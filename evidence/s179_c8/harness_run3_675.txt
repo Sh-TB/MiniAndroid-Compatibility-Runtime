@@ -1,0 +1,1465 @@
+=== S163/S166/S170/S173/S174/S175 CONCURRENCY HARNESS (CODER 8) ===
+=== 112 verifications over the real shadow dispatch surface ===
+
+[TEST 01] two+ thread creation & identity
+  ev1 virt=0ms wall=0ms thread=main :: TEST01 identity A=Thread-2 B=Thread-3
+  [PASS] tid(A) == 2 (monotonic, main=1)
+  [PASS] getName(A) == ctor name
+  [PASS] getName(B) == worker-B
+  [PASS] main tid == 1
+  [PASS] main name == main
+  [PASS] tids distinct
+[THREAD-ID] currentThread -> obj=5 (class=Ljava/lang/Thread;, drained-body identity))
+  [PASS] currentThread inside body A == A (drained identity)
+  ev2 virt=0ms wall=0ms thread=worker-A :: TEST01 drained-body identity currentThread==A
+[THREAD-ID] currentThread -> obj=1 (class=Ljava/lang/Thread;, drained-body identity))
+  [PASS] currentThread outside == main singleton
+
+[TEST 02] cross-thread message delivery (one-queue law)
+[QUEUE] Runnable id=10 enqueued (delay=0ms, ready_at=0ms virtual, queue_depth=1, source=Lworker/Payload;)
+  ev3 virt=0ms wall=0ms thread=Thread-0 :: enqueue payload from worker thread
+[QUEUE] Runnable id=10 dequeued (ready_at=0ms <= now=0ms virtual)
+  ev4 virt=0ms wall=0ms thread=main :: main drained payload
+  [PASS] worker-enqueued payload drained on main (one queue)
+
+[TEST 03] Handler callback order (FIFO by (when, seq))
+[QUEUE] Runnable id=100 enqueued (delay=0ms, ready_at=0ms virtual, queue_depth=1, source=LA;)
+[QUEUE] Runnable id=200 enqueued (delay=0ms, ready_at=0ms virtual, queue_depth=2, source=LB;)
+[QUEUE] Runnable id=300 enqueued (delay=0ms, ready_at=0ms virtual, queue_depth=3, source=LC;)
+  ev5 virt=0ms wall=0ms thread=main :: posted A B C
+[QUEUE] Runnable id=100 dequeued (ready_at=0ms <= now=0ms virtual)
+[QUEUE] Runnable id=200 dequeued (ready_at=0ms <= now=0ms virtual)
+[QUEUE] Runnable id=300 dequeued (ready_at=0ms <= now=0ms virtual)
+  ev6 virt=0ms wall=0ms thread=main :: drained
+  [PASS] 3 callbacks due
+  [PASS] FIFO order A, B, C
+
+[TEST 04] delayed callback execution (virtual due law)
+[QUEUE] Runnable id=400 enqueued (delay=250ms, ready_at=250ms virtual, queue_depth=1, source=LD;)
+  [PASS] not due before 250 virtual ms
+[QUEUE] Runnable id=400 dequeued (ready_at=250ms <= now=250ms virtual)
+  ev7 virt=250ms wall=0ms thread=main :: ran delayed D at virt=250
+  [PASS] delayed callback fired exactly at its virtual due
+  [PASS] 250 virtual ms elapsed in ~0 wall ms (decoupled clocks)
+
+[TEST 05] cancel callback before dispatch
+[QUEUE] Runnable id=500 enqueued (delay=100ms, ready_at=350ms virtual, queue_depth=1, source=LE;)
+[QUEUE] Runnable id=500 removed (was at depth=0)
+  [PASS] removeCallbacks removed the pending entry
+  ev8 virt=350ms wall=0ms thread=main :: after due: cancelled callback absent
+  [PASS] cancelled callback NEVER fired
+
+[TEST 06] Thread.join drive primitives
+  [PASS] NEW thread not alive
+[THREAD-START] thread_oid=11 runnable_oid=12 → pending inline run (deterministic law)
+  [PASS] started thread alive
+  [PASS] pending start recorded
+  [PASS] join sees parked wake at 50
+  [PASS] drive re-drained the body
+  [PASS] target TERMINATED — join returns with fresh state
+  ev9 virt=350ms wall=0ms thread=main :: TEST06 join drive → TERMINATED
+
+[TEST 07] Thread interrupt (flag + unpark + consume)
+[THREAD-START] thread_oid=13 runnable_oid=14 → pending inline run (deterministic law)
+  [PASS] parked to 5000
+[THREAD-LIFE] interrupt obj=13 parked-wake=0 (INT64_MAX = not parked)
+  ev10 virt=350ms wall=0ms thread=main :: interrupt: unpark + status consume
+  [PASS] interrupt collapsed the parked wake to now (unpark law)
+  [PASS] isInterrupted() true
+[THREAD-LIFE] Thread.interrupted() self=13 -> true (cleared)
+  [PASS] static interrupted() saw the flag
+[THREAD-LIFE] Thread.interrupted() self=13 -> false
+  [PASS] static interrupted() cleared it exactly once
+  [PASS] flag consumed — isInterrupted() false (isInterrupted never clears)
+
+[TEST 08] Object wait/notify per-monitor wait set
+  ev11 virt=350ms wall=0ms thread=main :: TEST08 two waiters registered on monitor
+  [PASS] 2 waiters registered
+  [PASS] notify on ANOTHER monitor releases 0
+  [PASS] notify releases exactly ONE waiter (deterministic choice)
+  [PASS] notifyAll releases the remaining waiter
+  [PASS] wait set empty after release + re-entry
+  [PASS] interrupted waiter consumes InterruptedException at wait site
+  [PASS] wait(0) → WAITING state
+  [PASS] wait(250) → TIMED_WAITING state
+
+[TEST 09] Executor task execution (submit → COMPLETED)
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=20 core=2
+  [PASS] factory returned an executor
+[QUEUE] Runnable id=21 enqueued (delay=0ms, ready_at=350ms virtual, queue_depth=1, token=22, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][FUTURE] submit task=21 → FutureTask obj=22 (PENDING)
+  [PASS] submit returned a REAL FutureTask (was a loud stub)
+  [PASS] future registered
+  [PASS] future PENDING after submit
+  [PASS] task rides the ONE MessageQueue
+  ev12 virt=350ms wall=0ms thread=main :: TEST09 submit → queue
+[QUEUE] Runnable id=21 dequeued (ready_at=350ms <= now=350ms virtual)
+  [PASS] drained the task
+[EXECUTOR][LIFE] task o21 drained — pending for executor o20 = 0
+[EXECUTOR][FUTURE] task o21 → future o22 state=COMPLETED
+  [PASS] drain hook flipped PENDING → COMPLETED
+  ev13 virt=350ms wall=0ms thread=main :: TEST09 drain hook → COMPLETED
+
+[TEST 10] Future cancel (cancel-before-dispatch)
+[EXECUTOR] newSingleThreadExecutor → ThreadPoolExecutor obj=23 core=1
+[QUEUE] Runnable id=24 enqueued (delay=0ms, ready_at=350ms virtual, queue_depth=1, token=25, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][FUTURE] submit task=24 → FutureTask obj=25 (PENDING)
+  [PASS] task queued before cancel
+[EXECUTOR][FUTURE] cancel o25 -> true (removed 1 queued entry by token)
+  [PASS] cancel() == true while PENDING
+  [PASS] queued entry removed by token — cancelled task never dispatches
+  ev14 virt=350ms wall=0ms thread=main :: TEST10 cancel → queue purge
+[EXECUTOR][FUTURE] cancel o25 -> false (state=2, OpenJDK: cancel after done returns false)
+  [PASS] double cancel == false
+  [PASS] isDone && isCancelled after cancel
+  [PASS] cancelled task NEVER ran
+
+[TEST 11] exception propagation (EXCEPTION state)
+[EXECUTOR] newCachedThreadPool → ThreadPoolExecutor obj=26 core=1
+[QUEUE] Runnable id=27 enqueued (delay=0ms, ready_at=1350ms virtual, queue_depth=1, token=29, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][FUTURE] submit task=27 → FutureTask obj=29 (PENDING)
+[QUEUE] Runnable id=27 dequeued (ready_at=1350ms <= now=1350ms virtual)
+[EXECUTOR][LIFE] task o27 drained — pending for executor o26 = 0
+[EXECUTOR][FUTURE] task o27 → future o29 state=EXCEPTION
+  [PASS] throwing task → EXCEPTION state (get() throws ExecutionException with the REAL cause, S166)
+  [PASS] thrown object recorded as the cause
+
+[TEST 12] thread termination + restart law
+[THREAD-START] thread_oid=30 runnable_oid=31 → pending inline run (deterministic law)
+[THREAD-LIFE] isAlive obj=30 state=4 -> false
+  [PASS] TERMINATED observable — isAlive false
+[THREAD-LIFE][LAW] start() on non-NEW thread obj=30 -> IllegalThreadStateException
+  [PASS] restart of a dead thread → IllegalThreadStateException
+  [PASS] stale pending-start purged (a body runs ONCE)
+  ev15 virt=1350ms wall=0ms thread=main :: TEST12 TERMINATED + restart rejected
+
+[TEST 13] Thread.getState() state machine
+[THREAD-LIFE] getState obj=32 -> NEW
+  [PASS] getState(NEW) == NEW
+[THREAD-START] thread_oid=32 runnable_oid=33 → pending inline run (deterministic law)
+[THREAD-LIFE] getState obj=32 -> RUNNABLE
+  [PASS] getState == RUNNABLE
+[THREAD-LIFE] getState obj=32 -> TIMED_WAITING
+  [PASS] sleep-parked → TIMED_WAITING
+[THREAD-LIFE] getState obj=32 -> WAITING
+  [PASS] wait(0) → WAITING
+[THREAD-LIFE] getState obj=32 -> TERMINATED
+  [PASS] getState == TERMINATED
+  ev16 virt=1350ms wall=0ms thread=main :: TEST13 state walk NEW→RUNNABLE→TIMED_WAITING→WAITING→TERMINATED
+
+[TEST 14] interrupt on TERMINATED = no-op; on NEW = flag
+[THREAD-START] thread_oid=35 runnable_oid=36 → pending inline run (deterministic law)
+[THREAD-LIFE] interrupt obj=35 → no-op (TERMINATED — JDK dead-thread law)
+[THREAD-LIFE] interrupt obj=35 parked-wake=9223372036854775807 (INT64_MAX = not parked)
+  ev17 virt=1350ms wall=0ms thread=main :: TEST14 interrupt on TERMINATED → no-op
+  [PASS] interrupt on a TERMINATED thread does NOT set the flag (JDK law)
+[THREAD-LIFE] interrupt obj=37 parked-wake=9223372036854775807 (INT64_MAX = not parked)
+  [PASS] interrupt on a NEW thread sets the flag (legal pre-start cancel)
+
+[TEST 15] hasMessages(what)/hasCallbacks real booleans
+[QUEUE] Runnable id=39 enqueued (delay=0ms, ready_at=1350ms virtual, queue_depth=1, source=Landroid/os/Message;)
+  [PASS] sendEmptyMessageDelayed returned true (was a silent fake-true no-op that enqueued NOTHING)
+  [PASS] hasMessages(42) == true (was void)
+  [PASS] message ENQUEUED (was silently dropped)
+[QUEUE] removeMessages(what=42) removed 1 entries
+  [PASS] removeMessages(42) handled
+  [PASS] hasMessages(42) == false after remove
+  [PASS] removeMessages purged the entry
+[QUEUE] Runnable id=40 enqueued (delay=0ms, ready_at=1350ms virtual, queue_depth=1, source=Lapp/Task;)
+  [PASS] hasCallbacks(R) == true
+[QUEUE] Runnable id=40 removed (was at depth=0)
+  [PASS] hasCallbacks(R) == false after remove
+  ev18 virt=1350ms wall=0ms thread=main :: TEST15 has/remove surface
+
+[TEST 16] obtainMessage → REAL Message payload
+[QUEUE] obtainMessage → Message o43
+  [PASS] obtainMessage returned a REAL Message object
+  [PASS] Message lives on the heap
+  [PASS] getWhat() == 7
+  [PASS] getArg1() == 11
+  [PASS] getArg2() == 22
+  [PASS] getObj() == the payload object
+  [PASS] getTarget() null before send (AOSP obtain law)
+  ev19 virt=1350ms wall=0ms thread=main :: TEST16 obtainMessage(7,11,22,obj) fields verified
+
+[TEST 17] sendMessage → real enqueue + target/when law
+[QUEUE] obtainMessage → Message o45
+[QUEUE] Runnable id=45 enqueued (delay=0ms, ready_at=1350ms virtual, queue_depth=1, source=Landroid/os/Message;)
+  [PASS] sendMessage returned true
+  [PASS] getTarget() == the sending handler (AOSP enqueueMessage law)
+  [PASS] msg.when stamped with the virtual send time
+  [PASS] message queued for dispatch
+  [PASS] hasMessages(5) sees the sent message
+  [PASS] sendMessage(null) → NullPointerException (was fake-true)
+[QUEUE] obtainMessage → Message o47
+[QUEUE] Runnable id=47 enqueued (delay=0ms, ready_at=1350ms virtual, queue_depth=2, token=46, source=Landroid/os/Message;)
+  [PASS] two messages queued
+  [PASS] removeCallbacksAndMessages(obj) removed exactly 1
+  [PASS] the OTHER message survived
+[QUEUE] Clearing 1 queued Runnables
+  ev20 virt=1350ms wall=0ms thread=main :: TEST17 send/target/when/token verified
+
+[TEST 18] postAtTime — ABSOLUTE uptime law
+[QUEUE] Runnable id=49 enqueued at ABSOLUTE when=2350ms virtual (postAtTime/sendMessageAtTime law, queue_depth=1)
+  [PASS] postAtTime handled (did not exist — REC-MISS)
+  [PASS] entry ready at ABSOLUTE when (not now+delay recomputed)
+  [PASS] not due before the absolute when
+[QUEUE] Runnable id=49 dequeued (ready_at=2350ms <= now=2350ms virtual)
+  ev21 virt=2350ms wall=0ms thread=main :: ran postAtTime callback at absolute when
+  [PASS] fired exactly when the clock crossed the absolute when
+[QUEUE] Runnable id=50 enqueued at ABSOLUTE when=4350ms virtual (postAtTime/sendMessageAtTime law, queue_depth=1, token=51)
+  [PASS] postAtTime token form cancelable by token
+
+[TEST 19] Message.sendToTarget self-dispatch
+[QUEUE] obtainMessage → Message o53
+[QUEUE] Runnable id=53 enqueued (delay=0ms, ready_at=2350ms virtual, queue_depth=1, source=Landroid/os/Message;)
+  [PASS] sendToTarget returned true
+  [PASS] sendToTarget re-enqueued the message on its target
+  [PASS] target binding preserved
+[QUEUE] Clearing 1 queued Runnables
+  ev22 virt=2350ms wall=0ms thread=main :: TEST19 sendToTarget verified
+
+[TEST 20] execute() after shutdown → RejectedExecutionException
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=54 core=1
+[QUEUE] Runnable id=55 enqueued (delay=0ms, ready_at=2350ms virtual, queue_depth=1, source=Ljava/util/concurrent/ThreadPoolExecutor;)
+  [PASS] execute() enqueued the task
+[EXECUTOR] shutdown obj=54 (submitted=1)
+[EXECUTOR][LAW-VIOLATION] execute after shutdown — AOSP throws RejectedExecutionException
+  [PASS] execute after shutdown → RejectedExecutionException (was silently accepted)
+[QUEUE] Clearing 1 queued Runnables
+  ev23 virt=2350ms wall=0ms thread=main :: TEST20 rejection law
+
+[TEST 21] shutdownNow → queue purge + never-run tasks
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=57 core=2
+[QUEUE] Runnable id=58 enqueued (delay=0ms, ready_at=2350ms virtual, queue_depth=1, source=Ljava/util/concurrent/ThreadPoolExecutor;)
+[QUEUE] Runnable id=59 enqueued (delay=0ms, ready_at=2350ms virtual, queue_depth=2, token=61, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][FUTURE] submit task=59 → FutureTask obj=61 (PENDING)
+[QUEUE] Runnable id=60 enqueued (delay=0ms, ready_at=2350ms virtual, queue_depth=3, source=Ljava/util/concurrent/ThreadPoolExecutor;)
+  [PASS] 3 tasks queued
+[QUEUE] Runnable id=58 removed (was at depth=0)
+[QUEUE] Runnable id=59 removed (was at depth=0)
+[QUEUE] Runnable id=60 removed (was at depth=0)
+[EXECUTOR] shutdownNow executor o57 — purged 3 never-run task(s)
+[EXECUTOR] shutdownNow → ArrayList o62 size=3
+  [PASS] shutdownNow returned a task list (was a loud stub)
+  [PASS] ALL never-run tasks purged from the queue
+  [PASS] submitted future flipped CANCELLED by shutdownNow
+  [PASS] purged tasks NEVER ran
+  ev24 virt=7350ms wall=1ms thread=main :: TEST21 shutdownNow purge
+
+[TEST 22] isTerminated — the REAL lifecycle law
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=63 core=1
+[QUEUE] Runnable id=64 enqueued (delay=0ms, ready_at=7350ms virtual, queue_depth=1, token=65, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][FUTURE] submit task=64 → FutureTask obj=65 (PENDING)
+[EXECUTOR] shutdown obj=63 (submitted=1)
+[EXECUTOR] isTerminated obj=63 shutdown=true pending=1 → false
+  [PASS] isTerminated FALSE while a task is pending (was a fake true)
+[QUEUE] Runnable id=64 dequeued (ready_at=7350ms <= now=7350ms virtual)
+[EXECUTOR][LIFE] task o64 drained — pending for executor o63 = 0
+[EXECUTOR][FUTURE] task o64 → future o65 state=COMPLETED
+[EXECUTOR] isTerminated obj=63 shutdown=true pending=0 → true
+  [PASS] isTerminated TRUE after the last task drained
+
+[TEST 23] ScheduledThreadPoolExecutor.schedule + TimeUnit
+[QUEUE] Runnable id=67 enqueued (delay=2500ms, ready_at=9850ms virtual, queue_depth=1, token=69, source=Ljava/util/concurrent/ScheduledThreadPoolExecutor;)
+[EXECUTOR][SCHED] schedule task=67 delay=2500ms period=0ms → FutureTask o69 (PENDING)
+  [PASS] schedule returned a Future (was REC-MISS — no delayed task ever ran)
+  [PASS] scheduled task queued
+  [PASS] delay 2500 MILLISECONDS → due at now+2500
+  [PASS] not due early
+[QUEUE] Runnable id=67 dequeued (ready_at=9850ms <= now=9850ms virtual)
+  ev25 virt=9850ms wall=1ms thread=main :: ran scheduled task at its absolute due
+  [PASS] scheduled task fired at its due time
+[QUEUE] Runnable id=71 enqueued (delay=2000ms, ready_at=11850ms virtual, queue_depth=1, token=72, source=Ljava/util/concurrent/ScheduledThreadPoolExecutor;)
+[EXECUTOR][SCHED] schedule task=71 delay=2000ms period=0ms → FutureTask o72 (PENDING)
+  [PASS] schedule(2, SECONDS) → due at now+2000ms (TimeUnit conversion)
+[QUEUE] Clearing 1 queued Runnables
+
+[TEST 24] scheduleAtFixedRate period stamp
+[QUEUE] Runnable id=74 enqueued (delay=100ms, ready_at=9950ms virtual, queue_depth=1, token=76, source=Ljava/util/concurrent/ScheduledThreadPoolExecutor;)
+[EXECUTOR][SCHED] scheduleAtFixedRate task=74 delay=100ms period=250ms → FutureTask o76 (PENDING)
+  [PASS] scheduleAtFixedRate handled (heartbeat schedulers)
+  [PASS] period=250ms stamped on the task (drain re-enqueue law)
+  [PASS] fixed-RATE mode stamped (next due = prev due + period, the drift-corrected JDK law)
+[QUEUE] Clearing 1 queued Runnables
+  ev26 virt=9850ms wall=1ms thread=main :: TEST24 fixed-rate stamp
+
+[TEST 25] ExecutionException cause recording
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=77 core=1
+[QUEUE] Runnable id=78 enqueued (delay=0ms, ready_at=9850ms virtual, queue_depth=1, token=80, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][FUTURE] submit task=78 → FutureTask obj=80 (PENDING)
+[QUEUE] Runnable id=78 dequeued (ready_at=9850ms <= now=9850ms virtual)
+[EXECUTOR][LIFE] task o78 drained — pending for executor o77 = 0
+[EXECUTOR][FUTURE] task o78 → future o80 state=EXCEPTION
+  [PASS] the REAL thrown object is on the record (get() wraps it as the ExecutionException cause — getCause() reads it)
+
+[TEST 26] newCondition → REAL ConditionObject
+[LOCKS] newCondition obj=82 (owner lock o81) — REAL Condition
+  [PASS] newCondition returned a REAL object (was a loud stub → null → NPE)
+  [PASS] condition registered on the (cond → lock) law map
+  [PASS] condition bound to its owning lock
+  ev27 virt=9850ms wall=1ms thread=main :: TEST26 REAL Condition
+
+[TEST 27] Condition await/signal wait-set primitives
+[LOCKS] newCondition obj=84 (owner lock o83) — REAL Condition
+  [PASS] 2 awaiters on the condition
+  [PASS] signal wakes exactly ONE
+  [PASS] signalAll wakes the rest
+  [PASS] condition wait set empty after re-entry
+  ev28 virt=9850ms wall=1ms thread=main :: TEST27 await/signal primitives
+
+[TEST 28] ReentrantLock ownership law
+  [PASS] lock() acquired by A
+  [PASS] tryLock() true for the owner (reentrant hold bumped)
+[LOCKS] tryLock o87 -> false (held by thread o88, JDK tryLock law)
+  [PASS] tryLock() FALSE while ANOTHER thread holds the lock (was always-true)
+[LOCKS] lock o87 CONTENDED — thread o89 parks (owner=o88)
+  [PASS] lock() by B is CONTENDED (the caller parks — JDK block law)
+[LOCKS][LAW-VIOLATION] unlock o87 by thread o89 — NOT the owner (holds=2 owner=o88) → IllegalMonitorStateException (JDK law)
+  [PASS] unlock() by a NON-OWNER → IllegalMonitorStateException law
+  ev29 virt=9850ms wall=1ms thread=locker-B :: TEST28 foreign unlock rejected
+  [PASS] owner unlock #1
+  [PASS] owner unlock #2 — lock free
+[LOCKS][LAW-VIOLATION] unlock o87 by thread o88 — NOT the owner (holds=0 owner=o0) → IllegalMonitorStateException (JDK law)
+  [PASS] unlock of an UNHELD lock → IllegalMonitorStateException
+  [PASS] free lock acquired by B
+  [PASS] isHeldByCurrentThread true for B (was isLocked-echo)
+  [PASS] isHeldByCurrentThread false for A
+
+[TEST 29] WAITING vs TIMED_WAITING wait states
+  [PASS] unbounded wait state name == WAITING
+  [PASS] bounded wait state name == TIMED_WAITING
+  [PASS] dead thread state name == TERMINATED
+  ev30 virt=9850ms wall=1ms thread=main :: TEST29 state names
+
+[TEST 30] interruptible-join primitives
+[THREAD-START] thread_oid=92 runnable_oid=93 → pending inline run (deterministic law)
+[THREAD-LIFE] interrupt obj=94 parked-wake=9223372036854775807 (INT64_MAX = not parked)
+  [PASS] interrupted joiner's flag aborts the join (InterruptedException law; was never consulted)
+  [PASS] target drive reaches its parked wake
+  [PASS] target TERMINATED after drive
+  ev31 virt=9850ms wall=1ms thread=main :: TEST30 interruptible join
+
+[TEST 31] deterministic virtual clock + poll timeout
+  [PASS] advance_virtual(500) → +500ms
+  [PASS] empty queue → no poll timeout (INT64_MAX, FINDING-009 law)
+[QUEUE] Runnable id=600 enqueued (delay=100ms, ready_at=10450ms virtual, queue_depth=1, source=LD;)
+  [PASS] next_ready_ms = earliest when (nativePollOnce target)
+  [PASS] not due at 599
+  [PASS] due exactly at 600
+[QUEUE] Clearing 1 queued Runnables
+  ev32 virt=10350ms wall=1ms thread=main :: TEST31 clock law
+
+[TEST 32] absolute-time vs front-of-queue ordering
+[QUEUE] Runnable id=700 enqueued (delay=0ms, ready_at=10350ms virtual, queue_depth=1, source=LA;)
+[QUEUE] Runnable id=800 enqueued at ABSOLUTE when=10850ms virtual (postAtTime/sendMessageAtTime law, queue_depth=2)
+[QUEUE] Runnable id=900 enqueued FRONT-OF-QUEUE (when=0, ready_at=0ms virtual, queue_depth=3, source=LC;)
+[QUEUE] Runnable id=900 dequeued (ready_at=0ms <= now=10350ms virtual)
+[QUEUE] Runnable id=700 dequeued (ready_at=10350ms <= now=10350ms virtual)
+  ev33 virt=10350ms wall=1ms thread=main :: drained front + due batch
+  [PASS] front-post (when=0) then A — both due now, B waits for its when
+[QUEUE] Runnable id=800 dequeued (ready_at=10850ms <= now=10850ms virtual)
+  ev34 virt=10850ms wall=1ms thread=main :: absolute entry due at its when
+  [PASS] absolute-time entry fires exactly at its when
+
+[TEST 33] CountDownLatch core law
+[JUC] CountDownLatch o95 ctor count=2
+  [PASS] ctor(2) accepted
+[JUC][LAW] CountDownLatch.<init>(-1) → IllegalArgumentException (JDK law)
+  [PASS] ctor(-1) → IllegalArgumentException (JDK law)
+  [PASS] getCount == 2
+  ev35 virt=10850ms wall=1ms thread=main :: TEST33 two latch waiters parked
+  [PASS] 2 waiters registered on the latch
+[JUC] CountDownLatch o95 countDown → 1
+  [PASS] count 2→1 releases NO waiter
+[JUC] CountDownLatch o95 reached ZERO → released 2 waiter(s)
+[JUC] CountDownLatch o95 countDown → 0
+  [PASS] count reaches ZERO: BOTH waiters released (notify_all law)
+  [PASS] waiter 1 consumes its release at the await site (notified=true)
+  [PASS] waiter 2 consumes its release too (all released at zero)
+  [PASS] getCount == 0 after 2 countDowns
+  [PASS] await on count==0 returns immediately (open latch)
+
+[TEST 34] CountDownLatch timed-await state law
+[JUC] CountDownLatch o99 ctor count=1
+  ev36 virt=10850ms wall=1ms thread=main :: TEST34 timed latch waiter registered
+  [PASS] await(750ms) → TIMED_WAITING state (JDK getState law)
+  [PASS] wake stamp = now + 750ms
+  [PASS] deadline-first resume records notified=false (JDK false law)
+  [PASS] resumed waiter → RUNNABLE
+
+[TEST 35] Semaphore core law
+[JUC][LAW] Semaphore.<init>(-2) → IllegalArgumentException (JDK law)
+  [PASS] ctor(-2) → IllegalArgumentException
+[JUC] Semaphore o101 ctor permits=1
+  [PASS] availablePermits == 1
+[JUC] Semaphore o101 acquire(1) → permits=0
+  [PASS] acquire() consumed a permit
+  [PASS] availablePermits == 0 after acquire
+  [PASS] tryAcquire on empty → FALSE (was: blind true)
+  ev37 virt=10850ms wall=1ms thread=main :: TEST35 acquirer parked on empty semaphore
+[JUC] Semaphore o101 release(1) → permits=1 woke 1 acquirer(s)
+  [PASS] release woke exactly ONE parked acquirer (JDK law; notified)
+  [PASS] wait set empty after the resume
+  [PASS] permits == 1 after release
+
+[TEST 36] Semaphore acquire(n)/release(n)/drainPermits
+[JUC] Semaphore o104 ctor permits=5
+[JUC] Semaphore o104 acquire(3) → permits=2
+  [PASS] acquire(3) on 5 → 2 remaining
+[JUC] Semaphore o104 release(4) → permits=6 woke 0 acquirer(s)
+  [PASS] release(4) → 6 permits (can exceed the initial balance)
+  [PASS] acquire(-1) → IllegalArgumentException
+  [PASS] drainPermits returns 6 and empties the balance
+  [PASS] balance == 0 after drain
+  ev38 virt=10850ms wall=1ms thread=main :: TEST36 extended semaphore law
+
+[TEST 37] CyclicBarrier law
+[JUC][LAW] CyclicBarrier.<init>(0) → IllegalArgumentException (JDK law)
+  [PASS] ctor(0) → IllegalArgumentException (JDK parties<=0 law)
+[JUC] CyclicBarrier o105 ctor parties=3
+  [PASS] getParties == 3
+  [PASS] fresh barrier is NOT broken
+  ev39 virt=10850ms wall=1ms thread=main :: TEST37 two parties waiting
+  [PASS] getNumberWaiting == 2
+[JUC] CyclicBarrier o105 TRIPPED (3 parties) → released 2 waiter(s), new generation
+  [PASS] trip released party 1 (notified)
+  [PASS] trip released party 2 (ALL parties — JDK barrierTripped law)
+  [PASS] waiting reset to 0 after trip (new generation)
+[JUC] CyclicBarrier o105 reset → fresh generation
+  [PASS] reset released the waiter so it can surface the broken barrier
+  [PASS] reset leaves a FRESH generation (not broken)
+
+[TEST 38] ReentrantReadWriteLock read/write exclusion
+[LOCKS] ReentrantReadWriteLock.readLock rwl=110 → READLock obj=111 (identity held)
+[LOCKS] ReentrantReadWriteLock.writeLock rwl=110 → WRITELock obj=112 (identity held)
+  [PASS] readLock()/writeLock() return REAL objects
+  [PASS] A writeLock.lock() acquired
+  [PASS] B readLock.tryLock() → FALSE while A holds the write lock (was: blind true)
+[LOCKS][LAW-VIOLATION] WriteLock obj=112 unlock by thread o114 — NOT the owner → IMSE (JDK law)
+  [PASS] B WriteLock.unlock() → IllegalMonitorStateException (JDK law; was a logged no-op)
+  [PASS] A downgrades write→read (same owner, legal)
+  [PASS] getReadHoldCount == 1 for the OWNER (per-thread law)
+  [PASS] A releases the write lock (downgrade path)
+  [PASS] isWriteLocked == false after release
+  [PASS] isReadLocked == true (the read hold survives)
+  [PASS] read hold released
+[LOCKS][LAW-VIOLATION] ReadLock obj=111 unlock by thread o113 with NO read hold → IMSE (JDK law)
+  [PASS] ReadLock.unlock with NO hold → IMSE (was a logged no-op)
+  ev40 virt=10850ms wall=1ms thread=main :: TEST38 rrwl exclusion walk
+
+[TEST 39] LinkedBlockingQueue element law
+[JUC] LinkedBlockingQueue o115 ctor capacity=unbounded
+[JUC] queue o115 put o116 → size=1
+  [PASS] put(e1) accepted
+[JUC] queue o115 put o117 → size=2
+  [PASS] put(e2) accepted
+  [PASS] size == 2
+  [PASS] peek returns the HEAD without removal (FIFO)
+  [PASS] size still 2
+[JUC] queue o115 take → o116 (Ljava/lang/Object;) size=1
+  [PASS] take → e1 FIRST (FIFO law)
+[JUC] queue o115 take → o117 (Ljava/lang/Object;) size=0
+  [PASS] poll → e2
+  [PASS] poll on EMPTY → null (non-blocking contract)
+  [PASS] unbounded LinkedBlockingQueue → huge remainingCapacity
+  [PASS] put(null) → NPE (JDK law)
+  ev41 virt=10850ms wall=1ms thread=main :: TEST39 lbq FIFO walk
+
+[TEST 40] ArrayBlockingQueue capacity law
+[JUC][LAW] ArrayBlockingQueue.<init>(0) → IllegalArgumentException
+  [PASS] ArrayBlockingQueue(0) → IllegalArgumentException (JDK law)
+[JUC] ArrayBlockingQueue o119 ctor capacity=1
+[JUC] queue o119 put o120 → size=1
+  [PASS] capacity 1, one element → remainingCapacity 0
+  [PASS] offer on FULL → false (immediate form)
+  ev42 virt=10850ms wall=1ms thread=Thread-0 :: TEST40 producer parked FULL
+  [PASS] put-when-full → WAITING on the put-side key
+[JUC] queue o119 take → o120 (Ljava/lang/Object;) size=0
+  [PASS] take → e1
+  [PASS] take woke the parked PRODUCER (putter, not a taker)
+  [PASS] put-side wait set empty
+[JUC] queue o119 put o121 → size=1
+  [PASS] size == 1 after retry
+
+[TEST 41] SynchronousQueue rendezvous law
+  [PASS] size() == 0 ALWAYS (JDK SynchronousQueue law)
+  [PASS] isEmpty() == true ALWAYS (JDK law)
+  [PASS] offer with NO waiting taker → false (no capacity)
+  ev43 virt=10850ms wall=1ms thread=main :: TEST41 taker parked
+[JUC] SynchronousQueue o123 put o124 (handoff slot armed)
+  [PASS] put released the parked taker (rendezvous; notified)
+  [PASS] the handoff slot is ARMED (put parked until a taker consumes)
+  [PASS] poll consumed the armed handoff (rendezvous slot delivered)
+  [PASS] second poll → null (the slot never holds two)
+
+[TEST 42] Exchanger exchange law
+[JUC][BOUNDARY] Exchanger o126 first exchange (item o127) — parked on the exchanger (WAITING)
+  [PASS] first exchange registered (parks)
+  [PASS] first exchanger → WAITING
+  ev44 virt=10850ms wall=1ms thread=Thread-0 :: TEST42 first exchanger parked
+[JUC] Exchanger o126 PAIRED — second exchanger returns o127, parked exchanger wakes with o128
+  [PASS] second exchange returns the FIRST exchanger's item (JDK node-pairing law)
+  [PASS] resume payload == the SECOND exchanger's item
+  [PASS] pair completion woke the parked exchanger (notified)
+  [PASS] resumed exchanger → RUNNABLE
+
+[TEST 43] invokeAll/invokeAny stub removal audit
+  [PASS] invokeAll/invokeAny REMOVED from the loud-stub surface (was stubbed_methods — the engine now submits + drives for real)
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=131 core=2
+  [PASS] executor factory (the invoke law's substrate) live
+  [PASS] JUC coordinator surface live (latch readable)
+  ev45 virt=10850ms wall=1ms thread=main :: TEST43 invoke-batch surface audit
+
+[TEST 44] CompletableFuture creation law
+[EXECUTOR][CF] completedFuture → CF o134 (COMPLETED)
+  [PASS] completedFuture → REAL CF object (was: unimplemented path)
+  [PASS] completedFuture state == COMPLETED
+[EXECUTOR][CF] failedFuture → CF o135 (EXCEPTION)
+  [PASS] failedFuture state == EXCEPTION with the REAL cause
+[QUEUE] Runnable id=136 enqueued (delay=0ms, ready_at=10850ms virtual, queue_depth=1, token=137, source=Ljava/util/concurrent/CompletableFuture;)
+[EXECUTOR][CF] runAsync task=136 → CF o137 enqueued (token=o137)
+  [PASS] runAsync → REAL CF
+  [PASS] runAsync CF starts PENDING
+  [PASS] the CF records its async task (cf→task law)
+  [PASS] the async task rides the ONE MessageQueue
+[QUEUE] Runnable id=136 dequeued (ready_at=10850ms <= now=10850ms virtual)
+  [PASS] runAsync task drained from the queue
+  [PASS] completion hook flipped the CF → COMPLETED
+  [PASS] no dependents registered → nothing to fire
+  [PASS] isDone == true after completion
+  ev46 virt=10850ms wall=1ms thread=main :: TEST44 cf creation laws
+
+[TEST 45] CompletableFuture chaining law
+[EXECUTOR][CF] CompletableFuture.<init> obj=138 (PENDING)
+  [PASS] new CompletableFuture() → PENDING
+[EXECUTOR][CF] thenApply src=o138 → dependent CF o140 registered (PENDING source)
+  [PASS] thenApply on a PENDING source → a NEW dependent CF
+  [PASS] getNumberOfDependents == 1 (registered on the source)
+  [PASS] completion returned the registered dependent for firing
+  [PASS] source result == v1
+  [PASS] SECOND complete is a no-op (JDK first-wins law)
+  [PASS] dependent fired → COMPLETED (JDK postComplete law)
+  ev47 virt=10850ms wall=1ms thread=main :: TEST45 cf chaining law
+[EXECUTOR][CF] CompletableFuture.<init> obj=143 (PENDING)
+  [PASS] cancel on PENDING → true
+  [PASS] state → CANCELLED
+  [PASS] double cancel → false
+
+[TEST 46] Looper quit/quitSafely law
+[QUEUE] Runnable id=1100 enqueued (delay=0ms, ready_at=10850ms virtual, queue_depth=1, source=LR1;)
+[QUEUE] Runnable id=1200 enqueued (delay=500ms, ready_at=11350ms virtual, queue_depth=2, source=LR2;)
+  [PASS] two messages queued before quit
+[QUEUE] quitSafely purge: dropped 1 future message(s), kept due ones
+[LOOPER] quitSafely looper=o3 → purged 1 queued message(s)
+  ev48 virt=10850ms wall=1ms thread=main :: TEST46 quitSafely purged future entries
+  [PASS] quitSafely kept the DUE message (AOSP finishAsync=true law)
+  [PASS] looper quit state recorded
+[QUEUE][QUIT] post after quit → false (runnable o1300 never enqueued)
+  [PASS] post AFTER quit → FALSE (AOSP enqueueMessage law; was true)
+  [PASS] the rejected post never enqueued
+[QUEUE] Runnable id=1200 enqueued (delay=0ms, ready_at=10850ms virtual, queue_depth=2, source=LR2b;)
+[QUEUE] quit purge: discarded 2 pending message(s)
+[LOOPER] quit looper=o3 (already quit) → purged 2 queued message(s)
+  [PASS] quit() discarded EVERY pending message (AOSP mMessages=null)
+
+[TEST 47] MessageQueue IdleHandler registry
+[LOOPER] MessageQueue.addIdleHandler obj=144 (registered)
+  [PASS] addIdleHandler accepted (was: unimplemented path)
+  [PASS] 1 idle handler registered
+[LOOPER] MessageQueue.addIdleHandler obj=144 (registered)
+  [PASS] duplicate add is allowed (AOSP ArrayList semantics)
+[LOOPER] MessageQueue.removeIdleHandler obj=144 → removed
+  [PASS] removeIdleHandler accepted
+  [PASS] one instance removed
+  [PASS] addIdleHandler(null) → NPE (AOSP law)
+  ev49 virt=10850ms wall=1ms thread=main :: TEST47 idle handler registry
+
+[TEST 48] Thread.holdsLock law (monitor tracking)
+[THREAD-LIFE] holdsLock(monitor=o145) self=o1 → true
+  [PASS] holdsLock(monitor) → TRUE after monitor-enter (was no-op)
+[THREAD-LIFE] holdsLock(monitor=o146) self=o1 → false
+  [PASS] holdsLock(other) → FALSE (never entered)
+[THREAD-LIFE] holdsLock(monitor=o145) self=o1 → true
+  [PASS] one exit of two → still held (nesting count)
+[THREAD-LIFE] holdsLock(monitor=o145) self=o1 → false
+  [PASS] both exits → FALSE (release law)
+  ev50 virt=10850ms wall=1ms thread=main :: TEST48 holdsLock walk
+
+[TEST 49] Thread priority/daemon observables
+  [PASS] getPriority default == 5/NORM (was silent no-op)
+  [PASS] setPriority(7) accepted
+  [PASS] getPriority reads the REAL store (was: vanished)
+[THREAD-LIFE][LAW] setPriority(11) → IllegalArgumentException (JDK 1..10 law)
+  [PASS] setPriority(11) → IllegalArgumentException (JDK 1..10 law)
+  [PASS] rejected store left the priority untouched
+  [PASS] isDaemon default false
+  [PASS] setDaemon(true) → isDaemon true (was hardcoded false)
+[THREAD-LIFE][LAW] setDaemon on ALIVE thread obj=148 → IllegalThreadStateException (JDK law)
+  [PASS] setDaemon on an ALIVE thread → IllegalThreadStateException (JDK isAlive guard)
+  ev51 virt=10850ms wall=1ms thread=main :: TEST49 priority/daemon laws
+
+[TEST 50] LockSupport park state-name law
+  [PASS] park() (no deadline) → WAITING (was TIMED_WAITING for every form)
+  [PASS] parkNanos → TIMED_WAITING
+[THREAD-LIFE] getState obj=149 -> WAITING
+  [PASS] getState() answers WAITING for the unbounded park
+[THREAD-LIFE] getState obj=150 -> TIMED_WAITING
+  [PASS] getState() answers TIMED_WAITING for parkNanos
+  ev52 virt=10850ms wall=1ms thread=main :: TEST50 park state names
+
+[TEST 51] HandlerThread law
+  [PASS] HandlerThread.<init> recorded the identity (NEW)
+  [PASS] ctor name recorded
+[THREAD-LIFE] HandlerThread obj=151 getLooper → Looper o152 (bound, identity held)
+  [PASS] getLooper → REAL Looper object (was: unimplemented path)
+  [PASS] getLooper identity HELD across calls (AOSP law)
+  [PASS] getThreadId == the JDK tid
+[THREAD-LIFE] HandlerThread obj=151 quit → Looper o152 QUIT
+  [PASS] quit accepted
+  [PASS] HandlerThread.quit marked ITS looper quit (post gate engages)
+  ev53 virt=10850ms wall=1ms thread=main :: TEST51 handler thread laws
+
+[TEST 52] wave-3 surface claims audit
+  [PASS] LocksShadow claims CountDownLatch
+  [PASS] LocksShadow claims Semaphore
+  [PASS] LocksShadow claims CyclicBarrier
+  [PASS] LocksShadow claims Exchanger
+  [PASS] LocksShadow claims LinkedBlockingQueue
+  [PASS] LocksShadow claims ArrayBlockingQueue
+  [PASS] LocksShadow claims SynchronousQueue
+  [PASS] ExecutorShadow claims CompletableFuture
+  [PASS] ThreadShadow claims HandlerThread
+  [PASS] main looper quit state persisted after TEST 46 (quit is forever)
+  ev54 virt=10850ms wall=1ms thread=main :: TEST52 surface claims audit
+
+[TEST 53] Phaser ledger law
+[JUC][LAW] Phaser.<init>(-1) → IllegalArgumentException (JDK law)
+  [PASS] ctor(-1) → IllegalArgumentException
+[JUC] Phaser o153 ctor parties=2
+  [PASS] initial phase == 0
+  [PASS] getRegisteredParties == 2
+  [PASS] getArrivedParties == 0
+  [PASS] first arrive returns phase 0
+  [PASS] 1 arrival registered
+  [PASS] advancing arrival returns the PREVIOUS phase (JDK arrive law)
+  [PASS] phase advanced 0 → 1
+  [PASS] new generation: arrivals reset
+  [PASS] arriveAndDeregister removed one party
+  [PASS] empty phaser terminates at the advance (default onAdvance law)
+  ev55 virt=10850ms wall=1ms thread=main :: TEST53 phaser ledger
+
+[TEST 54] Phaser awaitAdvance primitives
+[JUC] Phaser o155 ctor parties=1
+  ev56 virt=10850ms wall=1ms thread=main :: TEST54 phaser waiter parked on phase 0
+  [PASS] awaitAdvance waiter → WAITING
+  [PASS] first arrival releases NO waiter
+  [PASS] advance releases ALL phase-0 waiters (notify-all law)
+  [PASS] waiter consumes the advance release (notified=true)
+  [PASS] phase is 1 after the advance
+  ev57 virt=10850ms wall=1ms thread=main :: TEST54 phaser advance released the waiter
+
+[TEST 55] LinkedBlockingDeque law
+[JUC][LAW] LinkedBlockingDeque.<init>(0) → IllegalArgumentException
+  [PASS] ctor(0) → IllegalArgumentException
+  [PASS] offerLast(e1) true
+  [PASS] offerFirst(e2) true
+  [PASS] size == 2
+  [PASS] peekFirst == e2 (head)
+  [PASS] peekLast == e1 (tail)
+  [PASS] remainingCapacity == 0 at capacity
+  [PASS] offerLast on FULL → FALSE (JDK law)
+  [PASS] takeFirst == e2 (FIFO head)
+  [PASS] takeLast == e1 (LIFO tail)
+  [PASS] pollFirst on empty → null
+  [PASS] putFirst(null) → NullPointerException
+  ev58 virt=10850ms wall=1ms thread=main :: TEST55 deque laws
+
+[TEST 56] ConcurrentLinkedQueue law
+  [PASS] ctor accepted
+  [PASS] isEmpty initially
+  [PASS] offer(a) true
+  [PASS] add(b) true
+  [PASS] size == 2
+  [PASS] peek == a (head, no removal)
+  [PASS] size still 2 after peek
+  [PASS] poll == a first
+  [PASS] poll == b second
+  [PASS] poll on empty → null (immediate, never parks)
+  [PASS] add(null) → NullPointerException
+  ev59 virt=10850ms wall=1ms thread=main :: TEST56 lock-free queue
+
+[TEST 57] LongAdder law
+  [PASS] sum == 0 at ctor
+  [PASS] sum == exact balance (42)
+  [PASS] increment → 43
+  [PASS] 2×decrement → 41
+  [PASS] sumThenReset returns 41
+  [PASS] reset to 0 after sumThenReset
+  [PASS] reset → 0
+  ev60 virt=10850ms wall=1ms thread=main :: TEST57 adder ledger
+
+[TEST 58] LongAccumulator ledger law
+[JUC] LongAccumulator o166 ctor fn=o167 identity=100
+  [PASS] get == identity (100) before any fold
+  [PASS] ctor recorded the folding fn
+  [PASS] reset restores the identity
+  [PASS] getThenReset restores the identity after the read
+  ev61 virt=10850ms wall=1ms thread=main :: TEST58 accumulator ledger
+
+[TEST 59] CompletableFuture.allOf composite law
+  [PASS] composite CF is a real CF record
+  [PASS] composite PENDING while sources pending
+  [PASS] 1/3 done → still PENDING
+  [PASS] 2/3 done → still PENDING
+[EXECUTOR][CF][ALL] last source o170 done → composite o171 COMPLETED
+  [PASS] 3/3 done → composite COMPLETED (JDK allOf law)
+  [PASS] allOf() with NO sources → already completed
+[EXECUTOR][CF][ALL] source o173 threw → composite o175 completes EXCEPTIONALLY
+  [PASS] exceptional source → composite EXCEPTIONAL
+  [PASS] late source cannot un-throw the composite (first-wins)
+  ev62 virt=10850ms wall=1ms thread=main :: TEST59 allOf composite
+
+[TEST 60] CompletableFuture.anyOf composite law
+  [PASS] anyOf PENDING before any source settles
+[EXECUTOR][CF][ANY] source o178 settled → composite o179 completes (result)
+  [PASS] FIRST settled source completes the anyOf composite
+  [PASS] composite carries the FIRST source's result (JDK anyOf law)
+  [PASS] the later source cannot replace the settled outcome
+  ev63 virt=10850ms wall=1ms thread=main :: TEST60 anyOf composite
+
+[TEST 61] CF handle/whenComplete dependent kinds
+[EXECUTOR][CF] handle src=o181 → dependent CF o182 registered (PENDING source)
+  [PASS] handle on PENDING source → dependent CF (was: unimplemented)
+  [PASS] handle registered as dependent
+  [PASS] handle kind == 4
+[EXECUTOR][CF] whenComplete src=o181 → dependent CF o183 registered (PENDING source)
+  [PASS] whenComplete on PENDING source → dependent CF
+  [PASS] whenComplete kind == 5
+  ev64 virt=10850ms wall=1ms thread=main :: TEST61 handle/whenComplete kinds
+
+[TEST 62] CF deep chain (dependent of dependent)
+[EXECUTOR][CF] thenApply src=o184 → dependent CF o185 registered (PENDING source)
+[EXECUTOR][CF] thenApply src=o185 → dependent CF o186 registered (PENDING source)
+  [PASS] both chain stages PENDING
+  [PASS] src completion returns dep1 for firing
+  [PASS] dep1 completion returns dep2 for firing (chain reaches depth 2)
+  [PASS] leaf completion has no further dependents
+  ev65 virt=10850ms wall=1ms thread=main :: TEST62 deep chain
+
+[TEST 63] TPE observables law
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=187 core=2
+  [PASS] getCompletedTaskCount == 0 before any completion (was: absent)
+  [PASS] getActiveCount == 1 with tasks pending (was: hardcoded 0)
+[EXECUTOR][LIFE] task o188 drained — pending for executor o187 = 1
+  [PASS] completed ledger == 1 after one drain
+[EXECUTOR][LIFE] task o189 drained — pending for executor o187 = 0
+  [PASS] completed ledger == 2
+  [PASS] getActiveCount == 0 when the queue is empty
+  [PASS] allowCoreThreadTimeOut stores + reads back
+  [PASS] prestartCoreThread true while running
+[EXECUTOR] shutdown obj=187 (submitted=0)
+  [PASS] prestartCoreThread false after shutdown (JDK law)
+  ev66 virt=10850ms wall=2ms thread=main :: TEST63 TPE observables
+
+[TEST 64] Executors.callable + FutureTask direct run
+[EXECUTOR] callable → RunnableAdapter o191 wraps o190 result=null
+  [PASS] callable(R) → REAL adapter object (was: unimplemented path)
+  [PASS] adapter records the wrapped runnable
+[EXECUTOR] callable → RunnableAdapter o193 wraps o190 result=set
+  [PASS] callable(R, result) records the result payload
+  [PASS] callable(null) → NullPointerException (JDK law)
+  [PASS] direct FutureTask.<init> → PENDING record
+[EXECUTOR][FUTURE] task o190 → future o194 state=COMPLETED
+  [PASS] drain hook flipped the direct FutureTask → COMPLETED
+  ev67 virt=10850ms wall=2ms thread=main :: TEST64 callable adapter + direct FutureTask
+
+[TEST 65] invokeAll/invokeAny surface audit (wave 4)
+  [PASS] invokeAll/invokeAny NOT in the stubbed list
+  [PASS] create_future → PENDING (the timed law drives these)
+  [PASS] task → future pairing live
+[EXECUTOR][FUTURE] cancel o196 -> true (removed 0 queued entries by token)
+  [PASS] cancel-on-PENDING → CANCELLED (the invokeAll(t,u) deadline law)
+  ev68 virt=10850ms wall=2ms thread=main :: TEST65 invoke surface
+
+[TEST 66] ReentrantLock timed/interruptible primitives
+  [PASS] A acquires
+  [PASS] tryLock(500ms) parks with a DEADLINE wake (was: ignored)
+  [PASS] timed tryLock waiter → TIMED_WAITING
+[LOCKS] unlock o197 → woke 1 contender(s)
+  [PASS] owner release clean
+  [PASS] deadline wake delivered (notified → the re-entry race arm)
+  [PASS] lockInterruptibly consumes the flag
+  [PASS] flag consumed exactly once
+  ev69 virt=10850ms wall=2ms thread=Thread-0 :: TEST66 timed lock primitives
+
+[TEST 67] Condition awaitUntil/awaitNanos primitives
+[LOCKS] newCondition obj=201 (owner lock o200) — REAL Condition
+  [PASS] real Condition object
+  [PASS] awaitUntil waiter → TIMED_WAITING
+  [PASS] awaitUntil wake == deadline
+  [PASS] awaitNanos estimator reads 800ms remaining before any advance
+  [PASS] estimator tracks the clock: 500ms after a 300ms advance
+  [PASS] deadline-first resume records notified=false (timeout arm)
+  ev70 virt=11150ms wall=2ms thread=main :: TEST67 awaitUntil/awaitNanos
+
+[TEST 68] Semaphore timed/uninterruptible primitives
+[JUC] Semaphore o203 ctor permits=0
+  [PASS] tryAcquire(t,u) waiter → TIMED_WAITING
+  [PASS] deadline stamp = now+1200ms
+  [PASS] wake record delivered
+  [PASS] interrupt recorded on the resume (was_intr arm)
+  [PASS] acquireUninterruptibly PRESERVES the interrupt status (JDK law)
+  ev71 virt=11150ms wall=2ms thread=main :: TEST68 semaphore forms
+
+[TEST 69] Thread.activeCount/enumerate law
+  [PASS] activeCount >= 1 (the main thread is live)
+  [PASS] NEW thread NOT counted (JDK: enumerate counts started threads)
+[THREAD-START] thread_oid=205 runnable_oid=206 → pending inline run (deterministic law)
+  [PASS] started thread counted (activeCount +1)
+  [PASS] enumerate filled exactly the live count
+  [PASS] the started worker IS in the filled array
+  [PASS] enumerate into a shorter array truncates (JDK silent-ignore)
+  [PASS] enumerate(null) → NullPointerException (JDK law)
+  ev72 virt=11150ms wall=2ms thread=main :: TEST69 enumerate/activeCount
+
+[TEST 70] MessageQueue.next() dequeue law
+[QUEUE] Runnable id=211 enqueued (delay=0ms, ready_at=11150ms virtual, queue_depth=1, source=Lapp/Task;)
+[QUEUE] Runnable id=210 enqueued (delay=0ms, ready_at=11150ms virtual, queue_depth=2, source=Lapp/Task;)
+[QUEUE] Runnable id=212 enqueued (delay=400ms, ready_at=11550ms virtual, queue_depth=3, source=Lapp/Task;)
+  ev73 virt=11150ms wall=2ms thread=main :: TEST70 queue: m2, m1 due now; m3 due +400ms
+[QUEUE] MessageQueue.next → Runnable id=211 (ready_at=11150ms <= now=11150ms virtual)
+  [PASS] next() == m2 (earliest enqueue_seq among the due)
+[QUEUE] MessageQueue.next → Runnable id=210 (ready_at=11150ms <= now=11150ms virtual)
+  [PASS] next() == m1 second (FIFO)
+  [PASS] next() with only a FUTURE message → null (park law, was: unconditional null even with due messages)
+[QUEUE] MessageQueue.next → Runnable id=212 (ready_at=11550ms <= now=11550ms virtual)
+  [PASS] after the clock crosses the delay, next() == m3
+  [PASS] each seeded message dispatched exactly once (no re-queue)
+  [PASS] the drain reaches null after the seeded set
+  ev74 virt=11550ms wall=2ms thread=main :: TEST70 MessageQueue.next
+
+[TEST 71] priority band + monitor-ownership gate
+  [PASS] MIN_PRIORITY band edge (1) stored
+  [PASS] MAX_PRIORITY band edge (10) stored
+  [PASS] ownership gate FALSE before any enter (the IMSE condition)
+  [PASS] ownership gate TRUE after MONITOR_ENTER (the legal path)
+  [PASS] gate FALSE again after the balanced exit
+  ev75 virt=11550ms wall=2ms thread=main :: TEST71 priority band + ownership gate
+
+[TEST 72] wave-4 surface claims audit
+  [PASS] LocksShadow claims Phaser
+  [PASS] LocksShadow claims ConcurrentLinkedQueue
+  [PASS] LocksShadow claims LongAdder
+  [PASS] LocksShadow claims LongAccumulator
+  [PASS] LocksShadow claims LinkedBlockingDeque
+  [PASS] ExecutorShadow claims the RunnableAdapter
+  [PASS] ExecutorShadow still claims CF
+  ev76 virt=11550ms wall=2ms thread=main :: TEST72 wave-4 claims
+
+[TEST 73] LinkedBlockingDeque take-park primitives
+  [PASS] deque EMPTY (park precondition)
+  [PASS] no waiters before the park
+  [PASS] take-park registered on the deque monitor
+[THREAD-LIFE] getState obj=1 -> WAITING
+  [PASS] unbounded take-park state == WAITING (JDK getState law)
+  [PASS] waiter still registered until consume
+  [PASS] re-entry consume: notified by the put, not interrupted
+  [PASS] woken take consumes the element
+[THREAD-LIFE] interrupt obj=1 parked-wake=0 (INT64_MAX = not parked)
+  [PASS] interrupted take-park surfaces the interrupt at re-entry
+  [PASS] the IME throw consumed the interrupt flag (consume-once law)
+  ev77 virt=11550ms wall=2ms thread=main :: TEST73 deque take-park
+
+[TEST 74] LinkedBlockingDeque put-park + role key
+  [PASS] deque FULL at capacity 1
+  [PASS] put-wait key is DISTINCT from the deque monitor
+  [PASS] no put-waiters before the park
+  [PASS] put-park registered on the role key
+  [PASS] put-park does NOT touch the take-side set
+  [PASS] take frees the slot
+  [PASS] putter wakes via the role key (never a taker wake)
+[THREAD-LIFE] interrupt obj=1 parked-wake=0 (INT64_MAX = not parked)
+  [PASS] interrupted put-park surfaces InterruptedException (JDK law)
+  [PASS] the put-site IME throw consumed the interrupt flag
+  [PASS] not-full put falls through to the enqueue law
+  ev78 virt=11550ms wall=2ms thread=main :: TEST74 deque put-park
+
+[TEST 75] SynchronousQueue timed arms
+[JUC] SynchronousQueue o221 put o222 (handoff slot armed)
+  [PASS] put armed the rendezvous slot
+  [PASS] timed poll parks with deadline = now + timeout
+  [PASS] deadline wake is NOT an interrupt (poll(t,u) → null)
+  [PASS] deadline poll leaves no false item
+  [PASS] negative timeout detected before any park (IAE law)
+  ev79 virt=11800ms wall=2ms thread=main :: TEST75 syncq timed
+
+[TEST 76] SynchronousQueue timed offer
+  [PASS] no taker waiting
+  [PASS] offer(null) → NPE (JDK law, timed or not)
+  [PASS] taker parked on the sq monitor
+  [PASS] offer to a WAITING taker → immediate TRUE (JDK handoff law)
+  [PASS] the handoff consumed the slot (rendezvous completed)
+  [PASS] taker released from the sq monitor
+  ev80 virt=11800ms wall=2ms thread=main :: TEST76 syncq offer
+
+[TEST 77] LBQ/ABQ take-park interrupt audit
+[JUC] ArrayBlockingQueue o225 ctor capacity=2
+  [PASS] ABQ capacity recorded at ctor
+  [PASS] parked take registered on the queue oid
+[THREAD-LIFE] interrupt obj=1 parked-wake=0 (INT64_MAX = not parked)
+  [PASS] interrupted take → was_interrupted at re-entry (IME law)
+  [PASS] the take-site IME throw consumed the interrupt flag
+[JUC] queue o225 put o226 → size=1
+  [PASS] put's notify releases the parked taker (wake before timeout)
+  [PASS] interrupt flag consumed at the site
+  ev81 virt=11800ms wall=2ms thread=main :: TEST77 bq take interrupt
+
+[TEST 78] bounded put capacity law
+[JUC] ArrayBlockingQueue o227 ctor capacity=2
+[JUC] queue o227 put o228 → size=1
+[JUC] queue o227 put o229 → size=2
+  [PASS] ABQ at capacity 2/2
+  [PASS] capacity law reads 2
+  [PASS] full-put parks on the notFull role key
+[JUC] queue o227 take → o228 (Ljava/lang/Object;) size=1
+  [PASS] take consumes the head
+  [PASS] freed slot wakes the parked putter (notFull law)
+[JUC] LinkedBlockingQueue o231 ctor capacity=unbounded
+  [PASS] LBQ() is unbounded
+  ev82 virt=11800ms wall=2ms thread=main :: TEST78 put capacity
+
+[TEST 79] Phaser onAdvance override law
+[JUC] Phaser o232 ctor parties=1
+  [PASS] advancing arrival advanced the phase (override sees phase-1)
+  [PASS] override sees the registered count (onAdvance arg 2)
+  [PASS] non-empty phaser continues (default onAdvance law)
+[JUC] Phaser o233 ctor parties=1
+  [PASS] default onAdvance terminates at zero parties (anchored law)
+  [PASS] override returning FALSE revokes the termination (JDK law)
+  [PASS] the phase advance SURVIVES revocation
+  ev83 virt=11800ms wall=2ms thread=main :: TEST79 phaser onAdvance
+
+[TEST 80] AtomicIntegerArray law
+  [PASS] AtomicShadow registered
+  [PASS] length == 3
+  [PASS] set/get round-trip
+  [PASS] incrementAndGet returns NEW (post/prefix law)
+  [PASS] getAndAdd returns OLD
+  [PASS] additive law 42+8 == 50
+  [PASS] CAS on the exact value swaps
+  [PASS] CAS on a stale value FAILS (value identity law)
+  [PASS] decrementAndGet returns NEW
+[ATOMIC][LAW] Ljava/util/concurrent/atomic/AtomicIntegerArray;.<init>(-1) → NegativeArraySizeException (JDK law)
+  [PASS] ctor(-1) → NegativeArraySizeException (JDK law)
+[ATOMIC][LAW] Ljava/util/concurrent/atomic/AtomicIntegerArray;.get(i=3, len=3) → ArrayIndexOutOfBoundsException (JDK law)
+  [PASS] get(len) → ArrayIndexOutOfBoundsException (JDK law)
+[ATOMIC][LAW] Ljava/util/concurrent/atomic/AtomicIntegerArray;.set(i=-1, len=3) → ArrayIndexOutOfBoundsException (JDK law)
+  [PASS] set(-1, v) → ArrayIndexOutOfBoundsException (JDK law)
+  ev84 virt=11800ms wall=2ms thread=main :: TEST80 AtomicIntegerArray
+
+[TEST 81] AtomicLongArray law
+  [PASS] length == 2
+  [PASS] 64-bit value stored EXACTLY (the long identity)
+  [PASS] getAndSet returns the OLD value
+  [PASS] long CAS compares the FULL 64 bits
+  [PASS] addAndGet over the 64-bit cell
+[ATOMIC][LAW] Ljava/util/concurrent/atomic/AtomicLongArray;.get(i=2, len=2) → ArrayIndexOutOfBoundsException (JDK law)
+  [PASS] OOB long accessor → AIOOBE (JDK law)
+  ev85 virt=11800ms wall=2ms thread=main :: TEST81 AtomicLongArray
+
+[TEST 82] ExecutorCompletionService completion order
+[EXECUTOR][ECS] o237 ctor over executor o0
+[QUEUE] Runnable id=238 enqueued (delay=0ms, ready_at=11800ms virtual, queue_depth=1, token=241, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][ECS] o237 submit task o238 → future o241 (completion-order ledger armed)
+[QUEUE] Runnable id=239 enqueued (delay=0ms, ready_at=11800ms virtual, queue_depth=2, token=242, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][ECS] o237 submit task o239 → future o242 (completion-order ledger armed)
+[QUEUE] Runnable id=240 enqueued (delay=0ms, ready_at=11800ms virtual, queue_depth=3, token=243, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][ECS] o237 submit task o240 → future o243 (completion-order ledger armed)
+  [PASS] three submits → three real FutureTask objects
+  [PASS] nothing COMPLETED yet (submission ≠ completion)
+  [PASS] poll with no completion → null (JDK law)
+[EXECUTOR][FUTURE] task o240 → future o243 state=COMPLETED
+[EXECUTOR][ECS] future o243 → completion queue of ECS o237 (depth=1)
+[EXECUTOR][FUTURE] task o238 → future o241 state=COMPLETED
+[EXECUTOR][ECS] future o241 → completion queue of ECS o237 (depth=2)
+[EXECUTOR][FUTURE] task o239 → future o242 state=COMPLETED
+[EXECUTOR][ECS] future o242 → completion queue of ECS o237 (depth=3)
+  [PASS] three completions queued
+  [PASS] take 1 == the FIRST COMPLETED future (t3, submitted LAST)
+  [PASS] take 2 == second completed (t1)
+  [PASS] take 3 == last completed (t2)
+  [PASS] ledger drained exactly
+  ev86 virt=11800ms wall=2ms thread=main :: TEST82 ECS completion order
+
+[TEST 83] LinkedTransferQueue law
+[JUC] LTQ o244 enqueue o245 → size=1
+  [PASS] put(e1) enqueues
+[JUC] LTQ o244 enqueue o246 → size=2
+  [PASS] offer(e2) true (unbounded)
+  [PASS] size 2 (FIFO storage)
+[JUC][BOUNDARY] LTQ o244 transfer o247 — no waiting consumer; park is engine-owned
+  [PASS] transfer armed the rendezvous slot
+  [PASS] size counts the pending transfer
+  [PASS] tryTransfer with no waiting consumer → FALSE (JDK law)
+  [PASS] the failed tryTransfer did NOT enqueue (JDK contract)
+[JUC] LTQ o244 take → o247 size=2
+  [PASS] take consumes the pending TRANSFER first (consumer-first xfer)
+  [PASS] transfer slot consumed
+[JUC] LTQ o244 take → o245 size=1
+  [PASS] then the FIFO head (e1)
+[JUC] LTQ o244 take → o246 size=0
+  [PASS] then e2 (FIFO order kept)
+  [PASS] queue drained
+  [PASS] put(null) → NPE
+  ev87 virt=11800ms wall=2ms thread=main :: TEST83 LTQ
+
+[TEST 84] DelayQueue law
+[JUC] DelayQueue o248 offer o249 due=11900 (now=11800)
+  [PASS] offer(e1, due+100)
+[JUC] DelayQueue o248 offer o250 due=11850 (now=11800)
+  [PASS] offer(e2, due+50)
+[JUC] DelayQueue o248 offer o251 due=11800 (now=11800)
+  [PASS] put(e3, due now)
+  [PASS] three elements
+  [PASS] peek == e3 (earliest deadline; due = the offer-time clock)
+  [PASS] poll returns the EXPIRED head
+  [PASS] poll with an UNEXPIRED head → null (JDK law — never blocks)
+  [PASS] unexpired elements stay queued
+  [PASS] after the virtual advance the due head is takeable
+  [PASS] take answers once the LAST head expires
+  [PASS] drained in (due, seq) order
+  ev88 virt=11900ms wall=2ms thread=main :: TEST84 DelayQueue
+
+[TEST 85] PriorityBlockingQueue law
+  [PASS] ctor(0) → IllegalArgumentException (JDK law)
+[JUC] PBQ o253 add o254 pri=30 → size=1
+  [PASS] put never fails (unbounded JDK law)
+[JUC] PBQ o253 add o255 pri=10 → size=2
+  [PASS] offer always true (unbounded)
+[JUC] PBQ o253 add o256 pri=20 → size=3
+  [PASS] add always true
+  [PASS] peek == the MIN priority element (e2 pri=10)
+  [PASS] take == min (e2)
+  [PASS] next min (e3 pri=20)
+  [PASS] then (e1 pri=30)
+  [PASS] drained by priority
+  [PASS] put(null) → NPE
+[JUC] PBQ o253 add o257 pri=0 → size=1
+[JUC] PBQ o253 add o258 pri=0 → size=2
+  [PASS] no seed → insertion order (deterministic fallback)
+  ev89 virt=11900ms wall=2ms thread=main :: TEST85 PBQ
+
+[TEST 86] CF obtrude law
+[EXECUTOR][CF] obtrude CF o259 → COMPLETED (state rewritten; 0 pending dependents fire)
+  [PASS] obtrudeValue on PENDING → COMPLETED
+  [PASS] result carried
+  [PASS] no dependents yet
+[EXECUTOR][CF] obtrude CF o261 → COMPLETED (state rewritten; 0 pending dependents fire)
+  [PASS] obtrude REWROTE the completed outcome (JDK obtrudeValue law)
+  [PASS] no dependents were registered — nothing to fire
+[EXECUTOR][CF] thenApply src=o264 → dependent CF o265 registered (PENDING source)
+  [PASS] dependent registered on the PENDING source (unfired)
+[EXECUTOR][CF] obtrude CF o264 → COMPLETED (state rewritten; 1 pending dependents fire)
+  [PASS] the still-pending dependent fires with the obtruded outcome
+  [PASS] obtruded value recorded
+[EXECUTOR][CF] obtrude CF o267 → EXCEPTION (state rewritten; 0 pending dependents fire)
+  [PASS] obtrudeException → EXCEPTION state
+  [PASS] cause recorded
+  ev90 virt=11900ms wall=2ms thread=main :: TEST86 obtrude
+
+[TEST 87] CF orTimeout / completeOnTimeout
+[EXECUTOR][CF] orTimeout minted TimeoutException o270
+[EXECUTOR][CF] orTimeout CF o269 deadline=12150 (now=11900)
+  [PASS] orTimeout returns THIS
+  [PASS] still PENDING before the deadline
+  [PASS] deadline = now + timeout (the ONE virtual clock)
+[EXECUTOR][CF] deadline due CF o269 → TimeoutException
+  [PASS] deadline due → cf_check_deadlines fires it
+  [PASS] orTimeout deadline → TimeoutException (EXCEPTION state)
+  [PASS] real TimeoutException object
+[EXECUTOR][CF] completeOnTimeout CF o271 deadline=12000 (now=11900)
+[EXECUTOR][CF] deadline due CF o271 → fallback value
+  [PASS] completeOnTimeout → COMPLETED at the deadline
+  [PASS] fallback value carried
+[EXECUTOR][CF] orTimeout minted TimeoutException o274
+[EXECUTOR][CF] orTimeout CF o273 deadline=12000 (now=11900)
+  [PASS] settled CF is INERT at its deadline (postComplete guard)
+  [PASS] the REAL outcome stands
+  ev91 virt=11900ms wall=2ms thread=main :: TEST87 CF deadlines
+
+[TEST 88] CompletableFuture.delayedExecutor
+[EXECUTOR][CF] delayedExecutor delay=300ms → synthetic executor o276 (delegate=o0)
+  [PASS] delayedExecutor(300ms) → a REAL executor object
+[QUEUE] Runnable id=277 enqueued (delay=300ms, ready_at=12200ms virtual, queue_depth=4, token=276, source=Ljava/util/concurrent/CompletableFuture$DelayedExecutor;)
+[EXECUTOR][CF] delayedExecutor o276 execute o277 delay=300ms
+[QUEUE] Runnable id=238 dequeued (ready_at=11800ms <= now=11900ms virtual)
+[QUEUE] Runnable id=239 dequeued (ready_at=11800ms <= now=11900ms virtual)
+[QUEUE] Runnable id=240 dequeued (ready_at=11800ms <= now=11900ms virtual)
+  [PASS] NOT run before the virtual delay (never eager)
+[QUEUE] Runnable id=277 dequeued (ready_at=12200ms <= now=12200ms virtual)
+  [PASS] ran exactly at its virtual due (the ONE clock)
+  ev92 virt=12200ms wall=2ms thread=main :: TEST88 delayedExecutor
+
+[TEST 89] CF copy / minimalCompletionStage
+[EXECUTOR][CF] copy of settled CF o278 → o280 (same outcome)
+  [PASS] copy of a settled CF → a NEW CF
+  [PASS] the copy carries the SAME outcome (snapshot law)
+[EXECUTOR][CF] copy of PENDING CF o281 → o282 (mirror registered)
+  [PASS] copy of a PENDING CF stays PENDING
+  [PASS] the copy is a kind-6 MIRROR dependent (JDK CopyCompletion)
+  [PASS] the copy mirrored the source outcome at completion
+  [PASS] the mirror leaf has no further dependents
+[EXECUTOR][CF] minimalCompletionStage of o283 → o284 (read-only view)
+  [PASS] minimal view is a REAL CF object
+  [PASS] the view carries the minimal flag
+  [PASS] the view tracks the source (PENDING source → PENDING view)
+  ev93 virt=12200ms wall=2ms thread=main :: TEST89 copy/minimal
+
+[TEST 90] ScheduledFuture getDelay/isPeriodic
+[QUEUE] Runnable id=286 enqueued (delay=500ms, ready_at=12700ms virtual, queue_depth=1, token=289, source=Ljava/util/concurrent/ScheduledThreadPoolExecutor;)
+[EXECUTOR][SCHED] schedule task=286 delay=500ms period=0ms → FutureTask o289 (PENDING)
+  [PASS] schedule(500ms) → a real future
+  [PASS] one-shot schedule → isPeriodic FALSE
+  [PASS] getDelay (MILLISECONDS default) == 500 remaining
+  [PASS] getDelay answers a REAL long
+  [PASS] getDelay tracks the virtual clock (500-200 == 300)
+[QUEUE] Runnable id=287 enqueued (delay=100ms, ready_at=12500ms virtual, queue_depth=2, token=290, source=Ljava/util/concurrent/ScheduledThreadPoolExecutor;)
+[EXECUTOR][SCHED] scheduleAtFixedRate task=287 delay=100ms period=50ms → FutureTask o290 (PENDING)
+  [PASS] scheduleAtFixedRate → future
+  [PASS] fixed-rate schedule → isPeriodic TRUE
+  ev94 virt=12400ms wall=2ms thread=main :: TEST90 ScheduledFuture
+
+[TEST 91] LockSupport park blocker / getBlocker
+  [PASS] no blocker before parking
+  [PASS] park(blocker) recorded the blocker (JDK law)
+  [PASS] unpark clears the blocker (JDK release law)
+  [PASS] another thread's blocker is independent (per-thread law)
+  ev95 virt=12400ms wall=2ms thread=main :: TEST91 LockSupport blocker
+
+[TEST 92] wave-5 surface claims audit
+  [PASS] LTQ claimed by LocksShadow
+  [PASS] DelayQueue claimed by LocksShadow
+  [PASS] PriorityBlockingQueue claimed by LocksShadow
+  [PASS] ECS claimed by ExecutorShadow
+  [PASS] DelayedExecutor claimed by ExecutorShadow
+[EXECUTOR][ECS] o294 ctor over executor o0
+  [PASS] ECS ctor recorded its executor
+  [PASS] empty completion ledger
+  ev96 virt=0ms wall=2ms thread=main :: TEST92 wave-5 claims
+
+[TEST 93] ReentrantLock/RWLock isFair real flag
+  [PASS] default ctor → isFair false
+  [PASS] ctor(true) → isFair true (real store)
+  [PASS] RWL ctor(true) → isFair true
+  [PASS] RWL default ctor → isFair false
+  [PASS] flags are per-object (unfair object still false)
+  ev97 virt=12400ms wall=2ms thread=main :: TEST93 isFair
+
+[TEST 94] AtomicReferenceArray AIOOBE contract upgrade
+  [PASS] length 2
+  [PASS] in-range set works
+  [PASS] in-range get reads back
+[ATOMIC][LAW] AtomicReferenceArray.get(i=2, len=2) → ArrayIndexOutOfBoundsException (JDK law, W6-FIX 06 contract upgrade)
+  [PASS] get(len) → AIOOBE (JDK law; was null)
+[ATOMIC][LAW] AtomicReferenceArray.get(i=-1, len=2) → ArrayIndexOutOfBoundsException (JDK law, W6-FIX 06 contract upgrade)
+  [PASS] get(-1) → AIOOBE (was null)
+[ATOMIC][LAW] AtomicReferenceArray.set(i=5, len=2) → ArrayIndexOutOfBoundsException (JDK law, W6-FIX 06 contract upgrade)
+  [PASS] set(5) → AIOOBE (was silent grow)
+[ATOMIC][LAW] AtomicReferenceArray.<init>(-3) → NegativeArraySizeException (JDK law)
+  [PASS] negative length → NegativeArraySizeException
+  ev98 virt=12400ms wall=2ms thread=main :: TEST94 ARA AIOOBE
+
+[TEST 95] AtomicStampedReference paired CAS law
+  [PASS] getReference → initial ref
+  [PASS] getStamp → initial stamp
+[ATOMIC] Ljava/util/concurrent/atomic/AtomicStampedReference;.compareAndSet → SWAP
+  [PASS] CAS(v1→v2, 5→6) succeeds
+  [PASS] ref swapped
+  [PASS] stamp swapped
+[ATOMIC] Ljava/util/concurrent/atomic/AtomicStampedReference;.compareAndSet → FAIL
+  [PASS] CAS with WRONG stamp fails (pair law)
+[ATOMIC] Ljava/util/concurrent/atomic/AtomicStampedReference;.compareAndSet → FAIL
+  [PASS] CAS with WRONG ref fails (pair law)
+  [PASS] set(ref, stamp) unconditional store
+  [PASS] attemptStamp holds the ref, swaps the stamp
+  ev99 virt=12400ms wall=2ms thread=main :: TEST95 stamped ref
+
+[TEST 96] AtomicMarkableReference paired law
+  [PASS] getReference → initial ref
+  [PASS] isMarked → initial mark
+[ATOMIC] Ljava/util/concurrent/atomic/AtomicMarkableReference;.compareAndSet → SWAP
+  [PASS] CAS(v1→v2, true→false) succeeds
+  [PASS] mark swapped
+[ATOMIC] Ljava/util/concurrent/atomic/AtomicMarkableReference;.compareAndSet → FAIL
+  [PASS] CAS with wrong mark fails
+  ev100 virt=12400ms wall=2ms thread=main :: TEST96 markable ref
+
+[TEST 97] Semaphore wait-set observables
+[JUC] Semaphore o308 ctor permits=1
+[JUC] Semaphore o308 hasQueuedThreads → 0 waiter(s)
+  [PASS] no waiters → hasQueuedThreads false
+[JUC] Semaphore o308 getQueueLength → 0 waiter(s)
+  [PASS] no waiters → getQueueLength 0
+[JUC] Semaphore o308 hasQueuedThreads → 1 waiter(s)
+  [PASS] parked acquirer → hasQueuedThreads true
+[JUC] Semaphore o308 getQueueLength → 1 waiter(s)
+  [PASS] parked acquirer → getQueueLength 1
+  [PASS] release wakes the parked acquirer (JDK law)
+  ev101 virt=12400ms wall=2ms thread=main :: TEST97 semaphore observables
+
+[TEST 98] Thread.toString real priority
+  [PASS] shape Thread[name,...] (got Thread[prio-probe,5,main])
+  [PASS] setPriority(8) → toString ,8, (was hardcoded ,5,)
+  ev102 virt=12400ms wall=2ms thread=main :: TEST98 toString
+
+[TEST 99] defaultThreadFactory + newThread
+[EXECUTOR] defaultThreadFactory → factory o311 (pool-1)
+  [PASS] factory object created
+  [PASS] factory runtime class
+[EXECUTOR] newThread → Thread o313 "pool-1-thread-1" target=o312
+  [PASS] newThread → REAL Thread object
+  [PASS] newThread → java.lang.Thread class
+  [PASS] JDK pool-N-thread-M name (got pool-1-thread-1)
+  [PASS] fresh tid (monotonic, main=1)
+[EXECUTOR] privilegedThreadFactory → factory o314 (pool-2)
+  [PASS] privilegedThreadFactory object
+[EXECUTOR] newThread → Thread o315 "pool-2-thread-2" target=o312
+  [PASS] second thread gets a distinct pool-N-thread-M name
+  ev103 virt=12400ms wall=2ms thread=main :: TEST99 factory
+
+[TEST 100] unconfigurable wrapper law
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=316 core=2
+  [PASS] inner executor created
+[EXECUTOR] unconfigurableExecutorService → wrapper identity o316 (mutators now USO)
+  [PASS] wrapper identity == inner (one-queue delegation law)
+[EXECUTOR][LAW] setCorePoolSize on unconfigurable wrapper o316 → UnsupportedOperationException
+  [PASS] setCorePoolSize on wrapper → UnsupportedOperationException
+[EXECUTOR][LAW] purge on unconfigurable wrapper o316 → UnsupportedOperationException
+  [PASS] purge on wrapper → UnsupportedOperationException
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=317 core=2
+  [PASS] non-wrapped setCorePoolSize still stores
+  ev104 virt=12400ms wall=2ms thread=main :: TEST100 unconfigurable
+
+[TEST 101] TPE corePoolSize observables
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=318 core=3
+  [PASS] getCorePoolSize reads the factory size
+  [PASS] setCorePoolSize(7) stores
+  [PASS] setCorePoolSize(-1) → IllegalArgumentException (JDK law)
+  ev105 virt=12400ms wall=2ms thread=main :: TEST101 tpe config
+
+[TEST 102] Message recycle/isRecycled/toString
+[QUEUE] obtainMessage → Message o320
+  [PASS] obtainMessage(42) → Message
+  [PASS] fresh message isRecycled false
+  [PASS] toString carries what/when/arg fields (got Message{ what=42 when=0 arg1=0 arg2=0 obj=null })
+[QUEUE] Message o320 recycled (payload reset — identity-stable law)
+  [PASS] recycle → isRecycled true
+  [PASS] recycle RESETS the payload (what=0; was stale 42)
+[QUEUE] Message o320 recycled (payload reset — identity-stable law)
+  [PASS] double recycle is legal
+  ev106 virt=12400ms wall=2ms thread=main :: TEST102 message recycle
+
+[TEST 103] timed-park wake substrate (parkNanos law)
+  [PASS] finite deadline → TIMED_WAITING
+  [PASS] deadline NOT expired at now+100
+  [PASS] deadline EXPIRED at now+500 (the wake the F-150 pop fires)
+  [PASS] INT64_MAX deadline → WAITING (park state-name law)
+  [PASS] unbounded park never expires
+  ev107 virt=12400ms wall=2ms thread=main :: TEST103 timed park
+
+[TEST 104] TimeUnit.sleep/timedJoin substrate
+  [PASS] 250ms sleep advances the ONE virtual clock by 250
+[THREAD-START] thread_oid=322 runnable_oid=321 → pending inline run (deterministic law)
+  [PASS] pending start recorded
+  [PASS] join drive consumes the TARGET's body (scoped consume)
+  ev108 virt=12650ms wall=2ms thread=main :: TEST104 timeunit
+
+[TEST 105] CF.getNow record substrate
+[EXECUTOR][CF] completedFuture → CF o324 (COMPLETED)
+  [PASS] completedFuture record → COMPLETED + result (the getNow read)
+  [PASS] incomplete CF record → PENDING (getNow answers valueIfAbsent)
+  ev109 virt=12650ms wall=2ms thread=main :: TEST105 getNow
+
+[TEST 106] awaitTermination predicate substrate
+[EXECUTOR] newFixedThreadPool → ThreadPoolExecutor obj=326 core=1
+[QUEUE] Runnable id=327 enqueued (delay=0ms, ready_at=12650ms virtual, queue_depth=3, token=328, source=Ljava/util/concurrent/FutureTask;)
+[EXECUTOR][FUTURE] submit task=327 → FutureTask obj=328 (PENDING)
+  [PASS] running pool: not shutdown (awaitTermination → false)
+[EXECUTOR] shutdown obj=326 (submitted=1)
+  [PASS] shutdown flag set
+  [PASS] pending submission outstanding (termination FALSE)
+  [PASS] the pending future is tracked
+  ev110 virt=12650ms wall=2ms thread=main :: TEST106 awaitTermination
+
+[TEST 107] drainTo heap-field FIFO substrate
+  [PASS] FIFO count seeded (3)
+  [PASS] FIFO head slot reads back (the drain walks these slots)
+  ev111 virt=12650ms wall=2ms thread=main :: TEST107 drainTo
+
+[TEST 108] wait_expired probe law
+  [PASS] not expired before the deadline
+  [PASS] expired AT the deadline
+  [PASS] notified waiter never reports expired
+  [PASS] consumed record → no expiry (fresh-wait state)
+  ev112 virt=12650ms wall=2ms thread=main :: TEST108 wait_expired
+
+[TEST 109] CyclicBarrier isBroken/getNumberWaiting/reset
+[JUC] CyclicBarrier o334 ctor parties=2
+  [PASS] fresh barrier not broken
+  [PASS] no parties waiting
+  [PASS] one registered party → getNumberWaiting 1
+  [PASS] broken barrier → isBroken true (waiter re-entry reads this)
+  [PASS] after reset the FRESH generation is not broken (JDK law)
+  [PASS] reset clears the wait ledger (fresh generation)
+  ev113 virt=12650ms wall=2ms thread=main :: TEST109 barrier
+
+[TEST 110] LTQ take-park substrate
+  [PASS] empty xfer_take fails (park condition)
+[JUC] LTQ o335 enqueue o336 → size=1
+  [PASS] put's notify produced a resume record on the queue key
+  [PASS] the resume is a REAL wake (notified=true)
+[JUC] LTQ o335 take → o336 size=0
+  [PASS] take answers after the wake
+  ev114 virt=12650ms wall=2ms thread=main :: TEST110 LTQ park
+
+[TEST 111] DelayQueue head-deadline substrate
+[JUC] DelayQueue o337 offer o338 due=13650 (now=12650)
+[JUC] DelayQueue o337 offer o339 due=12750 (now=12650)
+  [PASS] head deadline available
+  [PASS] head due = EARLIEST deadline (now+100, not now+1000)
+  [PASS] not expired at now+50 → park until the deadline
+  [PASS] expired at now+100 → the EARLY element answers (min-delay law)
+  ev115 virt=12650ms wall=2ms thread=main :: TEST111 dq head
+
+[TEST 112] wave-6 surface claims audit
+  [PASS] DefaultThreadFactory claimed by ExecutorShadow
+  [PASS] AtomicStampedReference claimed
+  [PASS] AtomicMarkableReference claimed
+  [PASS] executor surface carries the wave-6 additions
+[JUC] Semaphore o340 ctor permits=2
+[JUC] Semaphore o340 hasQueuedThreads → 0 waiter(s)
+  [PASS] hasQueuedThreads handled (not a silent stub)
+  ev116 virt=12650ms wall=2ms thread=main :: TEST112 wave-6 claims
+
+=== event trace ===
+  ev1 virt=0ms wall=0ms thread=main :: TEST01 identity A=Thread-2 B=Thread-3
+  ev2 virt=0ms wall=0ms thread=worker-A :: TEST01 drained-body identity currentThread==A
+  ev3 virt=0ms wall=0ms thread=Thread-0 :: enqueue payload from worker thread
+  ev4 virt=0ms wall=0ms thread=main :: main drained payload
+  ev5 virt=0ms wall=0ms thread=main :: posted A B C
+  ev6 virt=0ms wall=0ms thread=main :: drained
+  ev7 virt=250ms wall=0ms thread=main :: ran delayed D at virt=250
+  ev8 virt=350ms wall=0ms thread=main :: after due: cancelled callback absent
+  ev9 virt=350ms wall=0ms thread=main :: TEST06 join drive → TERMINATED
+  ev10 virt=350ms wall=0ms thread=main :: interrupt: unpark + status consume
+  ev11 virt=350ms wall=0ms thread=main :: TEST08 two waiters registered on monitor
+  ev12 virt=350ms wall=0ms thread=main :: TEST09 submit → queue
+  ev13 virt=350ms wall=0ms thread=main :: TEST09 drain hook → COMPLETED
+  ev14 virt=350ms wall=0ms thread=main :: TEST10 cancel → queue purge
+  ev15 virt=1350ms wall=0ms thread=main :: TEST12 TERMINATED + restart rejected
+  ev16 virt=1350ms wall=0ms thread=main :: TEST13 state walk NEW→RUNNABLE→TIMED_WAITING→WAITING→TERMINATED
+  ev17 virt=1350ms wall=0ms thread=main :: TEST14 interrupt on TERMINATED → no-op
+  ev18 virt=1350ms wall=0ms thread=main :: TEST15 has/remove surface
+  ev19 virt=1350ms wall=0ms thread=main :: TEST16 obtainMessage(7,11,22,obj) fields verified
+  ev20 virt=1350ms wall=0ms thread=main :: TEST17 send/target/when/token verified
+  ev21 virt=2350ms wall=0ms thread=main :: ran postAtTime callback at absolute when
+  ev22 virt=2350ms wall=0ms thread=main :: TEST19 sendToTarget verified
+  ev23 virt=2350ms wall=0ms thread=main :: TEST20 rejection law
+  ev24 virt=7350ms wall=1ms thread=main :: TEST21 shutdownNow purge
+  ev25 virt=9850ms wall=1ms thread=main :: ran scheduled task at its absolute due
+  ev26 virt=9850ms wall=1ms thread=main :: TEST24 fixed-rate stamp
+  ev27 virt=9850ms wall=1ms thread=main :: TEST26 REAL Condition
+  ev28 virt=9850ms wall=1ms thread=main :: TEST27 await/signal primitives
+  ev29 virt=9850ms wall=1ms thread=locker-B :: TEST28 foreign unlock rejected
+  ev30 virt=9850ms wall=1ms thread=main :: TEST29 state names
+  ev31 virt=9850ms wall=1ms thread=main :: TEST30 interruptible join
+  ev32 virt=10350ms wall=1ms thread=main :: TEST31 clock law
+  ev33 virt=10350ms wall=1ms thread=main :: drained front + due batch
+  ev34 virt=10850ms wall=1ms thread=main :: absolute entry due at its when
+  ev35 virt=10850ms wall=1ms thread=main :: TEST33 two latch waiters parked
+  ev36 virt=10850ms wall=1ms thread=main :: TEST34 timed latch waiter registered
+  ev37 virt=10850ms wall=1ms thread=main :: TEST35 acquirer parked on empty semaphore
+  ev38 virt=10850ms wall=1ms thread=main :: TEST36 extended semaphore law
+  ev39 virt=10850ms wall=1ms thread=main :: TEST37 two parties waiting
+  ev40 virt=10850ms wall=1ms thread=main :: TEST38 rrwl exclusion walk
+  ev41 virt=10850ms wall=1ms thread=main :: TEST39 lbq FIFO walk
+  ev42 virt=10850ms wall=1ms thread=Thread-0 :: TEST40 producer parked FULL
+  ev43 virt=10850ms wall=1ms thread=main :: TEST41 taker parked
+  ev44 virt=10850ms wall=1ms thread=Thread-0 :: TEST42 first exchanger parked
+  ev45 virt=10850ms wall=1ms thread=main :: TEST43 invoke-batch surface audit
+  ev46 virt=10850ms wall=1ms thread=main :: TEST44 cf creation laws
+  ev47 virt=10850ms wall=1ms thread=main :: TEST45 cf chaining law
+  ev48 virt=10850ms wall=1ms thread=main :: TEST46 quitSafely purged future entries
+  ev49 virt=10850ms wall=1ms thread=main :: TEST47 idle handler registry
+  ev50 virt=10850ms wall=1ms thread=main :: TEST48 holdsLock walk
+  ev51 virt=10850ms wall=1ms thread=main :: TEST49 priority/daemon laws
+  ev52 virt=10850ms wall=1ms thread=main :: TEST50 park state names
+  ev53 virt=10850ms wall=1ms thread=main :: TEST51 handler thread laws
+  ev54 virt=10850ms wall=1ms thread=main :: TEST52 surface claims audit
+  ev55 virt=10850ms wall=1ms thread=main :: TEST53 phaser ledger
+  ev56 virt=10850ms wall=1ms thread=main :: TEST54 phaser waiter parked on phase 0
+  ev57 virt=10850ms wall=1ms thread=main :: TEST54 phaser advance released the waiter
+  ev58 virt=10850ms wall=1ms thread=main :: TEST55 deque laws
+  ev59 virt=10850ms wall=1ms thread=main :: TEST56 lock-free queue
+  ev60 virt=10850ms wall=1ms thread=main :: TEST57 adder ledger
+  ev61 virt=10850ms wall=1ms thread=main :: TEST58 accumulator ledger
+  ev62 virt=10850ms wall=1ms thread=main :: TEST59 allOf composite
+  ev63 virt=10850ms wall=1ms thread=main :: TEST60 anyOf composite
+  ev64 virt=10850ms wall=1ms thread=main :: TEST61 handle/whenComplete kinds
+  ev65 virt=10850ms wall=1ms thread=main :: TEST62 deep chain
+  ev66 virt=10850ms wall=2ms thread=main :: TEST63 TPE observables
+  ev67 virt=10850ms wall=2ms thread=main :: TEST64 callable adapter + direct FutureTask
+  ev68 virt=10850ms wall=2ms thread=main :: TEST65 invoke surface
+  ev69 virt=10850ms wall=2ms thread=Thread-0 :: TEST66 timed lock primitives
+  ev70 virt=11150ms wall=2ms thread=main :: TEST67 awaitUntil/awaitNanos
+  ev71 virt=11150ms wall=2ms thread=main :: TEST68 semaphore forms
+  ev72 virt=11150ms wall=2ms thread=main :: TEST69 enumerate/activeCount
+  ev73 virt=11150ms wall=2ms thread=main :: TEST70 queue: m2, m1 due now; m3 due +400ms
+  ev74 virt=11550ms wall=2ms thread=main :: TEST70 MessageQueue.next
+  ev75 virt=11550ms wall=2ms thread=main :: TEST71 priority band + ownership gate
+  ev76 virt=11550ms wall=2ms thread=main :: TEST72 wave-4 claims
+  ev77 virt=11550ms wall=2ms thread=main :: TEST73 deque take-park
+  ev78 virt=11550ms wall=2ms thread=main :: TEST74 deque put-park
+  ev79 virt=11800ms wall=2ms thread=main :: TEST75 syncq timed
+  ev80 virt=11800ms wall=2ms thread=main :: TEST76 syncq offer
+  ev81 virt=11800ms wall=2ms thread=main :: TEST77 bq take interrupt
+  ev82 virt=11800ms wall=2ms thread=main :: TEST78 put capacity
+  ev83 virt=11800ms wall=2ms thread=main :: TEST79 phaser onAdvance
+  ev84 virt=11800ms wall=2ms thread=main :: TEST80 AtomicIntegerArray
+  ev85 virt=11800ms wall=2ms thread=main :: TEST81 AtomicLongArray
+  ev86 virt=11800ms wall=2ms thread=main :: TEST82 ECS completion order
+  ev87 virt=11800ms wall=2ms thread=main :: TEST83 LTQ
+  ev88 virt=11900ms wall=2ms thread=main :: TEST84 DelayQueue
+  ev89 virt=11900ms wall=2ms thread=main :: TEST85 PBQ
+  ev90 virt=11900ms wall=2ms thread=main :: TEST86 obtrude
+  ev91 virt=11900ms wall=2ms thread=main :: TEST87 CF deadlines
+  ev92 virt=12200ms wall=2ms thread=main :: TEST88 delayedExecutor
+  ev93 virt=12200ms wall=2ms thread=main :: TEST89 copy/minimal
+  ev94 virt=12400ms wall=2ms thread=main :: TEST90 ScheduledFuture
+  ev95 virt=12400ms wall=2ms thread=main :: TEST91 LockSupport blocker
+  ev96 virt=0ms wall=2ms thread=main :: TEST92 wave-5 claims
+  ev97 virt=12400ms wall=2ms thread=main :: TEST93 isFair
+  ev98 virt=12400ms wall=2ms thread=main :: TEST94 ARA AIOOBE
+  ev99 virt=12400ms wall=2ms thread=main :: TEST95 stamped ref
+  ev100 virt=12400ms wall=2ms thread=main :: TEST96 markable ref
+  ev101 virt=12400ms wall=2ms thread=main :: TEST97 semaphore observables
+  ev102 virt=12400ms wall=2ms thread=main :: TEST98 toString
+  ev103 virt=12400ms wall=2ms thread=main :: TEST99 factory
+  ev104 virt=12400ms wall=2ms thread=main :: TEST100 unconfigurable
+  ev105 virt=12400ms wall=2ms thread=main :: TEST101 tpe config
+  ev106 virt=12400ms wall=2ms thread=main :: TEST102 message recycle
+  ev107 virt=12400ms wall=2ms thread=main :: TEST103 timed park
+  ev108 virt=12650ms wall=2ms thread=main :: TEST104 timeunit
+  ev109 virt=12650ms wall=2ms thread=main :: TEST105 getNow
+  ev110 virt=12650ms wall=2ms thread=main :: TEST106 awaitTermination
+  ev111 virt=12650ms wall=2ms thread=main :: TEST107 drainTo
+  ev112 virt=12650ms wall=2ms thread=main :: TEST108 wait_expired
+  ev113 virt=12650ms wall=2ms thread=main :: TEST109 barrier
+  ev114 virt=12650ms wall=2ms thread=main :: TEST110 LTQ park
+  ev115 virt=12650ms wall=2ms thread=main :: TEST111 dq head
+  ev116 virt=12650ms wall=2ms thread=main :: TEST112 wave-6 claims
+
+signature digest: 981767630cf46467
+checks: 675  failed: 0
+=== ALL GREEN ===
