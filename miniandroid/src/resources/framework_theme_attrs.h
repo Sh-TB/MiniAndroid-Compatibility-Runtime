@@ -51,6 +51,14 @@ inline const FrameworkThemeAttr FRAMEWORK_THEME_ATTRS[] = {
     {"colorControlActivated", 0x0101042au, 0xff80cbc4u, 0xff009688u},
     {"colorControlHighlight", 0x0101042cu, 0xffffffffu, 0xff000000u},
     {"disabledAlpha", 0x01010033u, 0x00002666u, 0x00002148u},
+    // F-NEW-491 (S188): android:actionBarSize — themes_material.xml law
+    // <item name="actionBarSize">@dimen/action_bar_default_height_material</item>,
+    // dimens_material.xml: 56dp (both flavors). TypedValue layout (AOSP
+    // ResourceTypes.h): unit in the LOW nibble (COMPLEX_UNIT_SHIFT=0,
+    // DIP=1), radix bits 4-5 (23p0=0), mantissa from bit 8:
+    // (56<<8)|(0<<4)|(1<<0) = 0x3801. Readers convert px at read time via
+    // complex_to_dimension_pixel_size(DensityContext{}).
+    {"actionBarSize", 0x010102ebu, 0x00003801u, 0x00003801u},
 };
 inline const size_t FRAMEWORK_THEME_ATTR_COUNT = sizeof(FRAMEWORK_THEME_ATTRS) / sizeof(FRAMEWORK_THEME_ATTRS[0]);
 

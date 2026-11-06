@@ -1,0 +1,26 @@
+[
+ {
+  "pkg": "com.dozingcatsoftware.bouncy",
+  "face": "8a6c24ac8a7d718e",
+  "pin": "8a6c24ac",
+  "pin_holds": true,
+  "uncaught": 0,
+  "binary": "4e226d2b199d12e0"
+ },
+ {
+  "pkg": "app.varlorg.unote",
+  "face": "3b8dcb0adbbc17a9",
+  "pin": "3b8dcb0a",
+  "pin_holds": true,
+  "uncaught": 0,
+  "binary": "4e226d2b199d12e0"
+ },
+ {
+  "pkg": "io.github.yamin8000.dooz",
+  "face": "31ddd4d5b8e6d18e",
+  "pin": "d602648e",
+  "pin_holds": false,
+  "uncaught": 6,
+  "binary": "4e226d2b199d12e0"
+ }
+]

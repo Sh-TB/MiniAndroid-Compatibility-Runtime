@@ -207,9 +207,25 @@ public:
 
     // Theme::GetAttribute (AssetManager2.cpp L1732): sorted-array binary
     // lookup; TYPE_ATTRIBUTE values hop to their named attribute (≤20 hops,
-    // the AOSP kMaxIterations law). Returns the RAW entry (may still be a
-    // reference — callers resolve through resolve_attribute / the ARSC).
-    const ResValue* get_attribute(uint32_t attr_key) const {
+    // the AOSP kMaxIterations law). Returns the terminal value (may still be
+    // a REFERENCE — callers resolve through resolve_attribute / the ARSC).
+    //
+    // ── F-NEW-491 (S188 WAVE-1): the PLATFORM hop-miss law. AOSP hops land
+    // in the framework-res package entries (Theme.Material et al define
+    // android:actionBarSize=56dp inside the FW theme chain). Without the fw
+    // table the parent-chain walk breaks at the FW style boundary and the
+    // hop target (0x01xxxxxx) is ABSENT from the flattened app bag — the
+    // lookup died there and the raw ?attr word leaked downstream as a
+    // pixel dimension (live evidence foehnix.widget: Toolbar
+    // LayoutParams.height=0x7f040003 raw → spec_h=0x7f040003 → 0x0 measure
+    // → flat screen; chess 298 same shape). AOSP law: the value STAYS a
+    // TypedValue TYPE_ATTRIBUTE; the AssetManager resolves it. Our degraded
+    // AM2 substitute is the generated FRAMEWORK_THEME_ATTRS tier in
+    // resolve_theme_attr_typed — so surface the RAW ATTRIBUTE WORD (truthful
+    // type, data=hop target) and let that tier answer. App-package (0x7f)
+    // hop targets that are absent stay honest misses (nullopt): no invented
+    // values (S185 clause 1).
+    std::optional<ResValue> get_attribute_value(uint32_t attr_key) const {
         constexpr uint32_t kMaxIterations = 20;   // AOSP law constant
         uint32_t resid = attr_key;
         for (uint32_t i = 0; i <= kMaxIterations; i++) {
@@ -217,15 +233,24 @@ public:
                 [](const std::pair<uint32_t, ResValue>& p, uint32_t k) {
                     return p.first < k;
                 });
-            if (it == kv_.end() || it->first != resid) return nullptr;
-            if (theme_value_is_undefined(it->second)) return nullptr;
+            if (it == kv_.end() || it->first != resid) {
+                if (i > 0 && (resid >> 24) == 0x01u) {
+                    ResValue attr_word;
+                    attr_word.type = DataType::ATTRIBUTE;
+                    attr_word.data = resid;
+                    attr_word.ref_id = resid;
+                    return attr_word;
+                }
+                return std::nullopt;
+            }
+            if (theme_value_is_undefined(it->second)) return std::nullopt;
             if (it->second.type == DataType::ATTRIBUTE) {
                 resid = it->second.data;   // hop to the attribute it names
                 continue;
             }
-            return &it->second;
+            return it->second;
         }
-        return nullptr;   // hop bound exceeded — honest miss
+        return std::nullopt;   // hop bound exceeded — honest miss
     }
 
     // Theme::ResolveAttributeReference: resolve the FINAL typed value for a
@@ -236,9 +261,9 @@ public:
     std::optional<ResValue> resolve_attribute(const ArscRouter& rt,
                                               const ResTableConfig& device,
                                               uint32_t attr_key) const {
-        const ResValue* raw = get_attribute(attr_key);
-        if (!raw) return std::nullopt;
-        ResValue out = *raw;
+        auto raw_opt = get_attribute_value(attr_key);
+        if (!raw_opt) return std::nullopt;
+        ResValue out = *raw_opt;
         if (out.is_reference()) {
             const ArscParser* arsc = rt.for_id(out.ref_id);
             if (arsc) {
@@ -373,10 +398,10 @@ public:
                 it->expanded = true;
                 it->expanded_size = it->theme.size();
             }
-            if (const ResValue* raw = it->theme.get_attribute(attr_key)) return *raw;
+            if (auto raw = it->theme.get_attribute_value(attr_key)) return *raw;
         }
         if (base_theme) {
-            if (const ResValue* raw = base_theme->get_attribute(attr_key)) return *raw;
+            if (auto raw = base_theme->get_attribute_value(attr_key)) return *raw;
         }
         resolve_misses_++;
         return std::nullopt;

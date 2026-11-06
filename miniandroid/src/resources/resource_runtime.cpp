@@ -1082,6 +1082,15 @@ std::optional<ResValue> ResourceRuntime::resolve_theme_attr_typed(
             } else if (attr_key == 0x0101020d /*windowFullscreen*/) {
                 out.type = DataType::INT_BOOLEAN;
                 out.data = (int32_t)raw;
+            } else if (attr_key == 0x010102eb /*actionBarSize*/) {
+                // F-NEW-491 (S188): dimension attrs keep their TypedValue
+                // DIMENSION word (56dp = 0x3810) — readers convert px at
+                // read time (complex_to_dimension_pixel_size), exactly like
+                // the F-NEW-454c TypedArray reader deref contract. Serving
+                // the raw word as INT_HEX would corrupt every dimension
+                // consumer (Toolbar/AppBarLayout heights).
+                out.type = DataType::DIMENSION;
+                out.data = (int32_t)raw;
             } else {
                 out.type = DataType::INT_HEX;
                 out.data = (int32_t)raw;

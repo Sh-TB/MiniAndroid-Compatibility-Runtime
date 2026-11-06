@@ -428,6 +428,42 @@ int LayoutInflater::parse_dim_attr(const AxmlAttribute* attr, InflateStats& stat
     // TypedValue{type=TYPE_DIMENSION} after typed-value resolution of the
     // reference; complexToDimensionPixelSize converts it.
     if (attr->value.is_reference()) {
+        // ── F-NEW-491 (S188): the ?attr/… element-XML dimension law ────────
+        // The compiled AXML word may be TYPE_ATTRIBUTE (data = the named
+        // attr id, e.g. android:minHeight="?attr/actionBarSize" → the app's
+        // renumbered 0x7f04xxxx). Resolving that id through the ARSC reads
+        // the attr DEFINITION, not the themed value — return 0 (the old
+        // behavior). AOSP law: TypedValue resolution goes through the
+        // theme. The theme service surfaces RAW ATTRIBUTE words for 0x01
+        // hop targets whose framework-res styles are absent (the degraded
+        // fw state) — hop to the terminal value, bounded (AOSP
+        // kMaxIterations spirit), then convert.
+        if (attr->value.type == DataType::ATTRIBUTE) {
+            auto tv = resources::ResourceRuntime::instance()
+                          .resolve_theme_attr_typed(
+                              apk_path_,
+                              attr->value.ref_id ? attr->value.ref_id
+                                                 : attr->value.data);
+            if (tv) {
+                ResValue v = *tv;
+                for (int hop = 0;
+                     v.type == DataType::ATTRIBUTE && hop < 8; ++hop) {
+                    auto tv2 = resources::ResourceRuntime::instance()
+                                   .resolve_theme_attr_typed(
+                                       apk_path_,
+                                       v.ref_id ? v.ref_id : v.data);
+                    if (!tv2) break;
+                    v = *tv2;
+                }
+                if (v.is_dimension()) {
+                    stats.dimens_resolved++;
+                    return complex_to_dimension_pixel_size(v.data,
+                                                           density_context());
+                }
+            }
+            stats.unresolved_refs++;
+            return 0;
+        }
         auto val = arsc_.resolve_value(attr->value.ref_id);
         if (val && val->is_dimension()) {
             stats.dimens_resolved++;
@@ -576,6 +612,17 @@ bool LayoutInflater::apply_style_item(Attrs& a, uint32_t attr_key,
             apk_path_, v.ref_id);
         if (!tv) return false;
         v = *tv;
+        // F-NEW-491 (S188): the theme service surfaces RAW ATTRIBUTE words
+        // when the hop lands on an 0x01 platform attr whose framework-res
+        // styles are absent — keep hopping to the terminal value (bounded,
+        // AOSP kMaxIterations spirit) instead of dropping the item.
+        for (int hop = 0; v.type == DataType::ATTRIBUTE && hop < 8; ++hop) {
+            auto tv2 =
+                resources::ResourceRuntime::instance().resolve_theme_attr_typed(
+                    apk_path_, v.ref_id ? v.ref_id : v.data);
+            if (!tv2) return false;
+            v = *tv2;
+        }
         stats.theme_attrs_resolved++;
     }
     // AOSP Style law: a style item may itself be a reference
