@@ -1,0 +1,106 @@
+{
+ "494": {
+  "title": "[4APP-EPIC][Coder-5] FOUR-TITLE FULL-COMPATIBILITY PROGRAM \u2014 Material Files \u00b7 NewPipe \u00b7 Joplin \u00b7 Element X",
+  "state": "open",
+  "state_reason": null,
+  "comments": 7,
+  "updated": "2026-11-05",
+  "last_comment_tail": "scriptor-form spellings too. |  | APP-016 ladder state: the full interactive run is live with the two pre-existing frontiers as the only in-flight rows. Next title on the ladder: **NewPipe (APP-017)**. Wave detail: #505 (S1W6R2 entry) \u00b7 evidence `evidence/s1w6r2_materialfiles/S1W6R2_EVIDENCE.json` \u00b7 local commit `ca0a10a` (push still blocked per the fine-grained PAT contents-write denial). |  | \u2014 Coder-5 | "
+ },
+ "495": {
+  "title": "[APP-016][Coder-5] me.zhanghai.android.files \u2014 full-interactive ladder MF-M0..M8",
+  "state": "open",
+  "state_reason": null,
+  "comments": 9,
+  "updated": "2026-11-05",
+  "last_comment_tail": "or form `Insets;.left` carried \u00d73 in mf_r17r/r43); the real producer (`getRootWindowInsets` + `getSystemGestureInsets`) died with F-NEW-571/571b \u2014 r47/r48 carry **0 rows**. Lesson recorded: 0-row claims must check descriptor-form spellings. | - Full wave log + evidence: `evidence/s1w6r2_materialfiles/S1W6R2_EVIDENCE.json`, runs `mf_r43..mf_r48` \u2014 details on #505. Next: NewPipe (APP-017). |  | \u2014 Coder-5 | "
+ },
+ "496": {
+  "title": "[APP-017][Coder-5] org.schabi.newpipe \u2014 full-interactive ladder NP-M0..M8",
+  "state": "open",
+  "state_reason": null,
+  "comments": 0,
+  "updated": "2026-11-03",
+  "last_comment_tail": ""
+ },
+ "497": {
+  "title": "[APP-018][Coder-5] net.cozic.joplin \u2014 full-interactive ladder JP-G0..M8",
+  "state": "open",
+  "state_reason": null,
+  "comments": 0,
+  "updated": "2026-11-03",
+  "last_comment_tail": ""
+ },
+ "498": {
+  "title": "[APP-019][Coder-5] io.element.android.x \u2014 full-interactive ladder EX-M0..M9",
+  "state": "open",
+  "state_reason": null,
+  "comments": 0,
+  "updated": "2026-11-03",
+  "last_comment_tail": ""
+ },
+ "499": {
+  "title": "[4APP-S1][Coder-5] GENERALIZED HTTP(S) CLIENT LAYER \u2014 OkHttp/SSLSocket/DNS/TLS-verify (NET-001 continuation)",
+  "state": "open",
+  "state_reason": null,
+  "comments": 0,
+  "updated": "2026-11-03",
+  "last_comment_tail": ""
+ },
+ "500": {
+  "title": "[4APP-S2][Coder-5] JAVA NIO2 FILESYSTEMPROVIDER OVER HOST FS \u2014 Material Files core dependency",
+  "state": "open",
+  "state_reason": null,
+  "comments": 0,
+  "updated": "2026-11-03",
+  "last_comment_tail": ""
+ },
+ "501": {
+  "title": "[4APP-S3][Coder-5] FOREGROUND SERVICES + NOTIFICATION RUNTIME \u2014 execution path",
+  "state": "open",
+  "state_reason": null,
+  "comments": 0,
+  "updated": "2026-11-03",
+  "last_comment_tail": ""
+ },
+ "502": {
+  "title": "[4APP-S4][Coder-5] HERMES/JSI EXECUTION-PATH GATE J0 \u2014 Joplin core dependency",
+  "state": "open",
+  "state_reason": null,
+  "comments": 0,
+  "updated": "2026-11-03",
+  "last_comment_tail": ""
+ },
+ "503": {
+  "title": "[4APP-S5][Coder-5] COMPOSE RENDER CLUSTER GENERIC FIX \u2014 Element X master gate (COMPOSE-001 / M-06)",
+  "state": "open",
+  "state_reason": null,
+  "comments": 0,
+  "updated": "2026-11-03",
+  "last_comment_tail": ""
+ },
+ "504": {
+  "title": "[4APP-S6][Coder-5] VIDEO-001 SOFTWARE MEDIAEXTRACTOR/MEDIACODEC PATH \u2014 NewPipe playback",
+  "state": "open",
+  "state_reason": null,
+  "comments": 0,
+  "updated": "2026-11-03",
+  "last_comment_tail": ""
+ },
+ "505": {
+  "title": "[CONT-4APP RECURRING][Coder-5] \u2014 per-session wave log: register \u2192 root-cause \u2192 fix \u2192 re-census \u2192 evidence",
+  "state": "open",
+  "state_reason": null,
+  "comments": 12,
+  "updated": "2026-11-05",
+  "last_comment_tail": "w lives only in the origin URL) \u2014 API helpers must read `git remote get-url origin` (`scripts/s1w6_gh_api.py`), and the grep-pattern trap above joins the \"check the .o timestamp\" lesson in the wave-infra ledger. |  | **Next:** NewPipe (APP-017) on the same register \u2192 root-cause \u2192 fix \u2192 re-census \u2192 evidence ladder. Local commits only \u2014 fine-grained PAT push still blocked (known limitation). |  | \u2014 Coder-5 | "
+ },
+ "166": {
+  "title": "[APP-042] org.ucam.ssb22.pinyinfdroid \u2014 compatibility report",
+  "state": "closed",
+  "state_reason": "completed",
+  "comments": 2,
+  "updated": "2026-09-27",
+  "last_comment_tail": " | |  | - APK version: `2.12.74 (vc 109)` | - Byte-identical screens across 3 runs (`==`) and identical to the wave evidence SHA. | - Direct image inspection: Launch menu renders (Pinyin Web & EPUB \u62fc\u97f3\u6d4f\u89c8\u5668, EPUB/Clipboard links, Help | Privacy policy) with CJK text. |  | **Verdict: VERIFIED_3RUN** \u2014 this closure survives the audit. Evidence: `evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run1..3/`. | "
+ }
+}

@@ -1,0 +1,692 @@
+[
+ {
+  "n": 1,
+  "title": "EXP-064 \u2014 REAL LOGIN IMAGE PROVEN BY PIXELS (OCR-validated PhoneView rendered)",
+  "closed_at": "2026-09-12",
+  "cat": null
+ },
+ {
+  "n": 2,
+  "title": "EXP-065 \u2014 Fix multi-DEX const-string bug (FIELD_PREFERRED_AUDIO_LANGUAGES leak resolved)",
+  "closed_at": "2026-09-12",
+  "cat": null
+ },
+ {
+  "n": 3,
+  "title": "EXP-066 \u2014 Multi-DEX semantic audit + OutlineTextContainerView text capture (Phone number label visible)",
+  "closed_at": "2026-09-12",
+  "cat": null
+ },
+ {
+  "n": 4,
+  "title": "EXP-067 \u2014 Resource resolution + AXML parser + Drawable decoding (real WebP images in Login UI)",
+  "closed_at": "2026-09-12",
+  "cat": null
+ },
+ {
+  "n": 5,
+  "title": "EXP-068 \u2014 Generic View inheritance + Floating Next button (semantic superclass resolution)",
+  "closed_at": "2026-09-12",
+  "cat": null
+ },
+ {
+  "n": 6,
+  "title": "EXP-069 \u2014 Generic text input + click dispatch: phone number injected + Next button clicked",
+  "closed_at": "2026-09-12",
+  "cat": null
+ },
+ {
+  "n": 7,
+  "title": "EXP-071 \u2014 Telegram Login \u2192 SMS Code Page Transition (CHECKPOINT_M PROVEN)",
+  "closed_at": "2026-09-12",
+  "cat": null
+ },
+ {
+  "n": 8,
+  "title": "MiniAndroid campaign evidence \u2014 verified achievements (REUSE-FIRST campaign, 2026-09-05)",
+  "closed_at": "2026-09-12",
+  "cat": null
+ },
+ {
+  "n": 10,
+  "title": "[EXEC] HelloWorld \u2014 APK Execution & Visual Proof",
+  "closed_at": "2026-09-21",
+  "cat": null
+ },
+ {
+  "n": 11,
+  "title": "[EXEC] TicTacToe \u2014 APK Execution & Gameplay Proof",
+  "closed_at": "2026-09-21",
+  "cat": null
+ },
+ {
+  "n": 12,
+  "title": "[EXEC] ConnectFour \u2014 APK Execution & Gameplay Proof",
+  "closed_at": "2026-09-21",
+  "cat": null
+ },
+ {
+  "n": 13,
+  "title": "[EXEC] AndroidGameSnake \u2014 Autonomous Gameplay Proof",
+  "closed_at": "2026-09-21",
+  "cat": null
+ },
+ {
+  "n": 15,
+  "title": "[EXEC] Unote \u2014 Runtime/UI Completion",
+  "closed_at": "2026-09-21",
+  "cat": null
+ },
+ {
+  "n": 17,
+  "title": "[EXEC] GMDice \u2014 APK Execution & Visual Proof",
+  "closed_at": "2026-09-21",
+  "cat": null
+ },
+ {
+  "n": 18,
+  "title": "[EXEC] MicroTimer \u2014 APK Execution & Visual Proof",
+  "closed_at": "2026-09-21",
+  "cat": null
+ },
+ {
+  "n": 68,
+  "title": "[GAME-044] com.smorgasbork.hotdeath \u2014 compatibility report",
+  "closed_at": "2026-09-26",
+  "cat": null
+ },
+ {
+  "n": 81,
+  "title": "[GAME-057] org.bobstuff.bobball \u2014 compatibility report",
+  "closed_at": "2026-09-26",
+  "cat": null
+ },
+ {
+  "n": 121,
+  "title": "[GAME-097] com.dozingcatsoftware.bouncy \u2014 compatibility report",
+  "closed_at": "2026-09-26",
+  "cat": null
+ },
+ {
+  "n": 166,
+  "title": "[APP-042] org.ucam.ssb22.pinyinfdroid \u2014 compatibility report",
+  "closed_at": "2026-09-26",
+  "cat": "APP-EPIC/4APP (Coder-5 full-interactive program)"
+ },
+ {
+  "n": 234,
+  "title": "[MG-051] Font fallback selection \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 235,
+  "title": "[MG-073] ellipsize \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 236,
+  "title": "[MG-080] Unicode combining marks \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 237,
+  "title": "[MG-081] RTL basic shaping \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 238,
+  "title": "[MG-082] Arabic joining \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 239,
+  "title": "[MG-083] emoji fallback \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 240,
+  "title": "[MG-084] surrogate pairs \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 241,
+  "title": "[MG-085] UTF-8/UTF-16 boundary \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 242,
+  "title": "[MG-115] requestLayout propagation \u2014 layout/geometry (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 243,
+  "title": "[MG-123] scroll offset \u2014 layout/geometry (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 244,
+  "title": "[MG-124] translationX \u2014 layout/geometry (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 245,
+  "title": "[MG-125] translationY \u2014 layout/geometry (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 246,
+  "title": "[MG-126] scaleX \u2014 layout/geometry (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 247,
+  "title": "[MG-127] scaleY \u2014 layout/geometry (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 248,
+  "title": "[MG-128] rotation \u2014 layout/geometry (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 249,
+  "title": "[MG-129] pivot \u2014 layout/geometry (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 250,
+  "title": "[MG-171] SharedPreferences default file \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 251,
+  "title": "[MG-172] custom file \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 252,
+  "title": "[MG-173] boolean persistence \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 253,
+  "title": "[MG-174] int persistence \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 254,
+  "title": "[MG-175] long persistence \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 255,
+  "title": "[MG-176] float persistence \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 256,
+  "title": "[MG-177] string persistence \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 257,
+  "title": "[MG-178] editor apply \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 258,
+  "title": "[MG-179] editor commit \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 259,
+  "title": "[MG-180] remove \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 260,
+  "title": "[MG-181] clear \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 261,
+  "title": "[MG-182] contains \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 262,
+  "title": "[MG-183] preference process persistence \u2014 storage/state (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 263,
+  "title": "[MG-214] GIF disposal NONE \u2014 animation (OBSERVED)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (other)"
+ },
+ {
+  "n": 264,
+  "title": "[MG-215] GIF disposal BACKGROUND \u2014 animation (OBSERVED)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (other)"
+ },
+ {
+  "n": 265,
+  "title": "[MG-216] GIF disposal PREVIOUS \u2014 animation (OBSERVED)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (other)"
+ },
+ {
+  "n": 266,
+  "title": "[MG-248] HTTP GET \u2014 network (PENDING)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (other)"
+ },
+ {
+  "n": 267,
+  "title": "[MG-047] adaptive icon foreground \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 268,
+  "title": "[MG-048] adaptive icon background \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 269,
+  "title": "[MG-052] Missing glyph detection \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 270,
+  "title": "[MG-053] tofu detection \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 273,
+  "title": "[MG-061] lineSpacing \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 274,
+  "title": "[MG-062] includeFontPadding \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 275,
+  "title": "[MG-067] font ascent \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 276,
+  "title": "[MG-068] font descent \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 277,
+  "title": "[MG-071] whitespace handling \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 279,
+  "title": "[MG-074] maxLines \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 280,
+  "title": "[MG-075] singleLine \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 285,
+  "title": "[MG-086] font file loading failure semantics \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 286,
+  "title": "[MG-087] Android resource font family \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 287,
+  "title": "[MG-088] downloadable-font failure fallback \u2014 text/font (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 289,
+  "title": "[MG-130] ViewGroup child ordering \u2014 layout/geometry (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 291,
+  "title": "[MG-002] Vector viewportWidth/viewportHeight \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 292,
+  "title": "[MG-003] Vector path fillType \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 293,
+  "title": "[MG-004] Vector path winding \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 294,
+  "title": "[MG-005] Vector path strokeWidth \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 298,
+  "title": "[MG-009] Vector group pivotX/pivotY \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 299,
+  "title": "[MG-010] Vector group rotation \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 300,
+  "title": "[MG-011] Vector group scale \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 301,
+  "title": "[MG-012] Vector group translation \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 302,
+  "title": "[MG-013] Vector nested group transforms \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 303,
+  "title": "[MG-014] Vector alpha inheritance \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 305,
+  "title": "[MG-016] Layer-list ordering \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 306,
+  "title": "[MG-017] Layer-list inset \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 307,
+  "title": "[MG-020] State-list selected state \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 308,
+  "title": "[MG-021] State-list disabled state \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 309,
+  "title": "[MG-022] State-list checked state \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 310,
+  "title": "[MG-023] State-list state fallback \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 313,
+  "title": "[MG-046] mipmap XML indirection \u2014 resource/asset (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 314,
+  "title": "[MG-204] scaling filter quality classes \u2014 graphics/render (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 315,
+  "title": "[MG-207] canvas translation \u2014 graphics/render (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 316,
+  "title": "[MG-208] canvas scale \u2014 graphics/render (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 317,
+  "title": "[MG-209] canvas rotation \u2014 graphics/render (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 318,
+  "title": "[MG-210] nested transforms \u2014 graphics/render (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 319,
+  "title": "[MG-146] event cancellation \u2014 input (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 321,
+  "title": "[MG-149] touch outside bounds \u2014 input (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 323,
+  "title": "[MG-223] ValueAnimator basic timing \u2014 animation (PARTIAL)",
+  "closed_at": "2026-09-25",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 331,
+  "title": "[MG-231] SoundPool initialization \u2014 audio (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 332,
+  "title": "[MG-232] MediaPlayer initialization \u2014 audio (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 333,
+  "title": "[MG-233] resource audio loading \u2014 audio (PARTIAL)",
+  "closed_at": "2026-09-26",
+  "cat": "MG micro-goal (closed while PARTIAL)"
+ },
+ {
+  "n": 334,
+  "title": "[GAMES-1] Full-load 5-10 games end-to-end (launch + render + interaction evidence)",
+  "closed_at": "2026-09-25",
+  "cat": "GAMES wave (full-load + autonomous play)"
+ },
+ {
+  "n": 335,
+  "title": "[GAMES-2] Autonomous Snake Deluxe play (self-play, no game-memory cheating)",
+  "closed_at": "2026-09-25",
+  "cat": "GAMES wave (full-load + autonomous play)"
+ },
+ {
+  "n": 336,
+  "title": "[GAMES-3] House-building autonomous play (Minicraft)",
+  "closed_at": "2026-09-25",
+  "cat": "GAMES wave (full-load + autonomous play)"
+ },
+ {
+  "n": 337,
+  "title": "[GAMES-4] NEW snake variant \u2014 build, load, autonomous play",
+  "closed_at": "2026-09-25",
+  "cat": "GAMES wave (full-load + autonomous play)"
+ },
+ {
+  "n": 338,
+  "title": "[GAMES-5] Autonomous 2048 play",
+  "closed_at": "2026-09-25",
+  "cat": "GAMES wave (full-load + autonomous play)"
+ },
+ {
+  "n": 340,
+  "title": "[GAMES-7] Autonomous TicTacToe Deluxe play",
+  "closed_at": "2026-09-25",
+  "cat": "GAMES wave (full-load + autonomous play)"
+ },
+ {
+  "n": 341,
+  "title": "[GAMES-8] Wave evidence package + gh-pages gameplay GIFs",
+  "closed_at": "2026-09-25",
+  "cat": "GAMES wave (full-load + autonomous play)"
+ },
+ {
+  "n": 342,
+  "title": "[F-NEW-165] androidx AppCompatDelegateImpl.createSubDecor theme-gate frontier \u2014 theme attr resolution gap for non-AppCompat-ancestor themes (mykanji family)",
+  "closed_at": "2026-09-25",
+  "cat": "F-NEW fix"
+ },
+ {
+  "n": 345,
+  "title": "[F-NEW-168] crash-on-launch family \u2014 rc=1 NPE chains (raumballer/tictactoe-classic) + dooz rc=-11 process-death",
+  "closed_at": "2026-09-25",
+  "cat": "F-NEW fix"
+ },
+ {
+  "n": 347,
+  "title": "[F-NEW-169] dooz compose-navigation NPE chain \u2014 3 roots after rc=-11 fix",
+  "closed_at": "2026-09-26",
+  "cat": "F-NEW fix"
+ },
+ {
+  "n": 349,
+  "title": "[S102-A] solitaire: R8-merged SavedStateRegistryController \u2014 getSavedStateProvider invoked on null registry receiver inside ComponentActivity.<init>",
+  "closed_at": "2026-09-26",
+  "cat": "S102 fix wave"
+ },
+ {
+  "n": 350,
+  "title": "[S102-B] compose frontier: 'CompositionLocal LocalDensity not present' \u2014 WindowRecomposer host wiring (solitaire, the real compose-runtime root)",
+  "closed_at": "2026-09-26",
+  "cat": "S102 fix wave"
+ },
+ {
+  "n": 352,
+  "title": "[S102-D] coroutines: CoroutineScheduler$Worker.tryPark interpreter spin (LockSupport.park has no blocking semantics)",
+  "closed_at": "2026-09-26",
+  "cat": "S102 fix wave"
+ },
+ {
+  "n": 421,
+  "title": "[APP-016][Coder-5] Material Files (me.zhanghai.android.files) \u2014 full-interactive ladder MF-M0..M8",
+  "closed_at": "2026-11-03",
+  "cat": "APP-EPIC/4APP (Coder-5 full-interactive program)"
+ },
+ {
+  "n": 422,
+  "title": "[APP-017][Coder-5] NewPipe (org.schabi.newpipe) \u2014 full-interactive ladder NP-M0..M8",
+  "closed_at": "2026-11-03",
+  "cat": "APP-EPIC/4APP (Coder-5 full-interactive program)"
+ },
+ {
+  "n": 423,
+  "title": "[APP-018][Coder-5] Joplin (net.cozic.joplin) \u2014 full-interactive ladder JP-G0..M8",
+  "closed_at": "2026-11-03",
+  "cat": "APP-EPIC/4APP (Coder-5 full-interactive program)"
+ },
+ {
+  "n": 424,
+  "title": "[APP-019][Coder-5] Element X (io.element.android.x) \u2014 full-interactive ladder EX-M0..M9",
+  "closed_at": "2026-11-03",
+  "cat": "APP-EPIC/4APP (Coder-5 full-interactive program)"
+ },
+ {
+  "n": 425,
+  "title": "[4APP-SHARED][Coder-5] Shared-layer campaign S1\u2013S7 \u2014 fix once, benefit all four titles",
+  "closed_at": "2026-11-03",
+  "cat": "APP-EPIC/4APP (Coder-5 full-interactive program)"
+ },
+ {
+  "n": 426,
+  "title": "[CONT-4APP RECURRING][Coder-5] Wave log \u2014 census \u2192 roots \u2192 fixes \u2192 battery \u2192 evidence",
+  "closed_at": "2026-11-03",
+  "cat": "wave-log / census / recurring meta"
+ },
+ {
+  "n": 427,
+  "title": "[4APP-EPIC][Coder-5] Four-title full-compatibility program: Material Files \u00b7 NewPipe \u00b7 Joplin \u00b7 Element X",
+  "closed_at": "2026-11-03",
+  "cat": "APP-EPIC/4APP (Coder-5 full-interactive program)"
+ }
+]

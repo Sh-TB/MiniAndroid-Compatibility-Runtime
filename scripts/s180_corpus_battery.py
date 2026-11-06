@@ -131,7 +131,9 @@ def discover_pkg(apk, store):
                         str(store)], capture_output=True, timeout=600)
     apps = store / "data" / "app"
     if apps.exists():
-        ds = [d.name for d in apps.iterdir() if d.is_dir()]
+        # F-NEW-376 staged promotion leaves .staging behind — never pick it
+        ds = [d.name for d in apps.iterdir() if d.is_dir()
+              and not d.name.startswith(".")]
         if ds:
             return ds[0]
     print("[discover] FAIL", (r.stderr or b"")[-200:].decode(

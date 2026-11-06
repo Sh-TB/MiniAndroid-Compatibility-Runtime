@@ -1,0 +1,7013 @@
+[
+ {
+  "n": 1,
+  "title": "EXP-064 \u2014 REAL LOGIN IMAGE PROVEN BY PIXELS (OCR-validated PhoneView rendered)",
+  "state": "closed",
+  "closed_at": "2026-09-12T20:46:34Z",
+  "created_at": "2026-08-19T20:57:09Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 2,
+  "title": "EXP-065 \u2014 Fix multi-DEX const-string bug (FIELD_PREFERRED_AUDIO_LANGUAGES leak resolved)",
+  "state": "closed",
+  "closed_at": "2026-09-12T20:46:36Z",
+  "created_at": "2026-08-19T21:54:53Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 3,
+  "title": "EXP-066 \u2014 Multi-DEX semantic audit + OutlineTextContainerView text capture (Phone number label visible)",
+  "state": "closed",
+  "closed_at": "2026-09-12T20:46:38Z",
+  "created_at": "2026-08-20T05:03:09Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 4,
+  "title": "EXP-067 \u2014 Resource resolution + AXML parser + Drawable decoding (real WebP images in Login UI)",
+  "state": "closed",
+  "closed_at": "2026-09-12T20:46:40Z",
+  "created_at": "2026-08-20T05:40:58Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 5,
+  "title": "EXP-068 \u2014 Generic View inheritance + Floating Next button (semantic superclass resolution)",
+  "state": "closed",
+  "closed_at": "2026-09-12T20:46:42Z",
+  "created_at": "2026-08-20T06:11:58Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 6,
+  "title": "EXP-069 \u2014 Generic text input + click dispatch: phone number injected + Next button clicked",
+  "state": "closed",
+  "closed_at": "2026-09-12T20:46:43Z",
+  "created_at": "2026-08-20T13:04:09Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 7,
+  "title": "EXP-071 \u2014 Telegram Login \u2192 SMS Code Page Transition (CHECKPOINT_M PROVEN)",
+  "state": "closed",
+  "closed_at": "2026-09-12T20:46:45Z",
+  "created_at": "2026-08-21T16:19:32Z",
+  "labels": [
+   "experiment",
+   "checkpoint-proven"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 8,
+  "title": "MiniAndroid campaign evidence \u2014 verified achievements (REUSE-FIRST campaign, 2026-09-05)",
+  "state": "closed",
+  "closed_at": "2026-09-12T20:46:47Z",
+  "created_at": "2026-09-05T13:01:45Z",
+  "labels": [
+   "documentation",
+   "evidence"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 9,
+  "title": "MASTER-ROADMAP v3 \u2014 MiniAndroid Compatibility Runtime \u2014 100% Base Execution Closure System (living document)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-08T07:05:52Z",
+  "labels": [
+   "documentation",
+   "campaign"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 10,
+  "title": "[EXEC] HelloWorld \u2014 APK Execution & Visual Proof",
+  "state": "closed",
+  "closed_at": "2026-09-21T01:04:12Z",
+  "created_at": "2026-09-21T01:04:10Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "apk",
+   "runtime",
+   "screenshot"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 11,
+  "title": "[EXEC] TicTacToe \u2014 APK Execution & Gameplay Proof",
+  "state": "closed",
+  "closed_at": "2026-09-21T01:04:14Z",
+  "created_at": "2026-09-21T01:04:13Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "apk",
+   "screenshot",
+   "gameplay"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 12,
+  "title": "[EXEC] ConnectFour \u2014 APK Execution & Gameplay Proof",
+  "state": "closed",
+  "closed_at": "2026-09-21T01:04:17Z",
+  "created_at": "2026-09-21T01:04:16Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "apk",
+   "state-change",
+   "gameplay"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 13,
+  "title": "[EXEC] AndroidGameSnake \u2014 Autonomous Gameplay Proof",
+  "state": "closed",
+  "closed_at": "2026-09-21T01:18:00Z",
+  "created_at": "2026-09-21T01:04:18Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "apk",
+   "state-change",
+   "screenshot",
+   "gameplay",
+   "autonomous-gameplay"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 14,
+  "title": "[EXEC] Dooz \u2014 Runtime/UI Completion",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-21T01:04:20Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "runtime",
+   "rendering",
+   "blocked",
+   "p1"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 15,
+  "title": "[EXEC] Unote \u2014 Runtime/UI Completion",
+  "state": "closed",
+  "closed_at": "2026-09-21T22:06:43Z",
+  "created_at": "2026-09-21T01:04:21Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "runtime",
+   "rendering"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 16,
+  "title": "[EXEC] Telegram \u2014 Runtime Compatibility",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-21T01:04:22Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "runtime"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 17,
+  "title": "[EXEC] GMDice \u2014 APK Execution & Visual Proof",
+  "state": "closed",
+  "closed_at": "2026-09-21T22:06:45Z",
+  "created_at": "2026-09-21T01:04:23Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "gameplay"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 18,
+  "title": "[EXEC] MicroTimer \u2014 APK Execution & Visual Proof",
+  "state": "closed",
+  "closed_at": "2026-09-21T22:06:48Z",
+  "created_at": "2026-09-21T01:04:24Z",
+  "labels": [
+   "evidence",
+   "execution"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 19,
+  "title": "[EXEC] FishRings \u2014 APK Execution & Gameplay Proof",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-21T01:04:25Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "gameplay"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 20,
+  "title": "[EXEC] TriPeaks \u2014 APK Execution & Visual Proof",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-21T01:04:26Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "rendering",
+   "blocked"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 21,
+  "title": "[EXEC] Bouncy \u2014 APK Execution & Visual Proof",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-21T01:04:27Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "gameplay"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 22,
+  "title": "[EXEC] Stopwatch \u2014 Service-Launch Family",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-21T01:04:28Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "blocked"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 23,
+  "title": "[EXEC] OPMT \u2014 APK Execution & Visual Proof",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-21T01:04:29Z",
+  "labels": [
+   "evidence",
+   "execution",
+   "gameplay"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 24,
+  "title": "S81 \u2014 REAL APP VISUAL COMPATIBILITY: audit ladder, VF fixes, 200-item F-Droid corpus + BATCH-01",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T02:27:40Z",
+  "labels": [
+   "wave-report",
+   "visual-compatibility"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 25,
+  "title": "[GAME-001] com.qwde.ccm \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:34Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 26,
+  "title": "[GAME-002] com.astroloop.game \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:35Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 27,
+  "title": "[GAME-003] app.halma \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:37Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 28,
+  "title": "[GAME-004] com.jeffliu.balancetheball \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:39Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-graphics-nontrivial",
+   "executed",
+   "graphics",
+   "state-graphically-nontrivial",
+   "fail-measure"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 29,
+  "title": "[GAME-005] crypto.o0o0o0o0o.games.blackjack \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:41Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 30,
+  "title": "[GAME-006] eu.veldsoft.no.thanks \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:42Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 31,
+  "title": "[GAME-007] com.simondalvai.ball2box \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:44Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-anr",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 32,
+  "title": "[GAME-008] si.palcka.tarok \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:45Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-palette",
+   "fail-unknown",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 33,
+  "title": "[GAME-009] cos.premy.mines \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:47Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 34,
+  "title": "[GAME-010] com.sidhant.puzzle \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:49Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 35,
+  "title": "[GAME-011] com.ivylopez.authsrng \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:50Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 36,
+  "title": "[GAME-012] io.github.hathibelagal.mykanji \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:52Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 37,
+  "title": "[GAME-013] io.github.ebraminio.bouncy \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:53Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 38,
+  "title": "[GAME-014] de.tobiasbielefeld.solitaire \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:55Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 39,
+  "title": "[GAME-015] eu.quelltext.memory \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:57Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-palette",
+   "fail-unknown",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 40,
+  "title": "[GAME-016] com.sidhant.queens \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:57:58Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-palette",
+   "fail-unknown",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 41,
+  "title": "[GAME-017] page.codeberg.lanticy.guandan \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:00Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 42,
+  "title": "[GAME-018] xyz.deepdaikon.quinb \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:01Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-palette",
+   "fail-unknown",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 43,
+  "title": "[GAME-019] com.vayunmathur.games.solitaire \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:03Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 44,
+  "title": "[GAME-020] bim.app \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:05Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 45,
+  "title": "[GAME-021] de.schwarz.boardgamepal \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:06Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 46,
+  "title": "[GAME-022] com.dash1971.maia_chess \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:08Z",
+  "labels": [
+   "blocked",
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 47,
+  "title": "[GAME-023] org.secuso.privacyfriendlybattleship \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:09Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 48,
+  "title": "[GAME-024] com.kingalex.kingpong \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:11Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 49,
+  "title": "[GAME-025] com.vovagorodok.blichess \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:12Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 50,
+  "title": "[GAME-026] io.itch.pirate_solitaire \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:14Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 51,
+  "title": "[GAME-027] com.dozingcatsoftware.dodge \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:16Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 52,
+  "title": "[GAME-028] com.helddertierwelt.mentalmath \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:17Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 53,
+  "title": "[GAME-029] com.sidhant.bubbleshooter \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:19Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 54,
+  "title": "[GAME-030] net.tigr.navyfleetbattle \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:21Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 55,
+  "title": "[GAME-031] com.hazelhope.dubster.hamtest \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:22Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 56,
+  "title": "[GAME-032] ca.rmen.nounours \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:23Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 57,
+  "title": "[GAME-033] com.nima.triviaapp \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:25Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 58,
+  "title": "[GAME-034] ru.wohlsoft.thextech.fdroid \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:27Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 59,
+  "title": "[GAME-035] com.willie.mancala \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:29Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 60,
+  "title": "[GAME-036] org.lichess.mobileV2 \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:30Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 61,
+  "title": "[GAME-037] de.georgsieber.ballbreak \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:32Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 62,
+  "title": "[GAME-038] com.quietgrid.app \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:33Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 63,
+  "title": "[GAME-039] com.octbit.rutmath \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:35Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 64,
+  "title": "[GAME-040] com.galaxyrio.sudokusolver \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:37Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 65,
+  "title": "[GAME-041] org.lufebe16.pysolfc \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:38Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 66,
+  "title": "[GAME-042] com.kaeruct.raumballer \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:40Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 67,
+  "title": "[GAME-043] com.sanskritbasics.memory \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:42Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 68,
+  "title": "[GAME-044] com.smorgasbork.hotdeath \u2014 compatibility report",
+  "state": "closed",
+  "closed_at": "2026-09-26T17:05:15Z",
+  "created_at": "2026-09-22T05:58:43Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 69,
+  "title": "[GAME-045] com.serwylo.retrowars \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:45Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 70,
+  "title": "[GAME-046] org.opensurge2d.surgeengine \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:47Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 71,
+  "title": "[GAME-047] com.eightsines.firestrike.opensource \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:48Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 72,
+  "title": "[GAME-048] com.clavierhaus.gnubg \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:50Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 73,
+  "title": "[GAME-049] com.sidhant.arrowescape \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:51Z",
+  "labels": [
+   "blocked",
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 74,
+  "title": "[GAME-050] com.vovagorodok.blidraughts \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:53Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 75,
+  "title": "[GAME-051] com.yepgoryo.EggReturnsHome \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:55Z",
+  "labels": [
+   "blocked",
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 76,
+  "title": "[GAME-052] com.rocket9labs.boxcars \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:56Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-rendered",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics",
+   "fail-measure"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 77,
+  "title": "[GAME-053] io.github.johnathan.minesweeper \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:58Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 78,
+  "title": "[GAME-054] org.piepmeyer.gauguin \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:58:59Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 79,
+  "title": "[GAME-055] jwtc.android.chess \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:00Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 80,
+  "title": "[GAME-056] org.pipoypipagames.cowsrevenge \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:02Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 81,
+  "title": "[GAME-057] org.bobstuff.bobball \u2014 compatibility report",
+  "state": "closed",
+  "closed_at": "2026-09-26T16:46:10Z",
+  "created_at": "2026-09-22T05:59:03Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 82,
+  "title": "[GAME-058] com.vayunmathur.games.alchemist \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:05Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 83,
+  "title": "[GAME-059] ru.hyst329.openfool \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:06Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 84,
+  "title": "[GAME-060] org.codeberg.scovillo.bubble \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:08Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 85,
+  "title": "[GAME-061] com.towerillusion.abdal \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:10Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 86,
+  "title": "[GAME-062] com.sidhant.blockblast \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:12Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 87,
+  "title": "[GAME-063] org.quentin_bettoum.librememorygame \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:14Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 88,
+  "title": "[GAME-064] com.fairytrick.fairymahjong \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:16Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 89,
+  "title": "[GAME-065] com.tacticmaster \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:18Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 90,
+  "title": "[GAME-066] com.joeld.minesweeper \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:20Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 91,
+  "title": "[GAME-067] com.adilhanney.ricochlime \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:21Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 92,
+  "title": "[GAME-068] com.dozingcatsoftware.cardswithcats \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:23Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 93,
+  "title": "[GAME-069] eu.veldsoft.scribe4 \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:24Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 94,
+  "title": "[GAME-070] me.lecaro.breakout \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:26Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 95,
+  "title": "[GAME-071] cube.run \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:27Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 96,
+  "title": "[GAME-072] fr.arnaudguyon.spacevertex \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:29Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 97,
+  "title": "[GAME-073] de.saschahlusiak.freebloks \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:30Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 98,
+  "title": "[GAME-074] org.secuso.privacyfriendlymemory \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:31Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 99,
+  "title": "[GAME-075] paper.loop \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:33Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 100,
+  "title": "[GAME-076] dev.serwin.AnarchRE \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:34Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 101,
+  "title": "[GAME-077] com.dozingcatsoftware.mouse_pounce \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:36Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 102,
+  "title": "[GAME-078] com.sidhant.shikaku \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:37Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 103,
+  "title": "[GAME-079] eve.game.tracker \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:39Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 104,
+  "title": "[GAME-080] com.sanskritbasics \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:41Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 105,
+  "title": "[GAME-081] eu.veldsoft.vitosha.blackjack \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:43Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 106,
+  "title": "[GAME-082] com.mostafa.brickblast \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:45Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 107,
+  "title": "[GAME-083] com.fr.laboussole.track \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:46Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 108,
+  "title": "[GAME-084] eu.mokrzycki.learndigits \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:47Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 109,
+  "title": "[GAME-085] com.game.asteroids_revenge \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:49Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 110,
+  "title": "[GAME-086] paper.loop2 \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:50Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 111,
+  "title": "[GAME-087] org.pgnapps.pk2 \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:52Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 112,
+  "title": "[GAME-088] org.secuso.privacyfriendlydame \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:53Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 113,
+  "title": "[GAME-089] com.itsfrz.tictactoe \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:55Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 114,
+  "title": "[GAME-090] nodomain.playmaker \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:56Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 115,
+  "title": "[GAME-091] com.chenyifaer.fafarunner \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:58Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 116,
+  "title": "[GAME-092] org.secuso.privacyfriendlysolitaire \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T05:59:59Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 117,
+  "title": "[GAME-093] com.movietrivia.filmfacts \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:01Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 118,
+  "title": "[GAME-094] com.attenomy.janken \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:03Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 119,
+  "title": "[GAME-095] com.sidhant.nonogram \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:05Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 120,
+  "title": "[GAME-096] garden.lina.oblique_strategies \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:06Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 121,
+  "title": "[GAME-097] com.dozingcatsoftware.bouncy \u2014 compatibility report",
+  "state": "closed",
+  "closed_at": "2026-09-26T16:10:04Z",
+  "created_at": "2026-09-22T06:00:08Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 122,
+  "title": "[GAME-098] com.sidhant.triplematch \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:09Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 123,
+  "title": "[GAME-099] net.sourceforge.solitaire_cg \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:11Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 124,
+  "title": "[GAME-100] eu.veldsoft.tuty.fruty.slot \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:12Z",
+  "labels": [
+   "compatibility",
+   "game",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 125,
+  "title": "[APP-001] com.hfut.schedule \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:14Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 126,
+  "title": "[APP-002] foehnix.widget \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:15Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 127,
+  "title": "[APP-003] de.seemoo.at_tracking_detection \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:17Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 128,
+  "title": "[APP-004] org.nitri.opentopo \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:18Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 129,
+  "title": "[APP-005] com.newsblur \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:20Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 130,
+  "title": "[APP-006] de.taz.android.app.free \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:21Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 131,
+  "title": "[APP-007] com.bupkis.tirailleur \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:23Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-palette",
+   "fail-unknown",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 132,
+  "title": "[APP-008] io.github.aoc_normal \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:24Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 133,
+  "title": "[APP-009] fr.shiningcat.binclockwidget \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:26Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 134,
+  "title": "[APP-010] net.diffengine.romandigitalclock \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:28Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 135,
+  "title": "[APP-011] eu.weblibre.gecko \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:29Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 136,
+  "title": "[APP-012] com.jherkenhoff.qalculate \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:31Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 137,
+  "title": "[APP-013] site.leos.apps.lespas \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:32Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 138,
+  "title": "[APP-014] me.river.nightbell \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:34Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 139,
+  "title": "[APP-015] com.madlonkay.orgro \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:36Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 140,
+  "title": "[APP-016] org.forkgram.classic \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:38Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 141,
+  "title": "[APP-017] com.kompact \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:39Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 142,
+  "title": "[APP-018] com.ma.tehro \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:41Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 143,
+  "title": "[APP-019] net.bible.android.activity \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:42Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 144,
+  "title": "[APP-020] net.osmand.plus \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:44Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 145,
+  "title": "[APP-021] com.tutpro.baresip.plus \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:45Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 146,
+  "title": "[APP-022] it.fast4x.riplay \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:47Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 147,
+  "title": "[APP-023] org.stingle.photos \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:48Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 148,
+  "title": "[APP-024] com.forrestguice.suntimeswidget \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:50Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 149,
+  "title": "[APP-025] com.vayunmathur.clock \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:51Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 150,
+  "title": "[APP-026] com.luc4n3x.levyra \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:52Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 151,
+  "title": "[APP-027] com.firebirdberlin.nightdream.noGms \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:54Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 152,
+  "title": "[APP-028] com.vagujhelyigergely.calculatorm3 \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:55Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 153,
+  "title": "[APP-029] com.hegocre.nextcloudpasswords \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:57Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 154,
+  "title": "[APP-030] com.chmouel.liseur \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:00:58Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 155,
+  "title": "[APP-031] protectedwp.safespace \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:00Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 156,
+  "title": "[APP-032] dev.gpxit.app \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:02Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 157,
+  "title": "[APP-033] com.srkovnar.legacyphotoframe \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:03Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 158,
+  "title": "[APP-034] com.nfcarchiver.nfc_archiver \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:05Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 159,
+  "title": "[APP-035] org.ojrandom.paiesque \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:06Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 160,
+  "title": "[APP-036] com.greenart7c3.nostrsigner \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:08Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 161,
+  "title": "[APP-037] com.divinelink.scenepeek \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:10Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 162,
+  "title": "[APP-038] app.fedilab.castlab \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:11Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 163,
+  "title": "[APP-039] de.schliweb.makeacopy \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:13Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 164,
+  "title": "[APP-040] fr.corenting.convertisseureurofranc \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:15Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 165,
+  "title": "[APP-041] io.paperterm.app \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:16Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 166,
+  "title": "[APP-042] org.ucam.ssb22.pinyinfdroid \u2014 compatibility report",
+  "state": "closed",
+  "closed_at": "2026-09-26T17:53:25Z",
+  "created_at": "2026-09-22T06:01:18Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 167,
+  "title": "[APP-043] com.kolakek.pimiwidget \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:20Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 168,
+  "title": "[APP-044] is.xyz.mpv \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:22Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 169,
+  "title": "[APP-045] orinasa.njarasoa.maripanatokana \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:23Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 170,
+  "title": "[APP-046] tibarj.tranquilstopwatch \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:24Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics",
+   "fail-measure"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 171,
+  "title": "[APP-047] com.davidtakac.bura \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:26Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 172,
+  "title": "[APP-048] m.co.rh.id.a_news_provider \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:27Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 173,
+  "title": "[APP-049] de.quaddyservices.dynamicnightlight \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:29Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 174,
+  "title": "[APP-050] com.ominous.quickweather \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:31Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 175,
+  "title": "[APP-051] cn.rbc.termuc \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:32Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 176,
+  "title": "[APP-052] com.kaii.photos \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:34Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 177,
+  "title": "[APP-053] com.co3 \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:36Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 178,
+  "title": "[APP-054] com.crome.forecastpoint \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:37Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 179,
+  "title": "[APP-055] com.metromusic \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:39Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 180,
+  "title": "[APP-056] com.bbzone.isitprime \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:40Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 181,
+  "title": "[APP-057] com.vsmartcard.acardemulator \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:42Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 182,
+  "title": "[APP-058] com.iris.gallery \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:43Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 183,
+  "title": "[APP-059] com.adeeteya.digital_calculator \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:45Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 184,
+  "title": "[APP-060] lab.rreedd.oriens \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:46Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 185,
+  "title": "[APP-061] org.godotengine.editor.v4 \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:48Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 186,
+  "title": "[APP-062] foss.cnugteren.nlweer \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:50Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 187,
+  "title": "[APP-063] com.axiel7.anihyou \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:51Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 188,
+  "title": "[APP-064] joshuatee.wx \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:52Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 189,
+  "title": "[APP-065] net.aliasvault.app \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:54Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 190,
+  "title": "[APP-066] uk.org.boddie.android.weatherforecast \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:56Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 191,
+  "title": "[APP-067] de.phasenrauscher.bicyweather \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:57Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 192,
+  "title": "[APP-068] com.fixupxer \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:01:59Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 193,
+  "title": "[APP-069] com.github.vauvenal5.yaga \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:00Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 194,
+  "title": "[APP-070] fr.ign.geoportail \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:01Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 195,
+  "title": "[APP-071] com.kylecorry.trail_sense \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:03Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 196,
+  "title": "[APP-072] de.kaffeemitkoffein.tinyweatherforecastgermany \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:05Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 197,
+  "title": "[APP-073] dudeofx.eval \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:07Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 198,
+  "title": "[APP-074] it.rignanese.leo.slimfacebook \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:09Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 199,
+  "title": "[APP-075] org.fossify.gallery \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:11Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 200,
+  "title": "[APP-076] deckers.thibault.aves.libre \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:12Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 201,
+  "title": "[APP-077] io.github.lordofpolls.shellwave \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:14Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 202,
+  "title": "[APP-078] org.fossify.clock \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:15Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 203,
+  "title": "[APP-079] com.justdeax.composeStopwatch \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:17Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 204,
+  "title": "[APP-080] yetzio.yetcalc \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:18Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 205,
+  "title": "[APP-081] trailence.org \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:20Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 206,
+  "title": "[APP-082] com.barghest.mesh \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:22Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 207,
+  "title": "[APP-083] dev.otaj.zelp \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:23Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 208,
+  "title": "[APP-084] takagi.ru.monica.fdroid \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:25Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 209,
+  "title": "[APP-085] org.fossify.math \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:27Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 210,
+  "title": "[APP-086] com.vicolo.chrono \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:28Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 211,
+  "title": "[APP-087] com.freetime.geoweather \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:30Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 212,
+  "title": "[APP-088] com.foxdebug.acode \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:31Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 213,
+  "title": "[APP-089] me.timeto.app \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:33Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 214,
+  "title": "[APP-090] org.sherpr.app \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:35Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 215,
+  "title": "[APP-091] org.y20k.transistor \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:36Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 216,
+  "title": "[APP-092] org.asafonov.weather \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:38Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 217,
+  "title": "[APP-093] com.agatamessina.webinspector \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:39Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 218,
+  "title": "[APP-094] com.fpf.smartscan \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:40Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 219,
+  "title": "[APP-095] org.billthefarmer.buses \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:42Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 220,
+  "title": "[APP-096] dev.cipher.notes \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:43Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 221,
+  "title": "[APP-097] io.github.x0b.rcx \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:44Z",
+  "labels": [
+   "blocked",
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 222,
+  "title": "[APP-098] com.google.android.stardroid \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:46Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 223,
+  "title": "[APP-099] duress.ultimate \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:47Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 224,
+  "title": "[APP-100] com.artifex.mupdf.viewer.app \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:49Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "state-not-loaded",
+   "not-tested"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 225,
+  "title": "[MAND-001] se.tube42.p9.android \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:51Z",
+  "labels": [
+   "compatibility",
+   "mandatory",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 226,
+  "title": "[MAND-002] io.timelimit.android.aosp.direct \u2014 compatibility report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:02:53Z",
+  "labels": [
+   "compatibility",
+   "mandatory",
+   "open-source",
+   "fdroid",
+   "state-nonblank",
+   "executed",
+   "fail-npe",
+   "fail-oncreate",
+   "fail-resource",
+   "fail-lifecycle",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 227,
+  "title": "[F-NEW-156] onCreate APP-BOUNDARY-UNWIND family \u2014 root cause (common runtime)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:04:54Z",
+  "labels": [
+   "regression",
+   "compatibility",
+   "fail-oncreate",
+   "root-cause",
+   "common-runtime"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 229,
+  "title": "[VF-NEW-003] IMAGE_DECODED_VS_RENDERED_GAP chain \u2014 root cause (common runtime, visual)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:04:55Z",
+  "labels": [
+   "compatibility",
+   "root-cause",
+   "common-runtime",
+   "image-decoded-vs-rendered-gap",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 228,
+  "title": "[F-NEW-157] libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier) \u2014 root cause (common runtime)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T06:04:55Z",
+  "labels": [
+   "compatibility",
+   "fail-oncreate",
+   "root-cause",
+   "common-runtime",
+   "graphics"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 230,
+  "title": "[F-NEW-161] Compose UI runtime internals \u2014 deferred-exception family (S84 NEW-50 fan-out, ~24 titles)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T19:44:57Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 231,
+  "title": "[F-NEW-162] androidx savedstate generated-adapter family \u2014 deferred CNFE unwind (S84, 12-title fan-out)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T19:44:58Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 232,
+  "title": "[S84] Canonical achievements + 50 NEW titles + README landing page \u2014 wave report",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-22T19:44:59Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 233,
+  "title": "[S97/S98] MICRO-GAP SWEEP master wave \u2014 100 probable-bug tickets + games/demo wave (issue-per-problem law)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:13:39Z",
+  "labels": [
+   "s97",
+   "s98",
+   "wave",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 234,
+  "title": "[MG-051] Font fallback selection \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:23Z",
+  "created_at": "2026-09-24T23:13:40Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 235,
+  "title": "[MG-073] ellipsize \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:24Z",
+  "created_at": "2026-09-24T23:13:41Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 236,
+  "title": "[MG-080] Unicode combining marks \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:26Z",
+  "created_at": "2026-09-24T23:13:42Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 237,
+  "title": "[MG-081] RTL basic shaping \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:28Z",
+  "created_at": "2026-09-24T23:13:44Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 238,
+  "title": "[MG-082] Arabic joining \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:30Z",
+  "created_at": "2026-09-24T23:13:45Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 239,
+  "title": "[MG-083] emoji fallback \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:32Z",
+  "created_at": "2026-09-24T23:13:46Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 240,
+  "title": "[MG-084] surrogate pairs \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:34Z",
+  "created_at": "2026-09-24T23:13:47Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 241,
+  "title": "[MG-085] UTF-8/UTF-16 boundary \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:36Z",
+  "created_at": "2026-09-24T23:13:48Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 242,
+  "title": "[MG-115] requestLayout propagation \u2014 layout/geometry (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:27Z",
+  "created_at": "2026-09-24T23:13:49Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 243,
+  "title": "[MG-123] scroll offset \u2014 layout/geometry (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:38Z",
+  "created_at": "2026-09-24T23:13:50Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 244,
+  "title": "[MG-124] translationX \u2014 layout/geometry (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:40Z",
+  "created_at": "2026-09-24T23:13:51Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 245,
+  "title": "[MG-125] translationY \u2014 layout/geometry (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:42Z",
+  "created_at": "2026-09-24T23:13:52Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 246,
+  "title": "[MG-126] scaleX \u2014 layout/geometry (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:43Z",
+  "created_at": "2026-09-24T23:13:53Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 247,
+  "title": "[MG-127] scaleY \u2014 layout/geometry (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:46Z",
+  "created_at": "2026-09-24T23:13:54Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 248,
+  "title": "[MG-128] rotation \u2014 layout/geometry (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:48Z",
+  "created_at": "2026-09-24T23:13:55Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 249,
+  "title": "[MG-129] pivot \u2014 layout/geometry (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T00:07:50Z",
+  "created_at": "2026-09-24T23:13:56Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 250,
+  "title": "[MG-171] SharedPreferences default file \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:14Z",
+  "created_at": "2026-09-24T23:13:57Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 251,
+  "title": "[MG-172] custom file \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:17Z",
+  "created_at": "2026-09-24T23:13:59Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 252,
+  "title": "[MG-173] boolean persistence \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:19Z",
+  "created_at": "2026-09-24T23:14:00Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 253,
+  "title": "[MG-174] int persistence \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:21Z",
+  "created_at": "2026-09-24T23:14:01Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 254,
+  "title": "[MG-175] long persistence \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:23Z",
+  "created_at": "2026-09-24T23:14:02Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 255,
+  "title": "[MG-176] float persistence \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:25Z",
+  "created_at": "2026-09-24T23:14:03Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 256,
+  "title": "[MG-177] string persistence \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:27Z",
+  "created_at": "2026-09-24T23:14:04Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 257,
+  "title": "[MG-178] editor apply \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:28Z",
+  "created_at": "2026-09-24T23:14:05Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 258,
+  "title": "[MG-179] editor commit \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:30Z",
+  "created_at": "2026-09-24T23:14:06Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 259,
+  "title": "[MG-180] remove \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:33Z",
+  "created_at": "2026-09-24T23:14:07Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 260,
+  "title": "[MG-181] clear \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:35Z",
+  "created_at": "2026-09-24T23:14:09Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 261,
+  "title": "[MG-182] contains \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:37Z",
+  "created_at": "2026-09-24T23:14:10Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 262,
+  "title": "[MG-183] preference process persistence \u2014 storage/state (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:00:40Z",
+  "created_at": "2026-09-24T23:14:11Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 263,
+  "title": "[MG-214] GIF disposal NONE \u2014 animation (OBSERVED)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:29Z",
+  "created_at": "2026-09-24T23:14:12Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 264,
+  "title": "[MG-215] GIF disposal BACKGROUND \u2014 animation (OBSERVED)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:31Z",
+  "created_at": "2026-09-24T23:14:13Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 265,
+  "title": "[MG-216] GIF disposal PREVIOUS \u2014 animation (OBSERVED)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:33Z",
+  "created_at": "2026-09-24T23:14:14Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 266,
+  "title": "[MG-248] HTTP GET \u2014 network (PENDING)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:35Z",
+  "created_at": "2026-09-24T23:14:16Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 267,
+  "title": "[MG-047] adaptive icon foreground \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:37Z",
+  "created_at": "2026-09-24T23:14:17Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 268,
+  "title": "[MG-048] adaptive icon background \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:39Z",
+  "created_at": "2026-09-24T23:14:18Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 269,
+  "title": "[MG-052] Missing glyph detection \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:40Z",
+  "created_at": "2026-09-24T23:14:19Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 270,
+  "title": "[MG-053] tofu detection \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:43Z",
+  "created_at": "2026-09-24T23:14:20Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 271,
+  "title": "[MG-058] Typeface inheritance \u2014 text/font (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:21Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 272,
+  "title": "[MG-060] letterSpacing \u2014 text/font (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:22Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 273,
+  "title": "[MG-061] lineSpacing \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:44Z",
+  "created_at": "2026-09-24T23:14:23Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 274,
+  "title": "[MG-062] includeFontPadding \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:48Z",
+  "created_at": "2026-09-24T23:14:24Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 275,
+  "title": "[MG-067] font ascent \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:50Z",
+  "created_at": "2026-09-24T23:14:25Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 276,
+  "title": "[MG-068] font descent \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:52Z",
+  "created_at": "2026-09-24T23:14:26Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 277,
+  "title": "[MG-071] whitespace handling \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:54Z",
+  "created_at": "2026-09-24T23:14:27Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 278,
+  "title": "[MG-072] tab handling \u2014 text/font (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:28Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 279,
+  "title": "[MG-074] maxLines \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:55Z",
+  "created_at": "2026-09-24T23:14:29Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 280,
+  "title": "[MG-075] singleLine \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:58Z",
+  "created_at": "2026-09-24T23:14:30Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 281,
+  "title": "[MG-076] textColor alpha \u2014 text/font (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:31Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 282,
+  "title": "[MG-077] Spannable basic spans \u2014 text/font (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:32Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 283,
+  "title": "[MG-078] foreground color span \u2014 text/font (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:33Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 284,
+  "title": "[MG-079] style span \u2014 text/font (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:34Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 285,
+  "title": "[MG-086] font file loading failure semantics \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:41:59Z",
+  "created_at": "2026-09-24T23:14:36Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 286,
+  "title": "[MG-087] Android resource font family \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:01Z",
+  "created_at": "2026-09-24T23:14:37Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 287,
+  "title": "[MG-088] downloadable-font failure fallback \u2014 text/font (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:03Z",
+  "created_at": "2026-09-24T23:14:38Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 288,
+  "title": "[MG-116] invalidate propagation \u2014 layout/geometry (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:39Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 289,
+  "title": "[MG-130] ViewGroup child ordering \u2014 layout/geometry (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:05Z",
+  "created_at": "2026-09-24T23:14:40Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 290,
+  "title": "[MG-001] Drawable XML parsing edge cases \u2014 resource/asset (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:41Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 291,
+  "title": "[MG-002] Vector viewportWidth/viewportHeight \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:09Z",
+  "created_at": "2026-09-24T23:14:42Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 292,
+  "title": "[MG-003] Vector path fillType \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:10Z",
+  "created_at": "2026-09-24T23:14:43Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 293,
+  "title": "[MG-004] Vector path winding \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:12Z",
+  "created_at": "2026-09-24T23:14:44Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 294,
+  "title": "[MG-005] Vector path strokeWidth \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:14Z",
+  "created_at": "2026-09-24T23:14:45Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 295,
+  "title": "[MG-006] Vector path strokeLineCap \u2014 resource/asset (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:46Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 296,
+  "title": "[MG-007] Vector path strokeLineJoin \u2014 resource/asset (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:47Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 297,
+  "title": "[MG-008] Vector path trimPath \u2014 resource/asset (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:48Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 298,
+  "title": "[MG-009] Vector group pivotX/pivotY \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:16Z",
+  "created_at": "2026-09-24T23:14:49Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 299,
+  "title": "[MG-010] Vector group rotation \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:17Z",
+  "created_at": "2026-09-24T23:14:50Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 300,
+  "title": "[MG-011] Vector group scale \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:19Z",
+  "created_at": "2026-09-24T23:14:51Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 301,
+  "title": "[MG-012] Vector group translation \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:21Z",
+  "created_at": "2026-09-24T23:14:52Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 302,
+  "title": "[MG-013] Vector nested group transforms \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:23Z",
+  "created_at": "2026-09-24T23:14:53Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 303,
+  "title": "[MG-014] Vector alpha inheritance \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:25Z",
+  "created_at": "2026-09-24T23:14:54Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 304,
+  "title": "[MG-015] Drawable alpha inheritance \u2014 resource/asset (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:14:55Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 305,
+  "title": "[MG-016] Layer-list ordering \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:30Z",
+  "created_at": "2026-09-24T23:14:56Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 306,
+  "title": "[MG-017] Layer-list inset \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:31Z",
+  "created_at": "2026-09-24T23:14:57Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 307,
+  "title": "[MG-020] State-list selected state \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:33Z",
+  "created_at": "2026-09-24T23:14:58Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 308,
+  "title": "[MG-021] State-list disabled state \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:35Z",
+  "created_at": "2026-09-24T23:14:59Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 309,
+  "title": "[MG-022] State-list checked state \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:36Z",
+  "created_at": "2026-09-24T23:15:00Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 310,
+  "title": "[MG-023] State-list state fallback \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:38Z",
+  "created_at": "2026-09-24T23:15:01Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 311,
+  "title": "[MG-024] NinePatch basic padding \u2014 resource/asset (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:02Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 312,
+  "title": "[MG-025] NinePatch stretch region \u2014 resource/asset (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:03Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 313,
+  "title": "[MG-046] mipmap XML indirection \u2014 resource/asset (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:40Z",
+  "created_at": "2026-09-24T23:15:04Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 314,
+  "title": "[MG-204] scaling filter quality classes \u2014 graphics/render (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:42Z",
+  "created_at": "2026-09-24T23:15:05Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 315,
+  "title": "[MG-207] canvas translation \u2014 graphics/render (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:44Z",
+  "created_at": "2026-09-24T23:15:06Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 316,
+  "title": "[MG-208] canvas scale \u2014 graphics/render (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:45Z",
+  "created_at": "2026-09-24T23:15:07Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 317,
+  "title": "[MG-209] canvas rotation \u2014 graphics/render (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:49Z",
+  "created_at": "2026-09-24T23:15:08Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 318,
+  "title": "[MG-210] nested transforms \u2014 graphics/render (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:51Z",
+  "created_at": "2026-09-24T23:15:09Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 319,
+  "title": "[MG-146] event cancellation \u2014 input (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:52Z",
+  "created_at": "2026-09-24T23:15:11Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 320,
+  "title": "[MG-147] multiple pointer IDs \u2014 input (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:12Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 321,
+  "title": "[MG-149] touch outside bounds \u2014 input (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:54Z",
+  "created_at": "2026-09-24T23:15:13Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 322,
+  "title": "[MG-150] translated view hit testing \u2014 input (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:14Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 323,
+  "title": "[MG-223] ValueAnimator basic timing \u2014 animation (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-25T05:06:01Z",
+  "created_at": "2026-09-24T23:15:15Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 324,
+  "title": "[MG-228] wrong-order frame detection \u2014 animation (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:16Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 325,
+  "title": "[MG-229] disappearing-object detection \u2014 animation (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:17Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 326,
+  "title": "[MG-298] timezone \u2014 system/edge (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:18Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 327,
+  "title": "[MG-299] locale \u2014 system/edge (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:19Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 328,
+  "title": "[MG-310] class initialization ordering \u2014 system/edge (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:20Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 329,
+  "title": "[MG-169] saved instance state \u2014 lifecycle (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:22Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 330,
+  "title": "[MG-170] Bundle persistence \u2014 lifecycle (PARTIAL)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:23Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 331,
+  "title": "[MG-231] SoundPool initialization \u2014 audio (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:56Z",
+  "created_at": "2026-09-24T23:15:24Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 332,
+  "title": "[MG-232] MediaPlayer initialization \u2014 audio (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:57Z",
+  "created_at": "2026-09-24T23:15:25Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 333,
+  "title": "[MG-233] resource audio loading \u2014 audio (PARTIAL)",
+  "state": "closed",
+  "closed_at": "2026-09-26T13:42:59Z",
+  "created_at": "2026-09-24T23:15:26Z",
+  "labels": [
+   "bug",
+   "s97",
+   "micro-gap"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 334,
+  "title": "[GAMES-1] Full-load 5-10 games end-to-end (launch + render + interaction evidence)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:01:20Z",
+  "created_at": "2026-09-24T23:15:27Z",
+  "labels": [
+   "s98",
+   "games"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 335,
+  "title": "[GAMES-2] Autonomous Snake Deluxe play (self-play, no game-memory cheating)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:01:23Z",
+  "created_at": "2026-09-24T23:15:28Z",
+  "labels": [
+   "s98",
+   "games"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 336,
+  "title": "[GAMES-3] House-building autonomous play (Minicraft)",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:01:25Z",
+  "created_at": "2026-09-24T23:15:29Z",
+  "labels": [
+   "s98",
+   "games"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 337,
+  "title": "[GAMES-4] NEW snake variant \u2014 build, load, autonomous play",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:01:27Z",
+  "created_at": "2026-09-24T23:15:30Z",
+  "labels": [
+   "s98",
+   "games"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 338,
+  "title": "[GAMES-5] Autonomous 2048 play",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:01:29Z",
+  "created_at": "2026-09-24T23:15:31Z",
+  "labels": [
+   "s98",
+   "games"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 339,
+  "title": "[GAMES-6] Autonomous Mini Tetris play",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-24T23:15:32Z",
+  "labels": [
+   "s98",
+   "games"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 340,
+  "title": "[GAMES-7] Autonomous TicTacToe Deluxe play",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:01:31Z",
+  "created_at": "2026-09-24T23:15:33Z",
+  "labels": [
+   "s98",
+   "games"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 341,
+  "title": "[GAMES-8] Wave evidence package + gh-pages gameplay GIFs",
+  "state": "closed",
+  "closed_at": "2026-09-25T01:01:33Z",
+  "created_at": "2026-09-24T23:15:34Z",
+  "labels": [
+   "s98",
+   "games"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 343,
+  "title": "[F-NEW-166] androidx ConstraintLayout core interpreter frontier \u2014 ConstraintWidgetContainer solve never populates core widgets (no.thanks onLayout NPE family)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-25T05:05:56Z",
+  "labels": [
+   "bug",
+   "compatibility",
+   "root-cause",
+   "common-runtime",
+   "graphics",
+   "s99"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 342,
+  "title": "[F-NEW-165] androidx AppCompatDelegateImpl.createSubDecor theme-gate frontier \u2014 theme attr resolution gap for non-AppCompat-ancestor themes (mykanji family)",
+  "state": "closed",
+  "closed_at": "2026-09-25T07:54:55Z",
+  "created_at": "2026-09-25T05:05:56Z",
+  "labels": [
+   "bug",
+   "compatibility",
+   "root-cause",
+   "common-runtime",
+   "s99"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 344,
+  "title": "[F-NEW-167] blank-render L0 family \u2014 rc=0 games that never draw (klondike/tripeaks/memory/blackjack/counting/accelerace/kingpong/bouncy)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-25T05:05:57Z",
+  "labels": [
+   "bug",
+   "compatibility",
+   "common-runtime",
+   "graphics",
+   "s99"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 345,
+  "title": "[F-NEW-168] crash-on-launch family \u2014 rc=1 NPE chains (raumballer/tictactoe-classic) + dooz rc=-11 process-death",
+  "state": "closed",
+  "closed_at": "2026-09-25T07:04:22Z",
+  "created_at": "2026-09-25T05:05:58Z",
+  "labels": [
+   "bug",
+   "compatibility",
+   "common-runtime",
+   "s99"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 346,
+  "title": "[F-NEW-169] SpeedDialView (leinardi) library frontier \u2014 babydots cascade: FAB inflate + FabWithLabelView.init setFocusable NPE",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-25T05:05:59Z",
+  "labels": [
+   "bug",
+   "compatibility",
+   "common-runtime",
+   "s99"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 347,
+  "title": "[F-NEW-169] dooz compose-navigation NPE chain \u2014 3 roots after rc=-11 fix",
+  "state": "closed",
+  "closed_at": "2026-09-26T12:32:40Z",
+  "created_at": "2026-09-25T07:04:23Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 348,
+  "title": "[F-NEW-170] appcompat decor-toolbar construction family (mykanji, post theme-gate fix)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-25T07:54:55Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 349,
+  "title": "[S102-A] solitaire: R8-merged SavedStateRegistryController \u2014 getSavedStateProvider invoked on null registry receiver inside ComponentActivity.<init>",
+  "state": "closed",
+  "closed_at": "2026-09-26T12:32:36Z",
+  "created_at": "2026-09-25T13:29:58Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 350,
+  "title": "[S102-B] compose frontier: 'CompositionLocal LocalDensity not present' \u2014 WindowRecomposer host wiring (solitaire, the real compose-runtime root)",
+  "state": "closed",
+  "closed_at": "2026-09-26T12:32:38Z",
+  "created_at": "2026-09-25T13:29:59Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 351,
+  "title": "[S102-C] mentalmath: Hilt DI 'ApplicationContextModule must be set' ISE in DaggerMentalMath_HiltComponents_SingletonC$Builder.build",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-25T13:30:00Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 352,
+  "title": "[S102-D] coroutines: CoroutineScheduler$Worker.tryPark interpreter spin (LockSupport.park has no blocking semantics)",
+  "state": "closed",
+  "closed_at": "2026-09-26T12:32:34Z",
+  "created_at": "2026-09-25T13:30:01Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 353,
+  "title": "[HTML5-APPS] WebView: white screen \u2192 REAL JS execution \u2014 Breakout 71 runs its game loop (#94)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-27T15:52:30Z",
+  "labels": [
+   "evidence",
+   "rendering",
+   "compatibility",
+   "game",
+   "root-cause"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 355,
+  "title": "[TELEGRAM] Forkgram 12.10.8.0 \u2014 errors 32 \u2192 0, first fully clean run (rc=0, 0 uncaught), real login UI tree; pixels = the frontier",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-27T15:52:31Z",
+  "labels": [
+   "evidence",
+   "p1",
+   "compatibility",
+   "app",
+   "root-cause"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 354,
+  "title": "[GAMES] Native game family \u2014 gameplay GIFs, 5 engine-bug laws, verified 3-run titles + the honest 124-reopen audit",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-27T15:52:31Z",
+  "labels": [
+   "evidence",
+   "gameplay",
+   "autonomous-gameplay",
+   "root-cause",
+   "games"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 356,
+  "title": "[TELEGRAM] Official Telegram S117\u2192S119 \u2014 the complete first-person journey changelog: first-ever run (5 errors) \u2192 rc=0 \u2192 first login pixels \u2192 first Dialogs-page render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-29T18:11:01Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 357,
+  "title": "[TELEGRAM] Knowledge transfer 1/7 \u2014 master index: every claim, the honest white-screen status, and how to verify",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-29T18:39:58Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 358,
+  "title": "[TELEGRAM] Knowledge transfer 2/7 \u2014 wave 1: official Telegram from first-ever run (5 errors) to rc=0 \u2014 four root causes, forensics, code anchors",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-29T18:40:00Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 359,
+  "title": "[TELEGRAM] Knowledge transfer 3/7 \u2014 wave 2: the G21 autopsy and seven AOSP measure laws \u2014 the login tree comes on-screen",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-29T18:40:01Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 360,
+  "title": "[TELEGRAM] Knowledge transfer 4/7 \u2014 the wave-3 record with attribution + the fresh-run proof on the current build",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-29T18:40:02Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 361,
+  "title": "[TELEGRAM] Knowledge transfer 5/7 \u2014 the tools: full source of all six reproduction scripts + the forensic probe kit",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-29T18:40:04Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 362,
+  "title": "[TELEGRAM] Knowledge transfer 6/7 \u2014 the complete engine diff of the session (every law change, unified)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-29T18:40:07Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 363,
+  "title": "[TELEGRAM] Knowledge transfer 7/7 \u2014 the 190-goal roadmap, the regression-gate method, and the honest frontier",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-09-29T18:40:08Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 364,
+  "title": "MASTER EXECUTION REQUEST \u2014 Upstream Reuse + Complete Compatibility Campaign",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-02T20:42:16Z",
+  "labels": [
+   "enhancement"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 365,
+  "title": "MASTER FORENSIC VERIFICATION \u2014 ALL PRIOR REQUESTS / CLAIMED COMPLETIONS / MISSING EVIDENCE",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-02T20:53:54Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 366,
+  "title": "DIFFERENTIAL EXECUTION \u2014 Why 4 apps work and 5 installed apps stay white",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-02T21:34:34Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 367,
+  "title": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 1/3 \u2014 50 HIGH/HARD CASES",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-03T04:16:03Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 368,
+  "title": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 2/3 \u2014 50 MEDIUM CASES",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-03T04:50:39Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 369,
+  "title": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 3/3 \u2014 8 FINAL CASES",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-03T04:50:43Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 370,
+  "title": "INSTALL-ENVIRONMENT CAPABILITY GATE \u2014 Complete post-install Android inspection surface for agents",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-03T07:30:20Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 371,
+  "title": "MASTER CONTINUATION \u2014 Independent verification #364\u2013#369 + full execution #370",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-03T08:40:03Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 372,
+  "title": "SUPPLEMENTARY DEEP ROOT-CAUSE CLOSEOUT \u2014 330-point black/white/partial/load audit",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-03T21:06:44Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 373,
+  "title": "ENV-PREREQUISITES \u2014 Android API / CPU / ABI / hardware / software compatibility matrix",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-04T03:34:12Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 374,
+  "title": "BASE-ANDROID \u2014 Complete Android Platform Contract Foundation Audit",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-04T04:41:52Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 375,
+  "title": "BASE + CAMPAIGN COMPLETION \u2014 Execute all prior/next missing foundation work and close every evidenced gap",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-04T06:33:34Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 376,
+  "title": "EXTERNAL ROOT CENSUS \u2014 Deep multilingual root discovery and MiniAndroid cross-match",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-04T14:50:05Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 377,
+  "title": "CONT-6 \u2014 External Root KB Forensic Audit + Runtime Fan-out Validation",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-05T17:23:00Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 378,
+  "title": "CONT-7 \u2014 CURRENT-HEAD RECONCILIATION + x86/x86_64 APK EXPANSION + COMPOSE/R8 CLASS-IDENTITY",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-05T20:44:11Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 379,
+  "title": "CONT-9 / WAVE 5 \u2014 Compose Continuation Root + External KB Runtime Fan-out",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-06T15:50:39Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 380,
+  "title": "CONT-11 / WAVE 7 \u2014 Kotlin stdlib semantic backend investigation + Compose draw frontier",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-07T00:24:37Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 381,
+  "title": "Unverified Claims \u2014 Complete Runtime Evidence Audit",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-08T01:45:43Z",
+  "labels": [
+   "investigation"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 382,
+  "title": "A1\u2013A104 Knowledge Transfer \u2014 Primary Coder Audit, Exact Fix Locations, and Minimal Tests",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-08T09:54:47Z",
+  "labels": [
+   "investigation"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 383,
+  "title": "BASE-FIRST: Establish a Generic Graphical Runtime Baseline",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-08T12:27:47Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 384,
+  "title": "ARCH-001: Execution Family Matrix for Generic App/Game Compatibility",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-08T13:27:44Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 385,
+  "title": "[CONT-24 EXPERIMENT \u2014 measurement only] Skeleton-Light: one 490-line generic skeleton painter vs ~10.6K lines of graphics machinery \u2014 measured impact",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-08T21:14:45Z",
+  "labels": [
+   "experiment",
+   "measurement-only"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 386,
+  "title": "REPO-HYGIENE \u2014 Evidence-Driven Repository Cleanup, Artifact Governance, and Canonical Structure",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-11T04:15:28Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 387,
+  "title": "CONT-11 RECURRING TASK: cross-app loading-screen blockers \u2014 register, root-cause, fix, re-census",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-23T03:43:10Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 388,
+  "title": "HEAD-SMOKE RECURRING + NEW ROOT: libGDX SharedLibraryLoadRuntimeException (tower3d native-load family) \u2014 separate work task",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-27T05:17:14Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 389,
+  "title": "F-NEW-562 dooz board frame-clock starvation \u2014 chrome renders (231K px), 3x3 board absent (T14 live probe)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-10-27T05:38:25Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 390,
+  "title": "Coder 5 | Full campaign report \u2014 open-source game execution campaign on MiniAndroid",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T04:53:58Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 391,
+  "title": "2048",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:37Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 392,
+  "title": "Anuto TD",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:38Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 393,
+  "title": "Balance the Ball",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:39Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 394,
+  "title": "Fish Rings",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:40Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 395,
+  "title": "FreeKlondike",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:42Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 396,
+  "title": "Mines (premy)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:43Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 398,
+  "title": "MiniCraft (House Builder)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:44Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 397,
+  "title": "Mini Tetris",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:44Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 399,
+  "title": "OPMT (One More Time\u2026)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:45Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 400,
+  "title": "OpenSudoku",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:46Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 401,
+  "title": "Snake Deluxe",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:47Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 402,
+  "title": "TicTacToe Deluxe",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:48Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 403,
+  "title": "Vector Pinball (bouncy)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:49Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 404,
+  "title": "ca.rmen.nounours",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:50Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 405,
+  "title": "com.dozingcatsoftware.dodge",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:52Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 407,
+  "title": "com.trianguloy.adnihilation",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:53Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 406,
+  "title": "com.smorgasbork.hotdeath",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:53Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 408,
+  "title": "de.georgsieber.ballbreak",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:54Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 409,
+  "title": "org.bobstuff.bobball",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:55Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 410,
+  "title": "x653.all_in_gold",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:56Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 411,
+  "title": "FlappyCow",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:57Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 412,
+  "title": "GameMasterDice",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:53:58Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 413,
+  "title": "Snake Neon",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:54:00Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 414,
+  "title": "TicTacToe Classic",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:54:01Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 415,
+  "title": "Coder 3 | Mission & Achievement Board \u2014 Full Execution of 20+ Legacy Open-Source Apps on MiniAndroid (Master Tracking)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T06:54:59Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 416,
+  "title": "Coder 3 | Achievement 2 \u2014 Fresh environment: full runtime build from source + complete deterministic Snake Deluxe run (3/3)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T07:08:57Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 417,
+  "title": "Coder 3 | Achievement 3 \u2014 Wave 2: 2048 + Mini Tetris + TicTacToe Deluxe on the fresh build, each 3\u00d7 deterministic (rc=0, byte-identical frames)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T07:14:19Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 418,
+  "title": "Coder 3 | Achievement 4 \u2014 Wave 3: MiniCraft + Snake Neon driven by each app's own ViewTree buttons \u2014 real block placement + snake steering, 3\u00d7 deterministic",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T07:17:48Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 419,
+  "title": "Coder 3 | Achievement 5 \u2014 Full self-play of Snake Deluxe on the fresh build: SCORE 2 / BEST 2 (canonical S80 driver, vision-based, 77 frames, 2 foods)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T07:22:40Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 420,
+  "title": "Coder 3 | Achievement 6 \u2014 Third execution environment: fresh source build + Snake Deluxe canonical reproduction (77fr / captures=2) + bouncy interactive wave (real doStartGame tap) + APK SHA256 registrations",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T13:04:27Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 421,
+  "title": "[APP-016][Coder-5] Material Files (me.zhanghai.android.files) \u2014 full-interactive ladder MF-M0..M8",
+  "state": "closed",
+  "closed_at": "2026-11-03T14:50:51Z",
+  "created_at": "2026-11-02T14:53:12Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 422,
+  "title": "[APP-017][Coder-5] NewPipe (org.schabi.newpipe) \u2014 full-interactive ladder NP-M0..M8",
+  "state": "closed",
+  "closed_at": "2026-11-03T14:50:53Z",
+  "created_at": "2026-11-02T14:53:13Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 423,
+  "title": "[APP-018][Coder-5] Joplin (net.cozic.joplin) \u2014 full-interactive ladder JP-G0..M8",
+  "state": "closed",
+  "closed_at": "2026-11-03T14:50:54Z",
+  "created_at": "2026-11-02T14:53:14Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 424,
+  "title": "[APP-019][Coder-5] Element X (io.element.android.x) \u2014 full-interactive ladder EX-M0..M9",
+  "state": "closed",
+  "closed_at": "2026-11-03T14:50:55Z",
+  "created_at": "2026-11-02T14:53:15Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 425,
+  "title": "[4APP-SHARED][Coder-5] Shared-layer campaign S1\u2013S7 \u2014 fix once, benefit all four titles",
+  "state": "closed",
+  "closed_at": "2026-11-03T14:50:57Z",
+  "created_at": "2026-11-02T14:53:16Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 426,
+  "title": "[CONT-4APP RECURRING][Coder-5] Wave log \u2014 census \u2192 roots \u2192 fixes \u2192 battery \u2192 evidence",
+  "state": "closed",
+  "closed_at": "2026-11-03T14:50:58Z",
+  "created_at": "2026-11-02T14:53:18Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 427,
+  "title": "[4APP-EPIC][Coder-5] Four-title full-compatibility program: Material Files \u00b7 NewPipe \u00b7 Joplin \u00b7 Element X",
+  "state": "closed",
+  "closed_at": "2026-11-03T14:51:00Z",
+  "created_at": "2026-11-02T14:53:19Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 428,
+  "title": "Coder 3 | Achievement 7 \u2014 FULL LOAD wave: F-NEW-162 subclass law + honest-surface law + Dodge/BobBall/Hot Death interactive full loads",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:06:55Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 429,
+  "title": "Coder 3 | \ud83d\udcca MASTER DASHBOARD \u2014 all issues + per-app progress % (one-glance status)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:06:57Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 430,
+  "title": "[4APP-EPIC][Coder-4] Four-title full-compatibility program: Thunderbird \u00b7 Nextcloud \u00b7 Tusky \u00b7 ConnectBot",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:19:17Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 431,
+  "title": "[APP-020][Coder-4] Thunderbird (net.thunderbird.android) \u2014 full-interactive ladder TB-M0..M9",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:19:18Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 432,
+  "title": "[APP-021][Coder-4] Nextcloud (com.nextcloud.client) \u2014 full-interactive ladder NC-M0..M9",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:19:19Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 433,
+  "title": "[APP-022][Coder-4] Tusky (com.keylesspalace.tusky) \u2014 full-interactive ladder TK-M0..M9",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:19:20Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 434,
+  "title": "[APP-023][Coder-4] ConnectBot (org.connectbot) \u2014 full-interactive ladder CB-M0..M9",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:19:21Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 435,
+  "title": "[4APP-SHARED][Coder-4] Shared-layer campaign C1\u2013C8 \u2014 fix once, benefit all four titles",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:19:22Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 436,
+  "title": "[CONT-4APP4 RECURRING][Coder-4] Wave log \u2014 census \u2192 roots \u2192 fixes \u2192 battery \u2192 evidence",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:19:23Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 437,
+  "title": "Coder 6 | Mission & Achievement Board \u2014 Full Execution of the 4 Hardest (VLC \u00b7 Termux \u00b7 Organic Maps \u00b7 Mindustry) \u2014 Master Tracking",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:25:58Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 438,
+  "title": "Coder 6 | Case File \u2014 VLC for Android (org.videolan.vlc) \u00b7 ladder V0\u2013V6",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:25:59Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 439,
+  "title": "Coder 6 | Case File \u2014 Termux (com.termux) \u00b7 ladder T0\u2013T5",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:26:00Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 440,
+  "title": "Coder 6 | Case File \u2014 Organic Maps (app.organicmaps) \u00b7 ladder O0\u2013O6",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:26:01Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 441,
+  "title": "Coder 6 | Case File \u2014 Mindustry (io.anuke.mindustry) \u00b7 ladder M0\u2013M6",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T15:26:02Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 442,
+  "title": "Coder 6 | Achievement 1 \u2014 Wave 1: 2 GENERIC roots fixed (live divergence movement \u00d72) + 2 frontiers root-pinned (C6-R1..R7)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T16:05:16Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 443,
+  "title": "Coder 3 | Achievement 8 \u2014 S136 GLES-constant translation + C-shader registration + JSON chain (3 laws): first GL content presentation + Dodge full-session 170/170 animated",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T17:30:22Z",
+  "labels": [
+   "coder-3",
+   "achievement"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 444,
+  "title": "Coder 6 | Achievement 2 \u2014 Wave 2: 9 GENERIC roots fixed (live \u00d73 apps), Mindustry reaches the draw guard \u2014 complete hand-off guide with per-fix verification tests (C6-R3..R10)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T18:01:39Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 445,
+  "title": "CODER-6 ACHIEVEMENT 2 \u2014 Mindustry FIRST REAL VISUAL RENDER through the full GL pipeline (root-caused \u00d75, all generic)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:20:36Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 446,
+  "title": "[Coder 2] Achievement 1 \u2014 INFRA: fresh-sandbox runtime rebuild in one 570 s chunk on 4 GB RAM / 2 vCPU / no-KVM host (exact recipe + resource laws)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:30:17Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 447,
+  "title": "[Coder 2] Achievement 2 \u2014 gmdice v8 (canonical registry entry): fresh independent reproduction \u2014 SUCCESS, 0 errors, real painted UI (99.4% non-white)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:30:18Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 448,
+  "title": "[Coder 2] Finding 1 \u2014 Telegram official v13.1.1 (vc72379): ViewTree inflates (15,963 nodes) but every frame is white (0.07% non-white); blocker chain documented with one-line tests",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:30:19Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 449,
+  "title": "[Coder 2] Finding 2 \u2014 APK_REGISTRY drift: the Telegram v12.10.1 baseline pin is no longer fetchable from its live link (A/B vs v13.1.1 blocked) \u2014 propose frozen-mirror law",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:30:20Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 450,
+  "title": "[Coder 2] Mission Board & Worklist \u2014 canonical-corpus breadth campaign + Telegram-family priority (fresh-sandbox lane)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:30:21Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 451,
+  "title": "[Coder 2] Achievement 3 \u2014 TicTacToe (emmanuelmess) v3 fresh verdict: window paints solid #303030, zero game content; blocker = libGDX AndroidApplication static-init chain (GdxRuntimeException) fed by missing EGL10 constant",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:32:41Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 452,
+  "title": "[Coder 2] Achievement 4 \u2014 Chess Clock v29 re-proven on fresh sandbox: clean SUCCESS (0 err / 0 warn / 0 uncaught), content-rich 1080\u00d71920 render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:43:45Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 453,
+  "title": "[Coder 2] Achievement 5 \u2014 MicroTimer v8 (was `PARTIAL / registry-only`): FIRST full Coder 2 render \u2014 SUCCESS, 8-child root, real content",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:43:46Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 454,
+  "title": "[Coder 2] Achievement 6 \u2014 uNote v30 (was `PARTIAL / registry-only`): FIRST full Coder 2 render \u2014 SUCCESS, 100% painted frame",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:43:47Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 455,
+  "title": "[Coder 2] Achievement 7 \u2014 Heading Calculator v1 (was `PARTIAL / registry-only`): richest Coder 2 render \u2014 828 colors, 184 ViewTree nodes, 98.7% painted",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:43:48Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 456,
+  "title": "[Coder 2] Achievement 8 \u2014 Simple Stopwatch v26 re-run: content-rich frame (99.4% painted, 156 colors) but status diverges to PARTIAL \u2014 1 in-flight exception after the last frame (F-016)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:43:49Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 457,
+  "title": "[Coder 2] Finding 4 \u2014 Notes (billthefarmer) v139: SUCCESS + 0 errors + inflated 2-child root \u2014 yet the framebuffer is pure white; a crash-less white face",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:43:50Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 458,
+  "title": "[Coder 2] Finding 5 \u2014 Tiny Music Player v1: registry download_url is DEAD \u2014 F-Droid serves a 12,950-byte HTML page (sha 24b5a906\u2026); second drift instance after #449",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:43:51Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 459,
+  "title": "[Coder 2] Finding 6 \u2014 Simple Keyboard v145 (IME): normal run path yields 0 ViewTree nodes and a white frame \u2014 IME apps need a harness decision from the main coder",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T19:43:52Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 460,
+  "title": "[Coder 2] Achievement 9 \u2014 PF 2048 (was EXEC BUDGET TIMEOUT): completes at 480s with lean frame schedule and renders REAL onboarding UI (Skip/Next)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:12:47Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 461,
+  "title": "[Coder 2] Finding 7 \u2014 Freebloks v1.8.4: DEFAULT_BACKGROUND_ONLY face reproduced; blocker named: Kotlin `lateinit property scene has not been initialized`",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:12:48Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 462,
+  "title": "[Coder 2] Finding 8 \u2014 RTTT v1.3 white frame: blocker is the SDL lane (SDLActivity.main \u2192 getMainSharedObject NPE), not Compose \u2014 registry label corrected",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:12:49Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 463,
+  "title": "[Coder 2] Finding 9 \u2014 PF Dicer v2.0.0: splash theme paints (SECUSO blue #0274B2, was empty); Thread.uncaughtExceptionHandler REC-MISS named",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:12:50Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 464,
+  "title": "[Coder 2] Finding 10 \u2014 Antimine v17.6.3: white frame; 434 SGET-MISS burst + xml-resource NotFoundException + null-AttributeSet NPE named",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:12:51Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 465,
+  "title": "[Coder 2] Finding 11 \u2014 TicTacToe (itsfrz) v1.0.5: theme-navy #202230 background-only face confirmed; Compose stops after windowBackground",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:12:52Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 466,
+  "title": "[Coder 2] Finding 12 \u2014 OpenLauncher v39: FROZEN pin re-validated; #303030 face; 22 unrendered custom views = best paint-gap stress test in corpus",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:12:53Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 467,
+  "title": "[Coder 2] Finding 13 \u2014 Lexica v3.13.1: budget face retired (completes at 480s, lean schedule); underneath is a quiet crash-less white frame (Compose)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:12:54Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 468,
+  "title": "[Coder 2] Wave 4 worklist \u2014 lean-schedule retests of the white family + corpus closure status + 4 decisions pending",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:14:30Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 469,
+  "title": "Coder 3 | Achievement 9 \u2014 S137 full-GL-render wave: Vector Pinball's table renders (walls/bumpers/ball), 3x byte-deterministic; 10 engine laws + 1 guard",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:31:51Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 470,
+  "title": "CODER-6 ACHIEVEMENT 3 \u2014 WAVE 4: Mindustry load-screen GRID renders through the full GL chain (5 generic roots: ByteBuffer absolute family, [F bit-identity, identity-MVP default, clear-mask, capture scale)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T20:36:10Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 471,
+  "title": "Coder 3 | Achievement 10 \u2014 S154 re-apply of the full S136+S137 law stack at post-slim HEAD 5817cc1 + 9 new laws: the Vector Pinball table mesh renders into the presented GL framebuffer (112,723 wall pixels verified at a present), 3x byte-identical",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:31:11Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 472,
+  "title": "[Coder 5] MASTER ACHIEVEMENT LEDGER \u2014 Coder-2 campaign: every achievement, finding & evidence (living index)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:15Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 473,
+  "title": "[Coder 2] gmdice (de.duenndns.gmdice) v8 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:16Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 474,
+  "title": "[Coder 2] Telegram v13.1.1 (org.telegram.messenger.web) v13.1.1 (vc72379) \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:17Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 476,
+  "title": "[Coder 2] Chess Clock (com.chessclock.android) v29 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:18Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 475,
+  "title": "[Coder 2] TicTacToe (emmanuelmess) (com.emmanuelmess.tictactoe) v3 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:18Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 477,
+  "title": "[Coder 2] Simple Stopwatch (omegacentauri.mobi.simplestopwatch) v26 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:20Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 478,
+  "title": "[Coder 2] MicroTimer (dubrowgn.microtimer) v8 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:21Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 479,
+  "title": "[Coder 2] uNote (app.varlorg.unote) v30 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:22Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 480,
+  "title": "[Coder 2] Notes (billthefarmer) (org.billthefarmer.notes) v139 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:23Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 481,
+  "title": "[Coder 2] Heading Calculator (org.debian.eugen.headingcalculator) v1 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:24Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 482,
+  "title": "[Coder 2] Tiny Music Player (com.martinmimigames.tinymusicplayer) v1 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:25Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 483,
+  "title": "[Coder 2] Simple Keyboard (rkr.simplekeyboard.inputmethod) v145 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:26Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 484,
+  "title": "[Coder 2] PF 2048 (org.secuso.privacyfriendly2048) v1.4.2 (vc100) \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:27Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 485,
+  "title": "[Coder 2] Freebloks (de.saschahlusiak.freebloks) v1.8.4 (vc184) \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:28Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 486,
+  "title": "[Coder 2] RTTT (kirkezz) (org.kirkezz.rttt) v1.3 (vc3) \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:29Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 487,
+  "title": "[Coder 2] PF Dicer (org.secuso.privacyfriendlydicer) v2.0.0 (vc101) \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:30Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 488,
+  "title": "[Coder 2] Antimine (dev.lucanlm.antimine) v17.6.3 F \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:31Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 489,
+  "title": "[Coder 2] TicTacToe (itsfrz) (com.itsfrz.tictactoe) v1.0.5 (vc5) \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:32Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 490,
+  "title": "[Coder 2] OpenLauncher (com.benny.openlauncher) v39 \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:33Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 491,
+  "title": "[Coder 2] Lexica (com.serwylo.lexica) v3.13.1 (vc30018) \u2014 app tracker \u00b7 living issue until full render",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:34Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 492,
+  "title": "Coder 3 | Master Dashboard \u2014 every Issue, every app, one glance (progress % + statistics) \u2014 refreshed at refresh 12 (S181 \u00b7 A19: the S163 pending-measure traverse law \u2014 four shapes built+measured, FIRST real post-tap dooz content frame, ISE \u221285% opt-in, byte-inert off \u00d73+30/30; counts 531 issues / 20 Coder-3 achievement reports)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-02T23:32:56Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 493,
+  "title": "Coder 6 | Wave 6 \u2014 the FULL Coder-6 law set is REBASED onto S154 HEAD (public HEAD lacked every Coder-6 law) + the bloom/combine chain goes live; 4/4 apps re-verified on one binary",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T01:28:38Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 494,
+  "title": "[4APP-EPIC][Coder-5] FOUR-TITLE FULL-COMPATIBILITY PROGRAM \u2014 Material Files \u00b7 NewPipe \u00b7 Joplin \u00b7 Element X",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:37:56Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 495,
+  "title": "[APP-016][Coder-5] me.zhanghai.android.files \u2014 full-interactive ladder MF-M0..M8",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:37:57Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 496,
+  "title": "[APP-017][Coder-5] org.schabi.newpipe \u2014 full-interactive ladder NP-M0..M8",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:37:58Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 497,
+  "title": "[APP-018][Coder-5] net.cozic.joplin \u2014 full-interactive ladder JP-G0..M8",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:37:59Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 498,
+  "title": "[APP-019][Coder-5] io.element.android.x \u2014 full-interactive ladder EX-M0..M9",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:38:00Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 499,
+  "title": "[4APP-S1][Coder-5] GENERALIZED HTTP(S) CLIENT LAYER \u2014 OkHttp/SSLSocket/DNS/TLS-verify (NET-001 continuation)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:38:01Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 500,
+  "title": "[4APP-S2][Coder-5] JAVA NIO2 FILESYSTEMPROVIDER OVER HOST FS \u2014 Material Files core dependency",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:38:02Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 501,
+  "title": "[4APP-S3][Coder-5] FOREGROUND SERVICES + NOTIFICATION RUNTIME \u2014 execution path",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:38:03Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 502,
+  "title": "[4APP-S4][Coder-5] HERMES/JSI EXECUTION-PATH GATE J0 \u2014 Joplin core dependency",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:38:04Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 503,
+  "title": "[4APP-S5][Coder-5] COMPOSE RENDER CLUSTER GENERIC FIX \u2014 Element X master gate (COMPOSE-001 / M-06)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:38:05Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 504,
+  "title": "[4APP-S6][Coder-5] VIDEO-001 SOFTWARE MEDIAEXTRACTOR/MEDIACODEC PATH \u2014 NewPipe playback",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:38:06Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 505,
+  "title": "[CONT-4APP RECURRING][Coder-5] \u2014 per-session wave log: register \u2192 root-cause \u2192 fix \u2192 re-census \u2192 evidence",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T03:38:07Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 506,
+  "title": "[W2][Coder-4] Nine generic laws \u2014 4APP4 arrest chain broken: ConnectBot 10\u21921 errors \u00b7 Nextcloud 0-frames\u2192APP_PIXELS \u00b7 Tusky dlopen+TLS alive \u00b7 Thunderbird C1 closed",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T04:56:01Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 507,
+  "title": "Coder 6 | Wave 7 \u2014 second recycle rebuild survived: full law set re-applied on S154 + 12 NEW laws; Mindustry chain live end-to-end, app content in the window",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T05:52:46Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 508,
+  "title": "Coder 3 | Achievement 11 - S138: Vector Pinball's game STARTS and the full table renders on EVERY present (33/33 consistent, 116,550 px, 52,588 wall px), 3x byte-identical; the doDraw F084 halt is gone (wait-yield law)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T05:57:37Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 509,
+  "title": "[4APP-S7][Coder-5] RXJAVA + COROUTINE SCHEDULING DEPTH \u2014 real executors/looper/dispatchers substrate (CONC-001 unblock)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T14:49:59Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 510,
+  "title": "[W3][Coder-4] Three verified laws \u2014 NC Dagger graph BUILDS (5730\u21928111 stubs) \u00b7 CB runs the real androidx super chain (8917\u219224715) \u00b7 TB reaches APP_DRAW_OPS \u00b7 TU theme chain mapped to the framework terminus + W2 law-ID collision fix",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T15:30:47Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 511,
+  "title": "Coder 3 | Achievement 12 - S139: the APK's own libgdx-box2d.so now EXECUTES \u2014 real physics (ball launches, moves, collides, deterministic 3x), in-game table renders; 4 root laws (catch-all bypass, 233-slot JNIEnv, float-array bridge, NIO view-extent marshal)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T19:58:24Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 512,
+  "title": "[W4][Coder-4] Tusky Theme.AppCompat ISE KILLED (theme bag 8\u2192819 keys, APP_PIXELS) \u00b7 CB renders real toString (Destination(0x0) + [hostId]) \u2014 2 verified laws + framework-ARSC activation + 2 W3 corrections",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T20:08:07Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 513,
+  "title": "Coder 3 | Achievement 13 - S140: bouncy renders its OWN palette - COMPLETE rendering (slate walls, blue/magenta bumpers, green targets, cyan rollovers, lavender ball), the A11 'zoom' frontier closed as the app's own launch animation, 2 new generic laws, 3x byte-identical",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T21:25:16Z",
+  "labels": [
+   "coder-3",
+   "achievement"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 514,
+  "title": "[W5][Coder-4] F-C4-566: CHM compute-bypass was eating putVal \u2014 Koin's 510 registrations now EXECUTE (596 nodes, resize chains live) \u00b7 TB residual = Class-token equals in the collision chain",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T21:38:23Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "root-cause"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 515,
+  "title": "CODER-6 ACHIEVEMENT 4 \u2014 WAVE 8: [C6-GLBD] index-mesh law set \u2014 Mindustry scene FBO receives REAL app geometry (40 guard skips \u2192 0, 313 real indexed draws)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T21:39:34Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 516,
+  "title": "Coder 3 | Achievement 14 - S141: ContactListener callbacks go native-to-Java - the APK's own libgdx-box2d trampoline drives the game's OWN scoring (0-500-600, drain, 'Ball 2', auto-serve), 3x byte-deterministic",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-03T23:25:48Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 517,
+  "title": "[W6][Coder-4] TB NDFE \u00d732 root CHAINED to a HOLLOW includes list (full forensic path, every link proven) \u00b7 3 new laws F-C4-569/570/571 \u00b7 the never-delivered W2+W3+W4 stack NOW delivered as w6_stack.patch (1305 lines, applies CLEAN on main 9f5e7b8a)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-04T15:27:41Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "root-cause"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 518,
+  "title": "[W7][Coder-4] TB Koin NDFE x32 KILLED \u2014 root: SecureRandom REC-MISS minted ONE uuid for ALL 100 modules \u2192 Module.equals TRUE for every pair \u2192 flatten visited-guard swallowed every include (full live-proven chain) \u00b7 law F-C4-572 SecureRandom real-stream \u00b7 ALL FOUR titles now dispatch Activity onResume",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-04T18:29:41Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 519,
+  "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime | Achievement Log (living reference, no-push delivery)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-04T18:30:26Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 520,
+  "title": "CODER 7 \u2014 Base Android Component Runtime: WAVE-3 twenty generic laws (task-stack/launch-flags \u00b7 service AUTO_CREATE/stopSelf(int) \u00b7 broadcast matchData+unregister+sticky-ordered \u00b7 ContentProviderClient \u00b7 PackageManager REAL resolution + enabled) (base S170+w1+w2; c7 34/34 \u00d73, act 8/8 \u00d73, gate_a unchanged)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-04T20:42:24Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 521,
+  "title": "CODER 9 \u2014 Base Resources, Assets & Image Pipeline | Achievement Log (living reference, no-push delivery)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-04T21:08:00Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 522,
+  "title": "[W8][Coder-4] FIVE generic laws close the 20-problem work list \u2014 TB storage UPGRADES (setVersion law) \u00b7 NC Dagger injector map BUILDS (SimpleImmutableEntry entry law) \u00b7 TK okio+enum chains live (File.toString, getEnumConstants) \u00b7 20/20 rows closed \u00b7 all four dispatch onResume",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-04T21:47:58Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "root-cause"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 523,
+  "title": "Coder 3 | Achievement 15 - S156: the frame-ceiling war - -O3/-march and PGO are PIN-EXACT (-27% wall), the virtual-clock step compresses ball physics 2.2x, the endgame wall is now MEASURED seven ways (P8 final recipe: 130 frames), and the corpus is restored 7 -> 15 APKs (8/8 re-fetched, booted) - 33 counted items",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-04T23:47:21Z",
+  "labels": [
+   "coder-3",
+   "achievement"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 524,
+  "title": "Coder 3 | Achievement 16 \u2014 S157: four corpus PARTIALs re-judged (simplestopwatch + simplekeyboard now SUCCESS EXIT=0), the #523 filed gaps CLOSED (opencalculator keypad taps DISPATCH to real buttons; microtimer clicks land with visual deltas), 5 new AOSP layout laws, bouncy golden BYTE-EXACT \u2014 33 counted items",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-05T06:09:57Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 525,
+  "title": "[W9][Coder-4] NINE generic laws \u2014 TB command-queue spin DEAD (PBQ family law) \u00b7 Room converter family DEAD on NC+TK (isInstance runtime-class) \u00b7 gson String.matches \u00b7 NC account chain (AccountManager/Stream/Account/URI) \u00b7 JNI table REWIRED to spec: conscrypt RegisterNatives 345 methods LIVE (CB 5\u21921) \u00b7 20/20 worklist rows \u00b7 all four RESUMED",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-05T14:56:01Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "root-cause"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 526,
+  "title": "[W10][Coder-4] NINE generic laws \u2014 conscrypt natives EXECUTE for real (RegisterNatives dispatch + JNI object-array family + RTLD_DEEPBIND isolation: ConnectBot census 1\u21920, FIRST title at ZERO) \u00b7 Tusky 4272-exception WorkManager DB family DEAD (absolute-path db law + File absolute-child + executor-thread identity) \u00b7 NC connectivity+theme+fragment families closed \u00b7 61 base rows closed \u00b7 all four RESUMED",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-05T18:14:18Z",
+  "labels": [
+   "compatibility",
+   "app",
+   "open-source",
+   "fdroid",
+   "root-cause"
+  ],
+  "is_pr": false
+ },
+ {
+  "n": 527,
+  "title": "Coder 3 | Achievement 17 \u2014 dooz renders its COMPLETE Material You UI: the dynamic-color baseline-palette law (all-black \u2192 121 real colors, rc=0/SUCCESS, byte-exact \u00d74, re-proven in a 6th fresh environment)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-05T18:34:49Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 528,
+  "title": "[W11][Coder-4] FIVE generic laws \u2014 Kotlin exception identity restored (EXP-045 sanitizeStackTrace gate REMOVED: checkNotNull/throwUninitializedProperty keep their REAL class+message+stack) \u00b7 AOSP onOpen lifecycle dispatched (Room 2.7 invalidation tracker lives: NC 32\u219217, TK 32\u219220, ALL base families dead) \u00b7 bridge-class toString in concat (TB preferences_pb poisoned-path root: TB at ZERO uncaught, FIRST in the program) \u00b7 67 base rows closed \u00b7 CB census-zero held",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-06T06:18:38Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 529,
+  "title": "COder  ( D )",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-06T06:40:51Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 530,
+  "title": "Coder 3 | Achievement 18 \u2014 S180: Coder-D CONFIRMED findings fix batch \u2014 21 laws at base e0bbffaa (INTEGRATION_READY, full patch attached)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-06T09:16:50Z",
+  "labels": [],
+  "is_pr": false
+ },
+ {
+  "n": 531,
+  "title": "Coder 3 | A19 \u00b7 S181 \u2014 the S163 pending-measure traverse law: four shapes built and measured, the FIRST real post-tap dooz content frame, ISE \u221285% (opt-in MINIANDROID_S163=1, byte-inert off)",
+  "state": "open",
+  "closed_at": null,
+  "created_at": "2026-11-06T10:54:06Z",
+  "labels": [],
+  "is_pr": false
+ }
+]
