@@ -1,0 +1,150 @@
+{
+ "generated": "2026-11-07",
+ "purpose": "S188 Phase A reconciliation input",
+ "issues": {
+  "536": {
+   "role": "S185 SQLITE RULE (governing law)",
+   "title": "S185 \u2014 THE SQLITE RULE (standing law for all Coders): VEND, DON'T REWRITE \u00b7 LOAD-FIRST \u00b7 TRACER-THEN-PRUNE \u00b7 NOTHING BULKY IN GIT",
+   "state": "open",
+   "comments": 5,
+   "updated_at": "2026-11-06T19:49:59Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/536"
+  },
+  "529": {
+   "role": "Coder D source audit",
+   "title": "COder  ( D )",
+   "state": "open",
+   "comments": 4,
+   "updated_at": "2026-11-06T07:04:21Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/529"
+  },
+  "530": {
+   "role": "Coder D related",
+   "title": "Coder 3 | Achievement 18 \u2014 S180: Coder-D CONFIRMED findings fix batch \u2014 21 laws at base e0bbffaa (INTEGRATION_READY, full patch attached)",
+   "state": "open",
+   "comments": 2,
+   "updated_at": "2026-11-06T09:18:01Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/530"
+  },
+  "472": {
+   "role": "Achievement Ledger",
+   "title": "[Coder 5] MASTER ACHIEVEMENT LEDGER \u2014 Coder-2 campaign: every achievement, finding & evidence (living index)",
+   "state": "open",
+   "comments": 7,
+   "updated_at": "2026-11-06T17:41:43Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/472"
+  },
+  "519": {
+   "role": "Coder 8 concurrency",
+   "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime | Achievement Log (living reference, no-push delivery)",
+   "state": "open",
+   "comments": 54,
+   "updated_at": "2026-11-06T09:03:27Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/519"
+  },
+  "533": {
+   "role": "Coder 8 concurrency (2)",
+   "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime Engineering Worklog",
+   "state": "open",
+   "comments": 0,
+   "updated_at": "2026-11-06T15:58:30Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/533"
+  },
+  "520": {
+   "role": "Coder 7 PM/SQLite",
+   "title": "CODER 7 \u2014 Base Android Component Runtime: WAVE-5 PMS-LITE (cross-package component index + REAL-SQLite package cache; 16/16 \u00d76 store ops; 34/34 == W4 sha; act 8/8; gate_a A/B identical) \u00b7 waves W1\u2013W4 in body",
+   "state": "open",
+   "comments": 19,
+   "updated_at": "2026-11-06T15:36:03Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/520"
+  },
+  "521": {
+   "role": "Coder 9 resources/images",
+   "title": "CODER 9 \u2014 Base Resources, Assets & Image Pipeline | Achievement Log (living reference, no-push delivery)",
+   "state": "open",
+   "comments": 10,
+   "updated_at": "2026-11-06T19:29:42Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/521"
+  },
+  "528": {
+   "role": "Coder 4 framework/Java",
+   "title": "[W11][Coder-4] FIVE generic laws \u2014 Kotlin exception identity restored (EXP-045 sanitizeStackTrace gate REMOVED: checkNotNull/throwUninitializedProperty keep their REAL class+message+stack) \u00b7 AOSP onOpen lifecycle dispatched (Room 2.7 invalidation tracker lives: NC 32\u219217, TK 32\u219220, ALL base families dead) \u00b7 bridge-class toString in concat (TB preferences_pb poisoned-path root: TB at ZERO uncaught, FIRST in the program) \u00b7 67 base rows closed \u00b7 CB census-zero held",
+   "state": "open",
+   "comments": 3,
+   "updated_at": "2026-11-06T15:52:00Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/528"
+  },
+  "534": {
+   "role": "Coder 4 W13",
+   "title": "[W12][Coder-4] SEVEN generic laws \u2014 Collections.sort natural-order RESTORED (TK MainActivity AIOOBE dead: okio Options built on an UNSORTED list) \u00b7 Pattern.pattern() (CB 13-row Compose family dead) \u00b7 JobScheduler job-store \u00b7 Matcher position/identity (hostId EXTRACTED live) \u00b7 single-truth collection render \u00b7 parseInclude override \u00b7 compileStmt-throws + W11 five PORTED onto S179 main \u2014 corpus 5/5 byte-inert",
+   "state": "open",
+   "comments": 3,
+   "updated_at": "2026-11-06T15:50:30Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/534"
+  },
+  "538": {
+   "role": "Coder 4 W13 results",
+   "title": "[W13][Coder-4] FOUR generic laws from the stuck-corpus directive \u2014 ParcelUuid/UUID.fromString COMPLETE AOSP law (sunpiano FLIPPED 0\u2192576,907 px REAL_APP_CONTENT, uncaught 32\u21927) \u00b7 ctor receiver-arity law (itsfrz FragmentContainerView fm-null chain dead 12\u21927) \u00b7 collection-render double-bracket fix (OpenJDK-exact [mode]) \u00b7 AudioFocusRequest.Builder \u2014 gates 3/3 + 4APP faces byte-inert",
+   "state": "open",
+   "comments": 3,
+   "updated_at": "2026-11-06T15:52:50Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/538"
+  },
+  "537": {
+   "role": "Coder 3 image pipeline/ListView",
+   "title": "Coder 3 | A22 \u00b7 S186 \u2014 B6 decode-chain audit: codec layer REFUTED as the gap (already real+proven); residuals are view-materialization blockers (setListAdapter drop, toolbar child-push) + fresh-clone third_party bootstrap",
+   "state": "open",
+   "comments": 2,
+   "updated_at": "2026-11-06T15:32:41Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/537"
+  },
+  "540": {
+   "role": "Coder 3 libGDX AssetManager laws",
+   "title": "Coder 3 | S187 \u2014 THREE generic silent-null laws (String.replaceAll family \u00b7 java.util.Stack \u00b7 ExecutorService.submit+Future) + INVOKE-TRACE tool: the libGDX asset pipeline opens end-to-end",
+   "state": "open",
+   "comments": 1,
+   "updated_at": "2026-11-06T17:33:03Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/540"
+  },
+  "539": {
+   "role": "main integration & frontier inventory",
+   "title": "Coder 3 | A23 \u00b7 S187 \u2014 main-coder progress recon (S172\u2192S186e reviewed): SQLITE RULE adopted, stale local stack retired, next frontier = B2 PortableGL under GLSurfaceView",
+   "state": "open",
+   "comments": 1,
+   "updated_at": "2026-11-06T17:33:27Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/539"
+  },
+  "475": {
+   "role": "TicTacToe tracker",
+   "title": "[Coder 2] TicTacToe (emmanuelmess) (com.emmanuelmess.tictactoe) v3 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "comments": 2,
+   "updated_at": "2026-11-06T17:17:48Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/475"
+  },
+  "441": {
+   "role": "Mindustry",
+   "title": "Coder 6 | Case File \u2014 Mindustry (io.anuke.mindustry) \u00b7 ladder M0\u2013M6",
+   "state": "open",
+   "comments": 21,
+   "updated_at": "2026-11-06T12:20:30Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/441"
+  },
+  "470": {
+   "role": "Mindustry (2)",
+   "title": "CODER-6 ACHIEVEMENT 3 \u2014 WAVE 4: Mindustry load-screen GRID renders through the full GL chain (5 generic roots: ByteBuffer absolute family, [F bit-identity, identity-MVP default, clear-mask, capture scale)",
+   "state": "open",
+   "comments": 1,
+   "updated_at": "2026-11-02T20:37:06Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/470"
+  },
+  "492": {
+   "role": "Main dashboard",
+   "title": "Coder 3 | Master Dashboard \u2014 every Issue, every app, one glance (progress % + statistics) \u2014 refreshed at refresh 12 (S181 \u00b7 A19: the S163 pending-measure traverse law \u2014 four shapes built+measured, FIRST real post-tap dooz content frame, ISE \u221285% opt-in, byte-inert off \u00d73+30/30; counts 531 issues / 20 Coder-3 achievement reports)",
+   "state": "open",
+   "comments": 5,
+   "updated_at": "2026-11-06T19:50:01Z",
+   "url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/492"
+  }
+ }
+}

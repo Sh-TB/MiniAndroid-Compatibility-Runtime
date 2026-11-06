@@ -1,0 +1,70 @@
+{
+ "generated": "2026-11-07",
+ "directive": "docs/S188_DIRECTIVE.md (commit 7edaa2b6)",
+ "master_issue": 541,
+ "status_vocabulary": [
+  "DISCOVERED",
+  "EVIDENCE_VERIFIED",
+  "REVIEWED",
+  "ACCEPTED",
+  "SOURCE_INTEGRATED",
+  "BINARY_INTEGRATED",
+  "BLOCKED",
+  "REJECTED",
+  "SUPERSEDED"
+ ],
+ "impact_vocabulary": [
+  "UNOBSERVED",
+  "NO_CHANGE",
+  "LOCAL_CONTRACT_VERIFIED",
+  "CHAIN_ADVANCED",
+  "PARTIAL_CHAIN",
+  "CROSS_APP_VERIFIED",
+  "VISUAL_VERIFIED",
+  "INTERACTIVE_VERIFIED",
+  "REGRESSION_VERIFIED"
+ ],
+ "infrastructure": {
+  "tools/fdt": false,
+  "library_ecosystem": [
+   "README.md",
+   "capability_matrix.json",
+   "dependency_graph.json",
+   "registry.json",
+   "reports"
+  ],
+  "reports/apk_routes": false,
+  "runtime_capabilities.json": false,
+  "docs/S188_DIRECTIVE.md": true
+ },
+ "s186i_baseline": {
+  "battery_json": "evidence/s186_s107/S186I_BATTERY.json",
+  "engines_compared": [
+   "de_engine",
+   "head_s186i"
+  ],
+  "summary": {
+   "titles": 41,
+   "zero_uncaught_total": 29,
+   "tiers": {
+    "FLAT_TWO_TONE_OR_BLANK": 34,
+    "A_RICH": 2,
+    "B_STRUCTURED": 5
+   },
+   "rich_faces": [
+    "app.halma",
+    "se.tube42.p9.android"
+   ]
+  },
+  "adoption_status": "EVIDENCE_VERIFIED",
+  "impact_status": "UNOBSERVED",
+  "note": "Claims (29 zero-uncaught, 2 A_RICH) require Phase I reproduction on one identified binary before VISUAL_VERIFIED credit."
+ },
+ "goldens": {
+  "bouncy": "8a6c24ac",
+  "unote": "3b8dcb0a",
+  "dooz": "d602648e",
+  "note": "Re-verify hashes against current HEAD test definitions before use (Phase L)."
+ },
+ "contributions": []
+}

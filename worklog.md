@@ -7798,3 +7798,28 @@ ancestry re-key confusion — queued next wave). Honest: NOT clean yet, no upgra
 Artifacts: evidence/s186_s107/S186I_BATTERY.json (+ head_s186i comparison + de_engine baseline),
 41× S186I_*_face.jpg, scripts/s186i_{battery,rebuild,disasm_jsexport,post_final}.py.
 GitHub: tracker #536 comment 6693206228 + 17 per-issue verdict comments posted.
+
+---
+
+## S188 — FINAL MASTER DIRECTIVE: Route-Aware Execution & Real Application Recovery (2026-11-07)
+
+User directive: post the final directive as law, English-only on GitHub, one issue per section so Coders 2–9 must read; then EXECUTE (no more planning-only).
+
+Delivered this session:
+- docs/S188_DIRECTIVE.md committed (7edaa2b6): full S188 master text — route-aware execution
+  graph, dual status systems, five-title milestone, A_RICH contract, final rule (§18).
+- 15 governing issues posted (English): #541 MASTER, #542 RULES (UNOBSERVED≠PASS + 13 rules),
+  #543–#555 = Phases A–L + Governance. Cross-refs on #536 + #492. ACK S188 required per coder.
+- scripts/s188_issues_data.py / s188_issues_data2.py / s188_post_issues.py.
+- Phase A started: reports/s188/phase_a_issue_snapshot.json (18 named issues: all OPEN,
+  #519=54c, #441=21c, #520=19c — achievements live in comments) + reports/s188/adoption_ledger.json
+  seeded (status vocab, infra audit, S186i baseline, goldens bouncy=8a6c24ac/unote=3b8dcb0a/dooz=d602648e).
+- Independent baseline check from S186I_BATTERY.json: 41 titles, 29 zero-uncaught_total,
+  tiers = 34 FLAT_TWO_TONE_OR_BLANK / 5 B_STRUCTURED / 2 A_RICH (app.halma, se.tube42.p9.android).
+  => Core S188 problem confirmed from repo data: zero exceptions ≠ real UI (34 flat pages).
+
+Infra audit: tools/fdt ABSENT (Phase B builds), library_ecosystem exists (extend with
+runtime_capabilities.json), reports/apk_routes ABSENT (Phase C builds).
+
+Next: Phase A deep reconciliation (read 18 issues incl. all comments → ledger rows); Phase B FDT
+graph on real runs; then gmdice Adapter rows + TicTacToe I18N (first real-render targets).
