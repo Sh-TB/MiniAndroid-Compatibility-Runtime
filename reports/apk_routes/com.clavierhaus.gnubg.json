@@ -1,0 +1,83 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "com.clavierhaus.gnubg",
+ "apk": "/home/z/my-project/upload/stuck_apks/com.clavierhaus.gnubg.apk",
+ "apk_sha256_16": "8b643e5681a798c8",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "WEBVIEW_NODE",
+   "evidence": [
+    "dex:Landroid/webkit/WebView;"
+   ],
+   "primary": false
+  },
+  {
+   "route": "COMPOSE",
+   "evidence": [
+    "dex:Landroidx/compose/"
+   ],
+   "primary": true
+  }
+ ],
+ "primary_route": "COMPOSE",
+ "routes_forbidden": [
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "WEBVIEW_ENGINE",
+   "evidence": [
+    "WebView component in DEX"
+   ]
+  },
+  {
+   "cap": "COMPOSE_RUNTIME",
+   "evidence": [
+    "compose in DEX"
+   ]
+  },
+  {
+   "cap": "SQLITE_VEND",
+   "evidence": [
+    "dex:sqlite"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libandroidx.graphics.path.so",
+   "lib/arm64-v8a/libdatastore_shared_counter.so",
+   "lib/arm64-v8a/libffi.so",
+   "lib/arm64-v8a/libgio-2.0.so",
+   "lib/arm64-v8a/libgirepository-2.0.so",
+   "lib/arm64-v8a/libglib-2.0.so",
+   "lib/arm64-v8a/libgmodule-2.0.so",
+   "lib/arm64-v8a/libgnubg-engine.so",
+   "lib/arm64-v8a/libgobject-2.0.so",
+   "lib/arm64-v8a/libgthread-2.0.so",
+   "lib/arm64-v8a/libintl.so",
+   "lib/arm64-v8a/libz.so"
+  ],
+  "asset_count": 15,
+  "media_assets": [],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

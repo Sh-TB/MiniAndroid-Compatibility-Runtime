@@ -1,0 +1,563 @@
+[
+ {
+  "pkg": "com.qwde.ccm",
+  "primary": "GODOT",
+  "routes": [
+   "GODOT",
+   "WEBVIEW_NODE",
+   "VIEW"
+  ],
+  "caps": [
+   "GODOT_ENGINE_SUPPORT",
+   "WEBVIEW_ENGINE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "com.astroloop.game",
+  "primary": "VIEW",
+  "routes": [
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "APPCOMPAT",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "app.halma",
+  "primary": "LIBGDX",
+  "routes": [
+   "LIBGDX",
+   "WEBVIEW_NODE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "NATIVE_LIB_LOAD",
+   "JNI",
+   "EGL_GLES",
+   "ASSET_MANAGER",
+   "WEBVIEW_ENGINE",
+   "SQLITE_VEND",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "com.jeffliu.balancetheball",
+  "primary": "VIEW",
+  "routes": [
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "crypto.o0o0o0o0o.games.blackjack",
+  "primary": "WEBVIEW_HTML5_PACKAGED",
+  "routes": [
+   "WEBVIEW_HTML5_PACKAGED",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "eu.veldsoft.no.thanks",
+  "primary": "COMPOSE",
+  "routes": [
+   "WEBVIEW_NODE",
+   "COMPOSE",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "COMPOSE_RUNTIME",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "com.simondalvai.ball2box",
+  "primary": "GODOT",
+  "routes": [
+   "GODOT",
+   "WEBVIEW_NODE",
+   "VIEW"
+  ],
+  "caps": [
+   "GODOT_ENGINE_SUPPORT",
+   "WEBVIEW_ENGINE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "si.palcka.tarok",
+  "primary": "FLUTTER",
+  "routes": [
+   "FLUTTER",
+   "WEBVIEW_NODE",
+   "VIEW"
+  ],
+  "caps": [
+   "FLUTTER_ENGINE",
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE"
+  ]
+ },
+ {
+  "pkg": "cos.premy.mines",
+  "primary": "WEBVIEW_NODE",
+  "routes": [
+   "WEBVIEW_NODE"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "io.github.hathibelagal.mykanji",
+  "primary": "WEBVIEW_HTML5_PACKAGED",
+  "routes": [
+   "WEBVIEW_HTML5_PACKAGED",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "de.tobiasbielefeld.solitaire",
+  "primary": "VIEW",
+  "routes": [
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "eu.quelltext.memory",
+  "primary": "WEBVIEW_HTML5_PACKAGED",
+  "routes": [
+   "WEBVIEW_HTML5_PACKAGED",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE"
+  ]
+ },
+ {
+  "pkg": "com.sidhant.queens",
+  "primary": "FLUTTER",
+  "routes": [
+   "FLUTTER",
+   "WEBVIEW_NODE",
+   "MEDIA"
+  ],
+  "caps": [
+   "FLUTTER_ENGINE",
+   "WEBVIEW_ENGINE",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "page.codeberg.lanticy.guandan",
+  "primary": "COMPOSE",
+  "routes": [
+   "COMPOSE"
+  ],
+  "caps": [
+   "COMPOSE_RUNTIME"
+  ]
+ },
+ {
+  "pkg": "xyz.deepdaikon.quinb",
+  "primary": "FLUTTER",
+  "routes": [
+   "FLUTTER",
+   "WEBVIEW_NODE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "FLUTTER_ENGINE",
+   "WEBVIEW_ENGINE",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "com.vayunmathur.games.solitaire",
+  "primary": "COMPOSE",
+  "routes": [
+   "COMPOSE"
+  ],
+  "caps": [
+   "COMPOSE_RUNTIME"
+  ]
+ },
+ {
+  "pkg": "bim.app",
+  "primary": "MEDIA",
+  "routes": [
+   "WEBVIEW_NODE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "org.secuso.privacyfriendlybattleship",
+  "primary": "VIEW",
+  "routes": [
+   "WEBVIEW_NODE",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "com.vovagorodok.blichess",
+  "primary": "WEBVIEW_HTML5_PACKAGED",
+  "routes": [
+   "WEBVIEW_HTML5_PACKAGED",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "ru.wohlsoft.thextech.fdroid",
+  "primary": "SDL",
+  "routes": [
+   "SDL",
+   "NATIVE_GAME_ENGINE",
+   "WEBVIEW_NODE",
+   "VIEW"
+  ],
+  "caps": [
+   "SDL_NATIVE",
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "org.opensurge2d.surgeengine",
+  "primary": "NATIVE_GAME_ENGINE",
+  "routes": [
+   "NATIVE_GAME_ENGINE"
+  ],
+  "caps": []
+ },
+ {
+  "pkg": "com.eightsines.firestrike.opensource",
+  "primary": "VIEW",
+  "routes": [
+   "WEBVIEW_NODE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "com.clavierhaus.gnubg",
+  "primary": "COMPOSE",
+  "routes": [
+   "WEBVIEW_NODE",
+   "COMPOSE"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "COMPOSE_RUNTIME",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "com.vovagorodok.blidraughts",
+  "primary": "WEBVIEW_HTML5_PACKAGED",
+  "routes": [
+   "WEBVIEW_HTML5_PACKAGED",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "com.rocket9labs.boxcars",
+  "primary": "VIEW",
+  "routes": [
+   "VIEW"
+  ],
+  "caps": []
+ },
+ {
+  "pkg": "com.hfut.schedule",
+  "primary": "COMPOSE",
+  "routes": [
+   "WEBVIEW_NODE",
+   "COMPOSE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "COMPOSE_RUNTIME",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "foehnix.widget",
+  "primary": "VIEW",
+  "routes": [
+   "WEBVIEW_NODE",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "de.seemoo.at_tracking_detection",
+  "primary": "COMPOSE",
+  "routes": [
+   "COMPOSE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "COMPOSE_RUNTIME",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "org.nitri.opentopo",
+  "primary": "COMPOSE",
+  "routes": [
+   "WEBVIEW_NODE",
+   "COMPOSE",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "COMPOSE_RUNTIME",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "com.newsblur",
+  "primary": "COMPOSE",
+  "routes": [
+   "WEBVIEW_NODE",
+   "COMPOSE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "COMPOSE_RUNTIME",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "de.taz.android.app.free",
+  "primary": "VIEW",
+  "routes": [
+   "WEBVIEW_NODE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "com.bupkis.tirailleur",
+  "primary": "FLUTTER",
+  "routes": [
+   "FLUTTER",
+   "MEDIA"
+  ],
+  "caps": [
+   "FLUTTER_ENGINE",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "io.github.aoc_normal",
+  "primary": "VIEW",
+  "routes": [
+   "WEBVIEW_NODE",
+   "VIEW"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "site.leos.apps.lespas",
+  "primary": "VIEW",
+  "routes": [
+   "WEBVIEW_NODE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "me.river.nightbell",
+  "primary": "COMPOSE",
+  "routes": [
+   "WEBVIEW_NODE",
+   "COMPOSE",
+   "MEDIA"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "COMPOSE_RUNTIME",
+   "SQLITE_VEND",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "com.hegocre.nextcloudpasswords",
+  "primary": "COMPOSE",
+  "routes": [
+   "WEBVIEW_NODE",
+   "COMPOSE",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "WEBVIEW_ENGINE",
+   "COMPOSE_RUNTIME",
+   "APPCOMPAT",
+   "SQLITE_VEND",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "tibarj.tranquilstopwatch",
+  "primary": "VIEW",
+  "routes": [
+   "VIEW"
+  ],
+  "caps": [
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE"
+  ]
+ },
+ {
+  "pkg": "com.justdeax.composeStopwatch",
+  "primary": "COMPOSE",
+  "routes": [
+   "COMPOSE"
+  ],
+  "caps": [
+   "COMPOSE_RUNTIME"
+  ]
+ },
+ {
+  "pkg": "me.timeto.app",
+  "primary": "COMPOSE",
+  "routes": [
+   "COMPOSE",
+   "VIEW"
+  ],
+  "caps": [
+   "COMPOSE_RUNTIME",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND"
+  ]
+ },
+ {
+  "pkg": "se.tube42.p9.android",
+  "primary": "LIBGDX",
+  "routes": [
+   "LIBGDX",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "NATIVE_LIB_LOAD",
+   "JNI",
+   "EGL_GLES",
+   "ASSET_MANAGER",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ },
+ {
+  "pkg": "io.timelimit.android.aosp.direct",
+  "primary": "COMPOSE",
+  "routes": [
+   "COMPOSE",
+   "VIEW"
+  ],
+  "caps": [
+   "COMPOSE_RUNTIME",
+   "APPCOMPAT",
+   "ADAPTER_RECYCLE",
+   "SQLITE_VEND"
+  ]
+ }
+]

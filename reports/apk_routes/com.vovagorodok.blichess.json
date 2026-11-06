@@ -1,0 +1,88 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "com.vovagorodok.blichess",
+ "apk": "/home/z/my-project/upload/stuck_apks/com.vovagorodok.blichess.apk",
+ "apk_sha256_16": "83faa3b5fec84059",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "WEBVIEW_HTML5_PACKAGED",
+   "evidence": [
+    "assets:assets/public/cordova.js"
+   ],
+   "primary": true
+  },
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/fragment/"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "WEBVIEW_HTML5_PACKAGED",
+ "routes_forbidden": [
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "WEBVIEW_ENGINE",
+   "evidence": [
+    "assets/public/cordova.js",
+    "assets/public/cordova_plugins.js",
+    "assets/public/index.html"
+   ]
+  },
+  {
+   "cap": "APPCOMPAT",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/fragment/"
+   ]
+  },
+  {
+   "cap": "SQLITE_VEND",
+   "evidence": [
+    "dex:sqlite"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libc++_shared.so",
+   "lib/arm64-v8a/libstockfish-variants.so",
+   "lib/arm64-v8a/libstockfish.so",
+   "lib/armeabi-v7a/libc++_shared.so",
+   "lib/armeabi-v7a/libstockfish-variants.so",
+   "lib/x86/libc++_shared.so",
+   "lib/x86/libstockfish-variants.so",
+   "lib/x86_64/libc++_shared.so",
+   "lib/x86_64/libstockfish-variants.so"
+  ],
+  "asset_count": 734,
+  "media_assets": [],
+  "html_assets": [
+   "assets/public/cordova.js",
+   "assets/public/cordova_plugins.js",
+   "assets/public/index.html"
+  ],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

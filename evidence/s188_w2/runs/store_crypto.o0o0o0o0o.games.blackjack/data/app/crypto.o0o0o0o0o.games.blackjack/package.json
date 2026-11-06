@@ -1,0 +1,16 @@
+{
+  "package": "crypto.o0o0o0o0o.games.blackjack",
+  "versionName": "0.29.1",
+  "versionCode": 4,
+  "mainActivity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
+  "minSdk": "16",
+  "targetSdk": "30",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/crypto.o0o0o0o0o.games.blackjack/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w2/runs/store_crypto.o0o0o0o0o.games.blackjack/data/app/crypto.o0o0o0o0o.games.blackjack/base.apk",
+  "apkSha256": "70e9979d2fd731cbb941f91f9308deb993f7cc8c839bbe94947aa92f2d371303",
+  "apkSize": 3487026,
+  "installedAt": "2026-11-06T21:26:39Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

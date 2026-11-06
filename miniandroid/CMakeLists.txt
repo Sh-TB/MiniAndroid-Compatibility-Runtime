@@ -81,6 +81,7 @@ add_library(miniandroid_core STATIC
     
     # Runtime
     src/runtime/execution_engine.cpp
+    src/runtime/route_law.cpp  # S188: alley-law route decision at launch
     
     # Resources (EXP-006)
     src/resources/resource_parser.cpp

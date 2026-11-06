@@ -85,6 +85,7 @@ struct SampleProfiler {
 #include <pthread.h>
 
 #include "runtime/execution_engine.h"
+#include "runtime/route_law.h"  // S188 alley law: route decision at launch
 #include "apk/apk_parser.h"
 
 // S108 ROOT-018: the `miniandroid run` CLI path NEVER registered the JNI
@@ -1068,9 +1069,16 @@ int cmd_pkg_audit(const std::string& package, const std::string& data_root) {
     return 0;
 }
 
-int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config) {
+int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config,
+            const std::string& package_hint = std::string()) {
     std::cout << "[*] Running APK: " << apk_path << std::endl;
     std::cout << "[*] Output directory: " << config.output_directory << std::endl;
+
+    // S188 W2 (user directive): THE ALLEY LAW — determine which route the
+    // app takes BEFORE execution. A Java app must not pass through the
+    // HTML5 alley; an MKV app must not be pushed through an MP4 substitute.
+    // The profile is static evidence only (UNOBSERVED != PASS).
+    runtime::RouteLaw::instance().load_for_apk(apk_path, package_hint);
     
     // S108 ROOT-018: register the JNI bridge on THIS path too (previously
     // only ApplicationRuntime::execute_on_create did it — a different
@@ -1528,7 +1536,7 @@ int main(int argc, char* argv[]) {
     } else if (command == "dex") {
         return cmd_dex(apk_path, verbose);
     } else if (command == "run") {
-        int rc = cmd_run(apk_path, config);
+        int rc = cmd_run(apk_path, config, run_package);
         // FIX-TTT (CONT-120) teardown law: when a native fault poisoned the
         // loader this process (fork-probe missed, guarded dlopen faulted),
         // the partially-loaded library's _dl_fini walk at exit can hang —

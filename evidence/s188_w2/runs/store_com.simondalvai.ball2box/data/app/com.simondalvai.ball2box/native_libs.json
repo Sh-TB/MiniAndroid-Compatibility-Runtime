@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "arm64-v8a",
+  "nativeLibraryDir": "/data/app/com.simondalvai.ball2box/lib/arm64-v8a",
+  "extracted": [
+    {"entry": "lib/arm64-v8a/libc++_shared.so", "size": 1014704},
+    {"entry": "lib/arm64-v8a/libgodot_android.so", "size": 29938832}
+  ],
+  "count": 2
+}

@@ -1,0 +1,113 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "com.newsblur",
+ "apk": "/home/z/my-project/upload/stuck_apks/com.newsblur.apk",
+ "apk_sha256_16": "e29243435e38b1b2",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "WEBVIEW_NODE",
+   "evidence": [
+    "dex:Landroid/webkit/WebView;"
+   ],
+   "primary": false
+  },
+  {
+   "route": "COMPOSE",
+   "evidence": [
+    "dex:Landroidx/compose/"
+   ],
+   "primary": true
+  },
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/"
+   ],
+   "primary": false
+  },
+  {
+   "route": "MEDIA",
+   "evidence": [
+    "dex:Landroid/media/MediaPlayer|MediaCodec"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "COMPOSE",
+ "routes_forbidden": [
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "WEBVIEW_ENGINE",
+   "evidence": [
+    "WebView component in DEX"
+   ]
+  },
+  {
+   "cap": "COMPOSE_RUNTIME",
+   "evidence": [
+    "compose in DEX"
+   ]
+  },
+  {
+   "cap": "APPCOMPAT",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/"
+   ]
+  },
+  {
+   "cap": "ADAPTER_RECYCLE",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/"
+   ]
+  },
+  {
+   "cap": "SQLITE_VEND",
+   "evidence": [
+    "dex:sqlite"
+   ]
+  },
+  {
+   "cap": "MEDIA_DEMUX_PER_ASSET",
+   "evidence": [
+    "media classes present; container set must match actual assets, never substituted"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libandroidx.graphics.path.so",
+   "lib/armeabi-v7a/libandroidx.graphics.path.so",
+   "lib/x86/libandroidx.graphics.path.so",
+   "lib/x86_64/libandroidx.graphics.path.so"
+  ],
+  "asset_count": 579,
+  "media_assets": [],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

@@ -5,6 +5,7 @@
  */
 
 #include "execution_engine.h"
+#include "route_law.h"  // S188 alley law: route decision + surprise/violation log
 #include "../apk/manifest_reader.h"  // S75 A7: ManifestReader::resolve_resid_string (ARSC label resolve)
 #include "../dex/trace_exporter.h"  // EXP-031.5: Mandatory trace generation
 #include "../diagnostics/click_audit.h"  // UNIFIED_002 EXP-100: env-gated click audit (DIAGNOSTIC)
@@ -4155,6 +4156,12 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                             bool webview_painted = false;
                             if (!node_invisible && w > 0 && h > 0 &&
                                 node->class_desc.find("WebView;") != std::string::npos) {
+                                // S188 alley law: record that the HTML5 alley
+                                // engaged at runtime. If the static profile
+                                // forbids/pred-differs this route, the honest
+                                // log line is emitted (classifier revision).
+                                runtime::RouteLaw::instance().observe_route_engagement(
+                                    "WEBVIEW", "webview-node-paint");
                                 auto eng = webview::WebViewRegistry::instance()
                                                 .find(node->view_id);
                                 if (eng) {
@@ -7199,6 +7206,8 @@ int ExecutionEngine::pump_compose_frames(int max_frames) {
         // the same vsync pump (one frame clock law). 16.6ms per pump tick —
         // the Choreographer frame interval (choreographer_shadow kFrameInterval).
         if (webview::WebViewRegistry::instance().any_needs_frames()) {
+            runtime::RouteLaw::instance().observe_route_engagement(
+                "WEBVIEW", "webview-frame-tick");
             webview::WebViewRegistry::instance().tick_all(pump_ms);
             did_work = true;  // an rAF loop keeps the pump alive until the bound
         }

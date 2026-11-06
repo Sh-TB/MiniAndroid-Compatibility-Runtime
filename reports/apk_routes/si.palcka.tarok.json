@@ -1,0 +1,114 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "si.palcka.tarok",
+ "apk": "/home/z/my-project/upload/stuck_apks/si.palcka.tarok.apk",
+ "apk_sha256_16": "f956d84eb4801d37",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "FLUTTER",
+   "evidence": [
+    "dex:Lio/flutter/"
+   ],
+   "primary": true
+  },
+  {
+   "route": "WEBVIEW_NODE",
+   "evidence": [
+    "dex:Landroid/webkit/WebView;"
+   ],
+   "primary": false
+  },
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "FLUTTER",
+ "routes_forbidden": [
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "FLUTTER_ENGINE",
+   "evidence": [
+    "FlutterJNI/embedding in DEX + flutter_assets"
+   ]
+  },
+  {
+   "cap": "WEBVIEW_ENGINE",
+   "evidence": [
+    "WebView component in DEX"
+   ]
+  },
+  {
+   "cap": "APPCOMPAT",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/"
+   ]
+  },
+  {
+   "cap": "ADAPTER_RECYCLE",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libapp.so",
+   "lib/arm64-v8a/libdatastore_shared_counter.so",
+   "lib/arm64-v8a/libflutter.so",
+   "lib/arm64-v8a/libmedia_kit_native_event_loop.so",
+   "lib/arm64-v8a/libmediakitandroidhelper.so",
+   "lib/arm64-v8a/libmpv.so"
+  ],
+  "asset_count": 87,
+  "media_assets": [
+   {
+    "path": "assets/flutter_assets/assets/zvoki/click1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/flutter_assets/assets/zvoki/karta.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/flutter_assets/assets/zvoki/karta2.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/flutter_assets/assets/zvoki/karta3.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/flutter_assets/assets/zvoki/karta4.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/flutter_assets/assets/zvoki/notification1.ogg",
+    "container": "OGG"
+   }
+  ],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

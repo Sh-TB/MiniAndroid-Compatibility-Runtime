@@ -1,0 +1,70 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "com.astroloop.game",
+ "apk": "/home/z/my-project/upload/stuck_apks/com.astroloop.game.apk",
+ "apk_sha256_16": "79aa83482f64f7ae",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/fragment/"
+   ],
+   "primary": true
+  },
+  {
+   "route": "MEDIA",
+   "evidence": [
+    "dex:Landroid/media/MediaPlayer|MediaCodec"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "VIEW",
+ "routes_forbidden": [
+  {
+   "route": "WEBVIEW_HTML5_PACKAGED",
+   "reason": "no WebView classes and no HTML assets in APK \u2014 a Java application must NOT pass through the HTML5 alley"
+  },
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "APPCOMPAT",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/fragment/"
+   ]
+  },
+  {
+   "cap": "MEDIA_DEMUX_PER_ASSET",
+   "evidence": [
+    "media classes present; container set must match actual assets, never substituted"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [],
+  "asset_count": 103,
+  "media_assets": [],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

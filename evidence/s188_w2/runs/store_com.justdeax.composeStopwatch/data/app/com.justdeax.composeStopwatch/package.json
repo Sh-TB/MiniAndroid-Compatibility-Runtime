@@ -1,0 +1,23 @@
+{
+  "package": "com.justdeax.composeStopwatch",
+  "versionName": "1.9.1",
+  "versionCode": 1009011,
+  "mainActivity": "com.justdeax.composeStopwatch.AppActivity",
+  "minSdk": "26",
+  "targetSdk": "37",
+  "requestedPermissions": [
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.VIBRATE",
+    "android.permission.WAKE_LOCK",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+    "com.justdeax.composeStopwatch.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.justdeax.composeStopwatch/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w2/runs/store_com.justdeax.composeStopwatch/data/app/com.justdeax.composeStopwatch/base.apk",
+  "apkSha256": "dbf937ebbe7c0b3d24c07fa0ede7cb53ea117f7071db3b61f1c96b7d257cda55",
+  "apkSize": 1451410,
+  "installedAt": "2026-11-06T21:26:03Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

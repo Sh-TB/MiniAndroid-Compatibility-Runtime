@@ -1,0 +1,532 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "org.opensurge2d.surgeengine",
+ "apk": "/home/z/my-project/upload/stuck_apks/org.opensurge2d.surgeengine.apk",
+ "apk_sha256_16": "c1020c5a1e594b21",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "NATIVE_GAME_ENGINE",
+   "evidence": [
+    "lib:lib/arm64-v8a/liballegro.so",
+    "lib:lib/arm64-v8a/liballegro_acodec.so",
+    "lib:lib/arm64-v8a/liballegro_audio.so"
+   ],
+   "primary": true
+  }
+ ],
+ "primary_route": "NATIVE_GAME_ENGINE",
+ "routes_forbidden": [
+  {
+   "route": "WEBVIEW_HTML5_PACKAGED",
+   "reason": "no WebView classes and no HTML assets in APK \u2014 a Java application must NOT pass through the HTML5 alley"
+  },
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/liballegro.so",
+   "lib/arm64-v8a/liballegro_acodec.so",
+   "lib/arm64-v8a/liballegro_audio.so",
+   "lib/arm64-v8a/liballegro_color.so",
+   "lib/arm64-v8a/liballegro_dialog.so",
+   "lib/arm64-v8a/liballegro_font.so",
+   "lib/arm64-v8a/liballegro_image.so",
+   "lib/arm64-v8a/liballegro_main.so",
+   "lib/arm64-v8a/liballegro_memfile.so",
+   "lib/arm64-v8a/liballegro_physfs.so",
+   "lib/arm64-v8a/liballegro_primitives.so",
+   "lib/arm64-v8a/liballegro_ttf.so",
+   "lib/arm64-v8a/libopensurge.so",
+   "lib/arm64-v8a/libphysfs.so",
+   "lib/armeabi-v7a/liballegro.so",
+   "lib/armeabi-v7a/liballegro_acodec.so",
+   "lib/armeabi-v7a/liballegro_audio.so",
+   "lib/armeabi-v7a/liballegro_color.so",
+   "lib/armeabi-v7a/liballegro_dialog.so",
+   "lib/armeabi-v7a/liballegro_font.so",
+   "lib/armeabi-v7a/liballegro_image.so",
+   "lib/armeabi-v7a/liballegro_main.so",
+   "lib/armeabi-v7a/liballegro_memfile.so",
+   "lib/armeabi-v7a/liballegro_physfs.so",
+   "lib/armeabi-v7a/liballegro_primitives.so",
+   "lib/armeabi-v7a/liballegro_ttf.so",
+   "lib/armeabi-v7a/libopensurge.so",
+   "lib/armeabi-v7a/libphysfs.so"
+  ],
+  "asset_count": 682,
+  "media_assets": [
+   {
+    "path": "assets/musics/title.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/menu.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/speed.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/boss.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/creativecommons.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/sharp.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/gimacian.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/gameover.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/winning_plusplus.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/template.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/citychill.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/theme.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/drowning.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/invincible.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/intro.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/waterworks.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/sunshine.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/winning.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/allegro.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/winning_plus.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/silence.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/musics/options.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/samples/bigring.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/pipe_in.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/windshield.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/springfling.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/shield.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/bumper.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/glasses.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/pause_appear.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/watershield.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/teleport_disappear.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/death.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/pause_cancel.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/endsign.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/cash.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/charge.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/trash_empty.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/floorhit.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/jump.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/electric_bulb.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/teleporter_backwards.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/spikes.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/select.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/collectible.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/pipe_out.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/power_pluggy_exit.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/shot.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/zipline2.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/impact.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/power_pluggy_enter.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/door2.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/bubbleget.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/deny.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/underwater_tick.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/salamander_ascent.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/samples/fireshield.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/help.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/salamander_charge.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/samples/acidshield.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/bosshit.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/pause_confirm.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/charging_up.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/checkpoint.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/discharge.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/jetpack.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/lightning_smash.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/brake.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/return.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/release.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/break.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/trotada.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/thundershield.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/pause_highlight.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/roll.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/salamander_boom.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/samples/collectible_count.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/zipline.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/fish.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/select_2.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/secret.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/water_out.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/skaterbug.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/spikes_disappearing.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/jetpack2.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/slide.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/choose.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/waterlevel.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/destroy.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/walk_on_water.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/water_in.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/lightning_boom.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/damaged.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/growlmod.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/spikes_appearing.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/roar.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/samples/tube.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/talk.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/teleport_appear.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/powerup.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/teleporter.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/switch.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/crococopter_swoop_down.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/1up.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/samples/door1.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/drown.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/cannon.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/samples/vibrate.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/crococopter_swoop_up.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/collectible_loss.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/crococopter.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/waterfall.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/samples/spring.wav",
+    "container": "WAV"
+   }
+  ],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

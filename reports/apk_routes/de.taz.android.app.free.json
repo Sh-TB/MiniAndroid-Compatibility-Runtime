@@ -1,0 +1,112 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "de.taz.android.app.free",
+ "apk": "/home/z/my-project/upload/stuck_apks/de.taz.android.app.free.apk",
+ "apk_sha256_16": "86f14e1101e7f989",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "WEBVIEW_NODE",
+   "evidence": [
+    "dex:Landroid/webkit/WebView;"
+   ],
+   "primary": false
+  },
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/",
+    "dex:Landroid/opengl/GLSurfaceView;"
+   ],
+   "primary": true
+  },
+  {
+   "route": "MEDIA",
+   "evidence": [
+    "dex:media3/exoplayer",
+    "dex:Landroid/media/MediaPlayer|MediaCodec"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "VIEW",
+ "routes_forbidden": [
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "WEBVIEW_ENGINE",
+   "evidence": [
+    "WebView component in DEX"
+   ]
+  },
+  {
+   "cap": "APPCOMPAT",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/",
+    "dex:Landroid/opengl/GLSurfaceView;"
+   ]
+  },
+  {
+   "cap": "ADAPTER_RECYCLE",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/",
+    "dex:Landroid/opengl/GLSurfaceView;"
+   ]
+  },
+  {
+   "cap": "SQLITE_VEND",
+   "evidence": [
+    "dex:sqlite"
+   ]
+  },
+  {
+   "cap": "MEDIA_DEMUX_PER_ASSET",
+   "evidence": [
+    "media classes present; container set must match actual assets, never substituted"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libconscrypt_jni.so",
+   "lib/arm64-v8a/libdatastore_shared_counter.so",
+   "lib/arm64-v8a/libmupdf_java.so",
+   "lib/armeabi-v7a/libconscrypt_jni.so",
+   "lib/armeabi-v7a/libdatastore_shared_counter.so",
+   "lib/armeabi-v7a/libmupdf_java.so",
+   "lib/x86/libconscrypt_jni.so",
+   "lib/x86/libdatastore_shared_counter.so",
+   "lib/x86/libmupdf_java.so",
+   "lib/x86_64/libconscrypt_jni.so",
+   "lib/x86_64/libdatastore_shared_counter.so",
+   "lib/x86_64/libmupdf_java.so"
+  ],
+  "asset_count": 36,
+  "media_assets": [],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

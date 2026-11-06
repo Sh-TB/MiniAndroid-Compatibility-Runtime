@@ -1,0 +1,68 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "com.bupkis.tirailleur",
+ "apk": "/home/z/my-project/upload/stuck_apks/com.bupkis.tirailleur.apk",
+ "apk_sha256_16": "474d9ecc0038a774",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "FLUTTER",
+   "evidence": [
+    "dex:Lio/flutter/"
+   ],
+   "primary": true
+  },
+  {
+   "route": "MEDIA",
+   "evidence": [
+    "dex:Landroid/media/MediaPlayer|MediaCodec"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "FLUTTER",
+ "routes_forbidden": [
+  {
+   "route": "WEBVIEW_HTML5_PACKAGED",
+   "reason": "no WebView classes and no HTML assets in APK \u2014 a Java application must NOT pass through the HTML5 alley"
+  },
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "FLUTTER_ENGINE",
+   "evidence": [
+    "FlutterJNI/embedding in DEX + flutter_assets"
+   ]
+  },
+  {
+   "cap": "MEDIA_DEMUX_PER_ASSET",
+   "evidence": [
+    "media classes present; container set must match actual assets, never substituted"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/x86_64/libapp.so",
+   "lib/x86_64/libflutter.so",
+   "lib/x86_64/libsqlite3.so"
+  ],
+  "asset_count": 31,
+  "media_assets": [],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

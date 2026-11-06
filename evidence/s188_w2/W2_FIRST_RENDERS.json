@@ -1,0 +1,221 @@
+[
+ {
+  "pkg": "com.justdeax.composeStopwatch",
+  "status": "OK",
+  "dpkg": "com.justdeax.composeStopwatch",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/com.justdeax.composeStopwatch/screenshot.png",
+  "face": "face_com.justdeax.composeStopwatch.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=com.justdeax.composeStopwatch primary=COMPOSE routes=COMPOSE forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL profile=./reports/apk_routes/com.justdeax.composeStopwatch.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [],
+  "uncaught_marks": 0,
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK",
+  "s186i_tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "pkg": "tibarj.tranquilstopwatch",
+  "status": "OK",
+  "dpkg": "tibarj.tranquilstopwatch",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/tibarj.tranquilstopwatch/screenshot.png",
+  "face": "face_tibarj.tranquilstopwatch.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=tibarj.tranquilstopwatch primary=VIEW routes=VIEW forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL profile=./reports/apk_routes/tibarj.tranquilstopwatch.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [],
+  "uncaught_marks": 0,
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK",
+  "s186i_tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "pkg": "com.qwde.ccm",
+  "status": "OK",
+  "dpkg": "com.qwde.ccm",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/com.qwde.ccm/screenshot.png",
+  "face": "face_com.qwde.ccm.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=com.qwde.ccm primary=GODOT routes=GODOT+WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL profile=./reports/apk_routes/com.qwde.ccm.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [],
+  "uncaught_marks": 0,
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK",
+  "s186i_tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "pkg": "eu.quelltext.memory",
+  "status": "OK",
+  "dpkg": "eu.quelltext.memory",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/eu.quelltext.memory/screenshot.png",
+  "face": "face_eu.quelltext.memory.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=eu.quelltext.memory primary=WEBVIEW_HTML5_PACKAGED routes=WEBVIEW_HTML5_PACKAGED+VIEW forbidden=LIBGDX+SDL profile=./reports/apk_routes/eu.quelltext.memory.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [
+   "[ROUTE_SURPRISE] route=WEBVIEW where=webview-frame-tick pkg=eu.quelltext.memory \u2014 static profile did not predict this engagement; classifier must be revised (honest static limit)",
+   "[ROUTE_SURPRISE] route=WEBVIEW where=webview-node-paint pkg=eu.quelltext.memory \u2014 static profile did not predict this engagement; classifier must be revised (honest static limit)"
+  ],
+  "uncaught_marks": 0,
+  "unique_colors": 256,
+  "bg_share": 0.8914,
+  "nonbg_share": 0.1086,
+  "grad_share": 0.0113,
+  "tier": "B_STRUCTURED",
+  "s186i_tier": "B_STRUCTURED"
+ },
+ {
+  "pkg": "cos.premy.mines",
+  "status": "OK",
+  "dpkg": "cos.premy.mines",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/cos.premy.mines/screenshot.png",
+  "face": "face_cos.premy.mines.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=cos.premy.mines primary=WEBVIEW_NODE routes=WEBVIEW_NODE forbidden=LIBGDX+SDL profile=./reports/apk_routes/cos.premy.mines.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [],
+  "uncaught_marks": 0,
+  "unique_colors": 686,
+  "bg_share": 0.5018,
+  "nonbg_share": 0.4982,
+  "grad_share": 0.0081,
+  "tier": "B_STRUCTURED",
+  "s186i_tier": "B_STRUCTURED"
+ },
+ {
+  "pkg": "eu.veldsoft.no.thanks",
+  "status": "OK",
+  "dpkg": "eu.veldsoft.no.thanks",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/eu.veldsoft.no.thanks/screenshot.png",
+  "face": "face_eu.veldsoft.no.thanks.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=eu.veldsoft.no.thanks primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE+VIEW forbidden=LIBGDX+SDL profile=./reports/apk_routes/eu.veldsoft.no.thanks.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [
+   "[ROUTE_SURPRISE] route=WEBVIEW where=webview-frame-tick pkg=eu.veldsoft.no.thanks \u2014 static profile did not predict this engagement; classifier must be revised (honest static limit)",
+   "[ROUTE_SURPRISE] route=WEBVIEW where=webview-node-paint pkg=eu.veldsoft.no.thanks \u2014 static profile did not predict this engagement; classifier must be revised (honest static limit)"
+  ],
+  "uncaught_marks": 0,
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK",
+  "s186i_tier": "B_STRUCTURED",
+  "tier_change": "B_STRUCTURED -> FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "pkg": "com.sidhant.queens",
+  "status": "OK",
+  "dpkg": "com.sidhant.queens",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/com.sidhant.queens/screenshot.png",
+  "face": "face_com.sidhant.queens.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=com.sidhant.queens primary=WEBVIEW_NODE routes=WEBVIEW_NODE+MEDIA forbidden=LIBGDX+SDL profile=./reports/apk_routes/com.sidhant.queens.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [],
+  "uncaught_marks": 0,
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK",
+  "s186i_tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "pkg": "com.simondalvai.ball2box",
+  "status": "OK",
+  "dpkg": "com.simondalvai.ball2box",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/com.simondalvai.ball2box/screenshot.png",
+  "face": "face_com.simondalvai.ball2box.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=com.simondalvai.ball2box primary=GODOT routes=GODOT+WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL profile=./reports/apk_routes/com.simondalvai.ball2box.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [],
+  "uncaught_marks": 0,
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK",
+  "s186i_tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "pkg": "xyz.deepdaikon.quinb",
+  "status": "OK",
+  "dpkg": "xyz.deepdaikon.quinb",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/xyz.deepdaikon.quinb/screenshot.png",
+  "face": "face_xyz.deepdaikon.quinb.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=xyz.deepdaikon.quinb primary=MEDIA routes=WEBVIEW_NODE+VIEW+MEDIA forbidden=LIBGDX+SDL profile=./reports/apk_routes/xyz.deepdaikon.quinb.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [],
+  "uncaught_marks": 0,
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK",
+  "s186i_tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "pkg": "org.secuso.privacyfriendlybattleship",
+  "status": "OK",
+  "dpkg": "org.secuso.privacyfriendlybattleship",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/org.secuso.privacyfriendlybattleship/screenshot.png",
+  "face": "face_org.secuso.privacyfriendlybattleship.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=org.secuso.privacyfriendlybattleship primary=VIEW routes=WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL profile=./reports/apk_routes/org.secuso.privacyfriendlybattleship.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [],
+  "uncaught_marks": 0,
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK",
+  "s186i_tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "pkg": "crypto.o0o0o0o0o.games.blackjack",
+  "status": "OK",
+  "dpkg": "crypto.o0o0o0o0o.games.blackjack",
+  "screenshot": "/home/z/my-project/evidence/s188_w2/runs/crypto.o0o0o0o0o.games.blackjack/screenshot.png",
+  "face": "face_crypto.o0o0o0o0o.games.blackjack.jpg",
+  "route_decision": [
+   "[ROUTE] DECISION pkg=crypto.o0o0o0o0o.games.blackjack primary=WEBVIEW_HTML5_PACKAGED routes=WEBVIEW_HTML5_PACKAGED+VIEW forbidden=LIBGDX+SDL profile=./reports/apk_routes/crypto.o0o0o0o0o.games.blackjack.json"
+  ],
+  "route_violation": [],
+  "route_surprise": [
+   "[ROUTE_SURPRISE] route=WEBVIEW where=webview-frame-tick pkg=crypto.o0o0o0o0o.games.blackjack \u2014 static profile did not predict this engagement; classifier must be revised (honest static limit)",
+   "[ROUTE_SURPRISE] route=WEBVIEW where=webview-node-paint pkg=crypto.o0o0o0o0o.games.blackjack \u2014 static profile did not predict this engagement; classifier must be revised (honest static limit)"
+  ],
+  "uncaught_marks": 0,
+  "unique_colors": 65,
+  "bg_share": 0.8442,
+  "nonbg_share": 0.1558,
+  "grad_share": 0.0009,
+  "tier": "B_STRUCTURED",
+  "s186i_tier": "B_STRUCTURED"
+ }
+]

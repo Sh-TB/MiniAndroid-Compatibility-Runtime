@@ -1,0 +1,64 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "com.justdeax.composeStopwatch",
+ "apk": "/home/z/my-project/upload/stuck_apks/com.justdeax.composeStopwatch.apk",
+ "apk_sha256_16": "dbf937ebbe7c0b3d",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "COMPOSE",
+   "evidence": [
+    "dex:Landroidx/compose/"
+   ],
+   "primary": true
+  }
+ ],
+ "primary_route": "COMPOSE",
+ "routes_forbidden": [
+  {
+   "route": "WEBVIEW_HTML5_PACKAGED",
+   "reason": "no WebView classes and no HTML assets in APK \u2014 a Java application must NOT pass through the HTML5 alley"
+  },
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "COMPOSE_RUNTIME",
+   "evidence": [
+    "compose in DEX"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libandroidx.graphics.path.so",
+   "lib/arm64-v8a/libdatastore_shared_counter.so",
+   "lib/armeabi-v7a/libandroidx.graphics.path.so",
+   "lib/armeabi-v7a/libdatastore_shared_counter.so",
+   "lib/x86/libandroidx.graphics.path.so",
+   "lib/x86/libdatastore_shared_counter.so",
+   "lib/x86_64/libandroidx.graphics.path.so",
+   "lib/x86_64/libdatastore_shared_counter.so"
+  ],
+  "asset_count": 2,
+  "media_assets": [],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

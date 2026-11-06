@@ -1,0 +1,95 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "eu.veldsoft.no.thanks",
+ "apk": "/home/z/my-project/upload/stuck_apks/eu.veldsoft.no.thanks.apk",
+ "apk_sha256_16": "0de8e6e045b3d8f6",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "WEBVIEW_NODE",
+   "evidence": [
+    "dex:Landroid/webkit/WebView;"
+   ],
+   "primary": false
+  },
+  {
+   "route": "COMPOSE",
+   "evidence": [
+    "dex:Landroidx/compose/"
+   ],
+   "primary": true
+  },
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "COMPOSE",
+ "routes_forbidden": [
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "WEBVIEW_ENGINE",
+   "evidence": [
+    "WebView component in DEX"
+   ]
+  },
+  {
+   "cap": "COMPOSE_RUNTIME",
+   "evidence": [
+    "compose in DEX"
+   ]
+  },
+  {
+   "cap": "APPCOMPAT",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/"
+   ]
+  },
+  {
+   "cap": "ADAPTER_RECYCLE",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/"
+   ]
+  },
+  {
+   "cap": "SQLITE_VEND",
+   "evidence": [
+    "dex:sqlite"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [],
+  "asset_count": 3,
+  "media_assets": [],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

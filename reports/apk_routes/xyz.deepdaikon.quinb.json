@@ -1,0 +1,253 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "xyz.deepdaikon.quinb",
+ "apk": "/home/z/my-project/upload/stuck_apks/xyz.deepdaikon.quinb.apk",
+ "apk_sha256_16": "bd720d019b85bac7",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "FLUTTER",
+   "evidence": [
+    "dex:Lio/flutter/"
+   ],
+   "primary": true
+  },
+  {
+   "route": "WEBVIEW_NODE",
+   "evidence": [
+    "dex:Landroid/webkit/WebView;"
+   ],
+   "primary": false
+  },
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroidx/fragment/"
+   ],
+   "primary": false
+  },
+  {
+   "route": "MEDIA",
+   "evidence": [
+    "dex:Landroid/media/MediaPlayer|MediaCodec",
+    "ships playable content: assets/flutter_assets/assets/audio/cat_1.wav"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "FLUTTER",
+ "routes_forbidden": [
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "FLUTTER_ENGINE",
+   "evidence": [
+    "FlutterJNI/embedding in DEX + flutter_assets"
+   ]
+  },
+  {
+   "cap": "WEBVIEW_ENGINE",
+   "evidence": [
+    "WebView component in DEX"
+   ]
+  },
+  {
+   "cap": "MEDIA_DEMUX_PER_ASSET",
+   "evidence": [
+    "media classes present; container set must match actual assets, never substituted"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libapp.so",
+   "lib/arm64-v8a/libflutter.so",
+   "lib/armeabi-v7a/libapp.so",
+   "lib/armeabi-v7a/libflutter.so",
+   "lib/x86_64/libapp.so",
+   "lib/x86_64/libflutter.so"
+  ],
+  "asset_count": 92,
+  "media_assets": [
+   {
+    "path": "assets/flutter_assets/assets/audio/cat_1.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/cat_2.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/dog_1.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/dog_2.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/dog_3.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/duck_1.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/duck_2.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/duck_3.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_1.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_10.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_11.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_12.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_13.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_14.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_2.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_3.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_4.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_5.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_6.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_7.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_8.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/human_9.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sfx_right.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sfx_timeout.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sfx_wrong.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_1.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_10.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_11.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_12.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_14.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_17.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_19.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_23.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_26.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_3.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_4.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_5.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_6.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_7.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_8.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/flutter_assets/assets/audio/sound_9.wav",
+    "container": "WAV"
+   }
+  ],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}
