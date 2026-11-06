@@ -1,0 +1,32 @@
+{
+ "schema": "s183_b1_scope/v1",
+ "name": "B1 — Android-ELF vs host-glibc dlopen collision (libGDX game family blocker)",
+ "live_evidence": {
+  "emmanuelttt_stderr": "run_s182_minimal2/emmanuelttt.err:95 [S2-NATIVE] load gdx (.../lib/x86_64/libgdx.so): dlopen failed: /lib/x86_64-linux-gnu/libm.so: invalid ELF header",
+  "bouncy_stderr": "run_s182_minimal2/bouncy.err:437 same failure for libgdx-box2d.so",
+  "cause": "bionic DT_NEEDED names collide with host glibc GNU ld scripts: /lib/x86_64-linux-gnu/libm.so is a 140-byte TEXT script (invalid ELF); the real ELF is libm.so.6. A real Android device never hits this (bionic libm.so is an ELF there)."
+ },
+ "dt_needed_census": {
+  "libgdx.so": ["libm.so", "liblog.so", "libstdc++.so", "libc.so", "libdl.so"],
+  "libgdx-box2d.so": ["libm.so", "libc.so", "libstdc++.so", "libdl.so"],
+  "libgdx-freetype.so": ["libm.so", "libstdc++.so", "libc.so", "libdl.so"],
+  "libtmessages.49.so (arm64, TG)": ["libjnigraphics.so", "liblog.so", "libz.so", "libGLESv2.so", "libEGL.so", "libandroid.so", "libOpenSLES.so", "libdl.so", "libm.so", "libc.so"]
+ },
+ "host_mapping_verified": {
+  "libm.so -> /lib/x86_64-linux-gnu/libm.so.6": "977112 B ELF present",
+  "libc.so -> /lib/x86_64-linux-gnu/libc.so.6": "1995216 B ELF present",
+  "libdl.so -> /lib/x86_64-linux-gnu/libdl.so.2": "14408 B ELF present",
+  "libstdc++.so -> /lib/x86_64-linux-gnu/libstdc++.so.6": "symlink to .so.6.0.33 present",
+  "liblog.so -> SHIM REQUIRED": "Android logging surface; small compile-time shim (empty __android_log_print family)",
+  "libz.so -> /lib/x86_64-linux-gnu/libz.so.1": "host present",
+  "libEGL.so / libGLESv2.so / libandroid.so / libOpenSLES.so / libjnigraphics.so -> ANDROID-ONLY": "no host equivalent — these are exactly why TG's dlopen fails and why TG needs the native bridge; bridge/shim law required per surface"
+ },
+ "law_design (queued)": "shim-symlink staging dir: extraction law plants <nativeLibraryDir>/shims/{libm.so,libc.so,libdl.so,libstdc++.so,libz.so} -> host SONAME equivalents + compiled liblog.so shim; the RUNTIME SPAWN law exports LD_LIBRARY_PATH=<nativeLibraryDir>/shims:<nativeLibraryDir> when launching the engine process (dlopen DT_NEEDED search honors it — glibc caches it at process start, so it MUST be set at spawn, not setenv). Dedupe safety: ld.so dedupes by (dev,ino), so shim→libc.so.6 cannot double-load libc. Scope: unblocks the whole libGDX natives family (emmanuelttt #11, stacktower3d, bouncy box2d physics); rendering then needs B2 (GL/EGL surface law).",
+ "FEASIBILITY_PROBE (2026-11-06, /tmp/shimtest, scripts/s183_versionclear2.py + s183_dt_needed.py)": {
+  "step1_shims_only": "dlopen(libgdx.so) advances past ALL bionic-collision libs, fails only at liblog.so -> compiled 5-function liblog shim -> next layer exposed",
+  "step2_verneed_clear": "after deleting DT_VERNEED/DT_VERNEEDNUM entries (shift-tail surgery, not zeroing) + versym[*]=1: **dlopen SUCCEEDS past load+relocation under RTLD_NOW** (LD_DEBUG=files: init runs for libdl/libm/libstdc++/liblog/libgdx_novers)",
+  "step3_remaining": "SEGFAULT inside libgdx.so's own ELF init constructors (after 'calling init: libgdx_novers.so') = the open B1 frontier; candidate next laws: (a) defer/patch .init_array (load-time constructor deferral), (b) complete the bionic-shim surface for init-time calls, (c) trace with gdb for the exact faulting import",
+  "conclusion": "host dlopen of Android natives is FEASIBLE on this sandbox — the glibc-script wall is broken by a two-part law (shim staging dir at spawn + verneed clearing); the remaining init-constructor crash is bounded and traceable"
+ },
+ "not_this_law": "ELF DT_NEEDED string surgery (requires .dynstr extension + offset repoint — invasive); bionic loader port (waydroid-class work)"
+}
