@@ -1,0 +1,242 @@
+{
+ "D-P0-1": [
+  {
+   "src": "body",
+   "head": "D-P0-1 \u2014 `pc_visit_count_` indexed without resize \u2192 heap buffer overflow in the interpreter hot loop",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.cpp",
+    "dalvik_engine.h"
+   ],
+   "core": "In `execute_method_internal`: ```cpp pc_visit_count_.clear(); ``` and in `fetch_decode_execute`, immediately after each instruction dispatch: ```cpp pc_visit_count_[pc_]++; if (pc_visit_count_[pc_] > config_.loop_visit_threshold) { ... } ``` `pc_visit_count_` is a `std::vector<uint32_t>` (declared in `dalvik_engine.h`). After `clear()`, its `size()` is 0. `operator[](pc_)` on an empty vector is **undefined behavior**."
+  },
+  {
+   "src": "comment1_6678915929",
+   "head": "D-P0-1 \u2014 **RETRACTED**",
+   "status": "",
+   "files": [
+    "dalvik_engine.h"
+   ],
+   "core": "I claimed `pc_visit_count_` was a `std::vector<uint32_t>` and that `pc_visit_count_[pc_]++` was undefined behavior. That was a **misread**. The actual declaration in `dalvik_engine.h` is: ```cpp // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal(). std::map<uint32_t, uint32_t> pc_visit_count_; ``` `std::map::operator[]` **inserts** `{pc_, 0}` on a miss and returns a reference to the value. `++` then increments it. `clear()` on a map is safe. So `pc_visit_count_[pc_]++` after `clear()` is well-defined."
+  }
+ ],
+ "D-P0-2": [
+  {
+   "src": "body",
+   "head": "D-P0-2 \u2014 `move/16` (0x03) truncates 16-bit registers to `uint8_t`",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.cpp"
+   ],
+   "core": "```cpp case Opcode::MOVE_16: { if (pc_ + 2 >= bytecode_.size()) return false; uint16_t src = bytecode_[pc + 1]; uint16_t dest = bytecode_[pc + 2]; DalvikValue val = get_register(static_cast<uint8_t>(src)); // \u2190 truncation set_register(static_cast<uint8_t>(dest), val); // \u2190 truncation ... } ```"
+  }
+ ],
+ "D-P0-3": [
+  {
+   "src": "body",
+   "head": "D-P0-3 \u2014 `set_register` / `get_register` / `register_name` take `uint8_t` while `DexRegisterFile::write_v` takes `uint16_t`",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.cpp",
+    "dalvik_engine.h"
+   ],
+   "core": "`dalvik_engine.h`: ```cpp void set_register(uint8_t reg, const DalvikValue& value); DalvikValue get_register(uint8_t reg) const; std::string register_name(uint8_t reg) const; ``` but `DexRegisterFile::write_v` / `read_v` in the *current* header are `uint16_t`: ```cpp void write_v(uint16_t reg, const DalvikValue& value); DalvikValue read_v(uint16_t reg) const; ``` Consequence: any call path that goes through `set_register`/`get_register` truncates the register number before it reaches `write_v`. The `uint16_t` widening in `DexRegisterFile` is *invisible* to the interpreter because the interpreter never passes anything wider than `uint8_t`."
+  }
+ ],
+ "D-P0-4": [
+  {
+   "src": "body",
+   "head": "D-P0-4 \u2014 `execute_invoke_static` reads `regs[5]` when `reg_idx == 4` (out-of-bounds stack read)",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.cpp"
+   ],
+   "core": "```cpp uint8_t regs[5] = { ... }; for (size_t p = 0; p < param_types.size() && reg_idx < 5 && (int)reg_idx < argc; ++p) { const std::string& pt = param_types[p]; if (pt == \"J\" || pt == \"D\") { DalvikValue lo = get_register(regs[reg_idx]); ... DalvikValue hi = get_register(regs[reg_idx + 1]); // \u2190 reg_idx==4 \u2192 regs[5] ``` The loop condition permits `reg_idx == 4`; inside, a wide parameter (`J` or `D`) unconditionally accesses `regs[5]`. The array has 5 elements (`regs[0..4]`)."
+  }
+ ],
+ "D-P0-5": [
+  {
+   "src": "body",
+   "head": "D-P0-5 \u2014 `Opcode::MOVE_WIDE_16` (0x06) is undefined; interpreter reaches `handle_unimplemented` on any method that uses it",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.h"
+   ],
+   "core": "```cpp constexpr uint16_t MOVE_WIDE = 0x04; constexpr uint16_t MOVE_WIDE_FROM16 = 0x05; // 0x06 is missing constexpr uint16_t MOVE_OBJECT = 0x07; ``` `0x06` is not defined anywhere in the header. The `switch` in `fetch_decode_execute` therefore has no case for it."
+  }
+ ],
+ "D-P1-1": [
+  {
+   "src": "body",
+   "head": "D-P1-1 \u2014 `DexInterpreterBatch::resolve_method` ignores `method_idx`; every invoke resolves to the first matching name it finds",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dex_interpreter_batch.cpp"
+   ],
+   "core": "```cpp std::pair<std::string, std::string> DexInterpreterBatch::resolve_method( uint16_t method_idx, const DexReport& dex_report) const { ... if (method_idx < dex_report.classes.size()) { // \u2190 compares method_idx to classes.size() for (const auto& cls : dex_report.classes) { for (const auto& m : cls.all_methods()) { if (m.name == \"onCreate\") { ... goto found; } else if (m.name == \"<init>\") { ... goto found; } else if (m.name == \"setText\") { ... goto found; } ``` There is no lookup into `dex_report.method_ids` at all. The `if (method_idx < dex_report.classes.size())` comparison mixes index spaces (`method_idx` indexes `method_ids`, not `classes`)."
+  }
+ ],
+ "D-P1-2": [
+  {
+   "src": "body",
+   "head": "D-P1-2 \u2014 Batch interpreter advances `pc_ += 3` for 2-unit opcodes (`const-string`, `new-instance`)",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dex_interpreter_batch.cpp"
+   ],
+   "core": "```cpp bool DexInterpreterBatch::execute_const_string(uint32_t pc, InstructionTraceEntry& entry) { ... pc_ += 3; // \u2190 21c is 2 code units ``` ```cpp bool DexInterpreterBatch::execute_new_instance(uint32_t pc, InstructionTraceEntry& entry, ...) { ... pc_ += 3; // \u2190 22c is 2 code units ``` `invoke-*` (35c) and `filled-new-array` (35c) and `fill-array-data` (31t) are 3 units. `const-string` (21c) and `new-instance` (22c) are 2."
+  }
+ ],
+ "D-P1-3": [
+  {
+   "src": "body",
+   "head": "D-P1-3 \u2014 `ApiDispatcher::dispatch` never increments `successful_calls_`",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "api_dispatcher.cpp"
+   ],
+   "core": "```cpp switch (result.status) { case Observatory::ApiImplementationStatus::FOUND_AND_EXECUTED: successful_calls_ ; // \u2190 bare expression, no effect break; ``` `successful_calls_` is never incremented on this branch. The other branches (`failed_calls_`, `stubbed_calls_`, `critical_missing_calls_`) are also bare expressions. So **all four counters stay at 0 forever**."
+  }
+ ],
+ "D-P1-4": [
+  {
+   "src": "body",
+   "head": "D-P1-4 \u2014 `CallStack::dump_current_stack` is a use-after-free (dangling `const Frame*` into `temp`'s popped node)",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.h"
+   ],
+   "core": "```cpp json dump_current_stack() const { json arr = json::array(); std::vector<const Frame*> frames; auto temp = stack_; while (!temp.empty()) { frames.push_back(&temp.top()); // pointer into temp's node temp.pop(); // node destroyed } for (auto it = frames.rbegin(); it != frames.rend(); ++it) { arr.push_back((*it)->to_json()); // dereference dangling pointer } return arr; } ``` `std::stack::pop()` destroys the top element (for the default `std::deque`/`std::vector` it is `pop_back` on the underlying container, followed by size decrement). The pointer stored in `frames` is therefore pointing at freed memory by the time the reverse pass runs."
+  }
+ ],
+ "D-P2-1": [
+  {
+   "src": "body",
+   "head": "D-P2-1 \u2014 `HeapObject::set_field` allows unbounded `array_store` growth \u2192 trivial DoS / OOM",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.h"
+   ],
+   "core": "```cpp int32_t ai; if (parse_array_index(name, ai)) { ... if (ai >= array_length) { array_length = ai + 1; if ((int32_t)array_store.size() < array_length) array_store.resize(array_length); // no cap } array_store[ai] = value; ``` No upper bound; `resize()` on a `std::vector<DalvikValue>` of ~1e9 elements."
+  }
+ ],
+ "D-P2-2": [
+  {
+   "src": "body",
+   "head": "D-P2-2 \u2014 `parse_array_index` accepts `array[]` and `array[abc]` (no endptr check); silently aliases them onto `array[0]`",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.h"
+   ],
+   "core": "```cpp static bool parse_array_index(const std::string& name, int32_t& out) { if (name.size() < 7 || name.compare(0, 6, \"array[\") != 0) return false; if (name.back() != ']') return false; out = (int32_t)strtol(name.c_str() + 6, nullptr, 10); return true; } ``` `\"array[]\"` has length 7 \u2192 passes the size check \u2192 `strtol(\"\")` returns 0 with `endptr == begin` (not checked) \u2192 `out = 0`. `\"array[abc]\"` similarly passes and `out = 0`."
+  }
+ ],
+ "D-P2-3": [
+  {
+   "src": "body",
+   "head": "D-P2-3 \u2014 `DexParser::parse_class_defs` silently discards `parse_class_data` failure",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dex_parser.cpp"
+   ],
+   "core": "```cpp if (class_def.class_data_off != 0 && class_def.class_data_off < current_size_) { parse_class_data(data, class_def, info); // return value ignored } ```"
+  }
+ ],
+ "D-P2-4": [
+  {
+   "src": "body",
+   "head": "D-P2-4 \u2014 `dalvik_engine.cpp` shell-injects `path` into `popen(\"unzip -p ...\")`",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.cpp"
+   ],
+   "core": "```cpp std::string cmd = \"unzip -p '\" + apk_path_ + \"' 'assets/\" + path + \"' 2>/dev/null\"; FILE* pipe = popen(cmd.c_str(), \"r\"); ``` `path` is a DEX string (`const-string` operand). It is concatenated into a shell command with single-quote delimiters. A DEX string containing `'` terminates the quote, allowing arbitrary shell injection (`x'; rm -rf ~; '`)."
+  }
+ ],
+ "D-P2-5": [
+  {
+   "src": "body",
+   "head": "D-P2-5 \u2014 `dex_parser.cpp` truncates the `tries[]` + handler list to 4 KiB \u2192 catch handlers silently break",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dex_parser.cpp"
+   ],
+   "core": "```cpp size_t max_catch_data = 4096; size_t available = current_size_ - tries_start; size_t to_copy = std::min(available, tries_bytes + max_catch_data); method.tries_data.resize(to_copy); ``` Any handler list longer than 4096 bytes is truncated. There is no sentinel or \"truncated\" flag emitted."
+  }
+ ],
+ "D-P2-6": [
+  {
+   "src": "body",
+   "head": "D-P2-6 \u2014 `execute_return_wide` zero-extends instead of sign-extending when the source register is `INT32`",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.cpp"
+   ],
+   "core": "```cpp if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) { int64_t coerced = static_cast<int64_t>(static_cast<uint32_t>(val.int_val)); val = DalvikValue::make_long(coerced); } ``` `static_cast<uint32_t>(val.int_val)` converts `-1` to `0xFFFFFFFF`; then `int64_t` yields `4294967295`, not `-1`."
+  }
+ ],
+ "D-P2-7": [
+  {
+   "src": "body",
+   "head": "D-P2-7 \u2014 `SharedPreferencesEditor::apply()` uses a discarded `std::async` future; blocks on destruction and skips listener notification",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "shared_prefs.cpp"
+   ],
+   "core": "```cpp void SharedPreferencesEditor::apply() { ... std::async(std::launch::async, [prefs_ptr, puts_copy, ...]() { std::lock_guard<std::shared_mutex> lock(prefs_ptr->m_rw_lock); ... prefs_ptr->saveToFile(); // ... For safety, we skip listener notification in async mode }); } ``` Three problems: 1. The `std::future` returned by `std::async(std::launch::async, ...)` is discarded. Its destructor **blocks** until the task completes \u2014 so `apply()` is *synchronous in practice*, contradicting the documented contract. 2. `prefs_ptr` is a raw pointer; if the parent `SharedPreferences` is destroyed before the async task starts, the task dereferences a dangling pointer. 3. Listeners are not called, brea"
+  }
+ ],
+ "D-P2-8": [
+  {
+   "src": "body",
+   "head": "D-P2-8 \u2014 Hardcoded Telegram-specific static keys in the generic engine",
+   "status": "`SOURCE_VERIFIED`",
+   "files": [
+    "dalvik_engine.cpp",
+    "dalvik_engine.h"
+   ],
+   "core": "```cpp static_field_storage_[\"Lorg/telegram/messenger/ApplicationLoader;.applicationContext\"] = ... ``` ```cpp static_field_storage_[\"Lorg/telegram/messenger/NativeLoader;.nativeLoaded\"] = ... ``` And in the batch-interpreter `resolve_method`: literal `\"onCreate\"`, `\"<init>\"`, `\"setText\"` matches."
+  }
+ ],
+ "D-P3-1": [
+  {
+   "src": "body",
+   "head": "D-P3-1 \u2014 `save_to_directory` reports success even when no file was written",
+   "status": "",
+   "files": [
+    "execution_observatory.cpp"
+   ],
+   "core": ""
+  }
+ ],
+ "D-P3-2": [
+  {
+   "src": "body",
+   "head": "D-P3-2 \u2014 Batch interpreter off-by-one: `pc + 2 >= bytecode_.size()` rejects the last valid instruction",
+   "status": "",
+   "files": [],
+   "core": ""
+  }
+ ],
+ "D-P3-3": [
+  {
+   "src": "body",
+   "head": "D-P3-3 \u2014 \"D8/R8 hybrid goto\" (opcode 0x28 read as both 10t and 20t) is not AOSP behavior",
+   "status": "",
+   "files": [],
+   "core": ""
+  }
+ ],
+ "D-P3-4": [
+  {
+   "src": "body",
+   "head": "D-P3-4 \u2014 `generate_trace = true` with `trace_cap = 0` (config inconsistency)",
+   "status": "",
+   "files": [
+    "http_client.cpp",
+    "text_shaper.cpp"
+   ],
+   "core": "--- ## Summary table for the ledger | ID | Status | Severity | Subsystem | One-line | |---|---|---|---|---| | D-P0-1 | SOURCE_VERIFIED | P0 | interpreter | `pc_visit_count_` not resized \u2192 OOB write | | D-P0-2 | SOURCE_VERIFIED | P0 | interpreter | `move/16` truncates to `uint8_t` + wrong 32x decode | | D-P0-3 | SOURCE_VERIFIED | P0 | interpreter | register API fa\u00e7ade is `uint8_t`, defeats `uint16_t` widening | | D-P0-4 | SOURCE_VERIFIED | P0 | interpreter | `invoke-static` reads `regs[5]` when `reg_idx==4` | | D-P0-5 | SOURCE_VERIFIED | P0 | opcode table | `MOVE_WIDE_16 = 0x06` undefined | | D-P1-1 | SOURCE_VERIFIED | P1 | batch interp | `resolve_method` ignores `method_idx` | | D-P1-2 | SOU"
+  }
+ ]
+}
