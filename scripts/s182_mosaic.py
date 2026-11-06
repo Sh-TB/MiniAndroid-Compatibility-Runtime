@@ -5,7 +5,7 @@ ONE BIG MOSAIC of every distinct title we have EVER rendered, newest face per
 title, labeled with tag + face8 + verdict class. Newest-session-first
 priority; older archive shots only fill titles not seen in newer sessions.
 
-Output: evidence/s182_mosaic/S182_MOSAIC.png (+ copy download/S182_MOSAIC.png)
+Output: evidence/s182_mosaic/S182_MOSAIC.jpg (+ copy download/S182_MOSAIC.jpg)
 """
 import hashlib
 import json
@@ -17,8 +17,8 @@ from PIL import Image, ImageDraw, ImageFont
 BASE = Path("/home/z/my-project")
 EVID = BASE / "evidence/s182_mosaic"
 EVID.mkdir(parents=True, exist_ok=True)
-OUT = EVID / "S182_MOSAIC.png"
-DL = BASE / "download/S182_MOSAIC.png"
+OUT = EVID / "S182_MOSAIC.jpg"
+DL = BASE / "download/S182_MOSAIC.jpg"
 
 # ---- newest-first screenshot sources (dir glob, title-mapping mode) ----
 SOURCES = [

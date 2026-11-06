@@ -38,8 +38,8 @@ for r in d['roots']:
             "content (21.4% non-bg, 160 buckets, dark+blue-accent face = the warm face family; ResIdAdapter.getResourceName completes; DrawerArrowDrawable"
             "+setupNavigationView reached; 0 theme ISE); memory WARM x3 c559b630dd8f0f0f (record intact); notes x3 d0a409043ffc83a7 (record intact); "
             "wall 36/36 x3 MATCH; TSP 7/7 (record values); gate A 98/1/0; negatives 19/19; reinstall 8/8; goldens 4/4; skill 13/13.")
-        r['evidence'] = ("evidence/cont69/cont69_evidence.json; evidence/cont69/cont69_mosaic.png "
-                         "(https://tmpfiles.org/w1AEZ3j74lJV/cont69_mosaic.png); run/s69/llk_store4 data/com.probe.llk/files/linkedlist_results.jsonl; "
+        r['evidence'] = ("evidence/cont69/cont69_evidence.json; evidence/cont69/cont69_mosaic.jpg "
+                         "(https://tmpfiles.org/w1AEZ3j74lJV/cont69_mosaic.jpg); run/s69/llk_store4 data/com.probe.llk/files/linkedlist_results.jsonl; "
                          "run/s69/{coldfix_r1..r4,cold1,warmfix1,notes_r1..r3}/; scripts/cont69_build_llk.sh; scripts/cont69_disasm.py")
         r['probe'] = "fixtures/linkedlist_probe (apk 1a1c2998bd788b75); upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk"
         r['verified_current'] = True

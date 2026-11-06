@@ -55,10 +55,10 @@
     "registry_validator": "PASS (676 roots, F-NEW-369 ROOT-CAUSED-FIXED)"
   },
   "mosaic": {
-    "path": "evidence/cont69/cont69_mosaic.png",
+    "path": "evidence/cont69/cont69_mosaic.jpg",
     "sha16": "3ef9443010366c76",
     "tiles": 20,
-    "uploaded": "https://tmpfiles.org/w1AEZ3j74lJV/cont69_mosaic.png",
+    "uploaded": "https://tmpfiles.org/w1AEZ3j74lJV/cont69_mosaic.jpg",
     "story": "row1: memory cold BEFORE(white)→AFTER(real)/WARM(record)/notes; row2: llk probe/TSP/gate A/BMI; rows3-5: the 12-row wall + bouncy/klondike controls"
   }
 }

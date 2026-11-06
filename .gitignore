@@ -293,3 +293,13 @@ run_s174_w10coder/
 run_s180_battery/
 run_s181_minimal/
 run_s182_minimal2/
+
+# S185 bigfile law (user directive 2026-11-06: no bulky run artifacts/logs/libs in git —
+# rebuild via scripts, evidence = verdicts + small JPGs only)
+run_*/
+*.err
+*.bak
+api_trace.json
+frames/
+.s185_stash/
+*.bundle

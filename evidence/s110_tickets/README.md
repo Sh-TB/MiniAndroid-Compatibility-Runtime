@@ -8,7 +8,7 @@ standard 8 frames x 300 ms protocol + `--max-seconds` wall budgets shown per run
 - `html5_breakout/` — **me.lecaro.breakout 29826425** (F-Droid, GAME-070 / issue #94 family).
   Status SUCCESS, 0 errors. WebView node renders the game document: header
   `Breakout 71 ☰ menu`, full-screen dark game theme (~99.9% non-white pixels,
-  2,071,677 / 2,073,600). `reference_froid.png` = official F-Droid screenshot.
+  2,071,677 / 2,073,600). `reference_froid.jpg` = official F-Droid screenshot.
   Screenshot SHA-16: `5bcd77b8b5e194de`.
 - Historical web/HTML5 GIF evidence (already on origin): `docs/evidence/canonical/com.miniandroid.browser.zai.gif`
   (real TLS website load), `com.miniandroid.browser.gif`.

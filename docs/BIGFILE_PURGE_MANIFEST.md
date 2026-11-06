@@ -82,8 +82,8 @@ Kept: full engine source history (miniandroid/src/** incl. dalvik_engine.cpp), w
 
 - Working-tree tool artifacts (jars/aars/dexes/framework_res/test_apks/tmp) restored locally from `backup/wt_offenders.tar` and remain on disk, now untracked.
 
-- Toolchains re-downloadable: kotlinc 2.1.20 (kotlinlang.org), r8.jar (r8.googlesource), android-34.jar (sdkmanager) — SHA-256s in evidence/s153_purge/purge_manifest.json.
+- Toolchains re-downloadable: kotlinc 2.1.20 (kotlinlang.org), r8.jar (r8.googlesource), android-34.jar (sdkmanager) — SHA-256s in evidence/s153_purge/purge_manifest.json.gz.
 
 - Issues, releases (8/8 published), pages — unaffected by history rewrite.
 
-- Per-blob ledger: evidence/s153_purge/purge_manifest.json (path, sha16, bytes, category).
+- Per-blob ledger: evidence/s153_purge/purge_manifest.json.gz (path, sha16, bytes, category).

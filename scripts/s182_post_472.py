@@ -10,7 +10,7 @@ REPO = "Sh-TB/MiniAndroid-Compatibility-Runtime"
 BODY = """## S182 census addendum — all-runs mosaic + 20-title minimal battery + the closed-115 audit (user-directed)
 
 **Mosaic (254 distinct titles, newest face per title, class-banded):**
-https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/main/evidence/s182_mosaic/S182_MOSAIC.png
+https://raw.githubusercontent.com/Sh-TB/MiniAndroid-Compatibility-Runtime/main/evidence/s182_mosaic/S182_MOSAIC.jpg
 (short-lived mirror: https://tmpfiles.org/w4A2JU2dIsn2/s182_mosaic.png)
 
 ### 1) Battery S182 — 10 tiny games + 10 very simple apps (all NEVER measured before; main 5d7edcdb34b1502c, fresh stores)

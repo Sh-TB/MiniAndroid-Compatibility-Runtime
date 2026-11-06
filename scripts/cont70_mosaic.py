@@ -56,7 +56,7 @@ for i, (label, path) in enumerate(TILES):
         draw.rectangle([x, y+40, x+TW, y+40+TH], fill=(60, 30, 30))
         draw.text((x+12, y+TH//2), "MISSING: " + os.path.basename(path), fill=(255,120,120), font=FONT)
     draw.text((x+10, y+9), label, fill=(240, 240, 240), font=FONT)
-out = f"{BASE}/evidence/cont70/cont70_mosaic.png"
+out = f"{BASE}/evidence/cont70/cont70_mosaic.jpg"
 mosaic.save(out)
 h = hashlib.sha256(open(out, "rb").read()).hexdigest()[:16]
 print("mosaic:", out, "sha16:", h, "tiles:", len(TILES))

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""S153: generate BIGFILE_PURGE_MANIFEST.md + purge_manifest.json from pre-rewrite blob census."""
+"""S153: generate BIGFILE_PURGE_MANIFEST.md + purge_manifest.json.gz from pre-rewrite blob census."""
 import json, collections, datetime
 
 blobs = []  # (size, path, sha)
@@ -67,9 +67,9 @@ md.append('\nKept: full engine source history (miniandroid/src/** incl. dalvik_e
 md.append('## Nothing is lost\n')
 md.append('- Full pre-rewrite history: `backup/ma_full_backup_s153.bundle` (576 MB, all refs) — restore: `git clone backup/ma_full_backup_s153.bundle restored`\n')
 md.append('- Working-tree tool artifacts (jars/aars/dexes/framework_res/test_apks/tmp) restored locally from `backup/wt_offenders.tar` and remain on disk, now untracked.\n')
-md.append('- Toolchains re-downloadable: kotlinc 2.1.20 (kotlinlang.org), r8.jar (r8.googlesource), android-34.jar (sdkmanager) — SHA-256s in evidence/s153_purge/purge_manifest.json.\n')
+md.append('- Toolchains re-downloadable: kotlinc 2.1.20 (kotlinlang.org), r8.jar (r8.googlesource), android-34.jar (sdkmanager) — SHA-256s in evidence/s153_purge/purge_manifest.json.gz.\n')
 md.append('- Issues, releases (8/8 published), pages — unaffected by history rewrite.\n')
-md.append('- Per-blob ledger: evidence/s153_purge/purge_manifest.json (path, sha16, bytes, category).\n')
+md.append('- Per-blob ledger: evidence/s153_purge/purge_manifest.json.gz (path, sha16, bytes, category).\n')
 with open('/home/z/my-project/docs/BIGFILE_PURGE_MANIFEST.md', 'w') as f:
     f.write('\n'.join(md))
 
@@ -87,7 +87,7 @@ out = {
 }
 import os
 os.makedirs('/home/z/my-project/evidence/s153_purge', exist_ok=True)
-with open('/home/z/my-project/evidence/s153_purge/purge_manifest.json', 'w') as f:
+with open('/home/z/my-project/evidence/s153_purge/purge_manifest.json.gz', 'w') as f:
     json.dump(out, f, indent=1)
 print('MD bytes:', len('\n'.join(md)), '| JSON entries:', len(out['purged_blobs']))
 print('purged raw total: %.1f MB | kept raw: %.2f GB' % (total_purge/1048576, total_kept/1073741824))

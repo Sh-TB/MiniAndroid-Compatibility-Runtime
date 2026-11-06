@@ -62,7 +62,7 @@ for i, (label, path) in enumerate(TILES):
     if FONT:
         draw.text((cx+8, cy+TH+6), label[:62], fill=(230, 230, 230), font=FONT)
 
-out = f"{BASE}/evidence/cont69/cont69_mosaic.png"
+out = f"{BASE}/evidence/cont69/cont69_mosaic.jpg"
 os.makedirs(os.path.dirname(out), exist_ok=True)
 mosaic.save(out, optimize=True)
 h = hashlib.sha256(open(out, "rb").read()).hexdigest()[:16]
