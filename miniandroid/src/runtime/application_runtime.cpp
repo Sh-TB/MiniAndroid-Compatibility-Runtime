@@ -597,15 +597,24 @@ bool ApplicationRuntime::resolve_manifest() {
                     shadow_registry_->find_as<framework::IntentShadow>()) {
                 const std::string& pkg = manifest_info.package_name;
                 for (const auto& act : manifest_info.activities) {
-                    for (const auto& action : act.actions) {
-                        std::string full = act.name;
-                        if (!full.empty() && full[0] == '.') {
-                            full = pkg + full;
-                        } else if (!full.empty() &&
-                                   full.find('.') == std::string::npos) {
-                            full = pkg + "." + full;
-                        }
-                        it_shadow->register_action_target(action, full);
+                    std::string full = act.name;
+                    if (!full.empty() && full[0] == '.') {
+                        full = pkg + full;
+                    } else if (!full.empty() &&
+                               full.find('.') == std::string::npos) {
+                        full = pkg + "." + full;
+                    }
+                    // CODER7 WAVE-3: per-filter registration (the
+                    // CATEGORY_DEFAULT resolution law reads each filter's
+                    // own category set — union-level data cannot express
+                    // it). Filters-less activities keep the S123 registry.
+                    if (act.filters.empty()) {
+                        it_shadow->register_activity_filter(full, act.actions,
+                                                            {});
+                    } else {
+                        for (const auto& f : act.filters)
+                            it_shadow->register_activity_filter(full, f.actions,
+                                                                f.categories);
                     }
                 }
             }

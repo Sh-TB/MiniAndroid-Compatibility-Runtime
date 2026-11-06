@@ -729,9 +729,19 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                                    full.find('.') == std::string::npos) {
                             full = pkg + "." + full;
                         }
-                        for (const auto& action : act.actions) {
-                            it_shadow->register_action_target(action, full);
-                            registered++;
+                        // CODER7 WAVE-3: per-filter registration (the
+                        // CATEGORY_DEFAULT resolution law reads each
+                        // filter's own category set).
+                        if (act.filters.empty()) {
+                            it_shadow->register_activity_filter(
+                                full, act.actions, {});
+                            registered += (int)act.actions.size();
+                        } else {
+                            for (const auto& f : act.filters) {
+                                it_shadow->register_activity_filter(
+                                    full, f.actions, f.categories);
+                                registered += (int)f.actions.size();
+                            }
                         }
                     }
                     std::cerr << "[S123-ACTION-REG] activities="
@@ -1437,6 +1447,23 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 prov_exported.emplace_back(cls, p.exported);
             }
             dalvik_engine_.set_manifest_provider_exported(prov_exported);
+            // CODER7 WAVE-3: per-provider android:enabled (AOSP
+            // PackageItemInfo.isEnabled — a disabled provider is not
+            // published; resolveContentProvider answers null).
+            {
+                std::vector<std::pair<std::string, bool>> prov_enabled;
+                for (const auto& p : result.apk_info.providers) {
+                    std::string cls = p.name;
+                    if (!cls.empty()) {
+                        if (cls[0] == '.')
+                            cls = result.apk_info.package_name + cls;
+                        else if (cls.find('.') == std::string::npos)
+                            cls = result.apk_info.package_name + "." + cls;
+                    }
+                    prov_enabled.emplace_back(cls, p.enabled);
+                }
+                dalvik_engine_.set_manifest_provider_enabled(prov_enabled);
+            }
             // ── #371 PHASE B5: manifest <service>/<receiver> transfer ──
             // Services/receivers live on ManifestInfo (the AXML parse), so
             // this path re-parses the binary manifest (same as the S123
@@ -1444,7 +1471,10 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             // → full-class normalization law as providers (AOSP
             // PackageParser component-name expansion).
             std::vector<std::pair<std::string, std::vector<std::string>>>
-                svc_classes, rcv_actions;
+                svc_classes;
+            std::vector<miniandroid::dalvik::DalvikExecutionEngine::
+                            ManifestReceiverTransfer>
+                rcv_entries;
             {
                 auto manifest_raw =
                     apk_parser_.extract_entry_cached("AndroidManifest.xml");
@@ -1461,6 +1491,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         }
                         if (!cls.empty()) svc_classes.emplace_back(cls, s.actions);
                     }
+                    // CODER7 ORDERED-BCAST: full AOSP receiver model
+                    // (priority/exported/permission/categories) — the
+                    // PackageParser normalized table the dispatch law reads.
                     for (const auto& r : mi5.receivers) {
                         std::string cls = r.name;
                         if (!cls.empty()) {
@@ -1469,12 +1502,139 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                             else if (cls.find('.') == std::string::npos)
                                 cls = result.apk_info.package_name + "." + cls;
                         }
-                        if (!cls.empty()) rcv_actions.emplace_back(cls, r.actions);
+                        if (cls.empty()) continue;
+                        miniandroid::dalvik::DalvikExecutionEngine::
+                            ManifestReceiverTransfer rt;
+                        rt.cls = cls;
+                        rt.actions = r.actions;
+                        rt.categories = r.categories;
+                        rt.priority = r.priority;
+                        // AOSP exported-default law (PackageParser): when
+                        // android:exported is absent, a component WITH an
+                        // intent-filter defaults to exported for
+                        // targetSdk <= 30; targetSdk >= 31 requires the
+                        // explicit attribute (defaults NOT exported).
+                        int c7_tsdk = 0;
+                        try {
+                            c7_tsdk = std::stoi(
+                                result.apk_info.target_sdk_version);
+                        } catch (...) { c7_tsdk = 0; }
+                        if (r.has_exported_attr) {
+                            rt.exported = r.exported;
+                            rt.has_exported_attr = true;
+                        } else {
+                            rt.has_exported_attr = false;
+                            rt.exported =
+                                !r.actions.empty() && c7_tsdk <= 30;
+                        }
+                        rt.permission = r.permission;
+                        // CODER7 WAVE-3: android:enabled travels with the
+                        // receiver (disabled-components law).
+                        rt.enabled = r.enabled;
+                        // CODER7 WAVE-2: per-filter records travel with the
+                        // receiver (AOSP PackageParser — every <intent-filter>
+                        // is its own matchable unit with its own priority).
+                        for (const auto& f : r.filters) {
+                            miniandroid::dalvik::DalvikExecutionEngine::
+                                ManifestReceiverTransfer::FilterTransfer ft;
+                            ft.actions = f.actions;
+                            ft.categories = f.categories;
+                            ft.priority = f.priority;
+                            // CODER7 WAVE-3: <data> match dimensions travel
+                            // with the filter (IntentFilter.matchData).
+                            for (const auto& d : f.datas) {
+                                miniandroid::dalvik::DalvikExecutionEngine::
+                                    C7DataSpec ds;
+                                ds.mime_type = d.mime_type;
+                                ds.scheme = d.scheme;
+                                ds.host = d.host;
+                                ds.path_prefix = d.path_prefix;
+                                ft.datas.push_back(std::move(ds));
+                            }
+                            rt.filters.push_back(std::move(ft));
+                        }
+                        rcv_entries.push_back(std::move(rt));
                     }
+                    // ── CODER7 WAVE-3: activity/service resolution models
+                    // (AOSP PackageParser normalized tables) — the
+                    // matchable units for resolveActivity/resolveService/
+                    // queryIntent* and the MATCH_DEFAULT_ONLY + enabled
+                    // laws. Same name normalization as the receiver table.
+                    auto norm_cls = [&](std::string cls) -> std::string {
+                        if (cls.empty()) return cls;
+                        if (cls[0] == '.')
+                            return result.apk_info.package_name + cls;
+                        if (cls.find('.') == std::string::npos)
+                            return result.apk_info.package_name + "." + cls;
+                        return cls;
+                    };
+                    std::vector<miniandroid::dalvik::DalvikExecutionEngine::
+                                    ManifestFilterTransfer>
+                        c7_act_filters;
+                    for (const auto& a : mi5.activities) {
+                        std::string cls = norm_cls(a.name);
+                        if (cls.empty()) continue;
+                        miniandroid::dalvik::DalvikExecutionEngine::
+                            ManifestFilterTransfer at;
+                        at.cls = cls;
+                        at.enabled = a.enabled;
+                        at.exported = a.exported;
+                        at.launch_mode = a.launch_mode;
+                        for (const auto& f : a.filters) {
+                            miniandroid::dalvik::DalvikExecutionEngine::
+                                ManifestFilterTransfer::Filter af;
+                            af.actions = f.actions;
+                            af.categories = f.categories;
+                            for (const auto& d : f.datas) {
+                                miniandroid::dalvik::DalvikExecutionEngine::
+                                    C7DataSpec ds;
+                                ds.mime_type = d.mime_type;
+                                ds.scheme = d.scheme;
+                                ds.host = d.host;
+                                ds.path_prefix = d.path_prefix;
+                                af.datas.push_back(std::move(ds));
+                            }
+                            at.filters.push_back(std::move(af));
+                        }
+                        c7_act_filters.push_back(std::move(at));
+                    }
+                    std::vector<miniandroid::dalvik::DalvikExecutionEngine::
+                                    ManifestFilterTransfer>
+                        c7_svc_filters;
+                    for (const auto& sv : mi5.services) {
+                        std::string cls = norm_cls(sv.name);
+                        if (cls.empty()) continue;
+                        miniandroid::dalvik::DalvikExecutionEngine::
+                            ManifestFilterTransfer st;
+                        st.cls = cls;
+                        st.enabled = sv.enabled;
+                        st.exported = sv.exported;
+                        for (const auto& f : sv.filters) {
+                            miniandroid::dalvik::DalvikExecutionEngine::
+                                ManifestFilterTransfer::Filter sf;
+                            sf.actions = f.actions;
+                            sf.categories = f.categories;
+                            for (const auto& d : f.datas) {
+                                miniandroid::dalvik::DalvikExecutionEngine::
+                                    C7DataSpec ds;
+                                ds.mime_type = d.mime_type;
+                                ds.scheme = d.scheme;
+                                ds.host = d.host;
+                                ds.path_prefix = d.path_prefix;
+                                sf.datas.push_back(std::move(ds));
+                            }
+                            st.filters.push_back(std::move(sf));
+                        }
+                        c7_svc_filters.push_back(std::move(st));
+                    }
+                    dalvik_engine_.set_manifest_activity_filters(
+                        std::move(c7_act_filters));
+                    dalvik_engine_.set_manifest_service_filters(
+                        std::move(c7_svc_filters));
                 }
             }
             dalvik_engine_.set_manifest_services(svc_classes);
-            dalvik_engine_.set_manifest_receiver_actions(rcv_actions);
+            dalvik_engine_.set_manifest_receivers(std::move(rcv_entries));
         }
         // ── CONT-102 (F-NEW-424/425/427/428): manifest package-identity
         // transfer — permissions, per-activity exported/launchMode and the
@@ -8312,6 +8472,262 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
     }
     rec["component_descriptor"] = cls;
 
+    // ── CODER7 WAVE-3: task-stack + launch-flag laws (AOSP
+    // ActivityThread/ActivityStack) ─────────────────────────────────────
+    // AOSP disabled-components law: an android:enabled="false" activity is
+    // unresolvable — the launch fails loudly (ActivityNotFoundException in
+    // AOSP startActivity), never a silent no-op.
+    if (!dalvik_engine_.c7_activity_enabled(cls)) {
+        rec["launched"] = false;
+        rec["error"] =
+            "ACTIVITY_NOT_FOUND: component disabled (android:enabled=false)";
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "ACT-START", cls, false,
+            "target disabled (android:enabled=false)",
+            "ExecutionEngine.consume_pending_launch");
+        std::cerr << "[C7-ACT] disabled target refused: " << cls << std::endl;
+        return rec;
+    }
+    const int c7_flags = pi->flags;
+    const int c7_lm = dalvik_engine_.c7_activity_launch_mode(cls);
+    const bool c7_single_top =
+        c7_lm == 1 || (c7_flags & 0x20000000) != 0;
+    const bool c7_clear_top = (c7_flags & 0x04000000) != 0;
+    // AOSP singleTop law: the target is ALREADY the resumed top → the new
+    // intent routes through onNewIntent (no new instance, no lifecycle
+    // restart). FLAG_ACTIVITY_SINGLE_TOP enforces the same shape.
+    if (c7_single_top && as->current_activity_class() == cls &&
+        as->current_activity_id() != 0) {
+        uint32_t c7_top_id = as->current_activity_id();
+        auto& c7_heap = dalvik_engine_.get_heap_public();
+        uint32_t c7_new_intent = pi->intent_object_id;
+        if (c7_new_intent == 0)
+            c7_new_intent = c7_heap.allocate("Landroid/content/Intent;", 0, 0);
+        nlohmann::json r;
+        try {
+            miniandroid::dalvik::DalvikValue ret;
+            miniandroid::dalvik::DalvikExecutionResult res;
+            std::vector<miniandroid::dalvik::DalvikValue> args2{
+                miniandroid::dalvik::DalvikValue::make_object(c7_top_id, cls),
+                miniandroid::dalvik::DalvikValue::make_object(
+                    c7_new_intent, "Landroid/content/Intent;")};
+            bool ok = dalvik_engine_.try_recursive_invoke(cls, "onNewIntent",
+                                                          args2, ret, res);
+            r["method"] = "onNewIntent";
+            r["class"] = cls;
+            r["dispatched"] = ok;
+            r["instructions"] = res.total_instructions_executed;
+        } catch (const std::exception& e) {
+            r["method"] = "onNewIntent";
+            r["dispatched"] = false;
+            r["error"] = e.what();
+        }
+        rec["callbacks"].push_back(r);
+        rec["launched"] = true;
+        rec["mode"] = "singleTop-onNewIntent (no new instance)";
+        rec["target"] = cls;
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "ACT-START", cls, true,
+            "singleTop: top re-launch → onNewIntent (no new instance)",
+            "ExecutionEngine.consume_pending_launch");
+        std::cerr << "[C7-ACT] singleTop onNewIntent → " << cls
+                  << " (top unchanged)" << std::endl;
+        return rec;
+    }
+    // AOSP FLAG_ACTIVITY_CLEAR_TOP: the target already sits in the task →
+    // every record above it is finished; the target then receives the
+    // intent via onNewIntent (singleTop shape) or is destroyed and a FRESH
+    // instance launches (standard shape).
+    if (c7_clear_top) {
+        int c7_idx = as->find_record_index_by_cls(cls);
+        if (c7_idx >= 0) {
+            int c7_destroyed = 0;
+            // The CURRENT top sits above the target too (AOSP: "all of the
+            // other activities on top of it will be closed") — destroy it
+            // FIRST unless it IS the target.
+            if (as->current_activity_class() != cls &&
+                as->current_activity_id() != 0) {
+                nlohmann::json r;
+                try {
+                    auto& c7_heap = dalvik_engine_.get_heap_public();
+                    miniandroid::dalvik::DalvikValue ret;
+                    miniandroid::dalvik::DalvikExecutionResult res;
+                    std::vector<miniandroid::dalvik::DalvikValue> args2{
+                        miniandroid::dalvik::DalvikValue::make_object(
+                            as->current_activity_id(),
+                            as->current_activity_class())};
+                    bool ok = dalvik_engine_.try_recursive_invoke(
+                        as->current_activity_class(), "onDestroy", args2,
+                        ret, res);
+                    r["method"] = "onDestroy";
+                    r["class"] = as->current_activity_class();
+                    r["dispatched"] = ok;
+                } catch (const std::exception& e) {
+                    r["method"] = "onDestroy";
+                    r["dispatched"] = false;
+                    r["error"] = e.what();
+                }
+                rec["callbacks"].push_back(r);
+                ++c7_destroyed;
+            }
+            auto c7_above = as->take_records_above(c7_idx);
+            for (auto& c7_up : c7_above) {
+                nlohmann::json r;
+                try {
+                    auto& c7_heap = dalvik_engine_.get_heap_public();
+                    if (c7_up.obj_id != 0 &&
+                        c7_heap.has_object(c7_up.obj_id)) {
+                        miniandroid::dalvik::DalvikValue ret;
+                        miniandroid::dalvik::DalvikExecutionResult res;
+                        std::vector<miniandroid::dalvik::DalvikValue> args2{
+                            miniandroid::dalvik::DalvikValue::make_object(
+                                c7_up.obj_id, c7_up.cls)};
+                        bool ok = dalvik_engine_.try_recursive_invoke(
+                            c7_up.cls, "onDestroy", args2, ret, res);
+                        r["method"] = "onDestroy";
+                        r["class"] = c7_up.cls;
+                        r["dispatched"] = ok;
+                    } else {
+                        r["method"] = "onDestroy";
+                        r["class"] = c7_up.cls;
+                        r["dispatched"] = false;
+                    }
+                } catch (const std::exception& e) {
+                    r["method"] = "onDestroy";
+                    r["dispatched"] = false;
+                    r["error"] = e.what();
+                }
+                rec["callbacks"].push_back(r);
+                ++c7_destroyed;
+            }
+            framework::ActivityShadow::ActivityRecord c7_tr =
+                as->take_record_at(c7_idx);
+            if (c7_single_top) {
+                // singleTop shape: the target becomes current again and
+                // receives the intent via onNewIntent (onRestart/onStart
+                // first — it was stopped).
+                as->set_current_activity(c7_tr.obj_id, c7_tr.cls);
+                as->set_content_view(c7_tr.content_view_id);
+                as->set_state(
+                    framework::ActivityShadow::LifecycleState::STOPPED);
+                as->set_current_caller_cls(c7_tr.launched_by_cls);
+                auto c7_dispatch = [&](const char* cb2) {
+                    nlohmann::json r;
+                    try {
+                        auto& c7_heap = dalvik_engine_.get_heap_public();
+                        miniandroid::dalvik::DalvikValue ret;
+                        miniandroid::dalvik::DalvikExecutionResult res;
+                        std::vector<miniandroid::dalvik::DalvikValue> args2{
+                            miniandroid::dalvik::DalvikValue::make_object(
+                                c7_tr.obj_id, c7_tr.cls)};
+                        bool ok = dalvik_engine_.try_recursive_invoke(
+                            c7_tr.cls, cb2, args2, ret, res);
+                        r["method"] = cb2;
+                        r["class"] = c7_tr.cls;
+                        r["dispatched"] = ok;
+                        r["instructions"] = res.total_instructions_executed;
+                    } catch (const std::exception& e) {
+                        r["method"] = cb2;
+                        r["dispatched"] = false;
+                        r["error"] = e.what();
+                    }
+                    rec["callbacks"].push_back(r);
+                };
+                c7_dispatch("onRestart");
+                c7_dispatch("onStart");
+                uint32_t c7_new_intent = pi->intent_object_id;
+                if (c7_new_intent == 0)
+                    c7_new_intent =
+                        dalvik_engine_.get_heap_public().allocate(
+                            "Landroid/content/Intent;", 0, 0);
+                {
+                    nlohmann::json r;
+                    try {
+                        miniandroid::dalvik::DalvikValue ret;
+                        miniandroid::dalvik::DalvikExecutionResult res;
+                        std::vector<miniandroid::dalvik::DalvikValue> args2{
+                            miniandroid::dalvik::DalvikValue::make_object(
+                                c7_tr.obj_id, c7_tr.cls),
+                            miniandroid::dalvik::DalvikValue::make_object(
+                                c7_new_intent, "Landroid/content/Intent;")};
+                        bool ok = dalvik_engine_.try_recursive_invoke(
+                            c7_tr.cls, "onNewIntent", args2, ret, res);
+                        r["method"] = "onNewIntent";
+                        r["class"] = c7_tr.cls;
+                        r["dispatched"] = ok;
+                    } catch (const std::exception& e) {
+                        r["method"] = "onNewIntent";
+                        r["dispatched"] = false;
+                        r["error"] = e.what();
+                    }
+                    rec["callbacks"].push_back(r);
+                }
+                c7_dispatch("onResume");
+                rec["launched"] = true;
+                rec["mode"] = "clearTop-singleTop-onNewIntent";
+                rec["destroyed_above"] = c7_destroyed;
+                rec["target"] = cls;
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "ACT-START", cls, true,
+                    "CLEAR_TOP(singleTop): above=" +
+                        std::to_string(c7_destroyed) +
+                        " destroyed, onNewIntent delivered",
+                    "ExecutionEngine.consume_pending_launch");
+                std::cerr << "[C7-ACT] CLEAR_TOP(singleTop) → " << cls
+                          << " (above=" << c7_destroyed
+                          << " destroyed, onNewIntent delivered)" << std::endl;
+                return rec;
+            }
+            // standard shape: the target is destroyed too; a FRESH instance
+            // launches below (fall through to the normal launch path with
+            // the beneath record restored as current).
+            {
+                nlohmann::json r;
+                try {
+                    auto& c7_heap = dalvik_engine_.get_heap_public();
+                    if (c7_tr.obj_id != 0 &&
+                        c7_heap.has_object(c7_tr.obj_id)) {
+                        miniandroid::dalvik::DalvikValue ret;
+                        miniandroid::dalvik::DalvikExecutionResult res;
+                        std::vector<miniandroid::dalvik::DalvikValue> args2{
+                            miniandroid::dalvik::DalvikValue::make_object(
+                                c7_tr.obj_id, c7_tr.cls)};
+                        bool ok = dalvik_engine_.try_recursive_invoke(
+                            c7_tr.cls, "onDestroy", args2, ret, res);
+                        r["method"] = "onDestroy";
+                        r["class"] = c7_tr.cls;
+                        r["dispatched"] = ok;
+                    } else {
+                        r["method"] = "onDestroy";
+                        r["class"] = c7_tr.cls;
+                        r["dispatched"] = false;
+                    }
+                } catch (const std::exception& e) {
+                    r["method"] = "onDestroy";
+                    r["dispatched"] = false;
+                    r["error"] = e.what();
+                }
+                rec["callbacks"].push_back(r);
+                ++c7_destroyed;
+            }
+            // Restore the record beneath the destroyed target as current
+            // (STOPPED) — the normal launch path then pauses it and creates
+            // the fresh instance on top. AOSP would deliver
+            // onRestart/onStart before the pause — a documented
+            // simplification (single-pass dispatch).
+            if (as->stack_depth() > 0) {
+                framework::ActivityShadow::ActivityRecord c7_beneath;
+                as->pop_activity_record(&c7_beneath);
+            }
+            rec["clear_top_standard"] = true;
+            rec["destroyed_above"] = c7_destroyed;
+            std::cerr << "[C7-ACT] CLEAR_TOP(standard) → " << cls
+                      << " destroyed=" << c7_destroyed
+                      << ", fresh instance launches" << std::endl;
+            // fall through to the normal launch path
+        }
+    }
+
     auto dispatch_cb = [&](const std::string& cb, uint32_t target_id,
                            const std::string& target_cls,
                            std::vector<miniandroid::dalvik::DalvikValue> extra_args,
@@ -8361,6 +8777,9 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
     a_record.state = framework::ActivityShadow::LifecycleState::PAUSED;
     a_record.launched_for_request =
         as->take_pending_launch_request_code();
+    // CODER7 WAVE-3: the pushed record carries A's OWN caller identity so
+    // the pop-restore law answers getCallingActivity for A's launch.
+    a_record.launched_by_cls = as->current_caller_cls();
     as->push_activity_record(a_record);
     rec["request_code"] = a_record.launched_for_request;
 
@@ -8408,6 +8827,10 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
     // getIntent() on B returns the LAUNCH intent (extras propagate).
     as->set_launch_intent_id(intent_obj);
     as->set_current_activity(b_id, cls);
+    // CODER7 WAVE-3: B's caller identity (whoever startActivityForResult'd
+    // it) + the runtime package (the ComponentName package half).
+    as->set_current_caller_cls(as->take_pending_launch_caller());
+    as->set_runtime_package(dalvik_engine_.package_name());
     as->set_state(framework::ActivityShadow::LifecycleState::CREATED);
     as->set_content_view(0);  // B must build its own window
     lifecycle_.transition_to(

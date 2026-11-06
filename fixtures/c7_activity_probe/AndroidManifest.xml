@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.probe.c7act"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="30" />
+    <application android:label="C7ActProbe">
+        <activity android:name=".Main" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ResAct" android:exported="false" />
+        <!-- W3-A3: the singleTop target. -->
+        <activity android:name=".STTop" android:exported="false"
+            android:launchMode="singleTop" />
+        <!-- W3-A4: the CLEAR_TOP chain (standard mode). -->
+        <activity android:name=".CTBase" android:exported="false" />
+        <activity android:name=".CTMid" android:exported="false" />
+        <!-- W3-A6: the multi-launch targets. -->
+        <activity android:name=".B1" android:exported="false" />
+        <activity android:name=".B2" android:exported="false" />
+        <!-- W3-A2: the service-context launch target. -->
+        <activity android:name=".NewTaskAct" android:exported="false" />
+        <!-- W3-R04: the disabled target. -->
+        <activity android:name=".DisAct" android:exported="false"
+            android:enabled="false" />
+        <service android:name=".SvcNT" />
+    </application>
+</manifest>

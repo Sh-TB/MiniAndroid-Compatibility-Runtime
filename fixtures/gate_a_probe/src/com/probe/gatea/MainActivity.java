@@ -865,8 +865,13 @@ public class MainActivity extends Activity {
             Bitmap bmp = BitmapFactory.decodeResource(res, drawId);
             // 420dpi: xhdpi(320) distance 100 < mdpi(160) distance 260 —
             // the AOSP density best-match law MUST pick the xhdpi variant.
-            if (bmp != null && bmp.getWidth() == 32)
-                ok("CFG-04", "density best-match picked xhdpi 32px variant");
+            // S179 gate update (C9-1 AOSP BitmapFactory law on main):
+            // decodeResource now density-scales (inDensity=320 ->
+            // inTargetDensity=420), so 32px xhdpi decodes to
+            // 32 * 420/320 = 42px — the pre-C9 32px expectation asserted
+            // the pre-law no-scale behavior, not the AOSP contract.
+            if (bmp != null && bmp.getWidth() == 42)
+                ok("CFG-04", "density best-match xhdpi variant, decodeResource-scaled 32*420/320=42px");
             else fail("CFG-04", "bmp=" + (bmp == null ? "null" : bmp.getWidth() + "px"));
         } catch (Throwable t) { fail("CFG-04", t); }
         try {

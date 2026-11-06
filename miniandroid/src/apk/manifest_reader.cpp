@@ -569,6 +569,19 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
             else if (aname == "exported" &&
                      (a.value_data_type & 0xFF) == 0x12)
                 prov.exported = a.value_data != 0;
+            // CODER7 WAVE-3: android:enabled (AOSP disabled-components law).
+            else if (aname == "enabled") {
+                if ((a.value_data_type & 0xFF) == 0x12) {
+                    prov.enabled = a.value_data != 0;
+                    prov.enabled_declared = true;
+                } else {
+                    const std::string es = get_attribute_value(attrs, "enabled");
+                    if (es == "true" || es == "false") {
+                        prov.enabled = (es == "true");
+                        prov.enabled_declared = true;
+                    }
+                }
+            }
         }
         if (!prov.name.empty()) {
             result_.providers.push_back(prov);
@@ -641,6 +654,21 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
                     else if (lm == "singleInstance") act_info.launch_mode = 3;
                 }
             }
+            // CODER7 WAVE-3: android:enabled (AOSP PackageParser — a
+            // disabled component is invisible to every resolution and
+            // delivery law).
+            else if (aname == "enabled") {
+                if ((a.value_data_type & 0xFF) == 0x12) {
+                    act_info.enabled = a.value_data != 0;
+                    act_info.enabled_declared = true;
+                } else {
+                    const std::string es = get_attribute_value(attrs, "enabled");
+                    if (es == "true" || es == "false") {
+                        act_info.enabled = (es == "true");
+                        act_info.enabled_declared = true;
+                    }
+                }
+            }
         }
         // CONT-68 (F-NEW-366): every activity carries its own theme record
         // (the main-activity slot keeps the S68 W2 semantics downstream).
@@ -657,6 +685,36 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
     if (name == "service") {
         ManifestInfo::ServiceInfo svc;
         svc.name = get_attribute_value(attrs, "name");
+        // CODER7 WAVE-3: component android:enabled + per-filter records for
+        // the resolution laws (resolveService/queryIntentServices).
+        for (const auto& a : attrs) {
+            const std::string aname = get_string(a.name_index);
+            if (aname == "exported") {
+                if ((a.value_data_type & 0xFF) == 0x12) {
+                    svc.exported = a.value_data != 0;
+                    svc.has_exported_attr = true;
+                } else {
+                    const std::string es = get_attribute_value(attrs, "exported");
+                    if (es == "true" || es == "false") {
+                        svc.exported = (es == "true");
+                        svc.has_exported_attr = true;
+                    }
+                }
+            } else if (aname == "permission") {
+                svc.permission = get_attribute_value(attrs, "permission");
+            } else if (aname == "enabled") {
+                if ((a.value_data_type & 0xFF) == 0x12) {
+                    svc.enabled = a.value_data != 0;
+                    svc.enabled_declared = true;
+                } else {
+                    const std::string es = get_attribute_value(attrs, "enabled");
+                    if (es == "true" || es == "false") {
+                        svc.enabled = (es == "true");
+                        svc.enabled_declared = true;
+                    }
+                }
+            }
+        }
         result_.services.push_back(svc);
         in_service_ = true;
         current_service_name_ = svc.name;
@@ -665,10 +723,117 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
     if (name == "receiver") {
         ManifestInfo::ReceiverInfo rcv;
         rcv.name = get_attribute_value(attrs, "name");
+        // CODER7 ORDERED-BCAST law: receiver android:exported +
+        // android:permission (typed BOOL 0x12 with string fallback).
+        for (const auto& a : attrs) {
+            const std::string aname = get_string(a.name_index);
+            if (aname == "exported") {
+                if ((a.value_data_type & 0xFF) == 0x12) {
+                    rcv.exported = a.value_data != 0;
+                    rcv.has_exported_attr = true;
+                } else {
+                    const std::string es = get_attribute_value(attrs, "exported");
+                    if (es == "true" || es == "false") {
+                        rcv.exported = (es == "true");
+                        rcv.has_exported_attr = true;
+                    }
+                }
+            } else if (aname == "permission") {
+                rcv.permission = get_attribute_value(attrs, "permission");
+            } else if (aname == "enabled") {
+                if ((a.value_data_type & 0xFF) == 0x12) {
+                    rcv.enabled = a.value_data != 0;
+                    rcv.enabled_declared = true;
+                } else {
+                    const std::string es = get_attribute_value(attrs, "enabled");
+                    if (es == "true" || es == "false") {
+                        rcv.enabled = (es == "true");
+                        rcv.enabled_declared = true;
+                    }
+                }
+            }
+        }
         result_.receivers.push_back(rcv);
         in_receiver_ = true;
         current_receiver_name_ = rcv.name;
         log("Receiver: " + rcv.name);
+    }
+    // CODER7 ORDERED-BCAST law: intent-filter android:priority — the AOSP
+    // ordered-dispatch ordering key (IntentFilter.setPriority /
+    // BroadcastQueueModernImpl priority tranches). Folded as MAX across the
+    // receiver's filters at filter-start time (no end-element bookkeeping).
+    // CODER7 WAVE-2: each <intent-filter> under a receiver now ALSO opens a
+    // per-filter record — the matchable unit the dispatch resolves against
+    // (a receiver matching through two filters is delivered twice, each at
+    // its own filter priority — AOSP PackageParser/IntentResolver law).
+    if (name == "intent-filter" && in_receiver_ && !result_.receivers.empty()) {
+        ManifestInfo::ReceiverInfo& rcv = result_.receivers.back();
+        rcv.filters.push_back(ManifestInfo::ReceiverInfo::FilterInfo{});
+        for (const auto& a : attrs) {
+            const std::string aname = get_string(a.name_index);
+            if (aname == "priority") {
+                int pr = 0;
+                if ((a.value_data_type & 0xFF) == 0x10) {
+                    pr = (int32_t)a.value_data;
+                } else {
+                    const std::string ps = get_attribute_value(attrs, "priority");
+                    if (!ps.empty()) {
+                        try { pr = std::stoi(ps); } catch (...) { pr = 0; }
+                    }
+                }
+                if (pr > rcv.priority) rcv.priority = pr;
+                if (!rcv.filters.empty()) rcv.filters.back().priority = pr;
+            }
+        }
+    }
+
+    // CODER7 WAVE-3: intent-filter opens a per-filter record on the
+    // enclosing SERVICE too (the matchable unit resolveService /
+    // queryIntentServices resolve against — AOSP PackageParser law).
+    if (name == "intent-filter" && in_service_ && !result_.services.empty()) {
+        result_.services.back().filters.push_back(
+            ManifestInfo::ServiceInfo::FilterInfo{});
+    }
+    // CODER7 WAVE-3: intent-filter opens a per-filter record on the
+    // enclosing ACTIVITY (MATCH_DEFAULT_ONLY resolution needs the MATCHING
+    // filter's own category set).
+    if (name == "intent-filter" && in_activity_ && !result_.activities.empty()) {
+        result_.activities.back().filters.push_back(
+            ManifestInfo::ActivityInfo::FilterInfo{});
+    }
+
+    // CODER7 WAVE-3: <data> capture — the IntentFilter.matchData match
+    // dimensions (mimeType / scheme / host / pathPrefix) on whichever
+    // component's filter is open.
+    if (name == "data") {
+        ManifestInfo::DataSpec ds;
+        ds.mime_type = get_attribute_value(attrs, "mimeType");
+        ds.scheme = get_attribute_value(attrs, "scheme");
+        ds.host = get_attribute_value(attrs, "host");
+        ds.path_prefix = get_attribute_value(attrs, "pathPrefix");
+        if (!ds.mime_type.empty() || !ds.scheme.empty()) {
+            if (in_receiver_ && !result_.receivers.empty()) {
+                ManifestInfo::ReceiverInfo& rcvD = result_.receivers.back();
+                if (rcvD.filters.empty())
+                    rcvD.filters.push_back(
+                        ManifestInfo::ReceiverInfo::FilterInfo{});
+                rcvD.filters.back().datas.push_back(ds);
+            }
+            if (in_activity_ && !result_.activities.empty()) {
+                ManifestInfo::ActivityInfo& actD = result_.activities.back();
+                if (actD.filters.empty())
+                    actD.filters.push_back(
+                        ManifestInfo::ActivityInfo::FilterInfo{});
+                actD.filters.back().datas.push_back(ds);
+            }
+            if (in_service_ && !result_.services.empty()) {
+                ManifestInfo::ServiceInfo& svcD = result_.services.back();
+                if (svcD.filters.empty())
+                    svcD.filters.push_back(
+                        ManifestInfo::ServiceInfo::FilterInfo{});
+                svcD.filters.back().datas.push_back(ds);
+            }
+        }
     }
 
     // Handle intent-filter elements inside activity
@@ -687,6 +852,14 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
             // action-string Intent resolved through the manifest filter).
             if (!action_name.empty() && !result_.activities.empty()) {
                 result_.activities.back().actions.push_back(action_name);
+                // CODER7 WAVE-3: dual-record into the OPEN activity filter
+                // (same law as the wave-2 receiver capture — XML ordering
+                // makes the last opened filter the enclosing one).
+                ManifestInfo::ActivityInfo& actA = result_.activities.back();
+                if (actA.filters.empty())
+                    actA.filters.push_back(
+                        ManifestInfo::ActivityInfo::FilterInfo{});
+                actA.filters.back().actions.push_back(action_name);
             }
         }
         
@@ -696,6 +869,16 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
                 activity_has_launcher_category_ = true;
                 log("Found LAUNCHER category");
             }
+            // CODER7 WAVE-3: the activity's filter category set (the
+            // MATCH_DEFAULT_ONLY law reads the MATCHING filter's own
+            // categories; union-level data cannot express that).
+            if (!category_name.empty() && !result_.activities.empty()) {
+                ManifestInfo::ActivityInfo& actC = result_.activities.back();
+                if (actC.filters.empty())
+                    actC.filters.push_back(
+                        ManifestInfo::ActivityInfo::FilterInfo{});
+                actC.filters.back().categories.push_back(category_name);
+            }
         }
     }
 
@@ -704,10 +887,44 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         if (name == "action") {
             std::string action_name = get_attribute_value(attrs, "name");
             if (!action_name.empty()) {
-                if (in_service_ && !result_.services.empty())
+                if (in_service_ && !result_.services.empty()) {
                     result_.services.back().actions.push_back(action_name);
-                if (in_receiver_ && !result_.receivers.empty())
+                    // CODER7 WAVE-3: dual-record into the OPEN service filter.
+                    ManifestInfo::ServiceInfo& svcA = result_.services.back();
+                    if (svcA.filters.empty())
+                        svcA.filters.push_back(
+                            ManifestInfo::ServiceInfo::FilterInfo{});
+                    svcA.filters.back().actions.push_back(action_name);
+                }
+                if (in_receiver_ && !result_.receivers.empty()) {
                     result_.receivers.back().actions.push_back(action_name);
+                    // CODER7 WAVE-2: dual-record into the OPEN filter (the
+                    // <intent-filter> start opened it; XML ordering makes it
+                    // the last one — defensive fallback reopens a default
+                    // record when an action arrives with no open filter).
+                    ManifestInfo::ReceiverInfo& rcv7 =
+                        result_.receivers.back();
+                    if (rcv7.filters.empty())
+                        rcv7.filters.push_back(
+                            ManifestInfo::ReceiverInfo::FilterInfo{});
+                    rcv7.filters.back().actions.push_back(action_name);
+                }
+            }
+        }
+        // CODER7 ORDERED-BCAST law: filter <category> capture for receivers —
+        // AOSP IntentFilter.matchCategories: a broadcast intent's categories
+        // must ALL be declared by the receiver's filter to match.
+        if (name == "category" && in_receiver_ && !result_.receivers.empty()) {
+            std::string cat_name = get_attribute_value(attrs, "name");
+            if (!cat_name.empty()) {
+                result_.receivers.back().categories.push_back(cat_name);
+                // CODER7 WAVE-2: per-filter category record (same open-filter
+                // dual-record law as the action capture above).
+                ManifestInfo::ReceiverInfo& rcv7 = result_.receivers.back();
+                if (rcv7.filters.empty())
+                    rcv7.filters.push_back(
+                        ManifestInfo::ReceiverInfo::FilterInfo{});
+                rcv7.filters.back().categories.push_back(cat_name);
             }
         }
     }

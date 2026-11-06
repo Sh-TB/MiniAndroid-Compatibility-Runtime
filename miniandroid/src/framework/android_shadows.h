@@ -697,6 +697,17 @@ public:
         std::map<std::string, bool>     extras_bool;
         int flags = 0;
         uint32_t intent_object_id = 0; // G08: heap object of this Intent
+        // CODER7 ORDERED-BCAST law: intent categories (AOSP Intent
+        // addCategory/hasCategory/getCategories; the broadcast-dispatch
+        // category match reads these — IntentFilter.matchCategories).
+        std::vector<std::string> categories;
+        // CODER7 WAVE-3: the MIME type (setType/setDataAndType) and the
+        // parsed data-URI dimensions (scheme/host/path) the
+        // IntentFilter.matchData dispatch and resolution laws read.
+        std::string type;
+        std::string data_scheme;
+        std::string data_host;
+        std::string data_path;
     };
 
     std::string name() const override { return "Intent"; }
@@ -713,7 +724,8 @@ public:
                 "setClassName", "setComponent", "getComponent",
                 "putExtra", "getStringExtra", "getIntExtra",
                 "getBooleanExtra", "setFlags", "addFlags",
-                "getFlags", "setPackage"};
+                "getFlags", "setPackage", "setType", "setData",
+                "setDataAndType", "getType"};
     }
     std::vector<std::string> stubbed_methods() const override {
         return {"createChooser", "parseUri", "toUri"};
@@ -722,12 +734,35 @@ public:
     // Record a startActivity(Intent) call. The ApplicationRuntime will
     // read this on the next drain point.
     void set_pending(std::shared_ptr<PendingIntent> intent) {
+        // CODER7 WAVE-3: startActivities queues; a queued launch drains
+        // before a later single pending (the queue holds the earlier
+        // intents — FIFO across both slots).
+        if (!pending_queue_.empty()) {
+            pending_queue_.push_back(std::move(intent));
+            return;
+        }
         pending_ = std::move(intent);
     }
+    // CODER7 WAVE-3: Context.startActivities(Intent[]) — every intent
+    // becomes a pending launch in order (AOSP startActivities: the array
+    // is launched as a sequence).
+    void enqueue_pending(std::shared_ptr<PendingIntent> intent) {
+        if (pending_ != nullptr) {
+            pending_queue_.push_back(std::move(pending_));
+        }
+        pending_queue_.push_back(std::move(intent));
+    }
     std::shared_ptr<PendingIntent> take_pending() {
+        if (!pending_queue_.empty()) {
+            auto p = std::move(pending_queue_.front());
+            pending_queue_.erase(pending_queue_.begin());
+            return p;
+        }
         auto p = std::move(pending_); pending_.reset(); return p;
     }
-    bool has_pending() const { return pending_ != nullptr; }
+    bool has_pending() const {
+        return pending_ != nullptr || !pending_queue_.empty();
+    }
 
     // S123 ACTION-RESOLVE law: manifest intent-filter action → activity
     // map (AOSP PackageManager.queryIntentActivities resolution). The
@@ -738,9 +773,68 @@ public:
                                 const std::string& activity_class) {
         action_targets_[action] = activity_class;
     }
+    // ── CODER7 WAVE-3: the CATEGORY_DEFAULT resolution law (AOSP
+    // Activity.resolveActivity with MATCH_DEFAULT_ONLY — the startActivity
+    // implicit-resolution path) ──────────────────────────────────────────
+    // Per-filter records (actions + categories) registered at manifest
+    // resolve time; resolve_activity_target answers only filters that
+    // declare android.intent.category.DEFAULT, falling back LAX (loudly
+    // reported) to the action-only registry when NO filter does — legacy
+    // corpus shapes keep launching while the strict law is observable.
+    struct ActivityFilterEntry {
+        std::string activity;
+        std::vector<std::string> actions;
+        std::vector<std::string> categories;
+    };
+    void register_activity_filter(const std::string& activity,
+                                  const std::vector<std::string>& actions,
+                                  const std::vector<std::string>& categories) {
+        ActivityFilterEntry e;
+        e.activity = activity;
+        e.actions = actions;
+        e.categories = categories;
+        activity_filters_.push_back(std::move(e));
+        for (const auto& a : actions)
+            action_targets_[a] = activity;  // S123 registry preserved
+    }
     std::string resolve_action_target(const std::string& action) const {
         auto it = action_targets_.find(action);
         return it != action_targets_.end() ? it->second : std::string();
+    }
+    std::string resolve_activity_target(
+        const std::string& action,
+        const std::vector<std::string>& intent_categories,
+        bool* lax_used) const {
+        if (lax_used) *lax_used = false;
+        auto categories_satisfied = [&](const ActivityFilterEntry& f) {
+            for (const auto& ic : intent_categories) {
+                bool has = false;
+                for (const auto& fc : f.categories)
+                    if (fc == ic) { has = true; break; }
+                if (!has) return false;
+            }
+            return true;
+        };
+        // Strict pass: the matching filter must declare CATEGORY_DEFAULT.
+        for (const auto& f : activity_filters_) {
+            bool has_action = false;
+            for (const auto& a : f.actions)
+                if (a == action) { has_action = true; break; }
+            if (!has_action) continue;
+            if (!categories_satisfied(f)) continue;
+            bool dflt = false;
+            for (const auto& fc : f.categories)
+                if (fc == "android.intent.category.DEFAULT") {
+                    dflt = true;
+                    break;
+                }
+            if (dflt) return f.activity;
+        }
+        // Lax fallback: no DEFAULT-declaring filter for this action — the
+        // S123 action registry answer (documented corpus-compat shape).
+        std::string lax = resolve_action_target(action);
+        if (!lax.empty() && lax_used) *lax_used = true;
+        return lax;
     }
 
     // EXP-051: Public so ActivityShadow.startActivity can mark an
@@ -751,8 +845,11 @@ public:
 
 private:
     std::shared_ptr<PendingIntent> pending_;
+    // CODER7 WAVE-3: startActivities launch queue (FIFO ahead of pending_).
+    std::vector<std::shared_ptr<PendingIntent>> pending_queue_;
     std::map<uint32_t, std::shared_ptr<PendingIntent>> intents_;
     std::map<std::string, std::string> action_targets_;  // S123 ACTION-RESOLVE
+    std::vector<ActivityFilterEntry> activity_filters_;  // WAVE-3 DEFAULT law
 };
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -857,6 +954,11 @@ public:
         // G08: >= 0 when THIS record's activity launched the current one
         // for a result — delivered to it on pop as onActivityResult.
         int launched_for_request = -1;
+        // CODER7 WAVE-3: the caller identity of THIS record's activity
+        // (who launched IT for a result) — restored as the current caller
+        // on pop so the revived activity answers getCallingActivity for
+        // its OWN launch (AOSP ActivityThread activity record).
+        std::string launched_by_cls;
     };
     void push_activity_record(const ActivityRecord& r) {
         stack_.push_back(r);
@@ -917,10 +1019,40 @@ public:
         current_activity_class_ = top.cls;
         content_view_id_ = top.content_view_id;
         state_ = top.state;
+        // CODER7 WAVE-3: the revived activity answers getCallingActivity
+        // for its OWN launch (its caller identity rides its record).
+        current_caller_cls_ = top.launched_by_cls;
         if (out_popped) *out_popped = top;
         return true;
     }
     size_t stack_depth() const { return stack_.size(); }
+
+    // ── CODER7 WAVE-3: task-stack search for the launch-flag laws ──────
+    // Topmost record matching cls (CLEAR_TOP scans from the top), or -1.
+    int find_record_index_by_cls(const std::string& cls) const {
+        for (int i = (int)stack_.size() - 1; i >= 0; --i)
+            if (stack_[i].cls == cls) return i;
+        return -1;
+    }
+    // Pop and return EVERY record above idx (the CLEAR_TOP close set);
+    // the record at idx stays.
+    std::vector<ActivityRecord> take_records_above(int idx) {
+        std::vector<ActivityRecord> out;
+        if (idx < 0 || idx >= (int)stack_.size()) return out;
+        out.assign(stack_.begin() + idx + 1, stack_.end());
+        stack_.resize(idx + 1);
+        return out;
+    }
+    // Pop and return the record at idx (the CLEAR_TOP target for the
+    // standard-mode destroy-and-recreate law).
+    ActivityRecord take_record_at(int idx) {
+        ActivityRecord r = stack_[idx];
+        stack_.erase(stack_.begin() + idx);
+        return r;
+    }
+    const ActivityRecord* record_at(int idx) const {
+        return idx >= 0 && idx < (int)stack_.size() ? &stack_[idx] : nullptr;
+    }
 
     // startActivityForResult(Intent, requestCode): the request code rides
     // with the pending launch; onActivityResult(request, result, data) is
@@ -931,6 +1063,36 @@ public:
         int rc = pending_request_code_;
         pending_request_code_ = -1;
         return rc;
+    }
+    // ── CODER7 WAVE-3: the caller-identity law (AOSP
+    // Activity.getCallingActivity / getCallingPackage) ────────────────────
+    // startActivityForResult captures the CURRENT activity as the caller;
+    // the launched activity answers it (null for plain startActivity
+    // launches and for activities launched without a caller).
+    void set_pending_launch_caller(std::string cls) {
+        pending_launch_caller_ = std::move(cls);
+    }
+    std::string take_pending_launch_caller() {
+        auto c = pending_launch_caller_;
+        pending_launch_caller_.clear();
+        return c;
+    }
+    const std::string& current_caller_cls() const { return current_caller_cls_; }
+    void set_current_caller_cls(std::string cls) {
+        current_caller_cls_ = std::move(cls);
+    }
+    // The running package (the ComponentName package half of the caller).
+    void set_runtime_package(const std::string& p) { runtime_package_ = p; }
+    const std::string& runtime_package() const { return runtime_package_; }
+    // ── CODER7 WAVE-3: the per-activity mFinished law ───────────────────
+    // AOSP Activity.mFinished: once finish() was requested on an activity
+    // the flag stays true through its teardown (onDestroy still observes
+    // isFinishing()==true). Tracked per heap object — the old process-wide
+    // pending_finish_ reset answered false there.
+    void mark_finished(uint32_t oid) { finished_by_oid_[oid] = true; }
+    bool is_finished(uint32_t oid) const {
+        auto it = finished_by_oid_.find(oid);
+        return it != finished_by_oid_.end() && it->second;
     }
     // Activity.setResult(resultCode, data) — recorded on the CURRENT record.
     void set_result(int result_code, uint32_t data_intent_id) {
@@ -965,6 +1127,7 @@ public:
         pending_finish_ = true;
         pending_finish_obj_id_ = oid;
         pending_finish_cls_ = cls;
+        finished_by_oid_[oid] = true;  // CODER7 WAVE-3: mFinished persists
     }
     bool pending_finish() const { return pending_finish_; }
     bool take_pending_finish() {
@@ -1050,6 +1213,11 @@ private:
     int32_t layout_resource_id_ = 0;
     LifecycleState state_ = LifecycleState::NONE;
     bool pending_finish_ = false;   // G07: finish() requested, not yet applied
+    // CODER7 WAVE-3: caller identity + per-activity mFinished state.
+    std::string current_caller_cls_;       // the current activity's caller
+    std::string pending_launch_caller_;    // captured at startActivityForResult
+    std::string runtime_package_;          // the running package
+    std::map<uint32_t, bool> finished_by_oid_;  // per-activity mFinished
     // F-NEW-174 (S87): identity of the activity that called finish() —
     // 0/empty when the legacy path (unknown receiver) requested it.
     uint32_t pending_finish_obj_id_ = 0;

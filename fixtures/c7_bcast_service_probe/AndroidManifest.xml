@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.probe.c7runtime"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="30" />
+    <!-- The sender (this app) HOLDS the receiver permission for RPerm. -->
+    <uses-permission android:name="com.probe.c7runtime.PERMISSION" />
+    <!-- CODER7 WAVE-2: sticky sends require android.permission.BROADCAST_STICKY. -->
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <application android:label="C7Probe">
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- CODER7 ordered-broadcast law receivers: priority ladder
+             High(50) > Dyn(40, runtime-registered) > Mid(20) > Low(10);
+             RAbort(30) aborts; RLow also listens on the abort action to
+             prove abort stops LOWER-priority pending receivers.
+             WAVE-2: exported="true" — these receivers test ordering /
+             result chains / permissions, NOT the exported law (the
+             dedicated Exp* receivers below own that law). -->
+        <receiver android:name=".RHigh" android:exported="true">
+            <intent-filter android:priority="50">
+                <action android:name="com.probe.c7runtime.ORDER" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".RMid" android:exported="true">
+            <intent-filter android:priority="20">
+                <action android:name="com.probe.c7runtime.ORDER" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".RAbort" android:exported="true">
+            <intent-filter android:priority="30">
+                <action android:name="com.probe.c7runtime.ABORT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".RLow" android:exported="true">
+            <intent-filter android:priority="10">
+                <action android:name="com.probe.c7runtime.ORDER" />
+                <action android:name="com.probe.c7runtime.ABORT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".RPerm" android:exported="true"
+            android:permission="com.probe.c7runtime.PERMISSION">
+            <intent-filter android:priority="10">
+                <action android:name="com.probe.c7runtime.PERM" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".RPermMissing" android:exported="true"
+            android:permission="com.probe.c7runtime.MISSING">
+            <intent-filter android:priority="10">
+                <action android:name="com.probe.c7runtime.PERM2" />
+            </intent-filter>
+        </receiver>
+
+        <!-- CODER7 WAVE-2 per-filter law: MultiFilter carries TWO filters
+             over the SAME action MF at priorities 60 and 15 — AOSP delivers
+             ONCE PER MATCHING FILTER (two deliveries, interleaved at their
+             own filter priorities). Filter B also declares action MFCAT
+             with category MFCC (category-law discrimination). MFHigh(30)
+             and MFLow(5) prove the interleaving. -->
+        <receiver android:name=".MultiFilter" android:exported="true">
+            <intent-filter android:priority="60">
+                <action android:name="com.probe.c7runtime.MF" />
+            </intent-filter>
+            <intent-filter android:priority="15">
+                <action android:name="com.probe.c7runtime.MF" />
+                <action android:name="com.probe.c7runtime.MFCAT" />
+                <category android:name="com.probe.c7runtime.MFCC" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".MFHigh" android:exported="true">
+            <intent-filter android:priority="30">
+                <action android:name="com.probe.c7runtime.MF" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".MFLow" android:exported="true">
+            <intent-filter android:priority="5">
+                <action android:name="com.probe.c7runtime.MF" />
+            </intent-filter>
+        </receiver>
+
+        <!-- CODER7 WAVE-2 exported law receivers (foreign-sender model).
+             ExpLocked: exported="false" — unreachable from a foreign
+             sender. ExpOpen: exported="true" + permission. ExpDefault: no
+             exported attribute but HAS a filter → the AOSP default law
+             (targetSdk 30 → exported). -->
+        <receiver android:name=".ExpLocked" android:exported="false">
+            <intent-filter android:priority="0">
+                <action android:name="com.probe.c7runtime.EXP1" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".ExpOpen" android:exported="true"
+            android:permission="com.probe.c7runtime.PERMISSION">
+            <intent-filter android:priority="0">
+                <action android:name="com.probe.c7runtime.EXP2" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".ExpDefault">
+            <intent-filter android:priority="0">
+                <action android:name="com.probe.c7runtime.EXP3" />
+            </intent-filter>
+        </receiver>
+
+        <!-- CODER7 SVC contract services. -->
+        <service android:name=".SvcA" />
+        <service android:name=".SvcB" />
+        <service android:name=".SvcC" />
+        <service android:name=".SvcD" />
+        <service android:name=".SvcE" />
+        <!-- CODER7 WAVE-2: bring-down path (started + bound → stopService). -->
+        <service android:name=".SvcF" />
+
+        <!-- ═════════ CODER7 WAVE-3 ═════════ -->
+        <!-- matchData law receivers: MIME half + scheme half. -->
+        <receiver android:name=".MimeRecv" android:exported="true">
+            <intent-filter android:priority="0">
+                <action android:name="com.probe.c7runtime.MIME" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".SchemeRecv" android:exported="true">
+            <intent-filter android:priority="0">
+                <action android:name="com.probe.c7runtime.SCHEME" />
+                <data android:scheme="content" />
+            </intent-filter>
+        </receiver>
+        <!-- sendStickyOrderedBroadcast: ordered chain + sticky cache. -->
+        <receiver android:name=".StickyCatch" android:exported="true">
+            <intent-filter android:priority="10">
+                <action android:name="com.probe.c7runtime.STKYORD" />
+            </intent-filter>
+        </receiver>
+        <!-- disabled-components law: receiver/service/provider with
+             android:enabled="false" are invisible to every law. -->
+        <receiver android:name=".DisRecv" android:enabled="false"
+            android:exported="true">
+            <intent-filter android:priority="99">
+                <action android:name="com.probe.c7runtime.DIS" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".ExpDefault">
+            <intent-filter android:priority="0">
+                <action android:name="com.probe.c7runtime.DISCTRL" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".DisSvc" android:enabled="false" />
+        <provider android:name=".DisProvider"
+            android:authorities="com.probe.c7runtime.disprov"
+            android:enabled="false" />
+        <!-- WAVE-3: the ContentProviderClient-law provider. -->
+        <provider android:name=".W3Provider"
+            android:authorities="com.probe.c7runtime.prov"
+            android:exported="false" />
+        <!-- WAVE-3: BIND_AUTO_CREATE gate + stopSelf(int) guard services. -->
+        <service android:name=".SvcG" />
+        <service android:name=".SvcH" />
+        <!-- WAVE-3: resolveService target (filter action). -->
+        <service android:name=".SvcFilter">
+            <intent-filter android:priority="0">
+                <action android:name="com.probe.c7runtime.ACTSVC" />
+            </intent-filter>
+        </service>
+        <!-- WAVE-3: implicit-resolution candidates — ResDefA declares
+             CATEGORY_DEFAULT, ResDefB does not (MATCH_DEFAULT_ONLY law). -->
+        <activity android:name=".ResDefA" android:exported="false">
+            <intent-filter android:priority="0">
+                <action android:name="com.probe.c7runtime.ACTDEF" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ResDefB" android:exported="false">
+            <intent-filter android:priority="0">
+                <action android:name="com.probe.c7runtime.ACTDEF" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

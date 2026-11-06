@@ -84,11 +84,29 @@ struct ManifestInfo {
     std::string main_activity;       // Short form (.MainActivity)
     std::string main_activity_full;  // Full form (com.example.MainActivity)
     
+    // CODER7 WAVE-3 (AOSP IntentFilter.matchData model): a <data> child of
+    // an <intent-filter> — mimeType/scheme/host/pathPrefix are the match
+    // dimensions the dispatch (broadcast) and resolution (activity/service)
+    // laws consult. path/pathPattern remain unmodeled (documented).
+    struct DataSpec {
+        std::string mime_type;
+        std::string scheme;
+        std::string host;
+        std::string path_prefix;
+    };
+
     // All activities found
     struct ActivityInfo {
         std::string name;
         bool is_main_activity = false;
         bool is_launcher = false;
+        // CODER7 WAVE-3 (AOSP PackageParser.ApplicationInfo.isEnabled /
+        // PackageItemInfo chain): android:enabled on the component — a
+        // disabled component is invisible to every resolution and delivery
+        // law (PackageManager.MATCH_ENABLEDCOMPONENTS semantics). The
+        // attribute defaults to true when absent.
+        bool enabled = true;
+        bool enabled_declared = false;
         // CONT-102 (F-NEW-425): per-activity android:exported +
         // android:launchMode (AOSP PackageParser.ActivityInfo laws).
         // exported_declared distinguishes "manifest said exported=false"
@@ -103,6 +121,16 @@ struct ManifestInfo {
         // keeps the full filter set per activity; the runtime needs the
         // action→activity map to resolve implicit/action-string Intents).
         std::vector<std::string> actions;
+        // CODER7 WAVE-3: per-activity filter records — the matchable unit
+        // for the resolution laws (resolveActivity/queryIntentActivities
+        // with MATCH_DEFAULT_ONLY requires CATEGORY_DEFAULT on the MATCHING
+        // filter; the union field above cannot express that).
+        struct FilterInfo {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            std::vector<DataSpec> datas;
+        };
+        std::vector<FilterInfo> filters;
         // CONT-68 (F-NEW-366): per-activity android:theme (AOSP
         // ActivityInfo.theme — the raw @resid from the AXML REFERENCE;
         // 0 = unset). The effective activity theme follows the
@@ -200,6 +228,10 @@ struct ManifestInfo {
         // install (notes_secuso SplashActivity chain = first divergence).
         bool grant_uri_permissions = false;
         bool exported = false;
+        // CODER7 WAVE-3: android:enabled — a disabled provider is not
+        // published (resolveContentProvider answers null).
+        bool enabled = true;
+        bool enabled_declared = false;
     };
     std::vector<ProviderInfo> providers;
 
@@ -210,10 +242,61 @@ struct ManifestInfo {
     struct ServiceInfo {
         std::string name;
         std::vector<std::string> actions;
+        // CODER7 ORDERED-BCAST/SVC law: AOSP PackageParser parses the
+        // component-level attributes android:exported and android:permission
+        // on <service> (ServiceInfo.exported / ServiceInfo.permission).
+        // Additive capture; exported=false when the attr is absent and the
+        // component has NO intent-filter (AOSP exported-default law).
+        bool exported = false;
+        bool has_exported_attr = false;
+        // CODER7 WAVE-3: android:enabled (AOSP disabled-components law) +
+        // per-filter matchable records for resolveService/queryIntentServices.
+        bool enabled = true;
+        bool enabled_declared = false;
+        struct FilterInfo {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            std::vector<DataSpec> datas;
+        };
+        std::vector<FilterInfo> filters;
+        std::string permission;
     };
     struct ReceiverInfo {
         std::string name;
         std::vector<std::string> actions;
+        // CODER7 ORDERED-BCAST law: AOSP PackageParser parses per-filter
+        // android:priority (IntentFilter.getPriority) and per-receiver
+        // android:exported / android:permission
+        // (ReceiverInfo.exported / ReceiverInfo.permission). The receiver's
+        // recorded priority is the MAX across its intent-filters (dispatch
+        // simplification, documented: single-filter receivers — the norm —
+        // are exact). Categories are the union across the receiver's
+        // filters (AOSP IntentFilter.matchCategories: every intent category
+        // must be declared by the filter).
+        int priority = 0;
+        bool exported = false;
+        bool has_exported_attr = false;
+        std::string permission;
+        std::vector<std::string> categories;
+        // CODER7 WAVE-2 per-filter model: AOSP PackageParser records EVERY
+        // <intent-filter> as its own matchable unit (own actions, own
+        // categories, own priority). The receiver-level fields above keep
+        // their union/MAX semantics for the existing consumers; the ordered
+        // dispatch now reads the per-filter records.
+        struct FilterInfo {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            int priority = 0;
+            // CODER7 WAVE-3: the filter's <data> match dimensions
+            // (IntentFilter.matchData: MIME half + scheme/host/pathPrefix
+            // half).
+            std::vector<DataSpec> datas;
+        };
+        std::vector<FilterInfo> filters;
+        // CODER7 WAVE-3: android:enabled (disabled receivers are not
+        // delivered).
+        bool enabled = true;
+        bool enabled_declared = false;
     };
     std::vector<ServiceInfo> services;
     std::vector<ReceiverInfo> receivers;

@@ -1,0 +1,37 @@
+C7|ORD-01|PASS|order=High,Dyn,Mid,Low,FINAL seed(-1)✓ chain✓ final(code=2 data=r2 k=7)
+C7|ORD-02|PASS|abort: Low skipped, final ran with data=aborted-here
+C7|ORD-03|PASS|non-ordered: abort no-op → both delivered
+C7|ORD-04|PASS|category: mismatch skipped, match delivered
+C7|ORD-05|PASS|isOrderedBroadcast=true; plain setResult no-throw
+C7|ORD-06|PASS|perm held → delivered; perm missing → denied
+C7|ORD-07|PASS|goAsync: pr(code=5,data=seed,e=9) detached, receiver-level null, finish ok
+C7|SVC-05|PASS|startx2 + stopSelfResult(old)=false (service stays), stopSelfResult(last)=true → onDestroy
+C7|SVC-06|PASS|pure-bound unbind → onUnbind(false) → onDestroy
+C7|SVC-07|PASS|unbind→onUnbind(true) stays; rebind→onRebind; retained binder reconnected; stop→onDestroy
+C7|SVC-08|PASS|unbind(connE) destroyed only SvcE
+C7|SVC-09|PASS|double unbind → IllegalArgumentException: Service not registered: connection not bound
+C7|SVC-10|PASS|bring-down: onUnbind delivered before onDestroy (unbinds=1 destroys=1)
+C7|ORD-08|PASS|per-filter: MFA,MFH,MFB,MFL,FINAL deliveries=2
+C7|ORD-09|PASS|category filter law: +1 via filter B, +0 for undeclared category
+C7|ORD-10|PASS|registration permission: denied without it, control delivered (perm=0, ctrl=1)
+C7|STK-01|PASS|sticky catch-up: caught=1 initial=true v=v1
+C7|STK-02|PASS|removeStickyBroadcast: late register gets 0
+C7|STK-04|PASS|re-cache: fresh sticky v2 delivered on register
+C7|EXP-01|OBS|ExpLocked exported=false delivered=true
+C7|EXP-02|OBS|ExpOpen exported=true+perm delivered=true
+C7|EXP-03|OBS|ExpDefault no-attr+filter delivered=true
+C7|W3-B11|PASS|unknown receiver → IllegalArgumentException: Receiver not registered: Lcom/probe/c7runtime/MainActivity$AllUnregR;
+C7|W3-B12|PASS|dual registration delivered 2; one unregister → 0 more
+C7|W3-B14|PASS|MIME: text/plain→manifest+1dyn; image/png→wildcard-dyn only (1); mismatch silent (0/0)
+C7|W3-B15|PASS|scheme: content→manifest+content-dyn; https→https-dyn only; mismatch silent
+C7|W3-B16|PASS|sticky-ordered: chain delivered, final(code=5,data=seed), fresh receiver caught the sticky with isInitialStickyBroadcast=true, then removed
+C7|W3-B3ev|PASS|zero matching receivers → final resultReceiver still ran with the seed (code=9 data=zseed)
+C7|W3-S11|PASS|flags=0 bind: no onCreate/no connect; startService → create + queued connect; unbind keeps the started svc; stop destroys
+C7|W3-S12|PASS|not-installed: startService → null ComponentName; bindService → false (AOSP law)
+C7|W3-S13|PASS|stale stopSelf(1) → service stayed; stopSelf(last) → onDestroy (destroys=1)
+C7|W3-P10|PASS|client acquired (real object); client.query routed (rows=2); getType routed; release=true; 2nd release → IllegalStateException
+C7|W3-P11|PASS|openTypedAssetFileDescriptor → provider openFile FileNotFoundException propagated
+C7|W3-R01|PASS|MATCH_DEFAULT_ONLY → ResDefA (filter has CATEGORY_DEFAULT); resolveActivity(0) → first match; query → 2 candidates
+C7|W3-R02|PASS|resolveService → SvcFilter; queryIntentServices → 1 (real manifest filters)
+C7|W3-R03|PASS|enabled=false: receiver silent (0 deliveries; enabled control delivered), startService → null, resolveContentProvider → null
+C7|W3-IT1|PASS|setType/getType round-trip exact; setData/getData non-null (matchData dimensions recorded)

@@ -1765,6 +1765,16 @@ public:
         std::vector<std::pair<std::string, bool>> name_exported) {
         manifest_provider_exported_ = std::move(name_exported);
     }
+    // CODER7 WAVE-3: per-provider android:enabled (disabled-components law).
+    void set_manifest_provider_enabled(
+        std::vector<std::pair<std::string, bool>> name_enabled) {
+        manifest_provider_enabled_ = std::move(name_enabled);
+    }
+    bool c7_provider_enabled(const std::string& cls) const {
+        for (const auto& [pname, pen] : manifest_provider_enabled_)
+            if (pname == cls) return pen;
+        return true;
+    }
     // 371-CLOSEOUT: component meta-data with resource references — the
     // ProviderInfo.metaData / resolveContentProvider / loadXmlMetaData law
     // set (androidx FileProvider contract; generic across all components).
@@ -1779,10 +1789,123 @@ public:
         std::vector<std::pair<std::string, std::vector<std::string>>> svc) {
         manifest_service_classes_ = std::move(svc);
     }
-    void set_manifest_receiver_actions(
-        std::vector<std::pair<std::string, std::vector<std::string>>> rcv) {
-        manifest_receiver_actions_ = std::move(rcv);
+    // CODER7: full AOSP receiver model transfer (priority/exported/
+    // permission/categories in addition to the action list).
+    struct C7DataSpec {
+        std::string mime_type;
+        std::string scheme;
+        std::string host;
+        std::string path_prefix;
+    };
+    struct ManifestReceiverTransfer {
+        std::string cls;
+        std::vector<std::string> actions;
+        std::vector<std::string> categories;
+        int priority = 0;
+        bool exported = false;
+        bool has_exported_attr = false;
+        std::string permission;
+        // CODER7 WAVE-3: android:enabled (disabled-components law).
+        bool enabled = true;
+        // CODER7 WAVE-2 per-filter model: AOSP PackageParser records EVERY
+        // <intent-filter> as its own matchable unit (the ordered dispatch
+        // resolves per (receiver, filter) pair, each with ITS priority —
+        // a receiver matching through two filters is delivered TWICE).
+        struct FilterTransfer {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            int priority = 0;
+            // CODER7 WAVE-3: the filter's <data> match dimensions
+            // (IntentFilter.matchData).
+            std::vector<C7DataSpec> datas;
+        };
+        std::vector<FilterTransfer> filters;
+    };
+    void set_manifest_receivers(std::vector<ManifestReceiverTransfer> rcv) {
+        manifest_receivers_.clear();
+        for (auto& r : rcv) {
+            ManifestReceiver mr;
+            mr.cls = std::move(r.cls);
+            mr.actions = std::move(r.actions);
+            mr.categories = std::move(r.categories);
+            mr.priority = r.priority;
+            mr.exported = r.exported;
+            mr.has_exported_attr = r.has_exported_attr;
+            mr.permission = std::move(r.permission);
+            mr.enabled = r.enabled;
+            for (auto& f : r.filters) {
+                ManifestReceiver::Filter ef;
+                ef.actions = std::move(f.actions);
+                ef.categories = std::move(f.categories);
+                ef.priority = f.priority;
+                ef.datas = std::move(f.datas);
+                mr.filters.push_back(std::move(ef));
+            }
+            // Defensive synthesis: a receiver transferred without filter
+            // records keeps its old union-level single-filter behavior.
+            if (mr.filters.empty()) {
+                ManifestReceiver::Filter ef;
+                ef.actions = mr.actions;
+                ef.categories = mr.categories;
+                ef.priority = mr.priority;
+                mr.filters.push_back(std::move(ef));
+            }
+            manifest_receivers_.push_back(std::move(mr));
+        }
     }
+
+    // ── CODER7 WAVE-3: activity/service resolution model transfer ────────
+    // The matchable component model for resolveActivity/resolveService/
+    // queryIntentActivities/queryIntentServices/queryBroadcastReceivers,
+    // the MATCH_DEFAULT_ONLY (CATEGORY_DEFAULT) law and the
+    // disabled-component exclusion law (AOSP PackageParser keeps every
+    // component's filters + PackageItemInfo.isEnabled).
+    struct ManifestFilterTransfer {
+        std::string cls;             // component class (dotted)
+        bool enabled = true;
+        bool exported = false;
+        int launch_mode = 0;         // activities only (0..3)
+        struct Filter {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            std::vector<C7DataSpec> datas;
+        };
+        std::vector<Filter> filters;
+    };
+    void set_manifest_activity_filters(std::vector<ManifestFilterTransfer> acts) {
+        manifest_activity_filters_ = std::move(acts);
+    }
+    void set_manifest_service_filters(std::vector<ManifestFilterTransfer> svcs) {
+        manifest_service_filters_ = std::move(svcs);
+    }
+    // CODER7 WAVE-3: manifest activity lookups for the task laws — the
+    // launch drain reads launchMode (singleTop) and enabled per target
+    // class (AOSP ActivityInfo.launchMode / PackageItemInfo.isEnabled).
+    int c7_activity_launch_mode(const std::string& cls_desc) const {
+        std::string dotted = cls_desc;
+        if (!dotted.empty() && dotted.front() == 'L') {
+            dotted = dotted.substr(1, dotted.size() - 2);
+            for (auto& c : dotted)
+                if (c == '/') c = '.';
+        }
+        for (const auto& a : manifest_activity_filters_)
+            if (a.cls == dotted) return a.launch_mode;
+        return 0;
+    }
+    bool c7_activity_enabled(const std::string& cls_desc) const {
+        std::string dotted = cls_desc;
+        if (!dotted.empty() && dotted.front() == 'L') {
+            dotted = dotted.substr(1, dotted.size() - 2);
+            for (auto& c : dotted)
+                if (c == '/') c = '.';
+        }
+        for (const auto& a : manifest_activity_filters_)
+            if (a.cls == dotted) return a.enabled;
+        return true;
+    }
+    // CODER7 WAVE-3: the running package (the caller ComponentName's
+    // package half — getCallingPackage law).
+    const std::string& package_name() const { return package_name_; }
     // ── #371 PHASE B2 setter (G-4: ABI-scoped lib extraction identity) ──
     // Called by the run flow when the package store holds extracted libs.
     void set_native_lib_dir(const std::string& logical,
@@ -3564,6 +3687,8 @@ public:
     // exported=true / multiprocess=false; manifest_reader already
     // parses both).
     std::vector<std::pair<std::string, bool>> manifest_provider_exported_;
+    // CODER7 WAVE-3: per-provider android:enabled (disabled-components law).
+    std::vector<std::pair<std::string, bool>> manifest_provider_enabled_;
     // GATE A: provider object → bound context object (attachInfo law).
     std::map<uint32_t, uint32_t> provider_context_;
     // ── #371 PHASE B1: ContentResolver authority→provider dispatch map ──
@@ -3606,6 +3731,14 @@ public:
     // addCategory(String) / countCategories() / getCategory(i) /
     // matchAction(String) need the declared-category list per filter oid.
     std::map<uint32_t, std::vector<std::string>> intent_filter_categories_;
+    // CODER7 ORDERED-BCAST law: IntentFilter priority state (heap oid →
+    // android:priority). AOSP IntentFilter.setPriority(int)/getPriority():
+    // the ordered-broadcast ordering key ("higher priority receivers are
+    // checked first"; BroadcastQueueModernImpl priority tranches).
+    std::map<uint32_t, int> intent_filter_priority_;
+    // CODER7 WAVE-3: the dynamic filter's <data> dimensions (addDataScheme/
+    // addDataType) — the IntentFilter.matchData dispatch half.
+    std::map<uint32_t, std::vector<C7DataSpec>> intent_filter_datas_;
     // ── #371 PHASE B5: service + broadcast dispatch state ──
     // AOSP ActiveServices law: startService instantiates the service class,
     // runs onCreate then onStartCommand(intent, flags, startId); a second
@@ -3619,8 +3752,47 @@ public:
         bool destroyed = false;
         bool started = false;   // startService path active (AOSP started service)
         int bindings = 0;       // bindService count (AOSP bound connections)
+        // ── CODER7 SVC contract completion (AOSP Service.java/ActiveServices) ──
+        // stopSelfResult(startId) law: stop succeeds ONLY when startId ==
+        // the service's last delivered startId (ActiveServices
+        // stopServiceTokenLocked: r.getLastStartId() != startId → no stop).
+        int next_start_id = 0;      // per-service startId counter (AOSP
+                                    // ServiceRecord startIds are per-record;
+                                    // the old code used a process-wide static)
+        int last_start_id = 0;      // getLastStartId()
+        // startForegroundService contract (AOSP: the service MUST call
+        // startForeground promptly). Headless runtime: no ANR clock — the
+        // contract is TRACKED and reported loudly, never faked.
+        bool fgs_needs_foreground = false;
+        // onUnbind/onRebind law (AOSP Service.onUnbind doc: "Return true if
+        // you would like to have the service's onRebind method later called
+        // when new clients bind to it").
+        bool do_rebind = false;     // last onUnbind returned true
+        bool on_unbind_overridden = false;  // computed once from DEX
+        uint32_t retained_binder_oid = 0;   // binder from the first onBind
+        std::string retained_binder_cls;
+        // per-connection binding records (AOSP: unbindService(conn) removes
+        // THAT connection only — the old code decremented the FIRST live
+        // service with bindings>0 regardless of which connection unbound).
+        struct ConnBinding {
+            int count = 0;
+            uint32_t bind_intent_oid = 0;  // the binding Intent (onUnbind arg)
+            // CODER7 WAVE-3 (AOSP ActiveServices.bindServiceLocked): a bind
+            // WITHOUT BIND_AUTO_CREATE does not bring the service up — the
+            // connection is QUEUED (no onCreate/onBind/onServiceConnected)
+            // until something starts the service; needs_connect marks the
+            // queued state and the connect is delivered at bring-up.
+            bool needs_connect = false;
+        };
+        std::map<uint32_t, ConnBinding> conn_bindings;
     };
     std::map<std::string, ServiceInstance> live_services_;
+    // CODER7 WAVE-2: the bring-down path law (AOSP ActiveServices
+    // bringDownServiceLocked). stopService/stopSelf must deliver
+    // onUnbind(bindingIntent) BEFORE onDestroy when live bindings exist —
+    // the base/wave-1 teardown path skipped onUnbind entirely (recorded
+    // PENDING in the wave-1 issue §7). Shared by every teardown site.
+    void c7_service_bring_down(ServiceInstance& svc, const char* reason);
     // AOSP BroadcastReceiver dispatch law: sendBroadcast(Intent) resolves
     // receivers whose intent-filter action matches the intent action —
     // dynamic registerReceiver registrations AND manifest <receiver>
@@ -3631,11 +3803,108 @@ public:
         uint32_t oid = 0;
         std::string cls;
         std::vector<std::string> actions;
+        // ── CODER7 ORDERED-BCAST law ──
+        int priority = 0;                 // IntentFilter.getPriority() at
+                                          // registerReceiver time
+        std::vector<std::string> categories;  // filter categories (match law)
+        // CODER7 WAVE-2: the registerReceiver(receiver, filter, permission,
+        // scheduler) broadcastPermission — AOSP LoadedApk.ReceiverDispatcher
+        // carries it and BroadcastQueue enforces it against the SENDER for
+        // every delivery (same law as a manifest receiver's
+        // android:permission). The base ignored the argument entirely.
+        std::string permission;
+        // CODER7 WAVE-3: the filter's <data> dimensions (addDataScheme /
+        // addDataType — IntentFilter.matchData for dynamic registrations).
+        std::vector<C7DataSpec> datas;
     };
     std::vector<DynamicReceiver> dynamic_receivers_;
-    // Manifest <receiver> name + intent-filter action pairs (parse-time).
-    std::vector<std::pair<std::string, std::vector<std::string>>>
-        manifest_receiver_actions_;
+    // Manifest <receiver> records (parse-time). ── CODER7: the old pair
+    // (class, actions) grew the full AOSP PackageParser receiver model —
+    // priority (max across filters), exported (with the declared-attr
+    // flag), permission, and the filter category union.
+    struct ManifestReceiver {
+        std::string cls;                      // dotted class name
+        std::vector<std::string> actions;
+        std::vector<std::string> categories;
+        int priority = 0;
+        bool exported = false;
+        bool has_exported_attr = false;
+        std::string permission;
+        // CODER7 WAVE-3: android:enabled — a disabled manifest receiver is
+        // not a dispatch candidate (AOSP disabled-components law).
+        bool enabled = true;
+        // CODER7 WAVE-2 per-filter model (AOSP PackageParser: every
+        // <intent-filter> is its own matchable record with its own
+        // priority/actions/categories — the wave-1 MAX-fold recorded only
+        // the receiver-level maximum, a documented PARTIAL).
+        struct Filter {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            int priority = 0;
+            // CODER7 WAVE-3: the filter's <data> match dimensions.
+            std::vector<C7DataSpec> datas;
+        };
+        std::vector<Filter> filters;
+    };
+    std::vector<ManifestReceiver> manifest_receivers_;
+    // CODER7 WAVE-3: activity/service resolution models (set_manifest_*_filters).
+    std::vector<ManifestFilterTransfer> manifest_activity_filters_;
+    std::vector<ManifestFilterTransfer> manifest_service_filters_;
+    // CODER7 WAVE-3: acquired ContentProviderClient objects (AOSP
+    // ContentResolver.acquireContentProviderClient) — heap object id → the
+    // authority the client is bound to; every client call routes through
+    // the same provider dispatch as ContentResolver.
+    std::map<uint32_t, std::string> c7_provider_client_authority_;
+    // CODER7 WAVE-2: sticky-broadcast cache (AOSP Context.sendStickyBroadcast
+    // law: the LAST sticky intent per action is retained by the system and
+    // delivered to every NEW receiver whose filter matches at
+    // registerReceiver time; removeStickyBroadcast drops it). Keyed by the
+    // intent ACTION (the runtime models one sticky per action — the
+    // BroadcastQueue per-action slot; data/type refinements are a
+    // documented simplification).
+    std::map<std::string, uint32_t> sticky_broadcasts_;
+    // CODER7 WAVE-2: true while the dispatcher is running the INITIAL
+    // sticky catch-up delivery of a freshly registered receiver (AOSP
+    // BroadcastReceiver.isInitialStickyBroadcast()).
+    bool initial_sticky_delivery_ = false;
+    // ── CODER7: ordered-broadcast dispatch state (AOSP BroadcastQueue ──
+    // ordered record: resultCode/resultData/resultExtras carried receiver
+    // to receiver; abortBroadcast stops LOWER-priority pending receivers
+    // but the final resultReceiver still runs — BroadcastReceiver.java
+    // abortBroadcast doc: "It will still call onReceive of the
+    // BroadcastReceiver that the caller of sendOrderedBroadcast passed in").
+    struct OrderedBroadcastState {
+        bool active = false;          // dispatch is an ordered broadcast
+        int code = -1;                // Activity.RESULT_OK seed (ContextImpl
+                                      // sendOrderedBroadcast overloads)
+        std::string data;             // resultData ("" until set / null flag)
+        bool has_data = false;        // data != null
+        uint32_t extras_oid = 0;      // resultExtras Bundle heap oid (0=null)
+        bool aborted = false;         // abortBroadcast() seen
+        uint32_t result_receiver_oid = 0;   // final receiver (0 = none)
+        std::string result_receiver_cls;
+        uint32_t pending_receiver_oid = 0;  // receiver currently executing
+        bool pending_is_final = false;      // executing the final receiver
+        bool in_ordered_dispatch = false;   // inside the dispatch loop
+        // CODER7: set when the pending receiver called goAsync() — AOSP
+        // BroadcastReceiver.goAsync detaches mPendingResult, so the
+        // receiver-level getResult*/setResult* then answer the no-pending
+        // defaults while the chain's carried state is untouched.
+        uint32_t pending_go_async_oid = 0;
+    };
+    OrderedBroadcastState ordered_broadcast_;
+    // BroadcastReceiver.PendingResult state (AOSP BroadcastReceiver.goAsync
+    // → PendingResult; the snapshot of the result state at goAsync time).
+    struct PendingResultState {
+        int code = 0;
+        std::string data;
+        bool has_data = false;
+        uint32_t extras_oid = 0;
+        bool aborted = false;
+        bool ordered = false;
+        bool finished = false;
+    };
+    std::map<uint32_t, PendingResultState> pending_results_;
     // Manifest <service> name + intent-filter action pairs (parse-time).
     std::vector<std::pair<std::string, std::vector<std::string>>>
         manifest_service_classes_;

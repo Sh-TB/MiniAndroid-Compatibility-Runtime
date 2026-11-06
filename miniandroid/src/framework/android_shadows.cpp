@@ -4825,6 +4825,48 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
                     // Intent(String, Uri) / setData data law.
                     pi->data_uri_object = c.object_id;
                     pi->data_uri_class = c.object_class;
+                    // CODER7 WAVE-3: parse the data URI's match dimensions
+                    // (scheme/host/path) — the IntentFilter.matchData half.
+                    if (heap_) {
+                        std::string c7_uraw;
+                        if (heap_->get_object_string_field(
+                                c.object_id, "uri_raw", c7_uraw) ||
+                            heap_->get_object_string_field(
+                                c.object_id, "uri", c7_uraw)) {
+                            // scheme://host/path
+                            size_t colon = c7_uraw.find(':');
+                            if (colon != std::string::npos) {
+                                pi->data_scheme = c7_uraw.substr(0, colon);
+                                std::string rest = c7_uraw.substr(colon + 1);
+                                if (rest.rfind("//", 0) == 0)
+                                    rest = rest.substr(2);
+                                size_t slash = rest.find('/');
+                                size_t qmark = rest.find('?');
+                                std::string auth = rest.substr(
+                                    0, std::min(slash, qmark) ==
+                                               std::string::npos
+                                           ? rest.size()
+                                           : std::min(slash, qmark));
+                                size_t at = auth.find('@');
+                                if (at != std::string::npos)
+                                    auth = auth.substr(at + 1);
+                                size_t colon2 = auth.rfind(':');
+                                if (colon2 != std::string::npos)
+                                    auth = auth.substr(0, colon2);
+                                pi->data_host = auth;
+                                if (slash != std::string::npos &&
+                                    (qmark == std::string::npos ||
+                                     slash < qmark)) {
+                                    size_t take =
+                                        qmark == std::string::npos
+                                            ? std::string::npos
+                                            : qmark - slash;
+                                    pi->data_path =
+                                        rest.substr(slash, take);
+                                }
+                            }
+                        }
+                    }
                 } else if (c.object_class.rfind("Landroid/", 0) != 0 &&
                            c.object_class.rfind("Ljava/", 0) != 0 &&
                            c.object_class.rfind("Landroidx/", 0) != 0) {
@@ -4849,6 +4891,24 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_string(pi->action);
     }
+    // ── CODER7 ORDERED-BCAST law: Intent category state (AOSP Intent
+    // addCategory appends; hasCategory answers membership). The broadcast
+    // dispatch matches every intent category against the receiver filter
+    // (IntentFilter.matchCategories).
+    if (m == "addCategory") {
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::STRING)
+            pi->categories.push_back(ctx.args[0].string_val);
+        return CallResult::handled_object(ctx.receiver_id,
+                                          "Landroid/content/Intent;");
+    }
+    if (m == "hasCategory") {
+        std::string want =
+            !ctx.args.empty() ? ctx.arg_as_string(0) : std::string();
+        for (const auto& c : pi->categories)
+            if (c == want) return CallResult::handled_bool(true);
+        return CallResult::handled_bool(false);
+    }
     if (m == "getData") {
         // EXP-056 + S-5 FIX (LOADING-CAMPAIGN): the ctor/setData path
         // RECORDS the Uri object (data_uri_object above) — getData must
@@ -4860,6 +4920,86 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
                                               pi->data_uri_class);
         }
         return CallResult::handled_null();
+    }
+    // ── CODER7 WAVE-3: the Intent.setType / setData / setDataAndType law
+    // (AOSP Intent.java): setType records the explicit MIME;
+    // setDataAndType records BOTH; setData records only the Uri. The
+    // IntentFilter.matchData dispatch (broadcast) and resolution
+    // (PackageManager) laws read these dimensions. setData accepts a Uri
+    // heap object and reads its raw string (the uri_raw field convention).
+    if (m == "setType" || m == "setData" || m == "setDataAndType") {
+        auto c7_uri_string_of = [&](uint32_t uid) -> std::string {
+            if (uid == 0 || !heap_ || !heap_->has_object(uid)) return {};
+            // The engine's Uri convention: the raw string lives in the
+            // "uri_raw" field (or "uri").
+            std::string raw;
+            if (heap_->get_object_string_field(uid, "uri_raw", raw)) return raw;
+            if (heap_->get_object_string_field(uid, "uri", raw)) return raw;
+            return {};
+        };
+        auto c7_parse_dims = [&](const std::string& uraw) {
+            pi->data_scheme.clear();
+            pi->data_host.clear();
+            pi->data_path.clear();
+            size_t colon = uraw.find(':');
+            if (colon == std::string::npos) return;
+            pi->data_scheme = uraw.substr(0, colon);
+            std::string rest = uraw.substr(colon + 1);
+            if (rest.rfind("//", 0) == 0) rest = rest.substr(2);
+            size_t slash = rest.find('/');
+            size_t qmark = rest.find('?');
+            size_t auth_end =
+                std::min(slash, qmark) == std::string::npos
+                    ? rest.size()
+                    : std::min(slash, qmark);
+            std::string auth = rest.substr(0, auth_end);
+            size_t at = auth.find('@');
+            if (at != std::string::npos) auth = auth.substr(at + 1);
+            size_t colon2 = auth.rfind(':');
+            if (colon2 != std::string::npos) auth = auth.substr(0, colon2);
+            pi->data_host = auth;
+            if (slash != std::string::npos &&
+                (qmark == std::string::npos || slash < qmark)) {
+                size_t take = qmark == std::string::npos
+                                  ? std::string::npos
+                                  : qmark - slash;
+                pi->data_path = rest.substr(slash, take);
+            }
+        };
+        if (m == "setType") {
+            pi->type = ctx.arg_as_string(0);
+        } else if (m == "setData") {
+            if (!ctx.args.empty() &&
+                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+                ctx.args[0].object_id != 0) {
+                pi->data_uri_object = ctx.args[0].object_id;
+                pi->data_uri_class =
+                    ctx.args[0].object_class.empty()
+                        ? std::string("Landroid/net/Uri;")
+                        : ctx.args[0].object_class;
+                c7_parse_dims(c7_uri_string_of(ctx.args[0].object_id));
+            }
+        } else {  // setDataAndType
+            if (!ctx.args.empty() &&
+                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+                ctx.args[0].object_id != 0) {
+                pi->data_uri_object = ctx.args[0].object_id;
+                pi->data_uri_class =
+                    ctx.args[0].object_class.empty()
+                        ? std::string("Landroid/net/Uri;")
+                        : ctx.args[0].object_class;
+                c7_parse_dims(c7_uri_string_of(ctx.args[0].object_id));
+            }
+            if (ctx.args.size() >= 2)
+                pi->type = ctx.arg_as_string(1);
+        }
+        return CallResult::handled_object(ctx.receiver_id,
+                                          "Landroid/content/Intent;");
+    }
+    if (m == "getType") {
+        // AOSP Intent.getType: null when no explicit MIME was set.
+        if (pi->type.empty()) return CallResult::handled_null();
+        return CallResult::handled_string(pi->type);
     }
     if (m == "setClass" || m == "setClassName" || m == "setComponent") {
         // setClass(Context, Class), setClassName(Context, String),
@@ -5425,7 +5565,12 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "isFinishing") {
-        return CallResult::handled_bool(pending_finish_);
+        // CODER7 WAVE-3 (AOSP Activity.mFinished): once finish() was
+        // requested on THIS activity the flag stays true through its whole
+        // teardown — onDestroy still observes isFinishing()==true. The old
+        // pending_finish_ reset answered false there.
+        return CallResult::handled_bool(pending_finish_ ||
+                                        is_finished(ctx.receiver_id));
     }
     if (m == "getApplicationContext") {
         // [R341-APPCTX] AOSP identity law — serve the bound manifest
@@ -5884,7 +6029,6 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
     if (m == "getResources" || m == "getPackageManager" || m == "getPackageName" ||
         m == "getClassLoader" || m == "getFilesDir" || m == "getCacheDir" ||
         m == "getSharedPreferences" || m == "getWindow" || m == "getWindowManager" ||
-        m == "getCallingActivity" || m == "getCallingPackage" ||
         m == "startActivityFromChild" ||
         m == "startActivityIfNeeded" || m == "startNextMatchingActivity") {
         // Let these fall through to the legacy bridge which has more
@@ -5892,6 +6036,9 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         // FIND-G08-007 fix: startActivityForResult was in this list, so it
         // returned not_handled BEFORE the real handler below — the for-
         // result launch never recorded a pending intent.
+        // CODER7 WAVE-3 fix: getCallingActivity/getCallingPackage were in
+        // this list too — the real handler below (the AOSP caller-identity
+        // law) was unreachable and the legacy bridge answered a hard null.
         return CallResult::not_handled();
     }
     // startActivity(Intent) — record the pending intent on the IntentShadow.
@@ -5931,8 +6078,18 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                     // every action-string second-activity family never
                     // opens (flappycow Play tap live evidence).
                     if (pi->component_class.empty() && !pi->action.empty()) {
-                        std::string resolved =
-                            intent_shadow->resolve_action_target(pi->action);
+                        // CODER7 WAVE-3: the CATEGORY_DEFAULT law — strict
+                        // pass first (the matching filter must declare
+                        // android.intent.category.DEFAULT), lax fallback
+                        // reported loudly (legacy corpus shapes).
+                        bool c7_lax = false;
+                        std::string resolved = intent_shadow->
+                            resolve_activity_target(pi->action, pi->categories,
+                                                    &c7_lax);
+                        if (c7_lax)
+                            std::cerr << "[C7-CAT] lax resolution (filter "
+                                         "lacks CATEGORY_DEFAULT) action=\""
+                                      << pi->action << "\"" << std::endl;
                         if (!resolved.empty()) {
                             pi->component_class = resolved;
                             std::cerr << "[S123-ACTION-RESOLVE] action=\""
@@ -5946,6 +6103,23 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                         ctx.args[1].kind == CallContext::Arg::Kind::INT) {
                         set_pending_launch_request_code(
                             static_cast<int>(ctx.args[1].int_val));
+                        // CODER7 WAVE-3 (AOSP Activity.startActivityFor-
+                        // Result → ActivityThread): the CALLER identity is
+                        // the activity that was current at the call — the
+                        // launched activity answers it via
+                        // getCallingActivity()/getCallingPackage(). The
+                        // receiver IS the caller when the shadow's current
+                        // slot is empty (first-frame launches).
+                        {
+                            std::string c7_caller =
+                                current_activity_class();
+                            if (c7_caller.empty() &&
+                                !ctx.receiver_class.empty())
+                                c7_caller = ctx.receiver_class;
+                            if (c7_caller.empty() && !ctx.class_name.empty())
+                                c7_caller = ctx.class_name;
+                            set_pending_launch_caller(c7_caller);
+                        }
                     }
                     if (!pi->component_class.empty()) {
                         std::cerr << "[INTENT] " << m << " called → "
@@ -5975,7 +6149,28 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "getCallingActivity" || m == "getCallingPackage") {
-        return CallResult::handled_null();
+        // ── CODER7 WAVE-3 (AOSP Activity.getCallingActivity / getCalling-
+        // Package): the ComponentName of the activity that called
+        // startActivityForResult to launch THIS activity; null when no
+        // caller exists (plain startActivity launches). The old stub
+        // answered a hard null — a fabricated negative.
+        if (current_caller_cls_.empty()) return CallResult::handled_null();
+        if (m == "getCallingPackage") {
+            if (runtime_package_.empty()) return CallResult::handled_null();
+            return CallResult::handled_string(runtime_package_);
+        }
+        if (!heap_) return CallResult::handled_null();
+        uint32_t cn_id = heap_->allocate("Landroid/content/ComponentName;");
+        std::string dotted = current_caller_cls_;
+        if (!dotted.empty() && dotted.front() == 'L') {
+            dotted = dotted.substr(1, dotted.size() - 2);
+            for (auto& c : dotted)
+                if (c == '/') c = '.';
+        }
+        heap_->set_string_field(cn_id, "mPackage", runtime_package_);
+        heap_->set_string_field(cn_id, "mClass", dotted);
+        return CallResult::handled_object(cn_id,
+                                          "Landroid/content/ComponentName;");
     }
     if (m == "runOnUiThread") {
         // ── R-NEW-359 (S45): AOSP Activity.runOnUiThread law ──────────────

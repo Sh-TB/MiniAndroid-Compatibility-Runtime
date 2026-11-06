@@ -1,0 +1,8 @@
+C7|W3-A1a|PASS|getCallingActivity=Main pkg=com.probe.c7act (AOSP caller identity law)
+C7|W3-A5|PASS|mFinished persists: isFinishing()==true in onDestroy
+C7|W3-A1b|PASS|onActivityResult(77, 7) delivered; (caller identity recorded by ResAct)
+C7|W3-A2a|PASS|no-flag service startActivity rejected; NEW_TASK launch delivered (instances=1): AndroidRuntimeException:Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+C7|W3-A3|PASS|singleTop: 1 instance, onNewIntent=1 (top re-launch did NOT create a new instance)
+C7|W3-A4|PASS|CLEAR_TOP: above destroyed (CTMid onDestroy), target destroyed+recreated (instances=2)
+C7|W3-A6|PASS|startActivities: both intents launched (FIFO queue drained)
+C7|W3-R04|PASS|disabled activity: launch attempt refused (0 instances)

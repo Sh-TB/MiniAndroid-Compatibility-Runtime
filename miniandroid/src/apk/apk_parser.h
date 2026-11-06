@@ -79,6 +79,7 @@ struct ApkInfo {
         std::string authorities;
         bool grant_uri_permissions = false;  // #371: ProviderInfo law
         bool exported = false;               // #371: ProviderInfo law
+        bool enabled = true;                 // CODER7 WAVE-3: isEnabled law
     };
     std::vector<ApkProviderInfo> providers;
 
