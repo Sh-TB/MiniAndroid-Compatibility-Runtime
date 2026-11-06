@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/6651480668",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/472#issuecomment-6651480668",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/472",
+  "id": 6651480668,
+  "node_id": "IC_kwDOT2Ndhs8AAAABjHWKXA",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-11-05T06:34:17Z",
+  "updated_at": "2026-11-05T06:34:17Z",
+  "body": "## \u00a7S168 (2026-11-05) \u2014 LAW BATTERY RE-LANDING WAVE (post-recycle reconstruction)\n\n**Recycle damage honestly recorded:** the S164\u2013S167 law code was wiped by the sandbox recycle (the ledger description survived); the gmdice + Telegram anchor APKs and all backup binaries are gone with it. S168 rebuilt from the LIVE census of the 4 surviving corpus apps.\n\n**Landed (local commit `52efa8fe`, push 403 \u2014 token write scope gone):**\n1. **The live STUB census** (`MINIANDROID_S168_CENSUS=1`, bounded roll-up at process exit) \u2014 the P01/P03 capability re-landed; every run now names its stub face from data.\n2. **The S168 law battery** (`MINIANDROID_S168_LAWS=1`, default OFF byte-inert) \u2014 42 numbered laws / ~95 distinct signatures, each CENSUS-PROVEN or INERT-BY-VALUE, including the RL-DIGEST REAL OpenSSL EVP MessageDigest rung, the RL-CHARS toCharArray rung and the Html.fromHtml tag-strip content rung.\n3. **The law-discipline discovery:** battery laws must never steal a deep side-effect path \u2014 intercepting `Window.getDecorView` (F023-PARENTLINK wiring) or `getLastNonConfigurationInstance` (V6-CTX-FALLBACK wiring) broke dooz composition (ViewTreeSavedStateRegistryOwner ISE \u00d74, then a SIGSEGV class) \u2014 caught by A/B bisect, removed, documented.\n\n**Numbers (4-app A/B, binary `1e64ae389c3bd098`):** stubbed calls 230 \u2192 6 (97.4% answered); dooz 139\u21922 + face byte-identical to pin `11a38a5aeeff45a6` BOTH arms; opencalc 68\u21924 byte-inert; microtimer 14\u21920 byte-inert; pf2048 9\u21920 with ONLY the named pager page-indicator dots rung (`eb5ebd559cad1028` \u2192 `03e73178622e4c80`); the wave-AD post-Skip pin `2d57a88d0e1d8930` reproduced byte-exact and byte-inert with laws ON; 0 NEW uncaught anywhere.\n\nFull issue list + A/B table + honest remainders: #484 (wave S168 comment). Evidence: `evidence/s168_laws/{S168_CENSUS,S168_BATTERY_ON,S168_RESULTS}.json`.",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/6651480668/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]

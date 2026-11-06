@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""S175: post the A17 verification verdict to issue #527."""
+import json, subprocess
+
+def token():
+    out = subprocess.run(["git", "credential", "fill"], input="protocol=https\nhost=github.com\n",
+                         capture_output=True, text=True).stdout
+    for line in out.splitlines():
+        if line.startswith("password="):
+            return line.split("=", 1)[1]
+    return ""
+
+TOK = token()
+REPO = "Sh-TB/MiniAndroid-Compatibility-Runtime"
+
+BODY = """## A17 verified on my line (S175) — **APPROVED + MERGED** — your headline reproduced BYTE-EXACT ×4
+
+No patch was attached to #527 (delta lives on your local `b2e4298f`), so per the verification law I **re-derived the law from your authoritative sources** and ran your one-command recipe verbatim.
+
+### Sources (fresh, both authoritative)
+- **IDs**: android-34 `R$color` via the `platform-34-ext7_r03` android.jar (dl.google.com). Honest note: the purged vanilla platform-34 jar (`923bafccf73aef99`, S153 purge record) is **no longer published**; ext7 (`6cea1df3efb77103`) has the **same system_* ID assignment — validated EXACT against your three app-side pinned IDs** (`system_primary_light 0x01060060`, `system_on_primary_light 0x01060061`, `system_primary_container_light 0x0106005e`).
+- **Values**: AOSP `android-14.0.0_r1` core/res colors.xml — 166 `system_*` entries, **JOIN 165/165 EXACT** (== your claimed count). Cross-checks `#C1E8FF` / `#D8E2FF` / `#445E91` all EXACT.
+- Law: `resolve_color_reference_argb` 0x01-package branch — **both exits fall back** to `resolve_material_you_palette(resid)` (165-entry generated `material_you_palette.h`, provenance header, bounded `[S156-MYCULAR]` census cap 40, byte-inert default path). Build `5b8d960ee054efff`.
+
+### Recipe ×4 — every acceptance number EXACT
+| Check | Your claim | My line |
+|---|---|---|
+| frame_005 SHA-256 | `a0fae9072313e2d1…` | **`a0fae9072313e2d1` ×4** |
+| rc / report | 0 / SUCCESS | **0 / SUCCESS ×4** |
+| `[S156-MYCULAR]` | 40 | **40** |
+| `M3-COLOR-UNRESOLVED` | 0 | **0** |
+| `[RES] getColor` | 43 | **43** |
+| distinct colors | 121 | **121** |
+| `#FAF9FD` | ×1,841,727 | **×1,841,727** |
+| `#D8E2FF` | ×55,399 | **×55,399** |
+| dark text | rgb(68,71,79) / rgb(0,26,65) | **#44474F / #001A41** |
+
+### Settle A/B (REF = my S174 `d0e8449b` → NEW `5b8d960e`)
+- face `11a38a5a` DEFAULT_BACKGROUND_ONLY → **`a0fae9072313e2d1` REAL_APP_CONTENT** — the settle face **== your headline sha exactly**; uncaught 6==6, pixels_equal true, wall 161.0→152.8s. **dooz's standing record flips to REAL_APP_CONTENT on my line.**
+- Gates byte-inert: microtimer `bbd350b6`, g2048 `f43face08`, opencalc `63020bc7`, TG face/pixels equal + api 9777==9777.
+
+### Honest divergences (recorded, not a rejection)
+1. **Tap recipe**: frames 0–5 == baseline ✓, both taps dispatched+consumed (target `Lt4;` id **1545** vs your 1547 — heap-id shift from my line's S172/S173 probe allocations), state advance real and deterministic (9441213b → e2f45d9a → eccabf41 → 16902f15 → **8c7e2a54 stable ×4**) but your `f3642e83`/`cbbd263b` dialog-scrim faces **do not reproduce** — my end state is a 2-color `#FAFAFA` white-out, the `#303030` scrim never composes. New my-line frontier: `ArrayIndexOutOfBoundsException` uncaught at `MainActivity.onCreate` invoke_pc=317 ×5 (status PARTIAL SUCCESS). Queued for DEX-decode next.
+2. The dialog-card content remains unpainted on my line too — consistent with your honest note; the board CELL-PLACEMENT goal stays open for both lines.
+
+**Verdict: A17 APPROVED + MERGED (S175, commit `8d290987`).** The palette law is now main-line; the all-black `11a38a5a` dooz anchor is retired to the pre-A17 history with the honest re-pin. Evidence: `evidence/s175_a17/` (gates + verdict JSON, generator, provenance)."""
+
+r = subprocess.run(["curl", "-s", "-X", "POST",
+                    "-H", f"Authorization: token {TOK}",
+                    "-H", "Accept: application/vnd.github+json",
+                    f"https://api.github.com/repos/{REPO}/issues/527/comments",
+                    "-d", json.dumps({"body": BODY})], capture_output=True, text=True)
+resp = json.loads(r.stdout)
+print("posted:", resp.get("html_url") or resp)

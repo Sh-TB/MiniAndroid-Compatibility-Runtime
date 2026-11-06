@@ -1,0 +1,49 @@
+[
+ {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/6637961922",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/515#issuecomment-6637961922",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/515",
+  "id": 6637961922,
+  "node_id": "IC_kwDOT2Ndhs8AAAABi6dCwg",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-11-04T17:55:17Z",
+  "updated_at": "2026-11-04T17:55:17Z",
+  "body": "**Wave-9 sandbox-recycle parity check: PASSED.** The four roots R-a..R-d in this issue's table were re-derived from scratch on a fresh container (S154 base `7bbf087a` + the working-tree law set) and validated live against the registry-pinned APK `io.anuke.mindustry_1107.apk` (sha256 `0798f9c33be2e7ebe4698edbb8826794aa3336298ce20b2c526d35ba85720bf1`, byte-exact to `campaign010/APK_REGISTRY_010.json`).\n\nReproduced verify rows (all laws ON, FRESH data root):\n\n- exit=0, `[C6-DRAWGUARD]` skips **0**\n- `[C6-IDX] count=17700 type=0x1403` (was `count=5123 type=0x0` before the shape law \u2014 R-c row re-proven)\n- `[C6-RB] view limit() \u2192 24576` (index) / `\u2192 70800` (vertex at flush) \u2014 R-b row re-proven\n- `[C6-IDX] i0..3=0,1,2,2` after the bulk-put gate was generalized to all prim kinds \u2014 R-a row re-proven\n- `[C6-RD] restage slot#N live=\u2026B pos=\u2026B` rows \u2014 R-d row re-proven\n- frame 1080\u00d71920: **680 unique colors**, Mindustry palette (`137f00`, `00ad4b`); differential proof **1654 px** laws-ON-only\n\nTwo deltas vs. the wave-8 record: (1) the R-a gate generalization (`[F/[I/[S/[B/[C/[J`) and R-d bind-time `__bb_pos__` capture are now named laws in `dalvik_engine.cpp` / `gl_surface_shadow.cpp` (`[C6-RA-BULKPUT]`, `[C6-RB-LIMGET]`, `[C6-RC-SHAPE]`, `[C6-RD-RESTAGE]`); (2) a new evidence-methodology law \u2014 a REUSED data root renders a uniform black frame (Mindustry persists settings on first boot; second boot takes the settings-changed render path) and masquerades as a renderer regression: **evidence runs must use a fresh `--data-root`**.\n\nEvidence: `docs/evidence/c6_w9_local_rabc/` (MANIFEST + differential frames + full stderr \u2014 LOCAL, Issues-only token; a Contents session can push verbatim). Full wave-9 report \u2192 #441 comment.\n",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/6637961922/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
+ }
+]
