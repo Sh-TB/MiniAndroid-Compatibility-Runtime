@@ -7696,3 +7696,43 @@ work is already paying on titles that were dead since September.
 - Remaining in family: tibarj.tranquilstopwatch #170 = separate root
   (FragmentContainerView.<init> NPE — inflation passes a NULL AttributeSet to
   the view ctor; getClassAttribute interface call on null at pc=0x38) — next law.
+
+## S186g/h — Wave 1 complete (registry+recovery map) + two generic engine laws from tibarj #170 (2026-11-07)
+
+**S186 directive (1666 lines) read line-by-line; Wave 1 executed at HEAD 47a5aa87:**
+- Real build-graph audit (`scripts/s186g_wave1_audit.py`): 33 DT_NEEDED, 517 U-symbols, 6-level
+  status for 22 libraries → `library_ecosystem/registry.json` (+capability_matrix, dependency_graph,
+  reports/WAVE1_AUDIT.json, README). JNI pins re-verified == S183b: gdx64=64, box2d=266, freetype=68.
+- New gaps found: libwebpdemux NOT linked (animated WebP impossible); audio = 2 linked decode paths +
+  2 vendored decoders and ZERO real-APK proof (Rule 5 risk); conscrypt JNI gap (taz); libEGL/GLESv2/
+  OpenSLES anchors are stubs (B2/B7 real backends open); minimp3/stb_vorbis duplicate audio = prune
+  candidate pending Rule 3 trace.
+- Ranked recovery map (`docs/S186_INCOMPLETE_RECOVERY_MAP.md`, PART-8 scores): AndroidX class-init 73,
+  F-NPE family 59, GLES/EGL native 50, B6 image decode 48, TLS/conscrypt 35, audio B7 32, F-RES 27.
+- Report + Coder 2–9 assignments posted to #536 (comment 6690336740; first POST had actually succeeded,
+  duplicate deleted — GitHub comments API returns `id`, not `number`).
+
+**S186h — tibarj.tranquilstopwatch #170 probe-first chain (fresh store, real-dalvik, HEAD 3c9d418f):**
+1. Probe: `FragmentContainerView.<init>` → theme-backed obtainStyledAttributes → `Lb1/t0;.A` (= R8-
+   renamed FragmentManager.findFragmentById) NPE reading `Lb0/k;.a` (fragment store) at pc=2.
+2. Disasm (`scripts/s186h_disasm_170A.py`): FCV internal ctor `(Context, AttributeSet, Lb1/t0;)` calls
+   A(I) at pc=116; A's tail returns null for an EMPTY store — the null store was the crime, not the
+   contract. F-NEW-188/188b are name-keyed and cannot fire on R8-renamed androidx.
+3. `[FCV-SEL]` diag: run_custom_view_constructor supplies 3 args (recv, ctx, attrs) but the
+   descriptor-less matcher picked the **3-param internal ctor** (type-prefix law + largest-bytecode
+   preference) — the FM param register read a stale heap oid → real androidx body ran on garbage.
+4. **LAW 1 — ARITY LAW** (matcher core): exact-arity candidates win over larger-arity type-prefix
+   matches. After: 2-arg ctor picked (FCV-SEL proves it).
+5. **LAW 2 — F-NEW-188c real-init**: resolve the app's REAL FM class structurally (FCV internal-ctor
+   signature — R8 cannot rename FCV or signatures), alias canonical+real keys to ONE object, run the
+   real `<init>()V` once. Not yet triggered on #170 (getSupportFragmentManager also R8-renamed) —
+   queued generalization: apply real-init at the androidx object-graph construction chain.
+   ODR lesson: law state in fn-local statics; adding DalvikExecutionEngine members across a partial
+   rebuild = sizeof mismatch → segfault in std::string::_M_assign (measured, fixed).
+6. A/B state: #170 FCV/store blocker GONE (now reaches the fragment state machine b1/d0.H; 12
+   uncaught remain — next root = androidx construction chain: u1/a lifecycle-null, a/q
+   FragmentHostCallback ctor NPE, g/l.<init>; face still black — HONEST: no verdict upgrade).
+7. Goldens held: dooz d602648e8e401895 (== cont108 standing wall pin), unote 3b8dcb0adbbc17a9
+   0-uncaught (== standing pin). Engine rebuilt from 75 cached .o + new dalvik_engine.o
+   (`scripts/s186h_rebuild_engine.sh`; sandbox lost cmake — .d files record the unit list; -O0 -g0
+   for the 76k-line unit after cc1plus OOM).
