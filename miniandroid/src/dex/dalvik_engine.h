@@ -3310,6 +3310,12 @@ public:
     // matching real Android behavior where getResources() always returns the
     // same Resources instance for a given Context.
     std::map<std::string, uint32_t> api_singletons_;
+
+    // S186h F-NEW-188c — obfuscated androidx FragmentManager singleton
+    // REAL-INIT law (state in function-local statics inside the .cpp —
+    // do NOT add data members here: sizeof() must stay stable across
+    // partial rebuilds; measured ODR crash S186h).
+    void realinit_fragment_manager_singleton(uint32_t fm_oid);
     // R-005 DECOR-LINKAGE (S105): per-activity window decor oid. AOSP law:
     // ONE DecorView per Window per Activity (PhoneWindow.mDecor created
     // once and stable for the window lifetime). The global singleton key

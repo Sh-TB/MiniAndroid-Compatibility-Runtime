@@ -9198,6 +9198,13 @@ bool DalvikExecutionEngine::try_recursive_invoke(
          declaring_class == "Landroidx/fragment/app/FragmentActivity;")) {
         return_val = get_or_create_singleton(
             "Landroidx/fragment/app/FragmentManager;");
+        // S186h F-NEW-188c: make the singleton REAL for R8-obfuscated
+        // androidx (FragmentManager renamed, FCV kept) — resolve the real
+        // class, alias identity, run <init>()V once. No-op on canonical
+        // layouts (resolver finds no obfuscated signature).
+        if (return_val.type == DalvikType::OBJECT_REF) {
+            realinit_fragment_manager_singleton(return_val.object_id);
+        }
         last_invoke_return_ = return_val;
         recursion_depth_--;
         return true;
@@ -12773,6 +12780,14 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     for (const auto& m : cls_ref.virtual_methods) f107_cands.push_back(&m);
     const dex::MethodInfo* best_match = nullptr;
     const dex::MethodInfo* fallback_match = nullptr;
+    // S186h ARITY LAW: exact-arity best candidate (ART JVMS 5.4.5 —
+    // descriptor-less selection must never execute an overload whose
+    // parameter count exceeds the supplied slots; trailing registers are
+    // garbage. Measured: FCV XML inflation (2 supplied params) executed
+    // the package-private (Context, AttributeSet, FragmentManager) ctor,
+    // the FM register carried a stale heap oid and the real androidx
+    // findFragmentById body NPE'd on its uninitialized store).
+    const dex::MethodInfo* best_arity_match = nullptr;
     size_t arg_count = args.size();
 
     for (const dex::MethodInfo* method_ptr : f107_cands) {
@@ -13146,6 +13161,17 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 }
             }
             if (type_matches) {
+                // S186h ARITY LAW: track the exact-arity candidate with the
+                // same largest-bytecode preference. Exact-arity wins at
+                // selection time (below); the legacy best_match path stays
+                // untouched as the no-exact-arity fallback.
+                size_t supplied_params =
+                    arg_count - ((!is_static_method && arg_count > 0) ? 1 : 0);
+                if (param_count == supplied_params &&
+                    (!best_arity_match ||
+                     method.bytecode.size() > best_arity_match->bytecode.size())) {
+                    best_arity_match = method_ptr;
+                }
                 // EXP-078: Multi-DEX method shadowing fix.
                 // When DEX files are merged, the same method name may appear
                 // in multiple DEX files with different bytecode sizes.
@@ -13163,7 +13189,29 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
     }
 
+    // S186h ARITY LAW selection: an exact-arity candidate is the ART-lawful
+    // pick whenever one exists; the descriptor-less type-prefix path only
+    // serves as fallback when every candidate mismatches arity.
+    if (best_arity_match) best_match = best_arity_match;
+
     const dex::MethodInfo* selected_ptr = best_match ? best_match : fallback_match;
+
+    // S186h DIAG (env-gated, read-only): FCV ctor selection identity —
+    // probe tibarj #170 (obfuscated androidx): which <init> overload runs
+    // with which arg count, and is the FM param register ever fed garbage?
+    if (class_descriptor == "Landroidx/fragment/app/FragmentContainerView;" &&
+        method_name == "<init>" &&
+        std::getenv("MINIANDROID_FCV_DIAG") != nullptr) {
+        static thread_local uint64_t fcv_sel_n = 0;
+        if (fcv_sel_n++ < 24)
+            std::cerr << "[FCV-SEL] cands=" << f107_cands.size()
+                      << " argc=" << arg_count
+                      << " best="
+                      << (best_match ? best_match->descriptor : "null")
+                      << " fb="
+                      << (fallback_match ? fallback_match->descriptor : "null")
+                      << " want=" << method_descriptor << std::endl;
+    }
 
     // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): the text-painter resolution
     // watch — try_recursive_invoke("Lte1;","I",…,"(Loc0;)V") returns false
@@ -36420,6 +36468,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          method == "getSupportFragmentManager")) {
         DalvikValue sfm = get_or_create_singleton(
             "Landroidx/fragment/app/FragmentManager;");
+        // S186h F-NEW-188c: obfuscated-FM real-init (same law as the
+        // invoke-layer site above).
+        if (sfm.type == DalvikType::OBJECT_REF) {
+            realinit_fragment_manager_singleton(sfm.object_id);
+        }
         result = sfm;
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -76101,6 +76154,96 @@ DalvikValue DalvikExecutionEngine::get_or_create_dir_file(const std::string& pat
     v.object_id = obj_id;
     v.class_desc = kFileDesc;
     return v;
+}
+
+// ── S186h F-NEW-188c — obfuscated androidx FragmentManager REAL-INIT law ──
+// Probe (tibarj.tranquilstopwatch #170, fresh store, real-dalvik trace):
+//   FCV internal ctor (kept name — referenced from layout XML) calls the
+//   R8-renamed FragmentManager body: `Lb1/t0;.A(I)Lb1/a0;` (=
+//   findFragmentById) reads `Lb0/k;.a` (the fragment store) at its pc=2
+//   and NPEs because the F-NEW-188 singleton was minted under the
+//   CANONICAL name with an empty field set — the FM <init> never ran.
+//   The existing F-NEW-188b findFragmentById intercept is name-keyed and
+//   cannot fire on obfuscated method names (A/B/C…), so the real body
+//   executed on empty state.
+// LAW (generic, Rule 6 — semantics not names):
+//   1. The app's REAL FragmentManager class is recoverable STRUCTURALLY:
+//      FragmentContainerView's internal constructor signature is
+//      (Context, AttributeSet, L<real-fm>;) — R8 can rename FragmentManager
+//      but NOT FragmentContainerView (kept for XML) and NOT the signature.
+//   2. Mint ONE object; alias BOTH the canonical key and the real class
+//      key to it (identity law F-NEW-188 preserved).
+//   3. Execute the real <init>()V of the real class on that object ONCE.
+//      The store fields then hold genuine androidx state and ANY obfuscated
+//      method body executes lawfully — an empty manager answers the
+//      androidx @Nullable null contract from its own bytecode tail
+//      (measured: b1/t0.A falls through to const/4 v6,0; return-object).
+//      No synthetic null-return shim is added for the obfuscated path
+//      (SQLITE Rule 1: vend the real behavior, don't rewrite it).
+// NOTE: law state lives in function-local statics (NOT class members) —
+//   adding members to DalvikExecutionEngine changes sizeof() and would ODR-
+//   mismatch the other translation units' objects without a full rebuild
+//   (measured S186h: mixed-layout relink crashed dooz golden in
+//   std::string::_M_assign during APPLICATION_CREATE).
+void DalvikExecutionEngine::realinit_fragment_manager_singleton(uint32_t fm_oid) {
+    static std::set<uint32_t>& done = *new std::set<uint32_t>();
+    static std::string resolved_real_fm_class_;
+    static bool real_fm_class_resolved_ = false;
+
+    if (fm_oid == 0 || done.count(fm_oid)) return;
+
+    if (!real_fm_class_resolved_) {
+        real_fm_class_resolved_ = true;
+        if (dex_report_ != nullptr) {
+            const std::string fcv =
+                "Landroidx/fragment/app/FragmentContainerView;";
+            for (const auto& cls : dex_report_->classes) {
+                if (cls.name != fcv) continue;
+                for (const auto& m : cls.direct_methods) {
+                    if (!m.is_constructor) continue;
+                    // Internal ctor = 3 params: (Context, AttributeSet, FM)
+                    if (m.parameters.size() != 3) continue;
+                    const std::string& third = m.parameters[2];
+                    if (third.size() > 2 && third[0] == 'L' &&
+                        third != fcv &&
+                        third != "Landroidx/fragment/app/FragmentManager;") {
+                        resolved_real_fm_class_ = third;
+                    }
+                }
+                break;
+            }
+        }
+        if (!resolved_real_fm_class_.empty()) {
+            std::cerr << "[F-NEW-188c] resolved real FM class = "
+                      << resolved_real_fm_class_ << std::endl;
+        } else {
+            std::cerr << "[F-NEW-188c] no obfuscated FM signature found "
+                         "(canonical androidx layout) — real-init skipped"
+                      << std::endl;
+        }
+    }
+
+    const std::string& real_fm = resolved_real_fm_class_;
+    if (real_fm.empty()) return;
+
+    // Identity law: ONE object, TWO keys (canonical + real class).
+    auto it = api_singletons_.find(real_fm);
+    if (it != api_singletons_.end() && it->second != fm_oid) {
+        std::cerr << "[F-NEW-188c] WARNING real-FM key already bound to obj#"
+                  << it->second << " (kept existing binding)" << std::endl;
+        return;
+    }
+    api_singletons_[real_fm] = fm_oid;
+
+    // Run the real <init>()V ONCE on the shared object.
+    done.insert(fm_oid);
+    DalvikValue rv;
+    DalvikExecutionResult res;
+    std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(fm_oid, real_fm));
+    bool ok = try_recursive_invoke(real_fm, "<init>", args, rv, res);
+    std::cerr << "[F-NEW-188c] real-init " << real_fm << " obj#" << fm_oid
+              << " ok=" << (ok ? 1 : 0) << std::endl;
 }
 
 DalvikValue DalvikExecutionEngine::get_or_create_singleton(const std::string& class_desc) {
