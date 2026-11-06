@@ -7604,3 +7604,24 @@ Stage Summary:
 - INCOMPLETE CENSUS (scripts/s186_incomplete_census.py → S186_INCOMPLETE_CENSUS.json; 535 issues, 422 open): 43 REAL STUCK (37 EXECUTED_CRASHED + 6 PARTIAL), 157 intake placeholders, 222 meta. **42/43 REAL-STUCK untouched since ≤2026-09-22** (only #227 moved 11-02) — user's half-finished suspicion confirmed with dates.
 - COMPLETION PLAN (S186_REPORT.md): 1) B6 stb_image wire-up (ALREADY vendored third_party/stb) ~90 titles visual headroom; 2) box2d GATE A completion (bouncy physics); 3) B2 PortableGL (ALREADY vendored third_party/portablegl.h); 4) B3 #227 compose law; 5) androidx fan-out 18/14/13/9; 6) B1 per-title native rebuilds (#70/#58/#72/#76/#224); 7) B7 OpenAL-soft. Re-battery: refetch 129 s107 APKs (F-Droid; /tmp corpus died), run s182 invocation law, census faces — honest before/after per law.
 - PINNED NEXT: (1) B6 stb_image BitmapFactory wire + A/B on B-tier; (2) box2d GATE A; (3) B2 PortableGL GLSurfaceView; (4) #227 compose boundary law; (5) GLES20 sprite frontier (S183b) unchanged.
+
+## S186b — SQLITE_RULE law #2 (box2d GATE-A completion) verified by real command (2026-11-06)
+
+- Found `tools/native_host/` EMPTY: the three host libgdx .so died with the sandbox wipe
+  (the S186 rerun binary was rebuilt, but the host natives were never re-built). This was
+  the real cause of the S186 "bouncy regression" (face dd0c1425, 13 errors, gdx_host=0):
+  environment loss, not an engine change.
+- Clause-4 rebuild: `bash scripts/s183_build_gdx_host.sh` (fetch-if-missing from tag
+  gdx-parent-1.9.10) → libgdx64.so / libgdx-box2d64.so (266 JNI symbols) /
+  libgdx-freetype64.so (68 JNI symbols) — symbol counts identical to S183b.
+- A/B (scripts/s186b_box2d_ab.py, exact s182 invocation law, fresh store):
+  System.loadLibrary("gdx-box2d") → GATE A substituted the host build
+  (console: "LOADED REAL host-native build ... sha16=8d4fe15b"), uncaught 13→0,
+  face **8a6c24ac8a7d718e = BYTE-EXACT match with the S183b pin** (S183_GDX.json
+  bouncy.face). Law #2 VERIFIED; SQLITE_RULE Clause 4 re-proven (script+URL reproduces
+  the artifact byte-exactly).
+- Artifacts: evidence/s186_s107/{S186B_BOX2D_AB.json,S186b_bouncy_face.jpg},
+  scripts/s186b_box2d_ab.py. reruns_box2d/ stays out of git (S186 evidence law).
+- NEXT: stuck-titles re-battery — 40/41 stuck APKs missing from disk (sandbox wipe),
+  re-fetch from fixed URLs (F-Droid repo), run the s182 invocation law over all,
+  produce the honest before/after family matrix (user directive: "همشون رو اجرا بکن").

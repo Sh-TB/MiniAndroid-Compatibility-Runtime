@@ -1,0 +1,31 @@
+{
+  "law": "SQLITE_RULE #2 box2d GATE-A completion",
+  "pkg": "com.dozingcatsoftware.bouncy",
+  "face_sha16": "8a6c24ac8a7d718e",
+  "prior_face_sha16_s182_pin": "dd0c14257fa1f2af",
+  "prior_face_sha16_s186_rerun": "dd0c14257fa1f2af",
+  "unique_colors": 746,
+  "gdx_host_substituted": true,
+  "gdx_box2d_substituted": true,
+  "box2d_uncaught_remaining": 0,
+  "uncaught_total": 0,
+  "rc0": false,
+  "console_key_lines": [
+    "[GDX-HOST] System.loadLibrary(\"gdx-box2d\"): bionic binary skipped (would fault the host loader); LOADED REAL host-native build /home/z/my-project/miniandroid/build/../../tools/native_host/libgdx-box2d64.so sha16=8d4fe15b"
+  ],
+  "prior_face_sha16_s183b_pin": "8a6c24ac8a7d718e",
+  "byte_exact_vs_s183b_pin": true,
+  "verdict": "LAW #2 VERIFIED: host libgdx-box2d64.so rebuilt from upstream sources via scripts/s183_build_gdx_host.sh (fetch-if-missing; 266 JNI symbols == S183b); GATE A substituted it (console GDX-HOST line, sha16 8d4fe15b); uncaught 13->0 vs S186 rerun; face 8a6c24ac8a7d718e BYTE-EXACT == S183b pin. S186 \"regression\" was sandbox loss of the built artifact, engine code unchanged. SQLITE_RULE Clause 4 re-proven: script+URL reproduces the artifact byte-exactly.",
+  "before_after": {
+    "S186_rerun_no_hostlib": {
+      "errors": 13,
+      "gdx_host": 0,
+      "face": "dd0c14257fa1f2af"
+    },
+    "S186b_rebuilt_hostlib": {
+      "uncaught": 0,
+      "gdx_host": 1,
+      "face": "8a6c24ac8a7d718e"
+    }
+  }
+}
