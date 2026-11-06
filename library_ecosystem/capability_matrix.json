@@ -1,0 +1,115 @@
+{
+ "schema": "s186-capability-matrix/v1",
+ "date": "2026-11-06",
+ "capabilities": [
+  {
+   "capability": "GLES2 software rendering",
+   "current_backend": "PortableGL (compiled-in)",
+   "consumers": [
+    "app.halma #27",
+    "se.tube42.p9 #225",
+    "Mindustry",
+    "Vector Pinball",
+    "Stardroid",
+    "libGDX family"
+   ],
+   "state": "A_RICH 2/41 in S186c battery; native family gated by EGL/surface semantics",
+   "candidates": [
+    "gl4es (GLES-over-GL semantic gaps)",
+    "keep PortableGL (audit first \u2014 directive PART 5A)"
+   ],
+   "fan_out": "10-title native/GL cluster (S185 census)"
+  },
+  {
+   "capability": "image decode to real Bitmap pixels (B6)",
+   "current_backend": "stb_image + libpng + libjpeg + libwebp",
+   "consumers": [
+    "14 B_STRUCTURED faces one fix away (S185)",
+    "10 B_STRUCTURED in s107 census"
+   ],
+   "state": "decoders linked+called; structured-content flattening root cause not fully closed",
+   "candidates": [
+    "AOSP BitmapFactory semantics port",
+    "premultiplied-alpha audit"
+   ],
+   "fan_out": "up to 43 near-blank + 10 B_STRUCTURED (census tiers)"
+  },
+  {
+   "capability": "AndroidX class-init (lifecycle/savedstate/fragment)",
+   "current_backend": "shadow stubs + partial vendored sources",
+   "consumers": [
+    "54-title headroom (S185)",
+    "F-ANDROIDX 6 in battery: datastore x2, OnBackPressedDispatcher x2, FragmentContainerView, appcompat"
+   ],
+   "state": "S186f descendingIterator law landed (foehnix 10->0, aoc 10->0)",
+   "candidates": [
+    "androidx sources.jar port per class (Rule 1: vend don't rewrite)"
+   ],
+   "fan_out": "highest of all families"
+  },
+  {
+   "capability": "physics (Box2D) for libGDX",
+   "current_backend": "host-native libgdx-box2d64.so via GATE-A",
+   "consumers": [
+    "bouncy (byte-exact pin)"
+   ],
+   "state": "S186b verified; regression = environment loss, not engine",
+   "candidates": [],
+   "fan_out": "all libGDX physics titles"
+  },
+  {
+   "capability": "SQLite storage",
+   "current_backend": "system libsqlite3",
+   "consumers": [
+    "S185 rule corpus"
+   ],
+   "state": "law formalized issue #536",
+   "candidates": [],
+   "fan_out": "datastore/deck-family titles"
+  },
+  {
+   "capability": "audio output",
+   "current_backend": "mpg123+sndfile linked; minimp3/stb_vorbis vendored (dupe)",
+   "consumers": [
+    "MP3/OGG-asset games"
+   ],
+   "state": "decode linked; NO real-APK audio proof yet (Rule 5)",
+   "candidates": [
+    "OpenAL Soft bridge for OpenSL ES (B7)"
+   ],
+   "fan_out": "B7 cluster + every game with sound assets"
+  },
+  {
+   "capability": "TLS/network",
+   "current_backend": "OpenSSL linked",
+   "consumers": [
+    "taz #? (conscrypt UnsatisfiedLinkError)"
+   ],
+   "state": "SSL symbols called; conscrypt JNI gap open",
+   "candidates": [
+    "conscrypt rebuild or BoringSSL path"
+   ],
+   "fan_out": "F-NATIVE 1 + all HTTPS titles"
+  },
+  {
+   "capability": "text shaping (Persian/Arabic/RTL)",
+   "current_backend": "FreeType+HarfBuzz+FriBidi",
+   "consumers": [
+    "multilingual titles"
+   ],
+   "state": "linked+called; per-script probes pending",
+   "candidates": [],
+   "fan_out": "all i18n titles"
+  },
+  {
+   "capability": "WebView/JS",
+   "current_backend": "QuickJS compiled-in (S118)",
+   "consumers": [
+    "web titles"
+   ],
+   "state": "reuse+audit mandated",
+   "candidates": [],
+   "fan_out": "webview titles"
+  }
+ ]
+}

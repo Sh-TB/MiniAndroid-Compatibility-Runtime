@@ -1,0 +1,568 @@
+{
+ "schema": "s186-library-registry/v1",
+ "date": "2026-11-06",
+ "law": "S185 SQLITE RULE (issue #536) + S186 directive PART 2",
+ "levels_legend": [
+  "1_available_in_source",
+  "2_compiled",
+  "3_linked",
+  "4_loaded",
+  "5_called",
+  "6_proven_via_real_apk"
+ ],
+ "libraries": [
+  {
+   "NAME": "SQLite",
+   "UPSTREAM": "https://www.sqlite.org/",
+   "LICENSE": "public domain",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called",
+    "proven"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libsqlite3.so.0",
+   "CALLED_SYMBOLS": 27,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "java_database_shadow (JDBC-style SQLiteDatabase shadow)",
+   "REAL_APK_CONSUMERS": [
+    "S185 SQLITE RULE corpus (datastore-family titles)"
+   ],
+   "TEST_EVIDENCE": "docs/SQLITE_RULE.md; 27 U sqlite3_* symbols in engine binary",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": "system Debian libsqlite3-dev; CMake foreach(crypto sqlite3) find_library"
+  },
+  {
+   "NAME": "zlib",
+   "UPSTREAM": "https://zlib.net/",
+   "LICENSE": "zlib",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called",
+    "proven"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libz.so.1",
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": [
+    "apk_parser (central directory inflate)",
+    "resource PNG paths"
+   ],
+   "ANDROID_API_ADAPTER": null,
+   "REAL_APK_CONSUMERS": [],
+   "TEST_EVIDENCE": "find_package(ZLIB REQUIRED); every APK load depends on it",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": "system Debian zlib1g-dev"
+  },
+  {
+   "NAME": "libpng",
+   "UPSTREAM": "https://github.com/pnggroup/libpng",
+   "LICENSE": "libpng-2.0",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called",
+    "proven"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libpng16.so.16",
+   "CALLED_SYMBOLS": 30,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "BitmapFactory shadow -> png_decode path",
+   "REAL_APK_CONSUMERS": [
+    "B_STRUCTURED image family (S183 B6)"
+   ],
+   "TEST_EVIDENCE": "30 U png_* symbols; B6 face-flip evidence S183",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": "system Debian libpng-dev"
+  },
+  {
+   "NAME": "libjpeg-turbo",
+   "UPSTREAM": "https://github.com/libjpeg-turbo/libjpeg-turbo",
+   "LICENSE": "IJG/BSD-3",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called",
+    "proven"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libjpeg.so.62",
+   "CALLED_SYMBOLS": 8,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "BitmapFactory shadow -> jpeg_decode path",
+   "REAL_APK_CONSUMERS": [
+    "JPEG asset titles"
+   ],
+   "TEST_EVIDENCE": "8 U jpeg_* symbols",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": "system Debian libjpeg-dev"
+  },
+  {
+   "NAME": "libwebp",
+   "UPSTREAM": "https://github.com/webmproject/libwebp",
+   "LICENSE": "BSD-3",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libwebp.so.7",
+   "CALLED_SYMBOLS": 3,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "BitmapFactory shadow webp branch",
+   "REAL_APK_CONSUMERS": [
+    "webp-asset titles"
+   ],
+   "TEST_EVIDENCE": "3 U WebP* symbols; animated-WebP untested -> capability gap",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "animated WebP demux (libwebpdemux not linked)"
+   ],
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "stb_image",
+   "UPSTREAM": "https://github.com/nothings/stb",
+   "LICENSE": "public domain",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "source",
+    "compiled",
+    "called",
+    "proven"
+   ],
+   "VENDORED": "miniandroid/third_party/stb/stb_image.h v2.30",
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "BitmapFactory shadow fallback decoder",
+   "REAL_APK_CONSUMERS": [
+    "GIF single-frame path",
+    "B6 family fallback"
+   ],
+   "TEST_EVIDENCE": "vendored header compiled into engine; S183 B6 evidence",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "animated GIF frames (stbi only decodes first frame)"
+   ],
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "FreeType",
+   "UPSTREAM": "https://freetype.org/",
+   "LICENSE": "FTL/GPL-2",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called",
+    "proven"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libfreetype.so.6",
+   "CALLED_SYMBOLS": 11,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "Typeface/TextShaper -> FT_Face glyph rasterization",
+   "REAL_APK_CONSUMERS": [
+    "all text-rendering titles incl. Persian/Arabic shaping"
+   ],
+   "TEST_EVIDENCE": "11 U FT_* symbols; text rendering across battery faces",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": "system Debian libfreetype-dev"
+  },
+  {
+   "NAME": "HarfBuzz",
+   "UPSTREAM": "https://github.com/harfbuzz/harfbuzz",
+   "LICENSE": "MIT",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libharfbuzz.so.0",
+   "CALLED_SYMBOLS": 9,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "TextShaper shaping stage",
+   "REAL_APK_CONSUMERS": [
+    "multilingual titles (Telegram-family)"
+   ],
+   "TEST_EVIDENCE": "9 U hb_* symbols",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "shaping coverage per-script not yet probed per-title"
+   ],
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "FriBidi",
+   "UPSTREAM": "https://github.com/fribidi/fribidi",
+   "LICENSE": "LGPL-2.1+",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libfribidi.so.0",
+   "CALLED_SYMBOLS": 2,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "TextShaper bidi stage",
+   "REAL_APK_CONSUMERS": [
+    "Persian/Arabic/RTL titles"
+   ],
+   "TEST_EVIDENCE": "2 U fribidi_* symbols",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "mpg123",
+   "UPSTREAM": "https://github.com/madebr/mpg123",
+   "LICENSE": "LGPL-2.1",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libmpg123.so.0",
+   "CALLED_SYMBOLS": 8,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "MediaPlayer/AudioTrack decode path",
+   "REAL_APK_CONSUMERS": [
+    "MP3-asset games"
+   ],
+   "TEST_EVIDENCE": "8 U mpg123_* symbols; audio end-to-end not yet 3-run verified",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "no real-APK audio proof recorded yet"
+   ],
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "libsndfile",
+   "UPSTREAM": "https://github.com/libsndfile/libsndfile",
+   "LICENSE": "LGPL-2.1",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libsndfile.so.1",
+   "CALLED_SYMBOLS": 4,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "SoundPool WAV/OGG path",
+   "REAL_APK_CONSUMERS": [
+    "OGG/WAV-asset games"
+   ],
+   "TEST_EVIDENCE": "4 U sf_* symbols",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "no real-APK audio proof recorded yet"
+   ],
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "OpenSSL",
+   "UPSTREAM": "https://github.com/openssl/openssl",
+   "LICENSE": "Apache-2.0",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "linked",
+    "called"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": "libssl.so.3 + libcrypto.so.3",
+   "CALLED_SYMBOLS": 11,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "HTTPSURLConnection/TLS adapter",
+   "REAL_APK_CONSUMERS": [
+    "network titles (taz -> conscrypt UnsatisfiedLinkError shows gap)"
+   ],
+   "TEST_EVIDENCE": "23 U SSL_* symbols; F-NATIVE taz conscrypt failure recorded",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "conscrypt JNI layer for TLS titles"
+   ],
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "QuickJS",
+   "UPSTREAM": "https://github.com/bellard/quickjs",
+   "LICENSE": "MIT",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "source",
+    "compiled",
+    "proven"
+   ],
+   "VENDORED": "miniandroid/third_party/quickjs (VERSION=2024-01-13)",
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "S118 WebView/HTML5 engine bridge",
+   "REAL_APK_CONSUMERS": [
+    "S118 web titles"
+   ],
+   "TEST_EVIDENCE": "172 defined JS_* T symbols compiled into engine binary",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "Fetch/Promise scheduling audits pending (S118 reuse mandated)"
+   ],
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "PortableGL",
+   "UPSTREAM": "https://github.com/rswinkle/PortableGL",
+   "LICENSE": "MIT",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "source",
+    "compiled",
+    "proven"
+   ],
+   "VENDORED": "miniandroid/third_party/portablegl/portablegl.h",
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "libEGL/libGLESv2 anchor -> GLES2 software backend",
+   "REAL_APK_CONSUMERS": [
+    "app.halma #27 (A_RICH 0-uncaught)",
+    "se.tube42.p9 #225 (A_RICH)",
+    "Mindustry/Vector Pinball/Stardroid (native family)"
+   ],
+   "TEST_EVIDENCE": "212 defined gl* T symbols compiled in; A_RICH faces in S186c battery",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "GLES3 coverage; FBO/shader families per-title gaps remain"
+   ],
+   "BUILD_RECIPE": "header-only vendored; compiled into miniandroid_core"
+  },
+  {
+   "NAME": "rlottie",
+   "UPSTREAM": "https://github.com/Samsung/rlottie",
+   "LICENSE": "MIT",
+   "STATUS": "ABSENT",
+   "LEVELS_REACHED": [],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": null,
+   "REAL_APK_CONSUMERS": [],
+   "TEST_EVIDENCE": "not in third_party, not in ldd, 0 symbols",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "no vendored copy, no system link, no consumer identified yet"
+   ],
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "SDL",
+   "UPSTREAM": "https://github.com/libsdl-org/SDL",
+   "LICENSE": "zlib",
+   "STATUS": "ABSENT",
+   "LEVELS_REACHED": [],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": null,
+   "REAL_APK_CONSUMERS": [],
+   "TEST_EVIDENCE": "not in third_party, not in ldd",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "no vendored copy, no system link; B1 SDL2/mupdf host rebuild still pending (S185 mapping)"
+   ],
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "libGDX",
+   "UPSTREAM": "https://github.com/libgdx/libgdx",
+   "LICENSE": "Apache-2.0",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "source",
+    "compiled",
+    "proven"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": "tools/native_host/libgdx64.so jni=64",
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "GATE-A .so substitution + bionic->glibc rebuild",
+   "REAL_APK_CONSUMERS": [
+    "emmanuelttt",
+    "bouncy",
+    "stacktower3d (S183b faces)"
+   ],
+   "TEST_EVIDENCE": "tools/native_host/libgdx64.so 64 T syms; NOT in git (Rule 4)",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": "scripts/s183_build_gdx_host.sh (fetch-if-missing, gdx-parent-1.9.10 tag)"
+  },
+  {
+   "NAME": "Box2D",
+   "UPSTREAM": "https://github.com/erincatto/box2d",
+   "LICENSE": "zlib",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "source",
+    "compiled",
+    "proven"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": "tools/native_host/libgdx-box2d64.so jni=266",
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": "GATE-A substitution (S186b)",
+   "REAL_APK_CONSUMERS": [
+    "bouncy #? byte-exact face 8a6c24ac8a7d718e == S183b pin"
+   ],
+   "TEST_EVIDENCE": "266 T syms; S186B_BOX2D_AB.json",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": "same script; gdx 1.9.10 box2d jni"
+  },
+  {
+   "NAME": "libgdx-freetype",
+   "UPSTREAM": "https://github.com/libgdx/libgdx",
+   "LICENSE": "Apache-2.0",
+   "STATUS": "BUILD_VERIFIED",
+   "LEVELS_REACHED": [
+    "source",
+    "compiled"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": "tools/native_host/libgdx-freetype64.so jni=68",
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": null,
+   "REAL_APK_CONSUMERS": [
+    "gdx titles using FreeType fonts"
+   ],
+   "TEST_EVIDENCE": "68 T syms; not yet proven via real APK face",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": "same script"
+  },
+  {
+   "NAME": "nlohmann_json",
+   "UPSTREAM": "https://github.com/nlohmann/json",
+   "LICENSE": "MIT",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "source",
+    "compiled",
+    "called",
+    "proven"
+   ],
+   "VENDORED": "miniandroid/third_party/nlohmann_json (cmake-4.x compat path)",
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": null,
+   "REAL_APK_CONSUMERS": [],
+   "TEST_EVIDENCE": "engine config/manifest JSON plumbing",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "minimp3/stb_vorbis",
+   "UPSTREAM": "github.com/lieff/minimp3; github.com/nothings/stb",
+   "LICENSE": "public domain",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "source"
+   ],
+   "VENDORED": "miniandroid/third_party/audio/{minimp3.h,stb_vorbis.c}",
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": null,
+   "REAL_APK_CONSUMERS": [],
+   "TEST_EVIDENCE": "vendored headers; trace-before-prune pending (Rule 3)",
+   "DUPLICATE_IMPLEMENTATIONS": [
+    "overlaps linked mpg123/libsndfile \u2014 PRUNE CANDIDATE after trace"
+   ],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": null,
+   "BUILD_RECIPE": null
+  },
+  {
+   "NAME": "anchor_libs (11 fake bionic sonames)",
+   "UPSTREAM": "project-internal",
+   "LICENSE": "project",
+   "STATUS": "INTEGRATED",
+   "LEVELS_REACHED": [
+    "compiled"
+   ],
+   "VENDORED": null,
+   "HOST_NATIVE": null,
+   "LINKED_SONAME": null,
+   "CALLED_SYMBOLS": null,
+   "RUNTIME_CALLERS": null,
+   "ANDROID_API_ADAPTER": null,
+   "REAL_APK_CONSUMERS": [],
+   "TEST_EVIDENCE": "build/anchor_libs: libc/libEGL/libGLESv2/libOpenSLES/libandroid/libjnigraphics/liblog/libdl/libm/libstdc++/libz.so for bionic DT_NEEDED satisfaction",
+   "DUPLICATE_IMPLEMENTATIONS": [],
+   "UNUSED_CODE": null,
+   "MISSING_CAPABILITIES": [
+    "libOpenSLES/libEGL anchors are stubs \u2014 B2/B7 real backends still open"
+   ],
+   "BUILD_RECIPE": null
+  }
+ ]
+}

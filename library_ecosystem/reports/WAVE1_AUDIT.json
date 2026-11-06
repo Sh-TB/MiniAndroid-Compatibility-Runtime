@@ -1,0 +1,103 @@
+{
+ "date": "2026-11-06",
+ "binary": "/home/z/my-project/miniandroid/build/miniandroid",
+ "ldd_count": 33,
+ "needed": [
+  "/lib64/ld-linux-x86-64.so.2",
+  "libFLAC.so.14",
+  "libatomic.so.1",
+  "libbrotlicommon.so.1",
+  "libbrotlidec.so.1",
+  "libbz2.so.1.0",
+  "libc.so.6",
+  "libcrypto.so.3",
+  "libfreetype.so.6",
+  "libfribidi.so.0",
+  "libgcc_s.so.1",
+  "libglib-2.0.so.0",
+  "libgraphite2.so.3",
+  "libharfbuzz.so.0",
+  "libjpeg.so.62",
+  "libm.so.6",
+  "libmp3lame.so.0",
+  "libmpg123.so.0",
+  "libogg.so.0",
+  "libopus.so.0",
+  "libpcre2-8.so.0",
+  "libpng16.so.16",
+  "libsharpyuv.so.0",
+  "libsndfile.so.1",
+  "libsqlite3.so.0",
+  "libssl.so.3",
+  "libstdc++.so.6",
+  "libvorbis.so.0",
+  "libvorbisenc.so.2",
+  "libwebp.so.7",
+  "libz.so.1",
+  "libzstd.so.1",
+  "linux-vdso.so.1"
+ ],
+ "undefined_symbol_families": {
+  "sqlite3": 27,
+  "libpng": 30,
+  "libjpeg": 8,
+  "freetype": 11,
+  "harfbuzz": 9,
+  "fribidi": 2,
+  "mpg123": 8,
+  "libsndfile": 4,
+  "openssl-ssl": 11,
+  "libwebp": 3
+ },
+ "compiled_in": {
+  "portablegl_gl_T_symbols": 212,
+  "quickjs_JS_T_symbols": 172,
+  "undefined_total": 517
+ },
+ "third_party": [
+  "audio",
+  "nlohmann_json",
+  "portablegl",
+  "quickjs",
+  "stb"
+ ],
+ "host_natives": {
+  "libgdx-box2d64.so": {
+   "jni_exports": 266,
+   "total_T": 705
+  },
+  "libgdx-freetype64.so": {
+   "jni_exports": 68,
+   "total_T": 367
+  },
+  "libgdx64.so": {
+   "jni_exports": 64,
+   "total_T": 196
+  }
+ },
+ "anchor_libs": [
+  "libEGL.so",
+  "libGLESv2.so",
+  "libOpenSLES.so",
+  "libandroid.so",
+  "libc.so",
+  "libdl.so",
+  "libjnigraphics.so",
+  "liblog.so",
+  "libm.so",
+  "libstdc++.so",
+  "libz.so"
+ ],
+ "cmake_finds": [
+  "ZLIB REQUIRED",
+  "png (optional)",
+  "jpeg (optional)",
+  "crypto sqlite3 (optional foreach)",
+  "nlohmann_json vendored-or-fetch"
+ ],
+ "notes": [
+  "libwebpdemux NOT linked -> animated WebP gap",
+  "no -lGL: PortableGL compiled-in, no system GL dependency",
+  "Box2D/libGDX NOT linked into engine: host natives dlopened at runtime via GATE-A"
+ ]
+}
