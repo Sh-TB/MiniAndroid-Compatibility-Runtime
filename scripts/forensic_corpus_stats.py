@@ -4,7 +4,7 @@ import json, re
 from collections import Counter
 D="/home/z/my-project/forensic_data/"
 issues=json.load(open(D+"issues_all.json"))
-comments=json.load(open(D+"all_issue_comments.json"))
+comments=json.load(gzip.open(D+"all_issue_comments.json.gz"))
 commits=json.load(open(D+"commits.json"))
 prs=[i for i in issues if "pull_request" in i]
 real=[i for i in issues if "pull_request" not in i]

@@ -23,7 +23,7 @@ D = "/home/z/my-project"
 FD = f"{D}/forensic_data"
 
 issues = {i["number"]: i for i in json.load(open(f"{FD}/issues_all.json"))}
-comments = json.load(open(f"{FD}/all_issue_comments.json"))
+comments = json.load(gzip.open(f"{FD}/all_issue_comments.json.gz"))
 commits = json.load(open(f"{FD}/commits.json"))
 cmts_by_issue = defaultdict(list)
 for c in comments:
