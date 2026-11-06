@@ -7860,3 +7860,45 @@ Regression: bouncy 8a6c24ac8a7d718e + unote 3b8dcb0a BYTE-EXACT hold (0 uncaught
 "standing pin" was STALE (itself a default-background face; same bytes as mykanji flat face).
 Next: foehnix content-inflation divergence; ConstraintLayout children measure; Flutter
 metadata-bundle ground truth; NavigationView NPE.
+
+## S188 W2 — Alley Law Implemented + First Renders (2026-11-07)
+
+**User directive:** route detection FIRST (Java app must not pass the HTML5
+alley; MKV app must not be forced through MP4); test simple clock apps and
+very simple games (open-source); trackers must know what each app needs.
+Follow all #556 rules.
+
+**Delivered:**
+- `miniandroid/tools/s188_route_classifier.py` — static route profiler
+  (DEX descriptors + native libs + assets + manifest). Per-title:
+  routes detected w/ evidence, PRIMARY route, FORBIDDEN routes, forbidden
+  substitutions (MKV≠MP4), required capabilities. Corpus (41):
+  COMPOSE 13 / VIEW 11 / WEBVIEW_HTML5_PACKAGED 5 / FLUTTER 4 / GODOT 2 /
+  LIBGDX 2 / SDL 1 / Allegro 1 / WEBVIEW_NODE 1 / MEDIA 1.
+  Discoveries: qwde.ccm + ball2box are GODOT games; queens/tarok/quinb/
+  tirailleur are FLUTTER. Ground truth: both A_RICH titles classify LIBGDX.
+- `miniandroid/src/runtime/route_law.{h,cpp}` — runtime loads the profile at
+  `run` startup (package-hint aware), prints [ROUTE] DECISION +
+  REQUIRED_CAPS, observes WebView engagement → ROUTE_VIOLATION /
+  ROUTE_SURPRISE (honest static-vs-runtime diff; UNOBSERVED != PASS).
+  Wired: cmd_run + webview-node-paint + webview-frame-tick. Build OK.
+- `reports/apk_routes/<pkg>.json` ×41 + `_SUMMARY.json` (committed).
+- `scripts/s188_w2_first_renders.py` + `evidence/s188_w2/` — 11-title
+  battery (3 clocks + 8 simple games, all F-Droid):
+  mines B(686c) / memory B(256c) / blackjack B(65c) HOLD vs S186i;
+  10/11 tiers hold; 1 REGRESSION: eu.veldsoft.no.thanks B→FLAT (3/3 runs,
+  window S186i→HEAD, prime suspect F-NEW-491; A/B queued; bouncy/unote
+  goldens unaffected).
+- First-divergence needs (per FLAT title, from real console evidence):
+  queens/quinb/tirailleur: CopyOnWriteArraySet.<init> in FlutterJNI init;
+  ball2box: java.lang.Enum.<init> in Godot XRMode; tranquilstopwatch:
+  Material NavigationView ctor NPE (solitaire census same root);
+  composeStopwatch: CNFE AndroidCompositionLocals_androidKt.
+- GitHub: tracker issue #559 (route map + per-app requirements matrix),
+  #556 progress comment. English only.
+- Commit b8230eaf (code+evidence) + this entry.
+
+**Next:** mines/memory/blackjack are the B-anchor set; first FLAT→B
+promotion candidates = NavigationView ctor fix (tranquilstopwatch+solitaire)
+and CopyOnWriteArraySet (Flutter trio); no.thanks A/B bisection; Phase B FDT
+graph on one title (per-app evidence records).
