@@ -10,7 +10,7 @@ OUT=/home/z/my-project/tools/native_host
 if [ ! -d "$SRC/gdx/jni" ]; then
   echo "== 0) fetch libGDX 1.9.10 sources =="
   rm -rf "$SRC" /tmp/libgdx1910.tar.gz
-  curl -fL -o /tmp/libgdx1910.tar.gz https://github.com/libgdx/libgdx/archive/refs/tags/1.9.10.tar.gz
+  curl -fL -o /tmp/libgdx1910.tar.gz https://github.com/libgdx/libgdx/archive/refs/tags/gdx-parent-1.9.10.tar.gz
   mkdir -p "$SRC"
   tar -xzf /tmp/libgdx1910.tar.gz -C "$SRC" --strip-components=1
 fi
