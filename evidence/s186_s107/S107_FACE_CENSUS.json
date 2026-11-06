@@ -1,0 +1,1043 @@
+{
+ "schema": "s186_s107_census/v1",
+ "n": 129,
+ "tiers": {
+  "C_TEXT_ON_FLAT": 76,
+  "FLAT_TWO_TONE_OR_BLANK": 43,
+  "B_STRUCTURED": 10
+ },
+ "rows": [
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "app.fedilab.castlab"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.adeeteya.digital_calculator"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.adilhanney.ricochlime"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.agatamessina.webinspector"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.artifex.mupdf.viewer.app"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.attenomy.janken"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.axiel7.anihyou"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.barghest.mesh"
+  },
+  {
+   "unique_colors": 223,
+   "bg_share": 0.9733,
+   "nonbg_share": 0.0267,
+   "grad_share": 0.006,
+   "tier": "B_STRUCTURED",
+   "package": "com.bbzone.isitprime"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.chenyifaer.fafarunner"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.chmouel.liseur"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.clavierhaus.gnubg"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.co3"
+  },
+  {
+   "unique_colors": 324,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0006,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.crome.forecastpoint"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.davidtakac.bura"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.divinelink.scenepeek"
+  },
+  {
+   "unique_colors": 1046,
+   "bg_share": 0.5102,
+   "nonbg_share": 0.4898,
+   "grad_share": 0.0104,
+   "tier": "B_STRUCTURED",
+   "package": "com.dozingcatsoftware.bouncy"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.dozingcatsoftware.mouse_pounce"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.eightsines.firestrike.opensource"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.fairytrick.fairymahjong"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.firebirdberlin.nightdream.noGms"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.fixupxer"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.forrestguice.suntimeswidget"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.foxdebug.acode"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.fpf.smartscan"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.fr.laboussole.track"
+  },
+  {
+   "unique_colors": 73,
+   "bg_share": 0.9928,
+   "nonbg_share": 0.0072,
+   "grad_share": 0.0007,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.freetime.geoweather"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.galaxyrio.sudokusolver"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.game.asteroids_revenge"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.github.vauvenal5.yaga"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.google.android.stardroid"
+  },
+  {
+   "unique_colors": 73,
+   "bg_share": 0.9928,
+   "nonbg_share": 0.0072,
+   "grad_share": 0.0007,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.greenart7c3.nostrsigner"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.hegocre.nextcloudpasswords"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.iris.gallery"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.itsfrz.tictactoe"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.joeld.minesweeper"
+  },
+  {
+   "unique_colors": 73,
+   "bg_share": 0.9928,
+   "nonbg_share": 0.0072,
+   "grad_share": 0.0007,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.justdeax.composeStopwatch"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.kaeruct.raumballer"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.kolakek.pimiwidget"
+  },
+  {
+   "unique_colors": 76,
+   "bg_share": 0.9984,
+   "nonbg_share": 0.0016,
+   "grad_share": 0.0003,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.kompact"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.kylecorry.trail_sense"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.luc4n3x.levyra"
+  },
+  {
+   "unique_colors": 76,
+   "bg_share": 0.9984,
+   "nonbg_share": 0.0016,
+   "grad_share": 0.0003,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.ma.tehro"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.metromusic"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.mostafa.brickblast"
+  },
+  {
+   "unique_colors": 76,
+   "bg_share": 0.9984,
+   "nonbg_share": 0.0016,
+   "grad_share": 0.0003,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.movietrivia.filmfacts"
+  },
+  {
+   "unique_colors": 73,
+   "bg_share": 0.9928,
+   "nonbg_share": 0.0072,
+   "grad_share": 0.0007,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.rocket9labs.boxcars"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.sanskritbasics.memory"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.sanskritbasics"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.serwylo.retrowars"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.sidhant.arrowescape"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.sidhant.blockblast"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.sidhant.nonogram"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.sidhant.shikaku"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.sidhant.triplematch"
+  },
+  {
+   "unique_colors": 1534,
+   "bg_share": 0.8829,
+   "nonbg_share": 0.1171,
+   "grad_share": 0.0115,
+   "tier": "B_STRUCTURED",
+   "package": "com.smorgasbork.hotdeath"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.tacticmaster"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.towerillusion.abdal"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.tutpro.baresip.plus"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.vagujhelyigergely.calculatorm3"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.vayunmathur.clock"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.vayunmathur.games.alchemist"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.vicolo.chrono"
+  },
+  {
+   "unique_colors": 243,
+   "bg_share": 0.9767,
+   "nonbg_share": 0.0233,
+   "grad_share": 0.0076,
+   "tier": "B_STRUCTURED",
+   "package": "com.vovagorodok.blidraughts"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "com.vsmartcard.acardemulator"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "com.yepgoryo.EggReturnsHome"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "de.kaffeemitkoffein.tinyweatherforecastgermany"
+  },
+  {
+   "unique_colors": 249,
+   "bg_share": 0.9959,
+   "nonbg_share": 0.0041,
+   "grad_share": 0.0029,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "de.phasenrauscher.bicyweather"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "de.saschahlusiak.freebloks"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "de.schliweb.makeacopy"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "deckers.thibault.aves.libre"
+  },
+  {
+   "unique_colors": 76,
+   "bg_share": 0.9984,
+   "nonbg_share": 0.0016,
+   "grad_share": 0.0003,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "dev.cipher.notes"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "dev.otaj.zelp"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "dev.serwin.AnarchRE"
+  },
+  {
+   "unique_colors": 14,
+   "bg_share": 0.9437,
+   "nonbg_share": 0.0563,
+   "grad_share": 0.0025,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "dudeofx.eval"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "duress.ultimate"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "eu.mokrzycki.learndigits"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "eu.veldsoft.tuty.fruty.slot"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "eu.veldsoft.vitosha.blackjack"
+  },
+  {
+   "unique_colors": 194,
+   "bg_share": 0.9984,
+   "nonbg_share": 0.0016,
+   "grad_share": 0.0002,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "eve.game.tracker"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "foss.cnugteren.nlweer"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "fr.arnaudguyon.spacevertex"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "fr.corenting.convertisseureurofranc"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "fr.ign.geoportail"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "garden.lina.oblique_strategies"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "io.github.johnathan.minesweeper"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "io.github.lordofpolls.shellwave"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "io.github.x0b.rcx"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "io.paperterm.app"
+  },
+  {
+   "unique_colors": 73,
+   "bg_share": 0.9928,
+   "nonbg_share": 0.0072,
+   "grad_share": 0.0007,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "is.xyz.mpv"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "it.fast4x.riplay"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "it.rignanese.leo.slimfacebook"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "jwtc.android.chess"
+  },
+  {
+   "unique_colors": 186,
+   "bg_share": 0.6678,
+   "nonbg_share": 0.3322,
+   "grad_share": 0.0044,
+   "tier": "B_STRUCTURED",
+   "package": "lab.rreedd.oriens"
+  },
+  {
+   "unique_colors": 153,
+   "bg_share": 0.9988,
+   "nonbg_share": 0.0012,
+   "grad_share": 0.0006,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "me.timeto.app"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "net.aliasvault.app"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "net.bible.android.activity"
+  },
+  {
+   "unique_colors": 192,
+   "bg_share": 0.9822,
+   "nonbg_share": 0.0178,
+   "grad_share": 0.0063,
+   "tier": "B_STRUCTURED",
+   "package": "net.sourceforge.solitaire_cg"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "nodomain.playmaker"
+  },
+  {
+   "unique_colors": 213,
+   "bg_share": 0.9959,
+   "nonbg_share": 0.0041,
+   "grad_share": 0.0022,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "org.asafonov.weather"
+  },
+  {
+   "unique_colors": 70,
+   "bg_share": 0.9928,
+   "nonbg_share": 0.0072,
+   "grad_share": 0.0017,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "org.billthefarmer.buses"
+  },
+  {
+   "unique_colors": 806,
+   "bg_share": 0.6244,
+   "nonbg_share": 0.3756,
+   "grad_share": 0.0132,
+   "tier": "B_STRUCTURED",
+   "package": "org.bobstuff.bobball"
+  },
+  {
+   "unique_colors": 2039,
+   "bg_share": 0.5188,
+   "nonbg_share": 0.4812,
+   "grad_share": 0.016,
+   "tier": "B_STRUCTURED",
+   "package": "org.codeberg.scovillo.bubble"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.fossify.clock"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.fossify.gallery"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.fossify.math"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.godotengine.editor.v4"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.lufebe16.pysolfc"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.ojrandom.paiesque"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.opensurge2d.surgeengine"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.pgnapps.pk2"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.pipoypipagames.cowsrevenge"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.quentin_bettoum.librememorygame"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.secuso.privacyfriendlydame"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.secuso.privacyfriendlymemory"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.secuso.privacyfriendlysolitaire"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.sherpr.app"
+  },
+  {
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "org.stingle.photos"
+  },
+  {
+   "unique_colors": 231,
+   "bg_share": 0.9634,
+   "nonbg_share": 0.0366,
+   "grad_share": 0.0191,
+   "tier": "B_STRUCTURED",
+   "package": "org.ucam.ssb22.pinyinfdroid"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "org.y20k.transistor"
+  },
+  {
+   "unique_colors": 140,
+   "bg_share": 0.9983,
+   "nonbg_share": 0.0017,
+   "grad_share": 0.0005,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "orinasa.njarasoa.maripanatokana"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "paper.loop"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "protectedwp.safespace"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "ru.hyst329.openfool"
+  },
+  {
+   "unique_colors": 73,
+   "bg_share": 0.9928,
+   "nonbg_share": 0.0072,
+   "grad_share": 0.0007,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "takagi.ru.monica.fdroid"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "tibarj.tranquilstopwatch"
+  },
+  {
+   "unique_colors": 222,
+   "bg_share": 0.9767,
+   "nonbg_share": 0.0233,
+   "grad_share": 0.007,
+   "tier": "B_STRUCTURED",
+   "package": "trailence.org"
+  },
+  {
+   "unique_colors": 73,
+   "bg_share": 0.9928,
+   "nonbg_share": 0.0072,
+   "grad_share": 0.0007,
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "package": "uk.org.boddie.android.weatherforecast"
+  },
+  {
+   "unique_colors": 8,
+   "bg_share": 0.9882,
+   "nonbg_share": 0.0118,
+   "grad_share": 0.0003,
+   "tier": "C_TEXT_ON_FLAT",
+   "package": "yetzio.yetcalc"
+  }
+ ]
+}

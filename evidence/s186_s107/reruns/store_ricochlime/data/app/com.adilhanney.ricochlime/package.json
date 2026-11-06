@@ -1,0 +1,18 @@
+{
+  "package": "com.adilhanney.ricochlime",
+  "versionName": "1.14.0",
+  "versionCode": 1140003,
+  "mainActivity": "com.adilhanney.ricochlime.MainActivity",
+  "minSdk": "24",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "com.adilhanney.ricochlime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.adilhanney.ricochlime/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s186_s107/reruns/store_ricochlime/data/app/com.adilhanney.ricochlime/base.apk",
+  "apkSha256": "cadc45ac61c765d82216592667474e36d011c21facfc8e74ceac5affc38461ef",
+  "apkSize": 23499243,
+  "installedAt": "2026-11-06T14:46:32Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

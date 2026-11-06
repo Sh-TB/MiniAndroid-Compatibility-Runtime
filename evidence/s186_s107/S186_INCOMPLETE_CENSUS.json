@@ -1,0 +1,5388 @@
+{
+ "schema": "s186_incomplete_census/v1",
+ "generated": "2026-11-06",
+ "buckets": {
+  "META_TRACKER": 222,
+  "EXECUTED_CRASHED": 37,
+  "INTAKE_QUEUE": 157,
+  "LOADED_PARTIAL": 5,
+  "EXECUTED_PARTIAL": 1
+ },
+ "n_open": 422,
+ "rows": [
+  {
+   "issue": 535,
+   "title": "Coder 3 | A21 \u00b7 S184 \u2014 F-NEW-572 bionic init-array null-skip law: the ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 3,
+   "family": "F-B1/libgdx"
+  },
+  {
+   "issue": 534,
+   "title": "[W12][Coder-4] SEVEN generic laws \u2014 Collections.sort natural-order RES",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 2,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 533,
+   "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime Engineering Worklog",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 532,
+   "title": "Coder 3 | A20 \u00b7 S182 \u2014 L1 android.graphics.Insets law (Family-3 of the",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 5,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 531,
+   "title": "Coder 3 | A19 \u00b7 S181 \u2014 the S163 pending-measure traverse law: four sha",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 530,
+   "title": "Coder 3 | Achievement 18 \u2014 S180: Coder-D CONFIRMED findings fix batch ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 529,
+   "title": "COder  ( D )",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 528,
+   "title": "[W11][Coder-4] FIVE generic laws \u2014 Kotlin exception identity restored ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 2,
+   "family": "F-B5/kotlin"
+  },
+  {
+   "issue": 527,
+   "title": "Coder 3 | Achievement 17 \u2014 dooz renders its COMPLETE Material You UI: ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 526,
+   "title": "[W10][Coder-4] NINE generic laws \u2014 conscrypt natives EXECUTE for real ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "app"
+   ],
+   "updated": "2026-11-05",
+   "comments": 3,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 525,
+   "title": "[W9][Coder-4] NINE generic laws \u2014 TB command-queue spin DEAD (PBQ fami",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "app"
+   ],
+   "updated": "2026-11-05",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 524,
+   "title": "Coder 3 | Achievement 16 \u2014 S157: four corpus PARTIALs re-judged (simpl",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-05",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 523,
+   "title": "Coder 3 | Achievement 15 - S156: the frame-ceiling war - -O3/-march an",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-04",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 522,
+   "title": "[W8][Coder-4] FIVE generic laws close the 20-problem work list \u2014 TB st",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "app"
+   ],
+   "updated": "2026-11-05",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 521,
+   "title": "CODER 9 \u2014 Base Resources, Assets & Image Pipeline | Achievement Log (l",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 9,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 520,
+   "title": "CODER 7 \u2014 Base Android Component Runtime: WAVE-3 twenty generic laws (",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 17,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 519,
+   "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime | Achievement Log (liv",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 54,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 518,
+   "title": "[W7][Coder-4] TB Koin NDFE x32 KILLED \u2014 root: SecureRandom REC-MISS mi",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 11,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 517,
+   "title": "[W6][Coder-4] TB NDFE \u00d732 root CHAINED to a HOLLOW includes list (full",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "app"
+   ],
+   "updated": "2026-11-04",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 516,
+   "title": "Coder 3 | Achievement 14 - S141: ContactListener callbacks go native-t",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-05",
+   "comments": 6,
+   "family": "F-B1/libgdx"
+  },
+  {
+   "issue": 515,
+   "title": "CODER-6 ACHIEVEMENT 4 \u2014 WAVE 8: [C6-GLBD] index-mesh law set \u2014 Mindust",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-04",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 514,
+   "title": "[W5][Coder-4] F-C4-566: CHM compute-bypass was eating putVal \u2014 Koin's ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "app"
+   ],
+   "updated": "2026-11-03",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 513,
+   "title": "Coder 3 | Achievement 13 - S140: bouncy renders its OWN palette - COMP",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 512,
+   "title": "[W4][Coder-4] Tusky Theme.AppCompat ISE KILLED (theme bag 8\u2192819 keys, ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 1,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 511,
+   "title": "Coder 3 | Achievement 12 - S139: the APK's own libgdx-box2d.so now EXE",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-B1/libgdx"
+  },
+  {
+   "issue": 510,
+   "title": "[W3][Coder-4] Three verified laws \u2014 NC Dagger graph BUILDS (5730\u21928111 ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 509,
+   "title": "[4APP-S7][Coder-5] RXJAVA + COROUTINE SCHEDULING DEPTH \u2014 real executor",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 508,
+   "title": "Coder 3 | Achievement 11 - S138: Vector Pinball's game STARTS and the ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 507,
+   "title": "Coder 6 | Wave 7 \u2014 second recycle rebuild survived: full law set re-ap",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 506,
+   "title": "[W2][Coder-4] Nine generic laws \u2014 4APP4 arrest chain broken: ConnectBo",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 1,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 505,
+   "title": "[CONT-4APP RECURRING][Coder-5] \u2014 per-session wave log: register \u2192 root",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-05",
+   "comments": 12,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 504,
+   "title": "[4APP-S6][Coder-5] VIDEO-001 SOFTWARE MEDIAEXTRACTOR/MEDIACODEC PATH \u2014",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 503,
+   "title": "[4APP-S5][Coder-5] COMPOSE RENDER CLUSTER GENERIC FIX \u2014 Element X mast",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 502,
+   "title": "[4APP-S4][Coder-5] HERMES/JSI EXECUTION-PATH GATE J0 \u2014 Joplin core dep",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 501,
+   "title": "[4APP-S3][Coder-5] FOREGROUND SERVICES + NOTIFICATION RUNTIME \u2014 execut",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 500,
+   "title": "[4APP-S2][Coder-5] JAVA NIO2 FILESYSTEMPROVIDER OVER HOST FS \u2014 Materia",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 499,
+   "title": "[4APP-S1][Coder-5] GENERALIZED HTTP(S) CLIENT LAYER \u2014 OkHttp/SSLSocket",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 498,
+   "title": "[APP-019][Coder-5] io.element.android.x \u2014 full-interactive ladder EX-M",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 497,
+   "title": "[APP-018][Coder-5] net.cozic.joplin \u2014 full-interactive ladder JP-G0..M",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 496,
+   "title": "[APP-017][Coder-5] org.schabi.newpipe \u2014 full-interactive ladder NP-M0.",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 495,
+   "title": "[APP-016][Coder-5] me.zhanghai.android.files \u2014 full-interactive ladder",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-05",
+   "comments": 9,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 494,
+   "title": "[4APP-EPIC][Coder-5] FOUR-TITLE FULL-COMPATIBILITY PROGRAM \u2014 Material ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-05",
+   "comments": 7,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 493,
+   "title": "Coder 6 | Wave 6 \u2014 the FULL Coder-6 law set is REBASED onto S154 HEAD ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 492,
+   "title": "Coder 3 | Master Dashboard \u2014 every Issue, every app, one glance (progr",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 491,
+   "title": "[Coder 2] Lexica (com.serwylo.lexica) v3.13.1 (vc30018) \u2014 app tracker ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 490,
+   "title": "[Coder 2] OpenLauncher (com.benny.openlauncher) v39 \u2014 app tracker \u00b7 li",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 489,
+   "title": "[Coder 2] TicTacToe (itsfrz) (com.itsfrz.tictactoe) v1.0.5 (vc5) \u2014 app",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 488,
+   "title": "[Coder 2] Antimine (dev.lucanlm.antimine) v17.6.3 F \u2014 app tracker \u00b7 li",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 487,
+   "title": "[Coder 2] PF Dicer (org.secuso.privacyfriendlydicer) v2.0.0 (vc101) \u2014 ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 486,
+   "title": "[Coder 2] RTTT (kirkezz) (org.kirkezz.rttt) v1.3 (vc3) \u2014 app tracker \u00b7",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 485,
+   "title": "[Coder 2] Freebloks (de.saschahlusiak.freebloks) v1.8.4 (vc184) \u2014 app ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 484,
+   "title": "[Coder 2] PF 2048 (org.secuso.privacyfriendly2048) v1.4.2 (vc100) \u2014 ap",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 483,
+   "title": "[Coder 2] Simple Keyboard (rkr.simplekeyboard.inputmethod) v145 \u2014 app ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 482,
+   "title": "[Coder 2] Tiny Music Player (com.martinmimigames.tinymusicplayer) v1 \u2014",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 481,
+   "title": "[Coder 2] Heading Calculator (org.debian.eugen.headingcalculator) v1 \u2014",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 480,
+   "title": "[Coder 2] Notes (billthefarmer) (org.billthefarmer.notes) v139 \u2014 app t",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 479,
+   "title": "[Coder 2] uNote (app.varlorg.unote) v30 \u2014 app tracker \u00b7 living issue u",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 478,
+   "title": "[Coder 2] MicroTimer (dubrowgn.microtimer) v8 \u2014 app tracker \u00b7 living i",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 477,
+   "title": "[Coder 2] Simple Stopwatch (omegacentauri.mobi.simplestopwatch) v26 \u2014 ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 476,
+   "title": "[Coder 2] Chess Clock (com.chessclock.android) v29 \u2014 app tracker \u00b7 liv",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 475,
+   "title": "[Coder 2] TicTacToe (emmanuelmess) (com.emmanuelmess.tictactoe) v3 \u2014 a",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 474,
+   "title": "[Coder 2] Telegram v13.1.1 (org.telegram.messenger.web) v13.1.1 (vc723",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 473,
+   "title": "[Coder 2] gmdice (de.duenndns.gmdice) v8 \u2014 app tracker \u00b7 living issue ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 472,
+   "title": "[Coder 5] MASTER ACHIEVEMENT LEDGER \u2014 Coder-2 campaign: every achievem",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 6,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 471,
+   "title": "Coder 3 | Achievement 10 \u2014 S154 re-apply of the full S136+S137 law sta",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 470,
+   "title": "CODER-6 ACHIEVEMENT 3 \u2014 WAVE 4: Mindustry load-screen GRID renders thr",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 469,
+   "title": "Coder 3 | Achievement 9 \u2014 S137 full-GL-render wave: Vector Pinball's t",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 468,
+   "title": "[Coder 2] Wave 4 worklist \u2014 lean-schedule retests of the white family ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 467,
+   "title": "[Coder 2] Finding 13 \u2014 Lexica v3.13.1: budget face retired (completes ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 466,
+   "title": "[Coder 2] Finding 12 \u2014 OpenLauncher v39: FROZEN pin re-validated; #303",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 465,
+   "title": "[Coder 2] Finding 11 \u2014 TicTacToe (itsfrz) v1.0.5: theme-navy #202230 b",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 464,
+   "title": "[Coder 2] Finding 10 \u2014 Antimine v17.6.3: white frame; 434 SGET-MISS bu",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 463,
+   "title": "[Coder 2] Finding 9 \u2014 PF Dicer v2.0.0: splash theme paints (SECUSO blu",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 462,
+   "title": "[Coder 2] Finding 8 \u2014 RTTT v1.3 white frame: blocker is the SDL lane (",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 461,
+   "title": "[Coder 2] Finding 7 \u2014 Freebloks v1.8.4: DEFAULT_BACKGROUND_ONLY face r",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-B5/kotlin"
+  },
+  {
+   "issue": 460,
+   "title": "[Coder 2] Achievement 9 \u2014 PF 2048 (was EXEC BUDGET TIMEOUT): completes",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 459,
+   "title": "[Coder 2] Finding 6 \u2014 Simple Keyboard v145 (IME): normal run path yiel",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-04",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 458,
+   "title": "[Coder 2] Finding 5 \u2014 Tiny Music Player v1: registry download_url is D",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 457,
+   "title": "[Coder 2] Finding 4 \u2014 Notes (billthefarmer) v139: SUCCESS + 0 errors +",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 456,
+   "title": "[Coder 2] Achievement 8 \u2014 Simple Stopwatch v26 re-run: content-rich fr",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 455,
+   "title": "[Coder 2] Achievement 7 \u2014 Heading Calculator v1 (was `PARTIAL / regist",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 454,
+   "title": "[Coder 2] Achievement 6 \u2014 uNote v30 (was `PARTIAL / registry-only`): F",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 453,
+   "title": "[Coder 2] Achievement 5 \u2014 MicroTimer v8 (was `PARTIAL / registry-only`",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 452,
+   "title": "[Coder 2] Achievement 4 \u2014 Chess Clock v29 re-proven on fresh sandbox: ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 451,
+   "title": "[Coder 2] Achievement 3 \u2014 TicTacToe (emmanuelmess) v3 fresh verdict: w",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-B1/libgdx"
+  },
+  {
+   "issue": 450,
+   "title": "[Coder 2] Mission Board & Worklist \u2014 canonical-corpus breadth campaign",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-04",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 449,
+   "title": "[Coder 2] Finding 2 \u2014 APK_REGISTRY drift: the Telegram v12.10.1 baseli",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 448,
+   "title": "[Coder 2] Finding 1 \u2014 Telegram official v13.1.1 (vc72379): ViewTree in",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 447,
+   "title": "[Coder 2] Achievement 2 \u2014 gmdice v8 (canonical registry entry): fresh ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 446,
+   "title": "[Coder 2] Achievement 1 \u2014 INFRA: fresh-sandbox runtime rebuild in one ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 445,
+   "title": "CODER-6 ACHIEVEMENT 2 \u2014 Mindustry FIRST REAL VISUAL RENDER through the",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 444,
+   "title": "Coder 6 | Achievement 2 \u2014 Wave 2: 9 GENERIC roots fixed (live \u00d73 apps)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 443,
+   "title": "Coder 3 | Achievement 8 \u2014 S136 GLES-constant translation + C-shader re",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 442,
+   "title": "Coder 6 | Achievement 1 \u2014 Wave 1: 2 GENERIC roots fixed (live divergen",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 441,
+   "title": "Coder 6 | Case File \u2014 Mindustry (io.anuke.mindustry) \u00b7 ladder M0\u2013M6",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 21,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 440,
+   "title": "Coder 6 | Case File \u2014 Organic Maps (app.organicmaps) \u00b7 ladder O0\u2013O6",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-04",
+   "comments": 7,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 439,
+   "title": "Coder 6 | Case File \u2014 Termux (com.termux) \u00b7 ladder T0\u2013T5",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 22,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 438,
+   "title": "Coder 6 | Case File \u2014 VLC for Android (org.videolan.vlc) \u00b7 ladder V0\u2013V",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 14,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 437,
+   "title": "Coder 6 | Mission & Achievement Board \u2014 Full Execution of the 4 Hardes",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 15,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 436,
+   "title": "[CONT-4APP4 RECURRING][Coder-4] Wave log \u2014 census \u2192 roots \u2192 fixes \u2192 ba",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 11,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 435,
+   "title": "[4APP-SHARED][Coder-4] Shared-layer campaign C1\u2013C8 \u2014 fix once, benefit",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-04",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 434,
+   "title": "[APP-023][Coder-4] ConnectBot (org.connectbot) \u2014 full-interactive ladd",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 5,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 433,
+   "title": "[APP-022][Coder-4] Tusky (com.keylesspalace.tusky) \u2014 full-interactive ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 5,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 432,
+   "title": "[APP-021][Coder-4] Nextcloud (com.nextcloud.client) \u2014 full-interactive",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 5,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 431,
+   "title": "[APP-020][Coder-4] Thunderbird (net.thunderbird.android) \u2014 full-intera",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 5,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 430,
+   "title": "[4APP-EPIC][Coder-4] Four-title full-compatibility program: Thunderbir",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 429,
+   "title": "Coder 3 | \ud83d\udcca MASTER DASHBOARD \u2014 all issues + per-app progress % (one-gl",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 428,
+   "title": "Coder 3 | Achievement 7 \u2014 FULL LOAD wave: F-NEW-162 subclass law + hon",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 420,
+   "title": "Coder 3 | Achievement 6 \u2014 Third execution environment: fresh source bu",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 419,
+   "title": "Coder 3 | Achievement 5 \u2014 Full self-play of Snake Deluxe on the fresh ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 418,
+   "title": "Coder 3 | Achievement 4 \u2014 Wave 3: MiniCraft + Snake Neon driven by eac",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 417,
+   "title": "Coder 3 | Achievement 3 \u2014 Wave 2: 2048 + Mini Tetris + TicTacToe Delux",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 416,
+   "title": "Coder 3 | Achievement 2 \u2014 Fresh environment: full runtime build from s",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 415,
+   "title": "Coder 3 | Mission & Achievement Board \u2014 Full Execution of 20+ Legacy O",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 414,
+   "title": "TicTacToe Classic",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 413,
+   "title": "Snake Neon",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 412,
+   "title": "GameMasterDice",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 411,
+   "title": "FlappyCow",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 410,
+   "title": "x653.all_in_gold",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 409,
+   "title": "org.bobstuff.bobball",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 408,
+   "title": "de.georgsieber.ballbreak",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 407,
+   "title": "com.trianguloy.adnihilation",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 406,
+   "title": "com.smorgasbork.hotdeath",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 405,
+   "title": "com.dozingcatsoftware.dodge",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 404,
+   "title": "ca.rmen.nounours",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 403,
+   "title": "Vector Pinball (bouncy)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-03",
+   "comments": 5,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 402,
+   "title": "TicTacToe Deluxe",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 401,
+   "title": "Snake Deluxe",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 400,
+   "title": "OpenSudoku",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 399,
+   "title": "OPMT (One More Time\u2026)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 398,
+   "title": "MiniCraft (House Builder)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 397,
+   "title": "Mini Tetris",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 396,
+   "title": "Mines (premy)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 395,
+   "title": "FreeKlondike",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 394,
+   "title": "Fish Rings",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 393,
+   "title": "Balance the Ball",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 392,
+   "title": "Anuto TD",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 391,
+   "title": "2048",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 390,
+   "title": "Coder 5 | Full campaign report \u2014 open-source game execution campaign o",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 389,
+   "title": "F-NEW-562 dooz board frame-clock starvation \u2014 chrome renders (231K px)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 10,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 388,
+   "title": "HEAD-SMOKE RECURRING + NEW ROOT: libGDX SharedLibraryLoadRuntimeExcept",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-B1/libgdx"
+  },
+  {
+   "issue": 387,
+   "title": "CONT-11 RECURRING TASK: cross-app loading-screen blockers \u2014 register, ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 10,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 386,
+   "title": "REPO-HYGIENE \u2014 Evidence-Driven Repository Cleanup, Artifact Governance",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 385,
+   "title": "[CONT-24 EXPERIMENT \u2014 measurement only] Skeleton-Light: one 490-line g",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-08",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 384,
+   "title": "ARCH-001: Execution Family Matrix for Generic App/Game Compatibility",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-08",
+   "comments": 5,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 383,
+   "title": "BASE-FIRST: Establish a Generic Graphical Runtime Baseline",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-08",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 382,
+   "title": "A1\u2013A104 Knowledge Transfer \u2014 Primary Coder Audit, Exact Fix Locations,",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-08",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 381,
+   "title": "Unverified Claims \u2014 Complete Runtime Evidence Audit",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-08",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 380,
+   "title": "CONT-11 / WAVE 7 \u2014 Kotlin stdlib semantic backend investigation + Comp",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 8,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 379,
+   "title": "CONT-9 / WAVE 5 \u2014 Compose Continuation Root + External KB Runtime Fan-",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-07",
+   "comments": 1,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 378,
+   "title": "CONT-7 \u2014 CURRENT-HEAD RECONCILIATION + x86/x86_64 APK EXPANSION + COMP",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-05",
+   "comments": 1,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 377,
+   "title": "CONT-6 \u2014 External Root KB Forensic Audit + Runtime Fan-out Validation",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-05",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 376,
+   "title": "EXTERNAL ROOT CENSUS \u2014 Deep multilingual root discovery and MiniAndroi",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-15",
+   "comments": 10,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 375,
+   "title": "BASE + CAMPAIGN COMPLETION \u2014 Execute all prior/next missing foundation",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-15",
+   "comments": 23,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 374,
+   "title": "BASE-ANDROID \u2014 Complete Android Platform Contract Foundation Audit",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-04",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 373,
+   "title": "ENV-PREREQUISITES \u2014 Android API / CPU / ABI / hardware / software comp",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-04",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 372,
+   "title": "SUPPLEMENTARY DEEP ROOT-CAUSE CLOSEOUT \u2014 330-point black/white/partial",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-04",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 371,
+   "title": "MASTER CONTINUATION \u2014 Independent verification #364\u2013#369 + full execut",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-04",
+   "comments": 7,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 370,
+   "title": "INSTALL-ENVIRONMENT CAPABILITY GATE \u2014 Complete post-install Android in",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-03",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 369,
+   "title": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 3/3 \u2014 8 FINAL CASES",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-03",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 368,
+   "title": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 2/3 \u2014 50 MEDIUM CASES",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-03",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 367,
+   "title": "CLOSED ISSUE FORENSIC PROGRAM \u2014 BATCH 1/3 \u2014 50 HIGH/HARD CASES",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-03",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 366,
+   "title": "DIFFERENTIAL EXECUTION \u2014 Why 4 apps work and 5 installed apps stay whi",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-03",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 365,
+   "title": "MASTER FORENSIC VERIFICATION \u2014 ALL PRIOR REQUESTS / CLAIMED COMPLETION",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-03",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 364,
+   "title": "MASTER EXECUTION REQUEST \u2014 Upstream Reuse + Complete Compatibility Cam",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 107,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 363,
+   "title": "[TELEGRAM] Knowledge transfer 7/7 \u2014 the 190-goal roadmap, the regressi",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-30",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 362,
+   "title": "[TELEGRAM] Knowledge transfer 6/7 \u2014 the complete engine diff of the se",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-30",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 361,
+   "title": "[TELEGRAM] Knowledge transfer 5/7 \u2014 the tools: full source of all six ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-30",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 360,
+   "title": "[TELEGRAM] Knowledge transfer 4/7 \u2014 the wave-3 record with attribution",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-30",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 359,
+   "title": "[TELEGRAM] Knowledge transfer 3/7 \u2014 wave 2: the G21 autopsy and seven ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-30",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 358,
+   "title": "[TELEGRAM] Knowledge transfer 2/7 \u2014 wave 1: official Telegram from fir",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-30",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 357,
+   "title": "[TELEGRAM] Knowledge transfer 1/7 \u2014 master index: every claim, the hon",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-30",
+   "comments": 0,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 356,
+   "title": "[TELEGRAM] Official Telegram S117\u2192S119 \u2014 the complete first-person jou",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-29",
+   "comments": 3,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 355,
+   "title": "[TELEGRAM] Forkgram 12.10.8.0 \u2014 errors 32 \u2192 0, first fully clean run (",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "app"
+   ],
+   "updated": "2026-09-29",
+   "comments": 5,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 354,
+   "title": "[GAMES] Native game family \u2014 gameplay GIFs, 5 engine-bug laws, verifie",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 37,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 353,
+   "title": "[HTML5-APPS] WebView: white screen \u2192 REAL JS execution \u2014 Breakout 71 r",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "game"
+   ],
+   "updated": "2026-09-30",
+   "comments": 14,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 351,
+   "title": "[S102-C] mentalmath: Hilt DI 'ApplicationContextModule must be set' IS",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-25",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 348,
+   "title": "[F-NEW-170] appcompat decor-toolbar construction family (mykanji, post",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 346,
+   "title": "[F-NEW-169] SpeedDialView (leinardi) library frontier \u2014 babydots casca",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 344,
+   "title": "[F-NEW-167] blank-render L0 family \u2014 rc=0 games that never draw (klond",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "graphics"
+   ],
+   "updated": "2026-11-02",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 343,
+   "title": "[F-NEW-166] androidx ConstraintLayout core interpreter frontier \u2014 Cons",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "graphics"
+   ],
+   "updated": "2026-10-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 339,
+   "title": "[GAMES-6] Autonomous Mini Tetris play",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-25",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 330,
+   "title": "[MG-170] Bundle persistence \u2014 lifecycle (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 329,
+   "title": "[MG-169] saved instance state \u2014 lifecycle (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 328,
+   "title": "[MG-310] class initialization ordering \u2014 system/edge (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 327,
+   "title": "[MG-299] locale \u2014 system/edge (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 326,
+   "title": "[MG-298] timezone \u2014 system/edge (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 325,
+   "title": "[MG-229] disappearing-object detection \u2014 animation (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 324,
+   "title": "[MG-228] wrong-order frame detection \u2014 animation (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 322,
+   "title": "[MG-150] translated view hit testing \u2014 input (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 320,
+   "title": "[MG-147] multiple pointer IDs \u2014 input (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 312,
+   "title": "[MG-025] NinePatch stretch region \u2014 resource/asset (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 311,
+   "title": "[MG-024] NinePatch basic padding \u2014 resource/asset (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 304,
+   "title": "[MG-015] Drawable alpha inheritance \u2014 resource/asset (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 297,
+   "title": "[MG-008] Vector path trimPath \u2014 resource/asset (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 296,
+   "title": "[MG-007] Vector path strokeLineJoin \u2014 resource/asset (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 295,
+   "title": "[MG-006] Vector path strokeLineCap \u2014 resource/asset (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 290,
+   "title": "[MG-001] Drawable XML parsing edge cases \u2014 resource/asset (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 288,
+   "title": "[MG-116] invalidate propagation \u2014 layout/geometry (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 284,
+   "title": "[MG-079] style span \u2014 text/font (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 283,
+   "title": "[MG-078] foreground color span \u2014 text/font (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 282,
+   "title": "[MG-077] Spannable basic spans \u2014 text/font (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 281,
+   "title": "[MG-076] textColor alpha \u2014 text/font (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 278,
+   "title": "[MG-072] tab handling \u2014 text/font (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 272,
+   "title": "[MG-060] letterSpacing \u2014 text/font (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 271,
+   "title": "[MG-058] Typeface inheritance \u2014 text/font (PARTIAL)",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-24",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 233,
+   "title": "[S97/S98] MICRO-GAP SWEEP master wave \u2014 100 probable-bug tickets + gam",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-25",
+   "comments": 5,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 232,
+   "title": "[S84] Canonical achievements + 50 NEW titles + README landing page \u2014 w",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 231,
+   "title": "[F-NEW-162] androidx savedstate generated-adapter family \u2014 deferred CN",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 230,
+   "title": "[F-NEW-161] Compose UI runtime internals \u2014 deferred-exception family (",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 1,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 229,
+   "title": "[VF-NEW-003] IMAGE_DECODED_VS_RENDERED_GAP chain \u2014 root cause (common ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [
+    "graphics"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 228,
+   "title": "[F-NEW-157] libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurf",
+   "package": null,
+   "bucket": "EXECUTED_CRASHED",
+   "state": null,
+   "labels": [
+    "fail-oncreate",
+    "graphics"
+   ],
+   "updated": "2026-10-22",
+   "comments": 1,
+   "family": "F-B1/libgdx"
+  },
+  {
+   "issue": 227,
+   "title": "[F-NEW-156] onCreate APP-BOUNDARY-UNWIND family \u2014 root cause (common r",
+   "package": null,
+   "bucket": "EXECUTED_CRASHED",
+   "state": null,
+   "labels": [
+    "fail-oncreate"
+   ],
+   "updated": "2026-11-02",
+   "comments": 5,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 226,
+   "title": "[MAND-002] io.timelimit.android.aosp.direct \u2014 compatibility report",
+   "package": "io.timelimit.android.aosp.direct",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 225,
+   "title": "[MAND-001] se.tube42.p9.android \u2014 compatibility report",
+   "package": "se.tube42.p9.android",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 224,
+   "title": "[APP-100] com.artifex.mupdf.viewer.app \u2014 compatibility report",
+   "package": "com.artifex.mupdf.viewer.app",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-B1/native-pdf"
+  },
+  {
+   "issue": 223,
+   "title": "[APP-099] duress.ultimate \u2014 compatibility report",
+   "package": "duress.ultimate",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 222,
+   "title": "[APP-098] com.google.android.stardroid \u2014 compatibility report",
+   "package": "com.google.android.stardroid",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 221,
+   "title": "[APP-097] io.github.x0b.rcx \u2014 compatibility report",
+   "package": "io.github.x0b.rcx",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 220,
+   "title": "[APP-096] dev.cipher.notes \u2014 compatibility report",
+   "package": "dev.cipher.notes",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 219,
+   "title": "[APP-095] org.billthefarmer.buses \u2014 compatibility report",
+   "package": "org.billthefarmer.buses",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 218,
+   "title": "[APP-094] com.fpf.smartscan \u2014 compatibility report",
+   "package": "com.fpf.smartscan",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 217,
+   "title": "[APP-093] com.agatamessina.webinspector \u2014 compatibility report",
+   "package": "com.agatamessina.webinspector",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 216,
+   "title": "[APP-092] org.asafonov.weather \u2014 compatibility report",
+   "package": "org.asafonov.weather",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 215,
+   "title": "[APP-091] org.y20k.transistor \u2014 compatibility report",
+   "package": "org.y20k.transistor",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 214,
+   "title": "[APP-090] org.sherpr.app \u2014 compatibility report",
+   "package": "org.sherpr.app",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 213,
+   "title": "[APP-089] me.timeto.app \u2014 compatibility report",
+   "package": "me.timeto.app",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 212,
+   "title": "[APP-088] com.foxdebug.acode \u2014 compatibility report",
+   "package": "com.foxdebug.acode",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 211,
+   "title": "[APP-087] com.freetime.geoweather \u2014 compatibility report",
+   "package": "com.freetime.geoweather",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 210,
+   "title": "[APP-086] com.vicolo.chrono \u2014 compatibility report",
+   "package": "com.vicolo.chrono",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 209,
+   "title": "[APP-085] org.fossify.math \u2014 compatibility report",
+   "package": "org.fossify.math",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 208,
+   "title": "[APP-084] takagi.ru.monica.fdroid \u2014 compatibility report",
+   "package": "takagi.ru.monica.fdroid",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 207,
+   "title": "[APP-083] dev.otaj.zelp \u2014 compatibility report",
+   "package": "dev.otaj.zelp",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 206,
+   "title": "[APP-082] com.barghest.mesh \u2014 compatibility report",
+   "package": "com.barghest.mesh",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-29",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 205,
+   "title": "[APP-081] trailence.org \u2014 compatibility report",
+   "package": "trailence.org",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 204,
+   "title": "[APP-080] yetzio.yetcalc \u2014 compatibility report",
+   "package": "yetzio.yetcalc",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 203,
+   "title": "[APP-079] com.justdeax.composeStopwatch \u2014 compatibility report",
+   "package": "com.justdeax.composeStopwatch",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-B3/compose"
+  },
+  {
+   "issue": 202,
+   "title": "[APP-078] org.fossify.clock \u2014 compatibility report",
+   "package": "org.fossify.clock",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 201,
+   "title": "[APP-077] io.github.lordofpolls.shellwave \u2014 compatibility report",
+   "package": "io.github.lordofpolls.shellwave",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 200,
+   "title": "[APP-076] deckers.thibault.aves.libre \u2014 compatibility report",
+   "package": "deckers.thibault.aves.libre",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 199,
+   "title": "[APP-075] org.fossify.gallery \u2014 compatibility report",
+   "package": "org.fossify.gallery",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 198,
+   "title": "[APP-074] it.rignanese.leo.slimfacebook \u2014 compatibility report",
+   "package": "it.rignanese.leo.slimfacebook",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 197,
+   "title": "[APP-073] dudeofx.eval \u2014 compatibility report",
+   "package": "dudeofx.eval",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 196,
+   "title": "[APP-072] de.kaffeemitkoffein.tinyweatherforecastgermany \u2014 compatibili",
+   "package": "de.kaffeemitkoffein.tinyweatherforecastgermany",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 195,
+   "title": "[APP-071] com.kylecorry.trail_sense \u2014 compatibility report",
+   "package": "com.kylecorry.trail_sense",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 194,
+   "title": "[APP-070] fr.ign.geoportail \u2014 compatibility report",
+   "package": "fr.ign.geoportail",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 193,
+   "title": "[APP-069] com.github.vauvenal5.yaga \u2014 compatibility report",
+   "package": "com.github.vauvenal5.yaga",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 192,
+   "title": "[APP-068] com.fixupxer \u2014 compatibility report",
+   "package": "com.fixupxer",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 191,
+   "title": "[APP-067] de.phasenrauscher.bicyweather \u2014 compatibility report",
+   "package": "de.phasenrauscher.bicyweather",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 190,
+   "title": "[APP-066] uk.org.boddie.android.weatherforecast \u2014 compatibility report",
+   "package": "uk.org.boddie.android.weatherforecast",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 189,
+   "title": "[APP-065] net.aliasvault.app \u2014 compatibility report",
+   "package": "net.aliasvault.app",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 188,
+   "title": "[APP-064] joshuatee.wx \u2014 compatibility report",
+   "package": "joshuatee.wx",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 187,
+   "title": "[APP-063] com.axiel7.anihyou \u2014 compatibility report",
+   "package": "com.axiel7.anihyou",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 186,
+   "title": "[APP-062] foss.cnugteren.nlweer \u2014 compatibility report",
+   "package": "foss.cnugteren.nlweer",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 185,
+   "title": "[APP-061] org.godotengine.editor.v4 \u2014 compatibility report",
+   "package": "org.godotengine.editor.v4",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 184,
+   "title": "[APP-060] lab.rreedd.oriens \u2014 compatibility report",
+   "package": "lab.rreedd.oriens",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 183,
+   "title": "[APP-059] com.adeeteya.digital_calculator \u2014 compatibility report",
+   "package": "com.adeeteya.digital_calculator",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 182,
+   "title": "[APP-058] com.iris.gallery \u2014 compatibility report",
+   "package": "com.iris.gallery",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 181,
+   "title": "[APP-057] com.vsmartcard.acardemulator \u2014 compatibility report",
+   "package": "com.vsmartcard.acardemulator",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 180,
+   "title": "[APP-056] com.bbzone.isitprime \u2014 compatibility report",
+   "package": "com.bbzone.isitprime",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 179,
+   "title": "[APP-055] com.metromusic \u2014 compatibility report",
+   "package": "com.metromusic",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 178,
+   "title": "[APP-054] com.crome.forecastpoint \u2014 compatibility report",
+   "package": "com.crome.forecastpoint",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 177,
+   "title": "[APP-053] com.co3 \u2014 compatibility report",
+   "package": "com.co3",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 176,
+   "title": "[APP-052] com.kaii.photos \u2014 compatibility report",
+   "package": "com.kaii.photos",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 175,
+   "title": "[APP-051] cn.rbc.termuc \u2014 compatibility report",
+   "package": "cn.rbc.termuc",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 174,
+   "title": "[APP-050] com.ominous.quickweather \u2014 compatibility report",
+   "package": "com.ominous.quickweather",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 173,
+   "title": "[APP-049] de.quaddyservices.dynamicnightlight \u2014 compatibility report",
+   "package": "de.quaddyservices.dynamicnightlight",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 172,
+   "title": "[APP-048] m.co.rh.id.a_news_provider \u2014 compatibility report",
+   "package": "m.co.rh.id.a_news_provider",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 171,
+   "title": "[APP-047] com.davidtakac.bura \u2014 compatibility report",
+   "package": "com.davidtakac.bura",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 170,
+   "title": "[APP-046] tibarj.tranquilstopwatch \u2014 compatibility report",
+   "package": "tibarj.tranquilstopwatch",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-28",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 169,
+   "title": "[APP-045] orinasa.njarasoa.maripanatokana \u2014 compatibility report",
+   "package": "orinasa.njarasoa.maripanatokana",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 168,
+   "title": "[APP-044] is.xyz.mpv \u2014 compatibility report",
+   "package": "is.xyz.mpv",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 167,
+   "title": "[APP-043] com.kolakek.pimiwidget \u2014 compatibility report",
+   "package": "com.kolakek.pimiwidget",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 165,
+   "title": "[APP-041] io.paperterm.app \u2014 compatibility report",
+   "package": "io.paperterm.app",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 164,
+   "title": "[APP-040] fr.corenting.convertisseureurofranc \u2014 compatibility report",
+   "package": "fr.corenting.convertisseureurofranc",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 163,
+   "title": "[APP-039] de.schliweb.makeacopy \u2014 compatibility report",
+   "package": "de.schliweb.makeacopy",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 162,
+   "title": "[APP-038] app.fedilab.castlab \u2014 compatibility report",
+   "package": "app.fedilab.castlab",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 161,
+   "title": "[APP-037] com.divinelink.scenepeek \u2014 compatibility report",
+   "package": "com.divinelink.scenepeek",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 160,
+   "title": "[APP-036] com.greenart7c3.nostrsigner \u2014 compatibility report",
+   "package": "com.greenart7c3.nostrsigner",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 159,
+   "title": "[APP-035] org.ojrandom.paiesque \u2014 compatibility report",
+   "package": "org.ojrandom.paiesque",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 158,
+   "title": "[APP-034] com.nfcarchiver.nfc_archiver \u2014 compatibility report",
+   "package": "com.nfcarchiver.nfc_archiver",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 157,
+   "title": "[APP-033] com.srkovnar.legacyphotoframe \u2014 compatibility report",
+   "package": "com.srkovnar.legacyphotoframe",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 156,
+   "title": "[APP-032] dev.gpxit.app \u2014 compatibility report",
+   "package": "dev.gpxit.app",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 155,
+   "title": "[APP-031] protectedwp.safespace \u2014 compatibility report",
+   "package": "protectedwp.safespace",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 154,
+   "title": "[APP-030] com.chmouel.liseur \u2014 compatibility report",
+   "package": "com.chmouel.liseur",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 153,
+   "title": "[APP-029] com.hegocre.nextcloudpasswords \u2014 compatibility report",
+   "package": "com.hegocre.nextcloudpasswords",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-28",
+   "comments": 4,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 152,
+   "title": "[APP-028] com.vagujhelyigergely.calculatorm3 \u2014 compatibility report",
+   "package": "com.vagujhelyigergely.calculatorm3",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 151,
+   "title": "[APP-027] com.firebirdberlin.nightdream.noGms \u2014 compatibility report",
+   "package": "com.firebirdberlin.nightdream.noGms",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 150,
+   "title": "[APP-026] com.luc4n3x.levyra \u2014 compatibility report",
+   "package": "com.luc4n3x.levyra",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 149,
+   "title": "[APP-025] com.vayunmathur.clock \u2014 compatibility report",
+   "package": "com.vayunmathur.clock",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 148,
+   "title": "[APP-024] com.forrestguice.suntimeswidget \u2014 compatibility report",
+   "package": "com.forrestguice.suntimeswidget",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 147,
+   "title": "[APP-023] org.stingle.photos \u2014 compatibility report",
+   "package": "org.stingle.photos",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 146,
+   "title": "[APP-022] it.fast4x.riplay \u2014 compatibility report",
+   "package": "it.fast4x.riplay",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 145,
+   "title": "[APP-021] com.tutpro.baresip.plus \u2014 compatibility report",
+   "package": "com.tutpro.baresip.plus",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 5,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 144,
+   "title": "[APP-020] net.osmand.plus \u2014 compatibility report",
+   "package": "net.osmand.plus",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 143,
+   "title": "[APP-019] net.bible.android.activity \u2014 compatibility report",
+   "package": "net.bible.android.activity",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 142,
+   "title": "[APP-018] com.ma.tehro \u2014 compatibility report",
+   "package": "com.ma.tehro",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 141,
+   "title": "[APP-017] com.kompact \u2014 compatibility report",
+   "package": "com.kompact",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 140,
+   "title": "[APP-016] org.forkgram.classic \u2014 compatibility report",
+   "package": "org.forkgram.classic",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-26",
+   "comments": 1,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 139,
+   "title": "[APP-015] com.madlonkay.orgro \u2014 compatibility report",
+   "package": "com.madlonkay.orgro",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 138,
+   "title": "[APP-014] me.river.nightbell \u2014 compatibility report",
+   "package": "me.river.nightbell",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 137,
+   "title": "[APP-013] site.leos.apps.lespas \u2014 compatibility report",
+   "package": "site.leos.apps.lespas",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 136,
+   "title": "[APP-012] com.jherkenhoff.qalculate \u2014 compatibility report",
+   "package": "com.jherkenhoff.qalculate",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 135,
+   "title": "[APP-011] eu.weblibre.gecko \u2014 compatibility report",
+   "package": "eu.weblibre.gecko",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 134,
+   "title": "[APP-010] net.diffengine.romandigitalclock \u2014 compatibility report",
+   "package": "net.diffengine.romandigitalclock",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 133,
+   "title": "[APP-009] fr.shiningcat.binclockwidget \u2014 compatibility report",
+   "package": "fr.shiningcat.binclockwidget",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "app",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 132,
+   "title": "[APP-008] io.github.aoc_normal \u2014 compatibility report",
+   "package": "io.github.aoc_normal",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 131,
+   "title": "[APP-007] com.bupkis.tirailleur \u2014 compatibility report",
+   "package": "com.bupkis.tirailleur",
+   "bucket": "LOADED_PARTIAL",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 130,
+   "title": "[APP-006] de.taz.android.app.free \u2014 compatibility report",
+   "package": "de.taz.android.app.free",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 129,
+   "title": "[APP-005] com.newsblur \u2014 compatibility report",
+   "package": "com.newsblur",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 128,
+   "title": "[APP-004] org.nitri.opentopo \u2014 compatibility report",
+   "package": "org.nitri.opentopo",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 127,
+   "title": "[APP-003] de.seemoo.at_tracking_detection \u2014 compatibility report",
+   "package": "de.seemoo.at_tracking_detection",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 126,
+   "title": "[APP-002] foehnix.widget \u2014 compatibility report",
+   "package": "foehnix.widget",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 125,
+   "title": "[APP-001] com.hfut.schedule \u2014 compatibility report",
+   "package": "com.hfut.schedule",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "app",
+    "executed",
+    "fail-oncreate",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 124,
+   "title": "[GAME-100] eu.veldsoft.tuty.fruty.slot \u2014 compatibility report",
+   "package": "eu.veldsoft.tuty.fruty.slot",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 123,
+   "title": "[GAME-099] net.sourceforge.solitaire_cg \u2014 compatibility report",
+   "package": "net.sourceforge.solitaire_cg",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 122,
+   "title": "[GAME-098] com.sidhant.triplematch \u2014 compatibility report",
+   "package": "com.sidhant.triplematch",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 120,
+   "title": "[GAME-096] garden.lina.oblique_strategies \u2014 compatibility report",
+   "package": "garden.lina.oblique_strategies",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 119,
+   "title": "[GAME-095] com.sidhant.nonogram \u2014 compatibility report",
+   "package": "com.sidhant.nonogram",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 118,
+   "title": "[GAME-094] com.attenomy.janken \u2014 compatibility report",
+   "package": "com.attenomy.janken",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 117,
+   "title": "[GAME-093] com.movietrivia.filmfacts \u2014 compatibility report",
+   "package": "com.movietrivia.filmfacts",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 116,
+   "title": "[GAME-092] org.secuso.privacyfriendlysolitaire \u2014 compatibility report",
+   "package": "org.secuso.privacyfriendlysolitaire",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 115,
+   "title": "[GAME-091] com.chenyifaer.fafarunner \u2014 compatibility report",
+   "package": "com.chenyifaer.fafarunner",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 114,
+   "title": "[GAME-090] nodomain.playmaker \u2014 compatibility report",
+   "package": "nodomain.playmaker",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 113,
+   "title": "[GAME-089] com.itsfrz.tictactoe \u2014 compatibility report",
+   "package": "com.itsfrz.tictactoe",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 112,
+   "title": "[GAME-088] org.secuso.privacyfriendlydame \u2014 compatibility report",
+   "package": "org.secuso.privacyfriendlydame",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 111,
+   "title": "[GAME-087] org.pgnapps.pk2 \u2014 compatibility report",
+   "package": "org.pgnapps.pk2",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 110,
+   "title": "[GAME-086] paper.loop2 \u2014 compatibility report",
+   "package": "paper.loop2",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 109,
+   "title": "[GAME-085] com.game.asteroids_revenge \u2014 compatibility report",
+   "package": "com.game.asteroids_revenge",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 108,
+   "title": "[GAME-084] eu.mokrzycki.learndigits \u2014 compatibility report",
+   "package": "eu.mokrzycki.learndigits",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 107,
+   "title": "[GAME-083] com.fr.laboussole.track \u2014 compatibility report",
+   "package": "com.fr.laboussole.track",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 106,
+   "title": "[GAME-082] com.mostafa.brickblast \u2014 compatibility report",
+   "package": "com.mostafa.brickblast",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 105,
+   "title": "[GAME-081] eu.veldsoft.vitosha.blackjack \u2014 compatibility report",
+   "package": "eu.veldsoft.vitosha.blackjack",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 104,
+   "title": "[GAME-080] com.sanskritbasics \u2014 compatibility report",
+   "package": "com.sanskritbasics",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 103,
+   "title": "[GAME-079] eve.game.tracker \u2014 compatibility report",
+   "package": "eve.game.tracker",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 102,
+   "title": "[GAME-078] com.sidhant.shikaku \u2014 compatibility report",
+   "package": "com.sidhant.shikaku",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 101,
+   "title": "[GAME-077] com.dozingcatsoftware.mouse_pounce \u2014 compatibility report",
+   "package": "com.dozingcatsoftware.mouse_pounce",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 100,
+   "title": "[GAME-076] dev.serwin.AnarchRE \u2014 compatibility report",
+   "package": "dev.serwin.AnarchRE",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 99,
+   "title": "[GAME-075] paper.loop \u2014 compatibility report",
+   "package": "paper.loop",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 98,
+   "title": "[GAME-074] org.secuso.privacyfriendlymemory \u2014 compatibility report",
+   "package": "org.secuso.privacyfriendlymemory",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-11-02",
+   "comments": 8,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 97,
+   "title": "[GAME-073] de.saschahlusiak.freebloks \u2014 compatibility report",
+   "package": "de.saschahlusiak.freebloks",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 96,
+   "title": "[GAME-072] fr.arnaudguyon.spacevertex \u2014 compatibility report",
+   "package": "fr.arnaudguyon.spacevertex",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 95,
+   "title": "[GAME-071] cube.run \u2014 compatibility report",
+   "package": "cube.run",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 94,
+   "title": "[GAME-070] me.lecaro.breakout \u2014 compatibility report",
+   "package": "me.lecaro.breakout",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 93,
+   "title": "[GAME-069] eu.veldsoft.scribe4 \u2014 compatibility report",
+   "package": "eu.veldsoft.scribe4",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 92,
+   "title": "[GAME-068] com.dozingcatsoftware.cardswithcats \u2014 compatibility report",
+   "package": "com.dozingcatsoftware.cardswithcats",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 91,
+   "title": "[GAME-067] com.adilhanney.ricochlime \u2014 compatibility report",
+   "package": "com.adilhanney.ricochlime",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 90,
+   "title": "[GAME-066] com.joeld.minesweeper \u2014 compatibility report",
+   "package": "com.joeld.minesweeper",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 89,
+   "title": "[GAME-065] com.tacticmaster \u2014 compatibility report",
+   "package": "com.tacticmaster",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 88,
+   "title": "[GAME-064] com.fairytrick.fairymahjong \u2014 compatibility report",
+   "package": "com.fairytrick.fairymahjong",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 87,
+   "title": "[GAME-063] org.quentin_bettoum.librememorygame \u2014 compatibility report",
+   "package": "org.quentin_bettoum.librememorygame",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-29",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 86,
+   "title": "[GAME-062] com.sidhant.blockblast \u2014 compatibility report",
+   "package": "com.sidhant.blockblast",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 85,
+   "title": "[GAME-061] com.towerillusion.abdal \u2014 compatibility report",
+   "package": "com.towerillusion.abdal",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 84,
+   "title": "[GAME-060] org.codeberg.scovillo.bubble \u2014 compatibility report",
+   "package": "org.codeberg.scovillo.bubble",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 83,
+   "title": "[GAME-059] ru.hyst329.openfool \u2014 compatibility report",
+   "package": "ru.hyst329.openfool",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 82,
+   "title": "[GAME-058] com.vayunmathur.games.alchemist \u2014 compatibility report",
+   "package": "com.vayunmathur.games.alchemist",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 80,
+   "title": "[GAME-056] org.pipoypipagames.cowsrevenge \u2014 compatibility report",
+   "package": "org.pipoypipagames.cowsrevenge",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 79,
+   "title": "[GAME-055] jwtc.android.chess \u2014 compatibility report",
+   "package": "jwtc.android.chess",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 78,
+   "title": "[GAME-054] org.piepmeyer.gauguin \u2014 compatibility report",
+   "package": "org.piepmeyer.gauguin",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 77,
+   "title": "[GAME-053] io.github.johnathan.minesweeper \u2014 compatibility report",
+   "package": "io.github.johnathan.minesweeper",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 76,
+   "title": "[GAME-052] com.rocket9labs.boxcars \u2014 compatibility report",
+   "package": "com.rocket9labs.boxcars",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-RENDERED",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics"
+   ],
+   "updated": "2026-09-27",
+   "comments": 3,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 75,
+   "title": "[GAME-051] com.yepgoryo.EggReturnsHome \u2014 compatibility report",
+   "package": "com.yepgoryo.EggReturnsHome",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 74,
+   "title": "[GAME-050] com.vovagorodok.blidraughts \u2014 compatibility report",
+   "package": "com.vovagorodok.blidraughts",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 73,
+   "title": "[GAME-049] com.sidhant.arrowescape \u2014 compatibility report",
+   "package": "com.sidhant.arrowescape",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 72,
+   "title": "[GAME-048] com.clavierhaus.gnubg \u2014 compatibility report",
+   "package": "com.clavierhaus.gnubg",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-27",
+   "comments": 2,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 71,
+   "title": "[GAME-047] com.eightsines.firestrike.opensource \u2014 compatibility report",
+   "package": "com.eightsines.firestrike.opensource",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-28",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 70,
+   "title": "[GAME-046] org.opensurge2d.surgeengine \u2014 compatibility report",
+   "package": "org.opensurge2d.surgeengine",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 69,
+   "title": "[GAME-045] com.serwylo.retrowars \u2014 compatibility report",
+   "package": "com.serwylo.retrowars",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 67,
+   "title": "[GAME-043] com.sanskritbasics.memory \u2014 compatibility report",
+   "package": "com.sanskritbasics.memory",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 66,
+   "title": "[GAME-042] com.kaeruct.raumballer \u2014 compatibility report",
+   "package": "com.kaeruct.raumballer",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-27",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 65,
+   "title": "[GAME-041] org.lufebe16.pysolfc \u2014 compatibility report",
+   "package": "org.lufebe16.pysolfc",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 64,
+   "title": "[GAME-040] com.galaxyrio.sudokusolver \u2014 compatibility report",
+   "package": "com.galaxyrio.sudokusolver",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-28",
+   "comments": 3,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 63,
+   "title": "[GAME-039] com.octbit.rutmath \u2014 compatibility report",
+   "package": "com.octbit.rutmath",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 62,
+   "title": "[GAME-038] com.quietgrid.app \u2014 compatibility report",
+   "package": "com.quietgrid.app",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 61,
+   "title": "[GAME-037] de.georgsieber.ballbreak \u2014 compatibility report",
+   "package": "de.georgsieber.ballbreak",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 60,
+   "title": "[GAME-036] org.lichess.mobileV2 \u2014 compatibility report",
+   "package": "org.lichess.mobileV2",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 59,
+   "title": "[GAME-035] com.willie.mancala \u2014 compatibility report",
+   "package": "com.willie.mancala",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 58,
+   "title": "[GAME-034] ru.wohlsoft.thextech.fdroid \u2014 compatibility report",
+   "package": "ru.wohlsoft.thextech.fdroid",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-B1/native-game"
+  },
+  {
+   "issue": 57,
+   "title": "[GAME-033] com.nima.triviaapp \u2014 compatibility report",
+   "package": "com.nima.triviaapp",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 56,
+   "title": "[GAME-032] ca.rmen.nounours \u2014 compatibility report",
+   "package": "ca.rmen.nounours",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 55,
+   "title": "[GAME-031] com.hazelhope.dubster.hamtest \u2014 compatibility report",
+   "package": "com.hazelhope.dubster.hamtest",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 54,
+   "title": "[GAME-030] net.tigr.navyfleetbattle \u2014 compatibility report",
+   "package": "net.tigr.navyfleetbattle",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 53,
+   "title": "[GAME-029] com.sidhant.bubbleshooter \u2014 compatibility report",
+   "package": "com.sidhant.bubbleshooter",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 52,
+   "title": "[GAME-028] com.helddertierwelt.mentalmath \u2014 compatibility report",
+   "package": "com.helddertierwelt.mentalmath",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 51,
+   "title": "[GAME-027] com.dozingcatsoftware.dodge \u2014 compatibility report",
+   "package": "com.dozingcatsoftware.dodge",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 50,
+   "title": "[GAME-026] io.itch.pirate_solitaire \u2014 compatibility report",
+   "package": "io.itch.pirate_solitaire",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 49,
+   "title": "[GAME-025] com.vovagorodok.blichess \u2014 compatibility report",
+   "package": "com.vovagorodok.blichess",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 48,
+   "title": "[GAME-024] com.kingalex.kingpong \u2014 compatibility report",
+   "package": "com.kingalex.kingpong",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 47,
+   "title": "[GAME-023] org.secuso.privacyfriendlybattleship \u2014 compatibility report",
+   "package": "org.secuso.privacyfriendlybattleship",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 46,
+   "title": "[GAME-022] com.dash1971.maia_chess \u2014 compatibility report",
+   "package": "com.dash1971.maia_chess",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 45,
+   "title": "[GAME-021] de.schwarz.boardgamepal \u2014 compatibility report",
+   "package": "de.schwarz.boardgamepal",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "graphics",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 44,
+   "title": "[GAME-020] bim.app \u2014 compatibility report",
+   "package": "bim.app",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 43,
+   "title": "[GAME-019] com.vayunmathur.games.solitaire \u2014 compatibility report",
+   "package": "com.vayunmathur.games.solitaire",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 42,
+   "title": "[GAME-018] xyz.deepdaikon.quinb \u2014 compatibility report",
+   "package": "xyz.deepdaikon.quinb",
+   "bucket": "LOADED_PARTIAL",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 41,
+   "title": "[GAME-017] page.codeberg.lanticy.guandan \u2014 compatibility report",
+   "package": "page.codeberg.lanticy.guandan",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 40,
+   "title": "[GAME-016] com.sidhant.queens \u2014 compatibility report",
+   "package": "com.sidhant.queens",
+   "bucket": "LOADED_PARTIAL",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 39,
+   "title": "[GAME-015] eu.quelltext.memory \u2014 compatibility report",
+   "package": "eu.quelltext.memory",
+   "bucket": "LOADED_PARTIAL",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 38,
+   "title": "[GAME-014] de.tobiasbielefeld.solitaire \u2014 compatibility report",
+   "package": "de.tobiasbielefeld.solitaire",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 37,
+   "title": "[GAME-013] io.github.ebraminio.bouncy \u2014 compatibility report",
+   "package": "io.github.ebraminio.bouncy",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 36,
+   "title": "[GAME-012] io.github.hathibelagal.mykanji \u2014 compatibility report",
+   "package": "io.github.hathibelagal.mykanji",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 35,
+   "title": "[GAME-011] com.ivylopez.authsrng \u2014 compatibility report",
+   "package": "com.ivylopez.authsrng",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 34,
+   "title": "[GAME-010] com.sidhant.puzzle \u2014 compatibility report",
+   "package": "com.sidhant.puzzle",
+   "bucket": "INTAKE_QUEUE",
+   "state": "STATE-NOT-LOADED",
+   "labels": [
+    "game",
+    "state-not-loaded"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 33,
+   "title": "[GAME-009] cos.premy.mines \u2014 compatibility report",
+   "package": "cos.premy.mines",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 32,
+   "title": "[GAME-008] si.palcka.tarok \u2014 compatibility report",
+   "package": "si.palcka.tarok",
+   "bucket": "LOADED_PARTIAL",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 31,
+   "title": "[GAME-007] com.simondalvai.ball2box \u2014 compatibility report",
+   "package": "com.simondalvai.ball2box",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 30,
+   "title": "[GAME-006] eu.veldsoft.no.thanks \u2014 compatibility report",
+   "package": "eu.veldsoft.no.thanks",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 29,
+   "title": "[GAME-005] crypto.o0o0o0o0o.games.blackjack \u2014 compatibility report",
+   "package": "crypto.o0o0o0o0o.games.blackjack",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 28,
+   "title": "[GAME-004] com.jeffliu.balancetheball \u2014 compatibility report",
+   "package": "com.jeffliu.balancetheball",
+   "bucket": "EXECUTED_PARTIAL",
+   "state": "STATE-GRAPHICALLY-NONTRIVIAL",
+   "labels": [
+    "executed",
+    "game",
+    "graphics"
+   ],
+   "updated": "2026-09-22",
+   "comments": 2,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 27,
+   "title": "[GAME-003] app.halma \u2014 compatibility report",
+   "package": "app.halma",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 26,
+   "title": "[GAME-002] com.astroloop.game \u2014 compatibility report",
+   "package": "com.astroloop.game",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 1,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 25,
+   "title": "[GAME-001] com.qwde.ccm \u2014 compatibility report",
+   "package": "com.qwde.ccm",
+   "bucket": "EXECUTED_CRASHED",
+   "state": "STATE-NONBLANK",
+   "labels": [
+    "executed",
+    "fail-oncreate",
+    "game",
+    "graphics",
+    "state-nonblank"
+   ],
+   "updated": "2026-09-22",
+   "comments": 0,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 24,
+   "title": "S81 \u2014 REAL APP VISUAL COMPATIBILITY: audit ladder, VF fixes, 200-item ",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 3,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 23,
+   "title": "[EXEC] OPMT \u2014 APK Execution & Visual Proof",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-21",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 22,
+   "title": "[EXEC] Stopwatch \u2014 Service-Launch Family",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-21",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 21,
+   "title": "[EXEC] Bouncy \u2014 APK Execution & Visual Proof",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 6,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 20,
+   "title": "[EXEC] TriPeaks \u2014 APK Execution & Visual Proof",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-21",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 19,
+   "title": "[EXEC] FishRings \u2014 APK Execution & Gameplay Proof",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-21",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 16,
+   "title": "[EXEC] Telegram \u2014 Runtime Compatibility",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-02",
+   "comments": 5,
+   "family": "F-B7/tg-family"
+  },
+  {
+   "issue": 14,
+   "title": "[EXEC] Dooz \u2014 Runtime/UI Completion",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-10-15",
+   "comments": 5,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 12,
+   "title": "[EXEC] ConnectFour \u2014 APK Execution & Gameplay Proof",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 4,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 11,
+   "title": "[EXEC] TicTacToe \u2014 APK Execution & Gameplay Proof",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-11-06",
+   "comments": 6,
+   "family": "F-UI/framework"
+  },
+  {
+   "issue": 9,
+   "title": "MASTER-ROADMAP v3 \u2014 MiniAndroid Compatibility Runtime \u2014 100% Base Exec",
+   "package": null,
+   "bucket": "META_TRACKER",
+   "state": null,
+   "labels": [],
+   "updated": "2026-09-12",
+   "comments": 9,
+   "family": "F-UI/framework"
+  }
+ ]
+}

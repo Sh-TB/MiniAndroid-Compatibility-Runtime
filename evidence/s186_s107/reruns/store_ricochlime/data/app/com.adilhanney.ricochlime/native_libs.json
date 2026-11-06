@@ -1,0 +1,12 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.adilhanney.ricochlime/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libapp.so", "size": 6030224},
+    {"entry": "lib/x86_64/libdartjni.so", "size": 116640},
+    {"entry": "lib/x86_64/libdatastore_shared_counter.so", "size": 6224},
+    {"entry": "lib/x86_64/libflutter.so", "size": 12859464},
+    {"entry": "lib/x86_64/libflutter_soloud_plugin.so", "size": 2047424}
+  ],
+  "count": 5
+}

@@ -1,0 +1,44 @@
+{
+ "schema": "s186_rerun/v1",
+ "binary": "post-S183b main (104.8MB build)",
+ "rows": [
+  {
+   "name": "bouncy",
+   "pkg": "com.dozingcatsoftware.bouncy",
+   "face": "dd0c14257fa1f2af",
+   "uncaught_lines": 13,
+   "gdx_host": 0,
+   "err_tail": [
+    "",
+    "--- Metrics ---",
+    "API Calls: 0",
+    "Frames Rendered: 6",
+    "Execution Time: 0ms",
+    "Errors: 13",
+    "Warnings: 1",
+    "",
+    "Screenshot: /home/z/my-project/evidence/s186_s107/reruns/bouncy/screenshot.png",
+    "Report: /home/z/my-project/evidence/s186_s107/reruns/bouncy/report.md"
+   ]
+  },
+  {
+   "name": "ricochlime",
+   "pkg": "com.adilhanney.ricochlime",
+   "face": "31ddd4d5b8e6d18e",
+   "uncaught_lines": 3,
+   "gdx_host": 0,
+   "err_tail": [
+    "",
+    "--- Metrics ---",
+    "API Calls: 0",
+    "Frames Rendered: 6",
+    "Execution Time: 0ms",
+    "Errors: 3",
+    "Warnings: 8",
+    "",
+    "Screenshot: /home/z/my-project/evidence/s186_s107/reruns/ricochlime/screenshot.png",
+    "Report: /home/z/my-project/evidence/s186_s107/reruns/ricochlime/report.md"
+   ]
+  }
+ ]
+}
