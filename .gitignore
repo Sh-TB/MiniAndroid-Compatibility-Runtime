@@ -324,3 +324,7 @@ frames/
 evidence/s186_s107/reruns_battery/
 evidence/s186_s107/reruns_box2d/
 androguard.db*
+
+# S186i run artifacts (S185 evidence law: run dirs/resume caches stay local)
+evidence/s186_s107/s186i_runs/
+evidence/s186_s107/S186I_BATTERY.*.jsonl
