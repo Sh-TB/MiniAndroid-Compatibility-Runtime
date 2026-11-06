@@ -4,6 +4,7 @@
 #include "resource_runtime.h"
 #include "framework_theme_attrs.h"
 #include "framework/state_list.h"
+#include "material_you_palette.h"
 #include "../apk/manifest_reader.h"
 #include <fstream>
 #include <iostream>
@@ -280,20 +281,55 @@ std::optional<uint32_t> ResourceRuntime::resolve_apk_file_color(
     return std::nullopt;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Coder-3 A17 (issue #527): the dynamic-color baseline Material You palette.
+// With no framework_res table in-tree (S153 purge) every android:color/system_*
+// lookup nullopted → Compose Unspecified → black fills + black text over the
+// black window = the all-black UI (dooz face 11a38a5a, #527 step 7). The
+// baseline palette table (material_you_palette.h, 165 entries, AOSP
+// android-14.0.0_r1 values + android-34 R$color IDs) answers the app's
+// system_* queries exactly like a real API-34 framework table would.
+// BYTE-INERT default path: a table miss returns nullopt exactly like the
+// code path it falls back from — apps that never query system_* colors are
+// untouched. Bounded [S156-MYCULAR] census: the #527 one-command recipe greps
+// exactly 40 rows, so the census caps at 40 rows per process (env-independent;
+// hits and misses both count — a MISS row is honest, never a fake pass).
+namespace {
+uint32_t s_mycular_rows = 0;
+std::optional<uint32_t> resolve_material_you_palette(uint32_t resid) {
+    auto hit = resources::material_you_palette_lookup(resid);
+    if (s_mycular_rows < resources::kMaterialYouCensusCap) {
+        ++s_mycular_rows;
+        std::cerr << "[S156-MYCULAR] " << std::dec << s_mycular_rows
+                  << " resid=0x" << std::hex << resid;
+        if (hit)
+            std::cerr << " -> 0x" << *hit;
+        else
+            std::cerr << " MISS";
+        std::cerr << std::dec << std::endl;
+    }
+    return hit;
+}
+}  // namespace
+
 std::optional<uint32_t> ResourceRuntime::resolve_color_reference_argb(uint32_t resid) {
     // S127: package-routed terminal-value color law (see resource_runtime.h).
     ArscRouter rt = arsc_router();
     if ((resid >> 24) == 0x01) {
-        if (!rt.fw) return std::nullopt;
-        ResolutionResult r = rt.fw->resolve_full(resid, device_config());
-        if (r.ok && r.value()) {
-            const ResValue& tv = *r.value();
-            if (tv.is_string() && tv.string_value.rfind("res/", 0) == 0)
-                return resolve_framework_file_color(resid);
-            if (tv.is_int()) return (uint32_t)tv.data;
-            return color_data_to_argb((uint8_t)tv.type, tv.data);
+        if (rt.fw) {
+            ResolutionResult r = rt.fw->resolve_full(resid, device_config());
+            if (r.ok && r.value()) {
+                const ResValue& tv = *r.value();
+                if (tv.is_string() && tv.string_value.rfind("res/", 0) == 0)
+                    return resolve_framework_file_color(resid);
+                if (tv.is_int()) return (uint32_t)tv.data;
+                return color_data_to_argb((uint8_t)tv.type, tv.data);
+            }
         }
-        return std::nullopt;
+        // A17 (#527): BOTH 0x01-package exits fall back to the baseline
+        // Material You palette — the framework-table miss (or no framework
+        // table at all) is exactly the failure the palette law exists for.
+        return resolve_material_you_palette(resid);
     }
     ResolutionResult r = arsc_.resolve_full(resid, device_config());
     if (r.ok && r.value()) {

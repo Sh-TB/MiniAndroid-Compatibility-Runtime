@@ -1,0 +1,56 @@
+{
+  "step": "S175",
+  "wave": "Coder-3 A17 (issue #527) — dooz Material You dynamic-color baseline-palette law",
+  "intake": {
+    "patch_posted": false,
+    "note": "#527 body-only delivery (0 comments); the code delta lives only on the coder's local line (b2e4298f, Issues-only token). Per the verification law the law was RE-DERIVED on my line from the issue's authoritative sources.",
+    "sources": {
+      "ids": "android-34 R$color via platform-34-ext7_r03 android.jar (dl.google.com), jar sha16 6cea1df3efb77103; the purged vanilla platform-34 jar (sha16 923bafccf73aef99, S153 purge record) is no longer published; ext7 system_* ID assignment validated EXACT against #527's three app-side pinned IDs (0x01060060/61/5e)",
+      "values": "AOSP android-14.0.0_r1 core/res/res/values/colors.xml (android.googlesource.com), 166 system_* entries",
+      "join": "165/165 EXACT (== the coder's claimed join count)",
+      "cross_checks": "system_accent1_100 #C1E8FF (hushenghao dump) / system_primary_container_light #D8E2FF / system_primary_light #445E91 — all EXACT"
+    }
+  },
+  "implementation": {
+    "files": [
+      "miniandroid/src/resources/material_you_palette.h (generated, 165 entries)",
+      "miniandroid/src/resources/resource_runtime.cpp (A17 law: both 0x01-package exits fall back to resolve_material_you_palette; bounded [S156-MYCULAR] census cap 40)",
+      "scripts/s175_gen_palette.py (generator, provenance header)",
+      "scripts/s175_rcolor_parse.py (class-file ConstantValue reader — no javap in sandbox)",
+      "scripts/s175_gates.py"
+    ],
+    "binary": "5b8d960ee054efff",
+    "insurance": "upload/_ma_local_backup/miniandroid_s175_a17_5b8d960ee054efff.bin"
+  },
+  "recipe_x4": {
+    "command": "./miniandroid/build/miniandroid run --execution-mode real-dalvik --frames 6 --frame-delay 200 --width 1080 --height 1920 -o <out> upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+    "runs": [
+      {"run": 1, "rc": 0, "frame005_sha16": "a0fae9072313e2d1", "colors": 121, "mycular": 40, "unresolved": 0, "getColor": 43, "report": "SUCCESS"},
+      {"run": 2, "rc": 0, "frame005_sha16": "a0fae9072313e2d1"},
+      {"run": 3, "rc": 0, "frame005_sha16": "a0fae9072313e2d1"},
+      {"run": 4, "rc": 0, "frame005_sha16": "a0fae9072313e2d1", "mycular": 40, "unresolved": 0, "getColor": 43}
+    ],
+    "color_census_frame005": {
+      "distinct": 121,
+      "FAF9FD_px": 1841727, "FAF9FD_claim": 1841727,
+      "D8E2FF_px": 55399, "D8E2FF_claim": 55399,
+      "dark_text": ["#44474F rgb(68,71,79)", "#001A41 rgb(0,26,65)"]
+    },
+    "verdict": "ALL acceptance numbers BYTE-EXACT vs #527 claims"
+  },
+  "tap_recipe": {
+    "status": "DIVERGENT (honest rows)",
+    "mine": {"frames0_5": "a0fae907 == theirs", "f6": "9441213b (theirs f3642e83)", "f7": "e2f45d9a", "f8": "eccabf41", "f9": "16902f15", "f10_13": "8c7e2a54 stable x4 (theirs cbbd263b x7)", "taps": "2/2 dispatched+consumed, target=1545 Lt4; (theirs 1547)", "end_state": "2 colors #FAFAFA x1974144 + #FAF9FD x99456 = white-out, dialog scrim #303030 NOT present", "new_frontier": "ArrayIndexOutOfBoundsException uncaught at MainActivity.onCreate invoke_pc=317 x5 -> PARTIAL SUCCESS"},
+    "interpretation": "state-advance is real and deterministic on my line too, but faces differ from the coder's line (my-line-only S172/S173 probe allocations shift heap ids: target 1545 vs 1547); the dialog dim-scrim face does not reproduce; recorded as frontier, NOT a rejection of the palette law (the baseline half is byte-exact)"
+  },
+  "gates": {
+    "anchors": {"microtimer": "bbd350b6c14fbd52 == REF", "g2048": "f43face08299ffc6 == REF", "opencalc": "63020bc7334048fe == REF"},
+    "dooz_settle_ab": {
+      "ctl_REF_d0e8449b": {"face": "11a38a5aeeff45a6", "verdict": "DEFAULT_BACKGROUND_ONLY", "uncaught": 6, "wall": 161.0},
+      "fix_NEW_5b8d960e": {"face": "a0fae9072313e2d1", "verdict": "REAL_APP_CONTENT", "uncaught": 6, "wall": 152.8},
+      "note": "face change IS the claim; settle face == the recipe headline sha EXACTLY; uncaught 6==6 unchanged; pixels_equal true"
+    },
+    "tg": {"face_equal": true, "pixels_equal": true, "api": "9777 == 9777", "uncaught": "6 == 6", "verdict": "REAL_APP_CONTENT both"}
+  },
+  "verdict": "A17 LAW APPROVED + MERGED on my line (S175). Coder-3's numbers reproduced BYTE-EXACT (recipe x4 + every pixel count). Honest divergences: tap face-chain + AIOOBE frontier. dooz standing record upgraded: DEFAULT_BACKGROUND_ONLY -> REAL_APP_CONTENT."
+}

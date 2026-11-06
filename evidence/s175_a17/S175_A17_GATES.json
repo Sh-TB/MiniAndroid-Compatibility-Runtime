@@ -1,0 +1,204 @@
+{
+ "anchors": {
+  "microtimer": {
+   "microtimer_ref": {
+    "tag": "microtimer_ref",
+    "bin": "d0e8449b476cd8f1",
+    "wall_s": 1.0,
+    "stderr_sha16": "94ff9875fde4211a",
+    "screenshot_face": "bbd350b6c14fbd52",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 893597,
+    "api_calls": 201
+   },
+   "microtimer_new": {
+    "tag": "microtimer_new",
+    "bin": "5b8d960ee054efff",
+    "wall_s": 1.0,
+    "stderr_sha16": "c3635083f3266334",
+    "screenshot_face": "bbd350b6c14fbd52",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 893597,
+    "api_calls": 201
+   },
+   "delta_inert": true,
+   "pin_match": true
+  },
+  "g2048": {
+   "g2048_ref": {
+    "tag": "g2048_ref",
+    "bin": "d0e8449b476cd8f1",
+    "wall_s": 1.3,
+    "stderr_sha16": "62af4aae83cf8485",
+    "screenshot_face": "f43face08299ffc6",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 1181241,
+    "api_calls": 64
+   },
+   "g2048_new": {
+    "tag": "g2048_new",
+    "bin": "5b8d960ee054efff",
+    "wall_s": 1.2,
+    "stderr_sha16": "e8f19c472aaff357",
+    "screenshot_face": "f43face08299ffc6",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 1181241,
+    "api_calls": 64
+   },
+   "delta_inert": true
+  },
+  "opencalc": {
+   "opencalc_ref": {
+    "tag": "opencalc_ref",
+    "bin": "d0e8449b476cd8f1",
+    "wall_s": 1.7,
+    "stderr_sha16": "2088d98b183b82be",
+    "screenshot_face": "63020bc7334048fe",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 896848,
+    "api_calls": 1569
+   },
+   "opencalc_new": {
+    "tag": "opencalc_new",
+    "bin": "5b8d960ee054efff",
+    "wall_s": 1.5,
+    "stderr_sha16": "ed389e3f62345c5f",
+    "screenshot_face": "63020bc7334048fe",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 896848,
+    "api_calls": 1569
+   },
+   "delta_inert": true
+  }
+ },
+ "a17_dz_ctl": {
+  "tag": "a17_dz_ctl",
+  "bin": "d0e8449b476cd8f1",
+  "env": {},
+  "wall_s": 161.0,
+  "rc": 1,
+  "settle": true,
+  "face": "11a38a5aeeff45a6",
+  "rss_peak_mb": 247.4,
+  "rss_final_mb": 238.6,
+  "rss_grow_mb_s": 1.477,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "DEFAULT_BACKGROUND_ONLY"
+  ]
+ },
+ "a17_dz_fix": {
+  "tag": "a17_dz_fix",
+  "bin": "5b8d960ee054efff",
+  "env": {},
+  "wall_s": 152.8,
+  "rc": 0,
+  "settle": true,
+  "face": "a0fae9072313e2d1",
+  "rss_peak_mb": 249.6,
+  "rss_final_mb": 238.7,
+  "rss_grow_mb_s": 1.56,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ]
+ },
+ "a17_dz_summary": {
+  "wall": "161.0 -> 152.8",
+  "wall_delta_pct": -5.1,
+  "rss_peak": "247.4 -> 249.6",
+  "face_equal": false,
+  "pixels_equal": true
+ },
+ "a17_tg_ctl": {
+  "tag": "a17_tg_ctl",
+  "bin": "d0e8449b476cd8f1",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 34.1,
+  "rc": 1,
+  "rss_peak_mb": 676.2,
+  "rss_final_mb": 676.2,
+  "uncaught": 6,
+  "uncaught_l9j": 4,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9777
+ },
+ "a17_tg_fix": {
+  "tag": "a17_tg_fix",
+  "bin": "5b8d960ee054efff",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 33.3,
+  "rc": 139,
+  "rss_peak_mb": 603.5,
+  "rss_final_mb": 455.4,
+  "uncaught": 6,
+  "uncaught_l9j": 4,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9777
+ },
+ "a17_tg_summary": {
+  "wall": "34.1 -> 33.3",
+  "wall_delta_pct": -2.3,
+  "rss_peak": "676.2 -> 603.5",
+  "face_equal": true,
+  "pixels_equal": true
+ }
+}
