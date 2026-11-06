@@ -303,3 +303,19 @@ api_trace.json
 frames/
 .s185_stash/
 *.bundle
+
+# S186 evidence law: NO per-frame PNG archives and NO raw traces in git —
+# verdict JSON + final face JPG (+ GIF <=1MB only for fully-loaded titles) is evidence.
+*/frames/
+/api_trace.json
+/method_trace.json
+/heap_trace.json
+/opcode_trace.json
+/register_trace.json
+/view_tree.json
+**/api_trace.json
+**/method_trace.json
+**/heap_trace.json
+**/opcode_trace.json
+**/register_trace.json
+**/view_tree.json
