@@ -1,0 +1,480 @@
+{
+ "microtimer": {
+  "tag": "microtimer",
+  "pkg": "dubrowgn.microtimer",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.0,
+  "face": "bbd350b6c14fbd52",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "5"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 893597,
+  "app_draw_ops": 16,
+  "unique_colors": 190,
+  "dominant": [
+   "#ffffff"
+  ],
+  "dominant_pct": 56.90600887345679,
+  "api_calls": 201,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "g2048": {
+  "tag": "g2048",
+  "pkg": "com.miniandroid.g2048",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.3,
+  "face": "f43face08299ffc6",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "5"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 1181241,
+  "app_draw_ops": 28,
+  "unique_colors": 517,
+  "dominant": [
+   "#faf8ef"
+  ],
+  "dominant_pct": 43.03428819444444,
+  "api_calls": 64,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "opencalc": {
+  "tag": "opencalc",
+  "pkg": "com.darkempire78.opencalculator",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.5,
+  "face": "63020bc7334048fe",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "5"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 896848,
+  "app_draw_ops": 28,
+  "unique_colors": 360,
+  "dominant": [
+   "#6fa8dc"
+  ],
+  "dominant_pct": 56.74922839506173,
+  "api_calls": 1569,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "dooz": {
+  "tag": "dooz",
+  "bin": "5d7edcdb34b1502c",
+  "env": {},
+  "wall_s": 157.7,
+  "rc": 0,
+  "settle": true,
+  "face": "a0fae9072313e2d1",
+  "rss_peak_mb": 244.7,
+  "rss_final_mb": 244.7,
+  "rss_grow_mb_s": 1.548,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "tg": {
+  "tag": "tg",
+  "bin": "5d7edcdb34b1502c",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 31.4,
+  "rc": 139,
+  "rss_peak_mb": 668.3,
+  "rss_final_mb": 668.3,
+  "uncaught": 6,
+  "uncaught_l9j": 4,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9777,
+  "class": "REAL_APP_CONTENT",
+  "prev_class_this_session": null
+ },
+ "tetris": {
+  "tag": "tetris",
+  "pkg": "com.miniandroid.tetris",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.4,
+  "face": "b818a6a7016bea8e",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 1156247,
+  "app_draw_ops": 71,
+  "unique_colors": 691,
+  "dominant": [
+   "#0b1020"
+  ],
+  "dominant_pct": 44.239631558641975,
+  "api_calls": 72,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "snake_deluxe": {
+  "tag": "snake_deluxe",
+  "pkg": "com.miniandroid.snakedeluxe",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.6,
+  "face": "5235683fc7b1f04b",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 1437085,
+  "app_draw_ops": 263,
+  "unique_colors": 1089,
+  "dominant": [
+   "#0f172a"
+  ],
+  "dominant_pct": 30.696132330246915,
+  "api_calls": 72,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "snakeneon": {
+  "tag": "snakeneon",
+  "pkg": "com.miniandroid.snakeneon",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.9,
+  "face": "9c02d9d66cb19be4",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 182238,
+  "app_draw_ops": 44,
+  "unique_colors": 478,
+  "dominant": [
+   "#14141e"
+  ],
+  "dominant_pct": 91.21151620370371,
+  "api_calls": 59,
+  "class": "REAL_APP_CONTENT",
+  "prev_class_this_session": null
+ },
+ "ttt_deluxe": {
+  "tag": "ttt_deluxe",
+  "pkg": "com.miniandroid.tictactoedeluxe",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.5,
+  "face": "db1d633d77b5819a",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 1071286,
+  "app_draw_ops": 35,
+  "unique_colors": 1387,
+  "dominant": [
+   "#111b31"
+  ],
+  "dominant_pct": 48.33690200617284,
+  "api_calls": 75,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "minicraft": {
+  "tag": "minicraft",
+  "pkg": "com.miniandroid.minicraft",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.4,
+  "face": "e77a073f733255eb",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 890441,
+  "app_draw_ops": 401,
+  "unique_colors": 561,
+  "dominant": [
+   "#b8e2f2"
+  ],
+  "dominant_pct": 57.05820794753087,
+  "api_calls": 74,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "gmdice": {
+  "tag": "gmdice",
+  "pkg": "de.duenndns.gmdice",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.1,
+  "face": "3891679dff449331",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 182535,
+  "app_draw_ops": 5,
+  "unique_colors": 688,
+  "dominant": [
+   "#101810"
+  ],
+  "dominant_pct": 91.19719328703704,
+  "api_calls": 73,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "tb": {
+  "tag": "tb",
+  "pkg": "net.thunderbird.android",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 7.6,
+  "face": "43bfdac6023cba66",
+  "uncaught": 3,
+  "ndfe": 7,
+  "frames": [
+   "5"
+  ],
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "dominant": [
+   "#fcf8f8"
+  ],
+  "dominant_pct": 100.0,
+  "api_calls": 11319,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "nc": {
+  "tag": "nc",
+  "pkg": "com.nextcloud.client",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 13.6,
+  "face": "b5a7a35d5fe0564b",
+  "uncaught": 32,
+  "ndfe": 0,
+  "frames": [
+   "5"
+  ],
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "dominant": [
+   "#303030"
+  ],
+  "dominant_pct": 100.0,
+  "api_calls": 9319,
+  "class": "PARTIAL",
+  "prev_class_this_session": null
+ },
+ "tusky": {
+  "tag": "tusky",
+  "pkg": "com.keylesspalace.tusky",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 2.4,
+  "face": "31ddd4d5b8e6d18e",
+  "uncaught": 33,
+  "ndfe": 0,
+  "frames": [
+   "5"
+  ],
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 1,
+  "unique_colors": 1,
+  "dominant": [
+   "#ffffff"
+  ],
+  "dominant_pct": 100.0,
+  "api_calls": 8177,
+  "class": "PIN_MATCH",
+  "prev_class_this_session": null
+ },
+ "forkgram": {
+  "tag": "forkgram",
+  "pkg": "org.forkgram.classic",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 29.2,
+  "face": "c2e071714e97a3af",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "5"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 1894,
+  "app_draw_ops": 10,
+  "unique_colors": 155,
+  "dominant": [
+   "#ffffff"
+  ],
+  "dominant_pct": 99.9086612654321,
+  "api_calls": 9600,
+  "class": "REAL_APP_CONTENT",
+  "prev_class_this_session": null
+ },
+ "solitaire": {
+  "tag": "solitaire",
+  "pkg": "de.tobiasbielefeld.solitaire",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.5,
+  "face": "ba50a4d28ea62fe7",
+  "uncaught": 2,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 20,
+  "unique_colors": 1,
+  "dominant": [
+   "#5d80f0"
+  ],
+  "dominant_pct": 100.0,
+  "api_calls": 1434,
+  "class": "PARTIAL",
+  "prev_class_this_session": null
+ },
+ "freebloks": {
+  "tag": "freebloks",
+  "pkg": "de.saschahlusiak.freebloks",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 2.5,
+  "face": "b5a7a35d5fe0564b",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "dominant": [
+   "#303030"
+  ],
+  "dominant_pct": 100.0,
+  "api_calls": 4157,
+  "class": "PARTIAL",
+  "prev_class_this_session": null
+ },
+ "memory": {
+  "tag": "memory",
+  "pkg": "org.secuso.privacyfriendlymemory",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.9,
+  "face": "422704179fa61cab",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 58755,
+  "app_draw_ops": 3,
+  "unique_colors": 128,
+  "dominant": [
+   "#1c1c1c"
+  ],
+  "dominant_pct": 97.16652199074075,
+  "api_calls": 5851,
+  "class": "REAL_APP_CONTENT",
+  "prev_class_this_session": null
+ },
+ "klondike": {
+  "tag": "klondike",
+  "pkg": "eu.veldsoft.free.klondike",
+  "bin": "5d7edcdb34b1502c",
+  "wall_s": 1.5,
+  "face": "c2cbb759e0b1908b",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "6"
+  ],
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 501984,
+  "app_draw_ops": 5,
+  "unique_colors": 190,
+  "dominant": [
+   "#303030"
+  ],
+  "dominant_pct": 75.79166666666667,
+  "api_calls": 5623,
+  "class": "REAL_APP_CONTENT",
+  "prev_class_this_session": null
+ },
+ "snakeneon_attrib": {
+  "pin_w8era": "b669ce89",
+  "face_today": "9c02d9d66cb19be4",
+  "ref_5b8d960e_preC9C7": "9c02d9d66cb19be4",
+  "c9only_47b89870": "9c02d9d66cb19be4",
+  "s172_fea1759d": "9c02d9d66cb19be4",
+  "s174_d0e8449b": "9c02d9d66cb19be4",
+  "s175_5b8d960e": "9c02d9d66cb19be4",
+  "verdict": "REAL_APP_CONTENT x6 binaries, byte-stable; W8-era pin stale (drift in W8->S172 window, pre-dates coder waves 2026-11-06); C9+C7 byte-inert"
+ },
+ "forkgram_attrib": {
+  "face_today": "c2e071714e97a3af",
+  "pkg": "org.forkgram.classic",
+  "ref_5b8d960e": "c2e071714e97a3af",
+  "c9only_47b89870": "c2e071714e97a3af",
+  "s172_fea1759d": "c2e071714e97a3af",
+  "s174_d0e8449b": "c2e071714e97a3af",
+  "verdict": "REAL_APP_CONTENT standing >= S172, FIRST TIME battery-measured S180; uncaught 0, api 9600; C9+C7 byte-inert; visual = minimal real UI (single 'Disable' action screen), NOT chat list; C8 forkgram-targeted ThreadLocal laws NOT merged and not needed for this class"
+ },
+ "memory_attrib": {
+  "face_today": "422704179fa61cab",
+  "ref_5b8d960e": "422704179fa61cab",
+  "verdict": "REAL_APP_CONTENT standing on pre-C9/C7 REF == today; first measured S180; menu 'Easy/New Game' real text; 58,755 app px, uncaught 0, api 5851"
+ },
+ "klondike_attrib": {
+  "face_today": "c2cbb759e0b1908b",
+  "ref_5b8d960e": "c2cbb759e0b1908b",
+  "verdict": "REAL_APP_CONTENT standing on pre-C9/C7 REF == today; first measured S180; full menu (New Game/View Help/About/Check Updates/Exit) 501,984 app px, uncaught 0, api 5623"
+ },
+ "nc_drift_attrib": {
+  "standing_pin": "33fd925fc12e7585",
+  "face_today_C9C7": "b5a7a35d5fe0564b",
+  "ref_5b8d960e": "33fd925fc12e7585",
+  "c9only_47b89870": "33fd925fc12e7585",
+  "mechanism": "window 2 of NC launch flow: NEW resolves framework dark default #303030 (EXT01-WINBG 0xff303030) where REF resolved app-theme blue 0xff0082c9; window 1 blue on BOTH; probe MINIANDROID_S95_DBG resid=0x7f140313 bag=miss typed fb=hit both arms",
+  "verdict_class": "DEFAULT_BACKGROUND_ONLY both arms, app_owned_pixels 0, uncaught 32==32",
+  "attribution": "C7 wave (C9-only == REF byte-exact); post-merge regression row -> #520 addendum; per-law bisect queued",
+  "pixel_diff": "REF whole screen (0,130,201) NC brand blue vs NEW whole screen (48,48,48)"
+ },
+ "freebloks_note": "freebloks face b5a7a35d5fe0564b == NC NEW face because both are pure full-screen #303030 (identical PNG bytes), not a store collision"
+}
