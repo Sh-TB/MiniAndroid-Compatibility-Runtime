@@ -1,0 +1,380 @@
+{
+ "generated": "2026-11-06",
+ "law": "SQLITE_RULE Clause 4 fetch-if-missing",
+ "total": 41,
+ "ok": 41,
+ "unresolved": 0,
+ "failed": 0,
+ "results": [
+  {
+   "issue": 25,
+   "pkg": "com.qwde.ccm",
+   "status": "OK",
+   "versioncode": 5,
+   "url": "https://f-droid.org/repo/com.qwde.ccm_5.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.qwde.ccm.apk",
+   "size": 56290801
+  },
+  {
+   "issue": 26,
+   "pkg": "com.astroloop.game",
+   "status": "OK",
+   "versioncode": 6,
+   "url": "https://f-droid.org/repo/com.astroloop.game_6.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.astroloop.game.apk",
+   "size": 52950747
+  },
+  {
+   "issue": 27,
+   "pkg": "app.halma",
+   "status": "OK",
+   "versioncode": 15,
+   "url": "https://f-droid.org/repo/app.halma_15.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/app.halma.apk",
+   "size": 3849844
+  },
+  {
+   "issue": 28,
+   "pkg": "com.jeffliu.balancetheball",
+   "status": "OK",
+   "versioncode": 4,
+   "url": "https://f-droid.org/repo/com.jeffliu.balancetheball_4.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.jeffliu.balancetheball.apk",
+   "size": 42170
+  },
+  {
+   "issue": 29,
+   "pkg": "crypto.o0o0o0o0o.games.blackjack",
+   "status": "OK",
+   "versioncode": 4,
+   "url": "https://f-droid.org/repo/crypto.o0o0o0o0o.games.blackjack_4.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/crypto.o0o0o0o0o.games.blackjack.apk",
+   "size": 3487026
+  },
+  {
+   "issue": 30,
+   "pkg": "eu.veldsoft.no.thanks",
+   "status": "OK",
+   "versioncode": 1,
+   "url": "https://f-droid.org/repo/eu.veldsoft.no.thanks_1.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/eu.veldsoft.no.thanks.apk",
+   "size": 19191974
+  },
+  {
+   "issue": 31,
+   "pkg": "com.simondalvai.ball2box",
+   "status": "OK",
+   "versioncode": 69,
+   "url": "https://f-droid.org/repo/com.simondalvai.ball2box_69.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.simondalvai.ball2box.apk",
+   "size": 46623765
+  },
+  {
+   "issue": 32,
+   "pkg": "si.palcka.tarok",
+   "status": "OK",
+   "versioncode": 203,
+   "url": "https://f-droid.org/repo/si.palcka.tarok_203.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/si.palcka.tarok.apk",
+   "size": 14618591
+  },
+  {
+   "issue": 33,
+   "pkg": "cos.premy.mines",
+   "status": "OK",
+   "versioncode": 16,
+   "url": "https://f-droid.org/repo/cos.premy.mines_16.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/cos.premy.mines.apk",
+   "size": 2040324
+  },
+  {
+   "issue": 36,
+   "pkg": "io.github.hathibelagal.mykanji",
+   "status": "OK",
+   "versioncode": 7,
+   "url": "https://f-droid.org/repo/io.github.hathibelagal.mykanji_7.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/io.github.hathibelagal.mykanji.apk",
+   "size": 14830416
+  },
+  {
+   "issue": 38,
+   "pkg": "de.tobiasbielefeld.solitaire",
+   "status": "OK",
+   "versioncode": 71,
+   "url": "https://f-droid.org/repo/de.tobiasbielefeld.solitaire_71.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/de.tobiasbielefeld.solitaire.apk",
+   "size": 16738109
+  },
+  {
+   "issue": 39,
+   "pkg": "eu.quelltext.memory",
+   "status": "OK",
+   "versioncode": 7,
+   "url": "https://f-droid.org/repo/eu.quelltext.memory_7.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/eu.quelltext.memory.apk",
+   "size": 3028941
+  },
+  {
+   "issue": 40,
+   "pkg": "com.sidhant.queens",
+   "status": "OK",
+   "versioncode": 123,
+   "url": "https://f-droid.org/repo/com.sidhant.queens_123.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.sidhant.queens.apk",
+   "size": 8834323
+  },
+  {
+   "issue": 41,
+   "pkg": "page.codeberg.lanticy.guandan",
+   "status": "OK",
+   "versioncode": 7,
+   "url": "https://f-droid.org/repo/page.codeberg.lanticy.guandan_7.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/page.codeberg.lanticy.guandan.apk",
+   "size": 1584455
+  },
+  {
+   "issue": 42,
+   "pkg": "xyz.deepdaikon.quinb",
+   "status": "OK",
+   "versioncode": 10,
+   "url": "https://f-droid.org/repo/xyz.deepdaikon.quinb_10.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/xyz.deepdaikon.quinb.apk",
+   "size": 21585549
+  },
+  {
+   "issue": 43,
+   "pkg": "com.vayunmathur.games.solitaire",
+   "status": "OK",
+   "versioncode": 20260804,
+   "url": "https://f-droid.org/repo/com.vayunmathur.games.solitaire_20260804.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.vayunmathur.games.solitaire.apk",
+   "size": 3202441
+  },
+  {
+   "issue": 44,
+   "pkg": "bim.app",
+   "status": "OK",
+   "versioncode": 1700,
+   "url": "https://f-droid.org/repo/bim.app_1700.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/bim.app.apk",
+   "size": 64962960
+  },
+  {
+   "issue": 47,
+   "pkg": "org.secuso.privacyfriendlybattleship",
+   "status": "OK",
+   "versioncode": 101,
+   "url": "https://f-droid.org/repo/org.secuso.privacyfriendlybattleship_101.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/org.secuso.privacyfriendlybattleship.apk",
+   "size": 5825971
+  },
+  {
+   "issue": 49,
+   "pkg": "com.vovagorodok.blichess",
+   "status": "OK",
+   "reason": "api-failed rc=22",
+   "url": "https://github.com/vovagorodok/blichess/releases/download/v8.0.0%2Bble2.5.2/app-release.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.vovagorodok.blichess.apk",
+   "size": 62081974,
+   "note": "GitHub Releases (F-Droid 404); authenticated API"
+  },
+  {
+   "issue": 58,
+   "pkg": "ru.wohlsoft.thextech.fdroid",
+   "status": "OK",
+   "versioncode": 1070401,
+   "url": "https://f-droid.org/repo/ru.wohlsoft.thextech.fdroid_1070401.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/ru.wohlsoft.thextech.fdroid.apk",
+   "size": 28030316
+  },
+  {
+   "issue": 70,
+   "pkg": "org.opensurge2d.surgeengine",
+   "status": "OK",
+   "versioncode": 30650,
+   "url": "https://f-droid.org/repo/org.opensurge2d.surgeengine_30650.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/org.opensurge2d.surgeengine.apk",
+   "size": 45065524
+  },
+  {
+   "issue": 71,
+   "pkg": "com.eightsines.firestrike.opensource",
+   "status": "OK",
+   "versioncode": 2000,
+   "url": "https://f-droid.org/repo/com.eightsines.firestrike.opensource_2000.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.eightsines.firestrike.opensource.apk",
+   "size": 15604476
+  },
+  {
+   "issue": 72,
+   "pkg": "com.clavierhaus.gnubg",
+   "status": "OK",
+   "versioncode": 103,
+   "url": "https://f-droid.org/repo/com.clavierhaus.gnubg_103.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.clavierhaus.gnubg.apk",
+   "size": 39211927
+  },
+  {
+   "issue": 74,
+   "pkg": "com.vovagorodok.blidraughts",
+   "status": "OK",
+   "versioncode": 3,
+   "url": "https://f-droid.org/repo/com.vovagorodok.blidraughts_3.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.vovagorodok.blidraughts.apk",
+   "size": 36836253
+  },
+  {
+   "issue": 76,
+   "pkg": "com.rocket9labs.boxcars",
+   "status": "OK",
+   "versioncode": 104090,
+   "url": "https://f-droid.org/repo/com.rocket9labs.boxcars_104090.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.rocket9labs.boxcars.apk",
+   "size": 30886503
+  },
+  {
+   "issue": 125,
+   "pkg": "com.hfut.schedule",
+   "status": "OK",
+   "versioncode": 2784,
+   "url": "https://f-droid.org/repo/com.hfut.schedule_2784.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.hfut.schedule.apk",
+   "size": 29021447
+  },
+  {
+   "issue": 126,
+   "pkg": "foehnix.widget",
+   "status": "OK",
+   "versioncode": 40,
+   "url": "https://f-droid.org/repo/foehnix.widget_40.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/foehnix.widget.apk",
+   "size": 2547753
+  },
+  {
+   "issue": 127,
+   "pkg": "de.seemoo.at_tracking_detection",
+   "status": "OK",
+   "versioncode": 69,
+   "url": "https://f-droid.org/repo/de.seemoo.at_tracking_detection_69.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/de.seemoo.at_tracking_detection.apk",
+   "size": 9276103
+  },
+  {
+   "issue": 128,
+   "pkg": "org.nitri.opentopo",
+   "status": "OK",
+   "versioncode": 84,
+   "url": "https://f-droid.org/repo/org.nitri.opentopo_84.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/org.nitri.opentopo.apk",
+   "size": 4708853
+  },
+  {
+   "issue": 129,
+   "pkg": "com.newsblur",
+   "status": "OK",
+   "versioncode": 300,
+   "url": "https://f-droid.org/repo/com.newsblur_300.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.newsblur.apk",
+   "size": 10265240
+  },
+  {
+   "issue": 130,
+   "pkg": "de.taz.android.app.free",
+   "status": "OK",
+   "versioncode": 20102900,
+   "url": "https://f-droid.org/repo/de.taz.android.app.free_20102900.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/de.taz.android.app.free.apk",
+   "size": 63985139
+  },
+  {
+   "issue": 131,
+   "pkg": "com.bupkis.tirailleur",
+   "status": "OK",
+   "versioncode": 13,
+   "url": "https://f-droid.org/repo/com.bupkis.tirailleur_13.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.bupkis.tirailleur.apk",
+   "size": 24432234
+  },
+  {
+   "issue": 132,
+   "pkg": "io.github.aoc_normal",
+   "status": "OK",
+   "versioncode": 1,
+   "url": "https://f-droid.org/repo/io.github.aoc_normal_1.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/io.github.aoc_normal.apk",
+   "size": 4453163
+  },
+  {
+   "issue": 137,
+   "pkg": "site.leos.apps.lespas",
+   "status": "OK",
+   "versioncode": 118,
+   "url": "https://f-droid.org/repo/site.leos.apps.lespas_118.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/site.leos.apps.lespas.apk",
+   "size": 50357252
+  },
+  {
+   "issue": 138,
+   "pkg": "me.river.nightbell",
+   "status": "OK",
+   "versioncode": 48,
+   "url": "https://f-droid.org/repo/me.river.nightbell_48.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/me.river.nightbell.apk",
+   "size": 2782204
+  },
+  {
+   "issue": 153,
+   "pkg": "com.hegocre.nextcloudpasswords",
+   "status": "OK",
+   "versioncode": 49,
+   "url": "https://f-droid.org/repo/com.hegocre.nextcloudpasswords_49.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.hegocre.nextcloudpasswords.apk",
+   "size": 13841332
+  },
+  {
+   "issue": 170,
+   "pkg": "tibarj.tranquilstopwatch",
+   "status": "OK",
+   "versioncode": 17,
+   "url": "https://f-droid.org/repo/tibarj.tranquilstopwatch_17.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/tibarj.tranquilstopwatch.apk",
+   "size": 2492454
+  },
+  {
+   "issue": 203,
+   "pkg": "com.justdeax.composeStopwatch",
+   "status": "OK",
+   "versioncode": 1009011,
+   "url": "https://f-droid.org/repo/com.justdeax.composeStopwatch_1009011.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/com.justdeax.composeStopwatch.apk",
+   "size": 1451410
+  },
+  {
+   "issue": 213,
+   "pkg": "me.timeto.app",
+   "status": "OK",
+   "versioncode": 626,
+   "url": "https://f-droid.org/repo/me.timeto.app_626.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/me.timeto.app.apk",
+   "size": 11145626
+  },
+  {
+   "issue": 225,
+   "pkg": "se.tube42.p9.android",
+   "status": "OK",
+   "versioncode": 11,
+   "url": "https://f-droid.org/repo/se.tube42.p9.android_11.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/se.tube42.p9.android.apk",
+   "size": 6819578
+  },
+  {
+   "issue": 226,
+   "pkg": "io.timelimit.android.aosp.direct",
+   "status": "OK",
+   "versioncode": 232,
+   "url": "https://f-droid.org/repo/io.timelimit.android.aosp.direct_232.apk",
+   "path": "/home/z/my-project/upload/stuck_apks/io.timelimit.android.aosp.direct.apk",
+   "size": 5849091
+  }
+ ]
+}

@@ -7625,3 +7625,55 @@ Stage Summary:
 - NEXT: stuck-titles re-battery — 40/41 stuck APKs missing from disk (sandbox wipe),
   re-fetch from fixed URLs (F-Droid repo), run the s182 invocation law over all,
   produce the honest before/after family matrix (user directive: "همشون رو اجرا بکن").
+
+## S186c/e — ALL 41 stuck titles re-batteried on the current engine; 3 engine laws landed (2026-11-06)
+
+User directive: "همشون رو اجرا بکن" — run ALL incomplete titles; apply the sqlite law
+to every worked-but-stuck game. The 43 REAL-STUCK census (42 stale since 09-22)
+became the runbook.
+
+**Re-fetch (Clause 4):** 40/41 APKs re-fetched from F-Droid (fixed URL per package;
+`scripts/s186c_fetch_stuck.py`); blichess (#49, F-Droid 404) from its GitHub
+Releases via the authenticated API (`s186c_fetch_blichess.py`). 41/41 on disk.
+First-response-schema bug (suggestions vs suggestedVersionCode) caught and fixed.
+
+**Re-battery** (`scripts/s186c_battery.py`, exact s182 invocation law, fresh-store,
+resume-JSONL so sandbox process reaping and one OOM cost nothing; chunked foreground
+mode added after detached runs kept dying between tool calls):
+
+| today vs issue-era | count | titles |
+|---|---|---|
+| **A_RICH, 0 uncaught** | 2 | **app.halma #27, se.tube42.p9 #225** (both were EXECUTED_CRASHED) |
+| B_STRUCTURED, 0 uncaught | 5 | balancetheball #28, blackjack #29, no.thanks #30, premy.mines #33, quelltext.memory #39 |
+| FLAT but 0 uncaught | 6 | qwde.ccm, ball2box, mykanji, thextech, battleship, composeStopwatch |
+| still crashing | 28 | families below |
+
+**Completion matrix** (`S186C_COMPLETION_MATRIX.json`): F-NPE 15 (diverse: flutter
+embedding, capacitor, gomobile go/Seq, liballeg, kotlin Intrinsics), F-ANDROIDX 6
+(**datastore ×2**, OnBackPressedDispatcher ×2, FragmentContainerView, appcompat),
+F-OTHER 5, F-RES 1 (astroloop Resources$NotFound in FontManager), F-NATIVE 1 (taz
+→ conscrypt UnsatisfiedLinkError).
+
+**Three engine laws landed (all probe-first, all A/B-proven):**
+1. **S186b box2d GATE-A** — host natives were wiped with the sandbox; rebuilt via
+   fetch-if-missing script (266/68 symbols == S183b); GATE A substituted
+   libgdx-box2d64.so; bouncy uncaught 13→0, face **8a6c24ac8a7d718e BYTE-EXACT ==
+   S183b pin**. The S186 "regression" was environment loss, not engine.
+2. **S186d File.toString at the bridge layer** — the F-C4-575 law existed in the
+   File arm but Object.toString / String.valueOf / StringBuilder.append(Object)
+   fell to the identity form ("Ljava/io/File;@3748") for shadow classes with no
+   dex body. Disassembly of gnubg's datastore delegate showed the lazy message
+   lambda interpolating a REAL File (valid path) through that hole.
+3. **S186e Object.equals + CHAR-typed args** — the real blocker chain, found by
+   (a) disassembling `Intrinsics.areEqual` → `invoke-virtual
+   Ljava/lang/Object;->equals` (erased receiver — REC-MISS → false even for two
+   IDENTICAL strings), fixed with a receiver-typed Object.equals law (String
+   content / enum name+class / oid identity); (b) a [LILO-PROBE]
+   (`MINIANDROID_LILO_PROBE=1`) proving `lastIndexOf(-1, 23)` — the `C`
+   delimiter arrived CHAR-typed and the arm answered -1 for any non-INT32;
+   accepted CHAR in indexOf/lastIndexOf → `lastIndexOf(46, 23) -> 9` correct.
+
+**A/B after laws:** vayunmathur solitaire #43 **13→0 uncaught, datastore check
+gone**; gnubg #72 **30→22 uncaught, datastore check gone** (next: coroutines
+AbortFlowException family); A_RICH halma/p9 confirm the PortableGL + framework
+work is already paying on titles that were dead since September.

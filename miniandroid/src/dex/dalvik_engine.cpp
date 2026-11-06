@@ -44593,6 +44593,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 ts_ret.type == DalvikType::STRING_REF) {
                                 return ts_ret.string_val;
                             }
+                            // S186d (stuck-battery #72 gnubg): shadow classes
+                            // have NO dex toString for try_recursive_invoke —
+                            // answer their native law before the identity
+                            // form. java.io.File: toString() == getPath()
+                            // (F-C4-575); identity form "Ljava/io/File;@N"
+                            // broke androidx datastore's check message and
+                            // every real-library File interpolation.
+                            if (a.object_id != 0 &&
+                                a.class_desc == "Ljava/io/File;") {
+                                auto pv564 = heap_.get_object_field(
+                                    a.object_id, "path");
+                                if (pv564.has_value() &&
+                                    pv564->type == DalvikType::STRING_REF)
+                                    return pv564->string_val;
+                            }
                         }
                     }
                     // Per OpenJDK Object.toString: ClassName@hexIdentityHash
@@ -72037,6 +72052,59 @@ measure_cm_done:;
     }
 
     // ────────────────────────────────────────────────────────────────────────
+    // S186e (stuck-battery #72 gnubg + #43 vayunmathur): Object.equals law —
+    // kotlin Intrinsics.areEqual(first, second) compiles to
+    //   invoke-virtual {first, second} Ljava/lang/Object;->equals(...)Z
+    // (the parameter's static type is Any? — erased). ART dispatches
+    // VIRTUALLY on the runtime class (String.equals for strings; identity
+    // for plain objects; Enum.equals by identity/name). The engine resolved
+    // the DECLARED class → no dex body → REC-MISS → typed-default FALSE, so
+    // every areEqual on a bridge-produced string answered false — androidx
+    // datastore's own extension check (FilesKt.getExtension(file) ==
+    // "preferences_pb", gnubg live: two IDENTICAL strings compared unequal)
+    // threw IllegalStateException before any file IO. Law (OpenJDK):
+    //   * String receiver: content equality (the String.equals arm above).
+    //   * Enum receiver: Enum.equals == identity — same object, OR minted
+    //     enum constants with the same class+enum_name (the engine mints
+    //     each constant once, so name equality ⇒ identity).
+    //   * Object receiver: reference equality (same non-zero oid).
+    //   * null == null → true; null vs non-null → false.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Object;" && method == "equals") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        bool eq = false;
+        if (args.size() >= 2) {
+            const DalvikValue& a = args[0];
+            const DalvikValue& b = args[1];
+            if (a.type == DalvikType::NULL_REF && b.type == DalvikType::NULL_REF) {
+                eq = true;
+            } else if (a.type == DalvikType::STRING_REF) {
+                eq = b.type == DalvikType::STRING_REF &&
+                     a.string_val == b.string_val;
+            } else if (a.type == DalvikType::OBJECT_REF && a.object_id != 0) {
+                if (b.type == DalvikType::OBJECT_REF && b.object_id == a.object_id) {
+                    eq = true;
+                } else {
+                    // minted-enum law: same class + same enum_name ⇒ the same
+                    // constant (engine mints each constant once).
+                    auto ea = heap_.get_object_field(a.object_id, "enum_name");
+                    if (ea.has_value() && ea->type == DalvikType::STRING_REF &&
+                        b.type == DalvikType::OBJECT_REF && b.object_id != 0) {
+                        auto eb = heap_.get_object_field(b.object_id,
+                                                         "enum_name");
+                        eq = eb.has_value() &&
+                             eb->type == DalvikType::STRING_REF &&
+                             ea->string_val == eb->string_val &&
+                             a.class_desc == b.class_desc;
+                    }
+                }
+            }
+        }
+        result = DalvikValue::make_bool(eq);
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // F-NEW-500 (CONT-159): String.compareTo(String) — REAL lexicographic
     // law. ROOT CAUSE this replaces: the engine had NO compareTo handler;
     // the unhandled virtual fall-through answered 0, so every pair of
@@ -72458,11 +72526,36 @@ measure_cm_done:;
                 if (!enum_name500.empty()) {
                     result = DalvikValue::make_string(enum_name500, 0);
                 } else {
-                    // Object receiver without a DEX body: OpenJDK identity form.
-                    result = DalvikValue::make_string(
-                        args[0].class_desc + "@" +
-                            std::to_string(args[0].object_id),
-                        0);
+                    // S186d (stuck-battery #72 gnubg): shadow classes with a
+                    // native toString law answer HERE, before the identity
+                    // form. java.io.File: toString() == getPath() (the same
+                    // F-C4-575 law the File bridge arm implements) — the dex
+                    // has no File bytecode, so try_recursive_invoke cannot
+                    // reach the bridge arm and the identity form poisoned
+                    // every real-library string interpolation of a File
+                    // ("File extension for file: Ljava/io/File;@3748 does
+                    // not match required extension for Preferences file:
+                    // preferences_pb" — androidx datastore check message,
+                    // gnubg + vayunmathur solitaire live evidence).
+                    std::string shadow_ts500;
+                    if (args[0].object_id != 0) {
+                        if (args[0].class_desc == "Ljava/io/File;") {
+                            auto pv500 = heap_.get_object_field(
+                                args[0].object_id, "path");
+                            if (pv500.has_value() &&
+                                pv500->type == DalvikType::STRING_REF)
+                                shadow_ts500 = pv500->string_val;
+                        }
+                    }
+                    if (!shadow_ts500.empty()) {
+                        result = DalvikValue::make_string(shadow_ts500, 0);
+                    } else {
+                        // Object receiver without a DEX body: OpenJDK identity form.
+                        result = DalvikValue::make_string(
+                            args[0].class_desc + "@" +
+                                std::to_string(args[0].object_id),
+                            0);
+                    }
                 }
             }
         } else {
@@ -72675,10 +72768,13 @@ measure_cm_done:;
                                             (size_t)args[2].int_val);
                         found = p2 == std::string::npos ? -1 : (int32_t)p2;
                     }
-                } else if (args[1].type == DalvikType::INT32) {
+                } else if (args[1].type == DalvikType::INT32 ||
+                           args[1].type == DalvikType::CHAR) {
                     // indexOf(int ch) / indexOf(int ch, int fromIndex) — the
                     // fromIndex law applies to the CHAR form too (OpenJDK
                     // String.java: search starts at max(0, fromIndex)).
+                    // S186e: CHAR-typed ch arrives from `C`-parameter passing
+                    // (same disease as the lastIndexOf fix in this file).
                     int32_t from = 0;
                     if (args.size() >= 3 && args[2].type == DalvikType::INT32)
                         from = args[2].int_val;
@@ -72716,8 +72812,19 @@ measure_cm_done:;
                            "lastIndexOf on null", "STR-BRIDGE");
             return true;
         }
-        const int32_t ch_li = (args[1].type == DalvikType::INT32)
-                                  ? args[1].int_val : -1;
+        // S186e FIX (gnubg #72 datastore): the delimiter is a `C` parameter —
+        // the invoke arg-typing delivers it as DalvikType::CHAR (int_val=46
+        // for '.'), and kotlin's lastIndexOf$default wrapper moves it through
+        // registers untouched. The old `== INT32 ? int_val : -1` ternary
+        // answered -1 for every CHAR-typed delimiter → substringAfterLast
+        // always returned `missing` → androidx Preferences extension check
+        // failed on a CORRECT file ("cbg_clock.preferences_pb" vs
+        // "preferences_pb" — probe-proven, [LILO-PROBE] lastIndexOf(-1, 23)).
+        // OpenJDK: char IS an integral type — accept any int-bearing slot.
+        const int32_t ch_li =
+            (args[1].type == DalvikType::INT32 ||
+             args[1].type == DalvikType::CHAR)
+                ? args[1].int_val : -1;
         // fromIndex: 2-arg form uses args[2]; 1-arg form = length-1.
         int32_t from_li = static_cast<int32_t>(s_li.size()) - 1;
         if (args.size() >= 3 && args[2].type == DalvikType::INT32)
@@ -72742,6 +72849,15 @@ measure_cm_done:;
                       << from_li << ") of \"" << s_li.substr(0, 32)
                       << "\" -> " << found << std::endl;
         }
+        // S186e datastore probe: the Preferences extension check hinges on
+        // this exact call — env-gated full log, no cap.
+        static const bool lilo_probe =
+            std::getenv("MINIANDROID_LILO_PROBE") != nullptr;
+        if (lilo_probe && s_li.size() < 512)
+            std::cerr << "[LILO-PROBE] lastIndexOf(" << ch_li << ", "
+                      << from_li << ") of \"" << s_li << "\" -> " << found
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
         return true;
     }
 
