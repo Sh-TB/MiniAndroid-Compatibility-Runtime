@@ -319,3 +319,8 @@ frames/
 **/opcode_trace.json
 **/register_trace.json
 **/view_tree.json
+
+# S186c: battery run dirs + probe dbs stay out of git (evidence law)
+evidence/s186_s107/reruns_battery/
+evidence/s186_s107/reruns_box2d/
+androguard.db*
