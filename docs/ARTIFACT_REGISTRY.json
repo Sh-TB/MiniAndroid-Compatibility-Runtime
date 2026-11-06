@@ -1821,23 +1821,23 @@
   },
   {
    "bytes": 5618707,
-   "path": "docs/foundation/dex_census/bouncy.json"
+   "path": "docs/foundation/dex_census/bouncy.json.gz"
   },
   {
    "bytes": 4293137,
-   "path": "docs/foundation/dex_census/com.emmanuelmess.tictactoe_3.json"
+   "path": "docs/foundation/dex_census/com.emmanuelmess.tictactoe_3.json.gz"
   },
   {
    "bytes": 3865834,
-   "path": "docs/foundation/knowledge_graph.json"
+   "path": "docs/foundation/knowledge_graph.json.gz"
   },
   {
    "bytes": 3417223,
-   "path": "docs/foundation/dex_census/io.github.yamin8000.dooz_23.json"
+   "path": "docs/foundation/dex_census/io.github.yamin8000.dooz_23.json.gz"
   },
   {
    "bytes": 3417212,
-   "path": "docs/foundation/dex_census/dooz_23_toplevel.json"
+   "path": "docs/foundation/dex_census/dooz_23_toplevel.json.gz"
   },
   {
    "bytes": 2296340,
@@ -1865,7 +1865,7 @@
   },
   {
    "bytes": 1119316,
-   "path": "docs/foundation/api_matrix.json"
+   "path": "docs/foundation/api_matrix.json.gz"
   },
   {
    "bytes": 1050687,

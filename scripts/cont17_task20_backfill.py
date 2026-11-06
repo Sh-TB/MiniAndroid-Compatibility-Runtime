@@ -4,7 +4,7 @@
 import json
 
 P = '/home/z/my-project/root_registry.json'
-KG = '/home/z/my-project/docs/foundation/knowledge_graph.json'
+KG = '/home/z/my-project/docs/foundation/knowledge_graph.json.gz'
 OUT = '/home/z/my-project/evidence/cont17/title_backfill.json'
 
 reg = json.load(open(P))
