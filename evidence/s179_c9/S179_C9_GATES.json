@@ -1,0 +1,204 @@
+{
+ "anchors": {
+  "microtimer": {
+   "microtimer_ref": {
+    "tag": "microtimer_ref",
+    "bin": "5b8d960ee054efff",
+    "wall_s": 1.1,
+    "stderr_sha16": "55f6a79e03ffb7e7",
+    "screenshot_face": "bbd350b6c14fbd52",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 893597,
+    "api_calls": 201
+   },
+   "microtimer_new": {
+    "tag": "microtimer_new",
+    "bin": "47b89870adf46715",
+    "wall_s": 1.0,
+    "stderr_sha16": "29758912b11a84fc",
+    "screenshot_face": "bbd350b6c14fbd52",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 893597,
+    "api_calls": 201
+   },
+   "delta_inert": true,
+   "pin_match": true
+  },
+  "g2048": {
+   "g2048_ref": {
+    "tag": "g2048_ref",
+    "bin": "5b8d960ee054efff",
+    "wall_s": 1.3,
+    "stderr_sha16": "df5c5147e2de6c70",
+    "screenshot_face": "f43face08299ffc6",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 1181241,
+    "api_calls": 64
+   },
+   "g2048_new": {
+    "tag": "g2048_new",
+    "bin": "47b89870adf46715",
+    "wall_s": 1.2,
+    "stderr_sha16": "6ba94d12824cb66d",
+    "screenshot_face": "f43face08299ffc6",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 1181241,
+    "api_calls": 64
+   },
+   "delta_inert": true
+  },
+  "opencalc": {
+   "opencalc_ref": {
+    "tag": "opencalc_ref",
+    "bin": "5b8d960ee054efff",
+    "wall_s": 1.6,
+    "stderr_sha16": "31d38af264c928b6",
+    "screenshot_face": "63020bc7334048fe",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 896848,
+    "api_calls": 1569
+   },
+   "opencalc_new": {
+    "tag": "opencalc_new",
+    "bin": "47b89870adf46715",
+    "wall_s": 1.6,
+    "stderr_sha16": "c6daf794dafe174d",
+    "screenshot_face": "63020bc7334048fe",
+    "uncaught": 0,
+    "ndfe": 0,
+    "law_rows": 0,
+    "frames": [
+     "5"
+    ],
+    "app_owned_pixels": 896848,
+    "api_calls": 1569
+   },
+   "delta_inert": true
+  }
+ },
+ "c9_dz_ctl": {
+  "tag": "c9_dz_ctl",
+  "bin": "5b8d960ee054efff",
+  "env": {},
+  "wall_s": 155.0,
+  "rc": 0,
+  "settle": true,
+  "face": "a0fae9072313e2d1",
+  "rss_peak_mb": 249.9,
+  "rss_final_mb": 248.3,
+  "rss_grow_mb_s": 1.595,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ]
+ },
+ "c9_dz_fix": {
+  "tag": "c9_dz_fix",
+  "bin": "47b89870adf46715",
+  "env": {},
+  "wall_s": 160.3,
+  "rc": 0,
+  "settle": true,
+  "face": "a0fae9072313e2d1",
+  "rss_peak_mb": 246.4,
+  "rss_final_mb": 246.4,
+  "rss_grow_mb_s": 1.533,
+  "uncaught": 6,
+  "f298_rows": 150,
+  "frames_rendered": [
+   "5"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ]
+ },
+ "c9_dz_summary": {
+  "wall": "155.0 -> 160.3",
+  "wall_delta_pct": 3.4,
+  "rss_peak": "249.9 -> 246.4",
+  "face_equal": true,
+  "pixels_equal": true
+ },
+ "c9_tg_ctl": {
+  "tag": "c9_tg_ctl",
+  "bin": "5b8d960ee054efff",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 33.6,
+  "rc": 1,
+  "rss_peak_mb": 547.6,
+  "rss_final_mb": 547.6,
+  "uncaught": 6,
+  "uncaught_l9j": 4,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9777
+ },
+ "c9_tg_fix": {
+  "tag": "c9_tg_fix",
+  "bin": "47b89870adf46715",
+  "env": {
+   "MINIANDROID_APP_DATA_SEED": "1",
+   "MINIANDROID_PROVIDER_SKIP": "FirebaseInitProvider,MlKitInitProvider"
+  },
+  "wall_s": 30.9,
+  "rc": 139,
+  "rss_peak_mb": 542.8,
+  "rss_final_mb": 542.8,
+  "uncaught": 6,
+  "uncaught_l9j": 4,
+  "frames_rendered": [
+   "9"
+  ],
+  "verdict": [
+   "REAL_APP_CONTENT"
+  ],
+  "app_draw_ops": 11,
+  "app_owned_pixels": 2161,
+  "api_calls": 9777
+ },
+ "c9_tg_summary": {
+  "wall": "33.6 -> 30.9",
+  "wall_delta_pct": -8.0,
+  "rss_peak": "547.6 -> 542.8",
+  "face_equal": true,
+  "pixels_equal": true
+ }
+}

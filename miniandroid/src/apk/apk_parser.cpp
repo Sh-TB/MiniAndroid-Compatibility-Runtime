@@ -392,6 +392,41 @@ bool ApkParser::parse_central_directory(const std::vector<uint8_t>& data, size_t
         
         entry.is_directory = !entry.name.empty() && entry.name.back() == '/';
         
+        // ── C9-2 (CODER 9) — resolve the entry DATA offset from the LOCAL
+        // file header. The central directory records the LFH offset; the
+        // AssetFileDescriptor contract (AssetManager.openFd) needs the
+        // offset of the DATA that follows it. LFH name/extra lengths are
+        // read from the LFH ITSELF — APPNOTE.TXT §4.4.11 allows LFH extra
+        // fields to differ from CDE extra fields, so the CDE-derived
+        // arithmetic would be wrong for such archives. A mismatching or
+        // out-of-bounds LFH leaves has_data_offset=false (honest miss);
+        // extraction (extract_entry_using_central_dir_) revalidates
+        // independently, so this never weakens the existing byte laws.
+        do {
+            const size_t lfh_off = entry.offset;
+            if (lfh_off + sizeof(ZipLocalFileHeader) > data.size()) break;
+            if (lfh_off + sizeof(ZipLocalFileHeader) < lfh_off) break;  // overflow guard
+            ZipLocalFileHeader lfh;
+            std::memcpy(&lfh, &data[lfh_off], sizeof(lfh));
+            if (lfh.signature != ZIP_LOCAL_FILE_HEADER_SIG) {
+                log("C9-2: LFH signature mismatch for entry '" + entry.name +
+                    "' at offset " + std::to_string(lfh_off) +
+                    " — data_offset unresolved");
+                break;
+            }
+            const uint64_t data_off = (uint64_t)lfh_off + sizeof(ZipLocalFileHeader) +
+                                      lfh.file_name_length + lfh.extra_field_length;
+            if (data_off > data.size() ||
+                data_off + entry.compressed_size > data.size()) {
+                log("C9-2: data offset " + std::to_string(data_off) +
+                    " out of bounds for entry '" + entry.name +
+                    "' — data_offset unresolved");
+                break;
+            }
+            entry.data_offset = data_off;
+            entry.has_data_offset = true;
+        } while (false);
+        
         entries.push_back(entry);
         
         // Move to next entry

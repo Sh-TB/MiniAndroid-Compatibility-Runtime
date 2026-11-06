@@ -158,6 +158,17 @@ struct ZipEntry {
     uint32_t crc32 = 0;
     uint32_t offset = 0;  // Offset to local file header
     bool is_directory = false;
+    // ── C9-2 (CODER 9) — AssetFileDescriptor data-offset law ────────────
+    // AOSP AssetManager.openFd (AssetManager2.java → Asset, APPNOTE.TXT
+    // §4.3.7): an uncompressed entry is addressable at the offset of its
+    // DATA, not of its local file header. data_offset = LFH offset + 30 +
+    // LFH file_name_length + LFH extra_field_length — resolved from the
+    // LOCAL header because LFH and CDE extra fields may legally differ
+    // (APPNOTE.TXT §4.4.11). has_data_offset=false means the LFH could not
+    // be validated (hostile/truncated archive) and consumers must not
+    // pretend the offset is the data (honest-miss law).
+    uint64_t data_offset = 0;
+    bool has_data_offset = false;
 };
 
 // Callback for progress reporting

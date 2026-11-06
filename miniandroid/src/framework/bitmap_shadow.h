@@ -44,6 +44,17 @@ struct StoredBitmap {
     std::vector<uint8_t> rgba;        // width*height*4, premultiplied OFF
     bool has_pixels = false;          // false = allocated-but-never-filled
     std::string source_desc;          // provenance (resource path / "createBitmap")
+    // ── C9-1 (CODER 9) — decode-law provenance (byte-level chain) ────────
+    // source_desc stays the PURE APK entry path (route_bitmap_object uses
+    // it as a zip path — suffixes would break the entry lookup); the
+    // decode-law fingerprint lives in these fields instead.
+    uint16_t density = 0;             // density the bitmap is MARKED with (opts.outDensity; 0 = none)
+    uint16_t source_density = 0;      // inDensity actually applied (selected entry config / opts)
+    uint16_t target_density = 0;      // inTargetDensity actually applied
+    int32_t source_width = 0;         // raw decoder output (pre-sample, pre-scale)
+    int32_t source_height = 0;
+    int32_t sample_size = 1;          // opts.inSampleSize applied (1 = none)
+    bool density_scaled = false;      // density scale actually applied
     // CONT-65 F-NEW-355: original container bytes for ANIMATED formats
     // (GIF89a/GIF87a only — stb_image first-frame decode can't recover
     // delays). Populated by decode_and_register on GIF magic; empty for
@@ -108,5 +119,57 @@ public:
                                         const std::string& desc,
                                         HeapAllocator* heap);
 };
+
+// ── C9-1 (CODER 9) — AOSP BitmapFactory.Options density law, pure & testable
+// ─────────────────────────────────────────────────────────────────────────
+// Law chain (source-backed, aosp-mirror/platform_frameworks_base master,
+// graphics/java/android/graphics/BitmapFactory.java):
+//   decodeResourceStream (lines ~557-574):
+//     if (opts.inDensity == 0 && value != null) {
+//         density = value.density == TypedValue.DENSITY_DEFAULT (0)
+//                     ? DisplayMetrics.DENSITY_DEFAULT (160)
+//                 : value.density == TypedValue.DENSITY_ANY (0xFFFE)
+//                     ? Bitmap.DENSITY_NONE (0xFFFF) : value.density;
+//         opts.inDensity = density;
+//     }
+//     if (opts.inTargetDensity == 0 && res != null)
+//         opts.inTargetDensity = res.getDisplayMetrics().densityDpi;
+//   BitmapFactory.cpp native scale:
+//     scale applies iff inScaled && inDensity != 0 &&
+//       inDensity != DENSITY_NONE(0xFFFF) && inTargetDensity != 0 &&
+//       inDensity != inTargetDensity;
+//     scale = (float)inTargetDensity / (float)inDensity;
+//     scaledWidth  = (int)(decodedWidth  * scale + 0.5f);
+//     scaledHeight = (int)(decodedHeight * scale + 0.5f);
+//   setDensityFromOptions (lines ~682-700):
+//     bitmap.setDensity(inDensity); then, when inScaled &&
+//     inTargetDensity != 0 && inDensity != inTargetDensity,
+//     bitmap.setDensity(inTargetDensity) — the SCALED bitmap is MARKED
+//     with the target density.
+//   Options has NO public outDensity field — the density lives on the
+//   Bitmap (Bitmap.getDensity). out* carry the FINAL dims (sample-size
+//   and density scale composed).
+// This mirrors the draw-layer law g04_image_draw_rect (execution_engine.cpp)
+// so decode-time and draw-time density cannot drift.
+struct BitmapFactoryDensityInput {
+    int32_t raw_width = 0;         // decoder output (source pixels)
+    int32_t raw_height = 0;
+    int32_t in_density = 0;        // opts.inDensity AFTER decodeResourceStream seeding
+                                   // (0 = unset, 160 = DENSITY_DEFAULT, 0xFFFF = DENSITY_NONE)
+    int32_t in_target_density = 0; // opts.inTargetDensity (0 = unset → no scaling)
+    bool in_scaled = true;         // opts.inScaled — AOSP Java default true
+    int32_t in_sample_size = 1;    // opts.inSampleSize (values < 1 clamp to 1)
+};
+struct BitmapFactoryDensityResult {
+    int32_t width = 0;             // FINAL dims (inSampleSize → density scale)
+    int32_t height = 0;
+    int32_t sampled_width = 0;     // after inSampleSize only
+    int32_t sampled_height = 0;
+    int32_t bitmap_density = 0;    // setDensityFromOptions result (Bitmap.getDensity)
+    bool density_scaled = false;   // density scale actually applied
+    bool valid = false;            // false = degenerate input (raw dims <= 0)
+};
+BitmapFactoryDensityResult bitmap_factory_density_law(
+    const BitmapFactoryDensityInput& in);
 
 } } // namespace miniandroid::framework

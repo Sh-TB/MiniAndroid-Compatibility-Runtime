@@ -146,12 +146,86 @@ static std::string f240_mime_of(const std::vector<uint8_t>& b) {
     return "";
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// C9-1 (CODER 9) — AOSP BitmapFactory.Options density law (pure, unit-
+// tested; see bitmap_shadow.h for the source-backed law chain).
+// One deviation from AOSP, recorded honestly: degenerate 0-sized results
+// clamp to 1 instead of failing the decode (AOSP native can answer null for
+// a zero-scaled bitmap; a compatibility runtime serves the 1-pixel image —
+// same spirit as the g04 draw-layer max(1, …) guard).
+// ─────────────────────────────────────────────────────────────────────────
+BitmapFactoryDensityResult bitmap_factory_density_law(
+        const BitmapFactoryDensityInput& in) {
+    BitmapFactoryDensityResult r;
+    if (in.raw_width <= 0 || in.raw_height <= 0) return r;  // valid=false
+    constexpr int32_t kDensityNone = 0xFFFF;   // Bitmap.DENSITY_NONE
+
+    // 1) inSampleSize law: (dim + s - 1) / s, s clamped to >= 1.
+    const int32_t s = in.in_sample_size < 1 ? 1 : in.in_sample_size;
+    r.sampled_width = (in.raw_width + s - 1) / s;
+    r.sampled_height = (in.raw_height + s - 1) / s;
+
+    // 2) density-scale law (BitmapFactory.cpp native): applies iff
+    //    inScaled && inDensity != 0 && inTargetDensity != 0 &&
+    //    inDensity != DENSITY_NONE && inDensity != inTargetDensity.
+    const bool can_scale =
+        in.in_scaled &&
+        in.in_density != 0 &&
+        in.in_density != kDensityNone &&
+        in.in_target_density != 0 &&
+        in.in_density != in.in_target_density;
+    if (can_scale) {
+        const float scale =
+            (float)in.in_target_density / (float)in.in_density;
+        // AOSP: (int)(dim * scale + 0.5f) — round-half-up for positive dims.
+        auto round_dim = [scale](int32_t d) -> int32_t {
+            const float v = (float)d * scale + 0.5f;
+            return (int32_t)std::floor(v);
+        };
+        r.width = std::max(1, round_dim(r.sampled_width));
+        r.height = std::max(1, round_dim(r.sampled_height));
+        r.density_scaled = true;
+        // setDensityFromOptions: the SCALED bitmap is MARKED with the
+        // target density (Bitmap.getDensity answers it).
+        r.bitmap_density = in.in_target_density;
+    } else {
+        r.width = r.sampled_width;
+        r.height = r.sampled_height;
+        r.density_scaled = false;
+        // setDensityFromOptions: unscaled → the bitmap carries inDensity
+        // (0 = no setDensity call at all — stays the Bitmap default).
+        r.bitmap_density = in.in_density;
+    }
+    r.valid = true;
+    return r;
+}
+
 // Decode once, serve the AOSP Options contract, and (optionally) register.
 // Returns the bitmap object id (0 = null result: failed decode OR the
 // bounds-only pass, which never allocates per AOSP).
+//
+// ── C9-1 (CODER 9) — full AOSP BitmapFactory.Options law ────────────────
+// resource_density: the SELECTED resource entry's config density, or -1 for
+// non-resource callers (decodeStream/decodeFile/decodeByteArray). AOSP
+// BitmapFactory.decodeResource ALWAYS creates its own Options and runs
+// decodeResourceStream — the seed law applies even when the app passed no
+// Options object:
+//   value.density == DENSITY_DEFAULT (0)    → inDensity  = 160
+//   value.density == DENSITY_ANY    (0xFFFE) → inDensity  = DENSITY_NONE
+//   else                                    → inDensity  = value.density
+//   opts.inTargetDensity == 0               → inTargetDensity = display dpi
+// (both seeds are written back onto the app-visible Options object). Non-
+// resource callers never seed — the app sets both densities explicitly.
+// The density arithmetic lives in the pure, unit-tested
+// bitmap_factory_density_law() (bitmap_shadow.h) — this wrapper only reads
+// opts, seeds, applies the resample chain, and records provenance.
+// PROVENANCE LAW: `desc` stays the PURE APK entry path (route_bitmap_object
+// re-uses it as a zip path); sample/density fingerprints go to the
+// StoredBitmap provenance fields, never into the path string.
 static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
                                          const std::string& desc,
-                                         HeapAllocator* heap, uint32_t opts_id) {
+                                         HeapAllocator* heap, uint32_t opts_id,
+                                         int32_t resource_density = -1) {
     if (!heap) return 0;
     renderer::DecodedImage decoded;
     if (!renderer::decode_image_bytes(bytes, &decoded,
@@ -163,50 +237,128 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
         // write here; the caller answers null.
         return 0;
     }
+    const std::string mime = f240_mime_of(bytes);
     if (opts_id != 0) {
-        heap->set_object_int_field(opts_id, "outWidth", decoded.width);
-        heap->set_object_int_field(opts_id, "outHeight", decoded.height);
-        const std::string mime = f240_mime_of(bytes);
-        if (!mime.empty()) heap->set_object_string_field(opts_id, "outMimeType", mime);
-    }
-    // Bounds-only pass: header consumed, NO bitmap allocation (AOSP law —
-    // decodeStream with inJustDecodeBounds answers null).
-    if (opts_id != 0) {
+        // Bounds-only pass: header consumed, NO bitmap allocation (AOSP law —
+        // decodeStream with inJustDecodeBounds answers null). out* = the
+        // RAW encoded dims (AOSP bounds pass never scales).
         int32_t bounds_only = 0;
         heap->get_object_int_field(opts_id, "inJustDecodeBounds", bounds_only);
         if (bounds_only) {
+            heap->set_object_int_field(opts_id, "outWidth", decoded.width);
+            heap->set_object_int_field(opts_id, "outHeight", decoded.height);
+            if (!mime.empty()) heap->set_object_string_field(opts_id, "outMimeType", mime);
             std::cerr << "[BITMAP-FACTORY] bounds-only " << desc << " -> "
                       << decoded.width << "x" << decoded.height
                       << " (null per AOSP inJustDecodeBounds)" << std::endl;
             return 0;
         }
     }
-    // Full decode — honor inSampleSize (AOSP: (dim + s - 1) / s).
-    int32_t sample = 1;
-    if (opts_id != 0) heap->get_object_int_field(opts_id, "inSampleSize", sample);
-    if (sample < 1) sample = 1;
-    if (sample > 1) {
-        const int dw = (decoded.width + sample - 1) / sample;
-        const int dh = (decoded.height + sample - 1) / sample;
-        StoredBitmap full;
-        full.width = decoded.width;
-        full.height = decoded.height;
-        full.rgba = std::move(decoded.rgba);
-        full.has_pixels = true;
-        full.source_desc = desc;
-        std::vector<uint8_t> out;
-        resample_nearest(full, dw, dh, out);
-        const uint32_t obj = heap->allocate("Landroid/graphics/Bitmap;");
-        BitmapStore::instance().store(obj, dw, dh, std::move(out),
-                                      desc + "#sample" + std::to_string(sample));
-        std::cerr << "[BITMAP-FACTORY] decoded " << desc << " -> Bitmap obj="
-                  << obj << " (" << dw << "x" << dh << ", inSampleSize="
-                  << sample << ")" << std::endl;
-        return obj;
+
+    // ── AOSP decodeResourceStream seeding (decodeResource path only) ────
+    int32_t in_density = 0, in_target_density = 0, in_sample = 1;
+    int32_t in_scaled = 1;  // AOSP Java field default: inScaled = true
+    bool in_scaled_present = false;
+    if (resource_density >= 0) {
+        // decodeResourceStream law — TypedValue.density → opts.inDensity.
+        constexpr int32_t kDensityAny = 0xFFFE;      // TypedValue.DENSITY_ANY
+        constexpr int32_t kDensityNone = 0xFFFF;     // Bitmap.DENSITY_NONE
+        constexpr int32_t kDisplayDefault = 160;     // DisplayMetrics.DENSITY_DEFAULT
+        if (resource_density == kDensityAny) in_density = kDensityNone;
+        else if (resource_density == 0) in_density = kDisplayDefault;
+        else in_density = resource_density;
+        in_target_density = (int32_t)resources::device_config().density;
+    }
+    if (opts_id != 0) {
+        int32_t o_density = 0, o_target = 0;
+        if (heap->get_object_int_field(opts_id, "inDensity", o_density) &&
+            o_density != 0) {
+            in_density = o_density;   // app-set value wins (AOSP seeds only when 0)
+        }
+        if (heap->get_object_int_field(opts_id, "inTargetDensity", o_target) &&
+            o_target != 0) {
+            in_target_density = o_target;
+        }
+        in_scaled_present = heap->get_object_int_field(opts_id, "inScaled", in_scaled);
+        heap->get_object_int_field(opts_id, "inSampleSize", in_sample);
+        // AOSP decodeResourceStream MUTATES the app's Options (the seeded
+        // values are app-visible afterwards).
+        if (in_density != 0)
+            heap->set_object_int_field(opts_id, "inDensity", in_density);
+        if (in_target_density != 0)
+            heap->set_object_int_field(opts_id, "inTargetDensity", in_target_density);
+    }
+    if (in_sample < 1) in_sample = 1;
+
+    // ── Pure AOSP law: sample → density scale → final dims + marked density ─
+    BitmapFactoryDensityInput law_in;
+    law_in.raw_width = decoded.width;
+    law_in.raw_height = decoded.height;
+    law_in.in_density = in_density;
+    law_in.in_target_density = in_target_density;
+    law_in.in_scaled = (opts_id == 0) ? true : (in_scaled_present ? in_scaled != 0 : true);
+    law_in.in_sample_size = in_sample;
+    BitmapFactoryDensityResult law = bitmap_factory_density_law(law_in);
+    if (!law.valid) return 0;
+
+    // Allocation-safety guard (same ceiling as the draw-layer g04 law):
+    // a pathological scale (e.g. 420/1) on a huge image must not OOM the
+    // runtime — refuse the DENSITY scale honestly, keep the sampled dims.
+    const int64_t final_pixels = (int64_t)law.width * law.height;
+    if (law.density_scaled && final_pixels > (1 << 24)) {
+        std::cerr << "[BITMAP-FACTORY] C9-1 density scale REFUSED (" << desc
+                  << "): " << law.width << "x" << law.height
+                  << " exceeds allocation bound — serving sampled dims "
+                  << law.sampled_width << "x" << law.sampled_height << std::endl;
+        law.width = law.sampled_width;
+        law.height = law.sampled_height;
+        law.density_scaled = false;
+        law.bitmap_density = in_density;
+    }
+
+    if (opts_id != 0) {
+        heap->set_object_int_field(opts_id, "outWidth", law.width);
+        heap->set_object_int_field(opts_id, "outHeight", law.height);
+        if (!mime.empty()) heap->set_object_string_field(opts_id, "outMimeType", mime);
+        // NOTE: AOSP Options has NO outDensity field — the density lives on
+        // the Bitmap (setDensityFromOptions); recorded on StoredBitmap below.
+    }
+
+    // ── Resample chain: raw → inSampleSize → density scale (nearest) ────
+    StoredBitmap full;
+    full.width = decoded.width;
+    full.height = decoded.height;
+    full.rgba = std::move(decoded.rgba);
+    full.has_pixels = true;
+    full.source_desc = desc;
+    std::vector<uint8_t>* cur = &full.rgba;
+    std::vector<uint8_t> sampled_buf, scaled_buf;
+    if (law.sampled_width != decoded.width || law.sampled_height != decoded.height) {
+        StoredBitmap src_full = full;
+        resample_nearest(src_full, law.sampled_width, law.sampled_height, sampled_buf);
+        cur = &sampled_buf;
+    }
+    if (law.width != law.sampled_width || law.height != law.sampled_height) {
+        StoredBitmap src_sampled;
+        src_sampled.width = law.sampled_width;
+        src_sampled.height = law.sampled_height;
+        src_sampled.rgba = *cur;
+        src_sampled.has_pixels = true;
+        resample_nearest(src_sampled, law.width, law.height, scaled_buf);
+        cur = &scaled_buf;
     }
     const uint32_t obj = heap->allocate("Landroid/graphics/Bitmap;");
-    BitmapStore::instance().store(obj, decoded.width, decoded.height,
-                                  std::move(decoded.rgba), desc);
+    BitmapStore::instance().store(obj, law.width, law.height, std::move(*cur), desc);
+    if (auto* sb = BitmapStore::instance().get_mut(obj)) {
+        sb->density = (uint16_t)std::max(0, law.bitmap_density);
+        sb->source_density = law.density_scaled ? (uint16_t)std::max(0, in_density) : 0;
+        sb->target_density = law.density_scaled ? (uint16_t)std::max(0, in_target_density) : 0;
+        sb->source_width = decoded.width;
+        sb->source_height = decoded.height;
+        sb->sample_size = law.sampled_width != decoded.width || law.sampled_height != decoded.height
+                              ? law_in.in_sample_size : 1;
+        sb->density_scaled = law.density_scaled;
+    }
     // CONT-65 F-NEW-355: keep the original container bytes for animated
     // GIFs so the render walk can decode the full frame timeline
     // (GifDecoder::decode_anim) — static consumers ignore this field.
@@ -222,8 +374,12 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
         }
     }
     std::cerr << "[BITMAP-FACTORY] decoded " << desc << " -> Bitmap obj=" << obj
-              << " (" << decoded.width << "x" << decoded.height << ")"
-              << std::endl;
+              << " (" << law.width << "x" << law.height
+              << " src=" << decoded.width << "x" << decoded.height
+              << " sample=" << law_in.in_sample_size
+              << " density=" << in_density << "->" << in_target_density
+              << (law.density_scaled ? " SCALED" : "")
+              << (mime.empty() ? "" : " mime=" + mime) << ")" << std::endl;
     return obj;
 }
 
@@ -258,9 +414,15 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
             uint16_t density = 0;
             if (drawable_bytes_resolver() &&
                 drawable_bytes_resolver()(resid, bytes, path, density)) {
-                // F-NEW-240: decodeResource(res, id[, opts]) — opts at slot 2.
+                // F-NEW-240 + C9-1: decodeResource(res, id[, opts]) — opts at
+                // slot 2. The resolver's density IS the SELECTED entry's
+                // config density (AOSP TypedValue.density → decodeResource-
+                // Stream seeding) — previously dropped here. AOSP decode-
+                // Resource scales EVEN WITHOUT an app Options object (it
+                // creates its own): resource_density >= 0 encodes that.
                 const uint32_t bmp = f240_decode_with_options(
-                    bytes, path, heap_, ctx.arg_as_object(2, 0));
+                    bytes, path, heap_, ctx.arg_as_object(2, 0),
+                    (int32_t)density);
                 if (bmp == 0) return CallResult::handled_null();
                 return CallResult::handled_object(bmp, "Landroid/graphics/Bitmap;");
             }
