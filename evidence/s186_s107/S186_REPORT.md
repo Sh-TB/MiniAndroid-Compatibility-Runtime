@@ -140,3 +140,53 @@ All numbers from live commands this session: PIL pixel census (129 faces), git
 stat-sums, `make` exit 0 with symbol-checked binary, PIL-verified rerun faces
 (bouncy dd0c1425 byte-exact vs S182 pin), issue DB refetched via
 scripts/forensic_fetch.py. No verdict upgraded without evidence.
+
+---
+
+## 6. S186c/f — the re-battery: all 41 stuck titles executed on the current engine (2026-11-06 continuation)
+
+User directive «همشون رو اجرا بکن» — every REAL-STUCK title re-fetched (Clause-4
+fixed URLs; blichess via its GitHub Releases) and re-run with the exact s182
+invocation law on the post-S183b/S186 engine. Full data:
+`S186C_STUCK_APK_MANIFEST.json` + `S186C_STUCK_BATTERY.json` +
+`S186C_COMPLETION_MATRIX.json` (scripts `s186c_*.py`).
+
+### Today's state vs the issue-era stuck list (42 stale since 2026-09-22)
+
+| verdict today | count | titles |
+|---|---:|---|
+| **A_RICH, 0 uncaught** | **2** | app.halma #27, se.tube42.p9.android #225 |
+| B_STRUCTURED, 0 uncaught | 5 | balancetheball #28, blackjack #29, no.thanks #30, premy.mines #33, quelltext.memory #39 |
+| run clean (0 uncaught), default-bg face | 6 | qwde.ccm #25, ball2box #31, mykanji #36, thextech #58, battleship #47, composeStopwatch #203 |
+| still crashing | 28 | see matrix families |
+
+13 of 41 now run with ZERO uncaught exceptions — no verdict downgrade, all
+improvements evidence-pinned (face sha16 + uncaught counts in the battery JSON).
+
+### Completion matrix (first-uncaught families)
+
+F-NPE 15 (flutter embedding / capacitor / gomobile go-Seq / liballeg / kotlin
+Intrinsics — diverse, app-specific) · F-ANDROIDX 6 (**datastore ×2**, OnBack
+PressedDispatcher ×2, FragmentContainerView ×1, appcompat attachBaseContext ×1)
+· F-OTHER 5 · F-RES 1 (astroloop Resources$NotFound@FontManager) · F-NATIVE 1
+(taz → conscrypt UnsatisfiedLinkError).
+
+### Engine laws landed this session (each probe-first + A/B-proven)
+
+| law | root evidence | A/B result |
+|---|---|---|
+| **S186b** box2d GATE-A (rebuild host natives via fetch-if-missing script) | S186 rerun's 13 errors = sandbox artifact wipe, not engine | bouncy uncaught 13→0, face **8a6c24ac8a7d718e BYTE-EXACT == S183b pin** |
+| **S186d** File.toString at the bridge layer (Object.toString/String.valueOf/append(Object) answered "Ljava/io/File;@N") | gnubg datastore message interpolated a real File as identity form | message now carries the real path |
+| **S186e** Object.equals law (kotlin Intrinsics.areEqual compiles to erased `Ljava/lang/Object;->equals`; REC-MISS → false even for IDENTICAL strings) + CHAR-typed delimiter in indexOf/lastIndexOf (`lastIndexOf(-1,23)` probe-proven — the `C` param arrived CHAR-typed, arm answered -1) | disasm of gnubg's `create$delegate$1` + `FilesKt.getExtension` + `StringsKt.substringAfterLast` chain | vayunmathur solitaire **13→0 uncaught**; gnubg **30→22 + datastore check gone** |
+| **S186f** ArrayDeque.descendingIterator (CollectionShadow) — reversed-snapshot iterator box | foehnix chain: hasEnabledCallbacks → descendingIterator → null → NPE ×10 | foehnix **10→0**, aoc_normal **10→0** |
+
+### Queued next laws (evidence pointers in the matrix)
+
+1. FragmentContainerView.<init> NULL AttributeSet from inflation
+   (tranquilstopwatch #170: getClassAttribute on null at ctor pc=0x3c).
+2. coroutines AbortFlowException family (gnubg's next blocker, 22 uncaught).
+3. conscrypt UnsatisfiedLinkError (taz #130) — B1-native or bridge law.
+4. appcompat attachBaseContext NPE (firestrike #71).
+5. B1-native family per playbook: opensurge/liballeg #70, boxcars/gomobile #76,
+   thextech #58 (both run 0-uncaught but render default-bg — content behind
+   their native surface init), gnubg #72.
