@@ -1,0 +1,360 @@
+{
+ "opmt": {
+  "tag": "opmt",
+  "pkg": "one.scarecrow.games.OPMT",
+  "apk": "upload/canonical_apks/opmt_v0.1.2_vc1.apk",
+  "wall_s": 1.4,
+  "face": "8eea9a6a5a9346e4",
+  "uncaught": 0,
+  "ndfe": 0,
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 1263099,
+  "app_draw_ops": 4,
+  "unique_colors": 1609,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": null,
+  "subsys_census": {
+   "graphics": 10,
+   "layout": 14,
+   "db": 2,
+   "compose": 1
+  },
+  "class": "REAL_APP_CONTENT"
+ },
+ "unote": {
+  "tag": "unote",
+  "pkg": "app.varlorg.unote",
+  "apk": "upload/canonical_apks/app.varlorg.unote_30.apk",
+  "wall_s": 1.1,
+  "face": "3b8dcb0adbbc17a9",
+  "uncaught": 0,
+  "ndfe": 0,
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 136080,
+  "app_draw_ops": 3,
+  "unique_colors": 188,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": null,
+  "subsys_census": {
+   "graphics": 7,
+   "layout": 14,
+   "db": 65,
+   "compose": 1
+  },
+  "class": "REAL_APP_CONTENT"
+ },
+ "fishrings": {
+  "tag": "fishrings",
+  "pkg": "eu.veldsoft.fish.rings",
+  "apk": "upload/canonical_apks/fishrings_v1.23_vc6.apk",
+  "wall_s": 1.4,
+  "face": "a341e3ad9092f640",
+  "uncaught": 0,
+  "ndfe": 0,
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 105061,
+  "app_draw_ops": 44,
+  "unique_colors": 6673,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": null,
+  "subsys_census": {
+   "graphics": 9,
+   "layout": 20,
+   "webview": 30,
+   "db": 2,
+   "compose": 1
+  },
+  "class": "REAL_APP_CONTENT"
+ },
+ "tripeaks": {
+  "tag": "tripeaks",
+  "pkg": "eu.veldsoft.tri.peaks",
+  "apk": "upload/canonical_apks/tripeaks_v1.2.1_vc4.apk",
+  "wall_s": 1.2,
+  "face": "d600acf2379e8eda",
+  "uncaught": 0,
+  "ndfe": 0,
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 559818,
+  "app_draw_ops": 4,
+  "unique_colors": 394,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": null,
+  "subsys_census": {
+   "graphics": 12,
+   "layout": 20,
+   "webview": 30,
+   "db": 2,
+   "compose": 1
+  },
+  "class": "REAL_APP_CONTENT"
+ },
+ "balance": {
+  "tag": "balance",
+  "pkg": "com.ashkanrafiee.balance",
+  "apk": "upload/fdroid_batch/com.ashkanrafiee.balance_29000.apk",
+  "wall_s": 1.4,
+  "face": "3d0461a13752ffb8",
+  "uncaught": 5,
+  "ndfe": 0,
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 500130,
+  "app_draw_ops": 11,
+  "unique_colors": 1223,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": "nce/OnboardingActivity; | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lcom/ashkanrafiee/balance/BankRules;.normalize invoke_pc=0x5 depth=4 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lcom/ashkanrafiee/balance/BankRules;.<clinit> invoke_pc=0x69a depth=3 [FRONTIER] | [TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNC",
+  "subsys_census": {
+   "font": 2,
+   "graphics": 52,
+   "layout": 25,
+   "db": 16,
+   "compose": 1
+  },
+  "class": "REAL_APP_CONTENT"
+ },
+ "stopwatch": {
+  "tag": "stopwatch",
+  "pkg": "com.github.muellerma.stopwatch",
+  "apk": "upload/canonical_apks/com.github.muellerma.stopwatch_6.apk",
+  "wall_s": 1.0,
+  "face": "31ddd4d5b8e6d18e",
+  "uncaught": 0,
+  "ndfe": 0,
+  "verdict": "NO_ROOT",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": null,
+  "subsys_census": {
+   "graphics": 10,
+   "layout": 6,
+   "db": 2,
+   "provider": 6,
+   "compose": 1
+  },
+  "class": "PARTIAL"
+ },
+ "bmi": {
+  "tag": "bmi",
+  "pkg": "com.zola.bmi",
+  "apk": "upload/cont11_apks/bmi_402.apk",
+  "wall_s": 1.3,
+  "face": "b5a7a35d5fe0564b",
+  "uncaught": 0,
+  "ndfe": 0,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 1,
+  "unique_colors": 1,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": "RSION;.SDK_INT value=35 | [R350-FORNAME] \"android.graphics.Insets\" \u2192 ClassNotFoundException | [SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (android.graphics.Insets) method=Landroid/support/v7/widget/DrawableUtils;.<clinit> pc=15 \u2192 deferred handler @0x0x15 type=Ljava/lang/ClassNotFoundException; | [CLASS_INIT] class=Landroid/support/v7/widget/DrawableUtils; method=<clinit> result=OK engine=0x7ffd24312fc8 storage_size=199 | [SGET] class=Landroid/support/v7/widget/Drawabl",
+  "subsys_census": {
+   "graphics": 310,
+   "layout": 71,
+   "db": 2,
+   "compose": 1,
+   "missing_class": 5
+  },
+  "class": "PARTIAL"
+ },
+ "sunpiano": {
+  "tag": "sunpiano",
+  "pkg": "code.alimiracle.sunpiano",
+  "apk": "upload/fdroid_batch/code.alimiracle.sunpiano_2.apk",
+  "wall_s": 5.8,
+  "face": "f6b35994ff07b960",
+  "uncaught": 32,
+  "ndfe": 0,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": " 2/2 observers executed | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lj4/b;.<clinit> invoke_pc=0x8 depth=47 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lg4/m;.<init> invoke_pc=0x180 depth=46 [FRONTIER] | [TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwo",
+  "subsys_census": {
+   "layout": 31,
+   "db": 2,
+   "provider": 11,
+   "compose": 2,
+   "missing_class": 5
+  },
+  "class": "PARTIAL"
+ },
+ "sopadeletras": {
+  "tag": "sopadeletras",
+  "pkg": "app.sopadeletras",
+  "apk": "upload/fdroid_batch/app.sopadeletras_24.apk",
+  "wall_s": 2.1,
+  "face": "87553c6bf541d4da",
+  "uncaught": 32,
+  "ndfe": 0,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": " 2/2 observers executed | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] La; unwound Lqh1;.f invoke_pc=0x4 depth=51 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] La; unwound Lph1;.t invoke_pc=0x89 depth=50 [FRONTIER] | [TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] La; unwound Lse;.r invoke_pc=0x15d depth=48 [FRONTIER] | [TRACE] 12 EXCEPTION state=nonfatal result=FAIL exc=[",
+  "subsys_census": {
+   "layout": 31,
+   "db": 2,
+   "provider": 6,
+   "compose": 2,
+   "missing_class": 4
+  },
+  "class": "PARTIAL"
+ },
+ "sparkledns": {
+  "tag": "sparkledns",
+  "pkg": "cc.skysparkle.sparkledns",
+  "apk": "upload/fdroid_batch/cc.skysparkle.sparkledns_10006.apk",
+  "wall_s": 2.2,
+  "face": "3fddba97cbe5ac66",
+  "uncaught": 0,
+  "ndfe": 0,
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": "350-FORNAME] \"kotlin.reflect.jvm.internal.ReflectionFactoryImpl\" \u2192 ClassNotFoundException | [SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lkotlin/jvm/internal/Reflection;.<clinit> pc=3 \u2192 deferred handler @0x0xe type=Ljava/lang/ClassNotFoundException; | [CLASS_INIT] class=Lkotlin/jvm/internal/Reflection; method=<clinit> result=OK engine=0x7ffc1f42a5e8 storage_size=634 | [CLASS_INIT] class=Lkotlin/jvm/internal/Cla",
+  "subsys_census": {
+   "font": 11,
+   "graphics": 6,
+   "layout": 40,
+   "db": 2,
+   "provider": 6,
+   "compose": 298,
+   "missing_class": 3
+  },
+  "class": "PARTIAL"
+ },
+ "terminightor": {
+  "tag": "terminightor",
+  "pkg": "org.schabi.terminightor",
+  "apk": "upload/fdroid_batch/org.schabi.terminightor_12.apk",
+  "wall_s": 1.3,
+  "face": "d2a47eaf35357c14",
+  "uncaught": 3,
+  "ndfe": 0,
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 11025,
+  "app_draw_ops": 2,
+  "unique_colors": 2,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": "35 container=0x7f0e0074 | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lorg/schabi/terminightor/AlarmItemListFragment;.onCreate invoke_pc=0x13 depth=2 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at Lorg/schabi/terminightor/AlarmItemListActivity;.onCreate invoke_pc=0x57 depth=1 [APP-BOUNDARY] [FRONTIER] ",
+  "subsys_census": {
+   "graphics": 135,
+   "layout": 13,
+   "db": 24,
+   "compose": 1
+  },
+  "class": "REAL_APP_CONTENT"
+ },
+ "just24hours": {
+  "tag": "just24hours",
+  "pkg": "com.chancehorizon.just24hoursplus",
+  "apk": "upload/fdroid_batch/com.chancehorizon.just24hoursplus_10400.apk",
+  "wall_s": 1.3,
+  "face": "88b1668a12a63880",
+  "uncaught": 0,
+  "ndfe": 0,
+  "verdict": "SYSTEM_CHROME_ONLY",
+  "app_owned_pixels": 12320,
+  "app_draw_ops": 0,
+  "unique_colors": 3,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": null,
+  "subsys_census": {
+   "graphics": 88,
+   "layout": 32,
+   "db": 2,
+   "provider": 2,
+   "compose": 1
+  },
+  "class": "PARTIAL"
+ },
+ "tangram": {
+  "tag": "tangram",
+  "pkg": "com.xmission.trevin.android.tangram",
+  "apk": "upload/fdroid_batch/com.xmission.trevin.android.tangram_90001.apk",
+  "wall_s": 1.7,
+  "face": "081a5d40d712b1aa",
+  "uncaught": 0,
+  "ndfe": 0,
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 376488,
+  "app_draw_ops": 4,
+  "unique_colors": 212,
+  "trace_err": "'str' object has no attribute 'get'",
+  "first_stack": ".onCreate | [R350-FORNAME] \"androidx.test.InstrumentationRegistry\" \u2192 ClassNotFoundException | [SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (androidx.test.InstrumentationRegistry) method=Lcom/xmission/trevin/android/tangram/TangramApp;.onCreate pc=12 \u2192 deferred handler @0x0x15 type=Ljava/lang/ClassNotFoundException; | [EXP062-INIT] Lcom/xmission/trevin/android/tangram/data/TangramPreferences; static_fields=10 with_defaults=9 | [CLASS_INIT] class=Lcom/xmission/trevin/and",
+  "subsys_census": {
+   "graphics": 213,
+   "layout": 25,
+   "db": 2,
+   "provider": 2,
+   "compose": 1,
+   "missing_class": 6
+  },
+  "class": "REAL_APP_CONTENT"
+ },
+ "_s181_family_map": {
+  "battery": "13 titles = 10 smallest corpus + 3 user-named; binary 5d7edcdb (C9+C7 main)",
+  "real_app_content": [
+   "opmt 8eea9a6a (1,263,099 px, uncaught 0)",
+   "unote 3b8dcb0a (136,080 px, uncaught 0)",
+   "fishrings a341e3ad (105,061 px, uncaught 0)",
+   "tripeaks d600acf2 (559,818 px, uncaught 0)",
+   "balance 3d0461a1 (500,130 px, uncaught 5 NONFATAL NPE BankRules.normalize)",
+   "terminightor d2a47eaf (11,025 px, uncaught 3 NONFATAL NPE AlarmItemListFragment.onCreate)",
+   "tangram 081a5d40 (376,488 px, uncaught 0)"
+  ],
+  "partial": {
+   "stopwatch": {
+    "verdict": "NO_ROOT",
+    "family": "COMPOSE-INIT",
+    "evidence": "renderer COMPOSE; [UC009-ATTACH-DIAG] ComposeView NOT in class index; divergence VIEWTREE no window content root"
+   },
+   "sparkledns": {
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "family": "COMPOSE-INIT",
+    "evidence": "compose census 298; kotlin.reflect ReflectionFactoryImpl ClassNotFoundException"
+   },
+   "tusky_standing": {
+    "family": "COMPOSE-INIT",
+    "evidence": "S170 pin 31ddd4d5 black-on-black paint-color blocker"
+   },
+   "sunpiano": {
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "family": "LIFECYCLE-INIT-NPE",
+    "evidence": "NPE storm Lj4/b;.<clinit> -> androidx.lifecycle s0/o0 (LifecycleRegistry) depth 47, after F058 onActivityPostCreated 2/2 observers OK"
+   },
+   "sopadeletras": {
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "family": "COROUTINES-INIT-NPE",
+    "evidence": "NPE/IAE storm qh1/ph1/se/ts0 depth 51 after F058 fan-out"
+   },
+   "bmi": {
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "family": "MISSING-FRAMEWORK-CLASS",
+    "evidence": "android.support.v7.widget.DrawableUtils.<clinit> -> android.graphics.Insets ClassNotFoundException (SDK_INT claims 35, class absent); graphics census 310 (appcompat drawables)"
+   },
+   "just24hours": {
+    "verdict": "SYSTEM_CHROME_ONLY",
+    "family": "NO-CONTENT-ROOT",
+    "evidence": "12,320 app px = chrome only; divergence VIEWTREE no window content root; uncaught 0"
+   }
+  },
+  "user_hypotheses_checked": {
+   "html5_claim": "DISPROVEN: full-loaders have 0 WebView refs (microtimer/g2048/opencalc/dooz/tetris/ttt) or incidental dex refs only (TG 3, forkgram 4, memory 1, klondike 1); user-named terminightor+tangram load REAL as NATIVE apps",
+   "graphics_broken": "DISPROVEN for simple apps: 7 minimal titles render 100K-1.26M app-owned px",
+   "fonts_broken": "DISPROVEN for simple apps: real text renders (menus/HUDs) \u2014 zero font-family failures in any failure stack",
+   "layout_broken": "PARTIALLY: basic XML inflation works (7/7 REAL titles inflate); the blocker is Compose-class UI and androidx runtime init, not classic layout"
+  },
+  "next_laws": [
+   "L1 android.graphics.Insets impl (bmi; tiny Parcelable, SDK-35 consistency)",
+   "L2 lifecycle/coroutines clinit NPE root (sunpiano j4/b pc=0x8 + sopadeletras qh1/ph1; disassemble null site)",
+   "L3 Compose runtime family (stopwatch ComposeView class-index + sparkledns kotlin-reflect; ties to standing tusky blocker)"
+  ]
+ }
+}
