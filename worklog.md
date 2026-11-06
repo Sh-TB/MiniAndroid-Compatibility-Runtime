@@ -7823,3 +7823,40 @@ runtime_capabilities.json), reports/apk_routes ABSENT (Phase C builds).
 
 Next: Phase A deep reconciliation (read 18 issues incl. all comments → ledger rows); Phase B FDT
 graph on real runs; then gmdice Adapter rows + TicTacToe I18N (first real-render targets).
+
+---
+
+## S188 W1 — Route-aware execution wave 1: F-NEW-491 theme-attr law chain (2026-11-07)
+
+User posted mirror issue #556; cross-linked to #541-#555. Directive: fix structure, take first
+renders, complete app/game execution.
+
+First-render wave (scripts/s188_first_renders.py, hybrid binary e2a8ded7): 7 probed titles from
+the 22-title zero-uncaught-but-FLAT frontier. Route census (S188 route law confirmed — every app
+its own streets): mykanji #36=WebView (child_class=Landroid/webkit/WebView in onCreate addView),
+ball2box #31=Godot (Lorg/godotengine/godot/FullScreenGodotApp — NOT libGDX), queens #40 +
+tarok #32=Flutter (FlutterLoader.ensureInitializationComplete throws IllegalArgumentException
+"<flag> is disabled and no longer allowed" at l0/c.a pc=816; DEX-decoded via androguard; flag
+table h0/g decoded — needs metadata-bundle ground truth), solitaire #38=support-design
+NavigationView ctor NPE, battleship #47=ConstraintLayout (draw dispatched=YES ops=0, bitmaps
+decode fine), foehnix #126=appcompat subDecor.
+
+F-NEW-491 law chain (committed fe5381c4, binary 4e226d2b):
+1. Theme::get_attribute_value platform hop-miss: ?attr -> 0x01 target absent from flattened bag
+   (fw-res styles skipped) now returns the RAW ATTRIBUTE word; FRAMEWORK_THEME_ATTRS tier answers.
+2. actionBarSize row: 0x010102eb = 56dp, dim word 0x3801 (TypedValue unit LOW nibble — first
+   attempt 0x3810 answered 1px, caught by A/B probe, fixed).
+3. resource_runtime DIMENSION branch (was INT_HEX).
+4. layout_inflater parse_dim_attr + apply_style_item: ?attr element-XML / style-bag dimension
+   gates now hop to terminal (bounded 8) — previously answered 0 or read the attr DEFINITION.
+
+Live verification (foehnix): Toolbar LP height 2130968579 -> 147px (exact 56dp@2.625); spec_h
+0x40000093; ContentFrameLayout (0,147 1080x1773) = AOSP content-below-actionbar; frame Y-drift
+gone at frame 1. Screen still flat: ContentFrameLayout children=0 (app content never inflated —
+next divergence) + ActionBarContainer bg=0x0.
+
+Regression: bouncy 8a6c24ac8a7d718e + unote 3b8dcb0a BYTE-EXACT hold (0 uncaught). dooz:
+31ddd4d5 + 6 uncaught on BOTH pre-change (3ade7a89) and post-change binaries — the d602648e
+"standing pin" was STALE (itself a default-background face; same bytes as mykanji flat face).
+Next: foehnix content-inflation divergence; ConstraintLayout children measure; Flutter
+metadata-bundle ground truth; NavigationView NPE.
