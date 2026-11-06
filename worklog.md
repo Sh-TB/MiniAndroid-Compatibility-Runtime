@@ -7677,3 +7677,22 @@ F-OTHER 5, F-RES 1 (astroloop Resources$NotFound in FontManager), F-NATIVE 1 (ta
 gone**; gnubg #72 **30→22 uncaught, datastore check gone** (next: coroutines
 AbortFlowException family); A_RICH halma/p9 confirm the PortableGL + framework
 work is already paying on titles that were dead since September.
+
+## S186f — ArrayDeque.descendingIterator law: OnBackPressedDispatcher family unblocked (2026-11-06)
+
+- Root chain (foehnix.widget #126): OnBackPressedDispatcher.<init> inits its
+  ArrayDeque (framework class, no dex) → shadow handles <init> fine → but
+  hasEnabledCallbacks() walks `mOnBackPressedCallbacks.descendingIterator()` —
+  NO descendingIterator arm in CollectionShadow → null → "Iterator.hasNext on
+  null object reference" at hasEnabledCallbacks pc=6 → addCallback →
+  FragmentManager.attachController → updateBackInvokedCallbackState → onCreate
+  death ×10 uncaught.
+- Law (CollectionShadow, android_shadows.cpp): descendingIterator mints a fresh
+  F-NEW-237 iterator box over a REVERSED snapshot parent — exact Deque
+  descending contract on the box contract hasNext/next already implement;
+  single-threaded init-path equivalence documented.
+- A/B: foehnix.widget **10→0 uncaught**; io.github.aoc_normal **10→0 uncaught**.
+  Both render the default background (widget apps — honest 0-uncaught idle state).
+- Remaining in family: tibarj.tranquilstopwatch #170 = separate root
+  (FragmentContainerView.<init> NPE — inflation passes a NULL AttributeSet to
+  the view ctor; getClassAttribute interface call on null at pc=0x38) — next law.

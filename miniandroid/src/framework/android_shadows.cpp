@@ -2808,6 +2808,39 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_object(obj_id, ctx.class_name);
     }
 
+    // ── S186f (stuck-battery #126 foehnix.widget + #132 aoc_normal):
+    // ArrayDeque.descendingIterator law — OpenJDK ArrayDeque.descending
+    // Iterator() walks LAST-ADDED-FIRST (the Deque contract). androidx
+    // OnBackPressedDispatcher.hasEnabledCallbacks() is compiled against it;
+    // with no arm the shadow declined → null iterator → "Iterator.hasNext
+    // on null object reference" NPE → addCallback → FragmentManager
+    // .attachController → updateBackInvokedCallbackState → onCreate death
+    // (foehnix live chain: [SYNTH-EXC] at hasEnabledCallbacks pc=6, 10
+    // uncaught). Law: mint a fresh iterator box over a REVERSED snapshot
+    // parent — the exact box contract hasNext/next already implement
+    // (F-NEW-237 per-iterator cursor), reverse order = the Deque descending
+    // contract. Single-threaded init-path equivalence documented (same
+    // style as the R-NEW-391 canonical ≡ absolute equivalence): no
+    // concurrent mutation between the snapshot and the walk.
+    if (m == "descendingIterator" && heap_) {
+        auto* src_state = get_or_create(obj_id);
+        uint32_t desc_parent = heap_->allocate("Ljava/util/ArrayDeque;");
+        auto* desc_state = get_or_create(desc_parent);
+        desc_state->elements.assign(src_state->elements.rbegin(),
+                                    src_state->elements.rend());
+        desc_state->elem_kinds.assign(src_state->elem_kinds.rbegin(),
+                                      src_state->elem_kinds.rend());
+        desc_state->elem_strings.assign(src_state->elem_strings.rbegin(),
+                                        src_state->elem_strings.rend());
+        desc_state->elem_ints.assign(src_state->elem_ints.rbegin(),
+                                     src_state->elem_ints.rend());
+        uint32_t it_id = heap_->allocate("Ljava/util/Iterator;");
+        heap_->set_object_ref_field(it_id, "__iterator_parent__", desc_parent,
+                                    "Ljava/util/ArrayDeque;", "", false);
+        heap_->set_object_int_field(it_id, "__iterator_pos__", 0);
+        return CallResult::handled_object(it_id, "Ljava/util/Iterator;");
+    }
+
     // ── W8 (F-NEW-510): the EXP-093 Bundle.keySet/ContentValues keySet
     // materialization shape — the engine answers keySet with an
     // "Ljava/util/ArrayList;" WRAPPER whose backing array hangs off the

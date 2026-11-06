@@ -2888,6 +2888,9 @@ public:
     std::vector<std::string> implemented_methods() const override {
         return {"add", "get", "size", "isEmpty", "clear", "remove",
                 "contains", "iterator", "hasNext", "next", "toArray",
+                // S186f: ArrayDeque.descendingIterator — the OnBackPressed
+                // Dispatcher.hasEnabledCallbacks walk (foehnix #126 chain).
+                "descendingIterator",
                 "put", "containsKey", "keySet", "values", "entrySet",
                 "putAll", "getKey", "getValue", "singletonMap",
                 "getIndex", "set",
