@@ -1,0 +1,18 @@
+{
+ "microtimer": {
+  "face": "bbd350b6c14fbd52",
+  "want": "bbd350b6c14fbd52",
+  "match": true
+ },
+ "g2048": {
+  "error": "apk missing"
+ },
+ "opencalc": {
+  "error": "apk missing"
+ },
+ "dooz": {
+  "face": "31ddd4d5b8e6d18e",
+  "want": "a0fae9072313e2d1",
+  "match": false
+ }
+}

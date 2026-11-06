@@ -1,0 +1,53 @@
+{
+ "emmanuelttt": {
+  "tag": "emmanuelttt",
+  "pkg": "com.emmanuelmess.tictactoe",
+  "apk": "upload/canonical_apks/com.emmanuelmess.tictactoe_3.apk",
+  "wall_s": 4.9,
+  "face": "a4e8cf16ff2cbf7c",
+  "uncaught": 0,
+  "gdx_host": 1,
+  "host_refused": 0,
+  "gl_surf": 89,
+  "gles20_calls": 0,
+  "freetype_calls": 45,
+  "checkgl": 6,
+  "app_px": null,
+  "colors": null,
+  "first_exc": null
+ },
+ "stacktower3d": {
+  "tag": "stacktower3d",
+  "pkg": "stack.tower3d",
+  "apk": "upload/canonical_apks/stack.tower3d_1.apk",
+  "wall_s": 1.9,
+  "face": "11a38a5aeeff45a6",
+  "uncaught": 0,
+  "gdx_host": 1,
+  "host_refused": 0,
+  "gl_surf": 70,
+  "gles20_calls": 0,
+  "freetype_calls": 0,
+  "checkgl": 6,
+  "app_px": null,
+  "colors": null,
+  "first_exc": null
+ },
+ "bouncy": {
+  "tag": "bouncy",
+  "pkg": "com.dozingcatsoftware.bouncy",
+  "apk": "upload/canonical_apks/com.dozingcatsoftware.bouncy_43.apk",
+  "wall_s": 1.7,
+  "face": "8a6c24ac8a7d718e",
+  "uncaught": 0,
+  "gdx_host": 1,
+  "host_refused": 0,
+  "gl_surf": 7,
+  "gles20_calls": 0,
+  "freetype_calls": 0,
+  "checkgl": 0,
+  "app_px": null,
+  "colors": null,
+  "first_exc": null
+ }
+}
