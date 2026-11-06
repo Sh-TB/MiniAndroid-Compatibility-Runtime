@@ -1,0 +1,16 @@
+{
+ "c7_w1w2_apply": "CLEAN+APPLIED",
+ "c7_w3_applycheck_on_w2tree": "FAIL",
+ "c7_w1w2_on_main": "CLEAN",
+ "c9_p1_on_25b5a01": "CLEAN",
+ "c9_p2_on_p1tree": "CLEAN",
+ "c9_p1_on_main": "CLEAN",
+ "c8_w15_on_ea490b82": "CLEAN",
+ "c8_w6_applycheck": "CLEAN",
+ "c8_w6_apply": "APPLIED",
+ "c8_dalvik_vs_main_bytes": [
+  4241431,
+  4151318
+ ],
+ "c8_dalvik_vs_main_diff": "+4407/-2799 lines (main -> their w1..5+w6 tree)"
+}

@@ -1,0 +1,3051 @@
+diff --git a/miniandroid/src/apk/manifest_reader.cpp b/miniandroid/src/apk/manifest_reader.cpp
+index 3500f636..7d3fa9c3 100755
+--- a/miniandroid/src/apk/manifest_reader.cpp
++++ b/miniandroid/src/apk/manifest_reader.cpp
+@@ -657,6 +657,26 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
+     if (name == "service") {
+         ManifestInfo::ServiceInfo svc;
+         svc.name = get_attribute_value(attrs, "name");
++        // CODER7 SVC law: component android:exported (typed BOOL 0x12 with
++        // string fallback, same shape as the activity block above) and
++        // android:permission (AOSP PackageParser → ServiceInfo).
++        for (const auto& a : attrs) {
++            const std::string aname = get_string(a.name_index);
++            if (aname == "exported") {
++                if ((a.value_data_type & 0xFF) == 0x12) {
++                    svc.exported = a.value_data != 0;
++                    svc.has_exported_attr = true;
++                } else {
++                    const std::string es = get_attribute_value(attrs, "exported");
++                    if (es == "true" || es == "false") {
++                        svc.exported = (es == "true");
++                        svc.has_exported_attr = true;
++                    }
++                }
++            } else if (aname == "permission") {
++                svc.permission = get_attribute_value(attrs, "permission");
++            }
++        }
+         result_.services.push_back(svc);
+         in_service_ = true;
+         current_service_name_ = svc.name;
+@@ -665,11 +685,58 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
+     if (name == "receiver") {
+         ManifestInfo::ReceiverInfo rcv;
+         rcv.name = get_attribute_value(attrs, "name");
++        // CODER7 ORDERED-BCAST law: receiver android:exported +
++        // android:permission (typed BOOL 0x12 with string fallback).
++        for (const auto& a : attrs) {
++            const std::string aname = get_string(a.name_index);
++            if (aname == "exported") {
++                if ((a.value_data_type & 0xFF) == 0x12) {
++                    rcv.exported = a.value_data != 0;
++                    rcv.has_exported_attr = true;
++                } else {
++                    const std::string es = get_attribute_value(attrs, "exported");
++                    if (es == "true" || es == "false") {
++                        rcv.exported = (es == "true");
++                        rcv.has_exported_attr = true;
++                    }
++                }
++            } else if (aname == "permission") {
++                rcv.permission = get_attribute_value(attrs, "permission");
++            }
++        }
+         result_.receivers.push_back(rcv);
+         in_receiver_ = true;
+         current_receiver_name_ = rcv.name;
+         log("Receiver: " + rcv.name);
+     }
++    // CODER7 ORDERED-BCAST law: intent-filter android:priority — the AOSP
++    // ordered-dispatch ordering key (IntentFilter.setPriority /
++    // BroadcastQueueModernImpl priority tranches). Folded as MAX across the
++    // receiver's filters at filter-start time (no end-element bookkeeping).
++    // CODER7 WAVE-2: each <intent-filter> under a receiver now ALSO opens a
++    // per-filter record — the matchable unit the dispatch resolves against
++    // (a receiver matching through two filters is delivered twice, each at
++    // its own filter priority — AOSP PackageParser/IntentResolver law).
++    if (name == "intent-filter" && in_receiver_ && !result_.receivers.empty()) {
++        ManifestInfo::ReceiverInfo& rcv = result_.receivers.back();
++        rcv.filters.push_back(ManifestInfo::ReceiverInfo::FilterInfo{});
++        for (const auto& a : attrs) {
++            const std::string aname = get_string(a.name_index);
++            if (aname == "priority") {
++                int pr = 0;
++                if ((a.value_data_type & 0xFF) == 0x10) {
++                    pr = (int32_t)a.value_data;
++                } else {
++                    const std::string ps = get_attribute_value(attrs, "priority");
++                    if (!ps.empty()) {
++                        try { pr = std::stoi(ps); } catch (...) { pr = 0; }
++                    }
++                }
++                if (pr > rcv.priority) rcv.priority = pr;
++                if (!rcv.filters.empty()) rcv.filters.back().priority = pr;
++            }
++        }
++    }
+ 
+     // Handle intent-filter elements inside activity
+     if (in_activity_) {
+@@ -706,8 +773,35 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
+             if (!action_name.empty()) {
+                 if (in_service_ && !result_.services.empty())
+                     result_.services.back().actions.push_back(action_name);
+-                if (in_receiver_ && !result_.receivers.empty())
++                if (in_receiver_ && !result_.receivers.empty()) {
+                     result_.receivers.back().actions.push_back(action_name);
++                    // CODER7 WAVE-2: dual-record into the OPEN filter (the
++                    // <intent-filter> start opened it; XML ordering makes it
++                    // the last one — defensive fallback reopens a default
++                    // record when an action arrives with no open filter).
++                    ManifestInfo::ReceiverInfo& rcv7 =
++                        result_.receivers.back();
++                    if (rcv7.filters.empty())
++                        rcv7.filters.push_back(
++                            ManifestInfo::ReceiverInfo::FilterInfo{});
++                    rcv7.filters.back().actions.push_back(action_name);
++                }
++            }
++        }
++        // CODER7 ORDERED-BCAST law: filter <category> capture for receivers —
++        // AOSP IntentFilter.matchCategories: a broadcast intent's categories
++        // must ALL be declared by the receiver's filter to match.
++        if (name == "category" && in_receiver_ && !result_.receivers.empty()) {
++            std::string cat_name = get_attribute_value(attrs, "name");
++            if (!cat_name.empty()) {
++                result_.receivers.back().categories.push_back(cat_name);
++                // CODER7 WAVE-2: per-filter category record (same open-filter
++                // dual-record law as the action capture above).
++                ManifestInfo::ReceiverInfo& rcv7 = result_.receivers.back();
++                if (rcv7.filters.empty())
++                    rcv7.filters.push_back(
++                        ManifestInfo::ReceiverInfo::FilterInfo{});
++                rcv7.filters.back().categories.push_back(cat_name);
+             }
+         }
+     }
+diff --git a/miniandroid/src/apk/manifest_reader.h b/miniandroid/src/apk/manifest_reader.h
+index c0b8248a..66e4f1a3 100755
+--- a/miniandroid/src/apk/manifest_reader.h
++++ b/miniandroid/src/apk/manifest_reader.h
+@@ -210,10 +210,43 @@ struct ManifestInfo {
+     struct ServiceInfo {
+         std::string name;
+         std::vector<std::string> actions;
++        // CODER7 ORDERED-BCAST/SVC law: AOSP PackageParser parses the
++        // component-level attributes android:exported and android:permission
++        // on <service> (ServiceInfo.exported / ServiceInfo.permission).
++        // Additive capture; exported=false when the attr is absent and the
++        // component has NO intent-filter (AOSP exported-default law).
++        bool exported = false;
++        bool has_exported_attr = false;
++        std::string permission;
+     };
+     struct ReceiverInfo {
+         std::string name;
+         std::vector<std::string> actions;
++        // CODER7 ORDERED-BCAST law: AOSP PackageParser parses per-filter
++        // android:priority (IntentFilter.getPriority) and per-receiver
++        // android:exported / android:permission
++        // (ReceiverInfo.exported / ReceiverInfo.permission). The receiver's
++        // recorded priority is the MAX across its intent-filters (dispatch
++        // simplification, documented: single-filter receivers — the norm —
++        // are exact). Categories are the union across the receiver's
++        // filters (AOSP IntentFilter.matchCategories: every intent category
++        // must be declared by the filter).
++        int priority = 0;
++        bool exported = false;
++        bool has_exported_attr = false;
++        std::string permission;
++        std::vector<std::string> categories;
++        // CODER7 WAVE-2 per-filter model: AOSP PackageParser records EVERY
++        // <intent-filter> as its own matchable unit (own actions, own
++        // categories, own priority). The receiver-level fields above keep
++        // their union/MAX semantics for the existing consumers; the ordered
++        // dispatch now reads the per-filter records.
++        struct FilterInfo {
++            std::vector<std::string> actions;
++            std::vector<std::string> categories;
++            int priority = 0;
++        };
++        std::vector<FilterInfo> filters;
+     };
+     std::vector<ServiceInfo> services;
+     std::vector<ReceiverInfo> receivers;
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index e08fda19..720daa7f 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -4786,6 +4786,24 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
+         }
+         return CallResult::handled_string(pi->action);
+     }
++    // ── CODER7 ORDERED-BCAST law: Intent category state (AOSP Intent
++    // addCategory appends; hasCategory answers membership). The broadcast
++    // dispatch matches every intent category against the receiver filter
++    // (IntentFilter.matchCategories).
++    if (m == "addCategory") {
++        if (!ctx.args.empty() &&
++            ctx.args[0].kind == CallContext::Arg::Kind::STRING)
++            pi->categories.push_back(ctx.args[0].string_val);
++        return CallResult::handled_object(ctx.receiver_id,
++                                          "Landroid/content/Intent;");
++    }
++    if (m == "hasCategory") {
++        std::string want =
++            !ctx.args.empty() ? ctx.arg_as_string(0) : std::string();
++        for (const auto& c : pi->categories)
++            if (c == want) return CallResult::handled_bool(true);
++        return CallResult::handled_bool(false);
++    }
+     if (m == "getData") {
+         // EXP-056 + S-5 FIX (LOADING-CAMPAIGN): the ctor/setData path
+         // RECORDS the Uri object (data_uri_object above) — getData must
+diff --git a/miniandroid/src/framework/android_shadows.h b/miniandroid/src/framework/android_shadows.h
+index 2f08c624..f9a680b7 100755
+--- a/miniandroid/src/framework/android_shadows.h
++++ b/miniandroid/src/framework/android_shadows.h
+@@ -676,6 +676,10 @@ public:
+         std::map<std::string, bool>     extras_bool;
+         int flags = 0;
+         uint32_t intent_object_id = 0; // G08: heap object of this Intent
++        // CODER7 ORDERED-BCAST law: intent categories (AOSP Intent
++        // addCategory/hasCategory/getCategories; the broadcast-dispatch
++        // category match reads these — IntentFilter.matchCategories).
++        std::vector<std::string> categories;
+     };
+ 
+     std::string name() const override { return "Intent"; }
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index b900a059..9fc9f476 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -1444,7 +1444,10 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+             // → full-class normalization law as providers (AOSP
+             // PackageParser component-name expansion).
+             std::vector<std::pair<std::string, std::vector<std::string>>>
+-                svc_classes, rcv_actions;
++                svc_classes;
++            std::vector<miniandroid::dalvik::DalvikExecutionEngine::
++                            ManifestReceiverTransfer>
++                rcv_entries;
+             {
+                 auto manifest_raw =
+                     apk_parser_.extract_entry_cached("AndroidManifest.xml");
+@@ -1461,6 +1464,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+                         }
+                         if (!cls.empty()) svc_classes.emplace_back(cls, s.actions);
+                     }
++                    // CODER7 ORDERED-BCAST: full AOSP receiver model
++                    // (priority/exported/permission/categories) — the
++                    // PackageParser normalized table the dispatch law reads.
+                     for (const auto& r : mi5.receivers) {
+                         std::string cls = r.name;
+                         if (!cls.empty()) {
+@@ -1469,12 +1475,49 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+                             else if (cls.find('.') == std::string::npos)
+                                 cls = result.apk_info.package_name + "." + cls;
+                         }
+-                        if (!cls.empty()) rcv_actions.emplace_back(cls, r.actions);
++                        if (cls.empty()) continue;
++                        miniandroid::dalvik::DalvikExecutionEngine::
++                            ManifestReceiverTransfer rt;
++                        rt.cls = cls;
++                        rt.actions = r.actions;
++                        rt.categories = r.categories;
++                        rt.priority = r.priority;
++                        // AOSP exported-default law (PackageParser): when
++                        // android:exported is absent, a component WITH an
++                        // intent-filter defaults to exported for
++                        // targetSdk <= 30; targetSdk >= 31 requires the
++                        // explicit attribute (defaults NOT exported).
++                        int c7_tsdk = 0;
++                        try {
++                            c7_tsdk = std::stoi(
++                                result.apk_info.target_sdk_version);
++                        } catch (...) { c7_tsdk = 0; }
++                        if (r.has_exported_attr) {
++                            rt.exported = r.exported;
++                            rt.has_exported_attr = true;
++                        } else {
++                            rt.has_exported_attr = false;
++                            rt.exported =
++                                !r.actions.empty() && c7_tsdk <= 30;
++                        }
++                        rt.permission = r.permission;
++                        // CODER7 WAVE-2: per-filter records travel with the
++                        // receiver (AOSP PackageParser — every <intent-filter>
++                        // is its own matchable unit with its own priority).
++                        for (const auto& f : r.filters) {
++                            miniandroid::dalvik::DalvikExecutionEngine::
++                                ManifestReceiverTransfer::FilterTransfer ft;
++                            ft.actions = f.actions;
++                            ft.categories = f.categories;
++                            ft.priority = f.priority;
++                            rt.filters.push_back(std::move(ft));
++                        }
++                        rcv_entries.push_back(std::move(rt));
+                     }
+                 }
+             }
+             dalvik_engine_.set_manifest_services(svc_classes);
+-            dalvik_engine_.set_manifest_receiver_actions(rcv_actions);
++            dalvik_engine_.set_manifest_receivers(std::move(rcv_entries));
+         }
+         // ── CONT-102 (F-NEW-424/425/427/428): manifest package-identity
+         // transfer — permissions, per-activity exported/launchMode and the
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 175daf25..322f1a17 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -523,6 +523,19 @@ static inline int32_t dalvik_int_value(const DalvikValue& v) {
+     }
+ }
+ 
++// CODER7: boolean view of a boolean-carrying register (same int_val
++// convention as dalvik_int_value; used by the onUnbind return-value law).
++static inline bool dalvik_bool_value(const DalvikValue& v) {
++    switch (v.type) {
++        case DalvikType::BOOLEAN:
++        case DalvikType::INT32:
++        case DalvikType::CHAR:
++        case DalvikType::BYTE:
++        case DalvikType::SHORT:   return v.int_val != 0;
++        default:                  return false;
++    }
++}
++
+ // F-028 (MASTER-4 §A1) — UNTYPED-REGISTER CONVERSION LAW, raw-bits view.
+ // Dalvik registers are UNTYPED storage slots; the OPCODE — not a runtime
+ // value tag — defines the source interpretation. This helper exposes the
+@@ -32701,6 +32714,57 @@ inline void bridge_census_init() {
+ }
+ } // namespace
+ 
++// ── CODER7 WAVE-2: the service BRING-DOWN path (AOSP ActiveServices
++// bringDownServiceLocked). Law: when a live service is torn down by ANY
++// caller (stopService / stopSelf / stopSelfResult) while bound connections
++// exist, onUnbind(bindingIntent) is delivered BEFORE onDestroy — exactly as
++// the unbind-driven destruction path already does. The wave-1 tree delivered
++// onUnbind only on the unbind path; the stop paths skipped it (recorded
++// PENDING in the wave-1 issue §7). onDestroy ALWAYS follows on the
++// bring-down path (an onUnbind==true return does NOT keep the instance
++// alive here — ActiveServices continues bringDownServiceLocked after the
++// unbind delivery).
++void DalvikExecutionEngine::c7_service_bring_down(ServiceInstance& svc,
++                                                  const char* reason) {
++    if (!svc.created || svc.destroyed) return;
++    if (svc.bindings > 0) {
++        // The binding intent of the FIRST live connection is the onUnbind
++        // argument (AOSP passes the binding Intent; with several
++        // connections the dispatcher delivers one onUnbind for the record —
++        // same shape as the unbind path).
++        uint32_t c7_bint_oid = 0;
++        for (const auto& [conn_oid, cb] : svc.conn_bindings) {
++            if (cb.bind_intent_oid != 0) {
++                c7_bint_oid = cb.bind_intent_oid;
++                break;
++            }
++        }
++        DalvikValue c7_bint =
++            (c7_bint_oid != 0 && heap_.has_object(c7_bint_oid))
++                ? DalvikValue::make_object(c7_bint_oid,
++                                           "Landroid/content/Intent;")
++                : DalvikValue::make_null();
++        DalvikValue c7_ub;
++        bool c7_has_unbind = invoke_lifecycle_method(
++            svc.oid, svc.cls, "onUnbind", {c7_bint}, c7_ub);
++        miniandroid::diagnostics::FileIoTrace::instance().record(
++            "SVC-UNBIND", svc.cls, true,
++            std::string("bring-down (") + reason + "): onUnbind delivered" +
++                (c7_has_unbind ? " (override answered)" : " (default)"),
++            current_class_ + "." + current_method_);
++    }
++    DalvikValue c7_ignore;
++    invoke_lifecycle_method(svc.oid, svc.cls, "onDestroy", {}, c7_ignore);
++    svc.destroyed = true;
++    svc.started = false;
++    svc.bindings = 0;
++    svc.conn_bindings.clear();
++    miniandroid::diagnostics::FileIoTrace::instance().record(
++        "SVC-STOP", svc.cls, true,
++        std::string(reason) + " → onDestroy delivered",
++        current_class_ + "." + current_method_);
++}
++
+ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                                           const std::string& method,
+                                           const std::vector<DalvikValue>& args,
+@@ -39721,7 +39785,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         (method == "<init>" || method == "addAction" ||
+          method == "countActions" || method == "getAction" ||
+          method == "addCategory" || method == "countCategories" ||
+-         method == "getCategory" || method == "matchAction")) {
++         method == "getCategory" || method == "matchAction" ||
++         method == "setPriority" || method == "getPriority")) {
+         if (method == "<init>") {
+             std::vector<std::string> actions;
+             for (size_t i = 1; i < args.size(); ++i) {
+@@ -39813,6 +39878,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             status = ApiCallTrace::Status::IMPLEMENTED;
+             return true;
+         }
++        // ── CODER7 ORDERED-BCAST law: IntentFilter.setPriority(int) /
++        // getPriority() — AOSP IntentFilter: "the priority of this filter;
++        // higher priority receivers are checked first" (the ordered-broadcast
++        // ordering key; BroadcastQueueModernImpl priority tranches read
++        // ((BroadcastFilter) receiver).getPriority()).
++        if (method == "setPriority" && args.size() >= 2) {
++            intent_filter_priority_[args[0].object_id] =
++                dalvik_int_value(args[1]);
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getPriority") {
++            auto it = intent_filter_priority_.find(args[0].object_id);
++            result = DalvikValue::make_int(
++                it != intent_filter_priority_.end() ? it->second : 0);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
+     }
+     // ────────────────────────────────────────────────────────────────────
+     // #371 PHASE B5 (issue #371 — UPP-006): Services + Broadcasts.
+@@ -39892,15 +39976,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                                                ? target_desc
+                                                : manifest_match];
+                 if (svc.created && !svc.destroyed) {
+-                    DalvikValue ignore;
+-                    invoke_lifecycle_method(svc.oid, svc.cls, "onDestroy", {},
+-                                            ignore);
+-                    svc.destroyed = true;
+-                    svc.started = false;
+-                    svc.bindings = 0;
+-                    miniandroid::diagnostics::FileIoTrace::instance().record(
+-                        "SVC-STOP", svc.cls, true, "onDestroy delivered",
+-                        current_class_ + "." + current_method_);
++                    // CODER7 WAVE-2 bring-down law (AOSP ActiveServices
++                    // bringDownServiceLocked): onUnbind(bindingIntent) is
++                    // delivered BEFORE onDestroy whenever live bindings
++                    // exist — the wave-1 tree kept the base teardown shape
++                    // here (recorded PENDING §7); the shared helper now
++                    // owns the whole sequence.
++                    c7_service_bring_down(svc, "stopService");
+                     result = DalvikValue::make_bool(true);
+                 } else {
+                     result = DalvikValue::make_bool(false);
+@@ -39916,32 +39998,80 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             return true;
+         }
+         if (method == "unbindService") {
+-            // AOSP ActiveServices law: unbindService removes ONE binding.
+-            // A STARTED service (startService path) stays alive until
+-            // stopService/stopSelf; a purely-bound service comes down when
+-            // its last binding is gone.
++            // ── CODER7 SVC law (AOSP ActiveServices/ContextImpl) ──
++            // unbindService(ServiceConnection) removes THAT connection's
++            // binding only (the old code decremented the FIRST live service
++            // with bindings>0 — wrong service when two services were bound).
++            // When the service's LAST binding goes away: onUnbind(binding
++            // intent) is delivered (AOSP Service.onUnbind doc: "Called when
++            // all clients have disconnected"). onUnbind==true → the
++            // instance stays and onRebind fires on the next bind; false
++            // (the AOSP default) → a purely-bound service is destroyed; a
++            // STARTED service stays until stopService/stopSelf.
++            uint32_t c7_conn_oid =
++                (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF)
++                    ? args[1].object_id
++                    : 0;
++            bool c7_removed = false;
+             for (auto& [cls, svc] : live_services_) {
+-                if (svc.created && !svc.destroyed && svc.bindings > 0) {
+-                    svc.bindings--;
+-                    if (svc.bindings == 0 && !svc.started) {
++                if (!svc.created || svc.destroyed) continue;
++                auto c7_it = svc.conn_bindings.find(c7_conn_oid);
++                if (c7_it == svc.conn_bindings.end()) continue;
++                auto c7_cb = c7_it->second;
++                c7_cb.count -= 1;
++                svc.bindings -= 1;
++                if (c7_cb.count <= 0) svc.conn_bindings.erase(c7_it);
++                c7_removed = true;
++                if (svc.bindings <= 0) {
++                    svc.bindings = 0;
++                    DalvikValue c7_bint =
++                        (c7_cb.bind_intent_oid != 0 &&
++                         heap_.has_object(c7_cb.bind_intent_oid))
++                            ? DalvikValue::make_object(
++                                  c7_cb.bind_intent_oid,
++                                  "Landroid/content/Intent;")
++                            : DalvikValue::make_null();
++                    DalvikValue c7_ub;
++                    bool c7_has_unbind = invoke_lifecycle_method(
++                        svc.oid, svc.cls, "onUnbind", {c7_bint}, c7_ub);
++                    bool c7_unbind_true =
++                        c7_has_unbind && dalvik_bool_value(c7_ub);
++                    if (c7_unbind_true) {
++                        svc.do_rebind = true;
++                        miniandroid::diagnostics::FileIoTrace::instance().record(
++                            "SVC-UNBIND", svc.cls, true,
++                            "onUnbind → true (onRebind on next bind)",
++                            current_class_ + "." + current_method_);
++                    } else if (!svc.started) {
+                         DalvikValue ignore;
+                         invoke_lifecycle_method(svc.oid, svc.cls, "onDestroy",
+                                                 {}, ignore);
+                         svc.destroyed = true;
+                         miniandroid::diagnostics::FileIoTrace::instance().record(
+                             "SVC-UNBIND", svc.cls, true,
+-                            "last binding gone → onDestroy",
++                            "last binding gone → onUnbind(false) → onDestroy",
+                             current_class_ + "." + current_method_);
+                     } else {
+                         miniandroid::diagnostics::FileIoTrace::instance().record(
+                             "SVC-UNBIND", svc.cls, true,
+-                            "binding removed; service stays (" +
+-                                std::string(svc.started ? "started" : "bound") +
+-                                ")",
++                            "onUnbind delivered; service STAYS (started)",
+                             current_class_ + "." + current_method_);
+                     }
+-                    break;
++                } else {
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "SVC-UNBIND", svc.cls, true,
++                        "binding removed; " + std::to_string(svc.bindings) +
++                            " left",
++                        current_class_ + "." + current_method_);
+                 }
++                break;
++            }
++            if (!c7_removed) {
++                // AOSP ContextImpl.unbindService law: an unregistered
++                // connection is a caller bug — loud, never silent.
++                throw_deferred("Ljava/lang/IllegalArgumentException;",
++                               "Service not registered: connection not bound",
++                               "SVC-UNBIND");
+             }
+             result = DalvikValue::make_void();
+             status = ApiCallTrace::Status::IMPLEMENTED;
+@@ -40022,16 +40152,54 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         if (method == "bindService") {
+             // AOSP bindService law: ensure onCreate ran; the connection is
+             // handed the binder returned by onBind (null → no callback).
++            // ── CODER7 SVC law: per-connection binding records + the
++            // onUnbind(true)/onRebind contract — a re-bind on a service
++            // whose onUnbind returned true delivers onRebind(intent) and
++            // re-publishes the RETAINED binder (AOSP ActivityThread
++            // handleBindService: rebind=true → onRebind, no new onBind;
++            // ActiveServices re-delivers the retained IntentBindRecord
++            // binder to the new connection).
+             if (!svc.created) {
+                 invoke_lifecycle_method(svc.oid, svc.cls, "onCreate", {}, ignore);
+                 svc.created = true;
+             }
++            uint32_t c7_conn_oid =
++                (args.size() >= 3 && args[2].type == DalvikType::OBJECT_REF)
++                    ? args[2].object_id
++                    : 0;
++            auto& c7_cb = svc.conn_bindings[c7_conn_oid];
++            c7_cb.count += 1;
++            c7_cb.bind_intent_oid =
++                (intent_arg.type == DalvikType::OBJECT_REF)
++                    ? intent_arg.object_id
++                    : 0;
+             svc.bindings++;
+             DalvikValue binder;
+-            bool has_bind = invoke_lifecycle_method(
+-                svc.oid, svc.cls, "onBind", {intent_arg}, binder);
++            // ── CODER7 SVC law: onUnbind(true) → the NEXT bind delivers
++            // onRebind(intent) (AOSP ActivityThread handleBindService:
++            // rebind=true → onRebind, no new onBind) — INDEPENDENT of
++            // whether onBind ever returned a binder; the retained binder
++            // (when any) is re-published to the new connection.
++            bool c7_rebind = svc.do_rebind;
++            if (c7_rebind) {
++                DalvikValue c7_rb_ignore;
++                invoke_lifecycle_method(svc.oid, svc.cls, "onRebind",
++                                        {intent_arg}, c7_rb_ignore);
++                svc.do_rebind = false;
++                if (svc.retained_binder_oid != 0)
++                    binder = DalvikValue::make_object(svc.retained_binder_oid,
++                                                      svc.retained_binder_cls);
++            } else {
++                bool has_bind = invoke_lifecycle_method(
++                    svc.oid, svc.cls, "onBind", {intent_arg}, binder);
++                if (has_bind && binder.type == DalvikType::OBJECT_REF &&
++                    binder.object_id != 0) {
++                    svc.retained_binder_oid = binder.object_id;
++                    svc.retained_binder_cls = binder.class_desc;
++                }
++            }
+             bool delivered = false;
+-            if (has_bind && binder.type == DalvikType::OBJECT_REF &&
++            if (binder.type == DalvikType::OBJECT_REF &&
+                 binder.object_id != 0 && args.size() >= 3 &&
+                 args[2].type == DalvikType::OBJECT_REF &&
+                 args[2].object_id != 0) {
+@@ -40054,17 +40222,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             }
+             miniandroid::diagnostics::FileIoTrace::instance().record(
+                 "SVC-BIND", svc.cls, true,
+-                std::string("onCreate+onBind; connected=") +
+-                    (delivered ? "1" : "0"),
++                std::string(c7_rebind ? "onRebind+retained binder; "
++                                      : "onCreate+onBind; ") +
++                    "connected=" + (delivered ? "1" : "0"),
+                 current_class_ + "." + current_method_);
+             result = DalvikValue::make_bool(true);
+             status = ApiCallTrace::Status::IMPLEMENTED;
+             return true;
+         }
+         // startService / startForegroundService.
+-        static uint32_t svc_start_id = 0;
+-        ++svc_start_id;
++        // ── CODER7 SVC law: startIds are PER-SERVICE (AOSP ServiceRecord
++        // getLastStartId) — the old process-wide static counter leaked
++        // counts across services. startForegroundService sets the
++        // foreground-promptly contract (tracked and reported loudly; the
++        // headless runtime has no 5s ANR clock — never faked).
++        ++svc.next_start_id;
++        svc.last_start_id = svc.next_start_id;
+         svc.started = true;
++        if (method == "startForegroundService")
++            svc.fgs_needs_foreground = true;
+         if (!svc.created) {
+             invoke_lifecycle_method(svc.oid, svc.cls, "onCreate", {}, ignore);
+             svc.created = true;
+@@ -40076,11 +40252,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         invoke_lifecycle_method(svc.oid, svc.cls, "onStartCommand",
+                                 {intent_arg,
+                                  DalvikValue::make_int(0),
+-                                 DalvikValue::make_int((int32_t)svc_start_id)},
++                                 DalvikValue::make_int(svc.last_start_id)},
+                                 osc_ret);
+         miniandroid::diagnostics::FileIoTrace::instance().record(
+             "SVC-START", svc.cls, true,
+-            "onStartCommand startId=" + std::to_string(svc_start_id) +
++            std::string(method == "startForegroundService" ? "FGS " : "") +
++                "onStartCommand startId=" + std::to_string(svc.last_start_id) +
+                 (svc.created ? " (live service)" : ""),
+             current_class_ + "." + current_method_);
+         // startService returns the ComponentName of the started service.
+@@ -40095,43 +40272,96 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     if ((method == "stopSelf" || method == "stopSelfResult" ||
+          method == "startForeground" || method == "stopForeground") &&
+         (class_name.find("Service") != std::string::npos ||
+-         class_name.find("Service;") != std::string::npos)) {
++         class_name.find("Service;") != std::string::npos ||
++         is_subclass_of(class_name, "Landroid/app/Service;"))) {
+         if (method == "stopSelf" || method == "stopSelfResult") {
+             std::string self_cls = class_name;
++            ServiceInstance* c7_self = nullptr;
+             for (auto& [cls, svc] : live_services_) {
+                 if (svc.oid == (args.empty() ? 0 : args[0].object_id) ||
+                     cls == self_cls) {
+-                    if (svc.created && !svc.destroyed) {
+-                        DalvikValue ignore;
+-                        invoke_lifecycle_method(svc.oid, svc.cls, "onDestroy",
+-                                                {}, ignore);
+-                        svc.destroyed = true;
+-                        svc.started = false;
+-                        miniandroid::diagnostics::FileIoTrace::instance().record(
+-                            "SVC-STOP", svc.cls, true,
+-                            "stopSelf → onDestroy",
+-                            current_class_ + "." + current_method_);
+-                    }
+-                    result = (method == "stopSelfResult")
+-                                 ? DalvikValue::make_bool(true)
+-                                 : DalvikValue::make_void();
++                    c7_self = &svc;
++                    break;
++                }
++            }
++            // ── CODER7 SVC law: stopSelfResult(startId) — AOSP
++            // ActiveServices.stopServiceTokenLocked: "if
++            // (r.getLastStartId() != startId) … don't stop" → the stop
++            // lands ONLY when startId matches the service's LAST start;
++            // an older startId answers false and the service continues
++            // (the doc'd anti-race law for stopSelf(int) after a newer
++            // startService). The old code destroyed unconditionally and
++            // answered true — a fabricated success.
++            if (method == "stopSelfResult") {
++                int c7_want = args.size() >= 2 ? dalvik_int_value(args[1]) : 0;
++                if (c7_self == nullptr || c7_self->destroyed ||
++                    c7_want != c7_self->last_start_id) {
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "SVC-STOP", self_cls, false,
++                        "stopSelfResult startId=" + std::to_string(c7_want) +
++                            " != last=" +
++                            std::to_string(c7_self ? c7_self->last_start_id
++                                                   : -1) +
++                            " → no stop (AOSP startId guard)",
++                        current_class_ + "." + current_method_);
++                    result = DalvikValue::make_bool(false);
+                     status = ApiCallTrace::Status::IMPLEMENTED;
+                     return true;
+                 }
+             }
+-            result = (method == "stopSelfResult") ? DalvikValue::make_bool(false)
+-                                                  : DalvikValue::make_void();
++            if (c7_self != nullptr && c7_self->created &&
++                !c7_self->destroyed) {
++                // CODER7 WAVE-2 bring-down law: same onUnbind-before-
++                // onDestroy sequence as stopService (AOSP
++                // bringDownServiceLocked delivers onUnbind whenever live
++                // bindings exist, no matter which caller tears the service
++                // down — stopSelf included).
++                c7_service_bring_down(*c7_self,
++                                      method == "stopSelfResult"
++                                          ? "stopSelfResult"
++                                          : "stopSelf");
++            }
++            // stopSelfResult answers TRUE only when this call destroyed the
++            // service (the guard above passed and onDestroy ran); stopSelf
++            // answers void.
++            if (method == "stopSelfResult") {
++                result = DalvikValue::make_bool(c7_self != nullptr &&
++                                                c7_self->destroyed);
++            }
+             status = ApiCallTrace::Status::IMPLEMENTED;
+             return true;
+         }
+         // startForeground/stopForeground: notification surface is a GATE C
+         // frontier; the lifecycle signal is honest no-op IMPLEMENTED.
++        // ── CODER7 SVC law: startForeground SATISFIES the
++        // startForegroundService contract — clear the tracked flag and
++        // record it (the service went foreground; AOSP
++        // ForegroundServiceDidNotStartInTimeException is thereby averted).
++        if (method == "startForeground") {
++            for (auto& [cls, svc] : live_services_) {
++                if (svc.fgs_needs_foreground) {
++                    svc.fgs_needs_foreground = false;
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "SVC-FG", svc.cls, true,
++                        "startForeground → FGS start-foreground contract "
++                        "satisfied",
++                        current_class_ + "." + current_method_);
++                    break;
++                }
++            }
++        } else if (method == "stopForeground") {
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "SVC-FG", class_name, true, "stopForeground",
++                current_class_ + "." + current_method_);
++        }
+         result = DalvikValue::make_void();
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         return true;
+     }
+     if ((method == "registerReceiver" || method == "unregisterReceiver" ||
+-         method == "sendBroadcast" || method == "sendOrderedBroadcast") &&
++         method == "removeStickyBroadcast" ||
++         method == "sendBroadcast" || method == "sendOrderedBroadcast" ||
++         method == "sendStickyBroadcast") &&
+         (class_name.find("Context") != std::string::npos ||
+          class_name.find("Activity") != std::string::npos ||
+          class_name.find("Application") != std::string::npos ||
+@@ -40146,13 +40376,72 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 args[2].object_id != 0) {
+                 for (const auto& a : intent_filters_[args[2].object_id])
+                     dr.actions.push_back(a);
+-            }
++                // ── CODER7 ORDERED-BCAST law: a dynamic registration
++                // carries its filter's priority and categories (AOSP
++                // BroadcastFilter wraps the registered IntentFilter;
++                // BroadcastQueueModernImpl reads
++                // ((BroadcastFilter) receiver).getPriority()).
++                auto c7_pr = intent_filter_priority_.find(args[2].object_id);
++                if (c7_pr != intent_filter_priority_.end())
++                    dr.priority = c7_pr->second;
++                auto c7_cats = intent_filter_categories_.find(args[2].object_id);
++                if (c7_cats != intent_filter_categories_.end())
++                    dr.categories = c7_cats->second;
++            }
++            // CODER7 WAVE-2: the registerReceiver(receiver, filter,
++            // broadcastPermission, scheduler) overload — the required
++            // permission rides the registration (AOSP BroadcastFilter
++            // wraps it as requiredPermission and BroadcastQueue enforces
++            // it against the SENDER for every delivery).
++            // args[3] = the permission String, args[4] = the scheduler
++            // Handler (skipped).
++            if (args.size() >= 4 && args[3].type == DalvikType::STRING_REF)
++                dr.permission = args[3].string_val;
+             dynamic_receivers_.push_back(dr);
+             miniandroid::diagnostics::FileIoTrace::instance().record(
+                 "BCAST-REGISTER", dr.cls, true,
+-                "actions=" + std::to_string(dr.actions.size()),
++                "actions=" + std::to_string(dr.actions.size()) +
++                    (dr.permission.empty()
++                         ? std::string()
++                         : " perm=" + dr.permission),
+                 current_class_ + "." + current_method_);
+-            result = DalvikValue::make_null();  // AOSP: sticky Intent, null here
++            // ── CODER7 WAVE-2 STICKY catch-up law (AOSP ContextImpl
++            // registerReceiver → StickyBroadcast delivery): a receiver
++            // registered AFTER a sticky broadcast is IMMEDIATELY delivered
++            // the cached sticky intent(s) its filter matches, with
++            // isInitialStickyBroadcast() == true for those deliveries; the
++            // call returns the last matching sticky Intent (null when none).
++            result = DalvikValue::make_null();
++            for (const auto& [c7_saction, c7_soid] : sticky_broadcasts_) {
++                bool c7_match = false;
++                for (const auto& a : dr.actions)
++                    if (a == c7_saction) { c7_match = true; break; }
++                if (!c7_match) continue;
++                if (!heap_.has_object(c7_soid)) continue;
++                DalvikValue c7_sintent =
++                    DalvikValue::make_object(c7_soid,
++                                             "Landroid/content/Intent;");
++                DalvikValue c7_recv = dr.oid != 0
++                    ? DalvikValue::make_object(dr.oid, dr.cls)
++                    : DalvikValue::make_null();
++                DalvikValue c7_ctx = application_object_id_ != 0
++                    ? DalvikValue::make_object(application_object_id_,
++                                               "Landroid/content/Context;")
++                    : get_or_create_singleton("Landroid/content/Context;");
++                DalvikExecutionResult c7_tmp;
++                DalvikValue c7_ret;
++                initial_sticky_delivery_ = true;
++                bool c7_delivered = try_recursive_invoke(
++                    dr.cls, "onReceive",
++                    {c7_recv, c7_ctx, c7_sintent}, c7_ret, c7_tmp, "");
++                initial_sticky_delivery_ = false;
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "BCAST-STICKY", c7_saction, c7_delivered,
++                    "initial sticky catch-up → " + dr.cls,
++                    current_class_ + "." + current_method_);
++                result = c7_sintent;  // AOSP: registerReceiver returns the
++                                      // sticky Intent it delivered
++            }
+             status = ApiCallTrace::Status::IMPLEMENTED;
+             return true;
+         }
+@@ -40165,7 +40454,119 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             status = ApiCallTrace::Status::IMPLEMENTED;
+             return true;
+         }
+-        if (method == "sendBroadcast" || method == "sendOrderedBroadcast") {
++        if (method == "removeStickyBroadcast") {
++            // ── CODER7 WAVE-2 (AOSP ContextImpl.removeStickyBroadcast):
++            // drop the cached sticky intent for the argument intent's
++            // action; later registerReceiver calls no longer receive it.
++            std::string c7_raction;
++            for (size_t i = 1; i < args.size(); ++i) {
++                if (args[i].type == DalvikType::OBJECT_REF &&
++                    args[i].object_id != 0 &&
++                    heap_.has_object(args[i].object_id)) {
++                    const auto* io = heap_.get(args[i].object_id);
++                    if (io && io->class_descriptor == "Landroid/content/Intent;" &&
++                        shadow_registry_ != nullptr) {
++                        auto* ish = shadow_registry_->find_as<
++                            framework::IntentShadow>();
++                        if (ish) {
++                            auto pi = ish->get_or_create_intent(
++                                args[i].object_id);
++                            if (pi) c7_raction = pi->action;
++                        }
++                    }
++                }
++            }
++            auto c7_it = sticky_broadcasts_.find(c7_raction);
++            if (c7_it != sticky_broadcasts_.end()) {
++                sticky_broadcasts_.erase(c7_it);
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "BCAST-STICKY", c7_raction, true,
++                    "sticky removed (removeStickyBroadcast)",
++                    current_class_ + "." + current_method_);
++            } else {
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "BCAST-STICKY", c7_raction, false,
++                    "removeStickyBroadcast: no cached sticky for action",
++                    current_class_ + "." + current_method_);
++            }
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "sendBroadcast" || method == "sendOrderedBroadcast" ||
++            method == "sendStickyBroadcast") {
++            // ────────────────────────────────────────────────────────────
++            // CODER7 ORDERED-BCAST LAW (the core of this change).
++            // AOSP contract chain (frameworks/base, android-14/main):
++            //   * BroadcastQueueModernImpl: ordered broadcasts deliver
++            //     receivers in PRIORITY TRANCHES — higher
++            //     IntentFilter.getPriority() first ((BroadcastFilter)
++            //     receiver).getPriority()).
++            //   * BroadcastReceiver.java: resultCode/resultData/
++            //     resultExtras propagate receiver → receiver (setResult*
++            //     write mPendingResult; the next receiver reads them via
++            //     getResult*); abortBroadcast() "will prevent any other
++            //     broadcast receivers from receiving the broadcast. It
++            //     will still call onReceive of the BroadcastReceiver that
++            //     the caller of sendOrderedBroadcast passed in"; during a
++            //     NON-ordered broadcast setResult*/abortBroadcast only
++            //     LOG a RuntimeException (checkSynchronousHint) — never
++            //     throw; getResultCode() answers 0 and getResultData()/
++            //     getResultExtras() answer null when there is no pending
++            //     result.
++            //   * ContextImpl: the sendOrderedBroadcast overloads seed
++            //     initialCode=Activity.RESULT_OK (-1), initialData=null,
++            //     initialExtras=null (7-arg overload passes the caller's
++            //     values); the final resultReceiver is a BroadcastReceiver
++            //     whose onReceive runs with the final result state.
++            // Old behavior: sendOrderedBroadcast == sendBroadcast — no
++            // priority, no result chain, no abort, no final receiver.
++            // ────────────────────────────────────────────────────────────
++            bool c7_ordered = (method == "sendOrderedBroadcast");
++            bool c7_sticky = (method == "sendStickyBroadcast");
++            // ── CODER7 WAVE-2: modeled-sender identity (the AOSP
++            // cross-package caller model). When MINIANDROID_C7_SENDER_PKG
++            // is set and differs from the running package, the dispatch
++            // evaluates the exported/permission gates AS that foreign
++            // sender; sender-held permissions come from
++            // MINIANDROID_C7_SENDER_PERMS (comma list). Without the env
++            // the sender IS the running package — the AOSP same-package
++            // law applies (no exported gate, uses-permission list read).
++            // This makes the exported/permission laws OBSERVABLE in the
++            // single-package runtime without fabricating any framework
++            // object — the model is documented and env-gated.
++            static const std::string c7_sender_pkg = [] {
++                const char* e = getenv("MINIANDROID_C7_SENDER_PKG");
++                return e ? std::string(e) : std::string();
++            }();
++            static const std::vector<std::string> c7_sender_perms = [] {
++                std::vector<std::string> out;
++                const char* e = getenv("MINIANDROID_C7_SENDER_PERMS");
++                if (!e) return out;
++                std::string cur;
++                for (const char* p = e;; ++p) {
++                    if (*p == ',' || *p == '\0') {
++                        if (!cur.empty()) out.push_back(cur);
++                        cur.clear();
++                        if (*p == '\0') break;
++                    } else {
++                        cur += *p;
++                    }
++                }
++                return out;
++            }();
++            bool c7_foreign = !c7_sender_pkg.empty() &&
++                              c7_sender_pkg != package_name_;
++            auto c7_sender_holds = [&](const std::string& perm) {
++                if (perm.empty()) return true;
++                if (c7_foreign)
++                    return std::find(c7_sender_perms.begin(),
++                                     c7_sender_perms.end(), perm) !=
++                           c7_sender_perms.end();
++                return std::find(manifest_requested_permissions_.begin(),
++                                 manifest_requested_permissions_.end(),
++                                 perm) != manifest_requested_permissions_.end();
++            };
+             std::string action;
+             uint32_t intent_oid = 0;
+             for (size_t i = 1; i < args.size(); ++i) {
+@@ -40196,6 +40597,182 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 status = ApiCallTrace::Status::IMPLEMENTED;
+                 return true;
+             }
++            // ── CODER7 WAVE-2 sticky-send permission law: sendSticky-
++            // Broadcast requires the sender to hold
++            // android.permission.BROADCAST_STICKY (AOSP ContextImpl:
++            // SecurityException; the runtime answers with a loud
++            // BCAST-DENY row and NO delivery, NO caching).
++            if (c7_sticky &&
++                !c7_sender_holds("android.permission.BROADCAST_STICKY")) {
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "BCAST-DENY", action, false,
++                    "sticky send without android.permission.BROADCAST_STICKY",
++                    current_class_ + "." + current_method_);
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            // Intent categories for the filter-match law (AOSP
++            // IntentFilter.matchCategories: every intent category must be
++            // declared by the receiver's filter).
++            std::vector<std::string> c7_intent_cats;
++            if (intent_oid != 0 && shadow_registry_ != nullptr) {
++                auto* ish =
++                    shadow_registry_->find_as<framework::IntentShadow>();
++                if (ish) {
++                    auto pi = ish->get_or_create_intent(intent_oid);
++                    if (pi) c7_intent_cats = pi->categories;
++                }
++            }
++            // ── CODER7 WAVE-2 sticky cache law: the sticky intent REPLACES
++            // the per-action cache slot (last write wins — AOSP
++            // StickyBroadcast per-action slot) and the send itself delivers
++            // like a normal (non-ordered) broadcast to current receivers.
++            if (c7_sticky) {
++                sticky_broadcasts_[action] = intent_oid;
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "BCAST-STICKY", action, true,
++                    "sticky cached (sendStickyBroadcast)",
++                    current_class_ + "." + current_method_);
++            }
++            // Overload parse (AOSP Context/ContextImpl shapes):
++            //   sendOrderedBroadcast(Intent)
++            //   sendOrderedBroadcast(Intent, BroadcastReceiver resultReceiver)
++            //   sendOrderedBroadcast(Intent, String receiverPermission)
++            //   sendOrderedBroadcast(Intent, String, BroadcastReceiver,
++            //                        Handler, int initialCode,
++            //                        String initialData, Bundle initialExtras)
++            int c7_initial_code = -1;             // Activity.RESULT_OK seed
++            bool c7_have_initial_data = false;
++            std::string c7_initial_data;
++            uint32_t c7_initial_extras = 0;
++            uint32_t c7_final_oid = 0;
++            std::string c7_final_cls;
++            if (c7_ordered) {
++                if (args.size() == 3 && args[2].type == DalvikType::OBJECT_REF &&
++                    args[2].object_id != 0 &&
++                    heap_.has_object(args[2].object_id)) {
++                    std::string c2 =
++                        heap_.get(args[2].object_id)->class_descriptor;
++                    if (is_subclass_of(c2, "Landroid/content/BroadcastReceiver;")) {
++                        c7_final_oid = args[2].object_id;
++                        c7_final_cls = c2;
++                    }
++                }
++                if (args.size() >= 8) {
++                    if (args[3].type == DalvikType::OBJECT_REF &&
++                        args[3].object_id != 0 &&
++                        heap_.has_object(args[3].object_id)) {
++                        c7_final_cls =
++                            heap_.get(args[3].object_id)->class_descriptor;
++                        c7_final_oid = args[3].object_id;
++                    }
++                    if (args[5].type == DalvikType::INT32)
++                        c7_initial_code = args[5].int_val;
++                    if (args[6].type == DalvikType::STRING_REF) {
++                        c7_initial_data = args[6].string_val;
++                        c7_have_initial_data = true;
++                    }
++                    if (args[7].type == DalvikType::OBJECT_REF &&
++                        args[7].object_id != 0)
++                        c7_initial_extras = args[7].object_id;
++                }
++            }
++            // Candidate model: dynamic (registration order) then manifest
++            // (parse order); stable priority-descending sort keeps that
++            // order inside an equal-priority band.
++            struct C7Cand {
++                int prio;
++                bool dyn;
++                size_t idx;
++                bool match;
++            };
++            std::vector<C7Cand> c7_cands;
++            for (size_t i = 0; i < dynamic_receivers_.size(); ++i) {
++                const auto& dr = dynamic_receivers_[i];
++                bool match = false;
++                for (const auto& a : dr.actions)
++                    if (a == action) { match = true; break; }
++                if (match) {
++                    // Category law: all intent categories declared.
++                    for (const auto& ic : c7_intent_cats) {
++                        bool has = false;
++                        for (const auto& fc : dr.categories)
++                            if (fc == ic) { has = true; break; }
++                        if (!has) { match = false; break; }
++                    }
++                }
++                // ── CODER7 WAVE-2 registration-permission law: a receiver
++                // registered with broadcastPermission requires the SENDER
++                // to hold it (AOSP BroadcastFilter.requiredPermission;
++                // denied sends are loud BCAST-DENY rows).
++                if (match && !dr.permission.empty() &&
++                    !c7_sender_holds(dr.permission)) {
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "BCAST-DENY", dr.cls, false,
++                        "sender lacks registration permission " +
++                            dr.permission,
++                        current_class_ + "." + current_method_);
++                    match = false;
++                }
++                c7_cands.push_back({dr.priority, true, i, match});
++            }
++            for (size_t i = 0; i < manifest_receivers_.size(); ++i) {
++                const auto& mr = manifest_receivers_[i];
++                // ── CODER7 WAVE-2 EXPORTED law (foreign-sender model):
++                // a manifest receiver with android:exported="false" is NOT
++                // reachable from a foreign sender (AOSP
++                // ActivityManagerService.checkComponentPermission + the
++                // ActivityInfo exported gate). Same-package sends are never
++                // gated (AOSP same-uid law) — the modeled-sender env
++                // switches the sender identity.
++                if (c7_foreign && !mr.exported) {
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "BCAST-DENY", mr.cls, false,
++                        "receiver not exported to foreign sender " +
++                            c7_sender_pkg,
++                        current_class_ + "." + current_method_);
++                    continue;
++                }
++                // ── CODER7 receiver-permission law (wave-1, now
++                // sender-identity aware): the sender must hold
++                // android:permission (ReceiverInfo.permission) — the
++                // running package reads its uses-permissions; a foreign
++                // (modeled) sender reads MINIANDROID_C7_SENDER_PERMS.
++                if (!mr.permission.empty() &&
++                    !c7_sender_holds(mr.permission)) {
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "BCAST-DENY", mr.cls, false,
++                        "receiver permission " + mr.permission +
++                            " not held by sender",
++                        current_class_ + "." + current_method_);
++                    continue;
++                }
++                // ── CODER7 WAVE-2 PER-FILTER candidates: every
++                // <intent-filter> is its own matchable record (AOSP
++                // IntentResolver resolves per filter; a receiver matching
++                // through two filters is DELIVERED TWICE, each at its own
++                // filter priority). The wave-1 tree resolved against the
++                // receiver-level union with the MAX priority folded.
++                for (const auto& c7f : mr.filters) {
++                    bool match = false;
++                    for (const auto& a : c7f.actions)
++                        if (a == action) { match = true; break; }
++                    if (match) {
++                        for (const auto& ic : c7_intent_cats) {
++                            bool has = false;
++                            for (const auto& fc : c7f.categories)
++                                if (fc == ic) { has = true; break; }
++                            if (!has) { match = false; break; }
++                        }
++                    }
++                    c7_cands.push_back({c7f.priority, false, i, match});
++                }
++            }
++            std::stable_sort(c7_cands.begin(), c7_cands.end(),
++                             [](const C7Cand& a, const C7Cand& b) {
++                                 return a.prio > b.prio;
++                             });
+             // Bound context for onReceive (application object per R-NEW-460).
+             DalvikValue ctx_obj;
+             uint32_t ctx_id = application_object_id_;
+@@ -40207,66 +40784,375 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             } else {
+                 ctx_obj = get_or_create_singleton("Landroid/content/Context;");
+             }
+-            int delivered = 0;
+-            // 1) dynamic receivers (registration order).
+-            for (auto& dr : dynamic_receivers_) {
+-                bool match = false;
+-                for (const auto& a : dr.actions)
+-                    if (a == action) { match = true; break; }
+-                if (!match || dr.oid == 0) continue;
+-                DalvikValue recv_obj =
+-                    DalvikValue::make_object(dr.oid, dr.cls);
+-                DalvikExecutionResult tmp;
+-                DalvikValue ret;
+-                std::vector<DalvikValue> on_args{
+-                    recv_obj, ctx_obj,
+-                    intent_oid ? DalvikValue::make_object(
+-                                     intent_oid, "Landroid/content/Intent;")
+-                               : DalvikValue::make_null()};
+-                if (try_recursive_invoke(dr.cls, "onReceive", on_args, ret,
+-                                         tmp, ""))
+-                    ++delivered;
++            DalvikValue intent_val =
++                intent_oid
++                    ? DalvikValue::make_object(intent_oid,
++                                               "Landroid/content/Intent;")
++                    : DalvikValue::make_null();
++            // Ordered state: save/restore around the dispatch (a receiver
++            // may itself send a nested broadcast — the outer chain's result
++            // state must survive the nested dispatch).
++            OrderedBroadcastState c7_saved = ordered_broadcast_;
++            if (c7_ordered) {
++                ordered_broadcast_ = OrderedBroadcastState{};
++                ordered_broadcast_.active = true;
++                ordered_broadcast_.in_ordered_dispatch = true;
++                ordered_broadcast_.code = c7_initial_code;
++                ordered_broadcast_.has_data = c7_have_initial_data;
++                ordered_broadcast_.data = c7_initial_data;
++                ordered_broadcast_.extras_oid = c7_initial_extras;
++                ordered_broadcast_.result_receiver_oid = c7_final_oid;
++                ordered_broadcast_.result_receiver_cls = c7_final_cls;
+             }
+-            // 2) manifest receivers with a matching intent-filter action —
+-            // AOSP LoadedApk instantiates the receiver class per delivery.
+-            for (auto& [rcv_cls, acts] : manifest_receiver_actions_) {
+-                bool match = false;
+-                for (const auto& a : acts)
+-                    if (a == action) { match = true; break; }
+-                if (!match) continue;
+-                std::string desc = rcv_cls;
+-                if (desc[0] != 'L') {
+-                    std::replace(desc.begin(), desc.end(), '.', '/');
+-                    desc = "L" + desc + ";";
+-                }
+-                uint32_t rid = heap_.allocate(desc, pc_, 0);
+-                DalvikValue recv_obj = DalvikValue::make_object(rid, desc);
+-                DalvikValue ignore;
+-                DalvikExecutionResult ctor_tmp;
+-                std::vector<DalvikValue> ctor_args{recv_obj};
+-                try_recursive_invoke(desc, "<init>", ctor_args, ignore,
+-                                     ctor_tmp, "");
++            int delivered = 0;
++            std::string c7_order_seq;
++            for (const auto& cd : c7_cands) {
++                if (!cd.match) continue;
++                if (c7_ordered && ordered_broadcast_.aborted) break;
++                if (cd.dyn) {
++                    const auto& dr = dynamic_receivers_[cd.idx];
++                    if (dr.oid == 0) continue;
++                    DalvikValue recv_obj =
++                        DalvikValue::make_object(dr.oid, dr.cls);
++                    DalvikExecutionResult tmp;
++                    DalvikValue ret;
++                    std::vector<DalvikValue> on_args{recv_obj, ctx_obj,
++                                                     intent_val};
++                    if (c7_ordered) {
++                        ordered_broadcast_.pending_receiver_oid = dr.oid;
++                        ordered_broadcast_.pending_is_final = false;
++                    }
++                    if (!c7_order_seq.empty()) c7_order_seq += ",";
++                    c7_order_seq += dr.cls + "@" + std::to_string(cd.prio);
++                    if (try_recursive_invoke(dr.cls, "onReceive", on_args, ret,
++                                             tmp, ""))
++                        ++delivered;
++                    // goAsync's detach is scoped to THIS delivery (AOSP:
++                    // mPendingResult is cleared only for the receiver that
++                    // called goAsync; the next receiver gets a fresh
++                    // pending result).
++                    if (c7_ordered && ordered_broadcast_.pending_go_async_oid
++                            == dr.oid)
++                        ordered_broadcast_.pending_go_async_oid = 0;
++                } else {
++                    const auto& mr = manifest_receivers_[cd.idx];
++                    std::string desc = mr.cls;
++                    if (desc[0] != 'L') {
++                        std::replace(desc.begin(), desc.end(), '.', '/');
++                        desc = "L" + desc + ";";
++                    }
++                    // AOSP LoadedApk instantiates the receiver class per
++                    // delivery.
++                    uint32_t rid = heap_.allocate(desc, pc_, 0);
++                    DalvikValue recv_obj = DalvikValue::make_object(rid, desc);
++                    DalvikValue ignore;
++                    DalvikExecutionResult ctor_tmp;
++                    std::vector<DalvikValue> ctor_args{recv_obj};
++                    try_recursive_invoke(desc, "<init>", ctor_args, ignore,
++                                         ctor_tmp, "");
++                    DalvikExecutionResult tmp;
++                    DalvikValue ret;
++                    std::vector<DalvikValue> on_args{recv_obj, ctx_obj,
++                                                     intent_val};
++                    if (c7_ordered) {
++                        ordered_broadcast_.pending_receiver_oid = rid;
++                        ordered_broadcast_.pending_is_final = false;
++                    }
++                    if (!c7_order_seq.empty()) c7_order_seq += ",";
++                    c7_order_seq += mr.cls + "@" + std::to_string(cd.prio);
++                    if (try_recursive_invoke(desc, "onReceive", on_args, ret,
++                                             tmp, ""))
++                        ++delivered;
++                    if (c7_ordered && ordered_broadcast_.pending_go_async_oid
++                            == rid)
++                        ordered_broadcast_.pending_go_async_oid = 0;
++                }
++            }
++            // Final resultReceiver (AOSP: it runs even after an abort —
++            // BroadcastReceiver.abortBroadcast doc: "It will still call
++            // onReceive of the BroadcastReceiver that the caller of
++            // sendOrderedBroadcast passed in").
++            if (c7_ordered && ordered_broadcast_.result_receiver_oid != 0 &&
++                heap_.has_object(ordered_broadcast_.result_receiver_oid)) {
++                ordered_broadcast_.pending_receiver_oid =
++                    ordered_broadcast_.result_receiver_oid;
++                ordered_broadcast_.pending_is_final = true;
++                DalvikValue recv_obj = DalvikValue::make_object(
++                    ordered_broadcast_.result_receiver_oid,
++                    ordered_broadcast_.result_receiver_cls);
+                 DalvikExecutionResult tmp;
+                 DalvikValue ret;
+-                std::vector<DalvikValue> on_args{
+-                    recv_obj, ctx_obj,
+-                    intent_oid ? DalvikValue::make_object(
+-                                     intent_oid, "Landroid/content/Intent;")
+-                               : DalvikValue::make_null()};
+-                if (try_recursive_invoke(desc, "onReceive", on_args, ret,
+-                                         tmp, ""))
++                std::vector<DalvikValue> on_args{recv_obj, ctx_obj, intent_val};
++                if (try_recursive_invoke(ordered_broadcast_.result_receiver_cls,
++                                         "onReceive", on_args, ret, tmp, ""))
+                     ++delivered;
+             }
++            ordered_broadcast_ = c7_saved;
+             miniandroid::diagnostics::FileIoTrace::instance().record(
+                 "BCAST-SEND", action, true,
+-                "delivered=" + std::to_string(delivered) +
+-                    " (dynamic+manifest)",
++                std::string(c7_ordered ? "ORDERED " : "") +
++                    "delivered=" + std::to_string(delivered) +
++                    " order=[" + c7_order_seq + "]",
+                 current_class_ + "." + current_method_);
+             result = DalvikValue::make_void();
+             status = ApiCallTrace::Status::IMPLEMENTED;
+             return true;
+         }
+     }
++    // ────────────────────────────────────────────────────────────────────
++    // ── CODER7: BroadcastReceiver result-state natives (AOSP
++    // BroadcastReceiver.java). The receiver-level state IS the dispatch's
++    // ordered state (AOSP mPendingResult): ordered dispatch carries
++    // resultCode/resultData/resultExtras receiver → receiver; non-ordered
++    // receivers have NO pending result (getResult* answer the documented
++    // defaults; setResult*/abortBroadcast only log — AOSP
++    // checkSynchronousHint never throws). goAsync detaches the pending
++    // result into a PendingResult object (mPendingResult = null).
++    // Dispatched via is_subclass_of so APP receiver subclasses resolve
++    // their inherited framework methods (the R-NEW-540 pattern).
++    // ────────────────────────────────────────────────────────────────────
++    if ((class_name == "Landroid/content/BroadcastReceiver;" ||
++         is_subclass_of(class_name, "Landroid/content/BroadcastReceiver;")) &&
++        (method == "isOrderedBroadcast" || method == "getResultCode" ||
++         method == "getResultData" || method == "getResultExtras" ||
++         method == "setResult" || method == "setResultCode" ||
++         method == "setResultData" || method == "setResultExtras" ||
++         method == "abortBroadcast" || method == "clearAbortBroadcast" ||
++         method == "getAbortBroadcast" || method == "goAsync" ||
++         method == "isInitialStickyBroadcast")) {
++        bool c7_pending = ordered_broadcast_.active &&
++                          ordered_broadcast_.pending_receiver_oid ==
++                              (args.empty()
++                                   ? 0
++                                   : (args[0].type == DalvikType::OBJECT_REF
++                                          ? args[0].object_id
++                                          : 0)) &&
++                          ordered_broadcast_.pending_go_async_oid == 0;
++        auto c7_nosync_hint = [&](const char* api) {
++            // AOSP checkSynchronousHint: LOG-only RuntimeException.
++            static thread_local uint64_t c7_hint_n = 0;
++            if (c7_hint_n++ < 40)
++                std::cerr << "[BroadcastReceiver] RuntimeException: "
++                          << "BroadcastReceiver trying to return result "
++                          << "during a non-ordered broadcast (" << api << ")"
++                          << std::endl;
++        };
++        if (method == "isInitialStickyBroadcast") {
++            // ── CODER7 WAVE-2 (AOSP BroadcastReceiver.isInitialSticky-
++            // Broadcast): true ONLY while the dispatcher is running the
++            // INITIAL sticky catch-up delivery of a freshly registered
++            // receiver; false for every normal (sticky or not) send.
++            result = DalvikValue::make_bool(initial_sticky_delivery_);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "isOrderedBroadcast") {
++            result = DalvikValue::make_bool(c7_pending &&
++                                            ordered_broadcast_.active);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getResultCode") {
++            // AOSP: mPendingResult != null ? result : 0.
++            result = DalvikValue::make_int(c7_pending
++                                               ? ordered_broadcast_.code
++                                               : 0);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getResultData") {
++            if (c7_pending && ordered_broadcast_.has_data)
++                result = DalvikValue::make_string(ordered_broadcast_.data, 0);
++            else
++                result = DalvikValue::make_null();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getResultExtras") {
++            bool make_map = args.size() >= 2 && dalvik_bool_value(args[1]);
++            if (c7_pending && ordered_broadcast_.extras_oid != 0 &&
++                heap_.has_object(ordered_broadcast_.extras_oid)) {
++                result = DalvikValue::make_object(
++                    ordered_broadcast_.extras_oid, "Landroid/os/Bundle;");
++            } else if (c7_pending && make_map) {
++                // AOSP: makeMap creates the Bundle and it PROPAGATES —
++                // mutations by later receivers are visible downstream.
++                uint32_t bid =
++                    heap_.allocate("Landroid/os/Bundle;", pc_, 0);
++                ordered_broadcast_.extras_oid = bid;
++                result = DalvikValue::make_object(bid, "Landroid/os/Bundle;");
++            } else {
++                result = DalvikValue::make_null();
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "setResultCode" || method == "setResultData" ||
++            method == "setResultExtras" || method == "setResult") {
++            if (!c7_pending) {
++                c7_nosync_hint(method.c_str());
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "setResultCode" && args.size() >= 2)
++                ordered_broadcast_.code = dalvik_int_value(args[1]);
++            if (method == "setResultData" && args.size() >= 2) {
++                if (args[1].type == DalvikType::STRING_REF) {
++                    ordered_broadcast_.data = args[1].string_val;
++                    ordered_broadcast_.has_data = true;
++                } else {
++                    ordered_broadcast_.data.clear();
++                    ordered_broadcast_.has_data = false;
++                }
++            }
++            if (method == "setResultExtras" && args.size() >= 2)
++                ordered_broadcast_.extras_oid =
++                    (args[1].type == DalvikType::OBJECT_REF) ? args[1].object_id
++                                                             : 0;
++            if (method == "setResult" && args.size() >= 4) {
++                if (args[1].type == DalvikType::INT32)
++                    ordered_broadcast_.code = args[1].int_val;
++                if (args[2].type == DalvikType::STRING_REF) {
++                    ordered_broadcast_.data = args[2].string_val;
++                    ordered_broadcast_.has_data = true;
++                } else {
++                    ordered_broadcast_.data.clear();
++                    ordered_broadcast_.has_data = false;
++                }
++                ordered_broadcast_.extras_oid =
++                    (args[3].type == DalvikType::OBJECT_REF) ? args[3].object_id
++                                                             : 0;
++            }
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "abortBroadcast" || method == "clearAbortBroadcast" ||
++            method == "getAbortBroadcast") {
++            if (method == "getAbortBroadcast") {
++                result = DalvikValue::make_bool(c7_pending &&
++                                                ordered_broadcast_.aborted);
++            } else {
++                if (!c7_pending) {
++                    c7_nosync_hint(method.c_str());
++                } else {
++                    ordered_broadcast_.aborted =
++                        (method == "abortBroadcast");
++                    if (method == "abortBroadcast")
++                        miniandroid::diagnostics::FileIoTrace::instance()
++                            .record("BCAST-ABORT",
++                                    ordered_broadcast_.data.empty()
++                                        ? std::string("(no data)")
++                                        : ordered_broadcast_.data,
++                                    true,
++                                    "ordered broadcast aborted at " +
++                                        std::to_string(
++                                            ordered_broadcast_.code),
++                                    current_class_ + "." + current_method_);
++                }
++                result = DalvikValue::make_void();
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "goAsync") {
++            // AOSP: returns the receiver's PendingResult (or null when the
++            // broadcast already finished / non-ordered with no result) and
++            // detaches it (mPendingResult = null).
++            if (c7_pending) {
++                uint32_t pr_id = heap_.allocate(
++                    "Landroid/content/PendingResult;", pc_, 0);
++                PendingResultState prs;
++                prs.code = ordered_broadcast_.code;
++                prs.data = ordered_broadcast_.data;
++                prs.has_data = ordered_broadcast_.has_data;
++                prs.extras_oid = ordered_broadcast_.extras_oid;
++                prs.aborted = ordered_broadcast_.aborted;
++                prs.ordered = true;
++                pending_results_[pr_id] = prs;
++                ordered_broadcast_.pending_go_async_oid =
++                    args[0].object_id;
++                result = DalvikValue::make_object(
++                    pr_id, "Landroid/content/PendingResult;");
++            } else {
++                result = DalvikValue::make_null();
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
++    // ── CODER7: android.content.PendingResult natives (the goAsync
++    // snapshot). AOSP PendingResult carries its OWN copies of the result
++    // state; finish() signals completion (in this synchronous dispatch the
++    // next receiver proceeds after onReceive returns — recorded loudly).
++    if ((class_name == "Landroid/content/PendingResult;" ||
++         is_subclass_of(class_name, "Landroid/content/PendingResult;")) &&
++        (method == "finish" || method == "getResultCode" ||
++         method == "getResultData" || method == "getResultExtras" ||
++         method == "setResult" || method == "setResultCode" ||
++         method == "setResultData" || method == "setResultExtras")) {
++        uint32_t c7_pr_oid = args.empty()
++                                 ? 0
++                                 : (args[0].type == DalvikType::OBJECT_REF
++                                        ? args[0].object_id
++                                        : 0);
++        auto c7_pr_it = pending_results_.find(c7_pr_oid);
++        if (c7_pr_it != pending_results_.end()) {
++            PendingResultState& prs = c7_pr_it->second;
++            if (method == "finish") {
++                prs.finished = true;
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "BCAST-FINISH", class_name, true,
++                    "PendingResult.finish()",
++                    current_class_ + "." + current_method_);
++                result = DalvikValue::make_void();
++            } else if (method == "getResultCode") {
++                result = DalvikValue::make_int(prs.code);
++            } else if (method == "getResultData") {
++                result = prs.has_data
++                             ? DalvikValue::make_string(prs.data, 0)
++                             : DalvikValue::make_null();
++            } else if (method == "getResultExtras") {
++                result = (prs.extras_oid != 0 &&
++                          heap_.has_object(prs.extras_oid))
++                             ? DalvikValue::make_object(
++                                   prs.extras_oid, "Landroid/os/Bundle;")
++                             : DalvikValue::make_null();
++            } else if (method == "setResultCode" && args.size() >= 2) {
++                prs.code = dalvik_int_value(args[1]);
++                result = DalvikValue::make_void();
++            } else if (method == "setResultData" && args.size() >= 2) {
++                if (args[1].type == DalvikType::STRING_REF) {
++                    prs.data = args[1].string_val;
++                    prs.has_data = true;
++                } else {
++                    prs.data.clear();
++                    prs.has_data = false;
++                }
++                result = DalvikValue::make_void();
++            } else if (method == "setResultExtras" && args.size() >= 2) {
++                prs.extras_oid =
++                    (args[1].type == DalvikType::OBJECT_REF)
++                        ? args[1].object_id
++                        : 0;
++                result = DalvikValue::make_void();
++            } else if (method == "setResult" && args.size() >= 4) {
++                if (args[1].type == DalvikType::INT32)
++                    prs.code = args[1].int_val;
++                if (args[2].type == DalvikType::STRING_REF) {
++                    prs.data = args[2].string_val;
++                    prs.has_data = true;
++                }
++                prs.extras_oid = (args[3].type == DalvikType::OBJECT_REF)
++                                     ? args[3].object_id
++                                     : 0;
++                result = DalvikValue::make_void();
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
+     if (class_name == "Landroid/content/ContentResolver;" &&
+         method == "openInputStream" && args.size() >= 2 &&
+         args[1].type == DalvikType::OBJECT_REF) {
+@@ -55559,6 +56445,87 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         return true;
+     }
+ 
++    // ── CODER7 WAVE-2 — PackageManager.getReceiverInfo law ──
++    // AOSP PackageManager.getReceiverInfo(ComponentName, flags): the
++    // ReceiverInfo of the manifest-declared <receiver> — NEVER null
++    // (throws PackageManager.NameNotFoundException when no receiver
++    // matches). Fields seeded from the wave-1/2 manifest receiver model:
++    // name, exported, permission (ComponentInfo contract). Same matching
++    // law as the getServiceInfo/ProviderInfo walks (exact → bare →
++    // containment). NOTE: the local ECJ/D8 stub set ships no
++    // android.content.pm.ReceiverInfo class, so the Java probe cannot
++    // compile a direct call — engine-level law + trace evidence here;
++    // probe-level verification PENDING on the stub upgrade.
++    // ────────────────────────────────────────────────────────────────────────
++    if (method == "getReceiverInfo" &&
++        class_name.find("PackageManager") != std::string::npos) {
++        std::string rcv_class;
++        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
++            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
++            auto cls_f = heap_.get_object_field(args[1].object_id, "mClass");
++            if (cls_f.has_value() && cls_f->type == DalvikType::STRING_REF)
++                rcv_class = cls_f->string_val;
++        }
++        auto normalize_rcv = [&](std::string c) {
++            if (c.empty()) return c;
++            if (c[0] == '.') return package_name_ + c;
++            if (c.find('.') == std::string::npos) return package_name_ + "." + c;
++            return c;
++        };
++        std::string rnorm = normalize_rcv(rcv_class);
++        std::string rbare = rnorm;
++        if (!rbare.empty() && rbare.front() == 'L' && rbare.back() == ';')
++            rbare = rbare.substr(1, rbare.size() - 2);
++        for (auto& ch : rbare) if (ch == '/') ch = '.';
++        const ManifestReceiver* c7_found = nullptr;
++        for (const auto& mr : manifest_receivers_) {
++            if (mr.cls == rnorm || mr.cls == rbare ||
++                (!mr.cls.empty() &&
++                 (rnorm.rfind(mr.cls) != std::string::npos ||
++                  rbare.rfind(mr.cls) != std::string::npos))) {
++                c7_found = &mr;
++                break;
++            }
++        }
++        if (c7_found == nullptr) {
++            std::cerr << "[C7-RCVINFO] MISS " << rbare
++                      << " → PackageManager$NameNotFoundException (AOSP contract)"
++                      << std::endl;
++            throw_deferred(
++                "Landroid/content/pm/PackageManager$NameNotFoundException;",
++                rbare, "C7-RCVINFO");
++            result = DalvikValue::make_null();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        uint32_t rid7 = heap_.allocate("Landroid/content/pm/ReceiverInfo;",
++                                       pc_,
++                                       call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++        heap_.set_object_field(rid7, "name",
++                               DalvikValue::make_string(rbare, 1));
++        heap_.set_object_field(rid7, "packageName",
++                               DalvikValue::make_string(
++                                   package_name_.empty() ? "unknown.package"
++                                                         : package_name_, 1));
++        heap_.set_object_field(rid7, "exported",
++                               DalvikValue::make_bool(c7_found->exported));
++        if (!c7_found->permission.empty())
++            heap_.set_object_field(rid7, "permission",
++                                   DalvikValue::make_string(
++                                       c7_found->permission, 0));
++        miniandroid::diagnostics::FileIoTrace::instance().record(
++            "PM-RECEIVER-INFO", rbare, true,
++            "exported=" + std::string(c7_found->exported ? "true" : "false") +
++                (c7_found->permission.empty()
++                     ? std::string()
++                     : " perm=" + c7_found->permission),
++            current_class_ + "." + current_method_);
++        result = DalvikValue::make_object(rid7,
++                                          "Landroid/content/pm/ReceiverInfo;");
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++
+     // ────────────────────────────────────────────────────────────────────────
+     // P0.10 — PackageManager.getPackageInfo → PackageInfo
+     // EXP-093/F011: Use manifest-derived package identity instead of hardcoded
+diff --git a/miniandroid/src/dex/dalvik_engine.h b/miniandroid/src/dex/dalvik_engine.h
+index cd98d45c..1c5cb51e 100755
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -1779,9 +1779,56 @@ public:
+         std::vector<std::pair<std::string, std::vector<std::string>>> svc) {
+         manifest_service_classes_ = std::move(svc);
+     }
+-    void set_manifest_receiver_actions(
+-        std::vector<std::pair<std::string, std::vector<std::string>>> rcv) {
+-        manifest_receiver_actions_ = std::move(rcv);
++    // CODER7: full AOSP receiver model transfer (priority/exported/
++    // permission/categories in addition to the action list).
++    struct ManifestReceiverTransfer {
++        std::string cls;
++        std::vector<std::string> actions;
++        std::vector<std::string> categories;
++        int priority = 0;
++        bool exported = false;
++        bool has_exported_attr = false;
++        std::string permission;
++        // CODER7 WAVE-2 per-filter model: AOSP PackageParser records EVERY
++        // <intent-filter> as its own matchable unit (the ordered dispatch
++        // resolves per (receiver, filter) pair, each with ITS priority —
++        // a receiver matching through two filters is delivered TWICE).
++        struct FilterTransfer {
++            std::vector<std::string> actions;
++            std::vector<std::string> categories;
++            int priority = 0;
++        };
++        std::vector<FilterTransfer> filters;
++    };
++    void set_manifest_receivers(std::vector<ManifestReceiverTransfer> rcv) {
++        manifest_receivers_.clear();
++        for (auto& r : rcv) {
++            ManifestReceiver mr;
++            mr.cls = std::move(r.cls);
++            mr.actions = std::move(r.actions);
++            mr.categories = std::move(r.categories);
++            mr.priority = r.priority;
++            mr.exported = r.exported;
++            mr.has_exported_attr = r.has_exported_attr;
++            mr.permission = std::move(r.permission);
++            for (auto& f : r.filters) {
++                ManifestReceiver::Filter ef;
++                ef.actions = std::move(f.actions);
++                ef.categories = std::move(f.categories);
++                ef.priority = f.priority;
++                mr.filters.push_back(std::move(ef));
++            }
++            // Defensive synthesis: a receiver transferred without filter
++            // records keeps its old union-level single-filter behavior.
++            if (mr.filters.empty()) {
++                ManifestReceiver::Filter ef;
++                ef.actions = mr.actions;
++                ef.categories = mr.categories;
++                ef.priority = mr.priority;
++                mr.filters.push_back(std::move(ef));
++            }
++            manifest_receivers_.push_back(std::move(mr));
++        }
+     }
+     // ── #371 PHASE B2 setter (G-4: ABI-scoped lib extraction identity) ──
+     // Called by the run flow when the package store holds extracted libs.
+@@ -3606,6 +3653,11 @@ public:
+     // addCategory(String) / countCategories() / getCategory(i) /
+     // matchAction(String) need the declared-category list per filter oid.
+     std::map<uint32_t, std::vector<std::string>> intent_filter_categories_;
++    // CODER7 ORDERED-BCAST law: IntentFilter priority state (heap oid →
++    // android:priority). AOSP IntentFilter.setPriority(int)/getPriority():
++    // the ordered-broadcast ordering key ("higher priority receivers are
++    // checked first"; BroadcastQueueModernImpl priority tranches).
++    std::map<uint32_t, int> intent_filter_priority_;
+     // ── #371 PHASE B5: service + broadcast dispatch state ──
+     // AOSP ActiveServices law: startService instantiates the service class,
+     // runs onCreate then onStartCommand(intent, flags, startId); a second
+@@ -3619,8 +3671,41 @@ public:
+         bool destroyed = false;
+         bool started = false;   // startService path active (AOSP started service)
+         int bindings = 0;       // bindService count (AOSP bound connections)
++        // ── CODER7 SVC contract completion (AOSP Service.java/ActiveServices) ──
++        // stopSelfResult(startId) law: stop succeeds ONLY when startId ==
++        // the service's last delivered startId (ActiveServices
++        // stopServiceTokenLocked: r.getLastStartId() != startId → no stop).
++        int next_start_id = 0;      // per-service startId counter (AOSP
++                                    // ServiceRecord startIds are per-record;
++                                    // the old code used a process-wide static)
++        int last_start_id = 0;      // getLastStartId()
++        // startForegroundService contract (AOSP: the service MUST call
++        // startForeground promptly). Headless runtime: no ANR clock — the
++        // contract is TRACKED and reported loudly, never faked.
++        bool fgs_needs_foreground = false;
++        // onUnbind/onRebind law (AOSP Service.onUnbind doc: "Return true if
++        // you would like to have the service's onRebind method later called
++        // when new clients bind to it").
++        bool do_rebind = false;     // last onUnbind returned true
++        bool on_unbind_overridden = false;  // computed once from DEX
++        uint32_t retained_binder_oid = 0;   // binder from the first onBind
++        std::string retained_binder_cls;
++        // per-connection binding records (AOSP: unbindService(conn) removes
++        // THAT connection only — the old code decremented the FIRST live
++        // service with bindings>0 regardless of which connection unbound).
++        struct ConnBinding {
++            int count = 0;
++            uint32_t bind_intent_oid = 0;  // the binding Intent (onUnbind arg)
++        };
++        std::map<uint32_t, ConnBinding> conn_bindings;
+     };
+     std::map<std::string, ServiceInstance> live_services_;
++    // CODER7 WAVE-2: the bring-down path law (AOSP ActiveServices
++    // bringDownServiceLocked). stopService/stopSelf must deliver
++    // onUnbind(bindingIntent) BEFORE onDestroy when live bindings exist —
++    // the base/wave-1 teardown path skipped onUnbind entirely (recorded
++    // PENDING in the wave-1 issue §7). Shared by every teardown site.
++    void c7_service_bring_down(ServiceInstance& svc, const char* reason);
+     // AOSP BroadcastReceiver dispatch law: sendBroadcast(Intent) resolves
+     // receivers whose intent-filter action matches the intent action —
+     // dynamic registerReceiver registrations AND manifest <receiver>
+@@ -3631,11 +3716,92 @@ public:
+         uint32_t oid = 0;
+         std::string cls;
+         std::vector<std::string> actions;
++        // ── CODER7 ORDERED-BCAST law ──
++        int priority = 0;                 // IntentFilter.getPriority() at
++                                          // registerReceiver time
++        std::vector<std::string> categories;  // filter categories (match law)
++        // CODER7 WAVE-2: the registerReceiver(receiver, filter, permission,
++        // scheduler) broadcastPermission — AOSP LoadedApk.ReceiverDispatcher
++        // carries it and BroadcastQueue enforces it against the SENDER for
++        // every delivery (same law as a manifest receiver's
++        // android:permission). The base ignored the argument entirely.
++        std::string permission;
+     };
+     std::vector<DynamicReceiver> dynamic_receivers_;
+-    // Manifest <receiver> name + intent-filter action pairs (parse-time).
+-    std::vector<std::pair<std::string, std::vector<std::string>>>
+-        manifest_receiver_actions_;
++    // Manifest <receiver> records (parse-time). ── CODER7: the old pair
++    // (class, actions) grew the full AOSP PackageParser receiver model —
++    // priority (max across filters), exported (with the declared-attr
++    // flag), permission, and the filter category union.
++    struct ManifestReceiver {
++        std::string cls;                      // dotted class name
++        std::vector<std::string> actions;
++        std::vector<std::string> categories;
++        int priority = 0;
++        bool exported = false;
++        bool has_exported_attr = false;
++        std::string permission;
++        // CODER7 WAVE-2 per-filter model (AOSP PackageParser: every
++        // <intent-filter> is its own matchable record with its own
++        // priority/actions/categories — the wave-1 MAX-fold recorded only
++        // the receiver-level maximum, a documented PARTIAL).
++        struct Filter {
++            std::vector<std::string> actions;
++            std::vector<std::string> categories;
++            int priority = 0;
++        };
++        std::vector<Filter> filters;
++    };
++    std::vector<ManifestReceiver> manifest_receivers_;
++    // CODER7 WAVE-2: sticky-broadcast cache (AOSP Context.sendStickyBroadcast
++    // law: the LAST sticky intent per action is retained by the system and
++    // delivered to every NEW receiver whose filter matches at
++    // registerReceiver time; removeStickyBroadcast drops it). Keyed by the
++    // intent ACTION (the runtime models one sticky per action — the
++    // BroadcastQueue per-action slot; data/type refinements are a
++    // documented simplification).
++    std::map<std::string, uint32_t> sticky_broadcasts_;
++    // CODER7 WAVE-2: true while the dispatcher is running the INITIAL
++    // sticky catch-up delivery of a freshly registered receiver (AOSP
++    // BroadcastReceiver.isInitialStickyBroadcast()).
++    bool initial_sticky_delivery_ = false;
++    // ── CODER7: ordered-broadcast dispatch state (AOSP BroadcastQueue ──
++    // ordered record: resultCode/resultData/resultExtras carried receiver
++    // to receiver; abortBroadcast stops LOWER-priority pending receivers
++    // but the final resultReceiver still runs — BroadcastReceiver.java
++    // abortBroadcast doc: "It will still call onReceive of the
++    // BroadcastReceiver that the caller of sendOrderedBroadcast passed in").
++    struct OrderedBroadcastState {
++        bool active = false;          // dispatch is an ordered broadcast
++        int code = -1;                // Activity.RESULT_OK seed (ContextImpl
++                                      // sendOrderedBroadcast overloads)
++        std::string data;             // resultData ("" until set / null flag)
++        bool has_data = false;        // data != null
++        uint32_t extras_oid = 0;      // resultExtras Bundle heap oid (0=null)
++        bool aborted = false;         // abortBroadcast() seen
++        uint32_t result_receiver_oid = 0;   // final receiver (0 = none)
++        std::string result_receiver_cls;
++        uint32_t pending_receiver_oid = 0;  // receiver currently executing
++        bool pending_is_final = false;      // executing the final receiver
++        bool in_ordered_dispatch = false;   // inside the dispatch loop
++        // CODER7: set when the pending receiver called goAsync() — AOSP
++        // BroadcastReceiver.goAsync detaches mPendingResult, so the
++        // receiver-level getResult*/setResult* then answer the no-pending
++        // defaults while the chain's carried state is untouched.
++        uint32_t pending_go_async_oid = 0;
++    };
++    OrderedBroadcastState ordered_broadcast_;
++    // BroadcastReceiver.PendingResult state (AOSP BroadcastReceiver.goAsync
++    // → PendingResult; the snapshot of the result state at goAsync time).
++    struct PendingResultState {
++        int code = 0;
++        std::string data;
++        bool has_data = false;
++        uint32_t extras_oid = 0;
++        bool aborted = false;
++        bool ordered = false;
++        bool finished = false;
++    };
++    std::map<uint32_t, PendingResultState> pending_results_;
+     // Manifest <service> name + intent-filter action pairs (parse-time).
+     std::vector<std::pair<std::string, std::vector<std::string>>>
+         manifest_service_classes_;
+diff --git a/fixtures/c7_bcast_service_probe/AndroidManifest.xml b/fixtures/c7_bcast_service_probe/AndroidManifest.xml
+new file mode 100644
+index 00000000..11122c33
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/AndroidManifest.xml
+@@ -0,0 +1,118 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.probe.c7runtime"
++    android:versionCode="1"
++    android:versionName="1.0">
++    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="30" />
++    <!-- The sender (this app) HOLDS the receiver permission for RPerm. -->
++    <uses-permission android:name="com.probe.c7runtime.PERMISSION" />
++    <!-- CODER7 WAVE-2: sticky sends require android.permission.BROADCAST_STICKY. -->
++    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
++    <application android:label="C7Probe">
++        <activity android:name=".MainActivity" android:exported="true">
++            <intent-filter>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
++            </intent-filter>
++        </activity>
++
++        <!-- CODER7 ordered-broadcast law receivers: priority ladder
++             High(50) > Dyn(40, runtime-registered) > Mid(20) > Low(10);
++             RAbort(30) aborts; RLow also listens on the abort action to
++             prove abort stops LOWER-priority pending receivers.
++             WAVE-2: exported="true" — these receivers test ordering /
++             result chains / permissions, NOT the exported law (the
++             dedicated Exp* receivers below own that law). -->
++        <receiver android:name=".RHigh" android:exported="true">
++            <intent-filter android:priority="50">
++                <action android:name="com.probe.c7runtime.ORDER" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".RMid" android:exported="true">
++            <intent-filter android:priority="20">
++                <action android:name="com.probe.c7runtime.ORDER" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".RAbort" android:exported="true">
++            <intent-filter android:priority="30">
++                <action android:name="com.probe.c7runtime.ABORT" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".RLow" android:exported="true">
++            <intent-filter android:priority="10">
++                <action android:name="com.probe.c7runtime.ORDER" />
++                <action android:name="com.probe.c7runtime.ABORT" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".RPerm" android:exported="true"
++            android:permission="com.probe.c7runtime.PERMISSION">
++            <intent-filter android:priority="10">
++                <action android:name="com.probe.c7runtime.PERM" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".RPermMissing" android:exported="true"
++            android:permission="com.probe.c7runtime.MISSING">
++            <intent-filter android:priority="10">
++                <action android:name="com.probe.c7runtime.PERM2" />
++            </intent-filter>
++        </receiver>
++
++        <!-- CODER7 WAVE-2 per-filter law: MultiFilter carries TWO filters
++             over the SAME action MF at priorities 60 and 15 — AOSP delivers
++             ONCE PER MATCHING FILTER (two deliveries, interleaved at their
++             own filter priorities). Filter B also declares action MFCAT
++             with category MFCC (category-law discrimination). MFHigh(30)
++             and MFLow(5) prove the interleaving. -->
++        <receiver android:name=".MultiFilter" android:exported="true">
++            <intent-filter android:priority="60">
++                <action android:name="com.probe.c7runtime.MF" />
++            </intent-filter>
++            <intent-filter android:priority="15">
++                <action android:name="com.probe.c7runtime.MF" />
++                <action android:name="com.probe.c7runtime.MFCAT" />
++                <category android:name="com.probe.c7runtime.MFCC" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".MFHigh" android:exported="true">
++            <intent-filter android:priority="30">
++                <action android:name="com.probe.c7runtime.MF" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".MFLow" android:exported="true">
++            <intent-filter android:priority="5">
++                <action android:name="com.probe.c7runtime.MF" />
++            </intent-filter>
++        </receiver>
++
++        <!-- CODER7 WAVE-2 exported law receivers (foreign-sender model).
++             ExpLocked: exported="false" — unreachable from a foreign
++             sender. ExpOpen: exported="true" + permission. ExpDefault: no
++             exported attribute but HAS a filter → the AOSP default law
++             (targetSdk 30 → exported). -->
++        <receiver android:name=".ExpLocked" android:exported="false">
++            <intent-filter android:priority="0">
++                <action android:name="com.probe.c7runtime.EXP1" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".ExpOpen" android:exported="true"
++            android:permission="com.probe.c7runtime.PERMISSION">
++            <intent-filter android:priority="0">
++                <action android:name="com.probe.c7runtime.EXP2" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".ExpDefault">
++            <intent-filter android:priority="0">
++                <action android:name="com.probe.c7runtime.EXP3" />
++            </intent-filter>
++        </receiver>
++
++        <!-- CODER7 SVC contract services. -->
++        <service android:name=".SvcA" />
++        <service android:name=".SvcB" />
++        <service android:name=".SvcC" />
++        <service android:name=".SvcD" />
++        <service android:name=".SvcE" />
++        <!-- CODER7 WAVE-2: bring-down path (started + bound → stopService). -->
++        <service android:name=".SvcF" />
++    </application>
++</manifest>
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/DynNoPerm.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/DynNoPerm.java
+new file mode 100644
+index 00000000..86241b9c
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/DynNoPerm.java
+@@ -0,0 +1,15 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++
++/** CODER7 WAVE-2 registration-permission law: CONTROL receiver registered
++ *  WITHOUT a broadcastPermission on the same action — delivered. */
++public class DynNoPerm extends BroadcastReceiver {
++    public static int deliveries = 0;
++    @Override public void onReceive(Context context, Intent intent) {
++        deliveries++;
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/DynPerm.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/DynPerm.java
+new file mode 100644
+index 00000000..6cd789a0
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/DynPerm.java
+@@ -0,0 +1,18 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++
++/** CODER7 WAVE-2 registration-permission law: registered with the
++ *  broadcastPermission com.probe.c7runtime.DYNPERM which the probe does
++ *  NOT hold → every send to it is DENIED (loud BCAST-DENY, no delivery).
++ *  DynNoPerm (registered WITHOUT a permission on the same action) is the
++ *  control: delivered. */
++public class DynPerm extends BroadcastReceiver {
++    public static int deliveries = 0;
++    @Override public void onReceive(Context context, Intent intent) {
++        deliveries++;
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/ExpDefault.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/ExpDefault.java
+new file mode 100644
+index 00000000..2e11fcf2
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/ExpDefault.java
+@@ -0,0 +1,15 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-2 exported law: NO android:exported attribute but the
++ *  component HAS an intent-filter — the AOSP PackageParser default law:
++ *  targetSdk &lt;= 30 defaults to EXPORTED. */
++public class ExpDefault extends BroadcastReceiver {
++    public static boolean delivered = false;
++    @Override public void onReceive(Context context, Intent intent) {
++        delivered = true;
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/ExpLocked.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/ExpLocked.java
+new file mode 100644
+index 00000000..f9317209
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/ExpLocked.java
+@@ -0,0 +1,15 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-2 exported law: android:exported="false" — a FOREIGN
++ *  sender (modeled sender identity) must NOT reach this receiver; the
++ *  same-package sender always may (AOSP same-uid law). */
++public class ExpLocked extends BroadcastReceiver {
++    public static boolean delivered = false;
++    @Override public void onReceive(Context context, Intent intent) {
++        delivered = true;
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/ExpOpen.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/ExpOpen.java
+new file mode 100644
+index 00000000..454b3248
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/ExpOpen.java
+@@ -0,0 +1,14 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-2 exported law: exported="true" + android:permission —
++ *  a foreign sender must additionally HOLD the permission. */
++public class ExpOpen extends BroadcastReceiver {
++    public static boolean delivered = false;
++    @Override public void onReceive(Context context, Intent intent) {
++        delivered = true;
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MFHigh.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MFHigh.java
+new file mode 100644
+index 00000000..2ea5fb3f
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MFHigh.java
+@@ -0,0 +1,13 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-2 per-filter law: priority-30 witness between the two
++ *  MultiFilter deliveries (MFA@60 &lt; MFH@30 &gt; MFB@15). */
++public class MFHigh extends BroadcastReceiver {
++    @Override public void onReceive(Context context, Intent intent) {
++        Order.append("MFH");
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MFLow.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MFLow.java
+new file mode 100644
+index 00000000..81edeaf4
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MFLow.java
+@@ -0,0 +1,13 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-2 per-filter law: priority-5 witness after the second
++ *  MultiFilter delivery. */
++public class MFLow extends BroadcastReceiver {
++    @Override public void onReceive(Context context, Intent intent) {
++        Order.append("MFL");
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MainActivity.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MainActivity.java
+new file mode 100644
+index 00000000..af4d2392
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MainActivity.java
+@@ -0,0 +1,523 @@
++package com.probe.c7runtime;
++
++import android.app.Activity;
++import android.content.BroadcastReceiver;
++import android.content.ComponentName;
++import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++import android.content.ServiceConnection;
++import android.os.Bundle;
++import android.os.IBinder;
++import android.widget.TextView;
++import java.io.FileOutputStream;
++
++/** CODER7 ordered-broadcast + service-contract probe — generic Android
++ *  component semantics, no package-specific runtime branches. Every op
++ *  records GATEA-style machine-readable lines to files/c7_results.jsonl
++ *  and stdout; negative ops PASS only when the AOSP-contract behavior
++ *  (exception or non-delivery) actually arrives. */
++public class MainActivity extends Activity {
++
++    private StringBuilder RES = new StringBuilder();
++
++    private void ok(String op, Object detail) {
++        RES.append("C7|").append(op).append("|PASS|").append(detail).append("\n");
++    }
++    private void fail(String op, Object detail) {
++        RES.append("C7|").append(op).append("|FAIL|").append(detail).append("\n");
++    }
++
++    static final class Conn implements ServiceConnection {
++        public int calls = 0;
++        public IBinder binder = null;
++        public void onServiceConnected(ComponentName n, IBinder b) {
++            calls++; binder = b;
++        }
++        public void onServiceDisconnected(ComponentName n) {}
++    }
++
++    /** Dynamic ORDER receiver, priority 40 — sits between RHigh(50) and
++     *  RMid(20); mutates the result chain (AOSP ordered propagation). */
++    static class DynHigh extends BroadcastReceiver {
++        static boolean chainSeen = false;
++        static String detail = "";
++        public void onReceive(Context c, Intent i) {
++            Order.append("Dyn");
++            int code = getResultCode();
++            String data = getResultData();
++            chainSeen = (code == 1 && "r1".equals(data));
++            detail = "code=" + code + " data=" + data;
++            setResultCode(2);
++            setResultData("r2");
++            getResultExtras(true).putInt("k", 7);
++        }
++    }
++
++    /** Category-mismatch receiver (no categories declared). */
++    static class DynNoCat extends BroadcastReceiver {
++        static int deliveries = 0;
++        public void onReceive(Context c, Intent i) { deliveries++; }
++    }
++
++    /** Category-match receiver (declares C7CAT1). */
++    static class DynCat extends BroadcastReceiver {
++        static int deliveries = 0;
++        public void onReceive(Context c, Intent i) { deliveries++; }
++    }
++
++    /** goAsync law receiver. */
++    static class GADyn extends BroadcastReceiver {
++        static int prCode = Integer.MIN_VALUE;
++        static String prData = "unread";
++        static String recvDataAfterGoAsync = "unread";
++        static int prExtrasE = -1;
++        static boolean finished = false;
++        public void onReceive(Context c, Intent i) {
++            Order.append("GA");
++            BroadcastReceiver.PendingResult pr = goAsync();
++            prCode = pr.getResultCode();
++            prData = pr.getResultData();
++            prExtrasE = pr.getResultExtras(false).getInt("e", -1);
++            recvDataAfterGoAsync = getResultData();
++            pr.finish();
++            finished = true;
++        }
++    }
++
++    /** Final resultReceiver for the ORDER chain (AOSP: runs after every
++     *  other receiver, carrying the final result state). */
++    static class FinalOrder extends BroadcastReceiver {
++        static boolean finalOk = false;
++        static String detail = "";
++        public void onReceive(Context c, Intent i) {
++            Order.append("FINAL");
++            int code = getResultCode();
++            String data = getResultData();
++            int k = getResultExtras(true).getInt("k", -1);
++            finalOk = (code == 2 && "r2".equals(data) && k == 7);
++            detail = "code=" + code + " data=" + data + " k=" + k;
++        }
++    }
++
++    /** Final resultReceiver for the ABORT chain — AOSP: STILL runs after
++     *  abortBroadcast(). */
++    static class FinalAbort extends BroadcastReceiver {
++        static boolean ranAfterAbort = false;
++        static String data = "";
++        public void onReceive(Context c, Intent i) {
++            ranAfterAbort = true;
++            data = getResultData();
++        }
++    }
++
++    /** Ordered-broadcast hint check receiver. */
++    static class OrderedHint extends BroadcastReceiver {
++        static boolean orderedHint = false;
++        static boolean setResultThrew = false;
++        public void onReceive(Context c, Intent i) {
++            orderedHint = isOrderedBroadcast();
++            try {
++                setResultData("hint-check");  // must NOT throw (AOSP
++                                              // checkSynchronousHint logs)
++            } catch (Throwable t) { setResultThrew = true; }
++        }
++    }
++
++    @Override protected void onCreate(Bundle b) {
++        super.onCreate(b);
++        RES = new StringBuilder();
++        try { runProbe(); } catch (Throwable t) { fail("PROBE-FATAL", t); }
++        try {
++            FileOutputStream fos = openFileOutput("c7_results.jsonl",
++                                                  Context.MODE_PRIVATE);
++            fos.write(RES.toString().getBytes("UTF-8"));
++            fos.flush(); fos.close();
++        } catch (Throwable t) { fail("RESULTS-WRITE", t); }
++        TextView tv = new TextView(this);
++        tv.setTextSize(11f);
++        tv.setText(RES.toString());
++        setContentView(tv);
++    }
++
++    private void runProbe() {
++        // ══ ORD-01: priority ordering (manifest 50 > dyn 40 > 20 > 10) ══
++        Order.reset(); RLow.called = false;
++        DynHigh.chainSeen = false; DynHigh.detail = "";
++        RMid.chainSeen = false; RMid.detail = "";
++        FinalOrder.finalOk = false; FinalOrder.detail = "";
++        try {
++            DynHigh dyn = new DynHigh();
++            IntentFilter df = new IntentFilter("com.probe.c7runtime.ORDER");
++            df.setPriority(40);
++            registerReceiver(dyn, df);
++            sendOrderedBroadcast(
++                new Intent("com.probe.c7runtime.ORDER"), null,
++                new FinalOrder(), null, -1, null, null);
++            String expect = "High,Dyn,Mid,Low,FINAL";
++            if (expect.equals(Order.seq.toString())
++                    && RHigh.sawInitialResultOk && DynHigh.chainSeen
++                    && RMid.chainSeen && FinalOrder.finalOk)
++                ok("ORD-01", "order=" + Order.seq + " seed(-1)✓ chain✓"
++                        + " final(" + FinalOrder.detail + ")");
++            else
++                fail("ORD-01", "order=" + Order.seq
++                        + " seed=" + RHigh.sawInitialResultOk
++                        + " dyn=" + DynHigh.detail
++                        + " mid=" + RMid.detail
++                        + " final=" + FinalOrder.detail);
++            unregisterReceiver(dyn);
++        } catch (Throwable t) { fail("ORD-01", t); }
++
++        // ══ ORD-02: abortBroadcast stops lower priority; final still runs ══
++        Order.reset(); RLow.called = false; RAbort.called = false;
++        FinalAbort.ranAfterAbort = false; FinalAbort.data = "";
++        try {
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.ABORT"),
++                    null, new FinalAbort(), null, -1, null, null);
++            if (RAbort.called && !RLow.called && FinalAbort.ranAfterAbort
++                    && "aborted-here".equals(FinalAbort.data))
++                ok("ORD-02", "abort: Low skipped, final ran with data="
++                        + FinalAbort.data);
++            else
++                fail("ORD-02", "abort=" + RAbort.called + " lowCalled="
++                        + RLow.called + " finalRan=" + FinalAbort.ranAfterAbort
++                        + " finalData=" + FinalAbort.data);
++        } catch (Throwable t) { fail("ORD-02", t); }
++
++        // ══ ORD-03: abort is a LOG-ONLY no-op on a NON-ordered send ══
++        Order.reset(); RLow.called = false; RAbort.called = false;
++        try {
++            sendBroadcast(new Intent("com.probe.c7runtime.ABORT"));
++            if (RAbort.called && RLow.called)
++                ok("ORD-03", "non-ordered: abort no-op → both delivered");
++            else
++                fail("ORD-03", "abort=" + RAbort.called + " low=" + RLow.called);
++        } catch (Throwable t) { fail("ORD-03", t); }
++
++        // ══ ORD-04: category law (IntentFilter.matchCategories) ══
++        DynNoCat.deliveries = 0; DynCat.deliveries = 0;
++        try {
++            DynNoCat noCat = new DynNoCat();
++            DynCat withCat = new DynCat();
++            IntentFilter f1 = new IntentFilter("com.probe.c7runtime.CAT");
++            IntentFilter f2 = new IntentFilter("com.probe.c7runtime.CAT");
++            f2.addCategory("com.probe.c7runtime.C7CAT1");
++            registerReceiver(noCat, f1);
++            registerReceiver(withCat, f2);
++            Intent ci = new Intent("com.probe.c7runtime.CAT");
++            ci.addCategory("com.probe.c7runtime.C7CAT1");
++            sendOrderedBroadcast(ci, null);
++            if (DynNoCat.deliveries == 0 && DynCat.deliveries == 1)
++                ok("ORD-04", "category: mismatch skipped, match delivered");
++            else
++                fail("ORD-04", "noCat=" + DynNoCat.deliveries + " cat="
++                        + DynCat.deliveries);
++            unregisterReceiver(noCat);
++            unregisterReceiver(withCat);
++        } catch (Throwable t) { fail("ORD-04", t); }
++
++        // ══ ORD-05: ordered hint + log-only setResult on non-ordered ══
++        OrderedHint.orderedHint = false;
++        OrderedHint.setResultThrew = false;
++        try {
++            OrderedHint oh = new OrderedHint();
++            registerReceiver(oh, new IntentFilter("com.probe.c7runtime.HINT"));
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.HINT"), null);
++            boolean ordOk = OrderedHint.orderedHint;
++            unregisterReceiver(oh);
++            registerReceiver(oh, new IntentFilter("com.probe.c7runtime.HINT2"));
++            sendBroadcast(new Intent("com.probe.c7runtime.HINT2"));
++            unregisterReceiver(oh);
++            boolean plainOk = !OrderedHint.setResultThrew;
++            if (ordOk && plainOk)
++                ok("ORD-05", "isOrderedBroadcast=true; plain setResult no-throw");
++            else
++                fail("ORD-05", "orderedHint=" + ordOk + " plainNoThrow="
++                        + plainOk);
++        } catch (Throwable t) { fail("ORD-05", t); }
++
++        // ══ ORD-06: receiver permission law (held vs missing) ══
++        RPerm.delivered = false; RPermMissing.delivered = false;
++        try {
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.PERM"), null);
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.PERM2"), null);
++            if (RPerm.delivered && !RPermMissing.delivered)
++                ok("ORD-06", "perm held → delivered; perm missing → denied");
++            else
++                fail("ORD-06", "held=" + RPerm.delivered + " missing="
++                        + RPermMissing.delivered);
++        } catch (Throwable t) { fail("ORD-06", t); }
++
++        // ══ ORD-07: 7-arg overload seeds + goAsync detach law ══
++        Order.reset();
++        GADyn.prCode = Integer.MIN_VALUE; GADyn.prData = "unread";
++        GADyn.recvDataAfterGoAsync = "unread"; GADyn.prExtrasE = -1;
++        try {
++            GADyn ga = new GADyn();
++            registerReceiver(ga, new IntentFilter("com.probe.c7runtime.GA"));
++            Bundle seed = new Bundle();
++            seed.putInt("e", 9);
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.GA"), null,
++                    new FinalOrder(), null, 5, "seed", seed);
++            unregisterReceiver(ga);
++            if (GADyn.prCode == 5 && "seed".equals(GADyn.prData)
++                    && GADyn.prExtrasE == 9 && GADyn.recvDataAfterGoAsync == null
++                    && GADyn.finished)
++                ok("ORD-07", "goAsync: pr(code=5,data=seed,e=9) detached,"
++                        + " receiver-level null, finish ok");
++            else
++                fail("ORD-07", "prCode=" + GADyn.prCode + " prData="
++                        + GADyn.prData + " prE=" + GADyn.prExtrasE
++                        + " recvAfter=" + GADyn.recvDataAfterGoAsync);
++        } catch (Throwable t) { fail("ORD-07", t); }
++
++        // ══ SVC-05: stopSelfResult(startId) law ══
++        SvcA.creates = 0; SvcA.starts = 0; SvcA.destroys = 0;
++        SvcA.lastStartId = -1; SvcA.lastStopAnswer = false;
++        try {
++            Intent ia = new Intent(this, SvcA.class);
++            startService(ia); startService(ia);          // startIds 1, 2
++            int startsAfterPlain = SvcA.starts;
++            Intent iOld = new Intent(this, SvcA.class);
++            iOld.setAction("com.probe.c7runtime.STOP_OLD");
++            startService(iOld);                          // startId 3; calls
++                                                         // stopSelfResult(1)
++            boolean oldIdAnswer = SvcA.lastStopAnswer;
++            int destroysAfterOld = SvcA.destroys;
++            Intent iLast = new Intent(this, SvcA.class);
++            iLast.setAction("com.probe.c7runtime.STOP_LAST");
++            startService(iLast);                         // startId 4; calls
++                                                         // stopSelfResult(4)
++            boolean lastIdAnswer = SvcA.lastStopAnswer;
++            if (startsAfterPlain == 2 && !oldIdAnswer && destroysAfterOld == 0
++                    && lastIdAnswer && SvcA.destroys == 1)
++                ok("SVC-05", "startx2 + stopSelfResult(old)=false (service"
++                        + " stays), stopSelfResult(last)=true → onDestroy");
++            else
++                fail("SVC-05", "starts=" + SvcA.starts + " oldAns="
++                        + oldIdAnswer + " dOld=" + destroysAfterOld
++                        + " lastAns=" + lastIdAnswer + " destroys="
++                        + SvcA.destroys);
++        } catch (Throwable t) { fail("SVC-05", t); }
++
++        // ══ SVC-06: onUnbind default(false) → onDestroy (pure-bound) ══
++        SvcB.binds = 0; SvcB.unbinds = 0; SvcB.destroys = 0;
++        try {
++            Conn cb = new Conn();
++            bindService(new Intent(this, SvcB.class), cb,
++                        Context.BIND_AUTO_CREATE);
++            unbindService(cb);
++            if (SvcB.binds == 1 && SvcB.unbinds == 1 && SvcB.destroys == 1)
++                ok("SVC-06", "pure-bound unbind → onUnbind(false) → onDestroy");
++            else
++                fail("SVC-06", "binds=" + SvcB.binds + " unbinds=" + SvcB.unbinds
++                        + " destroys=" + SvcB.destroys);
++        } catch (Throwable t) { fail("SVC-06", t); }
++
++        // ══ SVC-07: onUnbind(true) → onRebind on next bind ══
++        SvcC.binds = 0; SvcC.rebinds = 0; SvcC.unbinds = 0; SvcC.destroys = 0;
++        try {
++            Conn c1 = new Conn(); Conn c2 = new Conn();
++            bindService(new Intent(this, SvcC.class), c1,
++                        Context.BIND_AUTO_CREATE);
++            unbindService(c1);
++            boolean aliveAfterUnbind = (SvcC.destroys == 0);
++            bindService(new Intent(this, SvcC.class), c2,
++                        Context.BIND_AUTO_CREATE);
++            boolean rebindFired = (SvcC.rebinds == 1 && SvcC.binds == 1);
++            boolean reconnected = (c2.calls == 1 && c2.binder != null);
++            stopService(new Intent(this, SvcC.class));
++            if (aliveAfterUnbind && rebindFired && reconnected
++                    && SvcC.destroys == 1)
++                ok("SVC-07", "unbind→onUnbind(true) stays; rebind→onRebind;"
++                        + " retained binder reconnected; stop→onDestroy");
++            else
++                fail("SVC-07", "alive=" + aliveAfterUnbind + " rebinds="
++                        + SvcC.rebinds + " binds=" + SvcC.binds
++                        + " conn2calls=" + c2.calls + " destroys="
++                        + SvcC.destroys);
++        } catch (Throwable t) { fail("SVC-07", t); }
++
++        // ══ SVC-08: unbindService(conn) targets ITS service only ══
++        SvcD.destroys = 0; SvcE.destroys = 0;
++        try {
++            Conn cd = new Conn(); Conn ce = new Conn();
++            bindService(new Intent(this, SvcD.class), cd,
++                        Context.BIND_AUTO_CREATE);
++            bindService(new Intent(this, SvcE.class), ce,
++                        Context.BIND_AUTO_CREATE);
++            unbindService(ce);
++            if (SvcE.destroys == 1 && SvcD.destroys == 0)
++                ok("SVC-08", "unbind(connE) destroyed only SvcE");
++            else
++                fail("SVC-08", "svcD=" + SvcD.destroys + " svcE="
++                        + SvcE.destroys);
++            // ══ SVC-09: double unbind → IAE (AOSP ContextImpl law) ══
++            try {
++                unbindService(ce);
++                fail("SVC-09", "no-exception (double unbind silent)");
++            } catch (IllegalArgumentException okIae) {
++                ok("SVC-09", "double unbind → IllegalArgumentException: "
++                        + okIae.getMessage());
++            } catch (Throwable t) {
++                fail("SVC-09", "wrong exception: " + t);
++            }
++            stopService(new Intent(this, SvcD.class));
++        } catch (Throwable t) { fail("SVC-08", t); }
++
++        // ══ SVC-10: bring-down path delivers onUnbind before onDestroy ══
++        // (AOSP ActiveServices bringDownServiceLocked: a stopService /
++        // stopSelf on a service with LIVE bindings delivers onUnbind
++        // FIRST; wave-1 left the stop paths without onUnbind — PENDING §7.)
++        SvcF.creates = 0; SvcF.binds = 0; SvcF.unbinds = 0; SvcF.destroys = 0;
++        try {
++            Conn cf = new Conn();
++            startService(new Intent(this, SvcF.class));
++            bindService(new Intent(this, SvcF.class), cf,
++                        Context.BIND_AUTO_CREATE);
++            stopService(new Intent(this, SvcF.class));
++            if (SvcF.creates == 1 && SvcF.binds == 1 && SvcF.unbinds == 1
++                    && SvcF.destroys == 1)
++                ok("SVC-10", "bring-down: onUnbind delivered before onDestroy"
++                        + " (unbinds=1 destroys=1)");
++            else
++                fail("SVC-10", "creates=" + SvcF.creates + " binds="
++                        + SvcF.binds + " unbinds=" + SvcF.unbinds
++                        + " destroys=" + SvcF.destroys);
++        } catch (Throwable t) { fail("SVC-10", t); }
++
++        // ══ ORD-08: per-filter double delivery (same action, two filters) ══
++        // AOSP resolves per (receiver, filter): MultiFilter delivers TWICE
++        // (MFA@60, MFB@15) interleaved with MFH@30 / MFL@5; the wave-1
++        // MAX-fold delivered ONCE at the receiver-level max priority.
++        Order.reset();
++        MultiFilter.deliveries = 0;
++        try {
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.MF"), null,
++                    new FinalOrder(), null, -1, null, null);
++            if ("MFA,MFH,MFB,MFL,FINAL".equals(Order.seq.toString())
++                    && MultiFilter.deliveries == 2)
++                ok("ORD-08", "per-filter: " + Order.seq
++                        + " deliveries=" + MultiFilter.deliveries);
++            else
++                fail("ORD-08", "order=" + Order.seq + " deliveries="
++                        + MultiFilter.deliveries);
++        } catch (Throwable t) { fail("ORD-08", t); }
++
++        // ══ ORD-09: per-filter category law (second filter is selective) ══
++        // intent MFCAT + category MFCC matches ONLY filter B → exactly one
++        // more delivery; intent MFCAT + undeclared category matches NOTHING.
++        int mfBefore = MultiFilter.deliveries;
++        try {
++            Intent ci = new Intent("com.probe.c7runtime.MFCAT");
++            ci.addCategory("com.probe.c7runtime.MFCC");
++            sendOrderedBroadcast(ci, null);
++            int afterCat = MultiFilter.deliveries;
++            Intent xi = new Intent("com.probe.c7runtime.MFCAT");
++            xi.addCategory("com.probe.c7runtime.OTHERCAT");
++            sendOrderedBroadcast(xi, null);
++            int afterOther = MultiFilter.deliveries;
++            if (mfBefore >= 2 && afterCat == mfBefore + 1
++                    && afterOther == afterCat)
++                ok("ORD-09", "category filter law: +" + (afterCat - mfBefore)
++                        + " via filter B, +0 for undeclared category");
++            else
++                fail("ORD-09", "before=" + mfBefore + " afterCat=" + afterCat
++                        + " afterOther=" + afterOther);
++        } catch (Throwable t) { fail("ORD-09", t); }
++
++        // ══ ORD-10: dynamic registration-permission law ══
++        // DynPerm is registered WITH broadcastPermission DYNPERM (not held
++        // by this app) → its send is DENIED; DynNoPerm (same action, no
++        // permission) is the delivered CONTROL.
++        DynPerm.deliveries = 0; DynNoPerm.deliveries = 0;
++        try {
++            DynPerm dp = new DynPerm();
++            DynNoPerm dnp = new DynNoPerm();
++            registerReceiver(dp, new IntentFilter("com.probe.c7runtime.DYNP"),
++                    "com.probe.c7runtime.DYNPERM", null);
++            registerReceiver(dnp, new IntentFilter("com.probe.c7runtime.DYNP"));
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.DYNP"), null);
++            unregisterReceiver(dp);
++            unregisterReceiver(dnp);
++            if (DynPerm.deliveries == 0 && DynNoPerm.deliveries == 1)
++                ok("ORD-10", "registration permission: denied without it,"
++                        + " control delivered (perm=0, ctrl=1)");
++            else
++                fail("ORD-10", "perm=" + DynPerm.deliveries + " ctrl="
++                        + DynNoPerm.deliveries);
++        } catch (Throwable t) { fail("ORD-10", t); }
++
++        // ══ STK-01: sticky cache + initial catch-up delivery ══
++        StickyCatch.caught = 0; StickyCatch.initial = false;
++        StickyCatch.val = "";
++        try {
++            Intent s1 = new Intent("com.probe.c7runtime.STK");
++            s1.putExtra("v", "v1");
++            sendStickyBroadcast(s1);
++            StickyCatch sc = new StickyCatch();
++            registerReceiver(sc, new IntentFilter("com.probe.c7runtime.STK"));
++            unregisterReceiver(sc);
++            if (StickyCatch.caught == 1 && StickyCatch.initial
++                    && "v1".equals(StickyCatch.val))
++                ok("STK-01", "sticky catch-up: caught=1 initial=true v=v1");
++            else
++                fail("STK-01", "caught=" + StickyCatch.caught + " initial="
++                        + StickyCatch.initial + " val=" + StickyCatch.val);
++        } catch (Throwable t) { fail("STK-01", t); }
++
++        // ══ STK-02: removeStickyBroadcast ends the catch-up ══
++        StickyCatch2.caught = 0;
++        try {
++            removeStickyBroadcast(new Intent("com.probe.c7runtime.STK"));
++            StickyCatch2 sc2 = new StickyCatch2();
++            registerReceiver(sc2, new IntentFilter("com.probe.c7runtime.STK"));
++            unregisterReceiver(sc2);
++            if (StickyCatch2.caught == 0)
++                ok("STK-02", "removeStickyBroadcast: late register gets 0");
++            else
++                fail("STK-02", "caught=" + StickyCatch2.caught);
++        } catch (Throwable t) { fail("STK-02", t); }
++
++        // ══ STK-04: re-cached sticky (fresh send after removal) ══
++        StickyCatch3.caught = 0; StickyCatch3.val = "";
++        try {
++            Intent s2 = new Intent("com.probe.c7runtime.STK");
++            s2.putExtra("v", "v2");
++            sendStickyBroadcast(s2);
++            StickyCatch3 sc3 = new StickyCatch3();
++            registerReceiver(sc3, new IntentFilter("com.probe.c7runtime.STK"));
++            unregisterReceiver(sc3);
++            if (StickyCatch3.caught == 1 && "v2".equals(StickyCatch3.val))
++                ok("STK-04", "re-cache: fresh sticky v2 delivered on register");
++            else
++                fail("STK-04", "caught=" + StickyCatch3.caught + " val="
++                        + StickyCatch3.val);
++        } catch (Throwable t) { fail("STK-04", t); }
++
++        // ══ EXP-01..03: exported law observations (mode-dependent) ══
++        // The sender identity is chosen by the RUN MODE (no env → the
++        // running package; MINIANDROID_C7_SENDER_PKG → a modeled foreign
++        // sender; MINIANDROID_C7_SENDER_PERMS → its held permissions).
++        // Expected: R0 (same-pkg) all delivered; R1 (foreign, no perms)
++        // EXP1/EXP2 denied, EXP3 delivered; R2 (foreign + PERMISSION)
++        // EXP2 delivered too. Recorded as OBS rows — the harness asserts
++        // per mode.
++        ExpLocked.delivered = false; ExpOpen.delivered = false;
++        ExpDefault.delivered = false;
++        try {
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.EXP1"), null);
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.EXP2"), null);
++            sendOrderedBroadcast(new Intent("com.probe.c7runtime.EXP3"), null);
++            RES.append("C7|EXP-01|OBS|ExpLocked exported=false delivered=")
++               .append(ExpLocked.delivered).append("\n");
++            RES.append("C7|EXP-02|OBS|ExpOpen exported=true+perm delivered=")
++               .append(ExpOpen.delivered).append("\n");
++            RES.append("C7|EXP-03|OBS|ExpDefault no-attr+filter delivered=")
++               .append(ExpDefault.delivered).append("\n");
++        } catch (Throwable t) { fail("EXP-OBS", t); }
++    }
++
++    @Override protected void onDestroy() { super.onDestroy(); }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MultiFilter.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MultiFilter.java
+new file mode 100644
+index 00000000..e301a593
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/MultiFilter.java
+@@ -0,0 +1,20 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-2 per-filter law: TWO filters over the SAME action MF at
++ *  priorities 60 and 15 — AOSP resolves per (receiver, filter) pair, so
++ *  this receiver is delivered TWICE per MF broadcast (once per matching
++ *  filter), interleaved at its own filter priorities. Filter B also
++ *  declares MFCAT + category MFCC. */
++public class MultiFilter extends BroadcastReceiver {
++    public static int deliveries = 0;
++    @Override public void onReceive(Context context, Intent intent) {
++        deliveries++;
++        if (deliveries == 1) Order.append("MFA");
++        else if (deliveries == 2) Order.append("MFB");
++        else Order.append("MFC");
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/Order.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/Order.java
+new file mode 100644
+index 00000000..74a6a6de
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/Order.java
+@@ -0,0 +1,17 @@
++package com.probe.c7runtime;
++
++/** CODER7 probe: shared delivery-order recorder.
++ *  WAVE-2 NOTE: reset/append were switched from StringBuilder to String —
++ *  the runtime does not implement StringBuilder.setLength (a silent no-op:
++ *  appends worked, truncation never happened, so the recorder accumulated
++ *  across ops). String.concat/isEmpty are implemented and side-effect
++ *  free. The StringBuilder.setLength gap is recorded as an OBSERVED
++ *  core-lib frontier in the issue (not this domain's fix). */
++public class Order {
++    public static String seq = "";
++    public static void append(String who) {
++        if (seq.isEmpty()) seq = who;
++        else seq = seq.concat(",").concat(who);
++    }
++    public static void reset() { seq = ""; }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RAbort.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RAbort.java
+new file mode 100644
+index 00000000..4b13eb3f
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RAbort.java
+@@ -0,0 +1,18 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 ORDERED-BCAST: priority-30 aborter — abortBroadcast() must stop
++ *  every lower-priority pending receiver of this ordered broadcast while
++ *  the final resultReceiver still runs (AOSP abortBroadcast doc). */
++public class RAbort extends BroadcastReceiver {
++    public static boolean called = false;
++    @Override public void onReceive(Context context, Intent intent) {
++        called = true;
++        Order.append("Abort");
++        setResultData("aborted-here");
++        abortBroadcast();
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RHigh.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RHigh.java
+new file mode 100644
+index 00000000..f47bf33b
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RHigh.java
+@@ -0,0 +1,18 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 ORDERED-BCAST: priority-50 manifest receiver — first in the
++ *  ORDER chain. Asserts the AOSP seed (initial code == RESULT_OK == -1)
++ *  and seeds the result for the next receiver. */
++public class RHigh extends BroadcastReceiver {
++    public static boolean sawInitialResultOk = false;
++    @Override public void onReceive(Context context, Intent intent) {
++        Order.append("High");
++        sawInitialResultOk = (getResultCode() == -1);
++        setResultCode(1);
++        setResultData("r1");
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RLow.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RLow.java
+new file mode 100644
+index 00000000..f007da2b
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RLow.java
+@@ -0,0 +1,18 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 ORDERED-BCAST: priority-10 manifest receiver — the LAST in the
++ *  ORDER chain; on the ABORT action it must be SKIPPED (abort stops
++ *  lower-priority pending receivers) unless the send was non-ordered
++ *  (AOSP checkSynchronousHint: abort on a non-ordered broadcast is a
++ *  log-only no-op, so delivery continues). */
++public class RLow extends BroadcastReceiver {
++    public static boolean called = false;
++    @Override public void onReceive(Context context, Intent intent) {
++        called = true;
++        Order.append("Low");
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RMid.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RMid.java
+new file mode 100644
+index 00000000..df63a1a7
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RMid.java
+@@ -0,0 +1,21 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 ORDERED-BCAST: priority-20 manifest receiver — reads the result
++ *  the previous receivers carried (AOSP result propagation) and records
++ *  the verdict for the probe. */
++public class RMid extends BroadcastReceiver {
++    public static boolean chainSeen = false;
++    public static String detail = "";
++    @Override public void onReceive(Context context, Intent intent) {
++        Order.append("Mid");
++        int code = getResultCode();
++        String data = getResultData();
++        int k = getResultExtras(true).getInt("k", -1);
++        chainSeen = (code == 2 && k == 7);
++        detail = "code=" + code + " data=" + data + " k=" + k;
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RPerm.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RPerm.java
+new file mode 100644
+index 00000000..9950e7e8
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RPerm.java
+@@ -0,0 +1,14 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7: receiver-permission law — android:permission held by the
++ *  sender (declared in uses-permission) → delivery allowed. */
++public class RPerm extends BroadcastReceiver {
++    public static boolean delivered = false;
++    @Override public void onReceive(Context context, Intent intent) {
++        delivered = true;
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RPermMissing.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RPermMissing.java
+new file mode 100644
+index 00000000..351cfd07
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/RPermMissing.java
+@@ -0,0 +1,14 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7: receiver-permission law — the sender does NOT hold
++ *  com.probe.c7runtime.MISSING → NO delivery (denied, loud trace). */
++public class RPermMissing extends BroadcastReceiver {
++    public static boolean delivered = false;
++    @Override public void onReceive(Context context, Intent intent) {
++        delivered = true;
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/StickyCatch.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/StickyCatch.java
+new file mode 100644
+index 00000000..80a38b3f
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/StickyCatch.java
+@@ -0,0 +1,20 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++
++/** CODER7 WAVE-2 sticky catch-up law: registered AFTER a sticky broadcast
++ *  — must be delivered the cached sticky IMMEDIATELY with
++ *  isInitialStickyBroadcast() == true. */
++public class StickyCatch extends BroadcastReceiver {
++    public static int caught = 0;
++    public static boolean initial = false;
++    public static String val = "";
++    @Override public void onReceive(Context context, Intent intent) {
++        caught++;
++        initial = isInitialStickyBroadcast();
++        val = intent.getStringExtra("v");
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/StickyCatch2.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/StickyCatch2.java
+new file mode 100644
+index 00000000..0965de87
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/StickyCatch2.java
+@@ -0,0 +1,14 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-2 sticky catch-up: fresh receiver AFTER
++ *  removeStickyBroadcast — must receive NOTHING. */
++public class StickyCatch2 extends BroadcastReceiver {
++    public static int caught = 0;
++    @Override public void onReceive(Context context, Intent intent) {
++        caught++;
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/StickyCatch3.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/StickyCatch3.java
+new file mode 100644
+index 00000000..d152a121
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/StickyCatch3.java
+@@ -0,0 +1,16 @@
++package com.probe.c7runtime;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-2 sticky law: re-cached sticky (after removal, a fresh
++ *  send) — the fresh receiver gets the NEW value (last-write-wins). */
++public class StickyCatch3 extends BroadcastReceiver {
++    public static int caught = 0;
++    public static String val = "";
++    @Override public void onReceive(Context context, Intent intent) {
++        caught++;
++        val = intent.getStringExtra("v");
++    }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcA.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcA.java
+new file mode 100644
+index 00000000..30c92b52
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcA.java
+@@ -0,0 +1,29 @@
++package com.probe.c7runtime;
++
++import android.app.Service;
++import android.content.Intent;
++import android.os.IBinder;
++
++/** CODER7 SVC: stopSelfResult(startId) law — ActiveServices
++ *  stopServiceTokenLocked answers false when startId != lastStartId (the
++ *  service is NOT stopped); true only for the LAST startId. The probe
++ *  drives the calls from inside onStartCommand (AOSP: stopSelfResult is a
++ *  Service API — callable on the service itself). */
++public class SvcA extends Service {
++    public static int creates = 0, starts = 0, destroys = 0;
++    public static int lastStartId = -1;
++    public static boolean lastStopAnswer = false;
++    @Override public void onCreate() { super.onCreate(); creates++; }
++    @Override public int onStartCommand(Intent i, int f, int startId) {
++        starts++; lastStartId = startId;
++        if (i != null && "com.probe.c7runtime.STOP_OLD".equals(i.getAction())) {
++            lastStopAnswer = stopSelfResult(1);  // an OLD startId → false
++        } else if (i != null
++                && "com.probe.c7runtime.STOP_LAST".equals(i.getAction())) {
++            lastStopAnswer = stopSelfResult(startId);  // LAST startId → true
++        }
++        return START_STICKY;
++    }
++    @Override public IBinder onBind(Intent i) { return null; }
++    @Override public void onDestroy() { super.onDestroy(); destroys++; }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcB.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcB.java
+new file mode 100644
+index 00000000..75196c9d
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcB.java
+@@ -0,0 +1,14 @@
++package com.probe.c7runtime;
++
++import android.app.Service;
++import android.content.Intent;
++import android.os.IBinder;
++
++/** CODER7 SVC: onUnbind DEFAULT law — default onUnbind returns false →
++ *  the purely-bound service is destroyed when the last binding goes. */
++public class SvcB extends Service {
++    public static int binds = 0, unbinds = 0, destroys = 0;
++    @Override public IBinder onBind(Intent i) { binds++; return null; }
++    @Override public boolean onUnbind(Intent i) { unbinds++; return false; }
++    @Override public void onDestroy() { super.onDestroy(); destroys++; }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcC.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcC.java
+new file mode 100644
+index 00000000..1598c7ed
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcC.java
+@@ -0,0 +1,22 @@
++package com.probe.c7runtime;
++
++import android.app.Service;
++import android.content.Intent;
++import android.os.IBinder;
++
++/** CODER7 SVC: onUnbind TRUE law — onUnbind returns true → the instance
++ *  stays (no onDestroy) and onRebind fires on the next bind; the RETAINED
++ *  binder is re-delivered to the new connection (AOSP ActiveServices
++ *  IntentBindRecord retention). */
++public class SvcC extends Service {
++    public static int binds = 0, rebinds = 0, unbinds = 0, destroys = 0;
++    public static Object lastBinder = null;
++    @Override public IBinder onBind(Intent i) {
++        binds++;
++        lastBinder = new Object();
++        return (IBinder) lastBinder;
++    }
++    @Override public boolean onUnbind(Intent i) { unbinds++; return true; }
++    @Override public void onRebind(Intent i) { rebinds++; }
++    @Override public void onDestroy() { super.onDestroy(); destroys++; }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcD.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcD.java
+new file mode 100644
+index 00000000..d6fac94c
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcD.java
+@@ -0,0 +1,12 @@
++package com.probe.c7runtime;
++
++import android.app.Service;
++import android.content.Intent;
++import android.os.IBinder;
++
++/** CODER7 SVC: unbind targeting — stays alive when only SvcE unbinds. */
++public class SvcD extends Service {
++    public static int destroys = 0;
++    @Override public IBinder onBind(Intent i) { return null; }
++    @Override public void onDestroy() { super.onDestroy(); destroys++; }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcE.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcE.java
+new file mode 100644
+index 00000000..665fdc47
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcE.java
+@@ -0,0 +1,12 @@
++package com.probe.c7runtime;
++
++import android.app.Service;
++import android.content.Intent;
++import android.os.IBinder;
++
++/** CODER7 SVC: unbind targeting — destroyed by unbindService(connE). */
++public class SvcE extends Service {
++    public static int destroys = 0;
++    @Override public IBinder onBind(Intent i) { return null; }
++    @Override public void onDestroy() { super.onDestroy(); destroys++; }
++}
+diff --git a/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcF.java b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcF.java
+new file mode 100644
+index 00000000..a7cb2675
+--- /dev/null
++++ b/fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/SvcF.java
+@@ -0,0 +1,18 @@
++package com.probe.c7runtime;
++
++import android.app.Service;
++import android.content.Intent;
++import android.os.IBinder;
++
++/** CODER7 WAVE-2 bring-down law: a STARTED service with a LIVE binding is
++ *  torn down by stopService — AOSP ActiveServices bringDownServiceLocked
++ *  delivers onUnbind(bindingIntent) BEFORE onDestroy. The wave-1/wave-2
++ *  probe asserts unbinds==1 AND destroys==1; the SVC-UNBIND/SVC-STOP
++ *  FileIoTrace rows prove the ORDER. */
++public class SvcF extends Service {
++    public static int creates = 0, binds = 0, unbinds = 0, destroys = 0;
++    @Override public void onCreate() { super.onCreate(); creates++; }
++    @Override public IBinder onBind(Intent i) { binds++; return null; }
++    @Override public boolean onUnbind(Intent i) { unbinds++; return false; }
++    @Override public void onDestroy() { super.onDestroy(); destroys++; }
++}

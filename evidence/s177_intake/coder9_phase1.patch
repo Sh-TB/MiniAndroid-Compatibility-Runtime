@@ -1,0 +1,581 @@
+diff --git a/miniandroid/src/apk/apk_parser.cpp b/miniandroid/src/apk/apk_parser.cpp
+index d740269d..ea4b8f68 100755
+--- a/miniandroid/src/apk/apk_parser.cpp
++++ b/miniandroid/src/apk/apk_parser.cpp
+@@ -392,6 +392,41 @@ bool ApkParser::parse_central_directory(const std::vector<uint8_t>& data, size_t
+         
+         entry.is_directory = !entry.name.empty() && entry.name.back() == '/';
+         
++        // ── C9-2 (CODER 9) — resolve the entry DATA offset from the LOCAL
++        // file header. The central directory records the LFH offset; the
++        // AssetFileDescriptor contract (AssetManager.openFd) needs the
++        // offset of the DATA that follows it. LFH name/extra lengths are
++        // read from the LFH ITSELF — APPNOTE.TXT §4.4.11 allows LFH extra
++        // fields to differ from CDE extra fields, so the CDE-derived
++        // arithmetic would be wrong for such archives. A mismatching or
++        // out-of-bounds LFH leaves has_data_offset=false (honest miss);
++        // extraction (extract_entry_using_central_dir_) revalidates
++        // independently, so this never weakens the existing byte laws.
++        do {
++            const size_t lfh_off = entry.offset;
++            if (lfh_off + sizeof(ZipLocalFileHeader) > data.size()) break;
++            if (lfh_off + sizeof(ZipLocalFileHeader) < lfh_off) break;  // overflow guard
++            ZipLocalFileHeader lfh;
++            std::memcpy(&lfh, &data[lfh_off], sizeof(lfh));
++            if (lfh.signature != ZIP_LOCAL_FILE_HEADER_SIG) {
++                log("C9-2: LFH signature mismatch for entry '" + entry.name +
++                    "' at offset " + std::to_string(lfh_off) +
++                    " — data_offset unresolved");
++                break;
++            }
++            const uint64_t data_off = (uint64_t)lfh_off + sizeof(ZipLocalFileHeader) +
++                                      lfh.file_name_length + lfh.extra_field_length;
++            if (data_off > data.size() ||
++                data_off + entry.compressed_size > data.size()) {
++                log("C9-2: data offset " + std::to_string(data_off) +
++                    " out of bounds for entry '" + entry.name +
++                    "' — data_offset unresolved");
++                break;
++            }
++            entry.data_offset = data_off;
++            entry.has_data_offset = true;
++        } while (false);
++        
+         entries.push_back(entry);
+         
+         // Move to next entry
+diff --git a/miniandroid/src/apk/apk_parser.h b/miniandroid/src/apk/apk_parser.h
+index 938aedae..f6bfd596 100755
+--- a/miniandroid/src/apk/apk_parser.h
++++ b/miniandroid/src/apk/apk_parser.h
+@@ -158,6 +158,17 @@ struct ZipEntry {
+     uint32_t crc32 = 0;
+     uint32_t offset = 0;  // Offset to local file header
+     bool is_directory = false;
++    // ── C9-2 (CODER 9) — AssetFileDescriptor data-offset law ────────────
++    // AOSP AssetManager.openFd (AssetManager2.java → Asset, APPNOTE.TXT
++    // §4.3.7): an uncompressed entry is addressable at the offset of its
++    // DATA, not of its local file header. data_offset = LFH offset + 30 +
++    // LFH file_name_length + LFH extra_field_length — resolved from the
++    // LOCAL header because LFH and CDE extra fields may legally differ
++    // (APPNOTE.TXT §4.4.11). has_data_offset=false means the LFH could not
++    // be validated (hostile/truncated archive) and consumers must not
++    // pretend the offset is the data (honest-miss law).
++    uint64_t data_offset = 0;
++    bool has_data_offset = false;
+ };
+ 
+ // Callback for progress reporting
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 8c622c96..91be5110 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -46450,16 +46450,37 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             fdv2.object_id = fdobj;
+             fdv2.class_desc = "Ljava/io/FileDescriptor;";
+             heap_.set_object_field(afd, "descriptor", fdv2);
+-            heap_.set_object_field(afd, "startOffset",
+-                                   DalvikValue::make_int(static_cast<int32_t>(hit->offset)));
++            // C9-2 (CODER 9): AOSP AssetFileDescriptor.startOffset = entry
++            // DATA offset (AssetManager2.openFd → Asset), NOT the local file
++            // header offset. ZipEntry.data_offset is resolved from the LFH
++            // itself (APPNOTE.TXT §4.4.11 — LFH/CDE extra fields may differ);
++            // has_data_offset=false (hostile archive) falls back LOUDLY to
++            // the legacy LFH offset instead of silently pretending.
++            {
++                const uint64_t afd_off = hit->has_data_offset
++                                             ? hit->data_offset
++                                             : (uint64_t)hit->offset;
++                if (!hit->has_data_offset)
++                    std::cerr << "[RAW-FD] C9-2 WARNING: data_offset unresolved for '"
++                              << hit->name << "' — legacy LFH offset served"
++                              << std::endl;
++                heap_.set_object_field(afd, "startOffset",
++                                       DalvikValue::make_int(static_cast<int32_t>(afd_off)));
++            }
+             heap_.set_object_field(afd, "length",
+                                    DalvikValue::make_int(static_cast<int32_t>(hit->uncompressed_size)));
+             heap_.set_object_field(afd, "__entry__",
+                                    DalvikValue::make_string(hit->name, 0));
+-            std::cerr << "[RAW-FD] openRawResourceFd resid=0x" << std::hex
+-                      << resid << std::dec << " → " << hit->name
+-                      << " fd=" << host_fd << " off=" << hit->offset
+-                      << " len=" << hit->uncompressed_size << std::endl;
++            {
++                const uint64_t afd_off = hit->has_data_offset
++                                             ? hit->data_offset
++                                             : (uint64_t)hit->offset;
++                std::cerr << "[RAW-FD] openRawResourceFd resid=0x" << std::hex
++                          << resid << std::dec << " → " << hit->name
++                          << " fd=" << host_fd << " off=" << afd_off
++                          << " (lfh=" << hit->offset << ")"
++                          << " len=" << hit->uncompressed_size << std::endl;
++            }
+             DalvikValue av2;
+             av2.type = DalvikType::OBJECT_REF;
+             av2.object_id = afd;
+@@ -57365,6 +57386,59 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                     }
+                 }
+             }
++        // ── C9-3 (CODER 9) — VectorDrawable intrinsic law ──────────────────
++        // AOSP VectorDrawable.java inflate: the drawable answers
++        // getIntrinsicWidth/Height from its android:width / android:height
++        // dimensions evaluated at the target density
++        // (intrinsic = (int)(dim_px * targetDensity + 0.5f) with dim_px the
++        // dimension in px at the reference density — here ONE evaluation at
++        // the device density: applyDimension law, density/160 for dp/sp).
++        // The XML-vector shell previously kept intrinsic -1 (the raster
++        // branch above only filled bitmap-backed drawables), so every
++        // wrap_content/Glide-style consumer saw "no intrinsic size".
++        else if (ext == "xml" || ext == "axml") {
++            const auto& dbr = framework::BitmapShadow::drawable_bytes_resolver();
++            std::vector<uint8_t> vbytes;
++            std::string vpath;
++            uint16_t vdensity = 0;
++            if (dbr && dbr((uint32_t)resid, vbytes, vpath, vdensity) &&
++                !vbytes.empty()) {
++                resources::AxmlParser ax;
++                if (ax.parse(vbytes) && ax.valid() &&
++                    ax.root().name == "vector") {
++                    auto dim_px = [](const resources::AxmlAttribute* a,
++                                     int density) -> float {
++                        if (!a || !a->value.is_dimension()) return -1.f;
++                        const float v = a->value.dim_value;
++                        switch (a->value.dim_unit) {  // COMPLEX_UNIT_* law
++                            case 0: return v;                       // PX
++                            case 1: case 2: return v * density / 160.f;  // DP/SP
++                            case 3: return v * density / 72.f;      // PT
++                            case 4: return v * density;             // IN
++                            case 5: return v * density / 25.4f;     // MM
++                            default: return v * density / 160.f;
++                        }
++                    };
++                    const int dev_density =
++                        (int)resources::device_config().density;
++                    const float wpx = dim_px(ax.root().attr("width"), dev_density);
++                    const float hpx = dim_px(ax.root().attr("height"), dev_density);
++                    if (wpx > 0) {
++                        heap_.set_object_field(
++                            dw, "__dr_width__",
++                            DalvikValue::make_int((int32_t)(wpx + 0.5f)));
++                    }
++                    if (hpx > 0) {
++                        heap_.set_object_field(
++                            dw, "__dr_height__",
++                            DalvikValue::make_int((int32_t)(hpx + 0.5f)));
++                    }
++                    std::cerr << "[RES] C9-3 vector intrinsic " << wpx << "x"
++                              << hpx << " (density " << dev_density
++                              << ") for " << path << std::endl;
++                }
++            }
++        }
+         }
+         result = DalvikValue::make_object(dw, drawable_class);
+         return true;
+@@ -65949,8 +66023,19 @@ measure_cm_done:;
+                                DalvikValue::make_int(host_fd));
+         heap_.set_object_field(fdobj, "host_path",
+                                DalvikValue::make_string(apk_path_, 0));
+-        // AOSP AssetFileDescriptor startOffset = local-header data offset;
++        // C9-2 (CODER 9): AOSP AssetFileDescriptor.startOffset = the entry's
++        // DATA offset inside base.apk (AssetManager2.openFd → Asset),
++        // NOT the local file header offset. ZipEntry.data_offset is resolved
++        // from the LFH itself (APPNOTE.TXT §4.4.11 — LFH/CDE extra fields may
++        // differ); has_data_offset=false (hostile archive) falls back LOUDLY
++        // to the legacy LFH offset instead of silently pretending.
+         // length = uncompressed size (stored entry: == compressed size).
++        const uint64_t afd_data_off = hit->has_data_offset
++                                          ? hit->data_offset
++                                          : (uint64_t)hit->offset;
++        if (!hit->has_data_offset)
++            std::cerr << "[ASSET-FD] C9-2 WARNING: data_offset unresolved for '"
++                      << hit->name << "' — legacy LFH offset served" << std::endl;
+         uint32_t afd = heap_.allocate("Landroid/content/res/AssetFileDescriptor;", pc_, 0);
+         DalvikValue fdv;
+         fdv.type = DalvikType::OBJECT_REF;
+@@ -65959,7 +66044,7 @@ measure_cm_done:;
+         heap_.set_object_field(afd, "descriptor", fdv);
+         heap_.set_object_field(
+             afd, "startOffset",
+-            DalvikValue::make_int(static_cast<int32_t>(hit->offset)));
++            DalvikValue::make_int(static_cast<int32_t>(afd_data_off)));
+         heap_.set_object_field(
+             afd, "length",
+             DalvikValue::make_int(static_cast<int32_t>(hit->uncompressed_size)));
+@@ -65978,7 +66063,8 @@ measure_cm_done:;
+         av.class_desc = "Landroid/content/res/AssetFileDescriptor;";
+         result = av;
+         std::cerr << "[ASSET-FD] openFd assets/" << asset_name
+-                  << " fd=" << host_fd << " off=" << hit->offset
++                  << " fd=" << host_fd << " off=" << afd_data_off
++                  << " (lfh=" << hit->offset << ")"
+                   << " len=" << hit->uncompressed_size << std::endl;
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         return true;
+diff --git a/miniandroid/src/framework/bitmap_shadow.cpp b/miniandroid/src/framework/bitmap_shadow.cpp
+index 18c90bd2..5b625f0a 100644
+--- a/miniandroid/src/framework/bitmap_shadow.cpp
++++ b/miniandroid/src/framework/bitmap_shadow.cpp
+@@ -146,12 +146,86 @@ static std::string f240_mime_of(const std::vector<uint8_t>& b) {
+     return "";
+ }
+ 
++// ─────────────────────────────────────────────────────────────────────────
++// C9-1 (CODER 9) — AOSP BitmapFactory.Options density law (pure, unit-
++// tested; see bitmap_shadow.h for the source-backed law chain).
++// One deviation from AOSP, recorded honestly: degenerate 0-sized results
++// clamp to 1 instead of failing the decode (AOSP native can answer null for
++// a zero-scaled bitmap; a compatibility runtime serves the 1-pixel image —
++// same spirit as the g04 draw-layer max(1, …) guard).
++// ─────────────────────────────────────────────────────────────────────────
++BitmapFactoryDensityResult bitmap_factory_density_law(
++        const BitmapFactoryDensityInput& in) {
++    BitmapFactoryDensityResult r;
++    if (in.raw_width <= 0 || in.raw_height <= 0) return r;  // valid=false
++    constexpr int32_t kDensityNone = 0xFFFF;   // Bitmap.DENSITY_NONE
++
++    // 1) inSampleSize law: (dim + s - 1) / s, s clamped to >= 1.
++    const int32_t s = in.in_sample_size < 1 ? 1 : in.in_sample_size;
++    r.sampled_width = (in.raw_width + s - 1) / s;
++    r.sampled_height = (in.raw_height + s - 1) / s;
++
++    // 2) density-scale law (BitmapFactory.cpp native): applies iff
++    //    inScaled && inDensity != 0 && inTargetDensity != 0 &&
++    //    inDensity != DENSITY_NONE && inDensity != inTargetDensity.
++    const bool can_scale =
++        in.in_scaled &&
++        in.in_density != 0 &&
++        in.in_density != kDensityNone &&
++        in.in_target_density != 0 &&
++        in.in_density != in.in_target_density;
++    if (can_scale) {
++        const float scale =
++            (float)in.in_target_density / (float)in.in_density;
++        // AOSP: (int)(dim * scale + 0.5f) — round-half-up for positive dims.
++        auto round_dim = [scale](int32_t d) -> int32_t {
++            const float v = (float)d * scale + 0.5f;
++            return (int32_t)std::floor(v);
++        };
++        r.width = std::max(1, round_dim(r.sampled_width));
++        r.height = std::max(1, round_dim(r.sampled_height));
++        r.density_scaled = true;
++        // setDensityFromOptions: the SCALED bitmap is MARKED with the
++        // target density (Bitmap.getDensity answers it).
++        r.bitmap_density = in.in_target_density;
++    } else {
++        r.width = r.sampled_width;
++        r.height = r.sampled_height;
++        r.density_scaled = false;
++        // setDensityFromOptions: unscaled → the bitmap carries inDensity
++        // (0 = no setDensity call at all — stays the Bitmap default).
++        r.bitmap_density = in.in_density;
++    }
++    r.valid = true;
++    return r;
++}
++
+ // Decode once, serve the AOSP Options contract, and (optionally) register.
+ // Returns the bitmap object id (0 = null result: failed decode OR the
+ // bounds-only pass, which never allocates per AOSP).
++//
++// ── C9-1 (CODER 9) — full AOSP BitmapFactory.Options law ────────────────
++// resource_density: the SELECTED resource entry's config density, or -1 for
++// non-resource callers (decodeStream/decodeFile/decodeByteArray). AOSP
++// BitmapFactory.decodeResource ALWAYS creates its own Options and runs
++// decodeResourceStream — the seed law applies even when the app passed no
++// Options object:
++//   value.density == DENSITY_DEFAULT (0)    → inDensity  = 160
++//   value.density == DENSITY_ANY    (0xFFFE) → inDensity  = DENSITY_NONE
++//   else                                    → inDensity  = value.density
++//   opts.inTargetDensity == 0               → inTargetDensity = display dpi
++// (both seeds are written back onto the app-visible Options object). Non-
++// resource callers never seed — the app sets both densities explicitly.
++// The density arithmetic lives in the pure, unit-tested
++// bitmap_factory_density_law() (bitmap_shadow.h) — this wrapper only reads
++// opts, seeds, applies the resample chain, and records provenance.
++// PROVENANCE LAW: `desc` stays the PURE APK entry path (route_bitmap_object
++// re-uses it as a zip path); sample/density fingerprints go to the
++// StoredBitmap provenance fields, never into the path string.
+ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
+                                          const std::string& desc,
+-                                         HeapAllocator* heap, uint32_t opts_id) {
++                                         HeapAllocator* heap, uint32_t opts_id,
++                                         int32_t resource_density = -1) {
+     if (!heap) return 0;
+     renderer::DecodedImage decoded;
+     if (!renderer::decode_image_bytes(bytes, &decoded,
+@@ -163,50 +237,128 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
+         // write here; the caller answers null.
+         return 0;
+     }
++    const std::string mime = f240_mime_of(bytes);
+     if (opts_id != 0) {
+-        heap->set_object_int_field(opts_id, "outWidth", decoded.width);
+-        heap->set_object_int_field(opts_id, "outHeight", decoded.height);
+-        const std::string mime = f240_mime_of(bytes);
+-        if (!mime.empty()) heap->set_object_string_field(opts_id, "outMimeType", mime);
+-    }
+-    // Bounds-only pass: header consumed, NO bitmap allocation (AOSP law —
+-    // decodeStream with inJustDecodeBounds answers null).
+-    if (opts_id != 0) {
++        // Bounds-only pass: header consumed, NO bitmap allocation (AOSP law —
++        // decodeStream with inJustDecodeBounds answers null). out* = the
++        // RAW encoded dims (AOSP bounds pass never scales).
+         int32_t bounds_only = 0;
+         heap->get_object_int_field(opts_id, "inJustDecodeBounds", bounds_only);
+         if (bounds_only) {
++            heap->set_object_int_field(opts_id, "outWidth", decoded.width);
++            heap->set_object_int_field(opts_id, "outHeight", decoded.height);
++            if (!mime.empty()) heap->set_object_string_field(opts_id, "outMimeType", mime);
+             std::cerr << "[BITMAP-FACTORY] bounds-only " << desc << " -> "
+                       << decoded.width << "x" << decoded.height
+                       << " (null per AOSP inJustDecodeBounds)" << std::endl;
+             return 0;
+         }
+     }
+-    // Full decode — honor inSampleSize (AOSP: (dim + s - 1) / s).
+-    int32_t sample = 1;
+-    if (opts_id != 0) heap->get_object_int_field(opts_id, "inSampleSize", sample);
+-    if (sample < 1) sample = 1;
+-    if (sample > 1) {
+-        const int dw = (decoded.width + sample - 1) / sample;
+-        const int dh = (decoded.height + sample - 1) / sample;
+-        StoredBitmap full;
+-        full.width = decoded.width;
+-        full.height = decoded.height;
+-        full.rgba = std::move(decoded.rgba);
+-        full.has_pixels = true;
+-        full.source_desc = desc;
+-        std::vector<uint8_t> out;
+-        resample_nearest(full, dw, dh, out);
+-        const uint32_t obj = heap->allocate("Landroid/graphics/Bitmap;");
+-        BitmapStore::instance().store(obj, dw, dh, std::move(out),
+-                                      desc + "#sample" + std::to_string(sample));
+-        std::cerr << "[BITMAP-FACTORY] decoded " << desc << " -> Bitmap obj="
+-                  << obj << " (" << dw << "x" << dh << ", inSampleSize="
+-                  << sample << ")" << std::endl;
+-        return obj;
++
++    // ── AOSP decodeResourceStream seeding (decodeResource path only) ────
++    int32_t in_density = 0, in_target_density = 0, in_sample = 1;
++    int32_t in_scaled = 1;  // AOSP Java field default: inScaled = true
++    bool in_scaled_present = false;
++    if (resource_density >= 0) {
++        // decodeResourceStream law — TypedValue.density → opts.inDensity.
++        constexpr int32_t kDensityAny = 0xFFFE;      // TypedValue.DENSITY_ANY
++        constexpr int32_t kDensityNone = 0xFFFF;     // Bitmap.DENSITY_NONE
++        constexpr int32_t kDisplayDefault = 160;     // DisplayMetrics.DENSITY_DEFAULT
++        if (resource_density == kDensityAny) in_density = kDensityNone;
++        else if (resource_density == 0) in_density = kDisplayDefault;
++        else in_density = resource_density;
++        in_target_density = (int32_t)resources::device_config().density;
++    }
++    if (opts_id != 0) {
++        int32_t o_density = 0, o_target = 0;
++        if (heap->get_object_int_field(opts_id, "inDensity", o_density) &&
++            o_density != 0) {
++            in_density = o_density;   // app-set value wins (AOSP seeds only when 0)
++        }
++        if (heap->get_object_int_field(opts_id, "inTargetDensity", o_target) &&
++            o_target != 0) {
++            in_target_density = o_target;
++        }
++        in_scaled_present = heap->get_object_int_field(opts_id, "inScaled", in_scaled);
++        heap->get_object_int_field(opts_id, "inSampleSize", in_sample);
++        // AOSP decodeResourceStream MUTATES the app's Options (the seeded
++        // values are app-visible afterwards).
++        if (in_density != 0)
++            heap->set_object_int_field(opts_id, "inDensity", in_density);
++        if (in_target_density != 0)
++            heap->set_object_int_field(opts_id, "inTargetDensity", in_target_density);
++    }
++    if (in_sample < 1) in_sample = 1;
++
++    // ── Pure AOSP law: sample → density scale → final dims + marked density ─
++    BitmapFactoryDensityInput law_in;
++    law_in.raw_width = decoded.width;
++    law_in.raw_height = decoded.height;
++    law_in.in_density = in_density;
++    law_in.in_target_density = in_target_density;
++    law_in.in_scaled = (opts_id == 0) ? true : (in_scaled_present ? in_scaled != 0 : true);
++    law_in.in_sample_size = in_sample;
++    BitmapFactoryDensityResult law = bitmap_factory_density_law(law_in);
++    if (!law.valid) return 0;
++
++    // Allocation-safety guard (same ceiling as the draw-layer g04 law):
++    // a pathological scale (e.g. 420/1) on a huge image must not OOM the
++    // runtime — refuse the DENSITY scale honestly, keep the sampled dims.
++    const int64_t final_pixels = (int64_t)law.width * law.height;
++    if (law.density_scaled && final_pixels > (1 << 24)) {
++        std::cerr << "[BITMAP-FACTORY] C9-1 density scale REFUSED (" << desc
++                  << "): " << law.width << "x" << law.height
++                  << " exceeds allocation bound — serving sampled dims "
++                  << law.sampled_width << "x" << law.sampled_height << std::endl;
++        law.width = law.sampled_width;
++        law.height = law.sampled_height;
++        law.density_scaled = false;
++        law.bitmap_density = in_density;
++    }
++
++    if (opts_id != 0) {
++        heap->set_object_int_field(opts_id, "outWidth", law.width);
++        heap->set_object_int_field(opts_id, "outHeight", law.height);
++        if (!mime.empty()) heap->set_object_string_field(opts_id, "outMimeType", mime);
++        // NOTE: AOSP Options has NO outDensity field — the density lives on
++        // the Bitmap (setDensityFromOptions); recorded on StoredBitmap below.
++    }
++
++    // ── Resample chain: raw → inSampleSize → density scale (nearest) ────
++    StoredBitmap full;
++    full.width = decoded.width;
++    full.height = decoded.height;
++    full.rgba = std::move(decoded.rgba);
++    full.has_pixels = true;
++    full.source_desc = desc;
++    std::vector<uint8_t>* cur = &full.rgba;
++    std::vector<uint8_t> sampled_buf, scaled_buf;
++    if (law.sampled_width != decoded.width || law.sampled_height != decoded.height) {
++        StoredBitmap src_full = full;
++        resample_nearest(src_full, law.sampled_width, law.sampled_height, sampled_buf);
++        cur = &sampled_buf;
++    }
++    if (law.width != law.sampled_width || law.height != law.sampled_height) {
++        StoredBitmap src_sampled;
++        src_sampled.width = law.sampled_width;
++        src_sampled.height = law.sampled_height;
++        src_sampled.rgba = *cur;
++        src_sampled.has_pixels = true;
++        resample_nearest(src_sampled, law.width, law.height, scaled_buf);
++        cur = &scaled_buf;
+     }
+     const uint32_t obj = heap->allocate("Landroid/graphics/Bitmap;");
+-    BitmapStore::instance().store(obj, decoded.width, decoded.height,
+-                                  std::move(decoded.rgba), desc);
++    BitmapStore::instance().store(obj, law.width, law.height, std::move(*cur), desc);
++    if (auto* sb = BitmapStore::instance().get_mut(obj)) {
++        sb->density = (uint16_t)std::max(0, law.bitmap_density);
++        sb->source_density = law.density_scaled ? (uint16_t)std::max(0, in_density) : 0;
++        sb->target_density = law.density_scaled ? (uint16_t)std::max(0, in_target_density) : 0;
++        sb->source_width = decoded.width;
++        sb->source_height = decoded.height;
++        sb->sample_size = law.sampled_width != decoded.width || law.sampled_height != decoded.height
++                              ? law_in.in_sample_size : 1;
++        sb->density_scaled = law.density_scaled;
++    }
+     // CONT-65 F-NEW-355: keep the original container bytes for animated
+     // GIFs so the render walk can decode the full frame timeline
+     // (GifDecoder::decode_anim) — static consumers ignore this field.
+@@ -222,8 +374,12 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
+         }
+     }
+     std::cerr << "[BITMAP-FACTORY] decoded " << desc << " -> Bitmap obj=" << obj
+-              << " (" << decoded.width << "x" << decoded.height << ")"
+-              << std::endl;
++              << " (" << law.width << "x" << law.height
++              << " src=" << decoded.width << "x" << decoded.height
++              << " sample=" << law_in.in_sample_size
++              << " density=" << in_density << "->" << in_target_density
++              << (law.density_scaled ? " SCALED" : "")
++              << (mime.empty() ? "" : " mime=" + mime) << ")" << std::endl;
+     return obj;
+ }
+ 
+@@ -258,9 +414,15 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+             uint16_t density = 0;
+             if (drawable_bytes_resolver() &&
+                 drawable_bytes_resolver()(resid, bytes, path, density)) {
+-                // F-NEW-240: decodeResource(res, id[, opts]) — opts at slot 2.
++                // F-NEW-240 + C9-1: decodeResource(res, id[, opts]) — opts at
++                // slot 2. The resolver's density IS the SELECTED entry's
++                // config density (AOSP TypedValue.density → decodeResource-
++                // Stream seeding) — previously dropped here. AOSP decode-
++                // Resource scales EVEN WITHOUT an app Options object (it
++                // creates its own): resource_density >= 0 encodes that.
+                 const uint32_t bmp = f240_decode_with_options(
+-                    bytes, path, heap_, ctx.arg_as_object(2, 0));
++                    bytes, path, heap_, ctx.arg_as_object(2, 0),
++                    (int32_t)density);
+                 if (bmp == 0) return CallResult::handled_null();
+                 return CallResult::handled_object(bmp, "Landroid/graphics/Bitmap;");
+             }
+diff --git a/miniandroid/src/framework/bitmap_shadow.h b/miniandroid/src/framework/bitmap_shadow.h
+index ec7a0f30..bee8740b 100644
+--- a/miniandroid/src/framework/bitmap_shadow.h
++++ b/miniandroid/src/framework/bitmap_shadow.h
+@@ -44,6 +44,17 @@ struct StoredBitmap {
+     std::vector<uint8_t> rgba;        // width*height*4, premultiplied OFF
+     bool has_pixels = false;          // false = allocated-but-never-filled
+     std::string source_desc;          // provenance (resource path / "createBitmap")
++    // ── C9-1 (CODER 9) — decode-law provenance (byte-level chain) ────────
++    // source_desc stays the PURE APK entry path (route_bitmap_object uses
++    // it as a zip path — suffixes would break the entry lookup); the
++    // decode-law fingerprint lives in these fields instead.
++    uint16_t density = 0;             // density the bitmap is MARKED with (opts.outDensity; 0 = none)
++    uint16_t source_density = 0;      // inDensity actually applied (selected entry config / opts)
++    uint16_t target_density = 0;      // inTargetDensity actually applied
++    int32_t source_width = 0;         // raw decoder output (pre-sample, pre-scale)
++    int32_t source_height = 0;
++    int32_t sample_size = 1;          // opts.inSampleSize applied (1 = none)
++    bool density_scaled = false;      // density scale actually applied
+     // CONT-65 F-NEW-355: original container bytes for ANIMATED formats
+     // (GIF89a/GIF87a only — stb_image first-frame decode can't recover
+     // delays). Populated by decode_and_register on GIF magic; empty for
+@@ -109,4 +120,56 @@ public:
+                                         HeapAllocator* heap);
+ };
+ 
++// ── C9-1 (CODER 9) — AOSP BitmapFactory.Options density law, pure & testable
++// ─────────────────────────────────────────────────────────────────────────
++// Law chain (source-backed, aosp-mirror/platform_frameworks_base master,
++// graphics/java/android/graphics/BitmapFactory.java):
++//   decodeResourceStream (lines ~557-574):
++//     if (opts.inDensity == 0 && value != null) {
++//         density = value.density == TypedValue.DENSITY_DEFAULT (0)
++//                     ? DisplayMetrics.DENSITY_DEFAULT (160)
++//                 : value.density == TypedValue.DENSITY_ANY (0xFFFE)
++//                     ? Bitmap.DENSITY_NONE (0xFFFF) : value.density;
++//         opts.inDensity = density;
++//     }
++//     if (opts.inTargetDensity == 0 && res != null)
++//         opts.inTargetDensity = res.getDisplayMetrics().densityDpi;
++//   BitmapFactory.cpp native scale:
++//     scale applies iff inScaled && inDensity != 0 &&
++//       inDensity != DENSITY_NONE(0xFFFF) && inTargetDensity != 0 &&
++//       inDensity != inTargetDensity;
++//     scale = (float)inTargetDensity / (float)inDensity;
++//     scaledWidth  = (int)(decodedWidth  * scale + 0.5f);
++//     scaledHeight = (int)(decodedHeight * scale + 0.5f);
++//   setDensityFromOptions (lines ~682-700):
++//     bitmap.setDensity(inDensity); then, when inScaled &&
++//     inTargetDensity != 0 && inDensity != inTargetDensity,
++//     bitmap.setDensity(inTargetDensity) — the SCALED bitmap is MARKED
++//     with the target density.
++//   Options has NO public outDensity field — the density lives on the
++//   Bitmap (Bitmap.getDensity). out* carry the FINAL dims (sample-size
++//   and density scale composed).
++// This mirrors the draw-layer law g04_image_draw_rect (execution_engine.cpp)
++// so decode-time and draw-time density cannot drift.
++struct BitmapFactoryDensityInput {
++    int32_t raw_width = 0;         // decoder output (source pixels)
++    int32_t raw_height = 0;
++    int32_t in_density = 0;        // opts.inDensity AFTER decodeResourceStream seeding
++                                   // (0 = unset, 160 = DENSITY_DEFAULT, 0xFFFF = DENSITY_NONE)
++    int32_t in_target_density = 0; // opts.inTargetDensity (0 = unset → no scaling)
++    bool in_scaled = true;         // opts.inScaled — AOSP Java default true
++    int32_t in_sample_size = 1;    // opts.inSampleSize (values < 1 clamp to 1)
++};
++struct BitmapFactoryDensityResult {
++    int32_t width = 0;             // FINAL dims (inSampleSize → density scale)
++    int32_t height = 0;
++    int32_t sampled_width = 0;     // after inSampleSize only
++    int32_t sampled_height = 0;
++    int32_t bitmap_density = 0;    // setDensityFromOptions result (Bitmap.getDensity)
++    bool density_scaled = false;   // density scale actually applied
++    bool valid = false;            // false = degenerate input (raw dims <= 0)
++};
++BitmapFactoryDensityResult bitmap_factory_density_law(
++    const BitmapFactoryDensityInput& in);
++
+ } } // namespace miniandroid::framework

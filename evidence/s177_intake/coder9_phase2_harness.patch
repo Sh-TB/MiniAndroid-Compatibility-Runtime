@@ -1,0 +1,1355 @@
+diff --git a/miniandroid/tests/c9_bitmap_density_law_test.cpp b/miniandroid/tests/c9_bitmap_density_law_test.cpp
+new file mode 100644
+index 0000000..e104a27
+--- /dev/null
++++ b/miniandroid/tests/c9_bitmap_density_law_test.cpp
+@@ -0,0 +1,255 @@
++/*
++ * C9-1 (CODER 9) — BitmapFactory.Options density law, unit law test.
++ *
++ * Pins the pure law bitmap_factory_density_law() (bitmap_shadow.{h,cpp})
++ * against the AOSP chain it mirrors:
++ *   BitmapFactory.decodeResourceStream seeding (Java, master ~557-574),
++ *   BitmapFactory.cpp native scale
++ *     (iff inScaled && inDensity!=0 && inDensity!=DENSITY_NONE &&
++ *          inTargetDensity!=0 && inDensity!=inTargetDensity;
++ *      scale = target/in_density; scaled = (int)(dim*scale + 0.5f)),
++ *   setDensityFromOptions (bitmap marked inDensity, then inTargetDensity
++ *   when scaled), and the inSampleSize ceil law (dim + s - 1) / s.
++ * out* carry FINAL dims (sample and density composed). Options has NO
++ * public outDensity — the density lives on the Bitmap.
++ *
++ * Recorded honest divergence (documented in the law itself): degenerate
++ * zero-scaled dims clamp to 1 instead of failing the decode.
++ *
++ * Build: link with the full C9 object set (see scripts/c9 docs / Issue
++ * #521 ACH-1 §7) and run — expects 36/36.
++ */
++
++#include <framework/bitmap_shadow.h>
++
++#include <cstdio>
++
++using miniandroid::framework::BitmapFactoryDensityInput;
++using miniandroid::framework::BitmapFactoryDensityResult;
++using miniandroid::framework::bitmap_factory_density_law;
++
++static int g_pass = 0, g_fail = 0;
++#define LAW(cond, num, name)                                                    \
++    do {                                                                        \
++        if (cond) { ++g_pass; }                                                 \
++        else { ++g_fail;                                                        \
++            std::printf("  LAW %02d FAIL: %s\n", (num), (name)); }              \
++    } while (0)
++
++static constexpr int32_t DENSITY_NONE = 0xFFFF;
++
++int main() {
++    // ── F-A: degenerate inputs (laws 1–4) ────────────────────────────────
++    {
++        auto r = bitmap_factory_density_law({});
++        LAW(!r.valid, 1, "degenerate: default input (0x0) invalid");
++        LAW(r.width == 0 && r.height == 0, 2, "degenerate: dims stay 0");
++
++        BitmapFactoryDensityInput in; in.raw_width = -5; in.raw_height = 30;
++        LAW(!bitmap_factory_density_law(in).valid, 3, "degenerate: negative width");
++
++        BitmapFactoryDensityInput in2; in2.raw_width = 60; in2.raw_height = -1;
++        LAW(!bitmap_factory_density_law(in2).valid, 4, "degenerate: negative height");
++    }
++
++    // ── F-B: inSampleSize law (laws 5–10) ────────────────────────────────
++    {
++        BitmapFactoryDensityInput in; in.raw_width = 60; in.raw_height = 30;
++        in.in_sample_size = 0;  // AOSP: never honor < 1
++        auto r = bitmap_factory_density_law(in);
++        LAW(r.valid && r.sampled_width == 60 && r.sampled_height == 30, 5,
++            "sample: 0 clamps to 1 (identity)");
++
++        BitmapFactoryDensityInput in2; in2.raw_width = 60; in2.raw_height = 30;
++        in2.in_sample_size = -4;
++        auto r2 = bitmap_factory_density_law(in2);
++        LAW(r2.valid && r2.sampled_width == 60 && r2.sampled_height == 30, 6,
++            "sample: negative clamps to 1");
++
++        BitmapFactoryDensityInput in3; in3.raw_width = 61; in3.raw_height = 31;
++        in3.in_sample_size = 2;
++        auto r3 = bitmap_factory_density_law(in3);
++        LAW(r3.sampled_width == 31 && r3.sampled_height == 16, 7,
++            "sample: ceil law (61+1)/2=31, (31+1)/2=16");
++
++        BitmapFactoryDensityInput in4; in4.raw_width = 30; in4.raw_height = 30;
++        in4.in_sample_size = 2;
++        auto r4 = bitmap_factory_density_law(in4);
++        LAW(r4.sampled_width == 15 && r4.sampled_height == 15, 8,
++            "sample: exact divide (30/2=15)");
++
++        BitmapFactoryDensityInput in5; in5.raw_width = 62; in5.raw_height = 30;
++        in5.in_sample_size = 4;
++        auto r5 = bitmap_factory_density_law(in5);
++        LAW(r5.sampled_width == 16 && r5.sampled_height == 8, 9,
++            "sample: ceil law s=4 (62->16, 30->8)");
++
++        BitmapFactoryDensityInput in6; in6.raw_width = 100; in6.raw_height = 100;
++        in6.in_sample_size = 3;
++        auto r6 = bitmap_factory_density_law(in6);
++        LAW(r6.sampled_width == 34 && r6.sampled_height == 34, 10,
++            "sample: non-power-of-two s=3 ((100+2)/3=34)");
++    }
++
++    // ── F-C: scale gates — each condition alone disables scaling (11–16) ─
++    {
++        BitmapFactoryDensityInput in; in.raw_width = 60; in.raw_height = 30;
++        in.in_density = 0; in.in_target_density = 420;  // inDensity unset
++        auto r = bitmap_factory_density_law(in);
++        LAW(!r.density_scaled && r.width == 60 && r.height == 30, 11,
++            "gate: inDensity==0 → no scale");
++
++        BitmapFactoryDensityInput in2; in2.raw_width = 60; in2.raw_height = 30;
++        in2.in_density = 240; in2.in_target_density = 0;  // target unset
++        auto r2 = bitmap_factory_density_law(in2);
++        LAW(!r2.density_scaled && r2.bitmap_density == 240, 12,
++            "gate: target==0 → no scale, bitmap keeps inDensity");
++
++        BitmapFactoryDensityInput in3; in3.raw_width = 60; in3.raw_height = 30;
++        in3.in_density = 240; in3.in_target_density = 240;
++        auto r3 = bitmap_factory_density_law(in3);
++        LAW(!r3.density_scaled && r3.width == 60 && r3.bitmap_density == 240, 13,
++            "gate: inDensity==target → identity");
++
++        BitmapFactoryDensityInput in4; in4.raw_width = 60; in4.raw_height = 30;
++        in4.in_density = 240; in4.in_target_density = 420; in4.in_scaled = false;
++        auto r4 = bitmap_factory_density_law(in4);
++        LAW(!r4.density_scaled && r4.width == 60 && r4.height == 30 &&
++            r4.bitmap_density == 240, 14,
++            "gate: inScaled=false → no scale, bitmap marked inDensity");
++
++        BitmapFactoryDensityInput in5; in5.raw_width = 60; in5.raw_height = 30;
++        in5.in_density = DENSITY_NONE; in5.in_target_density = 420;  // nodpi law
++        auto r5 = bitmap_factory_density_law(in5);
++        LAW(!r5.density_scaled && r5.width == 60 && r5.bitmap_density == DENSITY_NONE,
++            15, "gate: DENSITY_NONE (nodpi) → never scaled");
++
++        BitmapFactoryDensityInput in6; in6.raw_width = 40; in6.raw_height = 20;
++        in6.in_density = 160; in6.in_target_density = 160;  // mdpi identity
++        auto r6 = bitmap_factory_density_law(in6);
++        LAW(!r6.density_scaled && r6.width == 40 && r6.height == 20, 16,
++            "gate: unscaled keeps sampled dims and flag false");
++    }
++
++    // ── F-D: scale arithmetic (laws 17–23) ───────────────────────────────
++    {
++        BitmapFactoryDensityInput in; in.raw_width = 60; in.raw_height = 30;
++        in.in_density = 240; in.in_target_density = 420;  // hdpi fixture @ xhdpi-ish
++        auto r = bitmap_factory_density_law(in);
++        LAW(r.width == 105 && r.height == 53, 17,
++            "scale: 60x30 @240->420 = 105x53 ((int)(d*1.75+0.5))");
++        LAW(r.bitmap_density == 420, 18,
++            "scale: bitmap marked with TARGET density (setDensityFromOptions)");
++        LAW(r.density_scaled, 19, "scale: density_scaled flag true");
++
++        BitmapFactoryDensityInput in2; in2.raw_width = 60; in2.raw_height = 30;
++        in2.in_density = 420; in2.in_target_density = 160;  // downscale
++        auto r2 = bitmap_factory_density_law(in2);
++        LAW(r2.width == 23 && r2.height == 11, 20,
++            "scale: 60x30 @420->160 = 23x11 (round-half-up: floor(22.86+0.5), floor(11.43+0.5))");
++
++        BitmapFactoryDensityInput in3; in3.raw_width = 40; in3.raw_height = 20;
++        in3.in_density = 320; in3.in_target_density = 420;
++        auto r3 = bitmap_factory_density_law(in3);
++        LAW(r3.width == 53 && r3.height == 26, 21,
++            "scale: 40x20 @320->420 = 53x26");
++
++        BitmapFactoryDensityInput in4; in4.raw_width = 100; in4.raw_height = 50;
++        in4.in_density = 160; in4.in_target_density = 240;
++        auto r4 = bitmap_factory_density_law(in4);
++        LAW(r4.width == 150 && r4.height == 75, 22,
++            "scale: 100x50 @160->240 = 150x75 (exact x1.5)");
++
++        BitmapFactoryDensityInput in5; in5.raw_width = 1; in5.raw_height = 1;
++        in5.in_density = 160; in5.in_target_density = 240;
++        auto r5 = bitmap_factory_density_law(in5);
++        LAW(r5.width == 2 && r5.height == 2, 23,
++            "scale: round-half-up 1x1 @1.5 = 2x2 ((int)(1.5+0.5))");
++    }
++
++    // ── F-E: sample + density composition (laws 24–27) ───────────────────
++    {
++        BitmapFactoryDensityInput in; in.raw_width = 60; in.raw_height = 30;
++        in.in_density = 240; in.in_target_density = 420; in.in_sample_size = 2;
++        auto r = bitmap_factory_density_law(in);
++        LAW(r.sampled_width == 30 && r.sampled_height == 15, 24,
++            "compose: sampled dims exposed (30x15)");
++        LAW(r.width == 53 && r.height == 26, 25,
++            "compose: final = scale(sample) → 53x26 (fixture CASE01 sample law)");
++        LAW(r.bitmap_density == 420, 26,
++            "compose: composed bitmap still marked target density");
++
++        BitmapFactoryDensityInput in2; in2.raw_width = 108; in2.raw_height = 70;
++        in2.in_density = 240; in2.in_target_density = 480; in2.in_sample_size = 7;
++        auto r2 = bitmap_factory_density_law(in2);
++        LAW(r2.sampled_width == 16 && r2.width == 32, 27,
++            "compose: s=7 ceil (108->16) then x2.0 → 32");
++    }
++
++    // ── F-F: clamp divergence — recorded honestly (laws 28–29) ───────────
++    {
++        BitmapFactoryDensityInput in; in.raw_width = 1; in.raw_height = 1;
++        in.in_density = 1000; in.in_target_density = 160;
++        auto r = bitmap_factory_density_law(in);
++        LAW(r.valid && r.density_scaled && r.width == 1 && r.height == 1, 28,
++            "clamp: zero-scaled dims clamp to 1 (documented divergence)");
++
++        BitmapFactoryDensityInput in2; in2.raw_width = 2; in2.raw_height = 2;
++        in2.in_density = 2000; in2.in_target_density = 100;
++        auto r2 = bitmap_factory_density_law(in2);
++        LAW(r2.valid && r2.width == 1 && r2.height == 1 && r2.bitmap_density == 100,
++            29, "clamp: clamp still marks the target density");
++    }
++
++    // ── F-G: density marking laws (laws 30–32) ───────────────────────────
++    {
++        BitmapFactoryDensityInput in; in.raw_width = 60; in.raw_height = 30;
++        in.in_density = DENSITY_NONE; in.in_target_density = 0;
++        auto r = bitmap_factory_density_law(in);
++        LAW(r.bitmap_density == DENSITY_NONE, 30,
++            "mark: DENSITY_NONE survives to Bitmap.getDensity");
++
++        BitmapFactoryDensityInput in2; in2.raw_width = 60; in2.raw_height = 30;
++        in2.in_density = 160; in2.in_target_density = 640;
++        auto r2 = bitmap_factory_density_law(in2);
++        LAW(r2.bitmap_density == 640 && r2.bitmap_density != in2.in_density, 31,
++            "mark: scaled bitmap answers TARGET, never the source density");
++
++        BitmapFactoryDensityInput in3; in3.raw_width = 60; in3.raw_height = 30;
++        in3.in_density = 0; in3.in_target_density = 420;  // non-resource decode
++        auto r3 = bitmap_factory_density_law(in3);
++        LAW(r3.bitmap_density == 0, 32,
++            "mark: inDensity unset → no setDensity call (0)");
++    }
++
++    // ── F-H: composed odd cases (laws 33–36) ─────────────────────────────
++    {
++        BitmapFactoryDensityInput in; in.raw_width = 61; in.raw_height = 31;
++        in.in_density = 240; in.in_target_density = 420; in.in_sample_size = 2;
++        auto r = bitmap_factory_density_law(in);
++        LAW(r.width == 54 && r.height == 28, 33,
++            "odd: 61x31 s=2 @240->420 → sampled 31x16 → 54x28");
++
++        BitmapFactoryDensityInput in2; in2.raw_width = 70; in2.raw_height = 35;
++        in2.in_density = 300; in2.in_target_density = 420;
++        auto r2 = bitmap_factory_density_law(in2);
++        LAW(r2.width == 98 && r2.height == 49, 34,
++            "odd: non-bucket densities 300->420 = x1.4 exactly 98x49");
++
++        BitmapFactoryDensityInput in3; in3.raw_width = 100; in3.raw_height = 100;
++        in3.in_density = 160; in3.in_target_density = 320; in3.in_sample_size = 3;
++        auto r3 = bitmap_factory_density_law(in3);
++        LAW(r3.sampled_width == 34 && r3.width == 68 && r3.height == 68, 35,
++            "odd: s=3 then x2.0 → 34 -> 68 (compose chain)");
++
++        BitmapFactoryDensityInput in4; in4.raw_width = 105; in4.raw_height = 52;
++        in4.in_density = 420; in4.in_target_density = 420; in4.in_sample_size = 2;
++        auto r4 = bitmap_factory_density_law(in4);
++        LAW(r4.width == 53 && r4.height == 26 && !r4.density_scaled &&
++            r4.bitmap_density == 420, 36,
++            "odd: identity densities with sample → sampled dims, marked 420");
++    }
++
++    std::printf("c9_bitmap_density_law_test: %d/%d PASS\n", g_pass, g_pass + g_fail);
++    return g_fail == 0 ? 0 : 1;
++}
+diff --git a/miniandroid/tests/c9_zip_data_offset_law_test.cpp b/miniandroid/tests/c9_zip_data_offset_law_test.cpp
+new file mode 100644
+index 0000000..d0771b1
+--- /dev/null
++++ b/miniandroid/tests/c9_zip_data_offset_law_test.cpp
+@@ -0,0 +1,434 @@
++/*
++ * C9-2 (CODER 9) — ZipEntry data-offset law, unit law test.
++ *
++ * Pins the AOSP AssetFileDescriptor contract (AssetManager.openFd →
++ * Asset): startOffset must be the entry DATA offset inside the APK,
++ * resolved from the LOCAL file header:
++ *     data_offset = LFH_offset + 30 + LFH.file_name_length
++ *                                 + LFH.extra_field_length     (APPNOTE §4.3.7)
++ * read from the LFH ITSELF because LFH and CDE extra fields may legally
++ * differ (APPNOTE §4.4.11). Hostile/truncated LFH → has_data_offset=false
++ * (honest-miss law; consumers must not pretend).
++ *
++ * 42 laws across 7 families, all on crafted in-memory ZIP archives:
++ *   F1 plain STORED · F2 LFH-extra != CDE-extra discriminator ·
++ *   F3 multi-entry mixed · F4 data-descriptor (streaming bit-3) ·
++ *   F5 prepended stub · F6 hostile archives · F7 integration identities.
++ *
++ * Build: g++ -std=c++17 -w -g -O1 -Isrc -o build/c9_zip_data_offset_law_test
++ *   tests/c9_zip_data_offset_law_test.cpp build/apk/apk_parser.o
++ *   build/apk/manifest_reader.o build/resources/string_pool.o
++ *   build/resources/arsc_parser.o build/resources/res_id.o
++ *   build/resources/res_config.o build/dex/mutf8.o -lz -lpthread
++ */
++
++#include <apk/apk_parser.h>
++#include <zlib.h>
++
++#include <cstdio>
++#include <cstring>
++#include <fstream>
++#include <string>
++#include <vector>
++
++using miniandroid::apk::ApkParser;
++using miniandroid::apk::ZipEntry;
++
++static int g_pass = 0, g_fail = 0;
++#define LAW(cond, num, name)                                                    \
++    do {                                                                        \
++        if (cond) { ++g_pass; }                                                 \
++        else { ++g_fail;                                                        \
++            std::printf("  LAW %02d FAIL: %s\n", (num), (name)); }              \
++    } while (0)
++
++static constexpr uint32_t SIG_LFH = 0x04034b50u;
++static constexpr uint32_t SIG_CDE = 0x02014b50u;
++static constexpr uint32_t SIG_EOCD = 0x06054b50u;
++static constexpr uint32_t SIG_DESCRIPTOR = 0x08074b50u;
++
++static void put16(std::vector<uint8_t>& b, uint16_t v) {
++    b.push_back(v & 0xFF); b.push_back((v >> 8) & 0xFF);
++}
++static void put32(std::vector<uint8_t>& b, uint32_t v) {
++    b.push_back(v & 0xFF); b.push_back((v >> 8) & 0xFF);
++    b.push_back((v >> 16) & 0xFF); b.push_back((v >> 24) & 0xFF);
++}
++
++struct CraftedEntry {
++    std::string name;
++    std::vector<uint8_t> payload;
++    uint16_t method = 0;                    // 0 = STORED, 8 = DEFLATE
++    std::vector<uint8_t> lfh_extra;         // extra field written in the LFH
++    std::vector<uint8_t> cde_extra;         // extra field written in the CDE
++    bool data_descriptor = false;           // streaming entry (general flag bit 3)
++    bool corrupt_lfh_sig = false;           // hostile: LFH signature is not PK\x03\x04
++    uint32_t cde_compressed_size_override = 0;  // hostile: lie about csize (0 = honest)
++    bool hide_lfh = false;                  // hostile: offset points outside the file
++};
++
++// Raw-DEFLATE (ZIP method 8 uses raw deflate, windowBits -15).
++static std::vector<uint8_t> raw_deflate(const std::vector<uint8_t>& in) {
++    z_stream zs{};
++    deflateInit2(&zs, Z_BEST_SPEED, Z_DEFLATED, -15, 8, Z_DEFAULT_STRATEGY);
++    zs.next_in = const_cast<Bytef*>(in.data());
++    zs.avail_in = (uInt)in.size();
++    std::vector<uint8_t> out;
++    uint8_t buf[4096];
++    int ret = Z_OK;
++    do {
++        zs.next_out = buf; zs.avail_out = sizeof(buf);
++        ret = deflate(&zs, Z_FINISH);
++        out.insert(out.end(), buf, buf + (sizeof(buf) - zs.avail_out));
++    } while (ret != Z_STREAM_END);
++    deflateEnd(&zs);
++    return out;
++}
++
++// Serializes a crafted archive; fills recorded LFH offsets for expectations.
++static std::vector<uint8_t> craft_zip(const std::vector<CraftedEntry>& entries,
++                                      size_t stub_bytes,
++                                      std::vector<size_t>* lfh_offsets) {
++    std::vector<uint8_t> z;
++    const std::string stub(stub_bytes, 'S');
++    z.insert(z.end(), stub.begin(), stub.end());
++
++    struct CdeRec { std::vector<uint8_t> bytes; };
++    std::vector<CdeRec> cdes;
++
++    for (const auto& e : entries) {
++        const size_t lfh_off = z.size();
++        if (lfh_offsets) lfh_offsets->push_back(lfh_off);
++
++        std::vector<uint8_t> stored = e.payload;
++        std::vector<uint8_t> comp;
++        const uint8_t* data_ptr = stored.data();
++        uint32_t csize = (uint32_t)stored.size();
++        uint32_t usize = (uint32_t)stored.size();
++        if (e.method == 8) {
++            comp = raw_deflate(stored);
++            data_ptr = comp.data();
++            csize = (uint32_t)comp.size();
++        }
++        if (e.cde_compressed_size_override) csize = e.cde_compressed_size_override;
++
++        // Local file header
++        put32(z, e.corrupt_lfh_sig ? 0xDEADBEEF : SIG_LFH);
++        put16(z, 20);              // version needed
++        put16(z, e.data_descriptor ? 0x0008 : 0);
++        put16(z, e.method);
++        put16(z, 0); put16(z, 0);  // time / date
++        put32(z, e.data_descriptor ? 0 : crc32(0L, stored.data(), stored.size()));
++        put32(z, e.data_descriptor ? 0 : csize);   // descriptor: sizes in LFH are 0
++        put32(z, e.data_descriptor ? 0 : usize);
++        put16(z, (uint16_t)e.name.size());
++        put16(z, (uint16_t)e.lfh_extra.size());
++        z.insert(z.end(), e.name.begin(), e.name.end());
++        z.insert(z.end(), e.lfh_extra.begin(), e.lfh_extra.end());
++        z.insert(z.end(), data_ptr, data_ptr + (e.cde_compressed_size_override
++                                                ? (uint32_t)stored.size() : csize));
++        if (e.data_descriptor) {   // descriptor AFTER the data (bit-3 law)
++            put32(z, SIG_DESCRIPTOR);
++            put32(z, crc32(0L, stored.data(), stored.size()));
++            put32(z, (uint32_t)stored.size());
++            put32(z, (uint32_t)stored.size());
++        }
++
++        // Central directory record (sizes/crc always authoritative here)
++        CdeRec& rec = cdes.emplace_back();
++        std::vector<uint8_t>& c = rec.bytes;
++        put32(c, SIG_CDE);
++        put16(c, 0x031E);          // version made by (unix)
++        put16(c, 20);
++        put16(c, e.data_descriptor ? 0x0008 : 0);
++        put16(c, e.method);
++        put16(c, 0); put16(c, 0);
++        put32(c, crc32(0L, stored.data(), stored.size()));
++        put32(c, csize);
++        put32(c, usize);
++        put16(c, (uint16_t)e.name.size());
++        put16(c, (uint16_t)e.cde_extra.size());
++        put16(c, 0);               // comment len
++        put16(c, 0);               // disk number
++        put16(c, 0);               // internal attrs
++        put32(c, 0100644 << 16);   // external attrs
++        const uint32_t recorded = e.hide_lfh ? (uint32_t)(z.size() + 1 << 20)
++                                             : (uint32_t)lfh_off;
++        put32(c, recorded);
++        c.insert(c.end(), e.name.begin(), e.name.end());
++        c.insert(c.end(), e.cde_extra.begin(), e.cde_extra.end());
++    }
++
++    const uint32_t cd_offset = (uint32_t)z.size();
++    for (auto& c : cdes) z.insert(z.end(), c.bytes.begin(), c.bytes.end());
++    const uint32_t cd_size = (uint32_t)z.size() - cd_offset;
++
++    put32(z, SIG_EOCD);
++    put16(z, 0); put16(z, 0);
++    put16(z, (uint16_t)entries.size());
++    put16(z, (uint16_t)entries.size());
++    put32(z, cd_size);
++    put32(z, cd_offset);
++    put16(z, 0);
++    return z;
++}
++
++static bool write_file(const std::string& path, const std::vector<uint8_t>& b) {
++    std::ofstream f(path, std::ios::binary | std::ios::trunc);
++    f.write(reinterpret_cast<const char*>(b.data()), (std::streamsize)b.size());
++    return (bool)f;
++}
++
++static std::vector<uint8_t> read_slice(const std::string& path, size_t off, size_t len) {
++    std::ifstream f(path, std::ios::binary);
++    f.seekg((std::streamoff)off);
++    std::vector<uint8_t> out(len);
++    f.read(reinterpret_cast<char*>(out.data()), (std::streamsize)len);
++    out.resize((size_t)f.gcount());
++    return out;
++}
++
++static const ZipEntry* find(const std::vector<ZipEntry>& v, const std::string& n) {
++    for (const auto& e : v) if (e.name == n) return &e;
++    return nullptr;
++}
++
++int main() {
++    const std::string dir = "/tmp/c9_zip_law";
++    (void)system("mkdir -p /tmp/c9_zip_law");
++
++    const std::vector<uint8_t> payload_a = {'C','9','-','2',' ','d','a','t','a',
++                                            ' ','o','f','f','s','e','t',' ','l','a','w'};
++    const std::vector<uint8_t> payload_big(2000, 'x');
++    const std::vector<uint8_t> extra16 = {0x11,0x00, 8,0,1,2,3,4,5,6,7,8};  // 12B shown; pad to 16 below
++    std::vector<uint8_t> lfh_extra16 = extra16;
++    lfh_extra16.push_back(0x99); lfh_extra16.push_back(0x99);
++    lfh_extra16.push_back(0x98); lfh_extra16.push_back(0x98);
++
++    // ── F1: plain STORED entry (laws 1–5) ────────────────────────────────
++    {
++        std::vector<size_t> offs;
++        auto z = craft_zip({{"assets/plain.txt", payload_a, 0, {}, {}, false, false, 0, false}},
++                           0, &offs);
++        const std::string p = dir + "/plain.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        const ZipEntry* e = find(es, "assets/plain.txt");
++        LAW(e && e->has_data_offset, 1, "plain: has_data_offset");
++        LAW(e && e->data_offset == offs[0] + 30 + 16, 2,
++            "plain: data_offset == lfh+30+namelen");  // "assets/plain.txt"=16
++        LAW(e && e->offset == offs[0], 3, "plain: offset records LFH");
++        auto ex = parser.extract_entry(p, "assets/plain.txt");
++        LAW(ex == payload_a, 4, "plain: extraction == payload");
++        LAW(read_slice(p, e ? (size_t)e->data_offset : 0, payload_a.size()) == payload_a,
++            5, "plain: data window bytes == payload");
++    }
++
++    // ── F2: LFH extra != CDE extra — THE discriminator (laws 6–11) ───────
++    {
++        std::vector<size_t> offs;
++        auto z = craft_zip({{"assets/extra.txt", payload_a, 0, lfh_extra16, {}, false, false, 0, false}},
++                           0, &offs);
++        const std::string p = dir + "/extra.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        const ZipEntry* e = find(es, "assets/extra.txt");
++        const uint64_t expect = offs[0] + 30 + 16 + 16;  // LFH extra (16), not CDE extra (0)
++        const uint64_t cde_arith = offs[0] + 30 + 16;    // wrong: CDE-derived
++        LAW(e && e->has_data_offset, 6, "extra-diff: has_data_offset");
++        LAW(e && e->data_offset == expect, 7,
++            "extra-diff: uses LFH extra field length");
++        LAW(e && e->data_offset != cde_arith, 8,
++            "extra-diff: NOT the CDE-derived arithmetic");
++        auto ex = parser.extract_entry(p, "assets/extra.txt");
++        LAW(ex == payload_a, 9, "extra-diff: extraction == payload");
++        LAW(read_slice(p, e ? (size_t)e->data_offset : 0, payload_a.size()) == payload_a,
++            10, "extra-diff: window bytes == payload");
++        LAW(es.size() == 1, 11, "extra-diff: entry listed once");
++    }
++
++    // ── F3: multi-entry mixed methods (laws 12–17) ───────────────────────
++    {
++        std::vector<size_t> offs;
++        auto z = craft_zip({
++            {"assets/e1_stored.txt", payload_a, 0, {}, {}, false, false, 0, false},
++            {"assets/e2_deflate.txt", payload_big, 8, {}, {}, false, false, 0, false},
++            {"assets/e3_stored.bin", {'Q','W','E','R','T','Y'}, 0, {}, {}, false, false, 0, false},
++        }, 0, &offs);
++        const std::string p = dir + "/multi.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        LAW(es.size() == 3, 12, "multi: three entries listed");
++        const ZipEntry *e1 = find(es, "assets/e1_stored.txt"),
++                       *e2 = find(es, "assets/e2_deflate.txt"),
++                       *e3 = find(es, "assets/e3_stored.bin");
++        LAW(e1 && e2 && e3 && e1->has_data_offset && e2->has_data_offset &&
++            e3->has_data_offset, 13, "multi: all have data_offset");
++        LAW(e1 && e1->data_offset == offs[0] + 30 + 20, 14, "multi: e1 data_offset");
++        LAW(e2 && e2->data_offset == offs[1] + 30 + 21, 15, "multi: e2 (deflate) data_offset");
++        LAW(e3 && e3->data_offset == offs[2] + 30 + 20, 16, "multi: e3 data_offset");
++        auto ex2 = parser.extract_entry(p, "assets/e2_deflate.txt");
++        LAW(ex2 == payload_big, 17, "multi: deflate extraction == original");
++    }
++
++    // ── F4: data-descriptor (streaming, bit 3) (laws 18–23) ──────────────
++    {
++        std::vector<size_t> offs;
++        auto z = craft_zip({{"assets/stream.txt", payload_big, 8, {}, {}, true, false, 0, false}},
++                           0, &offs);
++        const std::string p = dir + "/stream.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        const ZipEntry* e = find(es, "assets/stream.txt");
++        LAW(e && e->has_data_offset, 18, "descriptor: has_data_offset");
++        LAW(e && e->data_offset == offs[0] + 30 + 17, 19,
++            "descriptor: data_offset ignores trailing descriptor");
++        LAW(e && e->compression_method == 8, 20, "descriptor: method 8 parsed");
++        auto ex = parser.extract_entry(p, "assets/stream.txt");
++        LAW(ex == payload_big, 21, "descriptor: extraction == payload (sizes from CDE)");
++        const std::vector<uint8_t> comp_stream = raw_deflate(payload_big);
++        auto win = read_slice(p, e ? (size_t)e->data_offset : 0, comp_stream.size());
++        LAW(win == comp_stream, 22,
++            "descriptor: window == the COMPRESSED data bytes");
++        const std::vector<uint8_t> desc_sig = {0x50,0x4b,0x07,0x08};
++        LAW(read_slice(p, (e ? (size_t)e->data_offset : 0) + comp_stream.size(), 4)
++                == desc_sig,
++            23, "descriptor: signature sits AFTER the data window");
++    }
++
++    // ── F5: prepended stub (self-extracting style) (laws 24–28) ──────────
++    {
++        const size_t stub = 777;
++        std::vector<size_t> offs;
++        auto z = craft_zip({{"assets/stub.txt", payload_a, 0, {}, {}, false, false, 0, false}},
++                           stub, &offs);
++        const std::string p = dir + "/stub.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        const ZipEntry* e = find(es, "assets/stub.txt");
++        LAW(e && e->has_data_offset, 24, "stub: has_data_offset");
++        LAW(e && e->data_offset == offs[0] + 30 + 15, 25,
++            "stub: absolute offset includes the prepended stub");
++        LAW(e && e->offset == offs[0], 26, "stub: LFH offset includes stub");
++        auto ex = parser.extract_entry(p, "assets/stub.txt");
++        LAW(ex == payload_a, 27, "stub: extraction == payload");
++        LAW(read_slice(p, e ? (size_t)e->data_offset : 0, payload_a.size()) == payload_a,
++            28, "stub: window bytes == payload");
++    }
++
++    // ── F6: hostile archives — honest miss (laws 29–35) ──────────────────
++    {
++        std::vector<size_t> offs;
++        auto z = craft_zip({
++            {"assets/bad_sig.txt", payload_a, 0, {}, {}, false, true, 0, false},
++            {"assets/good.txt", payload_a, 0, {}, {}, false, false, 0, false},
++        }, 0, &offs);
++        const std::string p = dir + "/hostile_sig.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        const ZipEntry* bad = find(es, "assets/bad_sig.txt");
++        const ZipEntry* good = find(es, "assets/good.txt");
++        LAW(bad && !bad->has_data_offset, 29, "hostile: corrupt LFH sig → honest miss");
++        LAW(bad != nullptr, 30, "hostile: entry still listed");
++        LAW(bad && bad->data_offset == 0, 31, "hostile: data_offset stays 0 on miss");
++        LAW(good && good->has_data_offset, 32, "hostile: sibling entry unaffected");
++
++        auto z2 = craft_zip({{"assets/lie.txt", payload_a, 0, {}, {}, false, false,
++                              999999, false}}, 0, nullptr);
++        const std::string p2 = dir + "/hostile_lie.zip";
++        write_file(p2, z2);
++        ApkParser parser2;
++        auto es2 = parser2.list_entries(p2);
++        const ZipEntry* lie = find(es2, "assets/lie.txt");
++        LAW(lie && !lie->has_data_offset, 33,
++            "hostile: compressed_size beyond EOF → honest miss");
++
++        auto z3 = craft_zip({{"assets/hid.txt", payload_a, 0, {}, {}, false, false, 0, true}},
++                            0, nullptr);
++        const std::string p3 = dir + "/hostile_oob.zip";
++        write_file(p3, z3);
++        ApkParser parser3;
++        auto es3 = parser3.list_entries(p3);
++        const ZipEntry* hid = find(es3, "assets/hid.txt");
++        LAW(hid && !hid->has_data_offset, 34,
++            "hostile: LFH offset out of file → honest miss");
++        auto ex = parser3.extract_entry(p3, "assets/hid.txt");
++        LAW(ex.empty(), 35, "hostile: extraction refuses the unresolvable entry");
++
++        std::vector<size_t> offs_zero;
++        auto z4 = craft_zip({{"assets/zero.bin", {}, 0, {}, {}, false, false, 0, false}},
++                            0, &offs_zero);
++        const std::string p4 = dir + "/zero.zip";
++        write_file(p4, z4);
++        ApkParser parser4;
++        auto es4 = parser4.list_entries(p4);
++        const ZipEntry* zero = find(es4, "assets/zero.bin");
++        LAW(zero && zero->has_data_offset &&
++                zero->data_offset == offs_zero[0] + 30 + 15,
++            36, "zero-length: data_offset resolves, empty window is legal");
++    }
++
++    // ── F7: integration identities (laws 37–42) ──────────────────────────
++    {
++        std::vector<size_t> offs;
++        auto z = craft_zip({
++            {"assets/p1.bin", payload_a, 0, {}, {}, false, false, 0, false},
++            {"assets/p2.bin", payload_big, 8, {}, {}, false, false, 0, false},
++            {"assets/p3.bin", {'M','!'}, 0, {}, {}, false, false, 0, false},
++        }, 0, &offs);
++        const std::string p = dir + "/integ.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++
++        bool all_have = es.size() == 3;
++        for (auto& e : es) all_have = all_have && e.has_data_offset;
++        LAW(all_have, 37, "integ: every normal entry resolves");
++
++        bool window_matches = true;
++        for (auto& e : es) {
++            if (e.compression_method == 0 &&
++                read_slice(p, (size_t)e.data_offset, e.uncompressed_size).size()
++                    != e.uncompressed_size)
++                window_matches = false;
++        }
++        LAW(window_matches, 38, "integ: STORED windows fully addressable");
++
++        const ZipEntry* e2 = find(es, "assets/p2.bin");
++        LAW(e2 && e2->data_offset + e2->compressed_size <= z.size(), 39,
++            "integ: DEFLATE window within file bounds");
++
++        bool monotonic = true;
++        for (size_t i = 1; i < es.size(); ++i)
++            if (es[i].data_offset < es[i-1].data_offset) monotonic = false;
++        LAW(monotonic, 40, "integ: data_offset non-decreasing for sequential layout");
++
++        // Law formula re-derived from the raw file bytes (independent LFH read).
++        bool formula = true;
++        for (auto& e : es) {
++            std::ifstream f(p, std::ios::binary);
++            f.seekg((std::streamoff)e.offset);
++            miniandroid::apk::ZipLocalFileHeader lfh{};
++            f.read(reinterpret_cast<char*>(&lfh), sizeof(lfh));
++            const uint64_t expect = (uint64_t)e.offset + sizeof(lfh) +
++                                    lfh.file_name_length + lfh.extra_field_length;
++            if (expect != e.data_offset) formula = false;
++        }
++        LAW(formula, 41, "integ: data_offset == lfh+30+name+extra (independent re-read)");
++
++        // Two read paths agree: extraction bytes == independent window bytes.
++        const ZipEntry* e1 = find(es, "assets/p1.bin");
++        auto ex = parser.extract_entry(p, "assets/p1.bin");
++        auto win = read_slice(p, e1 ? (size_t)e1->data_offset : 0, ex.size());
++        LAW(ex == win, 42, "integ: extraction path == independent fd-window path");
++    }
++
++    std::printf("c9_zip_data_offset_law_test: %d/%d PASS\n", g_pass, g_pass + g_fail);
++    return g_fail == 0 ? 0 : 1;
++}
+diff --git a/miniandroid/tests/fixtures/c9_resources/AndroidManifest.xml b/miniandroid/tests/fixtures/c9_resources/AndroidManifest.xml
+new file mode 100644
+index 0000000..898f69a
+--- /dev/null
++++ b/miniandroid/tests/fixtures/c9_resources/AndroidManifest.xml
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.c9.resources"
++    android:versionCode="1"
++    android:versionName="1.0">
++    <application android:label="C9 Resources">
++        <activity android:name="com.c9.resources.MainActivity">
++            <intent-filter>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
++            </intent-filter>
++        </activity>
++    </application>
++</manifest>
+diff --git a/miniandroid/tests/fixtures/c9_resources/res/drawable/c9_vector.xml b/miniandroid/tests/fixtures/c9_resources/res/drawable/c9_vector.xml
+new file mode 100644
+index 0000000..27f66c1
+--- /dev/null
++++ b/miniandroid/tests/fixtures/c9_resources/res/drawable/c9_vector.xml
+@@ -0,0 +1,15 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- C9-3 fixture: 48dp x 48dp vector (intrinsic = 126px @420dpi, 72 @240, 48 @160).
++     Material-indigo background + amber triangle (matches the §6 pixel law). -->
++<vector xmlns:android="http://schemas.android.com/apk/res/android"
++    android:width="48dp"
++    android:height="48dp"
++    android:viewportWidth="48"
++    android:viewportHeight="48">
++    <path
++        android:fillColor="#3F51B5"
++        android:pathData="M0,0 L48,0 L48,48 L0,48 Z"/>
++    <path
++        android:fillColor="#FFC107"
++        android:pathData="M24,8 L40,40 L8,40 Z"/>
++</vector>
+diff --git a/miniandroid/tests/fixtures/c9_resources/res/values-fa/strings.xml b/miniandroid/tests/fixtures/c9_resources/res/values-fa/strings.xml
+new file mode 100644
+index 0000000..ebbce68
+--- /dev/null
++++ b/miniandroid/tests/fixtures/c9_resources/res/values-fa/strings.xml
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <string name="c9_hello">سلام کد۹</string>
++</resources>
+diff --git a/miniandroid/tests/fixtures/c9_resources/res/values/strings.xml b/miniandroid/tests/fixtures/c9_resources/res/values/strings.xml
+new file mode 100644
+index 0000000..096f48d
+--- /dev/null
++++ b/miniandroid/tests/fixtures/c9_resources/res/values/strings.xml
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <string name="c9_hello">Hello C9</string>
++    <string name="c9_missing_note">present so c9_missing itself stays absent</string>
++</resources>
+diff --git a/miniandroid/tests/fixtures/c9_resources/src/com/c9/resources/MainActivity.java b/miniandroid/tests/fixtures/c9_resources/src/com/c9/resources/MainActivity.java
+new file mode 100644
+index 0000000..3bf7ae7
+--- /dev/null
++++ b/miniandroid/tests/fixtures/c9_resources/src/com/c9/resources/MainActivity.java
+@@ -0,0 +1,204 @@
++package com.c9.resources;
++
++import android.app.Activity;
++import android.graphics.Bitmap;
++import android.graphics.BitmapFactory;
++import android.graphics.Typeface;
++import android.graphics.drawable.Drawable;
++import android.os.Bundle;
++import android.content.res.AssetFileDescriptor;
++import android.content.res.AssetManager;
++import android.content.res.Resources;
++import android.util.Log;
++import android.view.ViewGroup;
++import android.widget.ImageView;
++import android.widget.LinearLayout;
++import android.widget.TextView;
++
++import java.io.ByteArrayOutputStream;
++import java.io.FileInputStream;
++import java.io.FileNotFoundException;
++import java.io.InputStream;
++import java.util.Arrays;
++
++/**
++ * CODER 9 — synthetic resources/assets pipeline harness (§5/§6).
++ *
++ * Every case logs one `CASE..` line; scripts/c9/validate_c9_resources.sh
++ * greps these lines and asserts the documented expectations per device
++ * config (density/locale set by the RUNTIME env, not by the app — the app
++ * only measures and reports what the platform answered).
++ */
++public class MainActivity extends Activity {
++
++    private static void report(String line) {
++        Log.i("C9HARNESS", line);
++        System.out.println(line);
++    }
++
++    private static byte[] readAll(InputStream in) throws Exception {
++        ByteArrayOutputStream bos = new ByteArrayOutputStream();
++        byte[] buf = new byte[4096];
++        int n;
++        while ((n = in.read(buf)) > 0) bos.write(buf, 0, n);
++        in.close();
++        return bos.toByteArray();
++    }
++
++    private static String headHex(byte[] b, int count) {
++        StringBuilder sb = new StringBuilder();
++        for (int i = 0; i < count && i < b.length; i++)
++            sb.append(String.format("%02x", b[i]));
++        return sb.toString();
++    }
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        Resources res = getResources();
++        AssetManager am = getAssets();
++        int dpi = res.getDisplayMetrics().densityDpi;
++
++        // ── CASE01: PNG drawable decode (density law, decode-time half) ──
++        Bitmap photo = BitmapFactory.decodeResource(res, R.drawable.c9_photo);
++        if (photo != null) {
++            report("CASE01 natural=" + photo.getWidth() + "x" + photo.getHeight()
++                    + " density=" + dpi);
++        } else {
++            report("CASE01 natural=null density=" + dpi);
++        }
++
++        // ── CASE02: WebP bounds pass + full decode ───────────────────────
++        BitmapFactory.Options bo = new BitmapFactory.Options();
++        bo.inJustDecodeBounds = true;
++        BitmapFactory.decodeResource(res, R.drawable.c9_webp, bo);
++        Bitmap webpFull = BitmapFactory.decodeResource(res, R.drawable.c9_webp);
++        report("CASE02 bounds=" + bo.outWidth + "x" + bo.outHeight
++                + " mime=" + bo.outMimeType
++                + " natural=" + (webpFull != null
++                    ? webpFull.getWidth() + "x" + webpFull.getHeight() : "null"));
++
++        // ── CASE03: nested asset list + byte-exact read ──────────────────
++        try {
++            String[] deep = am.list("sub");
++            byte[] nested = readAll(am.open("sub/deep/c9_nested.bin"));
++            report("CASE03 list=" + Arrays.toString(deep)
++                    + "; " + nested.length + " bytes; head=" + headHex(nested, 8));
++        } catch (Exception e) {
++            report("CASE03 ERROR " + e.getClass().getSimpleName());
++        }
++
++        // ── CASE04: compressed asset — open serves bytes, openFd refuses ─
++        try {
++            byte[] comp = readAll(am.open("c9_compressed.txt"));
++            String afdResult;
++            try {
++                am.openFd("c9_compressed.txt");
++                afdResult = "UNEXPECTED-OPENED";
++            } catch (FileNotFoundException e) {
++                afdResult = "FileNotFoundException";
++            }
++            report("CASE04 open=" + comp.length + " bytes; openFd=" + afdResult);
++        } catch (Exception e) {
++            report("CASE04 ERROR " + e.getClass().getSimpleName());
++        }
++
++        // ── CASE05: uncompressed asset — AFD data-offset law ─────────────
++        try {
++            AssetFileDescriptor afd = am.openFd("c9_stored.bin");
++            byte[] viaOpen = readAll(am.open("c9_stored.bin"));
++            byte[] viaStream = readAll(afd.createInputStream());
++            boolean match = Arrays.equals(viaOpen, viaStream);
++            report("CASE05 afd startOffset=" + afd.getStartOffset()
++                    + " length=" + afd.getLength()
++                    + " declared=" + afd.getDeclaredLength()
++                    + " openBytes=" + viaOpen.length
++                    + " stream==open=" + match);
++            afd.close();
++        } catch (Exception e) {
++            report("CASE05 ERROR " + e.getClass().getSimpleName());
++        }
++
++        // ── CASE06: VectorDrawable intrinsic law (C9-3) ──────────────────
++        try {
++            Drawable v = res.getDrawable(R.drawable.c9_vector);
++            report("CASE06 intrinsic=" + v.getIntrinsicWidth() + "x"
++                    + v.getIntrinsicHeight());
++        } catch (Exception e) {
++            report("CASE06 ERROR " + e.getClass().getSimpleName());
++        }
++
++        // ── CASE07: density-qualified bucket selection ───────────────────
++        report("CASE07 photo=" + (photo != null
++                    ? photo.getWidth() + "x" + photo.getHeight() : "null")
++                + " at=" + dpi);
++
++        // ── CASE08: locale-qualified string ──────────────────────────────
++        report("CASE08 string=" + res.getString(R.string.c9_hello) + " locale=" + dpi);
++
++        // ── CASE09: custom font from assets ──────────────────────────────
++        try {
++            Typeface tf = Typeface.createFromAsset(am, "fonts/c9_font.ttf");
++            report("CASE09 typeface=" + (tf != null ? "loaded" : "null"));
++        } catch (Exception e) {
++            report("CASE09 ERROR " + e.getClass().getSimpleName());
++        }
++
++        // ── CASE10: missing resource laws ────────────────────────────────
++        Bitmap missing = BitmapFactory.decodeResource(res, R.raw.c9_invalid);
++        String missingString;
++        try {
++            // AOSP NotFoundException law: a WELL-FORMED but ABSENT resid
++            // (no R field can exist for a missing resource — raw id used).
++            missingString = String.valueOf(res.getString(0x7f0b0069));
++        } catch (Resources.NotFoundException e) {
++            missingString = "NotFoundException";
++        } catch (Exception e) {
++            missingString = e.getClass().getSimpleName();
++        }
++        report("CASE10 decode_null=" + (missing == null)
++                + "; string_error=" + missingString);
++
++        // ── CASE11: missing asset ────────────────────────────────────────
++        try {
++            am.open("missing.bin");
++            report("CASE11 asset_error=UNEXPECTED-OPENED");
++        } catch (FileNotFoundException e) {
++            report("CASE11 asset_error=FileNotFoundException");
++        } catch (Exception e) {
++            report("CASE11 asset_error=" + e.getClass().getSimpleName());
++        }
++
++        // ── CASE12: invalid image data → null (no fake pixels) ───────────
++        Bitmap invalid = BitmapFactory.decodeResource(res, R.raw.c9_invalid);
++        report("CASE12 invalid_null=" + (invalid == null));
++
++        // ── CASE13: nodpi → never density-scaled ─────────────────────────
++        Bitmap nodpi = BitmapFactory.decodeResource(res, R.drawable.c9_nodpi);
++        report("CASE13 nodpi=" + (nodpi != null
++                    ? nodpi.getWidth() + "x" + nodpi.getHeight() : "null")
++                + " at=" + dpi);
++
++        // ── CASE14: §6 View chain — real views, real texts ───────────────
++        LinearLayout root = new LinearLayout(this);
++        root.setOrientation(LinearLayout.VERTICAL);
++        TextView tv = new TextView(this);
++        tv.setText(res.getString(R.string.c9_hello));
++        ImageView ivPhoto = new ImageView(this);
++        ivPhoto.setImageResource(R.drawable.c9_photo);
++        ImageView ivVector = new ImageView(this);
++        ivVector.setImageResource(R.drawable.c9_vector);
++        root.addView(tv);
++        root.addView(ivPhoto);
++        root.addView(ivVector);
++        setContentView(root);
++
++        int children = root.getChildCount();
++        StringBuilder texts = new StringBuilder();
++        for (int i = 0; i < children; i++) {
++            if (root.getChildAt(i) instanceof TextView)
++                texts.append(((TextView) root.getChildAt(i)).getText());
++        }
++        report("CASE14 children=" + children + " texts=" + texts);
++    }
++}
+diff --git a/scripts/c9/gen_c9_fixture_assets.py b/scripts/c9/gen_c9_fixture_assets.py
+new file mode 100644
+index 0000000..be7aa9b
+--- /dev/null
++++ b/scripts/c9/gen_c9_fixture_assets.py
+@@ -0,0 +1,88 @@
++#!/usr/bin/env python3
++"""scripts/c9/gen_c9_fixture_assets.py — deterministic binary assets for the
++CODER 9 resources harness (tests/fixtures/c9_resources).
++
++Everything is generated from fixed constants (no randomness, no network):
++  res/drawable-hdpi/c9_photo.png   60x30 GREEN hdpi pattern
++  res/drawable-mdpi/c9_photo.png   40x20 RED mdpi pattern
++  res/drawable-nodpi/c9_nodpi.png  40x20 GREEN nodpi pattern
++  res/drawable/c9_webp.webp        24x12 blue lossless WebP
++  res/raw/c9_invalid.dat           invalid image bytes (NOT decodable)
++  assets/sub/deep/c9_nested.bin    29 bytes, head "C9-NESTE"
++  assets/c9_compressed.txt         2000 'z' bytes (post-pinned DEFLATE)
++  assets/c9_stored.bin             115 bytes (post-pinned STORED, AFD case)
++  assets/fonts/c9_font.ttf         DejaVuSans.ttf copy (host system font)
++
++Idempotent: safe to re-run; identical bytes every run.
++"""
++import os
++import shutil
++import zlib
++import struct
++
++HERE = os.path.dirname(os.path.abspath(__file__))
++FIXTURE = os.path.normpath(os.path.join(
++    HERE, "..", "..", "miniandroid", "tests", "fixtures", "c9_resources"))
++
++
++def png_chunk(tag: bytes, data: bytes) -> bytes:
++    return (struct.pack(">I", len(data)) + tag + data
++            + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF))
++
++
++def write_png(path: str, w: int, h: int, pixel_fn) -> None:
++    raw = b"".join(b"\x00" + bytes(v for x in range(w) for v in pixel_fn(x, y))
++                   for y in range(h))
++    ihdr = struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0)  # 8-bit RGB
++    png = (b"\x89PNG\r\n\x1a\n" + png_chunk(b"IHDR", ihdr)
++           + png_chunk(b"IDAT", zlib.compress(raw, 9)) + png_chunk(b"IEND", b""))
++    os.makedirs(os.path.dirname(path), exist_ok=True)
++    with open(path, "wb") as f:
++        f.write(png)
++
++
++def main() -> None:
++    # Density patterns — deliberately DIFFERENT colors per bucket so the §6
++    # pixel law proves WHICH bucket was selected at the framebuffer level.
++    green = lambda x, y: (0x2E, 0xB8, 0x4E)                     # hdpi pattern
++    red = lambda x, y: (0xD8, 0x3A, 0x2E)                       # mdpi pattern
++
++    write_png(os.path.join(FIXTURE, "res/drawable-hdpi/c9_photo.png"), 60, 30, green)
++    write_png(os.path.join(FIXTURE, "res/drawable-mdpi/c9_photo.png"), 40, 20, red)
++    write_png(os.path.join(FIXTURE, "res/drawable-nodpi/c9_nodpi.png"), 40, 20, green)
++
++    from PIL import Image
++    img = Image.new("RGB", (24, 12), (30, 144, 255))            # blue webp
++    webp_path = os.path.join(FIXTURE, "res/drawable/c9_webp.webp")
++    os.makedirs(os.path.dirname(webp_path), exist_ok=True)
++    img.save(webp_path, "WEBP", lossless=True)
++
++    # Invalid image: plausible magic then garbage — decoders must answer null.
++    with open(os.path.join(FIXTURE, "res/raw/c9_invalid.dat"), "wb") as f:
++        f.write(b"\x89PNG\r\n\x1a\n" + b"\xff" * 31)
++
++    nested = (b"C9-NESTED-ASSET-DATA-OK!\x01\x02\x03\x04\x05")   # 29 bytes
++    assert len(nested) == 29
++    os.makedirs(os.path.join(FIXTURE, "assets/sub/deep"), exist_ok=True)
++    with open(os.path.join(FIXTURE, "assets/sub/deep/c9_nested.bin"), "wb") as f:
++        f.write(nested)
++
++    with open(os.path.join(FIXTURE, "assets/c9_compressed.txt"), "wb") as f:
++        f.write(b"z" * 2000)
++
++    stored = (b"C9-STORED-ASSET-FD-LAW " + bytes(range(48, 48 + 89)) + b"END")
++    assert len(stored) == 115
++    with open(os.path.join(FIXTURE, "assets/c9_stored.bin"), "wb") as f:
++        f.write(stored)
++
++    font_src = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
++    font_dst = os.path.join(FIXTURE, "assets/fonts/c9_font.ttf")
++    os.makedirs(os.path.dirname(font_dst), exist_ok=True)
++    if not os.path.exists(font_dst):
++        shutil.copyfile(font_src, font_dst)
++
++    print("C9 fixture assets generated at", FIXTURE)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/c9/postprocess_c9_fixture.py b/scripts/c9/postprocess_c9_fixture.py
+new file mode 100644
+index 0000000..ca913ac
+--- /dev/null
++++ b/scripts/c9/postprocess_c9_fixture.py
+@@ -0,0 +1,69 @@
++#!/usr/bin/env python3
++"""scripts/c9/postprocess_c9_fixture.py — pin ZIP storage laws + determinism
++for the CODER 9 fixture APK, and print the evidence table.
++
++Pins (the aapt2/apk packaging may choose methods freely; the harness needs
++EXACT storage classes for CASE04/CASE05):
++  assets/c9_stored.bin     → method 0 (STORED)   — AFD data-offset law case
++  assets/c9_compressed.txt → method 8 (DEFLATE)  — openFd-refusal law case
++All entries: fixed 1980 epoch, normalized order → byte-deterministic APK.
++
++Prints per-entry: method, sizes, LFH data_offset (independent APPNOTE §4.3.7
++arithmetic) and the SHA-256 of every pinned payload, for the validator.
++"""
++import hashlib
++import struct
++import sys
++import zipfile
++import zlib
++
++FIXED_DATE = (1980, 1, 1, 0, 0, 0)
++
++
++def main() -> None:
++    apk = sys.argv[1]
++    with zipfile.ZipFile(apk, "r") as zin:
++        names = zin.namelist()
++        payload = {n: zin.read(n) for n in names}
++
++    def method_for(name: str, current: int) -> int:
++        if name == "assets/c9_stored.bin":
++            return zipfile.ZIP_STORED
++        if name == "assets/c9_compressed.txt":
++            return zipfile.ZIP_DEFLATED
++        return current
++
++    with zipfile.ZipFile(apk, "w") as zout:
++        for n in names:
++            info = zipfile.ZipInfo(n, date_time=FIXED_DATE)
++            info.compress_type = method_for(n, zipfile.ZIP_STORED)
++            info.external_attr = 0o644 << 16
++            zout.writestr(info, payload[n])
++
++    # ── Evidence table: independent data_offset arithmetic per APPNOTE ──
++    data = open(apk, "rb").read()
++    print("== C9 fixture post-processed ==")
++    with zipfile.ZipFile(apk, "r") as z:
++        for info in z.infolist():
++            if info.is_dir():
++                continue
++            lfh_off = info.header_offset
++            nlen, xlen = struct.unpack_from("<HH", data, lfh_off + 26)
++            data_off = lfh_off + 30 + nlen + xlen
++            if info.filename in ("assets/c9_stored.bin",
++                                 "assets/c9_compressed.txt",
++                                 "assets/sub/deep/c9_nested.bin"):
++                sha = hashlib.sha256(payload[info.filename]).hexdigest()
++                print(f"PINNED {info.filename}: method={info.compress_type} "
++                      f"lfh={lfh_off} data_offset={data_off} "
++                      f"csize={info.compress_size} sha256={sha}")
++            elif info.filename in ("AndroidManifest.xml", "resources.arsc",
++                                   "classes.dex"):
++                print(f"OK    {info.filename}: method={info.compress_type} "
++                      f"data_offset={data_off}")
++    print("APK SHA-256:", hashlib.sha256(data).hexdigest())
++    print("APK bytes:", len(data))
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/c9/validate_c9_resources.sh b/scripts/c9/validate_c9_resources.sh
+new file mode 100644
+index 0000000..224dba1
+--- /dev/null
++++ b/scripts/c9/validate_c9_resources.sh
+@@ -0,0 +1,207 @@
++#!/usr/bin/env bash
++# scripts/c9/validate_c9_resources.sh — CODER 9 synthetic resources harness.
++#
++# One-command reproduction of Issue #521 §5/§6:
++#   1. (re)generate deterministic fixture assets
++#   2. build the fixture APK with the REAL toolchain (aapt2+ECJ+D8)
++#   3. post-process: pin assets/c9_stored.bin STORED + c9_compressed.txt
++#      DEFLATE, 1980 epoch, print the independent APPNOTE §4.3.7 data offsets
++#   4. run the engine under 4 device configs (420/en, 160/en, 240/en, 420/fa)
++#   5. assert 41 laws: identity, selected config, raw entry bytes, SHA-256,
++#      decoder, dims/mime, error behavior + §6 framebuffer pixel law
++#
++# Usage: bash scripts/c9/validate_c9_resources.sh [evidence_dir]
++# Expects: build/miniandroid already built (make -j all inside miniandroid/).
++set -uo pipefail
++
++EVID="${1:-/tmp/c9_evidence}"
++ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
++FIX="$ROOT/miniandroid/tests/fixtures/c9_resources"
++ENG="$ROOT/miniandroid/build/miniandroid"
++APK="$EVID/c9_resources.apk"
++mkdir -p "$EVID"
++
++g_pass=0; g_fail=0
++law() {  # law <number> <description> <condition-exit-code>
++    if [ "$3" -eq 0 ]; then g_pass=$((g_pass+1));
++    else g_fail=$((g_fail+1)); echo "  LAW $1 FAIL: $2"; fi
++}
++
++echo "== [1/5] fixture assets (deterministic) =="
++python3 "$ROOT/scripts/c9/gen_c9_fixture_assets.py" > "$EVID/gen.log" 2>&1
++law 1 "fixture assets generated" $?
++
++echo "== [2/5] fixture APK build (aapt2+ECJ+D8 real toolchain) =="
++bash "$ROOT/scripts/build/build_fixture_apk.sh" "$FIX" "$APK" > "$EVID/build.log" 2>&1
++law 2 "fixture APK built" $?
++
++echo "== [3/5] post-process (pin STORED/DEFLATE + determinism) =="
++python3 "$ROOT/scripts/c9/postprocess_c9_fixture.py" "$APK" | tee "$EVID/postprocess.log"
++law 3 "stored asset pinned STORED" $(grep -qc "PINNED assets/c9_stored.bin: method=0" "$EVID/postprocess.log"; echo $?)
++law 4 "compressed asset pinned DEFLATE" $(grep -qc "PINNED assets/c9_compressed.txt: method=8" "$EVID/postprocess.log"; echo $?)
++
++STORED_DATA_OFFSET=$(grep -oP "PINNED assets/c9_stored\.bin:.*data_offset=\K[0-9]+" "$EVID/postprocess.log")
++STORED_SHA=$(grep -oP "PINNED assets/c9_stored\.bin:.*sha256=\K[0-9a-f]{64}" "$EVID/postprocess.log")
++
++echo "== [4/5] engine runs under 4 device configs =="
++run_cfg() {  # run_cfg <density> <locale> <tag>
++    MINIANDROID_DENSITY="$1" MINIANDROID_LOCALE="$2" timeout 180 \
++        "$ENG" run -o "$EVID/$3" "$APK" > "$EVID/$3.log" 2>&1
++}
++run_cfg 420 en-US run_420en; law 5 "run 420/en completes" $?
++run_cfg 160 en-US run_160en; law 6 "run 160/en completes" $?
++run_cfg 240 en-US run_240en; law 7 "run 240/en completes" $?
++run_cfg 420 fa-IR run_420fa; law 8 "run 420/fa completes" $?
++
++case_grep() {  # case_grep <tag> <pattern-with-anchor> -> 0 if it matches
++    grep -q "$2" "$EVID/$1.log"
++}
++
++echo "== [5/5] 33 law assertions =="
++# CASE01 — decodeResource density law per selected bucket (C9-1)
++law 9  "CASE01 @420 natural=105x53 (hdpi x1.75)" $(case_grep run_420en '^CASE01 natural=105x53'; echo $?)
++law 10 "CASE01 @160 natural=40x20 (mdpi x1.0)"   $(case_grep run_160en '^CASE01 natural=40x20'; echo $?)
++law 11 "CASE01 @240 natural=60x30 (hdpi x1.0)"   $(case_grep run_240en '^CASE01 natural=60x30'; echo $?)
++# CASE02 — WebP bounds contract + full decode
++ok=0
++for t in run_420en run_160en run_240en run_420fa; do
++    case_grep $t '^CASE02 bounds=24x12 mime=image/webp natural=' || ok=1
++done
++law 12 "CASE02 bounds=24x12 mime=image/webp (all runs)" $ok
++law 13 "CASE02 @420 natural=63x32" $(case_grep run_420en '^CASE02 bounds=24x12 mime=image/webp natural=63x32'; echo $?)
++# CASE03 — nested asset identity (list + bytes + head)
++ok=0
++for t in run_420en run_160en run_240en run_420fa; do
++    case_grep $t '^CASE03 list=\[deep\]; 29 bytes; head=43392d4e45535445' || ok=1
++done
++law 14 "CASE03 nested asset: list=[deep]; 29B; head=43392d4e45535445 (all runs)" $ok
++# CASE04 — compressed asset laws
++ok=0
++for t in run_420en run_160en run_240en run_420fa; do
++    case_grep $t '^CASE04 open=2000 bytes; openFd=FileNotFoundException' || ok=1
++done
++law 15 "CASE04 open=2000B served; openFd refuses (all runs)" $ok
++# CASE05 — AFD data-offset law vs independent python arithmetic (C9-2)
++ok=0
++for t in run_420en run_160en run_240en run_420fa; do
++    case_grep $t "^CASE05 afd startOffset=$STORED_DATA_OFFSET length=115 declared=115 openBytes=115 stream==open=true" || ok=1
++done
++law 16 "CASE05 startOffset==data_offset($STORED_DATA_OFFSET) len=115 stream==open (all runs)" $ok
++# fd-window provenance: bytes at [startOffset,+115) re-read independently
++ok=0
++python3 - "$APK" "$STORED_DATA_OFFSET" "$STORED_SHA" <<'PY' || ok=1
++import sys, zipfile, hashlib, struct
++apk, off, sha = sys.argv[1], int(sys.argv[2]), sys.argv[3]
++data = open(apk, 'rb').read()
++window = data[off:off+115]
++assert hashlib.sha256(window).hexdigest() == sha, "fd window sha mismatch"
++# cross-check: zipfile extraction of the same entry must equal the window
++with zipfile.ZipFile(apk) as z:
++    assert z.read('assets/c9_stored.bin') == window, "extraction != fd window"
++print("fd-window provenance OK (two read paths agree)")
++PY
++law 17 "fd window SHA-256 == payload sha; extraction path == fd path" $ok
++# CASE06 — VectorDrawable intrinsic law (C9-3)
++law 18 "CASE06 @420 intrinsic=126x126" $(case_grep run_420en '^CASE06 intrinsic=126x126'; echo $?)
++law 19 "CASE06 @240 intrinsic=72x72"   $(case_grep run_240en '^CASE06 intrinsic=72x72'; echo $?)
++law 20 "CASE06 @160 intrinsic=48x48"   $(case_grep run_160en '^CASE06 intrinsic=48x48'; echo $?)
++# CASE07 — density-qualified bucket selection (dims echo)
++law 21 "CASE07 @420 photo=105x53" $(case_grep run_420en '^CASE07 photo=105x53'; echo $?)
++law 22 "CASE07 @240 photo=60x30"  $(case_grep run_240en '^CASE07 photo=60x30'; echo $?)
++law 23 "CASE07 @160 photo=40x20"  $(case_grep run_160en '^CASE07 photo=40x20'; echo $?)
++# CASE08 — locale-qualified strings
++law 24 "CASE08 en 'Hello C9' (both en runs)" $([ $(grep -lc '^CASE08 string=Hello C9' "$EVID/run_420en.log" "$EVID/run_160en.log" 2>/dev/null | wc -l) -eq 2 ]; echo $?)
++law 25 "CASE08 fa 'سلام کد۹'" $(case_grep run_420fa '^CASE08 string=سلام کد۹'; echo $?)
++# CASE09/10/11/12 — typeface + missing-resource/asset + invalid image laws
++ok=0
++for t in run_420en run_160en run_240en run_420fa; do
++    case_grep $t '^CASE09 typeface=loaded' || ok=1
++    case_grep $t '^CASE10 decode_null=true; string_error=NotFoundException' || ok=1
++    case_grep $t '^CASE11 asset_error=FileNotFoundException' || ok=1
++    case_grep $t '^CASE12 invalid_null=true' || ok=1
++done
++law 26 "CASE09 typeface loaded (all runs)" $ok
++ok=0
++for t in run_420en run_160en run_240en run_420fa; do
++    case_grep $t '^CASE10 decode_null=true; string_error=NotFoundException' || ok=1
++done
++law 27 "CASE10 missing string → NotFoundException (all runs)" $ok
++ok=0
++for t in run_420en run_160en run_240en run_420fa; do
++    case_grep $t '^CASE11 asset_error=FileNotFoundException' || ok=1
++done
++law 28 "CASE11 missing asset → FileNotFoundException (all runs)" $ok
++ok=0
++for t in run_420en run_160en run_240en run_420fa; do
++    case_grep $t '^CASE12 invalid_null=true' || ok=1
++done
++law 29 "CASE12 invalid image → null, no fake pixels (all runs)" $ok
++# CASE13 — nodpi never scales
++ok=0
++for t in run_420en run_160en run_240en; do
++    case_grep $t '^CASE13 nodpi=40x20' || ok=1
++done
++law 30 "CASE13 nodpi=40x20 unscaled at 420/160/240" $ok
++# CASE14 — §6 view chain
++ok=0
++for t in run_420en run_160en run_240en; do
++    case_grep $t '^CASE14 children=3 texts=Hello C9' || ok=1
++done
++law 31 "CASE14 children=3 texts=Hello C9 (en runs)" $ok
++law 32 "CASE14 fa texts=سلام کد۹" $(case_grep run_420fa '^CASE14 children=3 texts=سلام کد۹'; echo $?)
++# §6 pixel law — bucket selection proven at the framebuffer level
++PIX=$(python3 - "$EVID" <<'PY'
++import sys
++from PIL import Image
++evid = sys.argv[1]
++out = {}
++for tag in ('run_160en', 'run_240en', 'run_420en', 'run_420fa'):
++    img = Image.open(f'{evid}/{tag}/screenshot.png').convert('RGB')
++    px = img.load(); w, h = img.size
++    red = green = blue = amber = 0
++    for y in range(0, h, 2):
++        for x in range(0, w, 2):
++            r, g, b = px[x, y]
++            if r > 150 and g < 110 and b < 110: red += 1
++            elif g > 130 and r < 110 and b < 130: green += 1
++            elif b > 130 and r < 110 and g < 110: blue += 1
++            elif r > 220 and g > 150 and b < 80: amber += 1
++    out[tag] = (red, green, blue, amber)
++print(out['run_160en'][0], out['run_160en'][1],
++      out['run_240en'][1], out['run_240en'][0],
++      out['run_420en'][1], out['run_420en'][0],
++      out['run_420fa'][1], out['run_420fa'][0],
++      min(out[t][2] for t in out), min(out[t][3] for t in out))
++PY
++)
++read R160 G160 G240 R240 G420 R420 GFA RFA BLUEMIN AMBERMIN <<< "$PIX"
++law 33 "pixel @160: RED family painted ($R160 px), ZERO green" $([ "$R160" -gt 500 ] && [ "$G160" -eq 0 ]; echo $?)
++law 34 "pixel @240: GREEN family painted ($G240 px), ZERO red" $([ "$G240" -gt 500 ] && [ "$R240" -eq 0 ]; echo $?)
++law 35 "pixel @420en: GREEN family painted ($G420 px), ZERO red" $([ "$G420" -gt 500 ] && [ "$R420" -eq 0 ]; echo $?)
++law 36 "pixel @420fa: GREEN family painted ($GFA px), ZERO red" $([ "$GFA" -gt 500 ] && [ "$RFA" -eq 0 ]; echo $?)
++law 37 "pixel: blue vector paints in ALL runs (min $BLUEMIN px)" $([ "$BLUEMIN" -gt 500 ]; echo $?)
++law 38 "pixel: amber triangle paints in ALL runs (min $AMBERMIN px)" $([ "$AMBERMIN" -gt 100 ]; echo $?)
++law 39 "pixel: bucket change MOVES the framebuffer (160 red vs 240/420 green)" $([ "$R160" -gt 0 ] && [ "$G240" -gt 0 ] && [ "$G420" -gt 0 ]; echo $?)
++
++# Evidence integrity — 4 distinct screenshot SHAs
++SHA_OUT=$(python3 - "$EVID" <<'PY'
++import sys, hashlib
++evid = sys.argv[1]
++shas = []
++for tag in ('run_420en', 'run_160en', 'run_240en', 'run_420fa'):
++    d = open(f'{evid}/{tag}/screenshot.png', 'rb').read()
++    shas.append(hashlib.sha256(d).hexdigest())
++    print(f"{tag} screenshot sha256={shas[-1]}")
++print("distinct:", len(set(shas)))
++PY
++)
++echo "$SHA_OUT" | tee "$EVID/screenshot_shas.txt"
++law 40 "4 screenshots exist" $([ $(grep -c "sha256=" "$EVID/screenshot_shas.txt") -eq 4 ]; echo $?)
++law 41 "4 DISTINCT screenshot SHAs (config changes the framebuffer)" $([ "$(grep -oP 'distinct: \K[0-9]+' "$EVID/screenshot_shas.txt")" -eq 4 ]; echo $?)
++
++echo "$STORED_SHA" > "$EVID/stored_payload_sha.txt"
++echo "APK $(sha256sum "$APK")" > "$EVID/apk_sha.txt"
++
++echo
++echo "== CODER 9 harness result: $g_pass/$((g_pass+g_fail)) PASS =="
++[ "$g_fail" -eq 0 ] || exit 1

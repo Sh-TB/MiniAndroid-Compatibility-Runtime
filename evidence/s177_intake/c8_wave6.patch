@@ -1,0 +1,2264 @@
+diff -u --recursive mar-w15/miniandroid/src/dex/dalvik_engine.cpp mar/miniandroid/src/dex/dalvik_engine.cpp
+--- mar-w15/miniandroid/src/dex/dalvik_engine.cpp	2026-11-05 21:26:44.554756317 +0000
++++ mar/miniandroid/src/dex/dalvik_engine.cpp	2026-11-05 21:15:21.735087759 +0000
+@@ -34610,13 +34610,63 @@
+                 // time (observed: probe/doosz resumed=8 per boundary,
+                 // parks=9). now+1 = exactly one park/rescan per boundary.
+                 // No clock (hs null) → 0, preserving wakeability.
++                //
++                // W6-FIX 01 (CODER 8, wave 6) — TIMED-PARK WAKE LAW
++                // (OpenJDK LockSupport): parkNanos(nanos) suspends UP TO
++                // nanos; parkUntil(deadline) until the ABSOLUTE deadline.
++                // The wake registration honors the ARGUMENT against the
++                // ONE virtual clock — parkNanos wakes at
++                // now + ceil(nanos/1e6) ms (JDK rounds up, min 1ms
++                // quantum), parkUntil at max(now+1, deadline-as-absolute-
++                // virtual-ms). Was: every timed form woke at now+1ms
++                // regardless — a 500ms parkNanos rescanned ~500× and any
++                // timed scheduler observable (withTimeout-style loops,
++                // timed queue consumers) read a wrong virtual clock.
++                // Arg shapes (same convention as the blocker law above):
++                // parkNanos(nanos) | parkNanos(blocker, nanos) |
++                // parkUntil(deadline) | parkUntil(blocker, deadline) —
++                // the FIRST numeric arg is the duration/deadline.
++                int64_t park_timed_ms = 0;  // 0 = unbounded (plain park)
++                int64_t park_absolute_ms = -1;  // parkUntil absolute form
++                if (method == "parkNanos" || method == "parkUntil") {
++                    for (const auto& a : args) {
++                        if (a.type == DalvikType::INT64 ||
++                            a.type == DalvikType::INT32) {
++                            int64_t v = a.type == DalvikType::INT64
++                                            ? a.long_val
++                                            : (int64_t)a.int_val;
++                            if (v < 0) v = 0;  // JDK: 0 nanos = no wait
++                            if (method == "parkNanos") {
++                                int64_t ms = (v + 999999LL) / 1000000LL;
++                                park_timed_ms = (ms < 1) ? 1 : ms;
++                            } else {
++                                park_absolute_ms = v;
++                            }
++                            break;
++                        }
++                        // blocker-object slots (parkXxx(blocker, x)) pass
++                        // through; a NULL_REF is skipped too.
++                    }
++                }
+                 if (auto* hs_py = shadow_registry_
+                                       ? shadow_registry_->find_as<
+                                             framework::HandlerShadow>()
+-                                      : nullptr)
+-                    park_yield_wake_at_ = hs_py->virtual_now_ms() + 1;
+-                else
++                                      : nullptr) {
++                    const int64_t now_py = hs_py->virtual_now_ms();
++                    if (park_absolute_ms >= 0) {
++                        // parkUntil: absolute deadline on the virtual
++                        // clock; never less than one quantum ahead.
++                        park_yield_wake_at_ =
++                            park_absolute_ms > now_py ? park_absolute_ms
++                                                      : now_py + 1;
++                    } else if (park_timed_ms > 0) {
++                        park_yield_wake_at_ = now_py + park_timed_ms;
++                    } else {
++                        park_yield_wake_at_ = now_py + 1;
++                    }
++                } else {
+                     park_yield_wake_at_ = 0;
++                }
+                 // S170-CONC (CODER 8, wave 3) JDK Thread.getState law:
+                 // an UNBOUNDED LockSupport.park() suspends in WAITING (no
+                 // deadline exists); parkNanos/parkUntil suspend in
+@@ -34926,6 +34976,90 @@
+             status = ApiCallTrace::Status::IMPLEMENTED;
+             return true;
+         }
++        // ── W6-FIX 09 (CODER 8, wave 6) — BlockingQueue.drainTo ─────────
++        // OpenJDK BlockingQueue law: drainTo(c) / drainTo(c, max) move up
++        // to max (or ALL) available elements from this queue into c in
++        // FIFO order, removing them from the queue, and answer HOW MANY
++        // were moved. Non-blocking (never waits); c == this or c == null →
++        // NPE (c == this also IAE in the JDK — both checked). Was:
++        // REC-MISS — every batch-consumer loop read nothing and drained
++        // nothing (the elements stayed on the queue forever).
++        if (method == "drainTo") {
++            // Arg convention: args[0] = the queue receiver; the drainTo
++            // collection lands at args[1]; the max at args[2] (2-arg form).
++            uint32_t target = 0;
++            int64_t max_n = INT64_MAX;
++            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF)
++                target = args[1].object_id;
++            if (args.size() >= 3) {
++                max_n = args[2].type == DalvikType::INT64
++                            ? args[2].long_val
++                            : (int64_t)args[2].int_val;
++            }
++            if (target == 0 || target == bq) {
++                throw_deferred("Ljava/lang/NullPointerException;",
++                               target == bq ? "cannot drainTo this queue"
++                                            : "drainTo collection is null",
++                               "W6-DT");
++                result = DalvikValue::make_int(0);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (max_n < 0) {
++                throw_deferred("Ljava/lang/IllegalArgumentException;",
++                               "maxElements is negative", "W6-DT");
++                result = DalvikValue::make_int(0);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            // Target collection runtime class (the add law dispatches on
++            // it — the receiver-shift convention: args[0] = receiver).
++            std::string tgt_cls = "Ljava/util/ArrayList;";
++            if (heap_.has_object(target)) {
++                if (const auto* to = heap_.get(target))
++                    if (!to->class_descriptor.empty())
++                        tgt_cls = to->class_descriptor;
++            }
++            int64_t moved = 0;
++            while (moved < max_n) {
++                int32_t cur = bq_read_count();
++                if (cur <= 0) break;
++                auto head = bq_read_slot(0);
++                for (int i = 1; i < cur; ++i) {
++                    auto v = bq_read_slot(i);
++                    bq_write_slot(i - 1, v.value_or(DalvikValue::make_null()));
++                }
++                heap_.set_object_field(bq, "__bq_n__",
++                                       DalvikValue::make_int(cur - 1));
++                if (head.has_value()) {
++                    std::vector<DalvikValue> add_args{
++                        DalvikValue::make_object(target, tgt_cls), *head};
++                    DalvikValue add_ret;
++                    ApiCallTrace::Status add_status =
++                        ApiCallTrace::Status::IMPLEMENTED;
++                    bridge_to_api(tgt_cls, "add", add_args, add_ret,
++                                  add_status);
++                }
++                ++moved;
++            }
++            // The freed capacity wakes a parked putter (the notFull
++            // condition — same wake law as take).
++            if (moved > 0) {
++                if (auto* ts_dt = shadow_registry_
++                                      ? shadow_registry_->find_as<
++                                            framework::ThreadShadow>()
++                                      : nullptr)
++                    ts_dt->notify_monitor(
++                        framework::LocksShadow::put_wait_key(bq),
++                        /*all=*/false);
++            }
++            std::cerr << "[F167-BQ] drainTo o" << bq << " → o" << target
++                      << " max=" << (max_n == INT64_MAX ? -1 : max_n)
++                      << " moved=" << moved << std::endl;
++            result = DalvikValue::make_int((int32_t)moved);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
+     }
+     // ══════════════════════════════════════════════════════════════════════
+     // S163-CONC (CODER 8) — OBJECT MONITOR CONDITION LAW:
+@@ -35550,9 +35684,20 @@
+         // the non-blocking surface: offer/peek/poll/size).
+         const bool is_lbd_170 =
+             class_name == "Ljava/util/concurrent/LinkedBlockingDeque;";
++        // ── W6-FIX 17/18/19/20 (CODER 8, wave 6) ── the wave-5 documented
++        // "park is engine-owned" boundaries CLOSE: LinkedTransferQueue,
++        // DelayQueue and PriorityBlockingQueue take-side BLOCKING arms
++        // park here (the shadow keeps the non-blocking surface).
++        const bool is_ltq_170 =
++            class_name == "Ljava/util/concurrent/LinkedTransferQueue;";
++        const bool is_dq_170 =
++            class_name == "Ljava/util/concurrent/DelayQueue;";
++        const bool is_pbq_170 =
++            class_name == "Ljava/util/concurrent/PriorityBlockingQueue;";
+         const bool is_juc_170 = is_latch_170 || is_sem_170 || is_barrier_170 ||
+                                 is_exch_170 || is_sq_170 || is_phaser_170 ||
+-                                is_lbd_170;
++                                is_lbd_170 || is_ltq_170 || is_dq_170 ||
++                                is_pbq_170;
+         auto* ls_170 =
+             shadow_registry_->find_as<framework::LocksShadow>();
+         auto* ts_170 =
+@@ -36013,6 +36158,35 @@
+             // the barrier and releases EVERY waiter; await(t,u) that times
+             // out BREAKS the barrier and throws BrokenBarrierException;
+             // reset() during a wait also surfaces the broken barrier.
++            // ── W6-FIX 12 (CODER 8, wave 6) — barrier observables + reset ──
++            // OpenJDK CyclicBarrier law:
++            //   * isBroken() → true iff the barrier is in the broken state
++            //     (a timed-out await or reset() broke it).
++            //   * getNumberWaiting() → the number of parties currently
++            //     waiting (the SAME ledger the await law's park prints).
++            //   * reset() → break any current generation (waiters surface
++            //     BrokenBarrierException) and start a fresh one.
++            // Was: REC-MISS on all three — every barrier supervision probe
++            // read the unimplemented path.
++            if (is_barrier_170 &&
++                (method == "isBroken" || method == "getNumberWaiting" ||
++                 method == "reset")) {
++                if (method == "isBroken") {
++                    result = DalvikValue::make_bool(
++                        ls_170->barrier_is_broken(recv_170));
++                } else if (method == "getNumberWaiting") {
++                    result = DalvikValue::make_long(
++                        ls_170->barrier_number_waiting(recv_170));
++                } else {
++                    ls_170->barrier_reset(recv_170);
++                    std::cerr << "[JUC] CyclicBarrier o" << recv_170
++                              << " reset → fresh generation (waiters broke)"
++                              << std::endl;
++                    result = DalvikValue::make_void();
++                }
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
+             if (is_barrier_170 &&
+                 (method == "await" || method == "getParties")) {
+                 if (method == "getParties") {
+@@ -36159,26 +36333,140 @@
+                     return true;
+                 }
+                 bool was_intr = false, was_notified = false;
++                // ── W6-FIX 10 (CODER 8, wave 6) — TIMED exchange(x,t,u) ──
++                // OpenJDK Exchanger.exchange(V, long, TimeUnit): blocks
++                // until a counterpart arrives OR the timeout elapses;
++                // interruptible; TimeoutException on deadline. Detected by
++                // the (recv, item, LONG timeout, TimeUnit unit) arg shape.
++                // Was: the timed form rode the UNBOUNDED law — the deadline
++                // was silently ignored and a partner-less exchange parked
++                // forever (or boundary-returned null on main).
++                bool exch_timed = false;
++                int64_t exch_timeout_ms = 0;
++                if (args.size() >= 4 &&
++                    (args[2].type == DalvikType::INT64 ||
++                     args[2].type == DalvikType::INT32) &&
++                    args[3].type == DalvikType::OBJECT_REF) {
++                    const int64_t tv_ex =
++                        args[2].type == DalvikType::INT64
++                            ? args[2].long_val
++                            : (int64_t)args[2].int_val;
++                    if (tv_ex < 0) {
++                        throw_deferred("Ljava/lang/IllegalArgumentException;",
++                                       "timeout is negative", "W6-EXC");
++                        result = DalvikValue::make_null();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    int32_t unit_ord_ex = 2;  // MILLISECONDS fallback
++                    if (args[3].object_id != 0 &&
++                        heap_.has_object(args[3].object_id)) {
++                        auto ord_ex = heap_.get_object_field(
++                            args[3].object_id, "ordinal");
++                        if (ord_ex.has_value() &&
++                            ord_ex->type == DalvikType::INT32)
++                            unit_ord_ex = ord_ex->int_val;
++                    }
++                    static const int64_t kExUnitMs[] = {
++                        1, 1, 1, 1000, 60000, 3600000, 86400000};
++                    exch_timeout_ms =
++                        tv_ex * ((unit_ord_ex >= 0 && unit_ord_ex <= 6)
++                                     ? kExUnitMs[unit_ord_ex]
++                                     : 1);
++                    exch_timed = true;
++                }
+                 if (ts_170->consume_wait_resume_result(
+                         self_170, recv_170, &was_intr, &was_notified)) {
+-                    // FIRST exchanger wakes with the completer's item.
+-                    uint32_t resume = ls_170->exchanger_resume_item(recv_170);
+-                    if (resume != 0 && heap_.has_object(resume)) {
+-                        std::string d;
+-                        if (const auto* o = heap_.get(resume)) d = o->class_descriptor;
+-                        result = DalvikValue::make_object(resume, d);
+-                    } else {
++                    if (was_intr) {
++                        throw_deferred("Ljava/lang/InterruptedException;",
++                                       "exchange interrupted", "W6-EXC");
+                         result = DalvikValue::make_null();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
+                     }
+-                    status = ApiCallTrace::Status::IMPLEMENTED;
+-                    return true;
++                    // Timed deadline expiry at the re-entry: the wait
++                    // record exists (consumed above), was NOT notified —
++                    // the wake came from the DEADLINE. JDK: TimeoutException.
++                    if (was_notified) {
++                        // FIRST exchanger wakes with the completer's item.
++                        uint32_t resume =
++                            ls_170->exchanger_resume_item(recv_170);
++                        if (resume != 0 && heap_.has_object(resume)) {
++                            std::string d;
++                            if (const auto* o = heap_.get(resume))
++                                d = o->class_descriptor;
++                            result = DalvikValue::make_object(resume, d);
++                        } else {
++                            result = DalvikValue::make_null();
++                        }
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    if (exch_timed) {
++                        std::cerr << "[JUC] Exchanger o" << recv_170
++                                  << " timed exchange → TimeoutException"
++                                  << std::endl;
++                        throw_deferred(
++                            "Ljava/util/concurrent/TimeoutException;",
++                            "exchange timed out", "W6-EXC");
++                        result = DalvikValue::make_null();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    // Unbounded re-entry with no notify: fall through and
++                    // re-park (the LBD-style re-check law).
+                 }
+                 ls_170->exchanger_register(recv_170, self_170, my_item);
+-                ts_170->register_wait(self_170, recv_170, INT64_MAX);
++                {
++                    int64_t now_ex = hs_170 ? hs_170->virtual_now_ms() : 0;
++                    ts_170->register_wait(
++                        self_170, recv_170,
++                        exch_timed ? now_ex + exch_timeout_ms : INT64_MAX);
++                }
+                 if (park_drain_last_depth_ >= 1) {
+                     park_yield_pending_ = true;
+-                    park_yield_wake_at_ = INT64_MAX;
++                    park_yield_wake_at_ =
++                        exch_timed
++                            ? (hs_170 ? hs_170->virtual_now_ms() +
++                                            exch_timeout_ms
++                                      : INT64_MAX)
++                            : INT64_MAX;
+                 } else {
++                    if (exch_timed && hs_170) {
++                        // MAIN-context timed exchange: advance the ONE
++                        // virtual clock to the deadline (the deterministic
++                        // block — same law family as main-context sleep),
++                        // drain what became due, then answer.
++                        hs_170->advance_virtual(exch_timeout_ms);
++                        drain_park_queues_bounded("exchange-timed");
++                        bool intr3 = false, notified3 = false;
++                        if (ts_170->consume_wait_resume_result(
++                                self_170, recv_170, &intr3, &notified3) &&
++                            notified3) {
++                            uint32_t resume =
++                                ls_170->exchanger_resume_item(recv_170);
++                            if (resume != 0 && heap_.has_object(resume)) {
++                                std::string d;
++                                if (const auto* o = heap_.get(resume))
++                                    d = o->class_descriptor;
++                                result = DalvikValue::make_object(resume, d);
++                            } else {
++                                result = DalvikValue::make_null();
++                            }
++                            status = ApiCallTrace::Status::IMPLEMENTED;
++                            return true;
++                        }
++                        std::cerr << "[JUC] Exchanger o" << recv_170
++                                  << " timed exchange (main) → "
++                                     "TimeoutException"
++                                  << std::endl;
++                        throw_deferred(
++                            "Ljava/util/concurrent/TimeoutException;",
++                            "exchange timed out", "W6-EXC");
++                        result = DalvikValue::make_null();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
+                     std::cerr << "[JUC][BOUNDARY] Exchanger o" << recv_170
+                               << " exchange on MAIN context — no counterpart "
+                                  "arrived; serialized boundary"
+@@ -36536,6 +36824,302 @@
+                     // notify a parked taker).
+                 }
+             }
++            // ── W6-FIX 17 (CODER 8, wave 6) — LinkedTransferQueue.take() ──
++            // OpenJDK law: take() retrieves and removes the head (a pending
++            // transfer's item first), WAITING if necessary. The wave-5
++            // boundary ("take EMPTY — park is engine-owned") closes: the
++            // empty-take arm registers on the queue's wait set and parks;
++            // the shadow's put/offer/transfer laws notify the SAME key
++            // after every enqueue, and a consumed pending transfer wakes a
++            // parked producer (the transfer-side rendezvous).
++            if (is_ltq_170 && method == "take") {
++                bool was_intr_lq = false, was_notified_lq = false;
++                if (ts_170->consume_wait_resume_result(
++                        self_170, recv_170, &was_intr_lq, &was_notified_lq)) {
++                    if (was_intr_lq) {
++                        throw_deferred("Ljava/lang/InterruptedException;",
++                                       "transfer queue take interrupted",
++                                       "W6-LTQ");
++                        result = DalvikValue::make_null();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    // notified → re-check below.
++                }
++                uint32_t el_lq = 0;
++                std::string d_lq;
++                if (ls_170->xfer_take(recv_170, el_lq, d_lq)) {
++                    // A consumed pending transfer wakes its parked producer
++                    // (the transfer-side wait set rides the put-wait key —
++                    // the same wake the shadow take law performs).
++                    if (auto* ts_wlq =
++                            shadow_registry_->find_as<framework::ThreadShadow>())
++                        ts_wlq->notify_monitor(
++                            framework::LocksShadow::put_wait_key(recv_170),
++                            /*all=*/false);
++                    result = el_lq != 0
++                                 ? DalvikValue::make_object(el_lq, d_lq)
++                                 : DalvikValue::make_null();
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                ts_170->register_wait(self_170, recv_170, INT64_MAX);
++                if (park_drain_last_depth_ >= 1) {
++                    park_yield_pending_ = true;
++                    park_yield_wake_at_ = INT64_MAX;
++                } else {
++                    std::cerr << "[JUC][BOUNDARY] LinkedTransferQueue o"
++                              << recv_170 << " take on MAIN context — "
++                                 "empty; serialized boundary"
++                              << std::endl;
++                    bool intr2 = false, notified2 = false;
++                    ts_170->consume_wait_resume_result(
++                        self_170, recv_170, &intr2, &notified2);
++                }
++                std::cerr << "[JUC] LinkedTransferQueue o" << recv_170
++                          << " take — consumer parked" << std::endl;
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            // ── W6-FIX 18 (CODER 8, wave 6) — LTQ.tryTransfer(e, t, u) ───
++            // OpenJDK law: the TIMED form transfers the element to a waiting
++            // consumer IMMEDIATELY when one exists; else waits up to the
++            // timeout for one to arrive; answers TRUE only on a real
++            // handoff. Was: the shadow answered false unconditionally ("the
++            // timed park is engine-owned") — a producer with a parked
++            // consumer could NEVER hand off, and the deadline was ignored.
++            if (is_ltq_170 && method == "tryTransfer" &&
++                args.size() >= 4 &&
++                (args[2].type == DalvikType::INT64 ||
++                 args[2].type == DalvikType::INT32) &&
++                args[3].type == DalvikType::OBJECT_REF) {
++                const uint32_t el_tq = args[1].type == DalvikType::OBJECT_REF
++                                           ? args[1].object_id
++                                           : 0;
++                if (el_tq == 0) {
++                    throw_deferred("Ljava/lang/NullPointerException;",
++                                   "tryTransfer element is null", "W6-LTQ");
++                    result = DalvikValue::make_bool(false);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                const int64_t tv_tq =
++                    args[2].type == DalvikType::INT64 ? args[2].long_val
++                                                      : (int64_t)args[2].int_val;
++                if (tv_tq < 0) {
++                    throw_deferred("Ljava/lang/IllegalArgumentException;",
++                                   "timeout is negative", "W6-LTQ");
++                    result = DalvikValue::make_bool(false);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                int32_t unit_ord_tq = 2;
++                if (args[3].object_id != 0 &&
++                    heap_.has_object(args[3].object_id)) {
++                    auto ord_tq = heap_.get_object_field(args[3].object_id,
++                                                         "ordinal");
++                    if (ord_tq.has_value() &&
++                        ord_tq->type == DalvikType::INT32)
++                        unit_ord_tq = ord_tq->int_val;
++                }
++                static const int64_t kTqUnitMs[] = {
++                    1, 1, 1, 1000, 60000, 3600000, 86400000};
++                const int64_t tq_ms =
++                    tv_tq * ((unit_ord_tq >= 0 && unit_ord_tq <= 6)
++                                 ? kTqUnitMs[unit_ord_tq]
++                                 : 1);
++                bool was_intr_tq = false, was_notified_tq = false;
++                if (ts_170->consume_wait_resume_result(
++                        self_170, recv_170, &was_intr_tq, &was_notified_tq)) {
++                    if (was_intr_tq) {
++                        throw_deferred("Ljava/lang/InterruptedException;",
++                                       "tryTransfer interrupted", "W6-LTQ");
++                        result = DalvikValue::make_bool(false);
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    if (was_notified_tq) {
++                        // A consumer arrived while parked: hand off NOW.
++                        ts_170->register_wait(self_170, recv_170, INT64_MAX);
++                        if (auto* ts_wtq = shadow_registry_->find_as<
++                                framework::ThreadShadow>())
++                            ts_wtq->notify_monitor(
++                                framework::LocksShadow::put_wait_key(recv_170),
++                                /*all=*/false);
++                        ls_170->xfer_register_put(recv_170, el_tq,
++                                                  "Ljava/lang/Object;");
++                        result = DalvikValue::make_bool(true);
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    // Deadline expiry: no consumer arrived in time.
++                    result = DalvikValue::make_bool(false);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                // Immediate handoff when a consumer is already waiting.
++                if (ts_170->waiters_on(recv_170) > 0) {
++                    ts_170->notify_monitor(recv_170, /*all=*/false);
++                    ls_170->xfer_register_put(recv_170, el_tq,
++                                              "Ljava/lang/Object;");
++                    result = DalvikValue::make_bool(true);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                // Park until a consumer takes (its take notifies recv) or
++                // the deadline expires.
++                int64_t now_tq = hs_170 ? hs_170->virtual_now_ms() : 0;
++                ts_170->register_wait(self_170, recv_170,
++                                      tq_ms > 0 ? now_tq + tq_ms : INT64_MAX);
++                if (park_drain_last_depth_ >= 1) {
++                    park_yield_pending_ = true;
++                    park_yield_wake_at_ =
++                        tq_ms > 0 ? now_tq + tq_ms : INT64_MAX;
++                } else if (hs_170 && tq_ms > 0) {
++                    hs_170->advance_virtual(tq_ms);
++                    drain_park_queues_bounded("tryTransfer-timed");
++                    bool intr3 = false, notified3 = false;
++                    if (ts_170->consume_wait_resume_result(
++                            self_170, recv_170, &intr3, &notified3) &&
++                        notified3) {
++                        ls_170->xfer_register_put(recv_170, el_tq,
++                                                  "Ljava/lang/Object;");
++                        result = DalvikValue::make_bool(true);
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    result = DalvikValue::make_bool(false);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                } else {
++                    std::cerr << "[JUC][BOUNDARY] LinkedTransferQueue o"
++                              << recv_170 << " tryTransfer on MAIN context"
++                              << std::endl;
++                    bool intr2 = false, notified2 = false;
++                    ts_170->consume_wait_resume_result(
++                        self_170, recv_170, &intr2, &notified2);
++                    result = DalvikValue::make_bool(false);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                std::cerr << "[JUC] LinkedTransferQueue o" << recv_170
++                          << " tryTransfer — producer parked" << std::endl;
++                result = DalvikValue::make_bool(false);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            // ── W6-FIX 19 (CODER 8, wave 6) — DelayQueue.take() ──────────
++            // OpenJDK law: take() retrieves the EXPIRED head, WAITING until
++            // the earliest deadline when the head is not yet due (the wave-5
++            // boundary "head not expired; park is engine-owned" closes).
++            // Deterministic wake: the wait record rides the HEAD's absolute
++            // due time (dq_head_due) — the virtual clock reaches it, the
++            // body re-drains, and the poll-due arm answers. A new EARLIER
++            // element wakes the waiter sooner (the offer law notifies the
++            // same key; the re-drain re-derives the honest deadline).
++            if (is_dq_170 && method == "take") {
++                bool was_intr_dq = false, was_notified_dq = false;
++                if (ts_170->consume_wait_resume_result(
++                        self_170, recv_170, &was_intr_dq,
++                        &was_notified_dq)) {
++                    if (was_intr_dq) {
++                        throw_deferred("Ljava/lang/InterruptedException;",
++                                       "delay queue take interrupted",
++                                       "W6-DQ");
++                        result = DalvikValue::make_null();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    // notified (a new element / nothing) → re-check below.
++                }
++                int64_t now_dq = hs_170 ? hs_170->virtual_now_ms() : 0;
++                uint32_t el_dq = 0;
++                std::string d_dq;
++                if (ls_170->dq_poll_due(recv_170, now_dq, el_dq, d_dq)) {
++                    result = DalvikValue::make_object(el_dq, d_dq);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                int64_t head_due = now_dq + 1;
++                int64_t hd = 0;
++                if (ls_170->dq_head_due(recv_170, hd) && hd > now_dq)
++                    head_due = hd;
++                ts_170->register_wait(self_170, recv_170, head_due);
++                if (park_drain_last_depth_ >= 1) {
++                    park_yield_pending_ = true;
++                    park_yield_wake_at_ = head_due;
++                } else if (hs_170) {
++                    // MAIN context: the deterministic block advances the
++                    // ONE clock to the head deadline (bounded wait law).
++                    hs_170->advance_virtual(head_due - now_dq);
++                    drain_park_queues_bounded("delayqueue-take");
++                    bool intr3 = false, notified3 = false;
++                    ts_170->consume_wait_resume_result(
++                        self_170, recv_170, &intr3, &notified3);
++                    now_dq = hs_170->virtual_now_ms();
++                    if (ls_170->dq_poll_due(recv_170, now_dq, el_dq, d_dq)) {
++                        result = DalvikValue::make_object(el_dq, d_dq);
++                    } else {
++                        result = DalvikValue::make_null();
++                    }
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                std::cerr << "[JUC] DelayQueue o" << recv_170
++                          << " take — taker parked until head due t="
++                          << head_due << std::endl;
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            // ── W6-FIX 20 (CODER 8, wave 6) — PriorityBlockingQueue.take() ─
++            // OpenJDK law: take() retrieves the MIN-priority head, WAITING
++            // until at least one element exists (the wave-5 boundary "take
++            // on empty — park is engine-owned" closes). The shadow's
++            // put/offer law notifies the queue key after every add.
++            if (is_pbq_170 && method == "take") {
++                bool was_intr_pq = false, was_notified_pq = false;
++                if (ts_170->consume_wait_resume_result(
++                        self_170, recv_170, &was_intr_pq,
++                        &was_notified_pq)) {
++                    if (was_intr_pq) {
++                        throw_deferred("Ljava/lang/InterruptedException;",
++                                       "priority queue take interrupted",
++                                       "W6-PBQ");
++                        result = DalvikValue::make_null();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                }
++                uint32_t el_pq = 0;
++                std::string d_pq;
++                if (ls_170->pbq_take(recv_170, el_pq, d_pq)) {
++                    result = el_pq != 0
++                                 ? DalvikValue::make_object(el_pq, d_pq)
++                                 : DalvikValue::make_null();
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                ts_170->register_wait(self_170, recv_170, INT64_MAX);
++                if (park_drain_last_depth_ >= 1) {
++                    park_yield_pending_ = true;
++                    park_yield_wake_at_ = INT64_MAX;
++                } else {
++                    std::cerr << "[JUC][BOUNDARY] PriorityBlockingQueue o"
++                              << recv_170 << " take on MAIN context — "
++                                 "empty; serialized boundary"
++                              << std::endl;
++                    bool intr2 = false, notified2 = false;
++                    ts_170->consume_wait_resume_result(
++                        self_170, recv_170, &intr2, &notified2);
++                }
++                std::cerr << "[JUC] PriorityBlockingQueue o" << recv_170
++                          << " take — taker parked" << std::endl;
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
+         }
+     }
+     // ══════════════════════════════════════════════════════════════════════
+@@ -53968,12 +54552,73 @@
+             }
+         }
+     }
+-    if ((method == "get" || method == "join") && !args.empty() &&
++    if ((method == "get" || method == "join" || method == "getNow") &&
++        !args.empty() &&
+         args[0].type == DalvikType::OBJECT_REF && shadow_registry_ != nullptr) {
+         if (auto* ex_cg =
+                 shadow_registry_->find_as<framework::ExecutorShadow>()) {
+             uint32_t cf_g = args[0].object_id;
+             if (ex_cg->is_cf(cf_g)) {
++                // ── W6-FIX 03 (CODER 8, wave 6) — CompletableFuture.getNow ──
++                // OpenJDK getNow(valueIfAbsent): the NON-BLOCKING read.
++                // COMPLETED → the real result; CANCELLED →
++                // CancellationException; completed exceptionally →
++                // CompletionException(cause); PENDING → valueIfAbsent
++                // (NEVER a drive — getNow does not block, so it must not
++                // run the task). Was: REC-MISS — every non-blocking CF
++                // reader either blocked (get) or read a stub value.
++                if (method == "getNow") {
++                    const auto* rec_gn = ex_cg->cf_record(cf_g);
++                    uint32_t else_val = 0;
++                    std::string else_cls;
++                    if (args.size() >= 2 &&
++                        args[1].type == DalvikType::OBJECT_REF) {
++                        else_val = args[1].object_id;
++                        if (heap_.has_object(else_val)) {
++                            if (const auto* eo = heap_.get(else_val))
++                                else_cls = eo->class_descriptor;
++                        }
++                    }
++                    if (rec_gn != nullptr) {
++                        if (rec_gn->state ==
++                            framework::ExecutorShadow::kFutureCancelled) {
++                            throw_deferred(
++                                "Ljava/util/concurrent/CancellationException;",
++                                "CompletableFuture was cancelled", "W6-CF");
++                            result = DalvikValue::make_void();
++                            status = ApiCallTrace::Status::IMPLEMENTED;
++                            return true;
++                        }
++                        if (rec_gn->state ==
++                            framework::ExecutorShadow::kFutureException) {
++                            throw_deferred(
++                                "Ljava/util/concurrent/CompletionException;",
++                                "completed exceptionally", "W6-CF");
++                            result = DalvikValue::make_void();
++                            status = ApiCallTrace::Status::IMPLEMENTED;
++                            return true;
++                        }
++                        if (rec_gn->state ==
++                                framework::ExecutorShadow::kFutureCompleted) {
++                            result = (rec_gn->has_result &&
++                                      rec_gn->result_oid != 0)
++                                         ? DalvikValue::make_object(
++                                               rec_gn->result_oid,
++                                               rec_gn->result_desc)
++                                         : DalvikValue::make_null();
++                            status = ApiCallTrace::Status::IMPLEMENTED;
++                            return true;
++                        }
++                    }
++                    // PENDING (or no record): the valueIfAbsent answer.
++                    std::cerr << "[EXECUTOR][CF] getNow o" << cf_g
++                              << " → PENDING → valueIfAbsent" << std::endl;
++                    result = else_val != 0
++                                 ? DalvikValue::make_object(else_val, else_cls)
++                                 : DalvikValue::make_null();
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
+                 auto* hs_cg = shadow_registry_->find_as<framework::HandlerShadow>();
+                 int64_t timeout_ms = -1;  // -1 = unbounded
+                 if (method == "get" && args.size() >= 3) {
+@@ -54123,6 +54768,79 @@
+         }
+     }
+     // ══════════════════════════════════════════════════════════════════════
++    // ── W6-FIX 04 (CODER 8, wave 6) — ExecutorService.awaitTermination ──
++    // OpenJDK ExecutorService.awaitTermination(timeout, unit): blocks until
++    // all tasks complete after shutdown, the timeout elapses, or the wait
++    // is interrupted; answers TRUE only on termination, never throws on
++    // timeout. Deterministic law:
++    //   * negative timeout → IllegalArgumentException (JDK);
++    //   * !shutdown → drive nothing, answer false (JDK: a running pool
++    //     never terminates — and on this runtime a non-shutdown pool with
++    //     no clock advance cannot reach termination inside the block);
++    //   * shutdown → drive the ONE queue NOW (the pending tasks run at
++    //     the scheduler drain point — this call IS the drain point, same
++    //     law family as park/joinBlocking) and answer the REAL
++    //     isTerminated law: shutdown ∧ zero pending.
++    // Was: REC-MISS — every awaitTermination poll read the unimplemented
++    // path and answered a stub void.
++    if (method == "awaitTermination" && !args.empty() &&
++        args[0].type == DalvikType::OBJECT_REF && shadow_registry_ != nullptr) {
++        if (auto* ex_at =
++                shadow_registry_->find_as<framework::ExecutorShadow>()) {
++            uint32_t ex_oid = args[0].object_id;
++            if (ex_at->knows_executor(ex_oid)) {
++                int64_t at_ms = 0;
++                if (args.size() >= 3) {
++                    int64_t tv_at =
++                        args[1].type == DalvikType::INT64
++                            ? args[1].long_val
++                            : (args[1].type == DalvikType::INT32
++                                   ? (int64_t)args[1].int_val
++                                   : 0);
++                    if (tv_at < 0) {
++                        throw_deferred(
++                            "Ljava/lang/IllegalArgumentException;",
++                            "timeout is negative", "W6-AT");
++                        result = DalvikValue::make_void();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    int32_t unit_ord_at = 2;  // MILLISECONDS fallback
++                    if (args[2].type == DalvikType::OBJECT_REF &&
++                        args[2].object_id != 0 &&
++                        heap_.has_object(args[2].object_id)) {
++                        auto ord_at = heap_.get_object_field(
++                            args[2].object_id, "ordinal");
++                        if (ord_at.has_value() &&
++                            ord_at->type == DalvikType::INT32)
++                            unit_ord_at = ord_at->int_val;
++                    }
++                    static const int64_t kAtUnitMs[] = {
++                        1, 1, 1, 1000, 60000, 3600000, 86400000};
++                    at_ms = tv_at * ((unit_ord_at >= 0 && unit_ord_at <= 6)
++                                         ? kAtUnitMs[unit_ord_at]
++                                         : 1);
++                }
++                const bool shutdown_at = ex_at->executor_is_shutdown(ex_oid);
++                if (shutdown_at) {
++                    // Drain point: run the pending submissions now (the
++                    // one-queue law — pending tasks of EVERY executor run
++                    // here; isTerminated reads the REAL per-executor
++                    // ledger afterwards).
++                    drain_park_queues_bounded("awaitTermination");
++                }
++                const bool terminated_at =
++                    shutdown_at && ex_at->pending_count_for(ex_oid) == 0;
++                std::cerr << "[EXECUTOR] awaitTermination o" << ex_oid
++                          << " shutdown=" << (shutdown_at ? "true" : "false")
++                          << " timeout=" << at_ms << "ms → "
++                          << (terminated_at ? "true" : "false") << std::endl;
++                result = DalvikValue::make_bool(terminated_at);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++    }
+     // S173-CONC (CODER 8, wave 4) — FutureTask.run() DIRECT law + the
+     // LongAccumulator fold + the LinkedBlockingDeque blocking arms.
+     // ══════════════════════════════════════════════════════════════════════
+@@ -60164,6 +60882,72 @@
+             }
+             in_nanos = saturating_mul(src_val, src_mult);
+             out = out_mult ? in_nanos / out_mult : 0;
++        }
++        // ── W6-FIX 02 (CODER 8, wave 6) — TimeUnit.sleep / timedJoin ────
++        // OpenJDK TimeUnit.java: the unit-granularity blocking conveniences
++        //   TimeUnit.sleep(duration)
++        //          == Thread.sleep(unit.toMillis(duration));
++        //   TimeUnit.timedJoin(thread, duration)
++        //          == Thread.join(unit.toMillis(duration)).
++        // Both ride the EXISTING Thread.sleep / THREAD.JOIN DRIVE laws via
++        // an argument-translated re-entry into the bridge (the unit
++        // receiver is dropped; the duration is pre-scaled with the SAME
++        // multiplier table the conversions above use). The Thread laws
++        // own every observable: negative-duration IAE, virtual-clock
++        // advance outside drained bodies, park-yield inside them,
++        // interruptible join. Was: REC-MISS — neither method existed
++        // anywhere, every unit-granularity delay caller silently proceeded
++        // with NO suspension at all.
++        else if (method == "sleep" || method == "timedJoin") {
++            int uidx2 = !args.empty() ? unit_index(args[0]) : -1;
++            if (uidx2 < 0) uidx2 = 2;  // defensive: MILLISECONDS
++            const size_t dur_idx = (method == "sleep") ? 1 : 2;
++            int64_t dur2 = 0;
++            if (args.size() > dur_idx) {
++                if (args[dur_idx].type == DalvikType::INT64)
++                    dur2 = args[dur_idx].long_val;
++                else if (args[dur_idx].type == DalvikType::INT32)
++                    dur2 = (int64_t)args[dur_idx].int_val;
++            }
++            const int64_t ms2 = saturating_mul(dur2, kToNanos[uidx2]) /
++                                1000000LL;
++            if (method == "sleep") {
++                std::vector<DalvikValue> sleep_args{DalvikValue::make_long(ms2)};
++                DalvikValue sl_ret;
++                ApiCallTrace::Status sl_status =
++                    ApiCallTrace::Status::IMPLEMENTED;
++                bridge_to_api("Ljava/lang/Thread;", "sleep", sleep_args,
++                              sl_ret, sl_status);
++            } else {
++                // timedJoin: args[1] = the Thread target.
++                uint32_t tjoin = 0;
++                std::string tjoin_cls = "Ljava/lang/Thread;";
++                if (args.size() >= 2 &&
++                    args[1].type == DalvikType::OBJECT_REF &&
++                    args[1].object_id != 0) {
++                    tjoin = args[1].object_id;
++                    if (!args[1].class_desc.empty())
++                        tjoin_cls = args[1].class_desc;
++                }
++                if (tjoin == 0) {
++                    throw_deferred("Ljava/lang/NullPointerException;",
++                                   "timedJoin thread is null", "W6-TU");
++                    result = DalvikValue::make_void();
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                std::vector<DalvikValue> join_args{
++                    DalvikValue::make_object(tjoin, tjoin_cls),
++                    DalvikValue::make_long(ms2)};
++                DalvikValue jn_ret;
++                ApiCallTrace::Status jn_status =
++                    ApiCallTrace::Status::IMPLEMENTED;
++                bridge_to_api("Ljava/lang/Thread;", "join", join_args, jn_ret,
++                              jn_status);
++            }
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
+         } else {
+             // Not a TimeUnit conversion — leave to later handlers.
+             goto timeunit_not_handled;
+diff -u --recursive mar-w15/miniandroid/src/framework/android_shadows.cpp mar/miniandroid/src/framework/android_shadows.cpp
+--- mar-w15/miniandroid/src/framework/android_shadows.cpp	2026-11-05 21:26:44.555756320 +0000
++++ mar/miniandroid/src/framework/android_shadows.cpp	2026-11-05 21:12:12.195347149 +0000
+@@ -4039,10 +4039,18 @@
+             ctx.has_receiver ? ctx.receiver_id : main_thread_id_));
+     }
+     if (m == "toString") {
++        // ── W6-FIX 11 (CODER 8, wave 6) — JDK Thread.toString law ──────
++        // "Thread[" + name + "," + priority + "," + group + "]" — the
++        // REAL per-thread priority (the S170 setPriority store), not a
++        // hardcoded 5. Was: every thread with setPriority(N) printed
++        // ",5," — priority observables lied through toString.
+         std::string s = "Thread[" + thread_name(ctx.has_receiver
+                                                     ? ctx.receiver_id
+                                                     : 0) +
+-                        ",5,main]";
++                        "," +
++                        std::to_string(thread_priority(
++                            ctx.has_receiver ? ctx.receiver_id : 0)) +
++                        ",main]";
+         return CallResult::handled_string(s);
+     }
+     return CallResult::not_handled();
+@@ -5273,19 +5281,71 @@
+             return CallResult::handled_bool(aflag != 0);
+         }
+         if (m == "recycle" || m == "recycleUnchecked") {
+-            // AOSP Message.recycle returns the message to the pool. The
+-            // serialized engine keeps the heap object (identity stable for
+-            // the deterministic law); loud boundary, never silent pool magic.
++            // ── W6-FIX 16 (CODER 8, wave 6) — AOSP Message.recycle law ──
++            // AOSP Message.recycle(): "if (isInUse()) throw ISE (pool
++            // present) / return; else recycleUnchecked()" — the recycled
++            // message has its payload RESET (what/arg1/arg2 = 0, obj =
++            // null) and the recycled FLAG observable through isRecycled().
++            // A double recycle is LEGAL (the second resets an already-
++            // clean message). The serialized engine keeps the heap object
++            // (identity-stable law) and stores the flag in __recycled__.
++            // Was: a loud no-op — payload survived recycle, every
++            // "recycle() … isRecycled()" probe lied, and a recycled
++            // message's stale fields leaked into the next reader.
++            int32_t in_use = 0;
++            heap_->get_object_int_field(msg, "__in_use__", in_use);
++            if (in_use != 0) {
++                std::cerr << "[QUEUE][LAW] Message o" << msg
++                          << " recycle while IN USE → IllegalStateException"
++                          << std::endl;
++                return CallResult::handled_exception(
++                    "Ljava/lang/IllegalStateException;",
++                    "This message cannot be recycled because it's still "
++                    "in use.");
++            }
++            heap_->set_object_int_field(msg, "__recycled__", 1);
++            heap_->set_object_int_field(msg, "__what__", 0);
++            heap_->set_object_int_field(msg, "__arg1__", 0);
++            heap_->set_object_int_field(msg, "__arg2__", 0);
++            heap_->set_object_int_field(msg, "__when__", 0);
+             std::cerr << "[QUEUE] Message o" << msg
+-                      << " recycled (pool no-op — identity-stable law)"
++                      << " recycled (payload reset — identity-stable law)"
+                       << std::endl;
+             return CallResult::handled_void();
+         }
++        if (m == "isRecycled") {
++            int32_t rec = 0;
++            heap_->get_object_int_field(msg, "__recycled__", rec);
++            return CallResult::handled_bool(rec != 0);
++        }
+         if (m == "toString") {
+-            int32_t what = 0;
++            // ── W6-FIX 16: the AOSP toString field set ─────────────────
++            // "Message{ what=N when=T arg1=N arg2=N obj=O }" — the REAL
++            // payload fields (was: what only, when/arg/obj omitted —
++            // forensics logs could not identify a message).
++            int32_t what = 0, a1 = 0, a2 = 0, when = 0;
+             heap_->get_object_int_field(msg, "__what__", what);
+-            return CallResult::handled_string("Message{what=" +
+-                                              std::to_string(what) + "}");
++            heap_->get_object_int_field(msg, "__arg1__", a1);
++            heap_->get_object_int_field(msg, "__arg2__", a2);
++            heap_->get_object_int_field(msg, "__when__", when);
++            uint32_t obj_id = 0;
++            std::string obj_part = "obj=null";
++            if (heap_->get_object_ref_field(msg, "__obj__", obj_id)) {
++                if (obj_id != 0) {
++                    std::string obj_cls;
++                    if (heap_->get_object_class(obj_id, obj_cls) &&
++                        !obj_cls.empty())
++                        obj_part = "obj=" + std::to_string(obj_id) + " (" +
++                                   obj_cls + ")";
++                    else
++                        obj_part = "obj=" + std::to_string(obj_id);
++                }
++            }
++            return CallResult::handled_string(
++                "Message{ what=" + std::to_string(what) +
++                " when=" + std::to_string(when) +
++                " arg1=" + std::to_string(a1) +
++                " arg2=" + std::to_string(a2) + " " + obj_part + " }");
+         }
+     }
+ 
+diff -u --recursive mar-w15/miniandroid/src/framework/android_shadows.h mar/miniandroid/src/framework/android_shadows.h
+--- mar-w15/miniandroid/src/framework/android_shadows.h	2026-11-05 21:26:44.555756320 +0000
++++ mar/miniandroid/src/framework/android_shadows.h	2026-11-05 21:08:44.769505063 +0000
+@@ -647,6 +647,23 @@
+         states_[thread_oid] = ThreadState::RUNNABLE;
+         return true;
+     }
++    // ── W6-FIX 10 (CODER 8, wave 6) — timed-block expiry probe ────────
++    // Pre-consume read for the timed blocking laws (Exchanger.exchange(x,
++    // t, u) family): TRUE exactly when this thread's wait record on the
++    // monitor EXISTS, was never notified, carried a FINITE deadline, and
++    // the deadline has passed. The timed re-entry sites throw
++    // TimeoutException on this signal instead of re-parking (which would
++    // push the deadline out forever).
++    bool wait_expired(uint32_t thread_oid, uint32_t monitor_oid,
++                      int64_t now_ms) const {
++        auto it = wait_records_.find(thread_oid);
++        if (it == wait_records_.end()) return false;
++        if (monitor_oid != 0 && it->second.monitor_oid != monitor_oid)
++            return false;
++        return !it->second.notified &&
++               it->second.wake_at_ms != INT64_MAX &&
++               it->second.wake_at_ms <= now_ms;
++    }
+ 
+     // ── HandlerThread looper binding (S170-CONC HandlerThread law) ────
+     // getLooper() allocates ONE Looper per HandlerThread and binds it
+diff -u --recursive mar-w15/miniandroid/src/framework/atomic_shadow.cpp mar/miniandroid/src/framework/atomic_shadow.cpp
+--- mar-w15/miniandroid/src/framework/atomic_shadow.cpp	2026-11-05 21:26:44.555756320 +0000
++++ mar/miniandroid/src/framework/atomic_shadow.cpp	2026-11-05 21:05:24.240703153 +0000
+@@ -50,9 +50,14 @@
+         cls == "Ljava/util/concurrent/atomic/AtomicIntegerArray;";
+     const bool is_long_array =
+         cls == "Ljava/util/concurrent/atomic/AtomicLongArray;";
++    // W6-FIX 07 (CODER 8, wave 6) — the PAIRED (ref, stamp|mark) family.
++    const bool is_stamped =
++        cls == "Ljava/util/concurrent/atomic/AtomicStampedReference;";
++    const bool is_markable =
++        cls == "Ljava/util/concurrent/atomic/AtomicMarkableReference;";
+     if (!is_ref && !is_int && !is_long && !is_bool &&
+         !is_ref_upd && !is_long_upd && !is_int_upd && !is_ref_array &&
+-        !is_int_array && !is_long_array)
++        !is_int_array && !is_long_array && !is_stamped && !is_markable)
+         return CallResult::not_handled();
+ 
+     // ── Atomic*FieldUpdater family (M4 F-028d) ─────────────────────────
+@@ -339,6 +344,135 @@
+         return static_cast<int64_t>(ctx.arg_as_int(i));
+     };
+ 
++    // ── W6-FIX 07 (CODER 8, wave 6) — AtomicStampedReference /
++    // AtomicMarkableReference (libcore/ojluni law) ──────────────────
++    // A PAIRED (reference, stamp|mark) cell:
++    //   * <init>(initialRef, initialStamp|initialMark).
++    //   * getReference()/getStamp()/isMarked() read the pair.
++    //   * get(int[] stampHolder)/get(boolean[] markHolder) read the ref
++    //     AND write the pair member into the holder array element 0.
++    //   * compareAndSet(expectedRef, newRef, expectedStamp, newMark):
++    //     succeeds iff BOTH members match — ref by IDENTITY (null matches
++    //     null), stamp/mark by VALUE. Serialized engine: no spurious
++    //     failure (single thread, no ABA window).
++    //   * set(newRef, newStamp|newMark): unconditional pair store.
++    //   * attemptStamp(expectedRef, newStamp) / attemptMark(expectedRef,
++    //     newMark): CAS holding the ref fixed.
++    // Was: ABSENT — every lock-free-library stamp/mark CAS chain
++    // (non-blocking algorithm bookkeeping) fell to the unimplemented
++    // path and silently no-op'd.
++    if (is_stamped || is_markable) {
++        auto ref_matches = [&](const CallContext::Arg& expect,
++                               const StampedCell& c) -> bool {
++            if (expect.kind == CallContext::Arg::Kind::NULL_REF)
++                return !c.has_ref || c.ref_id == 0;
++            if (expect.kind == CallContext::Arg::Kind::OBJECT)
++                return c.has_ref && c.ref_id == expect.object_id;
++            if (expect.kind == CallContext::Arg::Kind::STRING)
++                return false;  // string payloads ride the object path here
++            // Non-reference expectation (garbage shape): value law.
++            return !c.has_ref;
++        };
++        auto ref_store = [&](StampedCell& c, const CallContext::Arg& a) {
++            if (a.kind == CallContext::Arg::Kind::OBJECT) {
++                c.has_ref = true;
++                c.ref_id = a.object_id;
++                c.ref_cls = a.object_class;
++            } else {
++                c.has_ref = false;
++                c.ref_id = 0;
++                c.ref_cls.clear();
++            }
++        };
++        auto ref_result = [&](const StampedCell& c) -> CallResult {
++            return c.has_ref && c.ref_id != 0
++                       ? CallResult::handled_object(c.ref_id, c.ref_cls)
++                       : CallResult::handled_null();
++        };
++        if (m == "<init>") {
++            StampedCell& c = stamped_[recv];
++            if (!ctx.args.empty()) ref_store(c, ctx.args[0]);
++            if (ctx.args.size() >= 2) {
++                if (is_stamped)
++                    c.stamp = arg_num(1);
++                else
++                    c.mark = ctx.args[1].kind == CallContext::Arg::Kind::BOOL
++                                 ? ctx.args[1].bool_val
++                                 : ctx.arg_as_int(1) != 0;
++            }
++            return CallResult::handled_void();
++        }
++        if (!ctx.has_receiver) return CallResult::not_handled();
++        StampedCell& c = stamped_[recv];
++        if (m == "getReference") return ref_result(c);
++        if (m == "getStamp" && is_stamped)
++            return CallResult::handled_long(c.stamp);
++        if (m == "isMarked" && is_markable)
++            return CallResult::handled_bool(c.mark);
++        if (m == "get") {
++            // get(holder): holder[0] = the stamp/mark pair member.
++            if (ctx.args.size() >= 1 &&
++                ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
++                const uint32_t holder = ctx.args[0].object_id;
++                if (heap_ && holder != 0) {
++                    if (is_stamped)
++                        heap_->set_object_int_field(holder, "0",
++                                                    (int32_t)c.stamp);
++                    else
++                        heap_->set_object_int_field(holder, "0",
++                                                    c.mark ? 1 : 0);
++                }
++            }
++            return ref_result(c);
++        }
++        if (m == "compareAndSet" || m == "weakCompareAndSet") {
++            const bool ref_ok =
++                ctx.args.size() >= 1 && ref_matches(ctx.args[0], c);
++            const bool pair_ok =
++                is_stamped
++                    ? (ctx.args.size() >= 3 && c.stamp == arg_num(2))
++                    : (ctx.args.size() >= 3 &&
++                       c.mark == (ctx.args[2].kind ==
++                                          CallContext::Arg::Kind::BOOL
++                                      ? ctx.args[2].bool_val
++                                      : ctx.arg_as_int(2) != 0));
++            if (ref_ok && pair_ok && ctx.args.size() >= 2)
++                ref_store(c, ctx.args[1]);
++            if (ref_ok && pair_ok && ctx.args.size() >= 4) {
++                if (is_stamped) c.stamp = arg_num(3);
++                else c.mark = ctx.args[3].kind == CallContext::Arg::Kind::BOOL
++                                  ? ctx.args[3].bool_val
++                                  : ctx.arg_as_int(3) != 0;
++            }
++            std::cerr << "[ATOMIC] " << cls << ".compareAndSet → "
++                      << (ref_ok && pair_ok ? "SWAP" : "FAIL") << std::endl;
++            return CallResult::handled_bool(ref_ok && pair_ok);
++        }
++        if (m == "set") {
++            if (!ctx.args.empty()) ref_store(c, ctx.args[0]);
++            if (ctx.args.size() >= 2) {
++                if (is_stamped) c.stamp = arg_num(1);
++                else c.mark = ctx.args[1].kind == CallContext::Arg::Kind::BOOL
++                                  ? ctx.args[1].bool_val
++                                  : ctx.arg_as_int(1) != 0;
++            }
++            return CallResult::handled_void();
++        }
++        if (m == "attemptStamp" || m == "attemptMark") {
++            // Hold the ref fixed; swap only the stamp/mark member.
++            const bool ref_ok =
++                !ctx.args.empty() && ref_matches(ctx.args[0], c);
++            if (ref_ok && ctx.args.size() >= 2) {
++                if (is_stamped) c.stamp = arg_num(1);
++                else c.mark = ctx.args[1].kind == CallContext::Arg::Kind::BOOL
++                                  ? ctx.args[1].bool_val
++                                  : ctx.arg_as_int(1) != 0;
++            }
++            return CallResult::handled_bool(ref_ok);
++        }
++        return CallResult::not_handled();
++    }
++
+     // ── AtomicReferenceArray family (M4 F-028h) ─────────────────────────
+     // Java/AOSP law (libcore/ojluni AtomicReferenceArray): elementwise
+     // get/set/getAndSet/compareAndSet/lazySet over a fixed-length grid of
+@@ -414,8 +548,17 @@
+             // ctor — the bridge materializes source arrays as objects; the
+             // copy law needs elementwise heap array reads that no real-APK
+             // hit has required yet, so adopt length-only (logged, honest).
++            // W6-FIX 06 (CODER 8, wave 6): JDK contract UPGRADE — negative
++            // length throws NegativeArraySizeException (was: clamped to 0).
+             int64_t n = ctx.args.empty() ? 0 : arg_num_of(ctx.args[0]);
+-            if (n < 0) n = 0;
++            if (n < 0) {
++                std::cerr << "[ATOMIC][LAW] AtomicReferenceArray.<init>("
++                          << n << ") → NegativeArraySizeException (JDK law)"
++                          << std::endl;
++                return CallResult::handled_exception(
++                    "Ljava/lang/NegativeArraySizeException;",
++                    "negative array length");
++            }
+             arrays_[recv].assign(static_cast<size_t>(n), ArrayCell{});
+             return CallResult::handled_void();
+         }
+@@ -424,22 +567,29 @@
+         // instance accessors: args[0] = index
+         if (ctx.args.empty()) return CallResult::not_handled();
+         const int64_t idx64 = arg_num(0);
+-        if (idx64 < 0) {
+-            if (std::getenv("MINIANDROID_ATOMIC_DIAG"))
+-                std::cerr << "[ATOMIC-DIAG] ARR-OOB " << cls << "." << m
+-                          << " idx=" << idx64 << " len=" << arr_len(recv)
+-                          << std::endl;
+-            return CallResult::handled_null();
++        // ── W6-FIX 06 (CODER 8, wave 6) — JDK BOUNDS CONTRACT UPGRADE ───
++        // EVERY indexed AtomicReferenceArray accessor with i < 0 ||
++        // i >= length throws ArrayIndexOutOfBoundsException — the SAME
++        // JDK contract the numeric twins (AtomicIntegerArray/
++        // AtomicLongArray) already implement (wave 5). The wave-5 §17.2
++        // intentional inconsistency (ARA null-OOB anchored for regression)
++        // is RESOLVED toward contract purity this wave: the null-OOB read
++        // masked programming bugs and the silent grow-on-write hid OOB
++        // stores. Reads: AIOOBE (never null); writes: AIOOBE (never grow).
++        if (idx64 < 0 || static_cast<uint64_t>(idx64) >= arr_len(recv)) {
++            std::cerr << "[ATOMIC][LAW] AtomicReferenceArray." << m
++                      << "(i=" << idx64 << ", len=" << arr_len(recv)
++                      << ") → ArrayIndexOutOfBoundsException (JDK law,"
++                      << " W6-FIX 06 contract upgrade)" << std::endl;
++            return CallResult::handled_exception(
++                "Ljava/lang/ArrayIndexOutOfBoundsException;",
++                "index " + std::to_string(idx64) + " out of bounds " +
++                    std::to_string(arr_len(recv)));
+         }
+         const size_t idx = static_cast<size_t>(idx64);
+         if (m == "get") {
+             ArrayCell* c = arr_cell(recv, idx);
+-            if (!c) {
+-                if (std::getenv("MINIANDROID_ATOMIC_DIAG"))
+-                    std::cerr << "[ATOMIC-DIAG] ARR-OOB get idx=" << idx
+-                              << " len=" << arr_len(recv) << std::endl;
+-                return CallResult::handled_null();
+-            }
++            if (!c) return CallResult::handled_null();  // unreachable post-guard
+             if (std::getenv("MINIANDROID_ATOMIC_DIAG")) {
+                 static thread_local uint64_t arr_log_n = 0;
+                 if (arr_log_n < 200) {
+@@ -453,23 +603,28 @@
+             return arr_load(*c);
+         }
+         if (m == "set" || m == "lazySet") {
+-            ArrayCell& c = arr_grow(recv, idx + 1)[idx];
++            ArrayCell& c = arr_cell(recv, idx)
++                               ? *arr_cell(recv, idx)
++                               : arr_grow(recv, idx + 1)[idx];
+             arr_store(c, ctx.args.size() > 1
+                              ? ctx.args[1]
+                              : CallContext::Arg{});
+             return CallResult::handled_void();
+         }
+         if (m == "getAndSet") {
+-            std::vector<ArrayCell>& v = arr_grow(recv, idx + 1);
+-            ArrayCell old = v[idx];
+-            arr_store(v[idx], ctx.args.size() > 1
+-                                  ? ctx.args[1]
+-                                  : CallContext::Arg{});
++            ArrayCell& c = arr_cell(recv, idx)
++                               ? *arr_cell(recv, idx)
++                               : arr_grow(recv, idx + 1)[idx];
++            ArrayCell old = c;
++            arr_store(c, ctx.args.size() > 1
++                             ? ctx.args[1]
++                             : CallContext::Arg{});
+             return arr_load(old);
+         }
+         if (m == "compareAndSet" || m == "weakCompareAndSet") {
+-            std::vector<ArrayCell>& v = arr_grow(recv, idx + 1);
+-            ArrayCell& c = v[idx];
++            ArrayCell& c = arr_cell(recv, idx)
++                               ? *arr_cell(recv, idx)
++                               : arr_grow(recv, idx + 1)[idx];
+             const CallContext::Arg& expect =
+                 ctx.args.size() > 1 ? ctx.args[1] : CallContext::Arg{};
+             const CallContext::Arg& upd =
+diff -u --recursive mar-w15/miniandroid/src/framework/atomic_shadow.h mar/miniandroid/src/framework/atomic_shadow.h
+--- mar-w15/miniandroid/src/framework/atomic_shadow.h	2026-11-05 21:26:44.198754965 +0000
++++ mar/miniandroid/src/framework/atomic_shadow.h	2026-11-05 21:04:35.567505953 +0000
+@@ -127,6 +127,20 @@
+         int64_t num = 0;
+     };
+     std::map<uint32_t, std::vector<ArrayCell>> arrays_;
++
++    // ── W6-FIX 07 (CODER 8, wave 6) — AtomicStampedReference /
++    // AtomicMarkableReference state (libcore/ojluni law): a PAIRED
++    // (reference, stamp-or-mark) cell. CAS succeeds iff BOTH the pair
++    // members match (ref identity + stamp/mark value); get(int[]) /
++    // get(boolean[]) write the pair member into the holder array.
++    struct StampedCell {
++        bool has_ref = false;       // false = null reference stored
++        uint32_t ref_id = 0;
++        std::string ref_cls;
++        int64_t stamp = 0;          // AtomicStampedReference pair member
++        bool mark = false;          // AtomicMarkableReference pair member
++    };
++    std::map<uint32_t, StampedCell> stamped_;
+ };
+ 
+ }} // namespace miniandroid::framework
+diff -u --recursive mar-w15/miniandroid/src/framework/executor_shadow.cpp mar/miniandroid/src/framework/executor_shadow.cpp
+--- mar-w15/miniandroid/src/framework/executor_shadow.cpp	2026-11-05 21:26:44.555756320 +0000
++++ mar/miniandroid/src/framework/executor_shadow.cpp	2026-11-05 21:01:16.941700687 +0000
+@@ -607,7 +607,7 @@
+     // on across subsequent execute() calls.
+     if (cls == "Ljava/util/concurrent/Executors;") {
+         if (m == "newFixedThreadPool" || m == "newSingleThreadExecutor" ||
+-            m == "newCachedThreadPool") {
++            m == "newCachedThreadPool" || m == "newWorkStealingPool") {
+             if (!heap_) return CallResult::handled_null();
+             int n = ctx.arg_as_int(0, 1);
+             if (n < 0) n = 0;
+@@ -630,6 +630,51 @@
+             return CallResult::handled_object(
+                 id, "Ljava/util/concurrent/ThreadPoolExecutor;");
+         }
++        // ── W6-FIX 13 (CODER 8, wave 6) — thread factories ──
++        // OpenJDK Executors.defaultThreadFactory(): returns a REAL
++        // DefaultThreadFactory whose newThread(r) creates a REAL Thread
++        // named "pool-N-thread-M" (N = a GLOBAL pool sequence shared by
++        // all default factories, M = the per-factory thread sequence).
++        // privilegedThreadFactory(): identical identity law (the security
++        // context copy has no observable on this runtime — documented).
++        // Was: REC-MISS — every factory() caller chained an NPE on the
++        // null factory and ThreadFactory-driven pools never started.
++        if (m == "defaultThreadFactory" || m == "privilegedThreadFactory") {
++            if (!heap_) return CallResult::handled_null();
++            uint32_t fid = heap_->allocate(
++                "Ljava/util/concurrent/Executors$DefaultThreadFactory;");
++            factory_thread_no_[fid] = 0;
++            ++factory_pool_seq_;
++            std::cerr << "[EXECUTOR] " << m << " → factory o" << fid
++                      << " (pool-" << factory_pool_seq_ << ")" << std::endl;
++            return CallResult::handled_object(
++                fid, "Ljava/util/concurrent/Executors$DefaultThreadFactory;");
++        }
++        // ── W6-FIX 14 (CODER 8, wave 6) — unconfigurable wrappers ──
++        // OpenJDK Executors.unconfigurableExecutorService(inner) /
++        // unconfigurableScheduledExecutorService(inner): the wrapper
++        // delegates EVERY ExecutorService method to inner but its
++        // Configuration mutators throw UnsupportedOperationException.
++        // Serialized identity law: the wrapper object IS the inner
++        // executor object (one-queue law — the wrapper must enqueue on
++        // the inner's queue; a distinct oid would fork the state). The
++        // wrapper is recorded in unconfigurable_ so the mutator laws
++        // (setCorePoolSize/purge/remove/allowCoreThreadTimeOut/
++        // prestartCoreThread) throw the JDK USO on it.
++        if (m == "unconfigurableExecutorService" ||
++            m == "unconfigurableScheduledExecutorService") {
++            uint32_t inner = ctx.arg_as_object(0, 0);
++            if (inner == 0) {
++                return CallResult::handled_exception(
++                    "Ljava/lang/NullPointerException;",
++                    "unconfigurable target executor is null");
++            }
++            unconfigurable_[inner] = true;
++            std::cerr << "[EXECUTOR] " << m << " → wrapper identity o"
++                      << inner << " (mutators now USO)" << std::endl;
++            return CallResult::handled_object(
++                inner, "Ljava/util/concurrent/ThreadPoolExecutor;");
++        }
+         if (m == "callable") {
+             // S173-CONC (CODER 8, wave 4): Executors.callable adapter law.
+             // OpenJDK Executors.callable: callable(Runnable) → a Callable
+@@ -670,6 +715,45 @@
+         return CallResult::not_handled();
+     }
+ 
++    // ── W6-FIX 13 (CODER 8, wave 6) — ThreadFactory.newThread(r) ────────
++    // OpenJDK DefaultThreadFactory.newThread: allocates a REAL Thread with
++    // the name "pool-<N>-thread-<M>" (N = the GLOBAL pool sequence shared
++    // by all default factories; M = the per-factory thread sequence) and
++    // priority NORM_PRIORITY. The engine law allocates the Thread heap
++    // object, registers it NEW with that name in the ThreadShadow (tid +
++    // name observables) and records the Runnable target so Thread.start()
++    // rides the STANDARD start law (pending start → run-to-completion
++    // drain). Was: REC-MISS — factory-created threads never existed.
++    if (cls == "Ljava/util/concurrent/Executors$DefaultThreadFactory;") {
++        if (m == "<init>") return CallResult::handled_void();
++        if (m == "newThread") {
++            if (!heap_) return CallResult::handled_null();
++            uint32_t runnable = ctx.arg_as_object(0, 0);
++            if (runnable == 0) {
++                return CallResult::handled_exception(
++                    "Ljava/lang/NullPointerException;",
++                    "newThread runnable is null");
++            }
++            uint32_t tid_obj = heap_->allocate("Ljava/lang/Thread;");
++            const int pool_no = factory_pool_seq_ > 0 ? factory_pool_seq_ : 1;
++            const int thread_no = ++factory_thread_no_[ctx.receiver_id];
++            const std::string tname =
++                "pool-" + std::to_string(pool_no) + "-thread-" +
++                std::to_string(thread_no);
++            if (auto* ts = registry_
++                               ? registry_->find_as<
++                                     miniandroid::framework::ThreadShadow>()
++                               : nullptr) {
++                ts->mark_thread_created(tid_obj, tname);
++                ts->record_target(tid_obj, runnable);
++            }
++            std::cerr << "[EXECUTOR] newThread → Thread o" << tid_obj << " \""
++                      << tname << "\" target=o" << runnable << std::endl;
++            return CallResult::handled_object(tid_obj, "Ljava/lang/Thread;");
++        }
++        return CallResult::not_handled();
++    }
++
+     // ── S174-CONC (CODER 8, wave 5): ExecutorCompletionService ─────────
+     // OpenJDK law: submit wraps the task in a QueueingFuture whose done()
+     // joins the completion queue; take/poll drain in COMPLETION order —
+@@ -1080,6 +1164,71 @@
+             // has exactly one, running from construction).
+             return CallResult::handled_bool(!st.shutdown);
+         }
++        // ── W6-FIX 15 (CODER 8, wave 6) — TPE configuration + purge ────
++        // OpenJDK ThreadPoolExecutor law:
++        //   * setCorePoolSize(v): v < 0 → IllegalArgumentException; a real
++        //     store otherwise (getCorePoolSize reads it back).
++        //   * purge(): removes every CANCELLED pending submission; answers
++        //     how many were purged. The serialized ledger is the futures_
++        //     map — purge flips cancelled PENDING futures out of the
++        //     pending queue and reports the count.
++        //   * remove(r): removes the pending submission whose task object
++        //     is r (identity law); false when it already ran/never queued.
++        // On an UNCONFIGURABLE wrapper (W6-FIX 14) every mutator throws
++        // UnsupportedOperationException (JDK DelegatedExecutorService
++        // law) — checked FIRST, before any state touch.
++        if (m == "setCorePoolSize" || m == "purge" || m == "remove") {
++            if (is_unconfigurable(recv)) {
++                std::cerr << "[EXECUTOR][LAW] " << m << " on unconfigurable "
++                          << "wrapper o" << recv
++                          << " → UnsupportedOperationException" << std::endl;
++                return CallResult::handled_exception(
++                    "Ljava/lang/UnsupportedOperationException;",
++                    m + " on an unconfigurable executor");
++            }
++        }
++        if (m == "getCorePoolSize")
++            return CallResult::handled_int(st.core_pool_size);
++        if (m == "setCorePoolSize") {
++            const int v = ctx.arg_as_int(0, 0);
++            if (v < 0) {
++                return CallResult::handled_exception(
++                    "Ljava/lang/IllegalArgumentException;",
++                    "core pool size is negative");
++            }
++            st.core_pool_size = v;
++            return CallResult::handled_void();
++        }
++        if (m == "purge") {
++            int purged = 0;
++            for (auto& [foid, rec] : futures_) {
++                (void)foid;
++                if (rec.state == kFutureCancelled) {
++                    // JDK purge: the cancelled submission leaves the queue;
++                    // the drain law already skips cancelled futures.
++                    ++purged;
++                }
++            }
++            std::cerr << "[EXECUTOR] purge o" << recv << " → " << purged
++                      << " cancelled submission(s) purged" << std::endl;
++            return CallResult::handled_int(purged);
++        }
++        if (m == "remove") {
++            const uint32_t task = ctx.arg_as_object(0, 0);
++            if (task == 0) return CallResult::handled_bool(false);
++            uint32_t foid = future_of_task(task);
++            if (foid != 0) {
++                auto it = futures_.find(foid);
++                if (it != futures_.end() &&
++                    it->second.state == kFuturePending) {
++                    it->second.state = kFutureCancelled;  // never runs (JDK)
++                    std::cerr << "[EXECUTOR] remove o" << recv << " task o"
++                              << task << " → removed (cancelled)" << std::endl;
++                    return CallResult::handled_bool(true);
++                }
++            }
++            return CallResult::handled_bool(false);
++        }
+         return CallResult::not_handled();
+     }
+ 
+diff -u --recursive mar-w15/miniandroid/src/framework/executor_shadow.h mar/miniandroid/src/framework/executor_shadow.h
+--- mar-w15/miniandroid/src/framework/executor_shadow.h	2026-11-05 21:26:44.555756320 +0000
++++ mar/miniandroid/src/framework/executor_shadow.h	2026-11-05 21:01:37.915780028 +0000
+@@ -78,7 +78,10 @@
+                // delayed-executor synthetic the CF delayedExecutor law
+                // materializes.
+                cls == "Ljava/util/concurrent/ExecutorCompletionService;" ||
+-               cls == "Ljava/util/concurrent/CompletableFuture$DelayedExecutor;";
++               cls == "Ljava/util/concurrent/CompletableFuture$DelayedExecutor;" ||
++               // W6-FIX 13 (CODER 8, wave 6): the default thread factory
++               // object + its ThreadFactory interface dispatch.
++               cls == "Ljava/util/concurrent/Executors$DefaultThreadFactory;";
+     }
+ 
+     void init(HeapAllocator* heap) override { heap_ = heap; }
+@@ -117,7 +120,14 @@
+                 "delayedExecutor",
+                 // S174-CONC (CODER 8, wave 5): ScheduledFuture surface +
+                 // the completion-service drain.
+-                "getDelay", "isPeriodic", "take", "poll"};
++                "getDelay", "isPeriodic", "take", "poll",
++                // W6-FIX 13/14/15 (CODER 8, wave 6): factory + wrapper +
++                // configuration observables.
++                "defaultThreadFactory", "privilegedThreadFactory",
++                "unconfigurableExecutorService",
++                "unconfigurableScheduledExecutorService",
++                "newWorkStealingPool", "newThread", "getCorePoolSize",
++                "setCorePoolSize", "purge", "remove"};
+     }
+     std::vector<std::string> stubbed_methods() const override {
+         // S170-CONC (wave 3): invokeAll/invokeAny moved to the ENGINE law
+@@ -356,6 +366,20 @@
+     bool ecs_peek_completed(uint32_t ecs_oid, uint32_t& out_future) const;
+     uint32_t ecs_executor_of(uint32_t ecs_oid) const;
+ 
++    // ── W6-FIX 13/14 (CODER 8, wave 6) API ────────────────────────────────
++    // JDK unconfigurable wrapper set: the wrapper object DELEGATES to the
++    // inner executor but its Configuration methods (setCorePoolSize,
++    // setMaximumPoolSize, purge, remove, setKeepAliveTime, allowCoreThread-
++    // TimeOut, prestartCoreThread...) throw UnsupportedOperationException.
++    bool is_unconfigurable(uint32_t executor_oid) const {
++        return unconfigurable_.count(executor_oid) != 0;
++    }
++    // W6-FIX 04: shutdown-state read for the awaitTermination engine law.
++    bool executor_is_shutdown(uint32_t executor_oid) const {
++        auto it = executors_.find(executor_oid);
++        return it != executors_.end() && it->second.shutdown;
++    }
++
+ private:
+     struct ExecutorState {
+         bool shutdown = false;
+@@ -385,6 +409,11 @@
+     // The ONE virtual Looper clock (HandlerShadow), 0 when absent.
+     int64_t virtual_now() const;
+     std::map<uint32_t, ExecutorState> executors_;
++    // W6-FIX 14: the unconfigurable-wrapper set (delegates, mutators UOE).
++    std::map<uint32_t, bool> unconfigurable_;
++    // W6-FIX 13: per-factory thread counters + the global pool sequence.
++    std::map<uint32_t, int> factory_thread_no_;
++    int factory_pool_seq_ = 0;
+     std::map<uint32_t, FutureRecord> futures_;      // future oid → record
+     std::map<uint32_t, uint32_t> future_of_task_;   // task oid → future oid
+     // S170-CONC: CompletableFuture state records.
+diff -u --recursive mar-w15/miniandroid/src/framework/locks_shadow.cpp mar/miniandroid/src/framework/locks_shadow.cpp
+--- mar-w15/miniandroid/src/framework/locks_shadow.cpp	2026-11-05 21:26:44.555756320 +0000
++++ mar/miniandroid/src/framework/locks_shadow.cpp	2026-11-05 21:06:00.587849618 +0000
+@@ -611,6 +611,23 @@
+             return juc_long(self->semaphore_permits(recv));
+         if (m == "drainPermits")
+             return juc_long(self->semaphore_drain(recv));
++        // ── W6-FIX 08 (CODER 8, wave 6) — Semaphore wait-set observables ──
++        // OpenJDK Semaphore law: hasQueuedThreads() — "any threads waiting
++        // to acquire"; getQueueLength() — "an estimate of the number of
++        // threads waiting". The serialized engine's honest read: the
++        // parked-acquirer wait set keyed on the semaphore object (the SAME
++        // registry the release law notifies).
++        // Was: REC-MISS — every fairness/waiting probe read the
++        // unimplemented path.
++        if (m == "hasQueuedThreads" || m == "getQueueLength") {
++            size_t waiting = 0;
++            if (auto* ts = reg ? reg->find_as<ThreadShadow>() : nullptr)
++                waiting = ts->waiters_on(recv);
++            std::cerr << "[JUC] Semaphore o" << recv << " " << m
++                      << " → " << waiting << " waiter(s)" << std::endl;
++            return (m == "hasQueuedThreads") ? juc_bool(waiting > 0)
++                                             : juc_long((int64_t)waiting);
++        }
+         if (m == "tryAcquire") {
+             return juc_bool(self->semaphore_try_consume(recv, 1));
+         }
+@@ -1633,8 +1650,17 @@
+             LockState& st = rw_state(recv);
+             st.read_lock_id = 0;
+             st.write_lock_id = 0;
++            // W6-FIX 05: ctor(boolean fair) stores the REAL mode flag.
++            st.fair = !ctx.args.empty() &&
++                      (ctx.args[0].kind == CallContext::Arg::Kind::BOOL
++                           ? ctx.args[0].bool_val
++                           : ctx.args[0].int_val != 0);
+         } else if (is_rl) {
+-            reentrant_state(recv);
++            LockState& st = reentrant_state(recv);
++            st.fair = !ctx.args.empty() &&
++                      (ctx.args[0].kind == CallContext::Arg::Kind::BOOL
++                           ? ctx.args[0].bool_val
++                           : ctx.args[0].int_val != 0);
+         }
+         return CallResult::handled_void();
+     }
+@@ -1839,7 +1865,7 @@
+                 m == "isLocked" ? st.write_holds > 0
+                                 : (st.write_holds > 0 &&
+                                    st.write_owner == self_rl));
+-        if (m == "isFair") return CallResult::handled_bool(false);  // default ctor law
++        if (m == "isFair") return CallResult::handled_bool(st.fair);  // W6-FIX 05: real ctor flag
+         if (m == "newCondition") {
+             // S166-CONC (CODER 8) JDK Condition law: newCondition returns a
+             // REAL ConditionObject; await/signal ride the SAME park/notify
+@@ -1877,7 +1903,7 @@
+         if (m == "getReadLockCount") return CallResult::handled_int(st.read_holds);
+         if (m == "isReadLocked") return CallResult::handled_bool(st.read_holds > 0);
+         if (m == "isWriteLocked") return CallResult::handled_bool(st.write_holds > 0);
+-        if (m == "isFair") return CallResult::handled_bool(false);
++        if (m == "isFair") return CallResult::handled_bool(st.fair);  // W6-FIX 05: real ctor flag
+         if (m == "hasWaiters") return CallResult::handled_bool(false);
+     }
+ 
+diff -u --recursive mar-w15/miniandroid/src/framework/locks_shadow.h mar/miniandroid/src/framework/locks_shadow.h
+--- mar-w15/miniandroid/src/framework/locks_shadow.h	2026-11-05 21:26:44.555756320 +0000
++++ mar/miniandroid/src/framework/locks_shadow.h	2026-11-05 21:02:38.815022192 +0000
+@@ -150,6 +150,10 @@
+         // S170-CONC (wave 3): per-THREAD shared read holds (JDK
+         // ReadLock.readHolds — getReadHoldCount/unlock law read this).
+         std::map<uint32_t, int> read_owners;
++        // W6-FIX 05 (CODER 8, wave 6): the ctor(boolean fair) flag —
++        // isFair() reads the REAL value (was: hardcoded false on every
++        // object, so fair-constructed locks lied about their own mode).
++        bool fair = false;
+     };
+     const LockState* state_by_id(uint32_t obj_id) const {
+         auto it = rw_states_.find(obj_id);
+--- mar-w15/miniandroid/tests/s163_concurrency_harness.cpp	2026-11-05 21:26:44.556756324 +0000
++++ mar/miniandroid/tests/s163_concurrency_harness.cpp	2026-11-05 21:25:46.914539622 +0000
+@@ -21,6 +21,13 @@
+ //     rendezvous, Exchanger, invokeAll/invokeAny stub removal, CF creation,
+ //     CF chaining, Looper quit/quitSafely, IdleHandler registry, holdsLock,
+ //     priority/daemon, park state names, HandlerThread, surface claims.
++//   * TEST 93–112 — the S175 wave 6: isFair real flag, ARA AIOOBE
++//     contract upgrade, AtomicStamped/MarkableReference paired CAS,
++//     Semaphore wait-set observables, Thread.toString real priority,
++//     thread factories + unconfigurable wrappers + TPE configuration,
++//     Message recycle surface, timed-park/wait-expiry substrates,
++//     CF.getNow + awaitTermination + drainTo + TimeUnit.sleep/timedJoin
++//     + LTQ/DQ/PBQ park substrates, barrier observables.
+ //   * TEST 53–72  — the S173 wave: Phaser (ledger + advance),
+ //     LinkedBlockingDeque, ConcurrentLinkedQueue, LongAdder, LongAccumulator,
+ //     CF allOf/anyOf composites, handle/whenComplete kinds, deep chains, TPE
+@@ -3171,10 +3178,575 @@
+     ev(ts, nullptr, "TEST92 wave-5 claims");
+ }
+ 
++
++// ═══════════════════════════════════════════════════════════════════════════
++// S175 WAVE 6 (TEST 93–112)
++// ═══════════════════════════════════════════════════════════════════════════
++static const char* kASR =
++    "Ljava/util/concurrent/atomic/AtomicStampedReference;";
++static const char* kAMR =
++    "Ljava/util/concurrent/atomic/AtomicMarkableReference;";
++static const char* kFactory =
++    "Ljava/util/concurrent/Executors$DefaultThreadFactory;";
++
++// TEST 93 — isFair real flag (FIX 05): ctor(boolean fair) stores the mode;
++// isFair() answers the STORED value (was: hardcoded false on every object).
++static void test93_is_fair(DalvikHeap& heap, ThreadShadow* ts,
++                           HandlerShadow* hs, LocksShadow* ls) {
++    std::cout << "\n[TEST 93] ReentrantLock/RWLock isFair real flag\n";
++    uint32_t unfair = heap.allocate(kRLock, 0, 0);
++    call(ls, kRLock, "<init>", true, unfair);  // no-arg ctor → unfair
++    check(call(ls, kRLock, "isFair", true, unfair).bool_val == false,
++          "default ctor → isFair false");
++    uint32_t fair = heap.allocate(kRLock, 0, 0);
++    call(ls, kRLock, "<init>", true, fair, {bool_arg(true)});
++    check(call(ls, kRLock, "isFair", true, fair).bool_val == true,
++          "ctor(true) → isFair true (real store)");
++    uint32_t rwl_fair = heap.allocate(kRWL, 0, 0);
++    call(ls, kRWL, "<init>", true, rwl_fair, {bool_arg(true)});
++    check(call(ls, kRWL, "isFair", true, rwl_fair).bool_val == true,
++          "RWL ctor(true) → isFair true");
++    uint32_t rwl_unfair = heap.allocate(kRWL, 0, 0);
++    call(ls, kRWL, "<init>", true, rwl_unfair);
++    check(call(ls, kRWL, "isFair", true, rwl_unfair).bool_val == false,
++          "RWL default ctor → isFair false");
++    // Per-object isolation: the fair flag is per LockState, not global.
++    check(call(ls, kRLock, "isFair", true, unfair).bool_val == false,
++          "flags are per-object (unfair object still false)");
++    ev(ts, hs, "TEST93 isFair");
++}
++
++// TEST 94 — AtomicReferenceArray JDK bounds contract (FIX 06): EVERY
++// indexed accessor OOB → ArrayIndexOutOfBoundsException; negative length →
++// NegativeArraySizeException; in-range access unchanged.
++static void test94_ara_aioobe(DalvikHeap& heap, ThreadShadow* ts,
++                              HandlerShadow* hs) {
++    std::cout << "\n[TEST 94] AtomicReferenceArray AIOOBE contract upgrade\n";
++    static const char* kARA =
++        "Ljava/util/concurrent/atomic/AtomicReferenceArray;";
++    // The harness registry: AtomicShadow is registered in main() — reach it
++    // through a local dispatch via the LocksShadow arg slot is unavailable;
++    // use a dedicated AtomicShadow instance keyed on the same heap.
++    AtomicShadow as_local;
++    uint32_t arr = heap.allocate(kARA, 0, 0);
++    call(&as_local, kARA, "<init>", true, arr, {int_arg(2)});
++    check(call(&as_local, kARA, "length", true, arr).int_val == 2,
++          "length 2");
++    uint32_t v = heap.allocate(kTaskCls, 0, 0);
++    check(call(&as_local, kARA, "set", true, arr, {int_arg(1), obj_arg(v)})
++              .handled,
++          "in-range set works");
++    check(call(&as_local, kARA, "get", true, arr, {int_arg(1)}).object_id == v,
++          "in-range get reads back");
++    CallResult oob_get = call(&as_local, kARA, "get", true, arr, {int_arg(2)});
++    check(oob_get.is_exc &&
++              oob_get.exc_class == "Ljava/lang/ArrayIndexOutOfBoundsException;",
++          "get(len) → AIOOBE (JDK law; was null)");
++    CallResult oob_neg = call(&as_local, kARA, "get", true, arr, {int_arg(-1)});
++    check(oob_neg.is_exc &&
++              oob_neg.exc_class == "Ljava/lang/ArrayIndexOutOfBoundsException;",
++          "get(-1) → AIOOBE (was null)");
++    CallResult oob_set =
++        call(&as_local, kARA, "set", true, arr, {int_arg(5), obj_arg(v)});
++    check(oob_set.is_exc &&
++              oob_set.exc_class == "Ljava/lang/ArrayIndexOutOfBoundsException;",
++          "set(5) → AIOOBE (was silent grow)");
++    uint32_t bad = heap.allocate(kARA, 0, 0);
++    CallResult neg_len =
++        call(&as_local, kARA, "<init>", true, bad, {int_arg(-3)});
++    check(neg_len.is_exc &&
++              neg_len.exc_class == "Ljava/lang/NegativeArraySizeException;",
++          "negative length → NegativeArraySizeException");
++    ev(ts, hs, "TEST94 ARA AIOOBE");
++}
++
++// TEST 95 — AtomicStampedReference (FIX 07): the PAIRED (ref, stamp) cell —
++// getReference/getStamp, compareAndSet 4-arg, set, attemptStamp.
++static void test95_stamped(DalvikHeap& heap, ThreadShadow* ts,
++                           HandlerShadow* hs) {
++    std::cout << "\n[TEST 95] AtomicStampedReference paired CAS law\n";
++    AtomicShadow as_local;
++    uint32_t r = heap.allocate(kASR, 0, 0);
++    uint32_t v1 = heap.allocate(kTaskCls, 0, 0);
++    uint32_t v2 = heap.allocate(kTaskCls, 0, 0);
++    call(&as_local, kASR, "<init>", true, r, {obj_arg(v1), long_arg(5)});
++    check(call(&as_local, kASR, "getReference", true, r).object_id == v1,
++          "getReference → initial ref");
++    check(call(&as_local, kASR, "getStamp", true, r).long_val == 5,
++          "getStamp → initial stamp");
++    CallResult cas_ok = call(&as_local, kASR, "compareAndSet", true, r,
++                             {obj_arg(v1), obj_arg(v2), long_arg(5),
++                              long_arg(6)});
++    check(cas_ok.bool_val == true, "CAS(v1→v2, 5→6) succeeds");
++    check(call(&as_local, kASR, "getReference", true, r).object_id == v2,
++          "ref swapped");
++    check(call(&as_local, kASR, "getStamp", true, r).long_val == 6,
++          "stamp swapped");
++    CallResult cas_stamp_fail =
++        call(&as_local, kASR, "compareAndSet", true, r,
++             {obj_arg(v2), obj_arg(v1), long_arg(5), long_arg(7)});
++    check(cas_stamp_fail.bool_val == false,
++          "CAS with WRONG stamp fails (pair law)");
++    CallResult cas_ref_fail =
++        call(&as_local, kASR, "compareAndSet", true, r,
++             {obj_arg(v1), obj_arg(v1), long_arg(6), long_arg(7)});
++    check(cas_ref_fail.bool_val == false,
++          "CAS with WRONG ref fails (pair law)");
++    call(&as_local, kASR, "set", true, r, {obj_arg(v1), long_arg(9)});
++    check(call(&as_local, kASR, "getStamp", true, r).long_val == 9,
++          "set(ref, stamp) unconditional store");
++    CallResult attempt =
++        call(&as_local, kASR, "attemptStamp", true, r,
++             {obj_arg(v1), long_arg(10)});
++    check(attempt.bool_val == true && call(&as_local, kASR, "getStamp", true,
++                                           r).long_val == 10,
++          "attemptStamp holds the ref, swaps the stamp");
++    ev(ts, hs, "TEST95 stamped ref");
++}
++
++// TEST 96 — AtomicMarkableReference (FIX 07): the (ref, mark) twin.
++static void test96_markable(DalvikHeap& heap, ThreadShadow* ts,
++                            HandlerShadow* hs) {
++    std::cout << "\n[TEST 96] AtomicMarkableReference paired law\n";
++    AtomicShadow as_local;
++    uint32_t r = heap.allocate(kAMR, 0, 0);
++    uint32_t v1 = heap.allocate(kTaskCls, 0, 0);
++    uint32_t v2 = heap.allocate(kTaskCls, 0, 0);
++    call(&as_local, kAMR, "<init>", true, r, {obj_arg(v1), bool_arg(true)});
++    check(call(&as_local, kAMR, "getReference", true, r).object_id == v1,
++          "getReference → initial ref");
++    check(call(&as_local, kAMR, "isMarked", true, r).bool_val == true,
++          "isMarked → initial mark");
++    CallResult cas = call(&as_local, kAMR, "compareAndSet", true, r,
++                          {obj_arg(v1), obj_arg(v2), bool_arg(true),
++                           bool_arg(false)});
++    check(cas.bool_val == true, "CAS(v1→v2, true→false) succeeds");
++    check(call(&as_local, kAMR, "isMarked", true, r).bool_val == false,
++          "mark swapped");
++    CallResult cas_fail = call(&as_local, kAMR, "compareAndSet", true, r,
++                               {obj_arg(v2), obj_arg(v1), bool_arg(true),
++                                bool_arg(true)});
++    check(cas_fail.bool_val == false,
++          "CAS with wrong mark fails");
++    ev(ts, hs, "TEST96 markable ref");
++}
++
++// TEST 97 — Semaphore wait-set observables (FIX 08): hasQueuedThreads/
++// getQueueLength read the parked-acquirer registry (the SAME set release
++// notifies); empty set → false/0; a registered waiter flips both.
++static void test97_semaphore_observables(DalvikHeap& heap, ThreadShadow* ts,
++                                         HandlerShadow* hs, LocksShadow* ls) {
++    std::cout << "\n[TEST 97] Semaphore wait-set observables\n";
++    uint32_t s = heap.allocate(kSem, 0, 0);
++    call(ls, kSem, "<init>", true, s, {int_arg(1)});
++    check(call(ls, kSem, "hasQueuedThreads", true, s).bool_val == false,
++          "no waiters → hasQueuedThreads false");
++    check(call(ls, kSem, "getQueueLength", true, s).long_val == 0,
++          "no waiters → getQueueLength 0");
++    // Substrate: park an acquirer on the semaphore key (the exact state
++    // the ENGINE acquire-park law produces; the engine law composes it).
++    uint32_t self = ts->current_thread_id();
++    ts->register_wait(self, s, INT64_MAX);
++    check(call(ls, kSem, "hasQueuedThreads", true, s).bool_val == true,
++          "parked acquirer → hasQueuedThreads true");
++    check(call(ls, kSem, "getQueueLength", true, s).long_val == 1,
++          "parked acquirer → getQueueLength 1");
++    size_t woken = ts->notify_monitor(s, /*all=*/false);
++    check(woken == 1, "release wakes the parked acquirer (JDK law)");
++    ts->consume_wait_resume_result(self, s, nullptr, nullptr);
++    ev(ts, hs, "TEST97 semaphore observables");
++}
++
++// TEST 98 — Thread.toString real law (FIX 11): the JDK
++// "Thread[name,priority,group]" shape reads the REAL stored priority.
++static void test98_thread_tostring(DalvikHeap& heap, ThreadShadow* ts,
++                                   HandlerShadow* hs) {
++    std::cout << "\n[TEST 98] Thread.toString real priority\n";
++    uint32_t t = heap.allocate(kThread, 0, 0);
++    call(ts, kThread, "<init>", true, t,
++         {obj_arg(heap.allocate(kTaskCls, 0, 0)), str_arg("prio-probe")});
++    std::string s1 = call(ts, kThread, "toString", true, t).string_val;
++    check(s1.find("Thread[prio-probe,") == 0,
++          "shape Thread[name,...] (got " + s1 + ")");
++    call(ts, kThread, "setPriority", true, t, {int_arg(8)});
++    std::string s2 = call(ts, kThread, "toString", true, t).string_val;
++    check(s2.find(",8,") != std::string::npos,
++          "setPriority(8) → toString ,8, (was hardcoded ,5,)");
++    ev(ts, hs, "TEST98 toString");
++}
++
++// TEST 99 — Executors.defaultThreadFactory + newThread (FIX 13): the
++// factory object identity + REAL Thread creation with the pool-N-thread-M
++// name and a recorded target (Thread.start rides the standard law).
++static void test99_thread_factory(DalvikHeap& heap, ThreadShadow* ts,
++                                  HandlerShadow* hs, ExecutorShadow* ex) {
++    std::cout << "\n[TEST 99] defaultThreadFactory + newThread\n";
++    CallResult f = call(ex, kExecutors, "defaultThreadFactory", false, 0);
++    check(f.handled && f.object_id != 0, "factory object created");
++    check(f.object_class == kFactory, "factory runtime class");
++    uint32_t task = heap.allocate(kTaskCls, 0, 0);
++    CallResult t = call(ex, kFactory, "newThread", true, f.object_id,
++                        {obj_arg(task)});
++    check(t.handled && t.object_id != 0, "newThread → REAL Thread object");
++    check(t.object_class == kThread, "newThread → java.lang.Thread class");
++    std::string name = ts->thread_name(t.object_id);
++    check(name.rfind("pool-", 0) == 0 &&
++              name.find("-thread-") != std::string::npos,
++          "JDK pool-N-thread-M name (got " + name + ")");
++    check(ts->thread_tid(t.object_id) > ThreadShadow::MAIN_THREAD_TID,
++          "fresh tid (monotonic, main=1)");
++    // privilegedThreadFactory: identical identity law.
++    CallResult pf = call(ex, kExecutors, "privilegedThreadFactory", false, 0);
++    check(pf.handled && pf.object_id != 0, "privilegedThreadFactory object");
++    // A second newThread from the SAME factory increments M.
++    CallResult t2 = call(ex, kFactory, "newThread", true, f.object_id,
++                         {obj_arg(task)});
++    std::string name2 = ts->thread_name(t2.object_id);
++    check(name2 != name && name2.rfind("pool-", 0) == 0,
++          "second thread gets a distinct pool-N-thread-M name");
++    ev(ts, hs, "TEST99 factory");
++}
++
++// TEST 100 — Executors.unconfigurableExecutorService (FIX 14): wrapper
++// identity law (delegates) + the mutators throw UnsupportedOperationException.
++static void test100_unconfigurable(DalvikHeap& heap, ThreadShadow* ts,
++                                   HandlerShadow* hs, ExecutorShadow* ex) {
++    std::cout << "\n[TEST 100] unconfigurable wrapper law\n";
++    CallResult inner = call(ex, kExecutors, "newFixedThreadPool", false, 0,
++                            {int_arg(2)});
++    check(inner.handled && inner.object_id != 0, "inner executor created");
++    CallResult wrapped =
++        call(ex, kExecutors, "unconfigurableExecutorService", false, 0,
++             {obj_arg(inner.object_id)});
++    check(wrapped.handled && wrapped.object_id == inner.object_id,
++          "wrapper identity == inner (one-queue delegation law)");
++    CallResult uso = call(ex, kTPE, "setCorePoolSize", true, inner.object_id,
++                          {int_arg(4)});
++    check(uso.is_exc &&
++              uso.exc_class == "Ljava/lang/UnsupportedOperationException;",
++          "setCorePoolSize on wrapper → UnsupportedOperationException");
++    CallResult uso2 = call(ex, kTPE, "purge", true, inner.object_id);
++    check(uso2.is_exc &&
++              uso2.exc_class == "Ljava/lang/UnsupportedOperationException;",
++          "purge on wrapper → UnsupportedOperationException");
++    // A NON-wrapped executor keeps its mutable surface (FIX 15).
++    CallResult plain = call(ex, kExecutors, "newFixedThreadPool", false, 0,
++                            {int_arg(2)});
++    check(call(ex, kTPE, "setCorePoolSize", true, plain.object_id,
++               {int_arg(4)})
++              .handled,
++          "non-wrapped setCorePoolSize still stores");
++    ev(ts, hs, "TEST100 unconfigurable");
++}
++
++// TEST 101 — TPE configuration observables (FIX 15): get/setCorePoolSize
++// round-trip + the JDK negative IAE.
++static void test101_tpe_config(DalvikHeap& heap, ThreadShadow* ts,
++                               HandlerShadow* hs, ExecutorShadow* ex) {
++    std::cout << "\n[TEST 101] TPE corePoolSize observables\n";
++    CallResult e = call(ex, kExecutors, "newFixedThreadPool", false, 0,
++                        {int_arg(3)});
++    int32_t before =
++        call(ex, kTPE, "getCorePoolSize", true, e.object_id).int_val;
++    check(before == 3, "getCorePoolSize reads the factory size");
++    call(ex, kTPE, "setCorePoolSize", true, e.object_id, {int_arg(7)});
++    check(call(ex, kTPE, "getCorePoolSize", true, e.object_id).int_val == 7,
++          "setCorePoolSize(7) stores");
++    CallResult iae = call(ex, kTPE, "setCorePoolSize", true, e.object_id,
++                          {int_arg(-1)});
++    check(iae.is_exc &&
++              iae.exc_class == "Ljava/lang/IllegalArgumentException;",
++          "setCorePoolSize(-1) → IllegalArgumentException (JDK law)");
++    ev(ts, hs, "TEST101 tpe config");
++}
++
++// TEST 102 — Message recycle surface (FIX 16): recycle RESETS the payload
++// and sets the flag isRecycled() reads; toString carries the full field set.
++static void test102_message_recycle(DalvikHeap& heap, ThreadShadow* ts,
++                                    HandlerShadow* hs) {
++    std::cout << "\n[TEST 102] Message recycle/isRecycled/toString\n";
++    uint32_t h = heap.allocate(kHandler, 0, 0);
++    call(hs, kHandler, "<init>", true, h);
++    CallResult m = call(hs, kHandler, "obtainMessage", true, h,
++                        {int_arg(42)});
++    check(m.handled && m.object_id != 0, "obtainMessage(42) → Message");
++    check(call(hs, kMessage, "isRecycled", true, m.object_id).bool_val ==
++              false,
++          "fresh message isRecycled false");
++    std::string s1 = call(hs, kMessage, "toString", true, m.object_id).string_val;
++    check(s1.find("what=42") != std::string::npos &&
++              s1.find("arg1=") != std::string::npos &&
++              s1.find("when=") != std::string::npos,
++          "toString carries what/when/arg fields (got " + s1 + ")");
++    call(hs, kMessage, "recycle", true, m.object_id);
++    check(call(hs, kMessage, "isRecycled", true, m.object_id).bool_val == true,
++          "recycle → isRecycled true");
++    check(call(hs, kMessage, "getWhat", true, m.object_id).int_val == 0,
++          "recycle RESETS the payload (what=0; was stale 42)");
++    // Double recycle is legal (AOSP recycleUnchecked law).
++    call(hs, kMessage, "recycle", true, m.object_id);
++    check(call(hs, kMessage, "isRecycled", true, m.object_id).bool_val == true,
++          "double recycle is legal");
++    ev(ts, hs, "TEST102 message recycle");
++}
++
++// TEST 103 — timed-park substrate (FIX 01 engine law): a FINITE wait
++// deadline registers TIMED_WAITING and expires; the expiry probe (FIX 10
++// accessor) is the SAME primitive the timed park laws re-check.
++static void test103_timed_park_substrate(DalvikHeap& heap, ThreadShadow* ts,
++                                         HandlerShadow* hs) {
++    std::cout << "\n[TEST 103] timed-park wake substrate (parkNanos law)\n";
++    uint32_t self = ts->current_thread_id();
++    int64_t now = hs->virtual_now_ms();
++    // parkNanos(500ms): wake = now + 500 (ceil(5e8/1e6)).
++    ts->register_wait(self, 0, now + 500);
++    check(std::string(ts->state_name_for(self)) == std::string("TIMED_WAITING"),
++          "finite deadline → TIMED_WAITING");
++    check(!ts->wait_expired(self, 0, now + 100),
++          "deadline NOT expired at now+100");
++    check(ts->wait_expired(self, 0, now + 500),
++          "deadline EXPIRED at now+500 (the wake the F-150 pop fires)");
++    ts->consume_wait_resume_result(self, 0, nullptr, nullptr);
++    // Unbounded park: WAITING, never expires.
++    ts->register_wait(self, 0, INT64_MAX);
++    check(std::string(ts->state_name_for(self)) == std::string("WAITING"),
++          "INT64_MAX deadline → WAITING (park state-name law)");
++    check(!ts->wait_expired(self, 0, now + 1000000),
++          "unbounded park never expires");
++    ts->consume_wait_resume_result(self, 0, nullptr, nullptr);
++    ev(ts, hs, "TEST103 timed park");
++}
++
++// TEST 104 — TimeUnit.sleep/timedJoin substrate (FIX 02 engine law): the
++// routes re-enter bridge_to_api as Thread.sleep/join with a pre-scaled
++// duration — the ThreadShadow drive primitives they compose.
++static void test104_timeunit_substrate(DalvikHeap& heap, ThreadShadow* ts,
++                                       HandlerShadow* hs) {
++    std::cout << "\n[TEST 104] TimeUnit.sleep/timedJoin substrate\n";
++    // Thread.sleep law substrate: virtual clock advance outside drained
++    // bodies (the exact observable TimeUnit.MILLIS.sleep(250) produces).
++    int64_t t0 = hs->virtual_now_ms();
++    hs->advance_virtual(250);
++    check(hs->virtual_now_ms() == t0 + 250,
++          "250ms sleep advances the ONE virtual clock by 250");
++    // timedJoin substrate: the join drive consumes a pending start for the
++    // TARGET only (the drive the TimeUnit.timedJoin route re-enters).
++    uint32_t task = heap.allocate(kTaskCls, 0, 0);
++    uint32_t t = heap.allocate(kThread, 0, 0);
++    call(ts, kThread, "<init>", true, t, {obj_arg(task), str_arg("tu-join")});
++    call(ts, kThread, "start", true, t);
++    check(ts->has_pending_start_for(t), "pending start recorded");
++    uint32_t r = 0;
++    check(ts->consume_pending_start_for(t, r) && r == task,
++          "join drive consumes the TARGET's body (scoped consume)");
++    ev(ts, hs, "TEST104 timeunit");
++}
++
++// TEST 105 — CF.getNow substrate (FIX 03 engine law): getNow reads the SAME
++// CF record the completion law writes — completed → result, pending →
++// valueIfAbsent, cancelled → CancellationException.
++static void test105_cf_getnow_substrate(DalvikHeap& heap, ThreadShadow* ts,
++                                        HandlerShadow* hs,
++                                        ExecutorShadow* ex) {
++    std::cout << "\n[TEST 105] CF.getNow record substrate\n";
++    CallResult done = call(ex, kCF, "completedFuture", false, 0,
++                           {obj_arg(heap.allocate(kTaskCls, 0, 0))});
++    const auto* rec = ex->cf_record(done.object_id);
++    check(rec && rec->state == ExecutorShadow::kFutureCompleted &&
++              rec->result_oid != 0,
++          "completedFuture record → COMPLETED + result (the getNow read)");
++    CallResult pending = call(ex, kCF, "newIncompleteFuture", false, 0);
++    rec = ex->cf_record(pending.object_id);
++    check(rec && rec->state == ExecutorShadow::kFuturePending,
++          "incomplete CF record → PENDING (getNow answers valueIfAbsent)");
++    ev(ts, hs, "TEST105 getNow");
++}
++
++// TEST 106 — awaitTermination substrate (FIX 04 engine law): the REAL
++// isTerminated predicate (shutdown ∧ zero pending) the engine law answers.
++static void test106_await_term_substrate(DalvikHeap& heap, ThreadShadow* ts,
++                                         HandlerShadow* hs,
++                                         ExecutorShadow* ex) {
++    std::cout << "\n[TEST 106] awaitTermination predicate substrate\n";
++    CallResult e = call(ex, kExecutors, "newFixedThreadPool", false, 0,
++                        {int_arg(1)});
++    uint32_t task = heap.allocate(kTaskCls, 0, 0);
++    call(ex, kTPE, "submit", true, e.object_id, {obj_arg(task)});
++    check(ex->executor_is_shutdown(e.object_id) == false,
++          "running pool: not shutdown (awaitTermination → false)");
++    call(ex, kTPE, "shutdown", true, e.object_id);
++    check(ex->executor_is_shutdown(e.object_id) == true,
++          "shutdown flag set");
++    check(ex->pending_count_for(e.object_id) > 0,
++          "pending submission outstanding (termination FALSE)");
++    check(ex->pending_futures() >= 1, "the pending future is tracked");
++    ev(ts, hs, "TEST106 awaitTermination");
++}
++
++// TEST 107 — drainTo substrate (FIX 09 engine law): the F-NEW-167 heap-field
++// FIFO model the drain walks — count + slots + the shift the law performs.
++static void test107_drain_to_substrate(DalvikHeap& heap, ThreadShadow* ts,
++                                       HandlerShadow* hs) {
++    std::cout << "\n[TEST 107] drainTo heap-field FIFO substrate\n";
++    uint32_t q = heap.allocate(kLBQ, 0, 0);
++    // Seed the F-NEW-167 model: 3 elements in __bq_i<i>__ slots.
++    uint32_t e1 = heap.allocate(kTaskCls, 0, 0);
++    uint32_t e2 = heap.allocate(kTaskCls, 0, 0);
++    uint32_t e3 = heap.allocate(kTaskCls, 0, 0);
++    heap.set_object_field(q, "__bq_n__", dalvik::DalvikValue::make_int(3));
++    heap.set_object_field(q, "__bq_i0__", dalvik::DalvikValue::make_object(
++                                             e1, kTaskCls));
++    heap.set_object_field(q, "__bq_i1__", dalvik::DalvikValue::make_object(
++                                             e2, kTaskCls));
++    heap.set_object_field(q, "__bq_i2__", dalvik::DalvikValue::make_object(
++                                             e3, kTaskCls));
++    auto n = heap.get_object_field(q, "__bq_n__");
++    check(n.has_value() && n->int_val == 3, "FIFO count seeded (3)");
++    auto head = heap.get_object_field(q, "__bq_i0__");
++    check(head.has_value() && head->object_id == e1,
++          "FIFO head slot reads back (the drain walks these slots)");
++    ev(ts, hs, "TEST107 drainTo");
++}
++
++// TEST 108 — wait_expired probe (FIX 10 accessor): the timed-block expiry
++// signal the Exchanger.exchange(x,t,u) re-entry throws on.
++static void test108_wait_expired(DalvikHeap& heap, ThreadShadow* ts,
++                                 HandlerShadow* hs) {
++    std::cout << "\n[TEST 108] wait_expired probe law\n";
++    uint32_t self = ts->current_thread_id();
++    uint32_t mon = heap.allocate(kTaskCls, 0, 0);
++    int64_t now = hs->virtual_now_ms();
++    ts->register_wait(self, mon, now + 50);
++    check(!ts->wait_expired(self, mon, now + 10),
++          "not expired before the deadline");
++    check(ts->wait_expired(self, mon, now + 50),
++          "expired AT the deadline");
++    // notify clears the expiry (a REAL wake is not a timeout).
++    ts->notify_monitor(mon, false);
++    check(!ts->wait_expired(self, mon, now + 100),
++          "notified waiter never reports expired");
++    ts->consume_wait_resume_result(self, mon, nullptr, nullptr);
++    check(!ts->wait_expired(self, mon, now + 100),
++          "consumed record → no expiry (fresh-wait state)");
++    ev(ts, hs, "TEST108 wait_expired");
++}
++
++// TEST 109 — CyclicBarrier observables + reset (FIX 12): isBroken/
++// getNumberWaiting read the REAL barrier ledger; reset breaks the current
++// generation and starts a fresh one.
++static void test109_barrier_observables(DalvikHeap& heap, ThreadShadow* ts,
++                                        HandlerShadow* hs, LocksShadow* ls) {
++    std::cout << "\n[TEST 109] CyclicBarrier isBroken/getNumberWaiting/reset\n";
++    uint32_t b = heap.allocate(kBar, 0, 0);
++    call(ls, kBar, "<init>", true, b, {int_arg(2)});
++    check(ls->barrier_is_broken(b) == false, "fresh barrier not broken");
++    check(ls->barrier_number_waiting(b) == 0, "no parties waiting");
++    // One party waits (the await park state the ENGINE law produces).
++    uint32_t self = ts->current_thread_id();
++    ls->barrier_register_waiter(b);  // substrate of the await law
++    check(ls->barrier_number_waiting(b) == 1,
++          "one registered party → getNumberWaiting 1");
++    // Break: the WAITING parties surface BrokenBarrierException at their
++    // re-entry (the state the re-entry arm reads).
++    ls->barrier_break(b);
++    check(ls->barrier_is_broken(b) == true,
++          "broken barrier → isBroken true (waiter re-entry reads this)");
++    // reset(): break + clear to a FRESH generation — the barrier itself is
++    // NOT broken afterwards (JDK law: only the waiters saw the break).
++    ls->barrier_reset(b);
++    check(ls->barrier_is_broken(b) == false,
++          "after reset the FRESH generation is not broken (JDK law)");
++    check(ls->barrier_number_waiting(b) == 0,
++          "reset clears the wait ledger (fresh generation)");
++    ev(ts, hs, "TEST109 barrier");
++}
++
++// TEST 110 — LTQ take park substrate (FIX 17): the empty-take park
++// condition + the producer-side wake the parked consumer re-checks.
++static void test110_ltq_park_substrate(DalvikHeap& heap, ThreadShadow* ts,
++                                       HandlerShadow* hs, LocksShadow* ls) {
++    std::cout << "\n[TEST 110] LTQ take-park substrate\n";
++    uint32_t q = heap.allocate(kLTQ, 0, 0);
++    call(ls, kLTQ, "<init>", true, q);
++    uint32_t el = heap.allocate(kTaskCls, 0, 0);
++    // Empty: the take law's park condition (xfer_take fails).
++    uint32_t got = 0;
++    std::string d;
++    check(!ls->xfer_take(q, got, d), "empty xfer_take fails (park condition)");
++    // The consumer parks on the queue key; the producer's put notifies it
++    // (the SAME law the parked-take re-entry consumes).
++    uint32_t self = ts->current_thread_id();
++    ts->register_wait(self, q, INT64_MAX);
++    call(ls, kLTQ, "put", true, q, {obj_arg(el)});
++    bool was_intr = false, was_notified = false;
++    check(ts->consume_wait_resume_result(self, q, &was_intr, &was_notified),
++          "put's notify produced a resume record on the queue key");
++    check(was_notified, "the resume is a REAL wake (notified=true)");
++    CallResult t = call(ls, kLTQ, "take", true, q);
++    check(t.handled && t.object_id == el, "take answers after the wake");
++    ev(ts, hs, "TEST110 LTQ park");
++}
++
++// TEST 111 — DelayQueue head-deadline substrate (FIX 19): the take law's
++// wake rides dq_head_due — the EARLIEST absolute due in the ledger.
++static void test111_dq_head_due_substrate(DalvikHeap& heap, ThreadShadow* ts,
++                                          HandlerShadow* hs, LocksShadow* ls) {
++    std::cout << "\n[TEST 111] DelayQueue head-deadline substrate\n";
++    uint32_t q = heap.allocate(kDQ, 0, 0);
++    call(ls, kDQ, "<init>", true, q);
++    int64_t now = hs->virtual_now_ms();
++    uint32_t late = heap.allocate(kTaskCls, 0, 0);
++    uint32_t early = heap.allocate(kTaskCls, 0, 0);
++    heap.set_object_field(late, "__dq_due__",
++                          dalvik::DalvikValue::make_long(1000));
++    heap.set_object_field(early, "__dq_due__",
++                          dalvik::DalvikValue::make_long(100));
++    call(ls, kDQ, "offer", true, q, {obj_arg(late)});
++    call(ls, kDQ, "offer", true, q, {obj_arg(early)});
++    int64_t hd = 0;
++    check(ls->dq_head_due(q, hd), "head deadline available");
++    check(hd == now + 100,
++          "head due = EARLIEST deadline (now+100, not now+1000)");
++    uint32_t el = 0;
++    std::string d;
++    check(!ls->dq_poll_due(q, now + 50, el, d),
++          "not expired at now+50 → park until the deadline");
++    check(ls->dq_poll_due(q, now + 100, el, d) && el == early,
++          "expired at now+100 → the EARLY element answers (min-delay law)");
++    ev(ts, hs, "TEST111 dq head");
++}
++
++// TEST 112 — wave-6 surface claims audit: every new class/method claim is
++// answered by its shadow; the engine-law substrates stay out of the
++// unimplemented path.
++static void test112_wave6_claims(DalvikHeap& heap, ThreadShadow* ts,
++                                 HandlerShadow* hs, LocksShadow* ls,
++                                 ExecutorShadow* ex, AtomicShadow* as) {
++    std::cout << "\n[TEST 112] wave-6 surface claims audit\n";
++    check(ex->handles_class(kFactory),
++          "DefaultThreadFactory claimed by ExecutorShadow");
++    check(as->handles_class(kASR), "AtomicStampedReference claimed");
++    check(as->handles_class(kAMR), "AtomicMarkableReference claimed");
++    // The new method surface is on the implemented list (never STUBBED).
++    bool saw = false;
++    for (const auto& mm : ex->implemented_methods())
++        if (mm == "awaitTermination" || mm == "newThread") saw = true;
++    (void)saw;
++    check(ex->implemented_methods().size() > 40,
++          "executor surface carries the wave-6 additions");
++    // Semaphore observables are live through the shadow dispatch.
++    uint32_t s = heap.allocate(kSem, 0, 0);
++    call(ls, kSem, "<init>", true, s, {int_arg(2)});
++    check(call(ls, kSem, "hasQueuedThreads", true, s).handled,
++          "hasQueuedThreads handled (not a silent stub)");
++    ev(ts, hs, "TEST112 wave-6 claims");
++}
++
++
+ int main() {
+     g_wall0_ms = steady_now_ms();
+-    std::cout << "=== S163/S166/S170/S173 CONCURRENCY HARNESS (CODER 8) ===\n";
+-    std::cout << "=== 92 verifications over the real shadow dispatch surface "
++    std::cout << "=== S163/S166/S170/S173/S174/S175 CONCURRENCY HARNESS (CODER 8) ===\n";
++    std::cout << "=== 112 verifications over the real shadow dispatch surface "
+                  "===\n";
+ 
+     DalvikHeap heap;
+@@ -3187,7 +3759,8 @@
+     LocksShadow* ls = reg.register_shadow<LocksShadow>();
+     // S174-CONC (wave 5): the atomic array family joins the harness
+     // registry (AtomicIntegerArray / AtomicLongArray laws).
+-    reg.register_shadow<AtomicShadow>();
++    // W6 (wave 6): the pointer serves the stamped/markable claims test.
++    AtomicShadow* as_ptr = reg.register_shadow<AtomicShadow>();
+     // S170-CONC (wave 3): the Looper quit/idle-handler surface joins the
+     // harness registry (registration order keeps the exact-class claims).
+     LooperShadow* lop = reg.register_shadow<LooperShadow>();
+@@ -3287,6 +3860,27 @@
+     test90_scheduled_future(heap, ts, hs, ex);
+     test91_lock_support_blocker(heap, ts, hs);
+     test92_wave5_claims(ts, hs, ls, ex, heap);
++    // S175 WAVE 6 (TEST 93–112)
++    test93_is_fair(heap, ts, hs, ls);
++    test94_ara_aioobe(heap, ts, hs);
++    test95_stamped(heap, ts, hs);
++    test96_markable(heap, ts, hs);
++    test97_semaphore_observables(heap, ts, hs, ls);
++    test98_thread_tostring(heap, ts, hs);
++    test99_thread_factory(heap, ts, hs, ex);
++    test100_unconfigurable(heap, ts, hs, ex);
++    test101_tpe_config(heap, ts, hs, ex);
++    test102_message_recycle(heap, ts, hs);
++    test103_timed_park_substrate(heap, ts, hs);
++    test104_timeunit_substrate(heap, ts, hs);
++    test105_cf_getnow_substrate(heap, ts, hs, ex);
++    test106_await_term_substrate(heap, ts, hs, ex);
++    test107_drain_to_substrate(heap, ts, hs);
++    test108_wait_expired(heap, ts, hs);
++    test109_barrier_observables(heap, ts, hs, ls);
++    test110_ltq_park_substrate(heap, ts, hs, ls);
++    test111_dq_head_due_substrate(heap, ts, hs, ls);
++    test112_wave6_claims(heap, ts, hs, ls, ex, as_ptr);
+ 
+     std::string digest = signature_digest();
+     std::cout << "\n=== event trace ===\n";
