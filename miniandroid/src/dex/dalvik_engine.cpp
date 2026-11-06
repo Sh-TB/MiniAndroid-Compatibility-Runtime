@@ -9198,13 +9198,6 @@ bool DalvikExecutionEngine::try_recursive_invoke(
          declaring_class == "Landroidx/fragment/app/FragmentActivity;")) {
         return_val = get_or_create_singleton(
             "Landroidx/fragment/app/FragmentManager;");
-        // S186h F-NEW-188c: make the singleton REAL for R8-obfuscated
-        // androidx (FragmentManager renamed, FCV kept) — resolve the real
-        // class, alias identity, run <init>()V once. No-op on canonical
-        // layouts (resolver finds no obfuscated signature).
-        if (return_val.type == DalvikType::OBJECT_REF) {
-            realinit_fragment_manager_singleton(return_val.object_id);
-        }
         last_invoke_return_ = return_val;
         recursion_depth_--;
         return true;
@@ -12780,14 +12773,6 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     for (const auto& m : cls_ref.virtual_methods) f107_cands.push_back(&m);
     const dex::MethodInfo* best_match = nullptr;
     const dex::MethodInfo* fallback_match = nullptr;
-    // S186h ARITY LAW: exact-arity best candidate (ART JVMS 5.4.5 —
-    // descriptor-less selection must never execute an overload whose
-    // parameter count exceeds the supplied slots; trailing registers are
-    // garbage. Measured: FCV XML inflation (2 supplied params) executed
-    // the package-private (Context, AttributeSet, FragmentManager) ctor,
-    // the FM register carried a stale heap oid and the real androidx
-    // findFragmentById body NPE'd on its uninitialized store).
-    const dex::MethodInfo* best_arity_match = nullptr;
     size_t arg_count = args.size();
 
     for (const dex::MethodInfo* method_ptr : f107_cands) {
@@ -13161,17 +13146,6 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 }
             }
             if (type_matches) {
-                // S186h ARITY LAW: track the exact-arity candidate with the
-                // same largest-bytecode preference. Exact-arity wins at
-                // selection time (below); the legacy best_match path stays
-                // untouched as the no-exact-arity fallback.
-                size_t supplied_params =
-                    arg_count - ((!is_static_method && arg_count > 0) ? 1 : 0);
-                if (param_count == supplied_params &&
-                    (!best_arity_match ||
-                     method.bytecode.size() > best_arity_match->bytecode.size())) {
-                    best_arity_match = method_ptr;
-                }
                 // EXP-078: Multi-DEX method shadowing fix.
                 // When DEX files are merged, the same method name may appear
                 // in multiple DEX files with different bytecode sizes.
@@ -13189,29 +13163,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
     }
 
-    // S186h ARITY LAW selection: an exact-arity candidate is the ART-lawful
-    // pick whenever one exists; the descriptor-less type-prefix path only
-    // serves as fallback when every candidate mismatches arity.
-    if (best_arity_match) best_match = best_arity_match;
-
     const dex::MethodInfo* selected_ptr = best_match ? best_match : fallback_match;
-
-    // S186h DIAG (env-gated, read-only): FCV ctor selection identity —
-    // probe tibarj #170 (obfuscated androidx): which <init> overload runs
-    // with which arg count, and is the FM param register ever fed garbage?
-    if (class_descriptor == "Landroidx/fragment/app/FragmentContainerView;" &&
-        method_name == "<init>" &&
-        std::getenv("MINIANDROID_FCV_DIAG") != nullptr) {
-        static thread_local uint64_t fcv_sel_n = 0;
-        if (fcv_sel_n++ < 24)
-            std::cerr << "[FCV-SEL] cands=" << f107_cands.size()
-                      << " argc=" << arg_count
-                      << " best="
-                      << (best_match ? best_match->descriptor : "null")
-                      << " fb="
-                      << (fallback_match ? fallback_match->descriptor : "null")
-                      << " want=" << method_descriptor << std::endl;
-    }
 
     // CONT-37 (F-NEW-298 evidence, DIAG-ONLY): the text-painter resolution
     // watch — try_recursive_invoke("Lte1;","I",…,"(Loc0;)V") returns false
@@ -36468,11 +36420,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          method == "getSupportFragmentManager")) {
         DalvikValue sfm = get_or_create_singleton(
             "Landroidx/fragment/app/FragmentManager;");
-        // S186h F-NEW-188c: obfuscated-FM real-init (same law as the
-        // invoke-layer site above).
-        if (sfm.type == DalvikType::OBJECT_REF) {
-            realinit_fragment_manager_singleton(sfm.object_id);
-        }
         result = sfm;
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -38465,6 +38412,81 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+    }
+    // ── S186i: android.text.TextUtils.join — REAL AOSP contract ────────
+    // AOSP frameworks/base TextUtils.java: join(CharSequence delimiter,
+    // Object[] arr) and join(CharSequence delimiter, Iterable tokens):
+    // "" for null/empty tokens; elements joined with delimiter BETWEEN
+    // them; each element through StringBuilder.append(Object) ==
+    // String.valueOf(x) (null element renders "null").
+    // Kill: the capacitor BridgeActivity init path —
+    // Bridge.initPluginInstances → JSExport.getPluginJS(Collection) →
+    // generateMethodJS → TextUtils.join. With NO law the bridge fell to
+    // the unimplemented-API path and the init NPE'd (blichess #49 /
+    // blidraughts #74, exactly 1 uncaught each — the ONLY escape).
+    // Engine collection convention: elements live in array[i] fields
+    // with __array_length__ (same store the F-C4-564 collection
+    // fast-path reads).
+    if (class_name == "Landroid/text/TextUtils;" && method == "join" &&
+        args.size() >= 2) {
+        auto tuj_str = [&](auto&& tuj_self, const DalvikValue& a,
+                           int depth) -> std::string {
+            switch (a.type) {
+                case DalvikType::STRING_REF:
+                    return a.is_null ? "null" : a.string_val;
+                case DalvikType::INT32: return std::to_string(a.int_val);
+                case DalvikType::INT64: return std::to_string(a.long_val);
+                case DalvikType::BOOLEAN:
+                    return a.bool_val ? "true" : "false";
+                case DalvikType::CHAR:
+                    return std::string(1, static_cast<char>(a.int_val));
+                case DalvikType::FLOAT32: return std::to_string(a.float_val);
+                case DalvikType::FLOAT64: return std::to_string(a.double_val);
+                case DalvikType::NULL_REF: return "null";
+                case DalvikType::OBJECT_REF: {
+                    if (a.object_id == 0 || depth > 3) return "null";
+                    const auto* o = heap_.get(a.object_id);
+                    if (o) {
+                        for (const char* fld :
+                             {"sb_value", "value", "__string_value__",
+                              "enum_name"}) {
+                            auto it = o->fields.find(fld);
+                            if (it != o->fields.end() &&
+                                it->second.type == DalvikType::STRING_REF)
+                                return it->second.string_val;
+                        }
+                    }
+                    return "[object " + a.class_desc + "]";
+                }
+                default: return "";
+            }
+        };
+        std::string tuj_delim;
+        if (args[0].type == DalvikType::STRING_REF && !args[0].is_null)
+            tuj_delim = args[0].string_val;
+        std::string tuj_out;
+        bool tuj_first = true;
+        const DalvikValue& tuj_tok = args[1];
+        if (tuj_tok.type == DalvikType::OBJECT_REF &&
+            tuj_tok.object_id != 0 && heap_.has_object(tuj_tok.object_id)) {
+            auto tuj_len = heap_.get_object_field(tuj_tok.object_id,
+                                                  "__array_length__");
+            if (tuj_len.has_value() && tuj_len->type == DalvikType::INT32) {
+                int32_t n = tuj_len->int_val;
+                for (int32_t i = 0; i < n && i < 4096; ++i) {
+                    auto el = heap_.get_object_field(
+                        tuj_tok.object_id,
+                        "array[" + std::to_string(i) + "]");
+                    if (!el.has_value()) continue;
+                    if (!tuj_first) tuj_out += tuj_delim;
+                    tuj_first = false;
+                    tuj_out += tuj_str(tuj_str, *el, 0);
+                }
+            }
+        }
+        result = DalvikValue::make_string(tuj_out, 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
     }
     if (class_name == "Ljava/io/PrintStream;" &&
         args.size() >= 1 &&
@@ -59976,6 +59998,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    // ── S186i: Landroid/os/LocaleList; REAL method laws ────────────────────
+    // The F-NEW-159 getLocales law seeds the languageTags FIELD on the
+    // LocaleList singleton, but the METHOD dispatch had no law: R8 API
+    // outlines (ComponentDialog$$ExternalSyntheticApiModelOutline0.m)
+    // call list.toLanguageTags() → REC-MISS → silent null STRING →
+    // LocaleListCompat.forLanguageTags(null) NPE'd INSIDE the androidx
+    // body — measured chain (blichess #49):
+    //   AppCompatDelegateImpl$Api24Impl.getLocales u0x8 = forLanguageTags
+    //   ← outline m(LocaleList) = list.toLanguageTags() = null.
+    // AOSP LocaleList.java: toLanguageTags() returns the stored tag
+    // string ("en-US" from the F-NEW-159 seed); size() the tag count;
+    // isEmpty() size==0; get(int) a Locale.
+    if (class_name == "Landroid/os/LocaleList;" && method == "toLanguageTags" &&
+        args.size() >= 1) {
+        auto cur = heap_.get_object_field(args[0].object_id, "languageTags");
+        result = (cur.has_value() && cur->type == DalvikType::STRING_REF &&
+                  !cur->string_val.empty())
+                     ? *cur
+                     : DalvikValue::make_string("en-US", 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/os/LocaleList;" && method == "size" &&
+        args.size() >= 1) {
+        auto sz = heap_.get_object_field(args[0].object_id, "size");
+        result = (sz.has_value() && sz->type == DalvikType::INT32)
+                     ? *sz
+                     : DalvikValue::make_int(1);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    if (class_name == "Landroid/os/LocaleList;" && method == "isEmpty" &&
+        args.size() >= 1) {
+        auto sz = heap_.get_object_field(args[0].object_id, "size");
+        int32_t n = (sz.has_value() && sz->type == DalvikType::INT32)
+                        ? sz->int_val : 1;
+        result = DalvikValue::make_bool(n == 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
 
     // ────────────────────────────────────────────────────────────────────────
     // P1.2 — Window.setFlags(int, int) → void (no-op)
@@ -75998,7 +76060,88 @@ measure_cm_done:;
         }
     }
 
-    // Default: stubbed but not crashing.
+    // S186i STUB-TRIAGE: one-shot diag for the first 40 stubbed calls —
+    // the blichess #49 chain hid here: String.split(",",-1) on a
+    // MATERIALIZED heap-String receiver answered the typed default
+    // (null array) → array-length NPE inside LocaleListCompat.
+    // forLanguageTags pc=16. Without this line the swallowing layer is
+    // invisible (same family as [REC-MISS]).
+    {
+        static thread_local uint64_t stub_triage_n = 0;
+        if (stub_triage_n < 40) {
+            ++stub_triage_n;
+            std::cerr << "[S186I-STUB] " << class_name << "." << method
+                      << " argc=" << args.size()
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+    }
+    // S186i: heap-String receiver law — split/isEmpty family on a
+    // MATERIALIZED String object (receiver_type=7, oid≠0) must read the
+    // real chars from the heap (__string_value__/value/sb_value), never
+    // answer as an empty string or a stub. Class check = the heap object's
+    // REAL descriptor (the S71 ancestry re-dispatch may re-key the call
+    // under Ljava/lang/Object; — the receiver identity is authoritative).
+    {
+        bool s186i_is_str_recv = false;
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            const auto* ro = heap_.get(args[0].object_id);
+            s186i_is_str_recv =
+                ro && ro->class_descriptor == "Ljava/lang/String;";
+        }
+        if (s186i_is_str_recv && method == "split") {
+        std::string hs;
+        for (const char* fld :
+             {"__string_value__", "value", "sb_value"}) {
+            auto fv = heap_.get_object_field(args[0].object_id, fld);
+            if (fv.has_value() && fv->type == DalvikType::STRING_REF) {
+                hs = fv->string_val;
+                break;
+            }
+        }
+        std::string delim = (args.size() >= 2 &&
+                             args[1].type == DalvikType::STRING_REF)
+                                ? args[1].string_val
+                                : ",";
+        if (delim.size() >= 4 && delim.rfind("\\Q", 0) == 0 &&
+            delim.compare(delim.size() - 2, 2, "\\E") == 0)
+            delim = delim.substr(2, delim.size() - 4);
+        std::vector<std::string> parts;
+        if (delim.empty()) {
+            for (size_t ci = 0; ci < hs.size(); ++ci)
+                parts.push_back(std::string(1, hs[ci]));
+        } else {
+            size_t start = 0, pos;
+            while ((pos = hs.find(delim, start)) != std::string::npos) {
+                parts.push_back(hs.substr(start, pos - start));
+                start = pos + delim.size();
+            }
+            parts.push_back(hs.substr(start));
+            while (parts.size() > 1 && parts.back().empty())
+                parts.pop_back();
+        }
+        uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+        for (size_t i = 0; i < parts.size(); ++i)
+            heap_.set_object_field(
+                arr_id, "array[" + std::to_string(i) + "]",
+                DalvikValue::make_string(parts[i], 0));
+        heap_.set_object_field(
+            arr_id, "__array_length__",
+            DalvikValue::make_int(static_cast<int32_t>(parts.size())));
+        result = DalvikValue::make_object(arr_id, "Larray;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        static thread_local uint64_t s186i_hsplit_n = 0;
+        if (s186i_hsplit_n < 6)
+            ++s186i_hsplit_n,
+                std::cerr << "[S186I-HSPLIT] heap-String split in=\""
+                          << hs.substr(0, 40) << "\" delim=\"" << delim
+                          << "\" parts=" << parts.size()
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+        return true;
+        }
+    }
     //
     // UC-CM-001 (closes F012, Coder 3 systemic finding):
     //   "unknown method -> STUBBED + VOID -> later move-result /
@@ -76154,96 +76297,6 @@ DalvikValue DalvikExecutionEngine::get_or_create_dir_file(const std::string& pat
     v.object_id = obj_id;
     v.class_desc = kFileDesc;
     return v;
-}
-
-// ── S186h F-NEW-188c — obfuscated androidx FragmentManager REAL-INIT law ──
-// Probe (tibarj.tranquilstopwatch #170, fresh store, real-dalvik trace):
-//   FCV internal ctor (kept name — referenced from layout XML) calls the
-//   R8-renamed FragmentManager body: `Lb1/t0;.A(I)Lb1/a0;` (=
-//   findFragmentById) reads `Lb0/k;.a` (the fragment store) at its pc=2
-//   and NPEs because the F-NEW-188 singleton was minted under the
-//   CANONICAL name with an empty field set — the FM <init> never ran.
-//   The existing F-NEW-188b findFragmentById intercept is name-keyed and
-//   cannot fire on obfuscated method names (A/B/C…), so the real body
-//   executed on empty state.
-// LAW (generic, Rule 6 — semantics not names):
-//   1. The app's REAL FragmentManager class is recoverable STRUCTURALLY:
-//      FragmentContainerView's internal constructor signature is
-//      (Context, AttributeSet, L<real-fm>;) — R8 can rename FragmentManager
-//      but NOT FragmentContainerView (kept for XML) and NOT the signature.
-//   2. Mint ONE object; alias BOTH the canonical key and the real class
-//      key to it (identity law F-NEW-188 preserved).
-//   3. Execute the real <init>()V of the real class on that object ONCE.
-//      The store fields then hold genuine androidx state and ANY obfuscated
-//      method body executes lawfully — an empty manager answers the
-//      androidx @Nullable null contract from its own bytecode tail
-//      (measured: b1/t0.A falls through to const/4 v6,0; return-object).
-//      No synthetic null-return shim is added for the obfuscated path
-//      (SQLITE Rule 1: vend the real behavior, don't rewrite it).
-// NOTE: law state lives in function-local statics (NOT class members) —
-//   adding members to DalvikExecutionEngine changes sizeof() and would ODR-
-//   mismatch the other translation units' objects without a full rebuild
-//   (measured S186h: mixed-layout relink crashed dooz golden in
-//   std::string::_M_assign during APPLICATION_CREATE).
-void DalvikExecutionEngine::realinit_fragment_manager_singleton(uint32_t fm_oid) {
-    static std::set<uint32_t>& done = *new std::set<uint32_t>();
-    static std::string resolved_real_fm_class_;
-    static bool real_fm_class_resolved_ = false;
-
-    if (fm_oid == 0 || done.count(fm_oid)) return;
-
-    if (!real_fm_class_resolved_) {
-        real_fm_class_resolved_ = true;
-        if (dex_report_ != nullptr) {
-            const std::string fcv =
-                "Landroidx/fragment/app/FragmentContainerView;";
-            for (const auto& cls : dex_report_->classes) {
-                if (cls.name != fcv) continue;
-                for (const auto& m : cls.direct_methods) {
-                    if (!m.is_constructor) continue;
-                    // Internal ctor = 3 params: (Context, AttributeSet, FM)
-                    if (m.parameters.size() != 3) continue;
-                    const std::string& third = m.parameters[2];
-                    if (third.size() > 2 && third[0] == 'L' &&
-                        third != fcv &&
-                        third != "Landroidx/fragment/app/FragmentManager;") {
-                        resolved_real_fm_class_ = third;
-                    }
-                }
-                break;
-            }
-        }
-        if (!resolved_real_fm_class_.empty()) {
-            std::cerr << "[F-NEW-188c] resolved real FM class = "
-                      << resolved_real_fm_class_ << std::endl;
-        } else {
-            std::cerr << "[F-NEW-188c] no obfuscated FM signature found "
-                         "(canonical androidx layout) — real-init skipped"
-                      << std::endl;
-        }
-    }
-
-    const std::string& real_fm = resolved_real_fm_class_;
-    if (real_fm.empty()) return;
-
-    // Identity law: ONE object, TWO keys (canonical + real class).
-    auto it = api_singletons_.find(real_fm);
-    if (it != api_singletons_.end() && it->second != fm_oid) {
-        std::cerr << "[F-NEW-188c] WARNING real-FM key already bound to obj#"
-                  << it->second << " (kept existing binding)" << std::endl;
-        return;
-    }
-    api_singletons_[real_fm] = fm_oid;
-
-    // Run the real <init>()V ONCE on the shared object.
-    done.insert(fm_oid);
-    DalvikValue rv;
-    DalvikExecutionResult res;
-    std::vector<DalvikValue> args;
-    args.push_back(DalvikValue::make_object(fm_oid, real_fm));
-    bool ok = try_recursive_invoke(real_fm, "<init>", args, rv, res);
-    std::cerr << "[F-NEW-188c] real-init " << real_fm << " obj#" << fm_oid
-              << " ok=" << (ok ? 1 : 0) << std::endl;
 }
 
 DalvikValue DalvikExecutionEngine::get_or_create_singleton(const std::string& class_desc) {

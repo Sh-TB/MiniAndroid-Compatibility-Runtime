@@ -7736,3 +7736,65 @@ work is already paying on titles that were dead since September.
    0-uncaught (== standing pin). Engine rebuilt from 75 cached .o + new dalvik_engine.o
    (`scripts/s186h_rebuild_engine.sh`; sandbox lost cmake — .d files record the unit list; -O0 -g0
    for the 76k-line unit after cc1plus OOM).
+
+## S186i — REAL-RENDER BATTERY: 29/41 stuck titles 0-uncaught, 16 new flips, ZERO regressions (2026-11-07)
+
+User directive: "از اون ۴۱ بازی و برنامه باید رندر واقعی بگیری ... حداقل چند بازی و برنامه کامل اجرا بشه" —
+real renders, not comments. Executed.
+
+**Environment rebuild (sandbox recycled again):** engine binary gone → full source rebuild
+(`scripts/s186i_rebuild.sh`, staged-foreground mode — detached builds get reaped, S186c lesson
+re-learned). Makefile is the authoritative unit list (CMakeLists is stale: 10 sources only);
+Makefile-expansion gave 77 units (incl. main.cpp, bionic_compat.S thunk, quickjs×5 with
+-DUSE_BF_DEC on libbf — missing CONFIG_VERSION/BFDEC guards caught by link errors), dead units
+(exception_system/execution_guard/view_renderer/real_layout/exp007-temp) are NOT in the target.
+GDX host natives rebuilt via scripts/s183_build_gdx_host.sh (64/266/68 JNI symbols == S183b).
+
+**ARITY-LAW REGRESSION FOUND AND REVERTED-WITH-EVIDENCE:** the first battery on the rebuilt HEAD
+engine regressed previously-clean titles (no.thanks 0→32 LifecycleRegistry.sync NPE, blackjack,
+ccm, ball2box). Single-unit A/B (dalvik_engine.cpp swaps only): d675a9a0 → 0-uncaught pin face;
+52f13489 (d/e) → 0-uncaught pin face; 3c9d418f (S186h ARITY+F-NEW-188c) → 32 uncaught. The S186h
+A/B covered only dooz/unote/tibarj goldens. VERDICT: S186h laws OUT of the shipped engine pending
+re-derivation with corpus A/B.
+
+**3 new generic laws (probe-first, A/B on blichess #49):**
+1. TextUtils.join(CharSequence, Iterable|Object[]) — AOSP contract; kill: capacitor
+   JSExport.getPluginJS → generateMethodJS (the FIRST escape of #49/#74).
+2. LocaleList.toLanguageTags()/size()/isEmpty() — F-NEW-159 seeded the field, the METHOD answered
+   null → R8 outline m(LocaleList) → LocaleListCompat.forLanguageTags chain.
+3. heap-String split law — String.split on a MATERIALIZED String receiver answered the
+   typed-default stub (null array) → array-length NPE at forLanguageTags pc=16 (measured
+   [SYNTH-EXC] ARR-LEN-NULL). Receiver heap-identity authoritative over the ancestry-mangled
+   dispatch class. + [S186I-STUB] permanent triage diag on the stub fallback.
+Probe tooling: scripts/s186i_disasm_jsexport.py (androguard, per-instruction dumps).
+
+**Engine selection = measured A/B, three engines, same 41-title battery:**
+| engine | zero-uncaught | regressions vs S186c |
+| S186c baseline | 13 | — |
+| HEAD(S186h)+S186i | 27 | 10 (foehnix/mykanji 0→33, atracking 16→30, tibarj 10→15…) |
+| HYBRID = pre-S186h base + S186i (SHIPPED) | **29** | **0** |
+Hybrid source committed (dalvik_engine.cpp = 52f13489 base + S186i law blocks; dalvik_engine.h
+restored to 52f13489); tree rebuild reproduces unote + no.thanks face pins BYTE-EXACT (Rule 4
+functional reproduction). Nondeterminism note: gnubg/taz timing chains flip 0↔22/32 across runs
+(40s window race) — battery run is canonical; determinism queued.
+
+**16 new flips (0 uncaught, faces pinned in S186I_BATTERY.json):** astroloop #26 (18→0, F-RES
+GONE), tarok #32, solitaire-de #38, queens #40, quinb #42 (flutter GONE), solitaire #43, bim #44,
+gnubg #72 (coroutines chain), surgeengine #70 (liballeg GONE), boxcars #76 (gomobile GONE),
+foehnix #126, aoc_normal #132, nightbell #138 (32→0), opentopo #128, newsblur #129, taz #130
+(conscrypt F-NATIVE GONE), mykanji. One law chain unblocked SIX engine families at once.
+Family census: F-NPE 15→2, F-ANDROIDX 6→1, F-RES 1→0, F-NATIVE 1→0.
+A_RICH real renders: app.halma #27 + se.tube42.p9 #225 (both 0-uncaught).
+Goldens: unote 3b8dcb0adbbc17a9 ×3 engines; bouncy 8a6c24ac8a7d718e BYTE-EXACT with rebuilt
+hosts; dooz d602648e held; halma/p9 A_RICH faces are scene-timing-dependent (tier stable).
+
+**Capacitor chain (#49/#74):** 4 layers peeled (TextUtils → getLocales/Configuration →
+LocaleList methods → heap-String split), each verified gone by A/B; hybrid engine runs them at
+1 uncaught (interim HEAD engine showed the deeper 33-loop: LocaleList.<init> ctor stub +
+ancestry re-key confusion — queued next wave). Honest: NOT clean yet, no upgrade claimed.
+
+**Remaining 12 crashers:** #49/#74 (1), #170 (10), #226 (21), #41 (32), #125 (32), #137 (23),
+#213 (6), #153 (6), #127 (16), #71 (4, appcompat attachBaseContext), #131 (4), #39-flip-pending.
+Artifacts: evidence/s186_s107/S186I_BATTERY.json (+ head_s186i comparison + de_engine baseline),
+41× S186I_*_face.jpg, scripts/s186i_{battery,rebuild,disasm_jsexport,post_final}.py.
+GitHub: tracker #536 comment 6693206228 + 17 per-issue verdict comments posted.
