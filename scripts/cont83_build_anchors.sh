@@ -123,11 +123,18 @@ gcc -shared -fPIC -O2 -Wl,-soname,libOpenSLES.so \
 # (jobject=0x500000000|heap_id marshaling law).
 gcc -shared -fPIC -O2 -Wl,-soname,libjnigraphics.so \
     -o "$OUT/libjnigraphics.so" scripts/cont83_jnig_anchor.c -ldl
-# libEGL: honest first-party eglGetCurrentContext (T22) — EGL_NO_CONTEXT.
+# libEGL: full first-party EGL surface (S188-W2) — the 20 egl* symbols
+# libflutter.so needs; token state machine + exe-side PGL hooks via the
+# __ma_egl_* C-ABI helpers. The old single-symbol anchor (T22) died every
+# Flutter-family dlopen with "undefined symbol: eglGetCurrentDisplay".
 gcc -shared -fPIC -O2 -Wl,-soname,libEGL.so \
-    -o "$OUT/libEGL.so" scripts/cont83_egl_anchor.c
+    -o "$OUT/libEGL.so" scripts/cont83_egl_anchor.c -ldl
+# libGLESv2: the 15 GLES2 symbols libflutter.so needs that the exe's
+# PortableGL surface does NOT export (S188-W2). ONLY those 15 — a symbol
+# exported by BOTH would bind the app to this anchor instead of the exe's
+# real PortableGL implementation (resolution-order law, see the anchor).
 gcc -shared -fPIC -O2 -Wl,-soname,libGLESv2.so \
-    -o "$OUT/libGLESv2.so" /tmp/cont83_anchors/empty.c
+    -o "$OUT/libGLESv2.so" scripts/cont83_glesv2_anchor.c
 # libandroid: honest first-party surface (T22) — ANativeWindow identity
 # tokens + no-buffer window ops + NULL-asset AAsset family.
 gcc -shared -fPIC -O2 -Wl,-soname,libandroid.so \

@@ -32,6 +32,7 @@ uint8_t __sF[3][192] = {{0}, {0}, {0}};
 
 /* ── T18 additions: the residual bionic-only surface (census vs glibc) ── */
 #include <errno.h>
+#include <fcntl.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -319,4 +320,159 @@ int fflush(FILE* f) {
     static int (*real_fflush)(FILE*);
     if (!real_fflush) real_fflush = dlsym(RTLD_NEXT, "fflush");
     return real_fflush(r ? r : f);
+}
+
+/* ── S188-W2: bionic system-property surface ────────────────────────────
+ * libflutter.so (x86_64) dlopen died on "__system_property_get" — a
+ * bionic-only symbol with no glibc counterpart, so the libc.so anchor's
+ * glibc chain can never supply it. First-party provider law: the runtime
+ * HAS an honest Android platform identity (dalvik_engine.cpp: Android 15,
+ * n=35); the properties below ARE this runtime's platform reality, not a
+ * fabricated device table. Unknown properties answer length 0 (bionic:
+ * "property not set") — the same contract as a real device where the key
+ * does not exist. */
+#include <stddef.h>
+#include <string.h>
+
+typedef struct {
+    const char* name;
+    const char* value;
+} ma_property;
+
+static const ma_property ma_props[] = {
+    {"ro.build.version.sdk", "35"},
+    {"ro.build.version.release", "15"},
+    {"ro.build.version.codename", "REL"},
+    {"ro.build.fingerprint",
+     "MiniAndroid/miniandroid/miniandroid:15/2026.11/S188:userdebug/test-keys"},
+    {"ro.product.model", "MiniAndroid"},
+    {"ro.product.manufacturer", "MiniAndroid"},
+    {"ro.product.brand", "MiniAndroid"},
+    {"ro.product.device", "miniandroid"},
+    {"ro.hardware", "miniandroid"},
+    {"ro.board.platform", "miniandroid"},
+    {"ro.zygote", "zygote64"},
+    {"ro.secure", "1"},
+    {"ro.debuggable", "0"},
+    {"ro.build.type", "userdebug"},
+    {"ro.build.tags", "test-keys"},
+    {"ro.build.display.id", "S188.W2.miniandroid"},
+    {"ro.build.user", "miniandroid"},
+    {"ro.build.host", "miniandroid"},
+    {"ro.product.cpu.abi", "x86_64"},
+    {"ro.product.cpu.abilist", "x86_64"},
+    {"ro.product.cpu.abilist64", "x86_64"},
+    {"ro.media.codec.android.avc.decoder", ""},  /* honest: not wired */
+};
+#define MA_PROP_N (int)(sizeof(ma_props) / sizeof(ma_props[0]))
+
+static const char* ma_prop_find(const char* name) {
+    if (!name) return NULL;
+    for (int i = 0; i < MA_PROP_N; ++i)
+        if (strcmp(ma_props[i].name, name) == 0) return ma_props[i].value;
+    return NULL;
+}
+
+__attribute__((visibility("default")))
+int __system_property_get(const char* name, char* value) {
+    const char* v = ma_prop_find(name);
+    if (!v || !value) return 0;
+    size_t n = strlen(v);
+    memcpy(value, v, n + 1);
+    return (int)n;
+}
+
+/* bionic __system_property_find returns a const prop_info* opaque token
+ * (or NULL when absent). The anchor's token: value pointer +1 so it can
+ * never alias a real mapped page (the token is only fed BACK to bionic
+ * property read APIs, and libflutter uses only get/find per its symbol
+ * table — read_callback was NOT imported). */
+__attribute__((visibility("default")))
+const void* __system_property_find(const char* name) {
+    const char* v = ma_prop_find(name);
+    if (!v) return NULL;
+    return (const void*)(const uintptr_t)((uintptr_t)v | 0x1);
+}
+
+/* ── S188-W2: bionic FORTIFY(_chk) family ───────────────────────────────
+ * bionic's FORTIFY_SOURCE surface has NO glibc counterpart: the _chk
+ * variants take an explicit bound parameter and abort on overflow. The
+ * faithful forward: within bounds → the real underlying call (exactly
+ * what a non-fortified build would run); over bounds → abort (what
+ * bionic's __fortify_fail does). Callers compiled WITH fortify pass real
+ * bounds, so the forward is byte-faithful to the intended operation. */
+#include <stdio.h>
+#include <poll.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include <fcntl.h>
+
+__attribute__((visibility("default")))
+size_t __fwrite_chk(const void* buf, size_t size, size_t count, FILE* stream,
+                    size_t buf_size) {
+    size_t total = size * count;
+    if (total > buf_size) abort(); /* bionic __fortify_fail contract */
+    return fwrite(buf, size, count, stream);
+}
+
+__attribute__((visibility("default")))
+void* __memcpy_chk(void* dst, const void* src, size_t len, size_t dst_len) {
+    if (len > dst_len) abort();
+    return memcpy(dst, src, len);
+}
+
+__attribute__((visibility("default")))
+void* __memmove_chk(void* dst, const void* src, size_t len, size_t dst_len) {
+    if (len > dst_len) abort();
+    return memmove(dst, src, len);
+}
+
+__attribute__((visibility("default")))
+int __poll_chk(struct pollfd* fds, nfds_t n, int timeout, size_t fds_len) {
+    if (n > fds_len) abort();
+    return poll(fds, n, timeout);
+}
+
+__attribute__((visibility("default")))
+ssize_t __pread_chk(int fd, void* buf, size_t count, off_t offset,
+                    size_t buf_len) {
+    if (count > buf_len) abort();
+    return pread(fd, buf, count, offset);
+}
+
+__attribute__((visibility("default")))
+ssize_t __read_chk(int fd, void* buf, size_t count, size_t buf_len) {
+    if (count > buf_len) abort();
+    return read(fd, buf, count);
+}
+
+__attribute__((visibility("default")))
+ssize_t __readlink_chk(const char* path, char* buf, size_t size,
+                       size_t buf_len) {
+    if (size > buf_len) abort();
+    return readlink(path, buf, size);
+}
+
+__attribute__((visibility("default")))
+ssize_t __write_chk(int fd, const void* buf, size_t count, size_t buf_len) {
+    if (count > buf_len) abort();
+    return write(fd, buf, count);
+}
+
+__attribute__((visibility("default")))
+int __open_2(const char* path, int flags) {
+    return open(path, flags); /* __open_2 = open with O_CREAT-less 2-arg form */
+}
+
+__attribute__((visibility("default")))
+int __openat_2(int fd, const char* path, int flags) {
+    return openat(fd, path, flags);
+}
+
+/* bionic strerror_r is the GNU variant under _GNU_SOURCE; the explicit
+ * __gnu_strerror_r symbol is what some NDK builds bind directly. */
+__attribute__((visibility("default")))
+char* __gnu_strerror_r(int errnum, char* buf, size_t buflen) {
+    return strerror_r(errnum, buf, buflen);
 }

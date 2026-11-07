@@ -75874,6 +75874,51 @@ measure_cm_done:;
         return true;
     }
 
+    // ── S188-W2 — Context.createPackageContext(String, int) → Context ────
+    // AOSP ContextImpl.createPackageContext: a Context for the NAMED
+    // package (or NameNotFoundException). Ground truth (queens, Flutter
+    // lane): FlutterEngine's obfuscated ctor (Lh0/c;.<init> pc=44) calls
+    // createPackageContext then IMMEDIATELY .getAssets() on the result —
+    // the pre-law stub answered null and the very next virtual call died
+    // with "getAssets on a null object reference" APP-BOUNDARY (the run's
+    // first divergence, console [SYNTH-EXC] f141-null-recv face).
+    // Law: the runtime executes the app SINGLE-PACKAGE — the named
+    // package is the app's own package (getPackageName value), so the
+    // honest context IS the receiver (same resources, same assets). A
+    // genuinely-foreign package name throws NameNotFoundException (AOSP
+    // contract apps catch).
+    if (method == "createPackageContext" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos)) {
+        std::string want;
+        for (const auto& a : args) {
+            if (a.type == DalvikType::STRING_REF && !a.string_val.empty()) {
+                want = a.string_val;
+                break;
+            }
+        }
+        const std::string own = package_name_.empty() ? "unknown.package"
+                                                      : package_name_;
+        if (want.empty() || want == own) {
+            // same package: the receiver itself is the package context
+            result = args.empty() ? DalvikValue::make_null() : args[0];
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            static thread_local uint64_t s188_cpc_n = 0;
+            if (s188_cpc_n++ < 8)
+                std::cerr << "[S188-CPC] createPackageContext(\"" << want
+                          << "\") -> receiver context (single-package law)"
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            return true;
+        }
+        throw_deferred(
+            "Landroid/content/pm/PackageManager$NameNotFoundException;",
+            "Package " + want + " not installed", "S188-CPC");
+        result = DalvikValue::make_null();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     // ── S88 F-NEW-181 — Character.valueOf canonical-instance cache law ──
     // OpenJDK Character.java: valueOf(char) returns the cached Character
     // for code points 0..127 (CharacterCache) — valueOf('x') is the SAME
