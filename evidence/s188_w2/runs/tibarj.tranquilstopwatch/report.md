@@ -14,7 +14,7 @@
 | Frames Rendered | 2 |
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
-| Errors | 7 |
+| Errors | 4 |
 | Warnings | 1 |
 
 ## API Trace Summary
@@ -24,16 +24,16 @@
 | `DalvikEngine` | 3 |
 | `ExecutionEngine` | 1494 |
 | `TraceEngine` | 3 |
-| `Unknown` | 7 |
+| `Unknown` | 4 |
 
 ## Top Method Calls
 
 | Method | Calls |
 |--------|-------|
 | `ExecutionEngine.stage_load_classes` | 1455 |
-| `Unknown.Unknown` | 7 |
 | `ExecutionEngine.stage_capture_output` | 7 |
 | `ExecutionEngine.trace_files` | 5 |
+| `Unknown.Unknown` | 4 |
 | `ExecutionEngine.phase_b_click` | 4 |
 | `ExecutionEngine.stage_render_frame` | 4 |
 | `DalvikEngine.execute_apk` | 3 |
@@ -77,24 +77,6 @@
 - **Location:** `.`
 - **Fatal:** No
 
-### EXC-UNCAUGHT-TOP
-
-- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Ls1/n0;.g invoke_pc=0x2 depth=3
-- **Location:** `.`
-- **Fatal:** No
-
-### EXC-UNCAUGHT-TOP
-
-- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lcom/google/android/material/navigation/NavigationView;.<init> invoke_pc=0x2b7 depth=2
-- **Location:** `.`
-- **Fatal:** No
-
-### EXC-UNCAUGHT-TOP
-
-- **Message:** [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at Ltibarj/tranquilstopwatch/MainActivity;.onCreate invoke_pc=0x23 depth=1 [APP-BOUNDARY]
-- **Location:** `.`
-- **Fatal:** No
-
 ## Screenshots
 
 ### Output Frame
@@ -115,5 +97,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261107-024146-3442`
-- **Generated:** 2026-11-07 02:41:47 UTC
+- **Session ID:** `EXP-001-20261107-030133-3137`
+- **Generated:** 2026-11-07 03:01:34 UTC

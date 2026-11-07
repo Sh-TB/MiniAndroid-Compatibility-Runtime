@@ -1,7 +1,7 @@
 {
   "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
   "apk_package": "crypto.o0o0o0o0o.games.blackjack",
-  "duration_ms": 1354,
+  "duration_ms": 1358,
   "events_retained": 25,
   "events_total": 25,
   "first_divergence": null,
@@ -64,52 +64,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 3312,
+        "pid": 4543,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w2/runs/store_crypto.o0o0o0o0o.games.blackjack/data/app/crypto.o0o0o0o0o.games.blackjack/base.apk",
       "thread": "main",
-      "ts_ms": 1794019295978
+      "ts_ms": 1794020492128
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=crypto.o0o0o0o0o.games.blackjack",
       "thread": "main",
-      "ts_ms": 1794019295982
+      "ts_ms": 1794020492132
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=crypto.o0o0o0o0o.games.blackjack.MainActivity",
       "thread": "main",
-      "ts_ms": 1794019295982
+      "ts_ms": 1794020492132
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=4200 methods=44129",
       "thread": "main",
-      "ts_ms": 1794019296138
+      "ts_ms": 1794020492291
     },
     {
       "component": "boot",
@@ -119,24 +119,24 @@
       },
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794019296158
+      "ts_ms": 1794020492311
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=4200",
       "thread": "main",
-      "ts_ms": 1794019296158
+      "ts_ms": 1794020492311
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -144,12 +144,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
       "thread": "main",
-      "ts_ms": 1794019296173
+      "ts_ms": 1794020492326
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -157,12 +157,12 @@
       "event": "APPLICATION_CREATE",
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "PENDING",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794019296173
+      "ts_ms": 1794020492326
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -198,12 +198,12 @@
       },
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794019296825
+      "ts_ms": 1794020492984
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -211,12 +211,12 @@
       "event": "RENDER_START",
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "PENDING",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 10,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794019296840
+      "ts_ms": 1794020493001
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -224,12 +224,12 @@
       "event": "VIEWTREE_CREATED",
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 11,
       "sev": "CONFIRMED",
       "state": "root_id=291",
       "thread": "main",
-      "ts_ms": 1794019296840
+      "ts_ms": 1794020493001
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -239,12 +239,12 @@
       "provenance": "stage_render_frame default walk",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 12,
       "sev": "RENDERER",
       "state": "CLASSIC_CANVAS",
       "thread": "main",
-      "ts_ms": 1794019296840
+      "ts_ms": 1794020493001
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -253,12 +253,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NO_APP_OPS",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 13,
       "sev": "PENDING",
       "state": "nonwhite=2073444 total=2073600 app_ops=0 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1794019296947
+      "ts_ms": 1794020493104
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -267,12 +267,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794019296947
+      "ts_ms": 1794020493104
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -285,12 +285,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794019297020
+      "ts_ms": 1794020493176
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -312,12 +312,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 16,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794019297037
+      "ts_ms": 1794020493193
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -365,12 +365,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 17,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794019297037
+      "ts_ms": 1794020493193
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -379,12 +379,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 18,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794019297092
+      "ts_ms": 1794020493249
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -393,12 +393,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 19,
       "sev": "CONFIRMED",
       "state": "root_id=291",
       "thread": "main",
-      "ts_ms": 1794019297092
+      "ts_ms": 1794020493249
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -407,12 +407,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NO_APP_OPS",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 20,
       "sev": "PENDING",
       "state": "nonwhite=2073444 total=2073600 app_ops=0 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1794019297171
+      "ts_ms": 1794020493326
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -421,12 +421,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794019297172
+      "ts_ms": 1794020493326
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -439,12 +439,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794019297243
+      "ts_ms": 1794020493397
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -466,12 +466,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 23,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794019297259
+      "ts_ms": 1794020493414
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -519,12 +519,12 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 24,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794019297259
+      "ts_ms": 1794020493414
     },
     {
       "activity": "crypto.o0o0o0o0o.games.blackjack.MainActivity",
@@ -536,20 +536,20 @@
       "package": "crypto.o0o0o0o0o.games.blackjack",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794019295978-1",
+      "run_id": "1794020492128-1",
       "seq": 25,
       "sev": "CONFIRMED",
       "state": "Execution completed successfully [F-NEW-200 stub-census: 2340 IMPLEMENTED, 153 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
       "thread": "main",
-      "ts_ms": 1794019297332
+      "ts_ms": 1794020493486
     }
   ],
   "last_exception": null,
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1794019295978-1",
+  "run_id": "1794020492128-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261107-024135-4064",
+  "session_id": "EXP-001-20261107-030132-8859",
   "severity_census": {
     "CONFIRMED": 14,
     "INFO": 4,

@@ -24731,6 +24731,100 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                                 // ART default (null) flows and the app's own
                                 // null-handling runs.
                                 if (!class_has_no_arg_ctor(ft->second)) {
+                                    // ── [S188-W4] INNER-CLASS INITIALIZER
+                                    // CAPTURE LAW ─────────────────────────
+                                    // F274 honest-null fired for
+                                    // Material/RecyclerView
+                                    // RecyclerViewAccessibilityDelegate
+                                    // (tranquilstopwatch + solitaire census):
+                                    // field Ls1/m1;.e : Ls1/l1; — l1 is the
+                                    // INNER class whose ONLY ctor is
+                                    // <init>(Ls1/m1;)V (outer-this capture,
+                                    // javac lowers `this.new Inner()` to
+                                    // exactly that). ART runs the REAL ctor
+                                    // with the receiver as the outer
+                                    // argument. Fabricate the same way: run
+                                    // the REAL DEX ctor; fall back to honest
+                                    // null only when no such capture-ctor
+                                    // exists or it fails.
+                                    bool inner_made = false;
+                                    DalvikValue inner_dv;
+                                    if (ft->second.size() > 2 &&
+                                        ft->second.front() == 'L') {
+                                        auto ccit =
+                                            class_info_index_.find(ft->second);
+                                        if (ccit != class_info_index_.end() &&
+                                            ccit->second <
+                                                dex_report_->classes.size()) {
+                                            const auto& ccls =
+                                                dex_report_->classes
+                                                    [ccit->second];
+                                            for (const auto& m :
+                                                 ccls.direct_methods) {
+                                                if (m.name != "<init>" ||
+                                                    m.descriptor.empty() ||
+                                                    m.descriptor.front() !=
+                                                        '(')
+                                                    continue;
+                                                // capture-ctor shape:
+                                                // (L<declaring>;)V where
+                                                // declaring == walk
+                                                std::string want =
+                                                    "(L" + walk.substr(1);
+                                                if (m.descriptor != want + ")V")
+                                                    continue;
+                                                uint32_t oid = heap_.allocate(
+                                                    ft->second, pc, 0);
+                                                if (oid == 0) break;
+                                                DalvikValue self_v =
+                                                    DalvikValue::make_object(
+                                                        oid, ft->second);
+                                                DalvikValue outer_v =
+                                                    obj_ref;  // receiver IS
+                                                              // the outer
+                                                              // this
+                                                DalvikValue ctor_ret;
+                                                DalvikExecutionResult ctor_res;
+                                                std::vector<DalvikValue>
+                                                    ctor_args{self_v, outer_v};
+                                                inner_made =
+                                                    try_recursive_invoke(
+                                                        ft->second, "<init>",
+                                                        ctor_args, ctor_ret,
+                                                        ctor_res,
+                                                        m.descriptor);
+                                                if (inner_made) {
+                                                    inner_dv = self_v;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (inner_made) {
+                                        heap_.set_object_field(
+                                            obj_ref.object_id,
+                                            s134_dex_field_key(
+                                                resolved_field_declarer(
+                                                    field_res.class_descriptor,
+                                                    field_res.field_name),
+                                                field_res.field_name, true),
+                                            inner_dv);
+                                        heap_.set_object_field(
+                                            obj_ref.object_id,
+                                            field_res.field_name, inner_dv);
+                                        std::cerr << "[S188-W4-INNER-INIT] "
+                                                  << walk << "."
+                                                  << field_res.field_name
+                                                  << " = new " << ft->second
+                                                  << "(this) REAL ctor obj#"
+                                                  << inner_dv.object_id
+                                                  << " caller="
+                                                  << current_class_ << "."
+                                                  << current_method_
+                                                  << " pc=" << pc << std::endl;
+                                        result_value = inner_dv;
+                                        field_val = inner_dv;
+                                    } else {
                                     static thread_local uint64_t f274_n = 0;
                                     if (f274_n < 16) {
                                         ++f274_n;
@@ -24745,6 +24839,7 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                                                   << current_method_
                                                   << " pc=" << pc << ")"
                                                   << std::endl;
+                                    }
                                     }
                                 } else {
                                     DalvikValue dv =
@@ -24792,6 +24887,43 @@ bool DalvikExecutionEngine::execute_iget_object(uint32_t pc, InstructionTrace& t
                         }
                     }
                     }
+                }
+            }
+            // ── [S188-W4] FRAMEWORK OBSERVABLE INVARIANT LAW ──────────────
+            // AOSP android.database.Observable: field initializer
+            // `mObservers = new ArrayList<Object>()` runs for EVERY subclass
+            // instance (javac inlines it into the default ctor the subclass
+            // super() chain calls). Engine gap: framework superclasses have
+            // no DEX body, so a Material Observable subclass (Ls1/o0; —
+            // tranquilstopwatch + solitaire NavigationView chain) reached
+            // `mObservers.isEmpty()` with a null list → NPE →
+            // NavigationView.<init> died → app blank. AOSP invariant:
+            // mObservers is NEVER null on a constructed Observable.
+            if (!field_val.has_value() &&
+                field_res.class_descriptor == "Landroid/database/Observable;" &&
+                field_res.field_name == "mObservers" &&
+                obj_ref.object_id != 0) {
+                uint32_t list_oid =
+                    heap_.allocate("Ljava/util/ArrayList;", pc, 0);
+                if (list_oid != 0) {
+                    DalvikValue dv =
+                        DalvikValue::make_object(list_oid,
+                                                 "Ljava/util/ArrayList;");
+                    heap_.set_object_field(
+                        obj_ref.object_id,
+                        s134_dex_field_key(
+                            resolved_field_declarer(field_res.class_descriptor,
+                                                    field_res.field_name),
+                            field_res.field_name, true),
+                        dv);
+                    heap_.set_object_field(obj_ref.object_id,
+                                           field_res.field_name, dv);
+                    std::cerr << "[S188-W4-OBSERVABLE] mObservers invariant "
+                              << "obj#" << obj_ref.object_id
+                              << " = ArrayList#" << list_oid
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc << std::endl;
+                    field_val = dv;
                 }
             }
             // S72 null-field probe (env-gated, bounded, read-only): a read
