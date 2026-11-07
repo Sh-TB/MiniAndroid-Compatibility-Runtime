@@ -8006,3 +8006,62 @@ DEFAULT_BACKGROUND_ONLY). Goldens byte-exact (bouncy 8a6c24ac, unote
 Evidence: evidence/s188_w5/W5_FM_FACTORY.json + ts_w5*.log + face JPG.
 Tracker: #559 W5 comment. Next: W6 anchor-id resolution law (CoordinatorLayout
 LayoutParams styleable chain), then Insets root law.
+
+## S188 W6 — anchor-id law + WindowInsets root/insets family (2026-11-07)
+
+**User directive:** «ادامه androguard چقدر بهت کمک کرده بگو» — continue W6 with
+androguard and account for its contribution. Three laws landed.
+
+**androguard W6 ground truth (4.1.4):**
+- ISE thrower = `CoordinatorLayout;->t()V` (un-obfuscated), anchorId field =
+  `Lb0/f;->f I`; LP class `Lb0/f;` = R8-renamed CoordinatorLayout$LayoutParams
+  (super MarginLayoutParams). Its (ctx,attrs) ctor iputs -1 into e(keyline)/
+  f(anchorId) BEFORE the TypedArray reads.
+- Styleable authority decoded from `La0/a;-><clinit>` fill-array-data-payload:
+  La0/a;->b = [0x010100b3(gravity), 0x7f0302e8(anchor), 0x7f0302e9(anchorGrav),
+  0x7f0302ea(behavior), 0x7f03031b, 0x7f030325, 0x7f030326(keyline)] — anchor
+  slot=1 getResourceId default -1.
+- res/7s.xml (resource-obfuscated names) full AXML decode: DrawerLayout >
+  CoordinatorLayout > LinearLayout/Toolbar/…/NavigationView — NO layout_anchor
+  on ANY child → the "XML anchor never landed" theory was wrong; anchorId had
+  to come from the runtime side.
+- h0 decode: h0.a(Insets)I = literal `iget Insets.left; return` (the NPE site);
+  h0.c(WindowInsets)Insets = ONE-LINE shim `WindowInsets.getTappableElementInsets()`.
+
+**Live evidence (ts_w6pre + FIELD-TRACE ts_w6ft):** `[FIELD-TRACE] get
+CoordinatorLayout.t Lb0/f;.f obj#1681 value=0` — anchorId read as heap-default
+0, never -1, NO put rows → the real DEX LP ctor never ran; the ROOT-055
+fallback materialized shadow-class LPs (o1567/o1568/o1681 churn, C++ field
+names anchorId/mAnchorId only). The '$'-prefix LP discovery could never match
+an R8-renamed class.
+
+**Laws:**
+- F-NEW-578 (dalvik_engine.cpp generate_child_layout_params): R8-renamed LP
+  discovery — AOSP generateLayoutParams realization scan: scan the PARENT's
+  own methods for new-instance (0x22) targets with (super MarginLayoutParams
+  + (ctx,attrs) direct ctor); the REAL DEX LP ctor then runs (defaults iput -1
+  + TypedArray reads). Diag: lp=Lb0/f; via new-instance in
+  generateDefaultLayoutParams(). Effect: ISE ×2 → 0; F-NEW-309/322 identity
+  restored (one LP object o808, no churn).
+- F-NEW-580 (android_shadows.cpp getRootWindowInsets): in-window pre-attach
+  face — parented nodes and the activity content root answer the root-insets
+  object; true orphans keep AOSP null (cont104 C104-PREATTACH row preserved).
+- F-NEW-581 (window_insets_shadow.cpp): API-29 insets-family law —
+  getInsets/getSystemWindowInsets/getTappableElementInsets/
+  getMandatorySystemGestureInsets/getSystemGestureInsets/getStableInsets all
+  answer a ZERO Insets object (F-NEW-384 zero-inset model), never null; also
+  fixes the PLURAL getSystemWindowInsets() being swallowed by the legacy
+  getSystemWindowInset* int-prefix branch. Effect: h0.a NPE ×1 → 0.
+
+**Result:** uncaught 6 → 3 (ts_w5v → ts_w6d); ISE 2→0, h0 NPE 1→0. Remaining:
+×3 f086-nextint-bound IAE (u3/a.c = ThreadLocalRandom.nextInt(origin,bound);
+caller MainActivity.w()V reads Toolbar/LinearLayout getWidth/getHeight; bound
+computed from a 0-dimension view) — W7 frontier, chain already mapped. Tier
+stays FLAT (honest, DEFAULT_BACKGROUND_ONLY).
+
+**Goldens:** bouncy 8a6c24ac + unote 3b8dcb0a byte-exact; dooz 31ddd4d5 ==
+W1-stable face (script pin updated d602648e → 31ddd4d5, pre-W1 stale).
+
+Evidence: evidence/s188_w6/W6_LAWS.json + runs/ts_w6{pre,ft,a..d} + face JPG.
+Scripts: scripts/s188_w6_androguard_*.py. Next: W7 nextInt-bound dimension
+chain (MainActivity.w), then Phase-B FDT per-app record.

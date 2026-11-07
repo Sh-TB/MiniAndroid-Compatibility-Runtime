@@ -1,0 +1,67 @@
+
+## callers of i1.k: 0
+
+## callers of g0c.c: 6
+   Lo0/i1;->g
+   Lo0/i1;->i
+   Lo0/i1;->k
+   Lo0/j1;->f
+   Lo0/l1;->f
+   Lo0/u0;->onStart
+
+## DrawerLayout methods:
+   <clinit> ()V
+   <init> (Landroid/content/Context; Landroid/util/AttributeSet;)V
+   i (I)Ljava/lang/String;
+   j (Landroid/view/View;)Z
+   k (Landroid/view/View;)Z
+   l (Landroid/view/View;)Z
+   m (Landroid/view/View;)Z
+   a (Landroid/view/View; I)Z
+   addFocusables (Ljava/util/ArrayList; I I)V
+   addView (Landroid/view/View; I Landroid/view/ViewGroup$LayoutParams;)V
+   b (Landroid/view/View; Z)V
+   c ()V
+   checkLayoutParams (Landroid/view/ViewGroup$LayoutParams;)Z
+   computeScroll ()V
+   d (Z)V
+   dispatchGenericMotionEvent (Landroid/view/MotionEvent;)Z
+   drawChild (Landroid/graphics/Canvas; Landroid/view/View; J)Z
+   e (I)Landroid/view/View;
+   f ()Landroid/view/View;
+   g (Landroid/view/View;)I
+   generateDefaultLayoutParams ()Landroid/view/ViewGroup$LayoutParams;
+   generateLayoutParams (Landroid/util/AttributeSet;)Landroid/view/ViewGroup$LayoutParams;
+   generateLayoutParams (Landroid/view/ViewGroup$LayoutParams;)Landroid/view/ViewGroup$LayoutParams;
+   getDrawerElevation ()F
+   getStatusBarBackgroundDrawable ()Landroid/graphics/drawable/Drawable;
+   h (Landroid/view/View;)I
+   n (Landroid/view/View;)V
+   o (I I)V
+   onAttachedToWindow ()V
+   onDetachedFromWindow ()V
+   onDraw (Landroid/graphics/Canvas;)V
+   onInterceptTouchEvent (Landroid/view/MotionEvent;)Z
+   onKeyDown (I Landroid/view/KeyEvent;)Z
+   onKeyUp (I Landroid/view/KeyEvent;)Z
+   onLayout (Z I I I I)V
+   onMeasure (I I)V
+   onRestoreInstanceState (Landroid/os/Parcelable;)V
+   onRtlPropertiesChanged (I)V
+   onSaveInstanceState ()Landroid/os/Parcelable;
+   onTouchEvent (Landroid/view/MotionEvent;)Z
+   p (Landroid/view/View; F)V
+   q (Landroid/view/View;)V
+   r (Landroid/view/View; Z)V
+   requestDisallowInterceptTouchEvent (Z)V
+   requestLayout ()V
+   s (Landroid/view/View; I)V
+   setDrawerElevation (F)V
+   setDrawerListener (Lv0/c;)V
+   setDrawerLockMode (I)V
+   setScrimColor (I)V
+   setStatusBarBackground (I)V
+   setStatusBarBackground (Landroid/graphics/drawable/Drawable;)V
+   setStatusBarBackgroundColor (I)V
+
+## layouts: []

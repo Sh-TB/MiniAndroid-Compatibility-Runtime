@@ -7043,8 +7043,73 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
     // attach-time consumers, push at frame boundary). Probes:
     // fixtures/cont104_insets_probe rows ATTACHED nonnull / PREATTACH null.
     if (m == "getRootWindowInsets") {
+        static thread_local uint32_t f580_enter_n = 0;
+        if (f580_enter_n < 12) {
+            ++f580_enter_n;
+            std::cerr << "[F-NEW-580-ENTER] getRootWindowInsets bridge"
+                      << " view=" << ctx.receiver_id
+                      << " cls=" << ctx.class_name << std::endl;
+        }
         const auto* n = find_node(ctx.receiver_id);
-        if (!n || !n->attached_to_window) return CallResult::handled_null();
+        if (!n || !n->attached_to_window) {
+            // ── F-NEW-580 (S188 W6): in-window pre-attach face ────────────
+            // AOSP never reaches the pre-attach read: ViewRootImpl
+            // .performTraversals dispatches attached-to-window BEFORE
+            // measure, so every framework consumer (DrawerLayout.onMeasure
+            // → ViewCompat.getRootWindowInsets(this)) reads POST-attach.
+            // The runtime's single-window measure pass reaches measure
+            // PRE-attach (tranquilstopwatch ts_w6ft: DrawerLayout
+            // getRootWindowInsets → null → WindowInsetsCompat chain
+            // h0.c(null) → Insets.left read on null NPE ×2 → onCreate
+            // APP-BOUNDARY unwind). The OBSERVABLE AOSP contract for a view
+            // that lives in the window tree is the root insets — null is
+            // reserved for true orphans (the AOSP mAttachInfo==null face:
+            // fixtures/cont104_insets_probe C104-PREATTACH row null=true
+            // preserved — its detached View has NO parent and is NOT the
+            // window-content root, both predicates below stay false).
+            // In-window predicate (bounded, honest):
+            //  (a) the node has a parent in the runtime view tree, or
+            //  (b) the node IS the activity's window-content root (the
+            //      setContentView target — AOSP wraps it in DecorView,
+            //      always attached; the runtime treats it as the window
+            //      root itself).
+            bool in_window = false;
+            if (n && n->parent_id != 0) {
+                in_window = true;
+            } else if (n && registry_) {
+                if (auto* act = registry_->find_as<ActivityShadow>()) {
+                    in_window = (act->content_view_id() != 0 &&
+                                 act->content_view_id() == ctx.receiver_id);
+                }
+            }
+            if (!in_window) {
+                static thread_local uint32_t f580_miss_n = 0;
+                if (f580_miss_n < 12) {
+                    ++f580_miss_n;
+                    uint32_t cv = 0;
+                    if (auto* act2 = registry_
+                                         ? registry_->find_as<ActivityShadow>()
+                                         : nullptr)
+                        cv = act2->content_view_id();
+                    std::cerr << "[F-NEW-580-MISS] root-insets null face"
+                              << " view=" << ctx.receiver_id
+                              << " parent=" << (n ? n->parent_id : 0)
+                              << " attached="
+                              << (n && n->attached_to_window ? 1 : 0)
+                              << " content_root=" << cv << std::endl;
+                }
+                return CallResult::handled_null();
+            }
+            static thread_local uint32_t f580_n = 0;
+            if (f580_n < 16) {
+                ++f580_n;
+                std::cerr << "[F-NEW-580] root-insets pre-attach in-window"
+                          << " view=" << ctx.receiver_id
+                          << (n && n->parent_id != 0 ? " parented"
+                                                     : " content-root")
+                          << std::endl;
+            }
+        }
         if (!heap_) return CallResult::handled_null();
         uint32_t wi = heap_->allocate("Landroid/view/WindowInsets;");
         heap_->set_object_int_field(wi, "__root_insets__", 1);

@@ -1,0 +1,82 @@
+{
+  "wave": "S188 W6",
+  "date": "2026-11-07",
+  "directive": "ادامه androguard چقدر بهت کمک کرده بگو — continue with androguard, account for its contribution",
+  "tool": "androguard 4.1.4 (pip) — DEX ground truth + AXML layout decode + styleable payload extraction for both W6 walls",
+  "frontier_from_W5": [
+    "CoordinatorLayout.t ISE 'Could not find CoordinatorLayout descendant view with id null to anchor view'",
+    "Landroidx/lifecycle/h0;.a NPE 'Insets.left on null' — DrawerLayout getRootWindowInsets() answered null"
+  ],
+  "androguard_findings": {
+    "ise_thrower": "Landroidx/coordinatorlayout/widget/CoordinatorLayout;->t()V (204 ins) — NOT obfuscated; anchorId field = Lb0/f;->f I (f=k/l = anchor view caches)",
+    "lp_class": "Lb0/f; super Landroid/view/ViewGroup$MarginLayoutParams; — R8 renamed CoordinatorLayout$LayoutParams (the '$'-prefix discovery net could never match)",
+    "lp_ctor_defaults": "(ctx,attrs) ctor iput -1 -> e(keyline) and f(anchorId) BEFORE the TypedArray reads",
+    "styleable_authority": "La0/a;->b [I (CoordinatorLayout_Layout) decoded from fill-array-data-payload: slot0=0x010100b3(android:layout_gravity) slot1=0x7f0302e8(layout_anchor, getResourceId default -1) slot2=0x7f0302e9(anchorGravity) slot3=0x7f0302ea(behavior) slot4=0x7f03031b slot5=0x7f030325 slot6=0x7f030326(keyline)",
+    "layout_xml": "res/7s.xml (resource-obfuscated name) = DrawerLayout(7F0800B0) > CoordinatorLayout(7F080118) > LinearLayout(7F080189)+Toolbar+...+NavigationView(7F08015B) — NO app:layout_anchor on ANY child (AXMLPrinter decode of the full 2726-char file)",
+    "h0_decoded": "Landroidx/lifecycle/h0; = R8 SDK-demux bucket; h0.a(Insets)I = literal 'iget Insets.left; return' ; h0.c(WindowInsets)Insets = ONE-LINE shim WindowInsets.getTappableElementInsets() (API 29)",
+    "npe_chain": "DrawerLayout.onMeasure (measure runs PRE-attach in the runtime's single-window traversal) -> getRootWindowInsets -> WindowInsetsCompat(o0/i1.k) -> h0.c -> getTappableElementInsets UNCLAIMED by WindowInsetsShadow -> null -> g0/c.c(null) -> h0.a(null) -> iget Insets.left on null"
+  },
+  "live_evidence_runs": {
+    "ts_w6pre_W5_binary": {
+      "file": "runs/ts_w6pre (W5-built binary, MINIANDROID_F327_DIAG=1)",
+      "rows": [
+        "[THROWABLE-MSG] ISE msg=\"Could not find CoordinatorLayout descendant view with id null to anchor view Landroid/widget/LinearLayout;@725\" caller=CoordinatorLayout;.t pc=363 x2",
+        "[SYNTH-EXC] iget-null-recv NPE 'Landroid/graphics/Insets;.left' on null method=Landroidx/lifecycle/h0;.a pc=0 x1",
+        "[SYNTH-EXC] f086-nextint-bound IAE '(bound must be positive)' method=Lu3/a;.c pc=4 x3",
+        "F-016 uncaught = 6"
+      ]
+    },
+    "ts_w6ft_FIELD_TRACE": {
+      "file": "runs/ts_w6ft (MINIANDROID_FIELD_TRACE='Lb0/f;.f')",
+      "smoking_gun": "[FIELD-TRACE] get CoordinatorLayout.t Lb0/f;.f obj#1681 value=0 — anchorId read as heap-default 0, NEVER -1 (no put rows: the real DEX ctor never ran; the LP was ROOT-055-fallback materialized)",
+      "root055_row": "[ROOT-055] getLayoutParams view=725 -> CoordinatorLayout$LayoutParams o1567/o1568/o1681... — repeated fallback materializations (identity churn, no app field names)"
+    }
+  },
+  "laws": [
+    {
+      "id": "F-NEW-578",
+      "file": "src/dex/dalvik_engine.cpp generate_child_layout_params",
+      "law": "R8-renamed LP discovery — the AOSP generateLayoutParams realization scan: when the '$'-prefix net misses, scan the PARENT class's own methods for new-instance (op 0x22) targets satisfying (super MarginLayoutParams + (Context,AttributeSet) direct ctor); first hit in DEX order; the REAL DEX LP ctor then runs (defaults iput -1 + TypedArray reads) exactly as AOSP constructs it",
+      "diag": "[F-NEW-578] R8-renamed LP discovered parent=Landroidx/coordinatorlayout/widget/CoordinatorLayout; lp=Lb0/f; via new-instance in generateDefaultLayoutParams()Landroid/view/ViewGroup$LayoutParams;",
+      "effect": "ISE 'Could not find CoordinatorLayout descendant view' 2 -> 0; F-NEW-309/322 identity restored ([F-NEW-309/322] getLayoutParams view=725 -> layout_params_object Lb0/f; o808 — one object, not the o1567/o1568/o1681 churn)"
+    },
+    {
+      "id": "F-NEW-580",
+      "file": "src/framework/android_shadows.cpp View.getRootWindowInsets",
+      "law": "in-window pre-attach face: AOSP never reaches the pre-attach read (ViewRootImpl.attaches BEFORE measure); the runtime's single-window traversal reaches measure pre-attach, so an in-window node (parent_id != 0, or the activity content root) answers the SAME root-insets object as the attached face; true orphans keep AOSP null (cont104 C104-PREATTACH null=true preserved — detached probe view has no parent and is not the content root)",
+      "note": "keeper row at ts_w6c: view=679 was already attached_to_window — the 580 face was not the deciding row; retained for the honest in-window contract (next reads pre-attach)"
+    },
+    {
+      "id": "F-NEW-581",
+      "file": "src/framework/window_insets_shadow.cpp",
+      "law": "API-29 insets-family law: getInsets(I)/getSystemWindowInsets()/getTappableElementInsets()/getMandatorySystemGestureInsets()/getSystemGestureInsets()/getStableInsets() answer a ZERO Insets object (F-NEW-384 zero-inset single-window model) — never null; also fixes getSystemWindowInsets() (PLURAL) previously swallowed by the legacy getSystemWindowInset* int-prefix branch (answered int 0 where an Insets object is required)",
+      "effect": "h0.a NPE 'Insets.left on null' 1 -> 0"
+    }
+  ],
+  "result": {
+    "uncaught": "6 -> 3 (W5 ts_w5v -> W6 ts_w6d)",
+    "remaining": [
+      "x3 f086-nextint-bound IAE: Lu3/a;.c = ThreadLocalRandom.current().nextInt(origin,bound); callers are MainActivity.w()V (reads Toolbar/LinearLayout getWidth/getHeight) + Lt3/a Kotlin Random chain — bound computed from a 0-dimension view; W7 frontier (dimension plumbing), evidence recorded not fixed"
+    ],
+    "tier": "FLAT (honest, DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS)"
+  },
+  "goldens": {
+    "com.dozingcatsoftware.bouncy": "8a6c24ac8a7d718e pin_holds=true",
+    "app.varlorg.unote": "3b8dcb0adbbc17a9 pin_holds=true",
+    "io.github.yamin8000.dooz": "31ddd4d5b8e6d18e == W1-stable face (W5 recorded 'dooz = W1-stable 31ddd4d5 unchanged'); script pin updated d602648e -> 31ddd4d5 (pre-W1 stale)"
+  },
+  "scripts": [
+    "scripts/s188_w6_androguard_anchor.py (ISE thrower + styleable field hunt)",
+    "scripts/s188_w6_androguard_ctor_h0.py (b0/f ctor disasm + h0 class decode)",
+    "scripts/s188_w6_androguard_callers.py (h0.a/c/m/u caller census)",
+    "scripts/s188_w6_androguard_chain.py (i1.k/g0c.c callers + DrawerLayout methods)",
+    "inline probe: La0/a;-><clinit> fill-array-data-payload decode (the styleable authority)"
+  ],
+  "androguard_account": [
+    "W4->W5: REVERSED the host-wiring hypothesis (b0/k = R8 state bucket, not FragmentHostCallback) — prevented a wrong attachHost law",
+    "W5: pinned the inflation ctor-overload bug (param_count==arg_count branch accepting FCV.<init>(ctx,attrs,FM)) -> F-NEW-576/577",
+    "W6-1: found the ISE thrower class/method in one string scan; proved the XML carries NO layout_anchor (killing the 'XML anchor never landed' theory); decoded the styleable array payload giving the authoritative slot->attr mapping; decoded the ctor defaults (e=-1,f=-1) — together these flipped the diagnosis from 'styleable slot resolution' to 'LP object never ran its real ctor'",
+    "W6-2: decoded h0 (SDK-demux bucket) method-by-method; h0.a = the literal NPE site; h0.c = the one-line getTappableElementInsets shim — the exact missing shadow method, no guessing",
+    "W7 prep: u3/a.c = ThreadLocalRandom.nextInt(origin,bound), caller MainActivity.w()V reads view dimensions — the next wall's chain is already mapped"
+  ]
+}

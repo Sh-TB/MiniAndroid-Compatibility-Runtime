@@ -15263,6 +15263,70 @@ uint32_t DalvikExecutionEngine::generate_child_layout_params(
             picked = &c;
         }
     }
+    // ── F-NEW-578 (S188 W6): R8-renamed LP discovery — the AOSP
+    // generateLayoutParams realization scan ────────────────────────────────
+    // R8 renames the LP subclass (tranquilstopwatch:
+    // CoordinatorLayout$LayoutParams → Lb0/f;), so the "$"-prefix net
+    // misses it → no LP generated at inflation → the ROOT-055 fallback
+    // materialized the shadow-class LP object (anchorId/mAnchorId names
+    // only) while the REAL DEX CoordinatorLayout.prepareChildren t() iget
+    // the app field Lb0/f;->f (anchorId) as the heap default 0 ≠ NO_ID(-1)
+    // → findViewById(0) null → ISE "Could not find CoordinatorLayout
+    // descendant view" → onCreate APP-BOUNDARY unwind ×2/run.
+    // AOSP binds a parent's LayoutParams subclass at the parent's OWN
+    // construction site: ViewGroup.generateLayoutParams(AttributeSet)
+    // news the subclass (CoordinatorLayout → new Lb0/f;(ctx, attrs)).
+    // Discovery: scan the parent class's OWN methods for new-instance
+    // (op 0x22, format 21c — type index in the next unit) targets that
+    // satisfy the same structural predicate (super MarginLayoutParams +
+    // (Context,AttributeSet) direct ctor). First hit in DEX method order
+    // — deterministic; no name conditions, R8 renames survive.
+    if (picked == nullptr) {
+        auto pit = class_info_index_.find(parent_cls);
+        if (pit != class_info_index_.end()) {
+            const dex::ClassInfo& pcls = dex_report_->classes[pit->second];
+            auto structural_ok = [&](const dex::ClassInfo& c) {
+                if (c.superclass_name != kMarginLp) return false;
+                if (c.name == pcls.name) return false;
+                for (const auto& m : c.direct_methods) {
+                    if (m.name != "<init>") continue;
+                    if (m.descriptor.find(
+                            "Landroid/content/Context;"
+                            "Landroid/util/AttributeSet;)V") !=
+                        std::string::npos)
+                        return true;
+                }
+                return false;
+            };
+            static thread_local int f578_n = 0;
+            pcls.for_each_method([&](const dex::MethodInfo& mm) {
+                if (picked != nullptr) return;
+                const auto& bc = mm.bytecode;
+                if (bc.size() < 2) return;
+                for (size_t i = 0; i + 1 < bc.size(); ++i) {
+                    if ((bc[i] & 0xFF) != 0x22) continue;  // new-instance
+                    uint32_t tidx = bc[i + 1];
+                    if (tidx >= dex_report_->types.size()) continue;
+                    const std::string& cand = dex_report_->types[tidx];
+                    auto cit = class_info_index_.find(cand);
+                    if (cit == class_info_index_.end()) continue;
+                    const dex::ClassInfo& cc =
+                        dex_report_->classes[cit->second];
+                    if (!structural_ok(cc)) continue;
+                    picked = &cc;
+                    if (f578_n < 8) {
+                        ++f578_n;
+                        std::cerr << "[F-NEW-578] R8-renamed LP discovered"
+                                  << " parent=" << parent_cls
+                                  << " lp=" << cc.name
+                                  << " via new-instance in " << mm.name
+                                  << mm.descriptor << std::endl;
+                    }
+                    break;
+                }
+            });
+        }
+    }
     // ── CONT-49 FIELD-DEFAULT LAW (generic, no app knowledge) ───────────
     // R8 horizontal class merging can strip every ctor from the LP
     // subclass (opencalc 53: LA/e = ConstraintLayout.LayoutParams merged

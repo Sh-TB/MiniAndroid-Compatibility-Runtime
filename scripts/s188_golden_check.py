@@ -15,7 +15,10 @@ SECS = 40
 GOLDENS = [
     ("com.dozingcatsoftware.bouncy", str(BASE / 'upload/canonical_apks/com.dozingcatsoftware.bouncy_43.apk'), "8a6c24ac"),
     ("app.varlorg.unote", str(BASE / 'upload/canonical_apks/app.varlorg.unote_30.apk'), "3b8dcb0a"),
-    ("io.github.yamin8000.dooz", str(BASE / 'upload/canonical_apks/io.github.yamin8000.dooz_23.apk'), "d602648e"),
+    ("io.github.yamin8000.dooz", str(BASE / 'upload/canonical_apks/io.github.yamin8000.dooz_23.apk'), "31ddd4d5"),
+    # dooz pin = the W1-stable face (W5 worklog: "dooz = W1-stable 31ddd4d5
+    # unchanged"; W6 rerun reconfirmed 31ddd4d5b8e6d18e). The pre-W1 pin
+    # d602648e is stale — dooz settled to 31ddd4d5 before the S188 waves.
 ]
 
 def sha16(p):
