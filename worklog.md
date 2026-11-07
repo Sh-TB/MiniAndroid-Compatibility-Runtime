@@ -7902,3 +7902,30 @@ Follow all #556 rules.
 promotion candidates = NavigationView ctor fix (tranquilstopwatch+solitaire)
 and CopyOnWriteArraySet (Flutter trio); no.thanks A/B bisection; Phase B FDT
 graph on one title (per-app evidence records).
+
+## S188 W3 — submit→Future + Throwable.toString laws, Flutter route advance (2026-11-07)
+
+**User directive:** ادامه — continue first-render recovery.
+
+**Two engine laws landed (commit d7ee5831):**
+- SUBMIT→FUTURE: ThreadPoolExecutor.submit(Callable) ran as silent stub →
+  FlutterLoader Future.get NPE → RuntimeException → death. Now: inline
+  real-DEX call(), Future box, get() answers stored result. FlutterLoader
+  init chain executes (asset dirs, native fallback, re-linking).
+- THROWABLE.toString: AOSP contract (name + ": " + msg, never null).
+  Flutter diagnostic builder no longer NPEs inside its own handler.
+
+**Live traces:** [EXECUTOR] submit(Ll0/a;) → Future box=202 ran=call;
+[THROWABLE-TOSTRING] java.lang.UnsatisfiedLinkError: dlopen failed: ...
+
+**Remaining wall (recorded):** deferred GATEA-NATIVE ULE re-fires after a
+handled catch (pc=152→catch-all 122, re-fires pc=421, propagates, re-fires
+l0/c.d pc=91 → death). In-flight-exception state machine: deferred slot not
+cleared across invoke-wrapper catch boundaries. Coder bisection target.
+
+**Regression set (S188 §14):** goldens bouncy 8a6c24ac + unote 3b8dcb0a
+byte-exact on binary 84480db756ef2eec; dooz 31ddd4d5 = W1 stable face;
+W2 11-title battery re-run: 3 B anchors stable, zero new regressions.
+
+**Tracker:** #559 W3 comment posted. Next: deferred-exception clearing law
+(Flutter trio), NavigationView ctor NPE (tranquilstopwatch/solitaire).
