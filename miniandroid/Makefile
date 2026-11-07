@@ -99,7 +99,7 @@ anchors:
 
 all: $(EXECUTABLE) anchors
 
-$(EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(MAIN_OBJECT) $(BUILDDIR)/jni/bionic_compat.o
+$(EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(MAIN_OBJECT) $(BUILDDIR)/jni/bionic_compat.o $(BUILDDIR)/jni/pthread_shadow.o
 	@mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -rdynamic -o $@ $^ $(LIBS) $(FONTS_LIBS)
 	@echo "Build complete: $(EXECUTABLE)"
@@ -131,6 +131,14 @@ $(BUILDDIR)/framework/android_shadows.o: $(SRCDIR)/framework/android_shadows.cpp
 
 
 $(BUILDDIR)/jni/bionic_compat.o: $(SRCDIR)/jni/bionic_compat.c
+	@mkdir -p $(dir $@)
+	gcc -O2 -fPIC -c -o $@ $<
+
+# S188-W8 F-NEW-585: bionic pthread-attr shadow family — the exe exports
+# the attr-family symbols (-rdynamic) so bionic-compiled libraries
+# (libflutter etc.) get correct 56-byte-attr semantics without stack
+# corruption; hot-path lock/unlock pass straight through (RTLD_NEXT).
+$(BUILDDIR)/jni/pthread_shadow.o: $(SRCDIR)/jni/pthread_shadow.c
 	@mkdir -p $(dir $@)
 	gcc -O2 -fPIC -c -o $@ $<
 

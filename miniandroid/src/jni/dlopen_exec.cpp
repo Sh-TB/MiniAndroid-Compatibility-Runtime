@@ -352,16 +352,48 @@ struct VMStub {
 };
 VMStub g_vm = {g_vm_table};
 
-// generic loud stub for unimplemented slots (returns 0)
-long jni_unsupported_slot() {
+// S188-W8 F-NEW-584 (slot census): the loud stub no longer shouts blindly —
+// it records WHICH spec slot the library invoked. Per-slot thunks carry the
+// slot index (a JNIEnv fn-table call cannot derive it from the args). The
+// census turns "6 UNSUPPORTED-slot hits" (W2 promotion evidence, queens)
+// into an exact demand list — the honest requirement matrix for the next
+// engine wave. env slots -> census[0..239], vm slots -> census[240+i].
+unsigned long long g_slot_census[256] = {0};
+static void jni_unsupported_slot_impl(int slot, bool is_vm) {
     std::lock_guard<std::mutex> lk(g_mu);
     ++g_unsupported_slot_calls;
-    fprintf(stderr,
-            "[MINIANDROID-JNI] UNSUPPORTED JNIEnv slot invoked — the library "
-            "used a JNI function outside the implemented subset (strings / "
-            "exceptions / VM / registration)\n");
+    int idx = is_vm ? 240 + slot : slot;
+    if (slot < 0 || idx < 0 || idx >= 256) idx = 0;
+    ++g_slot_census[idx];
+    static unsigned long long s_printed = 0;
+    if (s_printed < 40) {
+        ++s_printed;
+        fprintf(stderr,
+                "[MINIANDROID-JNI] UNSUPPORTED %s slot %d invoked — the library "
+                "used a JNI function outside the implemented subset (strings / "
+                "exceptions / VM / registration)\n",
+                is_vm ? "JavaVM" : "JNIEnv", slot);
+    }
+}
+long jni_unsupported_slot() {  // legacy alias (no index known)
+    jni_unsupported_slot_impl(-1, false);
     return 0;
 }
+template <int N, bool V>
+struct UnsupportedThunk {
+    static long fn() { jni_unsupported_slot_impl(N, V); return 0; }
+};
+template <int N, bool V>
+struct FillUnsupported {
+    static void fill(void** t) {
+        FillUnsupported<N - 1, V>::fill(t);
+        t[N] = (void*)&UnsupportedThunk<N, V>::fn;
+    }
+};
+template <bool V>
+struct FillUnsupported<-1, V> {
+    static void fill(void**) {}
+};
 
 // implemented slots — signatures per JNI spec (jni.h)
 int jni_GetVersion(void*) { return 0x00010006; }
@@ -387,6 +419,70 @@ int jni_GetStringLength(void*, void* jstr) {
     // ASCII probe surface: modified-UTF8 length ≈ byte length
     return (int)static_cast<std::string*>(jstr)->size();
 }
+
+// ── S188-W8 frontier-1 (queens slot census): env165 GetStringChars ×5 +
+// env226 NewWeakGlobalRef ×1 — the EXACT demand list from the F-NEW-584
+// census run (evidence/s188_w8/QUEENS_SLOT_CENSUS.json). The UTF-16 face
+// of the string family: transcode the boxed modified-UTF8 string to
+// UTF-16 (surrogate pairs for supplementary codepoints, the JNI spec's
+// jchar* shape), arena-owned copy (is_copy=1 — same law as
+// GetStringUTFChars). NewWeakGlobalRef = identity (same law as
+// NewGlobalRef — a weak ref that the runtime never collects is honest
+// here: the runtime has no GC collection pass over native boxes).
+static const uint16_t* jni_string_utf16_arena(void* jstr, int* out_len) {
+    static std::vector<std::vector<uint16_t>>* arena = nullptr;
+    static std::mutex* a_mu = nullptr;
+    if (!a_mu) { a_mu = new std::mutex(); arena = new std::vector<std::vector<uint16_t>>(); }
+    std::string s = jstr ? *static_cast<std::string*>(jstr) : std::string();
+    std::vector<uint16_t> out;
+    size_t i = 0, n = s.size();
+    while (i < n) {
+        unsigned char c = (unsigned char)s[i];
+        uint32_t cp = 0;
+        int extra = 0;
+        if (c < 0x80) { cp = c; extra = 0; }
+        else if ((c & 0xE0) == 0xC0) { cp = c & 0x1F; extra = 1; }
+        else if ((c & 0xF0) == 0xE0) { cp = c & 0x0F; extra = 2; }
+        else if ((c & 0xF8) == 0xF0) { cp = c & 0x07; extra = 3; }
+        else { cp = 0xFFFD; extra = 0; }  // invalid byte -> U+FFFD
+        ++i;
+        bool bad = false;
+        for (int k = 0; k < extra; ++k) {
+            if (i >= n || ((unsigned char)s[i] & 0xC0) != 0x80) { bad = true; break; }
+            cp = (cp << 6) | ((unsigned char)s[i] & 0x3F);
+            ++i;
+        }
+        if (bad) cp = 0xFFFD;
+        if (cp >= 0x10000) {  // supplementary -> surrogate pair
+            cp -= 0x10000;
+            out.push_back((uint16_t)(0xD800 | (cp >> 10)));
+            out.push_back((uint16_t)(0xDC00 | (cp & 0x3FF)));
+        } else {
+            out.push_back((uint16_t)cp);
+        }
+    }
+    std::lock_guard<std::mutex> lk(*a_mu);
+    arena->push_back(std::move(out));
+    std::vector<uint16_t>& stored = arena->back();
+    if (out_len) *out_len = (int)stored.size();
+    return stored.data();
+}
+const uint16_t* jni_GetStringChars(void* env, void* jstr,
+                                   unsigned char* is_copy) {
+    if (!jstr) return nullptr;
+    if (is_copy) *is_copy = 1;  // arena-owned copy semantics
+    return jni_string_utf16_arena(jstr, nullptr);
+}
+void jni_ReleaseStringChars(void*, void*, const uint16_t*) {}  // arena-owned
+void* jni_NewWeakGlobalRef(void*, void* r) { return r; }
+void jni_DeleteWeakGlobalRef(void*, void*) {}
+
+// S188-W8 frontier-1b (quinb slot census): env19 PushLocalFrame ×1 — the
+// local-ref frame family. The runtime's local refs are identity boxes with
+// no collection pass, so a frame push/pop is an honest success that passes
+// the surviving ref through (the JNI spec's PopLocalFrame return law).
+int jni_PushLocalFrame(void*, int32_t /*capacity*/) { return 0; }  // JNI_OK
+void* jni_PopLocalFrame(void*, void* result) { return result; }
 void* jni_FindClass(void*, const char* name) {
     return box_string(std::string(name ? name : ""));
 }
@@ -593,8 +689,7 @@ void init_tables() {
     // GetJavaVM handler and got 0 back). The corpus battery re-verifies
     // maintainer-side (same honest caveat as every wave).
     // ─────────────────────────────────────────────────────────────────
-    for (int i = 0; i < kJniSlots; ++i)
-        g_jni_table[i] = (void*)&jni_unsupported_slot;
+    FillUnsupported<kJniSlots - 1, false>::fill(g_jni_table);
     g_jni_table[4] = (void*)&jni_GetVersion;               // 4 GetVersion
     g_jni_table[6] = (void*)&jni_FindClass;                // 6 FindClass
     g_jni_table[13] = (void*)&jni_Throw;                   // 13 Throw
@@ -603,6 +698,8 @@ void init_tables() {
     g_jni_table[16] = (void*)&jni_ExceptionDescribe;       // 16 ExceptionDescribe
     g_jni_table[17] = (void*)&jni_ExceptionClear;          // 17 ExceptionClear
     g_jni_table[18] = (void*)&jni_FatalError;              // 18 FatalError
+    g_jni_table[19] = (void*)&jni_PushLocalFrame;          // 19 PushLocalFrame (W8 census: quinb ×1)
+    g_jni_table[20] = (void*)&jni_PopLocalFrame;           // 20 PopLocalFrame
     g_jni_table[21] = (void*)&jni_NewGlobalRef;            // 21 NewGlobalRef
     g_jni_table[22] = (void*)&jni_DeleteGlobalRef;         // 22 DeleteGlobalRef
     g_jni_table[23] = (void*)&jni_DeleteLocalRef;          // 23 DeleteLocalRef
@@ -616,6 +713,8 @@ void init_tables() {
     // string family — TRUE spec slots (were mis-wired at 113..120).
     g_jni_table[163] = (void*)&jni_NewString;              // 163 NewString
     g_jni_table[164] = (void*)&jni_GetStringLength;        // 164 GetStringLength
+    g_jni_table[165] = (void*)&jni_GetStringChars;         // 165 GetStringChars (W8 census: queens ×5)
+    g_jni_table[166] = (void*)&jni_ReleaseStringChars;     // 166 ReleaseStringChars
     g_jni_table[167] = (void*)&jni_NewStringUTF;           // 167 NewStringUTF
     g_jni_table[168] = (void*)&jni_GetStringUTFLength;     // 168 GetStringUTFLength
     g_jni_table[169] = (void*)&jni_GetStringUTFChars;      // 169 GetStringUTFChars
@@ -635,8 +734,21 @@ void init_tables() {
     g_jni_table[218] = (void*)&jni_MonitorExit;            // 218 MonitorExit
     g_jni_table[219] = (void*)&jni_GetJavaVM;              // 219 GetJavaVM
     g_jni_table[228] = (void*)&jni_ExceptionCheck;         // 228 ExceptionCheck
-    for (int i = 0; i < kVmSlots; ++i)
-        g_vm_table[i] = (void*)&jni_unsupported_slot;
+    g_jni_table[226] = (void*)&jni_NewWeakGlobalRef;       // 226 NewWeakGlobalRef (W8 census: queens ×1)
+    g_jni_table[227] = (void*)&jni_DeleteWeakGlobalRef;    // 227 DeleteWeakGlobalRef
+    FillUnsupported<kVmSlots - 1, true>::fill(g_vm_table);
+    std::atexit([]() {
+        std::lock_guard<std::mutex> lk(g_mu);
+        if (!g_unsupported_slot_calls) return;
+        fprintf(stderr,
+                "[MINIANDROID-JNI] UNSUPPORTED slot census: total=%llu",
+                g_unsupported_slot_calls);
+        for (int i = 0; i < 248; ++i)
+            if (g_slot_census[i])
+                fprintf(stderr, " %s%d=%llu", i >= 240 ? "vm" : "env",
+                        i >= 240 ? i - 240 : i, g_slot_census[i]);
+        fprintf(stderr, "\n");
+    });
     g_vm_table[3] = (void*)&jni_DestroyJavaVM;             // DestroyJavaVM
     g_vm_table[4] = (void*)&jni_AttachCurrentThread;       // AttachCurrentThread
     g_vm_table[5] = (void*)&jni_DetachCurrentThread;       // DetachCurrentThread

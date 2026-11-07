@@ -75269,6 +75269,58 @@ measure_cm_done:;
                           << "\") LOADED size=" << fsz << " sha16="
                           << sha16_of_file(extracted_file) << " (" << lo.detail
                           << ")" << std::endl;
+                // S188-W8 Flutter AOT lane (queens slot census follow-up):
+                // Android's runtime linker resolves the app's AOT snapshot
+                // library inside the app's linker namespace — the host
+                // process has none, so the engine's later bare-name
+                // dlopen("libapp.so") fails and the Dart VM data never
+                // resolves ("VM snapshot invalid and could not be inferred
+                // from settings" — dart_vm_data.cc, live queens/quinb W8
+                // logs). Pre-load the sibling libapp.so by FULL PATH: the
+                // loader registers it under its soname, so the engine's
+                // bare-name lookup finds the already-loaded object (real
+                // dlopen semantics — no interception, no fabrication).
+                // Verify the four AOT snapshot symbols exist and log them.
+                if (lib == "flutter") {
+                    std::filesystem::path app_lib =
+                        std::filesystem::path(extracted_file).parent_path() /
+                        "libapp.so";
+                    std::error_code ap_ec;
+                    if (std::filesystem::exists(app_lib, ap_ec) && !ap_ec) {
+                        void* h = dlopen(app_lib.c_str(),
+                                         RTLD_NOW | RTLD_GLOBAL);
+                        if (h) {
+                            const char* syms[4] = {"_kDartVmSnapshotData",
+                                                   "_kDartVmSnapshotInstructions",
+                                                   "_kDartIsolateSnapshotData",
+                                                   "_kDartIsolateSnapshotInstructions"};
+                            int found = 0;
+                            for (const char* s : syms) {
+                                void* p = dlsym(h, s);
+                                if (p) ++found;
+                                std::cerr << "[S2-NATIVE] libapp.so snapshot "
+                                          << "symbol " << s << ": "
+                                          << (p ? "RESOLVED" : "MISSING")
+                                          << std::endl;
+                            }
+                            std::cerr << "[S2-NATIVE] Flutter AOT lane: "
+                                      << "libapp.so pre-loaded by full path ("
+                                      << app_lib.string() << ", " << found
+                                      << "/4 snapshot symbols resolved)"
+                                      << std::endl;
+                        } else {
+                            const char* err = dlerror();
+                            std::cerr << "[S2-NATIVE] Flutter AOT lane: "
+                                      << "libapp.so full-path dlopen FAILED: "
+                                      << (err ? err : "unknown") << std::endl;
+                        }
+                    } else {
+                        std::cerr << "[S2-NATIVE] Flutter AOT lane: no "
+                                  << "libapp.so sibling (JIT/debug app?) — "
+                                  << "snapshot must come from assets"
+                                  << std::endl;
+                    }
+                }
                 miniandroid::diagnostics::FileIoTrace::instance().record(
                     "NATIVE-LOADED", logical_file, true,
                     "System." + method + " " + lo.detail,

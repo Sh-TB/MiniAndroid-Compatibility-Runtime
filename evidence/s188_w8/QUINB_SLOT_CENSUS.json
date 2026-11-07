@@ -1,0 +1,13 @@
+{
+ "pkg": "xyz.deepdaikon.quinb",
+ "per_hit_rows": 1,
+ "detail": {
+  "JNIEnv19": 1
+ },
+ "census": null,
+ "flutter": [
+  "[S2-NATIVE] load flutter: dlopen ok (/tmp/w8_quinb_store/data/app/xyz.deepdaikon.quinb/lib/x86_64/libflutter.so) JNI_OnLoad ran",
+  "[S2-NATIVE] System.loadLibrary(\"flutter\") LOADED size=10559624 sha16=74a6d8c37c013c4c (dlopen ok; JNI_OnLoad version 0x10004)"
+ ],
+ "uncaught": 1
+}

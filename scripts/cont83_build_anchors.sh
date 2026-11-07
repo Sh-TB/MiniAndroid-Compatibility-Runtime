@@ -99,8 +99,13 @@ gcc -shared -fPIC -O2 -Wl,-soname,libstdc++.so -Wl,--no-as-needed -lstdc++ \
 # module (dep scope) and never mixes layouts. exe-side callers keep the
 # exe's own shim (each world self-consistent; no FILE* crosses worlds).
 cp miniandroid/src/jni/bionic_compat.c /tmp/cont83_anchors/bionic_compat.c
+# S188-W8 F-NEW-585: the bionic pthread-attr shadow ships in the anchor
+# libc.so too — libflutter's DT_NEEDED puts the anchor FIRST in its
+# dependency scope, ahead of the exe (live W8 evidence: the exe's
+# rdynamic shadow never won the binding; the anchor did).
+cp miniandroid/src/jni/pthread_shadow.c /tmp/cont83_anchors/pthread_shadow.c
 gcc -shared -fPIC -O2 -Wl,-soname,libc.so -Wl,--no-as-needed -lc \
-    -o "$OUT/libc.so" /tmp/cont83_anchors/bionic_compat.c
+    -o "$OUT/libc.so" /tmp/cont83_anchors/bionic_compat.c /tmp/cont83_anchors/pthread_shadow.c
 
 # ── T18 anchor set, restored to the tracked build (fresh-container law) ─
 # The T18-era built anchors stayed LOCAL (ZERO-APK spirit) and their build

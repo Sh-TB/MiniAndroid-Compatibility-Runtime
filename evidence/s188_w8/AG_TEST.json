@@ -1,0 +1,67 @@
+{
+ "tool": "androguard 4.1.4",
+ "apk": "tibarj.tranquilstopwatch (2.4MB)",
+ "load_s": 0.25,
+ "questions": {
+  "Q1_route": {
+   "answer": {
+    "flutter": 0,
+    "godot": 0,
+    "compose": 0
+   },
+   "verdict": "VIEW (all zero)",
+   "ok": true,
+   "seconds": 0.0,
+   "n_classes": 1454
+  },
+  "Q2_thrower": {
+   "answer": [
+    "Landroidx/coordinatorlayout/widget/CoordinatorLayout;",
+    "t",
+    204
+   ],
+   "expect": [
+    "Landroidx/coordinatorlayout/widget/CoordinatorLayout;",
+    "t",
+    204
+   ],
+   "ok": true,
+   "seconds": 0.06
+  },
+  "Q3_decode_h0": {
+   "answer": {
+    "a": {
+     "desc": "(Landroid/graphics/Insets;)I",
+     "ops": [
+      "v0, v0, Landroid/graphics/Insets;->left I",
+      "v0"
+     ]
+    },
+    "c": {
+     "desc": "(Landroid/view/WindowInsets;)Landroid/graphics/Insets;",
+     "ops": [
+      "v0, Landroid/view/WindowInsets;->getTappableElementInsets()Landroid/graphics/Insets;",
+      "v0",
+      "v0"
+     ]
+    }
+   },
+   "ok": true,
+   "seconds": 0.0
+  },
+  "Q4_styleable": {
+   "answer": [
+    "b'\\xb3\\x00\\x01\\x01\\xe8\\x02\\x03\\x7f\\xe9\\x02\\x03\\x7f\\xea\\x02\\x03\\x7f\\x1b\\x03\\x03\\x7f%\\x03\\x03\\x7f&\\x03\\x03\\x7f' | \\xb3\\x00\\x01\\x01\\xe8\\x02\\x03\\x7f\\xe9\\x02\\x03\\x7f\\xea\\x02\\x03\\x7f\\x1b\\x03\\x03\\x7f\\x25\\x03\\x03\\x7f\\x26\\x03\\x03\\x7f"
+   ],
+   "ok": false,
+   "seconds": 0.0
+  },
+  "Q5_callers_u3a_c": {
+   "answer": [],
+   "expect": "ZERO static callers",
+   "ok": true,
+   "seconds": 0.59
+  }
+ },
+ "total_s": 0.5905931854248048
+}

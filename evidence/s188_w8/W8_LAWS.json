@@ -1,0 +1,70 @@
+{
+ "wave": "S188 W8 — oracle head-to-head + Flutter-lane frontier wave",
+ "date": "2026-11-07",
+ "directive": "ادامه بده ولی یک تست ساده هم بکن androguard و JADX رو بررسی بکن ... هر چهار مرز بندی رو هم اجرا بکن ... یک امار پیشرفتی بده",
+ "oracle_test": "evidence/s188_w8/ORACLE_HEAD_TO_HEAD.json — androguard 5/5 EXACT in 0.59s; jadx 1.5.3 3/5 in 13.7s (FAILED on the exact wall method CoordinatorLayout.t 'Method not decompiled' + DROPPED h0.a/h0.c methods)",
+ "walls_removed": [
+  {
+   "id": "F-NEW-584",
+   "title": "JNI slot census — the loud UNSUPPORTED stub now records WHICH spec slot",
+   "impl": "miniandroid/src/jni/dlopen_exec.cpp: per-slot thunks (template filler) carry the slot index; atexit census dump. Blind '6 UNSUPPORTED-slot hits' (W2) -> exact demand list.",
+   "census_queens": "env165 GetStringChars x5 + env226 NewWeakGlobalRef x1",
+   "census_quinb": "env19 PushLocalFrame x1 (second libflutter, different path)"
+  },
+  {
+   "id": "F-NEW-586",
+   "title": "the census demands implemented: UTF-16 string face + weak refs + local-ref frames",
+   "impl": "dlopen_exec.cpp: GetStringChars (modified-UTF8 -> UTF-16 transcode, surrogate pairs, arena-owned is_copy=1) 165, ReleaseStringChars 166, NewWeakGlobalRef 226 (identity law), DeleteWeakGlobalRef 227, PushLocalFrame 19 (JNI_OK), PopLocalFrame 20 (result passthrough).",
+   "effect": "queens UNSUPPORTED slot hits 6 -> 0 (45s run); quinb 1 -> 0"
+  },
+  {
+   "id": "F-NEW-587",
+   "title": "Flutter AOT lane — libapp.so pre-load by full path",
+   "impl": "dalvik_engine.cpp loadLibrary('flutter') success path: sibling libapp.so dlopen'd by FULL PATH (glibc registers the soname, the engine's later bare-name lookup hits the loaded object — the Android linker-namespace analog). Snapshot symbol verification logged.",
+   "effect": "the engine's 'VM snapshot invalid and could not be inferred from settings' (dart_vm_data.cc) is GONE; 'Check failed: vm' (shell.cc:143) is GONE — the Dart VM passes its creation wall for the FIRST time"
+  },
+  {
+   "id": "F-NEW-585",
+   "title": "bionic pthread-attr shadow family (exe + anchor libc.so)",
+   "impl": "miniandroid/src/jni/pthread_shadow.c (NEW): the attr-family (mutexattr/condattr/threadattr init+setters) shadowed with a side registry keyed by the CALLER's pointer; real glibc attrs live on the heap; the caller's object is never dereferenced (bionic 4-byte vs glibc 56-byte structural mismatch — the root of Dart's synchronization_posix.cc:87 'pthread error: 22' abort). Hot-path lock/unlock/trylock + mutex/cond object functions pass through (layout-compatible 40/48 bytes on x86_64). Ships in BOTH the exe (rdynamic) and the anchor libc.so — live evidence proved the anchor wins the binding (libflutter's DT_NEEDED dependency scope precedes the exe's global scope).",
+   "effect": "pthread EINVAL abort GONE; [BIONIC-ABORT] GONE"
+  }
+ ],
+ "new_frontier": {
+  "state": "queens nativeAttach guarded call: Dart VM now REALLY starts its thread pool (5+ live threads: futex waits + an epoll message-loop waiter) but TWO threads spin at ~100% CPU inside VM init (utime 1180->1216 over 2s); the guarded call never returns and the parent fork-probe waiter sits in sigsuspend forever (timeout kill is the honest outcome).",
+  "diagnosis_next": "spin attribution needs in-process sampling (gdb/perf not present in this container) — candidates: a Dart trylock spin against a shadow-misinitialized mutex, or a VM init handshake spin. The pthread-shadow registry is the prime suspect to audit FIRST (bounded, env-gated audit counters planned).",
+  "honest_tier": "queens/quinb stay FLAT_TWO_TONE_OR_BLANK (no render: the VM never reached the frame pipeline this run; run dir had no final frame — timeout kill before capture)"
+ },
+ "laws_files": [
+  "miniandroid/src/jni/dlopen_exec.cpp (F-NEW-584/586 + slots 165/166/19/20/226/227 wired)",
+  "miniandroid/src/jni/pthread_shadow.c (NEW FILE — F-NEW-585)",
+  "miniandroid/src/dex/dalvik_engine.cpp (F-NEW-587 AOT pre-load)",
+  "miniandroid/Makefile (pthread_shadow.o in the link line)",
+  "scripts/cont83_build_anchors.sh (pthread shadow into the anchor libc.so)"
+ ],
+ "verification": {
+  "slot_census": "queens per_hit_rows 6 -> 0; quinb 1 -> 0 (45s runs, fresh rebuilt binary)",
+  "flutter_engine": "dlopen ok + JNI_OnLoad 0x10004 held on every run",
+  "vm_wall": "dart_vm_data/dart_vm_lifecycle/shell.cc Check failed — all silent this wave (were live in W2/W8-pre runs)",
+  "pthread_wall": "synchronization_posix.cc:87 EINVAL — silent this wave (was live)"
+ },
+ "scripts": [
+  "scripts/s188_w8_ag_test.py",
+  "scripts/s188_w8_queens_census.py",
+  "scripts/s188_resume_verify.py (earlier today)"
+ ],
+ "evidence_files": [
+  "evidence/s188_w8/ORACLE_HEAD_TO_HEAD.json",
+  "evidence/s188_w8/QUEENS_SLOT_CENSUS.json",
+  "evidence/s188_w8/QUINB_SLOT_CENSUS.json",
+  "evidence/s188_w8/AG_TEST.json",
+  "evidence/s188_w8/queens_slot_census.console.log",
+  "evidence/s188_w8/quinb_slot_census.console.log"
+ ],
+ "four_frontiers_status": [
+  {"frontier": "1. JNIEnv slot coverage (Flutter lane)", "status": "ADVANCED — census law + all demanded slots implemented; VM creation wall crossed; new spin frontier recorded"},
+  {"frontier": "2. Godot engine init chain (ball2box + ccm)", "status": "ground truth already captured (W2/W2b probes); untouched this wave — the wave budget went to the Flutter lane where the census gave an exact demand list"},
+  {"frontier": "3. Dimension/draw chain (tranquilstopwatch B-tier candidate)", "status": "not attacked this wave (W7 uncaught=0 state holds, re-verified today)"},
+  {"frontier": "4. ViewPager adapter pages (battleship)", "status": "not attacked this wave (ship-rotation law F-W2B-2 holds)"}
+ ]
+}

@@ -1,0 +1,21 @@
+{
+ "pkg": "com.sidhant.queens",
+ "secs": 45,
+ "per_hit_rows": 0,
+ "detail": {},
+ "census_line": null,
+ "natives": [
+  "[MINIANDROID-JNI] RegisterNatives: 2 methods for io/flutter/embedding/engine/FlutterJNI",
+  "[MINIANDROID-JNI] RegisterNatives: 37 methods for io/flutter/embedding/engine/FlutterJNI",
+  "[MINIANDROID-JNI] RegisterNatives: 2 methods for io/flutter/embedding/engine/FlutterJNI",
+  "[MINIANDROID-JNI] RegisterNatives: 1 methods for io/flutter/embedding/engine/FlutterJNI"
+ ],
+ "flutter_load": [
+  "[S2-NATIVE] load flutter: dlopen ok (/home/z/my-project/evidence/s188_w2/runs/store_com.sidhant.queens/data/app/com.sidhant.queens/lib/x86_64/libflutter.so) JNI_OnLoad ran",
+  "[S2-NATIVE] System.loadLibrary(\"flutter\") LOADED size=13051424 sha16=951322aa31ae47ae (dlopen ok; JNI_OnLoad version 0x10004)"
+ ],
+ "jni_onload": [
+  "[S2-NATIVE] load flutter: dlopen ok (/home/z/my-project/evidence/s188_w2/runs/store_com.sidhant.queens/data/app/com.sidhant.queens/lib/x86_64/libflutter.so) JNI_OnLoad ran",
+  "[S2-NATIVE] System.loadLibrary(\"flutter\") LOADED size=13051424 sha16=951322aa31ae47ae (dlopen ok; JNI_OnLoad version 0x10004)"
+ ]
+}

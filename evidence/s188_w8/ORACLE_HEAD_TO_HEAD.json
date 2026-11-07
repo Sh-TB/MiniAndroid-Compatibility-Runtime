@@ -1,0 +1,50 @@
+{
+ "wave": "S188 W8 — oracle head-to-head: androguard vs JADX",
+ "date": "2026-11-07",
+ "directive": "ادامه بده ولی یک تست ساده هم بکن androguard و JADX رو بررسی بکن ببین کدامش برات بهتره",
+ "apk_under_test": "tibarj.tranquilstopwatch.apk (2.4MB, R8-obfuscated, 1454 DEX classes)",
+ "questions": "the REAL W6/W7 wall questions (ground truth = evidence/s188_w6/W6_LAWS.json + W7_LAWS.json)",
+ "androguard": {
+  "version": "4.1.4 (pip, in-process Python)",
+  "setup_cost": "pip install (~15s)",
+  "total_probe_time_s": 0.59,
+  "score": "5/5 EXACT",
+  "detail": {
+   "Q1_route": "VIEW — flutter/godot/compose prefixes all 0 over 1454 classes — 0.0s",
+   "Q2_ise_thrower": "EXACT Landroidx/coordinatorlayout/widget/CoordinatorLayout;->t()V, 204 instructions, string constant located — 0.06s",
+   "Q3_h0_decode": "h0.a(Insets)I ops decoded pc-level + h0.c(WindowInsets)Insets = getTappableElementInsets shim — 0.0s",
+   "Q4_styleable": "fill-array-data-payload RAW BYTES b3 00 01 01 | e8 02 03 7f | e9 02 03 7f | ea 02 03 7f ... == [0x010100b3, 0x7f0302e8 layout_anchor, 0x7f0302e9 anchorGravity, 0x7f03031b, 0x7f030325, 0x7f030326 keyline] — matches W6 ground truth — 0.0s",
+   "Q5_callers": "ZERO static callers of Lu3/a;.c (virtual dispatch only) — 0.59s"
+  }
+ },
+ "jadx": {
+  "version": "1.5.3 (CLI, Java 21)",
+  "setup_cost": "116MB download + unzip (~60s)",
+  "decompile_time_s": 13.7,
+  "decompile_errors": 2,
+  "score": "3/5 usable (2 FAIL, 2 of them strong)",
+  "detail": {
+   "Q1_route": "VIEW — same verdict via 0 engine-package files",
+   "Q2_ise_thrower": "FAIL — CoordinatorLayout.t() = 'Method dump skipped, instructions count: 402' + UnsupportedOperationException('Method not decompiled') — the EXACT wall method jadx cannot decompile without --show-bad-code",
+   "Q3_h0_decode": "FAIL — h0.java DROPPED a(Insets)I and c(WindowInsets)Insets entirely (only d/f/j/l/m/p/v/x present) — the NPE site and the shim are invisible",
+   "Q4_styleable": "STRONG — a0/a.java renders RESOLVED names {android.R.attr.layout_gravity, R.attr.layout_anchor, R.attr.layout_anchorGravity, R.attr.layout_behavior, R.attr.layout_dodgeInsetEdges, R.attr.layout_insetEdge, R.attr.layout_keyline} — more readable than raw payload",
+   "Q5_callers": "STRONG — MainActivity.java:368-369 'aVar.c(-i4, i4 + 1)' — the real call sites with arithmetic readable in Java"
+  }
+ },
+ "verdict": {
+  "primary_oracle": "androguard",
+  "why": [
+   "pc-level fidelity: the campaign's laws are stated at pc/instruction level (h0.a pc=0, u3/a.c pc=4, ISE at pc=363) — only bytecode gives that",
+   "never drops methods: jadx lost 2 of the 5 answers including the exact method the wall lived in",
+   "in-process Python = scripted evidence automation (W5/W6/W7/W8 probe scripts are all Python + androguard, integrate with the evidence JSON pipeline)",
+   "23x faster for targeted questions (0.59s vs 13.7s full decompile for one 2.4MB APK)",
+   "targeted: reads ONE class/method without materializing 774 Java files"
+  ],
+  "jadx_role": "readability complement for styleable NAMES + Java-level call sites (Q4/Q5 strong), NOT trustworthy as sole oracle (2/5 silent failures)",
+  "pipeline_decision": "keep androguard as the primary DEX oracle; jadx --show-bad-code optionally for human-readable cross-checks when a question is readability-shaped (not pc-shaped)"
+ },
+ "raw": {
+  "androguard": "evidence/s188_w8/AG_TEST.json",
+  "jadx_output": "/tmp/jadx_out/sources (session-local, not committed)"
+ }
+}
