@@ -28,13 +28,34 @@
     .type  miniandroid_native_thunk, @function
     .align 16
 miniandroid_native_thunk:
+    /* F-NEW-593 (W10) — UNWIND-THROUGH-THUNK LAW. The thunk had no
+     * .eh_frame: a C++ exception thrown inside the real native (live
+     * face: queens RunBundleAndSnapshotFromLibrary aborts via
+     * std::terminate after the null-marshal fix — the unwinder found no
+     * FDE for this frame and called terminate → SIGABRT, W10 fault
+     * trace) could never propagate to run_native_guarded's catch. The
+     * frame-pointer CFI below makes THIS frame unwound exactly like a
+     * compiled C++ frame: CFA = rbp+16 (the dynamic rsp manipulation in
+     * the body is invisible to the unwinder because CFA is rbp-based).
+     * run_native_guarded then catches the exception and reports it
+     * honestly — the AOSP JNI boundary contract (art's FaultHandler /
+     * exception scoping), not a process-death abort. */
+    .cfi_startproc
     push   %rbp
+    .cfi_def_cfa_offset 16
+    .cfi_offset rbp, -16
     mov    %rsp, %rbp
+    .cfi_def_cfa_register rbp
     push   %rbx
+    .cfi_offset rbx, -24
     push   %r12
+    .cfi_offset r12, -32
     push   %r13
+    .cfi_offset r13, -40
     push   %r14
+    .cfi_offset r14, -48
     push   %r15
+    .cfi_offset r15, -56
     /* entry args: rdi=fn rsi=stack_args rdx=n rcx=int_regs r8=sse_regs r9=sse_ret */
     mov    %rdi, %rbx          # fn
     mov    %rsi, %r12          # stack_args
@@ -81,10 +102,18 @@ copy_done:
     movsd  %xmm0, (%r14)
 no_sse_ret:
     pop    %r15
+    .cfi_restore r15
     pop    %r14
+    .cfi_restore r14
     pop    %r13
+    .cfi_restore r13
     pop    %r12
+    .cfi_restore r12
     pop    %rbx
+    .cfi_restore rbx
     pop    %rbp
+    .cfi_restore rbp
+    .cfi_def_cfa rsp, 8
     ret
+    .cfi_endproc
     .size miniandroid_native_thunk, .-miniandroid_native_thunk

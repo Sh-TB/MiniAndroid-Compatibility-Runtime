@@ -2496,6 +2496,32 @@ public:
     // EXP-051: Public heap accessor for the shadow registry adapter.
     DalvikHeap& get_heap_public() { return heap_; }
 
+    // ── F-NEW-590 (W10) — JNI static-field query (name-keyed) ───────────
+    // The native-exec JNI layer serves GetStatic<Prim>Field through these:
+    // the caller's jclass degraded to Ljava/lang/Object; (GetObjectClass
+    // identity law), so the field NAME is the only contract left. Law:
+    // (1) the engine's DEX static storage by name — sorted-key
+    // determinism, exact declarer preferred; (2) the REAL display
+    // configuration for the four Flutter display statics (1080x1920
+    // software target @ density 2.625, 60fps frame clock). Unknown names
+    // answer false (the JNI layer logs + answers 0 — never fabricated).
+    bool f590_static_float(const std::string& name, float* out);
+    bool f590_static_int(const std::string& name, int32_t* out);
+    bool f590_static_long(const std::string& name, int64_t* out);
+    bool f590_static_bool(const std::string& name, uint8_t* out);
+    bool f590_static_double(const std::string& name, double* out);
+    // F-NEW-590 direct-ByteBuffer materialization: snapshot a DEX
+    // ByteBuffer's lazy __bb_b<i>__ bytes into REAL malloc memory; the
+    // JNI layer registers the {addr,cap} box that GetDirectBufferAddress/
+    // Capacity then serve. false = oid is not a live DEX ByteBuffer.
+    bool f590_direct_buffer_snapshot(uint32_t oid, void** addr, size_t* cap);
+
+    // F-NEW-590 read-only static-storage walk (name-keyed query support).
+    template <class F>
+    void f590_for_each_static(F&& f) const {
+        for (const auto& kv : static_field_storage_) f(kv.first, kv.second);
+    }
+
     // MASTER CAMPAIGN FIX (lifecycle-provenance law): whether onCreate/
     // onStart/onResume actually EXECUTED as DEX bytecode in this engine.
     // Set at method-entry time (execute_method_internal), never inferred

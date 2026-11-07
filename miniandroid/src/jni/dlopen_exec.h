@@ -124,6 +124,39 @@ unsigned long long load_successes();
 unsigned long long native_calls();
 unsigned long long native_call_failures();
 
+// ─────────────────────────────────────────────────────────────────────
+// F-NEW-590 (W10) — ENGINE-QUERY HOOKS. The JNI env-table serves REAL
+// contracts whose state lives in the DEX engine (static field storage,
+// heap-backed ByteBuffers) that the JNI TU cannot see:
+//   • env152 GetStaticFloatField ×8 + the typed siblings — libflutter's
+//     UpdateDisplayMetrics resolved the statics against a class handle
+//     our GetObjectClass identity law degraded to Ljava/lang/Object;, so
+//     the field NAME is the only contract left; the engine answers from
+//     its DEX static storage (the app's own values when its FlutterView
+//     code ran) then from the REAL display configuration.
+//   • env230 GetDirectBufferAddress ×4 (+ NewDirectByteBuffer/Capacity) —
+//     DartMessenger#send hands libflutter's nativeDispatchPlatformMessage
+//     a DEX heap ByteBuffer whose bytes live as lazy __bb_b<i>__ fields;
+//     the engine snapshots them into REAL malloc memory and the JNI layer
+//     registers the {addr,cap} box the spec getters serve.
+// The engine installs these once at construction (last engine wins).
+struct EngineHooks {
+    bool (*static_float)(const char* class_hint, const char* name,
+                         float* out) = nullptr;
+    bool (*static_int)(const char* class_hint, const char* name,
+                       int32_t* out) = nullptr;
+    bool (*static_long)(const char* class_hint, const char* name,
+                        int64_t* out) = nullptr;
+    bool (*static_bool)(const char* class_hint, const char* name,
+                        uint8_t* out) = nullptr;
+    bool (*static_double)(const char* class_hint, const char* name,
+                          double* out) = nullptr;
+    // Snapshot a DEX ByteBuffer's bytes into malloc memory. Returns false
+    // when the oid is not a live DEX ByteBuffer (caller answers honestly).
+    bool (*direct_buffer)(uint32_t oid, void** addr, size_t* cap) = nullptr;
+};
+void set_engine_hooks(const EngineHooks& hooks);
+
 }  // namespace nativeexec
 }  // namespace miniandroid
 

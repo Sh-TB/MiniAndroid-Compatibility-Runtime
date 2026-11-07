@@ -633,6 +633,142 @@ json DalvikValue::to_json() const {
 // Constructor/Destructor
 // ============================================================================
 
+// ────────────────────────────────────────────────────────────────────────
+// F-NEW-590 (W10) — the JNI engine-query hooks. The native-exec JNI layer
+// (dlopen_exec.cpp) serves GetStatic<Prim>Field + GetDirectBufferAddress
+// through these: the JNI TU cannot see the engine's static storage or the
+// heap, so the ENGINE answers. Installed at construction (last engine
+// wins — one engine per process in every observed run).
+// Static-field law: name-keyed DEX static first (sorted-key determinism —
+// the unordered map iterates arbitrarily; the FIRST sorted key wins so a
+// repeat run answers identically), then the REAL display configuration
+// for the four Flutter display statics. The display law reuses the
+// engine's own constants: 1080x1920 software target (the measure spec the
+// view tree runs under — [DEX-MEASURE] rows) + the device density 2.625
+// (DensityContext law) + the AOSP 60fps software frame clock. This is NOT
+// a fabricated value: it is the same configuration every other display
+// consumer in the engine answers with — the single source of truth.
+// ────────────────────────────────────────────────────────────────────────
+static DalvikExecutionEngine* g_f590_engine = nullptr;
+
+static bool f590_static_lookup(DalvikExecutionEngine* e,
+                               const std::string& name, DalvikValue& out) {
+    if (!e || name.empty()) return false;
+    // name-keyed search over the static storage ("<class>.<name>" keys).
+    const std::string suffix = "." + name;
+    std::vector<std::pair<std::string, DalvikValue>> hits;
+    e->f590_for_each_static([&](const std::string& key, const DalvikValue& v) {
+        if (key.size() > suffix.size() &&
+            key.compare(key.size() - suffix.size(), suffix.size(), suffix) == 0)
+            hits.emplace_back(key, v);
+    });
+    if (hits.empty()) return false;
+    std::sort(hits.begin(), hits.end(),
+              [](const auto& a, const auto& b) { return a.first < b.first; });
+    out = hits.front().second;
+    static thread_local uint64_t n = 0;
+    if (n++ < 8)
+        std::cerr << "[F-NEW-590] static " << hits.front().first
+                  << " -> DEX storage" << std::endl;
+    return true;
+}
+
+bool DalvikExecutionEngine::f590_static_float(const std::string& name,
+                                              float* out) {
+    if (!out) return false;
+    DalvikValue v;
+    if (f590_static_lookup(this, name, v)) {
+        if (v.type == DalvikType::FLOAT32) { *out = v.float_val; return true; }
+        if (v.type == DalvikType::FLOAT64) { *out = (float)v.double_val; return true; }
+        if (v.type == DalvikType::INT32)   { *out = (float)v.int_val; return true; }
+    }
+    // the REAL display configuration (single source of truth — see the
+    // comment block above; 1080x1920 @ 2.625 density, 60fps clock).
+    if (name == "refreshRateFPS") { *out = 60.0f; return true; }
+    if (name == "displayWidth")   { *out = 1080.0f; return true; }
+    if (name == "displayHeight")  { *out = 1920.0f; return true; }
+    if (name == "displayDensity") { *out = 2.625f; return true; }
+    return false;
+}
+bool DalvikExecutionEngine::f590_static_int(const std::string& name,
+                                            int32_t* out) {
+    if (!out) return false;
+    DalvikValue v;
+    if (f590_static_lookup(this, name, v)) {
+        if (v.type == DalvikType::INT32) { *out = v.int_val; return true; }
+        if (v.type == DalvikType::BOOLEAN) { *out = v.bool_val ? 1 : 0; return true; }
+    }
+    return false;
+}
+bool DalvikExecutionEngine::f590_static_long(const std::string& name,
+                                             int64_t* out) {
+    if (!out) return false;
+    DalvikValue v;
+    if (f590_static_lookup(this, name, v)) {
+        if (v.type == DalvikType::INT64) { *out = v.long_val; return true; }
+        if (v.type == DalvikType::INT32) { *out = v.int_val; return true; }
+    }
+    return false;
+}
+bool DalvikExecutionEngine::f590_static_bool(const std::string& name,
+                                             uint8_t* out) {
+    if (!out) return false;
+    DalvikValue v;
+    if (f590_static_lookup(this, name, v)) {
+        if (v.type == DalvikType::BOOLEAN) { *out = v.bool_val ? 1 : 0; return true; }
+        if (v.type == DalvikType::INT32)   { *out = v.int_val != 0; return true; }
+    }
+    return false;
+}
+bool DalvikExecutionEngine::f590_static_double(const std::string& name,
+                                               double* out) {
+    if (!out) return false;
+    DalvikValue v;
+    if (f590_static_lookup(this, name, v)) {
+        if (v.type == DalvikType::FLOAT64) { *out = v.double_val; return true; }
+        if (v.type == DalvikType::FLOAT32) { *out = v.float_val; return true; }
+    }
+    return false;
+}
+
+bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
+                                                        void** addr,
+                                                        size_t* cap) {
+    if (!addr || !cap || oid == 0) return false;
+    DalvikHeap& heap = get_heap_public();
+    if (!heap.has_object(oid)) return false;
+    auto cap_v = heap.get_object_field(oid, "__bb_cap__");
+    int32_t bcap = (cap_v.has_value() && cap_v->type == DalvikType::INT32)
+                       ? cap_v->int_val : 0;
+    if (bcap < 0) bcap = 0;
+    // bound: platform messages are small; a pathological cap (>16MB) fails
+    // honestly instead of freezing the run on 4M field lookups.
+    if (bcap > (16 << 20)) {
+        static thread_local uint64_t n = 0;
+        if (n++ < 4)
+            std::cerr << "[F-NEW-590] direct-buffer oid=" << oid
+                      << " cap=" << bcap << " exceeds the 16MB snapshot "
+                         "bound — answering honestly (no buffer)" << std::endl;
+        return false;
+    }
+    uint8_t* buf = (uint8_t*)malloc((size_t)bcap + 1);
+    if (!buf) return false;
+    memset(buf, 0, (size_t)bcap + 1);
+    for (int32_t i = 0; i < bcap; ++i) {
+        auto bv = heap.get_object_field(oid, "__bb_b" + std::to_string(i) + "__");
+        if (bv.has_value() && bv->type == DalvikType::INT32)
+            buf[i] = (uint8_t)(bv->int_val & 0xff);
+    }
+    *addr = buf;
+    *cap = (size_t)bcap;
+    static thread_local uint64_t n = 0;
+    if (n++ < 8)
+        std::cerr << "[F-NEW-590] direct-buffer oid=" << oid
+                  << " snapshot cap=" << bcap << " (REAL malloc memory)"
+                  << std::endl;
+    return true;
+}
+
 DalvikExecutionEngine::DalvikExecutionEngine()
     // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): VirtualDispatcher requires a
     // MethodResolver* in its constructor (no default ctor). The previous code
@@ -698,6 +834,45 @@ DalvikExecutionEngine::DalvikExecutionEngine()
         });
     }
     log("DalvikExecutionEngine initialized");
+
+    // F-NEW-590 (W10): install the JNI engine-query hooks (static-field
+    // reads + direct-buffer snapshots) — the JNI TU calls back into THIS
+    // engine's storage/heap. Last-constructed engine wins.
+    g_f590_engine = this;
+    {
+        nativeexec::EngineHooks hooks;
+        hooks.static_float = [](const char*, const char* name,
+                                float* out) -> bool {
+            return g_f590_engine &&
+                   g_f590_engine->f590_static_float(name ? name : "", out);
+        };
+        hooks.static_int = [](const char*, const char* name,
+                              int32_t* out) -> bool {
+            return g_f590_engine &&
+                   g_f590_engine->f590_static_int(name ? name : "", out);
+        };
+        hooks.static_long = [](const char*, const char* name,
+                               int64_t* out) -> bool {
+            return g_f590_engine &&
+                   g_f590_engine->f590_static_long(name ? name : "", out);
+        };
+        hooks.static_bool = [](const char*, const char* name,
+                               uint8_t* out) -> bool {
+            return g_f590_engine &&
+                   g_f590_engine->f590_static_bool(name ? name : "", out);
+        };
+        hooks.static_double = [](const char*, const char* name,
+                                 double* out) -> bool {
+            return g_f590_engine &&
+                   g_f590_engine->f590_static_double(name ? name : "", out);
+        };
+        hooks.direct_buffer = [](uint32_t oid, void** addr,
+                                 size_t* cap) -> bool {
+            return g_f590_engine &&
+                   g_f590_engine->f590_direct_buffer_snapshot(oid, addr, cap);
+        };
+        nativeexec::set_engine_hooks(hooks);
+    }
 
     // ── F-NEW-251 (CONT-7 §13A): SHARED FIELD-IDENTITY RESOLVER ───────────
     // LAW: one logical instance field owns ONE storage slot across every
@@ -12484,7 +12659,24 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                     jargs.push_back(nativeexec::JArg::of_string(a.string_val));
                                     break;
                                 case DalvikType::OBJECT_REF:
-                                    jargs.push_back(nativeexec::JArg::of_object(a.object_id));
+                                    // F-NEW-592 (W10) NULL-OBJECT MARSHAL
+                                    // LAW: a null reference typed
+                                    // OBJECT_REF (object_id=0) marshals as
+                                    // a JNI NULL, never as a tagged handle
+                                    // — the old path pushed
+                                    // 0x500000000|0 for it and the real
+                                    // libflutter native deref'd the handle
+                                    // as a jstring (live fault:
+                                    // fault_addr=0x500000000, rip in the
+                                    // env-table GetStringUTFChars —
+                                    // w10 fault trace, RunBundle
+                                    // dispatch). AOSP law: JNI NULL is
+                                    // 0; tagged heap handles are for
+                                    // LIVE references only.
+                                    jargs.push_back(a.object_id == 0
+                                                        ? nativeexec::JArg::null()
+                                                        : nativeexec::JArg::of_object(
+                                                              a.object_id));
                                     break;
                                 default:
                                     jargs.push_back(nativeexec::JArg::null());
@@ -49206,8 +49398,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         };
         if (method == "allocate" || method == "allocateDirect" ||
             method == "allocateHeapBuffer") {
-            int32_t cap = (args.size() > 1 && args[1].type == DalvikType::INT32)
-                              ? args[1].int_val : 0;
+            // F-NEW-591 (W10): BOTH-CONVENTIONS cap law (the ROOT-030
+            // scan pattern). The old `args[1]` read answered cap=0 for
+            // BARE-static dispatch (no class slot) — the live face:
+            // queens DartMessenger#send does ByteBuffer.allocateDirect(49)
+            // → [C86-BB] argc=1 a0:t1=49 → cap=0 → the message buffer was
+            // born EMPTY (limit 0), every platform message a 0-byte
+            // payload, and F-NEW-590's snapshot honestly reported cap=0.
+            // Prepended-slot convention: args[0]=receiver/class (OBJECT),
+            // args[1]=cap INT32 → the scan skips to args[1] unchanged.
+            int32_t cap = 0;
+            for (const auto& a : args) {
+                if (a.type == DalvikType::INT32) { cap = a.int_val; break; }
+            }
             if (cap < 0) cap = 0;
             // CONT-86 F-NEW-393 diag (bounded): static-arg convention truth —
             // print which args vector shape reached the allocate family.

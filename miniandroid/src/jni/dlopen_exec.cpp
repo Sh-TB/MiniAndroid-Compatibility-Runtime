@@ -22,6 +22,7 @@
 #include "../diagnostics/gfx_trace.h"  // CONT-83 WS-B native.load rows
 
 #include <dlfcn.h>
+#include <execinfo.h>
 #include <csetjmp>
 #include <csignal>
 #include <cstdint>
@@ -84,6 +85,9 @@ sigjmp_buf& guard_jb() {
     return jb;
 }
 volatile sig_atomic_t g_guard_active = 0;
+// F-NEW-593 (W10): the honest reason of the last guard landing (exception
+// text or signal) — surfaced in call_native's fault detail.
+std::string g_guard_last_reason;
 
 struct GuardedSignal {
     int sig;
@@ -220,8 +224,38 @@ bool run_native_guarded(F&& fn) {
     bool faulted = false;
     if (sigsetjmp(guard_jb(), 1) == 0) {
         g_guard_active = 1;
-        fn();
-        g_guard_active = 0;
+        // F-NEW-593 (W10): the thunk now carries .eh_frame CFI, so a C++
+        // exception thrown inside the real native unwinds HERE instead of
+        // hitting std::terminate in the unwinder (the abort face that
+        // killed queens' RunBundle dispatch). The catch is the honest JNI
+        // boundary: call_ok=false + the exception text as the error.
+        try {
+            fn();
+        } catch (const std::exception& e) {
+            g_guard_active = 0;
+            faulted = true;
+            g_guard_last_reason = std::string("C++ exception in native: ") +
+                                  (e.what() ? e.what() : "(no message)");
+            // F-NEW-593 diag (bounded): WHERE the exception was thrown —
+            // the unwind stopped here, so the stack IS the throw chain.
+            if (std::getenv("MINIANDROID_W10_JNI_TRACE")) {
+                void* bt[24];
+                int n = backtrace(bt, 24);
+                char** syms = backtrace_symbols(bt, n);
+                fprintf(stderr, "[W10-THROW] %s — throw chain:\n",
+                        g_guard_last_reason.c_str());
+                for (int i = 0; i < n && i < 24; ++i)
+                    fprintf(stderr, "[W10-THROW]   [%d] %s\n", i,
+                            syms ? syms[i] : "?");
+                free(syms);
+            }
+        } catch (...) {
+            g_guard_active = 0;
+            faulted = true;
+            g_guard_last_reason =
+                "unknown C++ exception (uncaught inside the library)";
+        }
+        if (!faulted) g_guard_active = 0;
     } else {
         faulted = true;  // longjmp landed: g_guard_active already cleared
     }
@@ -313,24 +347,33 @@ static std::vector<NativeObjArray*>& obj_array_boxes() {
     static std::vector<NativeObjArray*> boxes;
     return boxes;
 }
+// F-NEW-594 (W10): registry accesses from multiple threads — guarded.
+static std::mutex g_obj_array_mu;
 static NativeObjArray* as_obj_array(void* ref) {
     if (!ref) return nullptr;
+    std::lock_guard<std::mutex> lk(g_obj_array_mu);
     for (NativeObjArray* b : obj_array_boxes())
         if (b == ref) return b;
     return nullptr;
 }
 
 // ── per-call arena (local-ref lifetime) ────────────────────────────────
+// F-NEW-594 (W10): the arena is touched from every thread that mints
+// boxes (NewStringUTF etc.) — mutex-guarded. Distinct mutex from the
+// interner's (box_string is called while holding the interner lock).
+std::mutex g_arena_mu;
 std::vector<std::string*>& arena() {
     static std::vector<std::string*> a;
     return a;
 }
 std::string* box_string(const std::string& s) {
     std::string* b = new std::string(s);
+    std::lock_guard<std::mutex> lk(g_arena_mu);
     arena().push_back(b);
     return b;
 }
 void arena_clear() {
+    std::lock_guard<std::mutex> lk(g_arena_mu);
     for (std::string* p : arena()) delete p;
     arena().clear();
 }
@@ -430,9 +473,12 @@ int jni_GetStringLength(void*, void* jstr) {
 // NewGlobalRef — a weak ref that the runtime never collects is honest
 // here: the runtime has no GC collection pass over native boxes).
 static const uint16_t* jni_string_utf16_arena(void* jstr, int* out_len) {
-    static std::vector<std::vector<uint16_t>>* arena = nullptr;
-    static std::mutex* a_mu = nullptr;
-    if (!a_mu) { a_mu = new std::mutex(); arena = new std::vector<std::vector<uint16_t>>(); }
+    // F-NEW-594 (W10): magic statics (C++11 thread-safe init) — the old
+    // `if (!a_mu)` lazy-init raced when two threads hit the first call.
+    static std::mutex a_mu_instance;
+    static std::vector<std::vector<uint16_t>> arena_instance;
+    std::mutex* a_mu = &a_mu_instance;
+    std::vector<std::vector<uint16_t>>* arena = &arena_instance;
     std::string s = jstr ? *static_cast<std::string*>(jstr) : std::string();
     std::vector<uint16_t> out;
     size_t i = 0, n = s.size();
@@ -542,7 +588,10 @@ void* jni_NewObjectArray(void*, int32_t len, void* elem_class, void* init) {
     if (len < 0) return nullptr;
     NativeObjArray* b = new NativeObjArray();
     b->elems.assign((size_t)len, init);
-    obj_array_boxes().push_back(b);
+    {
+        std::lock_guard<std::mutex> lk(g_obj_array_mu);  // F-NEW-594
+        obj_array_boxes().push_back(b);
+    }
     return b;
 }
 void* jni_GetObjectArrayElement(void*, void* arr, int32_t idx) {
@@ -584,7 +633,19 @@ int jni_DestroyJavaVM(void*) { return 0; }
 // decode (class, member, signature) from the id verbatim.
 // ─────────────────────────────────────────────────────────────────────
 static void* jni_intern_id(const std::string& key) {
+    // F-NEW-594 (W10): MUTEX-GUARDED INTERNING — the JNI env surface now
+    // serves REAL threads (queens: platform + raster + io task runners —
+    // the W9 thread pool), and libflutter interns field/method ids from
+    // MORE THAN ONE thread concurrently. The unguarded static map raced:
+    // two interning threads rehashed the pool simultaneously and a later
+    // GetStaticFloatField copied a garbage std::string* — the
+    // length_error("basic_string::_M_create") that landed in the guard at
+    // libflutter modoff 0x532b1a (slot 152 call site, refreshRateFPS).
+    // The interned payload is permanent (never freed) — the lock costs one
+    // uncontended futex per lookup.
+    static std::mutex id_mu;
     static std::map<std::string, std::string*> id_pool;
+    std::lock_guard<std::mutex> lk(id_mu);
     auto it = id_pool.find(key);
     if (it == id_pool.end()) {
         std::string* p = box_string(key);
@@ -665,6 +726,205 @@ static void* jni_NewString(void*, const unsigned short* chars, int len) {
 
 int vm_GetEnv(void* vm, void** env, int version);
 
+// ─────────────────────────────────────────────────────────────────────
+// F-NEW-590 (W10) — the static-field read family (spec slots 146/150/151/
+// 152/153) + the direct-Buffer family (229/230/231).
+// ROOT (live, queens W9 exit census: env152=8, env230=4 — evidence/
+// s188_w9/w9_gl2.console.log [MINIANDROID-JNI] UNSUPPORTED slot census):
+//   • GetStaticFloatField: libflutter's registered UpdateDisplayMetrics
+//     native resolved refreshRateFPS / displayWidth / displayHeight /
+//     displayDensity ("F") via GetStaticFieldID — whose jclass our
+//     GetObjectClass identity law degraded to Ljava/lang/Object; — then
+//     read them ×8 (2 rounds of 4). The JNI TU cannot see the DEX static
+//     store, so the ENGINE answers through the F-NEW-590 hooks (set at
+//     engine construction): name-keyed DEX static first (the app's own
+//     values when its FlutterView code ran), the REAL display
+//     configuration second. Spec law (jni.h): a resolvable field read
+//     never answers via the loud UNSUPPORTED stub.
+//   • GetDirectBufferAddress: DartMessenger#send builds the platform
+//     message as a DEX heap ByteBuffer (S108 ROOT-022 shape: lazy
+//     __bb_b<i>__ byte fields) and libflutter's registered
+//     nativeDispatchPlatformMessage reads its address — without it the
+//     message bytes never reach the engine side (the calls at
+//     w9_gl2.console.log:1065/1143/1217 landed right after each
+//     dispatchPlatformMessage). The engine snapshots the bytes into REAL
+//     malloc memory; the box registry serves the address/capacity
+//     getters. NewDirectByteBuffer covers the reverse direction
+//     (native-built buffers).
+// Tagged-oid law (call_native marshal): DEX objects ride as
+// 0x500000000|oid — GetDirectBufferAddress decodes that exact pattern
+// and asks the engine hook; anything else is a box this layer minted
+// itself (NewDirectByteBuffer) or an honest NULL (non-direct buffer).
+// ─────────────────────────────────────────────────────────────────────
+static nativeexec::EngineHooks g_f590_hooks;
+
+struct DirectBufferBox {
+    void* addr;
+    size_t cap;
+};
+static std::vector<DirectBufferBox*>& direct_buffer_boxes() {
+    static std::vector<DirectBufferBox*> v;
+    return v;
+}
+// F-NEW-594 (W10): multi-thread registry law — same as the object-array
+// registry (the direct-buffer family is called from the platform AND
+// raster threads once the real task runners run).
+static std::mutex g_direct_buffer_mu;
+static DirectBufferBox* as_direct_buffer_box(void* p) {
+    if (!p) return nullptr;
+    std::lock_guard<std::mutex> lk(g_direct_buffer_mu);
+    for (DirectBufferBox* b : direct_buffer_boxes())
+        if (b == p) return b;
+    return nullptr;
+}
+
+// interned field ids carry "SF:<class>|<name>|<sig>" (F-C4-581) — the
+// name is the middle segment.
+static std::string f590_field_name_of(void* fieldID) {
+    if (!fieldID) return std::string();
+    std::string s = *static_cast<std::string*>(fieldID);
+    size_t a = s.find('|');
+    if (a == std::string::npos) return std::string();
+    size_t b = s.find('|', a + 1);
+    if (b == std::string::npos) return std::string();
+    return s.substr(a + 1, b - a - 1);
+}
+
+static float jni_GetStaticFloatField(void*, void*, void* fieldID) {
+    std::string name = f590_field_name_of(fieldID);
+    float out = 0.0f;
+    if (!name.empty() && g_f590_hooks.static_float) {
+        // F-NEW-594: the hook walks the engine's static storage — a
+        // corrupt/unreadable storage state must not take the run down
+        // (the boundary answers the display-config fallback instead, and
+        // the exception text is recorded for the next frontier). Live
+        // face: queens' second refreshRateFPS batch inside RunBundle
+        // bad_alloc'd while the FIRST batch read the same keys fine —
+        // evidence/s188_w10/probe_throw2.console.log.
+        try {
+            if (g_f590_hooks.static_float("Ljava/lang/Object;", name.c_str(),
+                                          &out))
+                return out;
+        } catch (const std::exception& e) {
+            static thread_local uint64_t ne = 0;
+            if (ne++ < 8)
+                fprintf(stderr,
+                        "[F-NEW-590] GetStaticFloatField(%s) hook threw %s — "
+                        "answering the display-config fallback\n",
+                        name.c_str(), e.what());
+        } catch (...) {
+        }
+    }
+    // display-config fallback (the REAL software-target constants — the
+    // same law the engine serves every other display consumer).
+    if (name == "refreshRateFPS") return 60.0f;
+    if (name == "displayWidth") return 1080.0f;
+    if (name == "displayHeight") return 1920.0f;
+    if (name == "displayDensity") return 2.625f;
+    static thread_local uint64_t n = 0;
+    if (n++ < 8)
+        fprintf(stderr,
+                "[F-NEW-590] GetStaticFloatField(%s) unresolvable — answered "
+                "0.0f (the engine carries no such static)\n",
+                name.c_str());
+    return 0.0f;
+}
+static int32_t jni_GetStaticIntField(void*, void*, void* fieldID) {
+    std::string name = f590_field_name_of(fieldID);
+    int32_t out = 0;
+    if (!name.empty() && g_f590_hooks.static_int &&
+        g_f590_hooks.static_int("Ljava/lang/Object;", name.c_str(), &out))
+        return out;
+    return 0;
+}
+static int64_t jni_GetStaticLongField(void*, void*, void* fieldID) {
+    std::string name = f590_field_name_of(fieldID);
+    int64_t out = 0;
+    if (!name.empty() && g_f590_hooks.static_long &&
+        g_f590_hooks.static_long("Ljava/lang/Object;", name.c_str(), &out))
+        return out;
+    return 0;
+}
+static uint8_t jni_GetStaticBooleanField(void*, void*, void* fieldID) {
+    std::string name = f590_field_name_of(fieldID);
+    uint8_t out = 0;
+    if (!name.empty() && g_f590_hooks.static_bool &&
+        g_f590_hooks.static_bool("Ljava/lang/Object;", name.c_str(), &out))
+        return out;
+    return 0;
+}
+static double jni_GetStaticDoubleField(void*, void*, void* fieldID) {
+    std::string name = f590_field_name_of(fieldID);
+    double out = 0.0;
+    if (!name.empty() && g_f590_hooks.static_double &&
+        g_f590_hooks.static_double("Ljava/lang/Object;", name.c_str(), &out))
+        return out;
+    return 0.0;
+}
+
+// Direct-Buffer family — the {addr,cap} box registry. The engine-side
+// snapshot hook fills the box on first demand; NewDirectByteBuffer boxes
+// wrap native memory the library handed us (identity stays stable).
+void* jni_NewDirectByteBuffer(void*, void* address, int64_t capacity) {
+    if (!address || capacity <= 0) return nullptr;
+    DirectBufferBox* b = new DirectBufferBox{address, (size_t)capacity};
+    {
+        std::lock_guard<std::mutex> lk(g_direct_buffer_mu);  // F-NEW-594
+        direct_buffer_boxes().push_back(b);
+    }
+    return b;
+}
+void* jni_GetDirectBufferAddress(void*, void* buf) {
+    if (!buf) return nullptr;
+    if (DirectBufferBox* b = as_direct_buffer_box(buf)) return b->addr;
+    uintptr_t v = (uintptr_t)buf;
+    if ((v >> 32) == 5) {  // tagged-oid law: 0x500000000|oid
+        uint32_t oid = (uint32_t)(v & 0xffffffffull);
+        void* addr = nullptr;
+        size_t cap = 0;
+        if (g_f590_hooks.direct_buffer &&
+            g_f590_hooks.direct_buffer(oid, &addr, &cap)) {
+            DirectBufferBox* b = new DirectBufferBox{addr, cap};
+            {
+                std::lock_guard<std::mutex> lk(g_direct_buffer_mu);  // F-NEW-594
+                direct_buffer_boxes().push_back(b);
+            }
+            static thread_local uint64_t n = 0;
+            if (n++ < 8)
+                fprintf(stderr,
+                        "[F-NEW-590] GetDirectBufferAddress(oid=%u) "
+                        "snapshotted cap=%zu\n",
+                        oid, cap);
+            return addr;
+        }
+    }
+    return nullptr;  // JNI spec: non-direct buffer answers NULL
+}
+int64_t jni_GetDirectBufferCapacity(void*, void* buf) {
+    if (!buf) return 0;
+    if (DirectBufferBox* b = as_direct_buffer_box(buf)) return (int64_t)b->cap;
+    uintptr_t v = (uintptr_t)buf;
+    if ((v >> 32) == 5) {
+        uint32_t oid = (uint32_t)(v & 0xffffffffull);
+        void* addr = nullptr;
+        size_t cap = 0;
+        if (g_f590_hooks.direct_buffer &&
+            g_f590_hooks.direct_buffer(oid, &addr, &cap))
+            return (int64_t)cap;
+    }
+    return 0;
+}
+
+}  // anonymous namespace — JNI internals stay TU-local
+
+// F-NEW-590: engine hook setter — the ONE external symbol of this block
+// (dalvik_engine.cpp installs the DEX-storage-backed hooks at ctor time).
+void set_engine_hooks(const nativeexec::EngineHooks& hooks) {
+    g_f590_hooks = hooks;
+}
+
+namespace {
+
 void init_tables() {
     static bool done = false;
     if (done) return;
@@ -710,6 +970,14 @@ void init_tables() {
     g_jni_table[94] = (void*)&jni_GetFieldID;              // 94 GetFieldID
     g_jni_table[113] = (void*)&jni_GetStaticMethodID;      // 113 GetStaticMethodID
     g_jni_table[144] = (void*)&jni_GetStaticFieldID;       // 144 GetStaticFieldID
+    // F-NEW-590 (W10): the static-field READ family — W9 census env152=8
+    // (queens UpdateDisplayMetrics; the typed siblings complete the
+    // family — one contract, no half-families).
+    g_jni_table[146] = (void*)&jni_GetStaticBooleanField;  // 146 GetStaticBooleanField
+    g_jni_table[150] = (void*)&jni_GetStaticIntField;      // 150 GetStaticIntField
+    g_jni_table[151] = (void*)&jni_GetStaticLongField;     // 151 GetStaticLongField
+    g_jni_table[152] = (void*)&jni_GetStaticFloatField;    // 152 GetStaticFloatField (W9 census: queens ×8)
+    g_jni_table[153] = (void*)&jni_GetStaticDoubleField;   // 153 GetStaticDoubleField
     // string family — TRUE spec slots (were mis-wired at 113..120).
     g_jni_table[163] = (void*)&jni_NewString;              // 163 NewString
     g_jni_table[164] = (void*)&jni_GetStringLength;        // 164 GetStringLength
@@ -736,7 +1004,23 @@ void init_tables() {
     g_jni_table[228] = (void*)&jni_ExceptionCheck;         // 228 ExceptionCheck
     g_jni_table[226] = (void*)&jni_NewWeakGlobalRef;       // 226 NewWeakGlobalRef (W8 census: queens ×1)
     g_jni_table[227] = (void*)&jni_DeleteWeakGlobalRef;    // 227 DeleteWeakGlobalRef
+    // F-NEW-590 (W10): the direct-Buffer family — W9 census env230=4
+    // (DartMessenger platform messages into libflutter's native
+    // dispatch); 229/231 complete the family.
+    g_jni_table[229] = (void*)&jni_NewDirectByteBuffer;     // 229 NewDirectByteBuffer
+    g_jni_table[230] = (void*)&jni_GetDirectBufferAddress;  // 230 GetDirectBufferAddress (W9 census: queens ×4)
+    g_jni_table[231] = (void*)&jni_GetDirectBufferCapacity; // 231 GetDirectBufferCapacity
     FillUnsupported<kVmSlots - 1, true>::fill(g_vm_table);
+    // F-NEW-594 diag: the slot-152 identity — the throw-probe chain said
+    // libflutter's slot-152 call landed on exe code at 0x676ff7, not on
+    // jni_GetStaticFloatField (0x732fe0); verify the wiring is what we
+    // think it is (bounded, diag-gated).
+    if (std::getenv("MINIANDROID_W10_JNI_TRACE"))
+        fprintf(stderr,
+                "[F-NEW-594] slot152=&jni_GetStaticFloatField=%p "
+                "table=%p jni_GetStaticFieldID=%p\n",
+                (void*)&jni_GetStaticFloatField, (void*)g_jni_table[152],
+                (void*)&jni_GetStaticFieldID);
     std::atexit([]() {
         std::lock_guard<std::mutex> lk(g_mu);
         if (!g_unsupported_slot_calls) return;
@@ -1074,6 +1358,15 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
         if (int_i < 6) int_regs[int_i++] = v;
         else stack_args.push_back(v);
     };
+    // F-NEW-592 (W10): tagged-handle law — a tagged heap handle is ONLY
+    // minted for a LIVE oid (>=1). object_id==0 means a JNI null (the
+    // engine's null references arrive typed OBJECT_REF with id 0); the
+    // anonymous 0x500000000 constant was previously pushed for them and a
+    // real native deref'd it as a jstring → SIGSEGV at 0x500000000 inside
+    // the env-table string face (queens RunBundle fault, W10 trace).
+    auto push_object = [&](uint32_t oid) {
+        push_int(oid != 0 ? (0x500000000ull | (oid & 0xffffffffull)) : 0ull);
+    };
     auto push_float_bits = [&](uint32_t fb) {
         // SysV: float rides in an SSE register (movss). We store the 4-byte
         // pattern in the LOW half of an 8-byte slot; the thunk's movsd load
@@ -1093,9 +1386,17 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
 
     // slot 0: JNIEnv*
     push_int((uint64_t)(uintptr_t)&g_env);
-    // slot 1: receiver — jclass token for static, jobject identity otherwise
-    if (static_call) push_int((uint64_t)(uintptr_t)box_string("jclass-token"));
-    else push_int(0x500000000ull);  // anonymous receiver identity
+    // slot 1: receiver — jclass token for static, jobject identity otherwise.
+    // F-NEW-592: the receiver identity carries the REAL tagged oid when the
+    // engine passed one (resolvable by the hooks); the anon constant is the
+    // fallback for anonymous receivers.
+    if (static_call)
+        push_int((uint64_t)(uintptr_t)box_string("jclass-token"));
+    else if (!args.empty() && args[0].kind == JArg::Kind::OBJECT &&
+             args[0].object_id != 0)
+        push_object(args[0].object_id);
+    else
+        push_int(0x500000000ull);  // anonymous receiver identity
 
     for (size_t i = 0; i < params.size(); ++i) {
         const char c0 = params[i][0];
@@ -1124,7 +1425,7 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
                 if (a.kind == JArg::Kind::STRING)
                     push_int((uint64_t)(uintptr_t)box_string(a.str));
                 else if (a.kind == JArg::Kind::NULLREF) push_int(0);
-                else push_int(0x500000000ull | (a.object_id & 0xffffffffull));
+                else push_object(a.object_id);  // F-NEW-592: oid==0 → JNI null
                 break;
             }
             default:
@@ -1146,10 +1447,18 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
     });
     if (!call_ok) {
         ++g_native_call_faults;
-        error = "native call faulted (SIGSEGV/SIGBUS inside the library) — "
-                "guarded, runtime survived (FIX-TTT)";
+        // F-NEW-593: the guard reason distinguishes the fault class — a
+        // C++ exception landing in the catch (thunk .eh_frame) vs a raw
+        // signal landing in the longjmp (FIX-TTT).
+        if (!g_guard_last_reason.empty())
+            error = "native call faulted (" + g_guard_last_reason +
+                    ") — guarded, runtime survived (FIX-TTT)";
+        else
+            error = "native call faulted (SIGSEGV/SIGBUS inside the "
+                    "library) — guarded, runtime survived (FIX-TTT)";
         fprintf(stderr, "[S2-NATIVE] guarded call fault: %s sig=%s\n",
                 error.c_str(), sig.c_str());
+        g_guard_last_reason.clear();
         return false;
     }
 
