@@ -1,74 +1,64 @@
 {
   "activity": "xyz.deepdaikon.quinb.MainActivity",
   "apk_package": "xyz.deepdaikon.quinb",
-  "duration_ms": 385,
-  "events_retained": 26,
-  "events_total": 26,
-  "first_divergence": {
-    "actual": "no window content root resolved",
-    "evidence": "effective_content_root_() == 0",
-    "expected": "authoritative window content root (AOSP ViewRootImpl)",
-    "first_failure_event": {
-      "cls": "",
-      "event": "EXCEPTION",
-      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY]",
-      "method": "",
-      "seq": 13,
-      "stage": null,
-      "state": "nonfatal"
-    },
-    "last_successful_stage": "LIFECYCLE",
-    "next_required_stage": "MEASURE",
-    "seq": 16,
-    "source": "explicit-evidence",
-    "stage": "VIEWTREE"
+  "duration_ms": 556,
+  "events_retained": 31,
+  "events_total": 31,
+  "first_divergence": null,
+  "first_failure_event": {
+    "cls": "",
+    "event": "RUN_END",
+    "exception": "",
+    "method": "",
+    "seq": 31,
+    "stage": null,
+    "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 3872 IMPLEMENTED, 65 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]"
   },
-  "first_failure_event": null,
   "frame_analysis": {
     "app_draw_ops": 0,
     "app_owned_pixels": 0,
     "app_owned_pixels_inside_content_bounds": 0,
-    "auth_root_valid": false,
+    "auth_root_valid": true,
     "budget_exhausted": false,
     "content_bounds": {
-      "b": 0,
+      "b": 1920,
       "l": 0,
-      "r": 0,
+      "r": 1080,
       "t": 0,
-      "valid": false
+      "valid": true
     },
     "deferred_earliest_ready_ms": 0,
     "deferred_queue_size": 0,
     "deferred_ui_pending": false,
-    "depth_max": 0,
+    "depth_max": 1,
     "diag_owned_pixels": 0,
     "diag_regions": 0,
     "dialog_content_rendered": false,
     "dominant_color": [
-      "#ffffff"
+      "#303030"
     ],
     "dominant_pct": 100.0,
     "draw_budget_halt": false,
-    "draw_walk_ran": false,
-    "first_missing_stage": "WINDOW_ROOT",
+    "draw_walk_ran": true,
+    "first_missing_stage": "APP_DRAW_OPS",
     "height": 1920,
     "inflation_failed": false,
     "kept_prior_app_draw_ops": 0,
-    "layout_ran": false,
-    "layout_source": null,
-    "measure_ran": false,
-    "no_root": true,
+    "layout_ran": true,
+    "layout_source": "inflater",
+    "measure_ran": true,
+    "no_root": false,
     "nodes_skipped_depth": 0,
-    "nodes_visited": 0,
+    "nodes_visited": 2,
     "non_default_pixels": 0,
     "presentation": "this_frame",
     "render_exception": false,
-    "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+    "screenshot_sha256": "b5a7a35d5fe0564b08842f187f4e293bbb1d1b63099ba43978542449ae8c1f5b",
     "size": "1080x1920",
-    "synthetic_suppressed": true,
+    "synthetic_suppressed": false,
     "unique_colors": 1,
     "unreachable_children": 0,
-    "verdict": "NO_ROOT",
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
     "verdict_law": "21-P0-6 pixel ownership + correlated proof",
     "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
     "width": 1080,
@@ -83,52 +73,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 2889,
+        "pid": 7989,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w2/runs/store_xyz.deepdaikon.quinb/data/app/xyz.deepdaikon.quinb/base.apk",
       "thread": "main",
-      "ts_ms": 1794000396799
+      "ts_ms": 1794057913253
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "xyz.deepdaikon.quinb",
       "result": "OK",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=xyz.deepdaikon.quinb",
       "thread": "main",
-      "ts_ms": 1794000396809
+      "ts_ms": 1794057913265
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "xyz.deepdaikon.quinb",
       "result": "OK",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=xyz.deepdaikon.quinb.MainActivity",
       "thread": "main",
-      "ts_ms": 1794000396810
+      "ts_ms": 1794057913265
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "xyz.deepdaikon.quinb",
       "result": "OK",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=1163 methods=6490",
       "thread": "main",
-      "ts_ms": 1794000396834
+      "ts_ms": 1794057913290
     },
     {
       "component": "boot",
@@ -138,24 +128,24 @@
       },
       "package": "xyz.deepdaikon.quinb",
       "result": "OK",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794000396853
+      "ts_ms": 1794057913308
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "xyz.deepdaikon.quinb",
       "result": "OK",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=1163",
       "thread": "main",
-      "ts_ms": 1794000396853
+      "ts_ms": 1794057913308
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -163,12 +153,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "xyz.deepdaikon.quinb",
       "result": "OK",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "xyz.deepdaikon.quinb.MainActivity",
       "thread": "main",
-      "ts_ms": 1794000396855
+      "ts_ms": 1794057913310
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -176,68 +166,82 @@
       "event": "APPLICATION_CREATE",
       "package": "xyz.deepdaikon.quinb",
       "result": "PENDING",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794000396855
+      "ts_ms": 1794057913310
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
       "component": "vm",
       "event": "EXCEPTION",
-      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/engine/a;.<init> invoke_pc=0xc depth=5",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lkotlin/jvm/internal/i;.e invoke_pc=0x2 depth=6",
       "package": "xyz.deepdaikon.quinb",
       "result": "FAIL",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 9,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794000396894
+      "ts_ms": 1794057913438
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
       "component": "vm",
       "event": "EXCEPTION",
-      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/g;.G invoke_pc=0x6a depth=4",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/window/java/layout/WindowInfoTrackerCallbackAdapter;.addWindowLayoutInfoListener invoke_pc=0x7 depth=5",
       "package": "xyz.deepdaikon.quinb",
       "result": "FAIL",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 10,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794000396894
+      "ts_ms": 1794057913438
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
       "component": "vm",
       "event": "EXCEPTION",
-      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/g;.p invoke_pc=0x7 depth=3",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/b0;.a invoke_pc=0x2 depth=4",
       "package": "xyz.deepdaikon.quinb",
       "result": "FAIL",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 11,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794000396894
+      "ts_ms": 1794057913438
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
       "component": "vm",
       "event": "EXCEPTION",
-      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/f;.onCreate invoke_pc=0xd depth=2",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/s;.onAttachedToWindow invoke_pc=0x21 depth=3",
       "package": "xyz.deepdaikon.quinb",
       "result": "FAIL",
-      "run_id": "1794000396799-1",
+      "run_id": "1794057913253-1",
       "seq": 12,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794000396894
+      "ts_ms": 1794057913438
+    },
+    {
+      "activity": "xyz.deepdaikon.quinb.MainActivity",
+      "component": "vm",
+      "event": "EXCEPTION",
+      "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/f;.onCreate invoke_pc=0x23 depth=2",
+      "package": "xyz.deepdaikon.quinb",
+      "result": "FAIL",
+      "run_id": "1794057913253-1",
+      "seq": 13,
+      "sev": "FAILURE",
+      "state": "nonfatal",
+      "thread": "main",
+      "ts_ms": 1794057913438
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -246,12 +250,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at <unknown>.<unknown> invoke_pc=0x0 depth=1 [APP-BOUNDARY]",
       "package": "xyz.deepdaikon.quinb",
       "result": "FAIL",
-      "run_id": "1794000396799-1",
-      "seq": 13,
+      "run_id": "1794057913253-1",
+      "seq": 14,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794000396894
+      "ts_ms": 1794057913438
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -287,12 +291,12 @@
       },
       "package": "xyz.deepdaikon.quinb",
       "result": "OK",
-      "run_id": "1794000396799-1",
-      "seq": 14,
+      "run_id": "1794057913253-1",
+      "seq": 15,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794000396897
+      "ts_ms": 1794057913446
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -300,12 +304,25 @@
       "event": "RENDER_START",
       "package": "xyz.deepdaikon.quinb",
       "result": "PENDING",
-      "run_id": "1794000396799-1",
-      "seq": 15,
+      "run_id": "1794057913253-1",
+      "seq": 16,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794000396899
+      "ts_ms": 1794057913461
+    },
+    {
+      "activity": "xyz.deepdaikon.quinb.MainActivity",
+      "component": "viewtree",
+      "event": "VIEWTREE_CREATED",
+      "package": "xyz.deepdaikon.quinb",
+      "result": "OK",
+      "run_id": "1794057913253-1",
+      "seq": 17,
+      "sev": "CONFIRMED",
+      "state": "root_id=265",
+      "thread": "main",
+      "ts_ms": 1794057913461
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -315,12 +332,26 @@
       "provenance": "stage_render_frame default walk",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794000396799-1",
-      "seq": 16,
+      "run_id": "1794057913253-1",
+      "seq": 18,
       "sev": "RENDERER",
       "state": "CLASSIC_CANVAS",
       "thread": "main",
-      "ts_ms": 1794000396899
+      "ts_ms": 1794057913461
+    },
+    {
+      "activity": "xyz.deepdaikon.quinb.MainActivity",
+      "component": "render",
+      "event": "RENDER_OK",
+      "package": "xyz.deepdaikon.quinb",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "NO_APP_OPS",
+      "run_id": "1794057913253-1",
+      "seq": 19,
+      "sev": "PENDING",
+      "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
+      "thread": "main",
+      "ts_ms": 1794057913496
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -329,12 +360,12 @@
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794000396799-1",
-      "seq": 17,
+      "run_id": "1794057913253-1",
+      "seq": 20,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794000396905
+      "ts_ms": 1794057913497
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -347,12 +378,12 @@
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794000396799-1",
-      "seq": 18,
+      "run_id": "1794057913253-1",
+      "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794000396977
+      "ts_ms": 1794057913572
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -360,26 +391,26 @@
       "event": "FRAME_ANALYSIS",
       "extra": {
         "dominant_color": [
-          "#ffffff"
+          "#303030"
         ],
         "dominant_pct": 100.0,
         "height": 1920,
         "non_default_pixels": 0,
-        "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+        "screenshot_sha256": "b5a7a35d5fe0564b08842f187f4e293bbb1d1b63099ba43978542449ae8c1f5b",
         "size": "1080x1920",
         "unique_colors": 1,
-        "verdict": "NO_ROOT",
+        "verdict": "DEFAULT_BACKGROUND_ONLY",
         "width": 1080
       },
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794000396799-1",
-      "seq": 19,
+      "run_id": "1794057913253-1",
+      "seq": 22,
       "sev": "INFO",
-      "state": "NO_ROOT",
+      "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794000396984
+      "ts_ms": 1794057913579
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -389,36 +420,36 @@
         "app_draw_ops": 0,
         "app_owned_pixels": 0,
         "app_owned_pixels_inside_content_bounds": 0,
-        "auth_root_valid": false,
+        "auth_root_valid": true,
         "budget_exhausted": false,
         "content_bounds": {
-          "b": 0,
+          "b": 1920,
           "l": 0,
-          "r": 0,
+          "r": 1080,
           "t": 0,
-          "valid": false
+          "valid": true
         },
         "deferred_earliest_ready_ms": 0,
         "deferred_queue_size": 0,
         "deferred_ui_pending": false,
-        "depth_max": 0,
+        "depth_max": 1,
         "diag_owned_pixels": 0,
         "diag_regions": 0,
         "dialog_content_rendered": false,
         "draw_budget_halt": false,
-        "draw_walk_ran": false,
-        "first_missing_stage": "WINDOW_ROOT",
+        "draw_walk_ran": true,
+        "first_missing_stage": "APP_DRAW_OPS",
         "inflation_failed": false,
         "kept_prior_app_draw_ops": 0,
-        "layout_ran": false,
-        "layout_source": null,
-        "measure_ran": false,
-        "no_root": true,
+        "layout_ran": true,
+        "layout_source": "inflater",
+        "measure_ran": true,
+        "no_root": false,
         "nodes_skipped_depth": 0,
-        "nodes_visited": 0,
+        "nodes_visited": 2,
         "presentation": "this_frame",
         "render_exception": false,
-        "synthetic_suppressed": true,
+        "synthetic_suppressed": false,
         "unreachable_children": 0,
         "verdict_law": "21-P0-6 pixel ownership + correlated proof",
         "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
@@ -428,12 +459,12 @@
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1794000396799-1",
-      "seq": 20,
+      "run_id": "1794057913253-1",
+      "seq": 23,
       "sev": "INFO",
-      "state": "NO_ROOT",
+      "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794000396984
+      "ts_ms": 1794057913579
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -442,12 +473,40 @@
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794000396799-1",
-      "seq": 21,
+      "run_id": "1794057913253-1",
+      "seq": 24,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794000397040
+      "ts_ms": 1794057913646
+    },
+    {
+      "activity": "xyz.deepdaikon.quinb.MainActivity",
+      "component": "viewtree",
+      "event": "VIEWTREE_CREATED",
+      "package": "xyz.deepdaikon.quinb",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "OK",
+      "run_id": "1794057913253-1",
+      "seq": 25,
+      "sev": "CONFIRMED",
+      "state": "root_id=265",
+      "thread": "main",
+      "ts_ms": 1794057913646
+    },
+    {
+      "activity": "xyz.deepdaikon.quinb.MainActivity",
+      "component": "render",
+      "event": "RENDER_OK",
+      "package": "xyz.deepdaikon.quinb",
+      "renderer_family": "CLASSIC_CANVAS",
+      "result": "NO_APP_OPS",
+      "run_id": "1794057913253-1",
+      "seq": 26,
+      "sev": "PENDING",
+      "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
+      "thread": "main",
+      "ts_ms": 1794057913674
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -456,12 +515,12 @@
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794000396799-1",
-      "seq": 22,
+      "run_id": "1794057913253-1",
+      "seq": 27,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794000397045
+      "ts_ms": 1794057913674
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -474,12 +533,12 @@
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794000396799-1",
-      "seq": 23,
+      "run_id": "1794057913253-1",
+      "seq": 28,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794000397117
+      "ts_ms": 1794057913746
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -487,26 +546,26 @@
       "event": "FRAME_ANALYSIS",
       "extra": {
         "dominant_color": [
-          "#ffffff"
+          "#303030"
         ],
         "dominant_pct": 100.0,
         "height": 1920,
         "non_default_pixels": 0,
-        "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+        "screenshot_sha256": "b5a7a35d5fe0564b08842f187f4e293bbb1d1b63099ba43978542449ae8c1f5b",
         "size": "1080x1920",
         "unique_colors": 1,
-        "verdict": "NO_ROOT",
+        "verdict": "DEFAULT_BACKGROUND_ONLY",
         "width": 1080
       },
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794000396799-1",
-      "seq": 24,
+      "run_id": "1794057913253-1",
+      "seq": 29,
       "sev": "INFO",
-      "state": "NO_ROOT",
+      "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794000397124
+      "ts_ms": 1794057913752
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -516,36 +575,36 @@
         "app_draw_ops": 0,
         "app_owned_pixels": 0,
         "app_owned_pixels_inside_content_bounds": 0,
-        "auth_root_valid": false,
+        "auth_root_valid": true,
         "budget_exhausted": false,
         "content_bounds": {
-          "b": 0,
+          "b": 1920,
           "l": 0,
-          "r": 0,
+          "r": 1080,
           "t": 0,
-          "valid": false
+          "valid": true
         },
         "deferred_earliest_ready_ms": 0,
         "deferred_queue_size": 0,
         "deferred_ui_pending": false,
-        "depth_max": 0,
+        "depth_max": 1,
         "diag_owned_pixels": 0,
         "diag_regions": 0,
         "dialog_content_rendered": false,
         "draw_budget_halt": false,
-        "draw_walk_ran": false,
-        "first_missing_stage": "WINDOW_ROOT",
+        "draw_walk_ran": true,
+        "first_missing_stage": "APP_DRAW_OPS",
         "inflation_failed": false,
         "kept_prior_app_draw_ops": 0,
-        "layout_ran": false,
-        "layout_source": null,
-        "measure_ran": false,
-        "no_root": true,
+        "layout_ran": true,
+        "layout_source": "inflater",
+        "measure_ran": true,
+        "no_root": false,
         "nodes_skipped_depth": 0,
-        "nodes_visited": 0,
+        "nodes_visited": 2,
         "presentation": "this_frame",
         "render_exception": false,
-        "synthetic_suppressed": true,
+        "synthetic_suppressed": false,
         "unreachable_children": 0,
         "verdict_law": "21-P0-6 pixel ownership + correlated proof",
         "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
@@ -555,12 +614,12 @@
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1794000396799-1",
-      "seq": 25,
+      "run_id": "1794057913253-1",
+      "seq": 30,
       "sev": "INFO",
-      "state": "NO_ROOT",
+      "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794000397124
+      "ts_ms": 1794057913752
     },
     {
       "activity": "xyz.deepdaikon.quinb.MainActivity",
@@ -572,12 +631,12 @@
       "package": "xyz.deepdaikon.quinb",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1794000396799-1",
-      "seq": 26,
+      "run_id": "1794057913253-1",
+      "seq": 31,
       "sev": "FAILURE",
-      "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 182 IMPLEMENTED, 6 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]",
+      "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 3872 IMPLEMENTED, 65 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
       "thread": "main",
-      "ts_ms": 1794000397183
+      "ts_ms": 1794057913809
     }
   ],
   "last_exception": {
@@ -590,23 +649,23 @@
     "package": "xyz.deepdaikon.quinb",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1794000396799-1",
-    "seq": 26,
+    "run_id": "1794057913253-1",
+    "seq": 31,
     "sev": "FAILURE",
-    "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 182 IMPLEMENTED, 6 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]",
+    "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 3872 IMPLEMENTED, 65 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
     "thread": "main",
-    "ts_ms": 1794000397183
+    "ts_ms": 1794057913809
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1794000396799-1",
+  "run_id": "1794057913253-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261106-212636-3183",
+  "session_id": "EXP-001-20261107-132513-8955",
   "severity_census": {
-    "CONFIRMED": 11,
-    "FAILURE": 6,
+    "CONFIRMED": 13,
+    "FAILURE": 7,
     "INFO": 4,
-    "PENDING": 4,
+    "PENDING": 6,
     "RENDERER": 1
   },
   "stages": [
@@ -636,9 +695,9 @@
       "state": "CONFIRMED"
     },
     {
-      "detail": "",
+      "detail": "root_id=265",
       "stage": "VIEWTREE",
-      "state": "NOT_REACHED"
+      "state": "CONFIRMED"
     },
     {
       "detail": "",
@@ -651,7 +710,7 @@
       "state": "CONFIRMED"
     },
     {
-      "detail": "",
+      "detail": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
       "stage": "DRAW",
       "state": "CONFIRMED"
     },

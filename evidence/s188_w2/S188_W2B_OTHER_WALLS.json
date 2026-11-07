@@ -1,0 +1,62 @@
+{
+ "wave": "S188-W2b — the OTHER four FLAT walls",
+ "date": "2026-11-07",
+ "directive": "ادامه سایر موارد رو هم بررسی بکن و اضافه بکن ادامه (continue; check the OTHER items too and add them)",
+ "androgard_tool": "miniandroid/tools/s188_androguard_probe2.py (androguard 4.1.4)",
+ "androguard_findings": "evidence/s188_w2/androguard/PROBE_FINDINGS_W2B.json — DEX-level ground truth for the 4 remaining FLAT titles (no.thanks / quinb / ccm / battleship)",
+ "fixes": [
+  {
+   "id": "F-W2B-1",
+   "title": "bionic __strncpy_chk2 (libc anchor face)",
+   "evidence_chain": "quinb libflutter.so (10.5MB sha16=74a6d8c37c013c4c) dlopen failed: undefined symbol __strncpy_chk2. Full-process UND audit (nm -D vs glibc+exe+anchors): the ONLY FUNC GLOBAL UND gap — sdallocx and the Dart _ZTH TLS init are WEAK UND (legally bind 0). glibc exports the whole rest (incl. __vsnprintf_chk/__open_2).",
+   "impl": "miniandroid/src/jni/bionic_compat.c: __strncpy_chk2(dst,src,n,dst_len,src_len) — the 2-suffix FORTIFY variant's extra borne-size param, glibc primitive underneath (same law as __strncpy_chk); ships in BOTH the exe and the anchor libc.so (cont83_build_anchors.sh builds the anchor from the same first-party source).",
+   "result": "quinb [S2-NATIVE] load flutter: dlopen ok + JNI_OnLoad version 0x10004 — the Flutter lane reaches the EXACT queens frontier (next wall: nativeInit guarded SIGSEGV = JNIEnv slot coverage, the recorded next wave)"
+  },
+  {
+   "id": "F-W2B-2",
+   "title": "Bitmap.createBitmap(src,x,y,w,h,Matrix,filter) — the 7-arg TRANSFORM overload",
+   "evidence_chain": "androguard bytecode of battleship GameResources.rotateShipBitmaps: new Matrix → postRotate(F) → createBitmap(src,0,0,srcW,srcH,matrix,filter) feeding shipsBitmaps. Live run: the shape fell through the colors branch (src bitmap read as int[]) into the 5-arg crop branch → UNROTATED copies (all four ship rotations identical — silent rotation loss). Diag: [W2B-BITMAP] bridge entry argc=7 a5:t7/cLandroid/graphics/Matrix; a6:t9 (env MINIANDROID_W2B_BITMAP_PROBE).",
+   "impl": "miniandroid/src/framework/bitmap_shadow.cpp: real transform overload — map the source rect corners through the Matrix (MatrixShadow::read_matrix heap law), result dims = mapped bounding box, dest pixel inverse-maps through the affine inverse (nearest sampling; filter=true bilinear honestly registered). Identity fast path = crop/copy. Degenerate rect → null (AOSP IAE/OOM law).",
+   "result": "[W2B-ROT] src-rect 263x262 -> 262x263 (90°/270°) and 263x262 (0°/180°) — the four ship rotations now genuinely differ"
+  },
+  {
+   "id": "F-W2B-3",
+   "title": "W2 harness truth bugs (.trash dpkg + stale PNG + provisional face)",
+   "evidence_chain": "3 of 4 remaining FLAT titles never ran their real package: install's transient .trash dir won the iterdir() race (dpkg=.trash → Package not installed), AND the tier was computed from the PREVIOUS campaign's stale PNG via the glob fallback. eu.veldsoft.no.thanks's recorded FLAT was the same .trash artifact. Separately: runs whose verdict carried F-NEW-232 deferred-UI pending recorded ONLY the provisional quiescence face.",
+   "impl": "scripts/s188_w2_first_renders.py: (a) dpkg selection skips dot-dirs and requires base.apk; (b) rundir cleaned before every run; (c) F-NEW-232 time-driven cross-check — a --frames 14 --frame-delay 500 capture whenever deferred-UI pending or the quiescence face is FLAT; the SETTLED frame becomes the tier and the face JPG.",
+   "result": "see results below — no.thanks's B→FLAT 'regression' (F-NEW-491 suspect) is CLOSED: it was the provisional-face artifact; the settled face is the real main menu"
+  }
+ ],
+ "results": {
+  "eu.veldsoft.no.thanks": {
+   "before": "FLAT_TWO_TONE_OR_BLANK (1 color; recorded as the F-NEW-491 regression suspect, dpkg actually=.trash)",
+   "after": "B_STRUCTURED — 563 colors, nonbg=0.1385, settled face = real main menu (Single Player Game / Exit Game buttons)",
+   "next_wall": "none recorded at menu level; deeper play-UI under click flows"
+  },
+  "org.secuso.privacyfriendlybattleship": {
+   "before": "NO_ROOT / WINDOW_ROOT — quiescence captured only pre-switch Splash frames (ECR ran 2x with root=0), TutorialActivity never rendered",
+   "after": "WINDOW_ROOT resolved under the time-driven capture — [ECR-ROOT] scalar content_view_id root=1035; TutorialActivity renders its real theme background + addBottomDots pager dots (165 colors, honest pixel tier FLAT — content is small)",
+   "next_wall": "ViewPager content pages (adapter instantiateItem); ship bitmaps now rotate correctly (F-W2B-2) for the board"
+  },
+  "xyz.deepdaikon.quinb": {
+   "before": "libflutter.so dlopen failed: __strncpy_chk2",
+   "after": "dlopen ok + JNI_OnLoad 0x10004 — Flutter lane = the queens frontier",
+   "next_wall": "FlutterJNI.nativeInit guarded SIGSEGV — JNIEnv slot coverage (the recorded S188-W2 next wave, now TWO apps deep)"
+  },
+  "com.qwde.ccm": {
+   "before": "Godot lane unprobed",
+   "after": "androguard probe: GodotApp.onCreate chain clean (0 uncaught, ProfileInstaller lambdas dispatched); libgodot load never reached — SAME recorded next_wall as ball2box (APP_DRAW_OPS; Godot engine init does not reach the native lib in the window)",
+   "next_wall": "the GodotEngine/GodotLib init chain (probe captured the class+method ground truth for the next wave)"
+  }
+ },
+ "diag_probes": [
+  "MINIANDROID_W2B_BITMAP_PROBE=1 — bridge_to_api entry shape census for createBitmap (env-gated, bounded 24)"
+ ],
+ "goldens": "binary rebuilt (make -j2); no behavior change to any law outside the new shapes; harness reruns confirm mines/memory/blackjack B-anchors untouched",
+ "next": [
+  "JNIEnv slot coverage (Flutter lane, 2 apps waiting: queens + quinb)",
+  "Godot engine init chain (2 apps waiting: ball2box + ccm — probe ground truth captured)",
+  "ViewPager adapter pages (battleship tutorial content)",
+  "no.thanks play-UI under click flows"
+ ]
+}

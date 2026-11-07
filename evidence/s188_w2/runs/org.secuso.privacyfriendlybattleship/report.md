@@ -11,18 +11,18 @@
 | Metric | Value |
 |--------|-------|
 | APIs Called | 0 |
-| Frames Rendered | 2 |
+| Frames Rendered | 15 |
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
 | Errors | 0 |
-| Warnings | 3 |
+| Warnings | 2 |
 
 ## API Trace Summary
 
 | Class | Calls |
 |-------|-------|
 | `DalvikEngine` | 3 |
-| `ExecutionEngine` | 7261 |
+| `ExecutionEngine` | 7288 |
 | `TraceEngine` | 3 |
 
 ## Top Method Calls
@@ -30,9 +30,9 @@
 | Method | Calls |
 |--------|-------|
 | `ExecutionEngine.stage_load_classes` | 7226 |
+| `ExecutionEngine.stage_render_frame` | 30 |
 | `ExecutionEngine.stage_capture_output` | 7 |
 | `ExecutionEngine.trace_files` | 5 |
-| `ExecutionEngine.stage_render_frame` | 4 |
 | `DalvikEngine.execute_apk` | 3 |
 | `TraceEngine.log_screenshot` | 2 |
 | `ExecutionEngine.trace_export` | 2 |
@@ -43,12 +43,12 @@
 | `ExecutionEngine.stage_generate_reports` | 1 |
 | `TraceEngine.start_session` | 1 |
 | `ExecutionEngine.validation` | 1 |
+| `ExecutionEngine.stage_frame_sequence` | 1 |
 | `ExecutionEngine.stage_execute_application` | 1 |
 | `ExecutionEngine.phase_b_click` | 1 |
 | `ExecutionEngine.lifecycle_verified` | 1 |
 | `ExecutionEngine.lifecycle_source` | 1 |
 | `ExecutionEngine.execution_source` | 1 |
-| `ExecutionEngine.create_view_from_dalvik_result` | 1 |
 
 ## Screenshots
 
@@ -70,5 +70,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261106-212637-6842`
-- **Generated:** 2026-11-06 21:26:38 UTC
+- **Session ID:** `EXP-001-20261107-132523-8637`
+- **Generated:** 2026-11-07 13:25:26 UTC

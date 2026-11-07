@@ -15,7 +15,7 @@ Titles (all F-Droid open source):
            org.secuso.privacyfriendlybattleship (VIEW),
            crypto.o0o0o0o0o.games.blackjack (HTML5-packaged)
 """
-import json, subprocess, hashlib, sys, re
+import json, subprocess, hashlib, sys, re, shutil
 from pathlib import Path
 from PIL import Image
 from collections import Counter
@@ -78,13 +78,20 @@ def run_one(pkg, apk):
     apps = store / 'data' / 'app'
     dpkg = None
     if apps.exists():
-        ds = [d.name for d in apps.iterdir()
-              if d.is_dir() and not d.name.endswith('.staging')]
+        # dot-dirs (.trash transient created by runtime during install) and
+        # empty dirs must never win; require a real base.apk inside.
+        ds = [d.name for d in sorted(apps.iterdir())
+              if d.is_dir() and not d.name.startswith('.')
+              and not d.name.endswith('.staging')
+              and (d / 'base.apk').exists()]
         dpkg = ds[0] if ds else None
     if not dpkg:
         return dict(pkg=pkg, status='INSTALL_FAIL',
                     install_tail=(r.stdout[-400:] + r.stderr[-400:]).decode('utf-8','ignore'))
     rundir = RUNS / tag
+    # stale PNGs from a previous campaign would poison the tier (glob
+    # fallback picks them); always start the rundir clean.
+    shutil.rmtree(rundir, ignore_errors=True)
     console = OUT / f'{tag}.console.log'
     cmd = [str(BIN), 'run', '--execution-mode', 'real-dalvik',
            '--data-root', str(store), '-o', str(rundir),
@@ -112,13 +119,48 @@ def run_one(pkg, apk):
             im2.thumbnail((240, 426))
             im2.save(face, quality=55)
     uncaught = len(re.findall(r'FATAL|Uncaught|uncaught exception', log))
+    # ── S188-W2b: F-NEW-232 time-driven cross-check ──────────────────────
+    # The quiescence frame is PROVISIONAL when deferred-UI entries exist
+    # (splash timers, postDelayed navigation). The settled face needs the
+    # --frames time-driven capture: advance the virtual clock, fire due
+    # runnables, re-render. Tier BOTH faces honestly; the timed tier is
+    # the settled one (the harness previously recorded only the
+    # provisional launch face — battleship TutorialActivity rendered
+    # nothing in quiescence but its real UI under the clock).
+    timed = None
+    need_cross = ('deferred-UI pending' in log or
+                  (d.get('tier') == 'FLAT_TWO_TONE_OR_BLANK'))
+    if need_cross:
+        frames_dir = rundir / 'frames'
+        cmd2 = [str(BIN), 'run', '--execution-mode', 'real-dalvik',
+                '--data-root', str(store), '-o', str(rundir),
+                '--package', dpkg, '--frames', '14', '--frame-delay', '500']
+        console2 = OUT / f'{tag}.frames.console.log'
+        with open(console2, 'wb') as cf:
+            subprocess.run(cmd2, stdout=cf, stderr=subprocess.STDOUT,
+                           cwd=str(BASE), timeout=600)
+        fshots = sorted(frames_dir.glob('frame_*.png')) if frames_dir.exists() else []
+        if fshots:
+            td = depth(fshots[-1])
+            timed = dict(frame=str(fshots[-1]), **td)
+            d = td  # settled face becomes the tier
+            # The face JPG must show the SETTLED face too — regenerate
+            # from the timed frame (the quiescence face was provisional).
+            face = OUT / f'face_{tag}.jpg'
+            im = Image.open(fshots[-1]).convert('RGB')
+            im.thumbnail((360, 640))
+            im.save(face, quality=70)
+            if face.stat().st_size > 100_000:
+                im2 = Image.open(fshots[-1]).convert('RGB')
+                im2.thumbnail((240, 426))
+                im2.save(face, quality=55)
     return dict(pkg=pkg, status='OK', dpkg=dpkg,
                 screenshot=str(shot) if shot else None,
                 face=str(face.name) if face else None,
                 route_decision=[l for l in route_lines if 'DECISION' in l or 'NO_PROFILE' in l],
                 route_violation=[l for l in route_lines if 'VIOLATION' in l],
                 route_surprise=[l for l in route_lines if 'SURPRISE' in l],
-                uncaught_marks=uncaught, **d)
+                uncaught_marks=uncaught, timed_face=timed, **d)
 
 
 def main():

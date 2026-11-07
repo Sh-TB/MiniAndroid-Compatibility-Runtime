@@ -11,69 +11,75 @@
 | Metric | Value |
 |--------|-------|
 | APIs Called | 0 |
-| Frames Rendered | 2 |
+| Frames Rendered | 15 |
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
-| Errors | 5 |
-| Warnings | 3 |
+| Errors | 6 |
+| Warnings | 1 |
 
 ## API Trace Summary
 
 | Class | Calls |
 |-------|-------|
 | `DalvikEngine` | 3 |
-| `ExecutionEngine` | 1200 |
+| `ExecutionEngine` | 1229 |
 | `TraceEngine` | 3 |
-| `Unknown` | 5 |
+| `Unknown` | 6 |
 
 ## Top Method Calls
 
 | Method | Calls |
 |--------|-------|
 | `ExecutionEngine.stage_load_classes` | 1164 |
+| `ExecutionEngine.stage_render_frame` | 30 |
 | `ExecutionEngine.stage_capture_output` | 7 |
-| `Unknown.Unknown` | 5 |
+| `Unknown.Unknown` | 6 |
 | `ExecutionEngine.trace_files` | 5 |
-| `ExecutionEngine.stage_render_frame` | 4 |
 | `DalvikEngine.execute_apk` | 3 |
 | `TraceEngine.log_screenshot` | 2 |
 | `ExecutionEngine.trace_export` | 2 |
 | `ExecutionEngine.stage_parse_dex` | 2 |
+| `ExecutionEngine.stage_load_apk` | 2 |
 | `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
 | `ExecutionEngine.stage_initialize_runtime` | 2 |
-| `ExecutionEngine.stage_load_apk` | 2 |
-| `ExecutionEngine.stage_generate_reports` | 1 |
+| `ExecutionEngine.stage_frame_sequence` | 1 |
 | `TraceEngine.start_session` | 1 |
 | `ExecutionEngine.validation` | 1 |
+| `ExecutionEngine.stage_generate_reports` | 1 |
 | `ExecutionEngine.stage_execute_application` | 1 |
 | `ExecutionEngine.phase_b_click` | 1 |
 | `ExecutionEngine.lifecycle_verified` | 1 |
 | `ExecutionEngine.lifecycle_source` | 1 |
-| `ExecutionEngine.execution_source` | 1 |
 
 ## Errors & Issues
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/engine/a;.<init> invoke_pc=0xc depth=5
+- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lkotlin/jvm/internal/i;.e invoke_pc=0x2 depth=6
 - **Location:** `.`
 - **Fatal:** No
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/g;.G invoke_pc=0x6a depth=4
+- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/window/java/layout/WindowInfoTrackerCallbackAdapter;.addWindowLayoutInfoListener invoke_pc=0x7 depth=5
 - **Location:** `.`
 - **Fatal:** No
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/g;.p invoke_pc=0x7 depth=3
+- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/b0;.a invoke_pc=0x2 depth=4
 - **Location:** `.`
 - **Fatal:** No
 
 ### EXC-UNCAUGHT-TOP
 
-- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/f;.onCreate invoke_pc=0xd depth=2
+- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/s;.onAttachedToWindow invoke_pc=0x21 depth=3
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lio/flutter/embedding/android/f;.onCreate invoke_pc=0x23 depth=2
 - **Location:** `.`
 - **Fatal:** No
 
@@ -103,5 +109,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261106-212636-3183`
-- **Generated:** 2026-11-06 21:26:37 UTC
+- **Session ID:** `EXP-001-20261107-132514-0181`
+- **Generated:** 2026-11-07 13:25:16 UTC

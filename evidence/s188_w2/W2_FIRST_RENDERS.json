@@ -65,20 +65,32 @@
  {
   "pkg": "eu.veldsoft.no.thanks",
   "status": "OK",
-  "dpkg": ".trash",
+  "dpkg": "eu.veldsoft.no.thanks",
   "screenshot": "/home/z/my-project/evidence/s188_w2/runs/eu.veldsoft.no.thanks/screenshot.png",
   "face": "face_eu.veldsoft.no.thanks.jpg",
-  "route_decision": [],
+  "route_decision": [
+   "[ROUTE] DECISION pkg=eu.veldsoft.no.thanks primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/eu.veldsoft.no.thanks.json"
+  ],
   "route_violation": [],
-  "route_surprise": [],
+  "route_surprise": [
+   "[ROUTE_SURPRISE] route=WEBVIEW where=webview-frame-tick pkg=eu.veldsoft.no.thanks \u2014 static profile did not predict this engagement; classifier must be revised (honest static limit)",
+   "[ROUTE_SURPRISE] route=WEBVIEW where=webview-node-paint pkg=eu.veldsoft.no.thanks \u2014 static profile did not predict this engagement; classifier must be revised (honest static limit)"
+  ],
   "uncaught_marks": 0,
-  "unique_colors": 1,
-  "bg_share": 1.0,
-  "nonbg_share": 0.0,
-  "grad_share": 0.0,
-  "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "s186i_tier": "B_STRUCTURED",
-  "tier_change": "B_STRUCTURED -> FLAT_TWO_TONE_OR_BLANK"
+  "timed_face": {
+   "frame": "/home/z/my-project/evidence/s188_w2/runs/eu.veldsoft.no.thanks/frames/frame_013.png",
+   "unique_colors": 563,
+   "bg_share": 0.8615,
+   "nonbg_share": 0.1385,
+   "grad_share": 0.0083,
+   "tier": "B_STRUCTURED"
+  },
+  "unique_colors": 563,
+  "bg_share": 0.8615,
+  "nonbg_share": 0.1385,
+  "grad_share": 0.0083,
+  "tier": "B_STRUCTURED",
+  "s186i_tier": "B_STRUCTURED"
  },
  {
   "pkg": "com.sidhant.queens",
@@ -100,13 +112,23 @@
  {
   "pkg": "xyz.deepdaikon.quinb",
   "status": "OK",
-  "dpkg": ".trash",
+  "dpkg": "xyz.deepdaikon.quinb",
   "screenshot": "/home/z/my-project/evidence/s188_w2/runs/xyz.deepdaikon.quinb/screenshot.png",
   "face": "face_xyz.deepdaikon.quinb.jpg",
-  "route_decision": [],
+  "route_decision": [
+   "[ROUTE] DECISION pkg=xyz.deepdaikon.quinb primary=FLUTTER routes=FLUTTER+WEBVIEW_NODE+VIEW+MEDIA forbidden=LIBGDX+SDL profile=./reports/apk_routes/xyz.deepdaikon.quinb.json"
+  ],
   "route_violation": [],
   "route_surprise": [],
-  "uncaught_marks": 0,
+  "uncaught_marks": 1,
+  "timed_face": {
+   "frame": "/home/z/my-project/evidence/s188_w2/runs/xyz.deepdaikon.quinb/frames/frame_013.png",
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK"
+  },
   "unique_colors": 1,
   "bg_share": 1.0,
   "nonbg_share": 0.0,
@@ -172,13 +194,23 @@
  {
   "pkg": "com.qwde.ccm",
   "status": "OK",
-  "dpkg": ".trash",
+  "dpkg": "com.qwde.ccm",
   "screenshot": "/home/z/my-project/evidence/s188_w2/runs/com.qwde.ccm/screenshot.png",
   "face": "face_com.qwde.ccm.jpg",
-  "route_decision": [],
+  "route_decision": [
+   "[ROUTE] DECISION pkg=com.qwde.ccm primary=GODOT routes=GODOT+WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.qwde.ccm.json"
+  ],
   "route_violation": [],
   "route_surprise": [],
   "uncaught_marks": 0,
+  "timed_face": {
+   "frame": "/home/z/my-project/evidence/s188_w2/runs/com.qwde.ccm/frames/frame_013.png",
+   "unique_colors": 1,
+   "bg_share": 1.0,
+   "nonbg_share": 0.0,
+   "grad_share": 0.0,
+   "tier": "FLAT_TWO_TONE_OR_BLANK"
+  },
   "unique_colors": 1,
   "bg_share": 1.0,
   "nonbg_share": 0.0,
@@ -189,17 +221,27 @@
  {
   "pkg": "org.secuso.privacyfriendlybattleship",
   "status": "OK",
-  "dpkg": ".trash",
+  "dpkg": "org.secuso.privacyfriendlybattleship",
   "screenshot": "/home/z/my-project/evidence/s188_w2/runs/org.secuso.privacyfriendlybattleship/screenshot.png",
   "face": "face_org.secuso.privacyfriendlybattleship.jpg",
-  "route_decision": [],
+  "route_decision": [
+   "[ROUTE] DECISION pkg=org.secuso.privacyfriendlybattleship primary=VIEW routes=WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/org.secuso.privacyfriendlybattleship.json"
+  ],
   "route_violation": [],
   "route_surprise": [],
   "uncaught_marks": 0,
-  "unique_colors": 1,
-  "bg_share": 1.0,
-  "nonbg_share": 0.0,
-  "grad_share": 0.0,
+  "timed_face": {
+   "frame": "/home/z/my-project/evidence/s188_w2/runs/org.secuso.privacyfriendlybattleship/frames/frame_013.png",
+   "unique_colors": 165,
+   "bg_share": 0.9988,
+   "nonbg_share": 0.0012,
+   "grad_share": 0.0004,
+   "tier": "FLAT_TWO_TONE_OR_BLANK"
+  },
+  "unique_colors": 165,
+  "bg_share": 0.9988,
+  "nonbg_share": 0.0012,
+  "grad_share": 0.0004,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
   "s186i_tier": "FLAT_TWO_TONE_OR_BLANK"
  }

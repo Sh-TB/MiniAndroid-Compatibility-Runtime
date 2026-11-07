@@ -1,6 +1,7 @@
 // bitmap_shadow.cpp — S68 §12/§13: Bitmap/BitmapFactory implementation.
 // See bitmap_shadow.h for the upstream law.
 #include "bitmap_shadow.h"
+#include "matrix_shadow.h"
 #include "../diagnostics/gfx_provenance.h"
 #include "../renderer/software_renderer.h"
 #include "../resources/res_config.h"
@@ -615,6 +616,126 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
                 std::cerr << "[F-NEW-495] createBitmap(null-dm) " << w << "x"
                           << h << " -> obj#" << obj << std::endl;
             return CallResult::handled_object(obj, "Landroid/graphics/Bitmap;");
+        }
+        // ── S188-W2b: the TRANSFORM overload ────────────────────────────
+        // (Bitmap src, int x, int y, int w, int h, Matrix m, boolean filter)
+        // — argc=7 with args[5] = the Matrix OBJECT. Evidence:
+        // battleship GameResources.rotateShipBitmaps (androguard PROBE_
+        // FINDINGS_W2B: new Matrix → postRotate(F) → createBitmap(src,0,0,
+        // srcW,srcH,matrix,filter), results feed shipsBitmaps). The
+        // previous shape fell into the colors branch (the src BITMAP read
+        // as an int[]: filled(0) != need) and then the 5-arg crop branch,
+        // answering an UNROTATED copy — silent rotation loss (all four
+        // ship rotations identical). AOSP Bitmap.java law: the source rect
+        // (x,y,w,h) is transformed by m; the result dims = the bounding
+        // box of the mapped rect corners; dest pixel (dx,dy) inverse-maps
+        // through m⁻¹ into the source (nearest sampling; filter=true's
+        // bilinear honestly registered, same law as createScaledBitmap).
+        // Identity m = the plain crop/copy (AOSP fast path).
+        if (ctx.args.size() >= 7 &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[5].kind == CallContext::Arg::Kind::OBJECT) {
+            const uint32_t src = ctx.arg_as_object(0, 0);
+            const uint32_t mtx = ctx.arg_as_object(5, 0);
+            const int x = ctx.arg_as_int(1, 0);
+            const int y = ctx.arg_as_int(2, 0);
+            const int w = ctx.arg_as_int(3, 0);
+            const int h = ctx.arg_as_int(4, 0);
+            const bool filter = ctx.arg_as_bool(6, false);
+            const StoredBitmap* sb = store.get(src);
+            if (!sb || !heap_) return CallResult::handled_null();
+            MatrixShadow::M33 mtx_v;
+            if (mtx != 0) MatrixShadow::read_matrix(heap_, mtx, mtx_v);
+            const bool identity =
+                mtx_v.v[0] == 1.f && mtx_v.v[1] == 0.f && mtx_v.v[2] == 0.f &&
+                mtx_v.v[3] == 0.f && mtx_v.v[4] == 1.f && mtx_v.v[5] == 0.f;
+            // Map the four source-rect corners through the matrix.
+            float minx = 0.f, miny = 0.f, maxx = 0.f, maxy = 0.f;
+            if (identity) {
+                minx = (float)x; miny = (float)y;
+                maxx = (float)(x + w); maxy = (float)(y + h);
+            } else {
+                const float cs[4][2] = {{(float)x, (float)y},
+                                        {(float)(x + w), (float)y},
+                                        {(float)x, (float)(y + h)},
+                                        {(float)(x + w), (float)(y + h)}};
+                for (int i = 0; i < 4; ++i) {
+                    const float px = mtx_v.v[0] * cs[i][0] +
+                                     mtx_v.v[1] * cs[i][1] + mtx_v.v[2];
+                    const float py = mtx_v.v[3] * cs[i][0] +
+                                     mtx_v.v[4] * cs[i][1] + mtx_v.v[5];
+                    if (i == 0) { minx = maxx = px; miny = maxy = py; }
+                    else {
+                        if (px < minx) minx = px; if (px > maxx) maxx = px;
+                        if (py < miny) miny = py; if (py > maxy) maxy = py;
+                    }
+                }
+            }
+            const int dw = (int)std::floor(maxx - minx + 0.5f);
+            const int dh = (int)std::floor(maxy - miny + 0.5f);
+            if (w <= 0 || h <= 0 || dw <= 0 || dh <= 0 ||
+                (int64_t)dw * dh > 64000000) {
+                std::cerr << "[BITMAP] createBitmap(Matrix) degenerate rect ("
+                          << x << "," << y << " " << w << "x" << h << " -> "
+                          << dw << "x" << dh << ") -> null (AOSP IAE/OOM law)"
+                          << std::endl;
+                return CallResult::handled_null();
+            }
+            std::vector<uint8_t> rgba((size_t)dw * dh * 4, 0);
+            const float det = mtx_v.v[0] * mtx_v.v[4] -
+                              mtx_v.v[1] * mtx_v.v[3];
+            if (identity || std::fabs(det) > 1e-8f) {
+                // Inverse affine (the perspective row is ignored — affine
+                // law, same as every CanvasShadow consumer).
+                const float i0 = identity ? 1.f :  mtx_v.v[4] / det;
+                const float i1 = identity ? 0.f : -mtx_v.v[1] / det;
+                const float i3 = identity ? 0.f : -mtx_v.v[3] / det;
+                const float i4 = identity ? 1.f :  mtx_v.v[0] / det;
+                const float t2 = identity ? 0.f : mtx_v.v[2];
+                const float t5 = identity ? 0.f : mtx_v.v[5];
+                for (int dy = 0; dy < dh; ++dy) {
+                    for (int dx = 0; dx < dw; ++dx) {
+                        // dest pixel CENTER in transformed space, then
+                        // inverse-map into the source bitmap coords.
+                        const float gx = minx + dx + 0.5f;
+                        const float gy = miny + dy + 0.5f;
+                        const float sx0 =
+                            i0 * (gx - t2) + i1 * (gy - t5);
+                        const float sy0 =
+                            i3 * (gx - t2) + i4 * (gy - t5);
+                        const int sxi = (int)std::floor(sx0);
+                        const int syi = (int)std::floor(sy0);
+                        if (sxi < 0 || syi < 0 || sxi >= sb->width ||
+                            syi >= sb->height)
+                            continue;   // outside source = transparent
+                        std::copy(
+                            &sb->rgba[((size_t)syi * sb->width + sxi) * 4],
+                            &sb->rgba[((size_t)syi * sb->width + sxi) * 4 + 4],
+                            &rgba[((size_t)dy * dw + dx) * 4]);
+                    }
+                }
+            }
+            if (filter && !identity &&
+                !(mtx_v.v[1] == 0.f && mtx_v.v[3] == 0.f) &&
+                !std::getenv("MINIANDROID_W2B_QUIET"))
+                std::cerr << "[BITMAP] createBitmap(Matrix) filter=true:"
+                             " bilinear not implemented — nearest used"
+                             " (registered, same law as"
+                             " createScaledBitmap)" << std::endl;
+            const uint32_t obj = heap_->allocate("Landroid/graphics/Bitmap;");
+            store.store(obj, dw, dh, std::move(rgba),
+                        std::string("createBitmap(src,rect,Matrix") +
+                            (identity ? "=identity" : "=affine") + ")");
+            static thread_local uint64_t w2b_rot_n = 0;
+            if (w2b_rot_n++ < 8)
+                std::cerr << "[W2B-ROT] createBitmap(Matrix) src-rect "
+                          << x << "," << y << " " << w << "x" << h << " -> "
+                          << dw << "x" << dh
+                          << (identity ? " (identity crop)"
+                                       : " (affine transform)")
+                          << std::endl;
+            return CallResult::handled_object(obj,
+                                              "Landroid/graphics/Bitmap;");
         }
         if (ctx.args.size() >= 4 && ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
             // F-NEW-495 (CONT-157): (DisplayMetrics, int w, int h, Config)

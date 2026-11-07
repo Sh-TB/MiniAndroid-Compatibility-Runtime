@@ -33469,6 +33469,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     bridge_census_init();
     BridgeCensusGuard c97_census_guard;
     if (bridge_census().on) c97_census_guard.begin(class_name, method);
+    // S188-W2b diag (env-gated, bounded, read-only): WHICH createBitmap
+    // shapes enter the bridge and from where. Evidence gap: the
+    // battleship GameResources.rotateShipBitmaps 7-arg Matrix overload
+    // (invoke-static/range) never printed the shadow-side [S109-BITMAP]
+    // gate while the 5-arg crop calls (invoke-static) did — so either
+    // the call never enters the bridge or an earlier chain site eats it.
+    {
+        static thread_local const bool w2b_probe =
+            std::getenv("MINIANDROID_W2B_BITMAP_PROBE") != nullptr;
+        static thread_local uint64_t w2b_n = 0;
+        if (w2b_probe && method == "createBitmap" && w2b_n++ < 24) {
+            std::cerr << "[W2B-BITMAP] bridge entry argc=" << args.size();
+            for (size_t i = 0; i < args.size() && i < 7; ++i)
+                std::cerr << " a" << i << ":t"
+                          << static_cast<int>(args[i].type) << "/c"
+                          << args[i].class_desc;
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+    }
     // W6 (Coder-4) probe: every Class.equals entry into the bridge —
     // env-gated, bounded, read-only. Answers WHERE the Koin chain-walk
     // compare actually dispatches (F-C4-569 forensics).

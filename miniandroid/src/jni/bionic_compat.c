@@ -101,6 +101,20 @@ __attribute__((visibility("default")))
 char* __strncpy_chk(char* dst, const char* src, size_t n, size_t dst_len) {
     (void)dst_len; return strncpy(dst, src, n);
 }
+/* S188-W2b (quinb libflutter.so, sha16=74a6d8c37c013c4c): bionic's NEWER
+ * FORTIFY variant __strncpy_chk2 — the 2-suffix family carries an extra
+ * src_len borne-size parameter (API 21+ clang emits it for strncpy when
+ * both bounds are known). glibc has NO such export (only __strncpy_chk),
+ * so the dlopen died on "undefined symbol: __strncpy_chk2" — the only
+ * FUNC GLOBAL UND the whole 10.5 MB lib cannot resolve (sdallocx and the
+ * Dart _ZTH TLS init are WEAK UND: they legally bind to 0). Same law as
+ * __strncpy_chk above: the glibc primitive under it, bounds dropped —
+ * the FORTIFY contract is compile-time, not a runtime license to crash. */
+__attribute__((visibility("default")))
+char* __strncpy_chk2(char* dst, const char* src, size_t n,
+                     size_t dst_len, size_t src_len) {
+    (void)dst_len; (void)src_len; return strncpy(dst, src, n);
+}
 __attribute__((visibility("default")))
 char* __strcat_chk(char* dst, const char* src, size_t dst_len) {
     (void)dst_len; return strcat(dst, src);

@@ -4,25 +4,25 @@
 
 - **APK:** `/home/z/my-project/evidence/s188_w2/runs/store_eu.veldsoft.no.thanks/data/app/eu.veldsoft.no.thanks/base.apk`
 - **Package:** `eu.veldsoft.no.thanks`
-- **Status:** **FAILURE** ❌
+- **Status:** **SUCCESS** ✅
 
 ## Metrics
 
 | Metric | Value |
 |--------|-------|
 | APIs Called | 0 |
-| Frames Rendered | 2 |
+| Frames Rendered | 15 |
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
 | Errors | 0 |
-| Warnings | 1 |
+| Warnings | 0 |
 
 ## API Trace Summary
 
 | Class | Calls |
 |-------|-------|
 | `DalvikEngine` | 3 |
-| `ExecutionEngine` | 8591 |
+| `ExecutionEngine` | 8616 |
 | `TraceEngine` | 3 |
 
 ## Top Method Calls
@@ -30,25 +30,25 @@
 | Method | Calls |
 |--------|-------|
 | `ExecutionEngine.stage_load_classes` | 8555 |
-| `ExecutionEngine.stage_capture_output` | 7 |
+| `ExecutionEngine.stage_render_frame` | 30 |
+| `ExecutionEngine.stage_capture_output` | 6 |
 | `ExecutionEngine.trace_files` | 5 |
-| `ExecutionEngine.stage_render_frame` | 4 |
 | `DalvikEngine.execute_apk` | 3 |
 | `TraceEngine.log_screenshot` | 2 |
 | `ExecutionEngine.trace_export` | 2 |
-| `ExecutionEngine.phase_b_click` | 2 |
+| `ExecutionEngine.stage_parse_dex` | 2 |
 | `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
 | `ExecutionEngine.stage_initialize_runtime` | 2 |
 | `ExecutionEngine.stage_load_apk` | 2 |
-| `ExecutionEngine.stage_parse_dex` | 2 |
 | `ExecutionEngine.stage_generate_reports` | 1 |
 | `TraceEngine.start_session` | 1 |
 | `ExecutionEngine.validation` | 1 |
+| `ExecutionEngine.stage_frame_sequence` | 1 |
 | `ExecutionEngine.stage_execute_application` | 1 |
+| `ExecutionEngine.phase_b_click` | 1 |
 | `ExecutionEngine.lifecycle_verified` | 1 |
 | `ExecutionEngine.lifecycle_source` | 1 |
 | `ExecutionEngine.execution_source` | 1 |
-| `ExecutionEngine.create_view_from_dalvik_result` | 1 |
 
 ## Screenshots
 
@@ -70,5 +70,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261106-212625-9561`
-- **Generated:** 2026-11-06 21:26:26 UTC
+- **Session ID:** `EXP-001-20261107-132613-0631`
+- **Generated:** 2026-11-07 13:26:16 UTC
