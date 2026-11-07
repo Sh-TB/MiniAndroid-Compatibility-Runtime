@@ -1,0 +1,68 @@
+{
+  "wave": "S188 W5",
+  "task": "W5-1 FragmentManager host-wiring first-divergence (worked with androguard per user directive)",
+  "tool": "androguard 4.1.4 (pip) — DEX ground truth for b1/t0, b0/k, FragmentContainerView, Lb1/g0",
+  "androguard_findings": {
+    "fragment_manager_Lb1/t0;": {
+      "ctors": ["<init>()V only — the androidx package-private FragmentManager() ctor"],
+      "field_c": "Lb0/k; — NOT a host: it is the R8 horizontal-merge state bucket (mAdded/mActive holder)",
+      "ctor_pc4_7": "new-instance Lb0/k; -> invoke-direct Lb0/k;.<init>(I)V (arg=1) -> iput-object to field c",
+      "A(I)_findFragmentById_pc0": "iget-object v0, this, Lb1/t0;->c Lb0/k;",
+      "A(I)_pc4": "iget-object v1, v0, Lb0/k;->a (cast ArrayList = mAdded) — NPE site when c is null",
+      "W4_interpretation_correction": "W4 recorded 'FragmentManager field a:Lb0/k; (the host) is NULL' — androguard proves field c (not a), and it is the merged state bucket, NOT FragmentHostCallback; no attachHost law needed"
+    },
+    "bucket_Lb0/k;": {
+      "shape": "R8 horizontal-class-merge target: 6 unrelated ctor signatures; <init>(I)V = sparse-switch on classId; classId=1 branch (pc32) = a=ArrayList(mAdded), b=HashMap(mActive), c=HashMap",
+      "runtime_proof": "FIELD-TRACE put-obj Lb0/k;.<init> Lb0/k;.c obj#204 value=obj#207 + put-obj Lb1/t0;.<init> Lb1/t0;.c obj#202 value=obj#204 — bucket construction WORKS"
+    },
+    "fcv_ctrors": ["(Context)", "(Context, AttributeSet)", "(Context, AttributeSet, Lb1/t0;) — factory-internal; AOSP LayoutInflater NEVER calls it"],
+    "factory_Lb1/g0;": "FragmentLayoutInflaterFactory: field a=Lb1/t0; set in <init>(Lb1/t0;)V; onCreateView passes g0.a into FCV 3-arg ctor",
+    "callers_of_A(I)": ["FragmentContainerView.<init>(ctx,attrs,fm) pc27", "FragmentContainerView.getFragment()", "Lb1/g0;.onCreateView (fragment tag path)", "Landroidx/lifecycle/o0;.a"],
+    "layout_truth": "res/7s.xml (MainActivity, obfuscated names): <androidx.fragment.app.FragmentContainerView android:name=\"tibarj.tranquilstopwatch.ClockFragment\" android:id=\"@7F0800D4\"> (+ StopwatchFragment container); res/9O.xml FCV without android:name"
+  },
+  "runtime_probe_evidence": {
+    "NEW-WATCH Lb1/t0;": "exactly ONE DEX-constructed FM: obj#202 caller=Lb1/c0;.<init> pc=10 (the FragmentController chain — healthy)",
+    "FIELD-TRACE Lb1/t0;.c": "put obj#202<-obj#204 at ctor; methods b/t/L/Z/e/x/M read it back successfully",
+    "NPE_receiver": "NOT obj#202 — the C++ inflation ctor executor built FCV itself",
+    "root_cause_chain": [
+      "1. C++ run_custom_view_constructor passed {recv,ctx,attrs} (arg_count=3) with NO descriptor",
+      "2. matcher: param_count==arg_count 'static-like' branch accepted FCV.<init>(ctx,attrs,FragmentManager) — an INSTANCE ctor",
+      "3. EXP-078 largest-bytecode preference picked it (bigger body than 2-arg)",
+      "4. callee frame mapped 3rd param (FragmentManager) to a default register -> fm garbage",
+      "5. fm.A(id): this.c read -> null -> read c.a -> NPE 'field Lb0/k;.a on null recv' at Lb1/t0;.A pc=2",
+      "6. APP-BOUNDARY unwind x2 per run (clock+stopwatch containers)"
+    ]
+  },
+  "laws_landed": {
+    "F-NEW-576_inflation_ctor_overload_authority": "run_custom_view_constructor passes the EXACT AOSP inflation descriptors (Context,AttributeSet)V then (Context)V so F-023 exact-descriptor authority selects deterministically; legacy arg-only fallback retained",
+    "F-NEW-577_fragment_container_factory_law": "when the class declares <init>(Context,AttributeSet,<X>)V with X an APP-DEX class, the runtime constructs via FragmentLayoutInflaterFactory semantics: the unique initialized heap instance of X (earliest creation_sequence) rides in as the 3rd param — never a fabricated/default register",
+    "honest_trace": "[W5-FM-FACTORY] class=... fm_ctor=... fm=obj#N used=1 path=factory"
+  },
+  "verification": {
+    "W5-FM-FACTORY": "fired 2x (ClockFragment + StopwatchFragment containers) with fm=obj#202 path=factory used=1",
+    "old_wall_gone": "Lb1/t0;.A pc=2 NPE: 2x per run -> 0",
+    "uncaught_in_flight": "8 -> 6",
+    "fragment_lifecycle_reached": "onAttach, onCreateView, onStart, onResume (MainActivity + Lg/l + j0 chains)",
+    "tier": "still FLAT (honest) — DEFAULT_BACKGROUND_ONLY; app draw ops blocked by the NEXT walls"
+  },
+  "next_walls_W6_frontier": [
+    "1. CoordinatorLayout.t ISE 'Could not find CoordinatorLayout descendant view with id null to anchor view LinearLayout@725' — app:layout_anchor reference id did not land in LayoutParams (styleable slot resolution gap, obfuscated resources)",
+    "2. Landroidx/lifecycle/h0;.a NPE 'Insets.left on null' — DrawerLayout getRootWindowInsets() answered null; WindowInsetsCompat chain needs a real Insets root"
+  ],
+  "golden_regression_check": {
+    "bouncy": {"face": "8a6c24ac8a7d718e", "pin": "8a6c24ac", "holds": true},
+    "unote": {"face": "3b8dcb0adbbc17a9", "pin": "3b8dcb0a", "holds": true},
+    "dooz": {"face": "31ddd4d5b8e6d18e", "expected_W1_stable_face": "31ddd4d5", "note": "script pin d602648e predates the recorded W1-stable face (W3/W4 worklog) — no change"},
+    "binary": "eea50f7de1583b24"
+  },
+  "scripts": [
+    "scripts/s188_w5_androguard_fm.py",
+    "scripts/s188_w5_androguard_fm2.py",
+    "scripts/s188_w5_androguard_hostwire.py",
+    "scripts/s188_w5_androguard_disasm.py",
+    "scripts/s188_w5_androguard_ctor.py",
+    "scripts/s188_w5_androguard_bucket.py",
+    "scripts/s188_w5_androguard_g0.py"
+  ],
+  "runs": ["evidence/s188_w5/ts_w5_recon.log", "evidence/s188_w5/ts_w5_run.log", "evidence/s188_w5/ts_w5b.log (NEW-WATCH+NULLFIELD)", "evidence/s188_w5/ts_w5c.log (FIELD-TRACE)", "evidence/s188_w5/ts_w5v.log (post-law verify)"]
+}

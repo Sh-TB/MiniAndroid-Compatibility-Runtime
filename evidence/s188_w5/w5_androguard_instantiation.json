@@ -1,0 +1,367 @@
+{
+ "calib_new_instance": [
+  "La/a0;",
+  "<init>(Ljava/lang/Runnable; I)V",
+  "new-instance",
+  [
+   [
+    "tuple",
+    "(<Operand.REGISTER: 0>, 1)"
+   ],
+   [
+    "tuple",
+    "(259, 585, 'Lb0/k;')"
+   ]
+  ]
+ ],
+ "hits": {
+  "invoke_init_fm": [
+   {
+    "class": "Lb1/a0;",
+    "method": "<init>()V",
+    "op": "invoke-direct",
+    "ref": "(256, 4492, 'Lb1/t0;-><init>()V')"
+   },
+   {
+    "class": "Lb1/a0;",
+    "method": "p()V",
+    "op": "invoke-direct",
+    "ref": "(256, 4492, 'Lb1/t0;-><init>()V')"
+   },
+   {
+    "class": "Lb1/a1;",
+    "method": "i()V",
+    "op": "invoke-direct",
+    "ref": "(256, 4492, 'Lb1/t0;-><init>()V')"
+   },
+   {
+    "class": "Lb1/c0;",
+    "method": "<init>(Lg/l;)V",
+    "op": "invoke-direct",
+    "ref": "(256, 4492, 'Lb1/t0;-><init>()V')"
+   }
+  ],
+  "iput_host_field": [],
+  "get_host_field": []
+ },
+ "dump": {
+  "Lb1/a1;": {
+   "super": "Ljava/lang/Object;",
+   "fields": [
+    [
+     "a",
+     "Lb1/d0;"
+    ],
+    [
+     "b",
+     "Lb0/k;"
+    ],
+    [
+     "c",
+     "Lb1/a0;"
+    ],
+    [
+     "d",
+     "Z"
+    ],
+    [
+     "e",
+     "I"
+    ]
+   ],
+   "methods": [
+    "<init>(Lb1/d0; Lb0/k; Lb1/a0;)V",
+    "<init>(Lb1/d0; Lb0/k; Lb1/a0; Landroid/os/Bundle;)V",
+    "<init>(Lb1/d0; Lb0/k; Ljava/lang/ClassLoader; Lb1/m0; Landroid/os/Bundle;)V",
+    "a()V",
+    "b()V",
+    "c()V",
+    "d()I",
+    "e()V",
+    "f()V",
+    "g()V",
+    "h()V",
+    "i()V",
+    "j()V",
+    "k()V",
+    "l()V",
+    "m(Ljava/lang/ClassLoader;)V",
+    "n()V",
+    "o()Landroid/os/Bundle;",
+    "p()V",
+    "q()V",
+    "r()V"
+   ]
+  },
+  "La/u;": {
+   "super": "Ljava/lang/Object;",
+   "fields": [
+    [
+     "a",
+     "La/w;"
+    ],
+    [
+     "b",
+     "Z"
+    ],
+    [
+     "c",
+     "Lb0/k;"
+    ],
+    [
+     "d",
+     "La/v;"
+    ],
+    [
+     "e",
+     "Z"
+    ]
+   ],
+   "methods": [
+    "<init>(Lb1/k0; La/w;)V",
+    "a()V",
+    "b(Z)V"
+   ]
+  },
+  "La/a0;": {
+   "super": "Ljava/lang/Object;",
+   "fields": [
+    [
+     "a",
+     "Ljava/lang/Runnable;"
+    ],
+    [
+     "b",
+     "Lb0/k;"
+    ],
+    [
+     "c",
+     "La/y;"
+    ]
+   ],
+   "methods": [
+    "<init>(Ljava/lang/Runnable; I)V",
+    "a(Landroid/window/OnBackInvokedDispatcher;)V"
+   ]
+  },
+  "Lo1/d;": {
+   "super": "Ljava/lang/Object;",
+   "fields": [
+    [
+     "a",
+     "Lb0/k;"
+    ],
+    [
+     "b",
+     "Z"
+    ]
+   ],
+   "methods": [
+    "a()V",
+    "b(Z)V"
+   ]
+  },
+  "BeeperActivity": {
+   "super": "Lg/l;",
+   "methods": [
+    "<init>()V",
+    "onCreate(Landroid/os/Bundle;)V"
+   ]
+  },
+  "beeper_super_chain": [
+   "Lg/l;",
+   "La/q;"
+  ],
+  "Lg/l;": {
+   "super": "La/q;",
+   "fields": [
+    [
+     "s",
+     "Lb0/a;"
+    ],
+    [
+     "t",
+     "Landroidx/lifecycle/v;"
+    ],
+    [
+     "u",
+     "Z"
+    ],
+    [
+     "v",
+     "Z"
+    ],
+    [
+     "w",
+     "Z"
+    ],
+    [
+     "x",
+     "Lg/f0;"
+    ]
+   ],
+   "methods": [
+    "<init>()V",
+    "o(Lb1/t0;)Z",
+    "addContentView(Landroid/view/View; Landroid/view/ViewGroup$LayoutParams;)V",
+    "attachBaseContext(Landroid/content/Context;)V",
+    "closeOptionsMenu()V",
+    "dispatchKeyEvent(Landroid/view/KeyEvent;)Z",
+    "dump(Ljava/lang/String; Ljava/io/FileDescriptor; Ljava/io/PrintWriter; [Ljava/lang/String;)V",
+    "findViewById(I)Landroid/view/View;",
+    "getMenuInflater()Landroid/view/MenuInflater;",
+    "getResources()Landroid/content/res/Resources;",
+    "invalidateOptionsMenu()V",
+    "m()Lg/s;",
+    "n()La2/a;",
+    "onActivityResult(I I Landroid/content/Intent;)V",
+    "onConfigurationChanged(Landroid/content/res/Configuration;)V",
+    "onContentChanged()V",
+    "onCreate(Landroid/os/Bundle;)V",
+    "onCreateView(Landroid/view/View; Ljava/lang/String; Landroid/content/Context; Landroid/util/AttributeSet;)Landroid/view/View;",
+    "onCreateView(Ljava/lang/String; Landroid/content/Context; Landroid/util/AttributeSet;)Landroid/view/View;",
+    "onDestroy()V",
+    "onMenuItemSelected(I Landroid/view/MenuItem;)Z",
+    "onPause()V",
+    "onPostCreate(Landroid/os/Bundle;)V",
+    "onPostResume()V",
+    "onRequestPermissionsResult(I [Ljava/lang/String; [I)V",
+    "onResume()V",
+    "onStart()V",
+    "onStateNotSaved()V",
+    "onStop()V",
+    "onTitleChanged(Ljava/lang/CharSequence; I)V",
+    "openOptionsMenu()V",
+    "p()V",
+    "q(I Landroid/view/MenuItem;)Z",
+    "r()V",
+    "s()V",
+    "setContentView(I)V",
+    "setContentView(Landroid/view/View;)V",
+    "setContentView(Landroid/view/View; Landroid/view/ViewGroup$LayoutParams;)V",
+    "setTheme(I)V",
+    "t()V",
+    "u()Z",
+    "v(Landroidx/appcompat/widget/Toolbar;)V"
+   ]
+  },
+  "La/q;": {
+   "super": "Landroid/app/Activity;",
+   "fields": [
+    [
+     "a",
+     "Landroidx/lifecycle/v;"
+    ],
+    [
+     "b",
+     "Lb/a;"
+    ],
+    [
+     "c",
+     "Lg/q0;"
+    ],
+    [
+     "d",
+     "Lb1/d0;"
+    ],
+    [
+     "e",
+     "Landroidx/lifecycle/x0;"
+    ],
+    [
+     "f",
+     "La/n;"
+    ],
+    [
+     "g",
+     "Lg3/g;"
+    ],
+    [
+     "h",
+     "La/p;"
+    ],
+    [
+     "i",
+     "Ljava/util/concurrent/CopyOnWriteArrayList;"
+    ],
+    [
+     "j",
+     "Ljava/util/concurrent/CopyOnWriteArrayList;"
+    ],
+    [
+     "k",
+     "Ljava/util/concurrent/CopyOnWriteArrayList;"
+    ],
+    [
+     "l",
+     "Ljava/util/concurrent/CopyOnWriteArrayList;"
+    ],
+    [
+     "m",
+     "Ljava/util/concurrent/CopyOnWriteArrayList;"
+    ],
+    [
+     "n",
+     "Ljava/util/concurrent/CopyOnWriteArrayList;"
+    ],
+    [
+     "o",
+     "Z"
+    ],
+    [
+     "p",
+     "Z"
+    ],
+    [
+     "q",
+     "Lg3/g;"
+    ],
+    [
+     "r",
+     "Lg3/g;"
+    ]
+   ],
+   "methods": [
+    "<init>()V",
+    "f(Lg/l;)V",
+    "a()Lb1/d0;",
+    "b(Landroid/view/KeyEvent;)Z",
+    "c()Lf1/d;",
+    "d()Landroidx/lifecycle/x0;",
+    "dispatchKeyEvent(Landroid/view/KeyEvent;)Z",
+    "dispatchKeyShortcutEvent(Landroid/view/KeyEvent;)Z",
+    "e()Landroidx/lifecycle/v;",
+    "g(Ln0/a;)V",
+    "h(Lb/b;)V",
+    "i()La/a0;",
+    "j()V",
+    "k(Landroid/os/Bundle;)V",
+    "l(Landroid/os/Bundle;)V",
+    "onActivityResult(I I Landroid/content/Intent;)V",
+    "onBackPressed()V",
+    "onConfigurationChanged(Landroid/content/res/Configuration;)V",
+    "onCreate(Landroid/os/Bundle;)V",
+    "onCreatePanelMenu(I Landroid/view/Menu;)Z",
+    "onMenuItemSelected(I Landroid/view/MenuItem;)Z",
+    "onMultiWindowModeChanged(Z)V",
+    "onMultiWindowModeChanged(Z Landroid/content/res/Configuration;)V",
+    "onNewIntent(Landroid/content/Intent;)V",
+    "onPanelClosed(I Landroid/view/Menu;)V",
+    "onPictureInPictureModeChanged(Z)V",
+    "onPictureInPictureModeChanged(Z Landroid/content/res/Configuration;)V",
+    "onPreparePanel(I Landroid/view/View; Landroid/view/Menu;)Z",
+    "onRequestPermissionsResult(I [Ljava/lang/String; [I)V",
+    "onRetainNonConfigurationInstance()Ljava/lang/Object;",
+    "onSaveInstanceState(Landroid/os/Bundle;)V",
+    "onTrimMemory(I)V",
+    "onUserLeaveHint()V",
+    "reportFullyDrawn()V",
+    "setContentView(Landroid/view/View;)V",
+    "startActivityForResult(Landroid/content/Intent; I)V",
+    "startActivityForResult(Landroid/content/Intent; I Landroid/os/Bundle;)V",
+    "startIntentSenderForResult(Landroid/content/IntentSender; I Landroid/content/Intent; I I I)V",
+    "startIntentSenderForResult(Landroid/content/IntentSender; I Landroid/content/Intent; I I I Landroid/os/Bundle;)V"
+   ]
+  }
+ }
+}

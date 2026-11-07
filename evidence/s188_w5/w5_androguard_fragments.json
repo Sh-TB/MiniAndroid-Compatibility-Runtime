@@ -1,0 +1,1059 @@
+{
+ "fragment_manager": {
+  "fields": [
+   [
+    "A",
+    "Lc/h;"
+   ],
+   [
+    "B",
+    "Lc/h;"
+   ],
+   [
+    "C",
+    "Lc/h;"
+   ],
+   [
+    "D",
+    "Ljava/util/ArrayDeque;"
+   ],
+   [
+    "E",
+    "Z"
+   ],
+   [
+    "F",
+    "Z"
+   ],
+   [
+    "G",
+    "Z"
+   ],
+   [
+    "H",
+    "Z"
+   ],
+   [
+    "I",
+    "Z"
+   ],
+   [
+    "J",
+    "Ljava/util/ArrayList;"
+   ],
+   [
+    "K",
+    "Ljava/util/ArrayList;"
+   ],
+   [
+    "L",
+    "Ljava/util/ArrayList;"
+   ],
+   [
+    "M",
+    "Lb1/w0;"
+   ],
+   [
+    "N",
+    "Lb1/n;"
+   ],
+   [
+    "a",
+    "Ljava/util/ArrayList;"
+   ],
+   [
+    "b",
+    "Z"
+   ],
+   [
+    "c",
+    "Lb0/k;"
+   ],
+   [
+    "d",
+    "Ljava/util/ArrayList;"
+   ],
+   [
+    "e",
+    "Ljava/util/ArrayList;"
+   ],
+   [
+    "f",
+    "Lb1/g0;"
+   ],
+   [
+    "g",
+    "La/a0;"
+   ],
+   [
+    "h",
+    "Lb1/k0;"
+   ],
+   [
+    "i",
+    "Ljava/util/concurrent/atomic/AtomicInteger;"
+   ],
+   [
+    "j",
+    "Ljava/util/Map;"
+   ],
+   [
+    "k",
+    "Ljava/util/Map;"
+   ],
+   [
+    "l",
+    "Ljava/util/ArrayList;"
+   ],
+   [
+    "m",
+    "Lb1/d0;"
+   ],
+   [
+    "n",
+    "Ljava/util/concurrent/CopyOnWriteArrayList;"
+   ],
+   [
+    "o",
+    "Lb1/h0;"
+   ],
+   [
+    "p",
+    "Lb1/h0;"
+   ],
+   [
+    "q",
+    "Lb1/h0;"
+   ],
+   [
+    "r",
+    "Lb1/h0;"
+   ],
+   [
+    "s",
+    "Lb1/l0;"
+   ],
+   [
+    "t",
+    "I"
+   ],
+   [
+    "u",
+    "Lb1/c0;"
+   ],
+   [
+    "v",
+    "La2/a;"
+   ],
+   [
+    "w",
+    "Lb1/a0;"
+   ],
+   [
+    "x",
+    "Lb1/a0;"
+   ],
+   [
+    "y",
+    "Lb1/m0;"
+   ],
+   [
+    "z",
+    "Ly2/f;"
+   ]
+  ],
+  "ctors": [
+   "<init>()V"
+  ],
+  "method_count": 56
+ },
+ "fm_new_instance_sites": [],
+ "fm_host_field_names": [
+  "c"
+ ],
+ "fm_host_iput_sites": [],
+ "host_field_holders": [
+  {
+   "class": "La/a0;",
+   "fields": [
+    [
+     "a",
+     "Ljava/lang/Runnable;"
+    ],
+    [
+     "b",
+     "Lb0/k;"
+    ],
+    [
+     "c",
+     "La/y;"
+    ]
+   ]
+  },
+  {
+   "class": "La/u;",
+   "fields": [
+    [
+     "a",
+     "La/w;"
+    ],
+    [
+     "b",
+     "Z"
+    ],
+    [
+     "c",
+     "Lb0/k;"
+    ],
+    [
+     "d",
+     "La/v;"
+    ],
+    [
+     "e",
+     "Z"
+    ]
+   ]
+  },
+  {
+   "class": "Lo1/d;",
+   "fields": [
+    [
+     "a",
+     "Lb0/k;"
+    ],
+    [
+     "b",
+     "Z"
+    ]
+   ]
+  },
+  {
+   "class": "Landroidx/coordinatorlayout/widget/CoordinatorLayout;",
+   "fields": [
+    [
+     "t",
+     "Ljava/lang/String;"
+    ],
+    [
+     "u",
+     "[Ljava/lang/Class;"
+    ],
+    [
+     "v",
+     "Ljava/lang/ThreadLocal;"
+    ],
+    [
+     "w",
+     "Lb0/j;"
+    ],
+    [
+     "x",
+     "Ln0/c;"
+    ],
+    [
+     "a",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "b",
+     "Lb0/k;"
+    ],
+    [
+     "c",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "d",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "e",
+     "[I"
+    ],
+    [
+     "f",
+     "[I"
+    ],
+    [
+     "g",
+     "Z"
+    ],
+    [
+     "h",
+     "Z"
+    ],
+    [
+     "i",
+     "[I"
+    ],
+    [
+     "j",
+     "Landroid/view/View;"
+    ],
+    [
+     "k",
+     "Landroid/view/View;"
+    ],
+    [
+     "l",
+     "Lb0/g;"
+    ],
+    [
+     "m",
+     "Z"
+    ],
+    [
+     "n",
+     "Lo0/p1;"
+    ],
+    [
+     "o",
+     "Z"
+    ],
+    [
+     "p",
+     "Landroid/graphics/drawable/Drawable;"
+    ],
+    [
+     "q",
+     "Landroid/view/ViewGroup$OnHierarchyChangeListener;"
+    ],
+    [
+     "r",
+     "Lb0/a;"
+    ],
+    [
+     "s",
+     "Li1/b0;"
+    ]
+   ]
+  },
+  {
+   "class": "Lb1/a1;",
+   "fields": [
+    [
+     "a",
+     "Lb1/d0;"
+    ],
+    [
+     "b",
+     "Lb0/k;"
+    ],
+    [
+     "c",
+     "Lb1/a0;"
+    ],
+    [
+     "d",
+     "Z"
+    ],
+    [
+     "e",
+     "I"
+    ]
+   ]
+  },
+  {
+   "class": "Lb1/t0;",
+   "fields": [
+    [
+     "A",
+     "Lc/h;"
+    ],
+    [
+     "B",
+     "Lc/h;"
+    ],
+    [
+     "C",
+     "Lc/h;"
+    ],
+    [
+     "D",
+     "Ljava/util/ArrayDeque;"
+    ],
+    [
+     "E",
+     "Z"
+    ],
+    [
+     "F",
+     "Z"
+    ],
+    [
+     "G",
+     "Z"
+    ],
+    [
+     "H",
+     "Z"
+    ],
+    [
+     "I",
+     "Z"
+    ],
+    [
+     "J",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "K",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "L",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "M",
+     "Lb1/w0;"
+    ],
+    [
+     "N",
+     "Lb1/n;"
+    ],
+    [
+     "a",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "b",
+     "Z"
+    ],
+    [
+     "c",
+     "Lb0/k;"
+    ],
+    [
+     "d",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "e",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "f",
+     "Lb1/g0;"
+    ],
+    [
+     "g",
+     "La/a0;"
+    ],
+    [
+     "h",
+     "Lb1/k0;"
+    ],
+    [
+     "i",
+     "Ljava/util/concurrent/atomic/AtomicInteger;"
+    ],
+    [
+     "j",
+     "Ljava/util/Map;"
+    ],
+    [
+     "k",
+     "Ljava/util/Map;"
+    ],
+    [
+     "l",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "m",
+     "Lb1/d0;"
+    ],
+    [
+     "n",
+     "Ljava/util/concurrent/CopyOnWriteArrayList;"
+    ],
+    [
+     "o",
+     "Lb1/h0;"
+    ],
+    [
+     "p",
+     "Lb1/h0;"
+    ],
+    [
+     "q",
+     "Lb1/h0;"
+    ],
+    [
+     "r",
+     "Lb1/h0;"
+    ],
+    [
+     "s",
+     "Lb1/l0;"
+    ],
+    [
+     "t",
+     "I"
+    ],
+    [
+     "u",
+     "Lb1/c0;"
+    ],
+    [
+     "v",
+     "La2/a;"
+    ],
+    [
+     "w",
+     "Lb1/a0;"
+    ],
+    [
+     "x",
+     "Lb1/a0;"
+    ],
+    [
+     "y",
+     "Lb1/m0;"
+    ],
+    [
+     "z",
+     "Ly2/f;"
+    ]
+   ]
+  },
+  {
+   "class": "Ltibarj/tranquilstopwatch/BeeperActivity;",
+   "fields": [
+    [
+     "B",
+     "I"
+    ],
+    [
+     "A",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "y",
+     "Lb0/k;"
+    ],
+    [
+     "z",
+     "Lc4/n;"
+    ]
+   ]
+  },
+  {
+   "class": "Lx0/f;",
+   "fields": [
+    [
+     "a",
+     "Lx0/j;"
+    ],
+    [
+     "b",
+     "Lg/q0;"
+    ],
+    [
+     "c",
+     "Lb0/k;"
+    ]
+   ]
+  },
+  {
+   "class": "Lx0/v;",
+   "fields": [
+    [
+     "d",
+     "Ljava/lang/ThreadLocal;"
+    ],
+    [
+     "a",
+     "I"
+    ],
+    [
+     "b",
+     "Lb0/k;"
+    ],
+    [
+     "c",
+     "I"
+    ]
+   ]
+  },
+  {
+   "class": "Lx1/l;",
+   "fields": [
+    [
+     "w",
+     "[Landroid/animation/Animator;"
+    ],
+    [
+     "x",
+     "[I"
+    ],
+    [
+     "y",
+     "Lx/n;"
+    ],
+    [
+     "z",
+     "Ljava/lang/ThreadLocal;"
+    ],
+    [
+     "a",
+     "Ljava/lang/String;"
+    ],
+    [
+     "b",
+     "J"
+    ],
+    [
+     "c",
+     "J"
+    ],
+    [
+     "d",
+     "Landroid/animation/TimeInterpolator;"
+    ],
+    [
+     "e",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "f",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "g",
+     "Lb0/k;"
+    ],
+    [
+     "h",
+     "Lb0/k;"
+    ],
+    [
+     "i",
+     "Lx1/a;"
+    ],
+    [
+     "j",
+     "[I"
+    ],
+    [
+     "k",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "l",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "m",
+     "[Lx1/j;"
+    ],
+    [
+     "n",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "o",
+     "[Landroid/animation/Animator;"
+    ],
+    [
+     "p",
+     "I"
+    ],
+    [
+     "q",
+     "Z"
+    ],
+    [
+     "r",
+     "Z"
+    ],
+    [
+     "s",
+     "Lx1/l;"
+    ],
+    [
+     "t",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "u",
+     "Ljava/util/ArrayList;"
+    ],
+    [
+     "v",
+     "Lx/n;"
+    ]
+   ]
+  }
+ ],
+ "attach_named_methods": [
+  {
+   "class": "La/d;",
+   "method": "m(Lw0/a;)Z"
+  },
+  {
+   "class": "La2/a;",
+   "method": "m([F I)[F"
+  },
+  {
+   "class": "Landroidx/appcompat/widget/Toolbar;",
+   "method": "m()V"
+  },
+  {
+   "class": "Landroidx/coordinatorlayout/widget/CoordinatorLayout;",
+   "method": "m(I Landroid/graphics/Rect; Landroid/graphics/Rect; Lb0/f; I I)V"
+  },
+  {
+   "class": "Landroidx/core/widget/NestedScrollView;",
+   "method": "m(Landroid/view/View; I I)Z"
+  },
+  {
+   "class": "Landroidx/drawerlayout/widget/DrawerLayout;",
+   "method": "m(Landroid/view/View;)Z"
+  },
+  {
+   "class": "Landroidx/lifecycle/h0;",
+   "method": "m(Landroid/view/WindowInsets;)Landroid/view/WindowInsets$Builder;"
+  },
+  {
+   "class": "Lb1/a0;",
+   "method": "m(I)Ljava/lang/String;"
+  },
+  {
+   "class": "Landroidx/preference/Preference;",
+   "method": "m()V"
+  },
+  {
+   "class": "Landroidx/preference/PreferenceGroup;",
+   "method": "m()V"
+  },
+  {
+   "class": "Ls1/v0;",
+   "method": "m(Ls1/h1;)I"
+  },
+  {
+   "class": "Landroidx/recyclerview/widget/LinearLayoutManager;",
+   "method": "m(Ls1/h1;)I"
+  },
+  {
+   "class": "Landroidx/recyclerview/widget/RecyclerView;",
+   "method": "m()V"
+  },
+  {
+   "class": "Landroidx/recyclerview/widget/StaggeredGridLayoutManager;",
+   "method": "m(Ls1/h1;)I"
+  },
+  {
+   "class": "Lo0/e;",
+   "method": "m()I"
+  },
+  {
+   "class": "Lb0/a;",
+   "method": "m()I"
+  },
+  {
+   "class": "Lb0/c;",
+   "method": "m(Landroidx/coordinatorlayout/widget/CoordinatorLayout; Landroid/view/View; I I I)Z"
+  },
+  {
+   "class": "Lb0/k;",
+   "method": "m(Lb1/a1;)V"
+  },
+  {
+   "class": "Lb1/a1;",
+   "method": "m(Ljava/lang/ClassLoader;)V"
+  },
+  {
+   "class": "Lb1/d0;",
+   "method": "m(Z)V"
+  },
+  {
+   "class": "Lb1/t0;",
+   "method": "m(Z)V"
+  },
+  {
+   "class": "Lc3/s;",
+   "method": "m(Lp0/e;)V"
+  },
+  {
+   "class": "Ly2/j;",
+   "method": "m(F)V"
+  },
+  {
+   "class": "Lc3/n;",
+   "method": "m(Lp0/e;)V"
+  },
+  {
+   "class": "Lc3/r;",
+   "method": "m()V"
+  },
+  {
+   "class": "Ls1/k1;",
+   "method": "m()V"
+  },
+  {
+   "class": "Lcom/google/android/material/appbar/AppBarLayout$BaseBehavior;",
+   "method": "m(Landroidx/coordinatorlayout/widget/CoordinatorLayout; Landroid/view/View; I I I)Z"
+  },
+  {
+   "class": "Ld2/f;",
+   "method": "m(Landroidx/coordinatorlayout/widget/CoordinatorLayout; Landroid/view/View; I I I)Z"
+  },
+  {
+   "class": "Lcom/google/android/material/bottomsheet/BottomSheetBehavior;",
+   "method": "m(Landroidx/coordinatorlayout/widget/CoordinatorLayout; Landroid/view/View; I I I)Z"
+  },
+  {
+   "class": "Lcom/google/android/material/carousel/CarouselLayoutManager;",
+   "method": "m(Ls1/h1;)I"
+  },
+  {
+   "class": "Lcom/google/android/material/sidesheet/SideSheetBehavior;",
+   "method": "m(Landroidx/coordinatorlayout/widget/CoordinatorLayout; Landroid/view/View; I I I)Z"
+  },
+  {
+   "class": "Lcom/google/android/material/textfield/TextInputLayout;",
+   "method": "m(Landroid/view/ViewGroup; Z)V"
+  },
+  {
+   "class": "Lcom/google/android/material/timepicker/h;",
+   "method": "m()V"
+  },
+  {
+   "class": "Lcom/google/android/material/timepicker/ClockFaceView;",
+   "method": "m()V"
+  },
+  {
+   "class": "Li1/e0;",
+   "method": "m(I)V"
+  },
+  {
+   "class": "Lf0/b;",
+   "method": "m()F"
+  },
+  {
+   "class": "Lg/f0;",
+   "method": "m(Landroid/view/Window;)V"
+  },
+  {
+   "class": "Lg/l;",
+   "method": "m()Lg/s;"
+  },
+  {
+   "class": "Lg/q0;",
+   "method": "m(I)Landroid/view/View;"
+  },
+  {
+   "class": "Lk/a;",
+   "method": "m(I)V"
+  },
+  {
+   "class": "Lg/s0;",
+   "method": "m(I)V"
+  },
+  {
+   "class": "Lg0/f;",
+   "method": "m(Landroid/view/ContentInfo$Builder; I)V"
+  },
+  {
+   "class": "Lt1/b;",
+   "method": "m(Landroid/view/ViewGroup$MarginLayoutParams;)I"
+  },
+  {
+   "class": "Lk/d;",
+   "method": "m(I)V"
+  },
+  {
+   "class": "Lk1/h;",
+   "method": "m(Li1/i; Li1/c0;)Lb1/a;"
+  },
+  {
+   "class": "Lt0/b;",
+   "method": "m(I Landroid/graphics/Rect;)Z"
+  },
+  {
+   "class": "Ll/x;",
+   "method": "m(Ll/n;)Z"
+  },
+  {
+   "class": "Ll/t;",
+   "method": "m(Ll/n;)Z"
+  },
+  {
+   "class": "Ll/l;",
+   "method": "m()Z"
+  },
+  {
+   "class": "Ll/d0;",
+   "method": "m()Z"
+  },
+  {
+   "class": "Ll/h;",
+   "method": "m(Ll/n;)Z"
+  },
+  {
+   "class": "Ll1/j;",
+   "method": "m(Li1/i; Z Lh3/i;)V"
+  },
+  {
+   "class": "Ll1/l;",
+   "method": "m()V"
+  },
+  {
+   "class": "Lm/a3;",
+   "method": "m(Ll/n;)Z"
+  },
+  {
+   "class": "Lm/f2;",
+   "method": "m()I"
+  },
+  {
+   "class": "Lm/q0;",
+   "method": "m()I"
+  },
+  {
+   "class": "Lm/l0;",
+   "method": "m()I"
+  },
+  {
+   "class": "Lm/l;",
+   "method": "m(Ll/n;)Z"
+  },
+  {
+   "class": "Lm0/c;",
+   "method": "m()Landroid/view/accessibility/AccessibilityNodeInfo$AccessibilityAction;"
+  },
+  {
+   "class": "Ln2/b;",
+   "method": "m()V"
+  },
+  {
+   "class": "Lo0/d;",
+   "method": "m()I"
+  },
+  {
+   "class": "Lo0/m1;",
+   "method": "m()Z"
+  },
+  {
+   "class": "Lo0/f1;",
+   "method": "m()Z"
+  },
+  {
+   "class": "Lo0/h1;",
+   "method": "m()Landroid/view/accessibility/AccessibilityNodeInfo$AccessibilityAction;"
+  },
+  {
+   "class": "Lo0/l0;",
+   "method": "m(Landroid/view/View; Lo0/b;)V"
+  },
+  {
+   "class": "Lq1/e;",
+   "method": "m(Ljava/io/InputStream; I)J"
+  },
+  {
+   "class": "Lr2/b;",
+   "method": "m(F)V"
+  },
+  {
+   "class": "Lr2/q;",
+   "method": "m(Ll/n;)Z"
+  },
+  {
+   "class": "Ls1/h0;",
+   "method": "m(Landroid/view/View;)I"
+  },
+  {
+   "class": "Ls1/g0;",
+   "method": "m(Landroid/view/View;)I"
+  },
+  {
+   "class": "Lt0/e;",
+   "method": "m(F F I)V"
+  },
+  {
+   "class": "Lu/c;",
+   "method": "m()Lu/f;"
+  },
+  {
+   "class": "Lw/d;",
+   "method": "m(I)Lw/d;"
+  },
+  {
+   "class": "Lx/c;",
+   "method": "m()Lw/d;"
+  },
+  {
+   "class": "Lx/i;",
+   "method": "m(Lx/f;)V"
+  },
+  {
+   "class": "Lx/j;",
+   "method": "m(Lx/f;)V"
+  },
+  {
+   "class": "Lx/k;",
+   "method": "m([I I I I I F I)V"
+  },
+  {
+   "class": "Lx/m;",
+   "method": "m()V"
+  },
+  {
+   "class": "Lx1/l;",
+   "method": "m()V"
+  },
+  {
+   "class": "Lz2/a;",
+   "method": "m(Landroid/view/ViewGroup$MarginLayoutParams;)I"
+  }
+ ],
+ "fragment_host_callback": {
+  "fields": [
+   [
+    "a",
+    "Ljava/lang/Object;"
+   ],
+   [
+    "b",
+    "Ljava/lang/Object;"
+   ],
+   [
+    "c",
+    "Ljava/lang/Object;"
+   ],
+   [
+    "d",
+    "Ljava/lang/Object;"
+   ]
+  ],
+  "ctors": [
+   "<init>(I)V",
+   "<init>(La/x;)V",
+   "<init>(Landroid/content/Context; Landroid/view/ActionMode$Callback;)V",
+   "<init>(Landroid/graphics/Typeface; Ly0/b;)V",
+   "<init>(Landroidx/coordinatorlayout/widget/CoordinatorLayout; Lcom/google/android/material/floatingactionbutton/FloatingActionButton; Lcom/google/android/material/floatingactionbutton/FloatingActionButton; Landroidx/recyclerview/widget/RecyclerView; Lcom/google/android/material/appbar/MaterialToolbar;)V",
+   "<init>(Landroidx/lifecycle/x0; Landroidx/lifecycle/v0; Lf1/b;)V"
+  ],
+  "super_chain": [
+   "Ljava/lang/Object;"
+  ]
+ },
+ "framelayout_subclasses": [
+  "La3/c;",
+  "Landroidx/appcompat/widget/ActionBarContainer;",
+  "Landroidx/appcompat/widget/ContentFrameLayout;",
+  "Landroidx/appcompat/widget/FitWindowsFrameLayout;",
+  "Landroidx/cardview/widget/CardView;",
+  "Landroidx/core/widget/NestedScrollView;",
+  "Landroidx/fragment/app/FragmentContainerView;",
+  "Lcom/google/android/material/internal/ClippableRoundedCornerLayout;",
+  "Lcom/google/android/material/internal/TouchObserverFrameLayout;",
+  "Lr2/u;",
+  "Lcom/google/android/material/timepicker/ChipTextInputComboView;",
+  "Lg/d0;",
+  "Ll/p;"
+ ]
+}

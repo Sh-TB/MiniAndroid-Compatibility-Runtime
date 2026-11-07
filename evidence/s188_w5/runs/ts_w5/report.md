@@ -1,0 +1,101 @@
+# MiniAndroid Execution Report
+
+## Application
+
+- **APK:** `evidence/s188_w2/runs/store_tibarj.tranquilstopwatch/data/app/tibarj.tranquilstopwatch/base.apk`
+- **Package:** `tibarj.tranquilstopwatch`
+- **Status:** **FAILURE** ❌
+
+## Metrics
+
+| Metric | Value |
+|--------|-------|
+| APIs Called | 0 |
+| Frames Rendered | 2 |
+| Execution Time | 0ms |
+| Memory Peak | 0.00 B |
+| Errors | 4 |
+| Warnings | 1 |
+
+## API Trace Summary
+
+| Class | Calls |
+|-------|-------|
+| `DalvikEngine` | 3 |
+| `ExecutionEngine` | 1494 |
+| `TraceEngine` | 3 |
+| `Unknown` | 4 |
+
+## Top Method Calls
+
+| Method | Calls |
+|--------|-------|
+| `ExecutionEngine.stage_load_classes` | 1455 |
+| `ExecutionEngine.stage_capture_output` | 7 |
+| `ExecutionEngine.trace_files` | 5 |
+| `Unknown.Unknown` | 4 |
+| `ExecutionEngine.phase_b_click` | 4 |
+| `ExecutionEngine.stage_render_frame` | 4 |
+| `DalvikEngine.execute_apk` | 3 |
+| `TraceEngine.log_screenshot` | 2 |
+| `ExecutionEngine.trace_export` | 2 |
+| `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
+| `ExecutionEngine.stage_initialize_runtime` | 2 |
+| `ExecutionEngine.stage_load_apk` | 2 |
+| `ExecutionEngine.stage_parse_dex` | 2 |
+| `ExecutionEngine.stage_generate_reports` | 1 |
+| `TraceEngine.start_session` | 1 |
+| `ExecutionEngine.validation` | 1 |
+| `ExecutionEngine.stage_execute_application` | 1 |
+| `ExecutionEngine.lifecycle_verified` | 1 |
+| `ExecutionEngine.lifecycle_source` | 1 |
+| `ExecutionEngine.execution_source` | 1 |
+
+## Errors & Issues
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/fragment/app/FragmentContainerView;.<init> invoke_pc=0x3a depth=2
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at Ltibarj/tranquilstopwatch/MainActivity;.onCreate invoke_pc=0x23 depth=1 [APP-BOUNDARY]
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/fragment/app/FragmentContainerView;.<init> invoke_pc=0x3a depth=2
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at Ltibarj/tranquilstopwatch/MainActivity;.onCreate invoke_pc=0x23 depth=1 [APP-BOUNDARY]
+- **Location:** `.`
+- **Fatal:** No
+
+## Screenshots
+
+### Output Frame
+
+- **File:** `evidence/s188_w5/runs/ts_w5/screenshot.png`
+- **Resolution:** 1080x1920
+- **Size:** 7.91 MB
+
+![Screenshot](evidence/s188_w5/runs/ts_w5/screenshot.png)
+
+### Output Frame
+
+- **File:** `evidence/s188_w5/runs/ts_w5/screenshot.png`
+- **Resolution:** 1080x1920
+- **Size:** 7.91 MB
+
+![Screenshot](evidence/s188_w5/runs/ts_w5/screenshot.png)
+
+## Session Info
+
+- **Session ID:** `EXP-001-20261107-040012-0108`
+- **Generated:** 2026-11-07 04:00:12 UTC
