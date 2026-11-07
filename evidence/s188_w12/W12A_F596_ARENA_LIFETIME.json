@@ -1,0 +1,34 @@
+{
+ "wave": "S188-W12A \u2014 F-NEW-596 the arena/interner lifetime contract (the RunBundle std::bad_alloc root cause)",
+ "directive": "unwind-grade probe for the RunBundle bad_alloc thrower (W10 next-1)",
+ "binary_sha16": "1562c417d2a1fdef",
+ "attribution_chain": [
+  "w12_new_probe.c interposers _Znwm/_Znam/__cxa_throw: size=0x7f...(a POINTER value) as the allocation length",
+  "true RA resolved against /proc/self/maps: mid-instruction offsets 0x67469c/0x6770c9/0x677456 = stale interpreter-stack values; _Unwind chain unreliable there",
+  "F-NEW-596 hexdump of the box at the same id pointer: batch1 box_len=38 (healthy \"SF:Ljava/lang/Object;|refreshRateFPS|F\"), later box_len=0x7ff...d19d20 (SMASHED) \u2014 same address 0x7ff004cb7580 (w12_f596_2.console.log:1140 vs :1160)",
+  "smashed payload = {1, &displayWidth-box, 39, 39, JSON bytes, 117} = the 39-byte platform-message state REUSED the freed chunk (DartMessenger#send cap=39 in the same window)",
+  "ROOT CAUSE: box_string() registered EVERY box in the per-call arena; arena_clear() at the end of EVERY native dispatch deleted them \u2014 including the interner's ids and cached class tokens = USE-AFTER-FREE (the W10 \"second batch bad_allocs while the first reads fine\" face explained exactly)"
+ ],
+ "law": "F-NEW-596 \u2014 lifetime contract: interned ids and class tokens are GLOBAL-scope handles; allocated OUTSIDE the per-call arena (box_string_permanent); interned class tokens give pointer identity per name with plain-name payload (the \"C:\" key-prefix leak was caught and corrected the same wave); per-call local refs (NewStringUTF etc.) stay arena-scoped (JNI-spec local-ref lifetime)",
+ "runs": {
+  "pre_fix_probe": {
+   "log": "evidence/s188_w12/w12_probe5.console.log",
+   "face": "_Znwm size=0x7f8d08d19d21 PRE ra=exe+0x67469c(mid-inst) -> std::bad_alloc"
+  },
+  "boundary_diag": {
+   "log": "evidence/s188_w12/w12_f596_2.console.log",
+   "face": "same id pointer box_len=38->smashed; hexdumps decoded: JSON message text, class-name strings, signature strings"
+  },
+  "post_fix": {
+   "log": "evidence/s188_w12/w12_f596_4.console.log",
+   "counts": {
+    "corrupt_box": 0,
+    "guarded_faults": 0,
+    "impeller_accepted": 1,
+    "frames_rendered": 2
+   }
+  },
+  "regression_caught_in_wave": "first intern attempt returned \"C:\"+name payloads (GetFieldID(C:io/flutter/...) live face at f596_3:761) \u2014 payload contract restored via dedicated class-token pool before any commit"
+ },
+ "status": "CHAIN_ADVANCED \u2014 the W10 first divergence (std::bad_alloc inside RunBundle) is RESOLVED with an attributable trace; Dart VM shell still reaches Impeller (1) and renders 2 frames as before; next divergence = the Dart isolate snapshot pair (queens ships the old _kDartSnapshotData/_kDartSnapshotText; libflutter 3.13.4 dlsym strings confirmed in-binary)"
+}

@@ -1,0 +1,10 @@
+{
+ "status": "exit=1",
+ "binary": "f0147af42ed9e7ba",
+ "godotlib_lines": [],
+ "load_library": [],
+ "jni_unsupported_godot": [],
+ "oncreate_ok": true,
+ "uncaught": 0,
+ "log": "evidence/s188_w12/w12_godot1.console.log"
+}

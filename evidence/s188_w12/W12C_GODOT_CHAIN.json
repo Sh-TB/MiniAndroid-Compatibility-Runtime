@@ -1,0 +1,29 @@
+{
+ "wave": "S188-W12C \u2014 the Godot engine-load chain decoded + the stall attributed",
+ "decode": {
+  "source": "evidence/s188_w12/W12_T14_ANDROGUARD_GODOT.json (androguard, ball2box DEX)",
+  "chain": [
+   "Godot.onCreate(Bundle) \u2014 265 ins: window flags/clipboard/plugin-registry/command-line parse",
+   "\u2192 initializeGodot() \u2014 78 ins: GodotIO(activity), GodotNetUtils(activity), DirectoryAccessHandler(ctx), FileAccessHandler(ctx), SensorManager \u00d74 (accel=1, gravity=9, magnetometer=2, gyro=4), then",
+   "\u2192 GodotLib.initialize(Activity, Godot, AssetManager, GodotIO, GodotNetUtils, DirectoryAccessHandler, FileAccessHandler, Z) \u2014 THE NATIVE bootstrap",
+   "\u2192 godot_initialized=true; GodotLib.setup comes later from the surface-creation path"
+  ]
+ },
+ "live_census": {
+  "run": "evidence/s188_w12/w12_godot1.console.log (30s)",
+  "oncreate_ok": 1,
+  "uncaught": 0,
+  "route": "GODOT primary \u2713",
+  "loadLibrary_godot": 0,
+  "GodotLib_initialize_calls": 0
+ },
+ "stall_attribution": [
+  "GodotApp.onCreate runs: setTheme \u2192 setContentView(R.layout.godot_app_layout, root=296) \u2192 \"Creating new Godot fragment instance\" \u2192 new Godot() (Godot.<clinit> + the Kotlin Reflection clinit storm)",
+  "pc=63: getSupportFragmentManager().beginTransaction().replace(R.id.godot_fragment_container, godot).commit() \u2014 the androidx transaction machinery runs doAddOp (real DEX)",
+  "BUT the ONLY fragment that drained through F-NEW-304 (created\u2192started\u2192resumed) is the ReportFragment (lifecycle dispatcher); the GODOT fragment never reached stage CREATED",
+  "THE GATE: [S186I-STUB] Landroidx/fragment/app/FragmentManager;.dispatchStateChange argc=2 (dispatchCreate caller, log:957) \u2014 the androidx state-machine driver is stubbed, and the async commit (Handler.post of the exec-commit runnable) never drained in the window",
+  "CONSEQUENCE: Godot.onCreate(fragment) never runs \u2192 initializeGodot never runs \u2192 GodotLib.initialize native never called \u2192 no libgodot.so load attempt \u2192 the Godot lane stays at the W10 recorded state (onCreate clean, tier NO_ROOT)"
+ ],
+ "next_blocker": "the androidx FragmentManager.dispatchStateChange face: the pending-actions + state-machine path must reach the app fragment's onAttach/onCreate/onCreateView (the W5 FragmentLayoutInflaterFactory already covers inflation; the MISSING piece is the androidx-side state movement driving the app fragment lifecycle) \u2014 then GodotLib.initialize reaches the S2-NATIVE lane (libgodot.so dlopen + the real native bootstrap)",
+ "status": "BLOCKER_ATTRIBUTED (no shim added; the exact missing contract is named)"
+}

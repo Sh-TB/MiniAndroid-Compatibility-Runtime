@@ -372,6 +372,25 @@ std::string* box_string(const std::string& s) {
     arena().push_back(b);
     return b;
 }
+// F-NEW-596 (W12) — the lifetime contract was violated: box_string
+// registered EVERY box in the per-call arena, and arena_clear() (the
+// local-ref sweep at the end of every native dispatch) DELETED them —
+// including the interner's ids and the class tokens the DEX side caches
+// across calls. Live face (queens RunBundle): batch 1 of the
+// refreshRateFPS reads answered fine; an arena sweep between calls
+// freed the interned "SF:...|refreshRateFPS|F" box; the platform-message
+// state reused the 32-byte chunk ({1, ptr, 39, 39, JSON bytes}); the
+// next read copied a std::string whose length field was a heap pointer
+// -> _Znwm(0x7ff...) -> std::bad_alloc. Evidence:
+// evidence/s188_w12/w12_f596_2.console.log (same id=0x...b7580:
+// box_len=38 healthy at :1140, box_len=0x7ff...d19d20 smashed at :1160).
+// Contract: interned ids and class tokens are GLOBAL-scope handles our
+// runtime retains across calls — they must be allocated OUTSIDE the
+// per-call arena. Local refs (NewStringUTF etc.) stay arena-scoped
+// (JNI-spec local-ref lifetime).
+std::string* box_string_permanent(const std::string& s) {
+    return new std::string(s);
+}
 void arena_clear() {
     std::lock_guard<std::mutex> lk(g_arena_mu);
     for (std::string* p : arena()) delete p;
@@ -529,12 +548,35 @@ void jni_DeleteWeakGlobalRef(void*, void*) {}
 // the surviving ref through (the JNI spec's PopLocalFrame return law).
 int jni_PushLocalFrame(void*, int32_t /*capacity*/) { return 0; }  // JNI_OK
 void* jni_PopLocalFrame(void*, void* result) { return result; }
+// F-NEW-596 forward decl (defined in the reflection-ID block below)
+static void* jni_intern_id(const std::string& key);
+
+// F-NEW-596 (W12) — class-token interner: the payload MUST stay the plain
+// binary class name (the DEX side reads the box as the name — a "C:" key
+// prefix leaked into payloads and broke the FlutterJNI reflection path,
+// live face: GetFieldID(C:io/flutter/... instead of the plain name). The
+// pool key carries the prefix; the payload does not. Permanent storage,
+// pointer identity per name — the arena sweep can never free a token.
+static void* intern_class_token(const std::string& name) {
+    static std::mutex mu;
+    static std::map<std::string, std::string*> pool;
+    std::lock_guard<std::mutex> lk(mu);
+    auto it = pool.find(name);
+    if (it == pool.end()) {
+        std::string* p = box_string_permanent(name);
+        it = pool.emplace(name, p).first;
+    }
+    return it->second;
+}
 void* jni_FindClass(void*, const char* name) {
-    return box_string(std::string(name ? name : ""));
+    // F-NEW-596: class tokens are INTERNED PERMANENT boxes (plain-name
+    // payload) — the DEX side caches them across calls; the per-call
+    // arena sweep must never free one.
+    return intern_class_token(std::string(name ? name : ""));
 }
 void* jni_GetObjectClass(void*, void*) {
     // object identity only — class reflection stays an unsupported frontier
-    return box_string("Ljava/lang/Object;");
+    return intern_class_token("Ljava/lang/Object;");
 }
 void* jni_NewGlobalRef(void*, void* r) { return r; }
 void* jni_NewLocalRef(void*, void* r) { return r; }
@@ -648,14 +690,31 @@ static void* jni_intern_id(const std::string& key) {
     std::lock_guard<std::mutex> lk(id_mu);
     auto it = id_pool.find(key);
     if (it == id_pool.end()) {
-        std::string* p = box_string(key);
+        // F-NEW-596: the interned payload is permanent — NOT an arena
+        // box (the arena sweep must never free an id the pool hands out).
+        std::string* p = box_string_permanent(key);
         it = id_pool.emplace(key, p).first;
     }
     return it->second;
 }
+// F-NEW-596 forward decls (definitions below the F-NEW-590 block)
+static bool f590_box_len_of(void* box, size_t* len_out);
+static std::string f590_field_name_of_safe(void* fieldID, const char* who);
 static std::string jni_class_name_of(void* jcls) {
     if (!jcls) return std::string();
     // box_string jclass: the payload IS the binary class name.
+    // F-NEW-596: the same corrupt-box boundary (a smashed jclass box
+    // must not _Znwm a pointer-length string).
+    size_t len = 0;
+    if (!f590_box_len_of(jcls, &len) || len > 512) {
+        static std::mutex cmu; static uint64_t cn = 0;
+        std::lock_guard<std::mutex> lk(cmu);
+        if (cn++ < 8)
+            fprintf(stderr,
+                    "[F-NEW-596] corrupt jclass box: ptr=%p head_len=%zu "
+                    "(0x%zx) — answering empty\n", jcls, len, len);
+        return std::string();
+    }
     return *static_cast<std::string*>(jcls);
 }
 static void* jni_GetMethodID(void*, void* jcls, const char* name,
@@ -695,8 +754,18 @@ static void* jni_GetStaticFieldID(void*, void* jcls, const char* name,
     if (f581_sf < 12) { ++f581_sf;
         fprintf(stderr, "[F-C4-581] GetStaticFieldID(%s, %s%s) -> id\n",
                 jni_class_name_of(jcls).c_str(), name, sig); }
-    return jni_intern_id("SF:" + jni_class_name_of(jcls) + "|" + name +
-                         "|" + sig);
+    void* id = jni_intern_id("SF:" + jni_class_name_of(jcls) + "|" + name +
+                             "|" + sig);
+    // F-NEW-596 attribution: what the slot-152 reader receives must be
+    // THIS pointer — if it differs, the arg lane between slot 144 and
+    // slot 152 is broken, not the box.
+    static thread_local uint64_t f596_sf = 0;
+    if (f596_sf < 12) { ++f596_sf;
+        size_t blen = 0;
+        f590_box_len_of(id, &blen);
+        fprintf(stderr, "[F-NEW-596] GetStaticFieldID -> id=%p box_len=%zu\n",
+                id, blen); }
+    return id;
 }
 // MonitorEnter/MonitorExit: the serialized engine owns all monitors at
 // the DEX layer; native-side enter/exit pairs are answerable 0 (success)
@@ -790,8 +859,52 @@ static std::string f590_field_name_of(void* fieldID) {
     return s.substr(a + 1, b - a - 1);
 }
 
+// F-NEW-596 (W12) — corrupt-fieldID boundary: the interned id box is a
+// permanent std::string*, but a heap smash elsewhere (queens RunBundle
+// face: the second refreshRateFPS batch read len=0x7f... (a pointer
+// value) out of the box and _Znwm'd 0x7f... bytes -> std::bad_alloc)
+// can poison ANY box. A corrupt box must not take the run down: read
+// the {ptr,len} head safely, verify len against a sane bound, hexdump
+// the smashed object for attribution, and answer empty (the callers
+// fall back honestly). The huge-allocation face is UNREACHABLE from
+// this path afterwards.
+static bool f590_box_len_of(void* fieldID, size_t* len_out) {
+    if (!fieldID) return false;
+    // std::__cxx11::basic_string head: {char* _M_p; size_type _M_len; ...}
+    unsigned long raw[2];
+    memcpy(raw, fieldID, sizeof raw);
+    *len_out = raw[1];
+    return true;
+}
+
+static std::string f590_field_name_of_safe(void* fieldID, const char* who) {
+    size_t len = 0;
+    if (!f590_box_len_of(fieldID, &len) || len > 256) {
+        static std::mutex diag_mu;
+        static uint64_t diag_n = 0;
+        {
+            std::lock_guard<std::mutex> lk(diag_mu);
+            if (diag_n++ < 8) {
+                fprintf(stderr,
+                        "[F-NEW-596] corrupt id box (%s): ptr=%p head_len=%zu "
+                        "(0x%zx) — dumping 48 bytes:\n",
+                        who, fieldID, len, len);
+                unsigned char* p = (unsigned char*)fieldID;
+                for (int row = 0; row < 3; ++row) {
+                    fprintf(stderr, "[F-NEW-596]   %04x:", row * 16);
+                    for (int k = 0; k < 16; ++k)
+                        fprintf(stderr, " %02x", p[row * 16 + k]);
+                    fprintf(stderr, "\n");
+                }
+            }
+        }
+        return std::string();
+    }
+    return f590_field_name_of(fieldID);
+}
+
 static float jni_GetStaticFloatField(void*, void*, void* fieldID) {
-    std::string name = f590_field_name_of(fieldID);
+    std::string name = f590_field_name_of_safe(fieldID, "GetStaticFloatField");
     float out = 0.0f;
     if (!name.empty() && g_f590_hooks.static_float) {
         // F-NEW-594: the hook walks the engine's static storage — a
@@ -830,7 +943,7 @@ static float jni_GetStaticFloatField(void*, void*, void* fieldID) {
     return 0.0f;
 }
 static int32_t jni_GetStaticIntField(void*, void*, void* fieldID) {
-    std::string name = f590_field_name_of(fieldID);
+    std::string name = f590_field_name_of_safe(fieldID, "GetStaticIntField");
     int32_t out = 0;
     if (!name.empty() && g_f590_hooks.static_int &&
         g_f590_hooks.static_int("Ljava/lang/Object;", name.c_str(), &out))
@@ -838,7 +951,7 @@ static int32_t jni_GetStaticIntField(void*, void*, void* fieldID) {
     return 0;
 }
 static int64_t jni_GetStaticLongField(void*, void*, void* fieldID) {
-    std::string name = f590_field_name_of(fieldID);
+    std::string name = f590_field_name_of_safe(fieldID, "GetStaticLongField");
     int64_t out = 0;
     if (!name.empty() && g_f590_hooks.static_long &&
         g_f590_hooks.static_long("Ljava/lang/Object;", name.c_str(), &out))
@@ -846,7 +959,7 @@ static int64_t jni_GetStaticLongField(void*, void*, void* fieldID) {
     return 0;
 }
 static uint8_t jni_GetStaticBooleanField(void*, void*, void* fieldID) {
-    std::string name = f590_field_name_of(fieldID);
+    std::string name = f590_field_name_of_safe(fieldID, "GetStaticBooleanField");
     uint8_t out = 0;
     if (!name.empty() && g_f590_hooks.static_bool &&
         g_f590_hooks.static_bool("Ljava/lang/Object;", name.c_str(), &out))
@@ -854,7 +967,7 @@ static uint8_t jni_GetStaticBooleanField(void*, void*, void* fieldID) {
     return 0;
 }
 static double jni_GetStaticDoubleField(void*, void*, void* fieldID) {
-    std::string name = f590_field_name_of(fieldID);
+    std::string name = f590_field_name_of_safe(fieldID, "GetStaticDoubleField");
     double out = 0.0;
     if (!name.empty() && g_f590_hooks.static_double &&
         g_f590_hooks.static_double("Ljava/lang/Object;", name.c_str(), &out))

@@ -51453,20 +51453,44 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                       << " -> " << mw2 << "x" << mh2
                                       << std::endl;
                     } else {
-                        // Non-LinearLayout families keep the legacy answer
-                        // (EXACTLY → spec; AT_MOST → max(spec, child)) —
-                        // their own decode cycles own any change.
-                        int32_t mw = pw, mh = ph;
-                        if (mode(wspec) == 2 || mode(hspec) == 2) {
-                            for (uint32_t child : self->children) {
-                                auto* cn = vs->find_node(child);
-                                if (!cn) continue;
-                                if (mode(wspec) == 2)
-                                    mw = std::max(mw, cn->measured_width);
-                                if (mode(hspec) == 2)
-                                    mh = std::max(mh, cn->measured_height);
-                            }
+                        // F-NEW-598 (S188 W12): the AOSP FrameLayout law —
+                        // want = max(child + margins) + padding, then
+                        // resolveSizeAndState semantics: EXACTLY → spec;
+                        // AT_MOST → min(spec, want) (the spec bounds the
+                        // children's want; the children win when they ask
+                        // for LESS). The legacy answer (max(spec, child))
+                        // made the ActionBarContainer measure the FULL
+                        // screen (1920) under AT_MOST(1920) even with a
+                        // 168px Toolbar — blackjack's not-overlay
+                        // height-split then read the container height as
+                        // the content inset (mContentInsets.top += v1)
+                        // → content margins 1920 → content spec
+                        // EXACTLY(0) → the B-face collapse (the W10
+                        // first-divergence face, root-caused; live:
+                        // w12_f598_bj.console.log + the F-NEW-598 vpad
+                        // accumulation 1920→3840→5760).
+                        int32_t want_w = 0, want_h = 0;
+                        for (uint32_t child : self->children) {
+                            auto* cn = vs->find_node(child);
+                            if (!cn) continue;
+                            if (cn->visibility == 4 || cn->visibility == 8)
+                                continue;
+                            want_w = std::max(
+                                want_w,
+                                cn->measured_width + cn->lp_margin_left +
+                                    cn->lp_margin_right);
+                            want_h = std::max(
+                                want_h,
+                                cn->measured_height + cn->lp_margin_top +
+                                    cn->lp_margin_bottom);
                         }
+                        want_w += self->padding_left + self->padding_right;
+                        want_h += self->padding_top + self->padding_bottom;
+                        const int wm = mode(wspec), hm = mode(hspec);
+                        int32_t mw = (wm == 1) ? pw
+                                   : (wm == 2 ? std::min(pw, want_w) : want_w);
+                        int32_t mh = (hm == 1) ? ph
+                                   : (hm == 2 ? std::min(ph, want_h) : want_h);
                         if (std::getenv("MINIANDROID_C97_LAYOUT_DIAG") &&
                             self->class_desc.find("ActionBarLayout") !=
                                 std::string::npos)
@@ -64153,8 +64177,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // emulation is incomplete, R-NEW-438/441 evidence). Default OFF; the
         // bounded per-container-trust experiment is the named next lever
         // (registry F-NEW-370 PARTIAL decode trail).
+        // F-NEW-598 (W12): DEFAULT-ON (battery-verified). The W10 opt-in
+        // revert existed because the ActionBarContainer AT_MOST face
+        // collapsed blackjack's B face; F-NEW-598 fixed the S109 law
+        // (AOSP resolveSizeAndState semantics) and the full battery +
+        // goldens re-verified. MINIANDROID_MCM_LAW=0 opts out.
         static const bool mcm_law_active =
-            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
+            std::getenv("MINIANDROID_MCM_LAW") == nullptr ||
+            std::getenv("MINIANDROID_MCM_LAW")[0] != '0';
         if (!mcm_law_active) return false;
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (view_shadow && args[0].object_id != 0 && args[1].object_id != 0) {
@@ -64254,6 +64284,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     wspec, hpad, lp_dim(cn->layout_params_object, true));
                 const int32_t ch = child_spec(
                     hspec, vpad, lp_dim(cn->layout_params_object, false));
+                // F-NEW-598 diag (W12, bounded): the MCM input triple —
+                // spec/padding/lp — the ActionBarOverlayLayout
+                // EXACTLY(0)-content face needs the exact lane that
+                // starved the child spec.
+                {
+                    static const bool f598_diag =
+                        diag_env("MINIANDROID_F598_MCM_DIAG");
+                    static std::atomic<uint64_t> f598_n{0};
+                    if (f598_diag &&
+                        f598_n.fetch_add(1, std::memory_order_relaxed) < 32) {
+                        int32_t lph = lp_dim(cn->layout_params_object, false);
+                        int32_t lpw = lp_dim(cn->layout_params_object, true);
+                        std::cerr << "[F-NEW-598] mcm parent="
+                                  << pn->class_desc << " child=" << cn->class_desc
+                                  << " hspec=0x" << std::hex << hspec
+                                  << " vpad=" << std::dec << vpad
+                                  << " lp_h=" << lph << " lp_w=" << lpw
+                                  << " lp_obj=" << cn->layout_params_object
+                                  << " pt=" << pn->padding_top
+                                  << " pb=" << pn->padding_bottom
+                                  << std::endl;
+                    }
+                }
                 // Canonical child measure (R-NEW-440): one law, DEX
                 // onMeasure dispatched through the memo-protected walk.
                 auto& rt = resources::ResourceRuntime::instance();
@@ -64347,7 +64400,8 @@ measure_cm_done:;
         // evidence/s188_w10/W10_TS_DIMENSION.json + w10_ts.console.log —
         // containers 1080x1920/1080x168 where W7 answered 0x0).
         static const bool rsas_law_active =
-            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
+            std::getenv("MINIANDROID_MCM_LAW") == nullptr ||
+            std::getenv("MINIANDROID_MCM_LAW")[0] != '0';
         // F-NEW-595 diag (bounded): WHO calls resolve with which spec —
         // the blackjack regression first-divergence hunt needs the exact
         // caller of the degenerate EXACTLY(0) content spec.

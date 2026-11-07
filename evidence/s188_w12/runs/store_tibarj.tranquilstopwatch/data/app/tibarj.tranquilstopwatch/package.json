@@ -1,0 +1,18 @@
+{
+  "package": "tibarj.tranquilstopwatch",
+  "versionName": "1.12.1",
+  "versionCode": 17,
+  "mainActivity": "tibarj.tranquilstopwatch.MainActivity",
+  "minSdk": "27",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "tibarj.tranquilstopwatch.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/tibarj.tranquilstopwatch/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w12/runs/store_tibarj.tranquilstopwatch/data/app/tibarj.tranquilstopwatch/base.apk",
+  "apkSha256": "7bc31fae5cd2e9d815414dafb437f9a9a2fd21f4dc16d9929adc5fec962c5cb7",
+  "apkSize": 2492454,
+  "installedAt": "2026-11-07T19:38:57Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

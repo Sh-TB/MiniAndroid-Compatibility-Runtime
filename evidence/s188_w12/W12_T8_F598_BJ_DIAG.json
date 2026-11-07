@@ -1,0 +1,13 @@
+{
+ "status": "exit=1",
+ "binary": "e87bc8b1d698bd31",
+ "diag": [
+  "[F-NEW-598] mcm parent=Landroidx/appcompat/widget/ActionBarOverlayLayout; child=Landroidx/appcompat/widget/ActionBarContainer; hspec=0x40000780 vpad=0 lp_h=-2 lp_w=-1 lp_obj=356 pt=0 pb=0",
+  "[F-NEW-598] mcm parent=Landroidx/appcompat/widget/ActionBarOverlayLayout; child=Landroidx/appcompat/widget/ContentFrameLayout; hspec=0x40000780 vpad=1920 lp_h=-1 lp_w=-1 lp_obj=328 pt=0 pb=0",
+  "[F-NEW-598] mcm parent=Landroidx/appcompat/widget/ActionBarOverlayLayout; child=Landroidx/appcompat/widget/ActionBarContainer; hspec=0x40000780 vpad=0 lp_h=-2 lp_w=-1 lp_obj=356 pt=0 pb=0",
+  "[F-NEW-598] mcm parent=Landroidx/appcompat/widget/ActionBarOverlayLayout; child=Landroidx/appcompat/widget/ContentFrameLayout; hspec=0x40000780 vpad=3840 lp_h=-1 lp_w=-1 lp_obj=328 pt=0 pb=0",
+  "[F-NEW-598] mcm parent=Landroidx/appcompat/widget/ActionBarOverlayLayout; child=Landroidx/appcompat/widget/ActionBarContainer; hspec=0x40000780 vpad=0 lp_h=-2 lp_w=-1 lp_obj=356 pt=0 pb=0",
+  "[F-NEW-598] mcm parent=Landroidx/appcompat/widget/ActionBarOverlayLayout; child=Landroidx/appcompat/widget/ContentFrameLayout; hspec=0x40000780 vpad=5760 lp_h=-1 lp_w=-1 lp_obj=328 pt=0 pb=0"
+ ],
+ "log": "evidence/s188_w12/w12_f598_bj.console.log"
+}

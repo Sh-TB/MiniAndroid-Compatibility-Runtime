@@ -1,0 +1,10 @@
+{
+ "task": "F-NEW-596 corrupt-box boundary run",
+ "wave": "S188-W12",
+ "status": "exit=1",
+ "binary_sha16": "1562c417d2a1fdef",
+ "throw_lines": 0,
+ "throw_dump": [],
+ "guarded_fault": [],
+ "log": "evidence/s188_w12/w12_f596_4.console.log"
+}

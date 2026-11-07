@@ -1,0 +1,47 @@
+{
+ "ts": {
+  "status": "exit=1",
+  "f595_resolve": [
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=84 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=168 spec=0x400000a8",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=42 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=0 spec=0x400000a8",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=1080 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=168 spec=0x400000a8",
+   "[F-NEW-595] resolve caller=Landroidx/coordinatorlayout/widget/CoordinatorLayout;.onMeasure size=1080 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/coordinatorlayout/widget/CoordinatorLayout;.onMeasure size=1920 spec=0x40000780",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=42 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=0 spec=0x400000a8",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=1080 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=168 spec=0x400000a8"
+  ],
+  "uncaught": 0,
+  "frames": "2",
+  "exactly0_content": 0,
+  "dex_measure": 24,
+  "log": "evidence/s188_w12/w12_ts_mcm.console.log"
+ },
+ "blackjack": {
+  "status": "exit=0",
+  "f595_resolve": [
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=84 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=147 spec=0x40000093",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure size=1080 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure size=1920 spec=0x40000780",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=84 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=147 spec=0x40000093",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure size=1080 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/ActionBarOverlayLayout;.onMeasure size=1920 spec=0x40000780",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=84 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=147 spec=0x40000093",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=84 spec=0x40000438",
+   "[F-NEW-595] resolve caller=Landroidx/appcompat/widget/Toolbar;.onMeasure size=147 spec=0x40000093"
+  ],
+  "uncaught": 0,
+  "frames": "2",
+  "exactly0_content": 0,
+  "dex_measure": 8,
+  "log": "evidence/s188_w12/w12_bj_mcm.console.log"
+ },
+ "binary_sha16": "14af98b14cacfaf4"
+}
