@@ -1,0 +1,18 @@
+{
+  "package": "org.secuso.privacyfriendlybattleship",
+  "versionName": "2.0.0",
+  "versionCode": 101,
+  "mainActivity": "org.secuso.privacyfriendlybattleship.ui.SplashActivity",
+  "minSdk": "17",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "org.secuso.privacyfriendlybattleship.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.secuso.privacyfriendlybattleship/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w11/runs/store_org.secuso.privacyfriendlybattleship/data/app/org.secuso.privacyfriendlybattleship/base.apk",
+  "apkSha256": "beeedcbbefc3b013242926f11f51194900d00f0578def44c8d2a3cf924d800e0",
+  "apkSize": 5825971,
+  "installedAt": "2026-11-07T18:28:51Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

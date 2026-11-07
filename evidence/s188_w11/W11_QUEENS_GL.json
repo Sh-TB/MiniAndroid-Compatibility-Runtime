@@ -1,0 +1,41 @@
+{
+ "wave": "S188-W11 queens GL re-verification",
+ "secs": 35,
+ "status": "exit=1",
+ "binary_sha16": "73f4d87ac617ef4e",
+ "slot_census_at_exit": null,
+ "f590_static_dex_hits": [
+  "Lio/flutter/embedding/engine/FlutterJNI;.displayDensity",
+  "Lio/flutter/embedding/engine/FlutterJNI;.displayHeight",
+  "Lio/flutter/embedding/engine/FlutterJNI;.displayWidth",
+  "Lio/flutter/embedding/engine/FlutterJNI;.refreshRateFPS"
+ ],
+ "f590_buffer_snapshots": [
+  [
+   "392",
+   "49"
+  ],
+  [
+   "445",
+   "39"
+  ],
+  [
+   "516",
+   "54"
+  ],
+  [
+   "1534",
+   "25"
+  ]
+ ],
+ "f590_unresolvable_statics": [],
+ "counts": {
+  "run_bundle_fault": 0,
+  "dispatch_platform_fault": 0,
+  "guarded_call_faults": 1,
+  "jni_unsupported_lines": 16,
+  "impeller_accepted": 1,
+  "frames_rendered": 2
+ },
+ "log": "evidence/s188_w11/w11_gl1.console.log"
+}

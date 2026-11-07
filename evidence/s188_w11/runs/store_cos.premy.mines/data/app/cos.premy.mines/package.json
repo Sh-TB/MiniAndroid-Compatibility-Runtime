@@ -1,0 +1,16 @@
+{
+  "package": "cos.premy.mines",
+  "versionName": "1.7.1",
+  "versionCode": 16,
+  "mainActivity": "cos.premy.mines.MainActivity",
+  "minSdk": "19",
+  "targetSdk": "36",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/cos.premy.mines/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w11/runs/store_cos.premy.mines/data/app/cos.premy.mines/base.apk",
+  "apkSha256": "18faef7028457f4d123ac8d781f3ecdbf9e29b451468d5d6a348df28e8842aa7",
+  "apkSize": 2040324,
+  "installedAt": "2026-11-07T18:28:29Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}
