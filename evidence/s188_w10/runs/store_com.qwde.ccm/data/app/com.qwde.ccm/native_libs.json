@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "arm64-v8a",
+  "nativeLibraryDir": "/data/app/com.qwde.ccm/lib/arm64-v8a",
+  "extracted": [
+    {"entry": "lib/arm64-v8a/libc++_shared.so", "size": 1374336},
+    {"entry": "lib/arm64-v8a/libgodot_android.so", "size": 57569752}
+  ],
+  "count": 2
+}

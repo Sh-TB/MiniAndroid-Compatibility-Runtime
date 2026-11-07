@@ -1,0 +1,59 @@
+{
+ "wave": "S188-W10 — Flutter env-census clearance + RunBundle advance + measure-chain frontier",
+ "date": "2026-11-07",
+ "directive": "ادامه — continue the wave: env152/230 slots, Dart isolate lane, cross-frontier (ts dimension chain), Godot state, regression battery, report A-G",
+ "binary_sha16": "504c5288022b8660",
+
+ "laws": [
+  {"id": "F-NEW-590", "title": "JNI static-field read family (146/150/151/152/153) + direct-Buffer family (229/230/231)",
+   "root": "W9 exit census env152=8 (libflutter UpdateDisplayMetrics: refreshRateFPS/displayWidth/displayHeight/displayDensity resolved against a class handle the GetObjectClass identity law degraded to Ljava/lang/Object;) + env230=4 (DartMessenger#send platform messages into the real nativeDispatchPlatformMessage)",
+   "fix": "engine-query hooks (EngineHooks installed at DalvikExecutionEngine ctor): name-keyed DEX static first (REAL storage hits: Lio/flutter/embedding/engine/FlutterJNI;.display* — the app's own values), the REAL display config fallback (1080x1920 @ 2.625, 60fps clock); direct-Buffer snapshots of the DEX ByteBuffer lazy __bb_b<i>__ bytes into REAL malloc memory",
+   "stage": "SOURCE_INTEGRATED + BINARY_INTEGRATED + REAL_APK_PROVEN (census env152/env230 -> 0; buffer snapshots cap 49/39/54/25 = the real message payloads)"},
+  {"id": "F-NEW-591", "title": "ByteBuffer.allocate family BOTH-CONVENTIONS cap law (ROOT-030 scan pattern)",
+   "root": "the args[1] read answered cap=0 for bare-static dispatch: queens DartMessenger allocateDirect(49) → [C86-BB] argc=1 a0:t1=49 → cap=0 — every platform message buffer born EMPTY",
+   "stage": "SOURCE_INTEGRATED + BINARY_INTEGRATED + REAL_APK_PROVEN"},
+  {"id": "F-NEW-592", "title": "NULL-object marshal law",
+   "root": "OBJECT_REF(id=0) marshaled as the tagged handle 0x500000000|0; the real libflutter RunBundle native deref'd it as a jstring → SIGSEGV fault_addr=0x500000000, rip inside the env-table string face (W10 fault trace)",
+   "fix": "oid==0 marshals as JNI null (marshal site + call_native defense) + the receiver slot carries the REAL tagged oid",
+   "stage": "SOURCE_INTEGRATED + BINARY_INTEGRATED + REAL_APK_PROVEN (fault class eliminated)"},
+  {"id": "F-NEW-593", "title": "unwind-through-thunk law (.cfi + guard try/catch)",
+   "root": "after 592 the native aborted via std::terminate — the unwinder had NO FDE for the asm thunk (a C++ exception can never propagate to a catch); SIGABRT face",
+   "fix": "native_thunk.S .cfi_startproc/frame-pointer CFA + run_native_guarded try/catch recording the exception text (bounded [W10-THROW] chain under MINIANDROID_W10_JNI_TRACE)",
+   "stage": "SOURCE_INTEGRATED + BINARY_INTEGRATED + REAL_APK_PROVEN (abort -> honest guarded call_ok=false)"},
+  {"id": "F-NEW-594", "title": "JNI env-surface thread safety",
+   "root": "jni_intern_id (id_pool), obj_array_boxes, direct_buffer_boxes, arena(), and the utf16 arena lazy-init were ALL unguarded while serving REAL threads (platform + raster + io task runners — the W9 thread pool); the intern race corrupted a later GetStaticFloatField string copy (length_error/basic_string::_M_create face at libflutter modoff 0x532b1a, the refreshRateFPS call site)",
+   "fix": "mutex per registry + magic statics; bounded fault-addr/throw-chain diagnostics under the trace env",
+   "stage": "SOURCE_INTEGRATED + BINARY_INTEGRATED"},
+  {"id": "F-NEW-595", "title": "measure-answer family activation REVERTED to opt-in (battery-verified)",
+   "story": "the default-ON flip of the F-NEW-370 resolveSizeAndState/getMeasuredState/combineMeasuredStates gates advanced the ts tree (ActionBarOverlayLayout 0x0 -> 1080x1920, Toolbar 0x0 -> 1080x168, ContentFrameLayout 1080x1752 — evidence/s188_w10/W10_TS_DIMENSION.json + w10_ts.console.log) BUT collapsed blackjack's B face (W10_BATTERY.json: B_STRUCTURED -> FLAT); the caller diag pinned the first divergence INSIDE the same androidx classes ([F-NEW-595] resolve caller=ActionBarOverlayLayout.onMeasure size=0 spec=0x40000780 -> ContentFrameLayout spec EXACTLY(0), accumulation 1920->3840) — the height-split arithmetic must be completed before default-ON",
+   "stage": "SOURCE_INTEGRATED + BINARY_INTEGRATED (opt-in via MINIANDROID_MCM_LAW=1; default state byte-identical to W7)"}
+ ],
+
+ "flutter_lane_state": {
+  "milestone": "Dart VM initialization advanced past the five-thread stall in W9; W10 advanced the isolate-entry dispatch (nativeRunBundleAndSnapshotFromLibrary) through THREE fault classes with attributable traces: null-object SIGSEGV (F-NEW-592) -> std::terminate abort (F-NEW-593) -> intern-race length_error (F-NEW-594)",
+  "current_first_divergence": "std::bad_alloc inside the RunBundle call — the exact thrower needs an unwind-grade probe (glibc backtrace() walks stale exe frames at catch time; the __cxa_throw interposer probe is built: scripts/w10_throw_probe.c); NOT yet attributed — honestly recorded, no shim added",
+  "framework_executing": false,
+  "real_app_frame": false,
+  "tier": "NO_ROOT (WINDOW_ROOT) — unchanged; 2 shell frames per run; slot census 0 UNSUPPORTED (was 12)"
+ },
+
+ "ts_dimension_state": {
+  "advance": "with the law opt-in the container tree measures REAL sizes (zero 0x0 answers; Toolbar 1080x168 x14, containers 1080x1920)",
+  "remaining": "NavigationView.onMeasure no-write-back (F-NEW-496 fallback 0x473) + the draw-dispatch chain ([C013-ONDRAW] dispatched=NO for inflated views; Compose dispatchDraw is the render route rf=COMPOSE) -> first_missing_stage=APP_DRAW_OPS (tier stays FLAT honestly)"
+ },
+
+ "godot_state": {
+  "pkg": "com.simondalvai.ball2box",
+  "state": "UNCHANGED from the W2b milestone: GodotApp.onCreate chain clean, 0 uncaught, ROUTE DECISION GODOT primary, stub census 4062/33/0; no System.loadLibrary('godot') rows in the 30s window — the engine-load chain (GodotApp.onCreate -> GodotLib.setup) was never attempted this run",
+  "next_known_blocker": "the Godot engine-load chain (loadLibrary + GodotLib.setup + main-loop start)",
+  "wave_work": "NONE — Flutter + the measure frontier took the budget (honest: the directive's non-swallow rule is satisfied by recording the exact state)"
+ },
+
+ "regression": {
+  "goldens": "bouncy 8a6c24ac + unote 3b8dcb0a + dooz 31ddd4d5 ALL HOLD byte-exact across SIX rebuilds this wave (F-NEW-590/591/592/593/594/595 each verified)",
+  "battery": "W10_BATTERY.json FINAL: CLEAN — zero tier regressions on the default binary (the mid-wave default-ON flip's blackjack regression was CAUGHT by the battery, root-caused via the caller diag, and reverted battery-verified — the regression law executed end to end)",
+  "non_flutter_milestones": "queens dlopen+JNI_OnLoad+RegisterNatives + slot census 0; no.thanks B anchor HOLDS (battery); ball2box Godot onCreate clean (battery + w10_b2b run)"
+ },
+
+ "androguard_policy": "primary DEX oracle both waves: W10_ANDROGUARD_RUNBUNDLE.json (the exact Java caller of nativeRunBundleAndSnapshotFromLibrary: nativeShellHolderId.longValue() + 3 Strings + AssetManager + List + enginePtr — pc-level disassembly in 0.3s) + W10_ANDROGUARD_TS_MEASURE.json (Toolbar.onMeasure 349 units: the resolveSizeAndState tail feeding setMeasuredDimension — the W7 frontier question answered pc-level)"
+}

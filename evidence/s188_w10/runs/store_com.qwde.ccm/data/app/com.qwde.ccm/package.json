@@ -1,0 +1,16 @@
+{
+  "package": "com.qwde.ccm",
+  "versionName": "first",
+  "versionCode": 5,
+  "mainActivity": "com.godot.game.GodotApp",
+  "minSdk": "24",
+  "targetSdk": "36",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/com.qwde.ccm/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w10/runs/store_com.qwde.ccm/data/app/com.qwde.ccm/base.apk",
+  "apkSha256": "dd57ead2dc7671e4a658864ba48003e5bd434d2719703ebdd870a8c0b5217edb",
+  "apkSize": 56290801,
+  "installedAt": "2026-11-07T17:40:34Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

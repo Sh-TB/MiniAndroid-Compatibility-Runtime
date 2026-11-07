@@ -64320,13 +64320,47 @@ measure_cm_done:;
     if ((method == "resolveSizeAndState" || method == "resolveSize") &&
         args.size() >= 2 && args[0].type == DalvikType::INT32 &&
         args[1].type == DalvikType::INT32) {
-        // CONT-71 ACTIVATION GATE (honest scope decision, same doctrine as
-        // the negotiation-law gate): the answer law is correct AOSP math but
-        // its activation converts the record-era degenerate-answer native
-        // fallbacks into spec-faithful acceptances for containers whose own
-        // emulation is incomplete (opencalculator v53 decode). Default OFF.
+        // F-NEW-595 (W10): the measure-answer family is DEFAULT-ON. The
+        // original default-OFF gate existed because the opencalc v53
+        // degenerate-spec face collapsed; that face is now guarded by the
+        // F-NEW-370 spec-bounds gate below (an out-of-bounds spec DECLINES
+        // → typed-0 → the R-NEW-440 native re-measure takeover — the exact
+        // record-era behavior). The default-OFF state starved the entire
+        // ts container tree: every resolveSizeAndState answered typed-0 →
+        // Toolbar/CoordinatorLayout/ActionBarOverlayLayout measured 0x0
+        // ([DEX-MEASURE] ts_w7d.console.log:2546/2593/2600) →
+        // first_missing_stage=APP_DRAW_OPS (DEFAULT_BACKGROUND_ONLY). The
+        // flip rides the full regression battery (goldens byte-exact + the
+        // 11-title tier battery) — the same doctrine as every gate
+        // decision. MINIANDROID_MCM_LAW=0 opts out (honest escape hatch).
+        // F-NEW-595 (W10) REVERTED TO OPT-IN (battery-verified): the
+        // default-ON flip collapsed blackjack's B face — the battery
+        // caught it (W10_BATTERY.json: B_STRUCTURED -> FLAT) and the
+        // caller diag pinned the first divergence INSIDE the same
+        // androidx classes ([F-NEW-595] resolve caller=
+        // ActionBarOverlayLayout.onMeasure size=0 spec=0x40000780 → the
+        // ContentFrameLayout spec EXACTLY(0), then the accumulation
+        // 1920→3840 double-count): the height-split arithmetic needs the
+        // DEX measure semantics completed BEFORE the answer family can
+        // default-ON. MINIANDROID_MCM_LAW=1 activates the spec-faithful
+        // answers for research runs (the W10 ts advance is evidenced:
+        // evidence/s188_w10/W10_TS_DIMENSION.json + w10_ts.console.log —
+        // containers 1080x1920/1080x168 where W7 answered 0x0).
         static const bool rsas_law_active =
             std::getenv("MINIANDROID_MCM_LAW") != nullptr;
+        // F-NEW-595 diag (bounded): WHO calls resolve with which spec —
+        // the blackjack regression first-divergence hunt needs the exact
+        // caller of the degenerate EXACTLY(0) content spec.
+        {
+            static std::atomic<uint64_t> f595_n{0};
+            if (f595_n.fetch_add(1, std::memory_order_relaxed) < 24) {
+                std::cerr << "[F-NEW-595] resolve caller=" << current_class_
+                          << "." << current_method_ << " size="
+                          << args[0].int_val << " spec=0x" << std::hex
+                          << (uint32_t)args[1].int_val << std::dec
+                          << std::endl;
+            }
+        }
         if (!rsas_law_active) {
             // pre-law typed-default (int 0) — byte-identical to the tail
             status = ApiCallTrace::Status::STUBBED;
@@ -64388,7 +64422,7 @@ measure_cm_done:;
     if (method == "getMeasuredState" && !args.empty() &&
         args[0].type == DalvikType::OBJECT_REF && shadow_registry_) {
         static const bool gs_law_active =
-            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
+            std::getenv("MINIANDROID_MCM_LAW") != nullptr;  // F-NEW-595: opt-in (see above)
         if (!gs_law_active) {
             status = ApiCallTrace::Status::STUBBED;
             result = DalvikValue::make_int(0);
@@ -64413,7 +64447,7 @@ measure_cm_done:;
     if (method == "combineMeasuredStates" && args.size() >= 2 &&
         args[0].type == DalvikType::INT32 && args[1].type == DalvikType::INT32) {
         static const bool cms_law_active =
-            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
+            std::getenv("MINIANDROID_MCM_LAW") != nullptr;  // F-NEW-595: opt-in (see above)
         if (!cms_law_active) {
             status = ApiCallTrace::Status::STUBBED;
             result = DalvikValue::make_int(0);
