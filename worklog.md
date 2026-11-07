@@ -7945,3 +7945,19 @@ inflation — b1/t0.A reads Lb0/k;.a on null Fragment (FragmentFactory gap).
 
 **Regression:** goldens byte-exact (bouncy/unote); dooz uncaught 6→0;
 B anchors hold. Tracker #559 W4 comment posted.
+
+## S188 W5 spec — FragmentManager host wiring (next session first task)
+
+Live evidence (ts_w4c.log):
+- b1/t0 = FragmentManager: real DEX ctor RAN (collections built, log 659-670)
+- b0/k = FragmentHostCallback: an instance EXISTS (b0/k;.l ran, log 1220)
+- FragmentManager field `a : Lb0/k;` (the host) is NULL at t0.A(I) pc=2
+  (findFragmentById) → NPE → FragmentContainerView inflation dies
+- t0 has a ()V ctor in DEX (dex cmd) — suspicious for androidx FragmentManager;
+  a hostless FragmentManager got constructed somewhere (fabrication or
+  shadow-served FragmentActivity field)
+W5-1 task: find the t0 instantiation site (MINIANDROID_NULLFIELD_TRACE /
+new-instance census), wire the host iput law: FragmentManager created by the
+FragmentActivity chain MUST carry the HostCallback (AOSP
+FragmentController.attachHost law). Then tranquilstopwatch + solitaire
+FragmentContainerView chains advance together.
