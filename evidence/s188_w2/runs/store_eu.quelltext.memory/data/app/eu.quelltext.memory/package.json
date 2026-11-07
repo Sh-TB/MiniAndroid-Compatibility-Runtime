@@ -11,6 +11,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s188_w2/runs/store_eu.quelltext.memory/data/app/eu.quelltext.memory/base.apk",
   "apkSha256": "4dd3957983e3c3f38c673f898d9659d5e0251f97137bab5254eafdcdbc9fa27c",
   "apkSize": 3028941,
-  "installedAt": "2026-11-06T21:26:23Z",
+  "installedAt": "2026-11-07T02:41:35Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

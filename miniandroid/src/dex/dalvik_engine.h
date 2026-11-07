@@ -3985,6 +3985,12 @@ public:
     std::map<std::string, std::string> asset_bytes_cache_;
     // Pass-3 (K-35): one parser state per parser object (heap id keyed).
     std::map<uint32_t, XmlPullState> xml_parsers_;
+
+    // [S188-W3] SUBMIT→FUTURE LAW state: box object id → the DEX result the
+    // submitted task produced (run inline at submit, serialized engine).
+    // Consumed by Future/FutureTask.get in bridge_to_api. Engine-owned
+    // member (NOT a static local — F-025 static-freeze lesson).
+    std::map<uint32_t, DalvikValue> future_results_;
 private:
 
     // EXP-053: Set of class descriptors whose <clinit> has been executed.

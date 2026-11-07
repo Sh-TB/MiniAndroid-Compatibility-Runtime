@@ -55270,6 +55270,114 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         method == "getContext" &&
         is_subclass_of(class_name, "Landroid/content/ContentProvider;");
 
+    const bool s188w3_executor_family =
+        class_name == "Ljava/util/concurrent/ThreadPoolExecutor;" ||
+        class_name == "Ljava/util/concurrent/ScheduledThreadPoolExecutor;" ||
+        class_name == "Ljava/util/concurrent/AbstractExecutorService;" ||
+        class_name == "Ljava/util/concurrent/Executor;" ||
+        class_name == "Ljava/util/concurrent/ExecutorService;";
+    // ── [S188-W3] SUBMIT→FUTURE LAW ──────────────────────────────
+    // Flutter alley first-divergence (com.sidhant.queens / xyz.
+    // deepdaikon.quinb / com.bupkis.tirailleur, console 729-743):
+    // FlutterLoader (Ll0/c;.d) submits its init Callable via
+    // ThreadPoolExecutor.submit — the S186I-STUB answered nothing
+    // (null) — then Ll0/c;.a called Future.get on the NULL future:
+    // NPE → "LOG.e/FlutterLoader: Flutter initialization failed."
+    // → deliberate new RuntimeException → onCreate death. AOSP
+    // law: ExecutorService.submit(task) returns a Future holding
+    // the task's result; get() answers it.
+    // Serialized-engine contract (F-020 inline-run precedent, the
+    // executor-family guard prevents the double-run): the task
+    // runs INLINE at submit via the REAL DEX call(), the result
+    // is stored on a minted Future box, get() answers it. The
+    // Flutter init Callable is real APK code — its result flows
+    // from REAL app-owned construction, not a fabrication.
+    if (method == "submit" && s188w3_executor_family && !args.empty()) {
+        uint32_t t_oid = 0;
+        std::string t_cls;
+        // Instance shape (receiver-shift law): args[0]=receiver
+        // (executor), args[1]=task. Bare static shape fallback:
+        // args[0]=task.
+        if (args.size() >= 2 &&
+            args[1].type == DalvikType::OBJECT_REF) {
+            t_oid = args[1].object_id;
+            t_cls = args[1].class_desc;
+        } else if (args[0].type == DalvikType::OBJECT_REF) {
+            t_oid = args[0].object_id;
+            t_cls = args[0].class_desc;
+        }
+        if (t_oid == 0 || !heap_.has_object(t_oid)) {
+            std::cerr << "[EXECUTOR][LAW-VIOLATION] submit(null task)"
+                      << " — AOSP throws NullPointerException"
+                      << std::endl;
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (t_cls.empty()) t_cls = "Ljava/lang/Object;";
+        DalvikValue task_self = DalvikValue::make_object(t_oid, t_cls);
+        DalvikValue call_ret;
+        DalvikExecutionResult call_res;
+        std::vector<DalvikValue> call_args{task_self};
+        // Callable.call first (submit(Callable) contract), then
+        // Runnable.run (submit(Runnable) returns Future<?>).
+        bool ran = try_recursive_invoke(t_cls, "call", call_args,
+                                        call_ret, call_res,
+                                        "()Ljava/lang/Object;");
+        const char* which = ran ? "call" : nullptr;
+        if (!ran) {
+            ran = try_recursive_invoke(t_cls, "run", call_args,
+                                       call_ret, call_res, "()V");
+            which = ran ? "run" : nullptr;
+        }
+        uint32_t box = heap_.allocate(
+            "Ljava/util/concurrent/Future;",
+            0, 0 /* pre-task pc/frame: minted by the bridge */);
+        if (box != 0) {
+            future_results_[box] = call_ret;
+            result = DalvikValue::make_object(
+                box, "Ljava/util/concurrent/Future;");
+        } else {
+            result = DalvikValue::make_null();
+        }
+        std::cerr << "[EXECUTOR] submit(" << t_cls << ") oid=" << t_oid
+                  << " → Future box=" << box << " ran="
+                  << (which ? which : "NO")
+                  << " ret_type=" << static_cast<int>(call_ret.type)
+                  << std::endl;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ── [S188-W3] FUTURE.get LAW ─────────────────────────────────
+    // Answer the stored result of a submit() box. Unknown box →
+    // honest loud gap + null (AOSP would block; a silent null hid
+    // this whole chain before the submit law existed).
+    if ((class_name == "Ljava/util/concurrent/Future;" ||
+         class_name == "Ljava/util/concurrent/FutureTask;") &&
+        method == "get") {
+        uint32_t box_oid = 0;
+        if (args.size() >= 1 &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            box_oid = args[0].object_id;  // receiver-shift shape:
+            // instance get() carries args[0]=receiver (the box);
+            // get(timeout,unit) carries args[1..] as parameters.
+        }
+        auto fr = future_results_.find(box_oid);
+        if (fr != future_results_.end()) {
+            result = fr->second;
+            std::cerr << "[FUTURE] get box=" << box_oid
+                      << " → stored result type="
+                      << static_cast<int>(fr->second.type) << std::endl;
+        } else {
+            std::cerr << "[FUTURE][LAW-GAP] get box=" << box_oid
+                      << " unknown/undone — answering null LOUDLY "
+                         "(AOSP blocks here)"
+                      << std::endl;
+            result = DalvikValue::make_null();
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (!provider_ctx366 &&
         try_shadow_dispatch(class_name, method, args, result, status)) {
             // ────────────────────────────────────────────────────────────
@@ -75848,6 +75956,41 @@ measure_cm_done:;
             }
             result = msg.empty() ? DalvikValue::make_null()
                                  : DalvikValue::make_string(msg, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── [S188-W3] THROWABLE.toString LAW (AOSP Throwable.java) ──────
+        // Flutter alley divergence (com.sidhant.queens console 748-756):
+        // after the native-load fallback chain, Flutter's init Callable
+        // calls UnsatisfiedLinkError.toString() to build its diagnostic
+        // ("...was not loaded normally, re-linking...") and then runs
+        // String.contains on the result. The generic tail stub answered
+        // NULL → String.contains on null → NPE INSIDE the exception
+        // handler → the caught UnsatisfiedLinkError became a NEW uncaught
+        // NPE → onCreate death. AOSP: toString() = class-dotted-name +
+        // (": " + message) when a message exists, else the name alone.
+        // NEVER null.
+        if (is_throwable_family && method == "toString") {
+            std::string dotted = class_name;
+            if (dotted.size() >= 2 && dotted.front() == 'L' &&
+                dotted.back() == ';') {
+                dotted = dotted.substr(1, dotted.size() - 2);
+                for (auto& ch : dotted)
+                    if (ch == '/') ch = '.';
+            }
+            std::string msg;
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                auto v = heap_.get_object_field(args[0].object_id, "message");
+                if (v.has_value() && v->type == DalvikType::STRING_REF &&
+                    !v->string_val.empty())
+                    msg = v->string_val;
+            }
+            std::string s = dotted + (msg.empty() ? "" : ": " + msg);
+            result = DalvikValue::make_string(s, 0);
+            std::cerr << "[THROWABLE-TOSTRING] " << s
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
