@@ -1,0 +1,93 @@
+[
+ {
+  "tag": "ts_w7c",
+  "status": "OK",
+  "dpkg": "tibarj.tranquilstopwatch",
+  "uncaught_inflight": 0,
+  "verdict": "Partial execution completed [F-NEW-200 stub-census: 10284 IMPLEMENTED, 1010 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGRO",
+  "f086_nextint_bound": 0,
+  "f086_nextint_range": 0,
+  "w7_trace_rows": [
+   [
+    "0",
+    "1",
+    "Lu3/a;.c"
+   ],
+   [
+    "0",
+    "1",
+    "Lu3/a;.c"
+   ]
+  ],
+  "w7_trace_count": 2,
+  "getinteger_rows": [
+   [
+    "7f09000e",
+    "5000",
+    ""
+   ],
+   [
+    "7f090009",
+    "0",
+    ""
+   ],
+   [
+    "7f09000e",
+    "5000",
+    ""
+   ],
+   [
+    "7f090010",
+    "10",
+    ""
+   ]
+  ],
+  "screenshot": "/home/z/my-project/evidence/s188_w7/runs/ts_w7c/screenshot.png",
+  "face": "face_ts_w7c.jpg",
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "tag": "ts_w7d",
+  "status": "OK",
+  "dpkg": "tibarj.tranquilstopwatch",
+  "uncaught_inflight": 0,
+  "verdict": "Partial execution completed [F-NEW-200 stub-census: 10284 IMPLEMENTED, 1010 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGRO",
+  "f086_nextint_bound": 0,
+  "f086_nextint_range": 0,
+  "w7_trace_rows": [],
+  "w7_trace_count": 0,
+  "getinteger_rows": [
+   [
+    "7f09000e",
+    "5000",
+    ""
+   ],
+   [
+    "7f090009",
+    "0",
+    ""
+   ],
+   [
+    "7f09000e",
+    "5000",
+    ""
+   ],
+   [
+    "7f090010",
+    "10",
+    ""
+   ]
+  ],
+  "screenshot": "/home/z/my-project/evidence/s188_w7/runs/ts_w7d/screenshot.png",
+  "face": "face_ts_w7d.jpg",
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "grad_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK"
+ }
+]

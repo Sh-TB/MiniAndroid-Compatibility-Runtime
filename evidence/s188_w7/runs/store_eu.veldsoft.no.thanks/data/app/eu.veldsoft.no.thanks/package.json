@@ -1,0 +1,18 @@
+{
+  "package": "eu.veldsoft.no.thanks",
+  "versionName": "1.00",
+  "versionCode": 1,
+  "mainActivity": "eu.veldsoft.no.thanks.SplashActivity",
+  "minSdk": "33",
+  "targetSdk": "33",
+  "requestedPermissions": [
+    "eu.veldsoft.no.thanks.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/eu.veldsoft.no.thanks/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w7/runs/store_eu.veldsoft.no.thanks/data/app/eu.veldsoft.no.thanks/base.apk",
+  "apkSha256": "0de8e6e045b3d8f6635270d1ba0cef65e5fb6db8815452f02bca4350b85ee244",
+  "apkSize": 19191974,
+  "installedAt": "2026-11-07T08:35:47Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

@@ -1,0 +1,56 @@
+{
+ "wave": "S188 W7",
+ "date": "2026-11-07",
+ "directive": "ادامه بر همان اصول — continue on the same principles (androguard ground truth + live evidence + honest tiers + goldens hold)",
+ "tool": "androguard 4.1.4 (pip) — DEX ground truth for the RNG singleton demux, MainActivity.w() arithmetic, DrawerLayout LP authority, styleable payload; OpenJDK jdk14u source for the ThreadLocalRandom contract",
+ "frontier_from_W6": [
+  "×3 f086-nextint-bound IAE \"(bound must be positive)\" from Lu3/a;.c pc=4 (ThreadLocalRandom bridge) — uncaught 3/run"
+ ],
+ "androguard_findings": {
+  "rng_singleton_demux": "Lt3/e; = kotlin.random.Random (abstract a(I)I/b()I, CONCRETE c(II)I with Kotlin 'Random range is empty' guard). <clinit> SDK demux: SDK_INT >= 34 → new Lt3/c; (platform random), else → new Lu3/a; stored in static Lt3/e;->a : Lt3/a; — our runtime reports SDK < 34 → the Lu3/a; singleton ALWAYS serves",
+  "u3a_override": "Lu3/a; extends Lt3/a; and OVERRIDES c(II)I → ThreadLocalRandom.current().nextInt(origin, bound) — static caller scan finds ZERO callers (virtual dispatch only; static scan sees only Lt3/e;->c callers = MainActivity.w()V ×2)",
+  "w_decode": "MainActivity.w()V (Kotlin ViewBinding, 127 ins): orientation branch (portrait → toolbar.getHeight(), landscape → toolbar.getWidth()); reads binding.h(LinearLayout).w/h + binding.a(LinearLayout).w/h; bound = Math.max(0, h.w - a.w - 2*tb) style clamps (both axes); two RNG calls t3/e.c(-X, X+1) (centered random offset); results → MarginLayoutParams.leftMargin/topMargin of binding.a; setLayoutParams. Callers: onStart()V, c4/x.onGlobalLayout, c4/v.onLayoutChange, c4/t.run (posted in onStart)",
+  "openjdk_contract": "jdk14u ThreadLocalRandom.java — :336 public nextInt(int origin, int bound): if (origin >= bound) throw new IllegalArgumentException(BAD_RANGE); return internalNextInt(origin, bound); :1050 BAD_BOUND = \"bound must be positive\" (single-arg only); :1051 BAD_RANGE = \"bound must be greater than origin\"; internalNextInt maps into [origin, bound) (power-of-two fast path + rejection sampling on r>>>1 + origin offset)",
+  "runtime_bug": "The F-086 bridge matched ANY nextInt with args.size() >= 2 and read args[1] as the SINGLE-ARG bound — for the two-arg form args[1] is the ORIGIN: nextInt(0, 1) threw \"bound must be positive\" (fingerprint f086-nextint-bound) exactly as W6 observed ×3/run",
+  "drawer_isDrawerView": "DrawerLayout.m(View)Z: check-cast LP → Lv0/d; (R8-renamed DrawerLayout.LayoutParams, super MarginLayoutParams) → Gravity.getAbsoluteGravity(lp.a /*gravity*/, dir) & 3 (LEFT) / & 5 (RIGHT); l(View)Z throws IAE \"View X is not a drawer\" when !m(child); openDrawer path throws \"No drawer view found with gravity RIGHT\" when findDrawerWithGravity misses",
+  "lp_ctor_inlined": "Lv0/d; declares ZERO ctors (R8 ctor-inlining): the gravity authority lives INLINE in DrawerLayout.generateLayoutParams(AttributeSet) — new Lv0/d; → MarginLayoutParams.(ctx,attrs) → iput a=0 → obtainStyledAttributes(attrs, E) → ta.getInt(0, 0) → iput a → recycle. Both the '$'-prefix LP net (class renamed) and the F-NEW-578 own-ctor scan (no ctors) miss this shape",
+  "styleable_authority": "DrawerLayout.E [I = {16842931 = 0x010100B3 = android:layout_gravity} (DrawerLayout.<clinit> filled-new-array literal 16842931, one slot; D [I = {0x010109F4} unused here)",
+  "layout_xml": "res/7s.xml: DrawerLayout(7F0800B0) > CoordinatorLayout(7F080118) + com.google.android.material.navigation.NavigationView(7F08015B, DIRECT child) — NavigationView carries android:layout_gravity=\"0x00800005\" = Gravity.END (8388613, the same literal decoded in DrawerLayout.g(View)I); app:menu=@7F0D0000"
+ },
+ "laws": [
+  {
+   "id": "F-NEW-582",
+   "file": "dalvik_engine.cpp (Random/ThreadLocalRandom/SecureRandom nextInt bridge)",
+   "statement": "Two-arg nextInt(origin, bound) per OpenJDK: origin >= bound → deferred IAE(\"bound must be greater than origin\", fingerprint f086-nextint-range); result mapped into [origin, bound) by internalNextInt (power-of-two fast path + rejection sampling on the low half, uint32 wraparound == Java int semantics). Single-arg nextInt(bound) law (F-086/F-113) untouched; deterministic xorshift stream untouched.",
+   "diag": "MINIANDROID_W7_TRACE=1 → [W7-TLR] nextInt(origin=.., bound=..) caller=.. (≤24 rows)"
+  },
+  {
+   "id": "F-NEW-583",
+   "file": "dalvik_engine.cpp generate_child_layout_params",
+   "statement": "R8 ctor-inlined LP authority: when the parent class declares generateLayoutParams(AttributeSet;LayoutParams) whose body news a MarginLayoutParams subclass (own ctor NOT required — the R8-inlined shape), the engine executes the parent's REAL DEX method on the REAL parent object (view id == heap oid) with the child's XML AttributeSetStore attrs; the returned object IS the child LP (gravity included); ROOT-055 semantic w/h write-back preserved; CONT-49 materialization stands as the honest fallback on any failure.",
+   "diag": "[F-NEW-583] ctor-inlined LP authority parent=.. lp=.. via REAL generateLayoutParams oN"
+  }
+ ],
+ "live_evidence_runs": {
+  "ts_w7c": {
+   "env": "MINIANDROID_W7_TRACE=1",
+   "w7_tlr_rows": ["nextInt(origin=0, bound=1) caller=Lu3/a;.c", "nextInt(origin=0, bound=1) caller=Lu3/a;.c"],
+   "note": "the zero-dim w() path lands exactly on c(0,1) ×2 (Math.max clamps → X=0 → nextInt(-0, 0+1)) — static decode confirmed live; W6 saw ×3 throws, the post-law run shape executes the RNG ×2 (one trigger's call shape differs with the advanced run state — recorded honestly)"
+  },
+  "ts_w7d": {
+   "env": "clean",
+   "f583_rows": ["parent=Landroidx/drawerlayout/widget/DrawerLayout; lp=Lv0/d; o814 (NavigationView)", "parent=Landroidx/drawerlayout/widget/DrawerLayout; lp=Lv0/d; o1232 (CoordinatorLayout)", "parent=Landroidx/appcompat/widget/Toolbar; lp=Lm/b3; o809", "parent=Landroidx/appcompat/widget/ActionBarOverlayLayout; lp=Lm/e; o1424/o1448"],
+   "click_battery": "EXP088 Phase-B dispatched 3 clicks (Lm/z 1455, ImageButton 807 → c4/w drawer toggle, CoordinatorLayout 708 → c4/w) — ZERO IllegalArgumentException rows in the full console (W6 binary: both drawer IAEs fired from these same clicks)"
+  }
+ },
+ "verification": {
+  "f086_nextint_bound_IAE": "3/run (ts_w6d) → 0 (ts_w7c, ts_w7d)",
+  "drawer_IAE": "2/run (post-F-NEW-582 peeling) → 0",
+  "uncaught_inflight": "3 (W6 residual) → 0 (both W7 runs)",
+  "tier": "FLAT_TWO_TONE_OR_BLANK (honest — app_draw_ops=0, DEFAULT_BACKGROUND_ONLY)",
+  "getInteger_live": "0x7F090010 → 10 (matches androground ARSC resolve '10'), 0x7F090009 → 0, 0x7F09000E → 5000",
+  "goldens": "bouncy 8a6c24ac8a7d718e + unote 3b8dcb0adbbc17a9 + dooz 31ddd4d5b8e6d18e — ALL byte-exact (binary 864d65fe7ebd8e3d)"
+ },
+ "scripts": ["scripts/s188_w7_androguard_nextint.py", "scripts/s188_w7_run.py", "scripts/s188_w7_battery.py"],
+ "next_frontier": "Tier unlock = the dimension/draw chain: w() now completes with margins 0 (zero-dim views → Math.max clamps → c(0,1) → margin 0±1) — AOSP-honest given the runtime's current measure state, but the clock face (ClockFragment/StopwatchFragment in FragmentContainerView) still answers app_draw_ops=0. Next wave: real measure/layout dimensions for the DrawerLayout▸CoordinatorLayout▸LinearLayout/Toolbar tree, then the first authoritative app content (B-tier candidate)."
+}

@@ -8065,3 +8065,76 @@ W1-stable face (script pin updated d602648e → 31ddd4d5, pre-W1 stale).
 Evidence: evidence/s188_w6/W6_LAWS.json + runs/ts_w6{pre,ft,a..d} + face JPG.
 Scripts: scripts/s188_w6_androguard_*.py. Next: W7 nextInt-bound dimension
 chain (MainActivity.w), then Phase-B FDT per-app record.
+
+## S188 W7 — two-arg nextInt contract law + R8 ctor-inlined LP gravity authority (2026-11-07)
+
+**User directive:** «ادامه بر همان اصول» — continue on the same principles.
+
+**androguard W7 ground truth (4.1.4):**
+- RNG singleton demux: `t3/e.<clinit>` (kotlin.random.Random) — SDK_INT ≥ 34
+  → `t3/c` (platform), else → `u3/a`; our runtime reports SDK < 34 → the
+  `Lu3/a;` singleton always serves. `Lu3/a;` OVERRIDES `t3/e.c(II)I` →
+  `ThreadLocalRandom.current().nextInt(origin, bound)`; static caller scan
+  finds ZERO callers (virtual dispatch only).
+- OpenJDK jdk14u ThreadLocalRandom.java:336 — two-arg check is
+  `origin >= bound → IAE(BAD_RANGE)`; BAD_RANGE = "bound must be greater
+  than origin" (:1051), BAD_BOUND = "bound must be positive" (:1050,
+  single-arg only). The runtime F-086 bridge read args[1] (the ORIGIN) as
+  the single-arg bound → nextInt(0, 1) threw "bound must be positive" —
+  exactly the W6 ×3 residual.
+- MainActivity.w()V decode (127 ins): orientation branch → toolbar h/w;
+  binding.h + binding.a LinearLayout w/h; `Math.max(0, …)` clamps; two
+  `t3/e.c(-X, X+1)` centered-offset calls → binding.a LP leftMargin/
+  topMargin. Callers: onStart, c4/x.onGlobalLayout, c4/v.onLayoutChange,
+  c4/t.run. Zero-dim path → c(0, 1) — legal once the bridge is contract-
+  exact (no pathological arithmetic needed; getInteger 0x7F090010 → 10
+  confirmed live, the divide-by-zero theory was dead).
+- DrawerLayout chain: `m(View)Z` = isDrawerView — check-cast LP → `Lv0/d;`
+  (R8-renamed DrawerLayout.LayoutParams) + Gravity.getAbsoluteGravity
+  (lp.a, dir) & {3,5}; `l(View)Z` throws "View X is not a drawer";
+  openDrawer throws "No drawer view found with gravity RIGHT".
+  **`Lv0/d;` declares ZERO ctors (R8 ctor-inlining)** — the gravity
+  authority lives INLINE in DrawerLayout.generateLayoutParams(AttributeSet)
+  (new → MarginLayoutParams.(ctx,attrs) → iput a=0 → obtainStyledAttributes
+  (attrs, E) → ta.getInt(0,0) → iput → recycle). Styleable authority:
+  DrawerLayout.E = {16842931 = 0x010100B3 = android:layout_gravity}.
+  res/7s.xml: NavigationView(7F08015B) is a DIRECT DrawerLayout child with
+  layout_gravity = 0x00800005 = Gravity.END (8388613 — the same literal in
+  DrawerLayout.g).
+
+**Laws (commit this wave):**
+- F-NEW-582 (nextInt bridge): two-arg nextInt(origin, bound) per OpenJDK —
+  origin ≥ bound → deferred IAE("bound must be greater than origin",
+  f086-nextint-range); internalNextInt mapping ([origin, bound), power-of-
+  two fast path + rejection sampling on r>>>1, uint32 wraparound == Java
+  int semantics). Single-arg F-086/F-113 law + deterministic xorshift
+  stream untouched. Diag: MINIANDROID_W7_TRACE=1 → [W7-TLR] rows.
+- F-NEW-583 (generate_child_layout_params): R8 ctor-inlined LP authority —
+  the parent's own REAL generateLayoutParams(AttributeSet) DEX body is
+  executed on the REAL parent object (view id == heap oid) with the
+  child's XML AttributeSetStore attrs; the returned object IS the child LP
+  (gravity included); ROOT-055 semantic w/h write-back preserved; CONT-49
+  materialization stands as the honest fallback. No-ctor requirement: the
+  candidate only needs super MarginLayoutParams.
+
+**Live evidence:** [W7-TLR] nextInt(origin=0, bound=1) caller=Lu3/a;.c ×2 —
+the zero-dim w() path lands exactly on c(0,1) (static decode confirmed).
+[F-NEW-583] served DrawerLayout→Lv0/d; (NavigationView o814 + CoordinatorLayout
+o1232), Toolbar→Lm/b3; (o809), ActionBarOverlayLayout→Lm/e; (o1424/o1448).
+EXP088 Phase-B click battery (3 clicks incl. the drawer toggle → c4/w)
+completed with ZERO IllegalArgumentException rows.
+
+**Result:** uncaught 3 → 0 (ts_w6d → ts_w7c/ts_w7d); f086-nextint-bound
+×3 → 0; drawer IAE ×2 → 0. Tier stays FLAT (honest, DEFAULT_BACKGROUND_ONLY)
+— the dimension/draw chain (app_draw_ops=0) is the next frontier; w() now
+completes with margins 0 (AOSP-honest for zero-dim views).
+
+**Goldens:** bouncy 8a6c24ac + unote 3b8dcb0a + dooz 31ddd4d5 byte-exact
+(binary 864d65fe7ebd8e3d). 11-title battery: BATTERY CLEAN — zero tier
+regressions (mines/memory/blackjack B anchors hold).
+
+Evidence: evidence/s188_w7/W7_LAWS.json + W7_RUNS.json + W7_BATTERY.json +
+runs/ts_w7{c,d}. Scripts: s188_w7_androguard_nextint.py, s188_w7_run.py,
+s188_w7_battery.py. Next: dimension chain (real measure/layout sizes for the
+DrawerLayout▸CoordinatorLayout tree) → first authoritative app content
+(tier unlock), then Phase-B FDT per-app record.

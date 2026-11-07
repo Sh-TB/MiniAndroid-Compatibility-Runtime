@@ -15327,6 +15327,153 @@ uint32_t DalvikExecutionEngine::generate_child_layout_params(
             });
         }
     }
+    // ── F-NEW-583 (S188 W7): R8 ctor-INLINED LP — execute the parent's
+    // REAL generateLayoutParams(AttributeSet) DEX body ───────────────────
+    // R8 can inline the LP subclass's (ctx,attrs) ctor into the parent's
+    // own generateLayoutParams body (tranquilstopwatch:
+    // DrawerLayout.LayoutParams → Lv0/d; declares ZERO ctors; the gravity
+    // authority — iput 0, obtainStyledAttributes(attrs, E),
+    // ta.getInt(0, 0), iput, recycle — lives in
+    // DrawerLayout.generateLayoutParams(AttributeSet) itself:
+    //   0 new-instance Lv0/d;   3 invoke-direct MarginLayoutParams.(ctx,attrs)
+    //   5 iput a=0              6-7 obtainStyledAttributes(attrs, E)
+    //   9 ta.getInt(0, 0)      11 iput a — E[0] = 0x010100B3
+    //   (android:layout_gravity, DrawerLayout.<clinit> filled-new-array
+    //   literal 16842931; XML: NavigationView layout_gravity = 0x00800005
+    //   = Gravity.END).
+    // Both the '$'-prefix net (class renamed) and the F-NEW-578 own-ctor
+    // scan (no ctors to find) miss → the CONT-49 materialized LP answers
+    // gravity = heap default 0 → DrawerLayout.m(View)
+    // (Gravity.getAbsoluteGravity(lp.a, dir) & {3,5} == 0) = false →
+    // "View NavigationView@811 is not a drawer" (l()) and openDrawer(END)
+    // "No drawer view found with gravity RIGHT" (findDrawerWithGravity)
+    // IAE ×2 past the app boundary — the W7 residual after F-NEW-582
+    // peeled the nextInt wall (EXP088 Phase-B click battery →
+    // c4/w.onClick → DrawerLayout open/close toggles).
+    // AOSP law: ViewGroup.generateLayoutParams(AttributeSet) IS the
+    // parent's binding site — the engine executes the real DEX method on
+    // the REAL parent object (view id == heap oid; the body only calls
+    // getContext(), which the node's constructor-captured Context serves)
+    // with the child's XML AttributeSet; the returned object IS the child
+    // LP (gravity included). No-ctor requirement: the candidate only needs
+    // super MarginLayoutParams — the ctor is inherited/inlined by design.
+    if (picked == nullptr) {
+        auto pit = class_info_index_.find(parent_cls);
+        if (pit != class_info_index_.end()) {
+            const dex::ClassInfo& pcls =
+                dex_report_->classes[pit->second];
+            // generateLayoutParams is PUBLIC → virtual_methods; scan BOTH
+            // method tables (the public AttributeSet overload lives with
+            // the virtual set).
+            const dex::MethodInfo* glp = nullptr;
+            const std::vector<dex::MethodInfo>* tables[2] = {
+                &pcls.direct_methods, &pcls.virtual_methods};
+            for (auto* table : tables) {
+                for (const auto& mm : *table) {
+                    if (mm.name == "generateLayoutParams" &&
+                        mm.descriptor ==
+                            "(Landroid/util/AttributeSet;)"
+                            "Landroid/view/ViewGroup$LayoutParams;") {
+                        glp = &mm;
+                        break;
+                    }
+                }
+                if (glp) break;
+            }
+            if (glp) {
+                // new-instance scan in the method body → LP candidate
+                const auto& bc = glp->bytecode;
+                std::string cand;
+                for (size_t i = 0; i + 1 < bc.size(); ++i) {
+                    if ((bc[i] & 0xFF) != 0x22) continue;  // new-instance
+                    uint32_t tidx = bc[i + 1];
+                    if (tidx >= dex_report_->types.size()) continue;
+                    const std::string& t = dex_report_->types[tidx];
+                    auto cit = class_info_index_.find(t);
+                    if (cit == class_info_index_.end()) continue;
+                    if (dex_report_->classes[cit->second].superclass_name ==
+                        kMarginLp) {
+                        cand = t;
+                        break;
+                    }
+                }
+                auto* view_shadow =
+                    shadow_registry_->find_as<framework::ViewShadow>();
+                auto* cnode =
+                    view_shadow ? view_shadow->find_node(child_view_id)
+                                : nullptr;
+                if (!cand.empty() && cnode && cnode->parent_id != 0) {
+                    uint32_t parent_obj = cnode->parent_id;
+                    if (heap_.has_object(parent_obj)) {
+                        uint32_t attrs_id = heap_.allocate(
+                            "Landroid/util/AttributeSet;", 0, 0);
+                        if (!xml_attrs.empty()) {
+                            resources::AttributeSetStore::instance().install(
+                                attrs_id, xml_attrs);
+                        }
+                        DalvikValue ret = DalvikValue::make_void();
+                        DalvikExecutionResult res;
+                        bool ok = try_recursive_invoke(
+                            parent_cls, "generateLayoutParams",
+                            {DalvikValue::make_object(parent_obj, parent_cls),
+                             DalvikValue::make_object(
+                                 attrs_id, "Landroid/util/AttributeSet;")},
+                            ret, res);
+                        if (ok && ret.type == DalvikType::OBJECT_REF &&
+                            ret.object_id != 0 &&
+                            heap_.has_object(ret.object_id)) {
+                            uint32_t lp_obj = ret.object_id;
+                            heap_.mark_initialized(lp_obj);
+                            // Semantic write-back (same contract as the
+                            // ctor path): the runtime's measure truth for
+                            // w/h stays the node's parsed layout_width/
+                            // height (ROOT-055 law preserved).
+                            heap_.set_object_field(
+                                lp_obj, "width",
+                                DalvikValue::make_int(cnode->width));
+                            heap_.set_object_field(
+                                lp_obj, "height",
+                                DalvikValue::make_int(cnode->height));
+                            if (cnode->lp_margin_left ||
+                                cnode->lp_margin_top ||
+                                cnode->lp_margin_right ||
+                                cnode->lp_margin_bottom) {
+                                heap_.set_object_field(
+                                    lp_obj, "leftMargin",
+                                    DalvikValue::make_int(
+                                        cnode->lp_margin_left));
+                                heap_.set_object_field(
+                                    lp_obj, "topMargin",
+                                    DalvikValue::make_int(
+                                        cnode->lp_margin_top));
+                                heap_.set_object_field(
+                                    lp_obj, "rightMargin",
+                                    DalvikValue::make_int(
+                                        cnode->lp_margin_right));
+                                heap_.set_object_field(
+                                    lp_obj, "bottomMargin",
+                                    DalvikValue::make_int(
+                                        cnode->lp_margin_bottom));
+                            }
+                            cnode->layout_params_object = lp_obj;
+                            cnode->layout_params_class = cand;
+                            static thread_local int f583_n = 0;
+                            if (f583_n < 8) {
+                                ++f583_n;
+                                std::cerr << "[F-NEW-583] ctor-inlined LP"
+                                          << " authority parent="
+                                          << parent_cls << " lp=" << cand
+                                          << " via REAL generateLayoutParams"
+                                          << " o" << lp_obj << std::endl;
+                            }
+                            return lp_obj;
+                        }
+                        // ok == false → honest fallback: CONT-49 stands
+                    }
+                }
+            }
+        }
+    }
     // ── CONT-49 FIELD-DEFAULT LAW (generic, no app knowledge) ───────────
     // R8 horizontal class merging can strip every ctor from the LP
     // subclass (opencalc 53: LA/e = ConstraintLayout.LayoutParams merged
@@ -52801,7 +52948,71 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             rng_state = x;
             return x;
         };
-        if (args.size() >= 2 && args[1].type == DalvikType::INT32) {
+        if (args.size() >= 3 && args[1].type == DalvikType::INT32 &&
+            args[2].type == DalvikType::INT32) {
+            // ────────────────────────────────────────────────────────────
+            // W7 (F-NEW-582) — the TWO-ARG form is nextInt(origin, bound),
+            // NOT nextInt(bound). OpenJDK ThreadLocalRandom.java:
+            //   public int nextInt(int origin, int bound) {
+            //       if (origin >= bound)
+            //           throw new IllegalArgumentException(BAD_RANGE);
+            //       return internalNextInt(origin, bound); }
+            //   static final String BAD_RANGE =
+            //       "bound must be greater than origin";   (:1051, jdk14u)
+            //   static final String BAD_BOUND = "bound must be positive";
+            // Pre-fix the bridge fell into the single-arg branch with
+            // args[1] = ORIGIN read as the bound: nextInt(0, 1) threw
+            // "bound must be positive" (fingerprint f086-nextint-bound)
+            // and any call with a positive origin answered a value in
+            // [0, origin) instead of [origin, bound).
+            // tibarj.tranquilstopwatch: MainActivity.w()V → kotlin.random
+            // singleton (t3/e.<clinit> SDK demux: SDK < 34 → Lu3/a;)
+            // → Lu3/a;.c(II)I overrides t3/e.c(II)I →
+            // ThreadLocalRandom.current().nextInt(origin, bound) with
+            // origin = -scaled, bound = scaled+1 → the negative/mixed
+            // origin form that the old branch could never serve.
+            // Determinism law unchanged: same fixed-seed xorshift stream.
+            // ────────────────────────────────────────────────────────────
+            static int w7_rows = 0;
+            int32_t origin = args[1].int_val;
+            int32_t bound = args[2].int_val;
+            if (diag_env("MINIANDROID_W7_TRACE") && w7_rows++ < 24) {
+                std::cerr << "[W7-TLR] nextInt(origin=" << origin
+                          << ", bound=" << bound << ") caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+            }
+            if (origin >= bound) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "bound must be greater than origin",
+                               "f086-nextint-range");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(0);
+                return true;
+            }
+            // internalNextInt (OpenJDK): origin < bound ⇒ n = bound-origin
+            // is always > 0 for the int form (the n <= 0 wrap branch exists
+            // only for nextLong overflow shapes).
+            uint32_t r = next_u32();
+            int32_t n = bound - origin, m = n - 1;
+            if ((n & m) == 0) {
+                // power of two: (r & m) + origin with int wraparound
+                r = (r & (uint32_t)m) + (uint32_t)origin;
+            } else {
+                // OpenJDK rejection sampling on the low half:
+                // for (int u = r >>> 1; u + m - (r = u % n) < 0;
+                //      u = mix32(nextSeed()) >>> 1) ;
+                // r = (r & m) + origin — then r += origin.
+                int32_t u = (int32_t)(r >> 1);
+                int32_t rr = u % n;
+                while (u + m - rr < 0) {
+                    u = (int32_t)(next_u32() >> 1);
+                    rr = u % n;
+                }
+                r = (uint32_t)rr + (uint32_t)origin;
+            }
+            result = DalvikValue::make_int((int32_t)r);
+        } else if (args.size() >= 2 && args[1].type == DalvikType::INT32) {
             int32_t bound = args[1].int_val;
             if (bound <= 0) {
                 throw_deferred("Ljava/lang/IllegalArgumentException;",
