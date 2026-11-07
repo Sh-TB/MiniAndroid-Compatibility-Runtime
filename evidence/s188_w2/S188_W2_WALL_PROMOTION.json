@@ -1,0 +1,74 @@
+{
+  "wave": "S188-W2 wall promotion",
+  "date": "2026-11-07",
+  "directive": "ادامه بر همان اصول (continue on the same principles) — androguard probe + first FLAT→B wall removal",
+  "androguard_version": "4.1.4",
+  "androguard_tool": "miniandroid/tools/s188_androguard_probe.py",
+  "androguard_findings": {
+    "com.sidhant.queens": {
+      "dex_count": 1,
+      "route_from_androguard": ["FLUTTER"],
+      "dex_class_prefix_hits": {"io/flutter": 90},
+      "key_evidence": "Lio/flutter/embedding/engine/FlutterJNI;-><init>()V contains new-instance Ljava/util/concurrent/CopyOnWriteArraySet; x3 + ReentrantReadWriteLock + Looper.getMainLooper — confirmed by full bytecode dump",
+      "cowset_refs": ["Ljava/util/concurrent/CopyOnWriteArrayList;", "Ljava/util/concurrent/CopyOnWriteArraySet;"]
+    },
+    "com.simondalvai.ball2box": {
+      "route_from_androguard": ["GODOT"],
+      "dex_class_prefix_hits": {"godotengine": 123},
+      "main_activity": "com.godot.game.GodotApp",
+      "key_evidence": "Godot.onCreate -> Fragment.onCreate; GodotPluginRegistry.initializePluginRegistry; java.lang.Enum string present (reflection)"
+    },
+    "tibarj.tranquilstopwatch": {
+      "route_from_androguard": ["VIEW"],
+      "key_evidence": "MainActivity.onCreate holds ViewBinding (Ld4/c;) with LinearLayout/DrawerLayout/FragmentContainerView x2/CoordinatorLayout/ImageButton/NavigationView/LinearLayout/Toolbar; calls NavigationView.setNavigationItemSelectedListener"
+    },
+    "com.justdeax.composeStopwatch": {
+      "route_from_androguard": ["COMPOSE"],
+      "main_activity": "com.justdeax.composeStopwatch.AppActivity",
+      "key_evidence": "Lah0;.<clinit> reflectively loadClass(\"androidx.compose.ui.platform.AndroidCompositionLocals_androidKt\").getMethod(\"getLocalSavedStateRegistryOwner\") — CNFE caught by Kotlin Result on real device; only 3 compose class names in dex (R8-minified, META-INF *.version files confirm compose libs)"
+    }
+  },
+  "wall_promotion": {
+    "com.sidhant.queens": {
+      "before": "UnsatisfiedLinkError (dlopen undefined symbol eglGetCurrentDisplay) — engine lib never loaded",
+      "walls_removed": [
+        "EGL surface: libEGL.so anchor 1 symbol -> 22 (full egl* face: token state machine + eglGetProcAddress->dlsym(RTLD_DEFAULT) + exe C-ABI hooks __ma_egl_surface_size/__ma_egl_make_current/__ma_egl_frame_present)",
+        "GLESv2 surface: libGLESv2.so anchor exports the 15 gl* symbols the exe's PortableGL surface does not (bind-only, bindAttribLocation record, spec-precision constants, tex-name tracking)",
+        "bionic property surface: __system_property_get/__system_property_find in libc.so anchor (Android 15 / n=35 runtime identity, unknown key -> length 0)",
+        "FORTIFY _chk family: __fwrite_chk/__memcpy_chk/__memmove_chk/__poll_chk/__pread_chk/__read_chk/__readlink_chk/__write_chk/__open_2/__openat_2/__gnu_strerror_r (bounds-checked forwards, overflow aborts)",
+        "libandroid anchor: AAsset_getBuffer/getLength/isAllocated + ANativeWindow_getFormat + REAL epoll-backed ALooper (prepare/acquire/release/forThread/addFd/removeFd/pollOnce/wake, eventfd wake — Android's own design)"
+      ],
+      "after": "libflutter.so (13MB x86_64) dlopen OK + JNI_OnLoad 0x10004 + 42/42 FlutterJNI natives RegisterNatives'd + nativeInit/nativeAttach/nativeRunBundleAndSnapshotFromLibrary REALLY CALLED into libflutter C++",
+      "next_wall": "minimal JNIEnv slot coverage — Flutter native side calls JNI functions outside the strings/exceptions/VM/registration subset (GetJavaVM, global refs, object calls); 6 UNSUPPORTED-slot hits in 15s run; Dart VM never starts -> screenshot still FLAT (honest)"
+    },
+    "tibarj.tranquilstopwatch": {
+      "before": "NPE FragmentContainerView.<init> (uncaught, APP-BOUNDARY)",
+      "after": "ZERO uncaught exceptions; verdict NO_ROOT -> DEFAULT_BACKGROUND_ONLY (window root exists)",
+      "next_wall": "APP_DRAW_OPS — fragment content never inflates (app draw ops missing from frame)"
+    },
+    "com.justdeax.composeStopwatch": {
+      "before": "CNFE AndroidCompositionLocals_androidKt (clinit reflection) uncaught",
+      "after": "no uncaught exceptions (60483 IMPLEMENTED calls); verdict NO_ROOT -> DEFAULT_BACKGROUND_ONLY",
+      "next_wall": "APP_DRAW_OPS + one handled XmlPullParserException in Lh4;.onMeasure"
+    },
+    "com.simondalvai.ball2box": {
+      "before": "Enum reflection wall + libgodot load path unexplored",
+      "after": "GodotApp.onCreate chain runs clean (4057 IMPLEMENTED calls, 0 uncaught); verdict DEFAULT_BACKGROUND_ONLY",
+      "next_wall": "APP_DRAW_OPS — Godot engine init never reaches libgodot load in 20s window"
+    }
+  },
+  "generic_platform_laws_added": [
+    "Context.createPackageContext single-package law (dalvik_engine.cpp): own-package name returns the receiver context; foreign name throws NameNotFoundException. Root cause fixed: FlutterEngine ctor (Lh0/c;.<init> pc=44) createPackageContext->getAssets NPE (queens first divergence face)",
+    "exe C-ABI hook family in ma_native_bridge.cpp: __ma_egl_surface_size/__ma_egl_make_current/__ma_egl_frame_present/__ma_pgl_frame_end (weak-linked from anchors, degrade to recorded state)"
+  ],
+  "regression_proof": {
+    "user_golden_pixel_gate": "4/4 PASS (2048 REAL_APP_CONTENT colors=899; snakedeluxe colors=1550; minicraft colors=2614; helloworld canonical sha=83720c1028f832d0)",
+    "w2_b_anchor_spot_check": "mines 299 colors structured render holds"
+  },
+  "artifacts": {
+    "anchors": ["miniandroid/build/anchor_libs/libEGL.so", "miniandroid/build/anchor_libs/libGLESv2.so", "miniandroid/build/anchor_libs/libandroid.so", "miniandroid/build/anchor_libs/libc.so"],
+    "anchor_sources": ["scripts/cont83_egl_anchor.c", "scripts/cont83_glesv2_anchor.c", "scripts/cont83_android_anchor.c", "miniandroid/src/jni/bionic_compat.c"],
+    "probe_output": "evidence/s188_w2/androguard/PROBE_FINDINGS.json",
+    "console_logs": ["/tmp/q_console5.log (queens load success)", "/tmp/c_tibarj.tranquilstopwatch.log", "/tmp/c_com.justdeax.composeStopwatch.log", "/tmp/c_ball2box.log"]
+  }
+}
