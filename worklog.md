@@ -7929,3 +7929,19 @@ W2 11-title battery re-run: 3 B anchors stable, zero new regressions.
 
 **Tracker:** #559 W3 comment posted. Next: deferred-exception clearing law
 (Flutter trio), NavigationView ctor NPE (tranquilstopwatch/solitaire).
+
+## S188 W4 — inner-class capture + Observable invariant laws (2026-11-07)
+
+**Two laws landed (commit 73a1a405):**
+- INNER-CLASS INITIALIZER CAPTURE: F274 gate extension — initializer type
+  with only <init>(Ldeclaring;)V runs the REAL DEX ctor with the receiver as
+  outer this (Material RecyclerViewAccessibilityDelegate l1/m1 chain).
+- FRAMEWORK OBSERVABLE INVARIANT: Observable.mObservers never null (AOSP
+  field-initializer invariant; framework superclass has no DEX body).
+
+**Effect:** tranquilstopwatch NavigationView chain passed 3 death walls;
+tier still FLAT (honest). NEXT WALL: FragmentContainerView <fragment>
+inflation — b1/t0.A reads Lb0/k;.a on null Fragment (FragmentFactory gap).
+
+**Regression:** goldens byte-exact (bouncy/unote); dooz uncaught 6→0;
+B anchors hold. Tracker #559 W4 comment posted.
