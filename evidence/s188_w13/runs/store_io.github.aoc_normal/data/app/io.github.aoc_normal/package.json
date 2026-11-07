@@ -1,0 +1,18 @@
+{
+  "package": "io.github.aoc_normal",
+  "versionName": "1.0",
+  "versionCode": 1,
+  "mainActivity": "com.raiden.aoc_normal.MainActivity",
+  "minSdk": "21",
+  "targetSdk": "33",
+  "requestedPermissions": [
+    "io.github.aoc_normal.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/io.github.aoc_normal/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_io.github.aoc_normal/data/app/io.github.aoc_normal/base.apk",
+  "apkSha256": "7d049e2276f0c1ae46775e1d8cc897fb57e700c64e071cf843198e9532d9a0dc",
+  "apkSize": 4453163,
+  "installedAt": "2026-11-07T20:31:34Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

@@ -1,0 +1,16 @@
+{
+  "package": "com.simondalvai.ball2box",
+  "versionName": "4.1.9",
+  "versionCode": 69,
+  "mainActivity": "com.godot.game.GodotApp",
+  "minSdk": "19",
+  "targetSdk": "34",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/com.simondalvai.ball2box/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_com.simondalvai.ball2box/data/app/com.simondalvai.ball2box/base.apk",
+  "apkSha256": "aef33b17a0ae3c90cd3f73c19ab280b8ef34debe602066b55fa1aebab0de316a",
+  "apkSize": 46623765,
+  "installedAt": "2026-11-07T20:30:40Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

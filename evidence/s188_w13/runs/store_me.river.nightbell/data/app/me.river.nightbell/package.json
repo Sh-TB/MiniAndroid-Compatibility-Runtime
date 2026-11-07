@@ -1,0 +1,31 @@
+{
+  "package": "me.river.nightbell",
+  "versionName": "3.19.0",
+  "versionCode": 48,
+  "mainActivity": "me.river.nightbell.MainActivity",
+  "minSdk": "26",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.VIBRATE",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.WAKE_LOCK",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.REQUEST_INSTALL_PACKAGES",
+    "android.permission.USE_FULL_SCREEN_INTENT",
+    "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+    "android.permission.ACCESS_NOTIFICATION_POLICY",
+    "android.permission.POST_PROMOTED_NOTIFICATIONS",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+    "me.river.nightbell.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/me.river.nightbell/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_me.river.nightbell/data/app/me.river.nightbell/base.apk",
+  "apkSha256": "c519cf471d2d015544970ccb4fe58ef06e6c3848dc71df7bd79b57205f9871cf",
+  "apkSize": 2782204,
+  "installedAt": "2026-11-07T20:42:03Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

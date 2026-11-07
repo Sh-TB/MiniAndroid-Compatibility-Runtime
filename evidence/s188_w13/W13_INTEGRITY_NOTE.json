@@ -1,0 +1,149 @@
+{
+ "note": "sandbox freeze/restore re-executed some run_one sequences; in-memory counts were transient. All fields recomputed from current physical artifacts (logs + PNGs). quinb=1 matches W12 exactly; every other title shows 0 fatal marks.",
+ "recompute_diffs": [
+  {
+   "pkg": "com.justdeax.composeStopwatch",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "tibarj.tranquilstopwatch",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "com.qwde.ccm",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "eu.quelltext.memory",
+   "diffs": {
+    "effective_tier": "None -> B_STRUCTURED"
+   }
+  },
+  {
+   "pkg": "cos.premy.mines",
+   "diffs": {
+    "effective_tier": "None -> B_STRUCTURED"
+   }
+  },
+  {
+   "pkg": "eu.veldsoft.no.thanks",
+   "diffs": {
+    "effective_tier": "None -> B_STRUCTURED"
+   }
+  },
+  {
+   "pkg": "com.sidhant.queens",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "com.simondalvai.ball2box",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "xyz.deepdaikon.quinb",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "org.secuso.privacyfriendlybattleship",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "crypto.o0o0o0o0o.games.blackjack",
+   "diffs": {
+    "effective_tier": "None -> B_STRUCTURED"
+   }
+  },
+  {
+   "pkg": "app.halma",
+   "diffs": {
+    "effective_tier": "None -> NOISE_STATIC_SURFACE"
+   }
+  },
+  {
+   "pkg": "com.astroloop.game",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "com.jeffliu.balancetheball",
+   "diffs": {
+    "effective_tier": "None -> B_STRUCTURED"
+   }
+  },
+  {
+   "pkg": "com.rocket9labs.boxcars",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "com.vayunmathur.games.solitaire",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "com.vovagorodok.blichess",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "de.tobiasbielefeld.solitaire",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "io.github.aoc_normal",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "io.github.hathibelagal.mykanji",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "me.river.nightbell",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "page.codeberg.lanticy.guandan",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  },
+  {
+   "pkg": "se.tube42.p9.android",
+   "diffs": {
+    "effective_tier": "None -> NOISE_STATIC_SURFACE"
+   }
+  },
+  {
+   "pkg": "si.palcka.tarok",
+   "diffs": {
+    "effective_tier": "None -> FLAT_TWO_TONE_OR_BLANK"
+   }
+  }
+ ]
+}

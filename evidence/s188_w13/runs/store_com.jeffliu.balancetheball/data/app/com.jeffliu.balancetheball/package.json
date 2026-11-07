@@ -1,0 +1,16 @@
+{
+  "package": "com.jeffliu.balancetheball",
+  "versionName": "1.1.0",
+  "versionCode": 4,
+  "mainActivity": "com.jeffliu.balancetheball.GameActivity",
+  "minSdk": "14",
+  "targetSdk": "30",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/com.jeffliu.balancetheball/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_com.jeffliu.balancetheball/data/app/com.jeffliu.balancetheball/base.apk",
+  "apkSha256": "6180534b151e4d50365b21483f3719e32f207a42675dee20227de449c875c1e2",
+  "apkSize": 42170,
+  "installedAt": "2026-11-07T20:31:03Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

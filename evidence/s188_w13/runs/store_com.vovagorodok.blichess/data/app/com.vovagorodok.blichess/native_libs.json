@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.vovagorodok.blichess/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libc++_shared.so", "size": 1252080},
+    {"entry": "lib/x86_64/libstockfish-variants.so", "size": 668248}
+  ],
+  "count": 2
+}

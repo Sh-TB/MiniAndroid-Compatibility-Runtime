@@ -1,0 +1,13 @@
+{
+  "primaryAbi": "arm64-v8a",
+  "nativeLibraryDir": "/data/app/si.palcka.tarok/lib/arm64-v8a",
+  "extracted": [
+    {"entry": "lib/arm64-v8a/libapp.so", "size": 8717216},
+    {"entry": "lib/arm64-v8a/libdatastore_shared_counter.so", "size": 7112},
+    {"entry": "lib/arm64-v8a/libflutter.so", "size": 10942424},
+    {"entry": "lib/arm64-v8a/libmedia_kit_native_event_loop.so", "size": 581920},
+    {"entry": "lib/arm64-v8a/libmediakitandroidhelper.so", "size": 357448},
+    {"entry": "lib/arm64-v8a/libmpv.so", "size": 5039288}
+  ],
+  "count": 6
+}

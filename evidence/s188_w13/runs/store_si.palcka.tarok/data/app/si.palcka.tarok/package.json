@@ -1,0 +1,19 @@
+{
+  "package": "si.palcka.tarok",
+  "versionName": "1.0.7",
+  "versionCode": 203,
+  "mainActivity": "si.palcka.tarok.MainActivity",
+  "minSdk": "21",
+  "targetSdk": "35",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "si.palcka.tarok.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/si.palcka.tarok/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_si.palcka.tarok/data/app/si.palcka.tarok/base.apk",
+  "apkSha256": "f956d84eb4801d3779adc5f5c36775c11bc2ac7d37d4f3264412f1e978f0aa15",
+  "apkSize": 14618591,
+  "installedAt": "2026-11-07T20:42:26Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

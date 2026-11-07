@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/page.codeberg.lanticy.guandan/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libandroidx.graphics.path.so", "size": 10760}
+  ],
+  "count": 1
+}

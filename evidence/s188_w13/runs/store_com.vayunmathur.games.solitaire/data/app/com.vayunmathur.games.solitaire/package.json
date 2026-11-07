@@ -1,0 +1,18 @@
+{
+  "package": "com.vayunmathur.games.solitaire",
+  "versionName": "v2.6.5",
+  "versionCode": 20260804,
+  "mainActivity": "com.vayunmathur.games.solitaire.MainActivity",
+  "minSdk": "31",
+  "targetSdk": "37",
+  "requestedPermissions": [
+    "com.vayunmathur.games.solitaire.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.vayunmathur.games.solitaire/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_com.vayunmathur.games.solitaire/data/app/com.vayunmathur.games.solitaire/base.apk",
+  "apkSha256": "e87536851b7e9edcea2a5ee8e404bd88e6fea1cf32b15ad4f7b50952d1c0c2e6",
+  "apkSize": 3202441,
+  "installedAt": "2026-11-07T20:31:08Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

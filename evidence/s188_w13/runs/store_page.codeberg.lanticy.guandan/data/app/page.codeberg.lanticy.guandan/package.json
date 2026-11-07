@@ -1,0 +1,24 @@
+{
+  "package": "page.codeberg.lanticy.guandan",
+  "versionName": "1.2.2",
+  "versionCode": 7,
+  "mainActivity": "page.codeberg.lanticy.guandan.MainActivity",
+  "minSdk": "26",
+  "targetSdk": "35",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.ACCESS_WIFI_STATE",
+    "android.permission.CHANGE_WIFI_MULTICAST_STATE",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE",
+    "page.codeberg.lanticy.guandan.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/page.codeberg.lanticy.guandan/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_page.codeberg.lanticy.guandan/data/app/page.codeberg.lanticy.guandan/base.apk",
+  "apkSha256": "ccc74b5948154e7f53b5c6eddaef1640afc229fb02f71778da7992a658be7021",
+  "apkSize": 1584455,
+  "installedAt": "2026-11-07T20:42:14Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

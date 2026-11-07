@@ -1,0 +1,18 @@
+{
+  "package": "io.github.hathibelagal.mykanji",
+  "versionName": "1.6",
+  "versionCode": 7,
+  "mainActivity": "io.github.hathibelagal.mykanji.MainActivity",
+  "minSdk": "21",
+  "targetSdk": "35",
+  "requestedPermissions": [
+    "io.github.hathibelagal.mykanji.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/io.github.hathibelagal.mykanji/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_io.github.hathibelagal.mykanji/data/app/io.github.hathibelagal.mykanji/base.apk",
+  "apkSha256": "b20274a0885d03ba6947f82975c90e8415a4174dded8409e4798f92cb3a763a1",
+  "apkSize": 14830416,
+  "installedAt": "2026-11-07T20:31:39Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

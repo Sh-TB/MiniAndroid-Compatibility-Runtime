@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "arm64-v8a",
+  "nativeLibraryDir": "/data/app/com.vayunmathur.games.solitaire/lib/arm64-v8a",
+  "extracted": [
+    {"entry": "lib/arm64-v8a/libandroidx.graphics.path.so", "size": 10096},
+    {"entry": "lib/arm64-v8a/libdatastore_shared_counter.so", "size": 7784}
+  ],
+  "count": 2
+}

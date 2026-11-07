@@ -8211,3 +8211,42 @@ DrawerLayout▸CoordinatorLayout tree) → first authoritative app content
 **Regression:** goldens ALL HOLD twice this wave (bouncy 8a6c24ac + unote 3b8dcb0a + dooz 31ddd4d5 — on 14af98b14cacfaf4 and re-verified on the final f0147af42ed9e7ba); W12 battery CLEAN (11/11, zero tier drops); route matrix 11/11 with ROUTE_VIOLATION=0. Evidence: evidence/s188_w12/{W12A_F596_ARENA_LIFETIME,W12B_F598_HEIGHT_SPLIT,W12C_GODOT_CHAIN,W12_T1_THROW_PROBE,W12_T2_ANDROGUARD_RUNBUNDLE,W12_T7_ANDROGUARD_TS_MEASURE,W12_T8_F598_BJ_DIAG,W12_T9_MCM_RETRIAL,W12_T16_GODOT_RUN,W12_BATTERY,W12_ROUTE_MATRIX}.json + w12_*.console.log. Scripts: w12_new_probe.c, s188_w12_throw_probe_run.py, s188_w12_androguard_runbundle.py, s188_w12_androguard_ts_measure.py, s188_w12_mcm_runs.py, s188_w12_f598_bj.py, s188_w12_ball2box_run.py, s188_w12_battery.py.
 
 **Next:** (1) the androidx FragmentManager.dispatchStateChange face → GodotLib.initialize (the Godot native bootstrap via the S2-NATIVE lane); (2) the ts app-content paint (theme-attr backgrounds + fragment onDraw → APP_DRAW_OPS); (3) the Dart isolate snapshot pair (queens old _kDartSnapshotData/_kDartSnapshotText — wait for the attributable engine-side failure first); (4) the draw-walk kept_prior_frame/budget provenance audit.
+
+## S188-W13 — 24-title loading-progress battery (2026-11-07)
+
+Directive: "test at least 20 apps and games, check loading progress."
+
+- Battery: 24 titles (11 regression-floor + 13 fresh) on binary
+  031ce03d54ff57b1. All 24 reached S6_SETTLED_FACE_TIERED.
+- ROUTE_VIOLATION=0 across all 24; 0 regressions vs W12 floors.
+- Goldens re-verified byte-exact before the battery: bouncy 8a6c24ac,
+  unote 3b8dcb0a, dooz 31ddd4d5 — ALL HOLD.
+- Effective tiers (visual-verdict gated): B_STRUCTURED=5, FLAT=17,
+  NOISE_STATIC_SURFACE=2. New honesty gate: center-64x64 patch color
+  count >=100 => NOISE_NOT_UI (caught 2 metric-A_RICH false positives:
+  app.halma, se.tube42.p9.android — TV-snow, surface allocated, UI not
+  drawn).
+- Fresh title highlight: com.jeffliu.balancetheball renders real UI on
+  FIRST run (instruction text + ball + "Tap to reset"), uncaught=0,
+  B_STRUCTURED.
+- Chain findings (next blockers, no shim until contract pinned):
+  1. si.palcka.tarok (FLUTTER): snapshot Bundle keys resolved, JNI
+     loadLibrary executed, libflutter.so extracted (10.9MB) but dlopen
+     cannot open it at the mapped codePath path -> extraction-to-dlopen
+     path contract missing.
+  2. app.halma (LIBGDX): FIRST libgdx.so native load OK
+     (sha16=2e9dc948aab382e5); GLSurfaceView20 init OK; GL draw contract
+     missing (surface = noise).
+  3. se.tube42.p9.android (LIBGDX): exact symbol gap — undefined symbol
+     glCopyTexImage2D in libgdx.so dlopen.
+- Data-integrity incident, resolved honestly: sandbox freeze/restore
+  re-executed some run_one sequences mid-battery; in-memory fatal_marks
+  were transient. All fields recomputed from current physical artifacts
+  (logs+PNGs) in s188_w13_reconcile.py; apples-to-apples vs W12: quinb=1
+  matches exactly, all other floor titles 0, frames-log fatal marks
+  byte-identical to W12 frames logs (composeStopwatch 3x UEH, quinb 2x
+  VM check) — deeper counting, not new behavior.
+- Sandbox recycle killed the background battery once; incremental
+  W13_BATTERY.partial.json made the resume lossless (4 titles re-run).
+- Evidence: evidence/s188_w13/{W13_BATTERY.json, W13_LOADING_PROGRESS.json,
+  W13_INTEGRITY_NOTE.json, battery.console.log, 24 face_*.jpg, runs/}

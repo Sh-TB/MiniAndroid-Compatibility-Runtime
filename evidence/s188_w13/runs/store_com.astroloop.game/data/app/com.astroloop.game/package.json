@@ -1,0 +1,19 @@
+{
+  "package": "com.astroloop.game",
+  "versionName": "1.5",
+  "versionCode": 6,
+  "mainActivity": "com.astroloop.game.MainActivity",
+  "minSdk": "24",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.VIBRATE",
+    "com.astroloop.game.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.astroloop.game/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_com.astroloop.game/data/app/com.astroloop.game/base.apk",
+  "apkSha256": "79aa83482f64f7ae0bc245aa3550bc0e231fecdc046cb783b818917e418f6cf7",
+  "apkSize": 52950747,
+  "installedAt": "2026-11-07T20:31:00Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

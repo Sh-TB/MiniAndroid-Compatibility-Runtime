@@ -1,0 +1,18 @@
+{
+  "package": "com.rocket9labs.boxcars",
+  "versionName": "1.4.9",
+  "versionCode": 104090,
+  "mainActivity": "com.rocket9labs.boxcars.MainActivity",
+  "minSdk": "21",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.INTERNET"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.rocket9labs.boxcars/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_com.rocket9labs.boxcars/data/app/com.rocket9labs.boxcars/base.apk",
+  "apkSha256": "11d97ae669d97e893026ac5fc5449fe4476f5ac7363bf8bda2ef0f79fde3ac6f",
+  "apkSize": 30886503,
+  "installedAt": "2026-11-07T20:31:04Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

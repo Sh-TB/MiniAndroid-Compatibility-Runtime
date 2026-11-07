@@ -1,0 +1,542 @@
+{
+ "summary": {
+  "directive": "test >=20 apps/games, check loading progress",
+  "titles_run": 24,
+  "stage_s6": 24,
+  "route_violations": 0,
+  "regressions": 0,
+  "effective_tiers": {
+   "B_STRUCTURED": 5,
+   "NOISE_STATIC_SURFACE": 2,
+   "FLAT_TWO_TONE_OR_BLANK": 17
+  },
+  "known_titles_state": "NO_CHANGE (all 11; frames-log fatal marks are byte-identical to W12 frames logs \u2014 deeper counting, not new behavior)",
+  "fresh_strongest": "com.jeffliu.balancetheball \u2014 first run, real B_STRUCTURED UI (instruction text + ball + tap-to-reset), uncaught=0",
+  "noise_honesty": "app.halma & se.tube42.p9.android: metric A_RICH was TV-snow noise on visual inspection; demoted to NOISE_STATIC_SURFACE (surface allocated, UI not drawn)",
+  "regression_law": "0 drops on the 11 W12 floors",
+  "chain_findings": "tarok=PARTIAL_CHAIN (flutter java embedding + snapshot keys OK; dlopen path contract missing), halma=PARTIAL_CHAIN (first libgdx.so native load OK; GL draw contract missing), p9=PARTIAL_CHAIN (exact GLES symbol gap: glCopyTexImage2D)"
+ },
+ "titles": [
+  {
+   "pkg": "com.justdeax.composeStopwatch",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "COMPOSE",
+   "subsystems": [
+    "compose",
+    "dalvik"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 3,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "FLAT_TWO_TONE_OR_BLANK",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "tibarj.tranquilstopwatch",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "VIEW",
+   "subsystems": [
+    "compose",
+    "dalvik"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "FLAT_TWO_TONE_OR_BLANK",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "com.qwde.ccm",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "GODOT",
+   "subsystems": [
+    "compose",
+    "godot"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "FLAT_TWO_TONE_OR_BLANK",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "eu.quelltext.memory",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "WEBVIEW_HTML5_PACKAGED",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "B_STRUCTURED",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": false,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "B_STRUCTURED",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "cos.premy.mines",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "WEBVIEW_NODE",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "B_STRUCTURED",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": false,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "B_STRUCTURED",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "eu.veldsoft.no.thanks",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "COMPOSE",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "B_STRUCTURED",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "B_STRUCTURED",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "com.sidhant.queens",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "FLUTTER",
+   "subsystems": [
+    "compose",
+    "flutter"
+   ],
+   "jni_onload": 4,
+   "register_natives": 8,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "FLAT_TWO_TONE_OR_BLANK",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "com.simondalvai.ball2box",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "GODOT",
+   "subsystems": [
+    "compose",
+    "godot"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "FLAT_TWO_TONE_OR_BLANK",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "xyz.deepdaikon.quinb",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "FLUTTER",
+   "subsystems": [
+    "compose",
+    "flutter"
+   ],
+   "jni_onload": 4,
+   "register_natives": 8,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 2,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "FLAT_TWO_TONE_OR_BLANK",
+    "uncaught_marks_main_log": 1,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "org.secuso.privacyfriendlybattleship",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "VIEW",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "FLAT_TWO_TONE_OR_BLANK",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "crypto.o0o0o0o0o.games.blackjack",
+   "fresh": false,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "WEBVIEW_HTML5_PACKAGED",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "B_STRUCTURED",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": false,
+   "before": {
+    "source": "W12_BATTERY.json",
+    "tier": "B_STRUCTURED",
+    "uncaught_marks_main_log": 0,
+    "route_ok": true
+   },
+   "state": "NO_CHANGE"
+  },
+  {
+   "pkg": "app.halma",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "LIBGDX",
+   "subsystems": [
+    "compose",
+    "gles"
+   ],
+   "jni_onload": 1,
+   "register_natives": 0,
+   "effective_tier": "NOISE_STATIC_SURFACE",
+   "visual_verdict": "NOISE_NOT_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": false,
+   "before": null,
+   "state": "PARTIAL_CHAIN",
+   "route": "LIBGDX",
+   "chain_advanced": [
+    "libgdx.so dlopen OK (size=193008, sha16=2e9dc948aab382e5, no JNI_OnLoad needed)",
+    "GdxEglConfigChooser + GLSurfaceView20 class-init OK",
+    "GL surface allocated -> rendered frame exists"
+   ],
+   "next_blocker": "Surface content is uninitialized TV-snow noise (visual-verdict gate demoted metric A_RICH to NOISE_STATIC_SURFACE). MISSING CONTRACT: GL command stream must actually draw (eglCreateContext -> draw calls) before any visual-progress credit."
+  },
+  {
+   "pkg": "com.astroloop.game",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "VIEW",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "com.jeffliu.balancetheball",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "VIEW",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "B_STRUCTURED",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": false,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "com.rocket9labs.boxcars",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "VIEW",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "com.vayunmathur.games.solitaire",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "COMPOSE",
+   "subsystems": [
+    "compose",
+    "dalvik"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "com.vovagorodok.blichess",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "WEBVIEW_HTML5_PACKAGED",
+   "subsystems": [
+    "compose",
+    "webview"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "de.tobiasbielefeld.solitaire",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "VIEW",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "io.github.aoc_normal",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "VIEW",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "io.github.hathibelagal.mykanji",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "WEBVIEW_HTML5_PACKAGED",
+   "subsystems": [
+    "compose",
+    "dalvik"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "me.river.nightbell",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "COMPOSE",
+   "subsystems": [
+    "compose",
+    "dalvik"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 1,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "page.codeberg.lanticy.guandan",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "COMPOSE",
+   "subsystems": [
+    "compose"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "FIRST_OBSERVED_BASELINE"
+  },
+  {
+   "pkg": "se.tube42.p9.android",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "LIBGDX",
+   "subsystems": [
+    "compose",
+    "gles"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "NOISE_STATIC_SURFACE",
+   "visual_verdict": "NOISE_NOT_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": false,
+   "before": null,
+   "state": "PARTIAL_CHAIN",
+   "route": "LIBGDX",
+   "chain_advanced": [
+    "SharedLibraryLoader.load executed (pc=27)",
+    "libgdx.so extracted (size=338440, sha16=c8c6e37f9411517f)",
+    "GLSurfaceView20 Java-side class-init OK"
+   ],
+   "next_blocker": "dlopen fails: undefined symbol glCopyTexImage2D \u2014 the runtime GLES symbol table lacks it. MISSING CONTRACT (exact, actionable): export glCopyTexImage2D (then audit the remaining libgdx.so undefined-symbol list with androguard/elf tools)."
+  },
+  {
+   "pkg": "si.palcka.tarok",
+   "fresh": true,
+   "stage": "S6_SETTLED_FACE_TIERED",
+   "route_primary": "FLUTTER",
+   "subsystems": [
+    "compose",
+    "flutter"
+   ],
+   "jni_onload": 0,
+   "register_natives": 0,
+   "effective_tier": "FLAT_TWO_TONE_OR_BLANK",
+   "visual_verdict": "REAL_UI",
+   "fatal_marks": 0,
+   "route_violation": false,
+   "frames_crosscheck": true,
+   "before": null,
+   "state": "PARTIAL_CHAIN",
+   "route": "FLUTTER",
+   "chain_advanced": [
+    "Dart VM snapshot Bundle keys resolved (F0.e.vm-snapshot-data / F0.e.isolate-snapshot-data, has_obj=1)",
+    "FlutterJNI.loadLibrary executed (pc=67)",
+    "libflutter.so extracted (size=10942424, sha16=868783f8cd16acf4)"
+   ],
+   "next_blocker": "dlopen of the extracted libflutter.so fails: the virtual extraction path /data/app/si.palcka.tarok/lib/arm64-v8a/libflutter.so maps to the store path but the file is not dlopen-able there (cannot open shared object file); second attempt app_lib also absent. MISSING CONTRACT: extracted native libs must physically exist + be dlopen-able at the mapped codePath lib dir. No shim added until the contract is pinned (W8 law)."
+  }
+ ]
+}

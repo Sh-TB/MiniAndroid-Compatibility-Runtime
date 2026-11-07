@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="story_state_migrated" value="true" />
+    <int name="story_loop" value="1" />
+    <int name="story_stage" value="0" />
+</map>

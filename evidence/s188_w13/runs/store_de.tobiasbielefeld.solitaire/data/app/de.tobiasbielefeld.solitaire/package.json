@@ -1,0 +1,16 @@
+{
+  "package": "de.tobiasbielefeld.solitaire",
+  "versionName": "3.13",
+  "versionCode": 71,
+  "mainActivity": "de.tobiasbielefeld.solitaire.ui.GameSelector",
+  "minSdk": "11",
+  "targetSdk": "25",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/de.tobiasbielefeld.solitaire/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w13/runs/store_de.tobiasbielefeld.solitaire/data/app/de.tobiasbielefeld.solitaire/base.apk",
+  "apkSha256": "fdfaf7cad18e4416989b337b5c60b71158c54652384e564fe3e6386421504220",
+  "apkSize": 16738109,
+  "installedAt": "2026-11-07T20:31:30Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

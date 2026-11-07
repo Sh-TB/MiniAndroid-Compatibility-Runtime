@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.rocket9labs.boxcars/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libgojni.so", "size": 20371800}
+  ],
+  "count": 1
+}
