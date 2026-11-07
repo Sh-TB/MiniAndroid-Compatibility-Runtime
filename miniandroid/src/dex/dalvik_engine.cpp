@@ -68381,14 +68381,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // emulation is incomplete, R-NEW-438/441 evidence). Default OFF; the
         // bounded per-container-trust experiment is the named next lever
         // (registry F-NEW-370 PARTIAL decode trail).
-        // F-NEW-598 (W12): DEFAULT-ON (battery-verified). The W10 opt-in
-        // revert existed because the ActionBarContainer AT_MOST face
-        // collapsed blackjack's B face; F-NEW-598 fixed the S109 law
-        // (AOSP resolveSizeAndState semantics) and the full battery +
-        // goldens re-verified. MINIANDROID_MCM_LAW=0 opts out.
+        // F-NEW-598 (W12) — the cohort gate corrected the W12 default-ON
+        // flip: the S194 opencalc (vc53) cohort-pin A/B on the integrated
+        // binary collapsed the face with the laws ON (0.6% non-white vs
+        // the S193-KT published 17.94% dense calculator; MCM=0 restored a
+        // dense face) — the SAME cross-app face-sensitivity CODER 8's own
+        // F-NEW-625 gate A/B caught (microtimer/opencalc pins drifted; the
+        // law stayed implemented but DEFAULT-OFF). Two independent lines
+        // converge: the measure family stays OPT-IN
+        // (MINIANDROID_MCM_LAW=1) until the per-container trust gate lands;
+        // the W12 gains (ts real measures, blackjack CLEAN EXIT) remain
+        // available opt-in and are recorded with their evidence.
         static const bool mcm_law_active =
-            std::getenv("MINIANDROID_MCM_LAW") == nullptr ||
-            std::getenv("MINIANDROID_MCM_LAW")[0] != '0';
+            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
         if (!mcm_law_active) return false;
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (view_shadow && args[0].object_id != 0 && args[1].object_id != 0) {
@@ -68604,8 +68609,7 @@ measure_cm_done:;
         // evidence/s188_w10/W10_TS_DIMENSION.json + w10_ts.console.log —
         // containers 1080x1920/1080x168 where W7 answered 0x0).
         static const bool rsas_law_active =
-            std::getenv("MINIANDROID_MCM_LAW") == nullptr ||
-            std::getenv("MINIANDROID_MCM_LAW")[0] != '0';
+            std::getenv("MINIANDROID_MCM_LAW") != nullptr;
         // F-NEW-595 diag (bounded): WHO calls resolve with which spec —
         // the blackjack regression first-divergence hunt needs the exact
         // caller of the degenerate EXACTLY(0) content spec.

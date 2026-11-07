@@ -1,7 +1,7 @@
 {
   "activity": "eu.veldsoft.no.thanks.SplashActivity",
   "apk_package": "eu.veldsoft.no.thanks",
-  "duration_ms": 1248,
+  "duration_ms": 1229,
   "events_retained": 25,
   "events_total": 25,
   "first_divergence": null,
@@ -12,12 +12,12 @@
     "method": "",
     "seq": 25,
     "stage": null,
-    "state": "Partial execution completed [F-NEW-200 stub-census: 6947 IMPLEMENTED, 177 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]"
+    "state": "Partial execution completed [F-NEW-200 stub-census: 7417 IMPLEMENTED, 239 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content] [F-NEW-232 deferred-UI pending: queue_size=1 earliest_ready_at=0ms — launch-frame face is provisional; cross-check with --frames time-driven capture]"
   },
   "frame_analysis": {
     "app_draw_ops": 0,
-    "app_owned_pixels": 476280,
-    "app_owned_pixels_inside_content_bounds": 476280,
+    "app_owned_pixels": 0,
+    "app_owned_pixels_inside_content_bounds": 0,
     "auth_root_valid": true,
     "budget_exhausted": false,
     "content_bounds": {
@@ -35,11 +35,12 @@
     "diag_regions": 2,
     "dialog_content_rendered": false,
     "dominant_color": [
-      "#000000"
+      "#fafafa"
     ],
-    "dominant_pct": 77.03125,
+    "dominant_pct": 100.0,
     "draw_budget_halt": false,
     "draw_walk_ran": true,
+    "first_missing_stage": "APP_DRAW_OPS",
     "height": 1920,
     "inflation_failed": false,
     "kept_prior_app_draw_ops": 0,
@@ -49,19 +50,19 @@
     "no_root": false,
     "nodes_skipped_depth": 0,
     "nodes_visited": 6,
-    "non_default_pixels": 476280,
+    "non_default_pixels": 0,
     "presentation": "this_frame",
     "render_exception": false,
-    "screenshot_sha256": "ef2d46f0174e2d0f8838278dbc289ed1d79bf1a60a42cdcc11537040ec9120e6",
+    "screenshot_sha256": "d602648e8e401895b7b440bc9c0becd4af8748b37808ce0870735b19502dab71",
     "size": "1080x1920",
     "synthetic_suppressed": false,
-    "unique_colors": 2,
+    "unique_colors": 1,
     "unreachable_children": 0,
-    "verdict": "REAL_APP_CONTENT",
+    "verdict": "DEFAULT_BACKGROUND_ONLY",
     "verdict_law": "21-P0-6 pixel ownership + correlated proof",
     "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
     "width": 1080,
-    "window_background_px": 1597320,
+    "window_background_px": 2073600,
     "window_chrome_pixels": 0
   },
   "instrument": "S135 VISUAL RUNTIME BOOT/TRACE LOGGER",
@@ -72,52 +73,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 8600,
+        "pid": 9179,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w12/runs/store_eu.veldsoft.no.thanks/data/app/eu.veldsoft.no.thanks/base.apk",
       "thread": "main",
-      "ts_ms": 1794081810134
+      "ts_ms": 1794082221052
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=eu.veldsoft.no.thanks",
       "thread": "main",
-      "ts_ms": 1794081810144
+      "ts_ms": 1794082221062
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=eu.veldsoft.no.thanks.SplashActivity",
       "thread": "main",
-      "ts_ms": 1794081810144
+      "ts_ms": 1794082221062
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=8554 methods=64019",
       "thread": "main",
-      "ts_ms": 1794081810369
+      "ts_ms": 1794082221285
     },
     {
       "component": "boot",
@@ -127,24 +128,24 @@
       },
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794081810388
+      "ts_ms": 1794082221304
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=8554",
       "thread": "main",
-      "ts_ms": 1794081810388
+      "ts_ms": 1794082221305
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -152,12 +153,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "eu.veldsoft.no.thanks.SplashActivity",
       "thread": "main",
-      "ts_ms": 1794081810413
+      "ts_ms": 1794082221329
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -165,12 +166,12 @@
       "event": "APPLICATION_CREATE",
       "package": "eu.veldsoft.no.thanks",
       "result": "PENDING",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794081810413
+      "ts_ms": 1794082221329
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -206,12 +207,12 @@
       },
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794081810860
+      "ts_ms": 1794082221746
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -221,12 +222,12 @@
       "provenance": "choreographer/composition pump active",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 10,
       "sev": "RENDERER",
       "state": "COMPOSE",
       "thread": "main",
-      "ts_ms": 1794081810883
+      "ts_ms": 1794082221765
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -235,12 +236,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 11,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794081810903
+      "ts_ms": 1794082221781
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -249,12 +250,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 12,
       "sev": "CONFIRMED",
       "state": "root_id=632",
       "thread": "main",
-      "ts_ms": 1794081810903
+      "ts_ms": 1794082221781
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -263,12 +264,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 13,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=2",
       "thread": "main",
-      "ts_ms": 1794081810981
+      "ts_ms": 1794082221874
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -277,12 +278,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794081810982
+      "ts_ms": 1794082221874
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -295,12 +296,166 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794081811054
+      "ts_ms": 1794082221951
+    },
+    {
+      "activity": "eu.veldsoft.no.thanks.SplashActivity",
+      "component": "capture",
+      "event": "FRAME_ANALYSIS",
+      "extra": {
+        "dominant_color": [
+          "#000000"
+        ],
+        "dominant_pct": 92.34375,
+        "height": 1920,
+        "non_default_pixels": 158760,
+        "screenshot_sha256": "f968ab6289360bdffaf8126a59b09a1aa3b8dfc4b167899422fa6a98c92b003b",
+        "size": "1080x1920",
+        "unique_colors": 2,
+        "verdict": "REAL_APP_CONTENT",
+        "width": 1080
+      },
+      "package": "eu.veldsoft.no.thanks",
+      "renderer_family": "COMPOSE",
+      "result": "OK",
+      "run_id": "1794082221052-1",
+      "seq": 16,
+      "sev": "INFO",
+      "state": "REAL_APP_CONTENT",
+      "thread": "main",
+      "ts_ms": 1794082221961
+    },
+    {
+      "activity": "eu.veldsoft.no.thanks.SplashActivity",
+      "component": "capture",
+      "event": "TRACE_MARK",
+      "extra": {
+        "app_draw_ops": 0,
+        "app_owned_pixels": 158760,
+        "app_owned_pixels_inside_content_bounds": 158760,
+        "auth_root_valid": true,
+        "budget_exhausted": false,
+        "content_bounds": {
+          "b": 1920,
+          "l": 0,
+          "r": 1080,
+          "t": 0,
+          "valid": true
+        },
+        "deferred_earliest_ready_ms": 0,
+        "deferred_queue_size": 1,
+        "deferred_ui_pending": true,
+        "depth_max": 3,
+        "diag_owned_pixels": 0,
+        "diag_regions": 2,
+        "dialog_content_rendered": false,
+        "draw_budget_halt": false,
+        "draw_walk_ran": true,
+        "inflation_failed": false,
+        "kept_prior_app_draw_ops": 0,
+        "layout_ran": true,
+        "layout_source": "inflater",
+        "measure_ran": true,
+        "no_root": false,
+        "nodes_skipped_depth": 0,
+        "nodes_visited": 6,
+        "presentation": "this_frame",
+        "render_exception": false,
+        "synthetic_suppressed": false,
+        "unreachable_children": 0,
+        "verdict_law": "21-P0-6 pixel ownership + correlated proof",
+        "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
+        "window_background_px": 1914840,
+        "window_chrome_pixels": 0
+      },
+      "package": "eu.veldsoft.no.thanks",
+      "renderer_family": "COMPOSE",
+      "result": "CENSUS",
+      "run_id": "1794082221052-1",
+      "seq": 17,
+      "sev": "INFO",
+      "state": "REAL_APP_CONTENT",
+      "thread": "main",
+      "ts_ms": 1794082221961
+    },
+    {
+      "activity": "eu.veldsoft.no.thanks.SplashActivity",
+      "component": "render",
+      "event": "RENDER_START",
+      "package": "eu.veldsoft.no.thanks",
+      "renderer_family": "COMPOSE",
+      "result": "PENDING",
+      "run_id": "1794082221052-1",
+      "seq": 18,
+      "sev": "PENDING",
+      "state": "measure/layout/draw pass",
+      "thread": "main",
+      "ts_ms": 1794082222013
+    },
+    {
+      "activity": "eu.veldsoft.no.thanks.SplashActivity",
+      "component": "viewtree",
+      "event": "VIEWTREE_CREATED",
+      "package": "eu.veldsoft.no.thanks",
+      "renderer_family": "COMPOSE",
+      "result": "OK",
+      "run_id": "1794082221052-1",
+      "seq": 19,
+      "sev": "CONFIRMED",
+      "state": "root_id=632",
+      "thread": "main",
+      "ts_ms": 1794082222013
+    },
+    {
+      "activity": "eu.veldsoft.no.thanks.SplashActivity",
+      "component": "render",
+      "event": "RENDER_OK",
+      "package": "eu.veldsoft.no.thanks",
+      "renderer_family": "COMPOSE",
+      "result": "NO_APP_OPS",
+      "run_id": "1794082221052-1",
+      "seq": 20,
+      "sev": "PENDING",
+      "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=2",
+      "thread": "main",
+      "ts_ms": 1794082222089
+    },
+    {
+      "activity": "eu.veldsoft.no.thanks.SplashActivity",
+      "component": "capture",
+      "event": "FRAME_SUBMIT",
+      "package": "eu.veldsoft.no.thanks",
+      "renderer_family": "COMPOSE",
+      "result": "OK",
+      "run_id": "1794082221052-1",
+      "seq": 21,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1794082222089
+    },
+    {
+      "activity": "eu.veldsoft.no.thanks.SplashActivity",
+      "component": "capture",
+      "event": "FRAME_CAPTURE",
+      "extra": {
+        "bytes": 8294400,
+        "path": "/home/z/my-project/evidence/s188_w12/runs/eu.veldsoft.no.thanks/screenshot.png"
+      },
+      "package": "eu.veldsoft.no.thanks",
+      "renderer_family": "COMPOSE",
+      "result": "OK",
+      "run_id": "1794082221052-1",
+      "seq": 22,
+      "sev": "CONFIRMED",
+      "state": "1080x1920",
+      "thread": "main",
+      "ts_ms": 1794082222161
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -322,12 +477,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794081810134-1",
-      "seq": 16,
+      "run_id": "1794082221052-1",
+      "seq": 23,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794081811061
+      "ts_ms": 1794082222168
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -376,166 +531,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1794081810134-1",
-      "seq": 17,
+      "run_id": "1794082221052-1",
+      "seq": 24,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794081811062
-    },
-    {
-      "activity": "eu.veldsoft.no.thanks.SplashActivity",
-      "component": "render",
-      "event": "RENDER_START",
-      "package": "eu.veldsoft.no.thanks",
-      "renderer_family": "COMPOSE",
-      "result": "PENDING",
-      "run_id": "1794081810134-1",
-      "seq": 18,
-      "sev": "PENDING",
-      "state": "measure/layout/draw pass",
-      "thread": "main",
-      "ts_ms": 1794081811114
-    },
-    {
-      "activity": "eu.veldsoft.no.thanks.SplashActivity",
-      "component": "viewtree",
-      "event": "VIEWTREE_CREATED",
-      "package": "eu.veldsoft.no.thanks",
-      "renderer_family": "COMPOSE",
-      "result": "OK",
-      "run_id": "1794081810134-1",
-      "seq": 19,
-      "sev": "CONFIRMED",
-      "state": "root_id=632",
-      "thread": "main",
-      "ts_ms": 1794081811114
-    },
-    {
-      "activity": "eu.veldsoft.no.thanks.SplashActivity",
-      "component": "render",
-      "event": "RENDER_OK",
-      "package": "eu.veldsoft.no.thanks",
-      "renderer_family": "COMPOSE",
-      "result": "NO_APP_OPS",
-      "run_id": "1794081810134-1",
-      "seq": 20,
-      "sev": "PENDING",
-      "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=2",
-      "thread": "main",
-      "ts_ms": 1794081811176
-    },
-    {
-      "activity": "eu.veldsoft.no.thanks.SplashActivity",
-      "component": "capture",
-      "event": "FRAME_SUBMIT",
-      "package": "eu.veldsoft.no.thanks",
-      "renderer_family": "COMPOSE",
-      "result": "OK",
-      "run_id": "1794081810134-1",
-      "seq": 21,
-      "sev": "CONFIRMED",
-      "state": "1080x1920",
-      "thread": "main",
-      "ts_ms": 1794081811176
-    },
-    {
-      "activity": "eu.veldsoft.no.thanks.SplashActivity",
-      "component": "capture",
-      "event": "FRAME_CAPTURE",
-      "extra": {
-        "bytes": 8294400,
-        "path": "/home/z/my-project/evidence/s188_w12/runs/eu.veldsoft.no.thanks/screenshot.png"
-      },
-      "package": "eu.veldsoft.no.thanks",
-      "renderer_family": "COMPOSE",
-      "result": "OK",
-      "run_id": "1794081810134-1",
-      "seq": 22,
-      "sev": "CONFIRMED",
-      "state": "1080x1920",
-      "thread": "main",
-      "ts_ms": 1794081811252
-    },
-    {
-      "activity": "eu.veldsoft.no.thanks.SplashActivity",
-      "component": "capture",
-      "event": "FRAME_ANALYSIS",
-      "extra": {
-        "dominant_color": [
-          "#000000"
-        ],
-        "dominant_pct": 77.03125,
-        "height": 1920,
-        "non_default_pixels": 476280,
-        "screenshot_sha256": "ef2d46f0174e2d0f8838278dbc289ed1d79bf1a60a42cdcc11537040ec9120e6",
-        "size": "1080x1920",
-        "unique_colors": 2,
-        "verdict": "REAL_APP_CONTENT",
-        "width": 1080
-      },
-      "package": "eu.veldsoft.no.thanks",
-      "renderer_family": "COMPOSE",
-      "result": "OK",
-      "run_id": "1794081810134-1",
-      "seq": 23,
-      "sev": "INFO",
-      "state": "REAL_APP_CONTENT",
-      "thread": "main",
-      "ts_ms": 1794081811262
-    },
-    {
-      "activity": "eu.veldsoft.no.thanks.SplashActivity",
-      "component": "capture",
-      "event": "TRACE_MARK",
-      "extra": {
-        "app_draw_ops": 0,
-        "app_owned_pixels": 476280,
-        "app_owned_pixels_inside_content_bounds": 476280,
-        "auth_root_valid": true,
-        "budget_exhausted": false,
-        "content_bounds": {
-          "b": 1920,
-          "l": 0,
-          "r": 1080,
-          "t": 0,
-          "valid": true
-        },
-        "deferred_earliest_ready_ms": 0,
-        "deferred_queue_size": 1,
-        "deferred_ui_pending": true,
-        "depth_max": 3,
-        "diag_owned_pixels": 0,
-        "diag_regions": 2,
-        "dialog_content_rendered": false,
-        "draw_budget_halt": false,
-        "draw_walk_ran": true,
-        "inflation_failed": false,
-        "kept_prior_app_draw_ops": 0,
-        "layout_ran": true,
-        "layout_source": "inflater",
-        "measure_ran": true,
-        "no_root": false,
-        "nodes_skipped_depth": 0,
-        "nodes_visited": 6,
-        "presentation": "this_frame",
-        "render_exception": false,
-        "synthetic_suppressed": false,
-        "unreachable_children": 0,
-        "verdict_law": "21-P0-6 pixel ownership + correlated proof",
-        "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
-        "window_background_px": 1597320,
-        "window_chrome_pixels": 0
-      },
-      "package": "eu.veldsoft.no.thanks",
-      "renderer_family": "COMPOSE",
-      "result": "CENSUS",
-      "run_id": "1794081810134-1",
-      "seq": 24,
-      "sev": "INFO",
-      "state": "REAL_APP_CONTENT",
-      "thread": "main",
-      "ts_ms": 1794081811262
+      "ts_ms": 1794082222168
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -547,12 +548,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "FAIL",
-      "run_id": "1794081810134-1",
+      "run_id": "1794082221052-1",
       "seq": 25,
       "sev": "FAILURE",
-      "state": "Partial execution completed [F-NEW-200 stub-census: 6947 IMPLEMENTED, 177 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
+      "state": "Partial execution completed [F-NEW-200 stub-census: 7417 IMPLEMENTED, 239 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content] [F-NEW-232 deferred-UI pending: queue_size=1 earliest_ready_at=0ms — launch-frame face is provisional; cross-check with --frames time-driven capture]",
       "thread": "main",
-      "ts_ms": 1794081811382
+      "ts_ms": 1794082222281
     }
   ],
   "last_exception": {
@@ -565,18 +566,18 @@
     "package": "eu.veldsoft.no.thanks",
     "renderer_family": "COMPOSE",
     "result": "FAIL",
-    "run_id": "1794081810134-1",
+    "run_id": "1794082221052-1",
     "seq": 25,
     "sev": "FAILURE",
-    "state": "Partial execution completed [F-NEW-200 stub-census: 6947 IMPLEMENTED, 177 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
+    "state": "Partial execution completed [F-NEW-200 stub-census: 7417 IMPLEMENTED, 239 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content] [F-NEW-232 deferred-UI pending: queue_size=1 earliest_ready_at=0ms — launch-frame face is provisional; cross-check with --frames time-driven capture]",
     "thread": "main",
-    "ts_ms": 1794081811382
+    "ts_ms": 1794082222281
   },
   "lifecycle": "RESUMED",
   "renderer_family": "COMPOSE",
-  "run_id": "1794081810134-1",
+  "run_id": "1794082221052-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261107-200330-0369",
+  "session_id": "EXP-001-20261107-201021-3752",
   "severity_census": {
     "CONFIRMED": 13,
     "FAILURE": 1,

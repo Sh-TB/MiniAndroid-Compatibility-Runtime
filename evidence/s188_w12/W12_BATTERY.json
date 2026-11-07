@@ -133,12 +133,19 @@
    "[ROUTE_SURPRISE] route=WEBVIEW where=webview-node-paint pkg=eu.veldsoft.no.thanks \u2014 static profile did not predict this engagement; classifier must be revised (honest static limit)"
   ],
   "uncaught_marks": 0,
-  "timed_face": null,
-  "unique_colors": 4,
-  "bg_share": 0.7698,
-  "nonbg_share": 0.2302,
-  "grad_share": 0.0048,
-  "tier": "C_TEXT_ON_FLAT"
+  "timed_face": {
+   "frame": "/home/z/my-project/evidence/s188_w12/runs/eu.veldsoft.no.thanks/frames/frame_013.png",
+   "unique_colors": 563,
+   "bg_share": 0.8615,
+   "nonbg_share": 0.1385,
+   "grad_share": 0.0083,
+   "tier": "B_STRUCTURED"
+  },
+  "unique_colors": 563,
+  "bg_share": 0.8615,
+  "nonbg_share": 0.1385,
+  "grad_share": 0.0083,
+  "tier": "B_STRUCTURED"
  },
  {
   "pkg": "com.sidhant.queens",
@@ -260,10 +267,10 @@
   ],
   "uncaught_marks": 0,
   "timed_face": null,
-  "unique_colors": 63,
-  "bg_share": 0.7681,
-  "nonbg_share": 0.2319,
-  "grad_share": 0.0033,
+  "unique_colors": 65,
+  "bg_share": 0.8442,
+  "nonbg_share": 0.1558,
+  "grad_share": 0.0009,
   "tier": "B_STRUCTURED"
  }
 ]

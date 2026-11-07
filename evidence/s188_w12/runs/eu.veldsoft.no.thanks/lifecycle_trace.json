@@ -1,53 +1,6 @@
 {
   "activity": "Leu/veldsoft/no/thanks/MenuActivity;",
-  "activity_launch": {
-    "a_class": "Leu/veldsoft/no/thanks/SplashActivity;",
-    "a_view_root": 632,
-    "b_view_root": 1276,
-    "callbacks": [
-      {
-        "class": "Leu/veldsoft/no/thanks/SplashActivity;",
-        "dispatched": true,
-        "instructions": 0,
-        "method": "onPause"
-      },
-      {
-        "class": "Leu/veldsoft/no/thanks/MenuActivity;",
-        "dispatched": true,
-        "instructions": 2522,
-        "method": "<init>"
-      },
-      {
-        "class": "Leu/veldsoft/no/thanks/MenuActivity;",
-        "dispatched": true,
-        "instructions": 2349,
-        "method": "onCreate"
-      },
-      {
-        "class": "Leu/veldsoft/no/thanks/MenuActivity;",
-        "dispatched": true,
-        "instructions": 0,
-        "method": "onStart"
-      },
-      {
-        "class": "Leu/veldsoft/no/thanks/MenuActivity;",
-        "dispatched": true,
-        "instructions": 0,
-        "method": "onResume"
-      },
-      {
-        "class": "Leu/veldsoft/no/thanks/SplashActivity;",
-        "dispatched": true,
-        "instructions": 0,
-        "method": "onStop"
-      }
-    ],
-    "component": "Leu/veldsoft/no/thanks/MenuActivity;",
-    "component_descriptor": "Leu/veldsoft/no/thanks/MenuActivity;",
-    "launched": true,
-    "request_code": -1,
-    "stack_depth_after": 1
-  },
+  "activity_launch": null,
   "apk": "/home/z/my-project/evidence/s188_w12/runs/store_eu.veldsoft.no.thanks/data/app/eu.veldsoft.no.thanks/base.apk",
   "final_state": "RESUMED",
   "finish_cascade": null,
@@ -78,28 +31,28 @@
       "reason": "switch: A.onPause (TransactionExecutor law: pause is FIRST)",
       "success": true,
       "to": "PAUSED",
-      "virtual_ms": 5621
+      "virtual_ms": 6121
     },
     {
       "from": "PAUSED",
       "reason": "B.onCreate via DEX (performLaunchActivity law): Leu/veldsoft/no/thanks/MenuActivity;",
       "success": false,
       "to": "ACTIVITY_CREATED",
-      "virtual_ms": 5621
+      "virtual_ms": 6121
     },
     {
       "from": "PAUSED",
       "reason": "B.onStart via DEX: Leu/veldsoft/no/thanks/MenuActivity;",
       "success": false,
       "to": "STARTED",
-      "virtual_ms": 5621
+      "virtual_ms": 6121
     },
     {
       "from": "PAUSED",
       "reason": "B.onResume via DEX (handleResumeActivity law): Leu/veldsoft/no/thanks/MenuActivity;",
       "success": true,
       "to": "RESUMED",
-      "virtual_ms": 5621
+      "virtual_ms": 6121
     }
   ]
 }

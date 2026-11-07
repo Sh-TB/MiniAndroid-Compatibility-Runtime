@@ -1,0 +1,11 @@
+{
+ "status": "exit=1",
+ "binary": "dae43220cd9d0c1a",
+ "face": "3e73a5ad1ab7379d",
+ "published_pin": "479382e194be3803",
+ "match": false,
+ "uncaught": 4,
+ "default_bg_only": false,
+ "real_app_content": true,
+ "log": "evidence/s194_intake/opencalc_int1.console.log"
+}
