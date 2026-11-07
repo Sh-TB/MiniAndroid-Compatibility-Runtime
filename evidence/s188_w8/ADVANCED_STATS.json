@@ -1,0 +1,28 @@
+{
+ "anchors": {
+  "androguard_first": "2026-09-14 (S39 \u2014 first use: dooz23 JobSupport Unsafe disasm)",
+  "sqlite_law": "2026-09-27 (S108 ROOT-017 \u2014 REAL sqlite3 bridge; DEX-ground-truth-first method)"
+ },
+ "commits_since_androguard": 874,
+ "commits_since_sqlite_law": 643,
+ "total_commits": 1122,
+ "laws_since_androguard": {
+  "F-NEW": 345,
+  "ROOT": 38
+ },
+ "laws_since_sqlite_law": {
+  "F-NEW": 336,
+  "ROOT": 36
+ },
+ "scripts_using_androguard": 282,
+ "worklog_androguard_lines": 36,
+ "evidence_dirs_total": 220,
+ "s188_dirs": [
+  "s188",
+  "s188_w2",
+  "s188_w5",
+  "s188_w6",
+  "s188_w7",
+  "s188_w8"
+ ]
+}

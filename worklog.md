@@ -8138,3 +8138,24 @@ runs/ts_w7{c,d}. Scripts: s188_w7_androguard_nextint.py, s188_w7_run.py,
 s188_w7_battery.py. Next: dimension chain (real measure/layout sizes for the
 DrawerLayout▸CoordinatorLayout tree) → first authoritative app content
 (tier unlock), then Phase-B FDT per-app record.
+
+## S188 W8 — oracle head-to-head + Flutter-lane frontier wave (2026-11-07)
+
+**User directive:** «ادامه بده ولی یک تست ساده هم بکن androguard و JADX رو بررسی بکن ببین کدامش برات بهتره ... هر چهار مرز بندی رو هم اجرا بکن ... یک امار پیشرفتی بده»
+
+**Oracle head-to-head (5 real W6/W7 wall questions, tranquilstopwatch 2.4MB):**
+- androguard 4.1.4: 5/5 EXACT in 0.59s — ISE thrower pin (CoordinatorLayout.t, 204 ins), h0.a/c pc-level decode, styleable payload bytes, zero-static-caller census.
+- jadx 1.5.3: 3/5 in 13.7s — FAILED the exact wall method ("Method not decompiled", CoordinatorLayout.t) and DROPPED h0.a/h0.c from its output; STRONG on readability (styleable attr names, Java call sites).
+- VERDICT: androguard = primary oracle (pc fidelity + never drops + scriptable + 23x faster); jadx = readability complement only. Evidence: evidence/s188_w8/ORACLE_HEAD_TO_HEAD.json.
+
+**Walls removed (all live-evidenced):**
+- F-NEW-584 slot census: per-slot UNSUPPORTED thunks + atexit census — blind hits -> exact demand lists (queens: env165 GetStringChars x5 + env226 NewWeakGlobalRef x1; quinb: env19 PushLocalFrame x1).
+- F-NEW-586: the demanded slots implemented (UTF-16 transcode face 165/166, weak refs 226/227, local-ref frames 19/20) — queens UNSUPPORTED 6->0, quinb 1->0.
+- F-NEW-587: Flutter AOT lane — libapp.so pre-loaded by FULL PATH at loadLibrary("flutter") (the linker-namespace analog) — "VM snapshot invalid" (dart_vm_data.cc) GONE, "Check failed: vm" (shell.cc:143) GONE; Dart VM crosses its creation wall FIRST TIME.
+- F-NEW-585: bionic pthread-attr shadow family (NEW miniandroid/src/jni/pthread_shadow.c) in exe + anchor libc.so — 4-byte bionic attrs vs 56-byte glibc attrs stack corruption (Dart synchronization_posix.cc:87 EINVAL abort) fixed via side-registry attr shadowing; hot-path lock/unlock passthrough. Live evidence: the anchor libc.so wins the binding (DT_NEEDED dependency scope precedes the exe global scope).
+
+**New frontier (honest):** queens nativeAttach guarded child runs the REAL Dart thread pool (5+ threads: futex waits + epoll message loops) but TWO threads spin ~100% CPU inside VM init; parent fork-probe waiter sigsuspend-forever (timeout kill honest). Next: spin attribution (gdb/perf absent this container; audit the shadow registry first).
+
+**Advanced stats (user directive):** since androguard 2026-09-14: 874 commits, 345 F-NEW + 38 ROOT laws; since sqlite law 2026-09-27: 643 commits, 336 F-NEW + 36 ROOT; 282 scripts use androguard; total corpus evidence dirs 220. Evidence: evidence/s188_w8/ADVANCED_STATS.json.
+
+**Goldens:** rebuild verified byte-exact earlier this session (bouncy 8a6c24ac + unote 3b8dcb0a + dooz 31ddd4d5 ALL HOLD); W7 laws re-confirmed (ts uncaught 0 x2 runs); 3 milestones re-confirmed (S188_RESUME_VERIFY.json).
