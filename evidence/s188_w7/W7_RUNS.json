@@ -4,7 +4,7 @@
   "status": "OK",
   "dpkg": "tibarj.tranquilstopwatch",
   "uncaught_inflight": 0,
-  "verdict": "Partial execution completed [F-NEW-200 stub-census: 10284 IMPLEMENTED, 1010 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGRO",
+  "verdict": "Partial execution completed [F-NEW-200 stub-census: 10289 IMPLEMENTED, 1015 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGRO",
   "f086_nextint_bound": 0,
   "f086_nextint_range": 0,
   "w7_trace_rows": [
@@ -55,7 +55,7 @@
   "status": "OK",
   "dpkg": "tibarj.tranquilstopwatch",
   "uncaught_inflight": 0,
-  "verdict": "Partial execution completed [F-NEW-200 stub-census: 10284 IMPLEMENTED, 1010 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGRO",
+  "verdict": "Partial execution completed [F-NEW-200 stub-census: 10289 IMPLEMENTED, 1015 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGRO",
   "f086_nextint_bound": 0,
   "f086_nextint_range": 0,
   "w7_trace_rows": [],

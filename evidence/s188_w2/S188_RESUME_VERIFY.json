@@ -1,0 +1,45 @@
+{
+ "com.sidhant.queens": {
+  "status": "OK",
+  "dpkg": "com.sidhant.queens",
+  "uncaught": 0,
+  "route_lines": [
+   "[ROUTE] DECISION pkg=com.sidhant.queens primary=FLUTTER routes=FLUTTER+WEBVIEW_NODE+MEDIA forbidden=LIBGDX+SDL profile=./reports/apk_routes/com.sidhant.queens.json"
+  ],
+  "dlopen_flutter_ok": true,
+  "jni_onload": true,
+  "natives": [
+   "RegisterNatives: 2 methods for io/flutter/embedding/engine/FlutterJNI",
+   "RegisterNatives: 37 methods for io/flutter/embedding/engine/FlutterJNI"
+  ],
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ "eu.veldsoft.no.thanks": {
+  "status": "OK",
+  "dpkg": "eu.veldsoft.no.thanks",
+  "uncaught": 0,
+  "route_lines": [
+   "[ROUTE] DECISION pkg=eu.veldsoft.no.thanks primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/eu.veldsoft.no.thanks.json"
+  ],
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ "com.simondalvai.ball2box": {
+  "status": "OK",
+  "dpkg": "com.simondalvai.ball2box",
+  "uncaught": 0,
+  "route_lines": [
+   "[ROUTE] DECISION pkg=com.simondalvai.ball2box primary=GODOT routes=GODOT+WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.simondalvai.ball2box.json"
+  ],
+  "godot_oncreate_clean": true,
+  "unique_colors": 1,
+  "bg_share": 1.0,
+  "nonbg_share": 0.0,
+  "tier": "FLAT_TWO_TONE_OR_BLANK"
+ }
+}
