@@ -14793,21 +14793,149 @@ bool DalvikExecutionEngine::run_custom_view_constructor(
     }
 
     // 6) Constructor signature probe (AOSP order): (Context, AttributeSet)
-    //    is the XML-inflation constructor; fall back to (Context). The
-    //    interpreter's overload matcher selects by parameter count, so the
-    //    arg vector itself picks the right overload.
+    //    is the XML-inflation constructor; fall back to (Context).
+    //
+    //    ── F-NEW-576 (S188 W5): INFLATION CTOR OVERLOAD AUTHORITY ────────
+    //    The old probe passed ONLY the arg vector and let the matcher's
+    //    arity heuristic pick the overload. Root evidence
+    //    (tibarj.tranquilstopwatch W5 recon): FragmentContainerView
+    //    declares THREE ctors — (Context), (Context, AttributeSet),
+    //    (Context, AttributeSet, FragmentManager). With the inflation
+    //    arg vector {recv, ctx, attrs} (arg_count=3) the matcher's
+    //    "static-like" interpretation (param_count == arg_count) accepted
+    //    the 3-arg INSTANCE ctor AND the EXP-078 largest-bytecode
+    //    preference then selected it (bigger body than the 2-arg). The
+    //    callee frame mapped its 3rd param (FragmentManager) to a default
+    //    register → fm garbage → findFragmentById (b1/t0.A) NPE at the
+    //    "read field Lb0/k;.a on null object reference" → FCV inflation
+    //    death → MainActivity.onCreate APP-BOUNDARY unwind (2× per run,
+    //    log 1408/1414). AOSP LayoutInflater.createView NEVER calls a
+    //    FragmentManager-taking ctor — it is Factory2-internal.
+    //    Fix: pass the EXACT AOSP inflation descriptor so the F-023
+    //    exact-descriptor authority selects deterministically. Generic
+    //    (every custom view with an overload family benefits); when the
+    //    exact descriptor matches nothing local or up-chain, the legacy
+    //    lenient selection still runs (unchanged fallback).
+    //
+    //    ── F-NEW-577 (S188 W5): FRAGMENT-CONTAINER FACTORY LAW ───────────
+    //    When the class declares <init>(Context, AttributeSet, <X>)V with
+    //    X an APP-DEX class (the FragmentManager type of this app — FCV's
+    //    X is the app-shipped androidx FragmentManager), AOSP constructs
+    //    the tag via FragmentLayoutInflaterFactory with the ACTIVITY'S
+    //    REAL FragmentManager (never a default register, never
+    //    fabricated). The runtime must do the same: locate the unique
+    //    initialized heap instance of X — the one the app's
+    //    FragmentController chain built (tibarj evidence: Lb1/t0; obj#202
+    //    from Lb1/c0;.<init>, bucket field c = obj#204 — the FM is alive
+    //    and healthy; only its delivery was broken). With android:name
+    //    present in the XML (fragment-tag container) the factory path is
+    //    MANDATORY; without a live FM instance we fall back to the 2-arg
+    //    law below (honest, unchanged).
+    std::string w5_fm_ctor_desc;
+    uint32_t w5_fm_oid = 0;
+    {
+        auto w5_cit = class_info_index_.find(cls);
+        if (w5_cit != class_info_index_.end() && dex_report_ != nullptr) {
+            const dex::ClassInfo& w5_info =
+                dex_report_->classes[w5_cit->second];
+            for (const auto& w5_m : w5_info.direct_methods) {
+                if (w5_m.name != "<init>" || w5_m.bytecode.empty())
+                    continue;
+                const std::string& w5_d = w5_m.descriptor;
+                if (w5_d.rfind("(Landroid/content/Context;"
+                               "Landroid/util/AttributeSet;",
+                            0) != 0)
+                    continue;
+                // Parse the params after the AttributeSet slot.
+                const size_t w5_as_end =
+                    w5_d.find("Landroid/util/AttributeSet;") +
+                    std::string("Landroid/util/AttributeSet;").size();
+                if (w5_as_end >= w5_d.size() || w5_d[w5_as_end] != 'L')
+                    continue;  // no third object param → not the factory ctor
+                const size_t w5_semi = w5_d.find(';', w5_as_end);
+                if (w5_semi == std::string::npos ||
+                    w5_semi + 2 >= w5_d.size() ||
+                    w5_d.compare(w5_semi + 1, 2, ")V") != 0)
+                    continue;
+                const std::string w5_fm_cls =
+                    w5_d.substr(w5_as_end, w5_semi - w5_as_end + 1);
+                // X must be an APP-DEX class (the FragmentManager of an
+                // androidx.fragment app ships in the APK; framework
+                // android.app.FragmentManager is NEVER the factory type).
+                if (!class_info_index_.count(w5_fm_cls)) continue;
+                w5_fm_ctor_desc = w5_d;
+                // Locate the unique initialized instance (earliest seq =
+                // the FragmentActivity-chain FM).
+                uint64_t w5_best_seq = 0;
+                for (const auto& [w5_oid, w5_obj] : heap_.all_objects()) {
+                    if (w5_obj.class_descriptor != w5_fm_cls ||
+                        !w5_obj.initialized)
+                        continue;
+                    if (w5_fm_oid == 0 ||
+                        w5_obj.creation_sequence < w5_best_seq) {
+                        w5_fm_oid = w5_oid;
+                        w5_best_seq = w5_obj.creation_sequence;
+                    }
+                }
+                break;  // first factory-shaped ctor wins (DEX order)
+            }
+        }
+    }
+    auto try_ctor_desc = [&](std::vector<DalvikValue> args,
+                             const std::string& desc) {
+        DalvikValue ret = DalvikValue::make_void();
+        DalvikExecutionResult res;
+        return try_recursive_invoke(cls, "<init>", args, ret, res, desc);
+    };
     auto try_ctor = [&](std::vector<DalvikValue> args) {
         DalvikValue ret = DalvikValue::make_void();
         DalvikExecutionResult res;
         return try_recursive_invoke(cls, "<init>", args, ret, res);
     };
+    const DalvikValue w5_view_arg =
+        DalvikValue::make_object(view_object_id, cls);
+    const DalvikValue w5_ctx_arg =
+        DalvikValue::make_object(ctx_id, "Landroid/content/Context;");
+    const DalvikValue w5_attrs_arg =
+        DalvikValue::make_object(attrs_id, "Landroid/util/AttributeSet;");
     bool ok = false;
-    ok = try_ctor({DalvikValue::make_object(view_object_id, cls),
-                   DalvikValue::make_object(ctx_id, "Landroid/content/Context;"),
-                   DalvikValue::make_object(attrs_id, "Landroid/util/AttributeSet;")});
+    bool w5_factory_used = false;
+    if (!w5_fm_ctor_desc.empty() && w5_fm_oid != 0) {
+        // F-NEW-577: the FragmentLayoutInflaterFactory semantics — the
+        // REAL FragmentManager rides in as the 3rd ctor param.
+        ok = try_ctor_desc({w5_view_arg, w5_ctx_arg, w5_attrs_arg,
+                            DalvikValue::make_object(
+                                w5_fm_oid,
+                                heap_.get(w5_fm_oid)->class_descriptor)},
+                           w5_fm_ctor_desc);
+        w5_factory_used = ok;
+        static thread_local uint64_t w5ff_n = 0;
+        if (w5ff_n++ < 20) {
+            std::cerr << "[W5-FM-FACTORY] class=" << cls
+                      << " fm_ctor=" << w5_fm_ctor_desc
+                      << " fm=obj#" << w5_fm_oid
+                      << " used=" << (ok ? 1 : 0)
+                      << " path=" << (w5_factory_used ? "factory" : "fallback")
+                      << std::endl;
+        }
+    }
     if (!ok) {
-        ok = try_ctor({DalvikValue::make_object(view_object_id, cls),
-                       DalvikValue::make_object(ctx_id, "Landroid/content/Context;")});
+        // F-NEW-576: exact AOSP inflation descriptor authority.
+        ok = try_ctor_desc(
+            {w5_view_arg, w5_ctx_arg, w5_attrs_arg},
+            "(Landroid/content/Context;Landroid/util/AttributeSet;)V");
+    }
+    if (!ok) {
+        ok = try_ctor_desc({w5_view_arg, w5_ctx_arg},
+                           "(Landroid/content/Context;)V");
+    }
+    if (!ok) {
+        // Legacy arg-only fallback (pre-W5 behavior; keeps
+        // bogus-descriptor families on their recorded path).
+        ok = try_ctor({w5_view_arg, w5_ctx_arg, w5_attrs_arg});
+    }
+    if (!ok) {
+        ok = try_ctor({w5_view_arg, w5_ctx_arg});
     }
     if (ok) heap_.mark_initialized(view_object_id);
     // MASTER CAMPAIGN FIX (F8 default-onMeasure law): record whether the
