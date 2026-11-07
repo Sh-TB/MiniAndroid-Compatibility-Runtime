@@ -90,7 +90,7 @@ def main():
         'wave': 'S188-W10 ts dimension chain (F-NEW-595 measure-answer family default-ON)',
         'secs': SECS,
         'status': status,
-        'binary': '504c5288022b8660',
+        'binary': '73f4d87ac617ef4e',
         'measure_zero_answers': zerod,
         'measure_nonzero_answers': nonzero,
         'verdict': verdict.group(1) if verdict else None,

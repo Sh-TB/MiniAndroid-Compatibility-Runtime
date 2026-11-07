@@ -2,7 +2,7 @@
  "wave": "S188-W10 ts dimension chain (F-NEW-595 measure-answer family default-ON)",
  "secs": 40,
  "status": "exit=1",
- "binary": "504c5288022b8660",
+ "binary": "73f4d87ac617ef4e",
  "measure_zero_answers": {},
  "measure_nonzero_answers": {
   "Landroidx/appcompat/widget/ActionBarContainer": "1080x1920",
