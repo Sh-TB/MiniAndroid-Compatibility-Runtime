@@ -1,7 +1,7 @@
 {
   "activity": "eu.veldsoft.no.thanks.SplashActivity",
   "apk_package": "eu.veldsoft.no.thanks",
-  "duration_ms": 1219,
+  "duration_ms": 1255,
   "events_retained": 25,
   "events_total": 25,
   "first_divergence": null,
@@ -73,52 +73,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 1791,
+        "pid": 7487,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w2/runs/store_eu.veldsoft.no.thanks/data/app/eu.veldsoft.no.thanks/base.apk",
       "thread": "main",
-      "ts_ms": 1794060137424
+      "ts_ms": 1794067730356
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=eu.veldsoft.no.thanks",
       "thread": "main",
-      "ts_ms": 1794060137435
+      "ts_ms": 1794067730366
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=eu.veldsoft.no.thanks.SplashActivity",
       "thread": "main",
-      "ts_ms": 1794060137435
+      "ts_ms": 1794067730366
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=8554 methods=64019",
       "thread": "main",
-      "ts_ms": 1794060137657
+      "ts_ms": 1794067730589
     },
     {
       "component": "boot",
@@ -128,24 +128,24 @@
       },
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794060137678
+      "ts_ms": 1794067730608
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=8554",
       "thread": "main",
-      "ts_ms": 1794060137678
+      "ts_ms": 1794067730608
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -153,12 +153,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "eu.veldsoft.no.thanks.SplashActivity",
       "thread": "main",
-      "ts_ms": 1794060137703
+      "ts_ms": 1794067730633
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -166,12 +166,12 @@
       "event": "APPLICATION_CREATE",
       "package": "eu.veldsoft.no.thanks",
       "result": "PENDING",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794060137703
+      "ts_ms": 1794067730633
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -207,12 +207,12 @@
       },
       "package": "eu.veldsoft.no.thanks",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794060138114
+      "ts_ms": 1794067731060
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -222,12 +222,12 @@
       "provenance": "choreographer/composition pump active",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 10,
       "sev": "RENDERER",
       "state": "COMPOSE",
       "thread": "main",
-      "ts_ms": 1794060138134
+      "ts_ms": 1794067731081
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -236,12 +236,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 11,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794060138150
+      "ts_ms": 1794067731100
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -250,12 +250,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 12,
       "sev": "CONFIRMED",
       "state": "root_id=632",
       "thread": "main",
-      "ts_ms": 1794060138150
+      "ts_ms": 1794067731100
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -264,12 +264,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 13,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=2",
       "thread": "main",
-      "ts_ms": 1794060138239
+      "ts_ms": 1794067731194
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -278,12 +278,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794060138240
+      "ts_ms": 1794067731195
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -296,12 +296,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794060138317
+      "ts_ms": 1794067731271
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -323,12 +323,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 16,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794060138326
+      "ts_ms": 1794067731281
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -376,12 +376,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 17,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794060138326
+      "ts_ms": 1794067731282
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -390,12 +390,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 18,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794060138378
+      "ts_ms": 1794067731333
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -404,12 +404,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 19,
       "sev": "CONFIRMED",
       "state": "root_id=632",
       "thread": "main",
-      "ts_ms": 1794060138378
+      "ts_ms": 1794067731333
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -418,12 +418,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 20,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=2",
       "thread": "main",
-      "ts_ms": 1794060138450
+      "ts_ms": 1794067731413
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -432,12 +432,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794060138450
+      "ts_ms": 1794067731413
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -450,12 +450,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794060138522
+      "ts_ms": 1794067731484
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -477,12 +477,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 23,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794060138529
+      "ts_ms": 1794067731491
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -531,12 +531,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 24,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794060138529
+      "ts_ms": 1794067731491
     },
     {
       "activity": "eu.veldsoft.no.thanks.SplashActivity",
@@ -548,12 +548,12 @@
       "package": "eu.veldsoft.no.thanks",
       "renderer_family": "COMPOSE",
       "result": "FAIL",
-      "run_id": "1794060137424-1",
+      "run_id": "1794067730356-1",
       "seq": 25,
       "sev": "FAILURE",
       "state": "Partial execution completed [F-NEW-200 stub-census: 7417 IMPLEMENTED, 239 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content] [F-NEW-232 deferred-UI pending: queue_size=1 earliest_ready_at=0ms — launch-frame face is provisional; cross-check with --frames time-driven capture]",
       "thread": "main",
-      "ts_ms": 1794060138643
+      "ts_ms": 1794067731611
     }
   ],
   "last_exception": {
@@ -566,18 +566,18 @@
     "package": "eu.veldsoft.no.thanks",
     "renderer_family": "COMPOSE",
     "result": "FAIL",
-    "run_id": "1794060137424-1",
+    "run_id": "1794067730356-1",
     "seq": 25,
     "sev": "FAILURE",
     "state": "Partial execution completed [F-NEW-200 stub-census: 7417 IMPLEMENTED, 239 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content] [F-NEW-232 deferred-UI pending: queue_size=1 earliest_ready_at=0ms — launch-frame face is provisional; cross-check with --frames time-driven capture]",
     "thread": "main",
-    "ts_ms": 1794060138643
+    "ts_ms": 1794067731611
   },
   "lifecycle": "RESUMED",
   "renderer_family": "COMPOSE",
-  "run_id": "1794060137424-1",
+  "run_id": "1794067730356-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261107-140217-5365",
+  "session_id": "EXP-001-20261107-160850-1221",
   "severity_census": {
     "CONFIRMED": 13,
     "FAILURE": 1,
