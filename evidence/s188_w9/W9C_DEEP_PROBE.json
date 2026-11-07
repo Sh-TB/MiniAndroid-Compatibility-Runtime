@@ -1,0 +1,170 @@
+{
+ "5397:5397": {
+  "comm": "miniandroid",
+  "rips": [
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e"
+  ],
+  "code_bytes": "8b4424084c8b4c24104c895c24080f05c3662e0f1f8400000000000f1f80000000004883ec08bf01000000e8d2dd0500",
+  "stack_ret": [
+   "0xffffffff",
+   "0x557ff458f9e0",
+   "0x557ff458f9e0",
+   "0x557ff458f9e0",
+   "0x557ff4585c40",
+   "0x557ff4583038",
+   "0x557ff4425a90",
+   "0x557ff592a9c0",
+   "0x557ff592aad0",
+   "0x557ff592abc0"
+  ],
+  "rsp_hex": "0x7fff7967cdd8",
+  "rip_resolved": [
+   "libc.so.6@0x7272e vfwprintf@@GLIBC_2.2.5+0x46fe"
+  ],
+  "stack_resolved": [
+   "[anon]@0x99e0 off_0x99e0",
+   "[anon]@0x99e0 off_0x99e0",
+   "[anon]@0x99e0 off_0x99e0",
+   "miniandroid@0x1c40 _ZZN11miniandroid6dalvik21DalvikExecutionEngine22dump_cont4_solver_diagEjE7diag_on+0x0IN",
+   "miniandroid@0xe038 _ZZ17__ma_bitmap_queryE8tl_empty+0xb818",
+   "miniandroid@0x741a90 emit_op+0x50IN",
+   "[anon]@0x1f9c0 off_0x1f9c0",
+   "[anon]@0x1fad0 off_0x1fad0",
+   "[anon]@0x1fbc0 off_0x1fbc0"
+  ]
+ },
+ "5397:5398": {
+  "comm": "miniandroid",
+  "rips": [
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e"
+  ],
+  "code_bytes": "8b4424084c8b4c24104c895c24080f05c3662e0f1f8400000000000f1f80000000004883ec08bf01000000e8d2dd0500",
+  "stack_ret": [
+   "0xffffffff",
+   "0x557ff4427900",
+   "0x63568030",
+   "0x68003102"
+  ],
+  "rsp_hex": "0x7f6a62ae0fa8",
+  "rip_resolved": [
+   "libc.so.6@0x7272e vfwprintf@@GLIBC_2.2.5+0x46fe"
+  ],
+  "stack_resolved": [
+   "miniandroid@0x743900 js_dtoa1+0x450IN"
+  ]
+ },
+ "5397:5400": {
+  "comm": "1.raster",
+  "rips": [
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e"
+  ],
+  "code_bytes": "8b4424084c8b4c24104c895c24080f05c3662e0f1f8400000000000f1f80000000004883ec08bf01000000e8d2dd0500",
+  "stack_ret": [
+   "0x100000000"
+  ],
+  "rsp_hex": "0x7f6a225be548",
+  "rip_resolved": [
+   "libc.so.6@0x7272e vfwprintf@@GLIBC_2.2.5+0x46fe"
+  ],
+  "stack_resolved": []
+ },
+ "5397:5401": {
+  "comm": "1.io",
+  "rips": [
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e"
+  ],
+  "code_bytes": "8b4424084c8b4c24104c895c24080f05c3662e0f1f8400000000000f1f80000000004883ec08bf01000000e8d2dd0500",
+  "stack_ret": [
+   "0x100000000"
+  ],
+  "rsp_hex": "0x7f6a20268548",
+  "rip_resolved": [
+   "libc.so.6@0x7272e vfwprintf@@GLIBC_2.2.5+0x46fe"
+  ],
+  "stack_resolved": []
+ },
+ "5397:5402": {
+  "comm": "io.worker.1",
+  "rips": [
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e"
+  ],
+  "code_bytes": "8b4424084c8b4c24104c895c24080f05c3662e0f1f8400000000000f1f80000000004883ec08bf01000000e8d2dd0500",
+  "stack_ret": [
+   "0xffffffff",
+   "0x100000000",
+   "0x312e7265"
+  ],
+  "rsp_hex": "0x7f6a19efc498",
+  "rip_resolved": [
+   "libc.so.6@0x7272e vfwprintf@@GLIBC_2.2.5+0x46fe"
+  ],
+  "stack_resolved": []
+ },
+ "5397:5403": {
+  "comm": "io.worker.2",
+  "rips": [
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e"
+  ],
+  "code_bytes": "8b4424084c8b4c24104c895c24080f05c3662e0f1f8400000000000f1f80000000004883ec08bf01000000e8d2dd0500",
+  "stack_ret": [
+   "0xffffffff",
+   "0x100000000",
+   "0x322e7265"
+  ],
+  "rsp_hex": "0x7f6a196fb498",
+  "rip_resolved": [
+   "libc.so.6@0x7272e vfwprintf@@GLIBC_2.2.5+0x46fe"
+  ],
+  "stack_resolved": []
+ },
+ "5397:5404": {
+  "comm": "dart:io EventHa",
+  "rips": [
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e",
+   "0x7f6a6341e72e"
+  ],
+  "code_bytes": "8b4424084c8b4c24104c895c24080f05c3662e0f1f8400000000000f1f80000000004883ec08bf01000000e8d2dd0500",
+  "stack_ret": [
+   "0x4000000"
+  ],
+  "rsp_hex": "0x7f6a223bd018",
+  "rip_resolved": [
+   "libc.so.6@0x7272e vfwprintf@@GLIBC_2.2.5+0x46fe"
+  ],
+  "stack_resolved": []
+ }
+}

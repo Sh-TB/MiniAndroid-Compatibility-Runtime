@@ -125,28 +125,63 @@ int32_t ANativeWindow_getFormat(ANativeWindow* window) {
 
 /* ── S188-W2: ALooper — REAL epoll-backed event loop ────────────────────
  * libflutter.so binds the full ALooper face (prepare/acquire/release/
- * forThread/addFd/removeFd/pollOnce/wake): the Flutter engine runs its
- * UI/Raster/IO threads on Android's looper, and the dlopen needs the
+ * forThread/addFd/removeFd/pollOnce/pollAll/wake): the Flutter engine runs
+ * its UI/Raster/IO threads on Android's looper, and the dlopen needs the
  * symbols AND the engine's poll loop needs REAL behavior (pollOnce blocks
  * on epoll_wait until wake or timeout — Android's own design, not a
  * fabricated immediate-return). One epoll instance per looper; wake is an
- * eventfd registered in the same epoll (how AOSP ALooper works). */
+ * eventfd registered in the same epoll (how AOSP ALooper works).
+ *
+ * S188-W9 F-NEW-588 — AOSP CALLBACK-MODE CONTRACT (the hot-loop fix):
+ * live queens evidence (evidence/s188_w9/W9E_FD_PROBE.json + W9F_FDSTATE.json
+ * + the 1.raster/1.io stack walks) pinned the Dart-VM-init stall to this
+ * file's W2 implementation: ALooper_addFd DISCARDED the callback
+ * (`(void)callback`), so the engine's CALLBACK-mode-registered timerfd was
+ * never drained. A fired timerfd stays EPOLLIN-ready (level-triggered)
+ * forever -> epoll_wait returns instantly, forever -> the raster/io
+ * MessageLoopAndroid threads burn 100% CPU and the Shell::Create latch on
+ * the platform thread never closes (the W8 "two threads spin" stall).
+ * AOSP contract restored, verified against frameworks/native/libutils/
+ * Looper.cpp semantics:
+ *   - return constants EXACT: POLL_WAKE(-1) POLL_CALLBACK(-2) TIMEOUT(-3)
+ *     ERROR(-4)
+ *   - addFd ident == ALOOPER_POLL_CALLBACK(-2) -> CALLBACK mode (callback
+ *     required, invoked by pollOnce/pollAll, its return value returned);
+ *     ident >= 0 -> data mode (outFd/outEvents/outData filled, ident
+ *     returned); other negative -> ALOOPER_ADD_ERROR
+ *   - pollOnce: dispatch ONE event (callback result or data ident)
+ *   - pollAll: dispatch callback events CONTINUOUSLY until a data event,
+ *     wake, timeout or error (AOSP pollAll semantics — dartjni's poll face)
+ *   - ALOOPER_EVENT_* <-> EPOLL* translation incl. ERROR/HANGUP
+ *   - EINTR: retry the wait (AOSP pollInner behavior), not a spurious WAKE
+ *                                                                       */
 #include <sys/epoll.h>
 #include <sys/eventfd.h>
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
 
-#define ALOOPER_POLL_CALLBACK 1
-#define ALOOPER_POLL_TIMEOUT (-2)
+#define ALOOPER_POLL_CALLBACK (-2)   /* AOSP Looper.h exact */
+#define ALOOPER_POLL_TIMEOUT (-3)
 #define ALOOPER_POLL_WAKE (-1)
-#define ALOOPER_ERROR (-3)
+#define ALOOPER_ERROR (-4)
+#define ALOOPER_ADD_SUCCESS 1
+#define ALOOPER_ADD_ERROR (-1)
+#define ALOOPER_REMOVE_SUCCESS 1
+#define ALOOPER_REMOVE_ERROR (-1)
 #define ALOOPER_PREPARE_ALLOW_NON_CALLBACKS 1
-#define ALOOPER_EVENT_INPUT 1
+#define ALOOPER_EVENT_INPUT 1u
+#define ALOOPER_EVENT_OUTPUT 2u
+#define ALOOPER_EVENT_ERROR 4u
+#define ALOOPER_EVENT_HANGUP 8u
+#define ALOOPER_EVENT_INVALID 0u
+
+typedef int (*ma_alooper_cb)(int fd, int events, void* data);
 
 typedef struct ma_looper_fd {
     int fd;
-    int ident;
+    int ident;             /* >=0 data mode; ALOOPER_POLL_CALLBACK cb mode */
+    ma_alooper_cb cb;      /* callback mode only */
     void* data;
 } ma_looper_fd;
 
@@ -155,9 +190,27 @@ typedef struct ma_looper {
     int wake_fd;
     int refs;
     pthread_mutex_t mu;
-    struct ma_looper_fd fds[64];
+    struct ma_looper_fd fds[256];
     int n_fds;
 } ma_looper;
+
+static unsigned int ma_events_to_epoll(unsigned int alooper) {
+    unsigned int e = 0;
+    if (alooper & ALOOPER_EVENT_INPUT) e |= EPOLLIN;
+    if (alooper & ALOOPER_EVENT_OUTPUT) e |= EPOLLOUT;
+    if (alooper & ALOOPER_EVENT_ERROR) e |= EPOLLERR;
+    if (alooper & ALOOPER_EVENT_HANGUP) e |= EPOLLHUP;
+    return e;
+}
+
+static unsigned int ma_epoll_to_events(unsigned int epoll_ev) {
+    unsigned int e = 0;
+    if (epoll_ev & EPOLLIN) e |= ALOOPER_EVENT_INPUT;
+    if (epoll_ev & EPOLLOUT) e |= ALOOPER_EVENT_OUTPUT;
+    if (epoll_ev & EPOLLERR) e |= ALOOPER_EVENT_ERROR;
+    if (epoll_ev & EPOLLHUP) e |= ALOOPER_EVENT_HANGUP;
+    return e;
+}
 
 static pthread_key_t ma_looper_key;
 static pthread_once_t ma_looper_once = PTHREAD_ONCE_INIT;
@@ -226,39 +279,116 @@ __attribute__((visibility("default")))
 int ALooper_addFd(void* looper, int fd, int ident, unsigned int events,
                   void* callback, void* data) {
     ma_looper* l = (ma_looper*)looper;
-    if (!l || fd < 0) return -1; /* ALOOPER_ADD_ERROR */
+    if (!l || fd < 0) return ALOOPER_ADD_ERROR;
+    /* AOSP: ALOOPER_POLL_CALLBACK(-2) = callback mode (callback required);
+       ident >= 0 = data mode; any other negative = invalid. */
+    ma_alooper_cb cb = (ma_alooper_cb)callback;
+    if (ident == ALOOPER_POLL_CALLBACK) {
+        if (!cb) return ALOOPER_ADD_ERROR;
+    } else if (ident < 0) {
+        return ALOOPER_ADD_ERROR;
+    }
     struct epoll_event ev;
     memset(&ev, 0, sizeof ev);
-    ev.events = ((events ? events : ALOOPER_EVENT_INPUT) & 0xffffffffu);
+    ev.events = ma_events_to_epoll(events ? events : ALOOPER_EVENT_INPUT);
+    /* EPOLLERR/EPOLLHUP are always reported by epoll regardless (AOSP). */
+    ev.events |= EPOLLERR | EPOLLHUP;
     ev.data.u64 = (uint64_t)(uint32_t)fd;
     if (epoll_ctl(l->epoll_fd, EPOLL_CTL_ADD, fd, &ev) != 0 && errno != EEXIST)
-        return -1;
+        return ALOOPER_ADD_ERROR;
     pthread_mutex_lock(&l->mu);
-    if (l->n_fds < 64) {
-        l->fds[l->n_fds].fd = fd;
-        l->fds[l->n_fds].ident = ident;
-        l->fds[l->n_fds].data = data;
-        ++l->n_fds;
+    int slot = -1;
+    for (int i = 0; i < l->n_fds; ++i)
+        if (l->fds[i].fd == fd) { slot = i; break; }  /* re-add: update */
+    if (slot < 0 && l->n_fds < 256) slot = l->n_fds++;
+    if (slot >= 0) {
+        l->fds[slot].fd = fd;
+        l->fds[slot].ident = ident;
+        l->fds[slot].cb = cb;
+        l->fds[slot].data = data;
     }
     pthread_mutex_unlock(&l->mu);
-    (void)callback; /* callback mode recorded; data-mode served first */
-    return 1; /* ALOOPER_ADD_SUCCESS */
+    return ALOOPER_ADD_SUCCESS;
 }
 
 __attribute__((visibility("default")))
 int ALooper_removeFd(void* looper, int fd) {
     ma_looper* l = (ma_looper*)looper;
-    if (!l || fd < 0) return 0; /* ALOOPER_REMOVE_ERROR */
+    if (!l || fd < 0) return ALOOPER_REMOVE_ERROR;
     epoll_ctl(l->epoll_fd, EPOLL_CTL_DEL, fd, NULL);
     pthread_mutex_lock(&l->mu);
+    int found = 0;
     for (int i = 0; i < l->n_fds; ++i)
         if (l->fds[i].fd == fd) {
             l->fds[i] = l->fds[l->n_fds - 1];
             --l->n_fds;
+            found = 1;
             break;
         }
     pthread_mutex_unlock(&l->mu);
-    return 1; /* ALOOPER_REMOVE_SUCCESS */
+    return found ? ALOOPER_REMOVE_SUCCESS : ALOOPER_REMOVE_ERROR;
+}
+
+/* One epoll_wait dispatch, shared by pollOnce/pollAll (dispatch inline in
+   ma_poll_inner below). */
+static int ma_lookup_fd(ma_looper* l, int fd, int* ident, ma_alooper_cb* cb,
+                        void** data) {
+    *ident = 0; *cb = NULL; *data = NULL;
+    pthread_mutex_lock(&l->mu);
+    for (int i = 0; i < l->n_fds; ++i)
+        if (l->fds[i].fd == fd) {
+            *ident = l->fds[i].ident;
+            *cb = l->fds[i].cb;
+            *data = l->fds[i].data;
+            pthread_mutex_unlock(&l->mu);
+            return 1;
+        }
+    pthread_mutex_unlock(&l->mu);
+    return 0;
+}
+
+static int ma_poll_inner(ma_looper* l, int timeout, int* outFd,
+                         unsigned int* outEvents, void** outData,
+                         int* was_callback) {
+    *was_callback = 0;
+    struct epoll_event ev;
+    memset(&ev, 0, sizeof ev);
+    int n;
+    do {
+        n = epoll_wait(l->epoll_fd, &ev, 1, timeout);
+    } while (n < 0 && errno == EINTR);   /* AOSP: retry on EINTR */
+    if (n < 0) return ALOOPER_ERROR;
+    if (n == 0) return ALOOPER_POLL_TIMEOUT;
+    if (ev.data.u64 == 0xDEADC0DEull) {
+        /* wake: drain the eventfd (the level-triggered face must clear) */
+        uint64_t one = 0;
+        ssize_t r = read(l->wake_fd, &one, sizeof one);
+        (void)r;
+        return ALOOPER_POLL_WAKE;
+    }
+    int fd = (int)(ev.data.u64 & 0xffffffffu);
+    int ident;
+    ma_alooper_cb cb;
+    void* data;
+    unsigned int events = ma_epoll_to_events(ev.events);
+    if (!ma_lookup_fd(l, fd, &ident, &cb, &data)) {
+        /* fd removed between add and event: serve as a data event with 0 */
+        if (outFd) *outFd = fd;
+        if (outEvents) *outEvents = events;
+        if (outData) *outData = NULL;
+        return 0;
+    }
+    if (cb) {
+        *was_callback = 1;
+        if (outFd) *outFd = fd;
+        if (outEvents) *outEvents = events;
+        if (outData) *outData = data;
+        return cb(fd, (int)events, data);  /* the callback drains its fd */
+    }
+    if (outFd) *outFd = fd;
+    if (outEvents) *outEvents = events;
+    if (outData) *outData = data;
+    return ident;
 }
 
 __attribute__((visibility("default")))
@@ -267,31 +397,30 @@ int ALooper_pollOnce(int timeout, int* outFd, unsigned int* outEvents,
     ma_looper* l = (ma_looper*)pthread_getspecific(ma_looper_key);
     if (!l) l = (ma_looper*)ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
     if (!l || l->epoll_fd < 0) return ALOOPER_ERROR;
-    struct epoll_event ev;
-    memset(&ev, 0, sizeof ev);
-    int n = epoll_wait(l->epoll_fd, &ev, 1, timeout);
-    if (n < 0) return (errno == EINTR) ? ALOOPER_POLL_WAKE : ALOOPER_ERROR;
-    if (n == 0) return ALOOPER_POLL_TIMEOUT;
-    if (ev.data.u64 == 0xDEADC0DEull) {
-        /* wake: drain the eventfd */
-        uint64_t one = 0;
-        ssize_t r = read(l->wake_fd, &one, sizeof one);
-        (void)r;
-        return ALOOPER_POLL_WAKE;
+    int was_cb;
+    return ma_poll_inner(l, timeout, outFd, outEvents, outData, &was_cb);
+}
+
+/* AOSP pollAll: callback-mode events are dispatched CONTINUOUSLY inside the
+ * call (each callback drains its own fd — the engine's timerfd face); the
+ * call returns only on wake / timeout / error / data event. The first wait
+ * honors the caller timeout; pending-event waits afterwards are 0ms. This
+ * is the poll face dartjni (jni_native_loop) uses. */
+__attribute__((visibility("default")))
+int ALooper_pollAll(int timeout, int* outFd, unsigned int* outEvents,
+                    void** outData) {
+    ma_looper* l = (ma_looper*)pthread_getspecific(ma_looper_key);
+    if (!l) l = (ma_looper*)ALooper_prepare(ALOOPER_PREPARE_ALLOW_NON_CALLBACKS);
+    if (!l || l->epoll_fd < 0) return ALOOPER_ERROR;
+    int was_cb;
+    for (;;) {
+        int rc = ma_poll_inner(l, timeout, outFd, outEvents, outData, &was_cb);
+        timeout = 0;  /* subsequent iterations drain pending events only */
+        if (rc == ALOOPER_POLL_WAKE || rc == ALOOPER_POLL_TIMEOUT ||
+            rc == ALOOPER_ERROR || !was_cb)
+            return rc;
+        /* callback result: dispatched inside, keep draining (AOSP) */
     }
-    int fd = (int)(ev.data.u64 & 0xffffffffu);
-    unsigned int events = (ev.events & EPOLLIN) ? ALOOPER_EVENT_INPUT : 0;
-    if (outFd) *outFd = fd;
-    if (outEvents) *outEvents = events;
-    pthread_mutex_lock(&l->mu);
-    void* data = NULL;
-    for (int i = 0; i < l->n_fds; ++i)
-        if (l->fds[i].fd == fd) { data = l->fds[i].data; break; }
-    pthread_mutex_unlock(&l->mu);
-    if (outData) *outData = data;
-    /* data-mode registered fds answer with the ident (ALooper contract);
-       a positive ident IS the "callback handled" signal callers check. */
-    return ALOOPER_POLL_CALLBACK;
 }
 
 __attribute__((visibility("default")))

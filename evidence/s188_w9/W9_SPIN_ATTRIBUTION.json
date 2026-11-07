@@ -1,0 +1,186 @@
+{
+ "wave": "S188-W9 spin attribution",
+ "date": "2026-11-07",
+ "binary_sha16": "2997a4b8fc7583dc",
+ "pkg": "com.sidhant.queens",
+ "secs_run": 45.0,
+ "elapsed": 95.0087378025055,
+ "killed_by_us": true,
+ "exit_code": -9,
+ "samples": 360,
+ "ptrace_ok": 28,
+ "ptrace_fail": 0,
+ "symbol_tables": {
+  "libflutter.so": 69,
+  "miniandroid": 17745,
+  "libc.so.6": 3098
+ },
+ "spinners": [
+  {
+   "proc": "5208",
+   "tid": "5211",
+   "comm": "1.raster",
+   "cpu_ticks": 3361,
+   "top_syscalls": [
+    [
+     "running",
+     359
+    ]
+   ],
+   "wchan_last": "0"
+  },
+  {
+   "proc": "5208",
+   "tid": "5212",
+   "comm": "1.io",
+   "cpu_ticks": 3294,
+   "top_syscalls": [
+    [
+     "running",
+     359
+    ]
+   ],
+   "wchan_last": "0"
+  },
+  {
+   "proc": "5208",
+   "tid": "5208",
+   "comm": "miniandroid",
+   "cpu_ticks": 0,
+   "top_syscalls": [
+    [
+     "futex:16:uaddr_0x109",
+     359
+    ],
+    [
+     "running",
+     1
+    ]
+   ],
+   "wchan_last": "futex_wait_queue_me"
+  },
+  {
+   "proc": "5208",
+   "tid": "5209",
+   "comm": "miniandroid",
+   "cpu_ticks": 0,
+   "top_syscalls": [
+    [
+     "futex:32:uaddr_0x189",
+     359
+    ]
+   ],
+   "wchan_last": "futex_wait_queue_me"
+  },
+  {
+   "proc": "5208",
+   "tid": "5213",
+   "comm": "io.worker.1",
+   "cpu_ticks": 0,
+   "top_syscalls": [
+    [
+     "futex:100:uaddr_0x189",
+     359
+    ]
+   ],
+   "wchan_last": "futex_wait_queue_me"
+  },
+  {
+   "proc": "5208",
+   "tid": "5214",
+   "comm": "io.worker.2",
+   "cpu_ticks": 0,
+   "top_syscalls": [
+    [
+     "futex:100:uaddr_0x189",
+     359
+    ]
+   ],
+   "wchan_last": "futex_wait_queue_me"
+  },
+  {
+   "proc": "5208",
+   "tid": "5215",
+   "comm": "dart:io EventHa",
+   "cpu_ticks": 0,
+   "top_syscalls": [
+    [
+     "sys232(epoll_wait)",
+     359
+    ]
+   ],
+   "wchan_last": "do_epoll_wait"
+  }
+ ],
+ "thread_census": {
+  "5208:5208": {
+   "comm": "miniandroid",
+   "sys_hist": {
+    "running": 1,
+    "futex:16:uaddr_0x109": 359
+   }
+  },
+  "5208:5209": {
+   "comm": "miniandroid",
+   "sys_hist": {
+    "futex:32:uaddr_0x189": 359
+   }
+  },
+  "5208:5211": {
+   "comm": "1.raster",
+   "sys_hist": {
+    "running": 359
+   }
+  },
+  "5208:5212": {
+   "comm": "1.io",
+   "sys_hist": {
+    "running": 359
+   }
+  },
+  "5208:5213": {
+   "comm": "io.worker.1",
+   "sys_hist": {
+    "futex:100:uaddr_0x189": 359
+   }
+  },
+  "5208:5214": {
+   "comm": "io.worker.2",
+   "sys_hist": {
+    "futex:100:uaddr_0x189": 359
+   }
+  },
+  "5208:5215": {
+   "comm": "dart:io EventHa",
+   "sys_hist": {
+    "sys232(epoll_wait)": 359
+   }
+  }
+ },
+ "milestones": {
+  "flutter_dlopen": [
+   "dlopen ok (/home/z/my-project/evidence/s188_w2/runs/store_com.sidhant.queens/data/app/com.sidhant.queens/lib/x86_64/libflutter.so) JNI_OnLoad ran"
+  ],
+  "jni_onload": [
+   "JNI_OnLoad ran",
+   "JNI_OnLoad version 0x10004)"
+  ],
+  "register_natives": [
+   "RegisterNatives: 2 methods for io/flutter/embedding/engine/FlutterJNI",
+   "RegisterNatives: 37 methods for io/flutter/embedding/engine/FlutterJNI",
+   "RegisterNatives: 2 methods for io/flutter/embedding/engine/FlutterJNI",
+   "RegisterNatives: 1 methods for io/flutter/embedding/engine/FlutterJNI"
+  ],
+  "route_decision": [
+   "[ROUTE] DECISION pkg=com.sidhant.queens primary=FLUTTER routes=FLUTTER+WEBVIEW_NODE+MEDIA forbidden=LIBGDX+SDL profile=./reports/apk_routes/com.sidhant.queens.json",
+   "[ROUTE] REQUIRED_CAPS pkg=com.sidhant.queens caps=FLUTTER_ENGINE,WEBVIEW_ENGINE,MEDIA_DEMUX_PER_ASSET"
+  ],
+  "libapp": [
+   "libapp.so snapshot symbol _kDartVmSnapshotData: MISSING",
+   "libapp.so snapshot symbol _kDartVmSnapshotInstructions: MISSING",
+   "libapp.so snapshot symbol _kDartIsolateSnapshotData: MISSING",
+   "libapp.so snapshot symbol _kDartIsolateSnapshotInstructions: MISSING",
+   "libapp.so pre-loaded by full path (/home/z/my-project/evidence/s188_w2/runs/store_com.sidhant.queens/data/app/com.sidhant.queens/lib/x86_64/libapp.so, 0/4 snapshot symbols resolved)"
+  ]
+ }
+}

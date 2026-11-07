@@ -1,0 +1,183 @@
+{
+ "pid5523": {
+  "fds": {
+   "0": {
+    "target": "pipe:[44391]",
+    "flags": "flags:\t00"
+   },
+   "1": {
+    "target": "/home/z/my-project/evidence/s188_w9/w9e_queens.console.log",
+    "flags": "flags:\t0100001"
+   },
+   "2": {
+    "target": "/home/z/my-project/evidence/s188_w9/w9e_queens.console.log",
+    "flags": "flags:\t0100001"
+   },
+   "3": {
+    "target": "/home/z/my-project/evidence/s188_w2/runs/w9e_fd_probe/trace.jsonl",
+    "flags": "flags:\t0100001"
+   },
+   "4": {
+    "target": "anon_inode:[eventpoll]",
+    "flags": "flags:\t02"
+   },
+   "5": {
+    "target": "anon_inode:[eventfd]",
+    "flags": "flags:\t02004002"
+   },
+   "6": {
+    "target": "anon_inode:[timerfd]",
+    "flags": "flags:\t02004002"
+   },
+   "7": {
+    "target": "anon_inode:[eventpoll]",
+    "flags": "flags:\t02"
+   },
+   "8": {
+    "target": "anon_inode:[eventfd]",
+    "flags": "flags:\t02004002"
+   },
+   "9": {
+    "target": "anon_inode:[timerfd]",
+    "flags": "flags:\t02004002"
+   },
+   "10": {
+    "target": "anon_inode:[eventpoll]",
+    "flags": "flags:\t02"
+   },
+   "11": {
+    "target": "anon_inode:[eventfd]",
+    "flags": "flags:\t02004002"
+   },
+   "12": {
+    "target": "anon_inode:[timerfd]",
+    "flags": "flags:\t02004002"
+   },
+   "13": {
+    "target": "pipe:[44411]",
+    "flags": "flags:\t02004000"
+   },
+   "14": {
+    "target": "pipe:[44411]",
+    "flags": "flags:\t02000001"
+   },
+   "15": {
+    "target": "anon_inode:[eventpoll]",
+    "flags": "flags:\t02000002"
+   },
+   "16": {
+    "target": "anon_inode:[timerfd]",
+    "flags": "flags:\t02000002"
+   }
+  },
+  "epoll_rates": {
+   "1.raster": {
+    "samples": 38783,
+    "epoll_seen": 0,
+    "running": 38783,
+    "unique_states": [
+     "running"
+    ]
+   },
+   "1.io": {
+    "samples": 41242,
+    "epoll_seen": 0,
+    "running": 41242,
+    "unique_states": [
+     "running"
+    ]
+   },
+   "dart:io EventHa": {
+    "samples": 43711,
+    "epoll_seen": 43711,
+    "running": 0,
+    "unique_states": [
+     "232"
+    ]
+   }
+  },
+  "stack_walk": {
+   "1.raster": {
+    "rsp": "0x7f43abb8c548",
+    "rets": [
+     "0x7f43f0e25388",
+     "0x7f43abb8f9c8",
+     "0x7f43a0001070",
+     "0x7f43f0e253cd",
+     "0x7f43f20b1000",
+     "0x7f43f0ea67ed",
+     "0x7f43ace58140",
+     "0x7f43a0000c00",
+     "0x7f43f206b6be",
+     "0x7f43abfecbf3",
+     "0x7f43f0e27880",
+     "0x7f43a0000c00",
+     "0x7f43a0000c00",
+     "0x7f43a8028b58",
+     "0x7f43a86fb538",
+     "0x7f43acf06ff0",
+     "0x7f43a80263a9",
+     "0x7f43acf07200",
+     "0x7f43f04f5250",
+     "0x7f43ab98f000",
+     "0x7f43a8026181",
+     "0x7f43abb8fcdc",
+     "0x7f43f0e288bb",
+     "0x7f43abb8f6c0",
+     "0x7f43f04f5250",
+     "0x7f43ab98f000",
+     "0x7f43f0e28620",
+     "0x7f43f0ea6538",
+     "0x7f43f0f7c3c0",
+     "0x7f43f0f229e0",
+     "0x7f43f0f22fe0",
+     "0x7f43f0f238e0",
+     "0x7f43abb8fd78",
+     "0x7f43ace5a300",
+     "0x7f43a0000ef0",
+     "0x7f43a00008e0",
+     "0x7f43a0000030"
+    ]
+   },
+   "1.io": {
+    "rsp": "0x7f43a7acc548",
+    "rets": [
+     "0x7f43f0e25388",
+     "0x7f43a7acf9c8",
+     "0x7f4398000e00",
+     "0x7f43f0e253cd",
+     "0x7f43f04f5347",
+     "0x7f43f0ea67ed",
+     "0x7f4398000c90",
+     "0x7f43f206b6be",
+     "0x7f4398000c90",
+     "0x7f4398000c90",
+     "0x7f43a8028b58",
+     "0x7f43a86fb538",
+     "0x7f43acf07950",
+     "0x7f43a80263a9",
+     "0x7f43acf079d0",
+     "0x7f43f04f5250",
+     "0x7f43a78cf000",
+     "0x7f43a8026181",
+     "0x7f43a7acfcdc",
+     "0x7f43f0e288bb",
+     "0x7f43a7acf6c0",
+     "0x7f43f04f5250",
+     "0x7f43a78cf000",
+     "0x7f43f0e28620",
+     "0x7f43f0ea6538",
+     "0x7f43f0f7c3c0",
+     "0x7f43f0f229e0",
+     "0x7f43f0f22fe0",
+     "0x7f43f0f238e0",
+     "0x7f43a7acfd78",
+     "0x7f43ace5a300",
+     "0x7f4398000c40",
+     "0x7f43980008e0",
+     "0x7f4398000030"
+    ]
+   }
+  }
+ }
+}

@@ -139,7 +139,7 @@ gcc -shared -fPIC -O2 -Wl,-soname,libEGL.so \
 # exported by BOTH would bind the app to this anchor instead of the exe's
 # real PortableGL implementation (resolution-order law, see the anchor).
 gcc -shared -fPIC -O2 -Wl,-soname,libGLESv2.so \
-    -o "$OUT/libGLESv2.so" scripts/cont83_glesv2_anchor.c
+    -o "$OUT/libGLESv2.so" scripts/cont83_glesv2_anchor.c -ldl
 # libandroid: honest first-party surface (T22) — ANativeWindow identity
 # tokens + no-buffer window ops + NULL-asset AAsset family.
 gcc -shared -fPIC -O2 -Wl,-soname,libandroid.so \

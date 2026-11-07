@@ -1,0 +1,83 @@
+{
+ "wave": "S188-W9 — Dart VM init stall: full attribution + the two contract fixes",
+ "date": "2026-11-07",
+ "directive": "موج رو ادامه بده — attribute the two spinning threads, audit pthread_shadow, verify fork-probe interference, advance beyond the five-thread stall",
+ "binary_sha16": "2997a4b8fc7583dc",
+ "anchor_sha16": {
+   "libandroid.so": "21496377b3024bea",
+   "libEGL.so": "3b241394942e76e9",
+   "libGLESv2.so": "1e730e298354cb4e_plus_glCreate_fix"
+ },
+
+ "attribution_chain": [
+  {"step": "W9a /proc sampling (W9_SPIN_ATTRIBUTION.json)",
+   "found": "7 threads named: miniandroid x2 (futex WAIT_BITSET|CLOCK_REALTIME), 1.raster + 1.io (100% CPU, 359/359 samples 'running'), io.worker.1/2 (futex), dart:io EventHandler (epoll). 1.ui NEVER created. Single process — the W8 'guarded child/sigsuspend' narrative was WRONG (no sigsuspend exists in the source; fork-probe children exit instantly)."},
+  {"step": "W9b-W9c ptrace RIP sampling (W9B/W9C)",
+   "found": "ALL threads parked at one libc trampoline = __syscall_cancel_arch (identified by live-mem byte match at libc file offset 0x9A72C 'mov %r11,0x8(%rsp); syscall; ret'). NOTE: symbolization must add the maps file-offset column (vaddr==offset offset 0x28000) — first-pass offsets were shifted."},
+  {"step": "W9d syscall+regs capture (W9D_SYSCALL_MIX.json)",
+   "found": "1.raster/1.io orig_rax=232 (epoll_wait fd7/fd10 maxevents=1 timeout=-1); platform thread futex WAIT_BITSET|CLOCK_REALTIME timeout=NULL (infinite); fd triples (epoll+eventfd+timerfd) x3 = three MessageLoopAndroid instances."},
+  {"step": "W9e/W9f fd-state + attach test (W9E_FD_PROBE.json, W9F_FDSTATE.json)",
+   "found": "raster/io: 27085-43711 samples/sec 100% 'running' (hot), EventHandler 100% parked in epoll (healthy). Attach does NOT flip state. All eventfd-counts=0 (not the undrained-wake mechanism). Stack walk resolves the live call path: libflutter (0x556181/0x5563a9/0x558b58) -> anchor libandroid.so ALooper internals -> anchor libc.so pthread_cond_signal shadow -> cancel-arch stub."}
+ ],
+
+ "root_cause_F_NEW_588": {
+  "title": "ALooper CALLBACK-mode contract — the exact missing contract",
+  "gap": "scripts/cont83_android_anchor.c ALooper_addFd discarded the callback ('(void)callback'); the engine registers its timerfd in CALLBACK mode (ident==ALOOPER_POLL_CALLBACK, callback reads/drains the timerfd). A fired timerfd stays level-triggered EPOLLIN forever -> epoll_wait returns instantly, forever -> raster/io burn 100% CPU -> Shell::Create latch on the platform thread never closes -> the W8 five-thread stall.",
+  "also_wrong": "return constants: ours POLL_CALLBACK=1/TIMEOUT=-2/ERROR=-3 vs AOSP -2/-3/-4; pollAll missing (dartjni face); EINTR answered as spurious WAKE.",
+  "fix": "AOSP Looper.cpp contract restored: exact constants; addFd validates ident (-2 callback mode w/ required callback, >=0 data mode, else error); pollOnce dispatches ONE event (callback invoked, its fd drained, callback's return returned; data mode fills outs and returns ident); pollAll added (continuous callback dispatch, first wait honors timeout, subsequent 0ms); EINTR retries; EVENT<->EPOLL bit translation incl. ERROR/HANGUP; fd table 64->256.",
+  "stage": "SOURCE_INTEGRATED + BINARY_INTEGRATED (anchor rebuilt 21496377b3024bea) + REAL_APK_PROVEN (queens advanced past the stall)"
+ },
+
+ "root_cause_F_NEW_589": {
+  "title": "the real-GL lane — Load Real instead of a wider shim",
+  "gap_chain": [
+   "after F-NEW-588 the shell reached Impeller's GLES proc table: 'Could not resolve glGetActiveUniform' -> 'Could not create OpenGL proc table' -> 'Could not create Impeller context' -> SIGSEGV fault_addr=0x200000000 on a virtual call (this=0x200000000) at libflutter modoff 0x51defe <- 0x52d200 (decoded: mov (%rdi),%rcx; jmp *(%rcx,%rax,1) vtable dispatch).",
+   "second crash after the EGL getproc upgrade: exe's PortableGL glGetString (bound via libflutter's UND gl* through the global scope) derefs its NULL PortableGL context -> fault 0xa04 at glGetString+0x3f (mov 0xa04(%rdi),%ecx with rdi=NULL)."
+  ],
+  "fix": [
+   "OSMesa (Mesa 25.0.7 llvmpipe, GL 4.5 Compatibility + GL_ARB_ES3_compatibility) downloaded WITHOUT root (apt-get download libosmesa6 + dpkg -x to third_party/osmesa), dlopen'd by full path.",
+   "EGL anchor (cont83_egl_anchor.c rewritten): eglGetProcAddress('gl*') -> OSMesaGetProcAddress (REAL pointers); eglCreateContext -> OSMesaCreateContextAttribs (REAL contexts, share-group preserved); eglMakeCurrent -> OSMesaMakeCurrent binding each surface's OWN color buffer (REAL render targets, thread-local current state for raster/io concurrency); eglSwapBuffers -> real pixels in the surface buffer (frame-present hook sees a REAL framebuffer); token fallback preserved when OSMesa absent.",
+   "GLESv2 anchor (cont83_glesv2_anchor.c rebuilt): libflutter UND census = 106 gl* symbols; ALL 106 served as typed OSMesa delegators (W2's 15 first-party faces kept as the OSMesa-absent fallback; honest no-op/zeros for the rest — no fabricated success). The exe's PortableGL exports untouched (JS lane safe)."
+  ],
+  "osmesa_sanity": {"GL_VERSION": "4.5 (Compatibility Profile) Mesa 25.0.7-2+deb13u1", "GL_RENDERER": "llvmpipe (LLVM 19.1.7, 256 bits)", "ES3_compat": true, "clear_readback_exact": true},
+  "stage": "SOURCE_INTEGRATED + BINARY_INTEGRATED (libEGL 3b241394942e76e9, libGLESv2 106/106) + REAL_APK_PROVEN (Impeller ACCEPTED the OpenGLES backend)"
+ },
+
+ "w9_run_result": {
+  "log": "evidence/s188_w9/w9_gl2.console.log",
+  "before": "W8: kill-by-timeout, parent never exits, 2 threads at 100% CPU, last milestone 'Failed to set raster task runner priority'",
+  "after": "exit=1 CLEAN RUN END; '[IMPORTANT] Using the Impeller rendering backend (OpenGLES)' (first time ever); SurfaceView.getHolder chains; asyncWaitForVsync registered; BootOrder 7/7 stages ok (render_frame 193ms, capture_output); 'Frames Rendered: 2'; screenshot produced; stub-census 3489 IMPLEMENTED / 109 STUBBED / 0 MISSING",
+  "tier": "NO_ROOT (first_missing_stage=WINDOW_ROOT) — honest: the shell init advanced; app-owned Dart frame NOT yet claimed",
+  "new_first_divergences": [
+   "JNI slot census at exit: env152=8, env230=4 (the next JNI demands of the further-executed engine path)",
+   "android.util.LongArray ClassNotFoundException (flutter/view/r.<init> — accessibility path) — deferred",
+   "Lg0/u;.d NPE List.iterator on null — uncaught x2 past app frames (ART process-death law, compatibility-continue)",
+   "libapp.so snapshot symbols: queens ships _kDartSnapshotData/_kDartSnapshotText (old Data/Text pair), NOT the 4 Flutter AOT symbols — the Dart isolate-snapshot format is the next Dart-side frontier"
+  ]
+ },
+
+ "pthread_shadow_audit": {
+  "verified": [
+   "exe (-rdynamic) and anchor libc.so both carry the family — live stack evidence: the anchor libc.so pthread_cond_signal shadow frame appears in the queens hot-loop walk",
+   "hot-path lock/unlock/trylock passthrough: no registry touch, no regression (goldens ALL HOLD after the wave)",
+   "registry destroy->close ordering: no double-free (free_obj nulls s->real before close swaps)",
+   "no recursion: registry mutex is distinct from every shadowed object",
+   "attr objects never dereferenced (bionic 4-byte callers safe by construction)"
+  ],
+  "documented_gaps_nonblocking": [
+   "SHADOW_CAP=1024 overflow would pass a raw bionic attr to glibc (the original corruption path) — observed max live slots 6 in any run",
+   "settype-before-init records type but mutex_init falls through raw (same as unshadowed)",
+   "condattr_getclock / mutexattr_getpshared / attr_getdetachstate getters absent — no caller demanded them in any observed run",
+   "stack-address key reuse after destroy is benign (slot removed, re-init re-opens)"
+  ],
+  "fork_probe_interference_check": "DISPROVEN: no sigsuspend anywhere in src/; the fork-probe child dlopens and _exits instantly (waitpid reaps); the W8 'parent sigsuspend-forever' narrative was a misreading — the platform thread blocks in a legitimate infinite futex timed-wait (the Shell::Create latch)."
+ },
+
+ "regression": {
+  "goldens": "bouncy 8a6c24ac + unote 3b8dcb0a + dooz 31ddd4d5 ALL HOLD byte-exact, uncaught=0 x3 (after both anchor upgrades)",
+  "non_flutter_milestones": "queens dlopen+JNI_OnLoad+RegisterNatives OK; no.thanks uncaught=0; ball2box Godot onCreate clean (S188_RESUME_VERIFY.json; no.thanks tier matches the committed baseline FLAT/1-color for this short-run mode — not a regression)",
+  "independent_run_count": "queens advance verified across w9f (12s), w9_gl1 (30s), w9_gl2 (35s) + the earlier w9a-d probes — the no-stall behavior is stable across 3+ independent runs"
+ },
+
+ "androguard_policy": "primary oracle per W8 head-to-head (ORACLE_HEAD_TO_HEAD.json preserved); W9's questions were runtime/ELF/thread-level (ptrace, fd, proc, ELF UND census via readelf) — no DEX-level question arose; the one DEX-adjacent census (libflutter UND gl*) used the ELF dynamic table, the correct source for a symbol-binding question."
+}

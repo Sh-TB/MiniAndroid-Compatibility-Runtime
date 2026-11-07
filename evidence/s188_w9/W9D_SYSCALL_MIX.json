@@ -1,0 +1,142 @@
+{
+ "5495:miniandroid": {
+  "syscall_mix": {
+   "202": [
+    "202 0x7f749d06b990 0x109 0x1578 0x0 0x0 0xffffffff 0x7ffc25dc35f8 0x7f749d99472e",
+    "202 0x7f749d06b990 0x109 0x1578 0x0 0x0 0xffffffff 0x7ffc25dc35f8 0x7f749d99472e"
+   ]
+  },
+  "regs_last": {
+   "orig_rax": 202,
+   "rax": 18446744073709551104,
+   "rdi": "0x7f749d06b990",
+   "rsi": "0x109",
+   "rdx": "0x1578",
+   "r10": "0x0",
+   "r8": "0x0",
+   "rip": "0x7f749d99472e",
+   "rsp": "0x7ffc25dc35f8"
+  }
+ },
+ "5496:miniandroid": {
+  "syscall_mix": {
+   "202": [
+    "202 0x7f7458f0cb30 0x189 0x0 0x0 0x0 0xffffffff 0x7f749d056fa8 0x7f749d99472e",
+    "202 0x7f7458f0cb30 0x189 0x0 0x0 0x0 0xffffffff 0x7f749d056fa8 0x7f749d99472e"
+   ]
+  },
+  "regs_last": {
+   "orig_rax": 202,
+   "rax": 18446744073709551104,
+   "rdi": "0x7f7458f0cb30",
+   "rsi": "0x189",
+   "rdx": "0x0",
+   "r10": "0x0",
+   "r8": "0x0",
+   "rip": "0x7f749d99472e",
+   "rsp": "0x7f749d056fa8"
+  }
+ },
+ "5498:1.raster": {
+  "syscall_mix": {
+   "232": [
+    "232 0x7 0x7f745490c5c4 0x1 0xffffffffffffffff 0x0 0x0 0x7f745490c548 0x7f749d99472e",
+    "232 0x7 0x7f745490c5c4 0x1 0xffffffffffffffff 0x0 0x0 0x7f745490c548 0x7f749d99472e"
+   ],
+   "-1": [
+    "-1 0x7f745490c590 0x7f749d98fbf4"
+   ]
+  },
+  "regs_last": {
+   "orig_rax": 232,
+   "rax": 1,
+   "rdi": "0x7",
+   "rsi": "0x7f745490c5c4",
+   "rdx": "0x1",
+   "r10": "0xffffffffffffffff",
+   "r8": "0x0",
+   "rip": "0x7f749d99472e",
+   "rsp": "0x7f745490c548"
+  }
+ },
+ "5499:1.io": {
+  "syscall_mix": {
+   "232": [
+    "232 0xa 0x7f745470b5c4 0x1 0xffffffffffffffff 0x0 0x0 0x7f745470b548 0x7f749d99472e",
+    "232 0xa 0x7f745470b5c4 0x1 0xffffffffffffffff 0x0 0x0 0x7f745470b548 0x7f749d99472e"
+   ],
+   "-1": [
+    "-1 0x7f745470b590 0x7f749d98fbf4",
+    "-1 0x7f745470b5a8 0x7f749ebcf140"
+   ]
+  },
+  "regs_last": {
+   "orig_rax": 232,
+   "rax": 1,
+   "rdi": "0xa",
+   "rsi": "0x7f745470b5c4",
+   "rdx": "0x1",
+   "r10": "0xffffffffffffffff",
+   "r8": "0x0",
+   "rip": "0x7f749d99472e",
+   "rsp": "0x7f745470b548"
+  }
+ },
+ "5500:io.worker.1": {
+  "syscall_mix": {
+   "202": [
+    "202 0x7f7458ec6a74 0x189 0x0 0x0 0x0 0xffffffff 0x7f744fffc498 0x7f749d99472e",
+    "202 0x7f7458ec6a74 0x189 0x0 0x0 0x0 0xffffffff 0x7f744fffc498 0x7f749d99472e"
+   ]
+  },
+  "regs_last": {
+   "orig_rax": 202,
+   "rax": 18446744073709551104,
+   "rdi": "0x7f7458ec6a74",
+   "rsi": "0x189",
+   "rdx": "0x0",
+   "r10": "0x0",
+   "r8": "0x0",
+   "rip": "0x7f749d99472e",
+   "rsp": "0x7f744fffc498"
+  }
+ },
+ "5501:io.worker.2": {
+  "syscall_mix": {
+   "202": [
+    "202 0x7f7458ec6a74 0x189 0x0 0x0 0x0 0xffffffff 0x7f744f7fb498 0x7f749d99472e",
+    "202 0x7f7458ec6a74 0x189 0x0 0x0 0x0 0xffffffff 0x7f744f7fb498 0x7f749d99472e"
+   ]
+  },
+  "regs_last": {
+   "orig_rax": 202,
+   "rax": 18446744073709551104,
+   "rdi": "0x7f7458ec6a74",
+   "rsi": "0x189",
+   "rdx": "0x0",
+   "r10": "0x0",
+   "r8": "0x0",
+   "rip": "0x7f749d99472e",
+   "rsp": "0x7f744f7fb498"
+  }
+ },
+ "5502:dart:io EventHa": {
+  "syscall_mix": {
+   "232": [
+    "232 0xf 0x7f745c106120 0x10 0xffffffffffffffff 0x0 0x0 0x7f745c106018 0x7f749d99472e",
+    "232 0xf 0x7f745c106120 0x10 0xffffffffffffffff 0x0 0x0 0x7f745c106018 0x7f749d99472e"
+   ]
+  },
+  "regs_last": {
+   "orig_rax": 232,
+   "rax": 18446744073709551612,
+   "rdi": "0xf",
+   "rsi": "0x7f745c106120",
+   "rdx": "0x10",
+   "r10": "0xffffffffffffffff",
+   "r8": "0x0",
+   "rip": "0x7f749d99472e",
+   "rsp": "0x7f745c106018"
+  }
+ }
+}
