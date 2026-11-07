@@ -1,0 +1,240 @@
+{
+ "microtimer": {
+  "tag": "microtimer",
+  "pkg": "dubrowgn.microtimer",
+  "bin": "989439242e6e3b30",
+  "wall_s": 1.0,
+  "face": "bbd350b6c14fbd52",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "5"
+  ],
+  "first_stack": null,
+  "subsys": {
+   "compose": 1
+  },
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 893597,
+  "app_draw_ops": 16,
+  "unique_colors": 190,
+  "pin": "bbd350b6c14fbd52",
+  "pin_match": true,
+  "class": "PIN_MATCH"
+ },
+ "opencalc": {
+  "tag": "opencalc",
+  "pkg": "com.darkempire78.opencalculator",
+  "bin": "989439242e6e3b30",
+  "wall_s": 1.6,
+  "face": "63020bc7334048fe",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "5"
+  ],
+  "first_stack": "[EXP092-COPY] framebuffer_ updated, checking... | [EXP092-COPY] framebuffer_ has 1214450 non-white pixels | [TRACE] 32 FRAME_ANALYSIS state=REAL_APP_CONTENT result=OK rf=CLASSIC_CANVAS | [TRACE] 34 RUN_END state=Execution completed successfully [F-016 exception-honesty: 16 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 13322 IMPLEMENTED, 586 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] result=FAIL rf=CLASSIC_CANVAS [FRONTIER] |  | === Execution Result === |  | Status: PARTIAL SUCCESS \u26a0\ufe0f |  | Message: Exe",
+  "subsys": {
+   "compose": 1,
+   "lifecycle": 518,
+   "missing_class": 6,
+   "npe": 35
+  },
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 896848,
+  "app_draw_ops": 28,
+  "unique_colors": 360,
+  "pin": "63020bc7334048fe",
+  "pin_match": true,
+  "class": "PIN_MATCH"
+ },
+ "dooz": {
+  "tag": "dooz",
+  "pkg": "io.github.yamin8000.dooz",
+  "bin": "989439242e6e3b30",
+  "wall_s": 168.0,
+  "face": "a0fae9072313e2d1",
+  "uncaught": 6,
+  "ndfe": 0,
+  "frames": [
+   "5"
+  ],
+  "first_stack": "[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Landroid/app/Activity; | [F058-DISPATCH] onActivityPostCreated -> Loc1$a; obs=982 ins=50 | [F058] onActivityPostCreated fan-out: 2/2 observers executed | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] La; unwound Lzs;.m invoke_pc=0x4a depth=17 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] La; unwound Lte1;.f invoke_pc=0x4 depth=16 [FRONTIER] | [TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] La; unwound Lse1;.s invoke_pc=0x89 depth=15 [FRONTIER] | [TRACE] 12 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UN",
+  "subsys": {
+   "compose": 1,
+   "lifecycle": 101,
+   "missing_class": 4
+  },
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 231873,
+  "app_draw_ops": 1468,
+  "unique_colors": 121,
+  "pin": "a0fae9072313e2d1",
+  "pin_match": true,
+  "class": "PIN_MATCH"
+ },
+ "itsfrz_ttt": {
+  "tag": "itsfrz_ttt",
+  "pkg": "com.itsfrz.tictactoe",
+  "bin": "989439242e6e3b30",
+  "wall_s": 1.9,
+  "face": "d55056a8928a26ff",
+  "uncaught": 10,
+  "ndfe": 0,
+  "frames": [
+   "7"
+  ],
+  "first_stack": "[SGET] class=Landroidx/lifecycle/L$a; method=onActivityPostCreated pc=5 field=Landroidx/lifecycle/L;.e value=0 | [F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/L$a; obs=962 ins=64 | [F058] onActivityPostCreated fan-out: 2/2 observers executed | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] LC4/a; unwound LC4/u;.s invoke_pc=0x8d depth=20 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] LC4/a; unwound LB3/a;.e invoke_pc=0x4f depth=18 [FRONTIER] | [TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] LC4/a; unwound LB4/c;.e invoke_pc=0xd8 depth=17 [FRONTIER] | [TRACE]",
+  "subsys": {
+   "compose": 1,
+   "lifecycle": 497,
+   "missing_class": 3,
+   "npe": 22
+  },
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 1,
+  "unique_colors": 1,
+  "class": "DEFAULT_BACKGROUND_ONLY"
+ },
+ "pfdicer": {
+  "tag": "pfdicer",
+  "pkg": "org.secuso.privacyfriendlydicer",
+  "bin": "989439242e6e3b30",
+  "wall_s": 1.6,
+  "face": "b5a7a35d5fe0564b",
+  "uncaught": 12,
+  "ndfe": 0,
+  "frames": [
+   "7"
+  ],
+  "first_stack": "[SGET] class=Landroidx/lifecycle/ReportFragment$LifecycleCallbacks; method=onActivityPostCreated pc=5 field=Landroidx/lifecycle/ReportFragment;.$r8$clinit value=0 | [F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/ReportFragment$LifecycleCallbacks; obs=346 ins=66 | [F058] onActivityPostCreated fan-out: 2/2 observers executed | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalArgumentException; unwound Landroidx/lifecycle/ViewModelProvider;.get invoke_pc=0x47 depth=12 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/IllegalArgumentException; unwound Landroidx/lifecycle/Li",
+  "subsys": {
+   "compose": 1,
+   "lifecycle": 804,
+   "missing_class": 3
+  },
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "class": "DEFAULT_BACKGROUND_ONLY"
+ },
+ "sunpiano": {
+  "tag": "sunpiano",
+  "pkg": "code.alimiracle.sunpiano",
+  "bin": "989439242e6e3b30",
+  "wall_s": 27.4,
+  "face": "af001924bf2b7554",
+  "uncaught": 7,
+  "ndfe": 0,
+  "frames": [
+   "7"
+  ],
+  "first_stack": "[F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/g0$a; obs=276 ins=1109040 | [F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/g0$a; obs=280 ins=60 | [F058] onActivityPostCreated fan-out: 2/2 observers executed | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lr5/a; unwound Li4/q;.k invoke_pc=0x1ab depth=63 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lr5/a; unwound Lr5/p;.c invoke_pc=0x4 depth=61 [FRONTIER] | [TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Lr5/a; unwound Lr5/o;.s invoke_pc=0x8b depth=60 [FRONTIER] | [TRACE] 12 EXCEPTION state=non",
+  "subsys": {
+   "compose": 2,
+   "lifecycle": 581,
+   "missing_class": 5,
+   "npe": 12
+  },
+  "verdict": "REAL_APP_CONTENT",
+  "app_owned_pixels": 576907,
+  "app_draw_ops": 446,
+  "unique_colors": 908,
+  "class": "REAL_APP_CONTENT"
+ },
+ "sopadeletras": {
+  "tag": "sopadeletras",
+  "pkg": "app.sopadeletras",
+  "bin": "cd718719dbfe9917",
+  "wall_s": 2.4,
+  "face": "87553c6bf541d4da",
+  "uncaught": 32,
+  "ndfe": 0,
+  "frames": [
+   "7"
+  ],
+  "first_stack": "[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Landroid/app/Activity; | [F058-DISPATCH] onActivityPostCreated -> Ljf1$a; obs=823 ins=50 | [F058] onActivityPostCreated fan-out: 2/2 observers executed | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] La; unwound Lqh1;.f invoke_pc=0x4 depth=51 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] La; unwound Lph1;.t invoke_pc=0x89 depth=50 [FRONTIER] | [TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] La; unwound Lse;.r invoke_pc=0x15d depth=48 [FRONTIER] | [TRACE] 12 EXCEPTION state=nonfatal result=FAIL exc=[EXC-U",
+  "subsys": {
+   "compose": 2,
+   "lifecycle": 75,
+   "missing_class": 4
+  },
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "class": "DEFAULT_BACKGROUND_ONLY"
+ },
+ "antimine": {
+  "tag": "antimine",
+  "pkg": "dev.lucanlm.antimine",
+  "bin": "cd718719dbfe9917",
+  "wall_s": 3.2,
+  "face": "82848eef78073180",
+  "uncaught": 33,
+  "ndfe": 0,
+  "frames": [
+   "7"
+  ],
+  "first_stack": "[F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/k0; obs=1665 ins=1557 | [F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/k0; obs=1669 ins=70 | [F058] onActivityPostCreated fan-out: 2/2 observers executed | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lorg/acra/config/LimiterConfiguration;.<init> invoke_pc=0x2 depth=6 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lorg/acra/config/LimiterConfiguration;.<init> invoke_pc=0x66 depth=5 [FRONTIER] | [TRACE] 11 EXCEPTION state=nonfatal result=FAIL exc=[EXC-",
+  "subsys": {
+   "compose": 1,
+   "lifecycle": 476,
+   "missing_class": 3,
+   "npe": 60
+  },
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "class": "DEFAULT_BACKGROUND_ONLY"
+ },
+ "sparkledns": {
+  "tag": "sparkledns",
+  "pkg": "cc.skysparkle.sparkledns",
+  "bin": "989439242e6e3b30",
+  "wall_s": 1.9,
+  "face": "3fddba97cbe5ac66",
+  "uncaught": 23,
+  "ndfe": 0,
+  "frames": [
+   "7"
+  ],
+  "first_stack": "[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Landroid/app/Activity; | [F058-DISPATCH] onActivityPostCreated -> Landroidx/lifecycle/ReportFragment$LifecycleCallbacks; obs=327 ins=51 | [F058] onActivityPostCreated fan-out: 2/2 observers executed | [TRACE] 9 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/compose/ui/platform/AndroidCompositionLocals_androidKt;.ProvideAndroidCompositionLocals invoke_pc=0x26a depth=24 [FRONTIER] | [TRACE] 10 EXCEPTION state=nonfatal result=FAIL exc=[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Landroidx/compose/ui/platform/WrappedCompositio",
+  "subsys": {
+   "compose": 272,
+   "lifecycle": 877,
+   "missing_class": 3,
+   "npe": 42
+  },
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "class": "DEFAULT_BACKGROUND_ONLY"
+ },
+ "stopwatch": {
+  "tag": "stopwatch",
+  "pkg": "com.github.muellerma.stopwatch",
+  "bin": "989439242e6e3b30",
+  "wall_s": 1.1,
+  "face": "31ddd4d5b8e6d18e",
+  "uncaught": 0,
+  "ndfe": 0,
+  "frames": [
+   "7"
+  ],
+  "first_stack": "[CONT48-F1] eager R$ harvest: 14 classes, 165 resids | [ARSC-VALUES] drawable paths resolved via canonical resolver: 0/165 | [TRACE] 24 FRAME_ANALYSIS state=NO_ROOT result=OK rf=COMPOSE | [TRACE] 26 RUN_END state=Partial execution completed [F-NEW-200 stub-census: 462 IMPLEMENTED, 26 STUBBED, 0 MISSING, 0 ERROR \u2014 success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT \u2014 SUCCESS requires authoritative app content] result=FAIL rf=COMPOSE [FRONTIER] |  | === Execution Result === |  | Status: PARTIAL SUCCESS \u26a0\ufe0f |  | Message: Partial execution completed [F-NEW-200 stub-census: 462 IMPLEMENTED, 26 STUBBED, 0 MISSIN",
+  "subsys": {
+   "compose": 1,
+   "lifecycle": 522
+  },
+  "verdict": "NO_ROOT",
+  "app_owned_pixels": 0,
+  "app_draw_ops": 0,
+  "unique_colors": 1,
+  "class": "NO_ROOT"
+ }
+}

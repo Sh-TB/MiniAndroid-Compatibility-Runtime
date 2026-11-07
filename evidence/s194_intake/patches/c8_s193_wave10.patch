@@ -1,0 +1,1443 @@
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -4008,6 +4008,15 @@
+     uint32_t common_pool_oid_ = 0;
+     // [S191-C8] F-C8-143 HandlerThread → its Looper object binding.
+     std::map<uint32_t, uint32_t> handler_thread_looper_;
++    // [S193-C8] F-C8-184 Timer → its scheduled task ids (Timer.cancel
++    // discards exactly this set from the shared deterministic queue).
++    std::map<uint32_t, std::vector<uint32_t>> c8_timer_tasks_;
++    // [S193-C8] F-C8-198 ThreadPoolExecutor → its queue box (getQueue
++    // mints the LinkedBlockingQueue view once per executor).
++    std::map<uint32_t, uint32_t> c8_tpe_queue_;
++    // [S193-C8] F-C8-189 Process.setThreadPriority native store (tid →
++    // priority) — loud record; AOSP has no getter (setpriority(2) side).
++    std::map<uint32_t, int32_t> c8_native_thread_prio_;
+ private:
+ 
+     // EXP-053: Set of class descriptors whose <clinit> has been executed.
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -32710,6 +32710,14 @@
+     } else if (ts_shadow && thread_oid != 0) {
+         // Body completed (loop exit / return) — never re-drain it.
+         ts_shadow->clear_thread_yielded(thread_oid);
++        // [S193-C8] F-C8-185 TERMINATION LAW: a body that ran to
++        // completion (returned or loop-exited without parking) has
++        // TERMINATED — JDK Thread state law. isAlive() flips false;
++        // join() on this target returns. Was (this line): no state,
++        // isAlive() answered true forever.
++        ts_shadow->mark_thread_terminated(thread_oid);
++        std::cerr << "[THREAD-LIFE] thread o" << thread_oid
++                  << " body completed → TERMINATED" << std::endl;
+     }
+     std::cerr << "[THREAD-START] drained oid=" << run_oid << " cls=" << rcls
+               << (target_oid == thread_oid && thread_oid != 0
+@@ -42440,6 +42448,32 @@
+             }
+             heap_.set_object_field(task_id, "__timer_period__",
+                                    DalvikValue::make_long(period_ms));
++            // [S193-C8] F-C8-183: TimerTask SCHEDULE STAMP —
++            // scheduledExecutionTime() answers the scheduled beat
++            // (OpenJDK TimerThread law: nextExecutionTime). Was: the
++            // method had no law on this line → answered null/0.
++            {
++                int64_t base_now = 0;
++                if (auto* hs = shadow_registry_
++                                   ? shadow_registry_->find_as<
++                                         framework::HandlerShadow>()
++                                   : nullptr)
++                    base_now = hs->virtual_now_ms();
++                heap_.set_object_field(
++                    task_id, "__tt_sched_time__",
++                    DalvikValue::make_long(base_now + delay_ms));
++                heap_.set_object_field(task_id, "__tt_period__",
++                                       DalvikValue::make_long(period_ms));
++                // [S193-C8] F-C8-184: record the timer→task set so
++                // Timer.cancel() discards THIS timer's pending tasks
++                // (OpenJDK Timer clean-up law) without touching other
++                // work on the shared deterministic queue.
++                const uint32_t timer_oid =
++                    (args[0].type == DalvikType::OBJECT_REF)
++                        ? args[0].object_id : 0;
++                if (timer_oid != 0)
++                    c8_timer_tasks_[timer_oid].push_back(task_id);
++            }
+             if (auto* hs = shadow_registry_
+                                ? shadow_registry_->find_as<framework::HandlerShadow>()
+                                : nullptr) {
+@@ -42460,11 +42494,38 @@
+     }
+     if (class_name == "Ljava/util/Timer;" &&
+         (method == "cancel" || method == "purge")) {
+-        // AOSP Timer.cancel(): terminate the timer; its already-enqueued
+-        // tasks stay pending until their time (openjdk runs them unless
+-        // purge). Engine model: the queue is virtual-clock driven; a
+-        // cancelled timer's tasks are left to the established drain law.
+-        result = DalvikValue::make_void();
++        // [S193-C8] F-C8-184: Timer.cancel() discards THIS timer's
++        // pending tasks (OpenJDK Timer.java: the TimerThread's queue is
++        // drained on cancel). The tasks ride the shared deterministic
++        // queue here — removal is per-task via remove_callbacks, so no
++        // OTHER timer's or Handler's work is touched. purge() answers
++        // the count of cancelled tasks removed from the queue; the
++        // cancel law removes eagerly, so purge reports 0 (loud, honest
++        // serialized-model note — never a silent void).
++        if (method == "purge") {
++            result = DalvikValue::make_int(0);
++            std::cerr << "[F115-TIMER] purge → 0 (cancel law removes "
++                         "eagerly — serialized model)" << std::endl;
++        } else {
++            const uint32_t timer_oid =
++                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    ? args[0].object_id : 0;
++            auto it = c8_timer_tasks_.find(timer_oid);
++            if (it != c8_timer_tasks_.end()) {
++                if (auto* hs = shadow_registry_
++                                   ? shadow_registry_->find_as<
++                                         framework::HandlerShadow>()
++                                   : nullptr) {
++                    for (uint32_t t : it->second)
++                        hs->remove_callbacks(t);
++                    std::cerr << "[F115-TIMER] cancel o" << timer_oid
++                              << " → discarded " << it->second.size()
++                              << " pending task(s)" << std::endl;
++                }
++                c8_timer_tasks_.erase(it);
++            }
++            result = DalvikValue::make_void();
++        }
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         return true;
+     }
+@@ -55567,6 +55628,114 @@
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         return true;
+     }
++    // ── [S193-C8] F-C8-192/193 — invokeAll / invokeAny LAWS ─────────
++    // OpenJDK AbstractExecutorService: invokeAll(tasks) runs every task
++    // and returns a List<Future> IN TASK ORDER, each done with its
++    // result/exception; invokeAny(tasks) returns the FIRST successful
++    // result (ExecutionException when all fail). Serialized laws: the
++    // tasks run inline in iteration order (the S188-W3 submit precedent);
++    // invokeAll mints a REAL ArrayList box of Future boxes (the
++    // CollectionShadow list store); invokeAny walks tasks until the
++    // first non-throwing result, else REAL ExecutionException via the
++    // deferred-throw channel. Wave-9 §Next candidate.
++    if ((method == "invokeAll" || method == "invokeAny") &&
++        s188w3_executor_family) {
++        const uint32_t coll =
++            (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF)
++                ? args[1].object_id
++                : ((!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                       ? args[0].object_id
++                       : 0);
++        auto* csh_i = shadow_registry_
++                          ? shadow_registry_->find_as<
++                                framework::CollectionShadow>()
++                          : nullptr;
++        std::vector<uint32_t> task_oids;
++        if (coll != 0 && csh_i) {
++            auto* st = csh_i->get_or_create(coll, /*is_map=*/false);
++            if (st) {
++                for (size_t i = 0; i < st->elements.size(); ++i)
++                    if (st->elem_kinds[i] == 1)
++                        task_oids.push_back(st->elements[i]);
++            }
++        }
++        std::cerr << "[EXECUTOR] " << method << " tasks=" << task_oids.size()
++                  << " caller=" << current_class_ << "." << current_method_
++                  << std::endl;
++        if (method == "invokeAll") {
++            const uint32_t list_id = heap_.allocate("Ljava/util/ArrayList;",
++                                                    pc_, 0);
++            auto* dst = csh_i ? csh_i->get_or_create(
++                                    list_id, /*is_map=*/false)
++                              : nullptr;
++            for (uint32_t t : task_oids) {
++                std::string tcls = "Ljava/lang/Object;";
++                if (heap_.has_object(t)) {
++                    if (const auto* ro = heap_.get(t))
++                        if (!ro->class_descriptor.empty())
++                            tcls = ro->class_descriptor;
++                }
++                DalvikValue self = DalvikValue::make_object(t, tcls);
++                DalvikValue ret;
++                DalvikExecutionResult res;
++                std::vector<DalvikValue> cargs{self};
++                bool ran = try_recursive_invoke(tcls, "call", cargs, ret,
++                                                res,
++                                                "()Ljava/lang/Object;");
++                if (!ran)
++                    ran = try_recursive_invoke(tcls, "run", cargs, ret,
++                                               res, "()V");
++                const uint32_t fbox =
++                    heap_.allocate("Ljava/util/concurrent/Future;", 0, 0);
++                if (fbox != 0)
++                    future_results_[fbox] = ret;
++                if (dst)
++                    dst->elements.push_back(fbox),
++                        dst->elem_kinds.push_back(1);
++                std::cerr << "[EXECUTOR] invokeAll task o" << t
++                          << " → box o" << fbox << " ran=" << ran
++                          << std::endl;
++            }
++            result = DalvikValue::make_object(list_id,
++                                              "Ljava/util/ArrayList;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        // invokeAny: first successful result; all failed → REAL
++        // ExecutionException (OpenJDK contract).
++        for (uint32_t t : task_oids) {
++            std::string tcls = "Ljava/lang/Object;";
++            if (heap_.has_object(t)) {
++                if (const auto* ro = heap_.get(t))
++                    if (!ro->class_descriptor.empty())
++                        tcls = ro->class_descriptor;
++            }
++            DalvikValue self = DalvikValue::make_object(t, tcls);
++            DalvikValue ret;
++            DalvikExecutionResult res;
++            std::vector<DalvikValue> cargs{self};
++            bool ran = try_recursive_invoke(tcls, "call", cargs, ret, res,
++                                            "()Ljava/lang/Object;");
++            if (!ran)
++                ran = try_recursive_invoke(tcls, "run", cargs, ret, res,
++                                           "()V");
++            if (ran && res.uncaught_in_flight_count == 0) {
++                std::cerr << "[EXECUTOR] invokeAny task o" << t
++                          << " → first success" << std::endl;
++                result = ret;
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        std::cerr << "[EXECUTOR] invokeAny: no task succeeded → REAL "
++                     "ExecutionException" << std::endl;
++        throw_deferred("Ljava/util/concurrent/ExecutionException;",
++                       "no task completed successfully",
++                       "c8-193-invokeany");
++        result = DalvikValue::make_null();
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
+     // ── [S188-W3] FUTURE.get LAW ─────────────────────────────────
+     // Answer the stored result of a submit() box. Unknown box →
+     // honest loud gap + null (AOSP would block; a silent null hid
+@@ -55676,6 +55845,21 @@
+           class_name == "Ljava/lang/InterruptedException;") &&
+          (method == "getCause" || method == "initCause" ||
+           method == "printStackTrace" || method == "<init>")) ||
++        // [S193-C8] WAVE 10 keys (defects 181–200): the wave-9 §Next
++        // list + the androguard crossref targets (7-APK TimerTask,
++        // 4-APK Process family, wave-9 §Next Phaser/invokeAll/invokeAny,
++        // the 10-FAIL baseline probe rows).
++        c8_isa(class_name, "Ljava/util/TimerTask;") ||
++        (class_name == "Ljava/util/Timer;" &&
++         method == "purge") ||
++        (class_name == "Landroid/os/Process;") ||
++        c8_isa(class_name, "Ljava/util/concurrent/Phaser;") ||
++        (class_name == "Ljava/lang/Thread;" &&
++         (method == "getAllStackTraces" || method == "getStackTrace")) ||
++        ((class_name == "Ljava/util/concurrent/ThreadPoolExecutor;" ||
++          class_name == "Ljava/util/concurrent/ScheduledThreadPoolExecutor;") &&
++         (method == "getQueue" || method == "purge" ||
++          method == "prestartCoreThread")) ||
+         (class_name == "Ljava/util/concurrent/locks/Condition;" &&
+          (method == "await" || method == "awaitNanos") &&
+          [&]() {
+@@ -56760,6 +56944,393 @@
+             }
+         }
+ 
++        // ── F-C8-183 — java.util.TimerTask surface ──────────────────────
++        // OpenJDK law (TimerTask.java): cancel() returns true when it
++        // cancelled a scheduled-not-yet-run task; scheduledExecutionTime()
++        // answers the last scheduled beat (stamped by the Timer.schedule
++        // law F-C8-183-stamp at the F-115 block). 7 APKs construct
++        // TimerTask subclasses (androguard crossref; the kotlin timer
++        // wrapper family rides this surface). Was (this line): no law —
++        // cancel answered null, scheduledExecutionTime answered 0/null.
++        if (c8_isa(class_name, "Ljava/util/TimerTask;")) {
++            const uint32_t recv =
++                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    ? args[0].object_id : 0;
++            if (method == "<init>" && !args.empty() &&
++                args[0].type == DalvikType::OBJECT_REF) {
++                heap_.set_object_field(recv, "__tt_sched_time__",
++                                       DalvikValue::make_long(0));
++                heap_.set_object_field(recv, "__tt_period__",
++                                       DalvikValue::make_long(0));
++                heap_.set_object_field(recv, "__tt_cancelled__",
++                                       DalvikValue::make_bool(false));
++                std::cerr << "[C8-TT] new TimerTask o" << recv
++                          << " (fields stamped)" << std::endl;
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "cancel") {
++                DalvikValue sched = c8_getf(recv, "__tt_sched_time__");
++                int64_t when = (sched.type == DalvikType::INT64)
++                                   ? sched.long_val : 0;
++                bool already = c8_getf(recv, "__tt_cancelled__").bool_val;
++                bool was = (when > 0) && !already;
++                heap_.set_object_field(recv, "__tt_cancelled__",
++                                       DalvikValue::make_bool(true));
++                // A cancelled pending entry must not fire: remove it from
++                // the shared deterministic queue (OpenJDK: the TimerThread
++                // never runs a cancelled task).
++                if (auto* hs = shadow_registry_
++                                   ? shadow_registry_->find_as<
++                                         framework::HandlerShadow>()
++                                   : nullptr)
++                    hs->remove_callbacks(recv);
++                std::cerr << "[C8-TT] cancel o" << recv << " → " << was
++                          << " (was scheduled=" << (when > 0) << ")"
++                          << std::endl;
++                result = DalvikValue::make_bool(was);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "scheduledExecutionTime") {
++                DalvikValue sched = c8_getf(recv, "__tt_sched_time__");
++                result = DalvikValue::make_long(
++                    sched.type == DalvikType::INT64 ? sched.long_val : 0);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++
++        // ── F-C8-187/188/189 — android.os.Process identity + signals ───
++        // AOSP law (Process.java): myPid/myUid/myTid answer the OS ids;
++        // isApplicationUid(uid) = uid >= FIRST_APPLICATION_UID (10000);
++        // setThreadPriority(tid, prio) lowers the nice level (no getter
++        // in the AOSP surface); killProcess/sendSignal terminate. 4
++        // APKs/45 sites (androguard crossref). Serialized-engine laws:
++        // ONE process → deterministic pid/uid constants; tids ride the
++        // ThreadShadow tid table (main = 1, monotonic); the kill laws
++        // are LOUD boundary records (the engine cannot suicide — never
++        // silent, never a throw: real apps call these in exit flows).
++        if (class_name == "Landroid/os/Process;") {
++            auto* ts_p = shadow_registry_
++                             ? shadow_registry_->find_as<
++                                   framework::ThreadShadow>()
++                             : nullptr;
++            if (method == "myPid" || method == "myUid" ||
++                method == "myTid" || method == "isApplicationUid" ||
++                method == "setThreadPriority" || method == "killProcess" ||
++                method == "sendSignal") {
++                static thread_local uint64_t proc_log = 0;
++                bool do_log = proc_log < 12;
++                if (method == "myPid") {
++                    if (do_log) { ++proc_log;
++                        std::cerr << "[C8-PROC] myPid → 1 (serialized "
++                                     "single-process law)" << std::endl; }
++                    result = DalvikValue::make_int(1);
++                } else if (method == "myUid") {
++                    if (do_log) { ++proc_log;
++                        std::cerr << "[C8-PROC] myUid → 10042 (app-uid "
++                                     "law, isApplicationUid-coherent)"
++                                  << std::endl; }
++                    result = DalvikValue::make_int(10042);
++                } else if (method == "myTid") {
++                    int32_t tid = ts_p
++                        ? ts_p->tid_of(ts_p->current_thread_id()) : 1;
++                    if (do_log) { ++proc_log;
++                        std::cerr << "[C8-PROC] myTid → " << tid
++                                  << " (ThreadShadow tid table)"
++                                  << std::endl; }
++                    result = DalvikValue::make_int(tid);
++                } else if (method == "isApplicationUid") {
++                    int32_t uid = (!args.empty() &&
++                                   args[0].type == DalvikType::INT32)
++                                      ? args[0].int_val : 0;
++                    // AOSP: FIRST_APPLICATION_UID = 10000.
++                    bool app = uid >= 10000;
++                    if (do_log) { ++proc_log;
++                        std::cerr << "[C8-PROC] isApplicationUid(" << uid
++                                  << ") → " << app << " (AOSP 10000 law)"
++                                  << std::endl; }
++                    result = DalvikValue::make_bool(app);
++                } else if (method == "setThreadPriority") {
++                    int32_t tid = (args.size() >= 2 &&
++                                   args[0].type == DalvikType::INT32)
++                                      ? args[0].int_val : 0;
++                    int32_t prio = (args.size() >= 2 &&
++                                    args[1].type == DalvikType::INT32)
++                                       ? args[1].int_val
++                                       : (args.size() >= 1 &&
++                                          args[0].type == DalvikType::INT32
++                                              ? args[0].int_val : 0);
++                    c8_native_thread_prio_[tid] = prio;
++                    if (do_log) { ++proc_log;
++                        std::cerr << "[C8-PROC] setThreadPriority tid="
++                                  << tid << " prio=" << prio
++                                  << " (loud store — no OS nice)"
++                                  << std::endl; }
++                    result = DalvikValue::make_void();
++                } else if (method == "killProcess") {
++                    if (do_log) { ++proc_log;
++                        std::cerr << "[C8-PROC] killProcess — LOUD "
++                                     "boundary: serialized engine cannot "
++                                     "suicide; run continues" << std::endl; }
++                    result = DalvikValue::make_void();
++                } else {  // sendSignal
++                    if (do_log) { ++proc_log;
++                        std::cerr << "[C8-PROC] sendSignal — LOUD "
++                                     "boundary record (no OS signal)"
++                                  << std::endl; }
++                    result = DalvikValue::make_void();
++                }
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++
++        // ── F-C8-195 — java.util.concurrent.Phaser ──────────────────────
++        // OpenJDK law (Phaser.java): registration counting + phase
++        // advance. register/bulkRegister(n) add parties; arrive()/
++        // arriveAndAwaitAdvance()/arriveAndDeregister() advance the phase
++        // when every registered party arrived; onAdvance(phase, parties)
++        // is the DEX-overridable termination hook (true → terminated).
++        // Wave-9 §Next candidate; serialized single-party-per-call law.
++        if (c8_isa(class_name, "Ljava/util/concurrent/Phaser;")) {
++            const uint32_t recv =
++                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    ? args[0].object_id : 0;
++            auto ph_int = [&](const char* f) -> int64_t {
++                DalvikValue v = c8_getf(recv, f);
++                return v.type == DalvikType::INT64 ? v.long_val
++                     : (v.type == DalvikType::INT32 ? v.int_val : 0);
++            };
++            auto ph_set = [&](const char* f, int64_t v) {
++                heap_.set_object_field(recv, f,
++                                       DalvikValue::make_long(v));
++            };
++            // Advance law: when every party arrived, the phase advances,
++            // arrivals reset, and the onAdvance hook runs (DEX override).
++            auto ph_advance = [&]() -> void {
++                int64_t parties = ph_int("__phaser_parties__");
++                int64_t arrived = ph_int("__phaser_arrived__");
++                if (parties <= 0 || arrived < parties) return;
++                int64_t phase = ph_int("__phaser_phase__");
++                arrived = 0;
++                ph_set("__phaser_phase__", phase + 1);
++                ph_set("__phaser_arrived__", 0);
++                DalvikValue aret;
++                DalvikExecutionResult ares;
++                std::vector<DalvikValue> aargs{
++                    DalvikValue::make_object(recv, class_name),
++                    DalvikValue::make_int(
++                        static_cast<int32_t>(phase)),
++                    DalvikValue::make_int(
++                        static_cast<int32_t>(parties))};
++                bool hook = try_recursive_invoke(
++                    class_name, "onAdvance", aargs, aret, ares, "(II)Z");
++                std::cerr << "[C8-PHASER] o" << recv << " advance "
++                          << phase << " → " << (phase + 1)
++                          << " onAdvance="
++                          << (hook ? "DEX" : "default(false)") << std::endl;
++            };
++            if (method == "<init>") {
++                int64_t parties = 0;
++                if (args.size() >= 2) {
++                    if (args[1].type == DalvikType::INT32)
++                        parties = args[1].int_val;
++                    else if (args[1].type == DalvikType::INT64)
++                        parties = args[1].long_val;
++                }
++                ph_set("__phaser_phase__", 0);
++                ph_set("__phaser_parties__", parties);
++                ph_set("__phaser_arrived__", 0);
++                std::cerr << "[C8-PHASER] new Phaser o" << recv
++                          << " parties=" << parties << std::endl;
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "register" || method == "bulkRegister") {
++                int64_t n = method == "register"
++                                ? 1
++                                : ((args.size() >= 2 &&
++                                    args[1].type == DalvikType::INT32)
++                                       ? args[1].int_val : 0);
++                ph_set("__phaser_parties__",
++                       ph_int("__phaser_parties__") + n);
++                result = DalvikValue::make_int(static_cast<int32_t>(
++                    ph_int("__phaser_phase__")));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "arrive") {
++                // JDK: arrive() returns the ARRIVAL phase = the phase
++                // in which this arrival landed (pre-advance value when
++                // this arrival completes the barrier).
++                int64_t arrived_in = ph_int("__phaser_phase__");
++                ph_set("__phaser_arrived__",
++                       ph_int("__phaser_arrived__") + 1);
++                ph_advance();
++                result = DalvikValue::make_int(
++                    static_cast<int32_t>(arrived_in));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "arriveAndAwaitAdvance") {
++                // Serialized-engine law: the ONE interpreter thread
++                // embodies EVERY registered party (F-020 inline-run
++                // precedent) — an explicit await IS the barrier
++                // completion: all parties arrive, the phase advances,
++                // and the await returns the NEW phase (JDK contract:
++                // the phase the awaiters observe). Divergence note: a
++                // real concurrent runtime would park until the other
++                // parties arrive; here there are no other threads to
++                // arrive — documented, loud, deterministic.
++                ph_set("__phaser_arrived__",
++                       ph_int("__phaser_parties__"));
++                ph_advance();
++                result = DalvikValue::make_int(static_cast<int32_t>(
++                    ph_int("__phaser_phase__")));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "arriveAndDeregister") {
++                int64_t arrived_in = ph_int("__phaser_phase__");
++                ph_set("__phaser_parties__",
++                       ph_int("__phaser_parties__") - 1);
++                ph_set("__phaser_arrived__",
++                       ph_int("__phaser_arrived__") + 1);
++                ph_advance();
++                result = DalvikValue::make_int(
++                    static_cast<int32_t>(arrived_in));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "awaitAdvance" ||
++                method == "awaitAdvanceInterruptibly") {
++                // Serialized: the party awaiting already observed the
++                // advance (or the phase never advances further) — the
++                // current phase is the honest answer (no park needed).
++                result = DalvikValue::make_int(static_cast<int32_t>(
++                    ph_int("__phaser_phase__")));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getPhase") {
++                result = DalvikValue::make_int(static_cast<int32_t>(
++                    ph_int("__phaser_phase__")));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getRegisteredParties") {
++                result = DalvikValue::make_int(static_cast<int32_t>(
++                    ph_int("__phaser_parties__")));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getArrivedParties") {
++                result = DalvikValue::make_int(static_cast<int32_t>(
++                    ph_int("__phaser_arrived__")));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getUnarrivedParties") {
++                result = DalvikValue::make_int(static_cast<int32_t>(
++                    ph_int("__phaser_parties__") -
++                    ph_int("__phaser_arrived__")));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++
++        // ── F-C8-198 — ThreadPoolExecutor queue observables ─────────────
++        // OpenJDK law: getQueue() returns the work queue; purge() removes
++        // cancelled tasks and answers the count; prestartCoreThread()
++        // starts a worker iff below core. Serialized laws: the queue is
++        // minted once as a LinkedBlockingQueue VIEW (tasks ran inline at
++        // submit — the queue stays empty, honest); purge → 0 (loud);
++        // prestartCoreThread → false (no worker spawn — loud).
++        if ((class_name == "Ljava/util/concurrent/ThreadPoolExecutor;" ||
++             class_name ==
++                 "Ljava/util/concurrent/ScheduledThreadPoolExecutor;") &&
++            (method == "getQueue" || method == "purge" ||
++             method == "prestartCoreThread")) {
++            const uint32_t recv =
++                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    ? args[0].object_id : 0;
++            if (method == "getQueue") {
++                uint32_t& qbox = c8_tpe_queue_[recv];
++                if (qbox == 0) {
++                    qbox = heap_.allocate(
++                        "Ljava/util/concurrent/LinkedBlockingQueue;",
++                        pc_, 0);
++                    std::cerr << "[C8-POOL] getQueue o" << recv
++                              << " → minted LinkedBlockingQueue view o"
++                              << qbox << std::endl;
++                }
++                result = DalvikValue::make_object(
++                    qbox, "Ljava/util/concurrent/LinkedBlockingQueue;");
++            } else if (method == "purge") {
++                std::cerr << "[C8-POOL] purge → 0 (inline-run law: no "
++                             "queued tasks to purge)" << std::endl;
++                result = DalvikValue::make_int(0);
++            } else {
++                std::cerr << "[C8-POOL] prestartCoreThread → false "
++                             "(serialized law: no worker spawn)" << std::endl;
++                result = DalvikValue::make_bool(false);
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++
++        // ── F-C8-199 — Thread.getAllStackTraces ─────────────────────────
++        // OpenJDK law: a Map<Thread, StackTraceElement[]> snapshot for
++        // every live platform thread. Serialized law: the map is REAL
++        // (object-keyed via the obj:<oid> map-key law) and contains every
++        // ThreadShadow-known thread; each value is a REAL empty
++        // StackTraceElement[] array — the DEX frame rendering is not
++        // reproduced (the UC010 getStackTrace law stays the per-thread
++        // frame source; the map's arrays are the documented boundary).
++        if (class_name == "Ljava/lang/Thread;" &&
++            method == "getAllStackTraces") {
++            const uint32_t map_id = heap_.allocate("Ljava/util/HashMap;",
++                                                   pc_, 0);
++            auto* ts_g = shadow_registry_
++                             ? shadow_registry_->find_as<
++                                   framework::ThreadShadow>()
++                             : nullptr;
++            auto* csh_g = shadow_registry_
++                              ? shadow_registry_->find_as<
++                                    framework::CollectionShadow>()
++                              : nullptr;
++            if (csh_g) {
++                auto* st = csh_g->get_or_create(map_id, /*is_map=*/true);
++                if (st) {
++                    st->is_map = true;
++                    if (ts_g) {
++                        for (uint32_t toid : ts_g->known_thread_ids()) {
++                            const uint32_t arr =
++                                heap_.allocate("[Ljava/lang/StackTraceElement;",
++                                               pc_, 0);
++                            heap_.set_object_field(
++                                arr, "__new_array_length__",
++                                DalvikValue::make_int(0));
++                            st->map_entries["obj:" + std::to_string(toid)] =
++                                arr;
++                        }
++                    }
++                }
++            }
++            std::cerr << "[C8-THREAD] getAllStackTraces → map o" << map_id
++                      << " entries="
++                      << (ts_g ? ts_g->known_thread_ids().size() : 0)
++                      << std::endl;
++            result = DalvikValue::make_object(map_id,
++                                              "Ljava/util/HashMap;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++
+         // ── F-C8-177 — ConcurrentLinkedQueue ────────────────────────────
+         // OpenJDK law: unbounded lock-free FIFO (CLQ.java). add/offer
+         // append (always true); poll pops the head (null when empty);
+
+--- a/miniandroid/src/framework/android_shadows.h
++++ b/miniandroid/src/framework/android_shadows.h
+@@ -205,6 +205,79 @@
+     void clear_thread_yielded(uint32_t thread_oid) {
+         yielded_threads_.erase(thread_oid);
+     }
++    // ── [S193-C8] F-C8-185: per-thread OBSERVABLE tables + lifecycle ───
++    // AOSP/OpenJDK law: setName stores the name; getName answers it;
++    // setPriority/getPriority keep the 1..10 priority; isAlive answers
++    // false once the thread's body has run to completion (TERMINATED);
++    // getId assigns unique monotonic tids (main = 1). Wave-1..7 fixed
++    // these on the main-coder line; on THIS line (bare d3a8d0ec + waves
++    // 8+9) the F-150 no-op family still swallowed them — every Thread
++    // subclass (kotlin thread{}: 6 APKs) answered name="main",
++    // priority=5, alive forever.
++    void set_thread_name(uint32_t oid, const std::string& name) {
++        if (!oid) return;
++        thread_names_[oid] = name;
++        note_thread_seen(oid);
++    }
++    std::string thread_name_of(uint32_t oid) {
++        note_thread_seen(oid);
++        auto it = thread_names_.find(oid);
++        if (it != thread_names_.end()) return it->second;
++        if (oid == main_thread_id_) return MAIN_THREAD_NAME;
++        return "Thread-" + std::to_string(tid_of(oid));
++    }
++    void set_thread_priority(uint32_t oid, int32_t prio) {
++        if (!oid) return;
++        thread_priorities_[oid] = prio;
++        note_thread_seen(oid);
++    }
++    int32_t thread_priority_of(uint32_t oid) {
++        note_thread_seen(oid);
++        auto it = thread_priorities_.find(oid);
++        if (it != thread_priorities_.end()) return it->second;
++        return 5;  // Thread.NORM_PRIORITY
++    }
++    void set_thread_daemon(uint32_t oid, bool daemon) {
++        if (!oid) return;
++        thread_daemons_[oid] = daemon;
++        note_thread_seen(oid);
++    }
++    bool thread_daemon_of(uint32_t oid) {
++        auto it = thread_daemons_.find(oid);
++        return it != thread_daemons_.end() ? it->second : false;
++    }
++    // TERMINATION LAW: a body that ran to completion (returned or
++    // loop-exited without parking) has TERMINATED — JDK Thread state law.
++    // isAlive() flips false; join() on this target returns.
++    void mark_thread_terminated(uint32_t oid) {
++        if (!oid) return;
++        thread_terminated_[oid] = true;
++        note_thread_seen(oid);
++    }
++    bool thread_terminated(uint32_t oid) {
++        auto it = thread_terminated_.find(oid);
++        return it != thread_terminated_.end() ? it->second : false;
++    }
++    // JDK tid law: unique per thread, main = 1, monotonic after.
++    int32_t tid_of(uint32_t oid) {
++        note_thread_seen(oid);
++        auto it = thread_tids_.find(oid);
++        return it != thread_tids_.end() ? it->second : 1;
++    }
++    void note_thread_seen(uint32_t oid) {
++        if (!oid) return;
++        if (thread_tids_.count(oid)) return;
++        thread_tids_[oid] = (oid == main_thread_id_)
++                                ? 1 : next_tid_++;
++    }
++    // Registry of every thread identity seen (getAllStackTraces law).
++    std::vector<uint32_t> known_thread_ids() {
++        note_thread_seen(main_thread_id_);
++        std::vector<uint32_t> out;
++        for (const auto& kv : thread_tids_) out.push_back(kv.first);
++        return out;
++    }
++
+     // Pops the earliest-wake due thread (deterministic order law). Returns
+     // false when nothing is due at now_ms.
+     bool take_due_yielded(int64_t now_ms, uint32_t& thread_oid,
+@@ -233,6 +306,14 @@
+     std::vector<std::pair<uint32_t, uint32_t>> pending_starts_;
+     std::map<uint32_t, std::pair<uint32_t, int64_t>> yielded_threads_;
+     uint32_t active_drained_thread_ = 0;  // F-110d: 0 = main thread
++    // [S193-C8] F-C8-185/199 per-thread observable state (engine-member
++    // state per F-025 — no static locals).
++    std::map<uint32_t, std::string> thread_names_;
++    std::map<uint32_t, int32_t> thread_priorities_;
++    std::map<uint32_t, bool> thread_daemons_;
++    std::map<uint32_t, bool> thread_terminated_;
++    std::map<uint32_t, int32_t> thread_tids_;
++    int32_t next_tid_ = 2;  // main = 1 (assigned in init)
+ };
+ 
+ // ─────────────────────────────────────────────────────────────────────────
+@@ -655,11 +736,34 @@
+     // the arg is null or absent.
+     static uint32_t extract_runnable(const CallContext& ctx, size_t arg_idx);
+ 
++    // ── [S193-C8] F-C8-181: DUE-TIME CHANNEL ───────────────────────────
++    // drain_ready_ex records each popped entry's SCHEDULED ready time;
++    // the CountDownTimer dispatch law computes the countdown against the
++    // scheduled beat (AOSP live-Looper semantics: a tick fires with the
++    // countdown as of its own beat) — never against the possibly
++    // idle-settle-JUMPED clock (which reported the whole window elapsed
++    // at the first dispatch → 0 ticks + instant onFinish).
++    void note_drained_due(uint32_t rid, int64_t when_ms) {
++        if (rid) drained_due_[rid] = when_ms;
++    }
++    void clear_drained_due() { drained_due_.clear(); }
++    int64_t due_time_of(uint32_t rid) const {
++        auto it = drained_due_.find(rid);
++        return it != drained_due_.end() ? it->second : virtual_now_ms_;
++    }
++    // Anchored enqueue: ready_at = base + delay (the CDT chain re-posts
++    // its next tick at its own beat + interval, not at the jumped now).
++    void enqueue_from(uint32_t runnable_id, int64_t base_ms,
++                      int64_t delay_ms, const std::string& cls);
++
+ private:
+     uint32_t main_handler_id_ = 0;
+     std::deque<QueuedRunnable> queue_;
+     uint32_t next_seq_ = 0;
+     int64_t virtual_now_ms_ = 0;   // deterministic Looper time (ms)
++    // [S193-C8] F-C8-181 due-time channel state (per-drain-batch map —
++    // the dispatch of a batch happens immediately after its drain).
++    std::map<uint32_t, int64_t> drained_due_;
+ 
+ public:
+     // M4 F-029b: the main Handler singleton id (bound at init via
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -4007,10 +4007,17 @@
+         return CallResult::handled_object(tid, "Ljava/lang/Thread;");
+     }
+     if (m == "getName") {
+-        return CallResult::handled_string(MAIN_THREAD_NAME);
++        // [S193-C8] F-C8-185 NAME LAW: per-thread name (setName stores;
++        // main answers "main"; unnamed threads answer Thread-<tid>). Was:
++        // literal "main" for EVERY thread.
++        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
++        return CallResult::handled_string(thread_name_of(who));
+     }
+     if (m == "getId") {
+-        return CallResult::handled_long(MAIN_THREAD_TID);
++        // [S193-C8] F-C8-185 TID LAW: main = 1, monotonic per thread. Was:
++        // main tid (1) for EVERY thread.
++        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
++        return CallResult::handled_long(tid_of(who));
+     }
+     if (m == "getStackTrace") {
+         // CAMPAIGN 010 R14 (recovered via UNIFIED_011.1): do NOT handle here —
+@@ -4021,9 +4028,25 @@
+         // made the walk loop forever on out-of-bounds aget-object reads.
+         return CallResult::not_handled();
+     }
+-    if (m == "isAlive")      return CallResult::handled_bool(true);
+-    if (m == "isDaemon")     return CallResult::handled_bool(false);
++    if (m == "isAlive") {
++        // [S193-C8] F-C8-185 LIFECYCLE LAW: a thread whose body ran to
++        // completion is TERMINATED — isAlive answers false. Was: literal
++        // true forever (the join() pair defect on this line).
++        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
++        return CallResult::handled_bool(!thread_terminated(who));
++    }
++    if (m == "isDaemon")
++        return CallResult::handled_bool(
++            thread_daemon_of(ctx.has_receiver ? ctx.receiver_id : 0));
+     if (m == "isInterrupted")return CallResult::handled_bool(false);
++    if (m == "getPriority") {
++        // [S193-C8] F-C8-185 PRIORITY LAW: setPriority stores 1..10;
++        // getPriority answers it (NORM_PRIORITY default). Was: no
++        // handler — the F-150 family swallowed setPriority and
++        // getPriority answered a constant.
++        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
++        return CallResult::handled_int(thread_priority_of(who));
++    }
+     if (m == "start" || m == "run") {
+         // M3 F-THREAD-TICK: deterministic inline execution. If this thread has
+         // a recorded target Runnable, queue a pending inline run for the
+@@ -4061,7 +4084,6 @@
+         return CallResult::handled_void();
+     }
+     if (m == "interrupt" || m == "join" ||
+-        m == "setDaemon" || m == "setName" || m == "setPriority" ||
+         m == "yield" || m == "holdsLock" ||
+         m == "getContextClassLoader" || m == "setContextClassLoader") {
+         // F-150 (S72-W4): "sleep" REMOVED from this no-op family — it was
+@@ -4082,16 +4104,57 @@
+         // receives these calls.
+         return CallResult::handled_void();
+     }
++    // [S193-C8] F-C8-185 CONFIG LAWS (removed from the F-150 no-op
++    // family above): setName/setPriority/setDaemon store per-thread
++    // state the observables answer back. interrupt/join stay in the
++    // family (the wave-8 engine laws own interrupt delivery; join is
++    // coherent with the inline-run + termination marking).
++    if (m == "setName" && !ctx.args.empty() &&
++        ctx.args[0].kind == CallContext::Arg::Kind::STRING) {
++        set_thread_name(ctx.receiver_id, ctx.args[0].string_val);
++        return CallResult::handled_void();
++    }
++    if (m == "setPriority" && !ctx.args.empty() &&
++        ctx.args[0].kind == CallContext::Arg::Kind::INT) {
++        int32_t prio = ctx.args[0].int_val;
++        if (prio < 1 || prio > 10) {
++            // JDK IllegalArgumentException law (Thread.setPriority).
++            CallResult exc;
++            exc.handled = true;
++            exc.is_exc = true;
++            exc.exc_class = "Ljava/lang/IllegalArgumentException;";
++            exc.exc_msg = "priority out of range: " +
++                          std::to_string(prio);
++            return exc;
++        }
++        set_thread_priority(ctx.receiver_id, prio);
++        return CallResult::handled_void();
++    }
++    if (m == "setDaemon" && !ctx.args.empty()) {
++        set_thread_daemon(ctx.receiver_id,
++                          ctx.args[0].kind == CallContext::Arg::Kind::INT
++                              ? ctx.args[0].int_val != 0
++                              : false);
++        return CallResult::handled_void();
++    }
+     if (m == "equals") {
++        // [S193-C8] F-C8-185 IDENTITY LAW: JDK Thread.equals compares the
++        // heap objects THIS receiver vs the argument. Was: comparison
++        // against the main singleton (wrong for every non-main thread).
+         uint32_t other = ctx.arg_as_object(0, 0);
+-        return CallResult::handled_bool(other == main_thread_id_);
++        return CallResult::handled_bool(ctx.has_receiver &&
++                                        other == ctx.receiver_id);
+     }
+     if (m == "hashCode") {
+-        return CallResult::handled_int(static_cast<int32_t>(main_thread_id_));
++        return CallResult::handled_int(static_cast<int32_t>(tid_of(
++            ctx.has_receiver ? ctx.receiver_id : main_thread_id_)));
+     }
+     if (m == "toString") {
+-        std::string s = std::string("Thread[") + MAIN_THREAD_NAME +
+-                        ",5,main]";
++        // [S193-C8] F-C8-185: AOSP Thread.toString law —
++        // "Thread[" + getName() + "," + getPriority() + "," + group + "]".
++        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
++        std::string s = "Thread[" + thread_name_of(who) + "," +
++                        std::to_string(thread_priority_of(who)) + ",main]";
+         return CallResult::handled_string(s);
+     }
+     return CallResult::not_handled();
+@@ -4475,7 +4538,6 @@
+     q.runnable_class = cls;
+     q.token_id = token_id;
+     queue_.push_back(std::move(q));
+-    // EXP-052: Trace queue activity for diagnostics.
+     std::cerr << "[QUEUE] Runnable id=" << runnable_id
+               << " enqueued (delay=" << delay_ms << "ms"
+               << ", ready_at=" << q.ready_at_ms << "ms virtual"
+@@ -4485,6 +4547,29 @@
+               << ")" << std::endl;
+ }
+ 
++// [S193-C8] F-C8-181 — anchored enqueue (base + delay): the
++// CountDownTimer chain re-posts its next tick at its OWN beat + interval
++// (AOSP live-Looper semantics), never at the possibly idle-settle-jumped
++// now. Deterministic: same inputs → same schedule.
++void HandlerShadow::enqueue_from(uint32_t runnable_id, int64_t base_ms,
++                                 int64_t delay_ms, const std::string& cls) {
++    if (runnable_id == 0) return;
++    QueuedRunnable q;
++    q.runnable_id = runnable_id;
++    q.enqueue_seq = next_seq_++;
++    q.ready_at_ms = base_ms + (delay_ms < 0 ? 0 : delay_ms);
++    q.runnable_class = cls;
++    q.token_id = 0;
++    queue_.push_back(std::move(q));
++    std::cerr << "[QUEUE] Runnable id=" << runnable_id
++              << " enqueued FROM base=" << base_ms << "ms"
++              << " (delay=" << delay_ms << "ms"
++              << ", ready_at=" << q.ready_at_ms << "ms virtual"
++              << ", queue_depth=" << queue_.size()
++              << (cls.empty() ? "" : (", source=" + cls))
++              << ")" << std::endl;
++}
++
+ // R500 ROOT-PFQ-ORDER — AOSP Handler.sendMessageAtFrontOfQueue:
+ //   public final boolean sendMessageAtFrontOfQueue(Message msg) {
+ //       return enqueueMessage(queue, msg, 0);   // when = 0
+@@ -4610,6 +4695,10 @@
+     for (size_t i = 0; i < queue_.size(); ++i)
+         if (queue_[i].ready_at_ms <= virtual_now_ms_) due_idx.push_back(i);
+     if (due_idx.empty()) return 0;
++    // [S193-C8] F-C8-181: fresh drain batch — record each popped entry's
++    // SCHEDULED ready time so the dispatch layer (CountDownTimer law)
++    // computes countdowns against the beat, not the jumped clock.
++    drained_due_.clear();
+     // R500 ROOT-PFQ-ORDER: within the same ready time, a front-of-queue
+     // message (AOSP when=0 law) precedes normally-posted work.
+     std::stable_sort(due_idx.begin(), due_idx.end(),
+@@ -4628,6 +4717,7 @@
+     for (size_t i : due_idx) queue_.erase(queue_.begin() + static_cast<long>(i));
+     for (auto& q : taken) {
+         out_drained->emplace_back(q.runnable_id, q.delivery_thread_id);
++        drained_due_[q.runnable_id] = q.ready_at_ms;
+         std::cerr << "[QUEUE] Runnable id=" << q.runnable_id
+                   << " dequeued (ready_at=" << q.ready_at_ms
+                   << "ms <= now=" << virtual_now_ms_ << "ms virtual"
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -7108,17 +7108,30 @@
+                                              ? long_of("__cdt_interval__")
+                                              : 1;
+                 const int64_t started = long_of("__cdt_started_at__");
+-                int64_t now = started;
++                // [S193-C8] F-C8-181 — TICK-SCHEDULE LAW. The countdown
++                // is computed against THIS entry's SCHEDULED ready time
++                // (HandlerShadow due_time_of — stamped by drain_ready_ex),
++                // NEVER against the possibly idle-settle-JUMPED clock:
++                // wave-9's law read virtual_now_ms() here, so a settle
++                // jump past the CDT window reported the whole countdown
++                // elapsed at the FIRST dispatch → 0 onTick + instant
++                // onFinish (the wave-10 baseline probe reproduced it:
++                // countdown_timer/cdt_tick_schedule FAIL ticks=0, ×3).
++                // AOSP live-Looper semantics: each tick fires with the
++                // countdown as of its own beat, and the next tick is
++                // posted at beat+interval (enqueue_from anchored law).
++                int64_t due = started;
+                 if (auto* hs = shadow_registry_
+                                    ? shadow_registry_->find_as<
+                                          framework::HandlerShadow>()
+                                    : nullptr)
+-                    now = hs->virtual_now_ms();
+-                const int64_t elapsed = now - started;
++                    due = hs->due_time_of(rid);
++                const int64_t elapsed = due - started;
+                 const int64_t remaining = total - elapsed;
+                 if (remaining > 0) {
+                     std::cerr << "[C8-CDT] onTick o" << rid
+                               << " remaining=" << remaining << "ms"
++                              << " (beat=" << due << "ms virtual)"
+                               << std::endl;
+                     miniandroid::dalvik::DalvikValue tret;
+                     miniandroid::dalvik::DalvikExecutionResult tres;
+@@ -7133,7 +7146,8 @@
+                                        ? shadow_registry_->find_as<
+                                              framework::HandlerShadow>()
+                                        : nullptr)
+-                        hs->enqueue(rid, interval, "CountDownTimer.tick");
++                        hs->enqueue_from(rid, due, interval,
++                                         "CountDownTimer.tick");
+                 } else if (!flag_of("__cdt_finished__")) {
+                     heap2.set_object_field(rid, "__cdt_finished__",
+                                            miniandroid::dalvik::DalvikValue::
+--- a/tests/fixtures/c8_concurrency_probe/src/com/miniandroid/c8probe/MainActivity.java
++++ b/tests/fixtures/c8_concurrency_probe/src/com/miniandroid/c8probe/MainActivity.java
+@@ -28,11 +28,19 @@
+ import java.util.concurrent.TimeUnit;
+ import java.util.concurrent.atomic.AtomicIntegerArray;
+ import java.util.concurrent.atomic.AtomicLongArray;
++import java.util.ArrayList;
++import java.util.List;
++import java.util.Timer;
++import java.util.TimerTask;
++import java.util.concurrent.Callable;
++import java.util.concurrent.Phaser;
++import java.util.concurrent.ConcurrentMap;
+ import java.util.concurrent.locks.Condition;
+ import java.util.concurrent.locks.Lock;
+ import java.util.concurrent.locks.ReadWriteLock;
+ import java.util.concurrent.locks.ReentrantLock;
+ import java.util.concurrent.locks.ReentrantReadWriteLock;
++import android.os.Process;
+ 
+ /**
+  * S191 [C8] wave 8 + S192 [C8] wave 9 — Coder 8 concurrency-law probe
+@@ -595,6 +603,319 @@
+             mark("cond_await_interrupt", false, t.getClass().getSimpleName());
+         }
+ 
++        // ════════════════════════════════════════════════════════════════
++        // S193 [C8] WAVE 10 assertions (defects 181–200, androguard-driven
++        // targets: evidence/s192_c8 crossref + the wave-9 §Next list).
++        // ════════════════════════════════════════════════════════════════
++
++        // ── F-C8-181: CountDownTimer tick SCHEDULE law ──────────────────
++        // A long-delay item posted FIRST forces an idle-settle clock jump
++        // past the CDT window; the tick chain must still fire on its own
++        // beats (AOSP live-Looper semantics): 2 ticks + onFinish for
++        // (120ms total, 40ms interval). Wave-9's law computed remaining
++        // from the JUMPED clock → 0 ticks, instant onFinish (the
++        // countdown_timer FAIL reproduced at wave-10 start).
++        try {
++            Handler jump = new Handler(Looper.getMainLooper());
++            jump.postDelayed(new Runnable() { public void run() { } },
++                    900_000);              // far horizon → settle jump
++            cdtTicks = 0;
++            cdtFinished = false;
++            final CountDownTimer cdt3 = new CountDownTimer(120, 40) {
++                public void onTick(long remaining) { cdtTicks++; }
++                public void onFinish() { cdtFinished = true; }
++            };
++            cdt3.start();
++            Handler h5 = new Handler(Looper.getMainLooper());
++            h5.postDelayed(new Runnable() {
++                public void run() {
++                    mark("cdt_tick_schedule", cdtTicks >= 2 && cdtFinished,
++                            "ticks=" + cdtTicks
++                            + " finished=" + cdtFinished);
++                }
++            }, 800);
++        } catch (Throwable t) {
++            mark("cdt_tick_schedule", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-182: ConcurrentMap INTERFACE-typed dispatch ────────────
++        // 7 APKs call get/putIfAbsent through a ConcurrentMap slot
++        // (invoke-interface on Ljava/util/concurrent/ConcurrentMap;).
++        try {
++            ConcurrentMap<String, String> im = new ConcurrentHashMap<>();
++            im.put("a", "1");
++            boolean i1 = "1".equals(im.get("a"));
++            boolean i2 = im.putIfAbsent("a", "2") != null;
++            boolean i3 = "1".equals(im.get("a"));
++            boolean i4 = "1".equals(im.remove("a"));
++            boolean i5 = im.replace("b", "x") == null;
++            mark("chm_iface", i1 && i2 && i3 && i4 && i5,
++                    i1 + "" + i2 + i3 + i4 + i5);
++        } catch (Throwable t) {
++            mark("chm_iface", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-191: Callable INTERFACE-typed call() ───────────────────
++        try {
++            Callable<Integer> cb = new Callable<Integer>() {
++                public Integer call() { return 41; }
++            };
++            boolean c1 = cb.call() == 41;
++            java.util.concurrent.ExecutorService es4 =
++                    Executors.newFixedThreadPool(1);
++            Future<Integer> fb = es4.submit(cb);
++            boolean c2 = fb.get() == 41;
++            es4.shutdown();
++            mark("callable_iface", c1 && c2, c1 + "" + c2);
++        } catch (Throwable t) {
++            mark("callable_iface", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-190: UncaughtExceptionHandler iface-typed dispatch ─────
++        try {
++            final boolean[] got = {false};
++            Thread.UncaughtExceptionHandler ueh =
++                    new Thread.UncaughtExceptionHandler() {
++                        public void uncaughtException(Thread t, Throwable e) {
++                            got[0] = true;
++                        }
++                    };
++            Thread.UncaughtExceptionHandler prev =
++                    Thread.getDefaultUncaughtExceptionHandler();
++            Thread.setDefaultUncaughtExceptionHandler(ueh);
++            boolean same = Thread.getDefaultUncaughtExceptionHandler() == ueh;
++            ueh.uncaughtException(Thread.currentThread(),
++                    new RuntimeException("probe"));
++            Thread.setDefaultUncaughtExceptionHandler(prev);
++            mark("ueh_iface", same && got[0], same + "" + got[0]);
++        } catch (Throwable t) {
++            mark("ueh_iface", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-183/184: TimerTask surface + Timer schedule ────────────
++        // 7 APKs (kotlin timer wrapper family: 138 sites) ride
++        // Timer/TimerTask under the hood.
++        try {
++            final boolean[] ran = {false};
++            Timer t2 = new Timer();
++            TimerTask tt = new TimerTask() {
++                public void run() { ran[0] = true; }
++            };
++            boolean k1 = !tt.cancel();          // not yet scheduled → false
++            t2.schedule(tt, 20);                // one-shot at +20ms
++            boolean k2 = tt.scheduledExecutionTime() > 0;
++            boolean k3 = t2.purge() == 0;
++            t2.cancel();
++            mark("timer_task", k1 && k2 && k3, k1 + "" + k2 + k3
++                    + " ran=" + ran[0]);
++        } catch (Throwable t) {
++            mark("timer_task", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-185: Thread config ride (kotlin thread{} shape) ────────
++        // ThreadsKt.thread(start=true, name, daemon, priority) maps to
++        // Thread subclass + config + start — 6 APKs.
++        try {
++            final boolean[] tRan = {false};
++            Thread tw = new Thread(new Runnable() {
++                public void run() { tRan[0] = true; }
++            }) { };
++            tw.setName("c8-wave10");
++            tw.setDaemon(false);
++            tw.setPriority(7);
++            tw.setContextClassLoader(tw.getContextClassLoader());
++            boolean f1 = "c8-wave10".equals(tw.getName());
++            boolean f2 = tw.getPriority() == 7;
++            tw.start();
++            tw.join(2000);
++            mark("thread_config", f1 && f2 && tRan[0] && !tw.isAlive(),
++                    f1 + "" + f2 + " ran=" + tRan[0] + " alive="
++                            + tw.isAlive());
++        } catch (Throwable t) {
++            mark("thread_config", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-186: AutoCloseable (try-with-resources close) ──────────
++        try {
++            final boolean[] closed = {false};
++            class Res implements AutoCloseable {
++                public void close() { closed[0] = true; }
++            }
++            boolean a1;
++            try (Res r = new Res()) {
++                a1 = r != null;
++            }
++            mark("autocloseable", a1 && closed[0],
++                    a1 + " closed=" + closed[0]);
++        } catch (Throwable t) {
++            mark("autocloseable", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-187: Process identity family ───────────────────────────
++        try {
++            int pid = Process.myPid();
++            int uid = Process.myUid();
++            int tid = Process.myTid();
++            boolean p1 = pid > 0 && uid > 0 && tid > 0;
++            boolean p2 = Process.isApplicationUid(10042);
++            boolean p3 = !Process.isApplicationUid(1000);
++            mark("process_identity", p1 && p2 && p3,
++                    "pid=" + pid + " uid=" + uid + " tid=" + tid
++                            + " appUid=" + p2 + p3);
++        } catch (Throwable t) {
++            mark("process_identity", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-188/189: Process scheduling + signal boundary ──────────
++        try {
++            boolean q1 = true;
++            try {
++                Process.setThreadPriority(Process.myTid(), 10);
++            } catch (Throwable inner) {
++                q1 = false;
++            }
++            boolean q2 = true;
++            try {
++                android.os.Process.killProcess(Process.myPid());
++                q2 = true;             // loud boundary: engine keeps running
++            } catch (Throwable inner) {
++                q2 = false;
++            }
++            boolean q3 = true;
++            try {
++                Process.sendSignal(Process.myPid(), 9);
++            } catch (Throwable inner) {
++                q3 = false;
++            }
++            mark("process_sched", q1 && q2 && q3, q1 + "" + q2 + q3);
++        } catch (Throwable t) {
++            mark("process_sched", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-192: invokeAll List<Future> shape ──────────────────────
++        try {
++            java.util.concurrent.ExecutorService es5 =
++                    Executors.newFixedThreadPool(2);
++            List<Callable<Integer>> tasks = new ArrayList<>();
++            tasks.add(new Callable<Integer>() { public Integer call() { return 1; } });
++            tasks.add(new Callable<Integer>() { public Integer call() { return 2; } });
++            tasks.add(new Callable<Integer>() { public Integer call() { return 3; } });
++            List<Future<Integer>> out = es5.invokeAll(tasks);
++            boolean v1 = out != null && out.size() == 3;
++            boolean v2 = v1 && out.get(0).isDone() && out.get(0).get() == 1;
++            boolean v3 = v1 && out.get(1).isDone() && out.get(1).get() == 2;
++            boolean v4 = v1 && out.get(2).isDone() && out.get(2).get() == 3;
++            es5.shutdown();
++            mark("invoke_all", v1 && v2 && v3 && v4,
++                    v1 + "" + v2 + v3 + v4);
++        } catch (Throwable t) {
++            mark("invoke_all", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-193: invokeAny ─────────────────────────────────────────
++        try {
++            java.util.concurrent.ExecutorService es6 =
++                    Executors.newFixedThreadPool(1);
++            List<Callable<String>> tasks2 = new ArrayList<>();
++            tasks2.add(new Callable<String>() { public String call() { return "A"; } });
++            tasks2.add(new Callable<String>() { public String call() { return "B"; } });
++            String first = es6.invokeAny(tasks2);
++            es6.shutdown();
++            mark("invoke_any", "A".equals(first) || "B".equals(first),
++                    "first=" + first);
++        } catch (Throwable t) {
++            mark("invoke_any", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-194: Looper quit exit semantics ────────────────────────
++        try {
++            android.os.HandlerThread ht2 = new android.os.HandlerThread("c8q");
++            ht2.start();
++            android.os.Looper htl = ht2.getLooper();
++            boolean w1 = htl != null;
++            ht2.quit();
++            ht2.join(500);
++            boolean w2 = !ht2.isAlive();
++            mark("looper_quit", w1 && w2, w1 + "" + w2);
++        } catch (Throwable t) {
++            mark("looper_quit", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-195: Phaser bulk parties ───────────────────────────────
++        try {
++            Phaser ph = new Phaser(1);
++            ph.bulkRegister(2);
++            boolean y1 = ph.getRegisteredParties() == 3;
++            int phase = ph.arriveAndAwaitAdvance();   // phase 0 → 1
++            boolean y2 = phase == 1;
++            int un = ph.arriveAndDeregister();
++            boolean y3 = un >= 0;
++            mark("phaser_party", y1 && y2 && y3,
++                    "parties=3 phase=" + phase + " unreg=" + un
++                            + " " + y1 + y2 + y3);
++        } catch (Throwable t) {
++            mark("phaser_party", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-197: Semaphore wait-set observables ────────────────────
++        try {
++            Semaphore s3 = new Semaphore(1);
++            s3.acquire();
++            boolean z1 = s3.getQueueLength() == 0;
++            boolean z2 = !s3.hasQueuedThreads();
++            s3.release();
++            boolean z3 = s3.availablePermits() == 1;
++            mark("sem_observ", z1 && z2 && z3, z1 + "" + z2 + z3);
++        } catch (Throwable t) {
++            mark("sem_observ", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-198: ThreadPoolExecutor queue observables ──────────────
++        try {
++            ThreadPoolExecutor tpe2 = new ThreadPoolExecutor(2, 2,
++                    1000, TimeUnit.MILLISECONDS,
++                    new java.util.concurrent.LinkedBlockingQueue<Runnable>());
++            boolean u1 = tpe2.getQueue() != null;
++            tpe2.submit(new Runnable() { public void run() { } });
++            boolean u2 = tpe2.getCompletedTaskCount() >= 0;
++            boolean u3 = tpe2.getActiveCount() >= 0
++                    && tpe2.getPoolSize() <= 2;
++            tpe2.prestartCoreThread();     // JDK: no-throw boolean; shape law
++            boolean u4 = tpe2.getPoolSize() <= 2;
++            tpe2.shutdown();
++            mark("tpe_observ", u1 && u2 && u3 && u4,
++                    u1 + "" + u2 + u3 + u4);
++        } catch (Throwable t) {
++            mark("tpe_observ", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-199: Thread stack-trace surface ────────────────────────
++        try {
++            java.util.Map<Thread, StackTraceElement[]> all =
++                    Thread.getAllStackTraces();
++            boolean s10 = all != null
++                    && all.containsKey(Thread.currentThread());
++            StackTraceElement[] mine = Thread.currentThread().getStackTrace();
++            boolean s11 = mine != null;
++            mark("stack_traces", s10 && s11,
++                    "threads=" + (all == null ? -1 : all.size())
++                            + " frames=" + (mine == null ? -1 : mine.length));
++        } catch (Throwable t) {
++            mark("stack_traces", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-200: Handler/Looper binding surface ────────────────────
++        try {
++            android.os.Looper main = Looper.getMainLooper();
++            Handler hb = new Handler(main);
++            boolean h1 = hb.getLooper() == main;
++            boolean h2 = Looper.myLooper() == main;
++            boolean h3 = Looper.myQueue() != null;
++            mark("handler_looper", h1 && h2 && h3, h1 + "" + h2 + h3);
++        } catch (Throwable t) {
++            mark("handler_looper", false, t.getClass().getSimpleName());
++        }
++
+         android.util.Log.i("C8PROBE", "ALL-DONE");
+     }
+ }
+--- /dev/null
++++ b/scripts/s193_c8_ab_runs.py
+@@ -0,0 +1,67 @@
++#!/usr/bin/env python3
++"""S193 [C8] wave-10 live A/B (S188 rule 10): install + 30 s run of the four
++wave-9 live titles on the CURRENT tree (base d3a8d0ec + waves 8+9 + wave 10),
++extracting (api_rows / uncaught) per title — the same metric shape the S192
++wave-9 A/B published (klondike 494/33, tower3d 9214/63, microtimer 1052/19,
++tri-peaks 19/2)."""
++import json, shutil, subprocess, sys
++from pathlib import Path
++
++BASE = Path('/home/z/my-project/work/miniandroid')
++BIN = BASE / 'miniandroid/build/miniandroid'
++APKS = Path('/home/z/my-project/upload/canonical_apks')
++RUNS = BASE / 'evidence/s193_c8/ab_runs'
++SECS = 30
++
++TITLES = [
++    ("eu.veldsoft.free.klondike", "klondike_veldsoft_3.apk"),
++    ("stack.tower3d", "stack.tower3d_1.apk"),
++    ("dubrowgn.microtimer", "dubrowgn.microtimer_8.apk"),
++    ("eu.veldsoft.tri.peaks", "tripeaks_v1.2.1_vc4.apk"),
++]
++
++results = []
++for pkg, apk in TITLES:
++    store = RUNS / f'store_{pkg}'
++    if store.exists():
++        shutil.rmtree(store)
++    store.mkdir(parents=True)
++    apps = store / 'data' / 'app'
++    subprocess.run([str(BIN), 'install', str(APKS / apk),
++                    '--data-root', str(store)],
++                   capture_output=True, timeout=300)
++    dpkg = None
++    if apps.exists():
++        ds = [d.name for d in apps.iterdir()
++              if d.is_dir() and not d.name.endswith('.staging')]
++        dpkg = ds[0] if ds else None
++    if not dpkg:
++        results.append({"pkg": pkg, "status": "INSTALL_FAIL"})
++        continue
++    rundir = RUNS / f'run_{pkg}'
++    console = RUNS / f'{pkg}.err'
++    with open(console, 'w') as cf:
++        subprocess.run([str(BIN), 'run', '--execution-mode', 'real-dalvik',
++                        '--data-root', str(store), '-o', str(rundir),
++                        '--max-seconds', str(SECS), '--frames', '5',
++                        '--trace', '--package', dpkg],
++                       stdout=cf, stderr=subprocess.STDOUT,
++                       timeout=SECS + 240)
++    text = console.read_text(errors='replace')
++    uncaught = text.count('UNCAUGHT')
++    api_rows = 0
++    aj = rundir / 'api_calls.json'
++    if aj.exists():
++        try:
++            data = json.loads(aj.read_text())
++            api_rows = len(data) if isinstance(data, list) else len(
++                data.get('calls', data.get('rows', [])))
++        except Exception:
++            api_rows = -1
++    results.append({"pkg": pkg, "api_rows": api_rows,
++                    "uncaught": uncaught})
++    print(json.dumps(results[-1]))
++
++out = RUNS / 'ab_summary.json'
++out.write_text(json.dumps(results, indent=1))
++print("A/B COMPLETE →", out)
+--- /dev/null
++++ b/scripts/s193_c8_ab_metrics.py
+@@ -0,0 +1,29 @@
++#!/usr/bin/env python3
++"""S193 [C8] A/B metric extraction: api_trace.json calls minus engine-session
++bookkeeping rows + UNCAUGHT count — the wave-9 A/B metric shape."""
++import json
++from pathlib import Path
++
++RUNS = Path('/home/z/my-project/work/miniandroid/evidence/s193_c8/ab_runs')
++W9 = {"eu.veldsoft.free.klondike": "494/33", "stack.tower3d": "9214/63",
++      "dubrowgn.microtimer": "1052/19", "eu.veldsoft.tri.peaks": "19/2"}
++
++rows = []
++for rj in sorted(RUNS.glob('run_*/api_trace.json')):
++    pkg = rj.parent.name[4:]
++    d = json.loads(rj.read_text())
++    calls = d.get('calls', [])
++    # Wave-9 counted API-surface rows (the per-call trace), which excludes
++    # the TraceEngine session bookkeeping rows.
++    api = [c for c in calls
++           if c.get('class') != 'TraceEngine' and c.get('category') != 'SYSTEM']
++    console = RUNS / (rj.parent.name + '.err')
++    uncaught = console.read_text(errors='replace').count('UNCAUGHT') \
++        if console.exists() else -1
++    rows.append({"pkg": pkg, "api_rows": len(api),
++                 "total_trace_rows": len(calls), "uncaught": uncaught,
++                 "wave9_metric": W9.get(pkg, "-")})
++    print(json.dumps(rows[-1]))
++out = RUNS / 'ab_metrics.json'
++out.write_text(json.dumps(rows, indent=1))
++print("→", out)

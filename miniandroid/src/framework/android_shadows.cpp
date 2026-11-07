@@ -413,6 +413,78 @@ static void lawb_classify_arg(const CallContext::Arg& a, uint32_t item,
     }
 }
 
+// ── F-C4-602 (W12): SINGLE-TRUTH COLLECTION RENDER ──────────────────────
+// OpenJDK AbstractCollection.toString() over the shadow's own parallel
+// stores — the SAME store isEmpty()/size()/iterator() read (see the
+// header law note for the split-brain root). Element rendering mirrors
+// String.valueOf: kind 2 string, kind 3 int, kind 4 null, kind 1 object
+// (self-reference → "(this Collection)"; otherwise the recursive
+// identity/class form is the CALLER's job — the engine's append(Object)
+// path re-enters its own render for object elements, so here we only
+// mark them; the caller renders nested objects by class, keeping the
+// bounded-recursion design of the F-C4-564 site).
+bool CollectionShadow::render_list_string(uint32_t object_id,
+                                          std::string& out) const {
+    auto it = collections_.find(object_id);
+    if (it == collections_.end()) return false;
+    const CollectionState& st = it->second;
+    if (st.is_map) return false;  // Map.toString has its own {k=v} law
+    // An EMPTY shadow state is ambiguous (F-101 engine-array products
+    // legitimately carry zero shadow elements) — decline so the caller
+    // keeps its heap-array-fields fallback for those.
+    if (st.elements.empty() && st.view_elements.empty()) return false;
+    out = "[";
+    const bool is_view = !st.view_elements.empty();
+    const size_t n = is_view ? st.view_elements.size() : st.elements.size();
+    bool first = true;
+    for (size_t i = 0; i < n && i < 512; ++i) {
+        if (!first) out += ", ";
+        first = false;
+        uint8_t kind = 0;
+        std::string sval;
+        int32_t ival = 0;
+        uint32_t oid = 0;
+        if (is_view) {
+            const auto& ve = st.view_elements[i];
+            kind = ve.kind;
+            if (kind == 2) sval = ve.string_val;
+            else if (kind == 3) ival = ve.int_val;
+            else if (kind == 1) oid = ve.object_id;
+        } else {
+            oid = st.elements[i];
+            kind = i < st.elem_kinds.size() ? st.elem_kinds[i]
+                                            : (oid != 0 ? uint8_t{1} : uint8_t{2});
+            if (kind == 2 && i < st.elem_strings.size())
+                sval = st.elem_strings[i];
+            if (kind == 3 && i < st.elem_ints.size())
+                ival = st.elem_ints[i];
+        }
+        if (kind == 4) {
+            out += "null";
+        } else if (kind == 3) {
+            out += std::to_string(ival);
+        } else if (kind == 2) {
+            out += sval;
+        } else if (oid == object_id) {
+            out += "(this Collection)";
+        } else {
+            // kind 1 non-self object: render the heap-object identity form
+            // (Class@hash). The F-C4-564 site's own nested-object render
+            // handles boxes/enums/app toString; a conservative identity
+            // here is exactly OpenJDK's fallback for objects whose
+            // toString is Object.toString.
+            std::string cls = "Ljava/lang/Object;";
+            if (heap_) {
+                std::string c2;
+                if (heap_->get_object_class(oid, c2) && !c2.empty()) cls = c2;
+            }
+            out += cls + "@" + std::to_string(oid);
+        }
+    }
+    out += "]";
+    return true;
+}
+
 CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
     uint32_t obj_id = ctx.receiver_id;
@@ -941,6 +1013,172 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             uint32_t list_id = heap_->allocate("Ljava/util/ArrayList;");
             get_or_create(list_id, /*is_map=*/false);
             return CallResult::handled_object(list_id, "Ljava/util/List;");
+        }
+        // ── F-C4-606 (W12, 4APP4 Coder-4): Collections.sort(List) and
+        // Collections.sort(List, Comparator) — the NATURAL-ORDER static.
+        // OpenJDK Collections.sort: `list.sort(null)` — TimSort with the
+        // elements' OWN compareTo when no comparator is given; with a
+        // comparator, list.sort(comparator). Pre-law: NO handler → the
+        // call fell to the fail-soft void no-op → THE LIST STAYED
+        // UNSORTED while every caller believed it sorted. LIVE ROOT
+        // (Tusky v33.1, the MainActivity.onCreate AIOOBE frontier):
+        // glide's R8-renamed okio Options builder
+        // (Lcom/bumptech/glide/h;.B → decodeHex'd Unicode-BOM ByteStrings
+        // [efbbbf, feff, fffe0000, fffe, 0000feff]) calls
+        // Collections.sort(list) then builds its select directory — the
+        // binary-search select invariant (sorted order) broke on the
+        // unsorted list, h.d compared byteAt(2) on the 2-byte "feff"
+        // option → AIOOBE "length=2; index=2" → MainActivity.onCreate
+        // died at the APP boundary (the whole activity tree missing).
+        // Law: stable insertion sort (TimSort's small-run contract) over
+        // the shadow's four parallel stores — comparator case invokes the
+        // app comparator's compare via DEX (the K14 machinery), natural
+        // case invokes the ELEMENT's own compareTo (DEX; strings/ints via
+        // their own stores), then re-syncs heap array[i] fields for
+        // dual-store lists. n ≤ 4096 honesty bound (K14's).
+        if (m == "sort") {
+            // (dex_invoke arrives via the class-level dex_invoke_slot() —
+            // bound here because this static face dispatches BEFORE the
+            // instance-method binding at dispatch() mid-body.)
+            const auto& f606_dex = CollectionShadow::dex_invoke_slot();
+            uint32_t lid = ctx.arg_as_object(0, 0);
+            uint32_t cmp = ctx.args.size() >= 2
+                               ? ctx.arg_as_object(1, 0) : 0;
+            if (lid == 0) return CallResult::not_handled();
+            auto* st = get_or_create(lid, /*is_map=*/false);
+            if (!st || st->is_map || st->is_view)
+                return CallResult::not_handled();
+            const int32_t n = static_cast<int32_t>(
+                st->elements.size() + st->view_elements.size());
+            if (n < 2) return CallResult::handled_void();
+            if (n > 4096) return CallResult::not_handled();
+            auto f606_elem = [&](int32_t i) -> CallContext::Arg {
+                CallContext::Arg a;
+                if (!st->view_elements.empty()) {
+                    const auto& ve = st->view_elements[i];
+                    if (ve.kind == 4) {
+                        a.kind = CallContext::Arg::Kind::NULL_REF;
+                    } else if (ve.kind == 3) {
+                        a.kind = CallContext::Arg::Kind::INT;
+                        a.int_val = ve.int_val;
+                    } else if (ve.kind == 2) {
+                        a.kind = CallContext::Arg::Kind::STRING;
+                        a.string_val = ve.string_val;
+                    } else {
+                        a.kind = CallContext::Arg::Kind::OBJECT;
+                        a.object_id = ve.object_id;
+                    }
+                    return a;
+                }
+                // Materialize a view of the dense-store slot.
+                uint32_t oid = i < (int32_t)st->elements.size()
+                                   ? st->elements[i] : 0;
+                uint8_t k = i < (int32_t)st->elem_kinds.size()
+                                ? st->elem_kinds[i]
+                                : (oid ? 1 : 2);
+                if (k == 4) {
+                    a.kind = CallContext::Arg::Kind::NULL_REF;
+                } else if (k == 3 && i < (int32_t)st->elem_ints.size()) {
+                    a.kind = CallContext::Arg::Kind::INT;
+                    a.int_val = st->elem_ints[i];
+                } else if (k == 2 && i < (int32_t)st->elem_strings.size()) {
+                    a.kind = CallContext::Arg::Kind::STRING;
+                    a.string_val = st->elem_strings[i];
+                } else {
+                    a.kind = CallContext::Arg::Kind::OBJECT;
+                    a.object_id = oid;
+                }
+                return a;
+            };
+            auto f606_cmp = [&](const CallContext::Arg& x,
+                                const CallContext::Arg& y) -> int {
+                // <0 : x<y · 0 : equal · >0 : x>y · INT_MIN : decline
+                if (cmp != 0) {
+                    DexCallOutcome o = f606_dex(cmp, "compare", {x, y});
+                    if (!o.ok || o.kind != 1) return INT_MIN;
+                    return o.int_val;
+                }
+                // Natural ordering: the element's own compareTo.
+                if (x.kind == CallContext::Arg::Kind::STRING &&
+                    y.kind == CallContext::Arg::Kind::STRING) {
+                    // Java String.compareTo: UTF-16 code-unit order.
+                    return x.string_val.compare(y.string_val);
+                }
+                if (x.kind == CallContext::Arg::Kind::INT &&
+                    y.kind == CallContext::Arg::Kind::INT) {
+                    return x.int_val < y.int_val ? -1
+                                                 : (x.int_val > y.int_val
+                                                        ? 1 : 0);
+                }
+                if (x.kind == CallContext::Arg::Kind::OBJECT &&
+                    x.object_id != 0 &&
+                    y.kind == CallContext::Arg::Kind::OBJECT &&
+                    y.object_id != 0) {
+                    DexCallOutcome o = f606_dex(x.object_id, "compareTo",
+                                                  {y});
+                    if (!o.ok || o.kind != 1) return INT_MIN;
+                    return o.int_val;
+                }
+                return INT_MIN;  // mixed kinds — decline (loud)
+            };
+            for (int32_t i = 1; i < n; ++i) {
+                for (int32_t j = i; j > 0; --j) {
+                    int c = f606_cmp(f606_elem(j - 1), f606_elem(j));
+                    if (c == INT_MIN) return CallResult::not_handled();
+                    if (c <= 0) break;  // stable: equal keeps order
+                    // Swap slots j-1 <-> j across ALL stores.
+                    if (!st->view_elements.empty()) {
+                        std::swap(st->view_elements[j - 1],
+                                  st->view_elements[j]);
+                        continue;
+                    }
+                    std::swap(st->elements[j - 1], st->elements[j]);
+                    if (j - 1 < (int32_t)st->elem_kinds.size() &&
+                        j < (int32_t)st->elem_kinds.size())
+                        std::swap(st->elem_kinds[j - 1], st->elem_kinds[j]);
+                    if (j - 1 < (int32_t)st->elem_strings.size() &&
+                        j < (int32_t)st->elem_strings.size())
+                        std::swap(st->elem_strings[j - 1],
+                                  st->elem_strings[j]);
+                    if (j - 1 < (int32_t)st->elem_ints.size() &&
+                        j < (int32_t)st->elem_ints.size())
+                        std::swap(st->elem_ints[j - 1], st->elem_ints[j]);
+                }
+            }
+            // Dual-store coherence: refresh heap array[i] fields when the
+            // list also carries the engine-array shape (Arrays.asList /
+            // F-101 products), so heap-field readers see the sorted order.
+            if (heap_) {
+                int32_t alen = -1;
+                if (heap_->get_object_array_length(lid, alen) && alen == n) {
+                    for (int32_t i = 0; i < n; ++i) {
+                        CallContext::Arg a = f606_elem(i);
+                        const std::string fname =
+                            "array[" + std::to_string(i) + "]";
+                        if (a.kind == CallContext::Arg::Kind::STRING) {
+                            heap_->set_object_string_field(lid, fname,
+                                                           a.string_val);
+                        } else if (a.kind == CallContext::Arg::Kind::INT) {
+                            heap_->set_object_int_field(lid, fname,
+                                                        a.int_val);
+                        } else if (a.object_id != 0) {
+                            heap_->set_object_ref_field(
+                                lid, fname, a.object_id,
+                                "Ljava/lang/Object;", "", false);
+                        }
+                    }
+                }
+            }
+            {
+                static thread_local uint64_t f606_diag = 0;
+                if (f606_diag++ < 8) {
+                    std::cerr << "[F-C4-606] Collections.sort sorted " << n
+                              << " element(s) ("
+                              << (cmp ? "comparator" : "natural order")
+                              << ", stable)" << std::endl;
+                }
+            }
+            return CallResult::handled_void();
         }
     }
 
@@ -2822,7 +3060,13 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
     // contract. Single-threaded init-path equivalence documented (same
     // style as the R-NEW-391 canonical ≡ absolute equivalence): no
     // concurrent mutation between the snapshot and the walk.
-    if (m == "descendingIterator" && heap_) {
+    // W14 env-gate (probe scaffolding): MINIANDROID_S186F_DEQUE=0 restores
+    // the pre-S186f decline byte-for-byte — the sunpiano b/m;.<init>
+    // bisect eliminated the S186h laws, leaving this law as the carrier.
+    if (m == "descendingIterator" && heap_ &&
+        !(std::getenv("MINIANDROID_S186F_DEQUE") != nullptr &&
+          std::getenv("MINIANDROID_S186F_DEQUE")[0] == '0' &&
+          std::getenv("MINIANDROID_S186F_DEQUE")[1] == '\0')) {
         auto* src_state = get_or_create(obj_id);
         uint32_t desc_parent = heap_->allocate("Ljava/util/ArrayDeque;");
         auto* desc_state = get_or_create(desc_parent);
@@ -3384,6 +3628,114 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_null();
     }
 
+    // ── [S192-C8] F-C8-169 — ConcurrentMap interface family ────────────
+    // OpenJDK law (Map/ConcurrentMap default methods): putIfAbsent(k, v)
+    // — absent → store + null; present → the existing value VERBATIM,
+    // no store. remove(Object key) — present → remove + the old value;
+    // absent → null. replace(k, v) — present → store + the old value;
+    // absent → null (NO mapping created). The 5 canonical APKs consume
+    // the family (14 sites, decode evidence); before this law the calls
+    // fell through (get/put/containsKey already handled here). Keyed by
+    // the is_map state only — method names cannot collide with the
+    // element stores (remove(e) for lists is handled upstream where the
+    // receiver state is NOT a map).
+    if (m == "putIfAbsent" || m == "replace" ||
+        (m == "remove" && ctx.args.size() >= 1 &&
+         ctx.args[0].kind != CallContext::Arg::Kind::INT)) {
+        // JDK Map.remove(Object key) takes a KEY (ref/string) — the INT
+        // form is List.remove(int index) and NEVER enters this law. And
+        // a remove requires the state to ALREADY be a map: never flip a
+        // list state to map here (List.remove(Object) on a list keeps
+        // its own upstream law).
+        CollectionState* mstate = nullptr;
+        if (m == "remove") {
+            auto it = collections_.find(obj_id);
+            if (it == collections_.end() || !it->second.is_map)
+                return CallResult::not_handled();
+            mstate = &it->second;
+        } else {
+            mstate = get_or_create(obj_id, true);
+        }
+        if (!mstate->is_map) return CallResult::not_handled();
+        std::string key = map_key_value_law(ctx, 0, heap_);
+        auto lookup_prev = [&](bool& is_str, std::string& sval,
+                               uint32_t& oid) -> bool {
+            auto sit = mstate->map_string_entries.find(key);
+            if (sit != mstate->map_string_entries.end()) {
+                is_str = true; sval = sit->second; oid = 0;
+                return true;
+            }
+            auto it = mstate->map_entries.find(key);
+            if (it != mstate->map_entries.end()) {
+                is_str = false; sval.clear(); oid = it->second;
+                return true;
+            }
+            return false;
+        };
+        auto serve_prev = [&](bool is_str, const std::string& sval,
+                              uint32_t oid) -> CallResult {
+            if (is_str) return CallResult::handled_string(sval);
+            if (oid != 0) return CallResult::handled_object(
+                oid, "Ljava/lang/Object;");
+            return CallResult::handled_null();
+        };
+        bool prev_is_str = false;
+        std::string prev_sval;
+        uint32_t prev_oid = 0;
+        const bool present = lookup_prev(prev_is_str, prev_sval, prev_oid);
+        if (m == "putIfAbsent") {
+            if (present) {
+                std::cerr << "[C8-CHM] putIfAbsent o" << obj_id << " key=\""
+                          << key << "\" — present, NO store (JDK law)"
+                          << std::endl;
+                return serve_prev(prev_is_str, prev_sval, prev_oid);
+            }
+            if (ctx.args.size() >= 2) {
+                const auto& va = ctx.args[1];
+                if (va.kind == CallContext::Arg::Kind::STRING) {
+                    mstate->map_string_entries[key] = va.string_val;
+                    mstate->map_entries.erase(key);
+                } else {
+                    mstate->map_entries[key] = ctx.arg_as_object(1, 0);
+                    mstate->map_string_entries.erase(key);
+                }
+            }
+            std::cerr << "[C8-CHM] putIfAbsent o" << obj_id << " key=\""
+                      << key << "\" — stored (was absent)" << std::endl;
+            return CallResult::handled_null();
+        }
+        if (m == "remove") {
+            if (!present) return CallResult::handled_null();
+            mstate->map_entries.erase(key);
+            mstate->map_string_entries.erase(key);
+            std::cerr << "[C8-CHM] remove o" << obj_id << " key=\""
+                      << key << "\" — removed (JDK law: old value)"
+                      << std::endl;
+            return serve_prev(prev_is_str, prev_sval, prev_oid);
+        }
+        // replace(k, v)
+        if (!present) {
+            std::cerr << "[C8-CHM] replace o" << obj_id << " key=\""
+                      << key << "\" — absent, NO mapping created (JDK law)"
+                      << std::endl;
+            return CallResult::handled_null();
+        }
+        if (ctx.args.size() >= 2) {
+            const auto& va = ctx.args[1];
+            if (va.kind == CallContext::Arg::Kind::STRING) {
+                mstate->map_string_entries[key] = va.string_val;
+                mstate->map_entries.erase(key);
+            } else {
+                mstate->map_entries[key] = ctx.arg_as_object(1, 0);
+                mstate->map_string_entries.erase(key);
+            }
+        }
+        std::cerr << "[C8-CHM] replace o" << obj_id << " key=\""
+                  << key << "\" — replaced (JDK law: old value)"
+                  << std::endl;
+        return serve_prev(prev_is_str, prev_sval, prev_oid);
+    }
+
     if (m == "containsKey") {
         auto* state = get_or_create(obj_id, true);
         std::string key = map_key_value_law(ctx, 0, heap_);
@@ -3899,10 +4251,17 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_object(tid, "Ljava/lang/Thread;");
     }
     if (m == "getName") {
-        return CallResult::handled_string(MAIN_THREAD_NAME);
+        // [S193-C8] F-C8-185 NAME LAW: per-thread name (setName stores;
+        // main answers "main"; unnamed threads answer Thread-<tid>). Was:
+        // literal "main" for EVERY thread.
+        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
+        return CallResult::handled_string(thread_name_of(who));
     }
     if (m == "getId") {
-        return CallResult::handled_long(MAIN_THREAD_TID);
+        // [S193-C8] F-C8-185 TID LAW: main = 1, monotonic per thread. Was:
+        // main tid (1) for EVERY thread.
+        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
+        return CallResult::handled_long(tid_of(who));
     }
     if (m == "getStackTrace") {
         // CAMPAIGN 010 R14 (recovered via UNIFIED_011.1): do NOT handle here —
@@ -3913,9 +4272,25 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
         // made the walk loop forever on out-of-bounds aget-object reads.
         return CallResult::not_handled();
     }
-    if (m == "isAlive")      return CallResult::handled_bool(true);
-    if (m == "isDaemon")     return CallResult::handled_bool(false);
+    if (m == "isAlive") {
+        // [S193-C8] F-C8-185 LIFECYCLE LAW: a thread whose body ran to
+        // completion is TERMINATED — isAlive answers false. Was: literal
+        // true forever (the join() pair defect on this line).
+        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
+        return CallResult::handled_bool(!thread_terminated(who));
+    }
+    if (m == "isDaemon")
+        return CallResult::handled_bool(
+            thread_daemon_of(ctx.has_receiver ? ctx.receiver_id : 0));
     if (m == "isInterrupted")return CallResult::handled_bool(false);
+    if (m == "getPriority") {
+        // [S193-C8] F-C8-185 PRIORITY LAW: setPriority stores 1..10;
+        // getPriority answers it (NORM_PRIORITY default). Was: no
+        // handler — the F-150 family swallowed setPriority and
+        // getPriority answered a constant.
+        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
+        return CallResult::handled_int(thread_priority_of(who));
+    }
     if (m == "start" || m == "run") {
         // M3 F-THREAD-TICK: deterministic inline execution. If this thread has
         // a recorded target Runnable, queue a pending inline run for the
@@ -3953,7 +4328,6 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "interrupt" || m == "join" ||
-        m == "setDaemon" || m == "setName" || m == "setPriority" ||
         m == "yield" || m == "holdsLock" ||
         m == "getContextClassLoader" || m == "setContextClassLoader") {
         // F-150 (S72-W4): "sleep" REMOVED from this no-op family — it was
@@ -3974,16 +4348,57 @@ CallResult ThreadShadow::dispatch(const CallContext& ctx) {
         // receives these calls.
         return CallResult::handled_void();
     }
+    // [S193-C8] F-C8-185 CONFIG LAWS (removed from the F-150 no-op
+    // family above): setName/setPriority/setDaemon store per-thread
+    // state the observables answer back. interrupt/join stay in the
+    // family (the wave-8 engine laws own interrupt delivery; join is
+    // coherent with the inline-run + termination marking).
+    if (m == "setName" && !ctx.args.empty() &&
+        ctx.args[0].kind == CallContext::Arg::Kind::STRING) {
+        set_thread_name(ctx.receiver_id, ctx.args[0].string_val);
+        return CallResult::handled_void();
+    }
+    if (m == "setPriority" && !ctx.args.empty() &&
+        ctx.args[0].kind == CallContext::Arg::Kind::INT) {
+        int32_t prio = ctx.args[0].int_val;
+        if (prio < 1 || prio > 10) {
+            // JDK IllegalArgumentException law (Thread.setPriority).
+            CallResult exc;
+            exc.handled = true;
+            exc.is_exc = true;
+            exc.exc_class = "Ljava/lang/IllegalArgumentException;";
+            exc.exc_msg = "priority out of range: " +
+                          std::to_string(prio);
+            return exc;
+        }
+        set_thread_priority(ctx.receiver_id, prio);
+        return CallResult::handled_void();
+    }
+    if (m == "setDaemon" && !ctx.args.empty()) {
+        set_thread_daemon(ctx.receiver_id,
+                          ctx.args[0].kind == CallContext::Arg::Kind::INT
+                              ? ctx.args[0].int_val != 0
+                              : false);
+        return CallResult::handled_void();
+    }
     if (m == "equals") {
+        // [S193-C8] F-C8-185 IDENTITY LAW: JDK Thread.equals compares the
+        // heap objects THIS receiver vs the argument. Was: comparison
+        // against the main singleton (wrong for every non-main thread).
         uint32_t other = ctx.arg_as_object(0, 0);
-        return CallResult::handled_bool(other == main_thread_id_);
+        return CallResult::handled_bool(ctx.has_receiver &&
+                                        other == ctx.receiver_id);
     }
     if (m == "hashCode") {
-        return CallResult::handled_int(static_cast<int32_t>(main_thread_id_));
+        return CallResult::handled_int(static_cast<int32_t>(tid_of(
+            ctx.has_receiver ? ctx.receiver_id : main_thread_id_)));
     }
     if (m == "toString") {
-        std::string s = std::string("Thread[") + MAIN_THREAD_NAME +
-                        ",5,main]";
+        // [S193-C8] F-C8-185: AOSP Thread.toString law —
+        // "Thread[" + getName() + "," + getPriority() + "," + group + "]".
+        uint32_t who = ctx.has_receiver ? ctx.receiver_id : main_thread_id_;
+        std::string s = "Thread[" + thread_name_of(who) + "," +
+                        std::to_string(thread_priority_of(who)) + ",main]";
         return CallResult::handled_string(s);
     }
     return CallResult::not_handled();
@@ -4367,12 +4782,34 @@ void HandlerShadow::enqueue_tokened(uint32_t runnable_id, int64_t delay_ms,
     q.runnable_class = cls;
     q.token_id = token_id;
     queue_.push_back(std::move(q));
-    // EXP-052: Trace queue activity for diagnostics.
     std::cerr << "[QUEUE] Runnable id=" << runnable_id
               << " enqueued (delay=" << delay_ms << "ms"
               << ", ready_at=" << q.ready_at_ms << "ms virtual"
               << ", queue_depth=" << queue_.size()
               << (token_id ? (", token=" + std::to_string(token_id)) : "")
+              << (cls.empty() ? "" : (", source=" + cls))
+              << ")" << std::endl;
+}
+
+// [S193-C8] F-C8-181 — anchored enqueue (base + delay): the
+// CountDownTimer chain re-posts its next tick at its OWN beat + interval
+// (AOSP live-Looper semantics), never at the possibly idle-settle-jumped
+// now. Deterministic: same inputs → same schedule.
+void HandlerShadow::enqueue_from(uint32_t runnable_id, int64_t base_ms,
+                                 int64_t delay_ms, const std::string& cls) {
+    if (runnable_id == 0) return;
+    QueuedRunnable q;
+    q.runnable_id = runnable_id;
+    q.enqueue_seq = next_seq_++;
+    q.ready_at_ms = base_ms + (delay_ms < 0 ? 0 : delay_ms);
+    q.runnable_class = cls;
+    q.token_id = 0;
+    queue_.push_back(std::move(q));
+    std::cerr << "[QUEUE] Runnable id=" << runnable_id
+              << " enqueued FROM base=" << base_ms << "ms"
+              << " (delay=" << delay_ms << "ms"
+              << ", ready_at=" << q.ready_at_ms << "ms virtual"
+              << ", queue_depth=" << queue_.size()
               << (cls.empty() ? "" : (", source=" + cls))
               << ")" << std::endl;
 }
@@ -4502,6 +4939,10 @@ size_t HandlerShadow::drain_ready_ex(
     for (size_t i = 0; i < queue_.size(); ++i)
         if (queue_[i].ready_at_ms <= virtual_now_ms_) due_idx.push_back(i);
     if (due_idx.empty()) return 0;
+    // [S193-C8] F-C8-181: fresh drain batch — record each popped entry's
+    // SCHEDULED ready time so the dispatch layer (CountDownTimer law)
+    // computes countdowns against the beat, not the jumped clock.
+    drained_due_.clear();
     // R500 ROOT-PFQ-ORDER: within the same ready time, a front-of-queue
     // message (AOSP when=0 law) precedes normally-posted work.
     std::stable_sort(due_idx.begin(), due_idx.end(),
@@ -4520,6 +4961,7 @@ size_t HandlerShadow::drain_ready_ex(
     for (size_t i : due_idx) queue_.erase(queue_.begin() + static_cast<long>(i));
     for (auto& q : taken) {
         out_drained->emplace_back(q.runnable_id, q.delivery_thread_id);
+        drained_due_[q.runnable_id] = q.ready_at_ms;
         std::cerr << "[QUEUE] Runnable id=" << q.runnable_id
                   << " dequeued (ready_at=" << q.ready_at_ms
                   << "ms <= now=" << virtual_now_ms_ << "ms virtual"
@@ -4627,6 +5069,42 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
             }
             return CallResult::handled_bool(true);
         }
+        // [S192-C8] F-C8-163 — Handler.postAtTime (absolute-uptime law).
+        // AOSP (Handler.java): postAtTime(r, uptimeMillis) and
+        // postAtTime(r, Object token, uptimeMillis) enqueue at the
+        // ABSOLUTE uptimeMillis instant (SystemClock.uptimeMillis clock).
+        // Engine: the absolute when converts to a RELATIVE delay against
+        // the deterministic virtual clock (delay = max(0, when - now));
+        // the token form rides enqueue_tokened (FINDING-004 shape).
+        // klondike consumes it (4 sites, decode evidence); before this
+        // law the call fell through unhandled.
+        if (m == "postAtTime") {
+            uint32_t r = extract_runnable(ctx, 0);
+            if (r == 0) return CallResult::handled_bool(false);
+            const bool token_form = ctx.args.size() >= 3;
+            const int64_t when_idx = token_form ? 2 : 1;
+            int64_t when = 0;
+            if (ctx.args.size() > static_cast<size_t>(when_idx) &&
+                ctx.args[when_idx].kind == CallContext::Arg::Kind::LONG)
+                when = ctx.args[when_idx].long_val;
+            else if (ctx.args.size() > static_cast<size_t>(when_idx))
+                when = ctx.args[when_idx].int_val;
+            int64_t now = virtual_now_ms();
+            int64_t delay = when - now;
+            if (delay < 0) delay = 0;  // past when: fire on the next drain
+            if (token_form &&
+                (ctx.args[1].kind == CallContext::Arg::Kind::OBJECT ||
+                 ctx.args[1].kind == CallContext::Arg::Kind::NULL_REF)) {
+                uint32_t token = extract_runnable(ctx, 1);
+                enqueue_tokened(r, delay, /*cls=*/"", token);
+            } else {
+                enqueue(r, delay, /*cls=*/"");
+            }
+            std::cerr << "[QUEUE] postAtTime r=" << r << " when=" << when
+                      << " now=" << now << " delay=" << delay << "ms"
+                      << std::endl;
+            return CallResult::handled_bool(true);
+        }
         if (m == "removeCallbacks" || m == "removeMessages" || m == "hasMessages" || m == "hasCallbacks") {
             // EXP-088 Phase F: removeCallbacks(Runnable) — actually remove
             // matching Runnables from the queue. Previously this was a no-op.
@@ -4670,9 +5148,50 @@ CallResult HandlerShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_null();
         }
         if (m == "sendEmptyMessage" || m == "sendMessage" ||
-            m == "sendMessageDelayed" || m == "sendMessageAtTime" ||
-            m == "obtainMessage") {
+            m == "sendMessageDelayed" || m == "sendMessageAtTime") {
             return CallResult::handled_bool(true);
+        }
+        if (m == "obtainMessage") {
+            // [S191-C8] F-C8-144b — AOSP law (Handler.java): obtainMessage()
+            // RETURNS A REAL MESSAGE with msg.target = this. The old
+            // handled_bool(true) answered a boolean for an
+            // object-returning method — the caller's `msg` register then
+            // carried no heap object, and Message.sendToTarget /
+            // setAsynchronous / isAsynchronous had nothing to operate on
+            // (probe face: message_async_send NPE). Overloads:
+            //   () / (what) / (what, obj) / (what, arg1, arg2) /
+            //   (what, arg1, arg2, obj)
+            if (!heap_) return CallResult::handled_bool(true);
+            uint32_t msg_id = heap_->allocate("Landroid/os/Message;");
+            heap_->set_object_ref_field(msg_id, "__target__",
+                                        ctx.receiver_id, ctx.class_name, "",
+                                        false);
+            // AOSP Message.obtain(h, what, obj...) argument binding.
+            size_t ai = 0;  // args[0] = receiver (engine arg shift)
+            auto arg_at = [&](size_t i) -> const CallContext::Arg* {
+                return (ctx.args.size() > i) ? &ctx.args[i] : nullptr;
+            };
+            if (const CallContext::Arg* a = arg_at(1)) {
+                if (a->kind == CallContext::Arg::Kind::INT)
+                    heap_->set_object_int_field(msg_id, "__what__", a->int_val);
+            }
+            if (const CallContext::Arg* a = arg_at(2)) {
+                if (a->kind == CallContext::Arg::Kind::OBJECT && a->object_id)
+                    heap_->set_object_ref_field(msg_id, "__obj__", a->object_id,
+                                                a->object_class, "", false);
+            }
+            if (const CallContext::Arg* a = arg_at(3)) {
+                if (a->kind == CallContext::Arg::Kind::INT)
+                    heap_->set_object_int_field(msg_id, "__arg1__", a->int_val);
+            }
+            if (const CallContext::Arg* a = arg_at(4)) {
+                if (a->kind == CallContext::Arg::Kind::INT)
+                    heap_->set_object_int_field(msg_id, "__arg2__", a->int_val);
+            }
+            std::cerr << "[C8-MSG] obtainMessage handler=o" << ctx.receiver_id
+                      << " → msg=o" << msg_id << " (target bound, AOSP law)"
+                      << std::endl;
+            return CallResult::handled_object(msg_id, "Landroid/os/Message;");
         }
         if (m == "toString") return CallResult::handled_string("Handler");
     }

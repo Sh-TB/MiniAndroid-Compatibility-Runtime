@@ -23,9 +23,19 @@
 //     throwing (documented boundary; never silent).
 //   * lockInterruptibly() == lock() under a single serialized thread
 //     (no interrupt source exists).
-//   * newCondition() is EXPLICITLY UNSUPPORTED (STUBBED status): real
-//     Condition semantics (await/signal queues) are not demanded by the
-//     corpus; the stub is loud, never silent.
+//   * [S191-C8] F-C8-153 — calls DECLARED on the java.util.concurrent.locks
+//     Lock INTERFACE (the javac emit shape for `Lock l = new
+//     ReentrantLock()`) are resolved to the receiver's RUNTIME class
+//     (EXP-059 receiver-identity law) before the family dispatch — decode
+//     evidence: Lock.lock/unlock = 295 call sites across 5 canonical APKs.
+//   * [S191-C8] F-C8-152 — newCondition() returns a REAL Condition object
+//     (heap identity + owning-lock binding + pending-signal counter).
+//     signal/signalAll require the owning lock held (JDK IMSE law, REAL
+//     throw via the shadow exception channel); await consumes a pending
+//     signal or records a loud PARKED boundary (AOSP blocks there);
+//     awaitNanos advances the deterministic virtual clock when unsignaled
+//     and answers ≤0 (JDK timeout contract). The old handled_null stub
+//     was replaced — it answered NULL and the corpus NPE'd downstream.
 //
 // No fixture-specific code: these are platform classes any Kotlin/R8
 // APK may reference (Room-generated code uses ReentrantReadWriteLock
@@ -48,8 +58,11 @@ public:
     bool handles_class(const std::string& cls) const override {
         // Exact family claims — the catch-all view path must never see
         // these descriptors (registration order also keeps them early).
+        // [S191-C8] + Lock interface and Condition objects (F-C8-152/153).
         return cls.rfind("Ljava/util/concurrent/locks/ReentrantReadWriteLock;", 0) == 0 ||
-               cls.rfind("Ljava/util/concurrent/locks/ReentrantLock;", 0) == 0;
+               cls.rfind("Ljava/util/concurrent/locks/ReentrantLock;", 0) == 0 ||
+               cls.rfind("Ljava/util/concurrent/locks/Lock;", 0) == 0 ||
+               cls.rfind("Ljava/util/concurrent/locks/Condition;", 0) == 0;
     }
 
     CallResult dispatch(const CallContext& ctx) override;
@@ -75,6 +88,11 @@ private:
     // ReadLock/WriteLock object id → owning RWLock object id (0 = orphan).
     std::map<uint32_t, uint32_t> read_lock_owner_;
     std::map<uint32_t, uint32_t> write_lock_owner_;
+    // [S191-C8] F-C8-152 Condition state: condition oid → owning
+    // ReentrantLock oid; condition oid → pending signal count
+    // (signal +1, signalAll = wake-all marker LONG_MAX/2).
+    std::map<uint32_t, uint32_t> condition_locks_;
+    std::map<uint32_t, int64_t> condition_pending_signals_;
 
     LockState& rw_state(uint32_t id) { return rw_states_[id]; }
     LockState& reentrant_state(uint32_t id) { return reentrant_states_[id]; }

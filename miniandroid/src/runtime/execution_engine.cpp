@@ -871,7 +871,8 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                     [this](uint32_t child_id,
                            const std::string& parent_class_desc,
                            const std::vector<resources::AxmlAttribute>&
-                               xml_attrs) -> uint32_t {
+                               xml_attrs,
+                           uint32_t parent_view_id) -> uint32_t {
                         std::vector<resources::XmlAttrRecord> recs;
                         recs.reserve(xml_attrs.size());
                         for (const auto& a : xml_attrs) {
@@ -885,7 +886,8 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                             recs.push_back(std::move(r));
                         }
                         return dalvik_engine_.generate_child_layout_params(
-                            parent_class_desc, child_id, recs);
+                            parent_class_desc, child_id, recs,
+                            parent_view_id);
                     });
                 // G12 FIX-G12-002 (completes G10 FIX-G10-002's intent): the
                 // DEX superclass classifier must be wired for EVERY inflate/
@@ -927,9 +929,12 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 rt.set_fragment_tag_hook(
                     [this](uint32_t view_id,
                            const std::string& frag_class_desc,
-                           const std::string& tag, int32_t xml_id) {
+                           const std::string& tag, int32_t xml_id,
+                           const std::vector<resources::XmlAttrRecord>&
+                               xml_attrs) {
                         dalvik_engine_.instantiate_fragment_tag(
-                            view_id, frag_class_desc, tag, xml_id);
+                            view_id, frag_class_desc, tag, xml_id,
+                            xml_attrs);
                     });
             }
             // G06 §4: canonical input pipeline. The dispatcher shares the
@@ -7062,6 +7067,108 @@ void ExecutionEngine::invoke_handler_runnable(uint32_t rid,
             saved289 = ts289->current_thread_id();
             ts289->set_active_drained_thread(delivery_tid);
             bound289 = true;
+        }
+        // [S192-C8] F-C8-166 — CountDownTimer TICK DISPATCH LAW (AOSP
+        // CountDownTimer.java: the timer posts its own tick messages on
+        // the internal Handler; each dispatch fires onTick(remaining) and
+        // re-posts until the future elapses → onFinish()). The drained
+        // object is the CountDownTimer SUBCLASS (onTick/onFinish, no
+        // run()) — without this arm the drain tried run() and dropped
+        // the tick silently. Mirror of the F-115 Timer re-enqueue law.
+        {
+            std::string walk = cls;
+            bool is_cdt = (walk == "Landroid/os/CountDownTimer;");
+            for (int hop = 0; hop < 12 && !is_cdt && !walk.empty() &&
+                              walk != "Ljava/lang/Object;"; ++hop) {
+                auto sup = dalvik_engine_.superclass_of(walk);
+                if (sup.empty()) break;
+                walk = sup;
+                is_cdt = (walk == "Landroid/os/CountDownTimer;");
+            }
+            if (is_cdt) {
+                auto& heap2 = dalvik_engine_.get_heap_public();
+                auto flag_of = [&](const char* f) -> bool {
+                    auto v = heap2.get_object_field(rid, f);
+                    return v.has_value() ? v->bool_val : false;
+                };
+                auto long_of = [&](const char* f) -> int64_t {
+                    auto v = heap2.get_object_field(rid, f);
+                    return v.has_value()
+                               ? (v->type == miniandroid::dalvik::DalvikType::INT64
+                                      ? v->long_val
+                                      : (v->type ==
+                                                 miniandroid::dalvik::DalvikType::INT32
+                                             ? v->int_val
+                                             : 0))
+                               : 0;
+                };
+                if (flag_of("__cdt_cancelled__")) {
+                    std::cerr << "[C8-CDT] tick o" << rid
+                              << " DROPPED (cancelled — AOSP law)"
+                              << std::endl;
+                    return;
+                }
+                const int64_t total = long_of("__cdt_total__");
+                const int64_t interval = long_of("__cdt_interval__") > 0
+                                             ? long_of("__cdt_interval__")
+                                             : 1;
+                const int64_t started = long_of("__cdt_started_at__");
+                // [S193-C8] F-C8-181 — TICK-SCHEDULE LAW. The countdown
+                // is computed against THIS entry's SCHEDULED ready time
+                // (HandlerShadow due_time_of — stamped by drain_ready_ex),
+                // NEVER against the possibly idle-settle-JUMPED clock:
+                // wave-9's law read virtual_now_ms() here, so a settle
+                // jump past the CDT window reported the whole countdown
+                // elapsed at the FIRST dispatch → 0 onTick + instant
+                // onFinish (the wave-10 baseline probe reproduced it:
+                // countdown_timer/cdt_tick_schedule FAIL ticks=0, ×3).
+                // AOSP live-Looper semantics: each tick fires with the
+                // countdown as of its own beat, and the next tick is
+                // posted at beat+interval (enqueue_from anchored law).
+                int64_t due = started;
+                if (auto* hs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::HandlerShadow>()
+                                   : nullptr)
+                    due = hs->due_time_of(rid);
+                const int64_t elapsed = due - started;
+                const int64_t remaining = total - elapsed;
+                if (remaining > 0) {
+                    std::cerr << "[C8-CDT] onTick o" << rid
+                              << " remaining=" << remaining << "ms"
+                              << " (beat=" << due << "ms virtual)"
+                              << std::endl;
+                    miniandroid::dalvik::DalvikValue tret;
+                    miniandroid::dalvik::DalvikExecutionResult tres;
+                    std::vector<miniandroid::dalvik::DalvikValue> targs{
+                        miniandroid::dalvik::DalvikValue::make_object(rid,
+                                                                      cls),
+                        miniandroid::dalvik::DalvikValue::make_long(
+                            remaining)};
+                    dalvik_engine_.try_recursive_invoke(
+                        cls, "onTick", targs, tret, tres, "(J)V");
+                    if (auto* hs = shadow_registry_
+                                       ? shadow_registry_->find_as<
+                                             framework::HandlerShadow>()
+                                       : nullptr)
+                        hs->enqueue_from(rid, due, interval,
+                                         "CountDownTimer.tick");
+                } else if (!flag_of("__cdt_finished__")) {
+                    heap2.set_object_field(rid, "__cdt_finished__",
+                                           miniandroid::dalvik::DalvikValue::
+                                               make_bool(true));
+                    std::cerr << "[C8-CDT] onFinish o" << rid
+                              << " (future elapsed — AOSP law)" << std::endl;
+                    miniandroid::dalvik::DalvikValue fret;
+                    miniandroid::dalvik::DalvikExecutionResult fres;
+                    std::vector<miniandroid::dalvik::DalvikValue> fargs{
+                        miniandroid::dalvik::DalvikValue::make_object(rid,
+                                                                      cls)};
+                    dalvik_engine_.try_recursive_invoke(cls, "onFinish", fargs,
+                                                        fret, fres, "()V");
+                }
+                return;  // the CountDownTimer family never has run()
+            }
         }
         dalvik_engine_.try_recursive_invoke(cls, "run", args, ret, drain_result);
         if (bound289) ts289->set_active_drained_thread(saved289);

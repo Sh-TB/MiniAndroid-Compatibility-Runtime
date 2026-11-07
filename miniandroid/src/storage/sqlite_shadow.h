@@ -64,6 +64,20 @@ public:
     // Returns true exactly once per open that needs onUpgrade; fills versions.
     bool consume_pending_upgrade(uint32_t helper_oid, int64_t& old_version,
                                  int64_t& new_version);
+    // ── F-C4-597 (W11): the onOpen lifecycle flag. AOSP
+    // SQLiteOpenHelper.getDatabaseLocked ALWAYS calls onOpen(db) after
+    // the onCreate/onUpgrade dispatch on EVERY fresh open — Room 2.7's
+    // RoomOpenHelper.onOpen runs checkIdentity +
+    // internalInitInvalidationTracker (the CREATE TEMP TABLE
+    // room_table_modification_log + the trigger sync) on that callback;
+    // the engine delivered only onCreate/onUpgrade, so the temp table
+    // never existed and TriggerBasedInvalidationTracker's
+    // compileStatement("INSERT OR IGNORE INTO room_table_modification_log
+    // …") failed → null statement → execute() NPE family →
+    // MainActivity.onCreate aborted mid-body (Tusky: setContentView
+    // never ran → the whole activity tree missing). Returns true exactly
+    // once per open.
+    bool consume_pending_open(uint32_t helper_oid);
     // Engine calls after the onCreate/onUpgrade DEX callback returned:
     // persists PRAGMA user_version = requested version.
     void notify_lifecycle_callbacks_done(uint32_t helper_oid);
@@ -87,6 +101,7 @@ private:
         uint32_t db_oid = 0;       // cached SQLiteDatabase heap object
         bool pending_create = false;
         bool pending_upgrade = false;
+        bool pending_open = false;   // F-C4-597 (W11): onOpen callback flag
         int64_t upgrade_from = 0;
         bool wal_requested = false;
     };

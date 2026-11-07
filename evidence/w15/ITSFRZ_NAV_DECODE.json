@@ -1,0 +1,175 @@
+{
+ "apk": "/home/z/my-project/apk_cache/com.itsfrz.tictactoe_5.apk",
+ "package": "com.itsfrz.tictactoe",
+ "xml_count": 377,
+ "nav_classes": [
+  {
+   "class": "Landroidx/navigation/fragment/NavHostFragment;",
+   "super": "LU1/r;",
+   "methods": [
+    {
+     "name": "<init>",
+     "desc": "()V",
+     "size": 32
+    },
+    {
+     "name": "B",
+     "desc": "(Landroid/os/Bundle;)V",
+     "size": 22
+    },
+    {
+     "name": "E",
+     "desc": "(Landroid/view/View;)V",
+     "size": 176
+    },
+    {
+     "name": "O",
+     "desc": "()Lc2/z;",
+     "size": 18
+    },
+    {
+     "name": "r",
+     "desc": "(Li/i;)V",
+     "size": 58
+    },
+    {
+     "name": "s",
+     "desc": "(Landroid/os/Bundle;)V",
+     "size": 72
+    },
+    {
+     "name": "t",
+     "desc": "(Landroid/view/LayoutInflater; Landroid/view/ViewGroup;)Landroid/view/View;",
+     "size": 68
+    },
+    {
+     "name": "v",
+     "desc": "()V",
+     "size": 54
+    },
+    {
+     "name": "y",
+     "desc": "(Landroid/content/Context; Landroid/util/AttributeSet; Landroid/os/Bundle;)V",
+     "size": 120
+    }
+   ]
+  },
+  {
+   "class": "Lcom/google/android/material/internal/NavigationMenuItemView;",
+   "super": "LO2/e;",
+   "methods": [
+    {
+     "name": "<clinit>",
+     "desc": "()V",
+     "size": 20
+    },
+    {
+     "name": "<init>",
+     "desc": "(Landroid/content/Context; Landroid/util/AttributeSet;)V",
+     "size": 116
+    },
+    {
+     "name": "setActionView",
+     "desc": "(Landroid/view/View;)V",
+     "size": 68
+    },
+    {
+     "name": "a",
+     "desc": "(Ln/n;)V",
+     "size": 406
+    },
+    {
+     "name": "getItemData",
+     "desc": "()Ln/n;",
+     "size": 6
+    },
+    {
+     "name": "onCreateDrawableState",
+     "desc": "(I)[I",
+     "size": 60
+    },
+    {
+     "name": "setCheckable",
+     "desc": "(Z)V",
+     "size": 38
+    },
+    {
+     "name": "setChecked",
+     "desc": "(Z)V",
+     "size": 18
+    },
+    {
+     "name": "setHorizontalPadding",
+     "desc": "(I)V",
+     "size": 10
+    },
+    {
+     "name": "setIcon",
+     "desc": "(Landroid/graphics/drawable/Drawable;)V",
+     "size": 160
+    },
+    {
+     "name": "setIconPadding",
+     "desc": "(I)V",
+     "size": 12
+    },
+    {
+     "name": "setIconSize",
+     "desc": "(I)V",
+     "size": 6
+    },
+    {
+     "name": "setIconTintList",
+     "desc": "(Landroid/content/res/ColorStateList;)V",
+     "size": 42
+    },
+    {
+     "name": "setMaxLines",
+     "desc": "(I)V",
+     "size": 12
+    },
+    {
+     "name": "setNeedsEmptyIcon",
+     "desc": "(Z)V",
+     "size": 6
+    },
+    {
+     "name": "setTextAppearance",
+     "desc": "(I)V",
+     "size": 12
+    },
+    {
+     "name": "setTextColor",
+     "desc": "(Landroid/content/res/ColorStateList;)V",
+     "size": 12
+    },
+    {
+     "name": "setTitle",
+     "desc": "(Ljava/lang/CharSequence;)V",
+     "size": 12
+    }
+   ]
+  },
+  {
+   "class": "Lcom/google/android/material/internal/NavigationMenuView;",
+   "super": "Landroidx/recyclerview/widget/RecyclerView;",
+   "methods": [
+    {
+     "name": "<init>",
+     "desc": "(Landroid/content/Context; Landroid/util/AttributeSet;)V",
+     "size": 28
+    },
+    {
+     "name": "b",
+     "desc": "(Ln/l;)V",
+     "size": 2
+    },
+    {
+     "name": "getWindowAnimations",
+     "desc": "()I",
+     "size": 4
+    }
+   ]
+  }
+ ]
+}

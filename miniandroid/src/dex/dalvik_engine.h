@@ -2035,6 +2035,14 @@ public:
     // (long_click → OnItemLongClick.onItemLongClick(...)Z).
     bool dispatch_item_click(uint32_t adapter_id, uint32_t view_id,
                              int position, bool long_click);
+    // S191 F-NEW-601: adapter-row (re)materialization — the shared body of
+    // ListView.setAdapter (CONT-102), ListActivity.setListAdapter identity
+    // binding, ArrayAdapter.add/notifyDataSetChanged (AOSP: every adapter
+    // mutation invalidates the view; the next layout pass re-queries
+    // getCount()/getView()). Rebuilds the row children of every ListView
+    // node bound to this adapter (bounded 64-row window, same documented
+    // simplification as CONT-102).
+    int materialize_adapter_rows_for(uint32_t adapter_id);
     // R-NEW-431: CompoundButton.onCheckedChanged(buttonView, isChecked).
     void dispatch_checked_changed(uint32_t view_id, bool checked);
     // R-NEW-432: key pipeline — onKey listener → onKeyDown/onKeyUp law.
@@ -2183,7 +2191,8 @@ public:
     // default then stands, ROOT-055's existing behavior).
     uint32_t generate_child_layout_params(
         const std::string& parent_class_desc, uint32_t child_view_id,
-        const std::vector<resources::XmlAttrRecord>& xml_attrs);
+        const std::vector<resources::XmlAttrRecord>& xml_attrs,
+        uint32_t parent_view_id_hint = 0);
 
     // EXP-060: Convenience wrapper — find a View by class descriptor
     // substring (e.g. "IntroActivity$4" or "startMessagingButton") and
@@ -3225,6 +3234,11 @@ public:
     void run_thread_start_body(uint32_t thread_oid, uint32_t target_oid);
     // EXP-042 Phase 4: Singleton cache helper for Android framework objects.
     DalvikValue get_or_create_singleton(const std::string& class_desc);
+    // S186h F-NEW-188c (W14 re-apply): make the androidx FragmentManager
+    // singleton REAL for R8-obfuscated androidx — resolve the real class,
+    // alias identity, run <init>()V once. Declared here because S186i
+    // removed the S186h call sites+decl; the W15 re-apply restores both.
+    void realinit_fragment_manager_singleton(uint32_t fm_oid);
 
     // F-NEW-249 (CONT-6): STABLE CLASS-TOKEN IDENTITY LAW for
     // Object.getClass. ART returns the SAME java.lang.Class instance for a
@@ -3996,7 +4010,9 @@ public:
     // DEX commit path uses — one lifecycle owner, no parallel ladder.
     bool instantiate_fragment_tag(uint32_t container_view_id,
                                   const std::string& frag_class_desc,
-                                  const std::string& tag, int32_t xml_id);
+                                  const std::string& tag, int32_t xml_id,
+                                  const std::vector<resources::XmlAttrRecord>&
+                                      xml_attrs);
     // Platform PreferenceFragment.onCreateView law (AOSP internal
     // preference_list_fragment contract): builds the real list container
     // rows for the fragment's parsed preference screen through the
@@ -4017,6 +4033,32 @@ public:
     // Consumed by Future/FutureTask.get in bridge_to_api. Engine-owned
     // member (NOT a static local — F-025 static-freeze lesson).
     std::map<uint32_t, DalvikValue> future_results_;
+
+    // [S191-C8] F-C8-141 monitor-contract law state (DETERMINISTICALLY
+    // SERIALIZED vocabulary): monitor heap oid → hold count (owner exists
+    // iff count > 0 under the single serialized interpreter thread), and
+    // monitor oid → parked waiter thread ids (recorded by Object.wait,
+    // woken by Object.notify/notifyAll). NOT static locals (F-025).
+    std::map<uint32_t, int32_t> monitor_holds_;
+    std::map<uint32_t, std::vector<uint32_t>> monitor_waitsets_;
+    // [S191-C8] F-C8-146/147 thread-state law: thread object oid →
+    // interrupt flag (set by Thread.interrupt, read/cleared by
+    // interrupted()/isInterrupted()).
+    std::map<uint32_t, bool> thread_interrupted_;
+    // [S191-C8] F-C8-148 ForkJoinPool.commonPool() singleton identity
+    // (stable per heap, EXP-059 object-identity law).
+    uint32_t common_pool_oid_ = 0;
+    // [S191-C8] F-C8-143 HandlerThread → its Looper object binding.
+    std::map<uint32_t, uint32_t> handler_thread_looper_;
+    // [S193-C8] F-C8-184 Timer → its scheduled task ids (Timer.cancel
+    // discards exactly this set from the shared deterministic queue).
+    std::map<uint32_t, std::vector<uint32_t>> c8_timer_tasks_;
+    // [S193-C8] F-C8-198 ThreadPoolExecutor → its queue box (getQueue
+    // mints the LinkedBlockingQueue view once per executor).
+    std::map<uint32_t, uint32_t> c8_tpe_queue_;
+    // [S193-C8] F-C8-189 Process.setThreadPriority native store (tid →
+    // priority) — loud record; AOSP has no getter (setpriority(2) side).
+    std::map<uint32_t, int32_t> c8_native_thread_prio_;
 private:
 
     // EXP-053: Set of class descriptors whose <clinit> has been executed.

@@ -1,0 +1,496 @@
+From 2cf179ee9a974874a79ac637aba73d4e8ae42c28 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Sat, 7 Nov 2026 13:17:41 +0000
+Subject: [PATCH] =?UTF-8?q?S189=20(Coder=203):=20F-NEW-588/589/590=20?=
+ =?UTF-8?q?=E2=80=94=20three=20generic=20laws=20re-land=20tictactoe=5F3=20?=
+ =?UTF-8?q?FULL=20EXECUTION=20on=20the=20integrated=20S188-W5+A24=20binary?=
+ =?UTF-8?q?=20(2fb17b7d40086436):=20rc=3D0/SUCCESS=20x3=20byte-exact=20896?=
+ =?UTF-8?q?70008,=200=20uncaught,=20REAL=5FAPP=5FCONTENT=20GL=20loop.=20La?=
+ =?UTF-8?q?w=20chain=20each=20proven=20by=20androguard=20DEX=20truth:=20(1?=
+ =?UTF-8?q?)=20F-NEW-588=20heap-String=20replace=20family=20(replaceAll/re?=
+ =?UTF-8?q?placeFirst/replace=20CS+CC/matches/contains;=20libGDX=20AssetDe?=
+ =?UTF-8?q?scriptor=20i3=20replaceAll=20->=20typed-default=20NULL=20->=20p?=
+ =?UTF-8?q?reloadQueue=20NPE=20at=20AssetManager.load=20i20=20desc.fileNam?=
+ =?UTF-8?q?e.equals);=20(2)=20F-NEW-589=20java.util.Stack=20REAL=20LIFO=20?=
+ =?UTF-8?q?(AssetManager=20taskQueue=20.size/.peek/.push/.pop;=20stub=200?=
+ =?UTF-8?q?=20->=20false-done=20->=20'Asset=20not=20loaded');=20(3)=20F-NE?=
+ =?UTF-8?q?W-590=20Future.isDone/isCancelled=20(W3=20submit->Future=20mint?=
+ =?UTF-8?q?ed=20boxes=20complete=20at=20submit;=20missing=20isDone=20->=20?=
+ =?UTF-8?q?finishLoading=20F084=2050001-visit=20infinite-loop=20halt=20->?=
+ =?UTF-8?q?=20VirtualMachineError).=20Five-title=20milestone=20evidence=20?=
+ =?UTF-8?q?on=20ONE=20binary:=20tictactoe=5F3=20x3=20SUCCESS,=20bouncy=208?=
+ =?UTF-8?q?a6c24ac=20pin=20HOLD,=20unote=203b8dcb0a=20pin=20HOLD,=20dooz?=
+ =?UTF-8?q?=2031ddd4d5=20=3D=3D=20W3/W4=20documented=20stable=20face=20(d6?=
+ =?UTF-8?q?02648e=20pin=20STALE=20per=20W3=20commit=20d7ee5831;=20dooz=20u?=
+ =?UTF-8?q?ncaught-6=20=3D=20W5=20upstream=20state,=20A/B-proven=20pre-exi?=
+ =?UTF-8?q?sting:=20W5-dalvik=20arm=20df1be2d8=20identical),=20headingcalc?=
+ =?UTF-8?q?ulator=20rc=3D0,=20chessclock=20rc=3D0,=20tower3d=200-uncaught?=
+ =?UTF-8?q?=20frontier=20unchanged.=20B1=20host-native=20substitution=20pa?=
+ =?UTF-8?q?th=20fix:=20battery=20passes=20MINIANDROID=5FHOST=5FNATIVE=5FDI?=
+ =?UTF-8?q?R=20explicitly=20(exe-relative=20anchors=20resolve=20to=20work/?=
+ =?UTF-8?q?tools=20which=20is=20not=20the=20fetch-if-missing=20output=20di?=
+ =?UTF-8?q?r).=20Also=20recreates=20the=20#560=20ag45=20androguard=20evide?=
+ =?UTF-8?q?nce=20(census=20x13=20APKs,=20field-xref=20decode=20=3D=3D=20#5?=
+ =?UTF-8?q?60=20claims)=20lost=20to=20sandbox=20recycle.?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ evidence/s157_androguard/README.md            |  50 +++
+ .../census/app.varlorg.unote_30.apk.json      |  50 +++
+ .../s157_androguard/census/bouncy_43.apk.json |  47 +++
+ .../census/com.chessclock.android_29.apk.json |  39 ++
+ .../com.emmanuelmess.tictactoe_3.apk.json     |  57 +++
+ .../com.github.muellerma.stopwatch_6.apk.json |  48 +++
+ .../census/de.duenndns.gmdice_8.apk.json      |  39 ++
+ .../census/dubrowgn.microtimer_8.apk.json     |  58 +++
+ .../io.github.yamin8000.dooz_23.apk.json      |  62 +++
+ ...acentauri.mobi.simplestopwatch_26.apk.json |  42 ++
+ .../org.billthefarmer.notes_139.apk.json      |  46 +++
+ ....debian.eugen.headingcalculator_1.apk.json |  39 ++
+ ...kr.simplekeyboard.inputmethod_145.apk.json |  52 +++
+ .../census/stack.tower3d_1.apk.json           |  57 +++
+ evidence/s157_androguard/census_summary.tsv   |  14 +
+ miniandroid/src/dex/dalvik_engine.cpp         | 365 ++++++++++++++++++
+ scripts/ag45_census.py                        | 167 ++++++++
+ scripts/ag45_field.py                         |  96 +++++
+ scripts/ag45_zip_probe.py                     |  56 +++
+ scripts/s189_battery.py                       | 139 +++++++
+ 20 files changed, 1523 insertions(+)
+ create mode 100644 evidence/s157_androguard/README.md
+ create mode 100644 evidence/s157_androguard/census/app.varlorg.unote_30.apk.json
+ create mode 100644 evidence/s157_androguard/census/bouncy_43.apk.json
+ create mode 100644 evidence/s157_androguard/census/com.chessclock.android_29.apk.json
+ create mode 100644 evidence/s157_androguard/census/com.emmanuelmess.tictactoe_3.apk.json
+ create mode 100644 evidence/s157_androguard/census/com.github.muellerma.stopwatch_6.apk.json
+ create mode 100644 evidence/s157_androguard/census/de.duenndns.gmdice_8.apk.json
+ create mode 100644 evidence/s157_androguard/census/dubrowgn.microtimer_8.apk.json
+ create mode 100644 evidence/s157_androguard/census/io.github.yamin8000.dooz_23.apk.json
+ create mode 100644 evidence/s157_androguard/census/omegacentauri.mobi.simplestopwatch_26.apk.json
+ create mode 100644 evidence/s157_androguard/census/org.billthefarmer.notes_139.apk.json
+ create mode 100644 evidence/s157_androguard/census/org.debian.eugen.headingcalculator_1.apk.json
+ create mode 100644 evidence/s157_androguard/census/rkr.simplekeyboard.inputmethod_145.apk.json
+ create mode 100644 evidence/s157_androguard/census/stack.tower3d_1.apk.json
+ create mode 100644 evidence/s157_androguard/census_summary.tsv
+ create mode 100644 scripts/ag45_census.py
+ create mode 100644 scripts/ag45_field.py
+ create mode 100644 scripts/ag45_zip_probe.py
+ create mode 100644 scripts/s189_battery.py
+
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 51ea7f89..647fbec8 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -56512,6 +56512,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         return true;
+     }
++    // ── [S189] F-NEW-590: FUTURE.isDone/isCancelled LAW ──────────
++    // Live face (tictactoe_3 on the S188-W5+A24 tree): libGDX 1.9.10
++    // AssetManager.finishLoading loops  while (!update()) yield();
++    // updateTask polls AsyncResult.isDone() -> Future.isDone(). The
++    // S188-W3 law minted the box and stored the result, but isDone had
++    // NO handler -> the S186i typed-default answered FALSE forever ->
++    // 50001-visit F084 infinite-loop halt in finishLoading (PC=0x7)
++    // -> VirtualMachineError -> onCreate death.
++    // Contract truth (serialized-engine law documented in the W3 block
++    // above): a task submitted through this bridge ran INLINE to
++    // completion at submit() — every minted box IS complete the moment
++    // it exists, so isDone()==true for known boxes (AOSP: isDone() is
++    // true once the task completed; it can never go back). Unknown box
++    // -> LOUD gap + false (honest, matches the W3 get() law's stance).
++    if ((class_name == "Ljava/util/concurrent/Future;" ||
++         class_name == "Ljava/util/concurrent/FutureTask;") &&
++        (method == "isDone" || method == "isCancelled")) {
++        uint32_t box_oid = 0;
++        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++            box_oid = args[0].object_id;
++        const bool known = future_results_.count(box_oid) != 0;
++        result = DalvikValue::make_bool(method == "isDone" ? known
++                                                           : false);
++        if (!known) {
++            std::cerr << "[FUTURE][LAW-GAP] " << method << " box="
++                      << box_oid
++                      << " unknown — isDone=false LOUDLY (AOSP: pending)"
++                      << std::endl;
++        }
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
+     if (!provider_ctx366 &&
+         try_shadow_dispatch(class_name, method, args, result, status)) {
+             // ────────────────────────────────────────────────────────────
+@@ -70031,6 +70063,145 @@ measure_cm_done:;
+     // reached (try_shadow_dispatch returns true before bridge_to_api).
+     // If CollectionShadow doesn't handle it, this stub provides a
+     // best-effort fallback.
++    // ── F-NEW-589 (S189): java.util.Stack REAL LIFO semantics ──────────
++    // Live face (tictactoe_3 on the S188-W5+A24 integrated binary):
++    // libGDX 1.9.10 AssetManager holds its load pipeline in
++    //   Stack<AssetLoadingTask> taskQueue   (androguard DEX truth:
++    //   Ljava/util/Stack;.size dispatched from AssetManager.update)
++    // The S186i triage answered Stack.size with the typed default 0 ->
++    // update() believed the queue empty and returned true BEFORE any
++    // AssetLoadingTask ran -> the later manager.get("i18n/TicTacToe")
++    // threw GdxRuntimeException("Asset not loaded") -> onCreate death.
++    // AOSP java.util.Stack contract (Vector subclass): push returns the
++    // item, pop/peek operate on the top, empty()/size() reflect REAL
++    // state. Storage mirrors the HashMap fallback law below: heap fields
++    // on the receiver object (__f589_stack_size__ + __f589_stack_slot_N,
++    // slot 0 = BOTTOM). Exact-class gate: StackTraceElement must not hit.
++    if (class_name == "Ljava/util/Stack;") {
++        uint32_t this_id = args.empty() ? 0 : args[0].object_id;
++        auto stack_size_of = [&](uint32_t id) -> int32_t {
++            auto* o = heap_.get(id);
++            if (!o) return 0;
++            auto it = o->fields.find("__f589_stack_size__");
++            if (it == o->fields.end()) return 0;
++            if (it->second.type == DalvikType::INT32)
++                return it->second.int_val;
++            return 0;
++        };
++        auto stack_set_size = [&](uint32_t id, int32_t n) {
++            heap_.set_object_field(
++                id, "__f589_stack_size__", DalvikValue::make_int(n));
++        };
++        auto slot_name = [](int32_t n) {
++            return "__f589_stack_slot_" + std::to_string(n);
++        };
++        if (method == "<init>") {
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_void();
++            return true;
++        }
++        if (method == "push" && args.size() >= 2) {
++            const int32_t n = stack_size_of(this_id);
++            heap_.set_object_field(this_id, slot_name(n), args[1]);
++            stack_set_size(this_id, n + 1);
++            result = args[1];  // java.util.Stack.push RETURNS the item
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            static thread_local uint64_t f589_n = 0;
++            if (f589_n++ < 8)
++                std::cerr << "[F-NEW-589] Stack.push depth=" << (n + 1)
++                          << " caller=" << current_class_ << "."
++                          << current_method_ << std::endl;
++            return true;
++        }
++        if ((method == "pop" || method == "peek") && !args.empty()) {
++            const int32_t n = stack_size_of(this_id);
++            if (n <= 0) {
++                // java.util.Stack would throw EmptyStackException here.
++                // The libGDX guard (taskQueue.isEmpty()) prevents the
++                // empty path in the live route; answer null + loud log
++                // instead of fabricating an element.
++                std::cerr << "[F-NEW-589] Stack." << method
++                          << " on EMPTY stack (AOSP: EmptyStackException) "
++                          << "caller=" << current_class_ << "."
++                          << current_method_ << " — returning null honestly"
++                          << std::endl;
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            auto* o = heap_.get(this_id);
++            DalvikValue top = DalvikValue::make_null();
++            if (o) {
++                auto it = o->fields.find(slot_name(n - 1));
++                if (it != o->fields.end()) top = it->second;
++            }
++            if (method == "pop") {
++                // remove the top slot and clear it so a re-push reuses it
++                auto* o2 = heap_.get(this_id);
++                if (o2) o2->fields.erase(slot_name(n - 1));
++                stack_set_size(this_id, n - 1);
++            }
++            result = top;
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            static thread_local uint64_t f589p_n = 0;
++            if (f589p_n++ < 8)
++                std::cerr << "[F-NEW-589] Stack." << method
++                          << " depth=" << (method == "pop" ? n - 1 : n)
++                          << " caller=" << current_class_ << "."
++                          << current_method_ << std::endl;
++            return true;
++        }
++        if (method == "size") {
++            result = DalvikValue::make_int(stack_size_of(this_id));
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            static thread_local uint64_t f589s_n = 0;
++            if (f589s_n++ < 8)
++                std::cerr << "[F-NEW-589] Stack.size="
++                          << result.int_val
++                          << " caller=" << current_class_ << "."
++                          << current_method_ << std::endl;
++            return true;
++        }
++        if (method == "empty" || method == "isEmpty") {
++            result = DalvikValue::make_bool(stack_size_of(this_id) == 0);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if ((method == "contains" || method == "search") &&
++            args.size() >= 2) {
++            const int32_t n = stack_size_of(this_id);
++            int32_t found = -1;
++            auto* o = heap_.get(this_id);
++            if (o) {
++                for (int32_t i = 0; i < n; ++i) {
++                    auto it = o->fields.find(slot_name(i));
++                    if (it == o->fields.end()) continue;
++                    const DalvikValue& v = it->second;
++                    const DalvikValue& a = args[1];
++                    bool eq = false;
++                    if (v.type == a.type) {
++                        if (v.type == DalvikType::STRING_REF)
++                            eq = v.string_val == a.string_val;
++                        else if (v.type == DalvikType::OBJECT_REF)
++                            eq = v.object_id == a.object_id;
++                        else
++                            eq = v.int_val == a.int_val;
++                    }
++                    if (eq) {
++                        found = method == "search" ? n - i : 1;
++                        break;
++                    }
++                }
++            }
++            if (method == "contains") {
++                result = DalvikValue::make_bool(found >= 0 || found == 1);
++            } else {
++                result = DalvikValue::make_int(found);
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
+     if ((class_name == "Ljava/util/HashMap;" ||
+          class_name.find("HashMap") != std::string::npos ||
+          class_name.find("Map") != std::string::npos) &&
+@@ -77706,6 +77877,200 @@ measure_cm_done:;
+                           << current_method_ << std::endl;
+         return true;
+         }
++        // ── F-NEW-588 (S189): heap-String REPLACE family — real semantics ──
++        // Live face (tictactoe_3 on the S188-W5+A24 integrated binary):
++        // libGDX 1.9.10 AssetDescriptor.<init> does
++        //   this.file = fileName.replaceAll("\\\\", "/")
++        // (androguard disassembly: invoke-virtual
++        // String;->replaceAll(Ljava/lang/String;Ljava/lang/String;) at
++        // AssetDescriptor i3, DEX truth). The typed-default stub answered
++        // NULL for the String return -> preloadQueue desc.fileName == null
++        // -> the SECOND AssetManager.load's
++        //   desc.fileName.equals(fileName)   (AssetManager.load i20)
++        // NPE'd on a null receiver -> AndroidLauncher.onCreate death
++        // (PARTIAL SUCCESS, 1 in-flight exception). AOSP law: String
++        // replace family NEVER returns null and never throws for
++        // well-formed patterns; the typed default is a false answer here.
++        // Real semantics, same heap walk as the split law above:
++        //   replaceAll/replaceFirst (regex, \Q..\E honored),
++        //   replace(CharSequence,CharSequence) + replace(CC) literal,
++        //   matches(String)Z, contains(CharSequence)Z.
++        // F-NEW-588: the receiver may arrive in EITHER identity form —
++        // inline STRING_REF (register-held string, S100 form) or heap-String
++        // OBJECT (S186i form). Accept both; read the real chars.
++        std::string f588_recv;
++        bool f588_have_recv = false;
++        if (!args.empty()) {
++            if (args[0].type == DalvikType::STRING_REF) {
++                f588_recv = args[0].string_val;
++                f588_have_recv = true;
++            } else if (s186i_is_str_recv) {
++                for (const char* fld :
++                     {"__string_value__", "value", "sb_value"}) {
++                    auto fv = heap_.get_object_field(args[0].object_id, fld);
++                    if (fv.has_value() &&
++                        fv->type == DalvikType::STRING_REF) {
++                        f588_recv = fv->string_val;
++                        f588_have_recv = true;
++                        break;
++                    }
++                }
++            }
++        }
++        if (f588_have_recv &&
++                 (method == "replaceAll" || method == "replaceFirst" ||
++                  method == "replace" || method == "matches" ||
++                  method == "contains")) {
++            std::string hs = f588_recv;
++            auto arg_string = [&](size_t idx) -> bool {
++                if (args.size() <= idx) return false;
++                const DalvikValue& a = args[idx];
++                if (a.type == DalvikType::STRING_REF) return true;
++                if (a.type == DalvikType::OBJECT_REF && a.object_id != 0 &&
++                    heap_.has_object(a.object_id)) {
++                    // CharSequence receivers materialize as heap objects;
++                    // String instances carry __string_value__/value.
++                    return true;
++                }
++                return false;
++            };
++            auto read_string_arg = [&](size_t idx) -> std::string {
++                const DalvikValue& a = args[idx];
++                if (a.type == DalvikType::STRING_REF) return a.string_val;
++                if (a.type == DalvikType::OBJECT_REF && a.object_id != 0 &&
++                    heap_.has_object(a.object_id)) {
++                    for (const char* fld :
++                         {"__string_value__", "value", "sb_value"}) {
++                        auto fv = heap_.get_object_field(a.object_id, fld);
++                        if (fv.has_value() &&
++                            fv->type == DalvikType::STRING_REF)
++                            return fv->string_val;
++                    }
++                }
++                return std::string();
++            };
++            auto unquote = [](const std::string& pat) {
++                // Java \Q...\E literal-quote support (same law as split).
++                std::string out;
++                size_t i = 0;
++                while (i < pat.size()) {
++                    if (i + 1 < pat.size() && pat[i] == '\\' &&
++                        pat[i + 1] == 'Q') {
++                        size_t e = pat.find("\\E", i + 2);
++                        if (e == std::string::npos) {
++                            out += pat.substr(i + 2);
++                            break;
++                        }
++                        const std::string lit = pat.substr(i + 2, e - i - 2);
++                        for (char c : lit) {
++                            if (std::string(".[]{}()*+?^$|\\")
++                                    .find(c) != std::string::npos)
++                                out += '\\';
++                            out += c;
++                        }
++                        i = e + 2;
++                    } else {
++                        out += pat[i++];
++                    }
++                }
++                return out;
++            };
++            const std::string method_desc_tail =
++                resolve_method_proto_for_dex(method_idx_hint,
++                                             current_dex_index_);
++            const bool char_form =
++                method == "replace" &&
++                method_desc_tail.find("(CC)") != std::string::npos;
++            try {
++                if (method == "matches" && arg_string(1)) {
++                    const std::string pat = unquote(read_string_arg(1));
++                    const bool m =
++                        pat.empty()
++                            ? hs.empty()
++                            : std::regex_match(
++                                  hs, std::regex(pat, std::regex::ECMAScript));
++                    result = DalvikValue::make_bool(m);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    static thread_local uint64_t f588_n = 0;
++                    if (f588_n++ < 6)
++                        std::cerr << "[F-NEW-588] String.matches recv=\""
++                                  << hs.substr(0, 32) << "\" pat=\""
++                                  << pat.substr(0, 32) << "\" -> " << m
++                                  << " caller=" << current_class_ << "."
++                                  << current_method_ << std::endl;
++                    return true;
++                }
++                if (method == "contains" && arg_string(1)) {
++                    result = DalvikValue::make_bool(
++                        hs.find(read_string_arg(1)) != std::string::npos);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                if (method == "replace" && char_form && args.size() >= 3) {
++                    const char from =
++                        static_cast<char>(args[1].int_val & 0xFF);
++                    const char to =
++                        static_cast<char>(args[2].int_val & 0xFF);
++                    std::string out = hs;
++                    std::replace(out.begin(), out.end(), from, to);
++                    result = DalvikValue::make_string(out, 0);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    static thread_local uint64_t f588c_n = 0;
++                    if (f588c_n++ < 6)
++                        std::cerr << "[F-NEW-588] String.replace(CC) in=\""
++                                  << hs.substr(0, 32) << "\" -> \""
++                                  << out.substr(0, 32) << "\" caller="
++                                  << current_class_ << "."
++                                  << current_method_ << std::endl;
++                    return true;
++                }
++                if ((method == "replaceAll" || method == "replaceFirst" ||
++                     method == "replace") &&
++                    args.size() >= 3 && arg_string(1) && arg_string(2)) {
++                    const std::string pat =
++                        unquote(read_string_arg(1));
++                    const std::string rep = read_string_arg(2);
++                    std::string out;
++                    if (method == "replace") {
++                        // CharSequence form: literal, all occurrences.
++                        out = hs;
++                        if (!pat.empty()) {
++                            size_t pos = 0;
++                            while ((pos = out.find(pat, pos)) !=
++                                   std::string::npos) {
++                                out.replace(pos, pat.size(), rep);
++                                pos += rep.size();
++                            }
++                        }
++                    } else {
++                        std::regex re(pat, std::regex::ECMAScript);
++                        const auto flags =
++                            method == "replaceAll"
++                                ? std::regex_constants::format_default
++                                : std::regex_constants::format_first_only;
++                        out = std::regex_replace(hs, re, rep, flags);
++                    }
++                    result = DalvikValue::make_string(out, 0);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    static thread_local uint64_t f588r_n = 0;
++                    if (f588r_n++ < 6)
++                        std::cerr << "[F-NEW-588] String." << method
++                                  << " in=\"" << hs.substr(0, 32)
++                                  << "\" pat=\"" << pat.substr(0, 16)
++                                  << "\" rep=\"" << rep.substr(0, 16)
++                                  << "\" out=\"" << out.substr(0, 32)
++                                  << "\" caller=" << current_class_ << "."
++                                  << current_method_ << std::endl;
++                    return true;
++                }
++            } catch (const std::regex_error& e) {
++                // Invalid pattern: Java would throw PatternSyntaxException.
++                // Fall through to the typed-default stub below (honest
++                // bookkeeping) — never fabricate a String answer.
++                std::cerr << "[F-NEW-588] regex_error (" << e.what()
++                          << ") — falling through to stub" << std::endl;
++            }
++        }
+     }
+     //
+     // UC-CM-001 (closes F012, Coder 3 systemic finding):
+diff --git a/scripts/ag45_census.py b/scripts/ag45_census.py
+new file mode 100644
+index 00000000..60b6c97c
+--- /dev/null
++++ b/scripts/ag45_census.py
+@@ -0,0 +1,167 @@
+diff --git a/scripts/ag45_field.py b/scripts/ag45_field.py
+new file mode 100644
+index 00000000..5ae74145
+--- /dev/null
++++ b/scripts/ag45_field.py
+@@ -0,0 +1,96 @@
+diff --git a/scripts/ag45_zip_probe.py b/scripts/ag45_zip_probe.py
+new file mode 100644
+index 00000000..a16ce5cd
+--- /dev/null
++++ b/scripts/ag45_zip_probe.py
+@@ -0,0 +1,56 @@
+diff --git a/scripts/s189_battery.py b/scripts/s189_battery.py
+new file mode 100644
+index 00000000..03f01230
+--- /dev/null
++++ b/scripts/s189_battery.py
+@@ -0,0 +1,139 @@
+-- 
+2.47.3

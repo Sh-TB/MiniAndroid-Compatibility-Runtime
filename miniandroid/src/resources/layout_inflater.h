@@ -24,6 +24,7 @@
 
 #include "arsc_parser.h"
 #include "axml_parser.h"
+#include "attribute_set_store.h"  // F-C4-617: XmlAttrRecord for the onInflate hook
 #include "../framework/view_ancestry.h"  // G12 FIX-G12-001: framework ancestry law
 #include "../framework/android_shadows.h"
 #include "../apk/apk_parser.h"
@@ -49,6 +50,7 @@ struct InflateStats {
     int styles_applied = 0;
     int framework_styles_applied = 0;  // F-NEW-454: fw-package style bags walked
     int includes_expanded = 0;
+    int ids_overridden = 0;   // F-C4-603 (W12): <include android:id=...> root overrides
     int ids_resolved = 0;
     int unresolved_refs = 0;
     int theme_attrs_resolved = 0;      // S68 W2: ?attr resolved via theme
@@ -192,14 +194,23 @@ public:
     // reports (view_id, class, tag, xml_id) after the element's attrs
     // (id included) were applied. Unset → the V4-TAG generic-View
     // degradation continues (honest evidence, never silent).
-    using FragmentTagHook = std::function<void(uint32_t view_id,
-                                               const std::string& frag_class_desc,
-                                               const std::string& tag,
-                                               int32_t xml_id)>;
+    // F-C4-617 (W15): the hook now also carries the element's OWN XML
+    // attr records (resid-typed) so the engine can dispatch the REAL
+    // onInflate(Context, AttributeSet, Bundle) — the AOSP
+    // FragmentLayoutInflaterFactory law (NavHostFragment reads
+    // app:navGraph here). Resources-layer XmlAttrRecord carries no DEX
+    // dependency (resource ids + typed values only).
+    using FragmentTagHook = std::function<void(
+        uint32_t view_id, const std::string& frag_class_desc,
+        const std::string& tag, int32_t xml_id,
+        const std::vector<XmlAttrRecord>& xml_attrs)>;
     void set_fragment_tag_hook(FragmentTagHook fn) {
         fragment_tag_hook_ = std::move(fn);
     }
-
+    // F-C4-617 helper: AxmlAttribute → XmlAttrRecord conversion (same
+    // shape the F-NEW-309 hook uses at the executor boundary).
+    static std::vector<XmlAttrRecord> to_attr_records(
+        const std::vector<AxmlAttribute>& attrs);
     // ── F-NEW-309 (AOSP ViewGroup.generateLayoutParams law) ──────────
     // At XML inflation the PARENT container generates each child's
     // LayoutParams (ViewGroup.LayoutParams generateLayoutParams(
@@ -214,7 +225,8 @@ public:
     using GenerateChildLpHook =
         std::function<uint32_t(uint32_t child_view_id,
                                const std::string& parent_class_desc,
-                               const std::vector<AxmlAttribute>& xml_attrs)>;
+                               const std::vector<AxmlAttribute>& xml_attrs,
+                               uint32_t parent_view_id)>;
     void set_generate_child_lp_hook(GenerateChildLpHook fn) {
         generate_child_lp_hook_ = std::move(fn);
     }

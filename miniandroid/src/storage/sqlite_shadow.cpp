@@ -115,6 +115,17 @@ bool DatabaseShadow::consume_pending_upgrade(uint32_t helper_oid,
     return true;
 }
 
+// ── F-C4-597 (W11): onOpen — the third lifecycle callback AOSP always
+// delivers after onCreate/onUpgrade (SQLiteOpenHelper.getDatabaseLocked:
+// db.isOpen()… onCreate(db) → onUpgrade(db,…) → onOpen(db), and onOpen
+// fires on EVERY fresh open even when neither create nor upgrade ran).
+bool DatabaseShadow::consume_pending_open(uint32_t helper_oid) {
+    HelperState* h = helper_of(helper_oid);
+    if (!h || !h->pending_open) return false;
+    h->pending_open = false;
+    return true;
+}
+
 void DatabaseShadow::notify_lifecycle_callbacks_done(uint32_t helper_oid) {
     HelperState* h = helper_of(helper_oid);
     if (!h) return;
@@ -246,13 +257,14 @@ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
 
     uint32_t db_oid = heap_->allocate("Landroid/database/sqlite/SQLiteDatabase;");
     h->db_oid = db_oid;
+    h->pending_open = true;   // F-C4-597 (W11): onOpen fires on every fresh helper open
     dbs_[db_oid] = st;
 
     std::cerr << "[SQLITE-SHADOW] opened db oid=" << db_oid << " path=" << st.path
               << " user_version=" << uv << " target_version=" << h->version
               << (h->pending_create ? " [onCreate pending]"
                   : (h->pending_upgrade ? " [onUpgrade pending]" : ""))
-              << std::endl;
+              << " [onOpen pending]" << std::endl;
     return framework::CallResult::handled_object(
         db_oid, "Landroid/database/sqlite/SQLiteDatabase;");
 }
@@ -553,7 +565,22 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
             std::cerr << "[SQLITE-SHADOW] compileStatement rc=" << rc << " err="
                       << sqlite3_errmsg(raw) << " sql=\"" << ctx.args[0].string_val
                       << "\"" << std::endl;
-            return framework::CallResult::not_handled();
+            // ── F-C4-604 (W12): compile failures THROW, never answer null.
+            // AOSP SQLiteDatabase.compileStatement → SQLiteStatement ctor →
+            // native_prepare → throwSQLException on prepare failure: the
+            // method has NO null return path. The old not_handled answer
+            // fail-softed to null, the caller stored the null, and every
+            // later execute()/close() on it became an f141 null-recv NPE
+            // far from the real fault (Tusky InvalidationTracker: null
+            // INSERT statement → execute() NPE → MainActivity.onCreate
+            // aborted at the A0 boundary). The throw lands AT the fault,
+            // exactly like a device.
+            return framework::CallResult::handled_exception(
+                "Landroid/database/sqlite/SQLiteException;",
+                std::string("compileStatement failed: ") +
+                    (sqlite3_errmsg(raw) ? sqlite3_errmsg(raw) : "unknown") +
+                    " (code " + std::to_string(rc) + "), sql: \"" +
+                    ctx.args[0].string_val.substr(0, 120) + "\"");
         }
         uint32_t stmt_oid = heap_->allocate("Landroid/database/sqlite/SQLiteStatement;");
         StmtState ss;

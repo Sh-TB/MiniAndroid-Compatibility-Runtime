@@ -107,6 +107,27 @@ int LayoutInflater::gravity_bits(const std::string& s) {
     return g;
 }
 
+// F-C4-617 (W15): AxmlAttribute → XmlAttrRecord — the SAME conversion the
+// F-NEW-309 executor hook performs (resid-typed attr records for the
+// AttributeSetStore). Skips attrs without a resource id (the store is
+// keyed by attr resid).
+std::vector<XmlAttrRecord> LayoutInflater::to_attr_records(
+        const std::vector<AxmlAttribute>& attrs) {
+    std::vector<XmlAttrRecord> recs;
+    recs.reserve(attrs.size());
+    for (const auto& a : attrs) {
+        if (a.attr_resid == 0) continue;
+        XmlAttrRecord r;
+        r.resid = a.attr_resid;
+        r.type = a.value.type;
+        r.data = (int32_t)a.value.data;
+        r.ref_id = a.value.ref_id;
+        r.str = a.value.string_value;
+        recs.push_back(std::move(r));
+    }
+    return recs;
+}
+
 std::string LayoutInflater::class_to_descriptor(const std::string& xml_name) {
     static const std::unordered_map<std::string, std::string> KNOWN = {
         {"TextView", "Landroid/widget/TextView;"},
@@ -983,8 +1004,74 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
                     AxmlParser sub;
                     if (!xml.empty() && sub.parse(xml)) {
                         stats.includes_expanded++;
+                        // ── F-C4-603 (W12): AOSP parseInclude
+                        // id/params override law. LayoutInflater.parseInclude
+                        // (API 34 source; developer.android.com layout-resource
+                        // docs, verified W12): when the <include> TAG itself
+                        // carries android:id, the INCLUDED ROOT gets that
+                        // id ("Overrides the ID given to the root view in the
+                        // included layout" — view.setId(id), so findViewById
+                        // finds it); layout_width/layout_height on the tag
+                        // override the root's own, and the docs pin the
+                        // coupling: height is "only effective if
+                        // layout_width is also declared" (and vice versa) —
+                        // AOSP applies the LayoutParams override only when
+                        // BOTH are present, while the id override applies
+                        // alone. Live kill (Nextcloud 35.0.2
+                        // activity_show_error.xml):
+                        //   <include android:id="@+id/empty_list"
+                        //            layout="@layout/empty_list" />
+                        // — the engine inflated the subtree but kept the
+                        // inner root id, so ViewBindings' findViewById(
+                        // R.id.empty_list) answered null → binding.bind
+                        // null-field NPE (concat(null)) → the ShowError
+                        // flow died. Same shape for every databinding/
+                        // viewbinding that binds an included root by the
+                        // include-tag id.
+                        uint32_t inc_override_id = 0;
+                        std::string inc_id_name;
+                        int inc_w = INT_MIN, inc_h = INT_MIN;
+                        const AxmlAttribute* inc_id = el.attr("id", "");
+                        if (inc_id) {
+                            inc_override_id = resolve_id_attr(inc_id, stats);
+                            if (!inc_id->raw_value.empty()) {
+                                auto r = parse_ref(inc_id->raw_value);
+                                inc_id_name = r.name;
+                            }
+                        }
+                        const AxmlAttribute* inc_wa = el.attr("layout_width", "");
+                        if (inc_wa) inc_w = resolve_size_or_match(inc_wa, stats);
+                        const AxmlAttribute* inc_ha = el.attr("layout_height", "");
+                        if (inc_ha) inc_h = resolve_size_or_match(inc_ha, stats);
                         for (const auto& child : sub.root().children)
-                            created = inflate_element(views, child, parent_view_id, stats);
+                            created = inflate_element(views, child,
+                                                      parent_view_id, stats);
+                        // AOSP applies the override to the INCLUDED ROOT.
+                        // A plain layout has exactly ONE root child; a
+                        // <merge> layout has many and NO single root (the
+                        // id does not apply there — AOSP parseInclude
+                        // only overrides params for the single-root case,
+                        // and the id for the root view; merge children
+                        // keep their own ids).
+                        if (inc_override_id != 0 &&
+                            sub.root().children.size() == 1 && created != 0 &&
+                            views != nullptr) {
+                            auto* inc_node = views->find_node(created);
+                            if (inc_node != nullptr) {
+                                inc_node->android_view_id =
+                                    (int32_t)inc_override_id;
+                                if (!inc_id_name.empty())
+                                    inc_node->android_id_name = inc_id_name;
+                                // AOSP/docs: LayoutParams override needs BOTH
+                                // width and height on the include tag; either
+                                // alone is ignored.
+                                if (inc_w != INT_MIN && inc_h != INT_MIN) {
+                                    inc_node->width = inc_w;
+                                    inc_node->height = inc_h;
+                                }
+                                stats.ids_overridden++;
+                            }
+                        }
                         return created;
                     }
                 }
@@ -1169,8 +1256,81 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
                                      : ta->value.string_value)
                               : "";
         if (!fname.empty()) {
+            // F-C4-617: carry the element's OWN attrs (onInflate reads
+            // app:navGraph / theme attrs from them).
             fragment_tag_hook_(view_id, class_to_descriptor(fname), ftag,
-                               node->android_view_id);
+                               node->android_view_id,
+                               to_attr_records(el.attributes));
+        }
+    }
+
+    // ── F-C4-614 (W14): the FragmentContainerView android:name law ──────
+    // Real androidx (fragment-1.8.5 sources, vendored this wave):
+    //   FragmentLayoutInflaterFactory.onCreateView:
+    //     if (FragmentContainerView.class.getName().equals(name))
+    //         return new FragmentContainerView(context, attrs,
+    //                                          mFragmentManager);
+    //   FragmentContainerView internal ctor:
+    //     name = attrs.classAttribute ?: styleable android:name
+    //     if (name != null && fm.findFragmentById(id) == null) {
+    //         containerFragment = fm.fragmentFactory.instantiate(
+    //             context.classLoader, name);
+    //         containerFragment.mFragmentId = id;
+    //         containerFragment.mContainerId = id;
+    //         containerFragment.mTag = tag;
+    //         containerFragment.onInflate(context, attrs, null);
+    //         fm.beginTransaction().setReorderingAllowed(true)
+    //           .add(this, containerFragment, tag)
+    //           .commitNowAllowingStateLoss();
+    //     }
+    // The engine previously created the FCV element as a plain container
+    // view — the NAMED fragment was never instantiated and never committed,
+    // so every navigation app died at its first findFragmentById cast
+    // (itsfrz #489: "null cannot be cast to non-null type
+    // androidx.navigation.fragment.NavHostFragment" ×3 — the named
+    // NavHostFragment simply never existed). LAW: the SAME
+    // FragmentTagHook as the <fragment> tag fires for any
+    // *FragmentContainerView element carrying android:name/class — the
+    // engine-side instantiate_fragment_tag performs the FragmentFactory
+    // no-arg ctor + the synthetic add (container = the xml id) on the
+    // SAME committed queue the DEX path uses; the F-NEW-304 lifecycle
+    // drains own onAttach/onCreate/onCreateView and attach the view
+    // inside the FCV node. android:id is REQUIRED (the real FCV throws
+    // ISE without one — here an honest miss is logged instead).
+    if (fragment_tag_hook_ &&
+        el.name.size() > 21 &&
+        el.name.compare(el.name.size() - 21, 21, "FragmentContainerView") ==
+            0) {
+        const AxmlAttribute* fna = el.attr("name", "android");
+        if (!fna) fna = class_attr;  // class= fallback, same AOSP law
+        std::string frag_name =
+            fna ? (!fna->raw_value.empty() ? fna->raw_value
+                                           : fna->value.string_value)
+                : "";
+        if (!frag_name.empty()) {
+            if (node->android_view_id != 0) {
+                const AxmlAttribute* fta = el.attr("tag", "android");
+                std::string frag_tag =
+                    fta ? (!fta->raw_value.empty()
+                               ? fta->raw_value
+                               : fta->value.string_value)
+                        : "";
+                fragment_tag_hook_(view_id,
+                                   class_to_descriptor(frag_name),
+                                   frag_tag, node->android_view_id,
+                                   to_attr_records(el.attributes));
+            } else {
+                static bool f614_miss_logged = false;
+                if (!f614_miss_logged) {
+                    f614_miss_logged = true;
+                    std::cerr
+                        << "[F614-FCV] " << el.name
+                        << " with android:name=\"" << frag_name
+                        << "\" but NO android:id — fragment not "
+                           "instantiated (real FCV throws ISE here)"
+                        << std::endl;
+                }
+            }
         }
     }
 
@@ -1271,7 +1431,8 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
             }
             if (!pcls.empty() &&
                 (is_app_class_descriptor(pcls) || parent_in_dex)) {
-                generate_child_lp_hook_(view_id, pcls, el.attributes);
+                generate_child_lp_hook_(view_id, pcls, el.attributes,
+                                         parent_view_id);
             }
         }
     }
@@ -2425,6 +2586,7 @@ std::string InflateStats::to_json() const {
     out += ",\"drawables_resolved\":" + std::to_string(drawables_resolved);
     out += ",\"styles_applied\":" + std::to_string(styles_applied);
     out += ",\"includes_expanded\":" + std::to_string(includes_expanded);
+    out += ",\"ids_overridden\":" + std::to_string(ids_overridden);
     out += ",\"ids_resolved\":" + std::to_string(ids_resolved);
     out += ",\"unresolved_refs\":" + std::to_string(unresolved_refs);
     out += ",\"theme_attrs_resolved\":" + std::to_string(theme_attrs_resolved);

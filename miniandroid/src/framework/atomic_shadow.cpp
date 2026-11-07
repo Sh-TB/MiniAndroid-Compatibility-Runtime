@@ -45,9 +45,117 @@ CallResult AtomicShadow::dispatch(const CallContext& ctx) {
     // M4 F-028h — AtomicReferenceArray (SegmentedQueue cell grid law).
     const bool is_ref_array =
         cls == "Ljava/util/concurrent/atomic/AtomicReferenceArray;";
+    // [S192-C8] F-C8-167/168 — AtomicIntegerArray / AtomicLongArray
+    // (tri-peaks consumes the family: 7+7 sites, decode evidence).
+    const bool is_int_array =
+        cls == "Ljava/util/concurrent/atomic/AtomicIntegerArray;";
+    const bool is_long_array =
+        cls == "Ljava/util/concurrent/atomic/AtomicLongArray;";
     if (!is_ref && !is_int && !is_long && !is_bool &&
-        !is_ref_upd && !is_long_upd && !is_int_upd && !is_ref_array)
+        !is_ref_upd && !is_long_upd && !is_int_upd && !is_ref_array &&
+        !is_int_array && !is_long_array)
         return CallResult::not_handled();
+
+    // ── [S192-C8] F-C8-167/168 — numeric atomic arrays ──────────────────
+    // OpenJDK law (AtomicIntegerArray.java): get(i)/set(i,v)/addAndGet(i,
+    // d)/getAndAdd(i, d)/compareAndSet(i, e, v) over a FIXED-length int
+    // (long) array; negative index → ArrayIndexOutOfBoundsException.
+    // Engine: the SAME arrays_ cell grid as the ref array (NUM cells);
+    // bounds violations deliver the REAL AIOOBE (an upgrade over the
+    // ref-array null-at-OOB boundary — loud either way).
+    if (is_int_array || is_long_array) {
+        auto arr_n_of = [](const CallContext::Arg& a) -> int64_t {
+            if (a.kind == CallContext::Arg::Kind::LONG) return a.long_val;
+            if (a.kind == CallContext::Arg::Kind::INT) return a.int_val;
+            return 0;
+        };
+        auto num_arr_len = [&](uint32_t oid) -> size_t {
+            auto it = arrays_.find(oid);
+            return it != arrays_.end() ? it->second.size() : 0;
+        };
+        if (m == "<init>") {
+            int64_t n = ctx.args.empty() ? 0 : arr_n_of(ctx.args[0]);
+            if (n < 0) n = 0;
+            arrays_[recv].assign(static_cast<size_t>(n), ArrayCell{});
+            return CallResult::handled_void();
+        }
+        if (!ctx.has_receiver) return CallResult::not_handled();
+        if (m == "length") return CallResult::handled_int((int)num_arr_len(recv));
+        if (ctx.args.empty()) return CallResult::not_handled();
+        const int64_t idx64 = arr_n_of(ctx.args[0]);
+        const size_t len = num_arr_len(recv);
+        if (idx64 < 0 || idx64 >= static_cast<int64_t>(len)) {
+            std::cerr << "[ATOMIC][C8] " << cls << "." << m
+                      << " idx=" << idx64 << " len=" << len
+                      << " → ArrayIndexOutOfBoundsException (JDK law)"
+                      << std::endl;
+            return CallResult::handled_exception(
+                "Ljava/lang/ArrayIndexOutOfBoundsException;",
+                "index " + std::to_string(idx64) + ", length " +
+                    std::to_string(len));
+        }
+        ArrayCell& cell = arrays_[recv][static_cast<size_t>(idx64)];
+        auto cell_val = [&]() -> int64_t {
+            return cell.kind == ArrayCell::Kind::NUM ? cell.num : 0;
+        };
+        auto cell_set = [&](int64_t v) {
+            cell.kind = ArrayCell::Kind::NUM;
+            cell.num = v;
+        };
+        auto serve_num = [&](int64_t v) -> CallResult {
+            return is_long_array ? CallResult::handled_long(v)
+                                 : CallResult::handled_int(
+                                       static_cast<int32_t>(v));
+        };
+        if (m == "get") return serve_num(cell_val());
+        if (m == "set") {
+            cell_set(arr_n_of(ctx.args[1]));
+            return CallResult::handled_void();
+        }
+        if (m == "addAndGet") {
+            int64_t nv = cell_val() + arr_n_of(ctx.args[1]);
+            cell_set(nv);
+            return serve_num(nv);
+        }
+        if (m == "getAndAdd") {
+            int64_t old = cell_val();
+            cell_set(old + arr_n_of(ctx.args[1]));
+            return serve_num(old);
+        }
+        if (m == "incrementAndGet") {
+            int64_t nv = cell_val() + 1;
+            cell_set(nv);
+            return serve_num(nv);
+        }
+        if (m == "getAndIncrement") {
+            int64_t old = cell_val();
+            cell_set(old + 1);
+            return serve_num(old);
+        }
+        if (m == "decrementAndGet") {
+            int64_t nv = cell_val() - 1;
+            cell_set(nv);
+            return serve_num(nv);
+        }
+        if (m == "getAndDecrement") {
+            int64_t old = cell_val();
+            cell_set(old - 1);
+            return serve_num(old);
+        }
+        if (m == "getAndSet") {
+            int64_t old = cell_val();
+            cell_set(arr_n_of(ctx.args[1]));
+            return serve_num(old);
+        }
+        if (m == "compareAndSet") {
+            int64_t expect = arr_n_of(ctx.args[1]);
+            int64_t update = arr_n_of(ctx.args[2]);
+            bool ok = (cell_val() == expect);
+            if (ok) cell_set(update);
+            return CallResult::handled_bool(ok);
+        }
+        return CallResult::not_handled();
+    }
 
     // ── Atomic*FieldUpdater family (M4 F-028d) ─────────────────────────
     // Java/AOSP law (libcore/ojluni): newUpdater(tclass, vclass, fieldName)

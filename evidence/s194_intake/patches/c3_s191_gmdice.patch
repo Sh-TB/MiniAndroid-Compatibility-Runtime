@@ -1,0 +1,581 @@
+From 001fa549d2a0858c70b54c4c1dc5bf7cd85db1f5 Mon Sep 17 00:00:00 2001
+From: Z User <z@container>
+Date: Sat, 7 Nov 2026 09:06:17 +0000
+Subject: [PATCH] =?UTF-8?q?S191:=20gmdice=20COMPLETE=20GAMEPLAY=20(A27)=20?=
+ =?UTF-8?q?=E2=80=94=20the=20ListActivity/ArrayAdapter=20law=20stack=20(5?=
+ =?UTF-8?q?=20generic=20laws,=203x=20byte-identical,=20details-dialog=20pi?=
+ =?UTF-8?q?xel-verified).=20ROOT=20CAUSE=20CHAIN=20(androguard-decoded):?=
+ =?UTF-8?q?=20RollResultAdapter=20extends=20ArrayAdapter;=20setListAdapter?=
+ =?UTF-8?q?=20walked=20the=20ActivityShadow=20chain=20and=20fell=20off=20t?=
+ =?UTF-8?q?he=20end=20as=20not=5Fhandled=20->=20adapter=20identity=20NEVER?=
+ =?UTF-8?q?=20reached=20the=20ListView=20node=20->=20ArrayAdapter.add=20an?=
+ =?UTF-8?q?swered=20by=20the=20dialog-oriented=20ArrayAdapterShadow=20(emp?=
+ =?UTF-8?q?ty-string=20push,=20getView=20handled=5Fnull)=20->=20result=20l?=
+ =?UTF-8?q?og=20children=3D0=20forever.=20LAW=20SET:=20F-NEW-602=20ArrayAd?=
+ =?UTF-8?q?apter=20family=20in=20bridge=5Fto=5Fapi=20(init=20backing-list?=
+ =?UTF-8?q?=20via=20the=20canonical=20array[i]+=5F=5Farray=5Flength=5F=5F?=
+ =?UTF-8?q?=20store,=20add+notify,=20getCount/getItem/getItemId/isEmpty/se?=
+ =?UTF-8?q?tNotifyOnChange/clear/remove/insert,=20getView=20default=20row?=
+ =?UTF-8?q?=20=3D=20TextView=20+=20item.toString()=20via=20REAL=20DEX=20?=
+ =?UTF-8?q?=E2=80=94=20RollResult.toString=20produced=20'1d6:=206'/'3D20:?=
+ =?UTF-8?q?=2015=20=C2=B7=2015=20=C2=B7=202'=20verbatim);=20runtime-class?=
+ =?UTF-8?q?=20gate=20(execute=5Finvoke=5Fvirtual=20bridges=20under=20the?=
+ =?UTF-8?q?=20RECEIVER=20class=20=E2=80=94=20is=5Fsubclass=5Fof=20keeps=20?=
+ =?UTF-8?q?app=20subclasses=20on=20the=20law=20set);=20F-NEW-605=20ArrayAd?=
+ =?UTF-8?q?apterShadow=20DEFER=20(runtime=20class=20!=3D=20plain=20Landroi?=
+ =?UTF-8?q?d/widget/ArrayAdapter;=20OR=20=5F=5Fad=5Fobjects=5F=5F=20marker?=
+ =?UTF-8?q?=20->=20not=5Fhandled;=20plain=20ArrayAdapter=20dialog=20receiv?=
+ =?UTF-8?q?ers=20keep=20the=20legacy=20items=5F=20path=20=E2=80=94=20zero?=
+ =?UTF-8?q?=20dialog=20regression);=20F-NEW-603=20ListActivity.setListAdap?=
+ =?UTF-8?q?ter=20in=20ActivityShadow=20(reuses=20the=20getListView=20resol?=
+ =?UTF-8?q?ution=20verbatim,=20binds=20adapter=5Fid/adapter=5Fclass=20+=20?=
+ =?UTF-8?q?the=20AOSP=20internal=20item-click=20forward);=20S157=20getList?=
+ =?UTF-8?q?View=20ADOPT=20FIX=20(the=20parent=20test=20was=20nested=20insi?=
+ =?UTF-8?q?de=20the=20children=20loop=20=E2=80=94=20an=20EMPTY=20ListView?=
+ =?UTF-8?q?=20never=20matched,=20a=20phantom=20second=20ListView=20was=20m?=
+ =?UTF-8?q?aterialized=20outside=20the=20layout;=20now=20the=20ancestor-ch?=
+ =?UTF-8?q?ain=20check=20adopts=20the=20layout=20ListView=20at=20ANY=20dep?=
+ =?UTF-8?q?th=20=E2=80=94=20gmdice=20rows=20now=20land=20on=20the=20REAL?=
+ =?UTF-8?q?=20list=20node=20o42);=20F-NEW-601=20materialize=5Fadapter=5Fro?=
+ =?UTF-8?q?ws=5Ffor=20(AOSP=20relayout=20semantics:=20children=20rebuilt?=
+ =?UTF-8?q?=20from=20current=20adapter=20state=20on=20every=20add/notify,?=
+ =?UTF-8?q?=20bounded=2064,=20backing-store=20fast=20path=20for=20the=20in?=
+ =?UTF-8?q?herited-getCount/getView=20miss);=20F-NEW-604=20dispatch=5Fitem?=
+ =?UTF-8?q?=5Fclick=20ListActivity=20fallback=20(no=20onItemClick=20on=20t?=
+ =?UTF-8?q?he=20listener=20chain=20+=20class=5Fchain=5Fdefines=5Fmethod(on?=
+ =?UTF-8?q?ListItemClick)=20->=20the=20AOSP=20ListActivity=20forward=20fir?=
+ =?UTF-8?q?es:=20tap=20on=20row=20->=20GameMasterDice.onListItemClick=20->?=
+ =?UTF-8?q?=20RollResult.showDetails=20->=20AlertDialog).=20RESULT:=20tap?=
+ =?UTF-8?q?=201d6=20->=20resultview=20'6'=20+=20row=20'1d6:=206';=20tap=20?=
+ =?UTF-8?q?3D20=20->=20'15=20=C2=B7=2015=20=C2=B7=202'=20row=20(magenta,?=
+ =?UTF-8?q?=20app=20button=5Fcolors=20via=20the=20app's=20own=20getView=20?=
+ =?UTF-8?q?setTextColor);=20tap=201d20=20->=20'6'=20row;=20tap=20row-2=20-?=
+ =?UTF-8?q?>=20LIST=5FITEM=5FCLICK=20position=3D1=20->=20showDetails=20->?=
+ =?UTF-8?q?=20AlertDialog=20with=20the=20exact=20roll=20line=20(dialog=20d?=
+ =?UTF-8?q?ecor=20700000,=20lit=20px=20132k).=20DETERMINISM:=203=20runs=20?=
+ =?UTF-8?q?x=2046=20frames=20A=5Fvs=5FB=20AND=20A=5Fvs=5FC=2046/46=20byte-?=
+ =?UTF-8?q?identical,=20final=20frame=20sha16=205222f5080020d965.=20REGRES?=
+ =?UTF-8?q?SIONS:=20headingcalculator=20rc=3D0=20REAL=5FAPP=5FCONTENT,=20c?=
+ =?UTF-8?q?hessclock=20tap=20still=20ticks=20(9:5x).=20Honest=20gaps:=20Al?=
+ =?UTF-8?q?ertDialog=20setTitle(resId)/setPositiveButton=20rows=20are=20RE?=
+ =?UTF-8?q?C-MISS=20(resource-id=20title=20+=20button=20storage=20=3D=20ge?=
+ =?UTF-8?q?neric=20polish,=20non-blocking).=20Evidence:=20evidence/s191=5F?=
+ =?UTF-8?q?gmdice/S191=5FGMDICE=5FCOMPLETE.json=20+=20S191=5FGMDICE=5FDECO?=
+ =?UTF-8?q?DE.json=20(androguard=20census)=20+=20frame=5Frows=5F3rolls.png?=
+ =?UTF-8?q?=20+=20frame=5Fdetails=5Fdialog.png;=20script=20scripts/s191=5F?=
+ =?UTF-8?q?verify.py=20reproduces=20E1-E4=20with=20one=20command.?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ miniandroid/src/dex/dalvik_engine.cpp | 461 ++++++++++++++++++++++++++
+ miniandroid/src/dex/dalvik_engine.h   |   8 +
+ 2 files changed, 469 insertions(+)
+
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index e38235d6..73e8defb 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -15382,12 +15382,140 @@ bool DalvikExecutionEngine::dispatch_item_click(uint32_t adapter_id,
+     DalvikExecutionResult res;
+     const char* method = long_click ? "onItemLongClick" : "onItemClick";
+     bool ok = try_recursive_invoke(s130_norm_cls(lcls), method, args, ret, res);
++    if (!ok && !long_click) {
++        // ── S191 F-NEW-604: ListActivity.onListItemClick law ────────────
++        // AOSP ListActivity.java registers its OWN internal
++        // OnItemClickListener on the ListView and forwards every item
++        // click to the protected onListItemClick(ListView, View, int,
++        // long) hook that app subclasses override (gmdice:
++        // GameMasterDice.onListItemClick → RollResult.showDetails). The
++        // shadow side (ListActivity.setListAdapter law) binds the
++        // ACTIVITY as the item-click listener identity; when the
++        // listener class defines no onItemClick but DOES define
++        // onListItemClick along its class chain, dispatch through the
++        // AOSP ListActivity contract: same (parent, view, position, id)
++        // shape — this=the activity receiver (args[0] slot).
++        std::string act_cls = s130_norm_cls(lcls);
++        if (class_chain_defines_method(act_cls, "onListItemClick")) {
++            ret = DalvikValue::make_void();
++            ok = try_recursive_invoke(act_cls, "onListItemClick", args, ret,
++                                      res,
++                                      "(Landroid/widget/ListView;"
++                                      "Landroid/view/View;IJ)V");
++            if (ok)
++                std::cerr << "[UI-EVENT] event=LIST_ITEM_CLICK adapter="
++                          << adapter_id << " position=" << position
++                          << " result=DISPATCHED (ListActivity law)"
++                          << std::endl;
++        }
++    }
+     std::cerr << "[UI-EVENT] event=" << (long_click ? "ITEM_LONG_CLICK" : "ITEM_CLICK")
+               << " adapter=" << adapter_id << " position=" << position
+               << " result=" << (ok ? "DISPATCHED" : "FAILED") << std::endl;
+     return ok;
+ }
+ 
++// ────────────────────────────────────────────────────────────────────────
++// S191 F-NEW-601: adapter-row (re)materialization.
++// AOSP AdapterView/ListView contract: the adapter IS the data source; the
++// view re-queries getCount()/getView() on the next layout pass after any
++// adapter mutation (notifyDataSetChanged / ArrayAdapter.add when
++// mNotifyOnChange). CONT-102 (F-NEW-432) materialized rows ONCE at
++// setAdapter — adapters that gain rows AFTER setAdapter (the common
++// append-log pattern: gmdice RollResultAdapter, chat logs, history lists)
++// stayed empty forever. This is the shared re-materialization body:
++// every ListView node bound to this adapter has its row children rebuilt
++// from the CURRENT adapter state (bounded 64-row window, the same
++// documented simplification as CONT-102 until a recycler pass exists).
++// ────────────────────────────────────────────────────────────────────────
++int DalvikExecutionEngine::materialize_adapter_rows_for(uint32_t adapter_id) {
++    if (shadow_registry_ == nullptr || adapter_id == 0) return 0;
++    auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
++    if (vs == nullptr) return 0;
++    std::string ad_cls;
++    heap_.get_object_class(adapter_id, ad_cls);
++    if (ad_cls.empty()) return 0;
++    int total = 0;
++    for (const auto& [nid, nptr] : vs->all_nodes()) {
++        if (!nptr || nptr->adapter_id != adapter_id) continue;
++        const uint32_t lv_id = nid;
++        const std::string& lv_cls = nptr->class_desc;
++        // AOSP relayout: ListView children are exactly the adapter rows —
++        // rebuild instead of appending (objects survive the detach; the
++        // recycler window is the recorded frontier).
++        std::vector<uint32_t> stale = nptr->children;
++        for (uint32_t c : stale) vs->remove_child(lv_id, c);
++        int count = 0;
++        DalvikValue cret = DalvikValue::make_void();
++        DalvikExecutionResult cres;
++        std::vector<DalvikValue> cargs{DalvikValue::make_object(
++            adapter_id, ad_cls)};
++        if (try_recursive_invoke(s130_norm_cls(ad_cls), "getCount", cargs,
++                                 cret, cres) &&
++            (cret.type == DalvikType::INT32 ||
++             cret.type == DalvikType::BOOLEAN))
++            count = (int)cret.int_val;
++        // S191 backing-store fast path: an engine-backed adapter
++        // (__ad_objects__) has an authoritative count even when the DEX
++        // chain lookup misses the INHERITED getCount (the app subclass
++        // declares no getCount of its own — gmdice RollResultAdapter).
++        uint32_t s191_backing = 0;
++        {
++            auto bf = heap_.get_object_field(adapter_id, "__ad_objects__");
++            if (bf.has_value() && bf->type == DalvikType::OBJECT_REF)
++                s191_backing = bf->object_id;
++        }
++        if (count == 0 && s191_backing != 0) {
++            auto lf = heap_.get_object_field(s191_backing, "__array_length__");
++            if (lf.has_value() && lf->type == DalvikType::INT32)
++                count = lf->int_val;
++        }
++        int materialized = 0;
++        for (int i = 0; i < count && i < 64; i++) {
++            DalvikValue vret = DalvikValue::make_void();
++            DalvikExecutionResult vres;
++            std::vector<DalvikValue> vargs{
++                DalvikValue::make_object(adapter_id, ad_cls),
++                DalvikValue::make_int(i),
++                DalvikValue::make_null(),
++                DalvikValue::make_object(lv_id, lv_cls)};
++            bool got_row =
++                try_recursive_invoke(s130_norm_cls(ad_cls), "getView", vargs,
++                                     vret, vres) &&
++                vret.type == DalvikType::OBJECT_REF && vret.object_id != 0;
++            uint32_t row_oid = got_row ? vret.object_id : 0;
++            // Inherited-getView miss (same shape as the getCount miss): a
++            // subclass that declares no getView of its own still renders —
++            // the F-NEW-602 default row law synthesized from the SAME
++            // backing store (item.toString via real DEX; TextView row).
++            if (row_oid == 0 && s191_backing != 0) {
++                DalvikValue gv = DalvikValue::make_void();
++                ApiCallTrace::Status gv_status = ApiCallTrace::Status::MISSING;
++                std::vector<DalvikValue> gargs{
++                    DalvikValue::make_object(adapter_id,
++                                             "Landroid/widget/ArrayAdapter;"),
++                    DalvikValue::make_int(i),
++                    DalvikValue::make_null(),
++                    DalvikValue::make_object(lv_id, lv_cls)};
++                if (bridge_to_api("Landroid/widget/ArrayAdapter;", "getView",
++                                  gargs, gv, gv_status, 0) &&
++                    gv.type == DalvikType::OBJECT_REF && gv.object_id != 0)
++                    row_oid = gv.object_id;
++            }
++            if (row_oid != 0) {
++                vs->add_child(lv_id, row_oid);
++                materialized++;
++            }
++        }
++        total += materialized;
++        std::cerr << "[S191-ADAPTER] rematerialize lv=o" << lv_id
++                  << " adapter=o" << adapter_id << " (" << ad_cls
++                  << ") count=" << count
++                  << " rows=" << materialized << std::endl;
++    }
++    return total;
++}
++
+ // R-NEW-431: CompoundButton.onCheckedChanged(buttonView, isChecked).
+ void DalvikExecutionEngine::dispatch_checked_changed(uint32_t view_id,
+                                                      bool checked) {
+@@ -53784,6 +53912,339 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         return true;
+     }
+ 
++    // ────────────────────────────────────────────────────────────────────────
++    // S191 F-NEW-602: android.widget.ArrayAdapter family laws.
++    // AOSP ArrayAdapter.java (mObjects ArrayList, mNotifyOnChange=true,
++    // mResource, mTextViewResourceId):
++    //   <init>(Context, int[, int|List]) → fresh backing list,
++    //       mNotifyOnChange=true, mResource=resource
++    //   add(T) → mObjects.add(object); if (mNotifyOnChange)
++    //            notifyDataSetChanged()  [rows re-materialize]
++    //   getCount() → mObjects.size();  getItem(I) → mObjects.get(I);
++    //   getItemId(I) → position (AOSP default);  isEmpty() → size()==0
++    //   getView(I, View, ViewGroup) → inflate mResource; for the
++    //       simple_list_item_1 shape (a TextView root — the default
++    //       ListActivity row) the row IS a TextView carrying
++    //       item.toString(). toString dispatches REAL DEX on the item's
++    //       runtime class (gmdice RollResult.toString returns the roll
++    //       line) — no field guessing.
++    // Backing store: the engine's canonical collection convention
++    // (array[i] heap fields + __array_length__ on a real ArrayList
++    // object) — the SAME store the F-036/F-101/F-110 laws read and
++    // write, so apps that mix ArrayAdapter with plain list APIs see one
++    // consistent data source. No app-specific code.
++    // ────────────────────────────────────────────────────────────────────────
++    if (class_name == "Landroid/widget/ArrayAdapter;" ||
++        is_subclass_of(class_name, "Landroid/widget/ArrayAdapter;")) {
++        // Runtime-class gate: execute_invoke_virtual bridges with the
++        // RECEIVER's runtime class (M3 FIX-M3-008 law) — app-defined
++        // ArrayAdapter subclasses (gmdice RollResultAdapter) arrive under
++        // their OWN class name. The ArrayAdapterShadow defer (F-NEW-605)
++        // hands them here; the is_subclass_of walk keeps the whole family
++        // on the engine law set.
++        auto s191_ad_len = [&](uint32_t list_oid) -> int32_t {
++            auto lf = heap_.get_object_field(list_oid, "__array_length__");
++            return (lf.has_value() && lf->type == DalvikType::INT32)
++                       ? lf->int_val : 0;
++        };
++        auto s191_backing = [&](uint32_t ad_oid) -> uint32_t {
++            auto bf = heap_.get_object_field(ad_oid, "__ad_objects__");
++            return (bf.has_value() && bf->type == DalvikType::OBJECT_REF)
++                       ? bf->object_id : 0;
++        };
++        auto s191_val_eq = [&](const DalvikValue& a,
++                               const DalvikValue& b) -> bool {
++            if (a.type != b.type) return false;
++            switch (a.type) {
++                case DalvikType::STRING_REF:
++                    return a.is_null == b.is_null &&
++                           (a.is_null || a.string_val == b.string_val);
++                case DalvikType::OBJECT_REF:
++                    return a.object_id == b.object_id;
++                case DalvikType::INT32:
++                    return a.int_val == b.int_val;
++                case DalvikType::INT64:
++                    return a.long_val == b.long_val;
++                case DalvikType::BOOLEAN:
++                    return a.int_val == b.int_val;
++                default:
++                    return a.int_val == b.int_val &&
++                           a.long_val == b.long_val;
++            }
++        };
++        if (method == "<init>" && args.size() >= 2 &&
++            args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0) {
++            uint32_t ad = args[0].object_id;
++            uint32_t list_obj = heap_.allocate("Ljava/util/ArrayList;", pc_,
++                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++            heap_.set_object_field(ad, "__ad_objects__",
++                DalvikValue::make_object(list_obj, "Ljava/util/ArrayList;"));
++            heap_.set_object_field(ad, "__ad_notify__",
++                DalvikValue::make_int(1));  // AOSP mNotifyOnChange = true
++            // (Context, int resource[, int textViewResourceId]) — record
++            // the resource identity (row-shape contract); a List-typed
++            // 3rd argument seeds the backing list through the same
++            // array[i] store.
++            for (size_t ai = 1; ai < args.size(); ++ai) {
++                if (args[ai].type == DalvikType::INT32) {
++                    heap_.set_object_field(ad, "__ad_resource__",
++                                           DalvikValue::make_int(
++                                               args[ai].int_val));
++                    break;
++                }
++            }
++            if (args.size() >= 3 &&
++                args[2].type == DalvikType::OBJECT_REF &&
++                args[2].object_id != 0) {
++                std::string a3cls;
++                heap_.get_object_class(args[2].object_id, a3cls);
++                if (a3cls.find("List") != std::string::npos ||
++                    a3cls.find("list") != std::string::npos) {
++                    int32_t n = s191_ad_len(args[2].object_id);
++                    for (int32_t i = 0; i < n; ++i) {
++                        auto el = heap_.get_object_field(
++                            args[2].object_id,
++                            "array[" + std::to_string(i) + "]");
++                        if (el.has_value())
++                            heap_.set_object_field(
++                                list_obj, "array[" + std::to_string(i) + "]",
++                                *el);
++                    }
++                    heap_.set_object_field(list_obj, "__array_length__",
++                                           DalvikValue::make_int(n));
++                }
++            }
++            std::cerr << "[S191-ARRAYADAPTER] init ad=o" << ad
++                      << " backing=o" << list_obj << " args=" << args.size()
++                      << std::endl;
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_void();
++            return true;
++        }
++        if (method == "add" && args.size() >= 2 &&
++            args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0) {
++            uint32_t ad = args[0].object_id;
++            uint32_t backing = s191_backing(ad);
++            if (backing == 0) {
++                // <init> was never bridged (honest gap) — create the
++                // backing now instead of silently dropping the element.
++                backing = heap_.allocate("Ljava/util/ArrayList;", pc_,
++                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
++                heap_.set_object_field(ad, "__ad_objects__",
++                    DalvikValue::make_object(backing,
++                                             "Ljava/util/ArrayList;"));
++            }
++            int32_t n = s191_ad_len(backing);
++            heap_.set_object_field(backing, "array[" + std::to_string(n) + "]",
++                                   args[1]);
++            heap_.set_object_field(backing, "__array_length__",
++                                   DalvikValue::make_int(n + 1));
++            // AOSP ArrayAdapter.add: if (mNotifyOnChange)
++            //     notifyDataSetChanged();
++            auto nf = heap_.get_object_field(ad, "__ad_notify__");
++            bool notify = !(nf.has_value() && nf->type == DalvikType::INT32 &&
++                            nf->int_val == 0);
++            int rows = 0;
++            if (notify) rows = materialize_adapter_rows_for(ad);
++            std::cerr << "[S191-ARRAYADAPTER] add ad=o" << ad
++                      << " size=" << (n + 1) << " notify=" << notify
++                      << " rows=" << rows << std::endl;
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_void();
++            return true;
++        }
++        if (method == "notifyDataSetChanged" &&
++            args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF) {
++            int rows = materialize_adapter_rows_for(args[0].object_id);
++            std::cerr << "[S191-ARRAYADAPTER] notifyDataSetChanged ad=o"
++                      << args[0].object_id << " rows=" << rows << std::endl;
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_void();
++            return true;
++        }
++        if (method == "getCount" && args.size() >= 1 &&
++            args[0].type == DalvikType::OBJECT_REF) {
++            uint32_t backing = s191_backing(args[0].object_id);
++            result = DalvikValue::make_int(
++                backing != 0 ? s191_ad_len(backing) : 0);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getItem" && args.size() >= 2 &&
++            args[0].type == DalvikType::OBJECT_REF &&
++            args[1].type == DalvikType::INT32) {
++            uint32_t backing = s191_backing(args[0].object_id);
++            int32_t idx = args[1].int_val;
++            if (backing != 0 && idx >= 0 && idx < s191_ad_len(backing)) {
++                auto el = heap_.get_object_field(
++                    backing, "array[" + std::to_string(idx) + "]");
++                result = el.has_value() ? *el : DalvikValue::make_null();
++            } else {
++                result = DalvikValue::make_null();
++                throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
++                               "Invalid index " + std::to_string(idx) +
++                                   ", size is " +
++                                   std::to_string(
++                                       backing != 0 ? s191_ad_len(backing)
++                                                    : 0),
++                               "s191-getitem-oob");
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getItemId" && args.size() >= 2 &&
++            args[0].type == DalvikType::OBJECT_REF &&
++            args[1].type == DalvikType::INT32) {
++            // AOSP ArrayAdapter.getItemId: returns the position (no row-id
++            // mapping by default).
++            result = DalvikValue::make_long((int64_t)args[1].int_val);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "isEmpty" && args.size() >= 1 &&
++            args[0].type == DalvikType::OBJECT_REF) {
++            uint32_t backing = s191_backing(args[0].object_id);
++            result = DalvikValue::make_bool(backing == 0 ||
++                                            s191_ad_len(backing) == 0);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "setNotifyOnChange" && args.size() >= 2 &&
++            args[0].type == DalvikType::OBJECT_REF &&
++            args[1].type == DalvikType::INT32) {
++            heap_.set_object_field(args[0].object_id, "__ad_notify__",
++                                   DalvikValue::make_int(args[1].int_val));
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_void();
++            return true;
++        }
++        if ((method == "clear" || method == "remove" ||
++             method == "insert") &&
++            args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF) {
++            uint32_t backing = s191_backing(args[0].object_id);
++            int32_t n = backing != 0 ? s191_ad_len(backing) : 0;
++            if (method == "clear") {
++                if (backing != 0)
++                    heap_.set_object_field(backing, "__array_length__",
++                                           DalvikValue::make_int(0));
++                n = 0;
++            } else if (method == "remove" && args.size() >= 2 && backing != 0) {
++                for (int32_t i = 0; i < n; ++i) {
++                    auto el = heap_.get_object_field(
++                        backing, "array[" + std::to_string(i) + "]");
++                    if (el.has_value() && s191_val_eq(*el, args[1])) {
++                        for (int32_t j = i; j < n - 1; ++j) {
++                            auto nx = heap_.get_object_field(
++                                backing, "array[" + std::to_string(j + 1) + "]");
++                            if (nx.has_value())
++                                heap_.set_object_field(
++                                    backing, "array[" + std::to_string(j) + "]",
++                                    *nx);
++                        }
++                        heap_.set_object_field(backing, "__array_length__",
++                                               DalvikValue::make_int(n - 1));
++                        break;
++                    }
++                }
++                n = s191_ad_len(backing);
++            } else if (method == "insert" && args.size() >= 3 && backing != 0 &&
++                       args[1].type == DalvikType::INT32) {
++                int32_t at = args[1].int_val;
++                if (at < 0) at = 0;
++                if (at > n) at = n;
++                for (int32_t j = n; j > at; --j) {
++                    auto pv = heap_.get_object_field(
++                        backing, "array[" + std::to_string(j - 1) + "]");
++                    if (pv.has_value())
++                        heap_.set_object_field(
++                            backing, "array[" + std::to_string(j) + "]", *pv);
++                }
++                heap_.set_object_field(backing, "array[" + std::to_string(at) + "]",
++                                       args[2]);
++                heap_.set_object_field(backing, "__array_length__",
++                                       DalvikValue::make_int(n + 1));
++                n = n + 1;
++            }
++            // AOSP: add/remove/insert/clear all honor mNotifyOnChange.
++            auto nf = heap_.get_object_field(args[0].object_id,
++                                             "__ad_notify__");
++            bool notify = !(nf.has_value() && nf->type == DalvikType::INT32 &&
++                            nf->int_val == 0);
++            int rows = 0;
++            if (notify) rows = materialize_adapter_rows_for(args[0].object_id);
++            std::cerr << "[S191-ARRAYADAPTER] " << method << " ad=o"
++                      << args[0].object_id << " size=" << n
++                      << " rows=" << rows << std::endl;
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            result = DalvikValue::make_void();
++            return true;
++        }
++        if (method == "getView" && args.size() >= 4 &&
++            args[0].type == DalvikType::OBJECT_REF &&
++            args[1].type == DalvikType::INT32) {
++            // AOSP ArrayAdapter.getView: item = mObjects.get(position);
++            // row = inflate(mResource, parent); text = item.toString().
++            uint32_t ad = args[0].object_id;
++            int32_t pos = args[1].int_val;
++            uint32_t backing = s191_backing(ad);
++            DalvikValue item = DalvikValue::make_null();
++            if (backing != 0 && pos >= 0 && pos < s191_ad_len(backing)) {
++                auto el = heap_.get_object_field(
++                    backing, "array[" + std::to_string(pos) + "]");
++                if (el.has_value()) item = *el;
++            }
++            std::string text;
++            if (item.type == DalvikType::STRING_REF && !item.is_null) {
++                text = std::string(item.string_val);
++            } else if (item.type == DalvikType::OBJECT_REF &&
++                       item.object_id != 0) {
++                std::string icls;
++                heap_.get_object_class(item.object_id, icls);
++                DalvikValue tret = DalvikValue::make_void();
++                DalvikExecutionResult tres;
++                if (!icls.empty() &&
++                    try_recursive_invoke(s130_norm_cls(icls), "toString",
++                                         {item}, tret, tres, "()Ljava/lang/String;") &&
++                    tret.type == DalvikType::STRING_REF && !tret.is_null)
++                    text = std::string(tret.string_val);
++            }
++            // convertView reuse: the AOSP recycler path rebinds text on
++            // the recycled row when the caller supplies one.
++            uint32_t row_oid = 0;
++            if (args[2].type == DalvikType::OBJECT_REF &&
++                args[2].object_id != 0)
++                row_oid = args[2].object_id;
++            if (auto* vs = shadow_registry_
++                               ? shadow_registry_->find_as<
++                                     framework::ViewShadow>()
++                               : nullptr) {
++                if (row_oid == 0)
++                    row_oid = vs->create_view("Landroid/widget/TextView;");
++                if (auto* rn = vs->get_or_create_node(
++                        row_oid, "Landroid/widget/TextView;")) {
++                    rn->text = text;
++                    rn->width = -1;   // MATCH_PARENT (row shape)
++                    rn->height = -2;  // WRAP_CONTENT
++                    rn->lp_width = -1;
++                    rn->lp_height = -2;
++                }
++            }
++            static int s191_getview_diag = 0;
++            if (s191_getview_diag < 12) {
++                ++s191_getview_diag;
++                std::cerr << "[S191-ARRAYADAPTER] getView pos=" << pos
++                          << " row=o" << row_oid << " text=\"" << text
++                          << "\"" << std::endl;
++            }
++            result = DalvikValue::make_object(row_oid,
++                                              "Landroid/widget/TextView;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
++
+     // ────────────────────────────────────────────────────────────────────────
+     // P0.8 — Context.getPackageName → String
+     // EXP-093/F011: Use manifest-derived package name
+diff --git a/miniandroid/src/dex/dalvik_engine.h b/miniandroid/src/dex/dalvik_engine.h
+index 0f1e61bc..80f6f838 100755
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -1891,6 +1891,14 @@ public:
+     // (long_click → OnItemLongClick.onItemLongClick(...)Z).
+     bool dispatch_item_click(uint32_t adapter_id, uint32_t view_id,
+                              int position, bool long_click);
++    // S191 F-NEW-601: adapter-row (re)materialization — the shared body of
++    // ListView.setAdapter (CONT-102), ListActivity.setListAdapter identity
++    // binding, ArrayAdapter.add/notifyDataSetChanged (AOSP: every adapter
++    // mutation invalidates the view; the next layout pass re-queries
++    // getCount()/getView()). Rebuilds the row children of every ListView
++    // node bound to this adapter (bounded 64-row window, same documented
++    // simplification as CONT-102).
++    int materialize_adapter_rows_for(uint32_t adapter_id);
+     // R-NEW-431: CompoundButton.onCheckedChanged(buttonView, isChecked).
+     void dispatch_checked_changed(uint32_t view_id, bool checked);
+     // R-NEW-432: key pipeline — onKey listener → onKeyDown/onKeyUp law.
+-- 
+2.47.3

@@ -42,6 +42,39 @@ CallResult ExecutorShadow::dispatch(const CallContext& ctx) {
             return CallResult::handled_object(
                 id, "Ljava/util/concurrent/ThreadPoolExecutor;");
         }
+        // [S192-C8] F-C8-161 — scheduled-executor factories.
+        // OpenJDK (Executors.java): newScheduledThreadPool(n[,tf]) and
+        // newSingleThreadScheduledExecutor([tf]) return a
+        // ScheduledExecutorService (impl ScheduledThreadPoolExecutor).
+        // The schedule surface rides the F-C8-150 deterministic-queue law
+        // (dalvik_engine.cpp — keyed on ScheduledThreadPoolExecutor).
+        // klondike + tower3d consume newScheduledThreadPool (2 APKs);
+        // klondike consumes newSingleThreadScheduledExecutor (3 sites).
+        if (m == "newScheduledThreadPool" ||
+            m == "newSingleThreadScheduledExecutor") {
+            if (!heap_) return CallResult::handled_null();
+            int n = ctx.arg_as_int(0, 1);
+            if (n < 0) {
+                // OpenJDK: IllegalArgumentException on negative core.
+                std::cerr << "[EXECUTOR][LAW-VIOLATION] " << m << "(" << n
+                          << ") — AOSP throws IllegalArgumentException"
+                          << std::endl;
+                n = 0;
+            }
+            uint32_t id = heap_->get_or_create(
+                "Ljava/util/concurrent/ScheduledThreadPoolExecutor;");
+            ExecutorState& st = executors_[id];
+            st.shutdown = false;
+            st.tasks_submitted = 0;
+            st.core_pool_size =
+                (m == "newSingleThreadScheduledExecutor") ? 1 : n;
+            std::cerr << "[EXECUTOR] " << m << " → ScheduledThreadPool"
+                      << "Executor obj=" << id
+                      << " core=" << st.core_pool_size << std::endl;
+            return CallResult::handled_object(
+                id,
+                "Ljava/util/concurrent/ScheduledThreadPoolExecutor;");
+        }
         return CallResult::not_handled();
     }
 
@@ -118,6 +151,66 @@ CallResult ExecutorShadow::dispatch(const CallContext& ctx) {
             std::cerr << "[EXECUTOR] shutdown obj=" << recv
                       << " (submitted=" << st.tasks_submitted << ")" << std::endl;
             return CallResult::handled_void();
+        }
+        // [S192-C8] F-C8-162 — ExecutorService.shutdownNow +
+        // awaitTermination (OpenJDK laws). shutdownNow: attempts to stop
+        // actively executing tasks, returns the list of tasks awaiting
+        // execution (serialized engine: tasks ran INLINE at execute —
+        // the list is EMPTY; JDK would drain the queue). awaitTermination(
+        // timeout, unit): shutdown → true immediately (queue drained);
+        // live pool → JDK blocks up to the timeout then answers false
+        // (the engine advances the deterministic virtual clock by the
+        // window — same time law as Thread.sleep).
+        if (m == "shutdownNow") {
+            st.shutdown = true;
+            int drained = st.tasks_submitted;
+            st.tasks_submitted = 0;
+            uint32_t empty_list = 0;
+            if (heap_)
+                empty_list = heap_->allocate("Ljava/util/ArrayList;");
+            std::cerr << "[EXECUTOR] shutdownNow obj=" << recv
+                      << " (submitted=" << drained
+                      << ") → empty await-list o" << empty_list
+                      << " (serialized: tasks ran inline)" << std::endl;
+            return CallResult::handled_object(empty_list,
+                                              "Ljava/util/List;");
+        }
+        if (m == "awaitTermination") {
+            if (st.shutdown) {
+                std::cerr << "[EXECUTOR] awaitTermination obj=" << recv
+                          << " → true (shutdown, queue drained)"
+                          << std::endl;
+                return CallResult::handled_bool(true);
+            }
+            // Timed window on a LIVE pool: JDK blocks then false. Advance
+            // the deterministic virtual clock by the window (TimeUnit
+            // ordinal law — NANOSECONDS=0..DAYS=6, F-NEW-216).
+            int64_t amount = 0;
+            if (!ctx.args.empty()) {
+                if (ctx.args[0].kind == CallContext::Arg::Kind::LONG)
+                    amount = ctx.args[0].long_val;
+                else
+                    amount = ctx.arg_as_int(0, 0);
+            }
+            int64_t ms = amount;  // MILLISECONDS default
+            static const int64_t kDiv[7] = {1, 1, 1, 1000, 60000,
+                                            3600000, 86400000};
+            if (ctx.args.size() >= 2 && heap_ &&
+                ctx.args[1].kind == CallContext::Arg::Kind::OBJECT) {
+                int32_t ord = -1;
+                if (heap_->get_object_int_field(ctx.args[1].object_id,
+                                                "ordinal", ord) &&
+                    ord >= 0 && ord < 7)
+                    ms = amount * kDiv[ord];
+            }
+            if (auto* hs = registry_ ? registry_->find_as<HandlerShadow>()
+                                     : nullptr)
+                hs->advance_virtual(ms);
+            std::cerr << "[EXECUTOR] awaitTermination obj=" << recv
+                      << " → false after " << ms
+                      << "ms (pool live — JDK blocks then false)"
+                      << std::endl;
+            return CallResult::handled_bool(false);
         }
         if (m == "isShutdown") return CallResult::handled_bool(st.shutdown);
         if (m == "isTerminated") {

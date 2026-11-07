@@ -1,7 +1,7 @@
 {
   "activity": "com.justdeax.composeStopwatch.AppActivity",
   "apk_package": "com.justdeax.composeStopwatch",
-  "duration_ms": 1715,
+  "duration_ms": 1767,
   "events_retained": 25,
   "events_total": 25,
   "first_divergence": null,
@@ -12,7 +12,7 @@
     "method": "",
     "seq": 25,
     "stage": null,
-    "state": "Partial execution completed [F-NEW-200 stub-census: 60488 IMPLEMENTED, 303 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]"
+    "state": "Partial execution completed [F-NEW-200 stub-census: 60500 IMPLEMENTED, 296 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]"
   },
   "frame_analysis": {
     "app_draw_ops": 0,
@@ -73,52 +73,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 7079,
+        "pid": 8579,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w12/runs/store_com.justdeax.composeStopwatch/data/app/com.justdeax.composeStopwatch/base.apk",
       "thread": "main",
-      "ts_ms": 1794080329623
+      "ts_ms": 1794081789401
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "com.justdeax.composeStopwatch",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=com.justdeax.composeStopwatch",
       "thread": "main",
-      "ts_ms": 1794080329624
+      "ts_ms": 1794081789403
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "com.justdeax.composeStopwatch",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=com.justdeax.composeStopwatch.AppActivity",
       "thread": "main",
-      "ts_ms": 1794080329625
+      "ts_ms": 1794081789403
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "com.justdeax.composeStopwatch",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=2555 methods=14144",
       "thread": "main",
-      "ts_ms": 1794080329677
+      "ts_ms": 1794081789455
     },
     {
       "component": "boot",
@@ -128,24 +128,24 @@
       },
       "package": "com.justdeax.composeStopwatch",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794080329697
+      "ts_ms": 1794081789475
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "com.justdeax.composeStopwatch",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=2555",
       "thread": "main",
-      "ts_ms": 1794080329697
+      "ts_ms": 1794081789475
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -153,12 +153,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "com.justdeax.composeStopwatch",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "com.justdeax.composeStopwatch.AppActivity",
       "thread": "main",
-      "ts_ms": 1794080329702
+      "ts_ms": 1794081789480
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -166,12 +166,12 @@
       "event": "APPLICATION_CREATE",
       "package": "com.justdeax.composeStopwatch",
       "result": "PENDING",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794080329702
+      "ts_ms": 1794081789480
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -207,12 +207,12 @@
       },
       "package": "com.justdeax.composeStopwatch",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794080330459
+      "ts_ms": 1794081790275
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -222,12 +222,12 @@
       "provenance": "choreographer/composition pump active",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 10,
       "sev": "RENDERER",
       "state": "COMPOSE",
       "thread": "main",
-      "ts_ms": 1794080330553
+      "ts_ms": 1794081790351
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -236,12 +236,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 11,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794080330621
+      "ts_ms": 1794081790420
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -250,12 +250,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 12,
       "sev": "CONFIRMED",
       "state": "root_id=576",
       "thread": "main",
-      "ts_ms": 1794080330621
+      "ts_ms": 1794081790420
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -264,12 +264,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 13,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1794080330962
+      "ts_ms": 1794081790786
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -278,12 +278,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794080330983
+      "ts_ms": 1794081790808
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -296,12 +296,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794080331057
+      "ts_ms": 1794081790882
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -323,12 +323,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 16,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794080331064
+      "ts_ms": 1794081790888
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -377,12 +377,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 17,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794080331064
+      "ts_ms": 1794081790888
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -391,12 +391,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 18,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794080331115
+      "ts_ms": 1794081790941
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -405,12 +405,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 19,
       "sev": "CONFIRMED",
       "state": "root_id=576",
       "thread": "main",
-      "ts_ms": 1794080331116
+      "ts_ms": 1794081790941
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -419,12 +419,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 20,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=1",
       "thread": "main",
-      "ts_ms": 1794080331196
+      "ts_ms": 1794081791026
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -433,12 +433,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794080331197
+      "ts_ms": 1794081791026
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -451,12 +451,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794080331269
+      "ts_ms": 1794081791098
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -478,12 +478,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 23,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794080331276
+      "ts_ms": 1794081791105
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -532,12 +532,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 24,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794080331276
+      "ts_ms": 1794081791105
     },
     {
       "activity": "com.justdeax.composeStopwatch.AppActivity",
@@ -549,12 +549,12 @@
       "package": "com.justdeax.composeStopwatch",
       "renderer_family": "COMPOSE",
       "result": "FAIL",
-      "run_id": "1794080329623-1",
+      "run_id": "1794081789401-1",
       "seq": 25,
       "sev": "FAILURE",
-      "state": "Partial execution completed [F-NEW-200 stub-census: 60488 IMPLEMENTED, 303 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
+      "state": "Partial execution completed [F-NEW-200 stub-census: 60500 IMPLEMENTED, 296 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
       "thread": "main",
-      "ts_ms": 1794080331338
+      "ts_ms": 1794081791168
     }
   ],
   "last_exception": {
@@ -567,18 +567,18 @@
     "package": "com.justdeax.composeStopwatch",
     "renderer_family": "COMPOSE",
     "result": "FAIL",
-    "run_id": "1794080329623-1",
+    "run_id": "1794081789401-1",
     "seq": 25,
     "sev": "FAILURE",
-    "state": "Partial execution completed [F-NEW-200 stub-census: 60488 IMPLEMENTED, 303 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
+    "state": "Partial execution completed [F-NEW-200 stub-census: 60500 IMPLEMENTED, 296 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
     "thread": "main",
-    "ts_ms": 1794080331338
+    "ts_ms": 1794081791168
   },
   "lifecycle": "RESUMED",
   "renderer_family": "COMPOSE",
-  "run_id": "1794080329623-1",
+  "run_id": "1794081789401-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261107-193849-9815",
+  "session_id": "EXP-001-20261107-200309-2409",
   "severity_census": {
     "CONFIRMED": 13,
     "FAILURE": 1,

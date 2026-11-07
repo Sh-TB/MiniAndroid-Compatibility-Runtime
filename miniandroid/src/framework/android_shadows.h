@@ -205,6 +205,79 @@ public:
     void clear_thread_yielded(uint32_t thread_oid) {
         yielded_threads_.erase(thread_oid);
     }
+    // ── [S193-C8] F-C8-185: per-thread OBSERVABLE tables + lifecycle ───
+    // AOSP/OpenJDK law: setName stores the name; getName answers it;
+    // setPriority/getPriority keep the 1..10 priority; isAlive answers
+    // false once the thread's body has run to completion (TERMINATED);
+    // getId assigns unique monotonic tids (main = 1). Wave-1..7 fixed
+    // these on the main-coder line; on THIS line (bare d3a8d0ec + waves
+    // 8+9) the F-150 no-op family still swallowed them — every Thread
+    // subclass (kotlin thread{}: 6 APKs) answered name="main",
+    // priority=5, alive forever.
+    void set_thread_name(uint32_t oid, const std::string& name) {
+        if (!oid) return;
+        thread_names_[oid] = name;
+        note_thread_seen(oid);
+    }
+    std::string thread_name_of(uint32_t oid) {
+        note_thread_seen(oid);
+        auto it = thread_names_.find(oid);
+        if (it != thread_names_.end()) return it->second;
+        if (oid == main_thread_id_) return MAIN_THREAD_NAME;
+        return "Thread-" + std::to_string(tid_of(oid));
+    }
+    void set_thread_priority(uint32_t oid, int32_t prio) {
+        if (!oid) return;
+        thread_priorities_[oid] = prio;
+        note_thread_seen(oid);
+    }
+    int32_t thread_priority_of(uint32_t oid) {
+        note_thread_seen(oid);
+        auto it = thread_priorities_.find(oid);
+        if (it != thread_priorities_.end()) return it->second;
+        return 5;  // Thread.NORM_PRIORITY
+    }
+    void set_thread_daemon(uint32_t oid, bool daemon) {
+        if (!oid) return;
+        thread_daemons_[oid] = daemon;
+        note_thread_seen(oid);
+    }
+    bool thread_daemon_of(uint32_t oid) {
+        auto it = thread_daemons_.find(oid);
+        return it != thread_daemons_.end() ? it->second : false;
+    }
+    // TERMINATION LAW: a body that ran to completion (returned or
+    // loop-exited without parking) has TERMINATED — JDK Thread state law.
+    // isAlive() flips false; join() on this target returns.
+    void mark_thread_terminated(uint32_t oid) {
+        if (!oid) return;
+        thread_terminated_[oid] = true;
+        note_thread_seen(oid);
+    }
+    bool thread_terminated(uint32_t oid) {
+        auto it = thread_terminated_.find(oid);
+        return it != thread_terminated_.end() ? it->second : false;
+    }
+    // JDK tid law: unique per thread, main = 1, monotonic after.
+    int32_t tid_of(uint32_t oid) {
+        note_thread_seen(oid);
+        auto it = thread_tids_.find(oid);
+        return it != thread_tids_.end() ? it->second : 1;
+    }
+    void note_thread_seen(uint32_t oid) {
+        if (!oid) return;
+        if (thread_tids_.count(oid)) return;
+        thread_tids_[oid] = (oid == main_thread_id_)
+                                ? 1 : next_tid_++;
+    }
+    // Registry of every thread identity seen (getAllStackTraces law).
+    std::vector<uint32_t> known_thread_ids() {
+        note_thread_seen(main_thread_id_);
+        std::vector<uint32_t> out;
+        for (const auto& kv : thread_tids_) out.push_back(kv.first);
+        return out;
+    }
+
     // Pops the earliest-wake due thread (deterministic order law). Returns
     // false when nothing is due at now_ms.
     bool take_due_yielded(int64_t now_ms, uint32_t& thread_oid,
@@ -233,6 +306,14 @@ private:
     std::vector<std::pair<uint32_t, uint32_t>> pending_starts_;
     std::map<uint32_t, std::pair<uint32_t, int64_t>> yielded_threads_;
     uint32_t active_drained_thread_ = 0;  // F-110d: 0 = main thread
+    // [S193-C8] F-C8-185/199 per-thread observable state (engine-member
+    // state per F-025 — no static locals).
+    std::map<uint32_t, std::string> thread_names_;
+    std::map<uint32_t, int32_t> thread_priorities_;
+    std::map<uint32_t, bool> thread_daemons_;
+    std::map<uint32_t, bool> thread_terminated_;
+    std::map<uint32_t, int32_t> thread_tids_;
+    int32_t next_tid_ = 2;  // main = 1 (assigned in init)
 };
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -655,11 +736,34 @@ public:
     // the arg is null or absent.
     static uint32_t extract_runnable(const CallContext& ctx, size_t arg_idx);
 
+    // ── [S193-C8] F-C8-181: DUE-TIME CHANNEL ───────────────────────────
+    // drain_ready_ex records each popped entry's SCHEDULED ready time;
+    // the CountDownTimer dispatch law computes the countdown against the
+    // scheduled beat (AOSP live-Looper semantics: a tick fires with the
+    // countdown as of its own beat) — never against the possibly
+    // idle-settle-JUMPED clock (which reported the whole window elapsed
+    // at the first dispatch → 0 ticks + instant onFinish).
+    void note_drained_due(uint32_t rid, int64_t when_ms) {
+        if (rid) drained_due_[rid] = when_ms;
+    }
+    void clear_drained_due() { drained_due_.clear(); }
+    int64_t due_time_of(uint32_t rid) const {
+        auto it = drained_due_.find(rid);
+        return it != drained_due_.end() ? it->second : virtual_now_ms_;
+    }
+    // Anchored enqueue: ready_at = base + delay (the CDT chain re-posts
+    // its next tick at its own beat + interval, not at the jumped now).
+    void enqueue_from(uint32_t runnable_id, int64_t base_ms,
+                      int64_t delay_ms, const std::string& cls);
+
 private:
     uint32_t main_handler_id_ = 0;
     std::deque<QueuedRunnable> queue_;
     uint32_t next_seq_ = 0;
     int64_t virtual_now_ms_ = 0;   // deterministic Looper time (ms)
+    // [S193-C8] F-C8-181 due-time channel state (per-drain-batch map —
+    // the dispatch of a batch happens immediately after its drain).
+    std::map<uint32_t, int64_t> drained_due_;
 
 public:
     // M4 F-029b: the main Handler singleton id (bound at init via
@@ -2833,6 +2937,24 @@ public:
     }
 
     CallResult dispatch(const CallContext& ctx) override;
+
+    // ── F-C4-602 (W12): SINGLE-TRUTH COLLECTION RENDER ─────────────────
+    // OpenJDK AbstractCollection.toString(): "[e1, e2, ...]" with each
+    // element's own String.valueOf(e) rendering ("null" for null,
+    // "(this Collection)" for a self-reference). The ENGINE's
+    // StringBuilder.append(Object) render (F-C4-564, dalvik_engine)
+    // previously read ONLY the heap `__array_length__`/`array[i]` field
+    // store — the Arrays.asList/F-101 copy-product convention — while
+    // CollectionShadow stores EVERY add()/insert() element in its own
+    // parallel stores (elements/elem_kinds/elem_strings/elem_ints). A
+    // list built by add() rendered "[]" while isEmpty() read the real
+    // shadow state (ConnectBot NavDestinationBuilder: the
+    // missingRequiredArguments list non-empty by isEmpty() but rendered
+    // "[]" in the IAE message — the split-brain lie). Law: the render
+    // reads THE SAME store every reader reads — this method. Returns
+    // false when the shadow holds no state for the object (caller then
+    // falls back to the engine-array-fields convention).
+    bool render_list_string(uint32_t object_id, std::string& out) const;
 
     // ── F-NEW-236d: APP-DEFINED EQUALITY RESOLVER ───────────────────────
     // OpenJDK HashSet.add/contains and ArrayList.contains classify by the

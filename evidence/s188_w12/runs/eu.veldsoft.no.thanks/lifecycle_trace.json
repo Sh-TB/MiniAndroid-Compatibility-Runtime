@@ -3,7 +3,7 @@
   "activity_launch": {
     "a_class": "Leu/veldsoft/no/thanks/SplashActivity;",
     "a_view_root": 632,
-    "b_view_root": 1273,
+    "b_view_root": 1276,
     "callbacks": [
       {
         "class": "Leu/veldsoft/no/thanks/SplashActivity;",
@@ -20,7 +20,7 @@
       {
         "class": "Leu/veldsoft/no/thanks/MenuActivity;",
         "dispatched": true,
-        "instructions": 2340,
+        "instructions": 2349,
         "method": "onCreate"
       },
       {

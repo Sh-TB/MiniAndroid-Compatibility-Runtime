@@ -7408,7 +7408,8 @@ bool DalvikExecutionEngine::advance_fragments_to_created(
 // ── F-NEW-339 (CONT-59): XML <fragment> tag instantiation law ───────────
 bool DalvikExecutionEngine::instantiate_fragment_tag(
         uint32_t container_view_id, const std::string& frag_class_desc,
-        const std::string& tag, int32_t xml_id) {
+        const std::string& tag, int32_t xml_id,
+        const std::vector<resources::XmlAttrRecord>& xml_attrs) {
     (void)container_view_id;
     auto* fm = shadow_registry_
                    ? shadow_registry_->find_as<framework::FragmentManagerShadow>()
@@ -7434,6 +7435,90 @@ bool DalvikExecutionEngine::instantiate_fragment_tag(
         heap_.set_object_field(
             frag, "__frag_host__",
             DalvikValue::make_object(host_id, "Landroid/app/Activity;"));
+
+    // ── F-C4-617 (W15): the onInflate DISPATCH law ─────────────────────
+    // AOSP FragmentLayoutInflaterFactory / FragmentContainerView internal
+    // ctor (fragment-1.8.5, decoded from itsfrz 5 this wave):
+    //     containerFragment.onInflate(context, attrs, null);
+    // BEFORE the transaction commits. The method reads app:navGraph into
+    // mGraphId (NavHostFragment.onInflate → obtainStyledAttributes →
+    // TypedArray.getResourceId(0,0)) and app:defaultNavHost — the values
+    // every later NavController wire needs. R8 renames the method (itsfrz
+    // NavHostFragment.y) — the structural resolve is the EXACT descriptor
+    // (Landroid/content/Context;Landroid/util/AttributeSet;
+    //  Landroid/os/Bundle;)V with name "onInflate" preferred, ANY
+    // single-method name with that descriptor accepted (the signature is
+    // unique on a Fragment subclass). The element's XML attrs ride the
+    // AttributeSetStore (F-NEW-197) so the real obtainStyledAttributes
+    // (F-NEW-327) reads them. Honest miss: no matching method → skipped
+    // silently (the F-NEW-304 lifecycle drain proceeds as before).
+    {
+        const std::string kOnInflateDesc =
+            "(Landroid/content/Context;Landroid/util/AttributeSet;"
+            "Landroid/os/Bundle;)V";
+        const dex::ClassInfo* frag_ci = nullptr;
+        {
+            auto cit = class_info_index_.find(frag_class_desc);
+            if (cit != class_info_index_.end())
+                frag_ci = &dex_report_->classes[cit->second];
+        }
+        std::string oninflate_name;
+        if (frag_ci != nullptr) {
+            int desc_matches = 0;
+            std::string only_name;
+            for (const auto* ml :
+                 {&frag_ci->direct_methods, &frag_ci->virtual_methods}) {
+                for (const auto& mm : *ml) {
+                    if (mm.descriptor != kOnInflateDesc) continue;
+                    if (mm.is_abstract || mm.is_native ||
+                        mm.bytecode.empty())
+                        continue;
+                    ++desc_matches;
+                    only_name = mm.name;
+                    if (mm.name == "onInflate") {
+                        oninflate_name = mm.name;  // canonical wins
+                        break;
+                    }
+                }
+                if (!oninflate_name.empty()) break;
+            }
+            // R8-renamed shape: exactly ONE method with the descriptor.
+            if (oninflate_name.empty() && desc_matches == 1)
+                oninflate_name = only_name;
+        }
+        if (!oninflate_name.empty()) {
+            uint32_t ctx617 = host_id;
+            if (ctx617 == 0)
+                ctx617 = heap_.allocate("Landroid/content/Context;", 0, 0);
+            uint32_t attrs617 =
+                heap_.allocate("Landroid/util/AttributeSet;", 0, 0);
+            if (!xml_attrs.empty()) {
+                resources::AttributeSetStore::instance().install(
+                    attrs617, xml_attrs);
+            }
+            std::vector<DalvikValue> oargs;
+            oargs.push_back(
+                DalvikValue::make_object(frag, frag_class_desc));
+            oargs.push_back(DalvikValue::make_object(
+                ctx617, "Landroid/content/Context;"));
+            oargs.push_back(DalvikValue::make_object(
+                attrs617, "Landroid/util/AttributeSet;"));
+            oargs.push_back(DalvikValue::make_null());  // Bundle (null)
+            DalvikValue oret = DalvikValue::make_void();
+            DalvikExecutionResult ores;
+            bool ook = try_recursive_invoke(
+                frag_class_desc, oninflate_name, oargs, oret, ores,
+                kOnInflateDesc);
+            static thread_local int f617_n = 0;
+            if (f617_n < 8) {
+                ++f617_n;
+                std::cerr << "[F-C4-617] onInflate " << oninflate_name
+                          << " on " << frag_class_desc << " obj#" << frag
+                          << " ok=" << (ook ? 1 : 0) << " attrs="
+                          << xml_attrs.size() << std::endl;
+            }
+        }
+    }
     // Synthetic BackStackRecord: add(frag, container=xml_id, tag) — the
     // SAME committed queue the DEX commit path feeds; the F-NEW-304
     // drains run onAttach/onCreate/onCreateView and attach the fragment
@@ -8161,6 +8246,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     const std::string& method_descriptor
 ) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().recursive_invoke, f107_t0);
+
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().recursive_invoke, f107_t0};
     // ── W10 (Coder-4) CTOR PROBE (diagnostic, env MINIANDROID_W10_CTOR_PROBE)
     // — every try_recursive_invoke entry + candidate-scan row for
@@ -9373,26 +9459,179 @@ bool DalvikExecutionEngine::try_recursive_invoke(
          declaring_class == "Landroidx/fragment/app/FragmentActivity;")) {
         return_val = get_or_create_singleton(
             "Landroidx/fragment/app/FragmentManager;");
+        // S186h F-NEW-188c: make the singleton REAL for R8-obfuscated
+        // androidx (FragmentManager renamed, FCV kept) — resolve the real
+        // class, alias identity, run <init>()V once. No-op on canonical
+        // layouts (resolver finds no obfuscated signature).
+        if (return_val.type == DalvikType::OBJECT_REF) {
+            // W14 env-gate (probe scaffolding): MINIANDROID_S186H_FMINIT=0
+            // disables the real-init call for the b/m;.<init> bisect probe.
+            const char* fminit_env =
+                std::getenv("MINIANDROID_S186H_FMINIT");
+            if (!(fminit_env != nullptr && fminit_env[0] == '0' &&
+                  fminit_env[1] == '\0')) {
+                realinit_fragment_manager_singleton(return_val.object_id);
+            }
+        }
         last_invoke_return_ = return_val;
         recursion_depth_--;
         return true;
     }
-    // F-NEW-188b — AOSP FragmentManager.findFragmentById(@IdRes) is
-    // @Nullable: on a manager with no matching fragment it answers NULL
-    // and the caller null-checks (androidx contract). The engine's
-    // FragmentManager singleton carries no FragmentStore (constructed
-    // without the real <init>), so the DEX body NPE'd on the internal
-    // store — replacing the store with a legal null answer preserves the
-    // androidx contract for an empty fragment manager.
-    if (declaring_class == "Landroidx/fragment/app/FragmentManager;" &&
-        (method_name == "findFragmentById" ||
-         method_name == "findFragmentByTag" ||
-         method_name == "findFragmentByIdWho")) {
-        return_val = DalvikValue::make_null();
+    // F-C4-615b: forward declaration — the instance-independent real-FM
+    // resolver (defined near the S186h realinit below).
+    const std::string& w14_resolve_real_fm_class(
+        const dex::DexReport* dex_report);
+
+    // F-NEW-188b + F-C4-615 (W14) — androidx FragmentManager
+    // findFragmentById/ByTag: the STORE law. AOSP/androidx
+    // FragmentManagerImpl.findFragmentById walks mActive + mAdded for the
+    // fragment whose mFragmentId/mContainerId == the id; @Nullable null
+    // when none matches (the androidx contract every caller null-checks
+    // or casts). The F-NEW-188b law answered null ALWAYS because the
+    // singleton carried no store; with the F-C4-614 FCV instantiation
+    // and the F-NEW-304 committed queue the engine's
+    // FragmentManagerShadow NOW holds the real fragment records — the
+    // answer comes from THERE (by container id / by tag), null preserved
+    // for a store with no match. Live root (itsfrz #489): the named
+    // NavHostFragment is instantiated and committed by F-C4-614; the
+    // app's cast of findFragmentById(R.id.nav_host) then resolves the
+    // REAL fragment object instead of dying on null.
+    if (declaring_class == "Landroidx/fragment/app/FragmentManager;" ||
+        [&]() -> bool {
+            // F-C4-615b: R8 apps rename the FM class. Resolve the REAL
+            // (renamed) FM class STRUCTURALLY from the FCV internal-ctor
+            // signature — the same law the S186h realinit uses, but
+            // instance-independent (the engine object is recreated
+            // between the provider and activity phases; the singleton
+            // map binding dies with the old instance while this resolver
+            // re-derives the name from the shared DEX report). R8 apps
+            // reach findFragmentById through DIRECT FIELD ACCESS (itsfrz:
+            // this.u → .e → .h → U1/K;.A(I)) — the method never passes
+            // through getSupportFragmentManager, so no alias exists.
+            return declaring_class ==
+                   w14_resolve_real_fm_class(dex_report_);
+        }()) {
+        // F-C4-615c (W14): R8 renames the METHOD too (itsfrz:
+        // U1/K;.A(I)LU1/r; == FragmentManager.findFragmentById). ENTRY
+        // GATE: the canonical name OR the STRUCTURAL shape — a 1-int-arg
+        // (or 1-string-arg) method whose return type is the (renamed)
+        // Fragment base class, resolved by walking a recorded fragment's
+        // superclass chain (the store's own ground truth, no name
+        // assumptions).
+        bool f615_by_id = (method_name == "findFragmentById");
+        bool f615_by_tag = (method_name == "findFragmentByTag");
+        if (!f615_by_id && !f615_by_tag && !method_descriptor.empty()) {
+            const std::string& md = method_descriptor;
+            const bool by_id_shape =
+                md.rfind("(I)L", 0) == 0 && md.size() > 4;
+            const bool by_tag_shape =
+                md.rfind("(Ljava/lang/String;)L", 0) == 0 &&
+                md.size() > 22;
+            if (by_id_shape || by_tag_shape) {
+                const std::string ret = md.substr(md.find(')') + 1);
+                auto* f615c_fm2 = shadow_registry_
+                                      ? shadow_registry_->find_as<
+                                            framework::
+                                                FragmentManagerShadow>()
+                                      : nullptr;
+                if (f615c_fm2) {
+                    for (const auto& r : f615c_fm2->fragments()) {
+                        if (r.frag == 0) continue;
+                        std::string cur;
+                        heap_.get_object_class(r.frag, cur);
+                        for (int hop = 0; hop < 12 && !cur.empty();
+                             ++hop) {
+                            if (cur == ret) {
+                                f615_by_id = by_id_shape;
+                                f615_by_tag = by_tag_shape;
+                                break;
+                            }
+                            auto sup_it = class_to_superclass_.find(cur);
+                            cur = (sup_it != class_to_superclass_.end())
+                                      ? sup_it->second
+                                      : "";
+                        }
+                        if (f615_by_id || f615_by_tag) break;
+                    }
+                }
+            }
+        }
+        if (f615_by_id || f615_by_tag) {
+        auto* f615_fm = shadow_registry_
+                             ? shadow_registry_->find_as<
+                                   framework::FragmentManagerShadow>()
+                             : nullptr;
+        // try_recursive_invoke convention: args[0] = receiver for
+        // instance calls — scan for the first INT32 (ById) /
+        // STRING_REF (ByTag) parameter past any receiver.
+        int32_t f615_want_id = 0;
+        bool f615_have_id = false;
+        std::string f615_want_tag;
+        for (const auto& a : args) {
+            if (f615_by_id &&
+                a.type == DalvikType::INT32 && !f615_have_id) {
+                f615_want_id = a.int_val;
+                f615_have_id = true;
+            }
+            if (f615_by_tag &&
+                a.type == DalvikType::STRING_REF && f615_want_tag.empty()) {
+                f615_want_tag = a.string_val;
+            }
+        }
+        bool f615_answered = false;
+        if (f615_fm) {
+            for (const auto& r : f615_fm->fragments()) {
+                if (r.frag == 0) continue;
+                if (f615_by_id) {
+                    if (f615_have_id &&
+                        r.container == (uint32_t)f615_want_id) {
+                        std::string frag_cls;
+                        heap_.get_object_class(r.frag, frag_cls);
+                        return_val = DalvikValue::make_object(
+                            r.frag, frag_cls.empty()
+                                        ? "Landroidx/fragment/app/Fragment;"
+                                        : frag_cls);
+                        f615_answered = true;
+                        break;
+                    }
+                } else {  // findFragmentByTag (named or structural)
+                    if (!f615_want_tag.empty() && r.tag == f615_want_tag) {
+                        std::string frag_cls;
+                        heap_.get_object_class(r.frag, frag_cls);
+                        return_val = DalvikValue::make_object(
+                            r.frag, frag_cls.empty()
+                                        ? "Landroidx/fragment/app/Fragment;"
+                                        : frag_cls);
+                        f615_answered = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (!f615_answered) return_val = DalvikValue::make_null();
+        static thread_local uint64_t f615_diag = 0;
+        if (std::getenv("MINIANDROID_F615_DIAG") != nullptr &&
+            f615_diag < 24) {
+            ++f615_diag;
+            std::cerr << "[F615-FIND] " << method_name
+                      << " -> " << (f615_answered ? "record" : "null")
+                      << " (store="
+                      << (f615_fm ? f615_fm->fragments().size() : 0)
+                      << " records)" << std::endl;
+        }
         last_invoke_return_ = return_val;
         recursion_depth_--;
         return true;
-    }
+        }  // end findFragmentById/ByTag (named or structural)
+        if (method_name == "findFragmentByIdWho") {
+            // @Nullable by who-string — no who-tracking yet: the honest
+            // null.
+            return_val = DalvikValue::make_null();
+            last_invoke_return_ = return_val;
+            recursion_depth_--;
+            return true;
+        }
+    }  // end androidx FM (canonical or aliased) block
 
     // F-NEW-396 (CONT-94): getParentActivity → THE LIVE ACTIVITY INSTANCE.
     // AOSP law (android.app.Fragment.getParentActivity): "Return the activity
@@ -12297,22 +12536,34 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return false;
     }
 
-    // EXP-045 Phase 3: Stub the expensive NPE message construction path.
-    // When checkNotNullParameter detects a null parameter, it calls
-    // throwParameterIsNullNPE → createParameterIsNullExceptionMessage →
-    // sanitizeStackTrace. This path is ~159 instructions per NPE, called
-    // 1845+ times = ~293K instructions wasted on exception messages that
-    // are never displayed in our headless runtime.
-    // We stub the entire NPE path to return void/null immediately.
-    if (class_descriptor.find("Intrinsics") != std::string::npos &&
-        (method_name == "createParameterIsNullExceptionMessage" ||
-         method_name == "sanitizeStackTrace" ||
-         method_name == "throwParameterIsNullNPE")) {
-        log("⏭️ STUB-ONLY: " + class_descriptor + "." + method_name +
-            " — skipping (NPE path, not needed in headless runtime)");
-        recursion_depth_--;
-        return false;  // Bridge returns null, short-circuiting the NPE path
-    }
+    // ── F-C4-596 (W11, 4APP4 Coder-4) — the EXP-045 Intrinsics stub gate is
+    // REMOVED ─────────────────────────────────────────────────────────
+    // The gate stubbed three kotlin.jvm.internal.Intrinsics methods
+    // (createParameterIsNullExceptionMessage / sanitizeStackTrace /
+    // throwParameterIsNullNPE) as an "expensive NPE message path, not needed
+    // in a headless runtime" performance optimization — returning null from
+    // the bridge. That justification has rotted in exactly the W10
+    // F-C4-590/591 way: the three methods are NOT message-only helpers.
+    //   * sanitizeStackTrace(Throwable): Throwable is Kotlin's OWN throwable
+    //     sanitizer: `checkNotNullExpressionValue` and
+    //     `throwUninitializedProperty` literally THROW its RETURN VALUE
+    //     (`throw sanitizeStackTrace(new NPE(...))`). With the stub's null
+    //     return, EVERY Kotlin-intrinsic exception collapsed into the
+    //     synthetic "throw null" NPE — wrong class (NPE instead of e.g.
+    //     UninitializedPropertyAccessException), wrong message (the
+    //     diagnostic text destroyed), no stack, and app catch-type
+    //     discrimination broken. Live root (Nextcloud v35.0.2, the 32-row
+    //     Room census): checkNotNullExpressionValue("compileStatement(...)
+    //     must not be null") → sanitizeStackTrace → null → "throw null".
+    //   * throwParameterIsNullNPE: throws (void) — stubbing it let
+    //     execution CONTINUE past a failed null check with the null value.
+    //   * createParameterIsNullExceptionMessage: builds the message string
+    //     (Thread.currentThread().getStackTrace walk + StringBuilder) —
+    //     every dependency (real-frames getStackTrace, StackTraceElement
+    //     getters, String.equals, Arrays.copyOfRange F-060) is a live law.
+    // All three now execute their REAL DEX. The headless "messages are never
+    // displayed" premise is false: the census itself consumes exception
+    // identity, message, and catch type (this wave's evidence).
 
     // EXP-045 Phase 3: FragmentManager.dispatchStateChange loops infinitely
     // calling getSpecialEffectsControllerFactory for each Fragment state change.
@@ -12965,7 +13216,62 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     for (const auto& m : cls_ref.virtual_methods) f107_cands.push_back(&m);
     const dex::MethodInfo* best_match = nullptr;
     const dex::MethodInfo* fallback_match = nullptr;
+    // S186h ARITY LAW: exact-arity best candidate (ART JVMS 5.4.5 —
+    // descriptor-less selection must never execute an overload whose
+    // parameter count exceeds the supplied slots; trailing registers are
+    // garbage. Measured: FCV XML inflation (2 supplied params) executed
+    // the package-private (Context, AttributeSet, FragmentManager) ctor,
+    // the FM register carried a stale heap oid and the real androidx
+    // findFragmentById body NPE'd on its uninitialized store).
+    const dex::MethodInfo* best_arity_match = nullptr;
+    // F-C4-610 (W13): the <init> receiver-arity candidate pointer.
+    const dex::MethodInfo* ctor_recv_match_610 = nullptr;
+    // ── F-C4-613 (W14): the UNIFIED <init> ARITY CLASSIFIER ────
+    // The W13 receiver-arity law and the S186h exact-arity law disagree
+    // because each trusts a different call convention for <init>:
+    //   · F-C4-610: arg_count INCLUDES the receiver (itsfrz #489 proof:
+    //   the inflater hook passes (recv, Context, AttributeSet) → the
+    //   lawful ctor is param_count == arg_count - 1);
+    //   · S186h: arg_count EXCLUDES the receiver (tibarj #170 proof:
+    //   the 2-param XML inflation passes (Context, AttributeSet) →
+    //   the lawful ctor is param_count == arg_count).
+    // Live W14 bisect (sunpiano, pure main@S186h + env-off probes):
+    // EACH law alone regresses MainActivity construction —
+    // ComponentActivity(R8 Lb/m;).<init> dies at pc=0xb9 (the
+    // CopyOnWriteArrayList iput) with either law active on the S186h
+    // base, while BOTH disabled restore the app end-to-end (REAL_APP-
+    // CONTENT 576,907 px, the W13 flip). The two conventions are both
+    // real in this engine's call sites — the discriminator must be
+    // DATA, not a flag.
+    // ART JVMS 5.4.5 discriminator: an <init> invocation carries the
+    // receiver IFF args[0] is a reference whose class IS the declaring
+    // class or a SUBCLASS of it (`this` of the construction). No other
+    // first-argument type can satisfy that (a Context/AttributeSet/
+    // FragmentManager first arg is never a subclass of the constructed
+    // class).
+    //   receiver-carrying  → lawful param_count = arg_count - 1
+    //   receiver-less      → lawful param_count = arg_count
+    // This subsumes BOTH proven laws on all four shapes and kills the
+    // interplay regression.
+    bool ctor_recv_carrying_613 = false;
+    size_t lawful_ctor_params_613 = 0;
+    const char* f613_env = std::getenv("MINIANDROID_F613_LAW");
+    static thread_local const bool f613_on =
+        !(f613_env != nullptr && f613_env[0] == '0' &&
+          f613_env[1] == '\0');
     size_t arg_count = args.size();
+    if (method_name == "<init>" && arg_count > 0 &&
+        args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && !args[0].class_desc.empty()) {
+        ctor_recv_carrying_613 =
+            args[0].class_desc == class_descriptor ||
+            is_subclass_of(args[0].class_desc, class_descriptor);
+        lawful_ctor_params_613 =
+            ctor_recv_carrying_613 ? arg_count - 1 : arg_count;
+    } else if (method_name == "<init>" && arg_count > 0) {
+        // no receiver-shaped arg 0 → receiver-less convention
+        lawful_ctor_params_613 = arg_count;
+    }
 
     for (const dex::MethodInfo* method_ptr : f107_cands) {
         const dex::MethodInfo& method = *method_ptr;
@@ -13338,19 +13644,211 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 }
             }
             if (type_matches) {
+                // S186h ARITY LAW: track the exact-arity candidate with the
+                // same largest-bytecode preference. Exact-arity wins at
+                // selection time (below); the legacy best_match path stays
+                // untouched as the no-exact-arity fallback.
+                size_t supplied_params =
+                    arg_count - ((!is_static_method && arg_count > 0) ? 1 : 0);
+                if (param_count == supplied_params &&
+                    (!best_arity_match ||
+                     method.bytecode.size() > best_arity_match->bytecode.size())) {
+                    best_arity_match = method_ptr;
+                }
+                // ── F-C4-610 (W13) + F-C4-613 (W14): CONSTRUCTOR LAWFUL-
+                // ARITY LAW. The lawful <init> arity comes from the F613
+                // data classifier above: receiver-carrying calls need
+                // param_count == arg_count - 1 (invoke-direct <init> is
+                // never static — the itsfrz FragmentContainerView proof:
+                // the 3-param (Context, AttributeSet, FragmentManager)
+                // ctor materialized an unpassed null fm and Kotlin's own
+                // checkNotNullParameter("fm") killed the inflation),
+                // receiver-less calls need param_count == arg_count (the
+                // tibarj #170 XML-inflation proof). Track the lawful
+                // candidate separately (largest bytecode within the class,
+                // F-107d preference); it wins at selection time below.
+                if (method_name == "<init>" && arg_count > 0) {
+                    const bool lawful = f613_on
+                        ? (param_count == lawful_ctor_params_613)
+                        : (param_count + 1 == arg_count);
+                    if (lawful &&
+                        (!ctor_recv_match_610 ||
+                         method.bytecode.size() >
+                             ctor_recv_match_610->bytecode.size())) {
+                        ctor_recv_match_610 = method_ptr;
+                    }
+                }
                 // EXP-078: Multi-DEX method shadowing fix.
                 // When DEX files are merged, the same method name may appear
                 // in multiple DEX files with different bytecode sizes.
                 // A stub version (bytecode_size=1, return-void) from one DEX
                 // may shadow the real version (bytecode_size=1468) from another.
                 // Fix: prefer the method with the LARGEST bytecode.
-                if (!best_match || method.bytecode.size() > best_match->bytecode.size()) {
+                // (F-C4-610: the <init> receiver-arity candidate is tracked
+                // separately above and wins at selection time below; the
+                // legacy largest-bytecode path still runs for <init> as the
+                // no-receiver-arity fallback — multi-DEX shapes.)
+                if (!best_match ||
+                    method.bytecode.size() > best_match->bytecode.size()) {
                     best_match = method_ptr;  // F-107d: stable pointer (EXP-054 ownership law superseded)
                 }
                 // Don't break — continue searching for a larger bytecode version
             }
             if (!fallback_match) {
                 fallback_match = method_ptr;  // keep as fallback for type mismatch
+            }
+        }
+    }
+
+    // S186h ARITY LAW selection: an exact-arity candidate is the ART-lawful
+    // pick whenever one exists; the descriptor-less type-prefix path only
+    // serves as fallback when every candidate mismatches arity.
+    // F-C4-613 (W14) — TWO refinements, both measured on sunpiano:
+    //   (1) <init> is OWNED by the F613 classifier below — the S186h
+    //       tracker no longer competes on constructors (the two laws
+    //       fighting over <init> shapes was the MainActivity death).
+    //   (2) FILTER semantics (same as the ctor filter): the exact-arity
+    //       candidate REPLACES the legacy pick only when the legacy pick's
+    //       own arity is UNLAWFUL. When legacy already has the supplied
+    //       arity, legacy wins (byte-order stability) — re-picking by size
+    //       inside the exact-arity subset flipped same-arity overloads and
+    //       killed the sunpiano render chain (b2/x;.<init> NPE via a
+    //       non-<init> mispick; ARITY=0 restored 576,907 px, proving
+    //       every legacy pick on that path was already correct).
+    {
+        auto count_params_613 = [](const std::string& d) -> size_t {
+            size_t p0 = d.find('('), p1 = d.find(')');
+            if (p0 == std::string::npos || p1 == std::string::npos ||
+                p1 <= p0)
+                return static_cast<size_t>(-1);
+            size_t n = 0;
+            std::string ps = d.substr(p0 + 1, p1 - p0 - 1);
+            // F-C4-618 (W15): ARRAY PARAMS COUNT ONCE. '[' is a DIMENSION
+            // PREFIX of the following type, not a param slot — the old
+            // loop counted "[B" as TWO params, so the merged-mega-class
+            // ctor (I[B)V looked 3-param and the F-C4-613 FILTER judged
+            // the CORRECT legacy pick (…SavedStateRegistryImpl;B)V
+            // (2 real params) "unlawful" and overrode it with the SSH
+            // ctor — ConnectBot ComponentActivity.<init> died at the
+            // arraycopy(null [B) (live F613-SEL proof, this wave).
+            for (size_t ci = 0; ci < ps.size(); ++n) {
+                while (ci < ps.size() && ps[ci] == '[') ++ci;  // dims
+                if (ci >= ps.size()) break;                    // lone dims
+                if (ps[ci] == 'L') {
+                    ci = ps.find(';', ci);
+                    ci = (ci == std::string::npos) ? ps.size() : ci + 1;
+                } else {
+                    ++ci;
+                }
+            }
+            return n;
+        };
+        const char* s186h_env = std::getenv("MINIANDROID_S186H_ARITY");
+        static thread_local const bool s186h_on =
+            !(s186h_env != nullptr && s186h_env[0] == '0' &&
+              s186h_env[1] == '\0');
+        if (s186h_on && best_arity_match && method_name != "<init>") {
+            // The supplied-arity uses the SELECTED candidate's own static
+            // flag — the same per-candidate convention the tracker used
+            // inside the loop (is_static_method is loop-scoped there).
+            const bool s186h_static =
+                (best_arity_match->access_flags & 0x0008) != 0;
+            const size_t supplied_params =
+                arg_count -
+                ((!s186h_static && arg_count > 0) ? 1 : 0);
+            const size_t legacy_n =
+                best_match ? count_params_613(best_match->descriptor)
+                           : static_cast<size_t>(-1);
+            if (!best_match || legacy_n != supplied_params) {
+                best_match = best_arity_match;
+            }
+        }
+    }
+
+    // F-C4-610 (W13) + F-C4-613 (W14) selection: the LAWFUL-arity <init>
+    // candidate wins EVERY <init> pick. Its arity comes from the F613
+    // data classifier (receiver-carrying → arg_count-1, receiver-less →
+    // arg_count — subsuming the itsfrz and tibarj proofs); with F613=0
+    // the W13 receiver-arity convention stands (arg_count-1 always).
+    {
+        // W14 probe gate: MINIANDROID_F610_LAW=0 disables the ctor lawful-
+        // arity override entirely (probe scaffolding, mirrors the gates).
+        const char* f610_env = std::getenv("MINIANDROID_F610_LAW");
+        static thread_local const bool f610_on =
+            !(f610_env != nullptr && f610_env[0] == '0' &&
+              f610_env[1] == '\0');
+        if (f610_on && ctor_recv_match_610) {
+            // F-C4-613 FILTER semantics (the sunpiano refinement): the
+            // lawful-arity candidate REPLACES the legacy pick only when
+            // the legacy pick's own arity is UNLAWFUL. When legacy already
+            // carries the lawful arity, legacy WINS (byte-order stability):
+            // among same-arity overloads the largest-bytecode preference
+            // already picked, and re-picking by size INSIDE the lawful
+            // subset flipped Li2/v;.<init>(String,Lc5/e;)V — the 43-call
+            // hot ctor — to (String,I)V and killed MainActivity
+            // construction (both 2-param, null-typed arg2 matched both).
+            // Proofs preserved: itsfrz FCV (legacy pick = the UNLAWFUL
+            // 3-param (Context,AttributeSet,FragmentManager) ctor →
+            // replaced by the lawful 2-param) and tibarj #170 (legacy =
+            // the unlawful 3-param → replaced by the lawful 2-param).
+            size_t legacy_params = static_cast<size_t>(-1);
+            size_t tracker_params = static_cast<size_t>(-2);
+            {
+                auto count_params = [](const std::string& d) -> size_t {
+                    size_t p0 = d.find('('), p1 = d.find(')');
+                    if (p0 == std::string::npos || p1 == std::string::npos ||
+                        p1 <= p0)
+                        return static_cast<size_t>(-1);
+                    size_t n = 0;
+                    std::string ps = d.substr(p0 + 1, p1 - p0 - 1);
+                    // F-C4-618 (W15): array params count ONCE (the '[B' ==
+                    // 2-params miscount overrode lawful legacy picks on
+                    // R8 merged mega-classes — see count_params_613 above
+                    // for the live proof).
+                    for (size_t ci = 0; ci < ps.size(); ++n) {
+                        while (ci < ps.size() && ps[ci] == '[') ++ci;  // dims
+                        if (ci >= ps.size()) break;                    // lone dims
+                        if (ps[ci] == 'L') {
+                            ci = ps.find(';', ci);
+                            ci = (ci == std::string::npos) ? ps.size()
+                                                           : ci + 1;
+                        } else {
+                            ++ci;  // primitive char
+                        }
+                    }
+                    return n;
+                };
+                if (best_match) legacy_params = count_params(best_match->descriptor);
+                tracker_params =
+                    count_params(ctor_recv_match_610->descriptor);
+            }
+            const bool legacy_unlawful =
+                !best_match ||
+                legacy_params != tracker_params;
+            const dex::MethodInfo* best_match_pre_ctor = best_match;
+            if (legacy_unlawful) best_match = ctor_recv_match_610;
+            // F-C4-613 DIAG (env-gated, read-only): every <init> selection
+            // where the lawful-arity pick differs from the legacy largest-
+            // bytecode pick — the sunpiano mispick probe.
+            if (std::getenv("MINIANDROID_F613_DIAG") != nullptr &&
+                best_match != best_match_pre_ctor) {
+                static thread_local uint64_t f613_diag_n = 0;
+                if (f613_diag_n < 48) {
+                    ++f613_diag_n;
+                    std::cerr << "[F613-SEL] " << class_descriptor
+                              << ".<init> argc=" << arg_count
+                              << " argc0=" << args[0].class_desc
+                              << " carrying="
+                              << (ctor_recv_carrying_613 ? 1 : 0)
+                              << " lawful=" << lawful_ctor_params_613
+                              << " pick="
+                              << ctor_recv_match_610->descriptor
+                              << " legacy="
+                              << (best_match_pre_ctor
+                                      ? best_match_pre_ctor->descriptor
+                                      : "null")
+                              << std::endl;
+                }
             }
         }
     }
@@ -15400,7 +15898,8 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
 // checks (DrawerLayout g/j) read back through getLayoutParams.
 uint32_t DalvikExecutionEngine::generate_child_layout_params(
     const std::string& parent_class_desc, uint32_t child_view_id,
-    const std::vector<resources::XmlAttrRecord>& xml_attrs) {
+    const std::vector<resources::XmlAttrRecord>& xml_attrs,
+    uint32_t parent_view_id_hint) {
     if (!dex_report_ || !shadow_registry_) return 0;
     if (child_view_id == 0 || parent_class_desc.size() < 3) return 0;
 
@@ -15694,7 +16193,111 @@ uint32_t DalvikExecutionEngine::generate_child_layout_params(
             structural = &c;   // first structural match (deterministic DEX order)
             break;
         }
-        if (structural == nullptr) return 0;  // AOSP ViewGroup default stands
+        // ── F-C4-616 (W15): the R8 HORIZONTAL-MERGE LayoutParams law ────
+        // When the parent's LP subclass is no longer a $-inner class, the
+        // $-prefix discovery finds NOTHING (live proof, Tusky 145: R8
+        // merged CoordinatorLayout$LayoutParams into top-level Lp4/d;
+        // BottomSheetBehavior.from(View) reads view.getLayoutParams(),
+        // instance-of Lp4/d; fails on the generic ROOT-055 answer → IAE
+        // "The view is not a child of CoordinatorLayout" → MainActivity
+        // .onCreate APP-BOUNDARY death). The generateLayoutParams
+        // SIGNATURE can not recover the class either — the package-private
+        // override declares the BASE return type
+        // (Landroid/view/ViewGroup$LayoutParams;) while the body's own
+        // new-instance builds the merged class. AOSP TRUTH (ViewGroup
+        // .addView → generateLayoutParams(attrs)): the LP object comes
+        // from EXECUTING the parent's real generateLayoutParams body.
+        // LAW: run that body with the child's XML attrs installed in the
+        // AttributeSetStore; the body's new-instance + invoke-direct
+        // (Context, AttributeSet) ctor builds the LP object whose runtime
+        // class IS the merged class — no name discovery at all. Honest
+        // fallback: any failure (no method / no bytecode / non-object
+        // return) returns 0 and the AOSP ViewGroup default stands.
+        if (structural == nullptr) {
+            // Receiver: the parent view node's heap object (the explicit
+            // hook-carried id; the node parent_id fallback covers the
+            // programmatic addView paths).
+            auto* vs616 = shadow_registry_
+                              ? shadow_registry_->find_as<framework::ViewShadow>()
+                              : nullptr;
+            auto* node616 = vs616 ? vs616->find_node(child_view_id) : nullptr;
+            uint32_t parent_obj = parent_view_id_hint;
+            if (parent_obj == 0 && node616 && node616->parent_id != 0) {
+                parent_obj = node616->parent_id;   // node id == heap object id
+            }
+            if (parent_obj != 0) {
+                // Resolve generateLayoutParams(Landroid/util/AttributeSet;)
+                // on the parent's class (or ancestors — virtual dispatch
+                // through the class chain, AOSP ViewGroup law).
+                const std::string want_desc =
+                    "(Landroid/util/AttributeSet;)Landroid/view/ViewGroup"
+                    "$LayoutParams;";
+                std::string owner = parent_cls;
+                bool found_glp = false;
+                for (int hop = 0; hop < 8 && !owner.empty() && owner != "Ljava/lang/Object;";
+                     ++hop) {
+                    auto oit = class_info_index_.find(owner);
+                    if (oit == class_info_index_.end()) break;
+                    const auto& oc = dex_report_->classes[oit->second];
+                    for (const auto* ml : {&oc.direct_methods, &oc.virtual_methods}) {
+                        for (const auto& mm : *ml) {
+                            if (mm.name == "generateLayoutParams" &&
+                                mm.descriptor == want_desc &&
+                                !mm.is_abstract && !mm.is_native &&
+                                !mm.bytecode.empty()) {
+                                found_glp = true;
+                                break;
+                            }
+                        }
+                        if (found_glp) break;
+                    }
+                    if (found_glp) break;
+                    owner = oc.superclass_name;
+                }
+                if (found_glp) {
+                    uint32_t ctx616 = 0;
+                    if (auto* act616 = shadow_registry_->find_as<
+                            framework::ActivityShadow>())
+                        ctx616 = act616->current_activity_id();
+                    if (ctx616 == 0)
+                        ctx616 = heap_.allocate("Landroid/content/Context;", 0, 0);
+                    uint32_t attrs616 =
+                        heap_.allocate("Landroid/util/AttributeSet;", 0, 0);
+                    if (!xml_attrs.empty()) {
+                        resources::AttributeSetStore::instance().install(
+                            attrs616, xml_attrs);
+                    }
+                    std::vector<DalvikValue> gargs;
+                    gargs.push_back(
+                        DalvikValue::make_object(parent_obj, parent_cls));
+                    gargs.push_back(DalvikValue::make_object(
+                        attrs616, "Landroid/util/AttributeSet;"));
+                    DalvikValue gret = DalvikValue::make_void();
+                    DalvikExecutionResult gres;
+                    bool gok = try_recursive_invoke(
+                        parent_cls, "generateLayoutParams", gargs, gret,
+                        gres, want_desc);
+                    if (gok && gret.type == DalvikType::OBJECT_REF &&
+                        gret.object_id != 0 && heap_.has_object(gret.object_id)) {
+                        std::string lp_cls616;
+                        heap_.get_object_class(gret.object_id, lp_cls616);
+                        node616->layout_params_object = gret.object_id;
+                        node616->layout_params_class = lp_cls616;
+                        static thread_local int f616_n = 0;
+                        if (f616_n < 8) {
+                            ++f616_n;
+                            std::cerr
+                                << "[F-C4-616] generateLayoutParams REAL-DEX "
+                                << parent_cls << " -> " << lp_cls616 << " o"
+                                << gret.object_id << " (merged-LP law)"
+                                << std::endl;
+                        }
+                        return gret.object_id;
+                    }
+                }
+            }
+            return 0;  // AOSP ViewGroup default stands
+        }
 
         auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
         if (!view_shadow) return 0;
@@ -16326,10 +16929,138 @@ bool DalvikExecutionEngine::dispatch_item_click(uint32_t adapter_id,
     DalvikExecutionResult res;
     const char* method = long_click ? "onItemLongClick" : "onItemClick";
     bool ok = try_recursive_invoke(s130_norm_cls(lcls), method, args, ret, res);
+    if (!ok && !long_click) {
+        // ── S191 F-NEW-604: ListActivity.onListItemClick law ────────────
+        // AOSP ListActivity.java registers its OWN internal
+        // OnItemClickListener on the ListView and forwards every item
+        // click to the protected onListItemClick(ListView, View, int,
+        // long) hook that app subclasses override (gmdice:
+        // GameMasterDice.onListItemClick → RollResult.showDetails). The
+        // shadow side (ListActivity.setListAdapter law) binds the
+        // ACTIVITY as the item-click listener identity; when the
+        // listener class defines no onItemClick but DOES define
+        // onListItemClick along its class chain, dispatch through the
+        // AOSP ListActivity contract: same (parent, view, position, id)
+        // shape — this=the activity receiver (args[0] slot).
+        std::string act_cls = s130_norm_cls(lcls);
+        if (class_chain_defines_method(act_cls, "onListItemClick")) {
+            ret = DalvikValue::make_void();
+            ok = try_recursive_invoke(act_cls, "onListItemClick", args, ret,
+                                      res,
+                                      "(Landroid/widget/ListView;"
+                                      "Landroid/view/View;IJ)V");
+            if (ok)
+                std::cerr << "[UI-EVENT] event=LIST_ITEM_CLICK adapter="
+                          << adapter_id << " position=" << position
+                          << " result=DISPATCHED (ListActivity law)"
+                          << std::endl;
+        }
+    }
     std::cerr << "[UI-EVENT] event=" << (long_click ? "ITEM_LONG_CLICK" : "ITEM_CLICK")
               << " adapter=" << adapter_id << " position=" << position
               << " result=" << (ok ? "DISPATCHED" : "FAILED") << std::endl;
     return ok;
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// S191 F-NEW-601: adapter-row (re)materialization.
+// AOSP AdapterView/ListView contract: the adapter IS the data source; the
+// view re-queries getCount()/getView() on the next layout pass after any
+// adapter mutation (notifyDataSetChanged / ArrayAdapter.add when
+// mNotifyOnChange). CONT-102 (F-NEW-432) materialized rows ONCE at
+// setAdapter — adapters that gain rows AFTER setAdapter (the common
+// append-log pattern: gmdice RollResultAdapter, chat logs, history lists)
+// stayed empty forever. This is the shared re-materialization body:
+// every ListView node bound to this adapter has its row children rebuilt
+// from the CURRENT adapter state (bounded 64-row window, the same
+// documented simplification as CONT-102 until a recycler pass exists).
+// ────────────────────────────────────────────────────────────────────────
+int DalvikExecutionEngine::materialize_adapter_rows_for(uint32_t adapter_id) {
+    if (shadow_registry_ == nullptr || adapter_id == 0) return 0;
+    auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+    if (vs == nullptr) return 0;
+    std::string ad_cls;
+    heap_.get_object_class(adapter_id, ad_cls);
+    if (ad_cls.empty()) return 0;
+    int total = 0;
+    for (const auto& [nid, nptr] : vs->all_nodes()) {
+        if (!nptr || nptr->adapter_id != adapter_id) continue;
+        const uint32_t lv_id = nid;
+        const std::string& lv_cls = nptr->class_desc;
+        // AOSP relayout: ListView children are exactly the adapter rows —
+        // rebuild instead of appending (objects survive the detach; the
+        // recycler window is the recorded frontier).
+        std::vector<uint32_t> stale = nptr->children;
+        for (uint32_t c : stale) vs->remove_child(lv_id, c);
+        int count = 0;
+        DalvikValue cret = DalvikValue::make_void();
+        DalvikExecutionResult cres;
+        std::vector<DalvikValue> cargs{DalvikValue::make_object(
+            adapter_id, ad_cls)};
+        if (try_recursive_invoke(s130_norm_cls(ad_cls), "getCount", cargs,
+                                 cret, cres) &&
+            (cret.type == DalvikType::INT32 ||
+             cret.type == DalvikType::BOOLEAN))
+            count = (int)cret.int_val;
+        // S191 backing-store fast path: an engine-backed adapter
+        // (__ad_objects__) has an authoritative count even when the DEX
+        // chain lookup misses the INHERITED getCount (the app subclass
+        // declares no getCount of its own — gmdice RollResultAdapter).
+        uint32_t s191_backing = 0;
+        {
+            auto bf = heap_.get_object_field(adapter_id, "__ad_objects__");
+            if (bf.has_value() && bf->type == DalvikType::OBJECT_REF)
+                s191_backing = bf->object_id;
+        }
+        if (count == 0 && s191_backing != 0) {
+            auto lf = heap_.get_object_field(s191_backing, "__array_length__");
+            if (lf.has_value() && lf->type == DalvikType::INT32)
+                count = lf->int_val;
+        }
+        int materialized = 0;
+        for (int i = 0; i < count && i < 64; i++) {
+            DalvikValue vret = DalvikValue::make_void();
+            DalvikExecutionResult vres;
+            std::vector<DalvikValue> vargs{
+                DalvikValue::make_object(adapter_id, ad_cls),
+                DalvikValue::make_int(i),
+                DalvikValue::make_null(),
+                DalvikValue::make_object(lv_id, lv_cls)};
+            bool got_row =
+                try_recursive_invoke(s130_norm_cls(ad_cls), "getView", vargs,
+                                     vret, vres) &&
+                vret.type == DalvikType::OBJECT_REF && vret.object_id != 0;
+            uint32_t row_oid = got_row ? vret.object_id : 0;
+            // Inherited-getView miss (same shape as the getCount miss): a
+            // subclass that declares no getView of its own still renders —
+            // the F-NEW-602 default row law synthesized from the SAME
+            // backing store (item.toString via real DEX; TextView row).
+            if (row_oid == 0 && s191_backing != 0) {
+                DalvikValue gv = DalvikValue::make_void();
+                ApiCallTrace::Status gv_status = ApiCallTrace::Status::MISSING;
+                std::vector<DalvikValue> gargs{
+                    DalvikValue::make_object(adapter_id,
+                                             "Landroid/widget/ArrayAdapter;"),
+                    DalvikValue::make_int(i),
+                    DalvikValue::make_null(),
+                    DalvikValue::make_object(lv_id, lv_cls)};
+                if (bridge_to_api("Landroid/widget/ArrayAdapter;", "getView",
+                                  gargs, gv, gv_status, 0) &&
+                    gv.type == DalvikType::OBJECT_REF && gv.object_id != 0)
+                    row_oid = gv.object_id;
+            }
+            if (row_oid != 0) {
+                vs->add_child(lv_id, row_oid);
+                materialized++;
+            }
+        }
+        total += materialized;
+        std::cerr << "[S191-ADAPTER] rematerialize lv=o" << lv_id
+                  << " adapter=o" << adapter_id << " (" << ad_cls
+                  << ") count=" << count
+                  << " rows=" << materialized << std::endl;
+    }
+    return total;
 }
 
 // R-NEW-431: CompoundButton.onCheckedChanged(buttonView, isChecked).
@@ -21463,6 +22194,33 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 trace.opcode_name = "throw";
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
                 DalvikValue exc = get_register(vAA);
+                // W11 (Coder-4) session probe: dump the register shape at
+                // every athrow when env-gated — the NC Room census family
+                // ("throw null" with a NON-EMPTY exc_class in THROW-SITE)
+                // means the register holds a class-carrying null shape.
+                {
+                    static thread_local const bool w11_tp =
+                        std::getenv("MINIANDROID_W11_THROW_PROBE") != nullptr;
+                    static thread_local uint64_t w11_tp_n = 0;
+                    if (w11_tp && w11_tp_n < 80) {
+                        ++w11_tp_n;
+                        std::cerr << "[W11-THROW] #" << w11_tp_n << " at "
+                                  << current_class_ << "." << current_method_
+                                  << " pc=" << pc_ << " v" << +vAA
+                                  << " type=" << static_cast<int>(exc.type)
+                                  << " oid=" << exc.object_id
+                                  << " class=" << exc.class_desc
+                                  << " f141_null="
+                                  << (f141_is_null_receiver(exc) ? 1 : 0)
+                                  << " in_heap="
+                                  << (exc.object_id
+                                              ? (heap_.has_object(exc.object_id)
+                                                     ? 1
+                                                     : 0)
+                                              : -1)
+                                  << std::endl;
+                    }
+                }
                 /* F-NEW-268e (CONT-18g): JLS/ART throw-null law — `throw null`
                  * throws NullPointerException AT THE THROW SITE (JLS 14.18:
                  * "If evaluation of the Expression is null, a NullPointerException
@@ -21751,12 +22509,59 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             // monitor-enter / monitor-exit (12x: B|A|op, 1 code unit)
             case Opcode::MONITOR_ENTER: {
                 trace.opcode_name = "monitor-enter";
-                pc_ += 1;  // no-op in single-threaded runtime
+                // [S191-C8] F-C8-141 — REAL monitor ownership accounting
+                // (AOSP Object.wait/notify law needs the owner). vAA holds
+                // the monitor object. Under the DETERMINISTICALLY
+                // SERIALIZED engine there is exactly one interpreter
+                // thread, so a hold COUNT per monitor oid is the full
+                // ownership model (reentrant count). Monitors that carry
+                // no heap object (class-token synchronized static) are
+                // recorded loudly, not tracked.
+                {
+                    const uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
+                    DalvikValue mv = current_registers_->read_v(
+                        static_cast<uint16_t>(vAA));
+                    if (mv.type == DalvikType::OBJECT_REF && mv.object_id != 0) {
+                        monitor_holds_[mv.object_id]++;
+                    } else {
+                        static uint64_t c8_monitor_tok = 0;
+                        if (c8_monitor_tok < 8) {
+                            ++c8_monitor_tok;
+                            std::cerr << "[C8-MONITOR] monitor-enter on "
+                                         "class-token/no-heap monitor — not "
+                                         "tracked (caller=" << current_class_
+                                      << "." << current_method_ << ")"
+                                      << std::endl;
+                        }
+                    }
+                }
+                pc_ += 1;  // ownership tracked; still no suspension
                 break;
             }
             case Opcode::MONITOR_EXIT: {
                 trace.opcode_name = "monitor-exit";
-                pc_ += 1;  // no-op in single-threaded runtime
+                // [S191-C8] F-C8-141 — mirror of the enter law. Unlock of
+                // an un-held monitor = IMSE territory in AOSP; the
+                // interpreter does not throw here (javac-balanced code),
+                // the imbalance is recorded loudly instead.
+                {
+                    const uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
+                    DalvikValue mv = current_registers_->read_v(
+                        static_cast<uint16_t>(vAA));
+                    if (mv.type == DalvikType::OBJECT_REF && mv.object_id != 0) {
+                        auto it = monitor_holds_.find(mv.object_id);
+                        if (it != monitor_holds_.end() && it->second > 0) {
+                            if (--it->second == 0) monitor_holds_.erase(it);
+                        } else {
+                            std::cerr << "[C8-MONITOR] monitor-exit on "
+                                         "UN-HELD monitor o" << mv.object_id
+                                      << " (JDK: IllegalMonitorStateException "
+                                         "territory) caller=" << current_class_
+                                      << "." << current_method_ << std::endl;
+                        }
+                    }
+                }
+                pc_ += 1;
                 break;
             }
             // const-wide/32 (21i: AA|op BBBB, 2 code units)
@@ -33194,6 +33999,14 @@ void DalvikExecutionEngine::run_thread_start_body(uint32_t thread_oid,
     } else if (ts_shadow && thread_oid != 0) {
         // Body completed (loop exit / return) — never re-drain it.
         ts_shadow->clear_thread_yielded(thread_oid);
+        // [S193-C8] F-C8-185 TERMINATION LAW: a body that ran to
+        // completion (returned or loop-exited without parking) has
+        // TERMINATED — JDK Thread state law. isAlive() flips false;
+        // join() on this target returns. Was (this line): no state,
+        // isAlive() answered true forever.
+        ts_shadow->mark_thread_terminated(thread_oid);
+        std::cerr << "[THREAD-LIFE] thread o" << thread_oid
+                  << " body completed → TERMINATED" << std::endl;
     }
     std::cerr << "[THREAD-START] drained oid=" << run_oid << " cls=" << rcls
               << (target_oid == thread_oid && thread_oid != 0
@@ -37103,6 +37916,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
          method == "getSupportFragmentManager")) {
         DalvikValue sfm = get_or_create_singleton(
             "Landroidx/fragment/app/FragmentManager;");
+        // S186h F-NEW-188c: obfuscated-FM real-init (same law as the
+        // invoke-layer site above).
+        // W14 env-gate (probe scaffolding): same MINIANDROID_S186H_FMINIT=0
+        // switch as the invoke-layer site — both sites off together.
+        {
+            const char* fminit_env2 =
+                std::getenv("MINIANDROID_S186H_FMINIT");
+            if (!(fminit_env2 != nullptr && fminit_env2[0] == '0' &&
+                  fminit_env2[1] == '\0') &&
+                sfm.type == DalvikType::OBJECT_REF) {
+                realinit_fragment_manager_singleton(sfm.object_id);
+            }
+        }
         result = sfm;
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -42944,6 +43770,32 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             heap_.set_object_field(task_id, "__timer_period__",
                                    DalvikValue::make_long(period_ms));
+            // [S193-C8] F-C8-183: TimerTask SCHEDULE STAMP —
+            // scheduledExecutionTime() answers the scheduled beat
+            // (OpenJDK TimerThread law: nextExecutionTime). Was: the
+            // method had no law on this line → answered null/0.
+            {
+                int64_t base_now = 0;
+                if (auto* hs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::HandlerShadow>()
+                                   : nullptr)
+                    base_now = hs->virtual_now_ms();
+                heap_.set_object_field(
+                    task_id, "__tt_sched_time__",
+                    DalvikValue::make_long(base_now + delay_ms));
+                heap_.set_object_field(task_id, "__tt_period__",
+                                       DalvikValue::make_long(period_ms));
+                // [S193-C8] F-C8-184: record the timer→task set so
+                // Timer.cancel() discards THIS timer's pending tasks
+                // (OpenJDK Timer clean-up law) without touching other
+                // work on the shared deterministic queue.
+                const uint32_t timer_oid =
+                    (args[0].type == DalvikType::OBJECT_REF)
+                        ? args[0].object_id : 0;
+                if (timer_oid != 0)
+                    c8_timer_tasks_[timer_oid].push_back(task_id);
+            }
             if (auto* hs = shadow_registry_
                                ? shadow_registry_->find_as<framework::HandlerShadow>()
                                : nullptr) {
@@ -42964,11 +43816,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     }
     if (class_name == "Ljava/util/Timer;" &&
         (method == "cancel" || method == "purge")) {
-        // AOSP Timer.cancel(): terminate the timer; its already-enqueued
-        // tasks stay pending until their time (openjdk runs them unless
-        // purge). Engine model: the queue is virtual-clock driven; a
-        // cancelled timer's tasks are left to the established drain law.
-        result = DalvikValue::make_void();
+        // [S193-C8] F-C8-184: Timer.cancel() discards THIS timer's
+        // pending tasks (OpenJDK Timer.java: the TimerThread's queue is
+        // drained on cancel). The tasks ride the shared deterministic
+        // queue here — removal is per-task via remove_callbacks, so no
+        // OTHER timer's or Handler's work is touched. purge() answers
+        // the count of cancelled tasks removed from the queue; the
+        // cancel law removes eagerly, so purge reports 0 (loud, honest
+        // serialized-model note — never a silent void).
+        if (method == "purge") {
+            result = DalvikValue::make_int(0);
+            std::cerr << "[F115-TIMER] purge → 0 (cancel law removes "
+                         "eagerly — serialized model)" << std::endl;
+        } else {
+            const uint32_t timer_oid =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            auto it = c8_timer_tasks_.find(timer_oid);
+            if (it != c8_timer_tasks_.end()) {
+                if (auto* hs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::HandlerShadow>()
+                                   : nullptr) {
+                    for (uint32_t t : it->second)
+                        hs->remove_callbacks(t);
+                    std::cerr << "[F115-TIMER] cancel o" << timer_oid
+                              << " → discarded " << it->second.size()
+                              << " pending task(s)" << std::endl;
+                }
+                c8_timer_tasks_.erase(it);
+            }
+            result = DalvikValue::make_void();
+        }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
@@ -43353,6 +44232,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    // ── F-C4-607 (W12, 4APP4 Coder-4): Pattern.pattern() / toString() —
+    // the SOURCE-STRING getter. OpenJDK Pattern.pattern(): "Returns the
+    // regular expression from which this pattern was compiled" — NEVER
+    // null; Pattern.toString() returns the same string. Pre-law: NO arm →
+    // fail-soft typed-default NULL. LIVE ROOT (ConnectBot 1.11.1, the
+    // 13-row Compose NPE family): NavDeepLink.buildRegex 0x88
+    // `PATH_REGEX.nativePattern.pattern()` → null → the compiler-emitted
+    // null-check getClass() at 0x90 NPE'd → the whole composition content
+    // (CompositionImpl.composeContent → GapComposer.doCompose →
+    // AbstractComposeView.ensureCompositionCreated → Recomposer chain)
+    // unwound ×5 — the app's entire NavHost tree died. This getter closes
+    // the F-C4-601 Matcher identity family's last seam: the W11 route
+    // law minted matchers whose OWNING Pattern answered pattern() — a
+    // DIRECT Pattern.pattern() call (no matcher) had no law.
+    if (class_name == "Ljava/util/regex/Pattern;" &&
+        (method == "pattern" || method == "toString") &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0) {
+        auto rv = heap_.get_object_field(args[0].object_id, "regex");
+        std::string p607;
+        if (rv.has_value() && rv->type == DalvikType::STRING_REF)
+            p607 = rv->string_val;
+        static thread_local uint64_t f607_diag = 0;
+        if (f607_diag++ < 6) {
+            std::cerr << "[F-C4-607] Pattern." << method << "() -> \""
+                      << p607.substr(0, 48) << "\" o" << args[0].object_id
+                      << std::endl;
+        }
+        result = DalvikValue::make_string(p607, 0);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (class_name == "Ljava/util/regex/Pattern;" && method == "matcher") {
         // S100 #345 diag (one-shot per method): matcher-bridge condition
         // mismatch evidence — the dooz Matcher.find-on-null family.
@@ -43408,6 +44319,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         heap_.set_object_field(mid, "append_pos", DalvikValue::make_int(0));
         heap_.set_object_field(mid, "match_start", DalvikValue::make_int(-1));
         heap_.set_object_field(mid, "match_end", DalvikValue::make_int(-1));
+        // F-C4-601 (W12): remember the OWNING Pattern so Matcher.pattern()
+        // answers the real object (kotlin MatcherMatchResult.next() does
+        // pattern().matcher(input) to iterate — a fabricated Pattern with
+        // the same regex would still match, but the identity contract of
+        // OpenJDK Matcher.pattern() is the SAME Pattern instance).
+        heap_.set_object_field(mid, "pattern_oid",
+                               DalvikValue::make_int(
+                                   static_cast<int32_t>(
+                                       args[0].object_id)));
         result = DalvikValue::make_object(mid, "Ljava/util/regex/Matcher;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -43416,7 +44336,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0 &&
         (method == "find" || method == "matches" || method == "group" ||
          method == "appendReplacement" || method == "appendTail" ||
-         method == "groupCount")) {
+         method == "groupCount" ||
+         // ── F-C4-601 (W12): Matcher position/identity family ──────────
+         // start()/end()/start(int)/end(int)/pattern() had NO law: the
+         // bridge answered typed-default 0 for every position query.
+         // Live kill (ConnectBot 1.11.1, Navigation-Compose route law):
+         // kotlin.text.MatcherMatchResult.getRange() ==
+         // until(matcher.start(), matcher.end()) — both answered 0 →
+         // range.first = 0 → NavDeepLink.<init> substring(0,0) → "" →
+         // buildRegex("") extracted ZERO path args for
+         // "android-app://androidx.navigation/console/{hostId}" →
+         // BundleKt.missingRequiredArguments saw the required arg
+         // "missing" → IllegalArgumentException "Cannot set route
+         // ...required arguments are missing" → the app's whole
+         // NavHost composition died. OpenJDK Matcher.java law:
+         //   start()/end() = first/last+1 of the PREVIOUS match
+         //   (IllegalStateException when none — callers only call after
+         //   find()==true, so the stored value is the faithful serve);
+         //   start(g)/end(g) = the group's absolute bounds.
+         method == "start" || method == "end" || method == "pattern")) {
         uint32_t mid = args[0].object_id;
         auto get_str = [&](const char* fn, std::string& out) {
             auto v = heap_.get_object_field(mid, fn);
@@ -43437,6 +44375,88 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         get_int("append_pos", append_pos);
         get_int("match_start", m_start);
         get_int("match_end", m_end);
+        // ── F-C4-601 (W12) arm 1: Matcher.pattern() ─────────────────────
+        // OpenJDK Matcher.pattern(): returns the Pattern that created
+        // this matcher. Pattern.matcher now records its own oid under
+        // "pattern_oid" (see the matcher mint below); serve it back —
+        // kotlin.text.MatcherMatchResult.next() calls pattern().matcher
+        // (input) to iterate matches, a null here would NPE the whole
+        // sequence walk.
+        if (method == "pattern") {
+            auto pv = heap_.get_object_field(mid, "pattern_oid");
+            if (pv.has_value() && pv->type == DalvikType::INT32 &&
+                pv->int_val != 0 &&
+                heap_.has_object(static_cast<uint32_t>(pv->int_val))) {
+                result = DalvikValue::make_object(
+                    static_cast<uint32_t>(pv->int_val),
+                    "Ljava/util/regex/Pattern;");
+            } else {
+                // Fallback: mint a Pattern carrying the same regex so the
+                // AOSP contract (a functional Pattern) always holds.
+                uint32_t pid = heap_.allocate("Ljava/util/regex/Pattern;",
+                                              pc_, 0);
+                heap_.set_object_field(pid, "regex",
+                                       DalvikValue::make_string(rx, 0));
+                result = DalvikValue::make_object(
+                    pid, "Ljava/util/regex/Pattern;");
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── F-C4-601 (W12) arm 2: start()/end()/start(g)/end(g) ─────────
+        if (method == "start" || method == "end") {
+            int32_t gi = 0;
+            bool has_group = args.size() >= 2 &&
+                             args[1].type == DalvikType::INT32;
+            if (has_group) gi = args[1].int_val;
+            if (gi < 0) {
+                throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                               "No group " + std::to_string(gi), "F596");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            int32_t s = -1, e = -1;
+            if (gi == 0) {
+                s = m_start;
+                e = m_end;
+            } else {
+                get_int(("group" + std::to_string(gi) + "_start").c_str(), s);
+                get_int(("group" + std::to_string(gi) + "_end").c_str(), e);
+                if (s < 0 || e < 0) {
+                    // Group never participated / out of range for the
+                    // last match (OpenJDK: IOOBE for index > groupCount,
+                    // ISE for non-participating group — callers reach it
+                    // only after successful finds, so the IOOBE law for
+                    // the out-of-range index is the faithful serve).
+                    throw_deferred(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "No group " + std::to_string(gi), "F596");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            if (m_start < 0) {
+                // No previous match: OpenJDK throws IllegalStateException
+                // ("No match found"); deferred-throw the same.
+                throw_deferred("Ljava/lang/IllegalStateException;",
+                               "No match found", "F596");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            result = DalvikValue::make_int(method == "start" ? s : e);
+            {
+                static thread_local uint64_t f601_pos_diag = 0;
+                if (f601_pos_diag < 6) {
+                    ++f601_pos_diag;
+                    std::cerr << "[F-C4-601] Matcher." << method << "(" << gi
+                              << ") rx='" << rx.substr(0, 40) << "' input='"
+                              << input.substr(0, 40) << "' -> "
+                              << (method == "start" ? s : e) << std::endl;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         // Last-match group store: "group<i>" fields, refreshed per find.
         std::vector<std::string> groups;
         if (method == "find" || method == "matches") {
@@ -43452,6 +44472,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // Fix: COPY (matched, str) pairs into `captured` while the
             // subject string is alive; the store loop consumes copies.
             std::vector<std::pair<bool, std::string>> captured;
+            // ── F-C4-601 (W12) arm 3: Matcher.find(int from) honors the
+            // explicit start index. OpenJDK Matcher.find(int):
+            //   reset(); return search(from);
+            // i.e. the search restarts AT `from` (and the match-state
+            // fields are re-stored by the search itself). The old law
+            // ignored the int argument and re-used the stored
+            // search_pos — every find(from) after an empty match
+            // re-found the SAME position (kotlin findNext loops).
+            // Also stash ABSOLUTE group bounds (group<i>_start/_end)
+            // for start(g)/end(g) — m2 positions are TAIL-relative, so
+            // the absolute bound = the tail's base + m2.position(gi).
+            int32_t f601_tail_base = 0;
+            if (method == "find") {
+                if (args.size() >= 2 && args[1].type == DalvikType::INT32) {
+                    int32_t from = args[1].int_val;
+                    if (from < 0) from = 0;
+                    if (from > static_cast<int32_t>(input.size()))
+                        from = static_cast<int32_t>(input.size());
+                    search_pos = from;
+                    set_int("search_pos", search_pos);
+                }
+                f601_tail_base = search_pos;
+            }
             try {
                 if (method == "find") {
                     if (!rx.empty() && search_pos <= static_cast<int32_t>(input.size())) {
@@ -43468,6 +44511,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                                       m2[gi].matched
                                                           ? m2[gi].str()
                                                           : std::string());
+                            // F-C4-601: absolute group bounds for start(g)/end(g).
+                            for (size_t gi = 0; gi < m2.size(); ++gi) {
+                                set_int(("group" + std::to_string(gi) + "_start")
+                                            .c_str(),
+                                        m2[gi].matched
+                                            ? f601_tail_base +
+                                                  static_cast<int32_t>(
+                                                      m2.position(gi))
+                                            : -1);
+                                set_int(("group" + std::to_string(gi) + "_end")
+                                            .c_str(),
+                                        m2[gi].matched
+                                            ? f601_tail_base +
+                                                  static_cast<int32_t>(
+                                                      m2.position(gi)) +
+                                                  static_cast<int32_t>(
+                                                      m2.length(gi))
+                                            : -1);
+                            }
                         }
                     }
                 } else {
@@ -43483,6 +44545,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                                       m2[gi].matched
                                                           ? m2[gi].str()
                                                           : std::string());
+                            // F-C4-596: matches() group bounds are absolute 0-based.
+                            for (size_t gi = 0; gi < m2.size(); ++gi) {
+                                set_int(("group" + std::to_string(gi) + "_start")
+                                            .c_str(),
+                                        m2[gi].matched
+                                            ? static_cast<int32_t>(
+                                                  m2.position(gi))
+                                            : -1);
+                                set_int(("group" + std::to_string(gi) + "_end")
+                                            .c_str(),
+                                        m2[gi].matched
+                                            ? static_cast<int32_t>(
+                                                  m2.position(gi)) +
+                                                  static_cast<int32_t>(
+                                                      m2.length(gi))
+                                            : -1);
+                            }
                         }
                     }
                 }
@@ -45272,8 +46351,76 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 cls564.find("ArrayDeque") != std::string::npos;
                             if (f564_is_collection) {
                                 std::string out564 = "[";
+                                // ── F-C4-602 (W12): SINGLE-TRUTH RENDER ──
+                                // The CollectionShadow's parallel stores
+                                // are where add()/insert() land (and where
+                                // isEmpty()/iterator() read); the heap
+                                // array-fields below only cover the
+                                // Arrays.asList/F-101 copy products. Read
+                                // the shadow FIRST: a list built by add()
+                                // otherwise rendered "[]" while every
+                                // other observable saw its real elements
+                                // (ConnectBot missingRequiredArguments).
+                                // The shadow declines (false) when it has
+                                // no state — the array-fields law below
+                                // stays authoritative for those.
+                                bool f602_rendered = false;
+                                if (shadow_registry_ != nullptr) {
+                                    auto* f602_cs = shadow_registry_->find_as<
+                                        framework::CollectionShadow>();
+                                    if (f602_cs != nullptr) {
+                                        std::string sh_out;
+                                        if (f602_cs->render_list_string(
+                                                a.object_id, sh_out)) {
+                                            out564 = sh_out;
+                                            f602_rendered = true;
+                                            {
+                                                static thread_local uint64_t
+                                                    f602_diag = 0;
+                                                if (f602_diag < 6) {
+                                                    ++f602_diag;
+                                                    std::string hex602;
+                                                    for (unsigned char c602 :
+                                                         sh_out)
+                                                        hex602 += (hex602.empty()
+                                                                       ? ""
+                                                                       : " ") +
+                                                            [&]() {
+                                                                char b602[4];
+                                                                snprintf(
+                                                                    b602,
+                                                                    sizeof b602,
+                                                                    "%02x",
+                                                                    c602);
+                                                                return std::string(
+                                                                    b602);
+                                                            }();
+                                                    std::cerr
+                                                        << "[F-C4-602] "
+                                                           "append(collection) "
+                                                        << cls564
+                                                        << " o"
+                                                        << a.object_id
+                                                        << " -> \""
+                                                        << sh_out.substr(0, 48)
+                                                        << "\" len="
+                                                        << sh_out.size()
+                                                        << " hex[" << hex602
+                                                        << "] (shadow "
+                                                           "single-truth)"
+                                                        << std::endl;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                                 bool first564 = true;
                                 int32_t n564 = 0;
+                                if (f602_rendered) {
+                                    // served above — skip the array-fields
+                                    // walk entirely (its output would
+                                    // overwrite the shadow truth).
+                                } else {
                                 {
                                     auto lf = heap_.get_object_field(
                                         a.object_id, "__array_length__");
@@ -45336,7 +46483,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                             std::to_string(el->object_id);
                                     }
                                 }
-                                out564 += "]";
+                                }
+                                // F-C4-612 (W13): the closing bracket is
+                                // part of BOTH render laws — the shadow
+                                // single-truth render already returns the
+                                // COMPLETE "[a, b]" form, so appending a
+                                // second "]" here doubled it (live:
+                                // "[mode]]" — sopadeletras/ConnectBot
+                                // "Cannot set route ... missing: ode]]").
+                                if (!f602_rendered) out564 += "]";
                                 return out564;
                             }
                             DalvikValue ts_ret;
@@ -45351,20 +46506,60 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 ts_ret.type == DalvikType::STRING_REF) {
                                 return ts_ret.string_val;
                             }
-                            // S186d (stuck-battery #72 gnubg): shadow classes
-                            // have NO dex toString for try_recursive_invoke —
-                            // answer their native law before the identity
-                            // form. java.io.File: toString() == getPath()
-                            // (F-C4-575); identity form "Ljava/io/File;@N"
-                            // broke androidx datastore's check message and
-                            // every real-library File interpolation.
-                            if (a.object_id != 0 &&
-                                a.class_desc == "Ljava/io/File;") {
-                                auto pv564 = heap_.get_object_field(
-                                    a.object_id, "path");
-                                if (pv564.has_value() &&
-                                    pv564->type == DalvikType::STRING_REF)
-                                    return pv564->string_val;
+                            // ── F-C4-598 (W11, 4APP4 Coder-4) — BRIDGE-CLASS
+                            // toString consult. OpenJDK law:
+                            //   String.valueOf(obj) == (obj == null) ? "null"
+                            //                                        : obj.toString()
+                            // and toString dispatches through the RUNTIME
+                            // type — including types whose toString is a
+                            // FRAMEWORK method (java.io.File.toString() ==
+                            // getPath(), libcore), not DEX bytecode. The
+                            // recursive DEX invoke above cannot reach the
+                            // API bridge, so every bridge-owned object
+                            // stringified as the Object.toString identity
+                            // form (Class@oid). Live root (Thunderbird
+                            // v24.0, the preferences_pb ISE family): okio's
+                            // path resolution does
+                            // StringBuilder(dir).append(Object file) → the
+                            // File rendered "Ljava/io/File;@16078" → the
+                            // poisoned path
+                            // "/data/.../files Ljava/io/File;@16078" became
+                            // a real File → the DataStore extension check
+                            // ISE'd ×5 (SynchronizedLazyImpl.getValue →
+                            // Preferences$getAccountFlow cascade). Fix:
+                            // after the DEX miss, consult the ONE canonical
+                            // bridge dispatcher for non-DEX classes; every
+                            // bridge toString law (including the S186d
+                            // File.toString == getPath law, stuck-battery
+                            // gnubg #72) answers from there.
+                            // Blast radius: only classes with NO DEX body
+                            // (is_dex_defined_class false) — DEX classes
+                            // already had their shot above.
+                            if (a.object_id != 0 && f564_depth < 4 &&
+                                !is_dex_defined_class(cls564)) {
+                                // S186d fast path first (measured on gnubg
+                                // #72): File answers from its stored path
+                                // without a bridge round-trip.
+                                if (a.class_desc == "Ljava/io/File;") {
+                                    auto pv564 = heap_.get_object_field(
+                                        a.object_id, "path");
+                                    if (pv564.has_value() &&
+                                        pv564->type == DalvikType::STRING_REF)
+                                        return pv564->string_val;
+                                }
+                                DalvikValue b598_ret;
+                                ApiCallTrace::Status b598_st =
+                                    ApiCallTrace::Status::STUBBED;
+                                std::vector<DalvikValue> b598_args{a};
+                                ++f564_depth;
+                                bool b598_ok = bridge_to_api(
+                                    cls564, "toString", b598_args, b598_ret,
+                                    b598_st, 0);
+                                --f564_depth;
+                                if (b598_ok &&
+                                    b598_ret.type == DalvikType::STRING_REF) {
+                                    return b598_ret.string_val;
+                                }
                             }
                         }
                     }
@@ -51684,9 +52879,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // family (forkgram x8 evidence).
         if (method == "queryIntentActivities" ||
             method == "queryIntentServices" ||
+            method == "queryIntentContentProviders" ||
+            method == "queryContentProviders" ||
             method == "queryBroadcastReceivers" ||
             method == "resolveActivity" || method == "resolveService" ||
             method == "resolveActivityInfo") {
+            // ── F-C4-600 (W11): queryIntentContentProviders — the ONE
+            // member of the never-null query family this law missed.
+            // Live kill (Tusky 33.1 DefaultEmojiCompatConfig,
+            // Lt9/t;.r pc=42): PackageManager.queryIntentContentProviders(
+            // Intent("androidx.content.action.LOAD_EMOJI_FONT"), 0)
+            // answered NULL → List.iterator() on the null → f141 NPE →
+            // uncaught at the app boundary. AOSP
+            // PackageManagerService.queryIntentContentProvidersInternal
+            // ALWAYS returns a List (empty when nothing matches). The
+            // engine's manifest model carries providers (class names +
+            // authorities) but not provider intent filters, so the honest
+            // current answer is the EMPTY list — never null; real filter
+            // matching lands with the first corpus app that needs it.
+            // queryContentProviders(processName, uid, flags) — same
+            // never-null List contract.
+            if (method == "queryIntentContentProviders" ||
+                method == "queryContentProviders") {
+                uint32_t f599_list =
+                    heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+                {
+                    static thread_local uint64_t f599_diag = 0;
+                    if (f599_diag < 6) {
+                        ++f599_diag;
+                        std::cerr << "[F-C4-599] " << method
+                                  << " -> empty List o" << f599_list
+                                  << " (never-null law)"
+                                  << std::endl;
+                    }
+                }
+                result = DalvikValue::make_object(
+                    f599_list, "Ljava/util/ArrayList;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             // --- intent extraction (receiver slot aware) ---
             std::string c7_action, c7_type, c7_scheme, c7_host, c7_path;
             std::vector<std::string> c7_cats;
@@ -53287,6 +54518,46 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
     // ────────────────────────────────────────────────────────────────────────
+    // [S192-C8] F-C8-170 — ThreadLocalRandom.nextDouble/nextFloat/
+    // nextBoolean law (the F-086 sibling). OpenJDK
+    // (ThreadLocalRandom.java): nextDouble() = (next(26)<<27|next(27)) *
+    // 2^-53 ∈ [0,1); nextFloat() = next(24) * 2^-24 ∈ [0,1);
+    // nextBoolean() = next(1) != 0. Before this law: no handler — the
+    // 3 canonical APKs (klondike, tri-peaks, tower3d) calling
+    // nextDouble() read the typed-zero 0.0d (decode evidence). The SAME
+    // deterministic xorshift stream as F-086 nextInt (provenance law —
+    // byte-identical runs, distinct values within a run).
+    if ((class_name == "Ljava/util/Random;" ||
+         class_name == "Ljava/util/concurrent/ThreadLocalRandom;" ||
+         class_name == "Ljava/security/SecureRandom;") &&
+        (method == "nextDouble" || method == "nextFloat" ||
+         method == "nextBoolean")) {
+        static thread_local uint64_t c8_tlr_state =
+            0x2545F4914F6CDD1DULL;  // distinct lane from F-086's stream
+        auto next_u32_f086sib = [&]() -> uint32_t {
+            uint64_t x = c8_tlr_state;
+            x ^= x << 13; x ^= x >> 17; x ^= x << 5;
+            c8_tlr_state = x;
+            return static_cast<uint32_t>(x);
+        };
+        if (method == "nextDouble") {
+            // OpenJDK: ((long)next(26) << 27) + next(27) → double × 2^-53.
+            uint64_t a = next_u32_f086sib() & 0x03FFFFFF;  // 26 bits
+            uint64_t b = next_u32_f086sib() & 0x07FFFFFF;  // 27 bits
+            double d = static_cast<double>((a << 27) | b) *
+                       (1.0 / 9007199254740992.0);
+            result = DalvikValue::make_double(d);
+        } else if (method == "nextFloat") {
+            float f = static_cast<float>(next_u32_f086sib() & 0x00FFFFFF) *
+                      (1.0f / 16777216.0f);
+            result = DalvikValue::make_float(f);
+        } else {
+            result = DalvikValue::make_bool((next_u32_f086sib() & 1) != 0);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
     // F-090g (R-NEW-319) — java.util.UUID.randomUUID()/toString() law.
     // OpenJDK (UUID.java): randomUUID() answers a version-4, variant-1
     // (IETF RFC 4122) UUID backed by SecureRandom; toString() is the
@@ -53346,6 +54617,319 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         else
             result = DalvikValue::make_string(
                 "00000000-0000-4000-8000-000000000000", 0);
+        return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-C4-608 (W13) — java.util.UUID.fromString + android.os.ParcelUuid —
+    // the COMPLETE AOSP object law.
+    // UPSTREAM (libcore ojluni java/util/UUID.java):
+    //   static UUID fromString(String) — parses the 8-4-4-4-12 hex form
+    //   (lenient per OpenJDK: dashes at 8/13/18/23, case-insensitive hex),
+    //   throws IllegalArgumentException "Invalid UUID string: ..." on any
+    //   other shape; NEVER null.
+    // UPSTREAM (frameworks/base core/java/android/os/ParcelUuid.java):
+    //   static ParcelUuid fromString(String) = new ParcelUuid(
+    //       UUID.fromString(name))                    — NEVER null
+    //   UUID getUuid()                                — the wrapped UUID
+    //   String toString() = uuid.toString()
+    //   boolean equals(Object) = o instanceof ParcelUuid &&
+    //       uuid.equals(((ParcelUuid) o).getUuid())
+    //   int hashCode() = uuid.hashCode()
+    //   int describeContents() = 0; writeToParcel/CREATOR = parcel family
+    // ROOT (live, sunpiano code.alimiracle.sunpiano_2, S186 baseline):
+    //   Lj4/b;.<clinit> pc=0x8 calls Intrinsics.checkNotNull(
+    //       ParcelUuid.fromString("03B80E5A-EDE8-4B33-A751-6CE34EC4C700"))
+    //   — the class had ZERO coverage, fromString answered the typed-null
+    //   default, and the Kotlin result-check threw
+    //   "fromString(...) must not be null" ×29 → the BLE manager <clinit>
+    //   died → g4/m.<init> (its ViewModel) died → androidx LifecycleRegistry
+    //   s0.d chain died → MainActivity.i lazy ViewModel init died (depth
+    //   47) → 32 uncaught → DEFAULT_BACKGROUND_ONLY. Same §12 family as
+    //   F-NEW-572: a framework class the app's clinit depends on must hold
+    //   its AOSP contract or the whole static graph collapses.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/util/UUID;" && method == "fromString" &&
+        args.size() >= 1 && args[0].type == DalvikType::STRING_REF) {
+        const std::string& s608 = args[0].string_val;
+        auto hex_nibble = [](char c) -> int {
+            if (c >= '0' && c <= '9') return c - '0';
+            if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+            if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+            return -1;
+        };
+        uint64_t msb = 0, lsb = 0;
+        bool ok608 = s608.size() == 36;
+        if (ok608) {
+            static const int dash_at[4] = {8, 13, 18, 23};
+            for (int d = 0; d < 4 && ok608; ++d)
+                if (s608[dash_at[d]] != '-') ok608 = false;
+        }
+        if (ok608) {
+            int nib = 0;  // nibble counter: 0..15 -> msb, 16..31 -> lsb
+            for (int i = 0; i < 36 && ok608; ++i) {
+                if (i == 8 || i == 13 || i == 18 || i == 23) continue;
+                int n = hex_nibble(s608[i]);
+                if (n < 0) { ok608 = false; break; }
+                if (nib < 16) {
+                    msb = (msb << 4) | static_cast<uint64_t>(n);
+                } else {
+                    lsb = (lsb << 4) | static_cast<uint64_t>(n);
+                }
+                ++nib;
+            }
+            ok608 = ok608 && nib == 32;  // 16+16 nibbles = 128 bits
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (!ok608) {
+            throw_deferred("Ljava/lang/IllegalArgumentException;",
+                           "Invalid UUID string: " + s608, "F-C4-608");
+            result = DalvikValue::make_null();
+            return true;
+        }
+        uint32_t uuid_id = heap_.allocate(
+            "Ljava/util/UUID;", pc_,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        heap_.set_object_field(uuid_id, "uuid_msb",
+                               DalvikValue::make_long(
+                                   static_cast<int64_t>(msb)));
+        heap_.set_object_field(uuid_id, "uuid_lsb",
+                               DalvikValue::make_long(
+                                   static_cast<int64_t>(lsb)));
+        heap_.set_object_field(uuid_id, "uuid_value",
+                               DalvikValue::make_string(s608, 0));
+        {
+            static thread_local uint64_t f608_n = 0;
+            if (f608_n < 6) { ++f608_n;
+                std::cerr << "[F-C4-608] UUID.fromString(\""
+                          << s608.substr(0, 40)
+                          << "\") -> o" << uuid_id
+                          << " (never-null law)" << std::endl; }
+        }
+        result = DalvikValue::make_object(uuid_id, "Ljava/util/UUID;");
+        return true;
+    }
+    if (class_name == "Landroid/os/ParcelUuid;") {
+        if (method == "fromString" &&
+            args.size() >= 1 && args[0].type == DalvikType::STRING_REF) {
+            // AOSP: new ParcelUuid(UUID.fromString(name)) — the parse is
+            // inlined below (identical contract to the UUID.fromString arm
+            // above; both wrap the same AOSP fromString law).
+            const std::string& s608b = args[0].string_val;
+            uint64_t msb = 0, lsb = 0;
+            bool ok608 = s608b.size() == 36;
+            auto hex_nibble = [](char c) -> int {
+                if (c >= '0' && c <= '9') return c - '0';
+                if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+                if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+                return -1;
+            };
+            if (ok608) {
+                static const int dash_at[4] = {8, 13, 18, 23};
+                for (int d = 0; d < 4 && ok608; ++d)
+                    if (s608b[dash_at[d]] != '-') ok608 = false;
+            }
+            if (ok608) {
+                int nib = 0;  // 0..15 -> msb, 16..31 -> lsb (32 nibbles)
+                for (size_t i = 0; i < s608b.size() && ok608; ++i) {
+                    if (i == 8 || i == 13 || i == 18 || i == 23) continue;
+                    int n = hex_nibble(s608b[i]);
+                    if (n < 0) { ok608 = false; break; }
+                    if (nib < 16) msb = (msb << 4) |
+                        static_cast<uint64_t>(n);
+                    else lsb = (lsb << 4) |
+                        static_cast<uint64_t>(n);
+                    ++nib;
+                }
+                ok608 = ok608 && nib == 32;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (!ok608) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "Invalid UUID string: " + s608b, "F-C4-608");
+                result = DalvikValue::make_null();
+                return true;
+            }
+            uint32_t uid608 = heap_.allocate(
+                "Ljava/util/UUID;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(uid608, "uuid_msb",
+                                   DalvikValue::make_long(
+                                       static_cast<int64_t>(msb)));
+            heap_.set_object_field(uid608, "uuid_lsb",
+                                   DalvikValue::make_long(
+                                       static_cast<int64_t>(lsb)));
+            heap_.set_object_field(uid608, "uuid_value",
+                                   DalvikValue::make_string(s608b, 0));
+            uint32_t pid608 = heap_.allocate(
+                "Landroid/os/ParcelUuid;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(pid608, "uuid",
+                DalvikValue::make_object(uid608, "Ljava/util/UUID;"));
+            heap_.set_object_field(pid608, "uuid_string",
+                                   DalvikValue::make_string(s608b, 0));
+            {
+                static thread_local uint64_t f608b_n = 0;
+                if (f608b_n < 6) { ++f608b_n;
+                    std::cerr << "[F-C4-608] ParcelUuid.fromString(\""
+                              << s608b.substr(0, 40)
+                              << "\") -> o" << pid608
+                              << " (never-null law)" << std::endl; }
+            }
+            result = DalvikValue::make_object(
+                pid608, "Landroid/os/ParcelUuid;");
+            return true;
+        }
+        if (method == "<init>" && args.size() >= 2 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[1].type == DalvikType::OBJECT_REF) {
+            // new ParcelUuid(UUID) — store the wrapped UUID.
+            auto v608 = heap_.get_object_field(args[1].object_id,
+                                               "uuid_value");
+            heap_.set_object_field(args[0].object_id, "uuid", args[1]);
+            if (v608.has_value() && v608->type == DalvikType::STRING_REF)
+                heap_.set_object_field(args[0].object_id, "uuid_string",
+                                       *v608);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getUuid" && args.size() >= 1 &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            auto v608 = heap_.get_object_field(args[0].object_id, "uuid");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (v608.has_value() && v608->type == DalvikType::OBJECT_REF)
+                result = *v608;
+            else
+                result = DalvikValue::make_object(
+                    heap_.allocate("Ljava/util/UUID;", pc_, 0),
+                    "Ljava/util/UUID;");
+            return true;
+        }
+        if (method == "toString" && args.size() >= 1 &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            auto v608 = heap_.get_object_field(args[0].object_id,
+                                               "uuid_string");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = (v608.has_value() &&
+                      v608->type == DalvikType::STRING_REF)
+                         ? DalvikValue::make_string(v608->string_val, 0)
+                         : DalvikValue::make_string(
+                               "00000000-0000-4000-8000-000000000000", 0);
+            return true;
+        }
+        if ((method == "equals" || method == "hashCode" ||
+             method == "describeContents") &&
+            args.size() >= 1 &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (method == "describeContents") {
+                result = DalvikValue::make_int(0);
+                return true;
+            }
+            if (method == "hashCode") {
+                // OpenJDK UUID.hashCode: h = uuid_msb ^ uuid_lsb; h ^= h>>>32
+                auto m = heap_.get_object_field(args[0].object_id,
+                                                "uuid_msb");
+                auto l = heap_.get_object_field(args[0].object_id,
+                                                "uuid_lsb");
+                int64_t msb = (m.has_value() && m->type ==
+                                 DalvikType::INT64) ? m->long_val : 0;
+                int64_t lsb = (l.has_value() && l->type ==
+                                 DalvikType::INT64) ? l->long_val : 0;
+                int64_t h = msb ^ lsb;
+                h ^= (h >> 32);
+                result = DalvikValue::make_int(
+                    static_cast<int32_t>(h));
+                return true;
+            }
+            // equals: identity fast path, then compare the uuid_string law
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0) {
+                auto a608 = heap_.get_object_field(args[0].object_id,
+                                                   "uuid_string");
+                auto b608 = heap_.get_object_field(args[1].object_id,
+                                                   "uuid_string");
+                bool eq608 = false;
+                if (a608.has_value() && b608.has_value() &&
+                    a608->type == DalvikType::STRING_REF &&
+                    b608->type == DalvikType::STRING_REF)
+                    eq608 = a608->string_val == b608->string_val;
+                else if (a608.has_value() && b608.has_value() &&
+                         a608->type == DalvikType::INT64 &&
+                         b608->type == DalvikType::INT64)
+                    eq608 = a608->long_val == b608->long_val;
+                result = DalvikValue::make_int(eq608 ? 1 : 0);
+            } else {
+                result = DalvikValue::make_int(0);
+            }
+            return true;
+        }
+        if (method == "writeToParcel") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-C4-609 (W13) — android.media.AudioFocusRequest$Builder — the §12
+    // Builder family (AOSP media/java/android/media/AudioFocusRequest.java):
+    //   new Builder(AudioAttributes) / Builder(int)  — non-null builder
+    //   setAudioAttributes(AA) / setOnAudioFocusChangeListener(l [, h]) /
+    //   setWillPauseWhenDucked(b) / setAcceptsDelayedFocusGain(b) /
+    //   setFocusGain(int)  — EVERY setter returns THIS
+    //   build() → a REAL AudioFocusRequest object (fields stored)
+    // ROOT (live, sunpiano S186 baseline): the BLE AudioManager path calls
+    //   new AudioFocusRequest.Builder(attrs).setOnAudioFocusChangeListener(...)
+    //   — the Builder had ZERO coverage (new-instance of the nested class
+    //   answered null) → "Attempt to invoke virtual method
+    //   'AudioFocusRequest$Builder;.setOnAudioFocusChangeListener' on a
+    //   null object reference" ×2 → the audio-focus request chain died
+    //   behind the (now-fixed) BLE clinit.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/media/AudioFocusRequest$Builder;") {
+        if (method == "<init>") {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                heap_.set_object_field(
+                    args[0].object_id, "__is_afr_builder__",
+                    DalvikValue::make_int(1));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if ((method == "setAudioAttributes" ||
+             method == "setOnAudioFocusChangeListener" ||
+             method == "setWillPauseWhenDucked" ||
+             method == "setAcceptsDelayedFocusGain" ||
+             method == "setFocusGain") &&
+            !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+            // Fluent: store + return THIS (AOSP Builder law; listener
+            // refs are stored for the (future) dispatch side, never nulled.
+            if (args.size() >= 2) {
+                const std::string f609 =
+                    std::string("__afr_") + method + "__";
+                heap_.set_object_field(args[0].object_id, f609, args[1]);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = args[0];
+            return true;
+        }
+        if (method == "build" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t afr_id = heap_.allocate(
+                "Landroid/media/AudioFocusRequest;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(afr_id, "__from_builder__",
+                                   DalvikValue::make_int(1));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(
+                afr_id, "Landroid/media/AudioFocusRequest;");
+            return true;
+        }
+    }
+    if (class_name == "Landroid/media/AudioFocusRequest;" &&
+        method == "<init>") {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
         return true;
     }
     // ────────────────────────────────────────────────────────────────────────
@@ -56130,6 +57714,114 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    // ── [S193-C8] F-C8-192/193 — invokeAll / invokeAny LAWS ─────────
+    // OpenJDK AbstractExecutorService: invokeAll(tasks) runs every task
+    // and returns a List<Future> IN TASK ORDER, each done with its
+    // result/exception; invokeAny(tasks) returns the FIRST successful
+    // result (ExecutionException when all fail). Serialized laws: the
+    // tasks run inline in iteration order (the S188-W3 submit precedent);
+    // invokeAll mints a REAL ArrayList box of Future boxes (the
+    // CollectionShadow list store); invokeAny walks tasks until the
+    // first non-throwing result, else REAL ExecutionException via the
+    // deferred-throw channel. Wave-9 §Next candidate.
+    if ((method == "invokeAll" || method == "invokeAny") &&
+        s188w3_executor_family) {
+        const uint32_t coll =
+            (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF)
+                ? args[1].object_id
+                : ((!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                       ? args[0].object_id
+                       : 0);
+        auto* csh_i = shadow_registry_
+                          ? shadow_registry_->find_as<
+                                framework::CollectionShadow>()
+                          : nullptr;
+        std::vector<uint32_t> task_oids;
+        if (coll != 0 && csh_i) {
+            auto* st = csh_i->get_or_create(coll, /*is_map=*/false);
+            if (st) {
+                for (size_t i = 0; i < st->elements.size(); ++i)
+                    if (st->elem_kinds[i] == 1)
+                        task_oids.push_back(st->elements[i]);
+            }
+        }
+        std::cerr << "[EXECUTOR] " << method << " tasks=" << task_oids.size()
+                  << " caller=" << current_class_ << "." << current_method_
+                  << std::endl;
+        if (method == "invokeAll") {
+            const uint32_t list_id = heap_.allocate("Ljava/util/ArrayList;",
+                                                    pc_, 0);
+            auto* dst = csh_i ? csh_i->get_or_create(
+                                    list_id, /*is_map=*/false)
+                              : nullptr;
+            for (uint32_t t : task_oids) {
+                std::string tcls = "Ljava/lang/Object;";
+                if (heap_.has_object(t)) {
+                    if (const auto* ro = heap_.get(t))
+                        if (!ro->class_descriptor.empty())
+                            tcls = ro->class_descriptor;
+                }
+                DalvikValue self = DalvikValue::make_object(t, tcls);
+                DalvikValue ret;
+                DalvikExecutionResult res;
+                std::vector<DalvikValue> cargs{self};
+                bool ran = try_recursive_invoke(tcls, "call", cargs, ret,
+                                                res,
+                                                "()Ljava/lang/Object;");
+                if (!ran)
+                    ran = try_recursive_invoke(tcls, "run", cargs, ret,
+                                               res, "()V");
+                const uint32_t fbox =
+                    heap_.allocate("Ljava/util/concurrent/Future;", 0, 0);
+                if (fbox != 0)
+                    future_results_[fbox] = ret;
+                if (dst)
+                    dst->elements.push_back(fbox),
+                        dst->elem_kinds.push_back(1);
+                std::cerr << "[EXECUTOR] invokeAll task o" << t
+                          << " → box o" << fbox << " ran=" << ran
+                          << std::endl;
+            }
+            result = DalvikValue::make_object(list_id,
+                                              "Ljava/util/ArrayList;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // invokeAny: first successful result; all failed → REAL
+        // ExecutionException (OpenJDK contract).
+        for (uint32_t t : task_oids) {
+            std::string tcls = "Ljava/lang/Object;";
+            if (heap_.has_object(t)) {
+                if (const auto* ro = heap_.get(t))
+                    if (!ro->class_descriptor.empty())
+                        tcls = ro->class_descriptor;
+            }
+            DalvikValue self = DalvikValue::make_object(t, tcls);
+            DalvikValue ret;
+            DalvikExecutionResult res;
+            std::vector<DalvikValue> cargs{self};
+            bool ran = try_recursive_invoke(tcls, "call", cargs, ret, res,
+                                            "()Ljava/lang/Object;");
+            if (!ran)
+                ran = try_recursive_invoke(tcls, "run", cargs, ret, res,
+                                           "()V");
+            if (ran && res.uncaught_in_flight_count == 0) {
+                std::cerr << "[EXECUTOR] invokeAny task o" << t
+                          << " → first success" << std::endl;
+                result = ret;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        std::cerr << "[EXECUTOR] invokeAny: no task succeeded → REAL "
+                     "ExecutionException" << std::endl;
+        throw_deferred("Ljava/util/concurrent/ExecutionException;",
+                       "no task completed successfully",
+                       "c8-193-invokeany");
+        result = DalvikValue::make_null();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     // ── [S188-W3] FUTURE.get LAW ─────────────────────────────────
     // Answer the stored result of a submit() box. Unknown box →
     // honest loud gap + null (AOSP would block; a silent null hid
@@ -56143,6 +57835,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             box_oid = args[0].object_id;  // receiver-shift shape:
             // instance get() carries args[0]=receiver (the box);
             // get(timeout,unit) carries args[1..] as parameters.
+        }
+        // [S192-C8] F-C8-180: a CANCELLED box throws CancellationException
+        // (OpenJDK FutureTask.get law) — never a silent null.
+        {
+            DalvikValue cv;
+            if (auto cvo = heap_.get_object_field(box_oid,
+                                                  "__future_cancelled__"))
+                cv = *cvo;
+            if (cv.bool_val) {
+                std::cerr << "[FUTURE] get box=" << box_oid
+                          << " → CANCELLED — CancellationException (c8-180)"
+                          << std::endl;
+                throw_deferred(
+                    "Ljava/util/concurrent/CancellationException;",
+                    "Task was cancelled", "c8-180-get-cancelled");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
         }
         auto fr = future_results_.find(box_oid);
         if (fr != future_results_.end()) {
@@ -56159,6 +57870,2035 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+    // ════════════════════════════════════════════════════════════════════
+    // [S191-C8] CODER 8 CONCURRENCY WAVE — androguard-driven
+    // (evidence/s191_c8/S191_C8_CONCURRENCY_DECODE.json: 258 consumed
+    // (class,method) pairs across the 8 canonical APKs;
+    // S191_C8_COVERAGE_CROSSREF.json: the absent pairs). Every law here
+    // carries its per-APK consumer count — the "which app needs this law"
+    // column the campaign demands. Shared helper: TimeUnit → ms conversion
+    // reading the CYCLE-E materialized enum constant (heap field
+    // "ordinal", F-NEW-216 declaration order: NANOSECONDS=0..DAYS=6).
+    // [S192-C8] adds the RECEIVER-CLASS SUPERCLASS WALK helper (the
+    // ROOT-021b2 law): a virtual call on an APP SUBCLASS receiver (a
+    // CountedCompleter/CountDownTimer anonymous subclass) arrives at the
+    // bridge keyed by the SUBCLASS descriptor — the walk decides IS-A.
+    auto c8_isa = [&](const std::string& cls,
+                      const char* ancestor) -> bool {
+        std::string cur = cls;
+        for (int hop = 0; hop < 12 && !cur.empty() &&
+                          cur != "Ljava/lang/Object;"; ++hop) {
+            if (cur == ancestor) return true;
+            auto it = class_to_superclass_.find(cur);
+            if (it == class_to_superclass_.end()) return false;
+            cur = it->second;
+        }
+        return cur == ancestor;
+    };
+    if ((class_name.find("CountDownLatch") != std::string::npos) ||
+        (class_name == "Ljava/util/concurrent/ScheduledExecutorService;" ||
+         class_name == "Ljava/util/concurrent/ScheduledThreadPoolExecutor;") ||
+        (class_name == "Ljava/util/concurrent/ScheduledFuture;") ||
+        (class_name == "Ljava/util/concurrent/ForkJoinPool;") ||
+        (class_name.find("ExecutorService") != std::string::npos &&
+         method == "allowCoreThreadTimeOut") ||
+        (class_name.find("HandlerThread") != std::string::npos) ||
+        (class_name == "Landroid/os/Message;" &&
+         (method == "sendToTarget" || method == "setAsynchronous" ||
+          method == "isAsynchronous")) ||
+        (class_name.find("Thread") != std::string::npos &&
+         (method == "interrupt" || method == "interrupted" ||
+          method == "isInterrupted" || method == "getState")) ||
+        ((class_name == "Ljava/util/concurrent/Future;" ||
+          class_name == "Ljava/util/concurrent/FutureTask;") &&
+         (method == "isDone" || method == "cancel" ||
+          method == "isCancelled")) ||
+        (class_name == "Ljava/lang/Object;" &&
+         (method == "wait" || method == "notify" || method == "notifyAll" ||
+          method == "finalize")) ||
+        // [S192-C8] WAVE 9 keys (defects 161–180, androguard-driven):
+        // evidence/s192_c8/S192_C8_CONCURRENCY_DECODE.json +
+        // S192_C8_COVERAGE_CROSSREF.json.
+        (class_name == "Landroid/os/Message;" && method == "obtain") ||
+        c8_isa(class_name, "Ljava/util/concurrent/CountedCompleter;") ||
+        c8_isa(class_name, "Landroid/os/CountDownTimer;") ||
+        (class_name == "Ljava/util/concurrent/Semaphore;") ||
+        (class_name == "Ljava/util/concurrent/ConcurrentLinkedQueue;") ||
+        (class_name == "Ljava/util/concurrent/LinkedBlockingDeque;") ||
+        ((class_name == "Ljava/util/concurrent/ExecutionException;" ||
+          class_name == "Ljava/util/concurrent/CancellationException;" ||
+          class_name == "Ljava/lang/InterruptedException;") &&
+         (method == "getCause" || method == "initCause" ||
+          method == "printStackTrace" || method == "<init>")) ||
+        // [S193-C8] WAVE 10 keys (defects 181–200): the wave-9 §Next
+        // list + the androguard crossref targets (7-APK TimerTask,
+        // 4-APK Process family, wave-9 §Next Phaser/invokeAll/invokeAny,
+        // the 10-FAIL baseline probe rows).
+        c8_isa(class_name, "Ljava/util/TimerTask;") ||
+        (class_name == "Ljava/util/Timer;" &&
+         method == "purge") ||
+        (class_name == "Landroid/os/Process;") ||
+        c8_isa(class_name, "Ljava/util/concurrent/Phaser;") ||
+        (class_name == "Ljava/lang/Thread;" &&
+         (method == "getAllStackTraces" || method == "getStackTrace")) ||
+        ((class_name == "Ljava/util/concurrent/ThreadPoolExecutor;" ||
+          class_name == "Ljava/util/concurrent/ScheduledThreadPoolExecutor;") &&
+         (method == "getQueue" || method == "purge" ||
+          method == "prestartCoreThread")) ||
+        (class_name == "Ljava/util/concurrent/locks/Condition;" &&
+         (method == "await" || method == "awaitNanos") &&
+         [&]() {
+             // interrupt PRE-delivery gate: only intercept when the
+             // current thread's flag is set (else the locks shadow owns
+             // the law untouched).
+             const uint32_t main_tid =
+                 get_or_create_singleton("Ljava/lang/Thread;").object_id;
+             return thread_interrupted_[main_tid];
+         }())) {
+        // helper: heap field read (get_object_field is optional-valued).
+        auto c8_getf = [&](uint32_t oid, const char* name) -> DalvikValue {
+            auto o = heap_.get_object_field(oid, name);
+            return o ? *o : DalvikValue();
+        };
+        // helper: convert (amount, unit-arg) → ms. Unit arg is the CYCLE-E
+        // materialized TimeUnit constant (heap field "ordinal"). Missing
+        // ordinal → MILLISECONDS + loud note (never a silent guess).
+        auto c8_unit_ms = [&](const DalvikValue& amount,
+                              const DalvikValue& unit) -> int64_t {
+            int64_t amt = 0;
+            if (amount.type == DalvikType::INT64) amt = amount.long_val;
+            else if (amount.type == DalvikType::INT32) amt = amount.int_val;
+            static const int64_t kFactor[7] = {
+                0,            // NANOSECONDS → sub-ms; floor to 0ms (loud)
+                0,            // MICROSECONDS → sub-ms for corpus values
+                1, 1000, 60000, 3600000, 86400000};
+            int ord = 2;  // MILLISECONDS default
+            if (unit.type == DalvikType::OBJECT_REF && unit.object_id != 0) {
+                DalvikValue ov = c8_getf(unit.object_id, "ordinal");
+                if (ov.type == DalvikType::INT32 && ov.int_val >= 0 &&
+                    ov.int_val < 7) {
+                    ord = ov.int_val;
+                } else {
+                    std::cerr << "[C8-TIMEUNIT] unit o" << unit.object_id
+                              << " carries no ordinal — MILLISECONDS assumed "
+                                 "LOUDLY" << std::endl;
+                }
+            }
+            return amt * kFactor[ord];
+        };
+        // helper: monitor owner check (serialized engine: hold count > 0).
+        auto c8_monitor_owner = [&](uint32_t oid) -> bool {
+            auto it = monitor_holds_.find(oid);
+            return it != monitor_holds_.end() && it->second > 0;
+        };
+        // helper: release/re-acquire the monitor for a wait() window.
+        auto c8_monitor_release = [&](uint32_t oid) {
+            auto it = monitor_holds_.find(oid);
+            if (it != monitor_holds_.end()) {
+                if (--it->second <= 0) monitor_holds_.erase(it);
+            }
+        };
+        auto c8_monitor_reacquire = [&](uint32_t oid) {
+            monitor_holds_[oid]++;
+        };
+
+        // ── F-C8-141 — java.lang.Object wait/notify/notifyAll ───────────
+        // OpenJDK law (Object.java): wait/notify/notifyAll REQUIRE the
+        // caller to own the monitor — otherwise
+        // IllegalMonitorStateException. Before this law the engine had NO
+        // handler at all (grep '"wait"' over src/ = empty): every call
+        // fell through as silent void, including the 94 call sites in 5
+        // canonical APKs (decode evidence). Serialized model: wait
+        // releases + re-acquires around the clock window; the caller is
+        // parked in the monitor's waitset; notify/notifyAll wake parked
+        // waiters. An INFINITE wait whose wake never arrives returns with
+        // a loud PARKED record (AOSP blocks here; documented boundary —
+        // never a silent success).
+        if (class_name == "Ljava/lang/Object;" &&
+            (method == "wait" || method == "notify" ||
+             method == "notifyAll")) {
+            const uint32_t mon_oid =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (mon_oid == 0) {
+                // No heap monitor (theoretical: wait on null already NPE'd
+                // upstream) — fall through to the loud default path.
+                std::cerr << "[C8-OBJ] " << method
+                          << " without heap monitor oid caller="
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+            } else if (method == "wait") {
+                if (!c8_monitor_owner(mon_oid)) {
+                    throw_deferred(
+                        "Ljava/lang/IllegalMonitorStateException;",
+                        "object not locked by thread before wait()",
+                        "c8-141-wait");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_void();
+                    return true;
+                }
+                // [S192-C8] F-C8-157 (carried) — INTERRUPT DELIVERY AT THE
+                // PARKED LAW. OpenJDK (Object.wait): an interrupt at entry
+                // (or during the wait) clears the flag and delivers
+                // InterruptedException. Entry gate first (monitor still
+                // held — JDK re-acquire-before-throw shape for the window
+                // case below).
+                {
+                    const uint32_t main_tid =
+                        get_or_create_singleton("Ljava/lang/Thread;")
+                            .object_id;
+                    if (thread_interrupted_[main_tid]) {
+                        thread_interrupted_[main_tid] = false;
+                        std::cerr << "[C8-WAIT] INTERRUPTED at entry mon=o"
+                                  << mon_oid << " — flag cleared, "
+                                     "InterruptedException delivered ("
+                                     "c8-157 law)" << std::endl;
+                        throw_deferred("Ljava/lang/InterruptedException;",
+                                       "wait interrupted",
+                                       "c8-157-wait-entry");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_void();
+                        return true;
+                    }
+                }
+                int64_t wait_ms = 0;   // 0 = wait forever (JDK)
+                if (args.size() >= 2)
+                    wait_ms = c8_unit_ms(args[1],
+                                         args.size() >= 3 ? args[2]
+                                                          : DalvikValue());
+                monitor_waitsets_[mon_oid].push_back(0 /*serialized tid*/);
+                c8_monitor_release(mon_oid);
+                // [S192-C8] F-C8-156 (carried) — CROSS-TASK PARK/WAKE
+                // WINDOW (the F-104 drain-loop park primitive integrated
+                // into the wait law). AOSP: the waiter is SUSPENDED and
+                // the scheduler runs other ready work; a notify from
+                // another task lands in the waitset and wakes the waiter.
+                // Serialized engine: the one deterministic drain
+                // (drain_park_queues_bounded — the SAME primitive the
+                // Thread.join / blocking-queue-take parks use) runs the
+                // ready queue INSIDE the wait window. A notify executed by
+                // a drained task erases this waiter BEFORE the drain
+                // returns → the wake is OBSERVED (wave-8 boundary: "the
+                // wake NEVER observed" — closed). Depth is self-capped by
+                // the primitive (≥3 → yield-only).
+                const int c8_wait_depth_before = park_drain_last_depth_;
+                if (c8_wait_depth_before < 3)
+                    drain_park_queues_bounded("c8-wait");
+                bool c8_woken = false;
+                {
+                    auto it = monitor_waitsets_.find(mon_oid);
+                    bool still = false;
+                    if (it != monitor_waitsets_.end())
+                        for (uint32_t w : it->second)
+                            if (w == 0) { still = true; break; }
+                    c8_woken = !still;
+                }
+                // [S192-C8] F-C8-157 — interrupt that landed DURING the
+                // window: JDK re-acquires the monitor, clears the flag and
+                // throws InterruptedException.
+                {
+                    const uint32_t main_tid =
+                        get_or_create_singleton("Ljava/lang/Thread;")
+                            .object_id;
+                    if (thread_interrupted_[main_tid]) {
+                        thread_interrupted_[main_tid] = false;
+                        c8_monitor_reacquire(mon_oid);
+                        std::cerr << "[C8-WAIT] INTERRUPTED during window "
+                                     "mon=o" << mon_oid
+                                  << " — re-acquired, InterruptedException "
+                                     "delivered (c8-157 law)" << std::endl;
+                        throw_deferred("Ljava/lang/InterruptedException;",
+                                       "wait interrupted",
+                                       "c8-157-wait-window");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_void();
+                        return true;
+                    }
+                }
+                if (!c8_woken) {
+                    if (wait_ms > 0) {
+                        // Timed wait, wake never observed (no notifier ran
+                        // in the window): the same deterministic time law
+                        // as Thread.sleep (M3 FIX-M3-014) — outside drained
+                        // bodies advance the clock; inside a drained body
+                        // only record the wake time (frame-boundary law).
+                        if (c8_wait_depth_before < 1) {
+                            if (auto* hs = shadow_registry_
+                                               ? shadow_registry_->find_as<
+                                                     framework::HandlerShadow>()
+                                               : nullptr)
+                                hs->advance_virtual(wait_ms);
+                        } else {
+                            park_yield_pending_ = true;
+                            if (auto* hs = shadow_registry_
+                                               ? shadow_registry_->find_as<
+                                                     framework::HandlerShadow>()
+                                               : nullptr)
+                                park_yield_wake_at_ =
+                                    hs->virtual_now_ms() + wait_ms;
+                        }
+                    } else {
+                        std::cerr << "[C8-WAIT] PARKED (infinite) on monitor o"
+                                  << mon_oid << " caller=" << current_class_
+                                  << "." << current_method_
+                                  << " — window drained; no notifier ran; "
+                                     "AOSP blocks here (documented boundary)"
+                                  << std::endl;
+                    }
+                } else {
+                    std::cerr << "[C8-WAIT] WOKEN via window (cross-task "
+                                 "notify observed) mon=o" << mon_oid
+                              << std::endl;
+                }
+                // wake bookkeeping: remove this waiter if still recorded
+                // (the notify-erase already ran for the woken case).
+                auto& ws = monitor_waitsets_[mon_oid];
+                for (size_t i = 0; i < ws.size(); ++i)
+                    if (ws[i] == 0) { ws.erase(ws.begin() + i); break; }
+                c8_monitor_reacquire(mon_oid);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            } else {  // notify / notifyAll
+                if (!c8_monitor_owner(mon_oid)) {
+                    throw_deferred(
+                        "Ljava/lang/IllegalMonitorStateException;",
+                        method == "notify"
+                            ? std::string("object not locked by thread "
+                                          "before notify()")
+                            : std::string("object not locked by thread "
+                                          "before notifyAll()"),
+                        "c8-141-notify");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_void();
+                    return true;
+                }
+                auto it = monitor_waitsets_.find(mon_oid);
+                const size_t parked =
+                    it != monitor_waitsets_.end() ? it->second.size() : 0;
+                if (method == "notifyAll") {
+                    if (it != monitor_waitsets_.end()) it->second.clear();
+                } else if (parked > 0) {
+                    it->second.erase(it->second.begin());
+                }
+                std::cerr << "[C8-NOTIFY] " << method << " monitor=o"
+                          << mon_oid << " parked=" << parked
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        // ── F-C8-146/147 — Thread interrupt state + getState ────────────
+        // OpenJDK law (Thread.java): interrupt() sets the flag (and wakes
+        // parked waiters — the wake-throw at the parked law is the
+        // documented next-wave boundary); interrupted() reads+clears the
+        // CURRENT thread's flag; isInterrupted() reads without clearing.
+        // Thread.getState(): WAITING/TIMED_WAITING for parked threads,
+        // RUNNABLE otherwise (serialized engine — TERMINATED needs the
+        // thread-lifecycle table, documented boundary; returned as the
+        // state NAME string, divergence recorded loudly).
+        if (class_name.find("Thread") != std::string::npos &&
+            (method == "interrupt" || method == "interrupted" ||
+             method == "isInterrupted" || method == "getState")) {
+            const uint32_t main_tid =
+                get_or_create_singleton("Ljava/lang/Thread;").object_id;
+            if (method == "interrupt") {
+                const uint32_t tid =
+                    (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                        ? args[0].object_id : main_tid;
+                thread_interrupted_[tid] = true;
+                size_t woken = 0;
+                for (auto& [m, ws] : monitor_waitsets_) {
+                    for (size_t i = 0; i < ws.size();)
+                        if (ws[i] == tid || tid == 0) {
+                            ws.erase(ws.begin() + i);
+                            ++woken;
+                        } else ++i;
+                }
+                std::cerr << "[C8-THREAD] interrupt t" << tid << " woken="
+                          << woken << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "isInterrupted" || method == "interrupted") {
+                uint32_t tid = main_tid;
+                if (method == "isInterrupted" && !args.empty() &&
+                    args[0].type == DalvikType::OBJECT_REF &&
+                    args[0].object_id != 0)
+                    tid = args[0].object_id;
+                const bool set = thread_interrupted_[tid];
+                if (method == "interrupted") thread_interrupted_[tid] = false;
+                result = DalvikValue::make_bool(set);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getState") {
+                const uint32_t tid =
+                    (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                        ? args[0].object_id : main_tid;
+                const char* st = "RUNNABLE";
+                for (const auto& [m, ws] : monitor_waitsets_)
+                    for (uint32_t w : ws)
+                        if (w == tid) st = "WAITING";
+                if (tid == main_tid && park_yield_pending_) st = "TIMED_WAITING";
+                // AOSP Thread$State declaration order (Thread.java):
+                // NEW=0, RUNNABLE=1, BLOCKED=2, WAITING=3, TIMED_WAITING=4,
+                // TERMINATED=5. Materialize the CYCLE-E-coherent enum
+                // constant (ordinal + enum_name fields) — the same shape
+                // sget-synthesis produces, so .name()/.ordinal() consumers
+                // see one identity model. The string-typed shortcut is a
+                // documented divergence and is NOT used here.
+                std::cerr << "[C8-THREAD] getState t" << tid << " → " << st
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                uint32_t eo = heap_.allocate("Ljava/lang/Thread$State;", pc_, 0);
+                heap_.set_object_field(eo, "ordinal", DalvikValue::make_int(
+                    std::string(st) == "WAITING" ? 3
+                  : std::string(st) == "TIMED_WAITING" ? 4 : 1));
+                heap_.set_object_field(eo, "enum_name",
+                                       DalvikValue::make_string(st, 0));
+                result = DalvikValue::make_object(eo,
+                                                  "Ljava/lang/Thread$State;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        // ── F-C8-142 — CountDownLatch ────────────────────────────────────
+        // OpenJDK law (CountDownLatch.java): <init>(count) requires
+        // count >= 0 (IAE); countDown() decrements, releases ALL waiters
+        // at zero; await() blocks until count zero (timed variant returns
+        // whether the latch opened); getCount() reports the count. Heap
+        // field __latch_count__ is the state (EXP-051 shadow-state law).
+        if (class_name == "Ljava/util/concurrent/CountDownLatch;") {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (method == "<init>") {
+                int64_t count = 0;
+                if (args.size() >= 2) {
+                    if (args[1].type == DalvikType::INT64) count = args[1].long_val;
+                    else if (args[1].type == DalvikType::INT32) count = args[1].int_val;
+                }
+                if (count < 0) {
+                    throw_deferred("Ljava/lang/IllegalArgumentException;",
+                                   "count < 0", "c8-142-latch-init");
+                } else {
+                    heap_.set_object_field(recv, "__latch_count__",
+                                           DalvikValue::make_long(count));
+                    std::cerr << "[C8-LATCH] new latch o" << recv
+                              << " count=" << count << " caller="
+                              << current_class_ << "." << current_method_
+                              << std::endl;
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            auto latch_count = [&](uint32_t oid) -> int64_t {
+                DalvikValue v = c8_getf(oid, "__latch_count__");
+                return v.type == DalvikType::INT64 ? v.long_val
+                     : (v.type == DalvikType::INT32 ? v.int_val : 0);
+            };
+            if (method == "getCount") {
+                result = DalvikValue::make_long(latch_count(recv));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "countDown") {
+                int64_t c = latch_count(recv);
+                if (c > 0) c--;
+                heap_.set_object_field(recv, "__latch_count__",
+                                       DalvikValue::make_long(c));
+                if (c == 0) monitor_waitsets_[recv].clear();
+                std::cerr << "[C8-LATCH] countDown o" << recv << " → " << c
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "await") {
+                const bool timed = args.size() >= 2;
+                const int64_t ms = timed ? c8_unit_ms(args[1], args.size() >= 3
+                                                               ? args[2]
+                                                               : DalvikValue())
+                                         : 0;
+                // [S192-C8] F-C8-157 — interrupt delivery at the parked
+                // law (OpenJDK CountDownLatch.await is interruptible; an
+                // interrupt at entry clears the flag and throws).
+                {
+                    const uint32_t main_tid =
+                        get_or_create_singleton("Ljava/lang/Thread;")
+                            .object_id;
+                    if (thread_interrupted_[main_tid]) {
+                        thread_interrupted_[main_tid] = false;
+                        std::cerr << "[C8-LATCH] await o" << recv
+                                  << " — INTERRUPTED (c8-157 law)"
+                                  << std::endl;
+                        throw_deferred("Ljava/lang/InterruptedException;",
+                                       "await interrupted",
+                                       "c8-157-latch-await");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_void();
+                        return true;
+                    }
+                }
+                const int64_t c = latch_count(recv);
+                bool opened = (c == 0);
+                if (!opened && timed) {
+                    // Serialized JDK-faithful outcome: no concurrent
+                    // countDown can run during the window → timeout with
+                    // the clock advanced (sleep-law time shape).
+                    if (park_drain_last_depth_ < 1) {
+                        if (auto* hs = shadow_registry_
+                                           ? shadow_registry_->find_as<
+                                                 framework::HandlerShadow>()
+                                           : nullptr)
+                            hs->advance_virtual(ms);
+                    }
+                } else if (!opened) {
+                    std::cerr << "[C8-LATCH] PARKED await o" << recv
+                              << " count=" << c << " caller="
+                              << current_class_ << "." << current_method_
+                              << " — AOSP blocks here (documented boundary)"
+                              << std::endl;
+                    monitor_waitsets_[recv].push_back(0);
+                }
+                result = timed ? DalvikValue::make_bool(opened)
+                               : DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        // ── F-C8-143 — HandlerThread ─────────────────────────────────────
+        // AOSP law (HandlerThread.java): a Thread with its OWN Looper;
+        // start() creates the Looper (run() → Looper.prepare/myLooper);
+        // getLooper() answers it; quit()/quitSafely() terminate the loop.
+        // Consumers: 2 canonical APKs, 13 sites (decode evidence).
+        if (class_name == "Landroid/os/HandlerThread;") {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (method == "<init>") {
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "start") {
+                uint32_t& lo = handler_thread_looper_[recv];
+                if (lo == 0 || !heap_.has_object(lo)) {
+                    lo = heap_.allocate("Landroid/os/Looper;", pc_, 0);
+                }
+                std::cerr << "[C8-HT] start ht=o" << recv << " looper=o" << lo
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getLooper") {
+                uint32_t lo = handler_thread_looper_.count(recv)
+                                  ? handler_thread_looper_[recv] : 0;
+                if (lo == 0) {
+                    // AOSP getLooper() BLOCKS until the looper exists.
+                    // Serialized engine: materialize lazily + LOUD record
+                    // (never a silent null that hides the ordering bug).
+                    lo = heap_.allocate("Landroid/os/Looper;", pc_, 0);
+                    handler_thread_looper_[recv] = lo;
+                    std::cerr << "[C8-HT] getLooper BEFORE start o" << recv
+                              << " — materialized lazily (AOSP blocks here)"
+                              << std::endl;
+                }
+                result = DalvikValue::make_object(lo, "Landroid/os/Looper;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "quit" || method == "quitSafely") {
+                handler_thread_looper_.erase(recv);
+                std::cerr << "[C8-HT] " << method << " ht=o" << recv
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                result = DalvikValue::make_bool(method == "quit");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        // ── F-C8-144/145 — Message.sendToTarget + async flag ────────────
+        // AOSP law (Message.java): sendToTarget() = msg.target
+        // .sendMessage(msg) (null target → NPE); setAsynchronous(true)
+        // marks the message async; isAsynchronous() reads it. Consumers:
+        // 2 canonical APKs, 14 sites (decode evidence). The message rides
+        // the ONE deterministic MessageQueue (F-NEW-332 law queue).
+        if (class_name == "Landroid/os/Message;" &&
+            (method == "sendToTarget" || method == "setAsynchronous" ||
+             method == "isAsynchronous")) {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (method == "setAsynchronous") {
+                const bool flag = args.size() >= 2 && args[1].bool_val;
+                heap_.set_object_field(recv, "__async__",
+                                       DalvikValue::make_bool(flag));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "isAsynchronous") {
+                DalvikValue v = c8_getf(recv, "__async__");
+                result = DalvikValue::make_bool(v.bool_val);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "sendToTarget") {
+                DalvikValue tv = c8_getf(recv, "__target__");
+                const uint32_t target =
+                    (tv.type == DalvikType::OBJECT_REF) ? tv.object_id : 0;
+                if (target == 0) {
+                    // AOSP sendToTarget NPEs on a null target — the REAL
+                    // contract, not a silent drop.
+                    throw_deferred("Ljava/lang/NullPointerException;",
+                                   "sendToTarget on a Message with null "
+                                   "target", "c8-144-sendtotarget");
+                } else if (auto* hs = shadow_registry_
+                               ? shadow_registry_->find_as<
+                                     framework::HandlerShadow>()
+                               : nullptr) {
+                    uint32_t obj_oid = 0;
+                    DalvikValue ov = c8_getf(recv, "__obj__");
+                    if (ov.type == DalvikType::OBJECT_REF) obj_oid = ov.object_id;
+                    heap_.set_object_field(recv, "__when__",
+                        DalvikValue::make_long(
+                            hs ? hs->virtual_now_ms() : 0));
+                    hs->enqueue(recv, 0, "Landroid/os/Message;.sendToTarget");
+                    std::cerr << "[C8-MSG] sendToTarget msg=o" << recv
+                              << " target=o" << target << " obj=o" << obj_oid
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                } else {
+                    std::cerr << "[C8-MSG] sendToTarget msg=o" << recv
+                              << " NO MessageQueue — message NOT queued "
+                                 "LOUDLY" << std::endl;
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        // ── F-C8-148 — ForkJoinPool.commonPool() ────────────────────────
+        // OpenJDK law: the commonPool is a SINGLETON (static common pool
+        // object); parallelism = availableProcessors-1 (≥1). Serialized
+        // engine: identity singleton + parallelism 1 (LOUD). Consumers:
+        // 2 canonical APKs — CompletableFuture.asyncPool default.
+        if (class_name == "Ljava/util/concurrent/ForkJoinPool;" &&
+            (method == "commonPool" || method == "parallelism" ||
+             method == "getParallelism")) {
+            if (method == "commonPool") {
+                if (common_pool_oid_ == 0 || !heap_.has_object(common_pool_oid_))
+                    common_pool_oid_ =
+                        heap_.allocate("Ljava/util/concurrent/ForkJoinPool;",
+                                       pc_, 0);
+                result = DalvikValue::make_object(
+                    common_pool_oid_, "Ljava/util/concurrent/ForkJoinPool;");
+            } else {
+                result = DalvikValue::make_int(1);  // serialized law
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── F-C8-149 — Future/FutureTask.isDone ─────────────────────────
+        // OpenJDK law: isDone() TRUE once completed (result, exception or
+        // cancel). Engine: a box is done iff the SUBMIT→FUTURE law stored
+        // its result (future_results_). Unknown box → false + loud record.
+        if ((class_name == "Ljava/util/concurrent/Future;" ||
+             class_name == "Ljava/util/concurrent/FutureTask;") &&
+            method == "isDone") {
+            uint32_t box =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            // [S192-C8] F-C8-180 coherence: cancelled ⇒ done (JDK law).
+            DalvikValue cv = c8_getf(box, "__future_cancelled__");
+            const bool done = future_results_.count(box) > 0 || cv.bool_val;
+            if (!done)
+                std::cerr << "[C8-FUTURE] isDone box=o" << box
+                          << " → false (pending/unknown — LOUD)"
+                          << std::endl;
+            result = DalvikValue::make_bool(done);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── F-C8-150 — Scheduled executor family ────────────────────────
+        // OpenJDK law: schedule(task, delay, unit) runs the task after
+        // delay on the scheduler's clock and returns a Future;
+        // ScheduledFuture.getDelay(unit) = remaining time. Engine model:
+        // the SAME deterministic MessageQueue the Timer law (F-115) rides;
+        // delay via c8_unit_ms; box = FutureTask with __sched_when__.
+        if ((class_name == "Ljava/util/concurrent/ScheduledExecutorService;" ||
+             class_name == "Ljava/util/concurrent/ScheduledThreadPoolExecutor;" ||
+             class_name == "Ljava/util/concurrent/ScheduledFuture;") &&
+            (method == "schedule" || method == "scheduleAtFixedRate" ||
+             method == "scheduleWithFixedDelay" || method == "getDelay")) {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (method == "getDelay") {
+                DalvikValue wv = c8_getf(recv, "__sched_when__");
+                int64_t when = (wv.type == DalvikType::INT64) ? wv.long_val : 0;
+                int64_t now = 0;
+                if (auto* hs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::HandlerShadow>()
+                                   : nullptr)
+                    now = hs->virtual_now_ms();
+                // Answer in the REQUESTED unit (ordinal law).
+                int64_t rem_ms = when - now;
+                int ord = 2;
+                if (args.size() >= 2 &&
+                    args[1].type == DalvikType::OBJECT_REF) {
+                    DalvikValue ov = c8_getf(args[1].object_id, "ordinal");
+                    if (ov.type == DalvikType::INT32 && ov.int_val >= 0 &&
+                        ov.int_val < 7)
+                        ord = ov.int_val;
+                }
+                static const int64_t kDiv[7] = {1, 1, 1, 1000, 60000,
+                                                3600000, 86400000};
+                result = DalvikValue::make_long(rem_ms / kDiv[ord]);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (args.size() >= 3 &&
+                args[1].type == DalvikType::OBJECT_REF &&
+                heap_.has_object(args[1].object_id)) {
+                const uint32_t task = args[1].object_id;
+                const int64_t ms = c8_unit_ms(args[2], args.size() >= 4
+                                                           ? args[3]
+                                                           : DalvikValue());
+                if (auto* hs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::HandlerShadow>()
+                                   : nullptr) {
+                    hs->enqueue(task, ms,
+                                "Landroid/../ScheduledExecutor;." + method);
+                    const uint32_t box = heap_.allocate(
+                        "Ljava/util/concurrent/FutureTask;", pc_, 0);
+                    heap_.set_object_field(box, "__sched_when__",
+                        DalvikValue::make_long(hs->virtual_now_ms() + ms));
+                    std::cerr << "[C8-SCHED] " << method << " task=o" << task
+                              << " delay=" << ms << "ms box=o" << box
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                    result = DalvikValue::make_object(
+                        box, "Ljava/util/concurrent/FutureTask;");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                std::cerr << "[C8-SCHED] " << method
+                          << " NO MessageQueue — task NOT scheduled LOUDLY"
+                          << std::endl;
+            }
+        }
+        // ── F-C8-151 — ThreadPoolExecutor.allowCoreThreadTimeOut ────────
+        // OpenJDK law: sets the core-thread-timeout policy flag (true →
+        // core threads may terminate when idle). Engine: REAL flag record
+        // on the pool object + loud log (no silent void).
+        if (class_name.find("ExecutorService") != std::string::npos &&
+            method == "allowCoreThreadTimeOut") {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            const bool flag = args.size() >= 2 && args[1].bool_val;
+            heap_.set_object_field(recv, "__allow_core_timeout__",
+                                   DalvikValue::make_bool(flag));
+            std::cerr << "[C8-POOL] allowCoreThreadTimeOut pool=o" << recv
+                      << " flag=" << (flag ? "true" : "false")
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ════════════════════════════════════════════════════════════════
+        // [S192-C8] CODER 8 WAVE 9 — defects 161–180 (androguard-driven).
+        // Evidence: evidence/s192_c8/S192_C8_CONCURRENCY_DECODE.json
+        // (3001 consumed pairs) + S192_C8_COVERAGE_CROSSREF.json. Each law
+        // cites its AOSP/OpenJDK contract and carries the per-APK consumer
+        // counts from the decode. Same vocabulary as wave 8: heap-field
+        // state (EXP-051), loud diagnostics, no app-specific branches
+        // (S188 rule 5), engine-member/no-static-local state (F-025).
+        // ════════════════════════════════════════════════════════════════
+
+        // ── F-C8-164 — Message.obtain static factory family ─────────────
+        // AOSP law (Message.java): obtain() recycles a pooled Message with
+        // target=null; obtain(Handler h) binds msg.target=h (what=0);
+        // obtain(Message orig) copies what/arg1/arg2/obj. Before this law
+        // the static factory answered null (2 APKs / 5 sites — the Handler
+        // instance method obtainMessage was wave-8 F-C8-144b).
+        if (class_name == "Landroid/os/Message;" && method == "obtain") {
+            uint32_t msg = heap_.allocate("Landroid/os/Message;", pc_, 0);
+            if (msg != 0) {
+                if (args.size() >= 1 &&
+                    args[0].type == DalvikType::OBJECT_REF &&
+                    args[0].object_id != 0) {
+                    const auto& a0 = args[0];
+                    // obtain(Handler) — bind the dispatch target.
+                    heap_.set_object_field(
+                        msg, "__target__",
+                        DalvikValue::make_object(a0.object_id,
+                                                 "Landroid/os/Handler;"));
+                    std::cerr << "[C8-MSG] obtain(Handler h=o"
+                              << a0.object_id << ") → Message o" << msg
+                              << " (target bound)" << std::endl;
+                } else if (args.size() >= 1 &&
+                           args[0].type == DalvikType::OBJECT_REF &&
+                           heap_.has_object(args[0].object_id) &&
+                           heap_.get(args[0].object_id) &&
+                           heap_.get(args[0].object_id)->class_descriptor ==
+                               "Landroid/os/Message;") {
+                    // obtain(Message orig) — field-copy law.
+                    for (const char* f :
+                         {"__what__", "__arg1__", "__arg2__", "__obj__"}) {
+                        auto v = c8_getf(args[0].object_id, f);
+                        if (v.type != DalvikType::REGISTER_UNSET)
+                            heap_.set_object_field(msg, f, v);
+                    }
+                    std::cerr << "[C8-MSG] obtain(Message o"
+                              << args[0].object_id << ") → Message o" << msg
+                              << " (copied)" << std::endl;
+                } else {
+                    std::cerr << "[C8-MSG] obtain() → Message o" << msg
+                              << " (target null — AOSP pooled law)" << std::endl;
+                }
+                result = DalvikValue::make_object(msg, "Landroid/os/Message;");
+            } else {
+                result = DalvikValue::make_null();
+                std::cerr << "[C8-MSG] obtain — heap alloc failed (LOUD)"
+                          << std::endl;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
+        // ── F-C8-165 — CountedCompleter family ──────────────────────────
+        // OpenJDK law (CountedCompleter.java): fork() enqueues the task;
+        // invoke()/exec() run the compute() body; the pending-count chain
+        // (setPendingCount/addToPendingCount/getPendingCount) drives
+        // tryComplete()/propagateCompletion() up the completer chain;
+        // getCompleter() returns the parent. Bouncy consumes 9 methods /
+        // 68 sites (decode evidence). Serialized model: fork rides the
+        // deterministic MessageQueue; invoke runs compute() INLINE then
+        // propagates completion up the parents (each parent with pending
+        // 0 recurses), onCompletion hook loud when a DEX body exists.
+        if (c8_isa(class_name, "Ljava/util/concurrent/CountedCompleter;")) {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            auto cc_pending = [&](uint32_t oid) -> int64_t {
+                DalvikValue v = c8_getf(oid, "__cc_pending__");
+                return v.type == DalvikType::INT64 ? v.long_val
+                     : (v.type == DalvikType::INT32 ? v.int_val : 0);
+            };
+            auto cc_set_pending = [&](uint32_t oid, int64_t n) {
+                heap_.set_object_field(oid, "__cc_pending__",
+                                       DalvikValue::make_long(n));
+            };
+            if (method == "<init>") {
+                if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF)
+                    heap_.set_object_field(
+                        recv, "__cc_completer__",
+                        DalvikValue::make_object(
+                            args[1].object_id,
+                            args[1].class_desc.empty()
+                                ? "Ljava/util/concurrent/CountedCompleter;"
+                                : args[1].class_desc));
+                int64_t pend = 0;
+                if (args.size() >= 3) {
+                    if (args[2].type == DalvikType::INT64) pend = args[2].long_val;
+                    else if (args[2].type == DalvikType::INT32) pend = args[2].int_val;
+                }
+                cc_set_pending(recv, pend);
+                std::cerr << "[C8-CC] new CountedCompleter o" << recv
+                          << " completer="
+                          << (args.size() >= 2 &&
+                              args[1].type == DalvikType::OBJECT_REF
+                                  ? args[1].object_id : 0)
+                          << " pending=" << pend << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getPendingCount") {
+                result = DalvikValue::make_long(cc_pending(recv));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "setPendingCount") {
+                int64_t n = 0;
+                if (args.size() >= 2) {
+                    if (args[1].type == DalvikType::INT64) n = args[1].long_val;
+                    else if (args[1].type == DalvikType::INT32) n = args[1].int_val;
+                }
+                cc_set_pending(recv, n);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "addToPendingCount") {
+                int64_t d = 0;
+                if (args.size() >= 2) {
+                    if (args[1].type == DalvikType::INT64) d = args[1].long_val;
+                    else if (args[1].type == DalvikType::INT32) d = args[1].int_val;
+                }
+                cc_set_pending(recv, cc_pending(recv) + d);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "getCompleter") {
+                DalvikValue p = c8_getf(recv, "__cc_completer__");
+                result = (p.type == DalvikType::OBJECT_REF)
+                             ? p : DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "fork") {
+                // OpenJDK: ForkTask.fork() schedules asynchronously. Engine:
+                // the ONE deterministic queue (Executor/Timer law shape).
+                if (auto* hs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::HandlerShadow>()
+                                   : nullptr) {
+                    hs->enqueue(recv, 0, "CountedCompleter.fork");
+                    std::cerr << "[C8-CC] fork o" << recv << " → queue"
+                              << std::endl;
+                } else {
+                    std::cerr << "[C8-CC] fork o" << recv
+                              << " NO MessageQueue — NOT scheduled LOUDLY"
+                              << std::endl;
+                }
+                result = DalvikValue::make_object(
+                    recv, "Ljava/util/concurrent/CountedCompleter;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "tryComplete" || method == "propagateCompletion") {
+                // OpenJDK: tryComplete() — if pending > 0 decrement; else
+                // onCompletion + walk up the completer chain. Serialized:
+                // the walk is synchronous and depth-bounded.
+                int depth = 0;
+                uint32_t cur = recv;
+                while (cur != 0 && depth++ < 64) {
+                    int64_t p = cc_pending(cur);
+                    if (method == "tryComplete") {
+                        if (p > 0) { cc_set_pending(cur, p - 1); break; }
+                    } else if (p > 0) {
+                        // propagateCompletion does NOT decrement own count.
+                        break;
+                    }
+                    // onCompletion(this) hook: DEX override if present.
+                    const auto* obj = heap_.get(cur);
+                    if (obj && !obj->class_descriptor.empty()) {
+                        DalvikValue hret;
+                        DalvikExecutionResult hres;
+                        std::vector<DalvikValue> hargs{
+                            DalvikValue::make_object(
+                                cur, obj->class_descriptor)};
+                        try_recursive_invoke(obj->class_descriptor,
+                                             "onCompletion", hargs, hret,
+                                             hres, "(Ljava/util/concurrent/CountedCompleter;)V");
+                    }
+                    DalvikValue par = c8_getf(cur, "__cc_completer__");
+                    cur = (par.type == DalvikType::OBJECT_REF)
+                              ? par.object_id : 0;
+                }
+                std::cerr << "[C8-CC] " << method << " o" << recv
+                          << " chain-depth=" << depth << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "invoke" || method == "exec") {
+                // OpenJDK: exec() runs compute(); invoke() = exec + join.
+                // Serialized: run compute() INLINE (the real DEX body),
+                // then the completion chain. A missing compute() body is a
+                // LOUD gap, never a silent success.
+                const auto* obj = heap_.get(recv);
+                bool ran = false;
+                if (obj && !obj->class_descriptor.empty()) {
+                    DalvikValue cret;
+                    DalvikExecutionResult cres;
+                    std::vector<DalvikValue> cargs{
+                        DalvikValue::make_object(recv,
+                                                 obj->class_descriptor)};
+                    ran = try_recursive_invoke(obj->class_descriptor,
+                                               "compute", cargs, cret,
+                                               cres);
+                }
+                if (!ran)
+                    std::cerr << "[C8-CC] " << method << " o" << recv
+                              << " — no compute() DEX body (LOUD gap)"
+                              << std::endl;
+                std::cerr << "[C8-CC] " << method << " o" << recv
+                          << " ran=" << (ran ? "compute" : "NO-BODY")
+                          << std::endl;
+                // exec() answers boolean (normally-completed law);
+                // invoke() answers the completer itself (JDK T invoke()).
+                if (method == "exec") {
+                    result = DalvikValue::make_bool(ran);
+                } else {
+                    result = DalvikValue::make_object(
+                        recv, "Ljava/util/concurrent/CountedCompleter;");
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+
+        // ── F-C8-166 — android.os.CountDownTimer ────────────────────────
+        // AOSP law (CountDownTimer.java): <init>(millisInFuture,
+        // countDownInterval); start() posts the first tick after
+        // `interval` (via the internal Handler — the deterministic
+        // MessageQueue here); onTick(millisUntilFinished) fires every
+        // interval; onFinish() when the future elapses; cancel() stops
+        // the chain. gmdice consumes <init>/start/cancel (decode
+        // evidence). Dispatch law lives in
+        // ExecutionEngine::invoke_handler_runnable (the queue drain).
+        if (c8_isa(class_name, "Landroid/os/CountDownTimer;")) {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (method == "<init>") {
+                int64_t total = 0, interval = 0;
+                if (args.size() >= 2) {
+                    if (args[1].type == DalvikType::INT64) total = args[1].long_val;
+                    else if (args[1].type == DalvikType::INT32) total = args[1].int_val;
+                }
+                if (args.size() >= 3) {
+                    if (args[2].type == DalvikType::INT64) interval = args[2].long_val;
+                    else if (args[2].type == DalvikType::INT32) interval = args[2].int_val;
+                }
+                heap_.set_object_field(recv, "__cdt_total__",
+                                       DalvikValue::make_long(total));
+                heap_.set_object_field(recv, "__cdt_interval__",
+                                       DalvikValue::make_long(interval));
+                heap_.set_object_field(recv, "__cdt_cancelled__",
+                                       DalvikValue::make_bool(false));
+                heap_.set_object_field(recv, "__cdt_finished__",
+                                       DalvikValue::make_bool(false));
+                heap_.set_object_field(recv, "__cdt_started_at__",
+                                       DalvikValue::make_long(0));
+                std::cerr << "[C8-CDT] new CountDownTimer o" << recv
+                          << " total=" << total << " interval=" << interval
+                          << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "start") {
+                int64_t now = 0;
+                if (auto* hs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::HandlerShadow>()
+                                   : nullptr) {
+                    now = hs->virtual_now_ms();
+                    heap_.set_object_field(recv, "__cdt_started_at__",
+                                           DalvikValue::make_long(now));
+                    int64_t interval = 0;
+                    DalvikValue iv = c8_getf(recv, "__cdt_interval__");
+                    if (iv.type == DalvikType::INT64) interval = iv.long_val;
+                    else if (iv.type == DalvikType::INT32) interval = iv.int_val;
+                    hs->enqueue(recv, interval > 0 ? interval : 1,
+                                "CountDownTimer.start");
+                    std::cerr << "[C8-CDT] start o" << recv
+                              << " first tick +" << interval << "ms" << std::endl;
+                } else {
+                    std::cerr << "[C8-CDT] start o" << recv
+                              << " NO MessageQueue — NOT started LOUDLY"
+                              << std::endl;
+                }
+                result = DalvikValue::make_object(recv,
+                                                  "Landroid/os/CountDownTimer;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "cancel") {
+                heap_.set_object_field(recv, "__cdt_cancelled__",
+                                       DalvikValue::make_bool(true));
+                std::cerr << "[C8-CDT] cancel o" << recv
+                          << " — tick chain stopped (dispatch law reads "
+                             "the flag)" << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+
+        // ── F-C8-179 — java.util.concurrent.Semaphore ───────────────────
+        // OpenJDK law (Semaphore.java): <init>(permits[,fair]) IAE on
+        // negative; acquire() consumes a permit or blocks; tryAcquire()
+        // answers immediately; release() returns a permit; drainPermits()
+        // takes ALL; availablePermits() reports. klondike consumes
+        // <init>/acquire (decode evidence; wave-8's S191 crossref carried
+        // the class-level gap on this line). Heap field __sem_permits__.
+        if (class_name == "Ljava/util/concurrent/Semaphore;") {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            auto sem_permits = [&](uint32_t oid) -> int64_t {
+                DalvikValue v = c8_getf(oid, "__sem_permits__");
+                return v.type == DalvikType::INT64 ? v.long_val
+                     : (v.type == DalvikType::INT32 ? v.int_val : 0);
+            };
+            auto sem_set = [&](uint32_t oid, int64_t n) {
+                heap_.set_object_field(oid, "__sem_permits__",
+                                       DalvikValue::make_long(n));
+            };
+            if (method == "<init>") {
+                int64_t n = 0;
+                if (args.size() >= 2) {
+                    if (args[1].type == DalvikType::INT64) n = args[1].long_val;
+                    else if (args[1].type == DalvikType::INT32) n = args[1].int_val;
+                }
+                if (n < 0) {
+                    throw_deferred("Ljava/lang/IllegalArgumentException;",
+                                   "permits < 0", "c8-179-sem-init");
+                } else {
+                    sem_set(recv, n);
+                    std::cerr << "[C8-SEM] new Semaphore o" << recv
+                              << " permits=" << n << std::endl;
+                }
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "acquire") {
+                int64_t n = sem_permits(recv);
+                if (n > 0) {
+                    sem_set(recv, n - 1);
+                } else {
+                    monitor_waitsets_[recv].push_back(0);
+                    std::cerr << "[C8-SEM] acquire PARKED o" << recv
+                              << " permits=0 — AOSP blocks here (serialized "
+                                 "boundary: no concurrent release exists)"
+                              << std::endl;
+                }
+                std::cerr << "[C8-SEM] acquire o" << recv << " → " << (n > 0)
+                          << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "tryAcquire") {
+                int64_t n = sem_permits(recv);
+                bool got = n > 0;
+                if (got) sem_set(recv, n - 1);
+                std::cerr << "[C8-SEM] tryAcquire o" << recv << " → " << got
+                          << std::endl;
+                result = DalvikValue::make_bool(got);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "release") {
+                int64_t n = sem_permits(recv);
+                sem_set(recv, n + 1);
+                if (!monitor_waitsets_[recv].empty())
+                    monitor_waitsets_[recv].clear();  // wake waiters
+                std::cerr << "[C8-SEM] release o" << recv << " → permits="
+                          << (n + 1) << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "availablePermits") {
+                result = DalvikValue::make_int(
+                    static_cast<int32_t>(sem_permits(recv)));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "drainPermits") {
+                int64_t n = sem_permits(recv);
+                sem_set(recv, 0);
+                std::cerr << "[C8-SEM] drainPermits o" << recv << " → " << n
+                          << std::endl;
+                result = DalvikValue::make_int(
+                    static_cast<int32_t>(n));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+
+        // ── F-C8-183 — java.util.TimerTask surface ──────────────────────
+        // OpenJDK law (TimerTask.java): cancel() returns true when it
+        // cancelled a scheduled-not-yet-run task; scheduledExecutionTime()
+        // answers the last scheduled beat (stamped by the Timer.schedule
+        // law F-C8-183-stamp at the F-115 block). 7 APKs construct
+        // TimerTask subclasses (androguard crossref; the kotlin timer
+        // wrapper family rides this surface). Was (this line): no law —
+        // cancel answered null, scheduledExecutionTime answered 0/null.
+        if (c8_isa(class_name, "Ljava/util/TimerTask;")) {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (method == "<init>" && !args.empty() &&
+                args[0].type == DalvikType::OBJECT_REF) {
+                heap_.set_object_field(recv, "__tt_sched_time__",
+                                       DalvikValue::make_long(0));
+                heap_.set_object_field(recv, "__tt_period__",
+                                       DalvikValue::make_long(0));
+                heap_.set_object_field(recv, "__tt_cancelled__",
+                                       DalvikValue::make_bool(false));
+                std::cerr << "[C8-TT] new TimerTask o" << recv
+                          << " (fields stamped)" << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "cancel") {
+                DalvikValue sched = c8_getf(recv, "__tt_sched_time__");
+                int64_t when = (sched.type == DalvikType::INT64)
+                                   ? sched.long_val : 0;
+                bool already = c8_getf(recv, "__tt_cancelled__").bool_val;
+                bool was = (when > 0) && !already;
+                heap_.set_object_field(recv, "__tt_cancelled__",
+                                       DalvikValue::make_bool(true));
+                // A cancelled pending entry must not fire: remove it from
+                // the shared deterministic queue (OpenJDK: the TimerThread
+                // never runs a cancelled task).
+                if (auto* hs = shadow_registry_
+                                   ? shadow_registry_->find_as<
+                                         framework::HandlerShadow>()
+                                   : nullptr)
+                    hs->remove_callbacks(recv);
+                std::cerr << "[C8-TT] cancel o" << recv << " → " << was
+                          << " (was scheduled=" << (when > 0) << ")"
+                          << std::endl;
+                result = DalvikValue::make_bool(was);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "scheduledExecutionTime") {
+                DalvikValue sched = c8_getf(recv, "__tt_sched_time__");
+                result = DalvikValue::make_long(
+                    sched.type == DalvikType::INT64 ? sched.long_val : 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+
+        // ── F-C8-187/188/189 — android.os.Process identity + signals ───
+        // AOSP law (Process.java): myPid/myUid/myTid answer the OS ids;
+        // isApplicationUid(uid) = uid >= FIRST_APPLICATION_UID (10000);
+        // setThreadPriority(tid, prio) lowers the nice level (no getter
+        // in the AOSP surface); killProcess/sendSignal terminate. 4
+        // APKs/45 sites (androguard crossref). Serialized-engine laws:
+        // ONE process → deterministic pid/uid constants; tids ride the
+        // ThreadShadow tid table (main = 1, monotonic); the kill laws
+        // are LOUD boundary records (the engine cannot suicide — never
+        // silent, never a throw: real apps call these in exit flows).
+        if (class_name == "Landroid/os/Process;") {
+            auto* ts_p = shadow_registry_
+                             ? shadow_registry_->find_as<
+                                   framework::ThreadShadow>()
+                             : nullptr;
+            if (method == "myPid" || method == "myUid" ||
+                method == "myTid" || method == "isApplicationUid" ||
+                method == "setThreadPriority" || method == "killProcess" ||
+                method == "sendSignal") {
+                static thread_local uint64_t proc_log = 0;
+                bool do_log = proc_log < 12;
+                if (method == "myPid") {
+                    if (do_log) { ++proc_log;
+                        std::cerr << "[C8-PROC] myPid → 1 (serialized "
+                                     "single-process law)" << std::endl; }
+                    result = DalvikValue::make_int(1);
+                } else if (method == "myUid") {
+                    if (do_log) { ++proc_log;
+                        std::cerr << "[C8-PROC] myUid → 10042 (app-uid "
+                                     "law, isApplicationUid-coherent)"
+                                  << std::endl; }
+                    result = DalvikValue::make_int(10042);
+                } else if (method == "myTid") {
+                    int32_t tid = ts_p
+                        ? ts_p->tid_of(ts_p->current_thread_id()) : 1;
+                    if (do_log) { ++proc_log;
+                        std::cerr << "[C8-PROC] myTid → " << tid
+                                  << " (ThreadShadow tid table)"
+                                  << std::endl; }
+                    result = DalvikValue::make_int(tid);
+                } else if (method == "isApplicationUid") {
+                    int32_t uid = (!args.empty() &&
+                                   args[0].type == DalvikType::INT32)
+                                      ? args[0].int_val : 0;
+                    // AOSP: FIRST_APPLICATION_UID = 10000.
+                    bool app = uid >= 10000;
+                    if (do_log) { ++proc_log;
+                        std::cerr << "[C8-PROC] isApplicationUid(" << uid
+                                  << ") → " << app << " (AOSP 10000 law)"
+                                  << std::endl; }
+                    result = DalvikValue::make_bool(app);
+                } else if (method == "setThreadPriority") {
+                    int32_t tid = (args.size() >= 2 &&
+                                   args[0].type == DalvikType::INT32)
+                                      ? args[0].int_val : 0;
+                    int32_t prio = (args.size() >= 2 &&
+                                    args[1].type == DalvikType::INT32)
+                                       ? args[1].int_val
+                                       : (args.size() >= 1 &&
+                                          args[0].type == DalvikType::INT32
+                                              ? args[0].int_val : 0);
+                    c8_native_thread_prio_[tid] = prio;
+                    if (do_log) { ++proc_log;
+                        std::cerr << "[C8-PROC] setThreadPriority tid="
+                                  << tid << " prio=" << prio
+                                  << " (loud store — no OS nice)"
+                                  << std::endl; }
+                    result = DalvikValue::make_void();
+                } else if (method == "killProcess") {
+                    if (do_log) { ++proc_log;
+                        std::cerr << "[C8-PROC] killProcess — LOUD "
+                                     "boundary: serialized engine cannot "
+                                     "suicide; run continues" << std::endl; }
+                    result = DalvikValue::make_void();
+                } else {  // sendSignal
+                    if (do_log) { ++proc_log;
+                        std::cerr << "[C8-PROC] sendSignal — LOUD "
+                                     "boundary record (no OS signal)"
+                                  << std::endl; }
+                    result = DalvikValue::make_void();
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+
+        // ── F-C8-195 — java.util.concurrent.Phaser ──────────────────────
+        // OpenJDK law (Phaser.java): registration counting + phase
+        // advance. register/bulkRegister(n) add parties; arrive()/
+        // arriveAndAwaitAdvance()/arriveAndDeregister() advance the phase
+        // when every registered party arrived; onAdvance(phase, parties)
+        // is the DEX-overridable termination hook (true → terminated).
+        // Wave-9 §Next candidate; serialized single-party-per-call law.
+        if (c8_isa(class_name, "Ljava/util/concurrent/Phaser;")) {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            auto ph_int = [&](const char* f) -> int64_t {
+                DalvikValue v = c8_getf(recv, f);
+                return v.type == DalvikType::INT64 ? v.long_val
+                     : (v.type == DalvikType::INT32 ? v.int_val : 0);
+            };
+            auto ph_set = [&](const char* f, int64_t v) {
+                heap_.set_object_field(recv, f,
+                                       DalvikValue::make_long(v));
+            };
+            // Advance law: when every party arrived, the phase advances,
+            // arrivals reset, and the onAdvance hook runs (DEX override).
+            auto ph_advance = [&]() -> void {
+                int64_t parties = ph_int("__phaser_parties__");
+                int64_t arrived = ph_int("__phaser_arrived__");
+                if (parties <= 0 || arrived < parties) return;
+                int64_t phase = ph_int("__phaser_phase__");
+                arrived = 0;
+                ph_set("__phaser_phase__", phase + 1);
+                ph_set("__phaser_arrived__", 0);
+                DalvikValue aret;
+                DalvikExecutionResult ares;
+                std::vector<DalvikValue> aargs{
+                    DalvikValue::make_object(recv, class_name),
+                    DalvikValue::make_int(
+                        static_cast<int32_t>(phase)),
+                    DalvikValue::make_int(
+                        static_cast<int32_t>(parties))};
+                bool hook = try_recursive_invoke(
+                    class_name, "onAdvance", aargs, aret, ares, "(II)Z");
+                std::cerr << "[C8-PHASER] o" << recv << " advance "
+                          << phase << " → " << (phase + 1)
+                          << " onAdvance="
+                          << (hook ? "DEX" : "default(false)") << std::endl;
+            };
+            if (method == "<init>") {
+                int64_t parties = 0;
+                if (args.size() >= 2) {
+                    if (args[1].type == DalvikType::INT32)
+                        parties = args[1].int_val;
+                    else if (args[1].type == DalvikType::INT64)
+                        parties = args[1].long_val;
+                }
+                ph_set("__phaser_phase__", 0);
+                ph_set("__phaser_parties__", parties);
+                ph_set("__phaser_arrived__", 0);
+                std::cerr << "[C8-PHASER] new Phaser o" << recv
+                          << " parties=" << parties << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "register" || method == "bulkRegister") {
+                int64_t n = method == "register"
+                                ? 1
+                                : ((args.size() >= 2 &&
+                                    args[1].type == DalvikType::INT32)
+                                       ? args[1].int_val : 0);
+                ph_set("__phaser_parties__",
+                       ph_int("__phaser_parties__") + n);
+                result = DalvikValue::make_int(static_cast<int32_t>(
+                    ph_int("__phaser_phase__")));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "arrive") {
+                // JDK: arrive() returns the ARRIVAL phase = the phase
+                // in which this arrival landed (pre-advance value when
+                // this arrival completes the barrier).
+                int64_t arrived_in = ph_int("__phaser_phase__");
+                ph_set("__phaser_arrived__",
+                       ph_int("__phaser_arrived__") + 1);
+                ph_advance();
+                result = DalvikValue::make_int(
+                    static_cast<int32_t>(arrived_in));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "arriveAndAwaitAdvance") {
+                // Serialized-engine law: the ONE interpreter thread
+                // embodies EVERY registered party (F-020 inline-run
+                // precedent) — an explicit await IS the barrier
+                // completion: all parties arrive, the phase advances,
+                // and the await returns the NEW phase (JDK contract:
+                // the phase the awaiters observe). Divergence note: a
+                // real concurrent runtime would park until the other
+                // parties arrive; here there are no other threads to
+                // arrive — documented, loud, deterministic.
+                ph_set("__phaser_arrived__",
+                       ph_int("__phaser_parties__"));
+                ph_advance();
+                result = DalvikValue::make_int(static_cast<int32_t>(
+                    ph_int("__phaser_phase__")));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "arriveAndDeregister") {
+                int64_t arrived_in = ph_int("__phaser_phase__");
+                ph_set("__phaser_parties__",
+                       ph_int("__phaser_parties__") - 1);
+                ph_set("__phaser_arrived__",
+                       ph_int("__phaser_arrived__") + 1);
+                ph_advance();
+                result = DalvikValue::make_int(
+                    static_cast<int32_t>(arrived_in));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "awaitAdvance" ||
+                method == "awaitAdvanceInterruptibly") {
+                // Serialized: the party awaiting already observed the
+                // advance (or the phase never advances further) — the
+                // current phase is the honest answer (no park needed).
+                result = DalvikValue::make_int(static_cast<int32_t>(
+                    ph_int("__phaser_phase__")));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getPhase") {
+                result = DalvikValue::make_int(static_cast<int32_t>(
+                    ph_int("__phaser_phase__")));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getRegisteredParties") {
+                result = DalvikValue::make_int(static_cast<int32_t>(
+                    ph_int("__phaser_parties__")));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getArrivedParties") {
+                result = DalvikValue::make_int(static_cast<int32_t>(
+                    ph_int("__phaser_arrived__")));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getUnarrivedParties") {
+                result = DalvikValue::make_int(static_cast<int32_t>(
+                    ph_int("__phaser_parties__") -
+                    ph_int("__phaser_arrived__")));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+
+        // ── F-C8-198 — ThreadPoolExecutor queue observables ─────────────
+        // OpenJDK law: getQueue() returns the work queue; purge() removes
+        // cancelled tasks and answers the count; prestartCoreThread()
+        // starts a worker iff below core. Serialized laws: the queue is
+        // minted once as a LinkedBlockingQueue VIEW (tasks ran inline at
+        // submit — the queue stays empty, honest); purge → 0 (loud);
+        // prestartCoreThread → false (no worker spawn — loud).
+        if ((class_name == "Ljava/util/concurrent/ThreadPoolExecutor;" ||
+             class_name ==
+                 "Ljava/util/concurrent/ScheduledThreadPoolExecutor;") &&
+            (method == "getQueue" || method == "purge" ||
+             method == "prestartCoreThread")) {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (method == "getQueue") {
+                uint32_t& qbox = c8_tpe_queue_[recv];
+                if (qbox == 0) {
+                    qbox = heap_.allocate(
+                        "Ljava/util/concurrent/LinkedBlockingQueue;",
+                        pc_, 0);
+                    std::cerr << "[C8-POOL] getQueue o" << recv
+                              << " → minted LinkedBlockingQueue view o"
+                              << qbox << std::endl;
+                }
+                result = DalvikValue::make_object(
+                    qbox, "Ljava/util/concurrent/LinkedBlockingQueue;");
+            } else if (method == "purge") {
+                std::cerr << "[C8-POOL] purge → 0 (inline-run law: no "
+                             "queued tasks to purge)" << std::endl;
+                result = DalvikValue::make_int(0);
+            } else {
+                std::cerr << "[C8-POOL] prestartCoreThread → false "
+                             "(serialized law: no worker spawn)" << std::endl;
+                result = DalvikValue::make_bool(false);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
+        // ── F-C8-199 — Thread.getAllStackTraces ─────────────────────────
+        // OpenJDK law: a Map<Thread, StackTraceElement[]> snapshot for
+        // every live platform thread. Serialized law: the map is REAL
+        // (object-keyed via the obj:<oid> map-key law) and contains every
+        // ThreadShadow-known thread; each value is a REAL empty
+        // StackTraceElement[] array — the DEX frame rendering is not
+        // reproduced (the UC010 getStackTrace law stays the per-thread
+        // frame source; the map's arrays are the documented boundary).
+        if (class_name == "Ljava/lang/Thread;" &&
+            method == "getAllStackTraces") {
+            const uint32_t map_id = heap_.allocate("Ljava/util/HashMap;",
+                                                   pc_, 0);
+            auto* ts_g = shadow_registry_
+                             ? shadow_registry_->find_as<
+                                   framework::ThreadShadow>()
+                             : nullptr;
+            auto* csh_g = shadow_registry_
+                              ? shadow_registry_->find_as<
+                                    framework::CollectionShadow>()
+                              : nullptr;
+            if (csh_g) {
+                auto* st = csh_g->get_or_create(map_id, /*is_map=*/true);
+                if (st) {
+                    st->is_map = true;
+                    if (ts_g) {
+                        for (uint32_t toid : ts_g->known_thread_ids()) {
+                            const uint32_t arr =
+                                heap_.allocate("[Ljava/lang/StackTraceElement;",
+                                               pc_, 0);
+                            heap_.set_object_field(
+                                arr, "__new_array_length__",
+                                DalvikValue::make_int(0));
+                            st->map_entries["obj:" + std::to_string(toid)] =
+                                arr;
+                        }
+                    }
+                }
+            }
+            std::cerr << "[C8-THREAD] getAllStackTraces → map o" << map_id
+                      << " entries="
+                      << (ts_g ? ts_g->known_thread_ids().size() : 0)
+                      << std::endl;
+            result = DalvikValue::make_object(map_id,
+                                              "Ljava/util/HashMap;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
+        // ── F-C8-177 — ConcurrentLinkedQueue ────────────────────────────
+        // OpenJDK law: unbounded lock-free FIFO (CLQ.java). add/offer
+        // append (always true); poll pops the head (null when empty);
+        // peek reads the head; remove() = poll + NSEE on empty (remove(e)
+        // element form: boolean). Engine: heap element list
+        // __clq_e<p>__ + __clq_sz__ (EXP-051 state law). klondike +
+        // tower3d consume <init>/add/poll (10 sites, decode evidence).
+        if (class_name == "Ljava/util/concurrent/ConcurrentLinkedQueue;") {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            auto clq_size = [&](uint32_t oid) -> int32_t {
+                DalvikValue v = c8_getf(oid, "__clq_sz__");
+                return v.type == DalvikType::INT32 ? v.int_val : 0;
+            };
+            if (method == "<init>") {
+                heap_.set_object_field(recv, "__clq_sz__",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "add" || method == "offer") {
+                int32_t n = clq_size(recv);
+                if (args.size() >= 2) {
+                    const auto& va = args[1];
+                    if (va.type == DalvikType::OBJECT_REF ||
+                        va.type == DalvikType::INT32 ||
+                        va.type == DalvikType::INT64 ||
+                        va.type == DalvikType::STRING_REF)
+                        heap_.set_object_field(
+                            recv, "__clq_e" + std::to_string(n) + "__", va);
+                    heap_.set_object_field(recv, "__clq_sz__",
+                                           DalvikValue::make_int(n + 1));
+                    std::cerr << "[C8-CLQ] " << method << " o" << recv
+                              << " → size=" << (n + 1) << std::endl;
+                }
+                result = DalvikValue::make_bool(true);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "poll" || method == "remove") {
+                int32_t n = clq_size(recv);
+                if (n <= 0) {
+                    if (method == "remove") {
+                        std::cerr << "[C8-CLQ] remove() o" << recv
+                                  << " on EMPTY — NoSuchElementException law"
+                                  << std::endl;
+                        throw_deferred(
+                            "Ljava/util/NoSuchElementException;",
+                            "ConcurrentLinkedQueue.remove() on empty",
+                            "c8-177-clq-remove");
+                    }
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                // Shift the element list (head = position 0).
+                DalvikValue head = c8_getf(recv, "__clq_e0__");
+                for (int32_t i = 1; i < n; ++i) {
+                    DalvikValue v = c8_getf(
+                        recv, ("__clq_e" + std::to_string(i) + "__").c_str());
+                    heap_.set_object_field(
+                        recv, ("__clq_e" + std::to_string(i - 1) + "__")
+                                  .c_str(),
+                        v);
+                }
+                heap_.set_object_field(
+                    recv, ("__clq_e" + std::to_string(n - 1) + "__").c_str(),
+                    DalvikValue());
+                heap_.set_object_field(recv, "__clq_sz__",
+                                       DalvikValue::make_int(n - 1));
+                std::cerr << "[C8-CLQ] " << method << " o" << recv
+                          << " → head (size " << n << "→" << (n - 1) << ")"
+                          << std::endl;
+                result = (head.type == DalvikType::OBJECT_REF ||
+                          head.type == DalvikType::STRING_REF ||
+                          head.type == DalvikType::INT32 ||
+                          head.type == DalvikType::INT64)
+                             ? head
+                             : DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "peek") {
+                int32_t n = clq_size(recv);
+                if (n <= 0) {
+                    result = DalvikValue::make_null();
+                } else {
+                    DalvikValue head = c8_getf(recv, "__clq_e0__");
+                    result = (head.type == DalvikType::OBJECT_REF ||
+                              head.type == DalvikType::STRING_REF ||
+                              head.type == DalvikType::INT32 ||
+                              head.type == DalvikType::INT64)
+                                 ? head
+                                 : DalvikValue::make_null();
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "isEmpty") {
+                result = DalvikValue::make_bool(clq_size(recv) == 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "size") {
+                result = DalvikValue::make_int(clq_size(recv));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+
+        // ── F-C8-174 — LinkedBlockingDeque (carried F-C8-158) ───────────
+        // OpenJDK law (LinkedBlockingDeque.java): two-ended blocking
+        // deque. putFirst/putLast/offerFirst/offerLast append at the
+        // named end (offer answers capacity truth); pollFirst/pollLast/
+        // takeFirst/takeLast remove from the named end (null/None when
+        // empty — take blocks); peekFirst/peekLast read. klondike +
+        // tower3d consume the ctor (3 sites; the method family is the
+        // carried wave-8 PENDING). Engine: heap element list
+        // __dq_e<p>__ + __dq_sz__ with an end-tagged law (same EXP-051
+        // vocabulary as the F-578 bounded-queue family).
+        if (class_name == "Ljava/util/concurrent/LinkedBlockingDeque;") {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            auto dq_size = [&](uint32_t oid) -> int32_t {
+                DalvikValue v = c8_getf(oid, "__dq_sz__");
+                return v.type == DalvikType::INT32 ? v.int_val : 0;
+            };
+            if (method == "<init>") {
+                int64_t cap = -1;
+                if (args.size() >= 2) {
+                    if (args[1].type == DalvikType::INT64) cap = args[1].long_val;
+                    else if (args[1].type == DalvikType::INT32) cap = args[1].int_val;
+                }
+                if (cap == 0) {
+                    throw_deferred("Ljava/lang/IllegalArgumentException;",
+                                   "capacity < 0", "c8-174-lbd-init");
+                }
+                heap_.set_object_field(recv, "__dq_sz__",
+                                       DalvikValue::make_int(0));
+                std::cerr << "[C8-LBD] new LinkedBlockingDeque o" << recv
+                          << " cap=" << cap << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // insert family: putX/offerX/addX (offer returns capacity
+            // truth — serialized engine: unbounded ⇒ always true).
+            if (method == "putFirst" || method == "putLast" ||
+                method == "offerFirst" || method == "offerLast" ||
+                method == "addFirst" || method == "addLast" ||
+                method == "add" || method == "offer" || method == "put") {
+                bool at_front = (method == "putFirst" ||
+                                 method == "offerFirst" || method == "addFirst");
+                int32_t n = dq_size(recv);
+                if (args.size() >= 2) {
+                    const auto& va = args[1];
+                    if (at_front) {
+                        for (int32_t i = n; i > 0; --i) {
+                            DalvikValue v = c8_getf(
+                                recv, ("__dq_e" + std::to_string(i - 1) + "__")
+                                          .c_str());
+                            heap_.set_object_field(
+                                recv,
+                                ("__dq_e" + std::to_string(i) + "__").c_str(),
+                                v);
+                        }
+                        heap_.set_object_field(recv, "__dq_e0__", va);
+                    } else {
+                        heap_.set_object_field(
+                            recv,
+                            ("__dq_e" + std::to_string(n) + "__").c_str(),
+                            va);
+                    }
+                    heap_.set_object_field(recv, "__dq_sz__",
+                                           DalvikValue::make_int(n + 1));
+                    std::cerr << "[C8-LBD] " << method << " o" << recv
+                              << (at_front ? " FRONT" : " BACK")
+                              << " → size=" << (n + 1) << std::endl;
+                }
+                bool returns_bool = (method.rfind("offer", 0) == 0 ||
+                                     method.rfind("add", 0) == 0);
+                result = returns_bool ? DalvikValue::make_bool(true)
+                                      : DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // remove family: pollX/takeX/removeX + peek read-only family.
+            if (method == "pollFirst" || method == "pollLast" ||
+                method == "takeFirst" || method == "takeLast" ||
+                method == "removeFirst" || method == "removeLast" ||
+                method == "poll" || method == "take" || method == "remove" ||
+                method == "peekFirst" || method == "peekLast" ||
+                method == "peek") {
+                int32_t n = dq_size(recv);
+                const bool peek_only = (method.rfind("peek", 0) == 0);
+                // SUBSTRING law: First/Last is a SUFFIX of the method name
+                // (pollFirst/takeLast/...); "poll"/"take"/"remove"/"peek"
+                // without a suffix are the FRONT (FIFO head) forms.
+                bool from_front = method.find("First") != std::string::npos ||
+                                  method == "poll" || method == "peek" ||
+                                  method == "take" || method == "remove";
+                if (method == "pollLast" || method == "takeLast" ||
+                    method == "removeLast" || method == "peekLast")
+                    from_front = false;
+                if (n <= 0) {
+                    if (peek_only) {
+                        result = DalvikValue::make_null();
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                    if (method == "removeFirst" || method == "removeLast" ||
+                        method == "remove") {
+                        std::cerr << "[C8-LBD] " << method << " o" << recv
+                                  << " on EMPTY — NoSuchElementException law"
+                                  << std::endl;
+                        throw_deferred("Ljava/util/NoSuchElementException;",
+                                       "LinkedBlockingDeque." + method +
+                                           "() on empty",
+                                       "c8-174-lbd-remove");
+                    }
+                    if (method == "takeFirst" || method == "takeLast" ||
+                        method == "take") {
+                        std::cerr << "[C8-LBD] " << method << " o" << recv
+                                  << " PARKED (empty) — AOSP blocks here "
+                                     "(serialized boundary)" << std::endl;
+                    }
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                int32_t idx = from_front ? 0 : (n - 1);
+                DalvikValue v = c8_getf(
+                    recv, ("__dq_e" + std::to_string(idx) + "__").c_str());
+                if (!peek_only) {
+                    if (from_front) {
+                        for (int32_t i = 1; i < n; ++i) {
+                            DalvikValue nx = c8_getf(
+                                recv, ("__dq_e" + std::to_string(i) + "__")
+                                          .c_str());
+                            heap_.set_object_field(
+                                recv,
+                                ("__dq_e" + std::to_string(i - 1) + "__")
+                                    .c_str(),
+                                nx);
+                        }
+                    }
+                    heap_.set_object_field(
+                        recv,
+                        ("__dq_e" + std::to_string(n - 1) + "__").c_str(),
+                        DalvikValue());
+                    heap_.set_object_field(recv, "__dq_sz__",
+                                           DalvikValue::make_int(n - 1));
+                    std::cerr << "[C8-LBD] " << method << " o" << recv
+                              << (from_front ? " FRONT" : " BACK")
+                              << " (size " << n << "→" << (n - 1) << ")"
+                              << std::endl;
+                }
+                result = (v.type == DalvikType::OBJECT_REF ||
+                          v.type == DalvikType::STRING_REF ||
+                          v.type == DalvikType::INT32 ||
+                          v.type == DalvikType::INT64)
+                             ? v
+                             : DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "size") {
+                result = DalvikValue::make_int(dq_size(recv));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "isEmpty") {
+                result = DalvikValue::make_bool(dq_size(recv) == 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+
+        // ── F-C8-171 — Throwable cause channel (trio classes) ───────────
+        // OpenJDK law (Throwable.java): initCause(cause) — at most once
+        // (ISE on re-init, cause==this IAE); getCause() — the cause or
+        // null; printStackTrace() — renders (never throws). Before this
+        // law: no handler at all — ExecutionException.getCause (4 APKs /
+        // 12 sites), CancellationException.initCause (3 APKs / 12),
+        // InterruptedException.printStackTrace (4 APKs / 4) fell silent.
+        // Heap field __throwable_cause__.
+        if ((class_name == "Ljava/util/concurrent/ExecutionException;" ||
+             class_name == "Ljava/util/concurrent/CancellationException;" ||
+             class_name == "Ljava/lang/InterruptedException;") &&
+            (method == "getCause" || method == "initCause" ||
+             method == "printStackTrace")) {
+            const uint32_t recv =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            // [S192-C8] <init>(Throwable) / <init>(String, Throwable):
+            // OpenJDK stores the cause (Throwable.cause field). Without
+            // this the probe's ExecutionException("wrap", cause)
+            // constructor dropped the cause and getCause() answered null
+            // even after the ctor-carried form.
+            if (method == "<init>") {
+                // Receiver-shift shape: instance <init> carries the
+                // receiver at args[0] — the 2-arg (String, Throwable)
+                // ctor has the cause at args[2]; the 1-arg (Throwable)
+                // ctor at args[1].
+                DalvikValue ctor_cause;
+                if (args.size() >= 3 &&
+                    args[2].type == DalvikType::OBJECT_REF)
+                    ctor_cause = args[2];
+                else if (args.size() >= 2 &&
+                         args[1].type == DalvikType::OBJECT_REF)
+                    ctor_cause = args[1];
+                if (ctor_cause.type == DalvikType::OBJECT_REF)
+                    heap_.set_object_field(
+                        recv, "__throwable_cause__",
+                        DalvikValue::make_object(
+                            ctor_cause.object_id,
+                            ctor_cause.class_desc.empty()
+                                ? "Ljava/lang/Throwable;"
+                                : ctor_cause.class_desc));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getCause") {
+                DalvikValue c = c8_getf(recv, "__throwable_cause__");
+                result = (c.type == DalvikType::OBJECT_REF)
+                             ? c : DalvikValue::make_null();
+                std::cerr << "[C8-THROW] getCause o" << recv
+                          << " → "
+                          << (c.type == DalvikType::OBJECT_REF
+                                  ? std::string("cause o") +
+                                        std::to_string(c.object_id)
+                                  : std::string("null"))
+                          << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "initCause") {
+                if (args.size() >= 2 &&
+                    args[1].type == DalvikType::OBJECT_REF) {
+                    DalvikValue prev = c8_getf(recv, "__throwable_cause__");
+                    if (prev.type == DalvikType::OBJECT_REF) {
+                        // JDK: IllegalStateException on double-init.
+                        std::cerr << "[C8-THROW] initCause o" << recv
+                                  << " ALREADY set — ISE law" << std::endl;
+                        throw_deferred(
+                            "Ljava/lang/IllegalStateException;",
+                            "Can't overwrite cause",
+                            "c8-171-initcause");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_void();
+                        return true;
+                    }
+                    heap_.set_object_field(
+                        recv, "__throwable_cause__",
+                        DalvikValue::make_object(
+                            args[1].object_id,
+                            args[1].class_desc.empty()
+                                ? "Ljava/lang/Throwable;"
+                                : args[1].class_desc));
+                    std::cerr << "[C8-THROW] initCause o" << recv
+                              << " ← cause o" << args[1].object_id
+                              << std::endl;
+                }
+                result = DalvikValue::make_object(
+                    recv, class_name.c_str());
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "printStackTrace") {
+                // JDK: renders to stderr. Engine: the DEX frame rendering
+                // is not reproduced — the LBOUND record is the honest
+                // boundary (never silent, never a throw).
+                std::cerr << "[C8-THROW] printStackTrace o" << recv
+                          << " ("
+                          << class_name
+                          << ") — stack rendering not reproduced; loud "
+                             "boundary record" << std::endl;
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+
+        // ── F-C8-173 — ForkJoinPool.getCommonPoolParallelism ────────────
+        // OpenJDK: getCommonPoolParallelism() = the common pool's target
+        // parallelism. Serialized law: 1 (mirrors F-C8-148
+        // getParallelism). Bouncy consumes it (decode evidence).
+        if (class_name == "Ljava/util/concurrent/ForkJoinPool;" &&
+            method == "getCommonPoolParallelism") {
+            std::cerr << "[C8-POOL] getCommonPoolParallelism → 1 (serialized "
+                         "law, LOUD)" << std::endl;
+            result = DalvikValue::make_int(1);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
+        // ── F-C8-180 — Future.cancel / isCancelled (+isDone coherence) ──
+        // OpenJDK law (FutureTask.java): cancel(mayInterruptIfRunning) on
+        // a NOT-yet-completed future → true, state CANCELLED (later
+        // get() throws CancellationException); on a completed future →
+        // false. isCancelled() reads the state; isDone() = completed ||
+        // cancelled. Engine: __future_cancelled__ heap field +
+        // future_results_ (completed ⇒ cancel false). tower3d/klondike/
+        // tictactoe consume cancel (10 sites).
+        if ((class_name == "Ljava/util/concurrent/Future;" ||
+             class_name == "Ljava/util/concurrent/FutureTask;") &&
+            (method == "cancel" || method == "isCancelled")) {
+            uint32_t box =
+                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                    ? args[0].object_id : 0;
+            if (method == "isCancelled") {
+                DalvikValue cv = c8_getf(box, "__future_cancelled__");
+                result = DalvikValue::make_bool(cv.bool_val);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            const bool completed = future_results_.count(box) > 0;
+            if (completed) {
+                std::cerr << "[C8-FUTURE] cancel box=o" << box
+                          << " → false (already completed — JDK law)"
+                          << std::endl;
+                result = DalvikValue::make_bool(false);
+            } else {
+                heap_.set_object_field(box, "__future_cancelled__",
+                                       DalvikValue::make_bool(true));
+                std::cerr << "[C8-FUTURE] cancel box=o" << box
+                          << " → true (CANCELLED; get() now throws "
+                             "CancellationException)" << std::endl;
+                result = DalvikValue::make_bool(true);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
+        // ── F-C8-178 — Object.finalize lifecycle boundary ───────────────
+        // JDK: finalize() is the GC hook (protected, empty by default;
+        // called at collection). Engine: no GC — a deterministic boundary
+        // record (tictactoe + tower3d call it: 4 sites). Never a silent
+        // void: the record IS the observable.
+        if (class_name == "Ljava/lang/Object;" && method == "finalize") {
+            std::cerr << "[C8-OBJ] finalize o"
+                      << (!args.empty() &&
+                                  args[0].type == DalvikType::OBJECT_REF
+                              ? args[0].object_id : 0)
+                      << " — GC hook boundary (engine has no collector; "
+                         "AOSP calls this at collection)" << std::endl;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
+        // ── F-C8-157 (carried) — interrupt delivery at Condition await ──
+        // OpenJDK (AbstractQueuedSynchronizer.ConditionObject): await() is
+        // interruptible — an interrupt at entry (or during the park)
+        // clears the flag and throws InterruptedException. Engine pre-law:
+        // fires ONLY when the flag is set (outer gate), else the locks
+        // shadow owns the law untouched.
+        if (class_name == "Ljava/util/concurrent/locks/Condition;" &&
+            (method == "await" || method == "awaitNanos")) {
+            const uint32_t main_tid =
+                get_or_create_singleton("Ljava/lang/Thread;").object_id;
+            if (thread_interrupted_[main_tid]) {
+                thread_interrupted_[main_tid] = false;
+                std::cerr << "[C8-COND] await o"
+                          << (!args.empty() &&
+                                      args[0].type == DalvikType::OBJECT_REF
+                                  ? args[0].object_id : 0)
+                          << " — INTERRUPTED (flag cleared, "
+                             "InterruptedException delivered at the parked "
+                             "law)" << std::endl;
+                throw_deferred("Ljava/lang/InterruptedException;",
+                               "await interrupted",
+                               "c8-157-cond-await");
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
     }
     if (!provider_ctx366 &&
         try_shadow_dispatch(class_name, method, args, result, status)) {
@@ -56363,6 +60103,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                   << (fired ? "REAL DEX callback executed"
                                             : "no app override")
                                   << std::endl;
+                    }
+                    // ── F-C4-597 (W11): the onOpen callback. AOSP
+                    // SQLiteOpenHelper.getDatabaseLocked delivers
+                    // onCreate → onUpgrade → onOpen on EVERY fresh open
+                    // (onOpen fires even when neither create nor upgrade
+                    // did — e.g. a version-matched reopen). Room 2.7's
+                    // RoomOpenHelper.onOpen runs checkIdentity +
+                    // internalInitInvalidationTracker there (CREATE TEMP
+                    // TABLE room_table_modification_log + trigger sync);
+                    // the missing delivery left the temp table absent,
+                    // killed compileStatement, and aborted
+                    // MainActivity.onCreate mid-body on Tusky (the
+                    // setContentView subtree never installed). The
+                    // version-persist (notify_lifecycle_callbacks_done)
+                    // stays AFTER all three callbacks, as in AOSP.
+                    if (db_shadow->consume_pending_open(helper_oid)) {
+                        DalvikValue oo_ret;
+                        DalvikExecutionResult oo_res;
+                        std::vector<DalvikValue> oo_args{args[0], result};
+                        bool oo_fired = try_recursive_invoke(
+                            args[0].class_desc, "onOpen", oo_args, oo_ret,
+                            oo_res,
+                            "(Landroid/database/sqlite/SQLiteDatabase;)V");
+                        std::cerr << "[SQLITE-LIFECYCLE] onOpen -> "
+                                  << (oo_fired
+                                          ? "REAL DEX callback executed"
+                                          : "no app override (framework default)")
+                                  << " on " << args[0].class_desc << std::endl;
                     }
                     db_shadow->notify_lifecycle_callbacks_done(helper_oid);
                 }
@@ -59014,6 +62782,339 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_int(0);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // S191 F-NEW-602: android.widget.ArrayAdapter family laws.
+    // AOSP ArrayAdapter.java (mObjects ArrayList, mNotifyOnChange=true,
+    // mResource, mTextViewResourceId):
+    //   <init>(Context, int[, int|List]) → fresh backing list,
+    //       mNotifyOnChange=true, mResource=resource
+    //   add(T) → mObjects.add(object); if (mNotifyOnChange)
+    //            notifyDataSetChanged()  [rows re-materialize]
+    //   getCount() → mObjects.size();  getItem(I) → mObjects.get(I);
+    //   getItemId(I) → position (AOSP default);  isEmpty() → size()==0
+    //   getView(I, View, ViewGroup) → inflate mResource; for the
+    //       simple_list_item_1 shape (a TextView root — the default
+    //       ListActivity row) the row IS a TextView carrying
+    //       item.toString(). toString dispatches REAL DEX on the item's
+    //       runtime class (gmdice RollResult.toString returns the roll
+    //       line) — no field guessing.
+    // Backing store: the engine's canonical collection convention
+    // (array[i] heap fields + __array_length__ on a real ArrayList
+    // object) — the SAME store the F-036/F-101/F-110 laws read and
+    // write, so apps that mix ArrayAdapter with plain list APIs see one
+    // consistent data source. No app-specific code.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/widget/ArrayAdapter;" ||
+        is_subclass_of(class_name, "Landroid/widget/ArrayAdapter;")) {
+        // Runtime-class gate: execute_invoke_virtual bridges with the
+        // RECEIVER's runtime class (M3 FIX-M3-008 law) — app-defined
+        // ArrayAdapter subclasses (gmdice RollResultAdapter) arrive under
+        // their OWN class name. The ArrayAdapterShadow defer (F-NEW-605)
+        // hands them here; the is_subclass_of walk keeps the whole family
+        // on the engine law set.
+        auto s191_ad_len = [&](uint32_t list_oid) -> int32_t {
+            auto lf = heap_.get_object_field(list_oid, "__array_length__");
+            return (lf.has_value() && lf->type == DalvikType::INT32)
+                       ? lf->int_val : 0;
+        };
+        auto s191_backing = [&](uint32_t ad_oid) -> uint32_t {
+            auto bf = heap_.get_object_field(ad_oid, "__ad_objects__");
+            return (bf.has_value() && bf->type == DalvikType::OBJECT_REF)
+                       ? bf->object_id : 0;
+        };
+        auto s191_val_eq = [&](const DalvikValue& a,
+                               const DalvikValue& b) -> bool {
+            if (a.type != b.type) return false;
+            switch (a.type) {
+                case DalvikType::STRING_REF:
+                    return a.is_null == b.is_null &&
+                           (a.is_null || a.string_val == b.string_val);
+                case DalvikType::OBJECT_REF:
+                    return a.object_id == b.object_id;
+                case DalvikType::INT32:
+                    return a.int_val == b.int_val;
+                case DalvikType::INT64:
+                    return a.long_val == b.long_val;
+                case DalvikType::BOOLEAN:
+                    return a.int_val == b.int_val;
+                default:
+                    return a.int_val == b.int_val &&
+                           a.long_val == b.long_val;
+            }
+        };
+        if (method == "<init>" && args.size() >= 2 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint32_t ad = args[0].object_id;
+            uint32_t list_obj = heap_.allocate("Ljava/util/ArrayList;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(ad, "__ad_objects__",
+                DalvikValue::make_object(list_obj, "Ljava/util/ArrayList;"));
+            heap_.set_object_field(ad, "__ad_notify__",
+                DalvikValue::make_int(1));  // AOSP mNotifyOnChange = true
+            // (Context, int resource[, int textViewResourceId]) — record
+            // the resource identity (row-shape contract); a List-typed
+            // 3rd argument seeds the backing list through the same
+            // array[i] store.
+            for (size_t ai = 1; ai < args.size(); ++ai) {
+                if (args[ai].type == DalvikType::INT32) {
+                    heap_.set_object_field(ad, "__ad_resource__",
+                                           DalvikValue::make_int(
+                                               args[ai].int_val));
+                    break;
+                }
+            }
+            if (args.size() >= 3 &&
+                args[2].type == DalvikType::OBJECT_REF &&
+                args[2].object_id != 0) {
+                std::string a3cls;
+                heap_.get_object_class(args[2].object_id, a3cls);
+                if (a3cls.find("List") != std::string::npos ||
+                    a3cls.find("list") != std::string::npos) {
+                    int32_t n = s191_ad_len(args[2].object_id);
+                    for (int32_t i = 0; i < n; ++i) {
+                        auto el = heap_.get_object_field(
+                            args[2].object_id,
+                            "array[" + std::to_string(i) + "]");
+                        if (el.has_value())
+                            heap_.set_object_field(
+                                list_obj, "array[" + std::to_string(i) + "]",
+                                *el);
+                    }
+                    heap_.set_object_field(list_obj, "__array_length__",
+                                           DalvikValue::make_int(n));
+                }
+            }
+            std::cerr << "[S191-ARRAYADAPTER] init ad=o" << ad
+                      << " backing=o" << list_obj << " args=" << args.size()
+                      << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "add" && args.size() >= 2 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint32_t ad = args[0].object_id;
+            uint32_t backing = s191_backing(ad);
+            if (backing == 0) {
+                // <init> was never bridged (honest gap) — create the
+                // backing now instead of silently dropping the element.
+                backing = heap_.allocate("Ljava/util/ArrayList;", pc_,
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                heap_.set_object_field(ad, "__ad_objects__",
+                    DalvikValue::make_object(backing,
+                                             "Ljava/util/ArrayList;"));
+            }
+            int32_t n = s191_ad_len(backing);
+            heap_.set_object_field(backing, "array[" + std::to_string(n) + "]",
+                                   args[1]);
+            heap_.set_object_field(backing, "__array_length__",
+                                   DalvikValue::make_int(n + 1));
+            // AOSP ArrayAdapter.add: if (mNotifyOnChange)
+            //     notifyDataSetChanged();
+            auto nf = heap_.get_object_field(ad, "__ad_notify__");
+            bool notify = !(nf.has_value() && nf->type == DalvikType::INT32 &&
+                            nf->int_val == 0);
+            int rows = 0;
+            if (notify) rows = materialize_adapter_rows_for(ad);
+            std::cerr << "[S191-ARRAYADAPTER] add ad=o" << ad
+                      << " size=" << (n + 1) << " notify=" << notify
+                      << " rows=" << rows << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "notifyDataSetChanged" &&
+            args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF) {
+            int rows = materialize_adapter_rows_for(args[0].object_id);
+            std::cerr << "[S191-ARRAYADAPTER] notifyDataSetChanged ad=o"
+                      << args[0].object_id << " rows=" << rows << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getCount" && args.size() >= 1 &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t backing = s191_backing(args[0].object_id);
+            result = DalvikValue::make_int(
+                backing != 0 ? s191_ad_len(backing) : 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getItem" && args.size() >= 2 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[1].type == DalvikType::INT32) {
+            uint32_t backing = s191_backing(args[0].object_id);
+            int32_t idx = args[1].int_val;
+            if (backing != 0 && idx >= 0 && idx < s191_ad_len(backing)) {
+                auto el = heap_.get_object_field(
+                    backing, "array[" + std::to_string(idx) + "]");
+                result = el.has_value() ? *el : DalvikValue::make_null();
+            } else {
+                result = DalvikValue::make_null();
+                throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                               "Invalid index " + std::to_string(idx) +
+                                   ", size is " +
+                                   std::to_string(
+                                       backing != 0 ? s191_ad_len(backing)
+                                                    : 0),
+                               "s191-getitem-oob");
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getItemId" && args.size() >= 2 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[1].type == DalvikType::INT32) {
+            // AOSP ArrayAdapter.getItemId: returns the position (no row-id
+            // mapping by default).
+            result = DalvikValue::make_long((int64_t)args[1].int_val);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "isEmpty" && args.size() >= 1 &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t backing = s191_backing(args[0].object_id);
+            result = DalvikValue::make_bool(backing == 0 ||
+                                            s191_ad_len(backing) == 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "setNotifyOnChange" && args.size() >= 2 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[1].type == DalvikType::INT32) {
+            heap_.set_object_field(args[0].object_id, "__ad_notify__",
+                                   DalvikValue::make_int(args[1].int_val));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if ((method == "clear" || method == "remove" ||
+             method == "insert") &&
+            args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t backing = s191_backing(args[0].object_id);
+            int32_t n = backing != 0 ? s191_ad_len(backing) : 0;
+            if (method == "clear") {
+                if (backing != 0)
+                    heap_.set_object_field(backing, "__array_length__",
+                                           DalvikValue::make_int(0));
+                n = 0;
+            } else if (method == "remove" && args.size() >= 2 && backing != 0) {
+                for (int32_t i = 0; i < n; ++i) {
+                    auto el = heap_.get_object_field(
+                        backing, "array[" + std::to_string(i) + "]");
+                    if (el.has_value() && s191_val_eq(*el, args[1])) {
+                        for (int32_t j = i; j < n - 1; ++j) {
+                            auto nx = heap_.get_object_field(
+                                backing, "array[" + std::to_string(j + 1) + "]");
+                            if (nx.has_value())
+                                heap_.set_object_field(
+                                    backing, "array[" + std::to_string(j) + "]",
+                                    *nx);
+                        }
+                        heap_.set_object_field(backing, "__array_length__",
+                                               DalvikValue::make_int(n - 1));
+                        break;
+                    }
+                }
+                n = s191_ad_len(backing);
+            } else if (method == "insert" && args.size() >= 3 && backing != 0 &&
+                       args[1].type == DalvikType::INT32) {
+                int32_t at = args[1].int_val;
+                if (at < 0) at = 0;
+                if (at > n) at = n;
+                for (int32_t j = n; j > at; --j) {
+                    auto pv = heap_.get_object_field(
+                        backing, "array[" + std::to_string(j - 1) + "]");
+                    if (pv.has_value())
+                        heap_.set_object_field(
+                            backing, "array[" + std::to_string(j) + "]", *pv);
+                }
+                heap_.set_object_field(backing, "array[" + std::to_string(at) + "]",
+                                       args[2]);
+                heap_.set_object_field(backing, "__array_length__",
+                                       DalvikValue::make_int(n + 1));
+                n = n + 1;
+            }
+            // AOSP: add/remove/insert/clear all honor mNotifyOnChange.
+            auto nf = heap_.get_object_field(args[0].object_id,
+                                             "__ad_notify__");
+            bool notify = !(nf.has_value() && nf->type == DalvikType::INT32 &&
+                            nf->int_val == 0);
+            int rows = 0;
+            if (notify) rows = materialize_adapter_rows_for(args[0].object_id);
+            std::cerr << "[S191-ARRAYADAPTER] " << method << " ad=o"
+                      << args[0].object_id << " size=" << n
+                      << " rows=" << rows << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getView" && args.size() >= 4 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[1].type == DalvikType::INT32) {
+            // AOSP ArrayAdapter.getView: item = mObjects.get(position);
+            // row = inflate(mResource, parent); text = item.toString().
+            uint32_t ad = args[0].object_id;
+            int32_t pos = args[1].int_val;
+            uint32_t backing = s191_backing(ad);
+            DalvikValue item = DalvikValue::make_null();
+            if (backing != 0 && pos >= 0 && pos < s191_ad_len(backing)) {
+                auto el = heap_.get_object_field(
+                    backing, "array[" + std::to_string(pos) + "]");
+                if (el.has_value()) item = *el;
+            }
+            std::string text;
+            if (item.type == DalvikType::STRING_REF && !item.is_null) {
+                text = std::string(item.string_val);
+            } else if (item.type == DalvikType::OBJECT_REF &&
+                       item.object_id != 0) {
+                std::string icls;
+                heap_.get_object_class(item.object_id, icls);
+                DalvikValue tret = DalvikValue::make_void();
+                DalvikExecutionResult tres;
+                if (!icls.empty() &&
+                    try_recursive_invoke(s130_norm_cls(icls), "toString",
+                                         {item}, tret, tres, "()Ljava/lang/String;") &&
+                    tret.type == DalvikType::STRING_REF && !tret.is_null)
+                    text = std::string(tret.string_val);
+            }
+            // convertView reuse: the AOSP recycler path rebinds text on
+            // the recycled row when the caller supplies one.
+            uint32_t row_oid = 0;
+            if (args[2].type == DalvikType::OBJECT_REF &&
+                args[2].object_id != 0)
+                row_oid = args[2].object_id;
+            if (auto* vs = shadow_registry_
+                               ? shadow_registry_->find_as<
+                                     framework::ViewShadow>()
+                               : nullptr) {
+                if (row_oid == 0)
+                    row_oid = vs->create_view("Landroid/widget/TextView;");
+                if (auto* rn = vs->get_or_create_node(
+                        row_oid, "Landroid/widget/TextView;")) {
+                    rn->text = text;
+                    rn->width = -1;   // MATCH_PARENT (row shape)
+                    rn->height = -2;  // WRAP_CONTENT
+                    rn->lp_width = -1;
+                    rn->lp_height = -2;
+                }
+            }
+            static int s191_getview_diag = 0;
+            if (s191_getview_diag < 12) {
+                ++s191_getview_diag;
+                std::cerr << "[S191-ARRAYADAPTER] getView pos=" << pos
+                          << " row=o" << row_oid << " text=\"" << text
+                          << "\"" << std::endl;
+            }
+            result = DalvikValue::make_object(row_oid,
+                                              "Landroid/widget/TextView;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -63011,6 +67112,109 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_object(
             js_recv, "Landroid/app/job/JobScheduler;");
         status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-C4-605 (W12, 4APP4 Coder-4): JobScheduler JOB-STORE FAMILY law.
+    // ROOT (live, NC v35.0.2 W11-final census row — the pinned W12 queue):
+    // the `getAllPendingJobs(...) must not be null` Kotlin-intrinsic NPE —
+    // the method had NO bridge arm → fail-soft typed-default NULL, and the
+    // app's checkNotNull (now REAL since F-C4-596 — the exception-identity
+    // law names the fault honestly) kills the caller.
+    // AOSP laws (frameworks/base JobSchedulerImpl + JobSchedulerService):
+    //   · getAllPendingJobs() — client: `try { return
+    //     mBinder.getAllPendingJobs(); } catch (RemoteException e) { return
+    //     null; }` — the SERVICE side always answers a REAL List (empty
+    //     when the store holds no jobs; never null). In-process binder
+    //     death is impossible, so the never-null List is the only
+    //     reachable contract (verified W12 against the AOSP source).
+    //   · getAllPendingJobsForUri(Uri) — same never-null List shape;
+    //   · schedule(JobInfo) / schedule(JobInfo, WorkSource) / enqueue →
+    //     int RESULT_SUCCESS (0), and the job is RECORDED in the store
+    //     (the JobSchedulerService mJobs model — identity stored, never
+    //     fabricated);
+    //   · cancel(int) / cancelAll() — void, removes from the store.
+    // The deterministic device starts with ZERO jobs; jobs appear exactly
+    // when the app schedules them (fresh-install discipline, F-C4-599's
+    // channel-store pattern reused).
+    // ────────────────────────────────────────────────────────────────────────
+    if ((class_name == "Landroid/app/job/JobScheduler;" ||
+         class_name == "Landroid/app/JobScheduler;") &&
+        (method == "getAllPendingJobs" ||
+         method == "getAllPendingJobsForUri" ||
+         method == "schedule" || method == "enqueue" ||
+         method == "cancel" || method == "cancelAll")) {
+        static std::vector<uint32_t> f605_jobs;
+        if (method == "getAllPendingJobs" ||
+            method == "getAllPendingJobsForUri") {
+            // never-null List (service-side contract), recorded jobs served.
+            uint32_t lid = heap_.allocate("Ljava/util/ArrayList;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(lid, "__array_length__",
+                DalvikValue::make_int((int)f605_jobs.size()));
+            heap_.set_object_field(lid, "__element_type__",
+                DalvikValue::make_string("Landroid/app/job/JobInfo;", 0));
+            for (size_t i = 0; i < f605_jobs.size(); ++i) {
+                heap_.set_object_field(lid,
+                    "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_object(f605_jobs[i],
+                        "Landroid/app/job/JobInfo;"));
+            }
+            static thread_local uint64_t f605_g = 0;
+            if (f605_g++ < 8) {
+                std::cerr << "[F-C4-605] " << method << " -> List("
+                          << f605_jobs.size() << ") o" << lid
+                          << " (never-null AOSP job-store law)" << std::endl;
+            }
+            result = DalvikValue::make_object(lid, "Ljava/util/ArrayList;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "schedule" || method == "enqueue") {
+            // (JobInfo [, WorkSource|JobWorkItem]) → RESULT_SUCCESS, record.
+            for (const auto& a : args) {
+                if (a.type == DalvikType::OBJECT_REF && a.object_id != 0) {
+                    auto jc = a.class_desc;
+                    if (jc.find("JobInfo") != std::string::npos) {
+                        bool dup = false;
+                        for (uint32_t j : f605_jobs)
+                            if (j == a.object_id) { dup = true; break; }
+                        if (!dup) f605_jobs.push_back(a.object_id);
+                        static thread_local uint64_t f605_s = 0;
+                        if (f605_s++ < 8) {
+                            std::cerr << "[F-C4-605] " << method
+                                      << " recorded JobInfo o"
+                                      << a.object_id << " (store now "
+                                      << f605_jobs.size() << ")"
+                                      << std::endl;
+                        }
+                        break;  // only the JobInfo arg
+                    }
+                }
+            }
+            result = DalvikValue::make_int(0);  // JobScheduler.RESULT_SUCCESS
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // cancel(int): remove by jobId field when the object carries one;
+        // cancelAll(): clear. Void returns per AOSP.
+        if (method == "cancelAll") {
+            f605_jobs.clear();
+        } else if (method == "cancel" && args.size() >= 2 &&
+                   args[1].type == DalvikType::INT32) {
+            int32_t want = args[1].int_val;
+            for (size_t i = 0; i < f605_jobs.size(); ++i) {
+                auto jf = heap_.get_object_field(f605_jobs[i], "jobId");
+                if (jf.has_value() && jf->type == DalvikType::INT32 &&
+                    jf->int_val == want) {
+                    f605_jobs.erase(f605_jobs.begin() + i);
+                    break;
+                }
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
         return true;
     }
 
@@ -76750,6 +80954,29 @@ measure_cm_done:;
             class_name == "Ljava/lang/Throwable;";
         if (is_throwable_family && method == "<init>" && !args.empty() &&
             args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+            // [S192-C8] F-C8-171 — CAUSE-CAPTURE FIRST (the message branch
+            // below returns early on the string arg, so the cause scan
+            // must run before it). OpenJDK Throwable(String, Throwable) /
+            // (Throwable): the first OBJECT_REF parameter is the cause;
+            // args are receiver-shifted — (String, Throwable) puts the
+            // cause at args[2], (Throwable) at args[1].
+            for (size_t ai = 1; ai < args.size(); ++ai) {
+                if (args[ai].type == DalvikType::OBJECT_REF &&
+                    args[ai].object_id != 0) {
+                    heap_.set_object_field(
+                        args[0].object_id, "__throwable_cause__",
+                        DalvikValue::make_object(
+                            args[ai].object_id,
+                            args[ai].class_desc.empty()
+                                ? "Ljava/lang/Throwable;"
+                                : args[ai].class_desc));
+                    std::cerr << "[THROWABLE-CAUSE] " << class_name
+                              << " cause=o" << args[ai].object_id
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                    break;
+                }
+            }
             for (size_t ai = 1; ai < args.size(); ++ai) {
                 if (args[ai].type == DalvikType::STRING_REF) {
                     heap_.set_object_field(
@@ -77078,47 +81305,192 @@ measure_cm_done:;
     }
 
     // ────────────────────────────────────────────────────────────────────
-    // S172 W10 NCGroups LAW — AOSP NotificationManager never-null list law.
-    // ROOT (live, TB v33 pin 473b33da; PRE row S172_W10_TB_PRE):
-    // NotificationChannelManager.$r8$lambda$m3LNel5iYKrrYmwu_gXHemecIYY
-    // (code_off 0x5737a8; the channels-creation lambda — 2×
-    // createNotificationChannel then a groups-reconcile walk) calls
-    // NotificationManager.getNotificationChannelGroups() (DEX unit 0x98 =
-    // the recorded f141 pc=152) and iterates the result. The shadow had NO
-    // arm (grep-proven zero handlers; the W10-PROBE row records the
-    // STUBBED tail live) → typed-default NULL for the List return →
-    // NullPointerException 'Attempt to invoke interface method
-    // java/util/List.iterator on a null object reference' → unwound the
-    // merged R8 lambda dispatcher Fragment$$ExternalSyntheticLambda0.run
-    // at invoke_pc=0xf5 (depth 16) = the standing uncaught frontier row.
-    // AOSP law (frameworks/base/core/java/android/app/
-    // NotificationManager.java): getNotificationChannelGroups()/
-    // getNotificationChannels() return the ParceledListSlice getList() —
-    // a REAL List (empty when nothing was created), NEVER null. Same
-    // never-null object-shape discipline as F-C4-582 (SSLContext) and the
-    // W7 SecureRandom stream law. The shadow keeps no notification-service
-    // state, so both answer an empty ArrayList; createNotificationChannel
-    // stays the standing STUBBED void no-op (the W10-PROBE rows record it
-    // honestly — a channel census store is a separate wave if a consumer
-    // ever reads it back).
+    // F-C4-599 (W11, 4APP4 Coder-4): NotificationManager CHANNEL FAMILY
+    // law — SUBSUMES the S172 W10-NCGroups empty-list law (same site, same
+    // live roots: TB NotificationChannelManager.$r8$lambda
+    // m3LNel5iYKrrYmwu_gXHemecIYY iterating getNotificationChannelGroups at
+    // code_off 0x5737a8, and TK TuskyApplication.onCreate pc=85 iterating
+    // getNotificationChannels — both died `List.iterator on a null object
+    // reference` before S172). The S172 law answered the never-null EMPTY
+    // ArrayList but left createNotificationChannel a STUBBED no-op ("a
+    // channel census store is a separate wave if a consumer ever reads it
+    // back" — W10's own words). W11 IS that wave: TK's notification
+    // channel seeding + lookup loop needs the record.
+    // AOSP laws (frameworks/base NotificationManager +
+    // NotificationManagerService):
+    //   · getNotificationChannels() — "returns the notification channels for
+    //     this package" as a List, EMPTY for a package that created none,
+    //     NEVER null;
+    //   · getNotificationChannelGroups() — same contract for groups;
+    //   · createNotificationChannel(NotificationChannel) /
+    //     createNotificationChannelGroup(NotificationChannelGroup) — record
+    //     the channel in the package's channel list (per-package persistent
+    //     state, the NotificationManagerService mChannelsPkgMap model);
+    //     void return, idempotent by channel id (re-creating an existing id
+    //     UPDATES it);
+    //   · getNotificationChannel(String) — the recorded channel or null;
+    //   · deleteNotificationChannel(String) — removes it (void).
+    // The deterministic device starts with ZERO channels (fresh install);
+    // channels appear exactly when the app creates them.
     // ────────────────────────────────────────────────────────────────────
     if (class_name == "Landroid/app/NotificationManager;" &&
-        (method == "getNotificationChannelGroups" ||
-         method == "getNotificationChannels")) {
-        uint32_t w10_lst = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
-        heap_.set_object_field(w10_lst, "__array_length__",
-                               DalvikValue::make_int(0));
-        result = DalvikValue::make_object(w10_lst, "Ljava/util/ArrayList;");
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        static thread_local uint64_t w10_law_n = 0;
-        if (w10_law_n < 64) {
-            ++w10_law_n;
-            std::cerr << "[W10-NCGroups] NotificationManager." << method
-                      << " -> empty ArrayList (AOSP never-null list law)"
-                      << " caller=" << current_class_ << "."
-                      << current_method_ << std::endl;
+        (method == "getNotificationChannels" ||
+         method == "getNotificationChannelGroups" ||
+         method == "createNotificationChannel" ||
+         method == "createNotificationChannelGroup" ||
+         method == "createNotificationChannels" ||
+         method == "createNotificationChannelGroups" ||
+         method == "getNotificationChannel" ||
+         method == "deleteNotificationChannel")) {
+        // Per-package channel/group state: the object ids the app handed to
+        // create* (the channel object itself is the app's heap object; the
+        // law stores identity, never fabricates elements).
+        static std::map<std::string, std::vector<uint32_t>> f599_channels;
+        static std::map<std::string, std::vector<uint32_t>> f599_groups;
+        const std::string f599_pkg = package_name_.empty()
+                                         ? std::string("<app>")
+                                         : package_name_;
+        // Mint a REAL ArrayList (bridge-collection heap shape: descriptor +
+        // __array_length__ + dense array[i] entries — the iterator law and
+        // the F-C4-564 collection stringify both read this shape).
+        auto f599_list_of = [&](const std::vector<uint32_t>& oids,
+                                const char* elem_desc) -> DalvikValue {
+            uint32_t lid = heap_.allocate("Ljava/util/ArrayList;", pc_,
+             call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(lid, "__array_length__",
+                DalvikValue::make_int((int)oids.size()));
+            heap_.set_object_field(lid, "__element_type__",
+                DalvikValue::make_string(elem_desc, 0));
+            for (size_t i = 0; i < oids.size(); ++i) {
+                heap_.set_object_field(lid, "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_object(oids[i], elem_desc));
+            }
+            DalvikValue lv;
+            lv.type = DalvikType::OBJECT_REF;
+            lv.object_id = lid;
+            lv.class_desc = "Ljava/util/ArrayList;";
+            lv.int_val = (int)oids.size();
+            return lv;
+        };
+        // Record one channel/group object id (args[0] = receiver for
+        // instance calls, args[1] = the channel object).
+        auto f599_record = [&](std::map<std::string, std::vector<uint32_t>>& m,
+                               uint32_t oid) {
+            auto& v = m[f599_pkg];
+            for (uint32_t existing : v)
+                if (existing == oid) return;  // idempotent re-create
+            v.push_back(oid);
+        };
+        // Iterate a bridge List argument's array[i] slots.
+        auto f599_list_elems = [&](uint32_t list_oid,
+                                   std::vector<uint32_t>& out) {
+            if (!list_oid || !heap_.has_object(list_oid)) return;
+            int32_t n = 0;
+            auto lf = heap_.get_object_field(list_oid, "__array_length__");
+            if (lf.has_value() && lf->type == DalvikType::INT32)
+                n = lf->int_val;
+            for (int32_t i = 0; i < n && i < 512; ++i) {
+                auto ef = heap_.get_object_field(
+                    list_oid, "array[" + std::to_string(i) + "]");
+                if (ef.has_value() && ef->type == DalvikType::OBJECT_REF &&
+                    ef->object_id != 0)
+                    out.push_back(ef->object_id);
+            }
+        };
+        if (method == "getNotificationChannels" ||
+            method == "getNotificationChannelGroups") {
+            const bool is_group =
+                (method == "getNotificationChannelGroups");
+            auto& src = is_group ? f599_groups : f599_channels;
+            auto it = src.find(f599_pkg);
+            std::vector<uint32_t> oids;
+            if (it != src.end()) oids = it->second;
+            result = f599_list_of(oids, is_group
+                ? "Landroid/app/NotificationChannelGroup;"
+                : "Landroid/app/NotificationChannel;");
+            static thread_local uint64_t f599_g = 0;
+            if (f599_g++ < 8) {
+                std::cerr << "[F-C4-599] " << method << " -> List("
+                          << oids.size() << ") o" << result.object_id
+                          << " (never-null AOSP contract, fresh-install "
+                          << (oids.empty() ? "empty" : "recorded") << ")"
+                          << std::endl;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
         }
-        return true;
+        if (method == "createNotificationChannel" ||
+            method == "createNotificationChannelGroup") {
+            const bool is_group =
+                (method == "createNotificationChannelGroup");
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0) {
+                f599_record(is_group ? f599_groups : f599_channels,
+                            args[1].object_id);
+                static thread_local uint64_t f599_c = 0;
+                if (f599_c++ < 8) {
+                    std::cerr << "[F-C4-599] " << method << " recorded o"
+                              << args[1].object_id << " for " << f599_pkg
+                              << std::endl;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "createNotificationChannels" ||
+            method == "createNotificationChannelGroups") {
+            // (List<NotificationChannel>) — record every element.
+            const bool is_group =
+                (method == "createNotificationChannelGroups");
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+                std::vector<uint32_t> elems;
+                f599_list_elems(args[1].object_id, elems);
+                for (uint32_t oid : elems)
+                    f599_record(is_group ? f599_groups : f599_channels, oid);
+                static thread_local uint64_t f599_cs = 0;
+                if (f599_cs++ < 8) {
+                    std::cerr << "[F-C4-599] " << method << " recorded "
+                              << elems.size() << " element(s) for " << f599_pkg
+                              << std::endl;
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "getNotificationChannel") {
+            // (String id) → the recorded channel with that id, or null.
+            std::string want_id;
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                want_id = args[1].string_val;
+            uint32_t found = 0;
+            auto it = f599_channels.find(f599_pkg);
+            if (it != f599_channels.end()) {
+                for (uint32_t oid : it->second) {
+                    if (!heap_.has_object(oid)) continue;
+                    // The generic framework-ctor capture stores ctor args;
+                    // channel id is the FIRST constructor String arg.
+                    auto idf = heap_.get_object_field(oid, "arg0");
+                    if (idf.has_value() && idf->type == DalvikType::STRING_REF &&
+                        idf->string_val == want_id) {
+                        found = oid;
+                        break;
+                    }
+                }
+            }
+            result = found
+                ? DalvikValue::make_object(
+                      found, "Landroid/app/NotificationChannel;")
+                : DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "deleteNotificationChannel") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
     }
 
     // ── S71 ROOT LAW #1: ancestry dispatch (retry BEFORE stub fallthrough) ─
@@ -77383,6 +81755,121 @@ DalvikValue DalvikExecutionEngine::get_or_create_dir_file(const std::string& pat
     v.object_id = obj_id;
     v.class_desc = kFileDesc;
     return v;
+}
+
+// ── S186h F-NEW-188c — obfuscated androidx FragmentManager REAL-INIT law ──
+// Probe (tibarj.tranquilstopwatch #170, fresh store, real-dalvik trace):
+//   FCV internal ctor (kept name — referenced from layout XML) calls the
+//   R8-renamed FragmentManager body: `Lb1/t0;.A(I)Lb1/a0;` (=
+//   findFragmentById) reads `Lb0/k;.a` (the fragment store) at its pc=2
+//   and NPEs because the F-NEW-188 singleton was minted under the
+//   CANONICAL name with an empty field set — the FM <init> never ran.
+//   The existing F-NEW-188b findFragmentById intercept is name-keyed and
+//   cannot fire on obfuscated method names (A/B/C…), so the real body
+//   executed on empty state.
+// LAW (generic, Rule 6 — semantics not names):
+//   1. The app's REAL FragmentManager class is recoverable STRUCTURALLY:
+//      FragmentContainerView's internal constructor signature is
+//      (Context, AttributeSet, L<real-fm>;) — R8 can rename FragmentManager
+//      but NOT FragmentContainerView (kept for XML) and NOT the signature.
+//   2. Mint ONE object; alias BOTH the canonical key and the real class
+//      key to it (identity law F-NEW-188 preserved).
+//   3. Execute the real <init>()V of the real class on that object ONCE.
+//      The store fields then hold genuine androidx state and ANY obfuscated
+//      method body executes lawfully — an empty manager answers the
+//      androidx @Nullable null contract from its own bytecode tail
+//      (measured: b1/t0.A falls through to const/4 v6,0; return-object).
+//      No synthetic null-return shim is added for the obfuscated path
+//      (SQLITE Rule 1: vend the real behavior, don't rewrite it).
+// NOTE: law state lives in function-local statics (NOT class members) —
+//   adding members to DalvikExecutionEngine changes sizeof() and would ODR-
+//   mismatch the other translation units' objects without a full rebuild
+//   (measured S186h: mixed-layout relink crashed dooz golden in
+//   std::string::_M_assign during APPLICATION_CREATE).
+// F-C4-615b (W14): the INSTANCE-INDEPENDENT real-FM-class resolver.
+// The engine object can be RECREATED between the provider phase and the
+// activity phase (measured live, itsfrz: the S186h realinit bound
+// api_singletons_["LU1/K;"]=obj#16 on the FIRST instance; the SECOND
+// instance's map never got the binding because the realinit's static
+// done-set still held oid 16 — function-local statics survive instances
+// while member maps do not). This resolver runs off the DEX REPORT
+// (instance-shared) with its own file-scope cache, so ANY instance can
+// re-derive the class name.
+static std::string g_w14_resolved_real_fm_class_;
+static bool g_w14_resolved_real_fm_done_ = false;
+
+const std::string& w14_resolve_real_fm_class(
+    const dex::DexReport* dex_report) {
+    if (!g_w14_resolved_real_fm_done_) {
+        g_w14_resolved_real_fm_done_ = true;
+        if (dex_report != nullptr) {
+            const std::string fcv =
+                "Landroidx/fragment/app/FragmentContainerView;";
+            for (const auto& cls : dex_report->classes) {
+                if (cls.name != fcv) continue;
+                for (const auto& m : cls.direct_methods) {
+                    if (!m.is_constructor) continue;
+                    // Internal ctor = 3 params: (Context, AttributeSet, FM)
+                    if (m.parameters.size() != 3) continue;
+                    const std::string& third = m.parameters[2];
+                    if (third.size() > 2 && third[0] == 'L' &&
+                        third != fcv &&
+                        third != "Landroidx/fragment/app/FragmentManager;") {
+                        g_w14_resolved_real_fm_class_ = third;
+                    }
+                }
+                break;
+            }
+        }
+        if (!g_w14_resolved_real_fm_class_.empty()) {
+            std::cerr << "[F-NEW-188c/W14] resolved real FM class = "
+                      << g_w14_resolved_real_fm_class_ << std::endl;
+        }
+    }
+    return g_w14_resolved_real_fm_class_;
+}
+
+void DalvikExecutionEngine::realinit_fragment_manager_singleton(uint32_t fm_oid) {
+    static std::set<uint32_t>& done = *new std::set<uint32_t>();
+    static std::string resolved_real_fm_class_;
+    static bool real_fm_class_resolved_ = false;
+
+    if (fm_oid == 0 || done.count(fm_oid)) return;
+
+    if (!real_fm_class_resolved_) {
+        real_fm_class_resolved_ = true;
+        resolved_real_fm_class_ = w14_resolve_real_fm_class(dex_report_);
+        if (!resolved_real_fm_class_.empty()) {
+            std::cerr << "[F-NEW-188c] resolved real FM class = "
+                      << resolved_real_fm_class_ << std::endl;
+        } else {
+            std::cerr << "[F-NEW-188c] no obfuscated FM signature found "
+                         "(canonical androidx layout) — real-init skipped"
+                      << std::endl;
+        }
+    }
+
+    const std::string& real_fm = resolved_real_fm_class_;
+    if (real_fm.empty()) return;
+
+    // Identity law: ONE object, TWO keys (canonical + real class).
+    auto it = api_singletons_.find(real_fm);
+    if (it != api_singletons_.end() && it->second != fm_oid) {
+        std::cerr << "[F-NEW-188c] WARNING real-FM key already bound to obj#"
+                  << it->second << " (kept existing binding)" << std::endl;
+        return;
+    }
+    api_singletons_[real_fm] = fm_oid;
+
+    // Run the real <init>()V ONCE on the shared object.
+    done.insert(fm_oid);
+    DalvikValue rv;
+    DalvikExecutionResult res;
+    std::vector<DalvikValue> args;
+    args.push_back(DalvikValue::make_object(fm_oid, real_fm));
+    bool ok = try_recursive_invoke(real_fm, "<init>", args, rv, res);
+    std::cerr << "[F-NEW-188c] real-init " << real_fm << " obj#" << fm_oid
+              << " ok=" << (ok ? 1 : 0) << std::endl;
 }
 
 DalvikValue DalvikExecutionEngine::get_or_create_singleton(const std::string& class_desc) {

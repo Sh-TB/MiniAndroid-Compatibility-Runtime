@@ -1,0 +1,44 @@
+{
+ "wave": "S194 intake \u2014 the FULL contributor stack integrated onto the W12 maintainer line",
+ "directive": "\u0627\u062f\u0627\u0645\u0647 \u0628\u062f\u0647 ... \u062f\u0633\u062a\u0627\u0648\u0631\u062f \u0647\u0627\u06cc \u06a9\u062f\u0631 \u0647\u0627 \u0631\u0648 \u0647\u0645 \u0628\u0631\u0631\u0633\u06cc \u0628\u06a9\u0646 (issue #556 as the connection pattern)",
+ "base_line": "cbc9058e (S188 W12: W9+W10+W11+W12 waves \u2014 F-NEW-588..596+598 included)",
+ "patches": {
+  "c8_s192_waves89_cumulative": {
+   "source": "issue #519 comments 6710219759..6710224109",
+   "apply_check": "CLEAN (rc=0)",
+   "content": "CODER 8 defects 141-180 (F-C8 waves 8+9, 3321 insertions)"
+  },
+  "c8_s193_wave10": {
+   "source": "issue #519 comments 6711266453/6711266717",
+   "apply_check": "CLEAN after waves-8+9 (dependency-ordered)",
+   "content": "CODER 8 defects 181-200"
+  },
+  "c3_s191_gmdice": {
+   "source": "issue #561 comment 6704878786",
+   "apply_check": "CLEAN (rc=0)",
+   "content": "the gmdice ListActivity/ArrayAdapter stack (469 ins, dalvik_engine.cpp/.h)"
+  },
+  "c4_w15_laws": {
+   "source": "issue #562 parts 1-4",
+   "apply_check": "CLEAN with MID-WORD concat (S192-KT law: no newline between the 60,000-char parts)",
+   "content": "W15 laws (F-C4-616/617/618 + the re-land, 3425 insertions)"
+  },
+  "c3_s189_a24": {
+   "source": "issue #557 comments 6707480718/6707480969",
+   "apply_check": "NO ACTION per CODER-3 matrix \u2014 F-NEW-588/589/590 already in my W9/W10 line; the evidence hunks were truncated in publication (the ag45 census is re-derivable via the shipped scripts)"
+  }
+ },
+ "publication_repairs_applied": [
+  "fence extraction across part boundaries (mid-word concat for W15 per the S192-KT recipe)",
+  "PART N/N marker strips",
+  "truncated evidence hunk count rewrites (CODER-3 recipe, code hunks untouched)",
+  "evidence-file hunks dropped for S189 (unrecoverable truncation; the code = already integrated)"
+ ],
+ "future_isdone_owner": "S192-KT verdict kept: both isDone bridges kept SEQUENTIAL (F-NEW-590 my line + F-C8 block) \u2014 no double-dispatch (one handler wins per dispatch order); recorded per the (NAME, owner, wave, SHA) ledger proposal",
+ "build": "dae43220cd9d0c1a (miniandroid/build/miniandroid)",
+ "gates": {
+  "w2_goldens": "ALL HOLD (bouncy 8a6c24ac + unote 3b8dcb0a + dooz 31ddd4d5) on dae43220cd9d0c1a",
+  "battery": "W12_BATTERY.json \u2014 11/11 CLEAN, ZERO tier drops, no.thanks holds the C_TEXT_ON_FLAT advance",
+  "cohort_pins": "microtimer/opencalc/gmdice/pf2048 APKs not present in this container (upload/ has only opencalculator_53.apk) \u2014 the five-title byte-exact reproduction is the named next gate once the cohort APKs land; dooz pin note: this line holds 31ddd4d5 (W1-stable), the S192 line published a0fae907 (their integration lineage)"
+ }
+}
