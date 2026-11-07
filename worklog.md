@@ -7961,3 +7961,48 @@ new-instance census), wire the host iput law: FragmentManager created by the
 FragmentActivity chain MUST carry the HostCallback (AOSP
 FragmentController.attachHost law). Then tranquilstopwatch + solitaire
 FragmentContainerView chains advance together.
+
+## S188 W5 — inflation ctor overload authority + fragment-container factory law (2026-11-07)
+
+**User directive:** ادامه + androguard. Used androguard 4.1.4 for DEX ground
+truth on the W5-1 task; two laws landed (commit 78f7ad0f).
+
+**Androguard reversed the W4 hypothesis:** b1/t0 (FragmentManager) field
+`c : Lb0/k;` is NOT a FragmentHostCallback — it is the R8 horizontal-merge
+STATE BUCKET (mAdded ArrayList / mActive HashMap holder), initialized by the
+FM ctor itself at pc 4–7 (`new Lb0/k;(1)`). No attachHost law exists in this
+build. The FM (obj#202, created by Lb1/c0;.<init>) was healthy all along —
+field c = obj#204 proven by FIELD-TRACE.
+
+**Root cause (probe chain NEW-WATCH/FIELD-TRACE/NULLFIELD + DEX disasm):**
+the C++ inflation ctor executor passed {recv,ctx,attrs} (arg_count=3, no
+descriptor); the matcher's `param_count == arg_count` "static-like" branch
+accepted FCV.<init>(ctx,attrs,FragmentManager) — an INSTANCE ctor — and
+EXP-078 largest-bytecode picked it (bigger body). The callee frame mapped the
+FM param to a default register → fm garbage → A(I): read c → null → read c.a
+→ NPE at b1/t0.A pc=2 → FCV inflation death ×2/run (ClockFragment +
+StopwatchFragment containers, res/7s.xml).
+
+**Laws (dalvik_engine.cpp run_custom_view_constructor):**
+- F-NEW-576 inflation ctor overload authority: exact AOSP inflation
+  descriptors ((Context,AttributeSet)V → (Context)V) → F-023 authority;
+  legacy arg-only fallback retained.
+- F-NEW-577 fragment-container factory law: <init>(ctx,attrs,<X>)V with X an
+  app-DEX class → the unique initialized X heap instance (earliest seq) rides
+  in as the 3rd param. Trace: [W5-FM-FACTORY] fm=obj#202 used=1 path=factory.
+
+**Effect:** b1/t0.A NPE 2→0; fragment lifecycle reached (onAttach /
+onCreateView / onStart / onResume); uncaught 8→6. Tier still FLAT (honest,
+DEFAULT_BACKGROUND_ONLY). Goldens byte-exact (bouncy 8a6c24ac, unote
+3b8dcb0a); dooz = W1-stable 31ddd4d5 unchanged.
+
+**W6 frontier (recorded from live trace):**
+1. CoordinatorLayout.t ISE "Could not find CoordinatorLayout descendant view
+   with id null to anchor view" — app:layout_anchor reference never landed in
+   LayoutParams (styleable slot resolution vs obfuscated resources).
+2. Landroidx/lifecycle/h0;.a NPE "Insets.left on null" — DrawerLayout
+   getRootWindowInsets() answered null; WindowInsetsCompat root law needed.
+
+Evidence: evidence/s188_w5/W5_FM_FACTORY.json + ts_w5*.log + face JPG.
+Tracker: #559 W5 comment. Next: W6 anchor-id resolution law (CoordinatorLayout
+LayoutParams styleable chain), then Insets root law.
