@@ -12733,6 +12733,54 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         }
         for (const dex::MethodInfo* method = native_hit; method != nullptr;
              method = nullptr) {
+            // ── S188-W17 (F-NEW-602) guest→host GL driver routing ───────
+            // Anbox/emugl law (already cited in gl_surface_shadow.h §24):
+            // the guest's GL calls route to the HOST driver implementation.
+            // The runtime's driver IS the engine-side GLES20 surface
+            // (GLSurfaceViewShadow::dispatch_gles20_static — the F-NEW-505
+            // GLSL handle ledger lives there, next to the PGL backbuffer
+            // the compositor presents). The exported-symbol surface
+            // (gl_copy_bridge.cpp) is the SAME driver but CANNOT serve the
+            // GLSL family: "PortableGL has no GLSL pipeline (glLinkProgram
+            // is an empty stub in portablegl.h)" — a real driver-level
+            // answer is impossible there without a compiler. Live evidence
+            // (p9): AndroidGL20.init ran the real symbol (worked — no GLSL
+            // needed) but glCreateShader via the real path would return 0
+            // → ShaderProgram isCompiled=false → IllegalArgumentException
+            // → APP BOUNDARY unwind before the first frame.
+            //
+            // NOT a fail-soft stub (F-C4-594 untouched): this is a CAPABLE
+            // driver surface taking the call, and on a miss the call falls
+            // through to the exact pre-W17 order (JNIBridge → real symbol
+            // → fail-soft). Routed family: the libGDX JNI GL wrappers
+            // (AndroidGL20/AndroidGL20Base/AndroidGL10/AndroidGL11) — the
+            // one class family whose natives are 1:1 driver entry points.
+            if (shadow_registry_ &&
+                class_descriptor.find(
+                    "Lcom/badlogic/gdx/backends/android/AndroidGL") == 0 &&
+                method_name.size() >= 2 && method_name.compare(0, 2, "gl") == 0) {
+                framework::CallContext gctx;
+                gctx.caller = current_class_ + "." + current_method_ +
+                              " pc=" + std::to_string(pc_);
+                // driver surface is the GLES20 JAVA surface; the wrapper's
+                // args[0] is `this` (the wrapper object) — shift it out so
+                // the P(k) java-arg indexing law sees pure driver args.
+                gctx.class_name = "Landroid/opengl/GLES20;";
+                gctx.method = method_name;
+                gctx.descriptor = method->descriptor;
+                for (size_t gi = 1; gi < args.size(); ++gi)
+                    gctx.args.push_back(dalvik_value_to_arg(args[gi]));
+                auto gcr = shadow_registry_->dispatch(gctx);
+                if (gcr.handled) {
+                    log("🔌 GL DRIVER ROUTE (guest→host): " + method_name +
+                        method->descriptor);
+                    return_val = call_result_to_dalvik(gcr);
+                    last_invoke_return_ = return_val;
+                    recursion_depth_--;
+                    return true;  // mirrors the JNI-dispatch success path
+                }
+                // engine driver miss → pre-W17 order (real symbol attempt)
+            }
             // Found a native method — dispatch to JNI bridge
             log("🔌 JNI DISPATCH: " + class_descriptor + "." + method_name +
                 method->descriptor + " (native)");
@@ -30460,7 +30508,25 @@ bool DalvikExecutionEngine::execute_invoke_interface(uint32_t pc, InstructionTra
                 for (const auto& cls : dex_report_->classes) {
                     if (cls.name != f281c_cls) continue;
                     for (const auto& mi : cls.all_methods()) {
-                        if (mi.code_offset == 0 || mi.is_abstract) continue;
+                        // S188-W17 (F-NEW-601) native-exact law: an
+                        // ACC_NATIVE method has code_offset==0 and is NOT
+                        // abstract — it is a REAL dispatch target (AOSP
+                        // art_method: entry points, not "no method").
+                        // Live evidence (p9, /tmp/p9probe.log): the
+                        // interface call GL20.glCreateShader(I)I on the
+                        // AndroidGL20 receiver skipped this walk entirely
+                        // (native skipped by code_offset==0) →
+                        // S186I-STUB answered 0 → ShaderProgram
+                        // isCompiled=false → IllegalArgumentException
+                        // "Error compiling shader" → APP BOUNDARY unwind
+                        // before the first frame. An interface call whose
+                        // runtime class declares a native with the EXACT
+                        // name+descriptor is an EXACT hit; the native
+                        // block in try_recursive_invoke runs it.
+                        if (mi.is_abstract) continue;
+                        if (mi.code_offset == 0 &&
+                            !(mi.access_flags & 0x100))
+                            continue;
                         if (mi.name != method_name) continue;
                         if (mi.descriptor == iface_proto) {
                             f281c_exact = true;
@@ -34474,6 +34540,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     bridge_census_init();
     BridgeCensusGuard c97_census_guard;
     if (bridge_census().on) c97_census_guard.begin(class_name, method);
+
+    // ── S188-W17 (F-NEW-603) EGL Java-surface family law ────────────────
+    // The PINNED contract (evidence/s188_w16/W16_P9_EGL_CONTRACT.json):
+    // the LIBGDX family (p9 + halma) gates its whole draw stream behind
+    // EGLContext.getEGL -> EGL10.* statics/instances. Live evidence
+    // (/tmp/p9probe.log, MINIANDROID_SHADOW_ANSWER_TRACE=1): instance
+    // calls (GL10.glGetString) reach the shadow registry, but STATIC
+    // calls (getEGL/eglGetDisplay/eglInitialize/eglChooseConfig/
+    // eglTerminate) take execute_invoke_static -> try_recursive_invoke
+    // miss -> bridge_to_api — and this chain never consulted the shadow,
+    // so every EGL answer was the typed-default stub (null/false/0).
+    // The GLSurfaceViewShadow ALREADY implements the EGL object model
+    // (dispatch_egl) — route the family there. Statics only (instance
+    // EGL calls already resolve through the runtime-class retry arm).
+    if (shadow_registry_ &&
+        (class_name.find("khronos/egl/") != std::string::npos ||
+         class_name.find("opengl/EGL14") != std::string::npos ||
+         class_name.find("opengl/EGLExt") != std::string::npos)) {
+        framework::CallContext ectx;
+        ectx.caller = current_class_ + "." + current_method_ +
+                      " pc=" + std::to_string(pc_);
+        ectx.class_name = class_name;
+        ectx.method = method;
+        for (const auto& a : args) ectx.args.push_back(dalvik_value_to_arg(a));
+        auto ecr = shadow_registry_->dispatch(ectx);
+        if (ecr.handled) {
+            result = call_result_to_dalvik(ecr);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // family miss → the general law chain below (honest stub tail)
+    }
+
     // S188-W2b diag (env-gated, bounded, read-only): WHICH createBitmap
     // shapes enter the bridge and from where. Evidence gap: the
     // battleship GameResources.rotateShipBitmaps 7-arg Matrix overload

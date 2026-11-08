@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/xyz.deepdaikon.quinb/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libapp.so", "size": 5129112},
+    {"entry": "lib/x86_64/libflutter.so", "size": 10559624}
+  ],
+  "count": 2
+}

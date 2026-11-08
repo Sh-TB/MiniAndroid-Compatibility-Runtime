@@ -1,0 +1,18 @@
+{
+  "package": "com.sidhant.queens",
+  "versionName": "1.0.11",
+  "versionCode": 123,
+  "mainActivity": "com.sidhant.queens.MainActivity",
+  "minSdk": "24",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "com.sidhant.queens.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.sidhant.queens/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w17/floor_rerun/runs/store_com.sidhant.queens/data/app/com.sidhant.queens/base.apk",
+  "apkSha256": "811dfaa316778e2fe146d9844427ae72cc8c469d2b9f5056014bea62e114ac33",
+  "apkSize": 8834323,
+  "installedAt": "2026-11-08T08:21:43Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

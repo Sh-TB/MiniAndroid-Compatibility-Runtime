@@ -9,6 +9,7 @@
 #include <cmath>
 #include <cstring>
 #include <iostream>
+#include <vector>
 
 namespace miniandroid { namespace framework {
 
@@ -633,17 +634,33 @@ CallResult GLSurfaceViewShadow::dispatch_egl_body(const CallContext& ctx,
     }
     if (m == "eglInitialize") return CallResult::handled_bool(true);
     if (m == "eglChooseConfig") {
-        // Fill configs[0] with the canonical config object (args vary across
-        // EGL10/EGL14; arg0 = display, arg1.. = attribs/configs array refs).
+        // GLSurfaceView.checkGL20 law (p9 bytecode-proven, androguard):
+        // the return gate is `numConfigs[0] > 0` (aget v5,0; if-lez →
+        // return true). args (instance, receiver shifted out):
+        //   [0]=display [1]=attribs int[] [2]=configs EGLConfig[]
+        //   [3]=numRequested int [4]=numConfigs int[] holder
+        // Fill configs[0] with the canonical config object and write 1
+        // into the TRAILING int[] count holder. The old body wrote the
+        // config into the FIRST object arg (= the display) and never
+        // touched the count — checkGL20 returned false →
+        // GdxRuntimeException "Libgdx requires OpenGL ES 2.0" at
+        // createGLSurfaceView (live: /tmp/p9w17.log).
+        std::vector<uint32_t> objs;
         for (const auto& a : ctx.args) {
-            if (a.kind == CallContext::Arg::Kind::OBJECT && a.object_id != 0) {
-                // best effort: store the config ref into the first array slot
-                heap_->set_object_ref_field(a.object_id, "array[0]",
-                                            obj("Ljavax/microedition/khronos/egl/EGLConfig;"),
-                                            "Ljavax/microedition/khronos/egl/EGLConfig;",
-                                            "", false);
-                break;
-            }
+            if (a.kind == CallContext::Arg::Kind::OBJECT && a.object_id != 0)
+                objs.push_back(a.object_id);
+        }
+        uint32_t config_obj =
+            obj("Ljavax/microedition/khronos/egl/EGLConfig;");
+        if (objs.size() >= 4) {
+            // full shape: fill the configs array
+            heap_->set_object_ref_field(objs[2], "array[0]", config_obj,
+                                        "Ljavax/microedition/khronos/egl/"
+                                        "EGLConfig;",
+                                        "", false);
+        }
+        if (!objs.empty() && heap_) {
+            heap_->set_object_int_field(objs.back(), "array[0]", 1);
         }
         return CallResult::handled_bool(true);
     }
@@ -656,6 +673,66 @@ CallResult GLSurfaceViewShadow::dispatch_egl_body(const CallContext& ctx,
         return CallResult::handled_object(
             obj("Ljavax/microedition/khronos/egl/EGLSurface;"),
             "Ljavax/microedition/khronos/egl/EGLSurface;");
+    }
+    // S188-W17 (F-NEW-604) — the W16 pinned contract completion. Live
+    // evidence (p9 probe + halma W15 log): onSurfaceCreated does
+    //   eglGetCurrentContext().getGL() -> setupGL(gl)
+    // and GdxEglConfigChooser.getAttrib calls eglGetConfigAttrib x9.
+    // The first two answered typed-default null (S186I-STUB), the third
+    // REC-MISSed — the surface lifecycle stalled right after GLSurfaceView
+    // wiring. Honest answers per the pinned contract:
+    if (m == "eglGetCurrentContext") {
+        return CallResult::handled_object(
+            obj("Ljavax/microedition/khronos/egl/EGLContext;"),
+            "Ljavax/microedition/khronos/egl/EGLContext;");
+    }
+    if (m == "getGL") {
+        // AOSP EGLContext.getGL(): the GL entry object bound to the
+        // current context — the SAME software context the GLES20 bridge
+        // drives (one GL, one framebuffer).
+        return CallResult::handled_object(
+            obj("Ljavax/microedition/khronos/opengles/GL10;"),
+            "Ljavax/microedition/khronos/opengles/GL10;");
+    }
+    if (m == "eglGetConfigAttrib") {
+        // Honest PGL software-config values (RGBA8 backbuffer, 16-bit
+        // depth, 8-bit stencil, ES2 renderable, window surface) per the
+        // W16 pinned contract. args (instance, receiver shifted out by
+        // build_ctx): [0]=display [1]=config [2]=attrib(int)
+        // [3]=value(int[] holder). GLES2 spec attrib codes (GL spec —
+        // not "magic numbers": they are the EGL enumerations).
+        int32_t attrib = ctx.arg_as_int(2, 0);
+        int32_t val = 0;
+        switch (attrib) {
+            case 0x3022: val = 8; break;    // EGL_BLUE_SIZE
+            case 0x3023: val = 8; break;    // EGL_GREEN_SIZE
+            case 0x3024: val = 8; break;    // EGL_RED_SIZE
+            case 0x3021: val = 8; break;    // EGL_ALPHA_SIZE
+            case 0x3025: val = 16; break;   // EGL_DEPTH_SIZE
+            case 0x3026: val = 8; break;    // EGL_STENCIL_SIZE
+            case 0x3031: val = 0; break;    // EGL_SAMPLE_BUFFERS
+            case 0x3032: val = 0; break;    // EGL_SAMPLES
+            case 0x3053: val = 1; break;    // EGL_SURFACE_TYPE (window)
+            case 0x3040: val = 4; break;    // EGL_RENDERABLE_TYPE (ES2)
+            case 0x302E: val = 32; break;   // EGL_BUFFER_SIZE
+            case 0x303D: val = 0; break;    // EGL_LUMINANCE_SIZE
+            case 0x3038: val = 0x3038; break;  // EGL_CONFIG_CAVEAT = NONE
+            case 0x3033: val = 1; break;    // EGL_NATIVE_VISUAL_ID (RGBA8888)
+            case 0x3056: val = 4096; break; // EGL_MAX_PBUFFER_WIDTH
+            case 0x3057: val = 4096; break; // EGL_MAX_PBUFFER_HEIGHT
+            default: val = 0; break;
+        }
+        uint32_t holder = 0;
+        for (const auto& a : ctx.args) {
+            if (a.kind == CallContext::Arg::Kind::OBJECT && a.object_id != 0) {
+                // the LAST object arg is the int[] value holder
+                holder = a.object_id;
+            }
+        }
+        if (holder != 0 && heap_) {
+            heap_->set_object_int_field(holder, "array[0]", val);
+        }
+        return CallResult::handled_bool(true);
     }
     if (m == "eglMakeCurrent" || m == "eglSwapBuffers" ||
         m == "eglQuerySurface" || m == "eglDestroySurface" ||

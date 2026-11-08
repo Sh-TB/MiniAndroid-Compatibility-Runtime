@@ -1,0 +1,62 @@
+{
+ "wave": "S188-W17",
+ "title": "LIBGDX EGL family contract IMPLEMENTED \u2014 p9 advances three death-layers (EGL gate -> GL20 stream -> asset pipeline -> Gdx2DPixmap.load native fault)",
+ "binary_sha16": "a485e9826b618c35",
+ "binary_note": "the sandbox wiped build/ between waves; the W15-final binary was FIRST reproduced byte-exact from HEAD source (50400036a6f16fe8) before any edit \u2014 the lineage is reproducible. W17 binary = a485e9826b618c35.",
+ "laws_landed": [
+  {
+   "id": "F-NEW-601",
+   "name": "interface->native exact dispatch",
+   "file": "dalvik_engine.cpp f281c walk",
+   "law": "an ACC_NATIVE method has code_offset==0 and is NOT abstract \u2014 it is a real dispatch target. The f281c_exact walk now counts natives, so invoke-interface resolves against the receiver runtime class (ART law) and reaches the native block."
+  },
+  {
+   "id": "F-NEW-602",
+   "name": "guest->host GL driver routing",
+   "file": "dalvik_engine.cpp native block (try_recursive_invoke)",
+   "law": "the libGDX JNI GL wrappers (AndroidGL20 family) route to the engine GLES20 driver surface (dispatch_gles20_static, F-NEW-505 GLSL ledger) BEFORE the real-symbol attempt \u2014 Anbox/emugl guest->host law; NOT a fail-soft stub (on miss: pre-W17 order preserved; F-C4-594 untouched)."
+  },
+  {
+   "id": "F-NEW-603",
+   "name": "EGL Java-surface static routing",
+   "file": "dalvik_engine.cpp bridge_to_api entry",
+   "law": "EGL statics take execute_invoke_static -> try_recursive_invoke miss -> bridge_to_api, which never consulted the shadow registry; the khronos/egl + EGL14/EGLExt family now routes to GLSurfaceViewShadow.dispatch_egl at bridge entry. Instance EGL calls were already served."
+  },
+  {
+   "id": "F-NEW-604",
+   "name": "EGL shadow body completion",
+   "file": "gl_surface_shadow.cpp dispatch_egl_body",
+   "law": "eglGetCurrentContext -> EGLContext object; getGL -> GL10 object; eglGetConfigAttrib -> honest PGL software-config values written into the int[] holder; eglChooseConfig -> fills configs[0] AND writes 1 into the TRAILING int[] count holder (bytecode-proven gate: checkGL20 returns numConfigs[0] > 0)."
+  }
+ ],
+ "p9_chain_advance": {
+  "before_w17": "checkGL20 EGL answers = typed-default stubs -> createGLSurfaceView threw GdxRuntimeException \"Libgdx requires OpenGL ES 2.0\" (bytecode-proven gate: checkGL20()Z returns numConfigs[0] > 0)",
+  "after_w17": "checkGL20 PASSES; GLSurfaceView20 wired; SpriteBatch + ShaderProgram + Mesh class-init; REAL asset pipeline (2/icons.png 31435B streamed via ASSET-FD/STREAM-READ); Texture/Pixmap chain runs; FRAME_ANALYSIS state=REAL_APP_CONTENT rf=OPENGL_GLES x3 independent runs",
+  "new_frontier": "Gdx2DPixmap.load (ACC_NATIVE, libgdx.so) faults under the engine JNI subset: [MINIANDROID-JNI] UNSUPPORTED JNIEnv slot 222 -> guarded SIGSEGV (FIX-TTT survived) -> getFailureReason null -> IOException \"Error loading pixmap: null\" -> GdxRuntimeException -> APP BOUNDARY unwind. The GL frame is produced but contains uninitialized noise (center-64x64 = 4092 colors -> NOISE_NOT_UI honesty gate; the app never presented UI)."
+ },
+ "halma_advance": {
+  "note": "same family laws; halma now reaches I18NBundle createBundleImpl -> MissingResourceException \"strings, locale en_US\" (deeper than W15: no visual change \u2014 face noise->noise, honesty gate unchanged)"
+ },
+ "regression_gates": {
+  "goldens": "bouncy 8a6c24ac / unote 3b8dcb0a / dooz 31ddd4d5 ALL HOLD byte-exact on a485e9826b618c35, uncaught=0",
+  "floor_11": "FLOOR CLEAN 11/11 \u2014 every W12/W13 recorded tier holds tier-exact (floor_rerun/FLOOR_RERUN.json)",
+  "libgdx_spots": "blichess FLAT=FLAT, boxcars FLAT=FLAT, halma noise=noise (center 1228->732, verdict unchanged)",
+  "determinism": "p9 3/3 independent runs REAL_APP_CONTENT, 8 pipeline markers each"
+ },
+ "next_blockers": [
+  "Gdx2DPixmap.load: engine-side pixmap ledger (decode via the runtime PNG pipeline + minted long-ptr record + getWidth/getHeight/getFormat/getPixelPtr family) \u2014 the W18 draw-contract step",
+  "JNIEnv slot 222 (NewDirectByteBuffer family) \u2014 the JNI subset gap the real native hit before faulting",
+  "halma I18NBundle: locale properties FileHandle resolution"
+ ],
+ "evidence_files": [
+  "evidence/s188_w17/p9_w17b.console.log",
+  "evidence/s188_w17/p9r1.log",
+  "evidence/s188_w17/p9r2.log",
+  "evidence/s188_w17/p9r3.log",
+  "evidence/s188_w17/p9_w17b_frame.png",
+  "evidence/s188_w17/face_se.tube42.p9.android.jpg",
+  "evidence/s188_w17/face_app.halma.jpg",
+  "evidence/s188_w17/floor_rerun/FLOOR_RERUN.json",
+  "evidence/s188_w17/W17_GOLDENS.json"
+ ]
+}

@@ -8404,3 +8404,59 @@ Directive: "ادامه چند ده تسک با هم انجام بده حداقل
   W16_SYMBOL_CENSUS.json, W16_GOLDENS.json, W16_WAVE_REPORT.json,
   tarok_native/libflutter.so, 17 face_*.jpg, 34 *.console.log, runs/};
   scripts/s188_w16_{battery,contracts,progress,finalize}.py
+
+## S188-W17 — LIBGDX EGL FAMILY CONTRACT IMPLEMENTED (2026-11-08)
+
+Directive: "ادامه" — the W16-pinned EGL family contract implemented
+after the pin (W8 law satisfied: contract first, then code). Binary:
+rebuilt twice — first the byte-exact W15 reproduction (50400036a6f16fe8,
+proving the lineage reproducible after the sandbox wiped build/), then
+the W17 binary a485e9826b618c35 with four laws:
+
+- F-NEW-601 interface->native exact dispatch: the f281c_exact walk
+  skipped code_offset==0 methods — which excluded every ACC_NATIVE
+  method from interface resolution (GL20.glCreateShader on the
+  AndroidGL20 receiver never reached the native block → S186I-STUB
+  answered 0 → ShaderProgram isCompiled=false → IllegalArgumentException
+  → APP BOUNDARY unwind before the first frame). Natives are now exact
+  hits (ART art_method law).
+- F-NEW-602 guest→host GL driver routing: the libGDX JNI GL wrapper
+  family (AndroidGL20 et al.) routes ACC_NATIVE gl* calls to the engine
+  GLES20 driver surface (F-NEW-505 GLSL ledger) BEFORE the real-symbol
+  attempt — Anbox/emugl law; the exported-symbol surface is the same
+  driver minus GLSL (portablegl.h has no compiler); NOT a fail-soft
+  stub — pre-W17 order fully preserved on a miss.
+- F-NEW-603 EGL static routing: execute_invoke_static → bridge_to_api
+  never consulted the shadow registry; the khronos/egl + EGL14/EGLExt
+  family routes to GLSurfaceViewShadow.dispatch_egl at bridge entry.
+- F-NEW-604 EGL shadow body completion: eglGetCurrentContext/getGL/
+  eglGetConfigAttrib (honest PGL software config) + the eglChooseConfig
+  count-holder law — androguard bytecode of p9's checkGL20 proved the
+  gate is `numConfigs[0] > 0`; the old body wrote the config into the
+  DISPLAY object and never touched the count.
+
+RESULT (p9, 3 independent runs): checkGL20 PASSES (the
+"Libgdx requires OpenGL ES 2.0" death is gone), GLSurfaceView20 wired,
+SpriteBatch/ShaderProgram/Mesh init, REAL asset streaming
+(2/icons.png 31435B via ASSET-FD/STREAM-READ), Texture/Pixmap chain,
+FRAME_ANALYSIS state=REAL_APP_CONTENT rf=OPENGL_GLES x3. New frontier:
+Gdx2DPixmap.load faults under the JNI subset ([MINIANDROID-JNI]
+UNSUPPORTED JNIEnv slot 222 → guarded SIGSEGV (FIX-TTT) → IOException
+"Error loading pixmap: null" → GdxRuntimeException → APP BOUNDARY
+unwind). Face noise (center 4092 → NOISE_NOT_UI honesty gate; the app
+never presented UI — honest). halma: deeper chain (I18NBundle
+MissingResourceException "strings en_US"), face noise→noise unchanged.
+
+REGRESSION GATES on a485e9826b618c35: goldens 3/3 byte-exact
+(bouncy 8a6c24ac, unote 3b8dcb0a, dooz 31ddd4d5, uncaught=0);
+floor rerun 11/11 tier-exact (FLOOR CLEAN); blichess/boxcars FLAT hold,
+halma verdict unchanged. Promotion law respected: p9/halma remain
+stage6/NOISE (no tier promotion claimed) — the CHAIN advanced, the
+FACE did not.
+
+NEXT: W18 = Gdx2DPixmap engine-side pixmap ledger (runtime PNG decode +
+minted long-ptr record + the getWidth/getHeight/getFormat/getPixelPtr
+family) + JNIEnv slot 222; halma I18NBundle locale-file law.
+Evidence: evidence/s188_w17/{W17_EGL_IMPLEMENTATION.json,
+W17_GOLDENS.json, p9_w17b.console.log, p9r1..3.log, faces,
+floor_rerun/FLOOR_RERUN.json}; scripts/s188_w17_floor_rerun.py.

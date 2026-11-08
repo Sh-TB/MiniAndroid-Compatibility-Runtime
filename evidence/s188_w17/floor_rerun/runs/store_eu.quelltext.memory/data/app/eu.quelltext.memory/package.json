@@ -1,0 +1,16 @@
+{
+  "package": "eu.quelltext.memory",
+  "versionName": "1.7",
+  "versionCode": 7,
+  "mainActivity": "eu.quelltext.memory.FullscreenActivity",
+  "minSdk": "1",
+  "targetSdk": "29",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/eu.quelltext.memory/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w17/floor_rerun/runs/store_eu.quelltext.memory/data/app/eu.quelltext.memory/base.apk",
+  "apkSha256": "4dd3957983e3c3f38c673f898d9659d5e0251f97137bab5254eafdcdbc9fa27c",
+  "apkSize": 3028941,
+  "installedAt": "2026-11-08T08:21:35Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}
