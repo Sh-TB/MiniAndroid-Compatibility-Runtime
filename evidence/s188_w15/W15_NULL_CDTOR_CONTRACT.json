@@ -1,0 +1,47 @@
+{
+ "binary_sha16_final": "50400036a6f16fe8",
+ "wave": "S188-W15",
+ "title": "p9 libgdx.so dlopen: NULL-ctor contract pinned and solved; FAULT-IP observability law landed",
+
+ "p9_dlopen_result": {
+  "before_w15": "dlopen faulted (SIGSEGV) -> loader poisoned -> honest UnsatisfiedLinkError -> app degraded, surface noise",
+  "after_w15": "fork-probe verdict=SAFE; parent dlopen ok; System.loadLibrary(\"gdx\") LOADED size=338440 sha16=7ccb5961dd3e59f5 (dlopen ok; no JNI_OnLoad); SharedLibraryLoader.setLoaded ran; AndroidGraphics init ran; AndroidGL20.init -> 'GL2: all initialized 2'",
+  "independent_runs_with_dlopen_ok": 3,
+  "uncaught": 0
+ },
+
+ "contract_chain": [
+  {"step": 1, "law": "W14 NEXT: attribute the faulting constructor", "gap": "S100-CRASH-FORENSICS row lacked the faulting IP; backtrace() cannot cross the signal frame (live: count=2, frames were [handler, libc])"},
+  {"step": 2, "law": "FAULT-IP LAW (W15)", "fix": "crash_forensics.cpp handler captures uc_mcontext RIP (x86_64 REG_RIP; aarch64 pc fallback) and attributes it via dladdr + /proc/self/maps fallback ([S100-FAULT-IP] row). Pure diagnostics."},
+  {"step": 3, "law": "DLOPEN-PHASE rows (W15)", "fix": "dlopen_exec.cpp logs deps-prep begin/done, fork-probe child begin/done with pid, verdict+raw waitpid status, parent dlopen begin — the log now proves WHICH process/phase faulted"},
+  {"step": 4, "evidence": "first W15 run: forensics block pid=3750 == fork-probe child pid (was unattributable in W14); FAULT-IP ip=0x0 fault_addr=0x0 si_code=1 -> execution jumped TO address 0 (null function pointer, not a null data deref)"},
+  {"step": 5, "evidence": "waitpid status=0x8b00 -> WIFEXITED(139) not WIFSIGNALED: the forensics handler ran with SIGSEGV BLOCKED (no SA_NODEFER) so raise() only made it pending and _exit(128+sig) ran -> the probe classifier misreported a FAULTED probe as REFUSED -> parent re-faulted ('post-probe residual' mystery of W14, fully explained)"},
+  {"step": 6, "law": "UNBLOCK-BEFORE-RAISE (W15)", "fix": "crash_forensics handler sigprocmask(SIG_UNBLOCK) on the faulting signal before raise -> death is genuinely signal-class; probe verdict honest"},
+  {"step": 7, "evidence": "static ELF forensics of the extracted copy: DT_INIT_ARRAYSZ=8 @0x524e0 with init_array[0]=0x0 UNRELOCATED (no R_X86_64_RELATIVE covers the slot) and DT_FINI_ARRAYSZ=16 @0x52420 with fini_array[0]=0xd9b0 (relocated, real dtor) + fini_array[1]=0x0 (unrelocated). The loader calls entry 0 -> rip=0x0. halma's libgdx.so has NO DT_INIT_ARRAY tag at all — the exact structural difference between the family's clean loader (halma) and the faulting one (p9)"},
+  {"step": 8, "law": "FOREIGN_LOADER_NULL_CDTOR_LAW (W15)", "fix": "native_dep.cpp elide_bionic_skipped_cdtor_entries(): in the runtime-owned extracted copy ONLY, shrink DT_INIT_ARRAYSZ/DT_FINI_ARRAYSZ to drop TRAILING entries whose raw value is 0 or -1 AND carry no relocation. Bionic call_function/call_array skip null/-1 entries (device truth: p9 is a shipped app); glibc calls every entry. Trailing-only shrink never moves entries so existing relocations keep pairing; relocated slots are never dropped; APK bytes untouched. Same surgery class as the CONT-83 bionic versym strip; trace row native.nullcdtor lands honestly"},
+  {"step": 9, "incident": "first elision build wrote the new size at the Elf64Dyn d_tag offset (+0) instead of d_val (+8) -> tag became 0=DT_NULL mid-table -> loader's dynamic parse stopped early -> call_init faulted on missing l_info[DT_INIT_ARRAYSZ] (ld-linux +0x5d98 'mov 0x8(%rax),%rdx' with rax=0, fault_addr=0x8) — the FAULT-IP row caught the self-inflicted bug the same day it was introduced; fixed by rewriting the whole Elf64Dyn entry"},
+  {"step": 10, "verified": "p9 rerun: fork-probe child done ok=1, verdict=SAFE, parent dlopen ok, loadLibrary LOADED; identical across 3 independent runs"}
+ ],
+
+ "p9_next_blocker": {
+  "state": "natives loaded + Gdx GL20 init OK ('GL2: all initialized 2'); chain now reaches AndroidGraphics.checkGL20 -> EGL Java surface calls (eglGetDisplay/eglInitialize) which are REC-MISS (unimplemented Java API surface)",
+  "face": "center-64x64 patch colors=3000 -> NOISE_NOT_UI (visual honesty gate; GL draw contract still missing)",
+  "contract_next": "EGL Java-side surface law (eglGetDisplay/eglInitialize/eglChooseConfig/eglCreateContext/eglCreateWindowSurface + GLSurfaceView wiring to the PGL backend)"
+ },
+
+ "regression_gates": {
+  "goldens": "ALL HOLD via canonical s188_golden_check.py on the final binary 50400036a6f16fe8: bouncy 8a6c24ac8a7d718e, unote 3b8dcb0adbbc17a9, dooz 31ddd4d5b8e6d18e, all uncaught=0",
+  "dooz_note": "dooz face a0fae907... appeared only under the w2.run_one mode (different flags/settle than the canonical --max-seconds 40 --frames 5 --trace sequence); canonical method reproduces the pin byte-exact — run-mode sensitivity, not a regression",
+  "halma": "gdx_dlopen_ok=True, tier A_RICH metric, uncaught 0 — unchanged (elision is a no-op there: no DT_INIT_ARRAY tag)",
+  "queens": "Flutter chain intact: dlopen ok, JNI_OnLoad x2, RegisterNatives x4, uncaught 0, FLAT — same as W13/W14",
+  "composeStopwatch": "OK, FLAT, uncaught 0 — same as W12/W13 floor"
+ },
+
+ "evidence_files": [
+  "evidence/s188_w15/W15_FAULT_ATTR.json",
+  "evidence/s188_w15/W15_REGRESSION.json",
+  "evidence/s188_w15/se.tube42.p9.android.console.log",
+  "evidence/s188_w15/face_se.tube42.p9.android.jpg",
+  "evidence/s188_w15/W15_NULL_CDTOR_CONTRACT.json"
+ ]
+}

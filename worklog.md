@@ -8276,3 +8276,74 @@ Directive: "test at least 20 apps and games, check loading progress."
   halma unchanged; queens Flutter chain intact; blackjack B floor holds.
 - Evidence: evidence/s188_w14/{W14_GDX_VERIFY.json, W14_SUMMARY.json,
   W14_SPOT_REGRESSION.json, runs/}, evidence/s188_w13/W14_ABI_CENSUS.json
+
+## S188-W15 — p9 NULL-ctor contract solved; FAULT-IP forensics law; probe verdict honesty
+
+- Binary rebuilt twice: intermediate (off-by-8 elision bug) bde6fa563a0661d4,
+  FINAL 50400036a6f16fe8. All W15 gates ran on the final binary.
+- W14 NEXT executed — the faulting-IP observability gap closed
+  (crash_forensics.cpp): the handler now captures the faulting IP from the
+  ucontext (x86_64 REG_RIP, aarch64 pc fallback) and attributes it
+  (dladdr + /proc/self/maps fallback, [S100-FAULT-IP] row). Root finding:
+  backtrace() cannot cross the signal frame (W14 rows showed only
+  [handler, libc], count=2 — the faulting context was invisible).
+- DLOPEN-PHASE rows (dlopen_exec.cpp): deps-prep begin/done, fork-probe
+  child begin/done with pid, verdict + raw waitpid status, parent dlopen
+  begin. The log now proves WHICH process/phase faulted — no inference.
+- W14 "post-probe residual" mystery FULLY attributed from live evidence:
+  the forensics block pid == the fork-probe child pid; the probe child
+  DID fault, but with SIGSEGV blocked (handler without SA_NODEFER) its
+  raise() only pended the signal and _exit(128+sig) ran -> waitpid saw
+  WIFEXITED(139), not WIFSIGNALED -> verdict misreported FAULTED as
+  REFUSED -> parent re-faulted under the guard. Fix: the handler UNBLOCKS
+  the faulting signal before raise (UNBLOCK-BEFORE-RAISE) — death is
+  genuinely signal-class, probe verdicts honest.
+- First FAULT-IP attribution: ip=0x0 fault_addr=0x0 si_code=1 -> execution
+  JUMPED to address 0 (null function pointer). Static ELF forensics of the
+  extracted libgdx.so: DT_INIT_ARRAYSZ=8 with init_array[0]=0x0
+  UNRELOCATED (no R_X86_64_RELATIVE on the slot) and DT_FINI_ARRAYSZ=16
+  with fini_array[0]=0xd9b0 (relocated, real dtor) + fini_array[1]=0x0
+  (unrelocated). glibc calls every entry -> call to 0. halma's libgdx.so
+  has NO DT_INIT_ARRAY tag at all — the exact structural difference
+  between the family's clean loader (halma) and the faulting one (p9).
+  Device truth: p9 is a shipped app — bionic call_function/call_array
+  SKIP null/-1 entries. FOREIGN_LOADER contract difference, not an app
+  defect.
+- FOREIGN_LOADER_NULL_CDTOR_LAW (native_dep.cpp
+  elide_bionic_skipped_cdtor_entries): runtime-owned extracted copy ONLY —
+  shrink DT_INIT_ARRAYSZ/DT_FINI_ARRAYSZ to drop TRAILING entries with raw
+  value 0/-1 AND no relocation. Trailing-only: entries never move, so
+  existing relocations keep pairing; relocated slots never dropped; APK
+  bytes untouched. Same surgery class as the CONT-83 bionic versym strip;
+  honest native.nullcdtor trace row.
+- Self-inflicted-bug caught by the new forensics the same day: the first
+  elision build wrote the new size at the Elf64Dyn d_tag offset (+0) not
+  d_val (+8) -> tag became 0=DT_NULL mid-table -> loader dynamic parse
+  stopped early -> call_init faulted on missing l_info[DT_INIT_ARRAYSZ]
+  (ld-linux +0x5d98 "mov 0x8(%rax),%rdx", rax=0, fault_addr=0x8). The
+  [S100-FAULT-IP] row attributed it immediately. Fixed by rewriting the
+  whole Elf64Dyn entry.
+- RESULT (p9, 3 independent runs): fork-probe verdict=SAFE, parent dlopen
+  ok, System.loadLibrary("gdx") LOADED size=338440
+  sha16=7ccb5961dd3e59f5 (dlopen ok; no JNI_OnLoad);
+  SharedLibraryLoader.setLoaded ran; AndroidGraphics init ran;
+  AndroidGL20.init -> "GL2: all initialized 2". uncaught=0, ROUTE
+  LIBGDX lane, ROUTE_VIOLATION=0.
+- p9 NEXT BLOCKER (pinned, honest): EGL Java-side surface
+  (eglGetDisplay/eglInitialize/eglChooseConfig/eglCreateContext/
+  eglCreateWindowSurface + GLSurfaceView wiring to PGL) — checkGL20
+  reaches EGL calls as REC-MISS rows. Face still noise (center-64x64
+  colors=3000 -> NOISE_NOT_UI honesty gate): GL draw contract open.
+- Regression gates on the final binary: goldens ALL HOLD via the
+  canonical s188_golden_check.py (bouncy 8a6c24ac8a7d718e, unote
+  3b8dcb0adbbc17a9, dooz 31ddd4d5b8e6d18e, all uncaught=0). halma
+  unchanged (elision no-op: no DT_INIT_ARRAY tag); queens Flutter chain
+  intact (JNI_OnLoad x2, RegisterNatives x4); composeStopwatch floor
+  holds. dooz face a0fae907 under the w2.run_one mode is a documented
+  run-mode variant (S179/S180/S183 evidence alternates both faces across
+  modes) — canonical method reproduces the pin byte-exact, not a
+  regression.
+- Evidence: evidence/s188_w15/{W15_NULL_CDTOR_CONTRACT.json,
+  W15_FAULT_ATTR.json, W15_REGRESSION.json,
+  se.tube42.p9.android.console.log, face_se.tube42.p9.android.jpg};
+  scripts/s188_w15_fault_attr.py, scripts/s188_w15_regression.py

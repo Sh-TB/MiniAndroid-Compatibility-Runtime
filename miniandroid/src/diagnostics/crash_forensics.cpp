@@ -1,4 +1,15 @@
 // S100 §3/§7 — crash forensics implementation (see crash_forensics.h).
+// W15 (S188): FAULTING-IP LAW — the handler's backtrace() starts in the
+// handler itself and cannot cross the signal frame (live evidence: the
+// W14 p9 forensics block showed only [handler, libc] frames — count=2 —
+// while the faulting constructor context stayed invisible). The exact
+// faulting instruction pointer lives in the ucontext the kernel hands the
+// SA_SIGINFO handler; it is now captured, printed, and attributed
+// (module + module offset via dladdr, /proc/self/maps fallback). Pure
+// diagnostics — no behavior change.
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE 1
+#endif
 #include "crash_forensics.h"
 
 #include <atomic>
@@ -9,6 +20,7 @@
 #include <dlfcn.h>
 #include <signal.h>
 #include <unistd.h>
+#include <ucontext.h>
 
 namespace {
 
@@ -91,7 +103,23 @@ size_t append_u(char* out, size_t cap, size_t pos, uint64_t v, int base = 10) {
     return pos;
 }
 
-void handler(int sig, siginfo_t* info, void*) {
+// W15: faulting-IP capture from the ucontext (arch-conditional), with
+// dladdr attribution and a /proc/self/maps fallback. The maps fallback
+// mirrors the W10-FAULT guard precedent (fopen/fgets in-handler accepted
+// for diagnostics in this codebase).
+uintptr_t faulting_ip(const void* uctx_v) {
+    const ucontext_t* uc = static_cast<const ucontext_t*>(uctx_v);
+    if (!uc) return 0;
+#if defined(__x86_64__)
+    return (uintptr_t)uc->uc_mcontext.gregs[REG_RIP];
+#elif defined(__aarch64__)
+    return (uintptr_t)uc->uc_mcontext.pc;
+#else
+    return 0;
+#endif
+}
+
+void handler(int sig, siginfo_t* info, void* uctx_v) {
     char buf[4096];
     size_t pos = 0;
     pos = append_str(buf, sizeof(buf), pos,
@@ -109,6 +137,65 @@ void handler(int sig, siginfo_t* info, void*) {
     pos = append_str(buf, sizeof(buf), pos, " load_base=0x");
     pos = append_u(buf, sizeof(buf), pos, (uint64_t)g_load_base, 16);
     pos = append_str(buf, sizeof(buf), pos, "\n");
+
+    // W15: the exact faulting instruction pointer + module attribution.
+    {
+        uintptr_t ip = faulting_ip(uctx_v);
+        pos = append_str(buf, sizeof(buf), pos, "[S100-FAULT-IP] ip=0x");
+        pos = append_u(buf, sizeof(buf), pos, (uint64_t)ip, 16);
+        bool attributed = false;
+        Dl_info di;
+        if (ip && dladdr((const void*)ip, &di) && di.dli_fname) {
+            const char* bn = strrchr(di.dli_fname, '/');
+            bn = bn ? bn + 1 : di.dli_fname;
+            pos = append_str(buf, sizeof(buf), pos, " mod=");
+            pos = append_str(buf, sizeof(buf), pos, bn);
+            if (di.dli_fbase) {
+                pos = append_str(buf, sizeof(buf), pos, " modoff=0x");
+                pos = append_u(buf, sizeof(buf), pos,
+                               (uint64_t)(ip - (uintptr_t)di.dli_fbase), 16);
+            }
+            if (di.dli_sname) {
+                pos = append_str(buf, sizeof(buf), pos, " sym=");
+                pos = append_str(buf, sizeof(buf), pos, di.dli_sname);
+                if (di.dli_saddr) {
+                    pos = append_str(buf, sizeof(buf), pos, "+0x");
+                    pos = append_u(buf, sizeof(buf), pos,
+                                   (uint64_t)(ip - (uintptr_t)di.dli_saddr),
+                                   16);
+                }
+            }
+            attributed = true;
+        }
+        if (ip && !attributed) {
+            // dladdr could not name it — scan the maps like the W10-FAULT
+            // guard does, so foreign-loader mappings still resolve.
+            FILE* maps = fopen("/proc/self/maps", "r");
+            if (maps) {
+                char line[512];
+                while (fgets(line, sizeof line, maps)) {
+                    unsigned long lo, hi;
+                    char perms[8], path[400] = "";
+                    if (sscanf(line, "%lx-%lx %7s %*x %*x:%*x %*u %399s",
+                               &lo, &hi, perms, path) >= 3) {
+                        if (ip >= lo && ip < hi && path[0] == '/') {
+                            const char* bn = strrchr(path, '/');
+                            bn = bn ? bn + 1 : path;
+                            pos = append_str(buf, sizeof(buf), pos, " mod=");
+                            pos = append_str(buf, sizeof(buf), pos, bn);
+                            pos = append_str(buf, sizeof(buf), pos,
+                                             " modoff=0x");
+                            pos = append_u(buf, sizeof(buf), pos,
+                                           (uint64_t)(ip - lo), 16);
+                            break;
+                        }
+                    }
+                }
+                fclose(maps);
+            }
+        }
+        pos = append_str(buf, sizeof(buf), pos, "\n");
+    }
 
     // Last semantic operations (newest last).
     uint64_t s = g_ring.seq.load(std::memory_order_relaxed);
@@ -175,11 +262,24 @@ void handler(int sig, siginfo_t* info, void*) {
 
     // Restore default disposition and re-raise: honest signal death (rc stays
     // signal-class) with the evidence block already on stderr.
+    // W15: UNBLOCK the signal first. The kernel blocks the faulting signal
+    // (and sa_mask) for the duration of a handler installed without
+    // SA_NODEFER — raise() on a blocked signal only makes it PENDING, so
+    // the raise silently returned, _exit(128+sig) ran, and the process
+    // EXITED with code 128+sig instead of dying by signal. Live evidence:
+    // the W14/W15 fork-probe children exited 0x8b (139) — the probe
+    // classifier saw WIFEXITED, not WIFSIGNALED, and reported REFUSED for
+    // an actually-FAULTED probe (parent then re-faulted: "post-probe
+    // residual"). With the unblock, the death is genuinely signal-class.
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
     sa.sa_handler = SIG_DFL;
     sigemptyset(&sa.sa_mask);
     sigaction(sig, &sa, nullptr);
+    sigset_t block;
+    sigemptyset(&block);
+    sigaddset(&block, sig);
+    sigprocmask(SIG_UNBLOCK, &block, nullptr);
     raise(sig);
     _exit(128 + sig);  // unreachable in practice
 }

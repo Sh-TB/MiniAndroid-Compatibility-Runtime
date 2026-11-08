@@ -1,0 +1,25 @@
+{
+ "binary_sha16_new": "50400036a6f16fe8",
+ "status": "OK",
+ "tier": "A_RICH",
+ "uncaught": 0,
+ "route_decision": [
+  "[ROUTE] DECISION pkg=se.tube42.p9.android primary=LIBGDX routes=LIBGDX+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+SDL+FLUTTER profile=./reports/apk_routes/se.tube42.p9.android.json"
+ ],
+ "dlopen_phase_rows": [
+  "[DLOPEN-PHASE] deps-prep begin lib=gdx path=/home/z/my-project/evidence/s188_w15/runs/store_se.tube42.p9.android/data/app/se.tube42.p9.android/lib/x86_64/libgdx.so pid=4402",
+  "[DLOPEN-PHASE] deps-prep done pid=4402",
+  "[DLOPEN-PHASE] fork-probe child begin pid=4404 path=/home/z/my-project/evidence/s188_w15/runs/store_se.tube42.p9.android/data/app/se.tube42.p9.android/lib/x86_64/libgdx.so",
+  "[DLOPEN-PHASE] fork-probe child done pid=4404 ok=1",
+  "[DLOPEN-PHASE] fork-probe verdict=SAFE status=0x0 child=4404 parent=4402",
+  "[DLOPEN-PHASE] parent dlopen begin (guarded) pid=4402"
+ ],
+ "fault_ip_rows": [],
+ "forensics_head_rows": [],
+ "s2_native_rows": [
+  "[S2-NATIVE] load gdx: dlopen ok (/home/z/my-project/evidence/s188_w15/runs/store_se.tube42.p9.android/data/app/se.tube42.p9.android/lib/x86_64/libgdx.so)",
+  "[S2-NATIVE] System.loadLibrary(\"gdx\") LOADED size=338440 sha16=7ccb5961dd3e59f5 (dlopen ok; no JNI_OnLoad)"
+ ],
+ "gdx_host_rows": [],
+ "note": "rows from the FINAL W15 build (the successful dlopen run); an earlier intermediate build bde6fa563a0661d4 carried the off-by-8 elision bug, attributed via the same FAULT-IP row"
+}

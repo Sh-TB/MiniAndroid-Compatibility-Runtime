@@ -66,6 +66,22 @@ std::string anchor_dir();
 bool strip_bionic_version_tags(const std::string& path, int& rewritten,
                                std::string& why);
 
+// W15 FOREIGN_LOADER_NULL_CDTOR_LAW: bionic's call_function/call_array
+// SKIP null (and -1 sentinel) DT_INIT_ARRAY/DT_FINI_ARRAY entries; glibc
+// calls every entry (a null entry is a call to address 0 — W15 live
+// evidence: p9 libgdx.so init_array[0]=0x0 unrelocated, probe child
+// SIGSEGV rip=0x0 fault_addr=0x0; fini_array[1]=0x0 would fault dlclose
+// the same way; device truth: the same .so loads on real Android devices,
+// p9 is a shipped app). Law: in the RUNTIME-OWNED extracted copy only,
+// shrink DT_INIT_ARRAYSZ / DT_FINI_ARRAYSZ to drop TRAILING bionic-skip
+// entries (raw value 0 or -1 with NO relocation on the slot). Trailing
+// only: shrinking the count never moves entries, so existing relocations
+// keep pairing with their slots. APK bytes are never modified. Counts are
+// the dropped entries; `why` carries an honest note when nothing matched.
+bool elide_bionic_skipped_cdtor_entries(const std::string& path,
+                                        int& init_dropped, int& fini_dropped,
+                                        std::string& why);
+
 // Resolve + pre-load the DT_NEEDED chain of `host_path` (the extracted
 // app .so). `app_lib_dir` is the extracted lib directory (bundled deps).
 // Returns the per-entry plan; dlopen failures per entry land in the row

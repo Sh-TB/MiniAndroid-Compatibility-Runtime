@@ -1,0 +1,64 @@
+{
+ "binary_sha16": "50400036a6f16fe8",
+ "runs": {
+  "p9_rerun1": {
+   "dlopen_ok": true,
+   "status": "OK",
+   "tier": "A_RICH",
+   "uncaught": 0
+  },
+  "p9_rerun2": {
+   "dlopen_ok": true,
+   "status": "OK",
+   "tier": "A_RICH",
+   "uncaught": 0
+  },
+  "app.halma": {
+   "status": "OK",
+   "tier": "A_RICH",
+   "uncaught": 0,
+   "route_decision": [
+    "[ROUTE] DECISION pkg=app.halma primary=LIBGDX routes=LIBGDX+WEBVIEW_NODE+VIEW+MEDIA forbidden=SDL+FLUTTER profile=./reports/apk_routes/app.halma.json"
+   ],
+   "gdx_dlopen_ok": true
+  },
+  "com.sidhant.queens": {
+   "status": "OK",
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "uncaught": 0,
+   "route_decision": [
+    "[ROUTE] DECISION pkg=com.sidhant.queens primary=FLUTTER routes=FLUTTER+WEBVIEW_NODE+MEDIA forbidden=LIBGDX+SDL profile=./reports/apk_routes/com.sidhant.queens.json"
+   ],
+   "flutter_onload": 2,
+   "register_natives": 4,
+   "flutter_dlopen_ok": true
+  },
+  "com.justdeax.composeStopwatch": {
+   "status": "OK",
+   "tier": "FLAT_TWO_TONE_OR_BLANK",
+   "uncaught": 0,
+   "route_decision": [
+    "[ROUTE] DECISION pkg=com.justdeax.composeStopwatch primary=COMPOSE routes=COMPOSE forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.justdeax.composeStopwatch.json"
+   ]
+  }
+ },
+ "goldens": {
+  "com.dozingcatsoftware.bouncy": {
+   "face_sha16": "8a6c24ac8a7d718e",
+   "pin": "8a6c24ac",
+   "hold": true
+  },
+  "app.varlorg.unote": {
+   "face_sha16": "3b8dcb0adbbc17a9",
+   "pin": "3b8dcb0a",
+   "hold": true
+  },
+  "io.github.yamin8000.dooz": {
+   "face_sha16": "a0fae9072313e2d1",
+   "pin": "31ddd4d5",
+   "hold": false
+  }
+ },
+ "all_hold": false,
+ "golden_verdict_note": "8-char-prefix comparison (canonical); authoritative gate = scripts/s188_golden_check.py on binary 50400036a6f16fe8 -> ALL HOLD; the w2.run_one-mode dooz face is run-mode-sensitive, not a regression"
+}

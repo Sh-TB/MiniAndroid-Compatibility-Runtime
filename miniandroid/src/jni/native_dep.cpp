@@ -55,6 +55,7 @@ struct Vernaux {
 constexpr uint16_t ET_DYN = 3;
 constexpr uint16_t EM_X86_64 = 62;
 constexpr uint32_t PT_DYNAMIC = 2;
+constexpr uint32_t PT_LOAD = 1;
 constexpr int64_t DT_NULL = 0, DT_NEEDED = 1, DT_STRTAB = 5, DT_STRSZ = 10;
 constexpr uint32_t SHT_STRTAB = 3;
 constexpr uint32_t SHT_GNU_versym = 0x6fffffff;
@@ -287,6 +288,159 @@ bool strip_bionic_version_tags(const std::string& path, int& rewritten,
     return true;
 }
 
+// ── W15 FOREIGN_LOADER_NULL_CDTOR_LAW ────────────────────────────────────
+// Bionic (AOSP linker) call_function/call_array SKIP null and -1 sentinel
+// init/fini entries; glibc calls every entry. p9's libgdx.so ships with
+// init_array[0]=0x0 (unrelocated) — the probe child's dlopen jumped to
+// address 0 (SIGSEGV rip=0x0 fault_addr=0x0, FAULT-IP row 2026-11-08) —
+// and fini_array[1]=0x0 would fault dlclose the same way. Device truth:
+// the same .so loads on real Android (bionic skips the null entries) —
+// this is a FOREIGN LOADER contract difference, not an app defect. Fix
+// class: the same runtime-owned extracted-copy surgery as the bionic
+// versym strip above (APK bytes untouched). Only TRAILING skip-entries
+// are dropped (count shrink — entries never move, so existing RELATIVE
+// relocations keep pairing). A slot with ANY relocation on it is never
+// dropped (relocated slots are real even when their raw file value is
+// small).
+bool elide_bionic_skipped_cdtor_entries(const std::string& path,
+                                        int& init_dropped, int& fini_dropped,
+                                        std::string& why) {
+    init_dropped = fini_dropped = 0;
+    std::vector<uint8_t> buf;
+    if (!read_file(path, buf) || buf.size() < sizeof(Elf64Ehdr)) {
+        why = "unreadable";
+        return false;
+    }
+    Elf64Ehdr e;
+    std::memcpy(&e, buf.data(), sizeof e);
+    if (e.e_phoff == 0 || e.e_phnum == 0 ||
+        e.e_phoff + (uint64_t)e.e_phnum * e.e_phentsize > buf.size()) {
+        why = "no program headers";
+        return false;
+    }
+    // PT_DYNAMIC + PT_LOAD table for vaddr→file-offset translation.
+    Elf64Phdr dyn_ph{};
+    bool has_dyn = false;
+    std::vector<Elf64Phdr> loads;
+    for (uint16_t i = 0; i < e.e_phnum; ++i) {
+        Elf64Phdr p;
+        std::memcpy(&p, buf.data() + e.e_phoff + (size_t)i * e.e_phentsize,
+                    sizeof p);
+        if (p.p_type == PT_DYNAMIC) {
+            dyn_ph = p;
+            has_dyn = true;
+        } else if (p.p_type == PT_LOAD) {
+            loads.push_back(p);
+        }
+    }
+    if (!has_dyn ||
+        dyn_ph.p_offset + dyn_ph.p_filesz > buf.size()) {
+        why = "no PT_DYNAMIC";
+        return false;
+    }
+    constexpr int64_t DT_INIT_ARRAYSZ = 27, DT_FINI_ARRAYSZ = 28;
+    constexpr int64_t DT_INIT_ARRAY = 25, DT_FINI_ARRAY = 26;
+    constexpr uint64_t R_X86_64_RELATIVE = 8;
+    constexpr uint32_t SHT_RELA = 4;
+    uint64_t off_initsz = 0, off_finisz = 0;
+    uint64_t va_init = 0, va_fini = 0, sz_init = 0, sz_fini = 0;
+    for (uint64_t o = dyn_ph.p_offset;
+         o + sizeof(Elf64Dyn) <= dyn_ph.p_offset + dyn_ph.p_filesz;
+         o += sizeof(Elf64Dyn)) {
+        Elf64Dyn d;
+        std::memcpy(&d, buf.data() + o, sizeof d);
+        if (d.d_tag == DT_NULL) break;
+        if (d.d_tag == DT_INIT_ARRAY) { va_init = d.d_val; }
+        else if (d.d_tag == DT_INIT_ARRAYSZ) { sz_init = d.d_val; off_initsz = o; }
+        else if (d.d_tag == DT_FINI_ARRAY) { va_fini = d.d_val; }
+        else if (d.d_tag == DT_FINI_ARRAYSZ) { sz_fini = d.d_val; off_finisz = o; }
+    }
+    if (!sz_init && !sz_fini) {
+        why = "no init/fini arrays";
+        return true;   // nothing to do (halma's libgdx.so shape)
+    }
+    // Relocated-slot set: any RELATIVE relocation target. A slot covered
+    // by a relocation has a meaningful runtime value — never dropped.
+    auto vaddr_to_off = [&loads](uint64_t va, uint64_t& off) -> bool {
+        for (const auto& p : loads) {
+            if (va >= p.p_vaddr && va < p.p_vaddr + p.p_filesz) {
+                off = va - p.p_vaddr + p.p_offset;
+                return true;
+            }
+        }
+        return false;
+    };
+    auto trailing_droppable = [&](uint64_t va, uint64_t sz) -> int {
+        if (!va || !sz || sz % 8) return 0;
+        uint64_t aoff;
+        if (!vaddr_to_off(va, aoff)) return 0;
+        int dropped = 0;
+        for (int64_t k = (int64_t)(sz / 8) - 1; k >= 0; --k) {
+            uint64_t v;
+            std::memcpy(&v, buf.data() + aoff + (size_t)k * 8, 8);
+            if (v != 0 && v != ~uint64_t(0)) break;   // first non-skip entry
+            dropped++;
+        }
+        // Verify none of the trailing slots is relocated (their vaddrs run
+        // from va + sz - dropped*8 up to va + sz - 8).
+        for (uint16_t i = 0; i < e.e_shnum && dropped; ++i) {
+            Elf64Shdr s;
+            std::memcpy(&s, buf.data() + e.e_shoff + (size_t)i * e.e_shentsize,
+                        sizeof s);
+            if (s.sh_type != SHT_RELA) continue;
+            for (uint64_t ro = s.sh_offset;
+                 ro + 24 <= s.sh_offset + s.sh_size; ro += 24) {
+                uint64_t r_offset, r_info;
+                std::memcpy(&r_offset, buf.data() + ro, 8);
+                std::memcpy(&r_info, buf.data() + ro + 8, 8);
+                if ((r_info & 0xffffffffu) != R_X86_64_RELATIVE) continue;
+                for (int k = 0; k < dropped; ++k) {
+                    if (r_offset == va + (uint64_t)k * 8 + (sz - dropped * 8))
+                        return 0;   // relocation on a trailing slot: keep
+                }
+            }
+        }
+        return dropped;
+    };
+    bool changed = false;
+    // Rewrite the WHOLE Elf64Dyn entry (tag kept, d_val updated): writing
+    // only 8 bytes at the entry start would clobber d_tag with the new
+    // size (0 → DT_NULL stops the loader's dynamic parse mid-table, whose
+    // exact downstream face is call_init faulting on a missing
+    // l_info[DT_INIT_ARRAYSZ] — W15 live evidence, fixed same day).
+    if (sz_init) {
+        int d = trailing_droppable(va_init, sz_init);
+        if (d > 0) {
+            Elf64Dyn dd;
+            std::memcpy(&dd, buf.data() + off_initsz, sizeof dd);
+            dd.d_val = sz_init - (uint64_t)d * 8;
+            std::memcpy(buf.data() + off_initsz, &dd, sizeof dd);
+            init_dropped = d;
+            changed = true;
+        }
+    }
+    if (sz_fini) {
+        int d = trailing_droppable(va_fini, sz_fini);
+        if (d > 0) {
+            Elf64Dyn dd;
+            std::memcpy(&dd, buf.data() + off_finisz, sizeof dd);
+            dd.d_val = sz_fini - (uint64_t)d * 8;
+            std::memcpy(buf.data() + off_finisz, &dd, sizeof dd);
+            fini_dropped = d;
+            changed = true;
+        }
+    }
+    if (!changed) {
+        why = "no trailing bionic-skip entries (or relocated slots present)";
+        return true;
+    }
+    std::ofstream f(path, std::ios::binary | std::ios::trunc);
+    if (!f) { why = "write failed"; init_dropped = fini_dropped = 0; return false; }
+    f.write(reinterpret_cast<const char*>(buf.data()),
+            (std::streamsize)buf.size());
+    return true;
+}
+
 std::vector<DepRow> prepare_dependencies(const std::string& host_path,
                                          const std::string& app_lib_dir) {
     std::vector<DepRow> plan;
@@ -314,6 +468,30 @@ std::vector<DepRow> prepare_dependencies(const std::string& host_path,
                     r["law"] = "bionic @LIBC versym indexes -> "
                                "VER_NDX_GLOBAL (unversioned) in the "
                                "extracted copy; APK untouched";
+                });
+        }
+    }
+    // W15 FOREIGN_LOADER_NULL_CDTOR_LAW: elide trailing null/-1 init/fini
+    // entries in the extracted copy (bionic skips them; glibc calls them —
+    // p9 libgdx.so evidence: dlopen jumped to 0x0). Same surgery class as
+    // the versym strip; APK bytes untouched.
+    {
+        int init_dropped = 0, fini_dropped = 0;
+        std::string ewhy;
+        if (elide_bionic_skipped_cdtor_entries(host_path, init_dropped,
+                                               fini_dropped, ewhy) &&
+            (init_dropped > 0 || fini_dropped > 0)) {
+            gfx::GfxTrace::instance().event("native.nullcdtor",
+                [&](nlohmann::json& r) {
+                    r["path"] = host_path;
+                    r["init_dropped"] = init_dropped;
+                    r["fini_dropped"] = fini_dropped;
+                    r["law"] = "FOREIGN_LOADER_NULL_CDTOR_LAW: bionic "
+                               "call_array skips null/-1 cdtor entries, "
+                               "glibc calls them (call-to-0); trailing "
+                               "unrelocated skip-entries elided from the "
+                               "SZ tags in the extracted copy; APK "
+                               "untouched";
                 });
         }
     }

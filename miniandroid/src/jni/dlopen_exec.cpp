@@ -286,7 +286,13 @@ int g_probe_status = 0;  // raw waitpid status of the last fork-probe child
 enum class ProbeVerdict { SAFE, REFUSED, FAULTED };
 
 ProbeVerdict dlopen_probe(const char* host_path) {
-    if (g_loader_poisoned) return ProbeVerdict::FAULTED;
+    if (g_loader_poisoned) {
+        fprintf(stderr,
+                "[DLOPEN-PHASE] fork-probe skipped: loader poisoned "
+                "(pid=%d)\n",
+                (int)getpid());
+        return ProbeVerdict::FAULTED;
+    }
     pid_t p = fork();
     if (p < 0) return ProbeVerdict::SAFE;  // fork unavailable: direct dlopen
     if (p == 0) {
@@ -295,8 +301,19 @@ ProbeVerdict dlopen_probe(const char* host_path) {
         // F-C4-595 (W10): DEEPBIND in the probe too (mirrors the real
         // open — the probe must observe the same binding the real dlopen
         // will produce).
+        // W15: phase rows — the child prints its own pid BEFORE the dlopen
+        // so a forensics block from the child is attributable (the
+        // S100-CRASH-FORENSICS row carries pid but the caller used to have
+        // no marker distinguishing child-from-parent faults).
+        fprintf(stderr,
+                "[DLOPEN-PHASE] fork-probe child begin pid=%d path=%s\n",
+                (int)getpid(), host_path);
+        fflush(stderr);
         void* h = dlopen(host_path,
                          RTLD_NOW | RTLD_LOCAL | RTLD_DEEPBIND);
+        fprintf(stderr, "[DLOPEN-PHASE] fork-probe child done pid=%d ok=%d\n",
+                (int)getpid(), h ? 1 : 0);
+        fflush(stderr);
         _exit(h ? 0 : 2);
     }
     int st = 0;
@@ -305,6 +322,18 @@ ProbeVerdict dlopen_probe(const char* host_path) {
         break;
     }
     g_probe_status = st;
+    {
+        // W15: honest verdict row — settles WHICH process faulted and the
+        // raw waitpid status, evidence instead of inference.
+        const char* v = WIFSIGNALED(st) ? "FAULTED"
+                      : (WIFEXITED(st) && WEXITSTATUS(st) == 0) ? "SAFE"
+                                                                : "REFUSED";
+        fprintf(stderr,
+                "[DLOPEN-PHASE] fork-probe verdict=%s status=0x%x child=%d "
+                "parent=%d\n",
+                v, (unsigned)st, (int)p, (int)getpid());
+        fflush(stderr);
+    }
     if (WIFSIGNALED(st)) return ProbeVerdict::FAULTED;
     if (WIFEXITED(st) && WEXITSTATUS(st) == 0) return ProbeVerdict::SAFE;
     return ProbeVerdict::REFUSED;
@@ -1233,6 +1262,10 @@ LoadOutcome load_library(const std::string& libname,
     // missing-honest-block), pre-loads what it can RTLD_GLOBAL, and lands
     // a trace row per entry. The REAL dlopen below still fails loudly for
     // anything unresolvable — never a silent substitution.
+    // W15: phase row BEFORE the pre-pass so a fault inside prepare's own
+    // (unguarded) dlopens is attributable by log position alone.
+    fprintf(stderr, "[DLOPEN-PHASE] deps-prep begin lib=%s path=%s pid=%d\n",
+            libname.c_str(), host_path.c_str(), (int)getpid());
     {
         const auto slash = host_path.rfind('/');
         const std::string lib_dir =
@@ -1240,6 +1273,7 @@ LoadOutcome load_library(const std::string& libname,
         for (const auto& row : jni::prepare_dependencies(host_path, lib_dir))
             (void)row;   // trace rows already landed inside prepare
     }
+    fprintf(stderr, "[DLOPEN-PHASE] deps-prep done pid=%d\n", (int)getpid());
     dlerror();
     // FIX-TTT: fork-probe the dlopen first — a library that faults inside
     // the loader (ELF constructors) must become an honest load failure,
@@ -1257,6 +1291,9 @@ LoadOutcome load_library(const std::string& libname,
         return out;
     }
     void* h = nullptr;
+    fprintf(stderr,
+            "[DLOPEN-PHASE] parent dlopen begin (guarded) pid=%d\n",
+            (int)getpid());
     bool dlopen_faulted = !run_native_guarded(
         [&] {
             // ── F-C4-595 (W10, 4APP4 Coder-4) — RTLD_DEEPBIND APP-LIB

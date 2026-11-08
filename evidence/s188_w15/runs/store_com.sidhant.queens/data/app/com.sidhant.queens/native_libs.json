@@ -1,0 +1,10 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.sidhant.queens/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libapp.so", "size": 4457352},
+    {"entry": "lib/x86_64/libdartjni.so", "size": 116640},
+    {"entry": "lib/x86_64/libflutter.so", "size": 13051424}
+  ],
+  "count": 3
+}
