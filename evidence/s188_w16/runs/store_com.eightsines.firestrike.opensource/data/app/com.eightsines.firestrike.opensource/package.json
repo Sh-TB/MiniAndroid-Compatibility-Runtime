@@ -1,0 +1,19 @@
+{
+  "package": "com.eightsines.firestrike.opensource",
+  "versionName": "2.0",
+  "versionCode": 2000,
+  "mainActivity": "zame.game.feature.launcher.LauncherActivity",
+  "minSdk": "16",
+  "targetSdk": "30",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_NETWORK_STATE"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.eightsines.firestrike.opensource/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_com.eightsines.firestrike.opensource/data/app/com.eightsines.firestrike.opensource/base.apk",
+  "apkSha256": "66467fada7c5149e59fdbfc9bb94892e50b61c1343bdd18b351d484887caca79",
+  "apkSize": 15604476,
+  "installedAt": "2026-11-08T05:01:37Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

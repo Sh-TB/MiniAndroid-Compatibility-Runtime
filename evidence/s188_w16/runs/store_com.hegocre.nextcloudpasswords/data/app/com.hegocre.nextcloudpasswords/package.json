@@ -1,0 +1,28 @@
+{
+  "package": "com.hegocre.nextcloudpasswords",
+  "versionName": "1.2.1",
+  "versionCode": 49,
+  "mainActivity": "com.hegocre.nextcloudpasswords.ui.activities.MainActivity",
+  "minSdk": "24",
+  "targetSdk": "37",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.QUERY_ALL_PACKAGES",
+    "android.permission.ACCESS_LOCAL_NETWORK",
+    "android.permission.CAMERA",
+    "android.permission.USE_BIOMETRIC",
+    "android.permission.USE_FINGERPRINT",
+    "android.permission.WAKE_LOCK",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.FOREGROUND_SERVICE",
+    "com.hegocre.nextcloudpasswords.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.hegocre.nextcloudpasswords/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_com.hegocre.nextcloudpasswords/data/app/com.hegocre.nextcloudpasswords/base.apk",
+  "apkSha256": "b8ee43950d3fd8473a78e85494af0800f9f0ba50be49a1d55aff8362ab2d4b9c",
+  "apkSize": 13841332,
+  "installedAt": "2026-11-08T05:01:42Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

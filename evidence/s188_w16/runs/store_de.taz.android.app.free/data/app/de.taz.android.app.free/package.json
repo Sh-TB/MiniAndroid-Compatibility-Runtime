@@ -1,0 +1,27 @@
+{
+  "package": "de.taz.android.app.free",
+  "versionName": "2.1.2",
+  "versionCode": 20102900,
+  "mainActivity": "de.taz.app.android.ui.splash.SplashActivity",
+  "minSdk": "23",
+  "targetSdk": "37",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.WAKE_LOCK",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "de.taz.android.app.free.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/de.taz.android.app.free/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_de.taz.android.app.free/data/app/de.taz.android.app.free/base.apk",
+  "apkSha256": "86f14e1101e7f98952bc402234a7223e99a9defa100a4e12918ee3d88192e448",
+  "apkSize": 63985139,
+  "installedAt": "2026-11-08T05:02:50Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

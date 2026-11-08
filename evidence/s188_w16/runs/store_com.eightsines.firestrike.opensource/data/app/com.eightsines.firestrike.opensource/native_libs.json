@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.eightsines.firestrike.opensource/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/librenderer.so", "size": 6096}
+  ],
+  "count": 1
+}

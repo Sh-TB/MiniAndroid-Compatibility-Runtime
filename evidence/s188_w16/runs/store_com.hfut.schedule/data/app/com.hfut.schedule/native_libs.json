@@ -1,0 +1,16 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.hfut.schedule/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libandroidx.graphics.path.so", "size": 10760},
+    {"entry": "lib/x86_64/libbsdiff.so", "size": 92168},
+    {"entry": "lib/x86_64/libdatastore_shared_counter.so", "size": 6224},
+    {"entry": "lib/x86_64/libimage_processing_util_jni.so", "size": 48104},
+    {"entry": "lib/x86_64/libjpeg.so", "size": 281728},
+    {"entry": "lib/x86_64/libleptonica.so", "size": 3104384},
+    {"entry": "lib/x86_64/libpngx.so", "size": 231224},
+    {"entry": "lib/x86_64/libsurface_util_jni.so", "size": 4928},
+    {"entry": "lib/x86_64/libtesseract.so", "size": 4332136}
+  ],
+  "count": 9
+}

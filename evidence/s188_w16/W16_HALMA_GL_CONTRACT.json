@@ -1,0 +1,31 @@
+{
+ "wave": "S188-W16",
+ "pkg": "app.halma",
+ "title": "libGDX GL draw contract (post-dlopen)",
+ "proven_by_log": {
+  "libgdx_so_loaded": "x86_64 libgdx.so 193008B (W13/W14)",
+  "gdx_chain": "SharedLibraryLoader.setLoaded -> AndroidGraphics -> checkGL20 -> GLSurfaceView20.<init> OK",
+  "gl2_init_rows": 0,
+  "onSurfaceCreated_rows": 9,
+  "setupGL_glGetString_recmiss": 7
+ },
+ "egl_rows": {
+  "Landroid/opengl/GLSurfaceView;.<init> caller=Lcom/badlogic/gdx/backends/android/surfaceview/GLSurfaceView20;.<init>": 1,
+  "Landroid/opengl/GLSurfaceView;.post caller=Lcom/badlogic/gdx/backends/android/AndroidApplication;.onResume": 1,
+  "Ljavax/microedition/khronos/egl/EGL10;.eglChooseConfig caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20": 1,
+  "Ljavax/microedition/khronos/egl/EGL10;.eglGetConfigAttrib caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.getAttrib": 9,
+  "Ljavax/microedition/khronos/egl/EGL10;.eglGetCurrentContext caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated": 1,
+  "Ljavax/microedition/khronos/egl/EGL10;.eglGetDisplay caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20": 1,
+  "Ljavax/microedition/khronos/egl/EGL10;.eglGetDisplay caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig": 1,
+  "Ljavax/microedition/khronos/egl/EGL10;.eglInitialize caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20": 1,
+  "Ljavax/microedition/khronos/egl/EGL10;.eglTerminate caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20": 1,
+  "Ljavax/microedition/khronos/egl/EGLContext;.getEGL caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.checkGL20": 1,
+  "Ljavax/microedition/khronos/egl/EGLContext;.getEGL caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.logConfig": 1,
+  "Ljavax/microedition/khronos/egl/EGLContext;.getEGL caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated": 1,
+  "Ljavax/microedition/khronos/opengles/GL10;.glGetString caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.setupGL": 7,
+  "Ljavax/microedition/khronos/opengles/GL10;.glViewport caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceChanged": 1,
+  "Ljavax/microedition/khronos/opengles/GL10;.glViewport caller=Lcom/badlogic/gdx/backends/android/AndroidGraphics;.onSurfaceCreated": 1
+ },
+ "gap": "GL10.glGetString (setupGL) is REC-MISS -> the GL10/GL20 proxy never binds to a real context -> SurfaceView renders a noise surface (center-64x64 colors ~1228, NOISE_NOT_UI honesty gate). The draw command stream cannot start until the EGL family contract (W16_P9_EGL_CONTRACT.json) is implemented: same contract, same fix, family-wide.",
+ "verdict": "CONTRACT PINNED: halma draw gap == LIBGDX EGL family contract. No shim; implementation rides the family law."
+}

@@ -1,0 +1,507 @@
+{
+ "wave": "S188-W16",
+ "title": "FLEET LOADING-PROGRESS: 41/41 stuck_apks corpus titles battery-covered (W2/W12: 11 -> W13: +13 -> W16: +17)",
+ "corpus_size": 41,
+ "battery_covered": 41,
+ "stage6_count": 41,
+ "route_violation_total": 0,
+ "w16_fresh_progress": [
+  {
+   "pkg": "bim.app",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "com.bupkis.tirailleur",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "com.clavierhaus.gnubg",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "com.eightsines.firestrike.opensource",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "com.hegocre.nextcloudpasswords",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "com.hfut.schedule",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "com.newsblur",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "com.vovagorodok.blidraughts",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "de.seemoo.at_tracking_detection",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "de.taz.android.app.free",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "foehnix.widget",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "io.timelimit.android.aosp.direct",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "me.timeto.app",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "org.nitri.opentopo",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "org.opensurge2d.surgeengine",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "ru.wohlsoft.thextech.fdroid",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  },
+  {
+   "pkg": "site.leos.apps.lespas",
+   "before": "ROUTE-ARCHIVED ONLY (S2 knowledge, never run)",
+   "after": "S6_SETTLED_FACE_TIERED + face tier"
+  }
+ ],
+ "fleet": [
+  {
+   "pkg": "app.halma",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "A_RICH",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=app.halma primary=LIBGDX routes=LIBGDX+WEBVIEW_NODE+VIEW+MEDIA forbidden=SDL+FLUTTER profile=./reports/apk_routes/app.halma.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "bim.app",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=bim.app primary=MEDIA routes=WEBVIEW_NODE+VIEW+MEDIA forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/bim.app.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.astroloop.game",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=com.astroloop.game primary=VIEW routes=VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.astroloop.game.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.bupkis.tirailleur",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=com.bupkis.tirailleur primary=FLUTTER routes=FLUTTER+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL profile=./reports/apk_routes/com.bupkis.tirailleur.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.clavierhaus.gnubg",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=com.clavierhaus.gnubg primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.clavierhaus.gnubg.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.eightsines.firestrike.opensource",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=com.eightsines.firestrike.opensource primary=VIEW routes=WEBVIEW_NODE+VIEW+MEDIA forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.eightsines.firestrike.opensource.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.hegocre.nextcloudpasswords",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=com.hegocre.nextcloudpasswords primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE+VIEW+MEDIA forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.hegocre.nextcloudpasswords.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.hfut.schedule",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=com.hfut.schedule primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE+VIEW+MEDIA forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.hfut.schedule.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.jeffliu.balancetheball",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "B_STRUCTURED",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=com.jeffliu.balancetheball primary=VIEW routes=VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.jeffliu.balancetheball.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.justdeax.composeStopwatch",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=com.justdeax.composeStopwatch primary=COMPOSE routes=COMPOSE forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.justdeax.composeStopwatch.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.newsblur",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=com.newsblur primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE+VIEW+MEDIA forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.newsblur.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.qwde.ccm",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=com.qwde.ccm primary=GODOT routes=GODOT+WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.qwde.ccm.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.rocket9labs.boxcars",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=com.rocket9labs.boxcars primary=VIEW routes=VIEW forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.rocket9labs.boxcars.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.sidhant.queens",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=com.sidhant.queens primary=FLUTTER routes=FLUTTER+WEBVIEW_NODE+MEDIA forbidden=LIBGDX+SDL profile=./reports/apk_routes/com.sidhant.queens.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.simondalvai.ball2box",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=com.simondalvai.ball2box primary=GODOT routes=GODOT+WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.simondalvai.ball2box.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.vayunmathur.games.solitaire",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=com.vayunmathur.games.solitaire primary=COMPOSE routes=COMPOSE forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.vayunmathur.games.solitaire.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.vovagorodok.blichess",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=com.vovagorodok.blichess primary=WEBVIEW_HTML5_PACKAGED routes=WEBVIEW_HTML5_PACKAGED+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.vovagorodok.blichess.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "com.vovagorodok.blidraughts",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=com.vovagorodok.blidraughts primary=WEBVIEW_HTML5_PACKAGED routes=WEBVIEW_HTML5_PACKAGED+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/com.vovagorodok.blidraughts.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "cos.premy.mines",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "B_STRUCTURED",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=cos.premy.mines primary=WEBVIEW_NODE routes=WEBVIEW_NODE forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/cos.premy.mines.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "crypto.o0o0o0o0o.games.blackjack",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "B_STRUCTURED",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=crypto.o0o0o0o0o.games.blackjack primary=WEBVIEW_HTML5_PACKAGED routes=WEBVIEW_HTML5_PACKAGED+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/crypto.o0o0o0o0o.games.blackjack.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "de.seemoo.at_tracking_detection",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=de.seemoo.at_tracking_detection primary=COMPOSE routes=COMPOSE+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/de.seemoo.at_tracking_detection.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "de.taz.android.app.free",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=de.taz.android.app.free primary=VIEW routes=WEBVIEW_NODE+VIEW+MEDIA forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/de.taz.android.app.free.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "de.tobiasbielefeld.solitaire",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=de.tobiasbielefeld.solitaire primary=VIEW routes=VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/de.tobiasbielefeld.solitaire.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "eu.quelltext.memory",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "B_STRUCTURED",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=eu.quelltext.memory primary=WEBVIEW_HTML5_PACKAGED routes=WEBVIEW_HTML5_PACKAGED+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/eu.quelltext.memory.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "eu.veldsoft.no.thanks",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "B_STRUCTURED",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=eu.veldsoft.no.thanks primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/eu.veldsoft.no.thanks.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "foehnix.widget",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=foehnix.widget primary=VIEW routes=WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/foehnix.widget.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "io.github.aoc_normal",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=io.github.aoc_normal primary=VIEW routes=WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/io.github.aoc_normal.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "io.github.hathibelagal.mykanji",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=io.github.hathibelagal.mykanji primary=WEBVIEW_HTML5_PACKAGED routes=WEBVIEW_HTML5_PACKAGED+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/io.github.hathibelagal.mykanji.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "io.timelimit.android.aosp.direct",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=io.timelimit.android.aosp.direct primary=COMPOSE routes=COMPOSE+VIEW forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/io.timelimit.android.aosp.direct.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "me.river.nightbell",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=me.river.nightbell primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE+MEDIA forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/me.river.nightbell.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "me.timeto.app",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=me.timeto.app primary=COMPOSE routes=COMPOSE+VIEW forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/me.timeto.app.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "org.nitri.opentopo",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=org.nitri.opentopo primary=COMPOSE routes=WEBVIEW_NODE+COMPOSE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/org.nitri.opentopo.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "org.opensurge2d.surgeengine",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=org.opensurge2d.surgeengine primary=NATIVE_GAME_ENGINE routes=NATIVE_GAME_ENGINE forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/org.opensurge2d.surgeengine.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "org.secuso.privacyfriendlybattleship",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=org.secuso.privacyfriendlybattleship primary=VIEW routes=WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/org.secuso.privacyfriendlybattleship.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "page.codeberg.lanticy.guandan",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=page.codeberg.lanticy.guandan primary=COMPOSE routes=COMPOSE forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/page.codeberg.lanticy.guandan.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "ru.wohlsoft.thextech.fdroid",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=ru.wohlsoft.thextech.fdroid primary=SDL routes=SDL+NATIVE_GAME_ENGINE+WEBVIEW_NODE+VIEW forbidden=LIBGDX+FLUTTER profile=./reports/apk_routes/ru.wohlsoft.thextech.fdroid.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "se.tube42.p9.android",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "A_RICH",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=se.tube42.p9.android primary=LIBGDX routes=LIBGDX+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+SDL+FLUTTER profile=./reports/apk_routes/se.tube42.p9.android.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "si.palcka.tarok",
+   "first_battery_observation": "W13",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=si.palcka.tarok primary=FLUTTER routes=FLUTTER+WEBVIEW_NODE+VIEW forbidden=LIBGDX+SDL profile=./reports/apk_routes/si.palcka.tarok.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "site.leos.apps.lespas",
+   "first_battery_observation": "W16",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "route_lane_now": "[ROUTE] DECISION pkg=site.leos.apps.lespas primary=VIEW routes=WEBVIEW_NODE+VIEW+MEDIA forbidden=LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/site.leos.apps.lespas.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "tibarj.tranquilstopwatch",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=tibarj.tranquilstopwatch primary=VIEW routes=VIEW forbidden=WEBVIEW_HTML5_PACKAGED+LIBGDX+SDL+FLUTTER profile=./reports/apk_routes/tibarj.tranquilstopwatch.json",
+   "route_violations": 0
+  },
+  {
+   "pkg": "xyz.deepdaikon.quinb",
+   "first_battery_observation": "W12",
+   "stage_now": 6,
+   "stage_name_now": "S6_SETTLED_FACE_TIERED",
+   "tier_now": "FLAT_TWO_TONE_OR_BLANK",
+   "effective_tier_now": null,
+   "route_lane_now": "[ROUTE] DECISION pkg=xyz.deepdaikon.quinb primary=FLUTTER routes=FLUTTER+WEBVIEW_NODE+VIEW+MEDIA forbidden=LIBGDX+SDL profile=./reports/apk_routes/xyz.deepdaikon.quinb.json",
+   "route_violations": 0
+  }
+ ]
+}

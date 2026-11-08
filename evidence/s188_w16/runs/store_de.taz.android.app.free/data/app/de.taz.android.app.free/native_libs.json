@@ -1,0 +1,10 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/de.taz.android.app.free/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libconscrypt_jni.so", "size": 2501432},
+    {"entry": "lib/x86_64/libdatastore_shared_counter.so", "size": 7336},
+    {"entry": "lib/x86_64/libmupdf_java.so", "size": 10578440}
+  ],
+  "count": 3
+}

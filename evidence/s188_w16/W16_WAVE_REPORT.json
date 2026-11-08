@@ -1,0 +1,169 @@
+{
+ "wave": "S188-W16",
+ "directive": "user: \"\u0627\u062f\u0627\u0645\u0647 \u0686\u0646\u062f \u062f\u0647 \u062a\u0633\u06a9 \u0628\u0627 \u0647\u0645 \u0627\u0646\u062c\u0627\u0645 \u0628\u062f\u0647 \u062d\u062f\u0627\u0642\u0644 \u06f2\u06f0 \u0645\u0648\u0631\u062f \u06a9\u062f\u0631\u0647\u0627 \u0647\u0645 \u067e\u06cc\u0634\u0631\u0641\u062a \u062f\u0627\u0634\u062a\u0646\" (do dozens of tasks, >=20 items, coder progress)",
+ "binary_sha16": "50400036a6f16fe8",
+ "date_utc": "2026-11-08T05:12:42.764080+00:00",
+ "task_ledger": [
+  {
+   "task": "T1",
+   "title": "battery: bim.app (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=10 wall=4.5s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T2",
+   "title": "battery: com.bupkis.tirailleur (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=10 wall=3.7s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T3",
+   "title": "battery: com.clavierhaus.gnubg (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=44 wall=13.9s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T4",
+   "title": "battery: com.eightsines.firestrike.opensource (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=11 wall=4.6s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T5",
+   "title": "battery: com.hegocre.nextcloudpasswords (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=18 wall=4.7s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T6",
+   "title": "battery: com.hfut.schedule (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=73 wall=45.3s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T7",
+   "title": "battery: com.newsblur (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=21 wall=4.6s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T8",
+   "title": "battery: com.vovagorodok.blidraughts (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=6 wall=5.5s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T9",
+   "title": "battery: de.seemoo.at_tracking_detection (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=58 wall=6.6s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T10",
+   "title": "battery: de.taz.android.app.free (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=73 wall=20.0s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T11",
+   "title": "battery: foehnix.widget (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=2 wall=4.3s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T12",
+   "title": "battery: io.timelimit.android.aosp.direct (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=47 wall=5.1s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T13",
+   "title": "battery: me.timeto.app (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=16 wall=6.1s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T14",
+   "title": "battery: org.nitri.opentopo (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=14 wall=5.3s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T15",
+   "title": "battery: org.opensurge2d.surgeengine (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=15 wall=4.1s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T16",
+   "title": "battery: ru.wohlsoft.thextech.fdroid (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=5 wall=4.6s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T17",
+   "title": "battery: site.leos.apps.lespas (fresh title)",
+   "result": "stage=S6_SETTLED_FACE_TIERED tier=FLAT_TWO_TONE_OR_BLANK uncaught_marks=40 wall=10.2s ROUTE_VIOLATION=0"
+  },
+  {
+   "task": "T18",
+   "title": "p9 EGL Java-surface contract PIN",
+   "result": "W16_P9_EGL_CONTRACT.json: androguard dex_refs=71, log rows p9=18/halma=15, anchors egl=22 gl=106; no shim (W8 law carried)"
+  },
+  {
+   "task": "T19",
+   "title": "tarok libflutter extraction->dlopen path contract",
+   "result": "W16_TAROK_FLUTTER_PATH.json: physical copy 10942424B AArch64 NEEDED=8; FOREIGN_ARCH_ONLY_ABI closed as arch-bound; extraction path healthy"
+  },
+  {
+   "task": "T20",
+   "title": "halma GL draw contract PIN",
+   "result": "W16_HALMA_GL_CONTRACT.json: onSurfaceCreated x9, setupGL glGetString REC-MISS x7 -> same LIBGDX EGL family contract as p9"
+  },
+  {
+   "task": "T21",
+   "title": "undefined-dynsym census (closes W13 glCopyTexImage2D loop quantitatively)",
+   "result": "W16_SYMBOL_CENSUS.json: p9 libgdx 165/165, freetype 28/28, halma 13/13, queens 485/485, dooz 7/7; residual sdallocx only in foreign-arch tarok lib"
+  },
+  {
+   "task": "T22",
+   "title": "golden check on current binary",
+   "result": "W16_GOLDENS.json: bouncy/unote/dooz ALL HOLD, uncaught=0"
+  },
+  {
+   "task": "T23",
+   "title": "fleet reconcile + honesty gate + route audit",
+   "result": "W16_PROGRESS.json + W16_INTEGRITY_NOTE.json: fleet 41/41 battery-covered, 41/41 stage6, ROUTE_VIOLATION=0, honesty downgrades=0"
+  },
+  {
+   "task": "T24",
+   "title": "wave finalize + worklog + report",
+   "result": "W16_WAVE_REPORT.json + worklog.md S188-W16 entry"
+  }
+ ],
+ "n_tasks": 24,
+ "headline": {
+  "battery_coverage": "41/41 corpus titles battery-covered (was 24)",
+  "stage6": 41,
+  "route_violations": 0,
+  "goldens": "ALL HOLD",
+  "contracts_pinned": [
+   "p9/halma LIBGDX EGL family (Java-side surface law)",
+   "tarok FOREIGN_ARCH_ONLY_ABI",
+   "halma GL draw gap == family contract"
+  ],
+  "symbol_census": "565/566 host-arch UND symbols resolve; glCopyTexImage2D W13 blocker closed quantitatively"
+ },
+ "honesty": {
+  "visual_gate": "all fields recomputed from physical artifacts (console logs + face JPGs); visual honesty gate = center-64x64 patch colors >=100 => NOISE_NOT_UI (W13 calibration: noise 1228-3000 vs real UI 1-6)",
+  "downgrades": [],
+  "tier_histogram_w16": {
+   "A_RICH": 0,
+   "B_STRUCTURED": 0,
+   "C_TEXT_ON_FLAT": 0,
+   "FLAT_TWO_TONE_OR_BLANK": 17,
+   "NOISE_STATIC_SURFACE": 0
+  },
+  "promotion_claims": "NONE \u2014 W16 creates baselines and pins contracts; 3-independent-runs law untouched"
+ },
+ "evidence_files": [
+  "W16_BATTERY.json",
+  "W16_BATTERY.partial.json",
+  "W16_GOLDENS.json",
+  "W16_HALMA_GL_CONTRACT.json",
+  "W16_INTEGRITY_NOTE.json",
+  "W16_P9_EGL_CONTRACT.json",
+  "W16_PROGRESS.json",
+  "W16_SYMBOL_CENSUS.json",
+  "W16_TAROK_FLUTTER_PATH.json"
+ ],
+ "next_blockers": [
+  "p9/halma: implement the pinned EGL Java-surface family contract (eglGetDisplay/Initialize/ChooseConfig/GetConfigAttrib/CreateContext/CreateWindowSurface/MakeCurrent/GetCurrentContext/SwapBuffers + GLSurfaceView wiring + GL10.glGetString proxy) -> GL draw stream",
+  "tarok: foreign-arch decision (arm interpreter) \u2014 engine decision, not a contract fix",
+  "W8 Dart VM dual-thread spin: still open, untouched this wave"
+ ]
+}

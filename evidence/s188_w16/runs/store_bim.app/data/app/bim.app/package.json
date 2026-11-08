@@ -1,0 +1,20 @@
+{
+  "package": "bim.app",
+  "versionName": "17",
+  "versionCode": 1700,
+  "mainActivity": "bim.app.AppActivity",
+  "minSdk": "23",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.VIBRATE",
+    "android.permission.ACCESS_NETWORK_STATE"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/bim.app/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_bim.app/data/app/bim.app/base.apk",
+  "apkSha256": "711e03303f5702a01ff372dd0d04611cd62544ba424290dc509f2eb0197e577c",
+  "apkSize": 64962960,
+  "installedAt": "2026-11-08T05:01:14Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

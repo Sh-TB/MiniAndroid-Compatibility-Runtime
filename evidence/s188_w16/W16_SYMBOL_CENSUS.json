@@ -1,0 +1,99 @@
+{
+ "wave": "S188-W16",
+ "title": "undefined-dynsym census of extracted native libs",
+ "runtime_binary": {
+  "sha16": "50400036a6f16fe8",
+  "dyn_exports": 5029
+ },
+ "anchor_libs_exports": 241,
+ "host_libc_pool": 10084,
+ "libs": [
+  {
+   "lib": "se.tube42.p9.android/libgdx.so",
+   "size": 338440,
+   "sha16": "7ccb5961dd3e59f5",
+   "und_symbols": 165,
+   "resolved_by_runtime_or_anchor_or_libc": 165,
+   "missing_from_host_pools": 0,
+   "missing_list": [],
+   "spot_checks": {
+    "glCopyTexImage2D": true,
+    "eglGetDisplay": true,
+    "eglCreateWindowSurface": true
+   }
+  },
+  {
+   "lib": "se.tube42.p9.android/libgdx-freetype.so",
+   "size": 763920,
+   "sha16": "8434d5ed35200dcd",
+   "und_symbols": 28,
+   "resolved_by_runtime_or_anchor_or_libc": 28,
+   "missing_from_host_pools": 0,
+   "missing_list": [],
+   "spot_checks": {
+    "glCopyTexImage2D": true,
+    "eglGetDisplay": true,
+    "eglCreateWindowSurface": true
+   }
+  },
+  {
+   "lib": "app.halma/libgdx.so",
+   "size": 193008,
+   "sha16": "2e9dc948aab382e5",
+   "und_symbols": 13,
+   "resolved_by_runtime_or_anchor_or_libc": 13,
+   "missing_from_host_pools": 0,
+   "missing_list": [],
+   "spot_checks": {
+    "glCopyTexImage2D": true,
+    "eglGetDisplay": true,
+    "eglCreateWindowSurface": true
+   }
+  },
+  {
+   "lib": "com.sidhant.queens/libflutter.so",
+   "size": 13051424,
+   "sha16": "951322aa31ae47ae",
+   "und_symbols": 485,
+   "resolved_by_runtime_or_anchor_or_libc": 485,
+   "missing_from_host_pools": 0,
+   "missing_list": [],
+   "spot_checks": {
+    "glCopyTexImage2D": true,
+    "eglGetDisplay": true,
+    "eglCreateWindowSurface": true
+   }
+  },
+  {
+   "lib": "io.github.yamin8000.dooz/libandroidx.graphics.path.so",
+   "size": 10760,
+   "sha16": "4e56c996f13670e7",
+   "und_symbols": 7,
+   "resolved_by_runtime_or_anchor_or_libc": 7,
+   "missing_from_host_pools": 0,
+   "missing_list": [],
+   "spot_checks": {
+    "glCopyTexImage2D": true,
+    "eglGetDisplay": true,
+    "eglCreateWindowSurface": true
+   }
+  },
+  {
+   "lib": "si.palcka.tarok/libflutter.so (FOREIGN ARM64)",
+   "size": 10942424,
+   "sha16": "f0ae02b40ed5cd09",
+   "und_symbols": 467,
+   "resolved_by_runtime_or_anchor_or_libc": 466,
+   "missing_from_host_pools": 1,
+   "missing_list": [
+    "sdallocx"
+   ],
+   "spot_checks": {
+    "glCopyTexImage2D": true,
+    "eglGetDisplay": true,
+    "eglCreateWindowSurface": true
+   }
+  }
+ ],
+ "verdict": "The W13 dlopen blocker \"undefined symbol glCopyTexImage2D\" is closed quantitatively: the symbol is a DEFINED export of the current runtime binary (nm -D T glCopyTexImage2D) and every x86_64 lib above resolves its UND set against runtime+anchor+libc pools. Remaining gaps are listed per-lib as the next contract surface, not shims."
+}

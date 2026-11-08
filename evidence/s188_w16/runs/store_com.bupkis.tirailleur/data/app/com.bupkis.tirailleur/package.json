@@ -1,0 +1,21 @@
+{
+  "package": "com.bupkis.tirailleur",
+  "versionName": "1.0.0",
+  "versionCode": 13,
+  "mainActivity": "com.bupkis.tirailleur.MainActivity",
+  "minSdk": "24",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_FINE_LOCATION",
+    "android.permission.ACCESS_COARSE_LOCATION",
+    "com.bupkis.tirailleur.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.bupkis.tirailleur/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_com.bupkis.tirailleur/data/app/com.bupkis.tirailleur/base.apk",
+  "apkSha256": "474d9ecc0038a7744adc657e9f81605de6c96f34cb0b7924f7a2685699dcd60b",
+  "apkSize": 24432234,
+  "installedAt": "2026-11-08T05:01:19Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

@@ -1,0 +1,21 @@
+{
+  "primaryAbi": "arm64-v8a",
+  "nativeLibraryDir": "/data/app/org.opensurge2d.surgeengine/lib/arm64-v8a",
+  "extracted": [
+    {"entry": "lib/arm64-v8a/libphysfs.so", "size": 737256},
+    {"entry": "lib/arm64-v8a/liballegro_image.so", "size": 169176},
+    {"entry": "lib/arm64-v8a/liballegro_color.so", "size": 92184},
+    {"entry": "lib/arm64-v8a/liballegro_font.so", "size": 173144},
+    {"entry": "lib/arm64-v8a/liballegro_memfile.so", "size": 19152},
+    {"entry": "lib/arm64-v8a/liballegro_dialog.so", "size": 164296},
+    {"entry": "lib/arm64-v8a/liballegro_main.so", "size": 5080},
+    {"entry": "lib/arm64-v8a/libopensurge.so", "size": 5721232},
+    {"entry": "lib/arm64-v8a/liballegro_primitives.so", "size": 186464},
+    {"entry": "lib/arm64-v8a/liballegro.so", "size": 3796832},
+    {"entry": "lib/arm64-v8a/liballegro_ttf.so", "size": 1235464},
+    {"entry": "lib/arm64-v8a/liballegro_audio.so", "size": 325208},
+    {"entry": "lib/arm64-v8a/liballegro_physfs.so", "size": 53008},
+    {"entry": "lib/arm64-v8a/liballegro_acodec.so", "size": 862248}
+  ],
+  "count": 14
+}

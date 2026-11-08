@@ -1,0 +1,18 @@
+{
+  "package": "org.opensurge2d.surgeengine",
+  "versionName": "6.1.3.0-fdroid",
+  "versionCode": 30650,
+  "mainActivity": "org.opensurge2d.surgeengine.MainActivity",
+  "minSdk": "21",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.READ_EXTERNAL_STORAGE"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.opensurge2d.surgeengine/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_org.opensurge2d.surgeengine/data/app/org.opensurge2d.surgeengine/base.apk",
+  "apkSha256": "c1020c5a1e594b2189816ac39f657e827b9a4d22d199d72228ed7e276d70be77",
+  "apkSize": 45065524,
+  "installedAt": "2026-11-08T05:03:32Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

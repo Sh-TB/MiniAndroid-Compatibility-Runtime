@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="osmdroid.TileDownloaderFollowRedirects" value="true" />
+    <boolean name="otm_official_default_migration_v1_done" value="true" />
+    <boolean name="osmdroid.HardwareAcceleration" value="true" />
+    <string name="osmdroid.userAgentValue">org.nitri.opentopo</string>
+    <boolean name="osmdroid.DebugMode" value="false" />
+    <int name="osmdroid.tileDownloadThreads" value="2" />
+    <boolean name="osmdroid.DebugTileProvider" value="false" />
+    <string name="osmdroid.cachePath">/data/data/org.nitri.opentopo/cache/osmdroid/tiles</string>
+    <int name="osmdroid.cacheMapTileCount" value="9" />
+    <int name="osmdroid.tileDownloadMaxQueueSize" value="40" />
+    <boolean name="osmdroid.enforceTileSystemBounds" value="false" />
+    <int name="osmdroid.cacheTileOvershoot" value="0" />
+    <long name="osmdroid.ExpirationExtendedDuration" value="0" />
+    <boolean name="osmdroid.mapViewRecycler" value="true" />
+    <int name="osmdroid.animationSpeedShort" value="500" />
+    <int name="osmdroid.tileFileSystemThreads" value="8" />
+    <int name="osmdroid.ZoomSpeedDefault" value="1000" />
+    <boolean name="fullscreen" value="false" />
+    <long name="osmdroid.gpsWaitTime" value="20000" />
+    <string name="osmdroid.basePath">/data/data/org.nitri.opentopo/cache/osmdroid</string>
+    <boolean name="osmdroid.DebugMapView" value="false" />
+    <boolean name="osmdroid.DebugDownloading" value="false" />
+    <int name="osmdroid.tileFileSystemMaxQueueSize" value="40" />
+</map>

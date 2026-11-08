@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/bim.app/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libbim.so", "size": 14550288}
+  ],
+  "count": 1
+}

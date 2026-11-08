@@ -1,0 +1,17 @@
+{
+ "wave": "S188-W16",
+ "note": "all fields recomputed from physical artifacts (console logs + face JPGs); visual honesty gate = center-64x64 patch colors >=100 => NOISE_NOT_UI (W13 calibration: noise 1228-3000 vs real UI 1-6)",
+ "titles": 17,
+ "stage6": 17,
+ "route_logs": 34,
+ "route_decisions": 34,
+ "route_violations": 0,
+ "honesty_downgrades": [],
+ "tier_histogram": {
+  "A_RICH": 0,
+  "B_STRUCTURED": 0,
+  "C_TEXT_ON_FLAT": 0,
+  "FLAT_TWO_TONE_OR_BLANK": 17,
+  "NOISE_STATIC_SURFACE": 0
+ }
+}

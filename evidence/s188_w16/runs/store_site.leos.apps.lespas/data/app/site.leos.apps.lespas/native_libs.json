@@ -1,0 +1,10 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/site.leos.apps.lespas/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libglues.so", "size": 87912},
+    {"entry": "lib/x86_64/libtensorflowlite_gpu_jni.so", "size": 2728592},
+    {"entry": "lib/x86_64/libtensorflowlite_jni.so", "size": 6272848}
+  ],
+  "count": 3
+}

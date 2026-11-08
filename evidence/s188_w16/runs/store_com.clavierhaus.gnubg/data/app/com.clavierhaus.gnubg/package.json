@@ -1,0 +1,21 @@
+{
+  "package": "com.clavierhaus.gnubg",
+  "versionName": "1.0.3",
+  "versionCode": 103,
+  "mainActivity": "com.clavierhaus.gnubg.MainActivity",
+  "minSdk": "31",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+    "android.permission.POST_NOTIFICATIONS",
+    "com.clavierhaus.gnubg.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.clavierhaus.gnubg/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_com.clavierhaus.gnubg/data/app/com.clavierhaus.gnubg/base.apk",
+  "apkSha256": "8b643e5681a798c816e7852cb405895aa8c3da0833b905a1cfcb466b22a91178",
+  "apkSize": 39211927,
+  "installedAt": "2026-11-08T05:01:23Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

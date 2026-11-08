@@ -1,0 +1,27 @@
+{
+  "package": "com.vovagorodok.blidraughts",
+  "versionName": "2.3.0+ble2.5.1",
+  "versionCode": 3,
+  "mainActivity": "com.vovagorodok.blidraughts.MainActivity",
+  "minSdk": "23",
+  "targetSdk": "35",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.VIBRATE",
+    "android.permission.BLUETOOTH_CONNECT",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.ACCESS_COARSE_LOCATION",
+    "android.permission.ACCESS_FINE_LOCATION",
+    "android.permission.BLUETOOTH_SCAN",
+    "android.permission.BLUETOOTH",
+    "android.permission.BLUETOOTH_ADMIN",
+    "com.vovagorodok.blidraughts.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.vovagorodok.blidraughts/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_com.vovagorodok.blidraughts/data/app/com.vovagorodok.blidraughts/base.apk",
+  "apkSha256": "f7f4582fa24607d87c304c3acaca0cc150fa311da22e469cd15150c73d20ba2d",
+  "apkSize": 36836253,
+  "installedAt": "2026-11-08T05:02:37Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

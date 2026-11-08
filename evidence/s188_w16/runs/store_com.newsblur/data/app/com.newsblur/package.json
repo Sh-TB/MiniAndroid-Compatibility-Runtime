@@ -1,0 +1,27 @@
+{
+  "package": "com.newsblur",
+  "versionName": "16.1.1",
+  "versionCode": 300,
+  "mainActivity": "com.newsblur.activity.InitActivity",
+  "minSdk": "26",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.WAKE_LOCK",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.RECORD_AUDIO",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "com.newsblur.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.newsblur/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_com.newsblur/data/app/com.newsblur/base.apk",
+  "apkSha256": "e29243435e38b1b216b2b764c0e82dcff42d4ec8490e763c1864dfa917dba6f8",
+  "apkSize": 10265240,
+  "installedAt": "2026-11-08T05:02:32Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

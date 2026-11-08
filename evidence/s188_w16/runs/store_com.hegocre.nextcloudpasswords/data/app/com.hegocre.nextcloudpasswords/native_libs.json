@@ -1,0 +1,14 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.hegocre.nextcloudpasswords/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libandroidx.graphics.path.so", "size": 10760},
+    {"entry": "lib/x86_64/libdatastore_shared_counter.so", "size": 9424},
+    {"entry": "lib/x86_64/libimage_processing_util_jni.so", "size": 49416},
+    {"entry": "lib/x86_64/libjnidispatch.so", "size": 126912},
+    {"entry": "lib/x86_64/libsodium.so", "size": 427312},
+    {"entry": "lib/x86_64/libsurface_util_jni.so", "size": 4912},
+    {"entry": "lib/x86_64/libzxingcpp_android.so", "size": 1815304}
+  ],
+  "count": 7
+}

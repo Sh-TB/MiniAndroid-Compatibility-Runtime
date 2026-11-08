@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <int name="osmdroid.cacheMapTileCount" value="9" />
+    <string name="osmdroid.cachePath">/data/data/de.seemoo.at_tracking_detection/files/osmdroid/tiles</string>
+    <int name="osmdroid.tileDownloadMaxQueueSize" value="40" />
+    <boolean name="osmdroid.TileDownloaderFollowRedirects" value="true" />
+    <boolean name="osmdroid.HardwareAcceleration" value="true" />
+    <string name="osmdroid.userAgentValue">de.seemoo.at_tracking_detection</string>
+    <boolean name="osmdroid.DebugMode" value="false" />
+    <int name="osmdroid.tileDownloadThreads" value="2" />
+    <boolean name="osmdroid.DebugTileProvider" value="false" />
+    <boolean name="missing_notification_permission_warning" value="false" />
+    <boolean name="missing_background_permission_warning" value="false" />
+    <boolean name="osmdroid.enforceTileSystemBounds" value="false" />
+    <int name="osmdroid.cacheTileOvershoot" value="0" />
+    <long name="osmdroid.ExpirationExtendedDuration" value="0" />
+    <boolean name="osmdroid.mapViewRecycler" value="true" />
+    <int name="osmdroid.animationSpeedShort" value="500" />
+    <int name="osmdroid.ZoomSpeedDefault" value="1000" />
+    <int name="osmdroid.tileFileSystemThreads" value="8" />
+    <long name="osmdroid.gpsWaitTime" value="20000" />
+    <string name="osmdroid.basePath">/data/data/de.seemoo.at_tracking_detection/files/osmdroid</string>
+    <boolean name="osmdroid.DebugMapView" value="false" />
+    <boolean name="osmdroid.DebugDownloading" value="false" />
+    <int name="osmdroid.tileFileSystemMaxQueueSize" value="40" />
+</map>

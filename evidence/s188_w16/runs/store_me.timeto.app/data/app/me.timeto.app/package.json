@@ -1,0 +1,30 @@
+{
+  "package": "me.timeto.app",
+  "versionName": "2026.10.15",
+  "versionCode": 626,
+  "mainActivity": "me.timeto.app.MainActivity",
+  "minSdk": "31",
+  "targetSdk": "37",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.VIBRATE",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.POST_PROMOTED_NOTIFICATIONS",
+    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+    "android.permission.QUERY_ALL_PACKAGES",
+    "android.permission.USE_EXACT_ALARM",
+    "android.permission.SCHEDULE_EXACT_ALARM",
+    "android.permission.WAKE_LOCK",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.FOREGROUND_SERVICE",
+    "me.timeto.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/me.timeto.app/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_me.timeto.app/data/app/me.timeto.app/base.apk",
+  "apkSha256": "cd9b731b257eb4f7eba3e2fb7672ef07ed82298812e103010535d1935cfaf684",
+  "apkSize": 11145626,
+  "installedAt": "2026-11-08T05:03:20Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

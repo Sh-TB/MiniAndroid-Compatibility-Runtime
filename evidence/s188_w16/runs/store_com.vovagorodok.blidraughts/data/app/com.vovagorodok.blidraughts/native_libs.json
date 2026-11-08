@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.vovagorodok.blidraughts/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libc++_shared.so", "size": 1252080},
+    {"entry": "lib/x86_64/libscan.so", "size": 227608}
+  ],
+  "count": 2
+}

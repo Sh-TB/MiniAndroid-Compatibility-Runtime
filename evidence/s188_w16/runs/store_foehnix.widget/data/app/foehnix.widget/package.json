@@ -1,0 +1,22 @@
+{
+  "package": "foehnix.widget",
+  "versionName": "4.0",
+  "versionCode": 40,
+  "mainActivity": "foehnix.widget.MyMainActivity",
+  "minSdk": "14",
+  "targetSdk": "30",
+  "requestedPermissions": [
+    "com.android.alarm.permission.SET_ALARM",
+    "android.permission.INTERNET",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+    "foehnix.widget.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/foehnix.widget/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w16/runs/store_foehnix.widget/data/app/foehnix.widget/base.apk",
+  "apkSha256": "960913f40cefe5f4542554ef603305586b87ca0b03b25f28f09abeec7a9cf857",
+  "apkSize": 2547753,
+  "installedAt": "2026-11-08T05:03:10Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

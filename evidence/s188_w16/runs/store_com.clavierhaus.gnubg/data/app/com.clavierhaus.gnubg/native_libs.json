@@ -1,0 +1,19 @@
+{
+  "primaryAbi": "arm64-v8a",
+  "nativeLibraryDir": "/data/app/com.clavierhaus.gnubg/lib/arm64-v8a",
+  "extracted": [
+    {"entry": "lib/arm64-v8a/libandroidx.graphics.path.so", "size": 10096},
+    {"entry": "lib/arm64-v8a/libdatastore_shared_counter.so", "size": 7112},
+    {"entry": "lib/arm64-v8a/libffi.so", "size": 30056},
+    {"entry": "lib/arm64-v8a/libgio-2.0.so", "size": 1550704},
+    {"entry": "lib/arm64-v8a/libgirepository-2.0.so", "size": 193176},
+    {"entry": "lib/arm64-v8a/libglib-2.0.so", "size": 1650144},
+    {"entry": "lib/arm64-v8a/libgmodule-2.0.so", "size": 12072},
+    {"entry": "lib/arm64-v8a/libgnubg-engine.so", "size": 627504},
+    {"entry": "lib/arm64-v8a/libgobject-2.0.so", "size": 297600},
+    {"entry": "lib/arm64-v8a/libgthread-2.0.so", "size": 4240},
+    {"entry": "lib/arm64-v8a/libintl.so", "size": 5312},
+    {"entry": "lib/arm64-v8a/libz.so", "size": 83992}
+  ],
+  "count": 12
+}

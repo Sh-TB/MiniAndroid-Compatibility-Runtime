@@ -1,0 +1,10 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.bupkis.tirailleur/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libapp.so", "size": 9307056},
+    {"entry": "lib/x86_64/libflutter.so", "size": 12564816},
+    {"entry": "lib/x86_64/libsqlite3.so", "size": 1684184}
+  ],
+  "count": 3
+}

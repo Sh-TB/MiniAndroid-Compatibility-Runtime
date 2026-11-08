@@ -8347,3 +8347,60 @@ Directive: "test at least 20 apps and games, check loading progress."
   W15_FAULT_ATTR.json, W15_REGRESSION.json,
   se.tube42.p9.android.console.log, face_se.tube42.p9.android.jpg};
   scripts/s188_w15_fault_attr.py, scripts/s188_w15_regression.py
+
+## S188-W16 — CODER-PROGRESS BATTERY EXTENSION (41/41) + LIBGDX EGL FAMILY CONTRACT PIN (2026-11-08)
+
+Directive: "ادامه چند ده تسک با هم انجام بده حداقل ۲۰ مورد کدرها هم
+پیشرفت داشتن" — delivered as a 24-item ledger on the W15-final binary
+50400036a6f16fe8 (rebuilt not required; wave is battery + pinning).
+
+- BATTERY 24 -> 41 titles: 17 corpus titles that had NEVER been
+  battery-run on this lineage (bim.app, tirailleur, gnubg, firestrike,
+  nextcloudpasswords, hfut.schedule, newsblur, blidraughts,
+  at_tracking_detection, taz, foehnix.widget, timelimit, timeto,
+  opentopo, surgeengine, thetech, lespas) ran through the W13 stage
+  law unchanged. Result: 17/17 S6_SETTLED_FACE_TIERED, all
+  FLAT_TWO_TONE_OR_BLANK first-observation faces, honesty gate
+  center-64x64 passed with 0 downgrades (spot-checked gnubg=newsblur=
+  two-tone honest). Incremental partial persistence carried through;
+  single-pass, no re-execution anomalies.
+- FLEET LAW: stuck_apks corpus now 41/41 battery-covered
+  (W2/W12 11 -> W13 +13 -> W16 +17), 41/41 stage6,
+  ROUTE_VIOLATION=0 across all 34 W16 logs.
+- SYMBOL CENSUS (closes the W13 p9 "undefined symbol glCopyTexImage2D"
+  blocker quantitatively): nm -D runtime exports 6 libs
+  audited via readelf --dyn-syms UND vs runtime+anchor+libc pools with
+  version-suffix stripping and glibc V-type handling — p9 libgdx.so
+  165/165, libgdx-freetype 28/28, halma libgdx 13/13, queens
+  libflutter 485/485, dooz androidx.graphics.path 7/7. Residual:
+  sdallocx only inside FOREIGN-ARCH tarok libflutter (jemalloc
+  internal, non-actionable on x86 host). glCopyTexImage2D is a
+  DEFINED runtime export (T) — the W13 dlopen failure was fully
+  explained by W15's NULL-CDTOR law, and the census now proves the
+  complete symbol contract.
+- p9/halma CONTRACT PIN (no shim, W8 law carried): one FAMILY contract
+  — the EGL Java-side surface. App-side demand via androguard (primary
+  DEX oracle) on p9's classes.dex: 71 EGL/GLSurfaceView refs inside
+  badlogic/gdx classes. Runtime-side truth: REC-MISS rows (p9 18, halma
+  15 unique EGL/GLSurfaceView/GL10 signatures). Native anchors:
+  anchor_libs libEGL.so 22 egl* exports, libGLESv2.so 106 gl* exports.
+  The pinned law: implement EGLContext.getEGL + EGL10
+  (eglGetDisplay/Initialize/ChooseConfig/GetConfigAttrib/
+  CreateContext/CreateWindowSurface/MakeCurrent/GetCurrentContext/
+  SwapBuffers) + GLSurfaceView.<init>/setFocusable* + GL10.glGetString
+  proxy binding -> PGL backend; then the GL draw stream can start.
+- tarok CONTRACT CLOSED as arch-bound: physical libflutter.so extracted
+  from the APK today (10942424B, AArch64, DT_NEEDED x8) matches the
+  runtime extraction manifest byte-size-exact; the dlopen gap is the
+  ELF ARCHITECTURE, not the path. FOREIGN_ARCH_ONLY_ABI (W14) stands;
+  an arm interpreter is an engine decision, not a contract fix.
+- GOLDENS on 50400036a6f16fe8: bouncy 8a6c24ac / unote 3b8dcb0a / dooz
+  31ddd4d5 ALL HOLD, uncaught=0 (W16_GOLDENS.json).
+- PROMOTION LAW: no promotion claims — W16 creates first-observation
+  baselines and pins contracts only. 3-independent-runs rule untouched.
+- Evidence: evidence/s188_w16/{W16_BATTERY.json, W16_PROGRESS.json,
+  W16_INTEGRITY_NOTE.json, W16_P9_EGL_CONTRACT.json,
+  W16_TAROK_FLUTTER_PATH.json, W16_HALMA_GL_CONTRACT.json,
+  W16_SYMBOL_CENSUS.json, W16_GOLDENS.json, W16_WAVE_REPORT.json,
+  tarok_native/libflutter.so, 17 face_*.jpg, 34 *.console.log, runs/};
+  scripts/s188_w16_{battery,contracts,progress,finalize}.py

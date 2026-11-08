@@ -1,0 +1,65 @@
+{
+ "wave": "S188-W16",
+ "pkg": "si.palcka.tarok",
+ "title": "Flutter extraction->dlopen path contract",
+ "extraction": {
+  "apk_entry": "lib/arm64-v8a/libflutter.so",
+  "physical_copy": "/home/z/my-project/evidence/s188_w16/tarok_native/libflutter.so",
+  "size": 10942424,
+  "sha16": "f0ae02b40ed5cd09"
+ },
+ "elf_audit": {
+  "machine": "AArch64",
+  "DT_NEEDED": [
+   "libc.so",
+   "libdl.so",
+   "libm.so",
+   "libandroid.so",
+   "libEGL.so",
+   "libGLESv2.so",
+   "liblog.so",
+   "libjnigraphics.so"
+  ],
+  "note": "readelf on the physical copy extracted from the APK today"
+ },
+ "apk_lib_entries": [
+  "lib/arm64-v8a/libapp.so",
+  "lib/arm64-v8a/libdatastore_shared_counter.so",
+  "lib/arm64-v8a/libflutter.so",
+  "lib/arm64-v8a/libmedia_kit_native_event_loop.so",
+  "lib/arm64-v8a/libmediakitandroidhelper.so",
+  "lib/arm64-v8a/libmpv.so"
+ ],
+ "runtime_extraction_manifest": {
+  "primaryAbi": "arm64-v8a",
+  "nativeLibraryDir": "/data/app/si.palcka.tarok/lib/arm64-v8a",
+  "extracted": [
+   {
+    "entry": "lib/arm64-v8a/libapp.so",
+    "size": 8717216
+   },
+   {
+    "entry": "lib/arm64-v8a/libdatastore_shared_counter.so",
+    "size": 7112
+   },
+   {
+    "entry": "lib/arm64-v8a/libflutter.so",
+    "size": 10942424
+   },
+   {
+    "entry": "lib/arm64-v8a/libmedia_kit_native_event_loop.so",
+    "size": 581920
+   },
+   {
+    "entry": "lib/arm64-v8a/libmediakitandroidhelper.so",
+    "size": 357448
+   },
+   {
+    "entry": "lib/arm64-v8a/libmpv.so",
+    "size": 5039288
+   }
+  ],
+  "count": 6
+ },
+ "verdict": "FOREIGN_ARCH_ONLY_ABI pinned (W14). The extraction path is healthy (manifest lists all 6 arm64 libs with exact sizes; physical copy extracted byte-identical today). The dlopen gap is the ELF ARCHITECTURE (foreign arch on the x86_64 host), not the path. No shim: an arm interpreter/decoder is a runtime-engine decision, not a contract fix. Contract CLOSED as arch-bound."
+}
