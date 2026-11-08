@@ -1,7 +1,7 @@
 {
   "activity": "de.duenndns.gmdice.GameMasterDice",
   "apk_package": "de.duenndns.gmdice",
-  "duration_ms": 8624,
+  "duration_ms": 8553,
   "events_retained": 217,
   "events_total": 217,
   "first_divergence": null,
@@ -65,12 +65,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 186,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794170866463
+      "ts_ms": 1794173357161
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -79,12 +79,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 187,
       "sev": "CONFIRMED",
       "state": "root_id=41",
       "thread": "main",
-      "ts_ms": 1794170866463
+      "ts_ms": 1794173357161
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -93,12 +93,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 188,
       "sev": "CONFIRMED",
       "state": "nonwhite=2061529 total=2073600 app_ops=5 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794170866486
+      "ts_ms": 1794173357183
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -107,12 +107,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 189,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794170866598
+      "ts_ms": 1794173357297
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -121,12 +121,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 190,
       "sev": "CONFIRMED",
       "state": "root_id=41",
       "thread": "main",
-      "ts_ms": 1794170866598
+      "ts_ms": 1794173357297
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -135,12 +135,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 191,
       "sev": "CONFIRMED",
       "state": "nonwhite=2061529 total=2073600 app_ops=5 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794170866621
+      "ts_ms": 1794173357326
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -149,12 +149,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 192,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794170866733
+      "ts_ms": 1794173357439
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -163,12 +163,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 193,
       "sev": "CONFIRMED",
       "state": "root_id=41",
       "thread": "main",
-      "ts_ms": 1794170866734
+      "ts_ms": 1794173357439
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -177,12 +177,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 194,
       "sev": "CONFIRMED",
       "state": "nonwhite=2061529 total=2073600 app_ops=5 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794170866757
+      "ts_ms": 1794173357461
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -191,12 +191,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 195,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794170866869
+      "ts_ms": 1794173357573
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -205,12 +205,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 196,
       "sev": "CONFIRMED",
       "state": "root_id=41",
       "thread": "main",
-      "ts_ms": 1794170866869
+      "ts_ms": 1794173357573
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -219,12 +219,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 197,
       "sev": "CONFIRMED",
       "state": "nonwhite=2061529 total=2073600 app_ops=5 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794170866892
+      "ts_ms": 1794173357595
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -233,12 +233,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 198,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794170867005
+      "ts_ms": 1794173357707
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -247,12 +247,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 199,
       "sev": "CONFIRMED",
       "state": "root_id=41",
       "thread": "main",
-      "ts_ms": 1794170867005
+      "ts_ms": 1794173357707
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -261,12 +261,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 200,
       "sev": "CONFIRMED",
       "state": "nonwhite=2061529 total=2073600 app_ops=5 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794170867028
+      "ts_ms": 1794173357729
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -275,12 +275,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 201,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794170867139
+      "ts_ms": 1794173357841
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -289,12 +289,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 202,
       "sev": "CONFIRMED",
       "state": "root_id=41",
       "thread": "main",
-      "ts_ms": 1794170867139
+      "ts_ms": 1794173357841
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -303,12 +303,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 203,
       "sev": "CONFIRMED",
       "state": "nonwhite=2061529 total=2073600 app_ops=5 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794170867162
+      "ts_ms": 1794173357864
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -317,12 +317,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 204,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794170867275
+      "ts_ms": 1794173357984
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -331,12 +331,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 205,
       "sev": "CONFIRMED",
       "state": "root_id=41",
       "thread": "main",
-      "ts_ms": 1794170867275
+      "ts_ms": 1794173357984
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -345,12 +345,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 206,
       "sev": "CONFIRMED",
       "state": "nonwhite=2061529 total=2073600 app_ops=5 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794170867298
+      "ts_ms": 1794173358007
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -359,12 +359,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 207,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794170867410
+      "ts_ms": 1794173358118
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -373,12 +373,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 208,
       "sev": "CONFIRMED",
       "state": "root_id=41",
       "thread": "main",
-      "ts_ms": 1794170867410
+      "ts_ms": 1794173358118
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -387,12 +387,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 209,
       "sev": "CONFIRMED",
       "state": "nonwhite=2061529 total=2073600 app_ops=5 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794170867433
+      "ts_ms": 1794173358140
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -401,12 +401,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 210,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794170867546
+      "ts_ms": 1794173358252
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -415,12 +415,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 211,
       "sev": "CONFIRMED",
       "state": "root_id=41",
       "thread": "main",
-      "ts_ms": 1794170867546
+      "ts_ms": 1794173358252
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -429,12 +429,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 212,
       "sev": "CONFIRMED",
       "state": "nonwhite=2061529 total=2073600 app_ops=5 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794170867569
+      "ts_ms": 1794173358275
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -443,12 +443,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 213,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794170867569
+      "ts_ms": 1794173358275
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -461,12 +461,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 214,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794170867642
+      "ts_ms": 1794173358347
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -488,12 +488,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 215,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794170867658
+      "ts_ms": 1794173358362
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -541,12 +541,12 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 216,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794170867658
+      "ts_ms": 1794173358362
     },
     {
       "activity": "de.duenndns.gmdice.GameMasterDice",
@@ -558,20 +558,20 @@
       "package": "de.duenndns.gmdice",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794170859088-1",
+      "run_id": "1794173349863-1",
       "seq": 217,
       "sev": "CONFIRMED",
       "state": "Execution completed successfully [F-NEW-200 stub-census: 342 IMPLEMENTED, 5 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
       "thread": "main",
-      "ts_ms": 1794170867712
+      "ts_ms": 1794173358416
     }
   ],
   "last_exception": null,
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1794170859088-1",
+  "run_id": "1794173349863-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261108-204739-8943",
+  "session_id": "EXP-001-20261108-212909-3106",
   "severity_census": {
     "CONFIRMED": 144,
     "INFO": 4,

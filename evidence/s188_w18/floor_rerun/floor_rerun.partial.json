@@ -24,7 +24,7 @@
   "nonbg_share": 0.0,
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 8.2,
+  "wall_s": 8.5,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null
@@ -84,7 +84,7 @@
   "nonbg_share": 0.0,
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 5.4,
+  "wall_s": 4.8,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null
@@ -110,7 +110,7 @@
   "nonbg_share": 0.1086,
   "grad_share": 0.0113,
   "tier": "B_STRUCTURED",
-  "wall_s": 0.9,
+  "wall_s": 1.1,
   "floor": "B_STRUCTURED",
   "regression": false,
   "face_sha": null
@@ -133,7 +133,7 @@
   "nonbg_share": 0.4982,
   "grad_share": 0.0081,
   "tier": "B_STRUCTURED",
-  "wall_s": 1.3,
+  "wall_s": 1.2,
   "floor": "B_STRUCTURED",
   "regression": false,
   "face_sha": null
@@ -166,7 +166,7 @@
   "nonbg_share": 0.1385,
   "grad_share": 0.0083,
   "tier": "B_STRUCTURED",
-  "wall_s": 5.7,
+  "wall_s": 5.5,
   "floor": "B_STRUCTURED",
   "regression": false,
   "face_sha": null
@@ -196,7 +196,7 @@
   "nonbg_share": 0.0,
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 3.5,
+  "wall_s": 3.2,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null
@@ -226,7 +226,7 @@
   "nonbg_share": 0.0,
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 5.1,
+  "wall_s": 4.4,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null
@@ -256,7 +256,7 @@
   "nonbg_share": 0.0,
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 3.9,
+  "wall_s": 3.6,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null
@@ -286,7 +286,7 @@
   "nonbg_share": 0.0012,
   "grad_share": 0.0004,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 5.4,
+  "wall_s": 5.1,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null
@@ -312,7 +312,7 @@
   "nonbg_share": 0.1558,
   "grad_share": 0.0009,
   "tier": "B_STRUCTURED",
-  "wall_s": 1.8,
+  "wall_s": 1.7,
   "floor": "B_STRUCTURED",
   "regression": false,
   "face_sha": null

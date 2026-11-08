@@ -176,11 +176,19 @@ bool GLES20Bridge::dispatch(const std::string& method,
     if (method == "glVertexAttribPointer") {
         // F-NEW-503: pointer-array indexing + null guard (a null client
         // pointer would crash portablegl's attribute read path).
-        if (P(0) != nullptr) {
-            // F-NEW-609: on the SB-mapped program the app passes MINTED
-            // attrib ids (shared uniform+attrib namespace, F-NEW-505) —
-            // translate minted id → name → the canonical indices the C
-            // shaders read (position 0, color 1, texcoord0 2).
+        // F-NEW-623 (S200 Target-B): the VBO OFFSET form — when the pointer
+        // array is EMPTY and the int args carry the 6-arg (loc,size,type,
+        // norm,stride,offset) shape, the last int IS the byte offset into
+        // the bound GL_ARRAY_BUFFER. Offset 0 must NOT be skipped as a
+        // null client pointer (the position attribute rides offset 0).
+        const void* vap_ptr = P(0);
+        // F-NEW-623: the 6-int shape IS the VBO offset form — the offset
+        // is the pointer value EVEN WHEN IT IS 0 (the position attribute
+        // rides offset 0; treating 0 as "no pointer" skipped every bind).
+        const bool vbo_offset_form = (vap_ptr == nullptr && ni >= 6);
+        if (vbo_offset_form)
+            vap_ptr = (const void*)(uintptr_t)I(5);
+        if (vap_ptr != nullptr || vbo_offset_form) {
             unsigned idx = (unsigned)I(0);
             if (cur_engine_prog_) {
                 if (const std::string* nm = sb_uniform_name_for_loc((GLint)idx)) {
@@ -188,22 +196,29 @@ bool GLES20Bridge::dispatch(const std::string& method,
                     if (canon >= 0) idx = (unsigned)canon;
                 }
             }
-            glVertexAttribPointer(idx, (GLint)I(1), S(2), (GLboolean)I(3),
-                                  (GLsizei)I(4), P(0));  // F-NEW-607: type
-            // S198 corruption probe (env-gated, bounded).
+            // S200 Target-B probe (bounded): raw minted idx → canonical at
+            // the vap boundary.
             {
-                static int dumps = 0;
-                if (dumps < 8) {
-                    ++dumps;
-                    GLenum err = glGetError();
-                    std::fprintf(stderr, "[GLDBG] vap idx=%u pglerr=0x%X\n",
-                                 idx, (unsigned)err);
+                static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
+                static int shown = 0;
+                if (dbg && shown < 24) {
+                    ++shown;
+                    const std::string* nm2 = cur_engine_prog_
+                        ? sb_uniform_name_for_loc((GLint)I(0)) : nullptr;
+                    int canon2 = nm2 ? pgl_sb_attrib_location(nm2->c_str()) : -1;
+                    std::fprintf(stderr,
+                        "[GLDBG] vap RAW idx=%u prog=%u name=%s canon=%d "
+                        "final=%u\n",
+                        (unsigned)I(0), (unsigned)(uintptr_t)cur_engine_prog_,
+                        nm2 ? nm2->c_str() : "(none)", canon2, idx);
                 }
             }
+            glVertexAttribPointer(idx, (GLint)I(1), S(2), (GLboolean)I(3),
+                                  (GLsizei)I(4), vap_ptr);  // F-NEW-607: type
             // S198: remember the last pointer per canonical index (the
             // draw-time probe reads it).
             if (idx < 4) {
-                g_last_attrib_ptr[idx] = P(0);
+                g_last_attrib_ptr[idx] = vap_ptr;
                 g_last_attrib_size[idx] = (GLint)I(1);
             }
             // S198 debug probe (env-gated, bounded): first attrib records.
@@ -287,6 +302,17 @@ bool GLES20Bridge::dispatch(const std::string& method,
             if (int_ret) *int_ret = id;
         } else {
             if (int_ret) *int_ret = lit->second;
+        }
+        // S200 Target-B probe (bounded): the mint answer per name.
+        {
+            static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
+            static int shown = 0;
+            if (dbg && shown < 40) {
+                ++shown;
+                std::fprintf(stderr,
+                    "[GLDBG] attrib-loc prog=%u name=%s -> %d\n",
+                    prog, key.c_str(), int_ret ? *int_ret : -99);
+            }
         }
         stats_.uniform_ops++;
         return true;

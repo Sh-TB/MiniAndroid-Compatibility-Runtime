@@ -872,6 +872,154 @@
     "changed": true
    },
    "row_after_delete": false
+  },
+  "mtm_full_final": {
+   "tag": "mtm_full_final",
+   "binary_sha16": "6c808c7448850756",
+   "apk_sha16": "79c6f730f64886e7",
+   "uncaught": 0,
+   "app_boundary": 0,
+   "rc_line_errors": 0,
+   "taps": [
+    {
+     "frame": 4,
+     "xy": [
+      184,
+      1178
+     ],
+     "target": 134
+    },
+    {
+     "frame": 6,
+     "xy": [
+      539,
+      1808
+     ],
+     "target": 147
+    },
+    {
+     "frame": 8,
+     "xy": [
+      895,
+      1808
+     ],
+     "target": 148
+    },
+    {
+     "frame": 16,
+     "xy": [
+      964,
+      63
+     ],
+     "target": 264
+    },
+    {
+     "frame": 24,
+     "xy": [
+      964,
+      63
+     ],
+     "target": 270
+    },
+    {
+     "frame": 31,
+     "xy": [
+      115,
+      63
+     ],
+     "target": 253
+    }
+   ],
+   "tap_targets_expected": [
+    134,
+    147,
+    148,
+    264,
+    264,
+    253
+   ],
+   "tap_targets_actual": [
+    134,
+    147,
+    148,
+    264,
+    270,
+    253
+   ],
+   "frames_n": 34,
+   "frame_paths": [
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_000.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_001.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_002.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_003.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_004.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_005.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_006.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_007.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_008.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_009.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_010.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_011.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_012.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_013.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_014.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_015.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_016.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_017.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_018.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_019.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_020.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_021.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_022.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_023.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_024.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_025.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_026.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_027.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_028.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_029.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_030.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_031.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_032.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_full_final/frames/frame_033.png"
+   ],
+   "view_count": 26,
+   "row_geom": [],
+   "wall_s": 5.4,
+   "pause_tap": [
+    964,
+    63
+   ],
+   "delete_tap": [
+    115,
+    63
+   ],
+   "countdown_running": {
+    "changed_px": 3537,
+    "bbox": [
+     340,
+     19,
+     460,
+     99
+    ],
+    "changed": true
+   },
+   "countdown_paused": {
+    "changed_px": 0,
+    "bbox": null,
+    "changed": false
+   },
+   "countdown_resumed": {
+    "changed_px": 2180,
+    "bbox": [
+     407,
+     19,
+     460,
+     99
+    ],
+    "changed": true
+   },
+   "row_after_delete": false
   }
  },
  "persist": {
@@ -1059,6 +1207,100 @@
     {
      "path": "data/data/dubrowgn.microtimer/databases/app-data-wal",
      "sha16": "13c1861ad97d1bb0",
+     "bytes": 90672
+    }
+   ]
+  },
+  "mtm_persist_final": {
+   "tag": "mtm_persist_final_B",
+   "binary_sha16": "6c808c7448850756",
+   "apk_sha16": "79c6f730f64886e7",
+   "uncaught": 0,
+   "app_boundary": 0,
+   "rc_line_errors": 0,
+   "taps": [],
+   "tap_targets_expected": [],
+   "tap_targets_actual": [],
+   "frames_n": 10,
+   "frame_paths": [
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_000.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_001.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_002.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_003.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_004.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_005.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_006.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_007.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_008.png",
+    "/home/z/my-project/evidence/s200/runs/mtm_persist_final_B/frames/frame_009.png"
+   ],
+   "view_count": 31,
+   "row_geom": [
+    {
+     "row_obj": 216,
+     "row": {
+      "x": 0,
+      "y": 0,
+      "w": 1080,
+      "h": 126
+     },
+     "label_text": "00:00:07",
+     "children": [
+      {
+       "cls": "Button",
+       "obj": 218,
+       "android_id": 0,
+       "text": "",
+       "x": 0,
+       "y": 0,
+       "w": 231,
+       "h": 126
+      },
+      {
+       "cls": "RoTimeControl",
+       "obj": 224,
+       "android_id": 0,
+       "text": "",
+       "x": 231,
+       "y": 0,
+       "w": 618,
+       "h": 126
+      },
+      {
+       "cls": "Button",
+       "obj": 229,
+       "android_id": 0,
+       "text": "",
+       "x": 849,
+       "y": 0,
+       "w": 231,
+       "h": 126
+      }
+     ],
+     "clickable_objs": [
+      218,
+      229
+     ]
+    }
+   ],
+   "wall_A_s": 2.2,
+   "wall_B_s": 1.8,
+   "restored_row": true,
+   "restored_label": "00:00:07",
+   "db_files": [
+    {
+     "path": "data/data/dubrowgn.microtimer/databases/app-data",
+     "sha16": "352a9bb23c329c5a",
+     "bytes": 4096
+    },
+    {
+     "path": "data/data/dubrowgn.microtimer/databases/app-data-shm",
+     "sha16": "6348ecaf561422b4",
+     "bytes": 32768
+    },
+    {
+     "path": "data/data/dubrowgn.microtimer/databases/app-data-wal",
+     "sha16": "0feb5444fe0978b0",
      "bytes": 90672
     }
    ]

@@ -8707,3 +8707,46 @@ distinct states, rerun identical).
 
 NEXT: Target B tictactoe (GLES bridge: VBO attrib bind, glGetActiveAttrib
 dispatch, re-arm), then SQLite battery + C2 next-10 ranking intake.
+
+## S200 P0 TARGET B — tictactoe GLES bridge: three shared laws landed
+
+The shape-render board wall moved three laws deep (each probe-first on
+real dispatch traces, each fixed at the shared GLES boundary):
+- F-NEW-622 HEAP-STRING OBJECT RESOLUTION at the GLES marshal: gdx
+  VertexAttribute.alias Strings and the fetchAttributes decoded names
+  arrive as HEAP String OBJECTS (kind OBJECT); the pre-622 marshal
+  chased them as buffers → marshal-fail → glGetAttribLocation answered
+  the unhandled default → the app's attribute map got garbage keys.
+  Law: a String object is its chars (the F-NEW-580 identity fields read
+  at the GLES boundary — one law for every String-taking GLES20 static).
+- F-NEW-624 ARG-LAYOUT LAW (glGetActiveAttrib): the REAL chain is gdx
+  GL20 → AndroidGL20's delegate (own int[] scratch + byte[] buffer) →
+  ART glGetActiveAttribNative with the (array, offset) PAIR convention
+  — the observed context: 11 slots [prog, idx, bufsize, [I len, 0, [I
+  type, 0, [I ?, 0, [B name, 0]. The pre-624 handler read FIXED slots
+  2/3/4 → the name buffer never received the canonical bytes → the app
+  decoded an all-NUL String. Law: holders are TYPED, not positional —
+  length = first [I, type = second [I, name = THE [B (the delegate
+  builds its returned String from exactly that byte[]).
+- F-NEW-623 VBO OFFSET FORM at the bridge: GLES20.glVertexAttribPointer
+  has the (…, Buffer pointer) client form AND the (…, int offset) VBO
+  form; gdx VertexBufferObject.bind issues the int form and offset 0
+  (the position attribute!) must NOT be skipped as a null pointer.
+
+RESULT on binary 6c808c7448850756: the fetchAttributes name decode now
+returns a_position/a_color/a_texCoord0 (dispatch-proven: attrib-loc
+mints 0/1/2 for BOTH programs), the shape program's attribute map is
+filled, ALL glVertexAttribPointer calls marshal (gfx trace: 129/129
+handled, 0 misses), and the shape's draws execute with REAL vertex
+data (count=66 attrib0 v0=330,1064 — board coordinates). Remaining
+frontier (named, one divergence): the shape draw's raster output does
+not land in the framebuffer (face still fc0997a63f3b2dec — the S199
+first-glyphs pin byte-identical); the next question is the fragment
+path for the shape program (sb_frag texture multiply vs the shape's
+own v_color semantics / clip state).
+
+GATES on 6c808c7448850756 (fresh stores): goldens 3/3 ALL HOLD,
+floor 11/11 CLEAN, gmdice 5-tap PASS (5 distinct states, rerun
+identical), microtimer acceptance re-VERIFIED end-to-end (same tap
+signature [134,147,148,264,270,253], pause-frozen/resume/delete all
+correct, SQLite restore 00:00:07, 0 uncaught).

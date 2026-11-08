@@ -210,6 +210,33 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
         case CallContext::Arg::Kind::OBJECT: {
             uint32_t arr = 0;
             std::string ed;
+            // ── S200 Target-B F-NEW-622: HEAP-STRING OBJECT RESOLUTION at
+            // the GLES marshal ─────────────────────────────────────────
+            // gdx VertexAttribute.alias Strings and the fetchAttributes
+            // decoded attribute names arrive as HEAP String OBJECTS (kind
+            // OBJECT), not STRING-kind args. The pre-622 marshal chased
+            // them as buffers → marshal-fail → glGetAttribLocation answered
+            // the unhandled default → the app's attribute map got garbage
+            // keys and VertexBufferObject.bind (map-only getAttributeLocation
+            // — real bytecode) silently skipped EVERY attribute
+            // (location<0 → continue) → attrib0=(nil) at the shape draw.
+            // AOSP/ART law: a String object is its chars — resolve via the
+            // F-NEW-580 identity fields (__string_value__/value), one law
+            // for every GLES20 static that takes a java.lang.String.
+            {
+                std::string ocls622;
+                if (heap->get_object_class(a.object_id, ocls622) &&
+                    ocls622 == "Ljava/lang/String;") {
+                    std::string sv622;
+                    if (!heap->get_object_string_field(
+                            a.object_id, "__string_value__", sv622))
+                        heap->get_object_string_field(a.object_id, "value",
+                                                      sv622);
+                    m.strs.push_back(sv622);
+                    m.pa.push_back(m.strs.back().c_str());
+                    break;
+                }
+            }
             // ── S188-W18 F-NEW-605: the DIRECT-buffer pointer slot ──────
             // A ByteBuffer minted from a native NewDirectByteBuffer
             // (Gdx2DPixmap.load's pixel surface) has NO heap-array backing;
@@ -393,11 +420,33 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
             return false;
         }
     }
+    // ── S200 Target-B F-NEW-623: the VBO OFFSET form of
+    // glVertexAttribPointer ─────────────────────────────────────────────
+    // AOSP GLES20 has two overloads: (..., java.nio.Buffer pointer) — the
+    // CLIENT-array form (a real address) — and (..., int offset) — the
+    // VBO form (a BYTE OFFSET into the GL_ARRAY_BUFFER bound at call
+    // time). gdx VertexBufferObject.bind (real bytecode) issues the INT
+    // form after glEnableVertexAttribArray. The pre-623 marshal left the
+    // pointer array EMPTY for the int form → the bridge's null guard
+    // skipped EVERY VBO-path attribute bind (attrib0=(nil) at the
+    // tictactoe shape draw). Law: the last arg INT ⇒ the offset form —
+    // serve the offset AS the pointer value (the GL contract with a bound
+    // GL_ARRAY_BUFFER); PGL resolves it against the bound VBO.
+    if (ctx.method == "glVertexAttribPointer" && !ctx.args.empty() &&
+        ctx.args.back().kind == CallContext::Arg::Kind::INT) {
+        const int64_t off623 = ctx.args.back().int_val;
+        if (off623 < 0 || off623 > (64 << 20)) {
+            m.ok = false;
+            m.why = "vbo attribute offset out of bounds (" +
+                    std::to_string(off623) + ")";
+            gfx::GfxTrace::instance().marshal_fail("GLES20", ctx.method,
+                                                   m.why);
+            return false;
+        }
+        m.pa.push_back((const void*)(uintptr_t)off623);
+    }
     return true;
 }
-
-// Dispatch one GLES20 static through the bridge. Returns the handled flag;
-// ret maps from the DEX prototype's return char (I/Z→int, F→float, V→void).
 CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
     // CONT-159 (F-NEW-503 decode diag, env-gated): every GLES20/GLES30
     // static that reaches the shadow — method + arg kinds + ids. Answers
@@ -430,6 +479,26 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
     // spec guarantees at least these). Writes land in the view object's
     // __bb_b<i>__ element run — the engine's F-NEW-463 view-buffer identity
     // (same storage the IntBuffer.get shadow reads).
+    // S200 Target-B probe: what IS the OBJECT-kind name arg?
+    if (ctx.method == "glGetAttribLocation" && ctx.args.size() >= 2 &&
+        ctx.args[1].kind == CallContext::Arg::Kind::OBJECT && heap) {
+        static int nprobe = 0;
+        static const bool probe_on =
+            std::getenv("MINIANDROID_GL_DEBUG") != nullptr;
+        if (probe_on && nprobe < 8) {
+            ++nprobe;
+            uint32_t oid = ctx.args[1].object_id;
+            std::string ocls;
+            heap->get_object_class(oid, ocls);
+            std::string sval;
+            if (!heap->get_object_string_field(oid, "__string_value__", sval))
+                heap->get_object_string_field(oid, "value", sval);
+            std::cerr << "[GLATTR-PROBE] prog=" << ctx.args[0].int_val
+                      << " name_obj=" << oid << " class=" << ocls
+                      << " str=" << (sval.empty() ? "(empty)" : sval)
+                      << std::endl;
+        }
+    }
     if (ctx.method == "glGetIntegerv" && ctx.args.size() >= 2 &&
         ctx.args[0].kind == CallContext::Arg::Kind::INT &&
         ctx.args[1].kind == CallContext::Arg::Kind::OBJECT) {
@@ -530,55 +599,142 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
         if (idx >= 0 && idx < 3 && heap) {
             const char* nm = kAttribs[idx].n;
             const int nlen = (int)std::strlen(nm);
-            // length buffer (arg 2) + type buffer (arg 3): element 0
-            const uint32_t lb = ctx.args[2].kind == CallContext::Arg::Kind::OBJECT
-                                    ? ctx.args[2].object_id : 0;
-            const uint32_t tb = ctx.args[3].kind == CallContext::Arg::Kind::OBJECT
-                                    ? ctx.args[3].object_id : 0;
-            const uint32_t nb = ctx.args[4].kind == CallContext::Arg::Kind::OBJECT
-                                    ? ctx.args[4].object_id : 0;
+            // ── S200 Target-B F-NEW-624: ARG-LAYOUT LAW ─────────────────
+            // GLES20.glGetActiveAttrib overloads AND the engine's
+            // register-slot packing (the observed context: 11 slots with
+            // the holders at 3/5/7 and INT-0 pads between them) make
+            // FIXED slots dishonest. LAW: the length/type/name holders
+            // are the FIRST THREE OBJECT-kind args after the leading int
+            // run (program/index[/bufsize]) — one rule for the 5-arg
+            // Buffer form (objects at 2/3/4), the 6-arg array form
+            // (3/4/5), and the padded packing (3/5/7) alike.
+            auto holder_class = [&](size_t k) -> std::string {
+                if (k >= ctx.args.size() ||
+                    ctx.args[k].kind != CallContext::Arg::Kind::OBJECT)
+                    return "";
+                std::string c;
+                heap->get_object_class(ctx.args[k].object_id, c);
+                return c;
+            };
+            // F-NEW-624 holder selection: TYPED, not positional —
+            // length = first [I, type = second [I, name = THE [B.
+            size_t objs624[4] = {0, 0, 0, 0};
+            int nobj624 = 0;
+            for (size_t z = 2; z < ctx.args.size() && nobj624 < 4; ++z)
+                if (ctx.args[z].kind == CallContext::Arg::Kind::OBJECT)
+                    objs624[nobj624++] = z;
+            size_t li = 0, ti = 0, ni624 = 0;
+            int ni_seen = 0;
+            for (int z624 = 0; z624 < nobj624; ++z624) {
+                const std::string c624 = holder_class(objs624[z624]);
+                if (c624 == "[B") { ni624 = objs624[z624]; }
+                else if (ni_seen == 0) { li = objs624[z624]; ni_seen = 1; }
+                else if (ni_seen == 1) { ti = objs624[z624]; ni_seen = 2; }
+                else if (ni624 == 0) { ni624 = objs624[z624]; }
+            }
+            if (ni624 == 0) ni624 = objs624[nobj624 - 1];
+            if (nobj624 >= 2) {
+            auto is_array = [](const std::string& c) {
+                return c.size() > 1 && c[0] == '[';
+            };
+            // length holder: element 0 = name length
+            const uint32_t lb = ctx.args[li].kind ==
+                                        CallContext::Arg::Kind::OBJECT
+                                    ? ctx.args[li].object_id : 0;
             if (lb) {
-                heap->set_object_int_field(lb, "__bb_b0__", nlen);
-                gl_view_mirror_write(heap, lb, 0, nlen);
+                const std::string lc = holder_class(li);
+                if (is_array(lc))
+                    heap->set_object_int_field(lb, "array[0]", nlen);
+                else {
+                    heap->set_object_int_field(lb, "__bb_b0__", nlen);
+                    gl_view_mirror_write(heap, lb, 0, nlen);
+                }
             }
+            // type holder: element 0 = GL type enum
+            const uint32_t tb = ctx.args[ti].kind ==
+                                        CallContext::Arg::Kind::OBJECT
+                                    ? ctx.args[ti].object_id : 0;
             if (tb) {
-                heap->set_object_int_field(tb, "__bb_b0__",
-                                           (int32_t)kAttribs[idx].t);
-                gl_view_mirror_write(heap, tb, 0,
-                                     (int32_t)kAttribs[idx].t);
-            }
-            if (nb) {
-                // name buffer: direct memory first, field run always
-                int64_t daddr = 0;
-                uint32_t par = nb;
-                for (int hop = 0; hop < 4 && par != 0; ++hop) {
-                    int64_t a2 = 0;
-                    if (heap->get_object_long_field(par, "__bb_addr__", a2) &&
-                        a2 != 0) { daddr = a2; break; }
-                    if (heap->get_object_long_field(par, "__bb_direct__", a2) &&
-                        a2 != 0) { daddr = a2; break; }
-                    uint32_t p2 = 0;
-                    if (!heap->get_object_ref_field(par, "__bb_parent__", p2) ||
-                        p2 == 0) break;
-                    par = p2;
-                }
-                if (daddr != 0) {
-                    unsigned char* mem =
-                        reinterpret_cast<unsigned char*>((uintptr_t)daddr);
-                    for (int i = 0; i < nlen; ++i)
-                        mem[i] = (unsigned char)nm[i];
-                    mem[nlen] = 0;
-                }
-                for (int i = 0; i < nlen; ++i)
+                const std::string tc = holder_class(ti);
+                if (is_array(tc))
                     heap->set_object_int_field(
-                        nb, "__bb_b" + std::to_string(i) + "__",
-                        (int32_t)(unsigned char)nm[i]);
-                heap->set_object_int_field(nb, "__bb_b" + std::to_string(nlen) + "__", 0);
+                        tb, "array[0]", (int32_t)kAttribs[idx].t);
+                else {
+                    heap->set_object_int_field(
+                        tb, "__bb_b0__", (int32_t)kAttribs[idx].t);
+                    gl_view_mirror_write(heap, tb, 0,
+                                         (int32_t)kAttribs[idx].t);
+                }
+            }
+            // name holder: canonical bytes + NUL terminator, EVERY surface
+            // the one-identity family defines
+            const uint32_t nb = ctx.args[ni624].kind ==
+                                        CallContext::Arg::Kind::OBJECT
+                                    ? ctx.args[ni624].object_id : 0;
+            if (nb) {
+                const std::string nc = holder_class(ni624);
+                {
+                    static int d624 = 0;
+                    if (d624++ < 2) {
+                        std::cerr << "[624DIAG] idx=" << idx;
+                        for (size_t z = 0; z < ctx.args.size() && z < 11; ++z)
+                            std::cerr << " a" << z << ":k"
+                                      << (int)ctx.args[z].kind
+                                      << (ctx.args[z].kind ==
+                                                  CallContext::Arg::Kind::OBJECT
+                                              ? ("(" + holder_class(z) + ")")
+                                              : "=" +
+                                                    std::to_string(
+                                                        ctx.args[z].int_val));
+                        std::cerr << std::endl;
+                    }
+                }
+                if (is_array(nc)) {
+                    // byte[] name: array[i] = byte value
+                    for (int i = 0; i < nlen; ++i)
+                        heap->set_object_int_field(
+                            nb, "array[" + std::to_string(i) + "]",
+                            (int32_t)(unsigned char)nm[i]);
+                    heap->set_object_int_field(
+                        nb, "array[" + std::to_string(nlen) + "]", 0);
+                } else {
+                    // ByteBuffer name: direct memory first, field run always
+                    int64_t daddr = 0;
+                    uint32_t par = nb;
+                    for (int hop = 0; hop < 4 && par != 0; ++hop) {
+                        int64_t a2 = 0;
+                        if (heap->get_object_long_field(par, "__bb_addr__",
+                                                        a2) &&
+                            a2 != 0) { daddr = a2; break; }
+                        if (heap->get_object_long_field(par, "__bb_direct__",
+                                                        a2) &&
+                            a2 != 0) { daddr = a2; break; }
+                        uint32_t p2 = 0;
+                        if (!heap->get_object_ref_field(par, "__bb_parent__",
+                                                        p2) ||
+                            p2 == 0) break;
+                        par = p2;
+                    }
+                    if (daddr != 0) {
+                        unsigned char* mem = reinterpret_cast<
+                            unsigned char*>((uintptr_t)daddr);
+                        for (int i = 0; i < nlen; ++i)
+                            mem[i] = (unsigned char)nm[i];
+                        mem[nlen] = 0;
+                    }
+                    for (int i = 0; i < nlen; ++i)
+                        heap->set_object_int_field(
+                            nb, "__bb_b" + std::to_string(i) + "__",
+                            (int32_t)(unsigned char)nm[i]);
+                    heap->set_object_int_field(
+                        nb, "__bb_b" + std::to_string(nlen) + "__", 0);
+                }
             }
             gfx::GfxTrace::instance().gl_call(
                 "GLES20", ctx.method, true, (int)ctx.args.size(),
                 "active-attrib-canonical");
             return CallResult::handled_void();
+            }
         }
     }
     GlMarshal m;
