@@ -8649,3 +8649,27 @@ DELIVERABLES: evidence/s199/S199_*.md (9 documents) + this entry.
 NEXT: Coder-3 assignment (shape attribs + per-frame re-render) →
 tictactoe board render → the §4.1 A–M acceptance scripts for
 microtimer + tictactoe → C8 97/97 on 414332acd3603dac → SQLite battery.
+
+S199 CLOSE — identity refresh + final gates
+
+After the deliverables were written, two further laws landed on the
+integration line: F-NEW-619 (typed-view parent chase at the f590 hook —
+GetDirectBufferAddress on a view must answer the parent's real memory;
+disassembly-verified against the real AndroidGL20 path) and F-NEW-620/
+620b (GL_ACTIVE_ATTRIBUTES answered 0 — the kGlSiv comment had even
+mislabeled 0x8B89 as ACTIVE_UNIFORMS — plus the glGetActiveAttrib
+canonical-name law). FINAL canonical S199 binary: 97628b00d237f9eb.
+Gates re-verified on it: goldens 3/3 ALL HOLD (bouncy 8a6c24ac / unote
+3b8dcb0a / dooz 31ddd4d5), floor 11/11 CLEAN.
+
+Honest frontier record: the 619/620 laws did not yet move the tictactoe
+shape-attrib needle — glGetActiveAttrib never dispatched this run, so
+the fetchAttributes gate sits deeper (the AndroidGL20 real-native GL20
+path vs the GLES20 static bridge). That is Coder-3's named next task
+(S199_NEXT_ASSIGNMENTS.md #1) with the full trace pointers. The glyph
+render (the S196 chain) stands on this binary; the board render is one
+verified fix away.
+
+GitHub feedback comments posted: #557 6726426857, #566 6726427049,
+#521 6726427227, #492 6726427444. Deliverables: evidence/s199/S199_*.md
+(9 documents, identity-refreshed). Commits b2e21ae3..c7981eb7 on main.
