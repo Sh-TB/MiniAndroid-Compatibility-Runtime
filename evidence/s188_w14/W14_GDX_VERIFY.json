@@ -1,0 +1,31 @@
+{
+ "se.tube42.p9.android": {
+  "status": "OK",
+  "tier": "A_RICH",
+  "uncaught": 0,
+  "route_decision": [
+   "[ROUTE] DECISION pkg=se.tube42.p9.android primary=LIBGDX routes=LIBGDX+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+SDL+FLUTTER profile=./reports/apk_routes/se.tube42.p9.android.json"
+  ],
+  "gdx_lines": [
+   "[REC-MISS] Ljava/lang/System;.loadLibrary caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.load",
+   "[GATEA-NATIVE] System.loadLibrary(\"gdx\") caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.load",
+   "[S2-NATIVE] load gdx (/home/z/my-project/evidence/s188_w14/runs/store_se.tube42.p9.android/data/app/se.tube42.p9.android/lib/x86_64/libgdx.so): dlopen faulted (SIGSEGV/SIGBUS inside the loader, post-probe residual) \u2014 loader poisoned for this process, runtime survived (FIX-TTT)"
+  ],
+  "dlopen_ok": false
+ },
+ "app.halma": {
+  "status": "OK",
+  "tier": "A_RICH",
+  "uncaught": 0,
+  "route_decision": [
+   "[ROUTE] DECISION pkg=app.halma primary=LIBGDX routes=LIBGDX+WEBVIEW_NODE+VIEW+MEDIA forbidden=SDL+FLUTTER profile=./reports/apk_routes/app.halma.json"
+  ],
+  "gdx_lines": [
+   "[REC-MISS] Ljava/lang/System;.loadLibrary caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.load",
+   "[GATEA-NATIVE] System.loadLibrary(\"gdx\") caller=Lcom/badlogic/gdx/utils/SharedLibraryLoader;.load",
+   "[S2-NATIVE] load gdx: dlopen ok (/home/z/my-project/evidence/s188_w14/runs/store_app.halma/data/app/app.halma/lib/x86_64/libgdx.so)",
+   "[S2-NATIVE] System.loadLibrary(\"gdx\") LOADED size=193008 sha16=2e9dc948aab382e5 (dlopen ok; no JNI_OnLoad)"
+  ],
+  "dlopen_ok": true
+ }
+}

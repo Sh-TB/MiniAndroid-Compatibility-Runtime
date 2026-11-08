@@ -1,0 +1,18 @@
+{
+  "package": "se.tube42.p9.android",
+  "versionName": "0.1.1",
+  "versionCode": 11,
+  "mainActivity": "se.tube42.p9.android.MainActivity",
+  "minSdk": "11",
+  "targetSdk": "28",
+  "requestedPermissions": [
+    "android.permission.WAKE_LOCK"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/se.tube42.p9.android/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w14/runs/store_se.tube42.p9.android/data/app/se.tube42.p9.android/base.apk",
+  "apkSha256": "e69e40836e31337eb6d536b5637a3f6ba7b6484b54d172dd24238c0cb2dd5a76",
+  "apkSize": 6819578,
+  "installedAt": "2026-11-08T03:16:30Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

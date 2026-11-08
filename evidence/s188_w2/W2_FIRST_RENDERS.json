@@ -245,5 +245,10 @@
   "grad_share": 0.0004,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
   "s186i_tier": "FLAT_TWO_TONE_OR_BLANK"
+ },
+ {
+  "pkg": "io.github.yamin8000.dooz",
+  "status": "NO_APK",
+  "s186i_tier": null
  }
 ]

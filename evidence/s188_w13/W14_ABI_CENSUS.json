@@ -1,0 +1,198 @@
+{
+ "purpose": "W14: x86_64-host dlopen reachability per battery APK (queens/quinb proven x86-hosted; tarok pinned FOREIGN_ARCH_ONLY_ABI)",
+ "apk_abi": [
+  {
+   "pkg": "com.justdeax.composeStopwatch",
+   "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+   ],
+   "x86_hosted": true
+  },
+  {
+   "pkg": "tibarj.tranquilstopwatch",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "com.qwde.ccm",
+   "abis": [
+    "arm64-v8a"
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "eu.quelltext.memory",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "cos.premy.mines",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "eu.veldsoft.no.thanks",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "com.sidhant.queens",
+   "abis": [
+    "x86_64"
+   ],
+   "x86_hosted": true
+  },
+  {
+   "pkg": "com.simondalvai.ball2box",
+   "abis": [
+    "arm64-v8a",
+    "armeabi-v7a"
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "xyz.deepdaikon.quinb",
+   "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86_64"
+   ],
+   "x86_hosted": true
+  },
+  {
+   "pkg": "org.secuso.privacyfriendlybattleship",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "crypto.o0o0o0o0o.games.blackjack",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "app.halma",
+   "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+   ],
+   "x86_hosted": true
+  },
+  {
+   "pkg": "com.astroloop.game",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "com.jeffliu.balancetheball",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "com.rocket9labs.boxcars",
+   "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+   ],
+   "x86_hosted": true
+  },
+  {
+   "pkg": "com.vayunmathur.games.solitaire",
+   "abis": [
+    "arm64-v8a"
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "com.vovagorodok.blichess",
+   "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+   ],
+   "x86_hosted": true
+  },
+  {
+   "pkg": "de.tobiasbielefeld.solitaire",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "io.github.aoc_normal",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "io.github.hathibelagal.mykanji",
+   "abis": [
+    ""
+   ],
+   "x86_hosted": false
+  },
+  {
+   "pkg": "me.river.nightbell",
+   "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+   ],
+   "x86_hosted": true
+  },
+  {
+   "pkg": "page.codeberg.lanticy.guandan",
+   "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+   ],
+   "x86_hosted": true
+  },
+  {
+   "pkg": "se.tube42.p9.android",
+   "abis": [
+    "arm64-v8a",
+    "armeabi",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+   ],
+   "x86_hosted": true
+  },
+  {
+   "pkg": "si.palcka.tarok",
+   "abis": [
+    "arm64-v8a"
+   ],
+   "x86_hosted": false
+  }
+ ]
+}

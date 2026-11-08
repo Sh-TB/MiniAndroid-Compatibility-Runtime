@@ -35,17 +35,11 @@
    "dalvik"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 3,
+  "fatal_marks": 0,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "FLAT_TWO_TONE_OR_BLANK",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": true
  },
  {
   "pkg": "tibarj.tranquilstopwatch",
@@ -83,17 +77,11 @@
    "dalvik"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 20,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "FLAT_TWO_TONE_OR_BLANK",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": true
  },
  {
   "pkg": "com.qwde.ccm",
@@ -135,13 +123,7 @@
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "FLAT_TWO_TONE_OR_BLANK",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": true
  },
  {
   "pkg": "eu.quelltext.memory",
@@ -178,13 +160,7 @@
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "B_STRUCTURED",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 0,
-  "frames_crosscheck": false,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "B_STRUCTURED"
+  "regression": true
  },
  {
   "pkg": "cos.premy.mines",
@@ -214,17 +190,11 @@
    "compose"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 6,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "B_STRUCTURED",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 0,
-  "frames_crosscheck": false,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "B_STRUCTURED"
+  "regression": true
  },
  {
   "pkg": "eu.veldsoft.no.thanks",
@@ -264,17 +234,11 @@
    "compose"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 1,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "B_STRUCTURED",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "B_STRUCTURED"
+  "regression": true
  },
  {
   "pkg": "com.sidhant.queens",
@@ -302,8 +266,8 @@
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
   "wall_s": 3.1,
-  "n_jni_onload": 4,
-  "n_register_natives": 8,
+  "n_jni_onload": 2,
+  "n_register_natives": 4,
   "n_activity_oncreate": 81,
   "n_fortify_chk": 0,
   "n_looper": 0,
@@ -312,17 +276,11 @@
    "flutter"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 11,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "FLAT_TWO_TONE_OR_BLANK",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": true
  },
  {
   "pkg": "com.simondalvai.ball2box",
@@ -364,13 +322,7 @@
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "FLAT_TWO_TONE_OR_BLANK",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": true
  },
  {
   "pkg": "xyz.deepdaikon.quinb",
@@ -398,8 +350,8 @@
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
   "wall_s": 3.6,
-  "n_jni_onload": 4,
-  "n_register_natives": 8,
+  "n_jni_onload": 2,
+  "n_register_natives": 4,
   "n_activity_oncreate": 12,
   "n_fortify_chk": 0,
   "n_looper": 0,
@@ -408,17 +360,11 @@
    "flutter"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 2,
+  "fatal_marks": 17,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "FLAT_TWO_TONE_OR_BLANK",
-  "regression": true,
-  "fatal_marks_main_log": 1,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": true
  },
  {
   "pkg": "org.secuso.privacyfriendlybattleship",
@@ -455,17 +401,11 @@
    "compose"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 1,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "FLAT_TWO_TONE_OR_BLANK",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": true
  },
  {
   "pkg": "crypto.o0o0o0o0o.games.blackjack",
@@ -502,13 +442,7 @@
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
   "floor": "B_STRUCTURED",
-  "regression": true,
-  "fatal_marks_main_log": 0,
-  "n_frames": 0,
-  "frames_crosscheck": false,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "B_STRUCTURED"
+  "regression": true
  },
  {
   "pkg": "app.halma",
@@ -539,16 +473,10 @@
    "gles"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 3,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 0,
-  "frames_crosscheck": false,
-  "patch_colors": 386,
-  "visual_verdict": "NOISE_NOT_UI",
-  "effective_tier": "NOISE_STATIC_SURFACE"
+  "regression": null
  },
  {
   "pkg": "com.astroloop.game",
@@ -585,16 +513,10 @@
    "compose"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 38,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  },
  {
   "pkg": "com.jeffliu.balancetheball",
@@ -627,13 +549,7 @@
   "fatal_marks": 0,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 0,
-  "frames_crosscheck": false,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "B_STRUCTURED"
+  "regression": null
  },
  {
   "pkg": "com.rocket9labs.boxcars",
@@ -670,16 +586,10 @@
    "compose"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 18,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  },
  {
   "pkg": "com.vayunmathur.games.solitaire",
@@ -720,13 +630,7 @@
   "fatal_marks": 0,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  },
  {
   "pkg": "com.vovagorodok.blichess",
@@ -766,16 +670,10 @@
    "webview"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 6,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  },
  {
   "pkg": "de.tobiasbielefeld.solitaire",
@@ -812,16 +710,10 @@
    "compose"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 51,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  },
  {
   "pkg": "io.github.aoc_normal",
@@ -858,16 +750,10 @@
    "compose"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 1,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  },
  {
   "pkg": "io.github.hathibelagal.mykanji",
@@ -907,16 +793,10 @@
    "dalvik"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 16,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  },
  {
   "pkg": "me.river.nightbell",
@@ -950,20 +830,13 @@
   "n_fortify_chk": 0,
   "n_looper": 0,
   "subsystems": [
-   "compose",
-   "dalvik"
+   "compose"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 1,
+  "fatal_marks": 68,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  },
  {
   "pkg": "page.codeberg.lanticy.guandan",
@@ -1000,16 +873,10 @@
    "compose"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 67,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  },
  {
   "pkg": "se.tube42.p9.android",
@@ -1040,16 +907,10 @@
    "gles"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 7,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 0,
-  "frames_crosscheck": false,
-  "patch_colors": 4094,
-  "visual_verdict": "NOISE_NOT_UI",
-  "effective_tier": "NOISE_STATIC_SURFACE"
+  "regression": null
  },
  {
   "pkg": "si.palcka.tarok",
@@ -1087,15 +948,9 @@
    "flutter"
   ],
   "bionic_abort": 0,
-  "fatal_marks": 0,
+  "fatal_marks": 11,
   "stage": 6,
   "stage_name": "S6_SETTLED_FACE_TIERED",
-  "regression": null,
-  "fatal_marks_main_log": 0,
-  "n_frames": 14,
-  "frames_crosscheck": true,
-  "patch_colors": 1,
-  "visual_verdict": "REAL_UI",
-  "effective_tier": "FLAT_TWO_TONE_OR_BLANK"
+  "regression": null
  }
 ]

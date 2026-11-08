@@ -1,0 +1,33 @@
+{
+ "binary_sha16": "85f48a64a3192625",
+ "f_new_586": {
+  "law": "glCopyTexImage2D + glCopyTexSubImage2D native export (dlopen contract of p9 libgdx.so)",
+  "pinned_from": "evidence/s188_w13: undefined symbol glCopyTexImage2D",
+  "fix": "src/gles/gl_copy_bridge.cpp (ReadPixels->TexImage2D copy semantics over the software backend)",
+  "verified": "nm -D: T glCopyTexImage2D, T glCopyTexSubImage2D; p9 advanced past the symbol stage"
+ },
+ "f_new_587": {
+  "law": "declared-but-unimplemented PGL native surface (35 gl* symbols) + __android_log_print (bionic_compat.c)",
+  "pinned_from": "evidence/s188_w14/W14_GDX_VERIFY.json: after 586 the next dlopen blocker was glGetActiveAttrib; full diff against nm -D exports gave the exact 35-symbol set",
+  "semantics": "honest minimal: introspection empty (PGL has no GLSL pipeline), precision constants = real IEEE float32 ranges, Is* = FALSE (no interposition point), immediate VertexAttrib = no-op (PGL draw model is pointer-array)",
+  "verified": "4/4 symbols exported; p9 dlopen now reaches ELF constructor execution"
+ },
+ "p9_next_blocker": {
+  "state": "libgdx.so (p9 build) ELF constructor faults (SIGSEGV fault_addr=0x0) inside the loader \u2014 FIX-TTT fork-probe guard caught it post-probe, loader poisoned for the process (honest), app continued, 0 fatal, screenshot produced",
+  "attribution_needed": "faulting constructor IP is not in the S100-CRASH-FORENSICS row (observability gap, not a shim case)"
+ },
+ "tarok_contract": {
+  "root_cause": "si.palcka.tarok APK bundles ONLY lib/arm64-v8a (libflutter.so 10.9MB); queens/quinb bundle x86_64 libflutter.so which is why their Flutter chains work on this x86_64 host",
+  "law": "FOREIGN_ARCH_ONLY_ABI \u2014 architecture law (host cannot execute foreign machine code); Java-side Flutter embedding still advances (snapshot Bundle keys resolved)",
+  "options": "arm64 translation host OR x86_64-hosted APK variant; NOT a shim case"
+ },
+ "regression_gates": {
+  "goldens": "ALL HOLD (bouncy 8a6c24ac / unote 3b8dcb0a / dooz 31ddd4d5, byte-exact, 4 runs incl. 3 determinism reruns)",
+  "dooz_uncaught_variance": "6 nonfatal EXC-UNCAUGHT-TOP trace marks in 1 of 4 runs (state=nonfatal, face byte-identical); reruns show 0 \u2014 diagnostic-count variance, not regression",
+  "halma": "libgdx dlopen OK, unchanged (tier A_RICH metric; W13 noise verdict unchanged)",
+  "queens": "FLUTTER chain intact: dlopen OK, JNI_OnLoad x2, RegisterNatives x4, uncaught 0, FLAT (same as W13)",
+  "blackjack": "B_STRUCTURED, uncaught 0 (same as W12/W13 floor)"
+ },
+ "abi_census": "evidence/s188_w13/W14_ABI_CENSUS.json: X86_HOSTED=9 (composeStopwatch, queens, quinb, halma, boxcars, blichess, nightbell, guandan, p9), FOREIGN_ARCH_ONLY_ABI native-blocked=4 (tarok, ccm, ball2box \u2014 Java-side chains still advance), PURE_DEX=11 (no lib/)",
+ "build_incident": "Makefile recipe tabs were space-converted by the sandbox restore (62 lines) \u2014 repaired with sed, make dry-run verified before rebuild"
+}

@@ -1,0 +1,18 @@
+{
+ "com.sidhant.queens": {
+  "tier": "FLAT_TWO_TONE_OR_BLANK",
+  "uncaught": 0,
+  "jni_onload": 2,
+  "register_natives": 4,
+  "dlopen_flutter_ok": true,
+  "route": true
+ },
+ "crypto.o0o0o0o0o.games.blackjack": {
+  "tier": "B_STRUCTURED",
+  "uncaught": 0,
+  "jni_onload": 0,
+  "register_natives": 0,
+  "dlopen_flutter_ok": false,
+  "route": true
+ }
+}

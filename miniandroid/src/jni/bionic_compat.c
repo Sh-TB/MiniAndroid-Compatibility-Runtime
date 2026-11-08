@@ -490,3 +490,31 @@ __attribute__((visibility("default")))
 char* __gnu_strerror_r(int errnum, char* buf, size_t buflen) {
     return strerror_r(errnum, buf, buflen);
 }
+
+/* S188-W14 F-NEW-587: libgdx-family apps (se.tube42.p9.android libgdx.so,
+ * pinned in evidence/s188_w14/W14_GDX_VERIFY.json) import the strong
+ * symbol __android_log_print. The runtime's honest log sink is stderr
+ * (this exe has no logd); Android's contract returns the number of bytes
+ * that WOULD have been written. */
+#include <stdio.h>
+#include <stdarg.h>
+
+__attribute__((visibility("default")))
+int __android_log_print(int prio, const char* tag, const char* fmt, ...) {
+    const char* p = "log";
+    switch (prio) {
+        case 2: p = "VERBOSE"; break; case 3: p = "DEBUG"; break;
+        case 4: p = "INFO"; break;    case 5: p = "WARN"; break;
+        case 6: p = "ERROR"; break;   case 7: p = "ASSERT"; break;
+        default: break;
+    }
+    va_list ap;
+    va_start(ap, fmt);
+    flockfile(stderr);
+    fprintf(stderr, "[APP-LOG/%s] %s: ", p, tag ? tag : "");
+    int n = vfprintf(stderr, fmt, ap);
+    fputc('\n', stderr);
+    funlockfile(stderr);
+    va_end(ap);
+    return n;
+}

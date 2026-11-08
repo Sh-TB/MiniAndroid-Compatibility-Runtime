@@ -8250,3 +8250,29 @@ Directive: "test at least 20 apps and games, check loading progress."
   W13_BATTERY.partial.json made the resume lossless (4 titles re-run).
 - Evidence: evidence/s188_w13/{W13_BATTERY.json, W13_LOADING_PROGRESS.json,
   W13_INTEGRITY_NOTE.json, battery.console.log, 24 face_*.jpg, runs/}
+
+## S188-W14 — pinned-contract fixes: GL native surface + arch-law census
+
+- Rebuilt the runtime from source after the sandbox restore wiped build/
+  (and space-converted 62 Makefile recipe tabs — repaired). New binary
+  sha16=85f48a64a3192625.
+- F-NEW-586 (pinned in W13): glCopyTexImage2D/glCopyTexSubImage2D now
+  exported from src/gles/gl_copy_bridge.cpp (ReadPixels->TexImage2D copy
+  semantics). p9's dlopen advanced past the undefined-symbol stage.
+- F-NEW-587 (pinned in W14): the exact remaining 35-symbol PGL gap
+  (glGetActiveAttrib ... glVertexAttrib4fv — introspection/no-op family,
+  honest minimal semantics documented in-TU) + __android_log_print in
+  bionic_compat.c (stderr log sink). p9's dlopen now reaches ELF
+  constructor execution and faults there: SIGSEGV fault_addr=0x0 inside
+  the loader, FIX-TTT guard caught it post-probe, loader honestly
+  poisoned, app continued with 0 fatal marks. NEXT: attribute the
+  faulting constructor (forensics row lacks the IP — observability gap).
+- tarok contract cracked: APK bundles ONLY arm64-v8a libflutter.so;
+  queens/quinb bundle x86_64 — that is THE reason their Flutter chains
+  advance. Architecture law (FOREIGN_ARCH_ONLY_ABI), not a shim case.
+  ABI census of all 24 battery APKs saved (W14_ABI_CENSUS.json).
+- Regression gates: goldens ALL HOLD (4 runs; dooz's 6 UNCAUGHT marks in
+  1 run = nonfatal trace-count variance, face byte-identical, reruns 0);
+  halma unchanged; queens Flutter chain intact; blackjack B floor holds.
+- Evidence: evidence/s188_w14/{W14_GDX_VERIFY.json, W14_SUMMARY.json,
+  W14_SPOT_REGRESSION.json, runs/}, evidence/s188_w13/W14_ABI_CENSUS.json
