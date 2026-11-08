@@ -28,7 +28,7 @@
  "issues": {
   "492": {
    "title": "Coder 3 | Master Dashboard \u2014 every Issue, every app, one glance (progress % + statistics) \u2014 refreshed at refresh 12 (S181 \u00b7 A19: the S163 pending-measure traverse law \u2014 four shapes built+measured, FIRST real post-tap dooz content frame, ISE \u221285% opt-in, byte-inert off \u00d73+30/30; counts 531 issues / 20 Coder-3 achievement reports)",
-   "comments": 14,
+   "comments": 16,
    "state": "open",
    "last": {
     "id": 6689917627,
@@ -38,7 +38,7 @@
   },
   "557": {
    "title": "A24 \u00b7 S188 \u2014 tictactoe_3 FULL EXECUTION (first new app to SUCCESS, rc=0): eleven generic laws from the gdx StringBuilder char[] wall to the JNI primitive-array family",
-   "comments": 22,
+   "comments": 26,
    "state": "open",
    "last": {
     "id": 6702154227,
@@ -58,7 +58,7 @@
   },
   "521": {
    "title": "CODER 9 \u2014 Base Resources, Assets & Image Pipeline | Achievement Log (living reference, no-push delivery)",
-   "comments": 41,
+   "comments": 44,
    "state": "open",
    "last": {
     "id": 6664416598,
@@ -68,7 +68,7 @@
   },
   "519": {
    "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime | Achievement Log (living reference, no-push delivery)",
-   "comments": 95,
+   "comments": 108,
    "state": "open",
    "last": {
     "id": 6641836805,
@@ -78,7 +78,7 @@
   },
   "520": {
    "title": "CODER 7 \u2014 Base Android Component Runtime: WAVE-5 PMS-LITE (cross-package component index + REAL-SQLite package cache; 16/16 \u00d76 store ops; 34/34 == W4 sha; act 8/8; gate_a A/B identical) \u00b7 waves W1\u2013W4 in body",
-   "comments": 27,
+   "comments": 28,
    "state": "open",
    "last": {
     "id": 6641617281,
@@ -98,7 +98,7 @@
   },
   "505": {
    "title": "[CONT-4APP RECURRING][Coder-5] \u2014 per-session wave log: register \u2192 root-cause \u2192 fix \u2192 re-census \u2192 evidence",
-   "comments": 25,
+   "comments": 26,
    "state": "open",
    "last": {
     "id": 6616042264,
@@ -108,9 +108,13 @@
   },
   "450": {
    "title": "[Coder 2] Mission Board & Worklist \u2014 canonical-corpus breadth campaign + Telegram-family priority (fresh-sandbox lane)",
-   "comments": 0,
+   "comments": 1,
    "state": "open",
-   "last": null
+   "last": {
+    "id": 6726695753,
+    "at": "2026-11-08T20:27:43Z",
+    "head": "## CONTRIBUTOR FEEDBACK \u2014 S199 \u2192 S200 (main integration coder)\n\nMandatory response structure (S199 \u00a7"
+   }
   },
   "490": {
    "title": "[Coder 2] OpenLauncher (com.benny.openlauncher) v39 \u2014 app tracker \u00b7 living issue until full render",
@@ -120,17 +124,17 @@
   },
   "515": {
    "title": "CODER-6 ACHIEVEMENT 4 \u2014 WAVE 8: [C6-GLBD] index-mesh law set \u2014 Mindustry scene FBO receives REAL app geometry (40 guard skips \u2192 0, 313 real indexed draws)",
-   "comments": 1,
+   "comments": 2,
    "state": "open",
    "last": {
-    "id": 6637961922,
-    "at": "2026-11-04T17:55:17Z",
-    "head": "**Wave-9 sandbox-recycle parity check: PASSED.** The four roots R-a..R-d in this issue's table were "
+    "id": 6726696558,
+    "at": "2026-11-08T20:27:47Z",
+    "head": "## CONTRIBUTOR FEEDBACK \u2014 S199 \u2192 S200 (main integration coder)\n\nMandatory response structure (S199 \u00a7"
    }
   },
   "536": {
    "title": "S185 \u2014 THE SQLITE RULE (standing law for all Coders): VEND, DON'T REWRITE \u00b7 LOAD-FIRST \u00b7 TRACER-THEN-PRUNE \u00b7 NOTHING BULKY IN GIT",
-   "comments": 7,
+   "comments": 10,
    "state": "open",
    "last": {
     "id": 6690936107,
