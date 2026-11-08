@@ -1,10 +1,10 @@
 # S199 CONTRIBUTOR AUDIT (Coders 2–9) — verified integration states
 
 Recorded: 2026-11-08 20:03 UTC. Statuses use the S199 evidence-state vocabulary. "Independent
-reproduction" = behavior observed on the S199 canonical binary 414332acd3603dac.
+reproduction" = behavior observed on the S199 canonical binary 97628b00d237f9eb.
 
 ## Coder 3 (UI execution / ViewTree / adapter / native GL) — the P0 chain
-| Contribution | Original claim | Independent reproduction on 414332acd3603dac | Integration state | App impact |
+| Contribution | Original claim | Independent reproduction on 97628b00d237f9eb | Integration state | App impact |
 |---|---|---|---|---|
 | S196 F-NEW-580/580b String-boundary | AssetManager.load NPE dies at desc.fileName.equals(null) after replaceAll stub | Ported verbatim; `npe_asset_load` count went 1 → 0 on tictactoe | **INTEGRATED + BUILD-VERIFIED + APP-OBSERVED** | tictactoe passes AssetDescriptor/I18NBundle ladder |
 | S196 F-NEW-588 replace family | replaceAll("\\\\","/") answered null → null fileName | 6 live replaceAll calls logged; `i18n/TicTacToe` path built correctly | INTEGRATED, UNIT-OBSERVED | the named NPE chain closed |
@@ -44,3 +44,15 @@ reproduction" = behavior observed on the S199 canonical binary 414332acd3603dac.
   audit only — no cross-app claim made).
 - C6 Mindustry composite gap: stays OPEN by law (mission §2 C6) — no new
   GL system was created; the S199 identity work advances the shared chain.
+
+
+## NOTE — identity refresh (S199 close)
+The S199 wave made two further source commits after the baseline was
+written (F-NEW-619 typed-view parent chase at the f590 hook; F-NEW-620/
+620b GL_ACTIVE_ATTRIBUTES=3 + glGetActiveAttrib canonical-name law).
+The FINAL canonical S199 binary is 97628b00d237f9eb — goldens 3/3 ALL
+HOLD and floor 11/11 CLEAN re-verified on it (this is the identity all
+future waves compare against). The 619/620 laws did NOT yet move the
+shape-attrib needle (glGetActiveAttrib never dispatched — the
+fetchAttributes loop is gated deeper, at the AndroidGL20 real-native
+path); that remains the named Coder-3 frontier with the evidence above.

@@ -18,7 +18,7 @@ Posted from this wave (comment IDs on record):
    state stays intake/PENDING; asked for the minimal provider-authority
    resource-reference APK that would let mainline reproduce it.
 3. **C9 — issue #521** (npTc): SUPERSEDED state unchanged; floor re-run
-   evidence attached (11/11 on 414332acd3603dac); asked for the dedicated
+   evidence attached (11/11 on 97628b00d237f9eb); asked for the dedicated
    resource-validation APK (§2 C9) as the next joint test.
 4. **C8 — issue #492** (wave record thread): S199 wave record; 97/97 probe
    rerun on the S199 binary named as the next required gate.
@@ -26,3 +26,15 @@ Posted from this wave (comment IDs on record):
 Evidence/artifact references embedded in each comment: this directory's
 JSON/MD artifacts + the tictactoe run logs + the first-glyphs screenshot
 (face_ttt_first_glyphs.png sha16 fc0997a63f3b2dec).
+
+
+## NOTE — identity refresh (S199 close)
+The S199 wave made two further source commits after the baseline was
+written (F-NEW-619 typed-view parent chase at the f590 hook; F-NEW-620/
+620b GL_ACTIVE_ATTRIBUTES=3 + glGetActiveAttrib canonical-name law).
+The FINAL canonical S199 binary is 97628b00d237f9eb — goldens 3/3 ALL
+HOLD and floor 11/11 CLEAN re-verified on it (this is the identity all
+future waves compare against). The 619/620 laws did NOT yet move the
+shape-attrib needle (glGetActiveAttrib never dispatched — the
+fetchAttributes loop is gated deeper, at the AndroidGL20 real-native
+path); that remains the named Coder-3 frontier with the evidence above.

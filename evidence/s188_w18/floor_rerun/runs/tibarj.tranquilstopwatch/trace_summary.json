@@ -1,7 +1,7 @@
 {
   "activity": "tibarj.tranquilstopwatch.MainActivity",
   "apk_package": "tibarj.tranquilstopwatch",
-  "duration_ms": 872,
+  "duration_ms": 932,
   "events_retained": 31,
   "events_total": 31,
   "first_divergence": null,
@@ -73,52 +73,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 10048,
+        "pid": 11113,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w18/floor_rerun/runs/store_tibarj.tranquilstopwatch/data/app/tibarj.tranquilstopwatch/base.apk",
       "thread": "main",
-      "ts_ms": 1794167833870
+      "ts_ms": 1794168736814
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "tibarj.tranquilstopwatch",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=tibarj.tranquilstopwatch",
       "thread": "main",
-      "ts_ms": 1794167833873
+      "ts_ms": 1794168736818
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "tibarj.tranquilstopwatch",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=tibarj.tranquilstopwatch.MainActivity",
       "thread": "main",
-      "ts_ms": 1794167833873
+      "ts_ms": 1794168736818
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "tibarj.tranquilstopwatch",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=1454 methods=12340",
       "thread": "main",
-      "ts_ms": 1794167833911
+      "ts_ms": 1794168736857
     },
     {
       "component": "boot",
@@ -128,24 +128,24 @@
       },
       "package": "tibarj.tranquilstopwatch",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167833931
+      "ts_ms": 1794168736877
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "tibarj.tranquilstopwatch",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=1454",
       "thread": "main",
-      "ts_ms": 1794167833931
+      "ts_ms": 1794168736877
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -153,12 +153,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "tibarj.tranquilstopwatch",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "tibarj.tranquilstopwatch.MainActivity",
       "thread": "main",
-      "ts_ms": 1794167833935
+      "ts_ms": 1794168736881
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -166,12 +166,12 @@
       "event": "APPLICATION_CREATE",
       "package": "tibarj.tranquilstopwatch",
       "result": "PENDING",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794167833935
+      "ts_ms": 1794168736881
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -180,12 +180,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lb1/a0;.<init> invoke_pc=0x47 depth=3",
       "package": "tibarj.tranquilstopwatch",
       "result": "FAIL",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 9,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794167834173
+      "ts_ms": 1794168737136
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -194,12 +194,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Ltibarj/tranquilstopwatch/ClockFragment;.<init> invoke_pc=0x0 depth=2",
       "package": "tibarj.tranquilstopwatch",
       "result": "FAIL",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 10,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794167834173
+      "ts_ms": 1794168737136
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -208,12 +208,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at Ltibarj/tranquilstopwatch/MainActivity;.onCreate invoke_pc=0x23 depth=1 [APP-BOUNDARY]",
       "package": "tibarj.tranquilstopwatch",
       "result": "FAIL",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 11,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794167834173
+      "ts_ms": 1794168737136
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -222,12 +222,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Lb1/a0;.<init> invoke_pc=0x47 depth=3",
       "package": "tibarj.tranquilstopwatch",
       "result": "FAIL",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 12,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794167834173
+      "ts_ms": 1794168737136
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -236,12 +236,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNWIND] Ljava/lang/NullPointerException; unwound Ltibarj/tranquilstopwatch/StopwatchFragment;.<init> invoke_pc=0x0 depth=2",
       "package": "tibarj.tranquilstopwatch",
       "result": "FAIL",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 13,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794167834173
+      "ts_ms": 1794168737136
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -250,12 +250,12 @@
       "exception": "[EXC-UNCAUGHT-TOP] [EXC-UNCAUGHT-TOP] Ljava/lang/NullPointerException; escaped the app boundary at Ltibarj/tranquilstopwatch/MainActivity;.onCreate invoke_pc=0x23 depth=1 [APP-BOUNDARY]",
       "package": "tibarj.tranquilstopwatch",
       "result": "FAIL",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 14,
       "sev": "FAILURE",
       "state": "nonfatal",
       "thread": "main",
-      "ts_ms": 1794167834173
+      "ts_ms": 1794168737136
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -291,12 +291,12 @@
       },
       "package": "tibarj.tranquilstopwatch",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794167834201
+      "ts_ms": 1794168737167
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -306,12 +306,12 @@
       "provenance": "choreographer/composition pump active",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 16,
       "sev": "RENDERER",
       "state": "COMPOSE",
       "thread": "main",
-      "ts_ms": 1794167834255
+      "ts_ms": 1794168737228
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -320,12 +320,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 17,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794167834271
+      "ts_ms": 1794168737247
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -334,12 +334,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 18,
       "sev": "CONFIRMED",
       "state": "root_id=1474",
       "thread": "main",
-      "ts_ms": 1794167834271
+      "ts_ms": 1794168737247
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -348,12 +348,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 19,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=2",
       "thread": "main",
-      "ts_ms": 1794167834374
+      "ts_ms": 1794168737358
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -362,12 +362,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 20,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167834375
+      "ts_ms": 1794168737359
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -380,12 +380,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167834453
+      "ts_ms": 1794168737438
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -407,12 +407,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 22,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794167834460
+      "ts_ms": 1794168737445
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -461,12 +461,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 23,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794167834460
+      "ts_ms": 1794168737445
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -475,12 +475,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 24,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794167834512
+      "ts_ms": 1794168737506
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -489,12 +489,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 25,
       "sev": "CONFIRMED",
       "state": "root_id=1474",
       "thread": "main",
-      "ts_ms": 1794167834512
+      "ts_ms": 1794168737506
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -503,12 +503,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 26,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=2",
       "thread": "main",
-      "ts_ms": 1794167834601
+      "ts_ms": 1794168737602
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -517,12 +517,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 27,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167834601
+      "ts_ms": 1794168737602
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -535,12 +535,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 28,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167834678
+      "ts_ms": 1794168737680
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -562,12 +562,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 29,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794167834685
+      "ts_ms": 1794168737688
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -616,12 +616,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 30,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794167834685
+      "ts_ms": 1794168737688
     },
     {
       "activity": "tibarj.tranquilstopwatch.MainActivity",
@@ -633,12 +633,12 @@
       "package": "tibarj.tranquilstopwatch",
       "renderer_family": "COMPOSE",
       "result": "FAIL",
-      "run_id": "1794167833870-1",
+      "run_id": "1794168736814-1",
       "seq": 31,
       "sev": "FAILURE",
       "state": "Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 10393 IMPLEMENTED, 1015 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
       "thread": "main",
-      "ts_ms": 1794167834742
+      "ts_ms": 1794168737746
     }
   ],
   "last_exception": {
@@ -651,18 +651,18 @@
     "package": "tibarj.tranquilstopwatch",
     "renderer_family": "COMPOSE",
     "result": "FAIL",
-    "run_id": "1794167833870-1",
+    "run_id": "1794168736814-1",
     "seq": 31,
     "sev": "FAILURE",
     "state": "Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 10393 IMPLEMENTED, 1015 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
     "thread": "main",
-    "ts_ms": 1794167834742
+    "ts_ms": 1794168737746
   },
   "lifecycle": "RESUMED",
   "renderer_family": "COMPOSE",
-  "run_id": "1794167833870-1",
+  "run_id": "1794168736814-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261108-195713-0285",
+  "session_id": "EXP-001-20261108-201216-7003",
   "severity_census": {
     "CONFIRMED": 13,
     "FAILURE": 7,

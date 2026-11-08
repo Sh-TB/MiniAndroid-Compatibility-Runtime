@@ -1,6 +1,6 @@
 # S199 END-TO-END BATTERY — commands, identities, evidence
 
-Recorded: 2026-11-08 20:03 UTC. Binary 414332acd3603dac (sha256 414332acd3603dacc2bd0c66251975998ee77384089384c7f47b8b3b339d335b).
+Recorded: 2026-11-08 20:03 UTC. Binary 97628b00d237f9eb (sha256 97628b00d237f9ebc2bd0c66251975998ee77384089384c7f47b8b3b339d335b).
 
 ## Reproduce (each from /home/z/my-project)
 ```
@@ -26,7 +26,7 @@ python3 scripts/s188_w18_floor_rerun.py
 | cohort microtimer | 0 uncaught / 0 boundary / REAL_APP_CONTENT | evidence/s199/battery/microtimer_s199_r1.console.log |
 | cohort opencalc | 0 uncaught / 1 boundary / REAL_APP_CONTENT | battery/opencalc_s199_r1.console.log |
 | cohort chessclock | 0 uncaught / 1 boundary / REAL_APP_CONTENT | battery/chessclock_s199_r1.console.log |
-| goldens 3/3 | ALL HOLD on 414332acd3603dac | s188_golden_check output |
+| goldens 3/3 | ALL HOLD on 97628b00d237f9eb | s188_golden_check output |
 | floor 11/11 | CLEAN | s188_w18_floor_rerun output |
 
 ## Honest status of the two §4 targets
@@ -38,3 +38,15 @@ python3 scripts/s188_w18_floor_rerun.py
   gameplay completion are NOT yet verified; the named first divergence is
   the shape-renderer VBO attribute bind (attrib0=(nil) draws) and the
   per-frame re-render (static frame after boot frames).
+
+
+## NOTE — identity refresh (S199 close)
+The S199 wave made two further source commits after the baseline was
+written (F-NEW-619 typed-view parent chase at the f590 hook; F-NEW-620/
+620b GL_ACTIVE_ATTRIBUTES=3 + glGetActiveAttrib canonical-name law).
+The FINAL canonical S199 binary is 97628b00d237f9eb — goldens 3/3 ALL
+HOLD and floor 11/11 CLEAN re-verified on it (this is the identity all
+future waves compare against). The 619/620 laws did NOT yet move the
+shape-attrib needle (glGetActiveAttrib never dispatched — the
+fetchAttributes loop is gated deeper, at the AndroidGL20 real-native
+path); that remains the named Coder-3 frontier with the evidence above.

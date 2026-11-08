@@ -1,6 +1,6 @@
 # S199 NEXT ASSIGNMENTS — per coder, evidence-based
 
-Recorded: 2026-11-08 20:03 UTC. Binary 414332acd3603dac.
+Recorded: 2026-11-08 20:03 UTC. Binary 97628b00d237f9eb.
 
 ## Coder 3 (owner: the two named tictactoe walls)
 1. Shape-renderer VBO attribute bind: the ImmediateModeRenderer20 draws
@@ -37,7 +37,7 @@ one registry, one marshal).
 selection (see S199_SQLITE_IMPACT.md); the cross-package scenario battery
 remains as scoped in S195.
 
-## Coder 8: rerun the 97/97 marker probe + 3-run determinism on 414332acd3603dac
+## Coder 8: rerun the 97/97 marker probe + 3-run determinism on 97628b00d237f9eb
 (the W11/W12 patch stack is untouched but the binary changed). Then the
 real-APK async test (§2 C8): any cohort app doing post-launch async UI
 work counts.
@@ -46,3 +46,15 @@ work counts.
 resource-validation APK (§2 C9) exercising npTc/BitmapFactory density/
 AssetFileDescriptor — the ARSC label + asset stream chain is now proven
 end-to-end, so the validator rides a real pipeline.
+
+
+## NOTE — identity refresh (S199 close)
+The S199 wave made two further source commits after the baseline was
+written (F-NEW-619 typed-view parent chase at the f590 hook; F-NEW-620/
+620b GL_ACTIVE_ATTRIBUTES=3 + glGetActiveAttrib canonical-name law).
+The FINAL canonical S199 binary is 97628b00d237f9eb — goldens 3/3 ALL
+HOLD and floor 11/11 CLEAN re-verified on it (this is the identity all
+future waves compare against). The 619/620 laws did NOT yet move the
+shape-attrib needle (glGetActiveAttrib never dispatched — the
+fetchAttributes loop is gated deeper, at the AndroidGL20 real-native
+path); that remains the named Coder-3 frontier with the evidence above.

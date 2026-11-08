@@ -13,6 +13,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s188_w18/floor_rerun/runs/store_xyz.deepdaikon.quinb/data/app/xyz.deepdaikon.quinb/base.apk",
   "apkSha256": "bd720d019b85bac7aa08013bf2b50f331d76d736bfe681753a43c8215e002d69",
   "apkSize": 21585549,
-  "installedAt": "2026-11-08T19:57:41Z",
+  "installedAt": "2026-11-08T20:12:44Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

@@ -474,11 +474,24 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
             {0x8B82u, 1},  // GL_LINK_STATUS     → GL_TRUE
             {0x8B80u, 0},  // GL_DELETE_STATUS   → GL_FALSE
             {0x8B84u, 0},  // GL_INFO_LOG_LENGTH → 0 (empty log)
-            {0x8B85u, 0},  // GL_SHADER_SOURCE_LENGTH → 0
-            {0x8B86u, 0},  // GL_ATTACHED_SHADERS → 0
-            {0x8B87u, 0},  // GL_ACTIVE_ATTRIBUTES → 0
-            {0x8B89u, 0},  // GL_ACTIVE_UNIFORMS → 0
-            {0x8B8Au, 0},  // GL_ACTIVE_UNIFORM_MAX_LENGTH → 0
+            {0x8B85u, 0},  // GL_ACTIVE_UNIFORMS → 0 (uniforms resolve lazily, F-NEW-505)
+            {0x8B86u, 0},  // GL_ACTIVE_UNIFORM_MAX_LENGTH → 0
+            {0x8B87u, 0},  // GL_ATTACHED_SHADERS → 0
+            // ── S199 W19a F-NEW-620 — the gdx fetchAttributes fix ──────
+            // GL_ACTIVE_ATTRIBUTES answered 0 (the pre-620 comment even
+            // mislabeled 0x8B89 as ACTIVE_UNIFORMS): gdx
+            // ShaderProgram.fetchAttributes() read numAttributes=0 → the
+            // attributes ObjectIntMap stayed EMPTY → VertexBufferObject.bind's
+            // map-only getAttributeLocation(alias) answered -1 for EVERY
+            // program → enableVertexAttribute(-1)/setVertexAttribute(-1)
+            // silently no-oped in PGL → the mesh drew with whatever attrib
+            // state was left from the previous bind (tictactoe: the shape
+            // mesh drew over the SpriteBatch's buffer — board lines
+            // missing). The canonical gdx attribute set IS 3
+            // (a_position/a_color/a_texCoord0 — the default shaders), so 3
+            // is the honest answer for this program family.
+            {0x8B89u, 3},  // GL_ACTIVE_ATTRIBUTES → 3 (gdx canonical set)
+            {0x8B8Au, 32}, // GL_ACTIVE_ATTRIBUTE_MAX_LENGTH → 32
         };
         const uint32_t pname = (uint32_t)ctx.args[1].int_val;
         const uint32_t buf = ctx.args[2].object_id;
@@ -491,6 +504,80 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
             gfx::GfxTrace::instance().gl_call(
                 "GLES20", ctx.method, true, (int)ctx.args.size(),
                 "shader-status-query-into-buffer");
+            return CallResult::handled_void();
+        }
+    }
+    // ── S199 W19a F-NEW-620b — glGetActiveAttrib canonical-name law ────
+    // The companion of the 620 GL_ACTIVE_ATTRIBUTES=3 answer: gdx's
+    // fetchAttributes() loop calls glGetActiveAttrib(program, index,
+    // length IntBuffer, type IntBuffer, name ByteBuffer) for i=0..2 and
+    // resolves the location via glGetAttribLocation(name). Without the
+    // law the loop hit REC-MISS and the map stayed empty even with the
+    // count fixed. Names = the gdx canonical attribute set (the same
+    // three the default shaders declare, and the same order the
+    // pgl_sb_attrib_location bind law maps: position→0, color→1,
+    // texCoord0→2). Writes land in the buffers' direct memory AND the
+    // field run (the 616c two-surface rule).
+    if (ctx.method == "glGetActiveAttrib" && ctx.args.size() >= 5 &&
+        ctx.args[0].kind == CallContext::Arg::Kind::INT &&
+        ctx.args[1].kind == CallContext::Arg::Kind::INT) {
+        static const struct { uint32_t t; const char* n; } kAttribs[] = {
+            {0x8B52u, "a_position"},   // GL_FLOAT_VEC4
+            {0x8B52u, "a_color"},      // GL_FLOAT_VEC4
+            {0x8B53u, "a_texCoord0"},  // GL_FLOAT_VEC2
+        };
+        const int idx = ctx.args[1].int_val;
+        if (idx >= 0 && idx < 3 && heap) {
+            const char* nm = kAttribs[idx].n;
+            const int nlen = (int)std::strlen(nm);
+            // length buffer (arg 2) + type buffer (arg 3): element 0
+            const uint32_t lb = ctx.args[2].kind == CallContext::Arg::Kind::OBJECT
+                                    ? ctx.args[2].object_id : 0;
+            const uint32_t tb = ctx.args[3].kind == CallContext::Arg::Kind::OBJECT
+                                    ? ctx.args[3].object_id : 0;
+            const uint32_t nb = ctx.args[4].kind == CallContext::Arg::Kind::OBJECT
+                                    ? ctx.args[4].object_id : 0;
+            if (lb) {
+                heap->set_object_int_field(lb, "__bb_b0__", nlen);
+                gl_view_mirror_write(heap, lb, 0, nlen);
+            }
+            if (tb) {
+                heap->set_object_int_field(tb, "__bb_b0__",
+                                           (int32_t)kAttribs[idx].t);
+                gl_view_mirror_write(heap, tb, 0,
+                                     (int32_t)kAttribs[idx].t);
+            }
+            if (nb) {
+                // name buffer: direct memory first, field run always
+                int64_t daddr = 0;
+                uint32_t par = nb;
+                for (int hop = 0; hop < 4 && par != 0; ++hop) {
+                    int64_t a2 = 0;
+                    if (heap->get_object_long_field(par, "__bb_addr__", a2) &&
+                        a2 != 0) { daddr = a2; break; }
+                    if (heap->get_object_long_field(par, "__bb_direct__", a2) &&
+                        a2 != 0) { daddr = a2; break; }
+                    uint32_t p2 = 0;
+                    if (!heap->get_object_ref_field(par, "__bb_parent__", p2) ||
+                        p2 == 0) break;
+                    par = p2;
+                }
+                if (daddr != 0) {
+                    unsigned char* mem =
+                        reinterpret_cast<unsigned char*>((uintptr_t)daddr);
+                    for (int i = 0; i < nlen; ++i)
+                        mem[i] = (unsigned char)nm[i];
+                    mem[nlen] = 0;
+                }
+                for (int i = 0; i < nlen; ++i)
+                    heap->set_object_int_field(
+                        nb, "__bb_b" + std::to_string(i) + "__",
+                        (int32_t)(unsigned char)nm[i]);
+                heap->set_object_int_field(nb, "__bb_b" + std::to_string(nlen) + "__", 0);
+            }
+            gfx::GfxTrace::instance().gl_call(
+                "GLES20", ctx.method, true, (int)ctx.args.size(),
+                "active-attrib-canonical");
             return CallResult::handled_void();
         }
     }

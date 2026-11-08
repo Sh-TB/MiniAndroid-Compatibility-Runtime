@@ -1,7 +1,7 @@
 {
   "activity": "com.godot.game.GodotApp",
   "apk_package": "com.simondalvai.ball2box",
-  "duration_ms": 757,
+  "duration_ms": 780,
   "events_retained": 25,
   "events_total": 25,
   "first_divergence": null,
@@ -73,52 +73,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 10096,
+        "pid": 11161,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w18/floor_rerun/runs/store_com.simondalvai.ball2box/data/app/com.simondalvai.ball2box/base.apk",
       "thread": "main",
-      "ts_ms": 1794167856303
+      "ts_ms": 1794168759687
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "com.simondalvai.ball2box",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=com.simondalvai.ball2box",
       "thread": "main",
-      "ts_ms": 1794167856329
+      "ts_ms": 1794168759712
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "com.simondalvai.ball2box",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=com.godot.game.GodotApp",
       "thread": "main",
-      "ts_ms": 1794167856329
+      "ts_ms": 1794168759712
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "com.simondalvai.ball2box",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=3740 methods=32533",
       "thread": "main",
-      "ts_ms": 1794167856459
+      "ts_ms": 1794168759845
     },
     {
       "component": "boot",
@@ -128,24 +128,24 @@
       },
       "package": "com.simondalvai.ball2box",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167856479
+      "ts_ms": 1794168759868
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "com.simondalvai.ball2box",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=3740",
       "thread": "main",
-      "ts_ms": 1794167856479
+      "ts_ms": 1794168759868
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -153,12 +153,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "com.simondalvai.ball2box",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "com.godot.game.GodotApp",
       "thread": "main",
-      "ts_ms": 1794167856491
+      "ts_ms": 1794168759881
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -166,12 +166,12 @@
       "event": "APPLICATION_CREATE",
       "package": "com.simondalvai.ball2box",
       "result": "PENDING",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794167856491
+      "ts_ms": 1794168759881
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -207,12 +207,12 @@
       },
       "package": "com.simondalvai.ball2box",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794167856691
+      "ts_ms": 1794168760088
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -222,12 +222,12 @@
       "provenance": "choreographer/composition pump active",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 10,
       "sev": "RENDERER",
       "state": "COMPOSE",
       "thread": "main",
-      "ts_ms": 1794167856703
+      "ts_ms": 1794168760101
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -236,12 +236,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 11,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794167856710
+      "ts_ms": 1794168760109
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -250,12 +250,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 12,
       "sev": "CONFIRMED",
       "state": "root_id=296",
       "thread": "main",
-      "ts_ms": 1794167856710
+      "ts_ms": 1794168760109
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -264,12 +264,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 13,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794167856747
+      "ts_ms": 1794168760148
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -278,12 +278,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167856747
+      "ts_ms": 1794168760149
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -296,12 +296,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167856820
+      "ts_ms": 1794168760222
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -323,12 +323,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 16,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794167856827
+      "ts_ms": 1794168760230
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -377,12 +377,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 17,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794167856827
+      "ts_ms": 1794168760230
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -391,12 +391,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 18,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794167856879
+      "ts_ms": 1794168760282
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -405,12 +405,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 19,
       "sev": "CONFIRMED",
       "state": "root_id=296",
       "thread": "main",
-      "ts_ms": 1794167856879
+      "ts_ms": 1794168760282
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -419,12 +419,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 20,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794167856915
+      "ts_ms": 1794168760319
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -433,12 +433,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167856915
+      "ts_ms": 1794168760319
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -451,12 +451,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794167856986
+      "ts_ms": 1794168760391
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -478,12 +478,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 23,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794167856993
+      "ts_ms": 1794168760398
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -532,12 +532,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 24,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
       "thread": "main",
-      "ts_ms": 1794167856993
+      "ts_ms": 1794168760398
     },
     {
       "activity": "com.godot.game.GodotApp",
@@ -549,12 +549,12 @@
       "package": "com.simondalvai.ball2box",
       "renderer_family": "COMPOSE",
       "result": "FAIL",
-      "run_id": "1794167856303-1",
+      "run_id": "1794168759687-1",
       "seq": 25,
       "sev": "FAILURE",
       "state": "Partial execution completed [F-NEW-200 stub-census: 4062 IMPLEMENTED, 33 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
       "thread": "main",
-      "ts_ms": 1794167857060
+      "ts_ms": 1794168760467
     }
   ],
   "last_exception": {
@@ -567,18 +567,18 @@
     "package": "com.simondalvai.ball2box",
     "renderer_family": "COMPOSE",
     "result": "FAIL",
-    "run_id": "1794167856303-1",
+    "run_id": "1794168759687-1",
     "seq": 25,
     "sev": "FAILURE",
     "state": "Partial execution completed [F-NEW-200 stub-census: 4062 IMPLEMENTED, 33 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
     "thread": "main",
-    "ts_ms": 1794167857060
+    "ts_ms": 1794168760467
   },
   "lifecycle": "RESUMED",
   "renderer_family": "COMPOSE",
-  "run_id": "1794167856303-1",
+  "run_id": "1794168759687-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261108-195736-0765",
+  "session_id": "EXP-001-20261108-201239-4104",
   "severity_census": {
     "CONFIRMED": 13,
     "FAILURE": 1,

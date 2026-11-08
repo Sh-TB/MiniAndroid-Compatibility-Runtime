@@ -12,8 +12,8 @@ Recorded: 2026-11-08 20:03 UTC
 
 ## Canonical integrated binary
 - Path: `miniandroid/build/miniandroid`
-- SHA-256: `414332acd3603dacc2bd0c66251975998ee77384089384c7f47b8b3b339d335b`
-- sha16 (evidence records): `414332acd3603dac`
+- SHA-256: `97628b00d237f9ebc2bd0c66251975998ee77384089384c7f47b8b3b339d335b`
+- sha16 (evidence records): `97628b00d237f9eb`
 - Built from HEAD with `make -j$(nproc)` (reproducible-build law: rebuild
   from the same tree reproduces the same sha16 — re-verified this wave)
 
@@ -39,6 +39,18 @@ Laws ported / implemented on top of the S195 line (all committed):
 | F-NEW-618 | S199 W19a | [F raw-bits element law in the GLES marshal (F-028 dual convention: INT32-stored float element = raw bits; get_object_array_float_element) |
 
 ## Gates at close
-- Goldens 3/3 HOLD (bouncy 8a6c24ac, unote 3b8dcb0a, dooz 31ddd4d5) — evidence/s199/../s188_w18 chain, rerun on 414332acd3603dac
+- Goldens 3/3 HOLD (bouncy 8a6c24ac, unote 3b8dcb0a, dooz 31ddd4d5) — evidence/s199/../s188_w18 chain, rerun on 97628b00d237f9eb
 - Floor 11/11 CLEAN — scripts/s188_w18_floor_rerun.py output
 - gmdice 5-tap interactive regression PRESERVED (5 taps → 5 distinct result states, rerun identical)
+
+
+## NOTE — identity refresh (S199 close)
+The S199 wave made two further source commits after the baseline was
+written (F-NEW-619 typed-view parent chase at the f590 hook; F-NEW-620/
+620b GL_ACTIVE_ATTRIBUTES=3 + glGetActiveAttrib canonical-name law).
+The FINAL canonical S199 binary is 97628b00d237f9eb — goldens 3/3 ALL
+HOLD and floor 11/11 CLEAN re-verified on it (this is the identity all
+future waves compare against). The 619/620 laws did NOT yet move the
+shape-attrib needle (glGetActiveAttrib never dispatched — the
+fetchAttributes loop is gated deeper, at the AndroidGL20 real-native
+path); that remains the named Coder-3 frontier with the evidence above.

@@ -41,3 +41,15 @@ ROUTE_VIOLATION=0 across all S199 runs.
 | Element copier | 4-arg copyJni missing | F-NEW-617 | all Mesh-based GL titles |
 | Float raw bits | INT32-in-[F numeric cast | F-NEW-618 | all Matrix4/uniform apps |
 | 0-cap buffers | capacity<=0 rejected | F-NEW-615 | empty-glyph fonts, 0-dim pixmaps |
+
+
+## NOTE — identity refresh (S199 close)
+The S199 wave made two further source commits after the baseline was
+written (F-NEW-619 typed-view parent chase at the f590 hook; F-NEW-620/
+620b GL_ACTIVE_ATTRIBUTES=3 + glGetActiveAttrib canonical-name law).
+The FINAL canonical S199 binary is 97628b00d237f9eb — goldens 3/3 ALL
+HOLD and floor 11/11 CLEAN re-verified on it (this is the identity all
+future waves compare against). The 619/620 laws did NOT yet move the
+shape-attrib needle (glGetActiveAttrib never dispatched — the
+fetchAttributes loop is gated deeper, at the AndroidGL20 real-native
+path); that remains the named Coder-3 frontier with the evidence above.

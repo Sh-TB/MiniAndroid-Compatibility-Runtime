@@ -1,6 +1,6 @@
 # S199 SQLITE IMPACT — honest scope statement
 
-Recorded: 2026-11-08 20:03 UTC. Binary 414332acd3603dac.
+Recorded: 2026-11-08 20:03 UTC. Binary 97628b00d237f9eb.
 
 ## What is verified
 1. `storage/sqlite_shadow.cpp` is INTEGRATED (links real libsqlite3;
@@ -23,3 +23,15 @@ Recorded: 2026-11-08 20:03 UTC. Binary 414332acd3603dac.
   query/update/delete/txn rollback/cursor/persistence) and the three-DB-
   APK selection from the corpus (notes: TODO-apps and any note/list APKs
   in `upload/canonical_apks/` are the natural candidates; Coder 2 to rank).
+
+
+## NOTE — identity refresh (S199 close)
+The S199 wave made two further source commits after the baseline was
+written (F-NEW-619 typed-view parent chase at the f590 hook; F-NEW-620/
+620b GL_ACTIVE_ATTRIBUTES=3 + glGetActiveAttrib canonical-name law).
+The FINAL canonical S199 binary is 97628b00d237f9eb — goldens 3/3 ALL
+HOLD and floor 11/11 CLEAN re-verified on it (this is the identity all
+future waves compare against). The 619/620 laws did NOT yet move the
+shape-attrib needle (glGetActiveAttrib never dispatched — the
+fetchAttributes loop is gated deeper, at the AndroidGL20 real-native
+path); that remains the named Coder-3 frontier with the evidence above.

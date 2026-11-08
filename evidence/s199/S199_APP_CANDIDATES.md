@@ -1,7 +1,7 @@
 # S199 APP CANDIDATES — evaluated on the S199 binary
 
 Recorded: 2026-11-08 20:03 UTC. All candidates below are REAL corpus APKs located and
-inspected this wave (no invented names). Depth = observed on 414332acd3603dac.
+inspected this wave (no invented names). Depth = observed on 97628b00d237f9eb.
 
 | App | APK | Architecture | Observed depth this wave | Blocks |
 |---|---|---|---|---|
@@ -25,3 +25,15 @@ inspected this wave (no invented names). Depth = observed on 414332acd3603dac.
 
 Interpretation vs facts: the "blocks" column records observed first
 divergences only; nothing here is a completion claim.
+
+
+## NOTE — identity refresh (S199 close)
+The S199 wave made two further source commits after the baseline was
+written (F-NEW-619 typed-view parent chase at the f590 hook; F-NEW-620/
+620b GL_ACTIVE_ATTRIBUTES=3 + glGetActiveAttrib canonical-name law).
+The FINAL canonical S199 binary is 97628b00d237f9eb — goldens 3/3 ALL
+HOLD and floor 11/11 CLEAN re-verified on it (this is the identity all
+future waves compare against). The 619/620 laws did NOT yet move the
+shape-attrib needle (glGetActiveAttrib never dispatched — the
+fetchAttributes loop is gated deeper, at the AndroidGL20 real-native
+path); that remains the named Coder-3 frontier with the evidence above.
