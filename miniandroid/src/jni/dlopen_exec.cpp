@@ -1020,7 +1020,21 @@ static double jni_GetStaticDoubleField(void*, void*, void* fieldID) {
 // snapshot hook fills the box on first demand; NewDirectByteBuffer boxes
 // wrap native memory the library handed us (identity stays stable).
 void* jni_NewDirectByteBuffer(void*, void* address, int64_t capacity) {
-    if (!address || capacity <= 0) return nullptr;
+    // ── S199 W19a F-NEW-615 — ZERO-CAPACITY DIRECT BUFFER VALIDITY law ──
+    // AOSP/ART (OpenJDK Bits.reserveMemory / DirectByteBuffer(int, long)):
+    // a direct ByteBuffer of capacity 0 is WELL-FORMED (non-null, pos=lim=
+    // cap=0) as long as the address is non-null. Live face (tictactoe,
+    // S199): the first glyph generated from Roboto-Medium is SPACE (0x20)
+    // — an EMPTY outline — FT_Glyph_To_Bitmap succeeds with rows=width=
+    // pitch=0; gdx2d_new(0,0) (real libgdx.so, disasm 0x11720: NO w/h
+    // validation, pixels=malloc(0) non-NULL) succeeds; newPixmap calls
+    // NewDirectByteBuffer(pixels, w*h*bpp = 0) and the old
+    // `capacity <= 0 → nullptr` guard answered NULL → Gdx2DPixelPtr null
+    // → Gdx2DPixmap.<init> "Error loading pixmap." → taskFailed →
+    // GdxRuntimeException at AndroidLauncher.onCreate APP BOUNDARY. Real
+    // Android packs the empty space glyph and continues. The same family
+    // covers every 0-dimension pixmap/buffer any native mints.
+    if (!address || capacity < 0) return nullptr;
     DirectBufferBox* b = new DirectBufferBox{address, (size_t)capacity};
     {
         std::lock_guard<std::mutex> lk(g_direct_buffer_mu);  // F-NEW-594

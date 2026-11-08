@@ -51458,7 +51458,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ints in order = [srcOffset, numBytes, dstOffset].
     // ────────────────────────────────────────────────────────────────────────
     if (class_name == "Lcom/badlogic/gdx/utils/BufferUtils;" &&
-        method == "copyJni" && args.size() >= 5) {
+        method == "copyJni" && args.size() >= 4) {
         // structural arg resolution
         std::vector<uint32_t> c582_objs;   // heap ids of object args (in order)
         std::vector<int32_t> c582_ints;    // int args (in order)
@@ -51529,18 +51529,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     return -1;
                 }
                 // buffer: real memory first, then the lazy field store
-                auto dv = heap_.get_object_field(c582_src, "__bb_direct__");
-                if (dv.has_value() && dv->type == DalvikType::INT64 &&
-                    dv->long_val != 0) {
-                    unsigned char* mem =
-                        reinterpret_cast<unsigned char*>((uintptr_t)dv->long_val);
-                    auto cv = heap_.get_object_field(c582_src,
-                                                     "__bb_direct_cap__");
-                    int32_t dcap = (cv.has_value() &&
-                                    cv->type == DalvikType::INT32)
-                                       ? cv->int_val
-                                       : 0;
-                    if (dcap == 0 || k < dcap) return (int)mem[k];
+                // (F-NEW-616d: __bb_addr__ native-mint form first, then
+                // __bb_direct__ engine-mint form — one identity).
+                {
+                    int32_t dcap = 0;
+                    unsigned char* mem = nullptr;
+                    auto av = heap_.get_object_field(c582_src, "__bb_addr__");
+                    if (av.has_value() && av->type == DalvikType::INT64 &&
+                        av->long_val != 0) {
+                        auto cv2 = heap_.get_object_field(c582_src, "__bb_cap__");
+                        dcap = (cv2.has_value() &&
+                                cv2->type == DalvikType::INT32)
+                                   ? cv2->int_val
+                                   : 0;
+                        mem = reinterpret_cast<unsigned char*>(
+                            (uintptr_t)av->long_val);
+                        if (dcap == 0 || k < dcap) return (int)mem[k];
+                    }
+                    auto dv = heap_.get_object_field(c582_src, "__bb_direct__");
+                    if (dv.has_value() && dv->type == DalvikType::INT64 &&
+                        dv->long_val != 0) {
+                        mem = reinterpret_cast<unsigned char*>(
+                            (uintptr_t)dv->long_val);
+                        auto cv = heap_.get_object_field(c582_src,
+                                                         "__bb_direct_cap__");
+                        dcap = (cv.has_value() &&
+                                cv->type == DalvikType::INT32)
+                                   ? cv->int_val
+                                   : 0;
+                        if (dcap == 0 || k < dcap) return (int)mem[k];
+                    }
                 }
                 auto bv = heap_.get_object_field(
                     c582_src, "__bb_b" + std::to_string(k) + "__");
@@ -51554,18 +51572,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return -1;
             };
             // dst byte write: real memory + field store mirror
+            // (F-NEW-616d: __bb_addr__ native-mint form first, then
+            // __bb_direct__ engine-mint form — one identity).
             auto c582_dst_byte = [&](int32_t k, int v) {
+                int32_t dcap = 0;
+                unsigned char* mem = nullptr;
+                auto av = heap_.get_object_field(c582_dst, "__bb_addr__");
+                if (av.has_value() && av->type == DalvikType::INT64 &&
+                    av->long_val != 0) {
+                    auto cv2 = heap_.get_object_field(c582_dst, "__bb_cap__");
+                    dcap = (cv2.has_value() &&
+                            cv2->type == DalvikType::INT32)
+                               ? cv2->int_val
+                               : 0;
+                    mem = reinterpret_cast<unsigned char*>(
+                        (uintptr_t)av->long_val);
+                    if (dcap == 0 || k < dcap)
+                        mem[k] = (unsigned char)(v & 0xFF);
+                }
                 auto dv = heap_.get_object_field(c582_dst, "__bb_direct__");
                 if (dv.has_value() && dv->type == DalvikType::INT64 &&
                     dv->long_val != 0) {
-                    unsigned char* mem =
-                        reinterpret_cast<unsigned char*>((uintptr_t)dv->long_val);
+                    mem = reinterpret_cast<unsigned char*>(
+                        (uintptr_t)dv->long_val);
                     auto cv = heap_.get_object_field(c582_dst,
                                                      "__bb_direct_cap__");
-                    int32_t dcap = (cv.has_value() &&
-                                    cv->type == DalvikType::INT32)
-                                       ? cv->int_val
-                                       : 0;
+                    dcap = (cv.has_value() &&
+                            cv->type == DalvikType::INT32)
+                               ? cv->int_val
+                               : 0;
                     if (dcap == 0 || k < dcap)
                         mem[k] = (unsigned char)(v & 0xFF);
                 }
@@ -51584,6 +51619,147 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                           << "@+" << c582_src_off << " dst=o" << c582_dst
                           << "@+" << c582_dst_off << " num=" << c582_num
                           << std::endl;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── S199 W19a F-NEW-617 — the 4-arg ELEMENT-copier family ───────
+        // copyJni([X, Buffer dst, int numElements, int srcOffset) — the
+        // shape Mesh.setVertices rides (VertexBufferObject.setVertices →
+        // BufferUtils.copy([F, Buffer, I, I) → copyJni([F Buffer I I)).
+        // REAL native (libgdx.so 0x67f0 disasm): memcpy(
+        //   GetDirectBufferAddress(dst),             ← dst BASE, position
+        //   critical(src) + (size_t)srcOffset*esz,   ← src elem offset
+        //   (size_t)numElements*esz);                ← elem count
+        // dst position is IGNORED (the Java caller resets it to 0 after).
+        // The pre-617 law only handled the 5-arg byte form (3 ints); the
+        // 4-arg form fell to the native precedence whose Object-variant
+        // symbol pattern missed the element copiers — the mesh vertex data
+        // never entered the buffer and every SpriteBatch/ImmediateMode
+        // draw rasterized the zeroed vertex buffer (tictactoe white frame).
+        if (c582_objs.size() >= 2 && c582_ints.size() == 2) {
+            uint32_t f617_src = c582_objs[0];
+            uint32_t f617_dst = c582_objs[1];
+            int32_t f617_num = c582_ints[0];
+            int32_t f617_off = c582_ints[1];
+            if (f617_num < 0 || f617_off < 0) {
+                throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                               "copyJni negative offset/length",
+                               "f617-copy-neg");
+                return true;
+            }
+            // src element size from the array descriptor
+            int32_t esz4 = 4;
+            std::string scls4;
+            if (heap_.get_object_class(f617_src, scls4)) {
+                if (scls4 == "[B") esz4 = 1;
+                else if (scls4 == "[C" || scls4 == "[S") esz4 = 2;
+                else if (scls4 == "[J" || scls4 == "[D") esz4 = 8;
+                else esz4 = 4;  // [I, [F
+            }
+            // dst REAL memory: chase the view parent chain (AOSP
+            // GetDirectBufferAddress on a view answers the parent base).
+            auto f617_dst_mem = [&](int32_t* dcap) -> unsigned char* {
+                uint32_t cur = f617_dst;
+                for (int hop = 0; hop < 4 && cur != 0; ++hop) {
+                    if (!heap_.has_object(cur)) return nullptr;
+                    auto av = heap_.get_object_field(cur, "__bb_addr__");
+                    if (av.has_value() && av->type == DalvikType::INT64 &&
+                        av->long_val != 0) {
+                        auto cv2 = heap_.get_object_field(cur, "__bb_cap__");
+                        if (dcap)
+                            *dcap = (cv2.has_value() &&
+                                     cv2->type == DalvikType::INT32)
+                                        ? cv2->int_val
+                                        : 0;
+                        return reinterpret_cast<unsigned char*>(
+                            (uintptr_t)av->long_val);
+                    }
+                    auto dv = heap_.get_object_field(cur, "__bb_direct__");
+                    if (dv.has_value() && dv->type == DalvikType::INT64 &&
+                        dv->long_val != 0) {
+                        auto cv = heap_.get_object_field(cur,
+                                                         "__bb_direct_cap__");
+                        if (dcap)
+                            *dcap = (cv.has_value() &&
+                                     cv->type == DalvikType::INT32)
+                                        ? cv->int_val
+                                        : 0;
+                        return reinterpret_cast<unsigned char*>(
+                            (uintptr_t)dv->long_val);
+                    }
+                    uint32_t par = 0;
+                    if (auto pv = heap_.get_object_field(cur, "__bb_parent__");
+                        pv.has_value() && pv->type == DalvikType::OBJECT_REF)
+                        cur = pv->object_id;
+                    else
+                        break;
+                }
+                return nullptr;
+            };
+            int32_t dcap4 = 0;
+            unsigned char* dmem = f617_dst_mem(&dcap4);
+            // element reader: any numeric array-element storage → esz4
+            // little-endian raw bytes (the FLOAT32 arm is the live face —
+            // ImmediateModeRenderer20/SpriteBatch vertices are [F).
+            auto f617_elem_bytes = [&](int32_t elem, unsigned char* out) {
+                auto bv = heap_.get_object_field(
+                    f617_src, "array[" + std::to_string(elem) + "]");
+                if (!bv.has_value()) { std::memset(out, 0, (size_t)esz4); return; }
+                uint64_t raw = 0;
+                switch (bv->type) {
+                    case DalvikType::BYTE:
+                        raw = (uint64_t)(uint8_t)bv->byte_val; break;
+                    case DalvikType::SHORT:
+                        raw = (uint64_t)(uint16_t)bv->short_val; break;
+                    case DalvikType::CHAR:
+                        raw = (uint64_t)(uint16_t)bv->char_val; break;
+                    case DalvikType::INT32:
+                    case DalvikType::FLOAT32: {
+                        uint32_t u32;
+                        if (bv->type == DalvikType::FLOAT32)
+                            std::memcpy(&u32, &bv->float_val, 4);
+                        else
+                            u32 = (uint32_t)bv->int_val;
+                        raw = u32;
+                        if (esz4 <= 4) break;
+                        raw = u32;
+                        break;
+                    }
+                    case DalvikType::INT64:
+                    case DalvikType::FLOAT64: {
+                        if (bv->type == DalvikType::FLOAT64)
+                            std::memcpy(&raw, &bv->double_val, 8);
+                        else
+                            raw = (uint64_t)bv->long_val;
+                        break;
+                    }
+                    default:
+                        std::memset(out, 0, (size_t)esz4);
+                        return;
+                }
+                for (int32_t b = 0; b < esz4; ++b)
+                    out[b] = (unsigned char)((raw >> (8 * b)) & 0xFF);
+            };
+            std::vector<unsigned char> f617_eb((size_t)esz4, 0);
+            for (int32_t k = 0; k < f617_num; ++k) {
+                f617_elem_bytes(f617_off + k, f617_eb.data());
+                for (int32_t b = 0; b < esz4; ++b) {
+                    int32_t o = k * esz4 + b;
+                    unsigned char v = f617_eb[(size_t)b];
+                    if (dmem && (dcap4 == 0 || o < dcap4))
+                        dmem[o] = v;
+                    heap_.set_object_field(
+                        f617_dst, "__bb_b" + std::to_string(o) + "__",
+                        DalvikValue::make_int(v & 0xFF));
+                }
+            }
+            static std::atomic<uint64_t> s617_copy{0};
+            if (s617_copy.fetch_add(1, std::memory_order_relaxed) < 8)
+                std::cerr << "[F-NEW-617] copyJni4 src=o" << f617_src
+                          << " dst=o" << f617_dst << " num=" << f617_num
+                          << " off=" << f617_off << " esz=" << esz4
+                          << " dmem=" << (void*)dmem << std::endl;
             result = DalvikValue::make_void();
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
@@ -51826,9 +52002,30 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             args[0].object_id != 0) {
             uint32_t bb = args[0].object_id;
             // F-NEW-582 (S196, C3): the buffer's REAL host memory (direct
-            // form) — one identity shared by every reader/writer below.
+            // form). S199 W19a F-NEW-616d: ONE identity, TWO mint paths —
+            // the native-minted form carries the REAL pointer in
+            // __bb_addr__ (+ __bb_cap__ bytes; __bb_direct__ is a mere
+            // FLAG=1 there) and the engine-minted form (allocateDirect /
+            // newDisposableByteBuffer) carries it in __bb_direct__ (+
+            // __bb_direct_cap__). Both must resolve, or the copyJni/put
+            // writers and the GL reader disagree — the tictactoe SpriteBatch
+            // mesh buffer is native-minted, so a __bb_direct__-only reader
+            // wrote the vertices into the field run while GL read the REAL
+            // (still-zeroed) memory.
             auto bb_direct_mem = [&](uint32_t boid, int32_t* dcap)
                 -> unsigned char* {
+                auto av = heap_.get_object_field(boid, "__bb_addr__");
+                if (av.has_value() && av->type == DalvikType::INT64 &&
+                    av->long_val != 0) {
+                    auto cv2 = heap_.get_object_field(boid, "__bb_cap__");
+                    if (dcap)
+                        *dcap = (cv2.has_value() &&
+                                 cv2->type == DalvikType::INT32)
+                                    ? cv2->int_val
+                                    : 0;
+                    return reinterpret_cast<unsigned char*>(
+                        (uintptr_t)av->long_val);
+                }
                 auto dv = heap_.get_object_field(boid, "__bb_direct__");
                 if (!dv.has_value() || dv->type != DalvikType::INT64 ||
                     dv->long_val == 0)
@@ -52308,7 +52505,72 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             auto v_set = [&](const char* f, int32_t val) {
                 heap_.set_object_field(vb, f, DalvikValue::make_int(val));
             };
+            // ── S199 W19a F-NEW-616b — typed-view PARENT-MIRROR identity ──
+            // The GL marshal (F-NEW-616 parent-first) and the real natives
+            // read the PARENT's direct memory; the typed view's field run
+            // must stay the SAME identity. Every element write mirrors into
+            // the parent's real memory at pos*esz (little-endian), every
+            // read serves the parent memory first. Element width = the view
+            // family's esize (kViewFam entry held by vf).
+            // F-NEW-616d: resolve BOTH mint forms (__bb_addr__ native-mint
+            // first, then __bb_direct__ engine-mint).
+            auto v_parent_mem = [&]() -> std::pair<unsigned char*, int32_t> {
+                uint32_t par = 0;
+                if (auto pv = heap_.get_object_field(vb, "__bb_parent__");
+                    pv.has_value() && pv->type == DalvikType::OBJECT_REF)
+                    par = pv->object_id;
+                if (par == 0 || !heap_.has_object(par)) return {nullptr, 0};
+                auto av = heap_.get_object_field(par, "__bb_addr__");
+                if (av.has_value() && av->type == DalvikType::INT64 &&
+                    av->long_val != 0) {
+                    auto cv2 = heap_.get_object_field(par, "__bb_cap__");
+                    int32_t dcap = (cv2.has_value() &&
+                                    cv2->type == DalvikType::INT32)
+                                       ? cv2->int_val
+                                       : 0;
+                    return {reinterpret_cast<unsigned char*>(
+                                (uintptr_t)av->long_val),
+                            dcap};
+                }
+                auto dv = heap_.get_object_field(par, "__bb_direct__");
+                if (!dv.has_value() || dv->type != DalvikType::INT64 ||
+                    dv->long_val == 0)
+                    return {nullptr, 0};
+                auto cv = heap_.get_object_field(par, "__bb_direct_cap__");
+                int32_t dcap = (cv.has_value() &&
+                                cv->type == DalvikType::INT32)
+                                   ? cv->int_val
+                                   : 0;
+                return {reinterpret_cast<unsigned char*>(
+                            (uintptr_t)dv->long_val),
+                        dcap};
+            };
+            auto v_parent_mirror = [&](int32_t elem_idx, int32_t val) {
+                auto [mem, dcap] = v_parent_mem();
+                if (!mem) return;
+                int32_t base = elem_idx * vf->esize;
+                for (int b = 0; b < vf->esize; ++b) {
+                    int32_t o = base + b;
+                    if (dcap == 0 || o < dcap)
+                        mem[o] = (unsigned char)((val >> (8 * b)) & 0xFF);
+                }
+            };
             auto v_elem_get = [&](int32_t i) -> int32_t {
+                // parent real memory first (F-NEW-616b one identity; 616d:
+                // both mint forms)
+                {
+                    auto [mem, dcap] = v_parent_mem();
+                    if (mem) {
+                        int32_t base = i * vf->esize;
+                        if (base >= 0 &&
+                            (dcap == 0 || base + vf->esize <= dcap)) {
+                            int32_t val = 0;
+                            for (int b = 0; b < vf->esize; ++b)
+                                val |= ((int32_t)mem[base + b]) << (8 * b);
+                            return val;
+                        }
+                    }
+                }
                 auto v = heap_.get_object_field(vb, "__bb_b" + std::to_string(i) + "__");
                 return (v.has_value() && v->type == DalvikType::INT32) ? v->int_val : 0;
             };
@@ -52327,6 +52589,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (method == "put" && args.size() == 2 && args[1].type == DalvikType::INT32) {
                 int32_t pos = v_field("__bb_pos__");
                 v_set(("__bb_b" + std::to_string(pos) + "__").c_str(), args[1].int_val);
+                v_parent_mirror(pos, args[1].int_val);
                 if (pos + 1 <= v_field("__bb_lim__")) v_set("__bb_pos__", pos + 1);
                 result = args[0];
                 status = ApiCallTrace::Status::IMPLEMENTED;
@@ -52336,6 +52599,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 args[2].type == DalvikType::INT32) {
                 v_set(("__bb_b" + std::to_string(args[1].int_val) + "__").c_str(),
                       args[2].int_val);
+                v_parent_mirror(args[1].int_val, args[2].int_val);
                 result = args[0];
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;

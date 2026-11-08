@@ -51,8 +51,18 @@ bool read_array_elems(HeapAllocator* heap, uint32_t arr_id,
         out.resize(count * 4);
         for (size_t i = 0; i < count; ++i) {
             float f = 0.f;
-            if (!heap->get_object_float_field(
-                    arr_id, "array[" + std::to_string(i) + "]", f))
+            // ── S199 W19a F-NEW-618 — [F RAW-BITS ELEMENT LAW (F-028) ───
+            // A [F element may sit as FLOAT32 (DEX aput-float) or as
+            // INT32 RAW BITS (engine internals — the W18 primitive-array
+            // commit keeps per-element storage conventions). The
+            // field-level getter NUMERICALLY casts INT32 (for RectF-style
+            // mixed shadows that is right); a TYPED ARRAY element must
+            // BIT-REINTERPRET (Matrix4.val[15] = 1.0f → int32 0x3F800000
+            // → numeric cast answered 1.06535e+09 → u_projTrans m33
+            // corrupt → every vertex clipped → the all-white frame).
+            // get_object_array_float_element implements exactly this.
+            if (!heap->get_object_array_float_element(
+                    arr_id, i, f))
                 return false;
             std::memcpy(out.data() + i * 4, &f, 4);
         }
@@ -107,6 +117,47 @@ bool chase_buffer(HeapAllocator* heap, uint32_t obj_id, uint32_t& arr_out,
         }
     }
     return false;
+}
+
+// ── S199 W19a F-NEW-616c — GL OUT-PARAM PARENT-MIRROR write-back ────────
+// The one-identity law has TWO writer surfaces: the engine (typed put /
+// copyJni) writes the parent direct memory AND the view field run; the GL
+// out-param laws (glGetShaderiv F-NEW-503b, glGetIntegerv, gen* F-NEW-506)
+// wrote ONLY the view field run. With the engine get reading the parent
+// memory first (F-NEW-616b), a field-only write was shadowed by the zeroed
+// parent memory — live face: ShaderProgram.isCompiled() read COMPILE_STATUS
+// 0 from the parent calloc memory → createDefaultShader IAE → onCreate APP
+// BOUNDARY (nondeterministic vs runs where the shader path raced differently).
+// Law: EVERY GL out-param write lands in BOTH surfaces (field run AND the
+// parent's real direct memory, little-endian by element width).
+int gl_view_mirror_write(HeapAllocator* heap, uint32_t holder, int32_t elem_idx,
+                         int32_t val) {
+    if (!heap || holder == 0) return 0;
+    int esz = 4;
+    std::string hcls;
+    if (heap->get_object_class(holder, hcls)) {
+        if (hcls.find("ShortBuffer;") != std::string::npos ||
+            hcls.find("CharBuffer;") != std::string::npos) esz = 2;
+        else if (hcls.find("LongBuffer;") != std::string::npos ||
+                 hcls.find("DoubleBuffer;") != std::string::npos) esz = 8;
+        else if (hcls.find("ByteBuffer;") != std::string::npos) esz = 1;
+    }
+    uint32_t par = 0;
+    if (!heap->get_object_ref_field(holder, "__bb_parent__", par) || par == 0)
+        return esz;
+    int64_t addr = 0;
+    if (!heap->get_object_long_field(par, "__bb_direct__", addr) || addr == 0)
+        return esz;
+    int32_t dcap = 0;
+    heap->get_object_int_field(par, "__bb_direct_cap__", dcap);
+    unsigned char* mem = reinterpret_cast<unsigned char*>((uintptr_t)addr);
+    int32_t base = elem_idx * esz;
+    for (int b = 0; b < esz; ++b) {
+        int32_t o = base + b;
+        if (dcap == 0 || o < dcap)
+            mem[o] = (unsigned char)(((uint32_t)val >> (8 * b)) & 0xFF);
+    }
+    return esz;
 }
 
 // AOSP GLES20 array+offset overloads: glUniform{1,2,3,4}{f,i}v and
@@ -211,12 +262,33 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
                 size_t esz = 1;
                 void* dbuf_addr = nullptr;
                 int32_t dbuf_cap = 0;
-                bool have_direct = is_buffer &&
-                    nativeexec::lookup_direct_buffer(a.object_id, &dbuf_addr,
-                                                     &dbuf_cap);
-                if (!have_direct && is_buffer) {
-                    // typed view: chase __bb_parent__ to the byte receiver
-                    uint32_t par = 0;
+                // ── S199 W19a F-NEW-616 — TYPED-VIEW PARENT-FIRST RESOLUTION
+                // law ────────────────────────────────────────────────────
+                // A typed view (FloatBuffer/ShortBuffer/…) over a direct
+                // parent MUST chase __bb_parent__ FIRST. The pre-616 order
+                // looked up the view oid itself first: the f590 hook's
+                // snapshot leg "succeeded" on the view — it packs the
+                // view's OWN __bb_b<i>__ field run (ELEMENT-indexed, never
+                // filled when the data was written through the parent's
+                // REAL direct memory by copyJni/put — one identity, one
+                // writer) into a FRESH zeroed malloc. Live face (tictactoe,
+                // S199): the three SpriteBatch attribute binds received
+                // three DIFFERENT zeroed snapshot pointers (attrib0
+                // v0=0.000, sb_frag color=0,000 uv=garbage) — triangles
+                // rasterized fully transparent over the white clear →
+                // white frame. Parent-first serves the ONE real vertex
+                // buffer with the view position in ELEMENT units.
+                bool is_typed_view = is_buffer &&
+                    ocls.find("ByteBuffer;") == std::string::npos &&
+                    (ocls.find("FloatBuffer;") != std::string::npos ||
+                     ocls.find("IntBuffer;") != std::string::npos ||
+                     ocls.find("ShortBuffer;") != std::string::npos ||
+                     ocls.find("CharBuffer;") != std::string::npos ||
+                     ocls.find("LongBuffer;") != std::string::npos ||
+                     ocls.find("DoubleBuffer;") != std::string::npos);
+                bool have_direct = false;
+                uint32_t par = 0;
+                if (is_typed_view) {
                     if (heap->get_object_ref_field(a.object_id,
                                                    "__bb_parent__", par) &&
                         par != 0 &&
@@ -229,11 +301,25 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
                             {"FloatBuffer;", 4}, {"IntBuffer;", 4},
                             {"ShortBuffer;", 2}, {"CharBuffer;", 2},
                             {"LongBuffer;", 8}, {"DoubleBuffer;", 8},
-                            {"ByteBuffer;", 1},
                         };
                         for (const auto& ve : kViewEsz)
                             if (ocls.find(ve.n) != std::string::npos)
                                 { esz = ve.e; break; }
+                    }
+                }
+                if (!have_direct && is_buffer)
+                    have_direct = nativeexec::lookup_direct_buffer(
+                        a.object_id, &dbuf_addr, &dbuf_cap);
+                if (!have_direct && is_buffer && !is_typed_view) {
+                    // byte-buffer form: chase __bb_parent__ (element size 1)
+                    if (heap->get_object_ref_field(a.object_id,
+                                                   "__bb_parent__", par) &&
+                        par != 0 &&
+                        nativeexec::lookup_direct_buffer(par, &dbuf_addr,
+                                                         &dbuf_cap)) {
+                        have_direct = true;
+                        owner = par;
+                        esz = 1;
                     }
                 }
                 if (have_direct && dbuf_addr) {
@@ -357,8 +443,10 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
         const uint32_t buf = ctx.args[1].object_id;
         for (const auto& q : kGlQuery) {
             if (q.pname != pname) continue;
-            if (heap && buf != 0)
+            if (heap && buf != 0) {
                 heap->set_object_int_field(buf, "__bb_b0__", q.val);
+                gl_view_mirror_write(heap, buf, 0, q.val);  // F-NEW-616c
+            }
             gfx::GfxTrace::instance().gl_call(
                 "GLES20", ctx.method, true, (int)ctx.args.size(),
                 "state-query-into-buffer");
@@ -396,8 +484,10 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
         const uint32_t buf = ctx.args[2].object_id;
         for (const auto& q : kGlSiv) {
             if (q.pname != pname) continue;
-            if (heap && buf != 0)
+            if (heap && buf != 0) {
                 heap->set_object_int_field(buf, "__bb_b0__", q.val);
+                gl_view_mirror_write(heap, buf, 0, q.val);  // F-NEW-616c
+            }
             gfx::GfxTrace::instance().gl_call(
                 "GLES20", ctx.method, true, (int)ctx.args.size(),
                 "shader-status-query-into-buffer");
@@ -460,11 +550,14 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
             } else {
                 // Buffer-view holder: __bb_b<i>__ element run (F-NEW-463
                 // identity — the typed-view get reads the same slots).
+                // F-NEW-616c: mirror each element into the parent's REAL
+                // direct memory too (one identity, both writer surfaces).
                 for (size_t ei = 0; ei * 4 < bytes.size(); ++ei) {
                     int32_t v = 0;
                     std::memcpy(&v, bytes.data() + ei * 4, 4);
                     heap->set_object_int_field(
                         holder, "__bb_b" + std::to_string(ei) + "__", v);
+                    gl_view_mirror_write(heap, holder, (int32_t)ei, v);
                 }
             }
             break;  // the first OBJECT arg is the out-param holder

@@ -1,0 +1,22 @@
+{
+ "binary_sha16": "de7378933a34289f",
+ "wall_s": 3.2,
+ "uncaught": 0,
+ "app_boundary": 0,
+ "frame_analysis": [
+  "DEFAULT_BACKGROUND_ONLY",
+  "DEFAULT_BACKGROUND_ONLY"
+ ],
+ "s186i_stubs": 40,
+ "f588_replaceAll": 6,
+ "f589_stack": 22,
+ "f582_alloc": 8,
+ "f582b_copy": 8,
+ "f582_lookup": 0,
+ "npe_asset_load": 0,
+ "gdice": null,
+ "first_divergence": null,
+ "face": "/home/z/my-project/evidence/s199/face_ttt_s199_probe_r1.jpg",
+ "unique_colors": 1,
+ "depth_err": "unsupported operand type(s) for /: 'tuple' and 'int'"
+}
