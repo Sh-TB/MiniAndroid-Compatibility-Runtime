@@ -1,7 +1,7 @@
 {
   "activity": "cos.premy.mines.MainActivity",
   "apk_package": "cos.premy.mines",
-  "duration_ms": 845,
+  "duration_ms": 829,
   "events_retained": 25,
   "events_total": 25,
   "first_divergence": null,
@@ -72,52 +72,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 1976,
+        "pid": 10061,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w18/floor_rerun/runs/store_cos.premy.mines/data/app/cos.premy.mines/base.apk",
       "thread": "main",
-      "ts_ms": 1794151886151
+      "ts_ms": 1794167845088
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "cos.premy.mines",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=cos.premy.mines",
       "thread": "main",
-      "ts_ms": 1794151886154
+      "ts_ms": 1794167845091
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "cos.premy.mines",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=cos.premy.mines.MainActivity",
       "thread": "main",
-      "ts_ms": 1794151886154
+      "ts_ms": 1794167845091
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "cos.premy.mines",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=2320 methods=25835",
       "thread": "main",
-      "ts_ms": 1794151886246
+      "ts_ms": 1794167845181
     },
     {
       "component": "boot",
@@ -127,24 +127,24 @@
       },
       "package": "cos.premy.mines",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794151886266
+      "ts_ms": 1794167845201
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "cos.premy.mines",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=2320",
       "thread": "main",
-      "ts_ms": 1794151886266
+      "ts_ms": 1794167845201
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -152,12 +152,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "cos.premy.mines",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "cos.premy.mines.MainActivity",
       "thread": "main",
-      "ts_ms": 1794151886275
+      "ts_ms": 1794167845210
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -165,12 +165,12 @@
       "event": "APPLICATION_CREATE",
       "package": "cos.premy.mines",
       "result": "PENDING",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794151886275
+      "ts_ms": 1794167845210
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -206,12 +206,12 @@
       },
       "package": "cos.premy.mines",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794151886358
+      "ts_ms": 1794167845291
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -219,12 +219,12 @@
       "event": "RENDER_START",
       "package": "cos.premy.mines",
       "result": "PENDING",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 10,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794151886468
+      "ts_ms": 1794167845395
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -232,12 +232,12 @@
       "event": "VIEWTREE_CREATED",
       "package": "cos.premy.mines",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 11,
       "sev": "CONFIRMED",
       "state": "root_id=128",
       "thread": "main",
-      "ts_ms": 1794151886468
+      "ts_ms": 1794167845395
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -247,12 +247,12 @@
       "provenance": "stage_render_frame default walk",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 12,
       "sev": "RENDERER",
       "state": "CLASSIC_CANVAS",
       "thread": "main",
-      "ts_ms": 1794151886468
+      "ts_ms": 1794167845395
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -261,12 +261,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 13,
       "sev": "CONFIRMED",
       "state": "nonwhite=1900425 total=2073600 app_ops=7 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794151886546
+      "ts_ms": 1794167845472
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -275,12 +275,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794151886546
+      "ts_ms": 1794167845472
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -293,12 +293,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 15,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794151886621
+      "ts_ms": 1794167845547
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -320,12 +320,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 16,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794151886648
+      "ts_ms": 1794167845575
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -373,12 +373,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 17,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794151886648
+      "ts_ms": 1794167845575
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -387,12 +387,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 18,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794151886700
+      "ts_ms": 1794167845627
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -401,12 +401,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 19,
       "sev": "CONFIRMED",
       "state": "root_id=128",
       "thread": "main",
-      "ts_ms": 1794151886700
+      "ts_ms": 1794167845627
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -415,12 +415,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 20,
       "sev": "CONFIRMED",
       "state": "nonwhite=1900425 total=2073600 app_ops=7 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794151886788
+      "ts_ms": 1794167845714
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -429,12 +429,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 21,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794151886788
+      "ts_ms": 1794167845714
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -447,12 +447,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794151886862
+      "ts_ms": 1794167845788
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -474,12 +474,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 23,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794151886888
+      "ts_ms": 1794167845814
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -527,12 +527,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 24,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794151886888
+      "ts_ms": 1794167845814
     },
     {
       "activity": "cos.premy.mines.MainActivity",
@@ -544,12 +544,12 @@
       "package": "cos.premy.mines",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1794151886151-1",
+      "run_id": "1794167845088-1",
       "seq": 25,
       "sev": "FAILURE",
       "state": "Execution completed successfully [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 9807 IMPLEMENTED, 69 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
       "thread": "main",
-      "ts_ms": 1794151886996
+      "ts_ms": 1794167845916
     }
   ],
   "last_exception": {
@@ -562,18 +562,18 @@
     "package": "cos.premy.mines",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1794151886151-1",
+    "run_id": "1794167845088-1",
     "seq": 25,
     "sev": "FAILURE",
     "state": "Execution completed successfully [F-016 exception-honesty: 3 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 9807 IMPLEMENTED, 69 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
     "thread": "main",
-    "ts_ms": 1794151886996
+    "ts_ms": 1794167845916
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1794151886151-1",
+  "run_id": "1794167845088-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261108-153126-7239",
+  "session_id": "EXP-001-20261108-195725-6309",
   "severity_census": {
     "CONFIRMED": 15,
     "FAILURE": 1,

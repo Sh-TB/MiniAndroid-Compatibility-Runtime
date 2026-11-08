@@ -8600,3 +8600,52 @@ S198c typed-view setters re-implementation → rebuild → tictactoe
 raster re-check; floor-11 + C8 97/97 probe on the integration binary;
 C4 W17 (F-C4-631) intake; C7 W5–W7-first dependency-ordered intake.
 Standing: W19a FT bitmap-render leg; W19b halma properties line-parse.
+
+S199 — SHARED EXECUTION CHAIN: S196+S198c PORT, W19a GL IDENTITY FAMILY,
+FIRST REAL GLYPHS IN THE TICTACTOE FRAMEBUFFER
+
+Directive: MAIN RUNTIME INTEGRATION CODER S199 (continuation of S195).
+P0 executed first (mission §11): the canonical binary advanced
+31be843614e67bab → 414332acd3603dac (89682811).
+
+PORTED (reconstruct-hash-verify discipline; C3's S196 reconstruction
+9ee750b21afe89a0 as the source, adapted where this line superseded):
+- F-NEW-580/580b String identity-form normalization at both boundaries
+  (bridge_to_api args_raw + alias; S100 String block heap-String read).
+- F-NEW-582 family: allocateDirect/newDisposableByteBuffer REAL calloc
+  backing + put/get mirrors + put([B)/put(ByteBuffer)/get([B) + copyJni
+  5-arg. Registration = the f590 engine hook (ONE registry — C3's
+  separate register_direct_buffer() surface intentionally NOT recreated).
+- F-NEW-588 heap-String replace family (replaceAll regex law — the
+  AssetDescriptor.fileName null root), F-NEW-589 Stack LIFO (the
+  AssetManager taskQueue root), F-NEW-587 glGetString GL_EXTENSIONS.
+- F-NEW-610 typed-view position(int)/limit(int) setters (from the
+  truncated S198c tail; defect #557 6725597246 recorded).
+- F-NEW-581 recorded SUPERSEDED (S183/B1 host-native-first covers the
+  NOT-EXTRACTED shape).
+
+W19a (S199 additions, each pinned to a first divergence in the run logs):
+615 zero-cap direct buffers; 616 typed-view parent-first GL marshal;
+616b/616c/616d the one-identity family (two writer surfaces, two mint
+forms); 617 the 4-arg element copier (Mesh.setVertices rides it; real
+native disasm 0x67f0); 618 the [F raw-bits element law (F-028) in the
+GLES marshal.
+
+RESULT (honest, mission §13): tictactoe went from the AssetManager.load
+NPE death to 0 uncaught / 0 APP BOUNDARY, 54 GL frames, TOUCH consumed,
+async font load complete, and the FIRST REAL APP CONTENT IN THE
+FRAMEBUFFER (two FreeType-rendered black arrow glyphs, AA grays —
+evidence/s199/face_ttt_first_glyphs.png sha16 fc0997a63f3b2dec). The
+board-render gap is named and owned: shape-renderer VBO attribute bind
+(attrib0=(nil)) + per-frame re-render. Target A (microtimer) recorded
+with the cleanest cohort profile (0/0/REAL_APP_CONTENT); its core-feature
+acceptance script is the next P1 gate. END-TO-END-VERIFIED is NOT claimed
+for either target this wave.
+
+GATES: goldens 3/3 ALL HOLD, floor 11/11 CLEAN, gmdice 5-tap PRESERVED
+(5 states, rerun identical) — all on 414332acd3603dac.
+
+DELIVERABLES: evidence/s199/S199_*.md (9 documents) + this entry.
+NEXT: Coder-3 assignment (shape attribs + per-frame re-render) →
+tictactoe board render → the §4.1 A–M acceptance scripts for
+microtimer + tictactoe → C8 97/97 on 414332acd3603dac → SQLite battery.

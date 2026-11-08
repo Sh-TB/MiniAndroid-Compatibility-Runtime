@@ -1,0 +1,24 @@
+{
+  "package": "dubrowgn.microtimer",
+  "versionName": "1.8",
+  "versionCode": 8,
+  "mainActivity": "dubrowgn.microtimer.MainActivity",
+  "minSdk": "28",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.USE_FULL_SCREEN_INTENT",
+    "android.permission.VIBRATE",
+    "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+    "android.permission.SCHEDULE_EXACT_ALARM",
+    "android.permission.USE_EXACT_ALARM",
+    "dubrowgn.microtimer.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/dubrowgn.microtimer/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s199/battery/runs/store_microtimer_s199_r1/data/app/dubrowgn.microtimer/base.apk",
+  "apkSha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+  "apkSize": 208895,
+  "installedAt": "2026-11-08T20:01:09Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

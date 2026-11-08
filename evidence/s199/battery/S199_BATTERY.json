@@ -1,0 +1,62 @@
+{
+ "binary_sha16": "414332acd3603dac",
+ "runs": [
+  {
+   "app": "microtimer",
+   "tag": "microtimer_s199_r1",
+   "status": "OK",
+   "dpkg": "dubrowgn.microtimer",
+   "wall_s": 0.5,
+   "apk_sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+   "binary_sha16": "414332acd3603dac",
+   "uncaught": 0,
+   "app_boundary": 0,
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "depth": {
+    "err": "unsupported operand type(s) for /: 'tuple' and 'int'"
+   },
+   "face": "/home/z/my-project/evidence/s199/battery/face_microtimer_s199_r1.jpg"
+  },
+  {
+   "app": "opencalc",
+   "tag": "opencalc_s199_r1",
+   "status": "OK",
+   "dpkg": "com.darkempire78.opencalculator",
+   "wall_s": 1.0,
+   "apk_sha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+   "binary_sha16": "414332acd3603dac",
+   "uncaught": 0,
+   "app_boundary": 1,
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "depth": {
+    "err": "unsupported operand type(s) for /: 'tuple' and 'int'"
+   },
+   "face": "/home/z/my-project/evidence/s199/battery/face_opencalc_s199_r1.jpg"
+  },
+  {
+   "app": "chessclock",
+   "tag": "chessclock_s199_r1",
+   "status": "OK",
+   "dpkg": "com.chessclock.android",
+   "wall_s": 0.5,
+   "apk_sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+   "binary_sha16": "414332acd3603dac",
+   "uncaught": 0,
+   "app_boundary": 1,
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "depth": {
+    "err": "unsupported operand type(s) for /: 'tuple' and 'int'"
+   },
+   "face": "/home/z/my-project/evidence/s199/battery/face_chessclock_s199_r1.jpg"
+  }
+ ]
+}

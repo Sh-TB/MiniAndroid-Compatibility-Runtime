@@ -1,0 +1,21 @@
+{
+  "package": "com.darkempire78.opencalculator",
+  "versionName": "3.2.0",
+  "versionCode": 53,
+  "mainActivity": "com.darkempire78.opencalculator.activities.MainActivity",
+  "minSdk": "21",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.VIBRATE",
+    "android.permission.SYSTEM_ALERT_WINDOW",
+    "android.permission.USE_FULL_SCREEN_INTENT",
+    "com.darkempire78.opencalculator.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.darkempire78.opencalculator/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s199/battery/runs/store_opencalc_s199_r1/data/app/com.darkempire78.opencalculator/base.apk",
+  "apkSha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+  "apkSize": 2359134,
+  "installedAt": "2026-11-08T20:01:10Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}
