@@ -692,7 +692,25 @@ CallResult GLSurfaceViewShadow::dispatch_gl_body(const CallContext& ctx,
     if (m == "glBlendFunc") { glBlendFunc(gles::pgl_from_spec(i(0)), gles::pgl_from_spec(i(1))); return CallResult::handled_void(); }  // F-NEW-607 (S198, C3)
     if (m == "glFlush") return CallResult::handled_void();
     if (m == "glGetError") return CallResult::handled_int(0);
-    if (m == "glGetString") return CallResult::handled_string("PortableGL 0.101 (MiniAndroid software GL)");
+    // ── F-NEW-587 (S196, C3): GLES20.glGetString law ────────────────────
+    // AOSP GLES20.glGetString(name): the Android GLES2 driver answers
+    // GL_EXTENSIONS (0x1F03) with the real extension list (real Android
+    // drivers do — libGDX AndroidGraphics.supportsExtension READS it and
+    // every gdx texture-init path rides the answer). PortableGL carries
+    // its own GL_EXTENSIONS too. The GL10 shadow body answered glGetString
+    // but the GLES20 static adapter did NOT — the GLTexture.<clinit>
+    // supportsExtension read NULL → String.contains NPE → onCreate
+    // APP-BOUNDARY death. Version/Renderer/Vendor get the same PortableGL
+    // identity string (one GL — one identity).
+    if (m == "glGetString") {
+        if (!ctx.args.empty() && ctx.args[0].kind == CallContext::Arg::Kind::INT &&
+            (uint32_t)ctx.args[0].int_val == 0x1F03u) {
+            return CallResult::handled_string(
+                "GL_OES_texture_npot GL_OES_compressed_ETC1_RGB8_texture "
+                "GL_OES_standard_derivatives GL_EXT_texture_filter_anisotropic");
+        }
+        return CallResult::handled_string("PortableGL 0.101 (MiniAndroid software GL)");
+    }
     // ES1 fixed-function ops (glColor4f/glMatrixMode/glOrthof/glVertexPointer/
     // glDrawArrays-with-client-arrays...) have NO core-GL equivalent — they
     // fall through so the engine records the honest REC-MISS. The software

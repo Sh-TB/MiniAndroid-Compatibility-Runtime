@@ -767,6 +767,44 @@ bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
                       << " (no copy)" << std::endl;
         return true;
     }
+    // ── S196 F-NEW-582 (C3, S199 integration): the ENGINE-MINTED direct
+    // fast path ─────────────────────────────────────────────────────────
+    // allocateDirect/newDisposableByteBuffer minted a REAL calloc'd backing
+    // and stored it in __bb_direct__ (+ __bb_direct_cap__). Serve the REAL
+    // pointer verbatim — same identity law as the __bb_addr__ path above:
+    // the put/get mirror laws, BufferUtils.copyJni and the FreeType natives
+    // all read/write THIS memory, so a snapshot copy would hand GL a
+    // different (stale/zero) buffer than the one the app filled. This is
+    // the ONE shared registry on this line: C3's S196 engine-mint path and
+    // the W18 native-mint path both answer through this hook (S195 audit
+    // integration decision — no second registry).
+    {
+        auto dv = heap.get_object_field(oid, "__bb_direct__");
+        if (dv.has_value() && dv->type == DalvikType::INT64 &&
+            dv->long_val != 0) {
+            auto cv2 = heap.get_object_field(oid, "__bb_direct_cap__");
+            int32_t dcap = (cv2.has_value() && cv2->type == DalvikType::INT32)
+                               ? cv2->int_val
+                               : 0;
+            if (dcap < 0) dcap = 0;
+            if (dcap <= (16 << 20)) {
+                *addr = (void*)(uintptr_t)dv->long_val;
+                *cap = (size_t)dcap;
+                static thread_local uint64_t n = 0;
+                if (n++ < 8)
+                    std::cerr << "[F-NEW-582] direct-buffer oid=" << oid
+                              << " served REAL engine-mem addr=" << *addr
+                              << " cap=" << dcap << " (no copy)" << std::endl;
+                return true;
+            }
+            static thread_local uint64_t n2 = 0;
+            if (n2++ < 4)
+                std::cerr << "[F-NEW-582] direct-buffer oid=" << oid
+                          << " cap=" << dcap << " exceeds the 16MB bound — "
+                             "answering honestly (no buffer)" << std::endl;
+            return false;
+        }
+    }
     auto cap_v = heap.get_object_field(oid, "__bb_cap__");
     int32_t bcap = (cap_v.has_value() && cap_v->type == DalvikType::INT32)
                        ? cap_v->int_val : 0;
@@ -35236,13 +35274,47 @@ void DalvikExecutionEngine::c7_service_bring_down(ServiceInstance& svc,
 
 bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::string& method,
-                                          const std::vector<DalvikValue>& args,
+                                          const std::vector<DalvikValue>& args_raw,
                                           DalvikValue& result,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
     bridge_census_init();
     BridgeCensusGuard c97_census_guard;
     if (bridge_census().on) c97_census_guard.begin(class_name, method);
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-580b (S196, C3) — String receiver identity-form normalization at
+    // the bridge boundary (the ONE chokepoint every String-method law
+    // funnels through — 5 invoke sites route here). A String may arrive as
+    // a HEAP OBJECT: the new-instance→<init> identity law keeps the
+    // caller's OBJECT_REF register alive and stores the content under
+    // __string_value__ (the new String(buf,0,offset) product inside
+    // PropertiesUtils.load is exactly this form). Every String-family law
+    // downstream reads args[0] as STRING_REF; without normalization the
+    // receiver read "" — the S186 "identity-form hole" family (File.toString
+    // at bridge layer), now proven a THIRD time for substring
+    // (SIOOBE length=0; begin=0; end=4 at PropertiesUtils.load pc=59 —
+    // tictactoe_3 wall, after getChars + String(char[],off,len) landed).
+    // libcore semantics are identical for both forms; normalize ONCE here —
+    // zero app-specific branches. The vector copy happens ONLY for the
+    // heap-String receiver shape; every other call keeps the zero-cost alias.
+    // ────────────────────────────────────────────────────────────────────────
+    std::vector<DalvikValue> f580_args_storage;
+    if (class_name == "Ljava/lang/String;" && !args_raw.empty() &&
+        args_raw[0].type == DalvikType::OBJECT_REF &&
+        args_raw[0].object_id != 0 &&
+        heap_.has_object(args_raw[0].object_id)) {
+        auto f580_sv = heap_.get_object_field(args_raw[0].object_id,
+                                              "__string_value__");
+        if (!f580_sv.has_value())
+            f580_sv = heap_.get_object_field(args_raw[0].object_id, "value");
+        if (f580_sv.has_value() && f580_sv->type == DalvikType::STRING_REF) {
+            f580_args_storage = args_raw;
+            f580_args_storage[0] =
+                DalvikValue::make_string(f580_sv->string_val, 0);
+        }
+    }
+    const std::vector<DalvikValue>& args =
+        f580_args_storage.empty() ? args_raw : f580_args_storage;
 
     // ── S188-W17 (F-NEW-603) EGL Java-surface family law ────────────────
     // The PINNED contract (evidence/s188_w16/W16_P9_EGL_CONTRACT.json):
@@ -51333,9 +51405,189 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         heap_.set_object_field(bid, "__bb_pos__", DalvikValue::make_int(0));
         heap_.set_object_field(bid, "__bb_lim__", DalvikValue::make_int(cap));
         heap_.set_object_field(bid, "__bb_order__", DalvikValue::make_int(1));
+        // F-NEW-582 (S196, C3): REAL host memory + JNI direct-buffer
+        // registration — the gdx unsafe-buffer pipeline (FreeType font
+        // generation) hands these to REAL natives via
+        // GetDirectBufferAddress; without the memory the copyJni faulted
+        // (tictactoe_3 wall) and the buffer stayed empty.
+        if (cap > 0) {
+            void* mem582 = std::calloc((size_t)cap, 1);
+            if (mem582) {
+                DalvikValue d582;
+                d582.type = DalvikType::INT64;
+                d582.long_val = (int64_t)(uintptr_t)mem582;
+                heap_.set_object_field(bid, "__bb_direct__", d582);
+                heap_.set_object_field(
+                    bid, "__bb_direct_cap__", DalvikValue::make_int(cap));
+                // NOTE (S199 integration): on THIS line the f590 engine-hook
+                // registry IS the direct-buffer registry (S195 audit: one
+                // lookup surface, both mint paths feed it). Setting the
+                // __bb_direct__/__bb_direct_cap__ fields above registers the
+                // buffer — f590_direct_buffer_snapshot serves the REAL
+                // pointer to the JNI/GLES consumers. C3's separate
+                // register_direct_buffer() surface is intentionally NOT
+                // recreated (no second registry — mission §4 C6 law).
+            }
+        }
         result = DalvikValue::make_object(bid, "Ljava/nio/ByteBuffer;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-582b (S196, C3) — BufferUtils.copyJni family (the gdx byte-copy
+    // native) as an ENGINE-SIDE REAL law (F-NEW-504 tower3d layering: an
+    // IMPLEMENTED heap-side handler intentionally replaces a native whose
+    // ABI contract this runtime cannot honestly satisfy). The REAL
+    // libgdx64.so copyJni needs GetDirectBufferAddress on BOTH args + the
+    // GetPrimitiveArrayCritical family for the byte[] overloads; the
+    // Object-variant symbol is absent from the host build entirely
+    // (nm -D: only __3B/__3C/__3S/__3I/__3J/__3F/__3D/Buffer overloads) —
+    // the real call faulted on the NULL address (guarded, survived —
+    // tictactoe_3 font wall, 5× SIGSEGV per font). Shapes (gdx 1.9.10
+    // BufferUtils.java):
+    //   copyJni(src, srcOffset, dst, dstPosition, numBytes) — gdx 1.9.10
+    //   calls it with (Object|<prim>[]|Buffer src, int srcOffset, Buffer dst,
+    //   int dstPosition, int numBytes) — dstPosition BEFORE numBytes.
+    // Semantics: memcpy of numBytes from src+srcOffset into dst+dstOffset.
+    // The engine reads src bytes through ONE identity (a [B array's heap
+    // "array[N]" fields, or a buffer's real direct memory + lazy field
+    // store) and writes dst through the same identity — the real FreeType
+    // natives then parse the font from the REAL registered memory.
+    // Static-arg conventions differ by dispatch path (with/without a
+    // receiver slot) — resolve structurally: objects in order = [src, dst],
+    // ints in order = [srcOffset, numBytes, dstOffset].
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Lcom/badlogic/gdx/utils/BufferUtils;" &&
+        method == "copyJni" && args.size() >= 5) {
+        // structural arg resolution
+        std::vector<uint32_t> c582_objs;   // heap ids of object args (in order)
+        std::vector<int32_t> c582_ints;    // int args (in order)
+        for (const auto& a : args) {
+            if (a.type == DalvikType::OBJECT_REF && a.object_id != 0) {
+                // skip the receiver slot when it is NOT a [B/array or buffer
+                std::string c582_cls;
+                bool c582_known = heap_.get_object_class(a.object_id, c582_cls);
+                if (c582_known && (c582_cls == "[B" || c582_cls == "[C" ||
+                                   c582_cls == "[S" || c582_cls == "[I" ||
+                                   c582_cls == "[J" || c582_cls == "[F" ||
+                                   c582_cls == "[D" ||
+                                   c582_cls == "Ljava/nio/ByteBuffer;" ||
+                                   c582_cls == "Ljava/nio/IntBuffer;" ||
+                                   c582_cls == "Ljava/nio/FloatBuffer;" ||
+                                   c582_cls == "Ljava/nio/ShortBuffer;" ||
+                                   c582_cls == "Ljava/nio/DoubleBuffer;" ||
+                                   c582_cls == "Ljava/nio/CharBuffer;" ||
+                                   c582_cls == "Ljava/nio/LongBuffer;" ||
+                                   c582_cls == "Ljava/nio/DirectByteBuffer;"))
+                    c582_objs.push_back(a.object_id);
+            } else if (a.type == DalvikType::INT32 ||
+                       a.type == DalvikType::BYTE ||
+                       a.type == DalvikType::SHORT) {
+                c582_ints.push_back(a.int_val);
+            } else if (a.type == DalvikType::INT64) {
+                c582_ints.push_back(static_cast<int32_t>(a.long_val));
+            }
+        }
+        if (c582_objs.size() < 2 || c582_ints.size() < 3) {
+            // unknown shape — do NOT claim it; let the native precedence
+            // own the call (honest miss, never a fake success)
+        } else {
+            uint32_t c582_src = c582_objs[0];
+            uint32_t c582_dst = c582_objs[1];
+            // gdx 1.9.10 BufferUtils.java calls
+            //   copyJni(src, srcOffset, dst, positionInBytes(dst), numElements)
+            // — the int order is [srcOffset, dstPosition, numBytes].
+            int32_t c582_src_off = c582_ints[0];
+            int32_t c582_dst_off = c582_ints[1];
+            int32_t c582_num = c582_ints[2];
+            if (c582_num < 0 || c582_src_off < 0 || c582_dst_off < 0) {
+                throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                               "copyJni negative offset/length",
+                               "f582-copy-neg");
+                return true;
+            }
+            // src byte read: [B array fields, or buffer one-identity
+            auto c582_src_byte = [&](int32_t k) -> int {
+                std::string c_cls;
+                if (!heap_.get_object_class(c582_src, c_cls))
+                    return -1;
+                if (c_cls.size() > 1 && c_cls[0] == '[') {
+                    auto bv = heap_.get_object_field(
+                        c582_src, "array[" + std::to_string(k) + "]");
+                    if (!bv.has_value()) return -1;
+                    // F-NEW-582 FIX: byte_val is int8_t — mask to the
+                    // UNSIGNED byte value (a signed read turned every
+                    // 0x80..0xFF byte negative and the `v < 0 → 0` guard
+                    // zeroed it — the Roboto font's table directory lost
+                    // every high-bit byte → FT Invalid_Table, tictactoe_3).
+                    if (bv->type == DalvikType::BYTE)
+                        return (int)(bv->byte_val & 0xFF);
+                    if (bv->type == DalvikType::INT32 ||
+                        bv->type == DalvikType::CHAR ||
+                        bv->type == DalvikType::SHORT)
+                        return (int)(bv->int_val & 0xFF);
+                    return -1;
+                }
+                // buffer: real memory first, then the lazy field store
+                auto dv = heap_.get_object_field(c582_src, "__bb_direct__");
+                if (dv.has_value() && dv->type == DalvikType::INT64 &&
+                    dv->long_val != 0) {
+                    unsigned char* mem =
+                        reinterpret_cast<unsigned char*>((uintptr_t)dv->long_val);
+                    auto cv = heap_.get_object_field(c582_src,
+                                                     "__bb_direct_cap__");
+                    int32_t dcap = (cv.has_value() &&
+                                    cv->type == DalvikType::INT32)
+                                       ? cv->int_val
+                                       : 0;
+                    if (dcap == 0 || k < dcap) return (int)mem[k];
+                }
+                auto bv = heap_.get_object_field(
+                    c582_src, "__bb_b" + std::to_string(k) + "__");
+                if (bv.has_value() && bv->type == DalvikType::INT32)
+                    return (int)(bv->int_val & 0xFF);
+                char lo[32];
+                std::snprintf(lo, sizeof(lo), "__bb_w%d_lo__", k);
+                auto lv = heap_.get_object_field(c582_src, lo);
+                if (lv.has_value() && lv->type == DalvikType::INT32)
+                    return (int)(lv->int_val & 0xFF);
+                return -1;
+            };
+            // dst byte write: real memory + field store mirror
+            auto c582_dst_byte = [&](int32_t k, int v) {
+                auto dv = heap_.get_object_field(c582_dst, "__bb_direct__");
+                if (dv.has_value() && dv->type == DalvikType::INT64 &&
+                    dv->long_val != 0) {
+                    unsigned char* mem =
+                        reinterpret_cast<unsigned char*>((uintptr_t)dv->long_val);
+                    auto cv = heap_.get_object_field(c582_dst,
+                                                     "__bb_direct_cap__");
+                    int32_t dcap = (cv.has_value() &&
+                                    cv->type == DalvikType::INT32)
+                                       ? cv->int_val
+                                       : 0;
+                    if (dcap == 0 || k < dcap)
+                        mem[k] = (unsigned char)(v & 0xFF);
+                }
+                heap_.set_object_field(
+                    c582_dst, "__bb_b" + std::to_string(k) + "__",
+                    DalvikValue::make_int(v & 0xFF));
+            };
+            for (int32_t k = 0; k < c582_num; ++k) {
+                int v = c582_src_byte(c582_src_off + k);
+                if (v < 0) v = 0;  // unwritten slot reads as zero (deterministic)
+                c582_dst_byte(c582_dst_off + k, v);
+            }
+            static std::atomic<uint64_t> s582_copy{0};
+            if (s582_copy.fetch_add(1, std::memory_order_relaxed) < 8)
+                std::cerr << "[F-NEW-582b] copyJni src=o" << c582_src
+                          << "@+" << c582_src_off << " dst=o" << c582_dst
+                          << "@+" << c582_dst_off << " num=" << c582_num
+                          << std::endl;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
     }
     if (class_name == "Lorg/telegram/tgnet/NativeByteBuffer;") {
         // shared address→oid registry (both natives consult it)
@@ -51463,6 +51715,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             bb_set(bid, "__bb_pos__", 0);
             bb_set(bid, "__bb_lim__", cap);
             bb_set(bid, "__bb_order__", 0);  // BIG_ENDIAN default (OpenJDK)
+            // F-NEW-582 (S196, C3): allocateDirect allocates REAL host memory
+            // (AOSP DirectByteBuffer ctor law — the backing is runtime-owned
+            // malloc'd memory, zero-filled; calloc keeps the byte-determinism
+            // law: fresh page zero-fill is the deterministic answer). The
+            // buffer registers with the JNI direct-buffer family so the REAL
+            // natives (gdx BufferUtils.copyJni/getAddressJNI — the FreeType
+            // font pipeline) read the address through GetDirectBufferAddress
+            // and the put/get laws below mirror bytes into that memory.
+            if (method == "allocateDirect" && cap > 0) {
+                void* mem582 = std::calloc((size_t)cap, 1);
+                if (mem582) {
+                    DalvikValue d582;
+                    d582.type = DalvikType::INT64;
+                    d582.long_val = (int64_t)(uintptr_t)mem582;
+                    heap_.set_object_field(bid, "__bb_direct__", d582);
+                    heap_.set_object_field(
+                        bid, "__bb_direct_cap__", DalvikValue::make_int(cap));
+                    // Registration = the field pair above (f590 hook reads it).
+                    static std::atomic<uint64_t> s582_alloc{0};
+                    if (s582_alloc.fetch_add(1, std::memory_order_relaxed) < 8)
+                        std::cerr << "[F-NEW-582] allocateDirect(" << cap
+                                  << ") → obj#" << bid << " real-mem @"
+                                  << mem582 << std::endl;
+                }
+            }
             // backing store: per-object byte fields are impractical; store
             // as a run of __bb_b<i>__ int fields lazily on write.
             result = DalvikValue::make_object(bid, "Ljava/nio/ByteBuffer;");
@@ -51548,9 +51825,95 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
             args[0].object_id != 0) {
             uint32_t bb = args[0].object_id;
+            // F-NEW-582 (S196, C3): the buffer's REAL host memory (direct
+            // form) — one identity shared by every reader/writer below.
+            auto bb_direct_mem = [&](uint32_t boid, int32_t* dcap)
+                -> unsigned char* {
+                auto dv = heap_.get_object_field(boid, "__bb_direct__");
+                if (!dv.has_value() || dv->type != DalvikType::INT64 ||
+                    dv->long_val == 0)
+                    return nullptr;
+                if (dcap) {
+                    auto cv = heap_.get_object_field(boid, "__bb_direct_cap__");
+                    *dcap = (cv.has_value() && cv->type == DalvikType::INT32)
+                                ? cv->int_val
+                                : 0;
+                }
+                return reinterpret_cast<unsigned char*>(
+                    (uintptr_t)dv->long_val);
+            };
+            // read byte k of a [B array object (heap "array[k]" convention)
+            auto byte_arr_read = [&](uint32_t aoid, int32_t k) -> int {
+                auto bv = heap_.get_object_field(
+                    aoid, "array[" + std::to_string(k) + "]");
+                if (!bv.has_value()) return -1;
+                if (bv->type == DalvikType::BYTE)
+                    return (int)(bv->byte_val & 0xFF);  // unsigned byte law
+                if (bv->type == DalvikType::INT32 ||
+                    bv->type == DalvikType::CHAR ||
+                    bv->type == DalvikType::SHORT)
+                    return (int)(bv->int_val & 0xFF);
+                return -1;
+            };
+            // read byte k of ANY buffer (direct memory first, then the
+            // lazy field store) — one identity for every reader.
+            auto buf_byte_read = [&](uint32_t boid, int32_t k) -> int {
+                int32_t dcap = 0;
+                unsigned char* mem = bb_direct_mem(boid, &dcap);
+                if (mem && k >= 0 && (dcap == 0 || k < dcap))
+                    return (int)mem[k];
+                auto bv = heap_.get_object_field(
+                    boid, "__bb_b" + std::to_string(k) + "__");
+                if (bv.has_value() && bv->type == DalvikType::INT32)
+                    return (int)(bv->int_val & 0xFF);
+                char lo[32], hi[32];
+                std::snprintf(lo, sizeof(lo), "__bb_w%d_lo__", k);
+                std::snprintf(hi, sizeof(hi), "__bb_w%d_hi__", k);
+                auto lv = heap_.get_object_field(boid, lo);
+                if (lv.has_value() && lv->type == DalvikType::INT32)
+                    return (int)(lv->int_val & 0xFF);
+                return -1;
+            };
+            // write byte k of a buffer: real memory AND the lazy field store
+            // (the mirror keeps every existing engine-side reader honest).
+            auto buf_byte_write = [&](uint32_t boid, int32_t k, int v) {
+                int32_t dcap = 0;
+                unsigned char* mem = bb_direct_mem(boid, &dcap);
+                if (mem && k >= 0 && (dcap == 0 || k < dcap))
+                    mem[k] = (unsigned char)(v & 0xFF);
+                heap_.set_object_field(
+                    boid, "__bb_b" + std::to_string(k) + "__",
+                    DalvikValue::make_int(v & 0xFF));
+            };
             auto put_wide = [&](int size, int64_t value) {
                 int32_t pos = bb_field(bb, "__bb_pos__");
                 int32_t cap = bb_field(bb, "__bb_cap__");
+                // F-NEW-582 (S196, C3): mirror into the REAL host memory
+                // (little-endian — the x86_64 native order the direct buffer
+                // hands out).
+                {
+                    int32_t dcap = 0;
+                    unsigned char* mem = nullptr;
+                    auto dv = heap_.get_object_field(bb, "__bb_direct__");
+                    if (dv.has_value() && dv->type == DalvikType::INT64 &&
+                        dv->long_val != 0) {
+                        mem = reinterpret_cast<unsigned char*>(
+                            (uintptr_t)dv->long_val);
+                        auto cv = heap_.get_object_field(bb,
+                                                         "__bb_direct_cap__");
+                        dcap = (cv.has_value() && cv->type == DalvikType::INT32)
+                                   ? cv->int_val
+                                   : 0;
+                    }
+                    if (mem) {
+                        for (int b = 0; b < size; ++b) {
+                            int32_t o = pos + b;
+                            if (dcap == 0 || o < dcap)
+                                mem[o] =
+                                    (unsigned char)((value >> (8 * b)) & 0xFF);
+                        }
+                    }
+                }
                 // store as two int halves per slot: __bb_w<pos>__lo/hi
                 char lo[32], hi[32];
                 std::snprintf(lo, sizeof(lo), "__bb_w%d_lo__", pos);
@@ -51564,6 +51927,33 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             };
             auto get_wide = [&](int size) -> int64_t {
                 int32_t pos = bb_field(bb, "__bb_pos__");
+                // F-NEW-582 (S196, C3): read the REAL host memory first
+                // (direct form).
+                {
+                    int32_t dcap = 0;
+                    unsigned char* mem = nullptr;
+                    auto dv = heap_.get_object_field(bb, "__bb_direct__");
+                    if (dv.has_value() && dv->type == DalvikType::INT64 &&
+                        dv->long_val != 0) {
+                        mem = reinterpret_cast<unsigned char*>(
+                            (uintptr_t)dv->long_val);
+                        auto cv = heap_.get_object_field(bb,
+                                                         "__bb_direct_cap__");
+                        dcap = (cv.has_value() && cv->type == DalvikType::INT32)
+                                   ? cv->int_val
+                                   : 0;
+                    }
+                    if (mem) {
+                        uint64_t raw = 0;
+                        for (int b = 0; b < size; ++b) {
+                            int32_t o = pos + b;
+                            if (dcap == 0 || o < dcap)
+                                raw |= ((uint64_t)mem[o]) << (8 * b);
+                        }
+                        bb_set(bb, "__bb_pos__", pos + size);
+                        return (int64_t)raw;
+                    }
+                }
                 char lo[32], hi[32];
                 std::snprintf(lo, sizeof(lo), "__bb_w%d_lo__", pos);
                 std::snprintf(hi, sizeof(hi), "__bb_w%d_hi__", pos);
@@ -51578,6 +51968,165 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             static_cast<uint64_t>(static_cast<uint32_t>(hv)) << 32)) |
                        static_cast<uint32_t>(lv);
             };
+            // ────────────────────────────────────────────────────────────
+            // F-NEW-582 (S196, C3) — ByteBuffer.put(byte[]) / put(byte[], int,
+            // int) / put(ByteBuffer) / get(byte[]) / get(byte[], int, int)
+            // (OpenJDK law). THE FreeType font-pipeline idiom:
+            // StreamUtils.copyStream(input, buffer, n) fills the direct
+            // buffer with `output.put(buffer_, 0, byteCount)` per read
+            // chunk — the law was MISSING (generic bridge tail), so the
+            // font bytes never entered the buffer and
+            // FT_New_Memory_Face answered a null Face (tictactoe_3).
+            // ────────────────────────────────────────────────────────────
+            if (method == "put" && args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 &&
+                heap_.has_object(args[1].object_id)) {
+                std::string p582_cls;
+                heap_.get_object_class(args[1].object_id, p582_cls);
+                if (p582_cls == "[B") {
+                    int32_t off = 0, len = 0;
+                    int32_t alen = 0;
+                    auto lf = heap_.get_object_field(args[1].object_id,
+                                                     "__array_length__");
+                    if (lf.has_value() && lf->type == DalvikType::INT32)
+                        alen = lf->int_val;
+                    if (alen == 0) {
+                        auto nf = heap_.get_object_field(
+                            args[1].object_id, "__new_array_length__");
+                        if (nf.has_value() && nf->type == DalvikType::INT32)
+                            alen = nf->int_val;
+                    }
+                    if (args.size() >= 4 && args[2].type == DalvikType::INT32 &&
+                        args[3].type == DalvikType::INT32) {
+                        off = args[2].int_val;
+                        len = args[3].int_val;
+                    } else {
+                        len = alen;
+                    }
+                    // OpenJDK bounds: offset<0 || len<0 ||
+                    // offset > a.length - len → IndexOutOfBoundsException;
+                    // len > remaining() → BufferOverflowException.
+                    if (off < 0 || len < 0 || off > alen - len) {
+                        throw_deferred(
+                            "Ljava/lang/IndexOutOfBoundsException;",
+                            "put(byte[], " + std::to_string(off) + ", " +
+                                std::to_string(len) + ") of len-" +
+                                std::to_string(alen) + " array",
+                            "f582-put-oob");
+                        return true;
+                    }
+                    int32_t pos = bb_field(bb, "__bb_pos__");
+                    int32_t lim = bb_field(bb, "__bb_lim__");
+                    if (len > lim - pos) {
+                        throw_deferred("Ljava/nio/BufferOverflowException;",
+                                       "len=" + std::to_string(len) +
+                                           "; remaining=" +
+                                           std::to_string(lim - pos),
+                                       "f582-put-overflow");
+                        return true;
+                    }
+                    for (int32_t k = 0; k < len; ++k) {
+                        int v = byte_arr_read(args[1].object_id, off + k);
+                        if (v < 0) v = 0;
+                        buf_byte_write(bb, pos + k, v);
+                    }
+                    bb_set(bb, "__bb_pos__", pos + len);
+                    result = args[0];
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (p582_cls == "Ljava/nio/ByteBuffer;") {
+                    // put(ByteBuffer src): copy src.remaining() bytes at the
+                    // current position; advance BOTH cursors (OpenJDK
+                    // putBuffer law). The src's own direct memory (or field
+                    // store) is read through buf_byte_read — one identity.
+                    int32_t s_rem = bb_field(args[1].object_id, "__bb_lim__") -
+                                    bb_field(args[1].object_id, "__bb_pos__");
+                    if (s_rem < 0) s_rem = 0;
+                    int32_t s_pos = bb_field(args[1].object_id, "__bb_pos__");
+                    int32_t pos = bb_field(bb, "__bb_pos__");
+                    int32_t lim = bb_field(bb, "__bb_lim__");
+                    if (s_rem > lim - pos) {
+                        throw_deferred("Ljava/nio/BufferOverflowException;",
+                                       "src.remaining=" + std::to_string(s_rem) +
+                                           "; remaining=" +
+                                           std::to_string(lim - pos),
+                                       "f582-put-overflow");
+                        return true;
+                    }
+                    for (int32_t k = 0; k < s_rem; ++k) {
+                        int v = buf_byte_read(args[1].object_id, s_pos + k);
+                        if (v < 0) v = 0;
+                        buf_byte_write(bb, pos + k, v);
+                    }
+                    bb_set(bb, "__bb_pos__", pos + s_rem);
+                    bb_set(args[1].object_id, "__bb_pos__", s_pos + s_rem);
+                    result = args[0];
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+            if (method == "get" && args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 &&
+                heap_.has_object(args[1].object_id)) {
+                std::string g582_cls;
+                heap_.get_object_class(args[1].object_id, g582_cls);
+                if (g582_cls == "[B") {
+                    int32_t off = 0, len = 0;
+                    int32_t alen = 0;
+                    auto lf = heap_.get_object_field(args[1].object_id,
+                                                     "__array_length__");
+                    if (lf.has_value() && lf->type == DalvikType::INT32)
+                        alen = lf->int_val;
+                    if (alen == 0) {
+                        auto nf = heap_.get_object_field(
+                            args[1].object_id, "__new_array_length__");
+                        if (nf.has_value() && nf->type == DalvikType::INT32)
+                            alen = nf->int_val;
+                    }
+                    if (args.size() >= 4 && args[2].type == DalvikType::INT32 &&
+                        args[3].type == DalvikType::INT32) {
+                        off = args[2].int_val;
+                        len = args[3].int_val;
+                    } else {
+                        len = alen;
+                    }
+                    int32_t pos = bb_field(bb, "__bb_pos__");
+                    int32_t lim = bb_field(bb, "__bb_lim__");
+                    if (off < 0 || len < 0 || off > alen - len) {
+                        throw_deferred(
+                            "Ljava/lang/IndexOutOfBoundsException;",
+                            "get(byte[], " + std::to_string(off) + ", " +
+                                std::to_string(len) + ") of len-" +
+                                std::to_string(alen) + " array",
+                            "f582-get-oob");
+                        return true;
+                    }
+                    if (len > lim - pos) {
+                        throw_deferred(
+                            "Ljava/nio/BufferUnderflowException;",
+                            "len=" + std::to_string(len) + "; remaining=" +
+                                std::to_string(lim - pos),
+                            "f582-get-underflow");
+                        return true;
+                    }
+                    for (int32_t k = 0; k < len; ++k) {
+                        int v = buf_byte_read(bb, pos + k);
+                        if (v < 0) v = 0;
+                        heap_.set_object_field(
+                            args[1].object_id,
+                            "array[" + std::to_string(off + k) + "]",
+                            DalvikValue::make_byte(
+                                static_cast<int8_t>(v & 0xFF)));
+                    }
+                    bb_set(bb, "__bb_pos__", pos + len);
+                    result = args[0];
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
             if (method == "putInt" || method == "putInt32") {
                 if (args.size() > 1) {
                     put_wide(4, dalvik_int_value(args[1]));
@@ -51793,6 +52342,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             if (method == "position" && args.size() == 1) {
                 result = DalvikValue::make_int(v_field("__bb_pos__"));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "position" && args.size() > 1 &&
+                args[1].type == DalvikType::INT32) {
+                // ── F-NEW-610 (S198, C3) — typed-view position(int) setter
+                // OPENJDK buffer-algebra law (the ByteBuffer block above has
+                // them; the typed-view block was missing them). Live face
+                // (tictactoe): SpriteBatch.bind() does floatBuffer.position(3)
+                // for a_texCoord0 — with no setter the view pos stayed 0 and
+                // the texcoord pointer landed at vertex offset 0 (texture
+                // coords read position floats → white/none raster).
+                // Reconstructed from the truncated S198 part 2/2 tail
+                // (@@ -52014,6 +52014,35 @@; protocol defect #557 6725597246).
+                int32_t p = args[1].int_val;
+                if (p < 0 || (v_field("__bb_lim__") &&
+                              p > v_field("__bb_lim__")))
+                    p = 0;  // invalid position → reset (honest guard)
+                v_set("__bb_pos__", p);
+                result = args[0];
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "limit" && args.size() > 1 &&
+                args[1].type == DalvikType::INT32) {
+                // ── F-NEW-610 (S198, C3) — typed-view limit(int) setter.
+                int32_t lim = args[1].int_val;
+                int32_t cap = v_field("__bb_cap__");
+                if (lim < 0 || (cap && lim > cap)) lim = cap;  // clamp
+                v_set("__bb_lim__", lim);
+                if (v_field("__bb_pos__") > lim) v_set("__bb_pos__", lim);
+                result = args[0];
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }
@@ -74823,6 +75404,111 @@ measure_cm_done:;
     // reached (try_shadow_dispatch returns true before bridge_to_api).
     // If CollectionShadow doesn't handle it, this stub provides a
     // best-effort fallback.
+    // ── F-NEW-589 (S196, C3): java.util.Stack REAL LIFO semantics ───────
+    // Live face (tictactoe_3 on the S188-W5+A24 integrated binary):
+    // libGDX 1.9.10 AssetManager holds its load pipeline in
+    //   Stack<AssetLoadingTask> taskQueue   (androguard DEX truth:
+    //   Ljava/util/Stack;.size dispatched from AssetManager.update)
+    // The S186i triage answered Stack.size with the typed default 0 →
+    // update() believed the queue empty and returned true BEFORE any
+    // AssetLoadingTask ran → the later manager.get("i18n/TicTacToe")
+    // threw GdxRuntimeException("Asset not loaded") → onCreate death.
+    // AOSP java.util.Stack contract (Vector subclass): push returns the
+    // item, pop/peek operate on the top, empty()/size() reflect REAL
+    // state. Storage mirrors the HashMap fallback law below: heap fields
+    // on the receiver object (__f589_stack_size__ + __f589_stack_slot_N,
+    // slot 0 = BOTTOM). Exact-class gate: StackTraceElement must not hit.
+    if (class_name == "Ljava/util/Stack;") {
+        uint32_t this_id = args.empty() ? 0 : args[0].object_id;
+        auto stack_size_of = [&](uint32_t id) -> int32_t {
+            auto* o = heap_.get(id);
+            if (!o) return 0;
+            auto it = o->fields.find("__f589_stack_size__");
+            if (it == o->fields.end()) return 0;
+            if (it->second.type == DalvikType::INT32)
+                return it->second.int_val;
+            return 0;
+        };
+        auto stack_set_size = [&](uint32_t id, int32_t n) {
+            heap_.set_object_field(
+                id, "__f589_stack_size__", DalvikValue::make_int(n));
+        };
+        auto slot_name = [](int32_t n) {
+            return "__f589_stack_slot_" + std::to_string(n);
+        };
+        if (method == "<init>") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "push" && args.size() >= 2) {
+            const int32_t n = stack_size_of(this_id);
+            heap_.set_object_field(this_id, slot_name(n), args[1]);
+            stack_set_size(this_id, n + 1);
+            result = args[1];  // java.util.Stack.push RETURNS the item
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            static thread_local uint64_t f589_n = 0;
+            if (f589_n++ < 8)
+                std::cerr << "[F-NEW-589] Stack.push depth=" << (n + 1)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            return true;
+        }
+        if ((method == "pop" || method == "peek") && !args.empty()) {
+            const int32_t n = stack_size_of(this_id);
+            if (n <= 0) {
+                // java.util.Stack would throw EmptyStackException here.
+                // The libGDX guard (taskQueue.isEmpty()) prevents the
+                // empty path in the live route; answer null + loud log
+                // instead of fabricating an element.
+                std::cerr << "[F-NEW-589] Stack." << method
+                          << " on EMPTY stack (AOSP: EmptyStackException) "
+                          << "caller=" << current_class_ << "."
+                          << current_method_ << " — returning null honestly"
+                          << std::endl;
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            auto* o = heap_.get(this_id);
+            DalvikValue top = DalvikValue::make_null();
+            if (o) {
+                auto it = o->fields.find(slot_name(n - 1));
+                if (it != o->fields.end()) top = it->second;
+            }
+            if (method == "pop") {
+                // remove the top slot and clear it so a re-push reuses it
+                auto* o2 = heap_.get(this_id);
+                if (o2) o2->fields.erase(slot_name(n - 1));
+                stack_set_size(this_id, n - 1);
+            }
+            result = top;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            static thread_local uint64_t f589p_n = 0;
+            if (f589p_n++ < 8)
+                std::cerr << "[F-NEW-589] Stack." << method
+                          << " depth=" << (method == "pop" ? n - 1 : n)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            return true;
+        }
+        if (method == "size") {
+            result = DalvikValue::make_int(stack_size_of(this_id));
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            static thread_local uint64_t f589s_n = 0;
+            if (f589s_n++ < 8)
+                std::cerr << "[F-NEW-589] Stack.size="
+                          << result.int_val
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            return true;
+        }
+        if (method == "empty" || method == "isEmpty") {
+            result = DalvikValue::make_bool(stack_size_of(this_id) == 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     if ((class_name == "Ljava/util/HashMap;" ||
          class_name.find("HashMap") != std::string::npos ||
          class_name.find("Map") != std::string::npos) &&
@@ -78861,8 +79547,46 @@ measure_cm_done:;
     // ────────────────────────────────────────────────────────────────────────
     if (class_name == "Ljava/lang/String;" && args.size() >= 1) {
         const DalvikValue& recv = args[0];
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-580 (S196, C3) — receiver identity-form normalization at
+        // the S100 String-family boundary. A String may arrive as a HEAP
+        // OBJECT: the new-instance→<init> identity law keeps the caller's
+        // OBJECT_REF register alive and stores the content under
+        // __string_value__ (e.g. the gdx-utils StringBuilder.toString()
+        // product this#518 = "TicTacToe.properties"). The STRING_REF-only
+        // gate answered the bridge-tail default for that form — live face:
+        // AndroidFileHandle.sibling's `name.replace('\\','/')` received the
+        // heap-String candidate name and the F-NEW-576 replace law never
+        // ran → the I18NBundle ladder opened "i18n" (child empty) on every
+        // candidate → MissingResourceException AGAIN even after the
+        // getChars + String(char[],off,len) fixes. libcore semantics are
+        // identical for both forms; normalize ONCE at the boundary — zero
+        // app-specific branches (any heap-String receiver, any method).
+        // ────────────────────────────────────────────────────────────────
+        std::string f580_content;
+        const std::string* f580_sv = nullptr;
         if (recv.type == DalvikType::STRING_REF) {
-            const std::string& sv = recv.string_val;
+            // CowStr converts to const std::string&; bind the underlying
+            // buffer directly (no per-call copy on the hot path).
+            f580_sv = &static_cast<const std::string&>(recv.string_val);
+        } else if (recv.type == DalvikType::OBJECT_REF &&
+                   recv.object_id != 0 && heap_.has_object(recv.object_id)) {
+            std::string f580_cls;
+            if (heap_.get_object_class(recv.object_id, f580_cls) &&
+                f580_cls == "Ljava/lang/String;") {
+                auto f580_h = heap_.get_object_field(recv.object_id,
+                                                     "__string_value__");
+                if (!f580_h.has_value())
+                    f580_h = heap_.get_object_field(recv.object_id, "value");
+                if (f580_h.has_value() &&
+                    f580_h->type == DalvikType::STRING_REF) {
+                    f580_content = f580_h->string_val;
+                    f580_sv = &f580_content;
+                }
+            }
+        }
+        if (f580_sv) {
+            const std::string& sv = *f580_sv;
             if (method == "trim") {
                 size_t b = 0, e = sv.size();
                 while (b < e && (unsigned char)sv[b] <= 0x20) ++b;
@@ -82799,6 +83523,201 @@ measure_cm_done:;
                           << " caller=" << current_class_ << "."
                           << current_method_ << std::endl;
         return true;
+        }
+        // ── F-NEW-588 (S196, C3): heap-String REPLACE family — real
+        // semantics ──
+        // Live face (tictactoe_3 on the S188-W5+A24 integrated binary):
+        // libGDX 1.9.10 AssetDescriptor.<init> does
+        //   this.file = fileName.replaceAll("\\\\", "/")
+        // (androguard disassembly: invoke-virtual
+        // String;->replaceAll(Ljava/lang/String;Ljava/lang/String;) at
+        // AssetDescriptor i3, DEX truth). The typed-default stub answered
+        // NULL for the String return → preloadQueue desc.fileName == null
+        // → the SECOND AssetManager.load's
+        //   desc.fileName.equals(fileName)   (AssetManager.load i20)
+        // NPE'd on a null receiver → AndroidLauncher.onCreate death
+        // (PARTIAL SUCCESS, 1 in-flight exception). AOSP law: String
+        // replace family NEVER returns null and never throws for
+        // well-formed patterns; the typed default is a false answer here.
+        // Real semantics, same heap walk as the split law above:
+        //   replaceAll/replaceFirst (regex, \Q..\E honored),
+        //   replace(CharSequence,CharSequence) + replace(CC) literal,
+        //   matches(String)Z, contains(CharSequence)Z.
+        // F-NEW-588: the receiver may arrive in EITHER identity form —
+        // inline STRING_REF (register-held string, S100 form) or heap-String
+        // OBJECT (S186i form). Accept both; read the real chars.
+        std::string f588_recv;
+        bool f588_have_recv = false;
+        if (!args.empty()) {
+            if (args[0].type == DalvikType::STRING_REF) {
+                f588_recv = args[0].string_val;
+                f588_have_recv = true;
+            } else if (s186i_is_str_recv) {
+                for (const char* fld :
+                     {"__string_value__", "value", "sb_value"}) {
+                    auto fv = heap_.get_object_field(args[0].object_id, fld);
+                    if (fv.has_value() &&
+                        fv->type == DalvikType::STRING_REF) {
+                        f588_recv = fv->string_val;
+                        f588_have_recv = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (f588_have_recv &&
+                 (method == "replaceAll" || method == "replaceFirst" ||
+                  method == "replace" || method == "matches" ||
+                  method == "contains")) {
+            std::string hs = f588_recv;
+            auto arg_string = [&](size_t idx) -> bool {
+                if (args.size() <= idx) return false;
+                const DalvikValue& a = args[idx];
+                if (a.type == DalvikType::STRING_REF) return true;
+                if (a.type == DalvikType::OBJECT_REF && a.object_id != 0 &&
+                    heap_.has_object(a.object_id)) {
+                    // CharSequence receivers materialize as heap objects;
+                    // String instances carry __string_value__/value.
+                    return true;
+                }
+                return false;
+            };
+            auto read_string_arg = [&](size_t idx) -> std::string {
+                const DalvikValue& a = args[idx];
+                if (a.type == DalvikType::STRING_REF) return a.string_val;
+                if (a.type == DalvikType::OBJECT_REF && a.object_id != 0 &&
+                    heap_.has_object(a.object_id)) {
+                    for (const char* fld :
+                         {"__string_value__", "value", "sb_value"}) {
+                        auto fv = heap_.get_object_field(a.object_id, fld);
+                        if (fv.has_value() &&
+                            fv->type == DalvikType::STRING_REF)
+                            return fv->string_val;
+                    }
+                }
+                return std::string();
+            };
+            auto unquote = [](const std::string& pat) {
+                // Java \Q...\E literal-quote support (same law as split).
+                std::string out;
+                size_t i = 0;
+                while (i < pat.size()) {
+                    if (i + 1 < pat.size() && pat[i] == '\\' &&
+                        pat[i + 1] == 'Q') {
+                        size_t e = pat.find("\\E", i + 2);
+                        if (e == std::string::npos) {
+                            out += pat.substr(i + 2);
+                            break;
+                        }
+                        const std::string lit = pat.substr(i + 2, e - i - 2);
+                        for (char c : lit) {
+                            if (std::string(".[]{}()*+?^$|\\")
+                                    .find(c) != std::string::npos)
+                                out += '\\';
+                            out += c;
+                        }
+                        i = e + 2;
+                    } else {
+                        out += pat[i++];
+                    }
+                }
+                return out;
+            };
+            const std::string method_desc_tail =
+                resolve_method_proto_for_dex(method_idx_hint,
+                                             current_dex_index_);
+            const bool char_form =
+                method == "replace" &&
+                method_desc_tail.find("(CC)") != std::string::npos;
+            try {
+                if (method == "matches" && arg_string(1)) {
+                    const std::string pat = unquote(read_string_arg(1));
+                    const bool m =
+                        pat.empty()
+                            ? hs.empty()
+                            : std::regex_match(
+                                  hs, std::regex(pat, std::regex::ECMAScript));
+                    result = DalvikValue::make_bool(m);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    static thread_local uint64_t f588_n = 0;
+                    if (f588_n++ < 6)
+                        std::cerr << "[F-NEW-588] String.matches recv=\""
+                                  << hs.substr(0, 32) << "\" pat=\""
+                                  << pat.substr(0, 32) << "\" -> " << m
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    return true;
+                }
+                if (method == "contains" && arg_string(1)) {
+                    result = DalvikValue::make_bool(
+                        hs.find(read_string_arg(1)) != std::string::npos);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "replace" && char_form && args.size() >= 3) {
+                    const char from =
+                        static_cast<char>(args[1].int_val & 0xFF);
+                    const char to =
+                        static_cast<char>(args[2].int_val & 0xFF);
+                    std::string out = hs;
+                    std::replace(out.begin(), out.end(), from, to);
+                    result = DalvikValue::make_string(out, 0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    static thread_local uint64_t f588c_n = 0;
+                    if (f588c_n++ < 6)
+                        std::cerr << "[F-NEW-588] String.replace(CC) in=\""
+                                  << hs.substr(0, 32) << "\" -> \""
+                                  << out.substr(0, 32) << "\" caller="
+                                  << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    return true;
+                }
+                if ((method == "replaceAll" || method == "replaceFirst" ||
+                     method == "replace") &&
+                    args.size() >= 3 && arg_string(1) && arg_string(2)) {
+                    const std::string pat =
+                        unquote(read_string_arg(1));
+                    const std::string rep = read_string_arg(2);
+                    std::string out;
+                    if (method == "replace") {
+                        // CharSequence form: literal, all occurrences.
+                        out = hs;
+                        if (!pat.empty()) {
+                            size_t pos = 0;
+                            while ((pos = out.find(pat, pos)) !=
+                                   std::string::npos) {
+                                out.replace(pos, pat.size(), rep);
+                                pos += rep.size();
+                            }
+                        }
+                    } else {
+                        std::regex re(pat, std::regex::ECMAScript);
+                        const auto flags =
+                            method == "replaceAll"
+                                ? std::regex_constants::format_default
+                                : std::regex_constants::format_first_only;
+                        out = std::regex_replace(hs, re, rep, flags);
+                    }
+                    result = DalvikValue::make_string(out, 0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    static thread_local uint64_t f588r_n = 0;
+                    if (f588r_n++ < 6)
+                        std::cerr << "[F-NEW-588] String." << method
+                                  << " in=\"" << hs.substr(0, 32)
+                                  << "\" pat=\"" << pat.substr(0, 16)
+                                  << "\" rep=\"" << rep.substr(0, 16)
+                                  << "\" out=\"" << out.substr(0, 32)
+                                  << "\" caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                    return true;
+                }
+            } catch (const std::regex_error& e) {
+                // Invalid pattern: Java would throw PatternSyntaxException.
+                // Fall through to the typed-default stub below (honest
+                // bookkeeping) — never fabricate a String answer.
+                std::cerr << "[F-NEW-588] regex_error (" << e.what()
+                          << ") — falling through to stub" << std::endl;
+            }
         }
     }
     //
