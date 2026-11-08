@@ -1,0 +1,1115 @@
+{
+ "dex": {
+  "Lcom/badlogic/gdx/math/Matrix4;": [
+   {
+    "name": "<clinit>",
+    "desc": "()V",
+    "access": "static constructor"
+   },
+   {
+    "name": "<init>",
+    "desc": "()V",
+    "access": "public constructor",
+    "init_calls": [
+     "Ljava/lang/Object;-><init>()V",
+     "Lcom/badlogic/gdx/math/Matrix4;->val",
+     "Lcom/badlogic/gdx/math/Matrix4;->val",
+     "Lcom/badlogic/gdx/math/Matrix4;->val",
+     "Lcom/badlogic/gdx/math/Matrix4;->val",
+     "Lcom/badlogic/gdx/math/Matrix4;->val"
+    ]
+   },
+   {
+    "name": "<init>",
+    "desc": "(Lcom/badlogic/gdx/math/Matrix4;)V",
+    "access": "public constructor",
+    "init_calls": [
+     "Ljava/lang/Object;-><init>()V",
+     "Lcom/badlogic/gdx/math/Matrix4;->val",
+     "Lcom/badlogic/gdx/math/Matrix4;->set(Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/math/Matrix4;"
+    ]
+   },
+   {
+    "name": "<init>",
+    "desc": "(Lcom/badlogic/gdx/math/Quaternion;)V",
+    "access": "public constructor",
+    "init_calls": [
+     "Ljava/lang/Object;-><init>()V",
+     "Lcom/badlogic/gdx/math/Matrix4;->val",
+     "Lcom/badlogic/gdx/math/Matrix4;->set(Lcom/badlogic/gdx/math/Quaternion;)Lcom/badlogic/gdx/math/Matrix4;"
+    ]
+   },
+   {
+    "name": "<init>",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Quaternion; Lcom/badlogic/gdx/math/Vector3;)V",
+    "access": "public constructor",
+    "init_calls": [
+     "Ljava/lang/Object;-><init>()V",
+     "Lcom/badlogic/gdx/math/Matrix4;->val",
+     "Lcom/badlogic/gdx/math/Matrix4;->set(Lcom/badlogic/gdx/math/Vector3;"
+    ]
+   },
+   {
+    "name": "<init>",
+    "desc": "([F)V",
+    "access": "public constructor",
+    "init_calls": [
+     "Ljava/lang/Object;-><init>()V",
+     "Lcom/badlogic/gdx/math/Matrix4;->val",
+     "Lcom/badlogic/gdx/math/Matrix4;->set([F)Lcom/badlogic/gdx/math/Matrix4;"
+    ]
+   },
+   {
+    "name": "det",
+    "desc": "([F)F",
+    "access": "public static native"
+   },
+   {
+    "name": "inv",
+    "desc": "([F)Z",
+    "access": "public static native"
+   },
+   {
+    "name": "mul",
+    "desc": "([F [F)V",
+    "access": "public static native"
+   },
+   {
+    "name": "mulVec",
+    "desc": "([F [F)V",
+    "access": "public static native"
+   },
+   {
+    "name": "mulVec",
+    "desc": "([F [F I I I)V",
+    "access": "public static native"
+   },
+   {
+    "name": "prj",
+    "desc": "([F [F)V",
+    "access": "public static native"
+   },
+   {
+    "name": "prj",
+    "desc": "([F [F I I I)V",
+    "access": "public static native"
+   },
+   {
+    "name": "rot",
+    "desc": "([F [F)V",
+    "access": "public static native"
+   },
+   {
+    "name": "rot",
+    "desc": "([F [F I I I)V",
+    "access": "public static native"
+   },
+   {
+    "name": "avg",
+    "desc": "(Lcom/badlogic/gdx/math/Matrix4; F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "avg",
+    "desc": "([Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "avg",
+    "desc": "([Lcom/badlogic/gdx/math/Matrix4; [F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "cpy",
+    "desc": "()Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "det",
+    "desc": "()F",
+    "access": "public"
+   },
+   {
+    "name": "det3x3",
+    "desc": "()F",
+    "access": "public"
+   },
+   {
+    "name": "extract4x3Matrix",
+    "desc": "([F)V",
+    "access": "public"
+   },
+   {
+    "name": "getRotation",
+    "desc": "(Lcom/badlogic/gdx/math/Quaternion;)Lcom/badlogic/gdx/math/Quaternion;",
+    "access": "public"
+   },
+   {
+    "name": "getRotation",
+    "desc": "(Lcom/badlogic/gdx/math/Quaternion; Z)Lcom/badlogic/gdx/math/Quaternion;",
+    "access": "public"
+   },
+   {
+    "name": "getScale",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Vector3;",
+    "access": "public"
+   },
+   {
+    "name": "getScaleX",
+    "desc": "()F",
+    "access": "public"
+   },
+   {
+    "name": "getScaleXSquared",
+    "desc": "()F",
+    "access": "public"
+   },
+   {
+    "name": "getScaleY",
+    "desc": "()F",
+    "access": "public"
+   },
+   {
+    "name": "getScaleYSquared",
+    "desc": "()F",
+    "access": "public"
+   },
+   {
+    "name": "getScaleZ",
+    "desc": "()F",
+    "access": "public"
+   },
+   {
+    "name": "getScaleZSquared",
+    "desc": "()F",
+    "access": "public"
+   },
+   {
+    "name": "getTranslation",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Vector3;",
+    "access": "public"
+   },
+   {
+    "name": "getValues",
+    "desc": "()[F",
+    "access": "public"
+   },
+   {
+    "name": "hasRotationOrScaling",
+    "desc": "()Z",
+    "access": "public"
+   },
+   {
+    "name": "idt",
+    "desc": "()Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "inv",
+    "desc": "()Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "lerp",
+    "desc": "(Lcom/badlogic/gdx/math/Matrix4; F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "mul",
+    "desc": "(Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "mulLeft",
+    "desc": "(Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "rotate",
+    "desc": "(F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "rotate",
+    "desc": "(Lcom/badlogic/gdx/math/Quaternion;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "rotate",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "rotate",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "rotateRad",
+    "desc": "(F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "rotateRad",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "scale",
+    "desc": "(F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "scl",
+    "desc": "(F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "scl",
+    "desc": "(F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "scl",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(F F F F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(F F F F F F F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(Lcom/badlogic/gdx/math/Affine2;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(Lcom/badlogic/gdx/math/Matrix3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(Lcom/badlogic/gdx/math/Quaternion;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Quaternion;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Quaternion; Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "set",
+    "desc": "([F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setAsAffine",
+    "desc": "(Lcom/badlogic/gdx/math/Affine2;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setAsAffine",
+    "desc": "(Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setFromEulerAngles",
+    "desc": "(F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setFromEulerAnglesRad",
+    "desc": "(F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToLookAt",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToLookAt",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToOrtho",
+    "desc": "(F F F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToOrtho2D",
+    "desc": "(F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToOrtho2D",
+    "desc": "(F F F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToProjection",
+    "desc": "(F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToProjection",
+    "desc": "(F F F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToRotation",
+    "desc": "(F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToRotation",
+    "desc": "(F F F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToRotation",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToRotation",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToRotationRad",
+    "desc": "(F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToRotationRad",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToScaling",
+    "desc": "(F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToScaling",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToTranslation",
+    "desc": "(F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToTranslation",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToTranslationAndScaling",
+    "desc": "(F F F F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToTranslationAndScaling",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setToWorld",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3; Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setTranslation",
+    "desc": "(F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "setTranslation",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "toNormalMatrix",
+    "desc": "()Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "toString",
+    "desc": "()Ljava/lang/String;",
+    "access": "public"
+   },
+   {
+    "name": "tra",
+    "desc": "()Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "translate",
+    "desc": "(F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "translate",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "trn",
+    "desc": "(F F F)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   },
+   {
+    "name": "trn",
+    "desc": "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/math/Matrix4;",
+    "access": "public"
+   }
+  ],
+  "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;": [
+   {
+    "name": "<init>",
+    "desc": "(I I I)V",
+    "access": "public constructor",
+    "init_calls": [
+     "Ljava/lang/Object;-><init>()V",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->newPixmap([J",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->pixelPtr",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->pixelPtr",
+     "Lcom/badlogic/gdx/utils/GdxRuntimeException;-><init>(Ljava/lang/String;)V",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->basePtr",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->width",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->height",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->format"
+    ]
+   },
+   {
+    "name": "<init>",
+    "desc": "(Ljava/io/InputStream; I)V",
+    "access": "public constructor",
+    "init_calls": [
+     "Ljava/lang/Object;-><init>()V",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Ljava/io/ByteArrayOutputStream;-><init>(I)V",
+     "Ljava/io/InputStream;->read([B)I",
+     "Ljava/io/ByteArrayOutputStream;->write([B",
+     "Ljava/io/ByteArrayOutputStream;->toByteArray()[B",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->load([J",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->pixelPtr",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->pixelPtr",
+     "Ljava/lang/StringBuilder;-><init>()V",
+     "Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->getFailureReason()Ljava/lang/String;",
+     "Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+     "Ljava/lang/StringBuilder;->toString()Ljava/lang/String;",
+     "Ljava/io/IOException;-><init>(Ljava/lang/String;)V",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->basePtr",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->width",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->height",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->format",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->format",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->convert(I)V"
+    ]
+   },
+   {
+    "name": "<init>",
+    "desc": "(Ljava/nio/ByteBuffer; [J)V",
+    "access": "public constructor",
+    "init_calls": [
+     "Ljava/lang/Object;-><init>()V",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->pixelPtr",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->basePtr",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->width",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->height",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->format"
+    ]
+   },
+   {
+    "name": "<init>",
+    "desc": "([B I I I)V",
+    "access": "public constructor",
+    "init_calls": [
+     "Ljava/lang/Object;-><init>()V",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->load([J",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->pixelPtr",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->pixelPtr",
+     "Ljava/lang/StringBuilder;-><init>()V",
+     "Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->getFailureReason()Ljava/lang/String;",
+     "Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;",
+     "Ljava/lang/StringBuilder;->toString()Ljava/lang/String;",
+     "Ljava/io/IOException;-><init>(Ljava/lang/String;)V",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->basePtr",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->width",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->height",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->nativeData",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->format",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->format",
+     "Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;->convert(I)V"
+    ]
+   },
+   {
+    "name": "clear",
+    "desc": "(J I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "convert",
+    "desc": "(I)V",
+    "access": "private"
+   },
+   {
+    "name": "drawCircle",
+    "desc": "(J I I I I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "drawLine",
+    "desc": "(J I I I I I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "drawPixmap",
+    "desc": "(J J I I I I I I I I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "drawRect",
+    "desc": "(J I I I I I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "fillCircle",
+    "desc": "(J I I I I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "fillRect",
+    "desc": "(J I I I I I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "fillTriangle",
+    "desc": "(J I I I I I I I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "free",
+    "desc": "(J)V",
+    "access": "private static native"
+   },
+   {
+    "name": "getFailureReason",
+    "desc": "()Ljava/lang/String;",
+    "access": "public static native"
+   },
+   {
+    "name": "getPixel",
+    "desc": "(J I I)I",
+    "access": "private static native"
+   },
+   {
+    "name": "load",
+    "desc": "([J [B I I)Ljava/nio/ByteBuffer;",
+    "access": "private static native"
+   },
+   {
+    "name": "newPixmap",
+    "desc": "(I I I)Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;",
+    "access": "public static"
+   },
+   {
+    "name": "newPixmap",
+    "desc": "(Ljava/io/InputStream; I)Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap;",
+    "access": "public static"
+   },
+   {
+    "name": "newPixmap",
+    "desc": "([J I I I)Ljava/nio/ByteBuffer;",
+    "access": "private static native"
+   },
+   {
+    "name": "setBlend",
+    "desc": "(J I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "setPixel",
+    "desc": "(J I I I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "setScale",
+    "desc": "(J I)V",
+    "access": "private static native"
+   },
+   {
+    "name": "toGlFormat",
+    "desc": "(I)I",
+    "access": "public static"
+   },
+   {
+    "name": "toGlType",
+    "desc": "(I)I",
+    "access": "public static"
+   },
+   {
+    "name": "clear",
+    "desc": "(I)V",
+    "access": "public"
+   },
+   {
+    "name": "dispose",
+    "desc": "()V",
+    "access": "public"
+   },
+   {
+    "name": "drawCircle",
+    "desc": "(I I I I)V",
+    "access": "public"
+   },
+   {
+    "name": "drawLine",
+    "desc": "(I I I I I)V",
+    "access": "public"
+   },
+   {
+    "name": "drawPixmap",
+    "desc": "(Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap; I I I I I I)V",
+    "access": "public"
+   },
+   {
+    "name": "drawPixmap",
+    "desc": "(Lcom/badlogic/gdx/graphics/g2d/Gdx2DPixmap; I I I I I I I I)V",
+    "access": "public"
+   },
+   {
+    "name": "drawRect",
+    "desc": "(I I I I I)V",
+    "access": "public"
+   },
+   {
+    "name": "fillCircle",
+    "desc": "(I I I I)V",
+    "access": "public"
+   },
+   {
+    "name": "fillRect",
+    "desc": "(I I I I I)V",
+    "access": "public"
+   },
+   {
+    "name": "fillTriangle",
+    "desc": "(I I I I I I I)V",
+    "access": "public"
+   },
+   {
+    "name": "getFormat",
+    "desc": "()I",
+    "access": "public"
+   },
+   {
+    "name": "getFormatString",
+    "desc": "()Ljava/lang/String;",
+    "access": "public"
+   },
+   {
+    "name": "getGLFormat",
+    "desc": "()I",
+    "access": "public"
+   },
+   {
+    "name": "getGLInternalFormat",
+    "desc": "()I",
+    "access": "public"
+   },
+   {
+    "name": "getGLType",
+    "desc": "()I",
+    "access": "public"
+   },
+   {
+    "name": "getHeight",
+    "desc": "()I",
+    "access": "public"
+   },
+   {
+    "name": "getPixel",
+    "desc": "(I I)I",
+    "access": "public"
+   },
+   {
+    "name": "getPixels",
+    "desc": "()Ljava/nio/ByteBuffer;",
+    "access": "public"
+   },
+   {
+    "name": "getWidth",
+    "desc": "()I",
+    "access": "public"
+   },
+   {
+    "name": "setBlend",
+    "desc": "(I)V",
+    "access": "public"
+   },
+   {
+    "name": "setPixel",
+    "desc": "(I I I)V",
+    "access": "public"
+   },
+   {
+    "name": "setScale",
+    "desc": "(I)V",
+    "access": "public"
+   }
+  ]
+ },
+ "so": {
+  "Java_com_badlogic_gdx_backends_android_AndroidGL20_glUniformMatrix4fv__IIZLjava_nio_FloatBuffer_2@@Base": {
+   "env_calls": 4,
+   "slot_names": [
+    "GetDirectBufferAddress",
+    "GetIntField",
+    "ThrowNew"
+   ],
+   "detail": [
+    [
+     "1104b",
+     230,
+     "GetDirectBufferAddress"
+    ],
+    [
+     "11069",
+     100,
+     "GetIntField"
+    ],
+    [
+     "11082",
+     100,
+     "GetIntField"
+    ],
+    [
+     "110a9",
+     14,
+     "ThrowNew"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_backends_android_AndroidGL20_glUniformMatrix4fv__IIZ_3FI@@Base": {
+   "env_calls": 1,
+   "slot_names": [
+    "GetPrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "11103",
+     222,
+     "GetPrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load@@Base": {
+   "env_calls": 4,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "NewDirectByteBuffer",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "117a2",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "117ca",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ],
+    [
+     "117fe",
+     229,
+     "NewDirectByteBuffer"
+    ],
+    [
+     "11812",
+     222,
+     "GetPrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_newPixmap@@Base": {
+   "env_calls": 2,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "NewDirectByteBuffer"
+   ],
+   "detail": [
+    [
+     "118ae",
+     229,
+     "NewDirectByteBuffer"
+    ],
+    [
+     "118c2",
+     222,
+     "GetPrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_math_Matrix4_mul@@Base": {
+   "env_calls": 3,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "11d9b",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "11db0",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "11ed7",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_math_Matrix4_mulVec___3F_3F@@Base": {
+   "env_calls": 3,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "11f1b",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "11f30",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "11fd7",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_math_Matrix4_mulVec___3F_3FIII@@Base": {
+   "env_calls": 3,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "12035",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "1204a",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "12113",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_math_Matrix4_prj___3F_3F@@Base": {
+   "env_calls": 3,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "1216b",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "12180",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "12267",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_math_Matrix4_prj___3F_3FIII@@Base": {
+   "env_calls": 3,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "122c5",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "122da",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "123ee",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_math_Matrix4_rot___3F_3F@@Base": {
+   "env_calls": 3,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "1243b",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "12450",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "124e8",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_math_Matrix4_rot___3F_3FIII@@Base": {
+   "env_calls": 3,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "12545",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "1255a",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "12610",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_math_Matrix4_inv@@Base": {
+   "env_calls": 2,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "1265e",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "131f4",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ]
+   ]
+  },
+  "Java_com_badlogic_gdx_math_Matrix4_det@@Base": {
+   "env_calls": 2,
+   "slot_names": [
+    "GetPrimitiveArrayCritical",
+    "ReleasePrimitiveArrayCritical"
+   ],
+   "detail": [
+    [
+     "13227",
+     222,
+     "GetPrimitiveArrayCritical"
+    ],
+    [
+     "1324c",
+     223,
+     "ReleasePrimitiveArrayCritical"
+    ]
+   ]
+  }
+ },
+ "so_fn_count": 121
+}

@@ -158,6 +158,34 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
         case CallContext::Arg::Kind::OBJECT: {
             uint32_t arr = 0;
             std::string ed;
+            // ── S188-W18 F-NEW-605: the DIRECT-buffer pointer slot ──────
+            // A ByteBuffer minted from a native NewDirectByteBuffer
+            // (Gdx2DPixmap.load's pixel surface) has NO heap-array backing;
+            // it carries the REAL pointer in __bb_addr__ (+ __bb_cap__ /
+            // position / limit). Serving the real pointer is the honest
+            // upload law — the driver reads the app's actual decoded
+            // pixels. (The pre-W18 path answered marshal-fail → REC-MISS
+            // for every texture upload from a native-loaded pixmap.)
+            int64_t bb_addr = 0;
+            int32_t bb_cap = 0, bb_pos = 0;
+            if (heap->get_object_long_field(a.object_id, "__bb_addr__",
+                                            bb_addr) &&
+                bb_addr != 0 && heap->get_object_int_field(
+                                    a.object_id, "__bb_cap__", bb_cap)) {
+                heap->get_object_int_field(a.object_id, "position", bb_pos);
+                if (bb_pos < 0 || bb_cap <= 0 || bb_pos > bb_cap ||
+                    bb_cap > (16 << 20)) {
+                    m.ok = false;
+                    m.why = "direct-buffer bounds dishonest (cap=" +
+                            std::to_string(bb_cap) + " pos=" +
+                            std::to_string(bb_pos) + ")";
+                    gfx::GfxTrace::instance().marshal_fail(
+                        "GLES20", ctx.method, m.why);
+                    return false;
+                }
+                m.pa.push_back((const void*)(uintptr_t)(bb_addr + bb_pos));
+                break;
+            }
             if (!chase_buffer(heap, a.object_id, arr, ed)) {
                 m.ok = false;
                 m.why = "object arg not materializable (o#" +

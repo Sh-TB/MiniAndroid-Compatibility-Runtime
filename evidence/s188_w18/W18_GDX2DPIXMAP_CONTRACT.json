@@ -1,0 +1,46 @@
+{
+ "wave": "S188-W18",
+ "family": "LIBGDX primitive-array critical family (Matrix4 + Gdx2DPixmap share ONE JNI contract)",
+ "law": "CONTRACT PINNED BEFORE ANY SHIM (W8 law carried). The real libgdx.so already runs; it faults only on the JNI primitive-array critical family. No engine-side pixmap ledger is needed if the real natives run to completion.",
+ "evidence": {
+  "slot_222_identity": "JNIEnv slot 222 = GetPrimitiveArrayCritical (spec jni.h JNINativeInterface layout, 8 bytes/slot: 0x6f0/8=222). Live proof: p9_w17b.console.log lines 1014-1128 — Matrix4.mul/inv/prj AND Gdx2DPixmap.load all fault on slot 222 (UNSUPPORTED stub returns 0 -> native derefs NULL -> guarded SIGSEGV, FIX-TTT survives).",
+  "so_call_face": {
+   "oracle": "objdump -d x86_64 libgdx.so (p9 extracted, /tmp/p9w17_store/.../lib/x86_64/libgdx.so) — call *0xNN(%rax) env-table offsets",
+   "Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load": [
+    "222 GetPrimitiveArrayCritical (encodedData byte[])",
+    "223 ReleasePrimitiveArrayCritical (encodedData, mode 0)",
+    "229 NewDirectByteBuffer (pixmap->pixels, w*h*bpp)",
+    "222 GetPrimitiveArrayCritical (pdata long[])",
+    "223 ReleasePrimitiveArrayCritical (pdata, mode 0 — WRITEBACK)"
+   ],
+   "Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_newPixmap": [
+    "229 NewDirectByteBuffer",
+    "222 GetPrimitiveArrayCritical (pdata long[])"
+   ],
+   "Matrix4_family": "mul/inv/det/mulVec/prj/rot ([F... variants): GetPrimitiveArrayCritical on the float[] args + ReleasePrimitiveArrayCritical mode 0 — results are written INTO the arrays at Release (the natives are void/boolean with array-out semantics).",
+   "AndroidGL20_glUniformMatrix4fv_float_array_variant": "222/223 (routes through F-NEW-602 to the GLES20 driver before the real-symbol attempt; no new demand)"
+  },
+  "load_disassembly_proof": {
+   "address": "0x11780 Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load@@Base",
+   "pdata_writeback_law": "pdata[0]=(jlong)pixmap struct ptr, pdata[1]=width, pdata[2]=height, pdata[3]=format (11818-11830: mov %r15,(%rax); mov %edx->0x8; shr %rcx->0x10; 0x8(%r15)->0x18)",
+   "pixmap_struct": "+0 packed (width|height<<32), +8 format, +0x18 pixels pointer",
+   "java_side_reads": "Gdx2DPixmap.<init> reads basePtr=nativeData[0], width=nativeData[1], height=nativeData[2], format=nativeData[3] (androguard init_calls) — then convert(format)."
+  },
+  "dex_native_face": {
+   "oracle": "androguard (primary DEX oracle) on p9 classes.dex",
+   "Gdx2DPixmap_natives": [
+    "load ([J [B I I)Ljava/nio/ByteBuffer;",
+    "newPixmap ([J I I I)Ljava/nio/ByteBuffer;",
+    "getFailureReason ()Ljava/lang/String;",
+    "getPixel (J I I)I", "setPixel (J I I I)V", "clear (J I)V",
+    "drawLine (J I I I I I)V", "drawRect (J I I I I I)V",
+    "drawCircle (J I I I I)V", "fillCircle (J I I I I)V",
+    "fillRect (J I I I I I)V", "fillTriangle (J I I I I I I I)V",
+    "drawPixmap (J J I I I I I I I I)V", "setBlend (J I)V",
+    "setScale (J I)V", "free (J)V"
+   ],
+   "pointer_law": "every instance raster native takes (J nativeData[0], ...) — the REAL pixmap struct malloc pointer passed as a plain jlong. With load/newPixmap real, the whole raster family runs on REAL memory with ZERO marshal changes (call_native push_int for 'J' args)."
+  },
+  "return_marshal_hazard": "call_native case 'L' currently answers: NativeObjArray -> STRING_ARRAY, else -> STRING (deref of an arbitrary pointer as std::string*). Gdx2DPixmap.load returns the NewDirectByteBuffer box (DirectBufferBox*) — a fabricated std::string read is a REAL crash hazard the moment slots 222/223 land. The marshal must learn the direct-buffer return kind in the SAME wave."
+ }
+}

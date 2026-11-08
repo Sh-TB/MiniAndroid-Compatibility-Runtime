@@ -737,6 +737,28 @@ bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
     if (!addr || !cap || oid == 0) return false;
     DalvikHeap& heap = get_heap_public();
     if (!heap.has_object(oid)) return false;
+    // ── S188-W18 F-NEW-605: the DIRECT fast path ─────────────────────────
+    // A ByteBuffer minted from a native NewDirectByteBuffer (or carrying a
+    // native pixel surface, Gdx2DPixmap.load) stores the REAL pointer in
+    // __bb_addr__ — serve it verbatim (no snapshot copy: the pointer IS
+    // the memory, and a copy would lie about the address identity).
+    auto addr_v = heap.get_object_field(oid, "__bb_addr__");
+    if (addr_v.has_value() && addr_v->type == DalvikType::INT64 &&
+        addr_v->long_val != 0) {
+        auto cap_v = heap.get_object_field(oid, "__bb_cap__");
+        size_t bcap = (cap_v.has_value() && cap_v->type == DalvikType::INT32 &&
+                       cap_v->int_val > 0)
+                          ? (size_t)cap_v->int_val
+                          : 0;
+        *addr = (void*)(uintptr_t)addr_v->long_val;
+        *cap = bcap;
+        static thread_local uint64_t n = 0;
+        if (n++ < 8)
+            std::cerr << "[F-NEW-605] direct-buffer oid=" << oid
+                      << " served REAL addr=" << *addr << " cap=" << bcap
+                      << " (no copy)" << std::endl;
+        return true;
+    }
     auto cap_v = heap.get_object_field(oid, "__bb_cap__");
     int32_t bcap = (cap_v.has_value() && cap_v->type == DalvikType::INT32)
                        ? cap_v->int_val : 0;
@@ -766,6 +788,203 @@ bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
         std::cerr << "[F-NEW-590] direct-buffer oid=" << oid
                   << " snapshot cap=" << bcap << " (REAL malloc memory)"
                   << std::endl;
+    return true;
+}
+
+// ── S188-W18 F-NEW-605: primitive-array critical family ────────────────
+// The JNI criticals (slots 222/223) need byte-packed contiguous memory;
+// the DEX heap stores arrays as name-keyed "array[i]" fields. Snapshot
+// packs; write-back commits with per-element memcmp skip (the encodedData
+// face is released unmodified) and per-element TYPE PRESERVATION (the
+// F-028 law: float[] elements may sit as FLOAT32 values or INT32 raw
+// bits — a committed element keeps the storage convention it had).
+namespace {
+
+// Byte-packed element size per array descriptor.
+inline size_t w18_elem_bytes(const std::string& desc) {
+    if (desc == "[J") return 8;
+    if (desc == "[I" || desc == "[F") return 4;
+    if (desc == "[S" || desc == "[C") return 2;
+    return 1;  // [B and everything else honest-bounded
+}
+
+inline uint32_t w18_array_count(DalvikHeap& heap, uint32_t oid) {
+    auto len_v = heap.get_object_field(oid, "__array_length__");
+    if (len_v.has_value() && len_v->type == DalvikType::INT32 &&
+        len_v->int_val >= 0)
+        return (uint32_t)len_v->int_val;
+    return 0;
+}
+
+}  // namespace
+
+bool DalvikExecutionEngine::f590_primitive_array(uint32_t oid, void** addr,
+                                                 size_t* byte_len) {
+    if (!addr || !byte_len || oid == 0) return false;
+    DalvikHeap& heap = get_heap_public();
+    if (!heap.has_object(oid)) return false;
+    std::string desc;
+    if (!heap.get_object_class(oid, desc) || desc.empty() || desc[0] != '[')
+        return false;
+    if (desc == "[L" || desc.size() > 1 && desc[1] == 'L')
+        return false;  // object arrays are not primitive criticals
+    const uint32_t count = w18_array_count(heap, oid);
+    if (count == 0) return false;
+    const size_t eb = w18_elem_bytes(desc);
+    const size_t total = (size_t)count * eb;
+    // bound: pixmaps/asset buffers are ≤ a few MB; a pathological count
+    // fails honestly instead of freezing the run on millions of lookups.
+    if (total > (32u << 20)) {
+        static thread_local uint64_t n = 0;
+        if (n++ < 4)
+            std::cerr << "[F-NEW-605] array oid=" << oid << " " << desc
+                      << " total=" << total
+                      << "B exceeds the 32MB critical bound — honest fail"
+                      << std::endl;
+        return false;
+    }
+    uint8_t* buf = (uint8_t*)malloc(total ? total : 1);
+    if (!buf) return false;
+    std::memset(buf, 0, total);
+    for (uint32_t i = 0; i < count; ++i) {
+        auto v = heap.get_object_field(oid, "array[" + std::to_string(i) + "]");
+        uint8_t* dst = buf + (size_t)i * eb;
+        if (!v.has_value()) continue;
+        switch (eb) {
+            case 8:
+                if (v->type == DalvikType::INT64)
+                    std::memcpy(dst, &v->long_val, 8);
+                else if (v->type == DalvikType::INT32) {
+                    int64_t w = v->int_val;
+                    std::memcpy(dst, &w, 8);
+                }
+                break;
+            case 4:
+                if (v->type == DalvikType::FLOAT32)
+                    std::memcpy(dst, &v->float_val, 4);
+                else if (v->type == DalvikType::INT32)
+                    std::memcpy(dst, &v->int_val, 4);
+                break;
+            case 2: {
+                int32_t x = v->type == DalvikType::INT32 ? v->int_val : 0;
+                uint16_t h = desc == "[C" ? (uint16_t)(uint32_t)x
+                                          : (uint16_t)(int16_t)x;
+                std::memcpy(dst, &h, 2);
+                break;
+            }
+            case 1: {
+                int32_t x = v->type == DalvikType::INT32 ? v->int_val : 0;
+                *dst = (uint8_t)x;
+                break;
+            }
+        }
+    }
+    *addr = buf;
+    *byte_len = total;
+    static thread_local uint64_t n = 0;
+    if (n++ < 12)
+        std::cerr << "[F-NEW-605] array oid=" << oid << " " << desc
+                  << " snapshot " << count << " elems (" << total
+                  << "B, REAL malloc copy)" << std::endl;
+    return true;
+}
+
+bool DalvikExecutionEngine::f590_primitive_array_write(uint32_t oid,
+                                                       const void* data,
+                                                       size_t byte_len) {
+    if (!data || oid == 0 || byte_len == 0) return false;
+    DalvikHeap& heap = get_heap_public();
+    if (!heap.has_object(oid)) return false;
+    std::string desc;
+    if (!heap.get_object_class(oid, desc) || desc.empty() || desc[0] != '[' ||
+        (desc.size() > 1 && desc[1] == 'L'))
+        return false;
+    const uint32_t count = w18_array_count(heap, oid);
+    const size_t eb = w18_elem_bytes(desc);
+    if (count == 0 || (size_t)count * eb > byte_len) return false;
+    const uint8_t* src = (const uint8_t*)data;
+    uint32_t committed = 0;
+    for (uint32_t i = 0; i < count; ++i) {
+        const std::string fname = "array[" + std::to_string(i) + "]";
+        const uint8_t* s = src + (size_t)i * eb;
+        auto cur = heap.get_object_field(oid, fname);
+        // per-element skip: identical content → no map write
+        if (cur.has_value()) {
+            bool same = false;
+            switch (eb) {
+                case 8:
+                    same = cur->type == DalvikType::INT64 &&
+                           std::memcmp(&cur->long_val, s, 8) == 0;
+                    break;
+                case 4:
+                    same = cur->type == DalvikType::FLOAT32
+                               ? std::memcmp(&cur->float_val, s, 4) == 0
+                               : (cur->type == DalvikType::INT32 &&
+                                  std::memcmp(&cur->int_val, s, 4) == 0);
+                    break;
+                case 2: {
+                    int32_t x = cur->type == DalvikType::INT32
+                                    ? cur->int_val : -1;
+                    same = desc == "[C"
+                               ? x == (int32_t)(uint16_t)(*s |
+                                  ((*(s + 1)) << 8))
+                               : x == (int32_t)(int16_t)(*s |
+                                  ((*(s + 1)) << 8));
+                    break;
+                }
+                case 1:
+                    same = cur->type == DalvikType::INT32 &&
+                           cur->int_val == (int32_t)(int8_t)*s;
+                    break;
+            }
+            if (same) continue;
+        }
+        switch (eb) {
+            case 8: {
+                int64_t w;
+                std::memcpy(&w, s, 8);
+                heap.set_object_field(
+                    oid, fname, DalvikValue::make_long(w));
+                break;
+            }
+            case 4: {
+                DalvikType t = cur.has_value() ? cur->type
+                                               : DalvikType::FLOAT32;
+                if (t == DalvikType::FLOAT32) {
+                    float f;
+                    std::memcpy(&f, s, 4);
+                    heap.set_object_field(oid, fname,
+                                          DalvikValue::make_float(f));
+                } else {
+                    int32_t x;
+                    std::memcpy(&x, s, 4);
+                    heap.set_object_field(oid, fname,
+                                          DalvikValue::make_int(x));
+                }
+                break;
+            }
+            case 2: {
+                int16_t h;
+                std::memcpy(&h, s, 2);
+                heap.set_object_field(
+                    oid, fname,
+                    DalvikValue::make_int(desc == "[C" ? (int32_t)(uint16_t)h
+                                                       : (int32_t)h));
+                break;
+            }
+            case 1: {
+                heap.set_object_field(
+                    oid, fname, DalvikValue::make_int((int32_t)(int8_t)*s));
+                break;
+            }
+        }
+        ++committed;
+    }
+    static thread_local uint64_t n = 0;
+    if (n++ < 12)
+        std::cerr << "[F-NEW-605] array oid=" << oid << " " << desc
+                  << " commit " << committed << "/" << count
+                  << " changed elements" << std::endl;
     return true;
 }
 
@@ -870,6 +1089,19 @@ DalvikExecutionEngine::DalvikExecutionEngine()
                                  size_t* cap) -> bool {
             return g_f590_engine &&
                    g_f590_engine->f590_direct_buffer_snapshot(oid, addr, cap);
+        };
+        // S188-W18 F-NEW-605: the primitive-array critical family (JNI
+        // slots 222/223) — Matrix4 + Gdx2DPixmap snapshot/commit.
+        hooks.primitive_array = [](uint32_t oid, void** addr,
+                                   size_t* byte_len) -> bool {
+            return g_f590_engine &&
+                   g_f590_engine->f590_primitive_array(oid, addr, byte_len);
+        };
+        hooks.primitive_array_write = [](uint32_t oid, const void* data,
+                                         size_t byte_len) -> bool {
+            return g_f590_engine &&
+                   g_f590_engine->f590_primitive_array_write(oid, data,
+                                                             byte_len);
         };
         nativeexec::set_engine_hooks(hooks);
     }
@@ -13080,6 +13312,43 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                                        "Lnative_result;")
                                                  : DalvikValue::make_null();
                                 break;
+                            case nativeexec::JOutcome::Kind::BYTE_BUFFER: {
+                                // S188-W18 F-NEW-605: the native minted a
+                                // DIRECT ByteBuffer (Gdx2DPixmap.load — the
+                                // pixmap pixel surface). Mint a DEX
+                                // ByteBuffer whose __bb_addr__ carries the
+                                // REAL pointer — the GLES20 marshal serves
+                                // uploads from it; position/limit follow
+                                // the NewDirectByteBuffer contract (pos=0,
+                                // lim=cap).
+                                const uint32_t bb605 = heap_.allocate(
+                                    "Ljava/nio/ByteBuffer;", pc_,
+                                    call_stack_.empty()
+                                        ? 0
+                                        : call_stack_.top().frame_id);
+                                DalvikValue addr605;
+                                addr605.type = DalvikType::INT64;
+                                addr605.long_val = (int64_t)out.bb_addr;
+                                heap_.set_object_field(bb605, "__bb_addr__",
+                                                       addr605);
+                                heap_.set_object_field(
+                                    bb605, "__bb_cap__",
+                                    DalvikValue::make_int(
+                                        (int32_t)out.bb_cap));
+                                heap_.set_object_field(
+                                    bb605, "position",
+                                    DalvikValue::make_int(0));
+                                heap_.set_object_field(
+                                    bb605, "limit",
+                                    DalvikValue::make_int(
+                                        (int32_t)out.bb_cap));
+                                heap_.set_object_field(
+                                    bb605, "__bb_direct__",
+                                    DalvikValue::make_int(1));
+                                return_val = DalvikValue::make_object(
+                                    bb605, "Ljava/nio/ByteBuffer;");
+                                break;
+                            }
                         }
                         log("🔌 S2-NATIVE DISPATCH: " + class_descriptor + "." +
                             method_name + " → " + out.provenance);

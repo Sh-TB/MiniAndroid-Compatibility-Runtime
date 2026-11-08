@@ -1057,6 +1057,99 @@ int64_t jni_GetDirectBufferCapacity(void*, void* buf) {
     return 0;
 }
 
+// ─────────────────────────────────────────────────────────────────────
+// S188-W18 F-NEW-605 — the primitive-array critical family (spec slots
+// 222 GetPrimitiveArrayCritical / 223 ReleasePrimitiveArrayCritical).
+// LIVE DEMAND (evidence/s188_w18/W18_GDX2DPIXMAP_CONTRACT.json, objdump
+// call-face of the APK's own libgdx.so + p9_w17b console faults):
+//   • Matrix4.mul/inv/det/mulVec/prj/rot ([F variants): Get on the
+//     float[] args, math on the bytes, Release mode 0 WRITES RESULTS
+//     back into the arrays (void/boolean out-by-array semantics).
+//   • Gdx2DPixmap.load: Get(encodedData byte[]) -> gdx2d_load ->
+//     Release(encodedData) -> NewDirectByteBuffer(pixels) -> Get(pdata
+//     long[]) -> pdata[0..3] = {pixmap ptr, width, height, format} ->
+//     Release(pdata) -> return the ByteBuffer.
+//   • Gdx2DPixmap.newPixmap: Get(pdata) + NewDirectByteBuffer.
+// LAW (JNI spec): GetPrimitiveArrayCritical may answer a COPY
+// (is_copy=JNI_TRUE); between Get and Release the native must not call
+// other JNI functions — libgdx honors this. Release mode: 0 → write
+// back + free, JNI_COMMIT (1) → write back, JNI_ABORT (2) → free only.
+// The array arrives as the tagged-oid 0x500000000|oid (call_native
+// marshal); the DEX heap cannot offer contiguous storage, so the
+// engine-side primitive_array/primitive_array_write hooks snapshot and
+// commit (the memcmp skip avoids pointless writebacks for read-only
+// criticals — the load encodedData face).
+// ─────────────────────────────────────────────────────────────────────
+struct CriticalArrayBox {
+    uint32_t oid;
+    void* copy;
+    size_t len;
+};
+static std::vector<CriticalArrayBox*>& critical_array_boxes() {
+    static std::vector<CriticalArrayBox*> v;
+    return v;
+}
+static std::mutex g_critical_mu;
+static CriticalArrayBox* as_critical_box(void* p) {
+    if (!p) return nullptr;
+    std::lock_guard<std::mutex> lk(g_critical_mu);
+    for (CriticalArrayBox* b : critical_array_boxes())
+        if (b->copy == p) return b;
+    return nullptr;
+}
+static void* jni_GetPrimitiveArrayCritical(void*, void* arr,
+                                           unsigned char* is_copy) {
+    if (!arr) return nullptr;  // JNI spec: null array → NULL
+    uintptr_t v = (uintptr_t)arr;
+    if ((v >> 32) != 5) return nullptr;  // not a tagged DEX heap handle
+    uint32_t oid = (uint32_t)(v & 0xffffffffull);
+    void* addr = nullptr;
+    size_t len = 0;
+    if (!g_f590_hooks.primitive_array ||
+        !g_f590_hooks.primitive_array(oid, &addr, &len) || !addr) {
+        static thread_local uint64_t n = 0;
+        if (n++ < 8)
+            fprintf(stderr,
+                    "[F-NEW-605] GetPrimitiveArrayCritical(oid=%u) not a "
+                    "live DEX primitive array — answering NULL (spec)\n",
+                    oid);
+        return nullptr;
+    }
+    if (is_copy) *is_copy = 1;  // copy semantics — spec-legal
+    CriticalArrayBox* b = new CriticalArrayBox{oid, addr, len};
+    {
+        std::lock_guard<std::mutex> lk(g_critical_mu);
+        critical_array_boxes().push_back(b);
+    }
+    static thread_local uint64_t n = 0;
+    if (n++ < 12)
+        fprintf(stderr,
+                "[F-NEW-605] GetPrimitiveArrayCritical(oid=%u) snapshot "
+                "len=%zu\n", oid, len);
+    return addr;
+}
+static void jni_ReleasePrimitiveArrayCritical(void*, void* arr, void* cdata,
+                                              int32_t mode) {
+    (void)arr;
+    CriticalArrayBox* b = as_critical_box(cdata);
+    if (!b) return;  // mismatched release — nothing to commit
+    if (mode != 2 /* JNI_ABORT */ && g_f590_hooks.primitive_array_write) {
+        // The write hook snapshots the CURRENT element content and skips
+        // untouched elements (memcmp per element) — the load encodedData
+        // face releases unmodified byte[] at near-zero cost, the Matrix4
+        // face commits the modified float[] elements.
+        g_f590_hooks.primitive_array_write(b->oid, b->copy, b->len);
+    }
+    {
+        std::lock_guard<std::mutex> lk(g_critical_mu);
+        auto& v = critical_array_boxes();
+        for (size_t i = 0; i < v.size(); ++i)
+            if (v[i] == b) { v.erase(v.begin() + (long)i); break; }
+    }
+    std::free(b->copy);
+    delete b;
+}
+
 }  // anonymous namespace — JNI internals stay TU-local
 
 // F-NEW-590: engine hook setter — the ONE external symbol of this block
@@ -1149,6 +1242,10 @@ void init_tables() {
     // F-NEW-590 (W10): the direct-Buffer family — W9 census env230=4
     // (DartMessenger platform messages into libflutter's native
     // dispatch); 229/231 complete the family.
+// ── S188-W18 F-NEW-605: the primitive-array critical family — the W16
+// census slot (p9 ×N Matrix4 + Gdx2DPixmap.load/newPixmap).
+    g_jni_table[222] = (void*)&jni_GetPrimitiveArrayCritical;   // 222 GetPrimitiveArrayCritical
+    g_jni_table[223] = (void*)&jni_ReleasePrimitiveArrayCritical; // 223 ReleasePrimitiveArrayCritical
     g_jni_table[229] = (void*)&jni_NewDirectByteBuffer;     // 229 NewDirectByteBuffer
     g_jni_table[230] = (void*)&jni_GetDirectBufferAddress;  // 230 GetDirectBufferAddress (W9 census: queens ×4)
     g_jni_table[231] = (void*)&jni_GetDirectBufferCapacity; // 231 GetDirectBufferCapacity
@@ -1654,6 +1751,20 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
             if (!ref) {
                 out.kind = JOutcome::Kind::OBJECT;
                 out.object_id = 0;
+            } else if (DirectBufferBox* db = as_direct_buffer_box(ref)) {
+                // S188-W18 F-NEW-605: a native-minted DIRECT ByteBuffer
+                // (NewDirectByteBuffer — Gdx2DPixmap.load's pixel surface).
+                // Surface the {addr,cap} honestly; the engine mints a DEX
+                // ByteBuffer whose __bb_addr__ carries the REAL pointer.
+                // (The pre-W18 tail deref'd this box as a std::string* —
+                // a fabricated object read that crashed on the first
+                // successful pixmap load.)
+                out.kind = JOutcome::Kind::BYTE_BUFFER;
+                out.bb_addr = (uint64_t)(uintptr_t)db->addr;
+                out.bb_cap = (uint64_t)db->cap;
+                fprintf(stderr,
+                        "[F-NEW-605] native direct-ByteBuffer return: "
+                        "addr=%p cap=%zu\n", db->addr, db->cap);
             } else if (NativeObjArray* arr = as_obj_array(ref)) {
                 // F-C4-587 (W10): a native-built jobjectArray → the engine
                 // mints a real DEX array (STRING_ARRAY outcome). Elements

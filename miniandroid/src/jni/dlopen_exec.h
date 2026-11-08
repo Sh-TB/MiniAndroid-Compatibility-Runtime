@@ -72,11 +72,22 @@ struct JArg {
 // Invocation result (return type per DEX descriptor).
 struct JOutcome {
     enum class Kind { VOID, INT, LONG, FLOAT, DOUBLE, BOOLEAN, CHAR, SHORT,
-                      BYTE, STRING, OBJECT, STRING_ARRAY } kind = Kind::VOID;
+                      BYTE, STRING, OBJECT, STRING_ARRAY,
+                      // S188-W18 F-NEW-605: a native library returned a
+                      // DIRECT java.nio.ByteBuffer it minted through
+                      // NewDirectByteBuffer (Gdx2DPixmap.load — the pixmap
+                      // pixel surface). The engine mints a DEX ByteBuffer
+                      // whose __bb_addr__ carries the REAL pointer.
+                      BYTE_BUFFER } kind = Kind::VOID;
     int64_t i = 0;           // INT/LONG/BOOLEAN/CHAR/SHORT/BYTE
     double d = 0.0;          // FLOAT/DOUBLE
     std::string str;         // STRING (materialized from the native side)
     uint32_t object_id = 0;  // OBJECT
+    // S188-W18 F-NEW-605: BYTE_BUFFER payload — the {addr, cap} the native
+    // passed to NewDirectByteBuffer (addr is REAL malloc memory owned by
+    // the library, e.g. the pixmap pixel block).
+    uint64_t bb_addr = 0;
+    uint64_t bb_cap = 0;
     // F-C4-587 (W10): STRING_ARRAY — a jobjectArray of jstring built by a
     // native library through NewObjectArray/SetObjectArrayElement. Elements
     // are the string payloads; a null element is carried as the empty
@@ -154,6 +165,23 @@ struct EngineHooks {
     // Snapshot a DEX ByteBuffer's bytes into malloc memory. Returns false
     // when the oid is not a live DEX ByteBuffer (caller answers honestly).
     bool (*direct_buffer)(uint32_t oid, void** addr, size_t* cap) = nullptr;
+    // ── S188-W18 F-NEW-605: the primitive-array critical family ──────────
+    // (slots 222/223 — live demand: libgdx.so Matrix4.mul/inv/det/mulVec/
+    // prj/rot + Gdx2DPixmap.load/newPixmap; evidence/
+    // s188_w18/W18_GDX2DPIXMAP_CONTRACT.json).
+    // Snapshot a DEX primitive array ("[B"/"[F"/"[I"/"[J"/"[S") into
+    // byte-packed malloc memory (element type from the array descriptor;
+    // float elements may sit as FLOAT32 values or INT32 raw bits — both
+    // pack as their raw bits, the F-028 law). Returns false when oid is
+    // not a live DEX primitive array (the JNI layer answers NULL — spec).
+    bool (*primitive_array)(uint32_t oid, void** addr, size_t* byte_len) = nullptr;
+    // Write byte-packed elements back into the DEX primitive array (the
+    // ReleasePrimitiveArrayCritical mode-0 contract). Type-preserving per
+    // element: an element that sat as FLOAT32 is written back FLOAT32
+    // (new bits), one that sat as INT32 raw bits stays INT32. Returns
+    // false when oid is not a live DEX primitive array.
+    bool (*primitive_array_write)(uint32_t oid, const void* data,
+                                  size_t byte_len) = nullptr;
 };
 void set_engine_hooks(const EngineHooks& hooks);
 

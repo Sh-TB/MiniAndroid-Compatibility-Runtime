@@ -2525,6 +2525,16 @@ public:
     // Capacity then serve. false = oid is not a live DEX ByteBuffer.
     bool f590_direct_buffer_snapshot(uint32_t oid, void** addr, size_t* cap);
 
+    // ── S188-W18 F-NEW-605 — primitive-array critical family ────────────
+    // (JNI slots 222/223: libgdx.so Matrix4.mul/inv/det/mulVec/prj/rot +
+    // Gdx2DPixmap.load/newPixmap — evidence/s188_w18/
+    // W18_GDX2DPIXMAP_CONTRACT.json). The DEX heap stores arrays as
+    // name-keyed "array[i]" fields; the JNI criticals need byte-packed
+    // contiguous memory, so the engine snapshots and commits.
+    bool f590_primitive_array(uint32_t oid, void** addr, size_t* byte_len);
+    bool f590_primitive_array_write(uint32_t oid, const void* data,
+                                    size_t byte_len);
+
     // F-NEW-590 read-only static-storage walk (name-keyed query support).
     template <class F>
     void f590_for_each_static(F&& f) const {
