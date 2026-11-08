@@ -4645,7 +4645,15 @@ CallResult LooperShadow::dispatch(const CallContext& ctx) {
         int64_t now = 0;
         if (registry_) {
             if (auto* hs = registry_->find_as<HandlerShadow>())
-                now = hs->virtual_now_ms();
+                // F-NEW-621 (S200 device-clock law): app-visible absolute
+                // time = persisted device boot base + local virtual now.
+                // The base makes elapsedRealtime monotonic ACROSS runs that
+                // share a data-root (AOSP: monotonic since device boot,
+                // shared by every process) — microtimer v8 restores its
+                // persisted Alarm.expires_ms against the same non-rewinding
+                // clock it was written with. Looper scheduling stays on the
+                // raw local clock; this is the one offset boundary.
+                now = hs->device_now_ms();
         }
         if (m == "elapsedRealtime" || m == "uptimeMillis" ||
             m == "elapsedRealtimeNanos") {

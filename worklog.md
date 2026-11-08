@@ -8673,3 +8673,37 @@ verified fix away.
 GitHub feedback comments posted: #557 6726426857, #566 6726427049,
 #521 6726427227, #492 6726427444. Deliverables: evidence/s199/S199_*.md
 (9 documents, identity-refreshed). Commits b2e21ae3..c7981eb7 on main.
+
+## S200 P0 TARGET A — microtimer END-TO-END (first complete real app)
+
+Directive S200 received; the feedback cycle was completed FIRST (golden
+rule): 6 comments pushed (C2 #450 6726695753, C5 #505 6726696168, C6
+#515 6726696558, C7 #520 6726696979, C8 #519 6726697377, S200 kickoff
+#536 6726697774) — coders 2-9 now 8/8 covered.
+
+microtimer (dubrowgn.microtimer v8) declared core feature 100% VERIFIED
+on binary 96329a7ad50819d0: keypad entry -> label, START -> Room/SQLite
+INSERT + TimerControl row (viewtree-proven [0,0 1080x126]), Handler
+countdown (00:00:10 -> 09 in frames), pause FREEZES (0 px churn), resume
+RETIckS (via the swapped-in btnResume object 270 — the tap hit the
+re-parented view), delete removes the row, cold restart restores it from
+SQLite (direct sqlite3: alarm row (10,10,1,12290), room_master_table).
+Gates A-M in evidence/s200/S200_MICROTIMER_E2E.md; 3+1 equivalent clean
+runs, 0 uncaught. Acceptance written BEFORE the fix; probe on the
+UNMODIFIED 97628b00d237f9eb binary surfaced the first divergence.
+
+F-NEW-621 DEVICE-CLOCK LAW (the fix, shared): SystemClock.elapsedRealtime
+now = persisted device boot base (per data-root, <root>/data/system/
+device_clock) + local virtual now; AOSP monotonic-since-boot semantics
+across runs; offset only at the SystemClock boundary (Looper scheduling
+untouched). Before: restored expires_ms sat in the rewound future ->
+UInt wrap -> instant expiry (00:00:00 on restore). After: 00:00:07
+restore, ticking.
+
+GATES on 96329a7ad50819d0 (fresh stores): goldens 3/3 ALL HOLD (bouncy
+8a6c24ac / unote 3b8dcb0a / dooz 31ddd4d5 — dooz uncaught=6 standing
+baseline, pin unchanged), floor 11/11 CLEAN, gmdice 5-tap PASS (5
+distinct states, rerun identical).
+
+NEXT: Target B tictactoe (GLES bridge: VBO attrib bind, glGetActiveAttrib
+dispatch, re-arm), then SQLite battery + C2 next-10 ranking intake.

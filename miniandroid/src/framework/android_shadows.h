@@ -693,6 +693,20 @@ public:
     void advance_virtual(int64_t delta_ms);  // step the clock forward
     int64_t virtual_now_ms() const { return virtual_now_ms_; }
 
+    // F-NEW-621 (S200 device-clock law): AOSP SystemClock.elapsedRealtime()
+    // is monotonic SINCE DEVICE BOOT and shared by every process on the
+    // device. This runtime emulates a device == the data-root: the boot
+    // base persists there, so absolute-time math persisted by a previous
+    // run (microtimer Alarm.expires_ms = ERT + N, stopwatch splits)
+    // restores against a clock that never rewinds. The base lives OUTSIDE
+    // the Looper timeline — scheduling (ready_at_ms) stays on the local
+    // virtual clock; the offset is applied ONLY at the SystemClock
+    // boundary (device_now_ms). One clock, one authority, one offset.
+    void set_device_boot_base_ms(int64_t base) { device_boot_base_ms_ = base; }
+    int64_t device_now_ms() const {
+        return device_boot_base_ms_ + virtual_now_ms_;
+    }
+
     // M3 F-ROOM-CHAIN (AG, 2026-09-08): due-probe for the drain loops.
     // AOSP law: MessageQueue.next() re-evaluates `when` against the Looper
     // clock between dispatch rounds. A runnable that re-posts with
@@ -761,6 +775,9 @@ private:
     std::deque<QueuedRunnable> queue_;
     uint32_t next_seq_ = 0;
     int64_t virtual_now_ms_ = 0;   // deterministic Looper time (ms)
+    // F-NEW-621: persisted device boot base (ms) — additive offset at the
+    // SystemClock boundary only; never touches Looper scheduling math.
+    int64_t device_boot_base_ms_ = 0;
     // [S193-C8] F-C8-181 due-time channel state (per-drain-batch map —
     // the dispatch of a batch happens immediately after its drain).
     std::map<uint32_t, int64_t> drained_due_;

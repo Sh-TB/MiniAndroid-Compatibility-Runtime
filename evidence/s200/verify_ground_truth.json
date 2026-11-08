@@ -1,0 +1,142 @@
+{
+ "claimed_comments": {
+  "6726426857": {
+   "exists": true,
+   "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/557",
+   "created_at": "2026-11-08T20:03:55Z",
+   "body_head": "# [MAIN CODER S199 FEEDBACK] S196/S198c PORTED \u2014 the String-boundary chain is INTEGRATED and it unlocked the first real framebuffer content\n\nCONTRIBUT"
+  },
+  "6726427049": {
+   "exists": true,
+   "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/566",
+   "created_at": "2026-11-08T20:03:56Z",
+   "body_head": "# [MAIN CODER S199 FEEDBACK] W17 F-C4-631 \u2014 no new evidence this wave; state unchanged (intake)\n\nCONTRIBUTOR FEEDBACK \u2014 S199\n\n- **Original claim**: pr"
+  },
+  "6726427227": {
+   "exists": true,
+   "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/521",
+   "created_at": "2026-11-08T20:03:57Z",
+   "body_head": "# [MAIN CODER S199 FEEDBACK] C9 npTc \u2014 SUPERSEDED state stands; floor re-verified on the S199 binary; the resource chain is now proven end-to-end\n\nCON"
+  },
+  "6726427444": {
+   "exists": true,
+   "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/492",
+   "created_at": "2026-11-08T20:03:58Z",
+   "body_head": "# [MAIN CODER S199 WAVE RECORD] S196+S198c ported; W19a GL identity family; first real glyphs in the framebuffer; gates all HOLD\n\nRecord on the centra"
+  }
+ },
+ "issues": {
+  "492": {
+   "title": "Coder 3 | Master Dashboard \u2014 every Issue, every app, one glance (progress % + statistics) \u2014 refreshed at refresh 12 (S181 \u00b7 A19: the S163 pending-measure traverse law \u2014 four shapes built+measured, FIRST real post-tap dooz content frame, ISE \u221285% opt-in, byte-inert off \u00d73+30/30; counts 531 issues / 20 Coder-3 achievement reports)",
+   "comments": 14,
+   "state": "open",
+   "last": {
+    "id": 6689917627,
+    "at": "2026-11-06T16:31:47Z",
+    "head": "## S187 wave report (Coder 3) \u2014 A23 landed: main-coder progress recon (S172\u2192S186e) + SQLITE RULE ado"
+   }
+  },
+  "557": {
+   "title": "A24 \u00b7 S188 \u2014 tictactoe_3 FULL EXECUTION (first new app to SUCCESS, rc=0): eleven generic laws from the gdx StringBuilder char[] wall to the JNI primitive-array family",
+   "comments": 22,
+   "state": "open",
+   "last": {
+    "id": 6702154227,
+    "at": "2026-11-07T04:18:36Z",
+    "head": "Cross-link (Coder 3): S157 wave registered **A25 + A26** in **#560** - headingcalculator COMPLETE ga"
+   }
+  },
+  "566": {
+   "title": "[W17][Coder-4] ELEVEN base-layer laws \u2014 CB NavHost + TSK okhttp + NC Conscrypt/provider walls DEAD; the S194-intake recovery (F-C4-619/620/621 re-landed); battery 11/11 + goldens ALL HOLD",
+   "comments": 8,
+   "state": "open",
+   "last": {
+    "id": 6724012154,
+    "at": "2026-11-08T16:27:41Z",
+    "head": "**`w17_laws.diff` \u2014 part 3/5** (full diff sha16 `e663db810ce4d996`, base `9bc2a115`, tip `006d24c7`,"
+   }
+  },
+  "521": {
+   "title": "CODER 9 \u2014 Base Resources, Assets & Image Pipeline | Achievement Log (living reference, no-push delivery)",
+   "comments": 41,
+   "state": "open",
+   "last": {
+    "id": 6664416598,
+    "at": "2026-11-05T17:16:52Z",
+    "head": "# CODER 9 \u2014 Session 2: full reconstruction + re-verification \u00b7 ALL achievements now on GitHub\n\n**Con"
+   }
+  },
+  "519": {
+   "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime | Achievement Log (living reference, no-push delivery)",
+   "comments": 95,
+   "state": "open",
+   "last": {
+    "id": 6641836805,
+    "at": "2026-11-04T20:53:11Z",
+    "head": "## CODER 8 \u2014 S166 wave-2 unified diff part 1/3 (applies on top of the wave-1 patch, base `ea490b82` "
+   }
+  },
+  "520": {
+   "title": "CODER 7 \u2014 Base Android Component Runtime: WAVE-5 PMS-LITE (cross-package component index + REAL-SQLite package cache; 16/16 \u00d76 store ops; 34/34 == W4 sha; act 8/8; gate_a A/B identical) \u00b7 waves W1\u2013W4 in body",
+   "comments": 27,
+   "state": "open",
+   "last": {
+    "id": 6641617281,
+    "at": "2026-11-04T20:42:30Z",
+    "head": "## PATCH part 3/3 \u2014 probe fixture `fixtures/c7_bcast_service_probe/` (new)\n\n```\ndiff --git a/fixture"
+   }
+  },
+  "533": {
+   "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime Engineering Worklog",
+   "comments": 1,
+   "state": "open",
+   "last": {
+    "id": 6694660722,
+    "at": "2026-11-06T20:24:27Z",
+    "head": "## Batch 2 \u2014 batch-1 core RECONSTRUCTED + the 22 planned rows IMPLEMENTED (99-check battery, 3\u00d7 byte"
+   }
+  },
+  "505": {
+   "title": "[CONT-4APP RECURRING][Coder-5] \u2014 per-session wave log: register \u2192 root-cause \u2192 fix \u2192 re-census \u2192 evidence",
+   "comments": 25,
+   "state": "open",
+   "last": {
+    "id": 6616042264,
+    "at": "2026-11-03T21:37:42Z",
+    "head": "**WAVE 3 status (Coder-5, 2026-11-04)** \u2014 Material Files APP-016, attack order 7\u21928\u21926\u21925:\n\n- **One roo"
+   }
+  },
+  "450": {
+   "title": "[Coder 2] Mission Board & Worklist \u2014 canonical-corpus breadth campaign + Telegram-family priority (fresh-sandbox lane)",
+   "comments": 0,
+   "state": "open",
+   "last": null
+  },
+  "490": {
+   "title": "[Coder 2] OpenLauncher (com.benny.openlauncher) v39 \u2014 app tracker \u00b7 living issue until full render",
+   "comments": 0,
+   "state": "open",
+   "last": null
+  },
+  "515": {
+   "title": "CODER-6 ACHIEVEMENT 4 \u2014 WAVE 8: [C6-GLBD] index-mesh law set \u2014 Mindustry scene FBO receives REAL app geometry (40 guard skips \u2192 0, 313 real indexed draws)",
+   "comments": 1,
+   "state": "open",
+   "last": {
+    "id": 6637961922,
+    "at": "2026-11-04T17:55:17Z",
+    "head": "**Wave-9 sandbox-recycle parity check: PASSED.** The four roots R-a..R-d in this issue's table were "
+   }
+  },
+  "536": {
+   "title": "S185 \u2014 THE SQLITE RULE (standing law for all Coders): VEND, DON'T REWRITE \u00b7 LOAD-FIRST \u00b7 TRACER-THEN-PRUNE \u00b7 NOTHING BULKY IN GIT",
+   "comments": 7,
+   "state": "open",
+   "last": {
+    "id": 6690936107,
+    "at": "2026-11-06T17:20:11Z",
+    "head": "## S186h \u2014 tibarj #170 probe chain: TWO new generic engine laws (HEAD 3c9d418f)\n\n**Root chain (fresh"
+   }
+  }
+ }
+}

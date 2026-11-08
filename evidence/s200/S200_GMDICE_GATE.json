@@ -1,0 +1,62 @@
+{
+ "gmdice_96329a7ad50819d0": {
+  "binary_sha16": "96329a7ad50819d0",
+  "apk_sha16": "1621eda11b5dbc0c",
+  "r1": {
+   "tag": "mtm_gate_gmdice_r1",
+   "binary": "96329a7ad50819d0",
+   "uncaught": 0,
+   "tap_hits": [
+    8213,
+    1360,
+    7455,
+    7494,
+    1193
+   ],
+   "post_hashes": [
+    "8929ce63c1c5a4c1",
+    "40f4446a57f8cb7f",
+    "3376851945691cf1",
+    "5f3b1f65c4763cd4",
+    "4b066315731bc467"
+   ],
+   "transitions": [
+    true,
+    true,
+    true,
+    true,
+    true
+   ]
+  },
+  "r2": {
+   "tag": "mtm_gate_gmdice_r2",
+   "binary": "96329a7ad50819d0",
+   "uncaught": 0,
+   "tap_hits": [
+    8213,
+    1360,
+    7455,
+    7494,
+    1193
+   ],
+   "post_hashes": [
+    "8929ce63c1c5a4c1",
+    "40f4446a57f8cb7f",
+    "3376851945691cf1",
+    "5f3b1f65c4763cd4",
+    "4b066315731bc467"
+   ],
+   "transitions": [
+    true,
+    true,
+    true,
+    true,
+    true
+   ]
+  },
+  "five_transitions": true,
+  "five_distinct": true,
+  "rerun_identical": true,
+  "verdict": "PASS"
+ }
+}

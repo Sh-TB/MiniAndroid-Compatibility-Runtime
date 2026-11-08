@@ -1,5 +1,5 @@
 {
- "binary": "97628b00d237f9eb",
+ "binary": "96329a7ad50819d0",
  "titles": 11,
  "drops": [],
  "rows": [
@@ -28,7 +28,7 @@
    "nonbg_share": 0.0,
    "grad_share": 0.0,
    "tier": "FLAT_TWO_TONE_OR_BLANK",
-   "wall_s": 8.6,
+   "wall_s": 8.2,
    "floor": "FLAT_TWO_TONE_OR_BLANK",
    "regression": false,
    "face_sha": null
@@ -58,7 +58,7 @@
    "nonbg_share": 0.0,
    "grad_share": 0.0,
    "tier": "FLAT_TWO_TONE_OR_BLANK",
-   "wall_s": 5.2,
+   "wall_s": 4.9,
    "floor": "FLAT_TWO_TONE_OR_BLANK",
    "regression": false,
    "face_sha": null
@@ -88,7 +88,7 @@
    "nonbg_share": 0.0,
    "grad_share": 0.0,
    "tier": "FLAT_TWO_TONE_OR_BLANK",
-   "wall_s": 5.8,
+   "wall_s": 5.4,
    "floor": "FLAT_TWO_TONE_OR_BLANK",
    "regression": false,
    "face_sha": null
@@ -170,7 +170,7 @@
    "nonbg_share": 0.1385,
    "grad_share": 0.0083,
    "tier": "B_STRUCTURED",
-   "wall_s": 5.6,
+   "wall_s": 5.7,
    "floor": "B_STRUCTURED",
    "regression": false,
    "face_sha": null
@@ -200,7 +200,7 @@
    "nonbg_share": 0.0,
    "grad_share": 0.0,
    "tier": "FLAT_TWO_TONE_OR_BLANK",
-   "wall_s": 3.4,
+   "wall_s": 3.5,
    "floor": "FLAT_TWO_TONE_OR_BLANK",
    "regression": false,
    "face_sha": null
@@ -230,7 +230,7 @@
    "nonbg_share": 0.0,
    "grad_share": 0.0,
    "tier": "FLAT_TWO_TONE_OR_BLANK",
-   "wall_s": 5.0,
+   "wall_s": 5.1,
    "floor": "FLAT_TWO_TONE_OR_BLANK",
    "regression": false,
    "face_sha": null

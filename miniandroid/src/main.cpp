@@ -1122,6 +1122,20 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config,
     // IllegalStateException (fr.neamar.kiss v224 = motivating failure).
     framework::register_platform_shadows(shadow_registry);
     auto* handler_shadow = shadow_registry.find_as<framework::HandlerShadow>();
+    // F-NEW-621 (S200 device-clock law): the DEVICE == the data-root.
+    // Read the persisted boot base so SystemClock.elapsedRealtime() is
+    // monotonic across runs sharing this data-root (AOSP: shared
+    // monotonic since device boot). Fresh store == fresh device boot
+    // (base 0) — deterministic reruns stay byte-identical.
+    if (handler_shadow && !config.data_root.empty()) {
+        int64_t device_boot_base = 0;
+        std::ifstream dcin(std::filesystem::path(config.data_root)
+                           / "data" / "system" / "device_clock");
+        if (dcin) dcin >> device_boot_base;
+        handler_shadow->set_device_boot_base_ms(device_boot_base);
+        std::cout << "[DEVICE-CLOCK] boot_base=" << device_boot_base
+                  << "ms (device=" << config.data_root << ")" << std::endl;
+    }
     auto* view_shadow = shadow_registry.find_as<framework::ViewShadow>();
     auto* dialog_shadow = shadow_registry.find_as<framework::DialogShadow>();
     auto* array_adapter_shadow = shadow_registry.find_as<framework::ArrayAdapterShadow>();
@@ -1168,6 +1182,26 @@ int cmd_run(const std::string& apk_path, const runtime::ExecutionConfig& config,
         std::cout << "Report: " << result.report_path << "\n";
     }
     
+    // F-NEW-621: persist the device clock (boot base + final local now) so
+    // the next run on this data-root boots on a non-rewinding clock.
+    // Monotone guard: only write when it advances the device clock.
+    if (handler_shadow && !config.data_root.empty()) {
+        std::filesystem::path sysdir = std::filesystem::path(config.data_root)
+                                       / "data" / "system";
+        std::error_code fs_ec;
+        std::filesystem::create_directories(sysdir, fs_ec);
+        int64_t total = handler_shadow->device_now_ms();
+        int64_t prev = 0;
+        std::ifstream dcin(sysdir / "device_clock");
+        if (dcin) dcin >> prev;
+        if (total > prev) {
+            std::ofstream dcout(sysdir / "device_clock", std::ios::trunc);
+            dcout << total;
+            std::cout << "[DEVICE-CLOCK] persist=" << total
+                      << "ms (prev=" << prev << ")" << std::endl;
+        }
+    }
+
     return (result.status == runtime::ExecutionStatus::SUCCESS) ? 0 : 1;
 }
 
