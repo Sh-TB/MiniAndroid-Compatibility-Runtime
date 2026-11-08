@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/se.tube42.p9.android/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libgdx-freetype.so", "size": 763920},
+    {"entry": "lib/x86_64/libgdx.so", "size": 338440}
+  ],
+  "count": 2
+}

@@ -864,6 +864,18 @@ static std::vector<DirectBufferBox*>& direct_buffer_boxes() {
     static std::vector<DirectBufferBox*> v;
     return v;
 }
+// S188-W18 F-NEW-609: persistent per-oid direct-buffer backing registry —
+// GetDirectBufferAddress returns THE SAME malloc for the buffer's lifetime
+// (JNI direct buffers are shared memory; per-call snapshots erased native
+// writes — the FreeType face face).
+struct PersistentDirectBuffer {
+    void* addr;
+    size_t cap;
+};
+static std::map<uint32_t, PersistentDirectBuffer>& persistent_direct_buffers() {
+    static std::map<uint32_t, PersistentDirectBuffer> m;
+    return m;
+}
 // F-NEW-594 (W10): multi-thread registry law — same as the object-array
 // registry (the direct-buffer family is called from the platform AND
 // raster threads once the real task runners run).
@@ -1022,22 +1034,56 @@ void* jni_GetDirectBufferAddress(void*, void* buf) {
     uintptr_t v = (uintptr_t)buf;
     if ((v >> 32) == 5) {  // tagged-oid law: 0x500000000|oid
         uint32_t oid = (uint32_t)(v & 0xffffffffull);
+        // ── S188-W18 F-NEW-609 — PERSISTENT DIRECT-BUFFER BACKING law ──
+        // The pre-609 hook snapshotted the DEX mirror into a FRESH malloc
+        // on EVERY GetDirectBufferAddress call. JNI direct buffers are
+        // SHARED memory: a native that WRITES through the address (libgdx
+        // BufferUtils.copyJni streaming the 126168B RobotoCondensed TTF
+        // into the buffer) expects the NEXT native reader (FreeType
+        // newMemoryFace) to see those bytes. Per-call snapshots erased
+        // them — FT read zeros → newFace=0 → GdxRuntimeException
+        // "Couldn't create face for font" → MainActivity.onCreate APP
+        // BOUNDARY. AOSP/ART law: GetDirectBufferAddress returns THE
+        // buffer's address for its lifetime. Law here: the FIRST Get
+        // allocates the backing malloc and copies the CURRENT DEX mirror
+        // in; EVERY later Get returns the SAME pointer (native writes
+        // persist; DEX-side bridge writes after the first Get are not
+        // re-snapshotted — the documented boundary, the p9/font and
+        // pixmap consumers are native-side only).
+        {
+            std::lock_guard<std::mutex> lk(g_direct_buffer_mu);  // F-NEW-594
+            auto& reg = persistent_direct_buffers();
+            auto it = reg.find(oid);
+            if (it != reg.end()) {
+                static thread_local uint64_t hits = 0;
+                if (hits++ < 8)
+                    fprintf(stderr,
+                            "[F-NEW-609] GetDirectBufferAddress(oid=%u) "
+                            "persistent hit addr=%p cap=%zu\n",
+                            oid, it->second.addr, it->second.cap);
+                return it->second.addr;
+            }
+        }
         void* addr = nullptr;
         size_t cap = 0;
         if (g_f590_hooks.direct_buffer &&
             g_f590_hooks.direct_buffer(oid, &addr, &cap)) {
-            DirectBufferBox* b = new DirectBufferBox{addr, cap};
+            void* backing = std::malloc(cap ? cap : 1);
+            if (!backing) return nullptr;
+            if (addr && cap) memcpy(backing, addr, cap);
             {
-                std::lock_guard<std::mutex> lk(g_direct_buffer_mu);  // F-NEW-594
+                std::lock_guard<std::mutex> lk(g_direct_buffer_mu);
+                DirectBufferBox* b = new DirectBufferBox{backing, cap};
                 direct_buffer_boxes().push_back(b);
+                persistent_direct_buffers()[oid] = {backing, cap};
             }
             static thread_local uint64_t n = 0;
             if (n++ < 8)
                 fprintf(stderr,
-                        "[F-NEW-590] GetDirectBufferAddress(oid=%u) "
-                        "snapshotted cap=%zu\n",
+                        "[F-NEW-609] GetDirectBufferAddress(oid=%u) "
+                        "persistent backing minted cap=%zu\n",
                         oid, cap);
-            return addr;
+            return backing;
         }
     }
     return nullptr;  // JNI spec: non-direct buffer answers NULL
@@ -1288,15 +1334,30 @@ int vm_GetEnv(void* vm, void** env, int version) {
 // ── JNI symbol mangling (AOSP art::JniIdType semantics) ────────────────
 void mangle_escape(const std::string& in, std::string& out) {
     char buf[8];
+    // S188-W18 F-NEW-611 — JNI NAME MANGLING law (JNI spec
+    // ResolveNativeMethod short/long names): every character that is NOT
+    // an ASCII digit/letter/underscore carries a Unicode escape _0xxxx;
+    // the explicit / ; [ mappings keep their table entries. The pre-611
+    // code passed every printable byte through — '$' (U+0024) survived
+    // raw, so dlsym searched "Java_...FreeType$Library_newMemoryFace"
+    // while libgdx-freetype.so exports
+    // "Java_...FreeType_00024Library_newMemoryFace" (jnigen emits the
+    // ART-faithful _00024). Miss → the STUBBED tail answered the typed
+    // long default 0 → "Couldn't load font, FreeType error code: 0" →
+    // MainActivity.onCreate APP BOUNDARY. Inner-class natives ($-classes)
+    // are the whole FreeType/Bitmap/Face/Glyph family — one rule, all of
+    // them land. Previously-hit symbols (alnum/_//) are unchanged.
     for (unsigned char c : in) {
         if (c == '_') out += "_1";
         else if (c == ';') out += "_2";
         else if (c == '[') out += "_3";
         else if (c == '/' || c == '.') out += '_';
-        else if (c < 0x20 || c > 0x7e) {
+        else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                 (c >= '0' && c <= '9')) out += (char)c;
+        else {
             snprintf(buf, sizeof buf, "_0%04x", (unsigned)c);
             out += buf;
-        } else out += (char)c;
+        }
     }
 }
 

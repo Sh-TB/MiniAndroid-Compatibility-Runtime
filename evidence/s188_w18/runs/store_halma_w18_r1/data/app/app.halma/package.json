@@ -1,0 +1,18 @@
+{
+  "package": "app.halma",
+  "versionName": "15.0",
+  "versionCode": 15,
+  "mainActivity": "app.halma.AndroidLauncher",
+  "minSdk": "19",
+  "targetSdk": "35",
+  "requestedPermissions": [
+    "app.halma.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/app.halma/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s188_w18/runs/store_halma_w18_r1/data/app/app.halma/base.apk",
+  "apkSha256": "b994337244e2136b54f96f75038fe70d9562635cce50af6387d906ee048d0ec0",
+  "apkSize": 3849844,
+  "installedAt": "2026-11-08T14:06:35Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

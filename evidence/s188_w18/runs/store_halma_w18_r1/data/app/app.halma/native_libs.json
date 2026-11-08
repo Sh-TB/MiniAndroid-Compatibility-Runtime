@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/app.halma/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libgdx.so", "size": 193008}
+  ],
+  "count": 1
+}

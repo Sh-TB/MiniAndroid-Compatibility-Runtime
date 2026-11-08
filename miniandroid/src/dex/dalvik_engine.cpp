@@ -822,14 +822,42 @@ bool DalvikExecutionEngine::f590_primitive_array(uint32_t oid, void** addr,
                                                  size_t* byte_len) {
     if (!addr || !byte_len || oid == 0) return false;
     DalvikHeap& heap = get_heap_public();
-    if (!heap.has_object(oid)) return false;
-    std::string desc;
-    if (!heap.get_object_class(oid, desc) || desc.empty() || desc[0] != '[')
+    if (!heap.has_object(oid)) {
+        static thread_local uint64_t n = 0;
+        if (n++ < 6)
+            std::cerr << "[F-NEW-606] critical oid=" << oid
+                      << " rejected: not live on the DEX heap" << std::endl;
         return false;
-    if (desc == "[L" || desc.size() > 1 && desc[1] == 'L')
+    }
+    std::string desc;
+    if (!heap.get_object_class(oid, desc) || desc.empty() || desc[0] != '[') {
+        static thread_local uint64_t n = 0;
+        if (n++ < 6) {
+            std::string d2;
+            bool got = heap.get_object_class(oid, d2);
+            std::cerr << "[F-NEW-606] critical oid=" << oid
+                      << " rejected: not a primitive array (desc="
+                      << (got ? d2 : std::string("<unrecorded>")) << ")"
+                      << std::endl;
+        }
+        return false;
+    }
+    if (desc == "[L" || desc.size() > 1 && desc[1] == 'L') {
+        static thread_local uint64_t n = 0;
+        if (n++ < 6)
+            std::cerr << "[F-NEW-606] critical oid=" << oid << " " << desc
+                      << " rejected: object array (not a primitive critical)"
+                      << std::endl;
         return false;  // object arrays are not primitive criticals
+    }
     const uint32_t count = w18_array_count(heap, oid);
-    if (count == 0) return false;
+    if (count == 0) {
+        static thread_local uint64_t n = 0;
+        if (n++ < 6)
+            std::cerr << "[F-NEW-606] critical oid=" << oid << " " << desc
+                      << " rejected: no recorded length" << std::endl;
+        return false;
+    }
     const size_t eb = w18_elem_bytes(desc);
     const size_t total = (size_t)count * eb;
     // bound: pixmaps/asset buffers are ≤ a few MB; a pathological count
@@ -846,6 +874,19 @@ bool DalvikExecutionEngine::f590_primitive_array(uint32_t oid, void** addr,
     uint8_t* buf = (uint8_t*)malloc(total ? total : 1);
     if (!buf) return false;
     std::memset(buf, 0, total);
+    // F-NEW-606 ELEMENT-TYPE-FAMILY law: a heap element of width N may
+    // carry its value under ANY of the storage conventions the engine's
+    // own producers use (aput-byte → BYTE/byte_val, aput-char → CHAR,
+    // aput-short → SHORT, aput-boolean → BOOLEAN, InputStream.read →
+    // make_byte, StreamTokenizer → make_char; aget's K-41 conversion
+    // already reads this whole family). The pre-606 snapshot read ONLY
+    // INT32/INT64/FLOAT32 — the 31435B icons.png snapshot arrived as
+    // ZEROS, the real gdx2d_load failed, and the commit pass then WROTE
+    // ZEROS back over the live PNG bytes (data destruction, caught by
+    // the "commit 31435/31435 changed" tell). Snapshot now reads the
+    // family; commit compares the family and writes the element back in
+    // the array's descriptor-canonical make_* form (the same convention
+    // aput/stream producers use) — no representation drift, no loss.
     for (uint32_t i = 0; i < count; ++i) {
         auto v = heap.get_object_field(oid, "array[" + std::to_string(i) + "]");
         uint8_t* dst = buf + (size_t)i * eb;
@@ -854,6 +895,8 @@ bool DalvikExecutionEngine::f590_primitive_array(uint32_t oid, void** addr,
             case 8:
                 if (v->type == DalvikType::INT64)
                     std::memcpy(dst, &v->long_val, 8);
+                else if (v->type == DalvikType::FLOAT64)
+                    std::memcpy(dst, &v->double_val, 8);
                 else if (v->type == DalvikType::INT32) {
                     int64_t w = v->int_val;
                     std::memcpy(dst, &w, 8);
@@ -866,14 +909,20 @@ bool DalvikExecutionEngine::f590_primitive_array(uint32_t oid, void** addr,
                     std::memcpy(dst, &v->int_val, 4);
                 break;
             case 2: {
-                int32_t x = v->type == DalvikType::INT32 ? v->int_val : 0;
+                int32_t x = 0;
+                if (v->type == DalvikType::INT32) x = v->int_val;
+                else if (v->type == DalvikType::SHORT) x = v->short_val;
+                else if (v->type == DalvikType::CHAR) x = (int32_t)(uint8_t)v->char_val;
                 uint16_t h = desc == "[C" ? (uint16_t)(uint32_t)x
                                           : (uint16_t)(int16_t)x;
                 std::memcpy(dst, &h, 2);
                 break;
             }
             case 1: {
-                int32_t x = v->type == DalvikType::INT32 ? v->int_val : 0;
+                int32_t x = 0;
+                if (v->type == DalvikType::INT32) x = v->int_val;
+                else if (v->type == DalvikType::BYTE) x = v->byte_val;
+                else if (v->type == DalvikType::BOOLEAN) x = v->bool_val ? 1 : 0;
                 *dst = (uint8_t)x;
                 break;
             }
@@ -908,49 +957,85 @@ bool DalvikExecutionEngine::f590_primitive_array_write(uint32_t oid,
         const std::string fname = "array[" + std::to_string(i) + "]";
         const uint8_t* s = src + (size_t)i * eb;
         auto cur = heap.get_object_field(oid, fname);
-        // per-element skip: identical content → no map write
+        // per-element skip: identical content → no map write. F-NEW-606:
+        // the compare reads the FULL element-type family (BYTE/BOOLEAN
+        // for [B, SHORT/CHAR for width-2, FLOAT64 for [D) — a typed
+        // element that CONTENT-MATCHES must never count as "changed",
+        // otherwise the commit pass rewrites live data (the 31435/31435
+        // tell that preceded the type-family law).
         if (cur.has_value()) {
             bool same = false;
             switch (eb) {
                 case 8:
-                    same = cur->type == DalvikType::INT64 &&
-                           std::memcmp(&cur->long_val, s, 8) == 0;
+                    same = (cur->type == DalvikType::INT64 &&
+                            std::memcmp(&cur->long_val, s, 8) == 0) ||
+                           (cur->type == DalvikType::FLOAT64 &&
+                            std::memcmp(&cur->double_val, s, 8) == 0) ||
+                           (cur->type == DalvikType::INT32 && [&] {
+                                int64_t w = cur->int_val;
+                                return std::memcmp(&w, s, 8) == 0;
+                            }());
                     break;
                 case 4:
-                    same = cur->type == DalvikType::FLOAT32
-                               ? std::memcmp(&cur->float_val, s, 4) == 0
-                               : (cur->type == DalvikType::INT32 &&
-                                  std::memcmp(&cur->int_val, s, 4) == 0);
+                    same = (cur->type == DalvikType::FLOAT32 &&
+                            std::memcmp(&cur->float_val, s, 4) == 0) ||
+                           (cur->type == DalvikType::INT32 &&
+                            std::memcmp(&cur->int_val, s, 4) == 0);
                     break;
                 case 2: {
-                    int32_t x = cur->type == DalvikType::INT32
-                                    ? cur->int_val : -1;
+                    uint16_t h = (uint16_t)(*s | ((*(s + 1)) << 8));
+                    int32_t x;
+                    switch (cur->type) {
+                        case DalvikType::INT32: x = cur->int_val; break;
+                        case DalvikType::SHORT: x = cur->short_val; break;
+                        case DalvikType::CHAR:
+                            x = (int32_t)(uint8_t)cur->char_val;
+                            break;
+                        default: x = -1; break;
+                    }
                     same = desc == "[C"
-                               ? x == (int32_t)(uint16_t)(*s |
-                                  ((*(s + 1)) << 8))
-                               : x == (int32_t)(int16_t)(*s |
-                                  ((*(s + 1)) << 8));
+                               ? x == (int32_t)h
+                               : x == (int32_t)(int16_t)h;
                     break;
                 }
-                case 1:
-                    same = cur->type == DalvikType::INT32 &&
-                           cur->int_val == (int32_t)(int8_t)*s;
+                case 1: {
+                    int32_t x;
+                    switch (cur->type) {
+                        case DalvikType::INT32: x = cur->int_val; break;
+                        case DalvikType::BYTE: x = cur->byte_val; break;
+                        case DalvikType::BOOLEAN:
+                            x = cur->bool_val ? 1 : 0;
+                            break;
+                        default: x = -1; break;
+                    }
+                    same = x == (int32_t)(int8_t)*s;
                     break;
+                }
             }
             if (same) continue;
         }
+        // F-NEW-606: the element goes back in the array's
+        // descriptor-canonical make_* form — exactly the convention the
+        // engine's own producers (aput-byte/char/short/boolean,
+        // InputStream.read, STREAM-READ) store with, so aget's K-41
+        // conversion keeps reading the array without type drift.
         switch (eb) {
             case 8: {
-                int64_t w;
-                std::memcpy(&w, s, 8);
-                heap.set_object_field(
-                    oid, fname, DalvikValue::make_long(w));
+                if (desc == "[D") {
+                    double d;
+                    std::memcpy(&d, s, 8);
+                    heap.set_object_field(oid, fname,
+                                          DalvikValue::make_double(d));
+                } else {
+                    int64_t w;
+                    std::memcpy(&w, s, 8);
+                    heap.set_object_field(
+                        oid, fname, DalvikValue::make_long(w));
+                }
                 break;
             }
             case 4: {
-                DalvikType t = cur.has_value() ? cur->type
-                                               : DalvikType::FLOAT32;
-                if (t == DalvikType::FLOAT32) {
+                if (desc == "[F") {
                     float f;
                     std::memcpy(&f, s, 4);
                     heap.set_object_field(oid, fname,
@@ -966,15 +1051,23 @@ bool DalvikExecutionEngine::f590_primitive_array_write(uint32_t oid,
             case 2: {
                 int16_t h;
                 std::memcpy(&h, s, 2);
-                heap.set_object_field(
-                    oid, fname,
-                    DalvikValue::make_int(desc == "[C" ? (int32_t)(uint16_t)h
-                                                       : (int32_t)h));
+                if (desc == "[C")
+                    heap.set_object_field(
+                        oid, fname,
+                        DalvikValue::make_char((char)(h & 0xFF)));
+                else
+                    heap.set_object_field(
+                        oid, fname, DalvikValue::make_short(h));
                 break;
             }
             case 1: {
-                heap.set_object_field(
-                    oid, fname, DalvikValue::make_int((int32_t)(int8_t)*s));
+                if (desc == "[Z")
+                    heap.set_object_field(oid, fname,
+                                          DalvikValue::make_bool(*s != 0));
+                else
+                    heap.set_object_field(
+                        oid, fname,
+                        DalvikValue::make_byte((int8_t)*s));
                 break;
             }
         }
@@ -5680,6 +5773,24 @@ bool DalvikExecutionEngine::execute_method_internal(
                 ai = 1;
                 slot = 1;
             }
+            // S188-W18 STR PROBE: the sibling-family param binding.
+            if (diag_env("MINIANDROID_W18_FT_TRACE") &&
+                (class_name.find("FileHandle;") != std::string::npos ||
+                 current_class_.find("FileHandle;") != std::string::npos)) {
+                static thread_local uint64_t strbind_n = 0;
+                if (strbind_n++ < 24) {
+                    std::cerr << "[W18-BIND] " << class_name << "."
+                              << method_name << " regs=" << registers_size
+                              << " ins=" << ins_size
+                              << " ptypes=" << ptypes.size()
+                              << " args=" << args.size();
+                    for (size_t bi = 0; bi < args.size() && bi < 3; ++bi)
+                        std::cerr << " a" << bi << ":t"
+                                  << static_cast<int>(f282_args[bi].type)
+                                  << "/o" << f282_args[bi].object_id;
+                    std::cerr << std::endl;
+                }
+            }
             for (size_t ti = 0; ti < ptypes.size() && ai < args.size();
                  ++ti, ++ai) {
                 frame.registers.write_p(slot, f282_args[ai]);
@@ -8478,6 +8589,56 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     const std::string& method_descriptor
 ) {
     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().recursive_invoke, f107_t0);
+
+    // ── S188-W18 FT PROBE (entry) — the FreeType instance-native family:
+    // which dispatches reach try_recursive_invoke, with which descriptor.
+    static thread_local const bool w18ft_e_on =
+        std::getenv("MINIANDROID_W18_FT_TRACE") != nullptr;
+    if (w18ft_e_on &&
+        declaring_class.find("freetype/FreeType") != std::string::npos) {
+        static thread_local uint64_t w18ft_e_n = 0;
+        if (w18ft_e_n++ < 60)
+            std::cerr << "[W18-FT-RI] entry " << declaring_class << "."
+                      << method_name
+                      << " desc=" << (method_descriptor.empty()
+                                          ? "<none>"
+                                          : method_descriptor)
+                      << " argc=" << args.size()
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+    }
+    // ── S188-W18 STR PROBE — the halma sibling-name face: what arrives
+    // as the String arg of FileHandle.sibling / AndroidFileHandle.read.
+    if (declaring_class.find("FileHandle;") != std::string::npos &&
+        (method_name == "sibling" || method_name == "read")) {
+        static thread_local uint64_t w18str_n = 0;
+        if (w18str_n++ < 24) {
+            std::cerr << "[W18-STR] " << declaring_class << "."
+                      << method_name << " argc=" << args.size();
+            for (size_t si = 0; si < args.size() && si < 3; ++si) {
+                const DalvikValue& sv608 = args[si];
+                std::cerr << " a" << si << ":t" << static_cast<int>(sv608.type);
+                if (sv608.type == DalvikType::STRING_REF)
+                    std::cerr << "(\"" << sv608.string_val.substr(0, 40) << "\")";
+                else if (sv608.type == DalvikType::OBJECT_REF &&
+                         sv608.object_id != 0 && heap_.has_object(sv608.object_id)) {
+                    std::string cls608;
+                    heap_.get_object_class(sv608.object_id, cls608);
+                    auto f608 = heap_.get_object_field(sv608.object_id,
+                                                       "__string_value__");
+                    std::cerr << "(o" << sv608.object_id << " " << cls608
+                              << " sv=\""
+                              << (f608.has_value() &&
+                                          f608->type == DalvikType::STRING_REF
+                                      ? f608->string_val.substr(0, 40)
+                                      : std::string("<none>"))
+                              << "\")";
+                }
+            }
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
+    }
 
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().recursive_invoke, f107_t0};
     // ── W10 (Coder-4) CTOR PROBE (diagnostic, env MINIANDROID_W10_CTOR_PROBE)
@@ -12950,21 +13111,94 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         // all_methods() copy moved the whole method table (bytecode vectors
         // included) 13k+ times per run. Same order + overload semantics:
         // the first ACC_NATIVE method with the requested name dispatches.
+        //
+        // ── S188-W18 F-NEW-607 — DESCRIPTOR-EXACT NATIVE SELECTION ──────
+        // ART art_method law: the overload IS the descriptor. A name-only
+        // native scan picks the WRONG overload when a class carries
+        // same-name natives AND bytecode wrappers. Live face (p9 W18
+        // smoke): libgdx Matrix4 declares BOTH the static native
+        // mul([F[F)V and the virtual bytecode wrapper
+        // mul(Matrix4)LMatrix4; (iget-object val ×2 → invoke-static
+        // mul([F[F)V). The name-only scan served the STATIC native to
+        // the VIRTUAL call — the two Matrix4 receivers marshalled as
+        // "float[]" criticals → slot-222 answered NULL → native deref →
+        // guarded SIGSEGV → Matrix4.setToLookAt died → NPE at
+        // MainActivity.onCreate → APP BOUNDARY (2 faults/run, both mul).
+        // ART order restored:
+        //   Pass 1: exact (name, descriptor) + ACC_NATIVE → that native.
+        //   Pass 2 (fallback): name-only ACC_NATIVE — ONLY when the exact
+        //     (name, descriptor) method does not exist in this class AT
+        //     ALL. If the exact method exists with bytecode, the BYTECODE
+        //     runs (the wrapper); a same-name native of another overload
+        //     must never shadow it (the F-023 exact-descriptor law, now
+        //     covering the native-precedence gate too).
+        // Descriptor-unknown dispatches (empty method_descriptor) keep the
+        // W10/W17 name-only law verbatim (conscrypt RegisterNatives
+        // family — no same-name bytecode siblings).
         const dex::MethodInfo* native_hit = nullptr;
-        for (const auto& mm : cls_ref.direct_methods) {
-            if (mm.name == method_name && (mm.access_flags & 0x100)) {
-                native_hit = &mm; break;
+        if (!method_descriptor.empty()) {
+            for (const auto& mm : cls_ref.direct_methods) {
+                if (mm.name == method_name &&
+                    mm.descriptor == method_descriptor &&
+                    (mm.access_flags & 0x100)) {
+                    native_hit = &mm; break;
+                }
+            }
+            if (!native_hit) {
+                for (const auto& mm : cls_ref.virtual_methods) {
+                    if (mm.name == method_name &&
+                        mm.descriptor == method_descriptor &&
+                        (mm.access_flags & 0x100)) {
+                        native_hit = &mm; break;
+                    }
+                }
             }
         }
         if (!native_hit) {
-            for (const auto& mm : cls_ref.virtual_methods) {
-                if (mm.name == method_name && (mm.access_flags & 0x100)) {
-                    native_hit = &mm; break;
+            bool f607_exact_exists = false;
+            if (!method_descriptor.empty()) {
+                for (const auto& mm : cls_ref.direct_methods) {
+                    if (mm.name == method_name &&
+                        mm.descriptor == method_descriptor) {
+                        f607_exact_exists = true; break;
+                    }
+                }
+                if (!f607_exact_exists) {
+                    for (const auto& mm : cls_ref.virtual_methods) {
+                        if (mm.name == method_name &&
+                            mm.descriptor == method_descriptor) {
+                            f607_exact_exists = true; break;
+                        }
+                    }
+                }
+            }
+            if (!f607_exact_exists) {
+                for (const auto& mm : cls_ref.direct_methods) {
+                    if (mm.name == method_name && (mm.access_flags & 0x100)) {
+                        native_hit = &mm; break;
+                    }
+                }
+                if (!native_hit) {
+                    for (const auto& mm : cls_ref.virtual_methods) {
+                        if (mm.name == method_name && (mm.access_flags & 0x100)) {
+                            native_hit = &mm; break;
+                        }
+                    }
                 }
             }
         }
         for (const dex::MethodInfo* method = native_hit; method != nullptr;
              method = nullptr) {
+            // S188-W18 FT PROBE: native-block entry — did the F-NEW-607
+            // selection find the native?
+            if (w18ft_e_on &&
+                class_descriptor.find("freetype/FreeType") != std::string::npos) {
+                static thread_local uint64_t w18ft_nb_n = 0;
+                if (w18ft_nb_n++ < 200)
+                    std::cerr << "[W18-FT-NBLK] native_hit " << class_descriptor
+                              << "." << method_name << method->descriptor
+                              << std::endl;
+            }
             // ── S188-W17 (F-NEW-602) guest→host GL driver routing ───────
             // Anbox/emugl law (already cited in gl_surface_shadow.h §24):
             // the guest's GL calls route to the HOST driver implementation.
@@ -13106,6 +13340,22 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                   << std::endl;
                     bool bres = bridge_to_api(class_descriptor, method_name,
                                               args, bridge_val, bridge_status);
+                    // S188-W18 FT PROBE: what did the engine-shadow consult
+                    // answer for the FreeType family?
+                    if (w18ft_e_on &&
+                        class_descriptor.find("freetype/FreeType") !=
+                            std::string::npos) {
+                        static thread_local uint64_t w18ft_bc_n = 0;
+                        if (w18ft_bc_n++ < 200)
+                            std::cerr << "[W18-FT-BC] consult "
+                                      << class_descriptor << "." << method_name
+                                      << " bres=" << (bres ? 1 : 0)
+                                      << " status="
+                                      << static_cast<int>(bridge_status)
+                                      << " val_t="
+                                      << static_cast<int>(bridge_val.type)
+                                      << std::endl;
+                    }
                     if (w10_log_this)
                         std::cerr << "[W10-JNI] bridge_to_api -> "
                                   << (bres ? "HANDLED" : "miss")
@@ -13147,9 +13397,73 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                       << std::endl;
                         }
                     } else if (bres) {
-                        return_val = bridge_val;
-                        recursion_depth_--;
-                        return true;
+                        // ── S188-W18 F-NEW-613 — DEX-HIERARCHY SHADOW-CLAIM
+                        // GATE (native block). The F-NEW-504 shadow-first
+                        // law serves ENGINE-SIDE heap handlers (tower3d's
+                        // newDisposableByteBuffer — the real allocator
+                        // FAULTS under the DEX heap model). The
+                        // ViewShadow's EXP-060 catch-all, though, CLAIMS
+                        // every class outside the known framework prefixes
+                        // ("could be a View subclass — let dispatch()
+                        // decide by method name") — and its dispatch
+                        // answers VIEW-GEOMETRY GETTERS (getHeight/getWidth
+                        // ...) with typed 0 for ANY claimed class. Live
+                        // face (p9 W18): libgdx's
+                        // FreeType$GlyphMetrics.getHeight(J)I — a REAL
+                        // ACC_NATIVE in the loaded libgdx-freetype.so (the
+                        // same-name View getter collided) — was shadowed to
+                        // 0 BEFORE the real-symbol attempt; the x-height
+                        // stayed 0 → "No x-height character found in font"
+                        // → MainActivity.onCreate APP BOUNDARY (while
+                        // getHoriAdvance, not a View getter, ran REAL).
+                        // ART/JVMS law: the shadow heuristic is an
+                        // ENGINE-INTERNAL guess; a DEX-present class whose
+                        // declared superclass chain never reaches an
+                        // Landroid/ ancestor is NOT a platform family — its
+                        // native's real symbol is authoritative. Gate: for
+                        // a shadow-IMPLEMENTED answer on a DEX-present
+                        // native class, walk class_to_superclass_ (bounded
+                        // 16); an Landroid/ ancestor = the claim is
+                        // authoritative (framework-family receiver — return
+                        // it, unchanged); no Landroid/ ancestor = the claim
+                        // is heuristic — keep the answer ONLY as the
+                        // FIX-TTT fault-fallback (f594) and attempt the
+                        // real symbol (the tower3d faulting-allocator
+                        // observable is unchanged: the real call faults →
+                        // the honest-fallback restores this answer).
+                        bool f613_framework_family = false;
+                        {
+                            std::string w613 = class_descriptor;
+                            for (int hop613 = 0; hop613 < 16 && !w613.empty();
+                                 ++hop613) {
+                                if (w613.rfind("Landroid/", 0) == 0) {
+                                    f613_framework_family = true;
+                                    break;
+                                }
+                                auto sup613 = class_to_superclass_.find(w613);
+                                if (sup613 == class_to_superclass_.end())
+                                    break;
+                                w613 = sup613->second;
+                            }
+                        }
+                        if (f613_framework_family) {
+                            return_val = bridge_val;
+                            recursion_depth_--;
+                            return true;
+                        }
+                        static thread_local uint64_t f613_n = 0;
+                        if (f613_n++ < 12) {
+                            std::cerr << "[F-NEW-613] shadow claim "
+                                      << class_descriptor << "." << method_name
+                                      << " is heuristic (no Landroid/"
+                                         " ancestor in the DEX chain) — "
+                                         "real-symbol attempt first, the "
+                                         "shadow answer demoted to the "
+                                         "fault-fallback"
+                                      << std::endl;
+                        }
+                        f594_stub_had_answer = true;
+                        f594_stub_answer = bridge_val;
                     }
                 }
                 // ── #371 CLOSEOUT S-2: REAL native execution attempt ────
@@ -13215,10 +13529,85 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                         }
                         nativeexec::JOutcome out;
                         std::string nerr;
+                        // ── S188-W18 FT PROBE (env-gated, bounded, zero
+                        // behavior): the FreeType family's marshalled args
+                        // and native return, per call. Root-causing the
+                        // newMemoryFace face=0 without touching dispatch.
+                        static thread_local const bool w18ft_on =
+                            diag_env("MINIANDROID_W18_FT_TRACE");
+                        if (w18ft_on &&
+                            (class_descriptor.find("freetype/FreeType") !=
+                                 std::string::npos ||
+                             class_descriptor.find("Gdx2DPixmap") !=
+                                 std::string::npos)) {
+                            static thread_local uint64_t w18ft_n = 0;
+                            if (w18ft_n++ < 400) {
+                                std::cerr << "[W18-FT] call "
+                                          << class_descriptor << "."
+                                          << method_name
+                                          << method->descriptor << " args:";
+                                for (size_t wi = 0; wi < args.size(); ++wi) {
+                                    const DalvikValue& wa = args[wi];
+                                    std::cerr << " a" << wi << "=";
+                                    if (wa.is_null) std::cerr << "null";
+                                    else if (wa.type == DalvikType::OBJECT_REF)
+                                        std::cerr << "o" << wa.object_id;
+                                    else if (wa.type == DalvikType::INT64)
+                                        std::cerr << (long long)wa.long_val;
+                                    else if (wa.type == DalvikType::STRING_REF)
+                                        std::cerr << "\""
+                                                  << wa.string_val.substr(0, 24)
+                                                  << "\"";
+                                    else
+                                        std::cerr << wa.int_val;
+                                }
+                                std::cerr << " sig=" << method->descriptor;
+                                // W18 FT BITMAP HEXDUMP: read the guest
+                                // struct the (J) arg points at — the
+                                // FT_Bitmap face (rows/width/pitch/
+                                // pixel_mode) as the REAL FT wrote it.
+                                if (method->descriptor.size() > 1 &&
+                                    method->descriptor[1] == 'J' &&
+                                    !args.empty() &&
+                                    args[0].type == DalvikType::INT64) {
+                                    const void* p =
+                                        (const void*)(uintptr_t)args[0]
+                                            .long_val;
+                                    unsigned char dump[32];
+                                    if (p && ((uintptr_t)p & 0xfff)) {
+                                        std::memcpy(dump, p, sizeof(dump));
+                                        std::cerr << " mem:";
+                                        char b8[8];
+                                        for (size_t di = 0; di < 32; ++di) {
+                                            snprintf(b8, sizeof b8, "%02x",
+                                                     dump[di]);
+                                            std::cerr << b8;
+                                        }
+                                    }
+                                }
+                                std::cerr << std::endl;
+                            }
+                        }
                         bool f594_call_ok = nativeexec::call_native(
                             fn, is_static, method->descriptor, jargs, out,
                             nerr);
                         out.provenance = tried;
+                        if (w18ft_on &&
+                            (class_descriptor.find("freetype/FreeType") !=
+                                 std::string::npos ||
+                             class_descriptor.find("Gdx2DPixmap") !=
+                                 std::string::npos)) {
+                            static thread_local uint64_t w18ft_rn = 0;
+                            if (w18ft_rn++ < 400)
+                                std::cerr << "[W18-FT] ret "
+                                          << class_descriptor << "."
+                                          << method_name << " ok="
+                                          << (f594_call_ok ? 1 : 0)
+                                          << " kind="
+                                          << static_cast<int>(out.kind)
+                                          << " i=" << (long long)out.i
+                                          << std::endl;
+                        }
                         if (!f594_call_ok && f594_stub_had_answer) {
                             // F-C4-594 (W10) HONEST-FALLBACK: the real
                             // symbol FAULTED under the guarded thunk
@@ -29925,6 +30314,24 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
         class_name = resolve_method_class_for_dex(method_idx, current_dex_index_);
     }
 
+    // ── S188-W18 FT PROBE (entry) — trace the FreeType static dispatch.
+    static thread_local const bool w18ft_in_on =
+        std::getenv("MINIANDROID_W18_FT_TRACE") != nullptr;
+    if (w18ft_in_on &&
+        class_name.find("freetype/FreeType") != std::string::npos) {
+        static thread_local uint64_t w18ft_in_n = 0;
+        if (w18ft_in_n++ < 60)
+            std::cerr << "[W18-FT-STATIC] entry " << class_name << "."
+                      << method_name << " method_idx=" << method_idx
+                      << " dex=" << current_dex_index_
+                      << " proto="
+                      << (dex_report_
+                              ? resolve_method_proto_for_dex(method_idx,
+                                                             current_dex_index_)
+                              : std::string("<no-report>"))
+                      << std::endl;
+    }
+
     // EXP-071 Phase 8: Wide register merging.
     //
     // For methods with wide arguments (J = long, D = double), each wide arg
@@ -30448,9 +30855,28 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
         // current_invoke_is_static_ is already false (reset above).
+        // S188-W18 FT PROBE: FreeType-family static dispatch — did
+        // try_recursive_invoke claim it, and as what?
+        static thread_local const bool w18ft_d_on =
+            std::getenv("MINIANDROID_W18_FT_TRACE") != nullptr;
+        bool w18ft_probe = w18ft_d_on &&
+            class_name.find("freetype/FreeType") != std::string::npos;
+        static thread_local uint64_t w18ft_d_n = 0;
+        if (w18ft_probe && w18ft_d_n++ < 200)
+            std::cerr << "[W18-FT-DISP] pre-RI " << class_name << "."
+                      << method_name << " proto=" << method_proto << std::endl;
         if (try_recursive_invoke(class_name, method_name, args, return_val, result, method_proto)) { last_invoke_return_ = return_val;
             recursively_invoked = true;
             status = ApiCallTrace::Status::IMPLEMENTED;
+            if (w18ft_probe && w18ft_d_n < 220)
+                std::cerr << "[W18-FT-DISP] RI-claimed ret_type="
+                          << static_cast<int>(return_val.type)
+                          << " val=" << (return_val.type == DalvikType::INT64
+                                             ? (long long)return_val.long_val
+                                             : (long long)return_val.int_val)
+                          << std::endl;
+        } else if (w18ft_probe && w18ft_d_n < 220) {
+            std::cerr << "[W18-FT-DISP] RI-miss -> bridge" << std::endl;
         }
     }
     if (!recursively_invoked && config_.enable_api_bridge) {
@@ -35955,6 +36381,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                    c == 0x205F || c == 0x3000);
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_bool(method == "isWhitespace" ? ws : sc);
+        return true;
+    }
+    // ── S188-W18 F-NEW-608 — Character statics on the createCharset
+    // demand chain (p9 AssetLoaderService.createCharset real bytecode:
+    // isAlphabetic pc=136, toUpperCase pc=170, toLowerCase pc=216).
+    // AOSP Character.java semantics, engine-consistent approximation:
+    //   isAlphabetic: ASCII letters + non-ASCII bytes (the engine's
+    //     byte-per-char string convention — the charset family here is
+    //     Latin alphabets; honest boundary: full Unicode categories are
+    //     out of scope, same family as the isWhitespace arm above).
+    //   toUpperCase/toLowerCase: ASCII case law (A-Z <-> a-z); non-ASCII
+    //     unchanged (AOSP special-casing for Turkish etc. needs locales
+    //     the engine does not carry).
+    if (class_name == "Ljava/lang/Character;" &&
+        (method == "isAlphabetic" || method == "isLetter" ||
+         method == "toUpperCase" || method == "toLowerCase") &&
+        args.size() >= 1) {
+        int32_t c = 0;
+        if (args[0].type == DalvikType::CHAR || args[0].type == DalvikType::INT32)
+            c = args[0].int_val;
+        if (method == "isAlphabetic" || method == "isLetter") {
+            bool alpha = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                         c >= 0x80;  // non-ASCII byte = letter (byte-char law)
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(alpha);
+            return true;
+        }
+        int32_t cc = c;
+        if (method == "toUpperCase" && c >= 'a' && c <= 'z') cc = c - 32;
+        if (method == "toLowerCase" && c >= 'A' && c <= 'Z') cc = c + 32;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_char(static_cast<char>(cc & 0xFF));
         return true;
     }
     if (class_name == "Ljava/lang/String;" && method == "charAt" &&
@@ -74123,16 +74581,49 @@ measure_cm_done:;
             return best;
         };
         std::string assembled;
+        // ── S188-W18 F-NEW-608d — STRING-ARG DUAL-FACE read law ────────
+        // A String argument arrives as EITHER an inline STRING_REF (the
+        // const-string/literal convention) OR a MATERIALIZED heap String
+        // (OBJECT_REF whose content lives in __string_value__/value/
+        // sb_value — the String(char[])/String(String) ctor mints). The
+        // pre-608d arms read .string_val only — a heap-String child read
+        // as "" (live face: halma I18NBundle — the freshly-minted
+        // "strings_en_US.properties" flowed into File.<init>(String,
+        // String) as an OBJECT_REF and the path degraded to "" →
+        // "[ASSET-OPEN] MISS assets/" → MissingResourceException). OpenJDK
+        // reads the CHARACTER CONTENT regardless of the internal
+        // representation — same law here.
+        auto f608d_string_of = [&](const DalvikValue& v) -> std::string {
+            if (v.type == DalvikType::STRING_REF) return v.string_val;
+            if (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
+                heap_.has_object(v.object_id)) {
+                for (const char* fld :
+                     {"__string_value__", "value", "sb_value"}) {
+                    auto fv = heap_.get_object_field(v.object_id, fld);
+                    if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                        return fv->string_val;
+                }
+            }
+            return std::string();
+        };
+        auto f608d_is_str = [&](const DalvikValue& v) -> bool {
+            return v.type == DalvikType::STRING_REF ||
+                   (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
+                    heap_.has_object(v.object_id) &&
+                    heap_.get_object_field(v.object_id,
+                                           "__string_value__")
+                        .has_value());
+        };
         const bool two_arg =
-            args.size() >= 3 && args[1].type == DalvikType::STRING_REF;
-        if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF &&
+            args.size() >= 3 && f608d_is_str(args[1]);
+        if (args.size() >= 2 && f608d_is_str(args[1]) &&
             args.size() < 3) {
             // File(String pathname)
-            assembled = args[1].string_val;
-        } else if (two_arg && args[2].type == DalvikType::STRING_REF) {
-            // File(String parent, String child)
-            const std::string& parent = args[1].string_val;
-            const std::string& child = args[2].string_val;
+            assembled = f608d_string_of(args[1]);
+        } else if (two_arg && args.size() >= 3 && f608d_is_str(args[2])) {
+            // File(String parent, String child) — both faces (F-NEW-608d).
+            const std::string parent = f608d_string_of(args[1]);
+            const std::string child = f608d_string_of(args[2]);
             // F-C4-589 (W10, 4APP4 Coder-4) — OpenJDK File(File, String)
             // ABSOLUTE-CHILD law (java.io.File(File parent, String child):
             // `if (child == null ...) ... else { this.path =
@@ -74151,10 +74642,11 @@ measure_cm_done:;
             else if (child.empty()) assembled = parent;
             else assembled = parent + "/" + child;
         } else if (args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
-                   args[2].type == DalvikType::STRING_REF) {
-            // File(File parent, String child)
+                   f608d_is_str(args[2])) {
+            // File(File parent, String child) — the child rides either
+            // string face (F-NEW-608d).
             const std::string parent = path_field_of(args[1].object_id);
-            const std::string& child = args[2].string_val;
+            const std::string child = f608d_string_of(args[2]);
             // F-C4-589: absolute child ignores the parent (OpenJDK
             // UnixFileSystem.resolve law — see the String,String arm).
             if (!child.empty() && child[0] == '/') {
@@ -74164,7 +74656,7 @@ measure_cm_done:;
             else assembled = parent + "/" + child;
         } else if (args.size() >= 3 &&
                    args[1].type == DalvikType::NULL_REF &&
-                   args[2].type == DalvikType::STRING_REF) {
+                   f608d_is_str(args[2])) {
             // File(null, child) — OpenJDK File(File parent, String child):
             // `if (parent != null) { ... } else { this.path =
             //  fs.normalize(child); }` — a null parent degrades to the
@@ -74172,7 +74664,7 @@ measure_cm_done:;
             // Evidence (dooz_23 run_k): Lvx0;.a invoked File(null,
             // "datastore/settings.preferences_pb") — the parent state was
             // still null; the law must not answer an empty path.
-            assembled = args[2].string_val;
+            assembled = f608d_string_of(args[2]);
         } else if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
             // File(File) copy form — copy the parent's path.
             assembled = path_field_of(args[1].object_id);
@@ -74186,7 +74678,7 @@ measure_cm_done:;
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_void();
         static thread_local uint64_t r347_fctor_log = 0;
-        if (r347_fctor_log < 12) {
+        if (r347_fctor_log < 40) {
             ++r347_fctor_log;
             std::cerr << "[R347-FILE-CTOR] argc=" << args.size()
                       << " path=\"" << assembled << "\""
@@ -74195,8 +74687,12 @@ measure_cm_done:;
                 std::cerr << " a" << ai << "t=" << static_cast<int>(args[ai].type);
                 if (args[ai].type == DalvikType::STRING_REF)
                     std::cerr << "(\"" << args[ai].string_val << "\")";
-                else if (args[ai].type == DalvikType::OBJECT_REF)
-                    std::cerr << "(o" << args[ai].object_id << ")";
+                else if (args[ai].type == DalvikType::OBJECT_REF) {
+                    std::cerr << "(o" << args[ai].object_id;
+                    std::string s608d = f608d_string_of(args[ai]);
+                    if (!s608d.empty()) std::cerr << "=\"" << s608d.substr(0, 40) << "\"";
+                    std::cerr << ")";
+                }
             }
             std::cerr << std::endl;
         }
@@ -77279,7 +77775,75 @@ measure_cm_done:;
         }
         std::string f299_content;
         bool f299_copy_form = false;
-        if (args.size() == 1) {
+        // ── S188-W18 F-NEW-608c — String←char[] materialization law ────
+        // AOSP String.java: new String(char[] value) copies the array;
+        // new String(char[] value, int offset, int count) copies the
+        // window (bounds: offset<0 || count<0 || offset+count>value.length
+        // → IndexOutOfBoundsException). LIVE DEMAND (halma, W18 r4):
+        // libgdx's com.badlogic.gdx.utils.StringBuilder.toString() is REAL
+        // DEX bytecode ending in new String(buf, 0, length) — the unbridged
+        // ctor answered an UNMATERIALIZED string → every I18NBundle bundle
+        // name ("strings_en_US.properties") composed as "" →
+        // FileHandle.sibling("") → "[ASSET-OPEN] MISS assets/" →
+        // MissingResourceException → AndroidLauncher.onCreate APP BOUNDARY
+        // (the getChars copies landed; only the final String mint was
+        // missing). Element read = the F-NEW-606 element-type family
+        // (CHAR/int_val both honest).
+        if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {
+            std::string src_cls;
+            if (heap_.get_object_class(args[1].object_id, src_cls) &&
+                src_cls == "[C") {
+                auto len_v = heap_.get_object_field(args[1].object_id,
+                                                    "__array_length__");
+                int32_t clen =
+                    len_v.has_value() && len_v->type == DalvikType::INT32
+                        ? len_v->int_val
+                        : 0;
+                int32_t coff = 0, ccount = clen;
+                if (args.size() >= 4) {
+                    coff = dalvik_int_value(args[2]);
+                    ccount = dalvik_int_value(args[3]);
+                    if (coff < 0 || ccount < 0 ||
+                        coff + ccount > clen) {
+                        throw_deferred(
+                            "Ljava/lang/IndexOutOfBoundsException;",
+                            "String(char[]): offset=" +
+                                std::to_string(coff) + " count=" +
+                                std::to_string(ccount) + " length=" +
+                                std::to_string(clen),
+                            "F-NEW-608c");
+                        pc_ += 3;
+                        return false;
+                    }
+                }
+                f299_content.reserve((size_t)ccount);
+                for (int32_t si = 0; si < ccount; ++si) {
+                    auto el = heap_.get_object_field(
+                        args[1].object_id,
+                        "array[" + std::to_string(coff + si) + "]");
+                    if (!el.has_value()) continue;
+                    char cc = 0;
+                    if (el->type == DalvikType::CHAR)
+                        cc = el->char_val;
+                    else if (el->type == DalvikType::INT32)
+                        cc = (char)(el->int_val & 0xFF);
+                    else if (el->type == DalvikType::BYTE)
+                        cc = el->byte_val;
+                    f299_content.push_back(cc);
+                }
+                f299_copy_form = true;
+                static thread_local uint64_t f608c_n = 0;
+                if (f608c_n < 6)
+                    ++f608c_n,
+                        std::cerr << "[F-NEW-608c] String(char[]) len="
+                                  << ccount << " content=\""
+                                  << f299_content.substr(0, 40)
+                                  << "\" caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+            }
+        }
+        if (!f299_copy_form && args.size() == 1) {
             // new String() — the empty string (OpenJDK law).
             f299_copy_form = true;
         } else if (args.size() >= 2 &&
@@ -78304,6 +78868,112 @@ measure_cm_done:;
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }
+            // ── S188-W18 F-NEW-608 — String.toCharArray()[C ─────────────
+            // AOSP String.java: `public char[] toCharArray() { char
+            // result[] = new char[value.length]; value.getChars(0,
+            // value.length, result, 0); return result; }`. LIVE DEMAND
+            // (p9, W18 smoke): AssetLoaderService.createCharset pc=70
+            // (engine code-unit pc=35) array-lengths the toCharArray
+            // result — the unbridged call answered typed-default NULL →
+            // ARR-LEN-NULL → MainActivity.onCreate APP BOUNDARY (the
+            // run died AFTER the whole Gdx2DPixmap/Matrix4 family went
+            // real — the last.onCreate death face). Receiver faces:
+            // STRING_REF here, heap-String in the S186i law block.
+            // Element convention = the engine's canonical char[]
+            // producer (aput-char → make_char; aget's K-41 conversion
+            // reads it).
+            if (method == "toCharArray") {
+                uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+                heap_.set_object_field(
+                    arr_id, "__array_length__",
+                    DalvikValue::make_int((int32_t)sv.size()));
+                for (size_t ci = 0; ci < sv.size(); ++ci)
+                    heap_.set_object_field(
+                        arr_id, "array[" + std::to_string(ci) + "]",
+                        DalvikValue::make_char(sv[ci]));
+                result = DalvikValue::make_object(arr_id, "[C");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                static thread_local uint64_t f608_ref_n = 0;
+                if (f608_ref_n < 6)
+                    ++f608_ref_n,
+                        std::cerr << "[F-NEW-608] String.toCharArray "
+                                  << "len=" << sv.size()
+                                  << " (STRING_REF receiver) caller="
+                                  << current_class_ << "."
+                                  << current_method_ << std::endl;
+                return true;
+            }
+            // ── S188-W18 F-NEW-608b — String.getChars(I I [C I)V ────────
+            // AOSP String.java: copies value[srcBegin..srcEnd) into dst at
+            // dstBegin with the bounds law (srcBegin<0 / srcEnd>len /
+            // srcBegin>srcEnd → StringIndexOutOfBoundsException; dst
+            // overflow → IndexOutOfBoundsException). LIVE DEMAND (halma,
+            // W18 battery): I18NBundle.toFileHandle composes
+            // "strings_en_US.properties" through libgdx's
+            // StringBuilder.append0 → String.getChars — the unbridged stub
+            // emptied every composed name → sibling("") →
+            // "[ASSET-OPEN] MISS assets/" → MissingResourceException
+            // "Can't find bundle for base file handle strings" →
+            // AndroidLauncher.onCreate APP BOUNDARY. Element convention =
+            // make_char (the aput-char canonical).
+            if (method == "getChars" && args.size() >= 5) {
+                int32_t sb = dalvik_int_value(args[1]);
+                int32_t se = dalvik_int_value(args[2]);
+                int32_t db = dalvik_int_value(args[4]);
+                uint32_t dst_oid = args[3].type == DalvikType::OBJECT_REF
+                                       ? args[3].object_id
+                                       : 0u;
+                auto iobe = [&](const std::string& m) {
+                    throw_deferred(
+                        "Ljava/lang/StringIndexOutOfBoundsException;", m,
+                        "F-NEW-608b");
+                    pc_ += 3;
+                };
+                if (sb < 0 || se > (int32_t)sv.size() || sb > se) {
+                    iobe("getChars: begin " + std::to_string(sb) + ", end " +
+                         std::to_string(se) + ", length " +
+                         std::to_string(sv.size()));
+                    return false;
+                }
+                if (dst_oid == 0 || !heap_.has_object(dst_oid)) {
+                    throw_deferred("Ljava/lang/NullPointerException;",
+                                   "getChars: dst array is null",
+                                   "F-NEW-608b");
+                    pc_ += 3;
+                    return false;
+                }
+                auto dlen = heap_.get_object_field(dst_oid,
+                                                   "__array_length__");
+                int32_t dcount = dlen.has_value() &&
+                                         dlen->type == DalvikType::INT32
+                                     ? dlen->int_val
+                                     : 0;
+                if (db + (se - sb) > dcount) {
+                    throw_deferred(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "getChars: dstBegin " + std::to_string(db) +
+                            ", count " + std::to_string(se - sb) +
+                            ", dst length " + std::to_string(dcount),
+                        "F-NEW-608b");
+                    pc_ += 3;
+                    return false;
+                }
+                for (int32_t ci = sb; ci < se; ++ci)
+                    heap_.set_object_field(
+                        dst_oid, "array[" + std::to_string(db + (ci - sb)) +
+                                     "]",
+                        DalvikValue::make_char(sv[(size_t)ci]));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                static thread_local uint64_t f608b_n = 0;
+                if (f608b_n < 6)
+                    ++f608b_n,
+                        std::cerr << "[F-NEW-608b] String.getChars " << (se - sb)
+                                  << " chars -> dst#" << dst_oid << " from "
+                                  << db << " caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                return true;
+            }
             if (method == "startsWith" && args.size() >= 2 &&
                 args[1].type == DalvikType::STRING_REF) {
                 bool pre = sv.size() >= args[1].string_val.size() &&
@@ -78956,8 +79626,22 @@ measure_cm_done:;
         if (str.empty() && args[0].type == DalvikType::OBJECT_REF &&
             heap_.has_object(args[0].object_id)) {
             // Receiver may be a heap String object — resolve its value.
-            auto sv = heap_.get_object_field(args[0].object_id, "value");
-            if (sv.has_value() && sv->type == DalvikType::STRING_REF) str = sv->string_val;
+            // S188-W18 F-NEW-608d: the content lives under the SAME
+            // triple-field convention every String mint uses
+            // (__string_value__ = the String(char[])/String(String) ctor
+            // law; value/sb_value = the older bridges). Live face (halma
+            // W18): AndroidFileHandle.sibling's FIRST instruction is
+            // name.replace('\\','/') on the freshly-minted bundle name —
+            // the single-field read answered "" → new File(null, "") →
+            // "[ASSET-OPEN] MISS assets/" → MissingResourceException.
+            for (const char* fld :
+                 {"__string_value__", "value", "sb_value"}) {
+                auto sv = heap_.get_object_field(args[0].object_id, fld);
+                if (sv.has_value() && sv->type == DalvikType::STRING_REF) {
+                    str = sv->string_val;
+                    break;
+                }
+            }
         }
         if (args[1].type == DalvikType::INT32 && args[2].type == DalvikType::INT32) {
             // replace(char, char): substitute every occurrence of the single
@@ -79444,6 +80128,32 @@ measure_cm_done:;
                    c == 0x205F || c == 0x3000);
         status = ApiCallTrace::Status::IMPLEMENTED;
         result = DalvikValue::make_bool(method == "isWhitespace" ? ws : sc);
+        return true;
+    }
+    // ── S188-W18 F-NEW-608 — Character statics (bridge_to_api face) —
+    // same law as the try_recursive_invoke-side arm (isAlphabetic /
+    // toUpperCase / toLowerCase on the p9 createCharset demand chain);
+    // static dispatch of these lands HERE when the class resolves
+    // through the API bridge.
+    if (class_name == "Ljava/lang/Character;" &&
+        (method == "isAlphabetic" || method == "isLetter" ||
+         method == "toUpperCase" || method == "toLowerCase") &&
+        args.size() >= 1) {
+        int32_t c = 0;
+        if (args[0].type == DalvikType::CHAR || args[0].type == DalvikType::INT32)
+            c = args[0].int_val;
+        if (method == "isAlphabetic" || method == "isLetter") {
+            bool alpha = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                         c >= 0x80;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(alpha);
+            return true;
+        }
+        int32_t cc = c;
+        if (method == "toUpperCase" && c >= 'a' && c <= 'z') cc = c - 32;
+        if (method == "toLowerCase" && c >= 'A' && c <= 'Z') cc = c + 32;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_char(static_cast<char>(cc & 0xFF));
         return true;
     }
 
@@ -81905,6 +82615,17 @@ measure_cm_done:;
                       << " caller=" << current_class_ << "."
                       << current_method_ << std::endl;
         }
+        // S188-W18 FT PROBE: the FreeType family bypasses the 40-row cap —
+        // every stubbed FreeType native prints its bridge outcome.
+        if (class_name.find("freetype/FreeType") != std::string::npos) {
+            static thread_local uint64_t ft_stub_n = 0;
+            if (ft_stub_n++ < 20)
+                std::cerr << "[W18-FT-BRIDGE] stub tail " << class_name
+                          << "." << method << " argc=" << args.size()
+                          << " status=" << static_cast<int>(status)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+        }
     }
     // S186i: heap-String receiver law — split/isEmpty family on a
     // MATERIALIZED String object (receiver_type=7, oid≠0) must read the
@@ -81919,6 +82640,106 @@ measure_cm_done:;
             const auto* ro = heap_.get(args[0].object_id);
             s186i_is_str_recv =
                 ro && ro->class_descriptor == "Ljava/lang/String;";
+        }
+        if (s186i_is_str_recv && method == "getChars" && args.size() >= 5) {
+            // ── S188-W18 F-NEW-608b — heap-String getChars face ─────────
+            // Same AOSP bounds/copy law as the STRING_REF arm; the receiver
+            // here is a MATERIALIZED heap String (the libgdx
+            // StringBuilder.append0 face reads its chars into the builder's
+            // char[] — the I18NBundle name composition).
+            std::string hs;
+            for (const char* fld :
+                 {"__string_value__", "value", "sb_value"}) {
+                auto fv = heap_.get_object_field(args[0].object_id, fld);
+                if (fv.has_value() && fv->type == DalvikType::STRING_REF) {
+                    hs = fv->string_val;
+                    break;
+                }
+            }
+            int32_t sb = dalvik_int_value(args[1]);
+            int32_t se = dalvik_int_value(args[2]);
+            int32_t db = dalvik_int_value(args[4]);
+            uint32_t dst_oid = args[3].type == DalvikType::OBJECT_REF
+                                   ? args[3].object_id
+                                   : 0u;
+            if (sb < 0 || se > (int32_t)hs.size() || sb > se) {
+                throw_deferred(
+                    "Ljava/lang/StringIndexOutOfBoundsException;",
+                    "getChars: begin " + std::to_string(sb) + ", end " +
+                        std::to_string(se) + ", length " +
+                        std::to_string(hs.size()),
+                    "F-NEW-608b");
+                pc_ += 3;
+                return false;
+            }
+            if (dst_oid == 0 || !heap_.has_object(dst_oid)) {
+                throw_deferred("Ljava/lang/NullPointerException;",
+                               "getChars: dst array is null", "F-NEW-608b");
+                pc_ += 3;
+                return false;
+            }
+            auto dlen = heap_.get_object_field(dst_oid, "__array_length__");
+            int32_t dcount =
+                dlen.has_value() && dlen->type == DalvikType::INT32
+                    ? dlen->int_val
+                    : 0;
+            if (db + (se - sb) > dcount) {
+                throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
+                               "getChars: dst overflow", "F-NEW-608b");
+                pc_ += 3;
+                return false;
+            }
+            for (int32_t ci = sb; ci < se; ++ci)
+                heap_.set_object_field(
+                    dst_oid,
+                    "array[" + std::to_string(db + (ci - sb)) + "]",
+                    DalvikValue::make_char(hs[(size_t)ci]));
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            static thread_local uint64_t f608b_h_n = 0;
+            if (f608b_h_n < 6)
+                ++f608b_h_n,
+                    std::cerr << "[F-NEW-608b] heap-String getChars "
+                              << (se - sb) << " chars -> dst#" << dst_oid
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+            return true;
+        }
+        if (s186i_is_str_recv && method == "toCharArray") {
+            // ── S188-W18 F-NEW-608 — heap-String toCharArray face ───────
+            // Same AOSP law as the STRING_REF arm (String.toCharArray →
+            // char[value.length]); the receiver here is a MATERIALIZED
+            // heap String (StringBuilder.toString() chain — the
+            // createCharset face reads its chars back via aget-char).
+            // Element convention = aput-char canonical (make_char).
+            std::string hs;
+            for (const char* fld :
+                 {"__string_value__", "value", "sb_value"}) {
+                auto fv = heap_.get_object_field(args[0].object_id, fld);
+                if (fv.has_value() && fv->type == DalvikType::STRING_REF) {
+                    hs = fv->string_val;
+                    break;
+                }
+            }
+            uint32_t arr_id = heap_.allocate("Larray;", pc_, 0);
+            heap_.set_object_field(
+                arr_id, "__array_length__",
+                DalvikValue::make_int((int32_t)hs.size()));
+            for (size_t ci = 0; ci < hs.size(); ++ci)
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(ci) + "]",
+                    DalvikValue::make_char(hs[ci]));
+            result = DalvikValue::make_object(arr_id, "[C");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            static thread_local uint64_t f608_heap_n = 0;
+            if (f608_heap_n < 6)
+                ++f608_heap_n,
+                    std::cerr << "[F-NEW-608] String.toCharArray "
+                              << "len=" << hs.size()
+                              << " (heap-String receiver) caller="
+                              << current_class_ << "."
+                              << current_method_ << std::endl;
+            return true;
         }
         if (s186i_is_str_recv && method == "split") {
         std::string hs;

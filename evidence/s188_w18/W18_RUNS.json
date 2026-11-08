@@ -1,0 +1,179 @@
+{
+ "binary_sha16": "1f05270d793a43b5",
+ "runs": [
+  {
+   "pkg": "se.tube42.p9.android",
+   "tag": "p9_w18_r1",
+   "status": "OK",
+   "dpkg": "se.tube42.p9.android",
+   "wall_s": 5.5,
+   "screenshot": "/home/z/my-project/evidence/s188_w18/runs/p9_w18_r1/screenshot.png",
+   "face": "face_p9_w18_r1.jpg",
+   "chain": {
+    "matrix4_critical_snapshots": 0,
+    "critical_commits": 12,
+    "slot222_null": 0,
+    "direct_bb_returns": 7,
+    "tochararray": 2,
+    "charset_print": 1,
+    "font_face_real": 0,
+    "pixmap_load_real": 7,
+    "guarded_faults": 0,
+    "f607_dispatch_fix": 0,
+    "f613_shadow_gate": 7,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "route_violation": 0,
+    "uncaught": 0,
+    "app_boundary": 1
+   }
+  },
+  {
+   "pkg": "se.tube42.p9.android",
+   "tag": "p9_w18_r2",
+   "status": "OK",
+   "dpkg": "se.tube42.p9.android",
+   "wall_s": 5.3,
+   "screenshot": "/home/z/my-project/evidence/s188_w18/runs/p9_w18_r2/screenshot.png",
+   "face": "face_p9_w18_r2.jpg",
+   "chain": {
+    "matrix4_critical_snapshots": 0,
+    "critical_commits": 12,
+    "slot222_null": 0,
+    "direct_bb_returns": 7,
+    "tochararray": 2,
+    "charset_print": 1,
+    "font_face_real": 0,
+    "pixmap_load_real": 7,
+    "guarded_faults": 0,
+    "f607_dispatch_fix": 0,
+    "f613_shadow_gate": 7,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "route_violation": 0,
+    "uncaught": 0,
+    "app_boundary": 1
+   }
+  },
+  {
+   "pkg": "se.tube42.p9.android",
+   "tag": "p9_w18_r3",
+   "status": "OK",
+   "dpkg": "se.tube42.p9.android",
+   "wall_s": 5.3,
+   "screenshot": "/home/z/my-project/evidence/s188_w18/runs/p9_w18_r3/screenshot.png",
+   "face": "face_p9_w18_r3.jpg",
+   "chain": {
+    "matrix4_critical_snapshots": 0,
+    "critical_commits": 12,
+    "slot222_null": 0,
+    "direct_bb_returns": 7,
+    "tochararray": 2,
+    "charset_print": 1,
+    "font_face_real": 0,
+    "pixmap_load_real": 7,
+    "guarded_faults": 0,
+    "f607_dispatch_fix": 0,
+    "f613_shadow_gate": 7,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "route_violation": 0,
+    "uncaught": 0,
+    "app_boundary": 1
+   }
+  },
+  {
+   "pkg": "app.halma",
+   "tag": "halma_w18_r1",
+   "status": "OK",
+   "dpkg": "app.halma",
+   "wall_s": 3.2,
+   "screenshot": "/home/z/my-project/evidence/s188_w18/runs/halma_w18_r1/screenshot.png",
+   "face": "face_halma_w18_r1.jpg",
+   "chain": {
+    "matrix4_critical_snapshots": 0,
+    "critical_commits": 0,
+    "slot222_null": 0,
+    "direct_bb_returns": 0,
+    "tochararray": 0,
+    "charset_print": 0,
+    "font_face_real": 0,
+    "pixmap_load_real": 0,
+    "guarded_faults": 0,
+    "f607_dispatch_fix": 0,
+    "f613_shadow_gate": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "route_violation": 0,
+    "uncaught": 0,
+    "app_boundary": 1
+   }
+  },
+  {
+   "pkg": "app.halma",
+   "tag": "halma_w18_r2",
+   "status": "OK",
+   "dpkg": "app.halma",
+   "wall_s": 3.1,
+   "screenshot": "/home/z/my-project/evidence/s188_w18/runs/halma_w18_r2/screenshot.png",
+   "face": "face_halma_w18_r2.jpg",
+   "chain": {
+    "matrix4_critical_snapshots": 0,
+    "critical_commits": 0,
+    "slot222_null": 0,
+    "direct_bb_returns": 0,
+    "tochararray": 0,
+    "charset_print": 0,
+    "font_face_real": 0,
+    "pixmap_load_real": 0,
+    "guarded_faults": 0,
+    "f607_dispatch_fix": 0,
+    "f613_shadow_gate": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "route_violation": 0,
+    "uncaught": 0,
+    "app_boundary": 1
+   }
+  },
+  {
+   "pkg": "app.halma",
+   "tag": "halma_w18_r3",
+   "status": "OK",
+   "dpkg": "app.halma",
+   "wall_s": 3.1,
+   "screenshot": "/home/z/my-project/evidence/s188_w18/runs/halma_w18_r3/screenshot.png",
+   "face": "face_halma_w18_r3.jpg",
+   "chain": {
+    "matrix4_critical_snapshots": 0,
+    "critical_commits": 0,
+    "slot222_null": 0,
+    "direct_bb_returns": 0,
+    "tochararray": 0,
+    "charset_print": 0,
+    "font_face_real": 0,
+    "pixmap_load_real": 0,
+    "guarded_faults": 0,
+    "f607_dispatch_fix": 0,
+    "f613_shadow_gate": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "route_violation": 0,
+    "uncaught": 0,
+    "app_boundary": 1
+   }
+  }
+ ]
+}
