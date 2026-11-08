@@ -805,6 +805,65 @@ bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
             return false;
         }
     }
+    // ── S199 W19a F-NEW-619 — TYPED-VIEW PARENT CHASE at the hook ───────
+    // GetDirectBufferAddress(view) must answer the PARENT's real memory.
+    // The pre-619 hook took the __bb_b{i}__ snapshot leg for a typed view
+    // (fresh malloc of the view's own — empty — element fields): the real
+    // libgdx.so AndroidGL20 natives (glVertexAttribPointer/glBufferData —
+    // dispatched through the JNI table, NOT the GLES20 static bridge)
+    // then bound zeroed snapshot pointers for the SHAPE mesh and the draw
+    // rasterized nothing (tictactoe board lines missing). AOSP/ART law:
+    // GetDirectBufferAddress on a view answers the view's effective base
+    // = the parent's direct address (+ the view's own offset, 0 here);
+    // the caller adds buffer.position() itself.
+    {
+        uint32_t cur = oid;
+        for (int hop = 0; hop < 4 && cur != 0; ++hop) {
+            if (!heap.has_object(cur)) break;
+            auto pv = heap.get_object_field(cur, "__bb_parent__");
+            if (!pv.has_value() || pv->type != DalvikType::OBJECT_REF ||
+                pv->object_id == 0)
+                break;
+            cur = pv->object_id;
+            auto pav = heap.get_object_field(cur, "__bb_addr__");
+            if (pav.has_value() && pav->type == DalvikType::INT64 &&
+                pav->long_val != 0) {
+                auto pcv = heap.get_object_field(cur, "__bb_cap__");
+                int32_t pcap = (pcv.has_value() &&
+                                pcv->type == DalvikType::INT32)
+                                   ? pcv->int_val
+                                   : 0;
+                *addr = (void*)(uintptr_t)pav->long_val;
+                *cap = (size_t)(pcap > 0 ? pcap : 0);
+                static thread_local uint64_t n = 0;
+                if (n++ < 8)
+                    std::cerr << "[F-NEW-619] view oid=" << oid
+                              << " chased parent oid=" << cur
+                              << " → REAL addr=" << *addr << " cap=" << *cap
+                              << std::endl;
+                return true;
+            }
+            auto pdv = heap.get_object_field(cur, "__bb_direct__");
+            if (pdv.has_value() && pdv->type == DalvikType::INT64 &&
+                pdv->long_val != 0) {
+                auto pcv = heap.get_object_field(cur, "__bb_direct_cap__");
+                int32_t pcap = (pcv.has_value() &&
+                                pcv->type == DalvikType::INT32)
+                                   ? pcv->int_val
+                                   : 0;
+                if (pcap > (16 << 20)) return false;  // honest bound
+                *addr = (void*)(uintptr_t)pdv->long_val;
+                *cap = (size_t)(pcap > 0 ? pcap : 0);
+                static thread_local uint64_t n = 0;
+                if (n++ < 8)
+                    std::cerr << "[F-NEW-619] view oid=" << oid
+                              << " chased parent oid=" << cur
+                              << " → REAL engine-mem addr=" << *addr
+                              << " cap=" << *cap << std::endl;
+                return true;
+            }
+        }
+    }
     auto cap_v = heap.get_object_field(oid, "__bb_cap__");
     int32_t bcap = (cap_v.has_value() && cap_v->type == DalvikType::INT32)
                        ? cap_v->int_val : 0;
