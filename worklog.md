@@ -8750,3 +8750,48 @@ floor 11/11 CLEAN, gmdice 5-tap PASS (5 distinct states, rerun
 identical), microtimer acceptance re-VERIFIED end-to-end (same tap
 signature [134,147,148,264,270,253], pause-frozen/resume/delete all
 correct, SQLite restore 00:00:07, 0 uncaught).
+
+## S200 Target B (cont.) — fragment-path frontier RESOLVED (2026-11-09)
+
+The wave-record question ("the shape program's fragment path") was answered
+probe-first on live dispatch traces; all suspects acquitted, the pipeline
+proven by an app-exact isolation test AND a live quad on screen.
+
+FINDINGS on binary 6c808c7448850756 (byte-identical rebuild from HEAD
+463608f2; probes kept as scripts/s200_probe_patch.diff, runtime sources
+reverted to HEAD):
+1. dooz emits ZERO GLES-bridge calls (View lane) — tictactoe is the FIRST
+   real app through the sb pipeline; no golden ever exercised this family.
+2. The app's true vertex format = gdx SpriteBatch 20-byte vertex
+   (pos 2F + color 4xU8@+8 + uv 2F@+12) — hexdump-decoded.
+3. sb fragment stage CORRECT: isolation test (scripts/s200_pgl_blend_test.cpp)
+   replays the app-exact path — pixels land exactly as predicted, including
+   blend with alpha>1 (17.6 → black; 0.7 → exact 0x4c4c4c).
+4. FIRST REAL TEXTURED QUAD ON SCREEN: the face's "arrow" region = the
+   game's 96x96 tile quad (count=6, tex4) at the panned-camera position —
+   geometry matches the upload dump's art bbox (16,8)-(76,80).
+5. Texture audit: all 4 uploads land on the right PGL objects with real
+   data; bind→draw mapping clean (30←tex2, 6←tex4, 12←tex3, 66←tex1).
+6. REMAINING WALL NAMED: the three 1024x1024 font pages upload pure
+   (255,255,255,0) — the glyph blit never draws. Root: the FreeType native
+   family hits the engine STUB tail (initFreeTypeJni/newMemoryFace/loadChar/
+   getGlyph/getMetrics) while libgdx-freetype.so IS loaded and exports the
+   real symbols (nm -D verified; F-NEW-611 mangling already correct) —
+   fake handles → real renderGlyph fails → generateGlyphAndBitmap=null →
+   empty pages → all text draws sample transparent white.
+7. Second bug pinned: a_color served at base+0 instead of base+8 (the
+   shared FloatBuffer's position=2 missed; uv's position=3 lands) — the
+   vertex color reads position bytes. Cosmetic until 6 falls.
+8. PGL const map ACQUITTED: 0x302→87 IS PGL GL_SRC_ALPHA; 0x1406→248 IS
+   PGL GL_FLOAT (counted from the enum head).
+
+GATES (fresh, canonical binary): goldens 3/3 ALL HOLD (bouncy 8a6c24ac /
+unote 3b8dcb0a / dooz 31ddd4d5 pin invocation, rerun-identical), gmdice
+5-tap PASS (rerun-identical), microtimer spot 0 uncaught. Floor 11/11
+verified on this exact identity in 00783ccd (deterministic rebuild).
+
+PUSHED: #557 comment 6728642160 (fragment-path resolution + named wall).
+NEXT P0 (single task): FreeType real-symbol resolution (F-C4-594 for
+libgdx-freetype.so) or a real-bitmap stub leg on the runtime's own
+FreeType — then text renders, the menu becomes tappable, the board/X-O
+screen is reachable, and the full interaction proof follows.

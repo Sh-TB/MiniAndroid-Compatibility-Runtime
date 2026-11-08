@@ -1,0 +1,280 @@
+diff --git a/miniandroid/src/gles/gles20_bridge.cpp b/miniandroid/src/gles/gles20_bridge.cpp
+index 69accb7f..0ea28d80 100644
+--- a/miniandroid/src/gles/gles20_bridge.cpp
++++ b/miniandroid/src/gles/gles20_bridge.cpp
+@@ -215,6 +215,7 @@ bool GLES20Bridge::dispatch(const std::string& method,
+             }
+             glVertexAttribPointer(idx, (GLint)I(1), S(2), (GLboolean)I(3),
+                                   (GLsizei)I(4), vap_ptr);  // F-NEW-607: type
++            pgl_vap_state_dump(idx);  // S200: post-call PGL state probe
+             // S198: remember the last pointer per canonical index (the
+             // draw-time probe reads it).
+             if (idx < 4) {
+@@ -389,7 +390,12 @@ bool GLES20Bridge::dispatch(const std::string& method,
+     if (method == "glDepthFunc") { glDepthFunc(S(0)); stats_.state_ops++; return true; }
+     if (method == "glBlendFunc") { glBlendFunc(S(0), S(1)); stats_.state_ops++; return true; }
+     if (method == "glActiveTexture") { glActiveTexture(S(0)); stats_.state_ops++; return true; }
+-    if (method == "glBindTexture") { glBindTexture(S(0), I(1)); stats_.state_ops++; return true; }
++    if (method == "glBindTexture") {
++        glBindTexture(S(0), I(1));
++        pgl_texture_audit("bind", (GLuint)I(1));  // S200: object audit
++        stats_.state_ops++;
++        return true;
++    }
+     if (method == "glGenTextures") {
+         // F-NEW-503: pointer-array indexing + null guard (same law as
+         // glGenBuffers above).
+@@ -422,21 +428,33 @@ bool GLES20Bridge::dispatch(const std::string& method,
+     }
+     // ---- draw ------------------------------------------------------------
+     if (method == "glDrawArrays") {
+-        glDrawArrays(pgl_mode_from_spec(I(0)), (GLint)I(1), (GLsizei)I(2));  // F-NEW-607
+         {
++            // S200 Target-B: the app's ACTUAL interleaved vertex data at
++            // draw time — ground truth for the vertex-fetch comparison.
+             static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
+             static int shown = 0;
+-            if (dbg && shown < 12) {
++            if (dbg && shown < 8) {
+                 ++shown;
+-                const float* p = (const float*)g_last_attrib_ptr[0];
+-                const float* t = (const float*)g_last_attrib_ptr[2];
++                const unsigned char* v = (const unsigned char*)g_last_attrib_ptr[0];
+                 std::fprintf(stderr,
+-                    "[GLDBG] DRAW mode=%u count=%d attrib0=%p %.2f,%.2f attrib2=%p %.3f,%.3f\n",
++                    "[GLDBG] DRAW mode=%u count=%d attrib0=%p v0=%.2f,%.2f attrib2v=%.3f,%.3f\n",
+                     (unsigned)I(0), (GLint)I(2), g_last_attrib_ptr[0],
+-                    p ? p[0] : -1, p ? p[1] : -1,
+-                    g_last_attrib_ptr[2], t ? t[0] : -1, t ? t[1] : -1);
++                    v ? ((const float*)v)[0] : -1, v ? ((const float*)v)[1] : -1,
++                    g_last_attrib_ptr[2] ? ((const float*)g_last_attrib_ptr[2])[0] : -1,
++                    g_last_attrib_ptr[2] ? ((const float*)g_last_attrib_ptr[2])[1] : -1);
++                if (v) {
++                    for (int k = 0; k < 4; ++k) {
++                        char hx[61]; hx[0] = 0; int o = 0;
++                        for (int b = 0; b < 20 && o < 60; ++b)
++                            o += std::snprintf(hx + o, 61 - o, "%02x", v[k * 20 + b]);
++                        std::fprintf(stderr, "[GLDBG]   vtx[%d] %s\n", k, hx);
++                    }
++                }
+             }
+         }
++        pgl_dbg_arm();  // arm the per-draw vertex readback dump
++        pgl_raster_state_dump("draw");
++        glDrawArrays(pgl_mode_from_spec(I(0)), (GLint)I(1), (GLsizei)I(2));  // F-NEW-607
+         stats_.draws++;
+         return true;
+     }
+@@ -464,6 +482,7 @@ bool GLES20Bridge::dispatch(const std::string& method,
+         // or array hold); null is legal GL (uninitialized storage).
+         glTexImage2D(S(0), (GLint)I(1), S(2), (GLsizei)I(3), (GLsizei)I(4),
+                      (GLint)I(5), S(6), S(7), P(0));
++        pgl_texture_audit("upload", pgl_bound_texture_2d());
+         {
+             static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
+             static int shown = 0;
+@@ -483,6 +502,20 @@ bool GLES20Bridge::dispatch(const std::string& method,
+                     (unsigned)I(3), (unsigned)I(4), (unsigned)S(6),
+                     (unsigned)S(7), P(0), sum, nonzero,
+                     npix < 8388608 ? npix : -1L, d ? d[0] : 0, d ? d[1] : 0);
++                // S200 Target-B: dump the raw upload for offline analysis
++                // (alpha-channel audit — the 3/4-nonzero pattern).
++                if (d && npix > 0 && npix <= 8388608) {
++                    char pth[128];
++                    std::snprintf(pth, sizeof pth,
++                                  "/tmp/s200_texdump_%d_%ux%u.rgba", shown,
++                                  (unsigned)I(3), (unsigned)I(4));
++                    FILE* f = std::fopen(pth, "wb");
++                    if (f) {
++                        std::fwrite(d, 1, (size_t)npix, f);
++                        std::fclose(f);
++                        std::fprintf(stderr, "[GLDBG] texdump -> %s\n", pth);
++                    }
++                }
+             }
+         }
+         stats_.tex_ops++;
+diff --git a/miniandroid/src/gles/pgl_backend.cpp b/miniandroid/src/gles/pgl_backend.cpp
+index b7b48ed3..fe958047 100644
+--- a/miniandroid/src/gles/pgl_backend.cpp
++++ b/miniandroid/src/gles/pgl_backend.cpp
+@@ -87,6 +87,10 @@ namespace {
+ struct SBUniforms { float proj_view[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1}; };
+ 
+ // The C shader functions must outlive the program — static storage.
++// S200 Target-B: per-draw vertex-dump latch (bridge arms it before each
++// draw; the vertex shader consumes the first 3 invocations).
++bool g_dbg_armed = false;
++
+ void sb_vert(float* vs_output, vec4* vertex_attribs,
+              Shader_Builtins* builtins, void* uniforms) {
+     SBUniforms* u = (SBUniforms*)uniforms;
+@@ -115,25 +119,31 @@ void sb_vert(float* vs_output, vec4* vertex_attribs,
+     ((vec4*)vs_output)[0] = vertex_attribs[1];              // a_color
+     vec2 uv = {vertex_attribs[2].x, vertex_attribs[2].y};   // a_texCoord0
+     ((vec2*)vs_output)[2] = uv;
+-    builtins->gl_Position =
+-        mult_m4_v4(u->proj_view, vertex_attribs[0]);        // a_position
+-}
+-
+-void sb_frag(float* fs_input, Shader_Builtins* builtins, void* uniforms) {
+-    (void)uniforms;
+     {
++        // S200 Target-B: armed per-draw vertex dump — the first 3 vertex
++        // invocations of each draw call, full attribute readback.
+         static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
+         static long n = 0;
+-        if (dbg && n < 3) {
++        if (dbg && g_dbg_armed) {
+             ++n;
+-            vec4 v_color = ((vec4*)fs_input)[0];
+-            vec2 uv = ((vec2*)fs_input)[2];
+-            GLuint tex = c->bound_textures[GL_TEXTURE_2D - GL_TEXTURE_UNBOUND - 1];
+             std::fprintf(stderr,
+-                "[GLDBG] sb_frag #%ld color=%.3f,%.3f,%.3f,%.3f uv=%.3f,%.3f tex=%u\n",
+-                n, v_color.x, v_color.y, v_color.z, v_color.w, uv.x, uv.y, tex);
++                "[GLDBG] vsh #%ld pos=%.2f,%.2f,%.2f,%.2f col=%.3f,%.3f,%.3f,"
++                "%.3f uv=%.4f,%.4f,%.4f,%.4f\n",
++                n, vertex_attribs[0].x, vertex_attribs[0].y,
++                vertex_attribs[0].z, vertex_attribs[0].w,
++                vertex_attribs[1].x, vertex_attribs[1].y,
++                vertex_attribs[1].z, vertex_attribs[1].w,
++                vertex_attribs[2].x, vertex_attribs[2].y,
++                vertex_attribs[2].z, vertex_attribs[2].w);
++            if (n % 3 == 0) g_dbg_armed = false;
+         }
+     }
++    builtins->gl_Position =
++        mult_m4_v4(u->proj_view, vertex_attribs[0]);        // a_position
++}
++
++void sb_frag(float* fs_input, Shader_Builtins* builtins, void* uniforms) {
++    (void)uniforms;
+     vec4 v_color = ((vec4*)fs_input)[0];
+     vec2 uv = ((vec2*)fs_input)[2];
+     // u_texture is always sampler unit 0 in the SpriteBatch default shader
+@@ -141,7 +151,25 @@ void sb_frag(float* fs_input, Shader_Builtins* builtins, void* uniforms) {
+     // GL_TEXTURE_2D — the same object glBindTexture(GL_TEXTURE_2D, …)
+     // selected (PGL bound_textures index = target - GL_TEXTURE_UNBOUND - 1).
+     GLuint tex = c->bound_textures[GL_TEXTURE_2D - GL_TEXTURE_UNBOUND - 1];
+-    builtins->gl_FragColor = mult_v4s(v_color, texture2D(tex, uv.x, uv.y));
++    vec4 texel = texture2D(tex, uv.x, uv.y);
++    {
++        // S200 Target-B fragment-path probe (bounded): v_color, the SAMPLED
++        // texel, and the final product — the exact data the blend stage
++        // receives. 16 rows cover the first fragments of every draw class.
++        static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
++        static long n = 0;
++        ++n;
++        if (dbg && n < 640000 && (n <= 16 || n % 100 == 0)) {
++            std::fprintf(stderr,
++                "[GLDBG] sbf #%ld color=%.3f,%.3f,%.3f,%.3f uv=%.4f,%.4f "
++                "tex=%u texel=%.3f,%.3f,%.3f,%.3f out=%.3f,%.3f,%.3f,%.3f\n",
++                n, v_color.x, v_color.y, v_color.z, v_color.w, uv.x, uv.y,
++                tex, texel.x, texel.y, texel.z, texel.w,
++                v_color.x * texel.x, v_color.y * texel.y,
++                v_color.z * texel.z, v_color.w * texel.w);
++        }
++    }
++    builtins->gl_FragColor = mult_v4s(v_color, texel);
+ }
+ 
+ uint32_t g_sb_program = 0;  // 0 = not created (PGL ids are 1-based)
+@@ -217,6 +245,81 @@ void pgl_debug_attrib_dump(const char* tag) {
+     }
+ }
+ 
++
++void pgl_dbg_arm() {
++    // S200 Target-B: arm the per-draw vertex dump (called by the bridge
++    // immediately before each draw call).
++    static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
++    if (!dbg) return;
++    // flip the static armed flag inside the shader via a file-scope latch
++    g_dbg_armed = true;
++}
++
++
++void pgl_raster_state_dump(const char* tag) {
++    // S200 Target-B: raster-stage state at draw time — blend/scissor/depth/
++    // viewport/cull (the stage between the fragment shader and the pixel).
++    static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
++    static int shown = 0;
++    if (!dbg || shown >= 6) return;
++    ++shown;
++    std::fprintf(stderr,
++        "[GLDBG] raster@%s vp=%d,%d %ux%u guard=%d,%d..%d,%d "
++        "blend=%d sRGB=0x%X dRGB=0x%X sA=0x%X dA=0x%X "
++        "depth=%d func=0x%X mask=%d cull=%d mode=0x%X scissor=%d\n",
++        tag, (int)c->xmin, (int)c->ymin, (unsigned)c->width,
++        (unsigned)c->height, (int)c->lx, (int)c->ly, (int)c->ux, (int)c->uy,
++        (int)c->blend[0], (unsigned)c->blend_sRGB[0],
++        (unsigned)c->blend_dRGB[0], (unsigned)c->blend_sA[0],
++        (unsigned)c->blend_dA[0], (int)c->depth_test,
++        (unsigned)c->depth_func, (int)c->depth_mask, (int)c->cull_face,
++        (unsigned)c->cull_mode, (int)c->scissor_test);
++}
++
++
++
++unsigned pgl_bound_texture_2d() {
++    return c ? c->bound_textures[GL_TEXTURE_2D - GL_TEXTURE_UNBOUND - 1] : 0;
++}
++
++void pgl_texture_audit(const char* tag, GLuint name) {
++    // S200 Target-B: texture-object audit — does the PGL object for this
++    // name hold image data, and of what dimensions?
++    static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
++    static int shown = 0;
++    if (!dbg || shown >= 24) return;
++    ++shown;
++    glTexture* t = pgl_tex_2d(name);
++    if (!t) {
++        std::fprintf(stderr, "[GLDBG] texaudit@%s name=%u OBJECT_MISSING\n",
++                     tag, (unsigned)name);
++        return;
++    }
++    std::fprintf(stderr,
++        "[GLDBG] texaudit@%s name=%u w=%d h=%d levels=%d data=%p "
++        "b0=%02x b1=%02x b2=%02x b3=%02x\n",
++        tag, (unsigned)name, (int)t->w, (int)t->h, (int)t->num_levels,
++        (void*)t->data,
++        t->data ? ((const unsigned char*)t->data)[0] : 0,
++        t->data ? ((const unsigned char*)t->data)[1] : 0,
++        t->data ? ((const unsigned char*)t->data)[2] : 0,
++        t->data ? ((const unsigned char*)t->data)[3] : 0);
++}
++
++void pgl_vap_state_dump(unsigned idx) {
++    // S200 Target-B probe: PGL's POST-CALL vertex-attrib state for one
++    // index — did PGL accept the type/enabled/stride, or reject silently?
++    static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
++    if (!dbg || idx >= 8) return;
++    auto& va = c->vertex_arrays.a[c->cur_vertex_array].vertex_attribs[idx];
++    std::fprintf(stderr,
++        "[GLDBG] vapPOST idx=%u en=%d sz=%d type=0x%X norm=%d stride=%d "
++        "off=%p vbo=%u\n",
++        idx, (int)va.enabled, (int)va.size, (unsigned)va.type,
++        (int)va.normalized, (int)va.stride, (void*)(uintptr_t)va.offset,
++        (unsigned)c->bound_buffers[GL_ARRAY_BUFFER]);
++}
++
+ void pgl_sb_set_proj_view(const float* m16, bool transpose) {
+     // Legacy face (single block) — the bridge calls the _for(engine) form.
+     pgl_sb_set_proj_view_for(0, m16, transpose);
+diff --git a/miniandroid/src/gles/pgl_backend.h b/miniandroid/src/gles/pgl_backend.h
+index 6648d46d..29183b16 100644
+--- a/miniandroid/src/gles/pgl_backend.h
++++ b/miniandroid/src/gles/pgl_backend.h
+@@ -81,6 +81,11 @@ void pgl_sb_set_proj_view_for(uint32_t engine_id, const float* m16,
+ int pgl_sb_uniform_location(const char* name);      // u_projView→0, u_texture→1
+ int pgl_sb_attrib_location(const char* name);       // position→0 color→1 tex0→2
+ void pgl_debug_attrib_dump(const char* tag);        // S198 corruption probe
++void pgl_vap_state_dump(unsigned idx);              // S200 post-vap PGL state
++void pgl_dbg_arm();                                  // S200 arm per-draw vertex dump
++void pgl_raster_state_dump(const char* tag);         // S200 raster state at draw
++void pgl_texture_audit(const char* tag, unsigned name); // S200 texture object audit
++unsigned pgl_bound_texture_2d();                         // S200 current 2D binding
+ 
+ }  // namespace gles
+ }  // namespace miniandroid

@@ -1,0 +1,72 @@
+{
+ "binary_sha16": "bb16323f1b998a03",
+ "tag": "ttt_f633_texaudit",
+ "wall_s": 4.6,
+ "uncaught": 0,
+ "gldbg_vap_raw": [
+  "[GLDBG] vap RAW idx=0 prog=1 name=a_position canon=0 final=0",
+  "[GLDBG] vap RAW idx=1 prog=1 name=a_color canon=1 final=1",
+  "[GLDBG] vap RAW idx=2 prog=1 name=a_texCoord0 canon=2 final=2",
+  "[GLDBG] vap RAW idx=0 prog=1 name=a_position canon=0 final=0",
+  "[GLDBG] vap RAW idx=1 prog=1 name=a_color canon=1 final=1",
+  "[GLDBG] vap RAW idx=2 prog=1 name=a_texCoord0 canon=2 final=2",
+  "[GLDBG] vap RAW idx=0 prog=1 name=a_position canon=0 final=0",
+  "[GLDBG] vap RAW idx=1 prog=1 name=a_color canon=1 final=1"
+ ],
+ "gldbg_attrib": [
+  "[GLDBG] attrib idx=0 size=2 type=0xF8 stride=20 ptr=0x7fd5df7d4650 v0=23.000,121.000,0.000,0.000",
+  "[GLDBG] attrib idx=1 size=4 type=0xF2 stride=20 ptr=0x7fd5df7d4650 v0=23.000,121.000,-42535295865117307932921825928971026432.000,0.032",
+  "[GLDBG] attrib idx=2 size=2 type=0xF8 stride=20 ptr=0x7fd5df7d465c v0=0.032,0.001,0.000,0.000",
+  "[GLDBG] attrib idx=0 size=2 type=0xF8 stride=20 ptr=0x7fd5df7d4650 v0=0.000,0.000,0.000,0.000",
+  "[GLDBG] attrib idx=1 size=4 type=0xF2 stride=20 ptr=0x7fd5df7d4650 v0=0.000,0.000,-170141173319264429905852091742258462720.000,0.000",
+  "[GLDBG] attrib idx=2 size=2 type=0xF8 stride=20 ptr=0x7fd5df7d465c v0=0.000,1.000,0.000,0.000"
+ ],
+ "gldbg_mat4": [
+  "[GLDBG] mat4 loc=3 engine=2 name=u_projModelView t=0 m00=0.002 m30=-1 m31=1 m32=-1 m33=1",
+  "[GLDBG] mat4 loc=3 engine=1 name=u_projTrans t=0 m00=0.00277778 m30=-1 m31=-1 m32=-1 m33=1",
+  "[GLDBG] mat4 loc=3 engine=1 name=u_projTrans t=0 m00=0.00277778 m30=-1 m31=-1 m32=-1 m33=1",
+  "[GLDBG] mat4 loc=3 engine=1 name=u_projTrans t=0 m00=0.00277778 m30=-0.133333 m31=-0.921875 m32=-1 m33=1"
+ ],
+ "gldbg_draw": [
+  "[GLDBG] DRAW mode=4 count=66 attrib0=(nil) v0=-1.00,-1.00 attrib2v=-1.000,-1.000",
+  "[GLDBG] DRAW mode=4 count=30 attrib0=0x7fd5df7d4650 v0=23.00,121.00 attrib2v=0.032,0.001",
+  "[GLDBG] DRAW mode=4 count=6 attrib0=0x7fd5df7d4650 v0=0.00,0.00 attrib2v=0.000,1.000",
+  "[GLDBG] DRAW mode=4 count=12 attrib0=0x7fd5df7d4650 v0=50.00,20.00 attrib2v=0.103,0.001",
+  "[GLDBG] DRAW mode=4 count=66 attrib0=0x7fd5df7d4650 v0=330.00,1064.00 attrib2v=0.101,0.001",
+  "[GLDBG] DRAW mode=4 count=30 attrib0=0x7fd5df7d4650 v0=23.00,121.00 attrib2v=0.032,0.001",
+  "[GLDBG] DRAW mode=4 count=6 attrib0=0x7fd5df7d4650 v0=0.00,0.00 attrib2v=0.000,1.000",
+  "[GLDBG] DRAW mode=4 count=12 attrib0=0x7fd5df7d4650 v0=50.00,20.00 attrib2v=0.103,0.001"
+ ],
+ "gldbg_sbvert": [
+  "[GLDBG] sb_vert #1 pos=0.00,0.00 proj00=0.00277778 clip=0.0000,0.0000 | PGL attribs: en0=0 sz0=49 off0=564ad24f79f0 en1=0 sz1=51 en2=0 curVA=0 nprog=3",
+  "[GLDBG] sb_vert #2 pos=0.00,0.00 proj00=0.00277778 clip=0.0000,0.0000 | PGL attribs: en0=0 sz0=49 off0=564ad24f79f0 en1=0 sz1=51 en2=0 curVA=0 nprog=3",
+  "[GLDBG] sb_vert #67 pos=23.00,121.00 proj00=0.00277778 clip=0.0000,0.0000 | PGL attribs: en0=1 sz0=2 off0=7fd5df7d4650 en1=1 sz1=4 en2=1 curVA=0 nprog=3"
+ ],
+ "gldbg_sbfrag": [],
+ "gldbg_tex2d": [
+  "[GLDBG] tex2D 1024x1024 fmt=0x9E type=0xF2 ptr=0x7fd5dcae3480 bytesum=802160640 nonzero=3145728/4194304 b0=ff b1=ff",
+  "[GLDBG] tex2D 1024x1024 fmt=0x9E type=0xF2 ptr=0x7fd5dda9e190 bytesum=802160640 nonzero=3145728/4194304 b0=ff b1=ff",
+  "[GLDBG] tex2D 1024x1024 fmt=0x9E type=0xF2 ptr=0x7fd5de906a10 bytesum=802160640 nonzero=3145728/4194304 b0=ff b1=ff",
+  "[GLDBG] tex2D 96x96 fmt=0x9E type=0xF2 ptr=0x7fd5df763080 bytesum=369598 nonzero=1617/36864 b0=00 b1=00"
+ ],
+ "gldbg_attribloc": [
+  "[GLDBG] attrib-loc prog=1 name=a_position -> 0",
+  "[GLDBG] attrib-loc prog=1 name=a_color -> 1",
+  "[GLDBG] attrib-loc prog=1 name=a_texCoord0 -> 2",
+  "[GLDBG] attrib-loc prog=2 name=a_position -> 0",
+  "[GLDBG] attrib-loc prog=2 name=a_color -> 1",
+  "[GLDBG] attrib-loc prog=2 name=a_texCoord0 -> 2",
+  "[GLDBG] attrib-loc prog=1 name=a_position -> 0",
+  "[GLDBG] attrib-loc prog=1 name=a_color -> 1",
+  "[GLDBG] attrib-loc prog=1 name=a_texCoord0 -> 2"
+ ],
+ "face": "/home/z/my-project/evidence/s200/face_ttt_f633_texaudit.png",
+ "face_sha16": "fc0997a63f3b2dec",
+ "center_top_colors": [
+  [
+   4096,
+   "#ffffff"
+  ]
+ ],
+ "center_unique": 1
+}
