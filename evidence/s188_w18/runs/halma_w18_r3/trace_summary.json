@@ -1,7 +1,7 @@
 {
   "activity": "app.halma.AndroidLauncher",
   "apk_package": "app.halma",
-  "duration_ms": 3004,
+  "duration_ms": 2866,
   "events_retained": 29,
   "events_total": 29,
   "first_divergence": null,
@@ -52,7 +52,7 @@
     "non_default_pixels": 975949,
     "presentation": "this_frame",
     "render_exception": false,
-    "screenshot_sha256": "1fc63f8fbd0df89878cb49f12a5fc8a3e55b3a8cabe5d7971fc91f53bde6d7fa",
+    "screenshot_sha256": "246038d50f256bfed91586e361ac520095d8b251a0262f6374df4eacd6d79df8",
     "size": "1080x1920",
     "synthetic_suppressed": false,
     "unique_colors": 910563,
@@ -72,52 +72,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 10561,
+        "pid": 1879,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w18/runs/store_halma_w18_r3/data/app/app.halma/base.apk",
       "thread": "main",
-      "ts_ms": 1794146802211
+      "ts_ms": 1794151772846
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "app.halma",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=app.halma",
       "thread": "main",
-      "ts_ms": 1794146802214
+      "ts_ms": 1794151772849
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "app.halma",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=app.halma.AndroidLauncher",
       "thread": "main",
-      "ts_ms": 1794146802214
+      "ts_ms": 1794151772849
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "app.halma",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=5126 methods=50582",
       "thread": "main",
-      "ts_ms": 1794146802387
+      "ts_ms": 1794151773020
     },
     {
       "component": "boot",
@@ -127,24 +127,24 @@
       },
       "package": "app.halma",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146802407
+      "ts_ms": 1794151773039
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "app.halma",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=5126",
       "thread": "main",
-      "ts_ms": 1794146802407
+      "ts_ms": 1794151773040
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -152,12 +152,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "app.halma",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "app.halma.AndroidLauncher",
       "thread": "main",
-      "ts_ms": 1794146802426
+      "ts_ms": 1794151773058
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -165,12 +165,12 @@
       "event": "APPLICATION_CREATE",
       "package": "app.halma",
       "result": "PENDING",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794146802426
+      "ts_ms": 1794151773058
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -206,12 +206,12 @@
       },
       "package": "app.halma",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794146802534
+      "ts_ms": 1794151773162
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -221,12 +221,12 @@
       "provenance": "choreographer/composition pump active",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 10,
       "sev": "RENDERER",
       "state": "COMPOSE",
       "thread": "main",
-      "ts_ms": 1794146802537
+      "ts_ms": 1794151773166
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -235,12 +235,12 @@
       "package": "app.halma",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 11,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794146802545
+      "ts_ms": 1794151773173
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -249,12 +249,12 @@
       "package": "app.halma",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 12,
       "sev": "CONFIRMED",
       "state": "root_id=90",
       "thread": "main",
-      "ts_ms": 1794146802545
+      "ts_ms": 1794151773173
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -263,12 +263,12 @@
       "package": "app.halma",
       "renderer_family": "COMPOSE",
       "result": "NO_APP_OPS",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 13,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794146802573
+      "ts_ms": 1794151773199
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -280,12 +280,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146802607
+      "ts_ms": 1794151773232
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -295,12 +295,12 @@
       "provenance": "stage_gl_surfaces GL frame",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 15,
       "sev": "RENDERER",
       "state": "OPENGL_GLES",
       "thread": "main",
-      "ts_ms": 1794146802607
+      "ts_ms": 1794151773232
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -313,12 +313,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 16,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146802607
+      "ts_ms": 1794151773232
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -327,12 +327,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 17,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146802607
+      "ts_ms": 1794151773232
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -345,12 +345,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 18,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146802764
+      "ts_ms": 1794151773388
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -363,7 +363,7 @@
         "dominant_pct": 52.93455825617284,
         "height": 1920,
         "non_default_pixels": 975949,
-        "screenshot_sha256": "1fc63f8fbd0df89878cb49f12a5fc8a3e55b3a8cabe5d7971fc91f53bde6d7fa",
+        "screenshot_sha256": "246038d50f256bfed91586e361ac520095d8b251a0262f6374df4eacd6d79df8",
         "size": "1080x1920",
         "unique_colors": 910563,
         "verdict": "REAL_APP_CONTENT",
@@ -372,12 +372,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 19,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794146803647
+      "ts_ms": 1794151774192
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -425,12 +425,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "CENSUS",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 20,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794146803647
+      "ts_ms": 1794151774192
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -439,12 +439,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "PENDING",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 21,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794146803886
+      "ts_ms": 1794151774435
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -453,12 +453,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "root_id=90",
       "thread": "main",
-      "ts_ms": 1794146803886
+      "ts_ms": 1794151774435
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -467,12 +467,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "NO_APP_OPS",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 23,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794146803911
+      "ts_ms": 1794151774459
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -485,12 +485,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 24,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146803932
+      "ts_ms": 1794151774480
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -499,12 +499,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 25,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146803932
+      "ts_ms": 1794151774480
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -517,12 +517,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 26,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146804088
+      "ts_ms": 1794151774634
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -535,7 +535,7 @@
         "dominant_pct": 52.93455825617284,
         "height": 1920,
         "non_default_pixels": 975949,
-        "screenshot_sha256": "1fc63f8fbd0df89878cb49f12a5fc8a3e55b3a8cabe5d7971fc91f53bde6d7fa",
+        "screenshot_sha256": "246038d50f256bfed91586e361ac520095d8b251a0262f6374df4eacd6d79df8",
         "size": "1080x1920",
         "unique_colors": 910563,
         "verdict": "REAL_APP_CONTENT",
@@ -544,12 +544,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 27,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794146804946
+      "ts_ms": 1794151775438
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -597,12 +597,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "CENSUS",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 28,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794146804946
+      "ts_ms": 1794151775438
     },
     {
       "activity": "app.halma.AndroidLauncher",
@@ -614,12 +614,12 @@
       "package": "app.halma",
       "renderer_family": "OPENGL_GLES",
       "result": "FAIL",
-      "run_id": "1794146802211-1",
+      "run_id": "1794151772846-1",
       "seq": 29,
       "sev": "FAILURE",
       "state": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 924 IMPLEMENTED, 63 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
       "thread": "main",
-      "ts_ms": 1794146805215
+      "ts_ms": 1794151775712
     }
   ],
   "last_exception": {
@@ -632,18 +632,18 @@
     "package": "app.halma",
     "renderer_family": "OPENGL_GLES",
     "result": "FAIL",
-    "run_id": "1794146802211-1",
+    "run_id": "1794151772846-1",
     "seq": 29,
     "sev": "FAILURE",
     "state": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 924 IMPLEMENTED, 63 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
     "thread": "main",
-    "ts_ms": 1794146805215
+    "ts_ms": 1794151775712
   },
   "lifecycle": "RESUMED",
   "renderer_family": "OPENGL_GLES",
-  "run_id": "1794146802211-1",
+  "run_id": "1794151772846-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261108-140642-3948",
+  "session_id": "EXP-001-20261108-152932-9642",
   "severity_census": {
     "CONFIRMED": 16,
     "FAILURE": 1,

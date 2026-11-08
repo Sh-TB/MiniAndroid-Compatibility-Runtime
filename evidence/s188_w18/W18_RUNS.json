@@ -6,7 +6,7 @@
    "tag": "p9_w18_r1",
    "status": "OK",
    "dpkg": "se.tube42.p9.android",
-   "wall_s": 5.5,
+   "wall_s": 6.1,
    "screenshot": "/home/z/my-project/evidence/s188_w18/runs/p9_w18_r1/screenshot.png",
    "face": "face_p9_w18_r1.jpg",
    "chain": {
@@ -35,7 +35,7 @@
    "tag": "p9_w18_r2",
    "status": "OK",
    "dpkg": "se.tube42.p9.android",
-   "wall_s": 5.3,
+   "wall_s": 5.8,
    "screenshot": "/home/z/my-project/evidence/s188_w18/runs/p9_w18_r2/screenshot.png",
    "face": "face_p9_w18_r2.jpg",
    "chain": {
@@ -64,7 +64,7 @@
    "tag": "p9_w18_r3",
    "status": "OK",
    "dpkg": "se.tube42.p9.android",
-   "wall_s": 5.3,
+   "wall_s": 5.4,
    "screenshot": "/home/z/my-project/evidence/s188_w18/runs/p9_w18_r3/screenshot.png",
    "face": "face_p9_w18_r3.jpg",
    "chain": {
@@ -93,7 +93,7 @@
    "tag": "halma_w18_r1",
    "status": "OK",
    "dpkg": "app.halma",
-   "wall_s": 3.2,
+   "wall_s": 3.0,
    "screenshot": "/home/z/my-project/evidence/s188_w18/runs/halma_w18_r1/screenshot.png",
    "face": "face_halma_w18_r1.jpg",
    "chain": {
@@ -122,7 +122,7 @@
    "tag": "halma_w18_r2",
    "status": "OK",
    "dpkg": "app.halma",
-   "wall_s": 3.1,
+   "wall_s": 3.0,
    "screenshot": "/home/z/my-project/evidence/s188_w18/runs/halma_w18_r2/screenshot.png",
    "face": "face_halma_w18_r2.jpg",
    "chain": {
@@ -151,7 +151,7 @@
    "tag": "halma_w18_r3",
    "status": "OK",
    "dpkg": "app.halma",
-   "wall_s": 3.1,
+   "wall_s": 3.0,
    "screenshot": "/home/z/my-project/evidence/s188_w18/runs/halma_w18_r3/screenshot.png",
    "face": "face_halma_w18_r3.jpg",
    "chain": {

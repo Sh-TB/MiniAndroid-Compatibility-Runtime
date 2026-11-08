@@ -11,6 +11,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s188_w18/floor_rerun/runs/store_com.qwde.ccm/data/app/com.qwde.ccm/base.apk",
   "apkSha256": "dd57ead2dc7671e4a658864ba48003e5bd434d2719703ebdd870a8c0b5217edb",
   "apkSize": 56290801,
-  "installedAt": "2026-11-08T14:07:57Z",
+  "installedAt": "2026-11-08T15:31:20Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

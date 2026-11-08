@@ -17,7 +17,17 @@ impl = {
  "binary_sha16": sha,
  "binary_note": "rebuilt from HEAD after the sandbox wiped build/; the "
                 "W17 binary a485e9826b618c35 lineage is reproducible. The "
-                "wave produced TEN engine laws (605-608d, 609, 611, 613).",
+                "wave produced TEN engine laws (605-608d, 609, 611, 613). "
+                "POST-WAVE RE-VERIFICATION: the sandbox wiped build/ AND "
+                "dropped the wave's *.console.log files; the binary was "
+                "rebuilt from HEAD AGAIN — byte-exact 1f05270d793a43b5 "
+                "(reproducible-build law) — and the FULL gate battery was "
+                "re-run on the rebuilt binary (battery p9x3+halmax3, "
+                "goldens x3, floor 11 titles) with identical results; "
+                "console logs restored. Determinism now 6 independent runs "
+                "per app (3 original + 3 re-verification). The FT-probe "
+                "console logs were unrecoverable; the 14 probe run dirs "
+                "(runs/p9_w18ft*) with report.md/screenshot.png survive.",
  "law": "CONTRACT PINNED BEFORE ANY SHIM (W8 law carried) — "
         "W18_GDX2DPIXMAP_CONTRACT.json was pinned (objdump call-face of the "
         "APK's own libgdx.so/libgdx-freetype.so + androguard DEX face) "
@@ -137,7 +147,8 @@ impl = {
  "determinism": "p9 3/3 and halma 3/3 independent runs: same chain "
   "markers each run (charset print, 7 real direct-ByteBuffer returns, 0 "
   "guarded faults, FRAME_ANALYSIS REAL_APP_CONTENT x2), ROUTE_VIOLATION=0, "
-  "uncaught=0 (compatibility-continue honesty law).",
+  "uncaught=0 (compatibility-continue honesty law). RE-VERIFIED x3 more "
+  "per app on the rebuilt byte-exact binary — 6/6 runs marker-identical.",
  "regression_gates": {
   "goldens": "bouncy 8a6c24ac / unote 3b8dcb0a / dooz 31ddd4d5 — ALL HOLD "
    "byte-exact on 1f05270d793a43b5, uncaught=0 (dooz 6 = the recorded "
@@ -152,16 +163,20 @@ impl = {
   "evidence/s188_w18/W18_GDX2DPIXMAP_CONTRACT.json (the pinned contract)",
   "evidence/s188_w18/W18_JNI_DEMAND_AUDIT.json",
   "evidence/s188_w18/W18_IMPLEMENTATION.json",
-  "evidence/s188_w18/W18_RUNS.json (p9 x3 + halma x3 chain markers)",
-  "evidence/s188_w18/W18_GOLDENS.json",
-  "evidence/s188_w18/floor_rerun/FLOOR_RERUN.json",
+  "evidence/s188_w18/W18_RUNS.json (p9 x3 + halma x3 chain markers, "
+  "re-run x3 on the rebuilt binary)",
+  "evidence/s188_w18/W18_GOLDENS.json (ALL HOLD on the rebuilt binary)",
+  "evidence/s188_w18/floor_rerun/FLOOR_RERUN.json (FLOOR CLEAN 11/11, "
+  "dynamic-sha record on 1f05270d793a43b5)",
   "evidence/s188_w18/p9_w18_r{1,2,3}.console.log",
   "evidence/s188_w18/halma_w18_r{1,2,3}.console.log",
-  "evidence/s188_w18/p9_w18ft*.console.log (the FT root-cause probes)",
+  "evidence/s188_w18/runs/p9_w18ft* (the 14 FT root-cause probe runs: "
+  "report.md + screenshot.png; their console logs were lost in the "
+  "sandbox restore)",
   "evidence/s188_w18/face_*.jpg",
   "scripts/s188_w18_smoke.py, s188_w18_battery.py, s188_w18_floor_rerun.py,"
   " s188_w18_matrix4_face.py, s188_w18_charset_face.py,"
-  " s188_w18_ft_probe.py"
+  " s188_w18_ft_probe.py, s188_w18_finalize.py"
  ]
 }
 (E / 'W18_IMPLEMENTATION.json').write_text(json.dumps(impl, indent=1))
@@ -196,4 +211,90 @@ report = {
  ]
 }
 (E / 'W18_WAVE_REPORT.json').write_text(json.dumps(report, indent=1))
-print('W18_IMPLEMENTATION.json + W18_WAVE_REPORT.json written; binary', sha)
+
+# ── worklog entry (the W17 finalize pattern) ────────────────────────────
+from datetime import datetime, timezone
+wl = BASE / 'worklog.md'
+entry = f"""
+## S188-W18 — LIBGDX PRIMITIVE-ARRAY CRITICAL FAMILY IMPLEMENTED
+({datetime.now(timezone.utc).date()}; finalize completed post-wave after
+the sandbox wiped build/ and the wave's console logs)
+
+Directive: "ادامه" — the W17 frontier family implemented after the pin
+(W18_GDX2DPIXMAP_CONTRACT.json, pinned before any shim — W8 law
+carried). Binary 1f05270d793a43b5, TEN engine laws:
+
+- F-NEW-605 JNIEnv slots 222/223/229 GetPrimitiveArrayCritical/
+  ReleasePrimitiveArrayCritical + NewDirectByteBuffer box registry —
+  the pinned contract itself (spec copy semantics, mode-0 commit,
+  JNI_COMMIT/ABORT, engine-side snapshot hooks, 32MB honest bound).
+- F-NEW-606 ELEMENT-TYPE-FAMILY law: the snapshot read only
+  INT32/INT64/FLOAT32 while the engine's own producers store
+  BYTE/CHAR/SHORT/BOOLEAN — the 31435B icons.png arrived as ZEROS and
+  the commit WROTE ZEROS over the live PNG (data destruction, the
+  "commit 31435/31435 changed" tell). Full family per element width.
+- F-NEW-607 DESCRIPTOR-EXACT NATIVE SELECTION: the name-only scan
+  served Matrix4's static native mul([F[F)V to the virtual
+  mul(Matrix4) call (two receivers as 'float[]' criticals -> slot-222
+  NULL -> guarded SIGSEGV). ART order restored: exact (name,
+  descriptor)+ACC_NATIVE pass 1; name-only ONLY when the exact method
+  does not exist at all (the W10 conscrypt law verbatim).
+- F-NEW-608/608b/608c/608d the String char-chain family:
+  toCharArray (value.clone, make_char), getChars (AOSP bounds law),
+  String<-char[] materialization (both ctors), STRING-ARG DUAL-FACE
+  read law (inline STRING_REF vs MATERIALIZED heap String — the
+  File-ctor and name.replace faces).
+- F-NEW-609 PERSISTENT DIRECT-BUFFER BACKING: GetDirectBufferAddress
+  re-snapshotted per call, erasing BufferUtils.copyJni's streamed TTF
+  bytes before FT_New_Memory_Face read them (face=0). First Get mints
+  the persistent backing; every later Get returns THE SAME pointer
+  (documented boundary: DEX-side writes after the first Get are not
+  re-snapshotted).
+- F-NEW-611 JNI NAME MANGLING: '$' survived raw while the .so exports
+  the ART-faithful _00024 form — dlsym missed EVERY inner-class native
+  (the whole FreeType Library/Face/Bitmap/Glyph family). One rule:
+  every char outside [A-Za-z0-9_] carries _0xxxx.
+- F-NEW-613 DEX-HIERARCHY SHADOW-CLAIM GATE: the ViewShadow EXP-060
+  catch-all shadowed libgdx's REAL ACC_NATIVE FreeType$GlyphMetrics
+  .getHeight(J)I to typed-0 (x-height 0 -> "No x-height character
+  found in font"). A shadow-IMPLEMENTED answer on a DEX-present native
+  class is authoritative only when the declared superclass chain
+  reaches an Landroid/ ancestor; otherwise demoted to FIX-TTT fault-
+  fallback and the real symbol runs.
+
+RESULT: p9 advanced FOUR death-layers — checkGL20 -> GLSurfaceView20
+-> SpriteBatch/ShaderProgram/Mesh -> REAL asset streaming -> Matrix4
+REAL critical math (commit 2/16, 15/16 changed) -> Gdx2DPixmap.load
+REAL (PNG decoded, NewDirectByteBuffer minted, pdata writeback
+committed) -> createCharset prints the app's OWN "Language charset
+ENFRDESV" -> FreeType REAL (FT_Init_FreeType, FT_New_Memory_Face,
+FT_Set_Pixel_Sizes, real glyph metrics HoriAdvance=1280,
+SizeMetrics ascender=5376/descender=-1408, GlyphMetrics.getHeight=4160)
+-> fonts -> glyph atlas getPixmap -> newPixmap(w=0,h=0). NEW FRONTIER:
+FT_Glyph_To_Bitmap's output FT_Bitmap is EMPTY (rows/width/pitch=0,
+pixel_mode=GRAY — memory-hexdump pinned) -> W19a = the FT bitmap-render
+leg. halma advanced TWO — bundle names compose for real
+(getChars + String(char[]) + dual-face reads) and PropertiesUtils.load
+RUNS; NEW FRONTIER: pc=335 StringIndexOutOfBounds 'length=0; begin=0;
+end=10' (empty-line window) -> W19b = the properties line-parse leg.
+
+GATES (all re-verified post-wipe on the REBUILT byte-exact binary):
+goldens 3/3 ALL HOLD (bouncy 8a6c24ac, unote 3b8dcb0a, dooz 31ddd4d5,
+uncaught 0/0/6 = recorded counts); floor 11/11 tier-exact FLOOR CLEAN
+(dynamic-sha record); battery 6/6 marker-identical runs; ROUTE_VIOLATION=0
+everywhere. Promotion law respected: p9/halma REMAIN stage6/NOISE —
+the CHAIN advanced, the FACE did not (honesty gate).
+
+NEXT: W19a p9 FT_Glyph_To_Bitmap empty-render leg (getLastErrorCode
+bss read is the first oracle); W19b halma PropertiesUtils.load
+line-parse face. Standing: tarok FOREIGN_ARCH_ONLY_ABI (arch-bound,
+closed); W8 Dart VM double-thread stall (untouched).
+Evidence: evidence/s188_w18/{{W18_GDX2DPIXMAP_CONTRACT.json,
+W18_JNI_DEMAND_AUDIT.json, W18_IMPLEMENTATION.json, W18_RUNS.json,
+W18_GOLDENS.json, floor_rerun/FLOOR_RERUN.json, p9/halma console logs,
+runs/ incl. 14 FT probe dirs}}; scripts/s188_w18_*.py.
+"""
+with open(wl, 'a') as f:
+    f.write(entry)
+print('W18_IMPLEMENTATION.json + W18_WAVE_REPORT.json + worklog written;'
+      ' binary', sha)

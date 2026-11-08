@@ -1,6 +1,6 @@
 {
  "binary_sha16": "1f05270d793a43b5",
- "note": "final W18 binary; dooz uncaught=6 = the dooz-native recorded face (W16/W17 records carry the same count); the face pin is byte-exact",
+ "note": "final W18 binary 1f05270d793a43b5 REBUILT FROM HEAD after the sandbox wipe \u2014 byte-exact (reproducible-build law); goldens re-run on the rebuilt binary. dooz uncaught=6 = the dooz-native recorded face (W16/W17/W18 records carry the same count); the face pin is byte-exact",
  "goldens": [
   {
    "pkg": "com.dozingcatsoftware.bouncy",
@@ -24,5 +24,6 @@
    "uncaught": 6
   }
  ],
- "verdict": "ALL HOLD"
+ "verdict": "ALL HOLD",
+ "rerun_log": "console logs restored for all runs (the 15:17 sandbox restore had dropped *.console.log)"
 }

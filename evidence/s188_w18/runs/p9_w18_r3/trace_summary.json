@@ -1,7 +1,7 @@
 {
   "activity": "se.tube42.p9.android.MainActivity",
   "apk_package": "se.tube42.p9.android",
-  "duration_ms": 5266,
+  "duration_ms": 5316,
   "events_retained": 29,
   "events_total": 29,
   "first_divergence": null,
@@ -72,52 +72,52 @@
       "extra": {
         "boot_trace": true,
         "buffer_cap": 512,
-        "pid": 10548,
+        "pid": 1866,
         "trace_ui": false
       },
       "result": "PENDING",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 1,
       "sev": "PENDING",
       "state": "apk=/home/z/my-project/evidence/s188_w18/runs/store_p9_w18_r3/data/app/se.tube42.p9.android/base.apk",
       "thread": "main",
-      "ts_ms": 1794146790192
+      "ts_ms": 1794151761066
     },
     {
       "component": "boot",
       "event": "APK_LOADED",
       "package": "se.tube42.p9.android",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 2,
       "sev": "CONFIRMED",
       "state": "pkg=se.tube42.p9.android",
       "thread": "main",
-      "ts_ms": 1794146790196
+      "ts_ms": 1794151761069
     },
     {
       "component": "boot",
       "event": "MANIFEST_PARSED",
       "package": "se.tube42.p9.android",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 3,
       "sev": "CONFIRMED",
       "state": "activity=se.tube42.p9.android.MainActivity",
       "thread": "main",
-      "ts_ms": 1794146790196
+      "ts_ms": 1794151761069
     },
     {
       "component": "boot",
       "event": "DEX_PARSED",
       "package": "se.tube42.p9.android",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 4,
       "sev": "CONFIRMED",
       "state": "classes=1257 methods=15846",
       "thread": "main",
-      "ts_ms": 1794146790250
+      "ts_ms": 1794151761123
     },
     {
       "component": "boot",
@@ -127,24 +127,24 @@
       },
       "package": "se.tube42.p9.android",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 5,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146790270
+      "ts_ms": 1794151761143
     },
     {
       "component": "boot",
       "event": "CLASSES_LOADED",
       "package": "se.tube42.p9.android",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 6,
       "sev": "CONFIRMED",
       "state": "classes=1257",
       "thread": "main",
-      "ts_ms": 1794146790270
+      "ts_ms": 1794151761143
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -152,12 +152,12 @@
       "event": "ACTIVITY_RESOLVED",
       "package": "se.tube42.p9.android",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 7,
       "sev": "CONFIRMED",
       "state": "se.tube42.p9.android.MainActivity",
       "thread": "main",
-      "ts_ms": 1794146790275
+      "ts_ms": 1794151761148
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -165,12 +165,12 @@
       "event": "APPLICATION_CREATE",
       "package": "se.tube42.p9.android",
       "result": "PENDING",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 8,
       "sev": "PENDING",
       "state": "dex interpreter",
       "thread": "main",
-      "ts_ms": 1794146790275
+      "ts_ms": 1794151761148
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -206,12 +206,12 @@
       },
       "package": "se.tube42.p9.android",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 9,
       "sev": "CONFIRMED",
       "state": "RESUMED",
       "thread": "main",
-      "ts_ms": 1794146790327
+      "ts_ms": 1794151761200
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -219,12 +219,12 @@
       "event": "RENDER_START",
       "package": "se.tube42.p9.android",
       "result": "PENDING",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 10,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794146790331
+      "ts_ms": 1794151761203
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -232,12 +232,12 @@
       "event": "VIEWTREE_CREATED",
       "package": "se.tube42.p9.android",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 11,
       "sev": "CONFIRMED",
       "state": "root_id=70",
       "thread": "main",
-      "ts_ms": 1794146790331
+      "ts_ms": 1794151761203
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -247,12 +247,12 @@
       "provenance": "stage_render_frame default walk",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 12,
       "sev": "RENDERER",
       "state": "CLASSIC_CANVAS",
       "thread": "main",
-      "ts_ms": 1794146790331
+      "ts_ms": 1794151761203
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -261,12 +261,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NO_APP_OPS",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 13,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794146790359
+      "ts_ms": 1794151761230
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -278,12 +278,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 14,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146790540
+      "ts_ms": 1794151761398
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -293,12 +293,12 @@
       "provenance": "stage_gl_surfaces GL frame",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 15,
       "sev": "RENDERER",
       "state": "OPENGL_GLES",
       "thread": "main",
-      "ts_ms": 1794146790540
+      "ts_ms": 1794151761398
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -311,12 +311,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 16,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146790540
+      "ts_ms": 1794151761399
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -325,12 +325,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 17,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146790541
+      "ts_ms": 1794151761399
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -343,12 +343,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 18,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146790768
+      "ts_ms": 1794151761617
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -370,12 +370,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 19,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794146792528
+      "ts_ms": 1794151763480
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -423,12 +423,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "CENSUS",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 20,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794146792528
+      "ts_ms": 1794151763480
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -437,12 +437,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "PENDING",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 21,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
       "thread": "main",
-      "ts_ms": 1794146792966
+      "ts_ms": 1794151763922
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -451,12 +451,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 22,
       "sev": "CONFIRMED",
       "state": "root_id=70",
       "thread": "main",
-      "ts_ms": 1794146792966
+      "ts_ms": 1794151763922
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -465,12 +465,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "NO_APP_OPS",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 23,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
       "thread": "main",
-      "ts_ms": 1794146792992
+      "ts_ms": 1794151763948
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -483,12 +483,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 24,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146793015
+      "ts_ms": 1794151763971
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -497,12 +497,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 25,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146793016
+      "ts_ms": 1794151763971
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -515,12 +515,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 26,
       "sev": "CONFIRMED",
       "state": "1080x1920",
       "thread": "main",
-      "ts_ms": 1794146793230
+      "ts_ms": 1794151764192
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -542,12 +542,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "OK",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 27,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794146794957
+      "ts_ms": 1794151765899
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -595,12 +595,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "CENSUS",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 28,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
       "thread": "main",
-      "ts_ms": 1794146794957
+      "ts_ms": 1794151765899
     },
     {
       "activity": "se.tube42.p9.android.MainActivity",
@@ -612,12 +612,12 @@
       "package": "se.tube42.p9.android",
       "renderer_family": "OPENGL_GLES",
       "result": "FAIL",
-      "run_id": "1794146790192-1",
+      "run_id": "1794151761066-1",
       "seq": 29,
       "sev": "FAILURE",
       "state": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 3445 IMPLEMENTED, 45 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
       "thread": "main",
-      "ts_ms": 1794146795458
+      "ts_ms": 1794151766382
     }
   ],
   "last_exception": {
@@ -630,18 +630,18 @@
     "package": "se.tube42.p9.android",
     "renderer_family": "OPENGL_GLES",
     "result": "FAIL",
-    "run_id": "1794146790192-1",
+    "run_id": "1794151761066-1",
     "seq": 29,
     "sev": "FAILURE",
     "state": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 3445 IMPLEMENTED, 45 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
     "thread": "main",
-    "ts_ms": 1794146795458
+    "ts_ms": 1794151766382
   },
   "lifecycle": "RESUMED",
   "renderer_family": "OPENGL_GLES",
-  "run_id": "1794146790192-1",
+  "run_id": "1794151761066-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261108-140630-9426",
+  "session_id": "EXP-001-20261108-152921-8679",
   "severity_census": {
     "CONFIRMED": 16,
     "FAILURE": 1,

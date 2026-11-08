@@ -13,6 +13,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s188_w18/runs/store_halma_w18_r3/data/app/app.halma/base.apk",
   "apkSha256": "b994337244e2136b54f96f75038fe70d9562635cce50af6387d906ee048d0ec0",
   "apkSize": 3849844,
-  "installedAt": "2026-11-08T14:06:42Z",
+  "installedAt": "2026-11-08T15:29:32Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

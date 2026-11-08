@@ -11,6 +11,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s188_w18/floor_rerun/runs/store_cos.premy.mines/data/app/cos.premy.mines/base.apk",
   "apkSha256": "18faef7028457f4d123ac8d781f3ecdbf9e29b451468d5d6a348df28e8842aa7",
   "apkSize": 2040324,
-  "installedAt": "2026-11-08T14:08:02Z",
+  "installedAt": "2026-11-08T15:31:26Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
-"""S188-W18: 11-title regression-floor rerun on the W18 binary
-(cc616a35fc982981) — the W18 edits touch broad dispatch paths (the
-F-NEW-606 element-type family in the snapshot/commit hooks, the
-F-NEW-607 descriptor-exact native selection, the F-NEW-608 toCharArray/
-Character bridges, the F-NEW-609 persistent direct-buffer backing, the
-F-NEW-611 JNI mangling, the F-NEW-613 shadow-claim gate); the floor law
-requires the W12/W13 recorded tiers to hold.
+"""S188-W18: 11-title regression-floor rerun on the W18 binary — the W18
+edits touch broad dispatch paths (the F-NEW-606 element-type family in
+the snapshot/commit hooks, the F-NEW-607 descriptor-exact native
+selection, the F-NEW-608 toCharArray/Character bridges, the F-NEW-609
+persistent direct-buffer backing, the F-NEW-611 JNI mangling, the
+F-NEW-613 shadow-claim gate); the floor law requires the W12/W13
+recorded tiers to hold.
 Same run_one, same stage law, tier floors from the W13 battery.
+FIX (finalize): the binary sha is now computed from the on-disk binary
+(dynamically) — the first run hardcoded a stale draft label (cc616a35)
+while the battery recorded the true final binary 1f05270d793a43b5;
+re-run for a correctly-labeled record.
 """
-import json, sys, re, time
+import json, sys, re, time, hashlib
 from pathlib import Path
 
 BASE = Path('/home/z/my-project')
@@ -54,7 +58,10 @@ for t, floor in FLOOR.items():
         json.dump(results, f, indent=1)
 
 drops = [r['pkg'] for r in results if r['regression']]
+BIN_SHA = hashlib.sha256((BASE / 'miniandroid/build/miniandroid')
+                         .read_bytes()).hexdigest()[:16]
 (w2.OUT / 'FLOOR_RERUN.json').write_text(json.dumps(
-    {'binary': 'cc616a35fc982981', 'titles': len(results),
+    {'binary': BIN_SHA, 'titles': len(results),
      'drops': drops, 'rows': results}, indent=1))
-print('FLOOR', 'CLEAN 11/11' if not drops else f'REGRESSION x{len(drops)}')
+print('FLOOR', 'CLEAN 11/11' if not drops else f'REGRESSION x{len(drops)}',
+      'binary', BIN_SHA)

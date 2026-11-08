@@ -54,7 +54,7 @@
   "nonbg_share": 0.0,
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 5.0,
+  "wall_s": 4.9,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null
@@ -84,7 +84,7 @@
   "nonbg_share": 0.0,
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 5.4,
+  "wall_s": 5.7,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null
@@ -133,7 +133,7 @@
   "nonbg_share": 0.4982,
   "grad_share": 0.0081,
   "tier": "B_STRUCTURED",
-  "wall_s": 1.2,
+  "wall_s": 1.3,
   "floor": "B_STRUCTURED",
   "regression": false,
   "face_sha": null
@@ -226,7 +226,7 @@
   "nonbg_share": 0.0,
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 5.0,
+  "wall_s": 5.1,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null
@@ -256,7 +256,7 @@
   "nonbg_share": 0.0,
   "grad_share": 0.0,
   "tier": "FLAT_TWO_TONE_OR_BLANK",
-  "wall_s": 4.5,
+  "wall_s": 4.0,
   "floor": "FLAT_TWO_TONE_OR_BLANK",
   "regression": false,
   "face_sha": null

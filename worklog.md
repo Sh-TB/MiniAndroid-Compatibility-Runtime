@@ -8460,3 +8460,81 @@ family) + JNIEnv slot 222; halma I18NBundle locale-file law.
 Evidence: evidence/s188_w17/{W17_EGL_IMPLEMENTATION.json,
 W17_GOLDENS.json, p9_w17b.console.log, p9r1..3.log, faces,
 floor_rerun/FLOOR_RERUN.json}; scripts/s188_w17_floor_rerun.py.
+
+## S188-W18 — LIBGDX PRIMITIVE-ARRAY CRITICAL FAMILY IMPLEMENTED
+(2026-11-08; finalize completed post-wave after
+the sandbox wiped build/ and the wave's console logs)
+
+Directive: "ادامه" — the W17 frontier family implemented after the pin
+(W18_GDX2DPIXMAP_CONTRACT.json, pinned before any shim — W8 law
+carried). Binary 1f05270d793a43b5, TEN engine laws:
+
+- F-NEW-605 JNIEnv slots 222/223/229 GetPrimitiveArrayCritical/
+  ReleasePrimitiveArrayCritical + NewDirectByteBuffer box registry —
+  the pinned contract itself (spec copy semantics, mode-0 commit,
+  JNI_COMMIT/ABORT, engine-side snapshot hooks, 32MB honest bound).
+- F-NEW-606 ELEMENT-TYPE-FAMILY law: the snapshot read only
+  INT32/INT64/FLOAT32 while the engine's own producers store
+  BYTE/CHAR/SHORT/BOOLEAN — the 31435B icons.png arrived as ZEROS and
+  the commit WROTE ZEROS over the live PNG (data destruction, the
+  "commit 31435/31435 changed" tell). Full family per element width.
+- F-NEW-607 DESCRIPTOR-EXACT NATIVE SELECTION: the name-only scan
+  served Matrix4's static native mul([F[F)V to the virtual
+  mul(Matrix4) call (two receivers as 'float[]' criticals -> slot-222
+  NULL -> guarded SIGSEGV). ART order restored: exact (name,
+  descriptor)+ACC_NATIVE pass 1; name-only ONLY when the exact method
+  does not exist at all (the W10 conscrypt law verbatim).
+- F-NEW-608/608b/608c/608d the String char-chain family:
+  toCharArray (value.clone, make_char), getChars (AOSP bounds law),
+  String<-char[] materialization (both ctors), STRING-ARG DUAL-FACE
+  read law (inline STRING_REF vs MATERIALIZED heap String — the
+  File-ctor and name.replace faces).
+- F-NEW-609 PERSISTENT DIRECT-BUFFER BACKING: GetDirectBufferAddress
+  re-snapshotted per call, erasing BufferUtils.copyJni's streamed TTF
+  bytes before FT_New_Memory_Face read them (face=0). First Get mints
+  the persistent backing; every later Get returns THE SAME pointer
+  (documented boundary: DEX-side writes after the first Get are not
+  re-snapshotted).
+- F-NEW-611 JNI NAME MANGLING: '$' survived raw while the .so exports
+  the ART-faithful _00024 form — dlsym missed EVERY inner-class native
+  (the whole FreeType Library/Face/Bitmap/Glyph family). One rule:
+  every char outside [A-Za-z0-9_] carries _0xxxx.
+- F-NEW-613 DEX-HIERARCHY SHADOW-CLAIM GATE: the ViewShadow EXP-060
+  catch-all shadowed libgdx's REAL ACC_NATIVE FreeType$GlyphMetrics
+  .getHeight(J)I to typed-0 (x-height 0 -> "No x-height character
+  found in font"). A shadow-IMPLEMENTED answer on a DEX-present native
+  class is authoritative only when the declared superclass chain
+  reaches an Landroid/ ancestor; otherwise demoted to FIX-TTT fault-
+  fallback and the real symbol runs.
+
+RESULT: p9 advanced FOUR death-layers — checkGL20 -> GLSurfaceView20
+-> SpriteBatch/ShaderProgram/Mesh -> REAL asset streaming -> Matrix4
+REAL critical math (commit 2/16, 15/16 changed) -> Gdx2DPixmap.load
+REAL (PNG decoded, NewDirectByteBuffer minted, pdata writeback
+committed) -> createCharset prints the app's OWN "Language charset
+ENFRDESV" -> FreeType REAL (FT_Init_FreeType, FT_New_Memory_Face,
+FT_Set_Pixel_Sizes, real glyph metrics HoriAdvance=1280,
+SizeMetrics ascender=5376/descender=-1408, GlyphMetrics.getHeight=4160)
+-> fonts -> glyph atlas getPixmap -> newPixmap(w=0,h=0). NEW FRONTIER:
+FT_Glyph_To_Bitmap's output FT_Bitmap is EMPTY (rows/width/pitch=0,
+pixel_mode=GRAY — memory-hexdump pinned) -> W19a = the FT bitmap-render
+leg. halma advanced TWO — bundle names compose for real
+(getChars + String(char[]) + dual-face reads) and PropertiesUtils.load
+RUNS; NEW FRONTIER: pc=335 StringIndexOutOfBounds 'length=0; begin=0;
+end=10' (empty-line window) -> W19b = the properties line-parse leg.
+
+GATES (all re-verified post-wipe on the REBUILT byte-exact binary):
+goldens 3/3 ALL HOLD (bouncy 8a6c24ac, unote 3b8dcb0a, dooz 31ddd4d5,
+uncaught 0/0/6 = recorded counts); floor 11/11 tier-exact FLOOR CLEAN
+(dynamic-sha record); battery 6/6 marker-identical runs; ROUTE_VIOLATION=0
+everywhere. Promotion law respected: p9/halma REMAIN stage6/NOISE —
+the CHAIN advanced, the FACE did not (honesty gate).
+
+NEXT: W19a p9 FT_Glyph_To_Bitmap empty-render leg (getLastErrorCode
+bss read is the first oracle); W19b halma PropertiesUtils.load
+line-parse face. Standing: tarok FOREIGN_ARCH_ONLY_ABI (arch-bound,
+closed); W8 Dart VM double-thread stall (untouched).
+Evidence: evidence/s188_w18/{W18_GDX2DPIXMAP_CONTRACT.json,
+W18_JNI_DEMAND_AUDIT.json, W18_IMPLEMENTATION.json, W18_RUNS.json,
+W18_GOLDENS.json, floor_rerun/FLOOR_RERUN.json, p9/halma console logs,
+runs/ incl. 14 FT probe dirs}; scripts/s188_w18_*.py.
