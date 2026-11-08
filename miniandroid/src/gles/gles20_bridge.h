@@ -56,7 +56,7 @@ public:
     // Counters for evidence/traces.
     struct Stats {
         uint64_t draws = 0, buffer_ops = 0, state_ops = 0, uniform_ops = 0;
-        uint64_t shader_ops = 0, glsl_bytes = 0;
+        uint64_t shader_ops = 0, glsl_bytes = 0, tex_ops = 0;  // F-NEW-608
     };
     Stats stats() const { return stats_; }
     void reset_stats() { stats_ = {}; }
@@ -93,6 +93,21 @@ private:
     std::map<uint32_t, std::map<std::string, int32_t>> gl_locations_;
     uint32_t gl_next_shader_ = 1;
     uint32_t gl_next_program_ = 1;
+
+    // ── F-NEW-609 (S198): the engine program currently mapped to the
+    // SpriteBatch default C-shader PGL program (0 = none / real PGL id).
+    uint32_t cur_engine_prog_ = 0;
+
+    // Reverse lookup of the F-NEW-505 minted locations: minted id → name
+    // (the SB glUniform* routing reads it; maps are tiny).
+    const std::string* sb_uniform_name_for_loc(int32_t loc) const {
+        if (!cur_engine_prog_) return nullptr;
+        auto pit = gl_locations_.find(cur_engine_prog_);
+        if (pit == gl_locations_.end()) return nullptr;
+        for (const auto& kv : pit->second)
+            if (kv.second == loc) return &kv.first;
+        return nullptr;
+    }
 };
 
 }  // namespace gles

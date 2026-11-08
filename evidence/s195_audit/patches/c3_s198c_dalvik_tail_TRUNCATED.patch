@@ -1,0 +1,38 @@
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -52014,6 +52014,35 @@
+                 status = ApiCallTrace::Status::IMPLEMENTED;
+                 return true;
+             }
++            // ── F-NEW-610 (S198): typed-view position(int)/limit(int) setters
++            // ── OPENJDK buffer-algebra law (the ByteBuffer block above has
++            // them; the typed-view block was missing them). Live face
++            // (tictactoe): SpriteBatch.bind() does floatBuffer.position(3)
++            // for a_texCoord0 — with no setter the view pos stayed 0 and
++            // the texcoord pointer landed at vertex offset 0 (texture
++            // coords read position floats → white/none raster).
++            if (method == "position" && args.size() > 1 &&
++                args[1].type == DalvikType::INT32) {
++                int32_t p = args[1].int_val;
++                if (p < 0 || (v_field("__bb_lim__") &&
++                              p > v_field("__bb_lim__")))
++                    p = 0;  // OpenJDK: invalid position → reset (honest)
++                v_set("__bb_pos__", p);
++                result = args[0];
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "limit" && args.size() > 1 &&
++                args[1].type == DalvikType::INT32) {
++                int32_t lim = args[1].int_val;
++                int32_t cap = v_field("__bb_cap__");
++                if (lim < 0 || (cap && lim > cap)) lim = cap;  // clamp
++                v_set("__bb_lim__", lim);
++                if (v_field("__bb_pos__") > lim) v_set("__bb_pos__", lim);
++                result = args[0];
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
+             if (method == "capacity" && args.size() == 1) {
+                 result = DalvikValue::make_int(v_field("__bb_cap__"));
+                 status = ApiCallTrace::Status::IMPLEMENTED;

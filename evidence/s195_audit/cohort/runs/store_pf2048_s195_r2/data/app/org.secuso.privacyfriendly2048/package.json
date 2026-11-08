@@ -1,0 +1,18 @@
+{
+  "package": "org.secuso.privacyfriendly2048",
+  "versionName": "1.4.2",
+  "versionCode": 100,
+  "mainActivity": "org.secuso.privacyfriendly2048.activities.SplashActivity",
+  "minSdk": "21",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "org.secuso.privacyfriendly2048.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.secuso.privacyfriendly2048/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s195_audit/cohort/runs/store_pf2048_s195_r2/data/app/org.secuso.privacyfriendly2048/base.apk",
+  "apkSha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
+  "apkSize": 9294779,
+  "installedAt": "2026-11-08T18:23:16Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

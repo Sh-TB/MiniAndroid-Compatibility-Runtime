@@ -1,0 +1,7265 @@
+{
+ "wave": "S195 AUDIT",
+ "directive": "MAIN CODER MASTER TASK \u00a72 \u2014 machine-readable achievement inventory over the priority issue set (\u00a71)",
+ "generated_from": {
+  "issues_corpus": "evidence/s195_audit/issues_raw.json (566 issues, updated_at DESC)",
+  "comments_corpus": "evidence/s195_audit/comments_raw.json (92 priority issues, 480 comments)"
+ },
+ "mainline": {
+  "origin_main_head": "9bc2a11533036ff6f1b8c96ea1d8039ec0af0daa",
+  "local_binary_sha16": "1f05270d793a43b5",
+  "binary_note": "local integration line; W18 gates re-verified post-wipe (goldens 3/3 ALL HOLD, floor 11/11)"
+ },
+ "status_vocabulary": [
+  "IMPLEMENTED",
+  "TESTED",
+  "OBSERVED",
+  "TRANSFERRED",
+  "INTEGRATED",
+  "REGRESSION_VERIFIED",
+  "PARTIAL",
+  "PENDING",
+  "BLOCKED",
+  "SUPERSEDED",
+  "REJECTED"
+ ],
+ "status_semantics": "a tested patch is not automatically integrated; presence = law ID found in current source tree; evidence = found in evidence JSONs; worklog = found in the campaign worklog",
+ "records": [
+  {
+   "coder": "C4",
+   "issue": 430,
+   "title": "[4APP-EPIC][Coder-4] Four-title full-compatibility program: Thunderbird \u00b7 Nextcloud \u00b7 Tusky \u00b7 ConnectBot",
+   "state": "open",
+   "created_at": "2026-11-02T15:19:17Z",
+   "updated_at": "2026-11-06T06:19:23Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-261x",
+    "F-C4-54x",
+    "F-C4-561",
+    "F-C4-562",
+    "F-C4-563",
+    "F-C4-564",
+    "F-C4-565",
+    "F-C4-566",
+    "F-C4-567",
+    "F-C4-568",
+    "F-C4-569",
+    "F-C4-572",
+    "F-C4-573",
+    "F-C4-574",
+    "F-C4-575",
+    "F-C4-576",
+    "F-C4-577",
+    "F-C4-578",
+    "F-C4-579",
+    "F-C4-580",
+    "F-C4-581",
+    "F-C4-582",
+    "F-C4-583",
+    "F-C4-584",
+    "F-C4-585",
+    "F-C4-586",
+    "F-C4-587",
+    "F-C4-596",
+    "F-C4-597",
+    "F-C4-598",
+    "F-C4-599",
+    "F-C4-600",
+    "F-NEW-167",
+    "F-NEW-261x",
+    "F-NEW-541",
+    "F-NEW-542",
+    "F-NEW-543",
+    "F-NEW-544",
+    "F-NEW-545",
+    "F-NEW-546",
+    "F-NEW-547",
+    "F-NEW-548"
+   ],
+   "law_mainline_presence": {
+    "F-C4-261x": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-54x": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-561": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-562": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-563": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-565": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-566": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-567": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-568": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-569": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-572": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 8
+    },
+    "F-C4-573": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-574": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-575": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-576": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-577": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-578": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-579": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-580": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-583": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-584": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-585": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-586": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-587": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-596": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-597": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-598": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-599": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-600": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-167": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 11
+    },
+    "F-NEW-261x": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-541": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-542": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-543": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-544": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-545": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-546": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-547": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-548": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 431,
+   "title": "[APP-020][Coder-4] Thunderbird (net.thunderbird.android) \u2014 full-interactive ladder TB-M0..M9",
+   "state": "open",
+   "created_at": "2026-11-02T15:19:18Z",
+   "updated_at": "2026-11-06T15:51:47Z",
+   "last_comment_at": "2026-11-06T15:51:47Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 6,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-573",
+    "F-C4-574",
+    "F-C4-576",
+    "F-C4-598",
+    "F-C4-599",
+    "F-C4-608"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-573": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-574": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-576": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-598": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-599": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-608": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 432,
+   "title": "[APP-021][Coder-4] Nextcloud (com.nextcloud.client) \u2014 full-interactive ladder NC-M0..M9",
+   "state": "open",
+   "created_at": "2026-11-02T15:19:19Z",
+   "updated_at": "2026-11-06T15:51:49Z",
+   "last_comment_at": "2026-11-06T15:51:49Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 6,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-561",
+    "F-C4-562",
+    "F-C4-576",
+    "F-C4-596",
+    "F-C4-597",
+    "F-C4-603",
+    "F-C4-605",
+    "F-C4-608"
+   ],
+   "law_mainline_presence": {
+    "F-C4-561": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-562": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-576": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-596": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-597": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-603": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-605": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-608": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 433,
+   "title": "[APP-022][Coder-4] Tusky (com.keylesspalace.tusky) \u2014 full-interactive ladder TK-M0..M9",
+   "state": "open",
+   "created_at": "2026-11-02T15:19:20Z",
+   "updated_at": "2026-11-06T15:51:50Z",
+   "last_comment_at": "2026-11-06T15:51:50Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 6,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-565",
+    "F-C4-575",
+    "F-C4-577",
+    "F-C4-597",
+    "F-C4-599",
+    "F-C4-600",
+    "F-C4-604",
+    "F-C4-606",
+    "F-C4-608"
+   ],
+   "law_mainline_presence": {
+    "F-C4-565": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-575": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-577": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-597": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-599": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-600": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-604": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-606": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-608": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 434,
+   "title": "[APP-023][Coder-4] ConnectBot (org.connectbot) \u2014 full-interactive ladder CB-M0..M9",
+   "state": "open",
+   "created_at": "2026-11-02T15:19:21Z",
+   "updated_at": "2026-11-06T15:51:51Z",
+   "last_comment_at": "2026-11-06T15:51:51Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 6,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-563",
+    "F-C4-564",
+    "F-C4-587",
+    "F-C4-598",
+    "F-C4-601",
+    "F-C4-602",
+    "F-C4-607",
+    "F-C4-608",
+    "F-C4-612"
+   ],
+   "law_mainline_presence": {
+    "F-C4-563": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-587": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-598": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-601": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-602": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-607": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-608": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-612": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 435,
+   "title": "[4APP-SHARED][Coder-4] Shared-layer campaign C1\u2013C8 \u2014 fix once, benefit all four titles",
+   "state": "open",
+   "created_at": "2026-11-02T15:19:22Z",
+   "updated_at": "2026-11-04T21:49:13Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-C4-566",
+    "F-C4-573",
+    "F-NEW-545",
+    "F-NEW-547",
+    "F-NEW-548"
+   ],
+   "law_mainline_presence": {
+    "F-C4-566": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-573": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-545": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-547": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-548": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 436,
+   "title": "[CONT-4APP4 RECURRING][Coder-4] Wave log \u2014 census \u2192 roots \u2192 fixes \u2192 battery \u2192 evidence",
+   "state": "open",
+   "created_at": "2026-11-02T15:19:23Z",
+   "updated_at": "2026-11-07T14:50:33Z",
+   "last_comment_at": "2026-11-07T14:50:33Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 13,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-54x",
+    "F-C4-564",
+    "F-C4-565",
+    "F-C4-566",
+    "F-C4-569",
+    "F-C4-570",
+    "F-C4-571",
+    "F-C4-572",
+    "F-C4-573",
+    "F-C4-574",
+    "F-C4-575",
+    "F-C4-576",
+    "F-C4-577",
+    "F-C4-578",
+    "F-C4-579",
+    "F-C4-580",
+    "F-C4-581",
+    "F-C4-582",
+    "F-C4-583",
+    "F-C4-584",
+    "F-C4-585",
+    "F-C4-586",
+    "F-C4-587",
+    "F-C4-588",
+    "F-C4-589",
+    "F-C4-590",
+    "F-C4-591",
+    "F-C4-592",
+    "F-C4-593",
+    "F-C4-594",
+    "F-C4-595",
+    "F-C4-596",
+    "F-C4-597",
+    "F-C4-598",
+    "F-C4-599",
+    "F-C4-600",
+    "F-C4-601",
+    "F-C4-602",
+    "F-C4-608",
+    "F-C4-609",
+    "F-C4-610",
+    "F-C4-612",
+    "F-C4-613",
+    "F-C4-616",
+    "F-C4-617",
+    "F-C4-618",
+    "F-NEW-167",
+    "F-NEW-216",
+    "F-NEW-261x",
+    "F-NEW-282",
+    "F-NEW-289",
+    "F-NEW-541",
+    "F-NEW-542",
+    "F-NEW-543",
+    "F-NEW-544",
+    "F-NEW-545",
+    "F-NEW-546",
+    "F-NEW-547",
+    "F-NEW-548"
+   ],
+   "law_mainline_presence": {
+    "F-C4-54x": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-565": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-566": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-569": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-570": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-571": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-572": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 8
+    },
+    "F-C4-573": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-574": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-575": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-576": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-577": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-578": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-579": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-580": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-583": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-584": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-585": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-586": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-587": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-588": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-589": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-591": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-592": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-593": {
+     "src": 7,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-594": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-C4-595": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-596": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-597": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-598": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-599": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-600": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-601": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-602": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-608": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-609": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-610": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-612": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-613": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-616": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-617": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-618": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-167": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 11
+    },
+    "F-NEW-216": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-261x": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-282": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-289": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-541": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-542": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-543": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-544": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-545": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-546": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-547": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-548": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C6",
+   "issue": 437,
+   "title": "Coder 6 | Mission & Achievement Board \u2014 Full Execution of the 4 Hardest (VLC \u00b7 Termux \u00b7 Organic Maps \u00b7 Mindustry) \u2014 Master Tracking",
+   "state": "open",
+   "created_at": "2026-11-02T15:25:58Z",
+   "updated_at": "2026-11-07T21:37:00Z",
+   "last_comment_at": "2026-11-07T21:37:00Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 17,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-NEW-231",
+    "F-NEW-233",
+    "F-NEW-304",
+    "F-NEW-384",
+    "F-NEW-531",
+    "F-NEW-581",
+    "F-NEW-599a",
+    "F-NEW-599b",
+    "F-NEW-599c",
+    "F-NEW-599d",
+    "F-NEW-600a",
+    "F-NEW-600b",
+    "F-NEW-600c",
+    "F-NEW-600d",
+    "F-NEW-600f",
+    "F-NEW-601a"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-231": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 167
+    },
+    "F-NEW-233": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 199
+    },
+    "F-NEW-304": {
+     "src": 6,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-384": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 9
+    },
+    "F-NEW-531": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-599a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-599b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-599c": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-599d": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-600a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-600b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-600c": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-600d": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-600f": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-601a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C6",
+   "issue": 438,
+   "title": "Coder 6 | Case File \u2014 VLC for Android (org.videolan.vlc) \u00b7 ladder V0\u2013V6",
+   "state": "open",
+   "created_at": "2026-11-02T15:25:59Z",
+   "updated_at": "2026-11-08T17:20:33Z",
+   "last_comment_at": "2026-11-08T17:20:33Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 17,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-NEW-175",
+    "F-NEW-198",
+    "F-NEW-200",
+    "F-NEW-215",
+    "F-NEW-233",
+    "F-NEW-304",
+    "F-NEW-312",
+    "F-NEW-331",
+    "F-NEW-339",
+    "F-NEW-471",
+    "F-NEW-531e",
+    "F-NEW-531f",
+    "F-NEW-531g",
+    "F-NEW-532",
+    "F-NEW-601a"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-175": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-198": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-200": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 277
+    },
+    "F-NEW-215": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 10
+    },
+    "F-NEW-233": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 199
+    },
+    "F-NEW-304": {
+     "src": 6,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-312": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-331": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-339": {
+     "src": 8,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-471": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-NEW-531e": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-531f": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-531g": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-532": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-601a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C6",
+   "issue": 439,
+   "title": "Coder 6 | Case File \u2014 Termux (com.termux) \u00b7 ladder T0\u2013T5",
+   "state": "open",
+   "created_at": "2026-11-02T15:26:00Z",
+   "updated_at": "2026-11-08T17:20:31Z",
+   "last_comment_at": "2026-11-08T17:20:31Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 25,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-NEW-215",
+    "F-NEW-219",
+    "F-NEW-231",
+    "F-NEW-236",
+    "F-NEW-253",
+    "F-NEW-358",
+    "F-NEW-382",
+    "F-NEW-384",
+    "F-NEW-395",
+    "F-NEW-469",
+    "F-NEW-471",
+    "F-NEW-531",
+    "F-NEW-531a",
+    "F-NEW-531b",
+    "F-NEW-531c",
+    "F-NEW-531d",
+    "F-NEW-531e",
+    "F-NEW-581",
+    "F-NEW-590",
+    "F-NEW-599a",
+    "F-NEW-599b",
+    "F-NEW-599c",
+    "F-NEW-599d"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-215": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 10
+    },
+    "F-NEW-219": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 22
+    },
+    "F-NEW-231": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 167
+    },
+    "F-NEW-236": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-253": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 13
+    },
+    "F-NEW-358": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-382": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-384": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 9
+    },
+    "F-NEW-395": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-469": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-471": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-NEW-531": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-531a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-531b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-531c": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-531d": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-531e": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-590": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-599a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-599b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-599c": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-599d": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C6",
+   "issue": 440,
+   "title": "Coder 6 | Case File \u2014 Organic Maps (app.organicmaps) \u00b7 ladder O0\u2013O6",
+   "state": "open",
+   "created_at": "2026-11-02T15:26:01Z",
+   "updated_at": "2026-11-08T17:20:34Z",
+   "last_comment_at": "2026-11-08T17:20:34Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 8,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-NEW-441",
+    "F-NEW-531g",
+    "F-NEW-604"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-441": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-531g": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-604": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C6",
+   "issue": 441,
+   "title": "Coder 6 | Case File \u2014 Mindustry (io.anuke.mindustry) \u00b7 ladder M0\u2013M6",
+   "state": "open",
+   "created_at": "2026-11-02T15:26:02Z",
+   "updated_at": "2026-11-08T17:24:43Z",
+   "last_comment_at": "2026-11-08T17:24:43Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 27,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-594",
+    "F-NEW-219",
+    "F-NEW-233",
+    "F-NEW-240",
+    "F-NEW-463",
+    "F-NEW-503",
+    "F-NEW-600a",
+    "F-NEW-602a",
+    "F-NEW-603a"
+   ],
+   "law_mainline_presence": {
+    "F-C4-594": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-NEW-219": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 22
+    },
+    "F-NEW-233": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 199
+    },
+    "F-NEW-240": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-463": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-503": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-600a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-602a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-603a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 446,
+   "title": "[Coder 2] Achievement 1 \u2014 INFRA: fresh-sandbox runtime rebuild in one 570 s chunk on 4 GB RAM / 2 vCPU / no-KVM host (exact recipe + resource laws)",
+   "state": "open",
+   "created_at": "2026-11-02T19:30:17Z",
+   "updated_at": "2026-11-02T20:13:22Z",
+   "last_comment_at": "2026-11-02T20:13:22Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 447,
+   "title": "[Coder 2] Achievement 2 \u2014 gmdice v8 (canonical registry entry): fresh independent reproduction \u2014 SUCCESS, 0 errors, real painted UI (99.4% non-white)",
+   "state": "open",
+   "created_at": "2026-11-02T19:30:18Z",
+   "updated_at": "2026-11-02T19:30:18Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 448,
+   "title": "[Coder 2] Finding 1 \u2014 Telegram official v13.1.1 (vc72379): ViewTree inflates (15,963 nodes) but every frame is white (0.07% non-white); blocker chain ",
+   "state": "open",
+   "created_at": "2026-11-02T19:30:19Z",
+   "updated_at": "2026-11-02T19:31:15Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 449,
+   "title": "[Coder 2] Finding 2 \u2014 APK_REGISTRY drift: the Telegram v12.10.1 baseline pin is no longer fetchable from its live link (A/B vs v13.1.1 blocked) \u2014 prop",
+   "state": "open",
+   "created_at": "2026-11-02T19:30:20Z",
+   "updated_at": "2026-11-02T20:13:23Z",
+   "last_comment_at": "2026-11-02T20:13:23Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2",
+   "issue": 450,
+   "title": "[Coder 2] Mission Board & Worklist \u2014 canonical-corpus breadth campaign + Telegram-family priority (fresh-sandbox lane)",
+   "state": "open",
+   "created_at": "2026-11-02T19:30:21Z",
+   "updated_at": "2026-11-04T22:44:07Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 451,
+   "title": "[Coder 2] Achievement 3 \u2014 TicTacToe (emmanuelmess) v3 fresh verdict: window paints solid #303030, zero game content; blocker = libGDX AndroidApplicati",
+   "state": "open",
+   "created_at": "2026-11-02T19:32:41Z",
+   "updated_at": "2026-11-02T20:13:25Z",
+   "last_comment_at": "2026-11-02T20:13:25Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 452,
+   "title": "[Coder 2] Achievement 4 \u2014 Chess Clock v29 re-proven on fresh sandbox: clean SUCCESS (0 err / 0 warn / 0 uncaught), content-rich 1080\u00d71920 render",
+   "state": "open",
+   "created_at": "2026-11-02T19:43:45Z",
+   "updated_at": "2026-11-02T19:43:45Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 453,
+   "title": "[Coder 2] Achievement 5 \u2014 MicroTimer v8 (was `PARTIAL / registry-only`): FIRST full Coder 2 render \u2014 SUCCESS, 8-child root, real content",
+   "state": "open",
+   "created_at": "2026-11-02T19:43:46Z",
+   "updated_at": "2026-11-02T19:43:46Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 454,
+   "title": "[Coder 2] Achievement 6 \u2014 uNote v30 (was `PARTIAL / registry-only`): FIRST full Coder 2 render \u2014 SUCCESS, 100% painted frame",
+   "state": "open",
+   "created_at": "2026-11-02T19:43:47Z",
+   "updated_at": "2026-11-02T19:43:47Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 455,
+   "title": "[Coder 2] Achievement 7 \u2014 Heading Calculator v1 (was `PARTIAL / registry-only`): richest Coder 2 render \u2014 828 colors, 184 ViewTree nodes, 98.7% painte",
+   "state": "open",
+   "created_at": "2026-11-02T19:43:48Z",
+   "updated_at": "2026-11-02T19:45:16Z",
+   "last_comment_at": "2026-11-02T19:45:16Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 456,
+   "title": "[Coder 2] Achievement 8 \u2014 Simple Stopwatch v26 re-run: content-rich frame (99.4% painted, 156 colors) but status diverges to PARTIAL \u2014 1 in-flight exc",
+   "state": "open",
+   "created_at": "2026-11-02T19:43:49Z",
+   "updated_at": "2026-11-02T19:43:49Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 457,
+   "title": "[Coder 2] Finding 4 \u2014 Notes (billthefarmer) v139: SUCCESS + 0 errors + inflated 2-child root \u2014 yet the framebuffer is pure white; a crash-less white f",
+   "state": "open",
+   "created_at": "2026-11-02T19:43:50Z",
+   "updated_at": "2026-11-02T20:18:24Z",
+   "last_comment_at": "2026-11-02T20:18:24Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 2,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 458,
+   "title": "[Coder 2] Finding 5 \u2014 Tiny Music Player v1: registry download_url is DEAD \u2014 F-Droid serves a 12,950-byte HTML page (sha 24b5a906\u2026); second drift insta",
+   "state": "open",
+   "created_at": "2026-11-02T19:43:51Z",
+   "updated_at": "2026-11-02T19:43:51Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 459,
+   "title": "[Coder 2] Finding 6 \u2014 Simple Keyboard v145 (IME): normal run path yields 0 ViewTree nodes and a white frame \u2014 IME apps need a harness decision from th",
+   "state": "open",
+   "created_at": "2026-11-02T19:43:52Z",
+   "updated_at": "2026-11-04T14:08:00Z",
+   "last_comment_at": "2026-11-04T14:08:00Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 460,
+   "title": "[Coder 2] Achievement 9 \u2014 PF 2048 (was EXEC BUDGET TIMEOUT): completes at 480s with lean frame schedule and renders REAL onboarding UI (Skip/Next)",
+   "state": "open",
+   "created_at": "2026-11-02T20:12:47Z",
+   "updated_at": "2026-11-02T20:12:47Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 461,
+   "title": "[Coder 2] Finding 7 \u2014 Freebloks v1.8.4: DEFAULT_BACKGROUND_ONLY face reproduced; blocker named: Kotlin `lateinit property scene has not been initializ",
+   "state": "open",
+   "created_at": "2026-11-02T20:12:48Z",
+   "updated_at": "2026-11-02T20:12:48Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 462,
+   "title": "[Coder 2] Finding 8 \u2014 RTTT v1.3 white frame: blocker is the SDL lane (SDLActivity.main \u2192 getMainSharedObject NPE), not Compose \u2014 registry label correc",
+   "state": "open",
+   "created_at": "2026-11-02T20:12:49Z",
+   "updated_at": "2026-11-02T20:12:49Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 463,
+   "title": "[Coder 2] Finding 9 \u2014 PF Dicer v2.0.0: splash theme paints (SECUSO blue #0274B2, was empty); Thread.uncaughtExceptionHandler REC-MISS named",
+   "state": "open",
+   "created_at": "2026-11-02T20:12:50Z",
+   "updated_at": "2026-11-02T20:12:50Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 464,
+   "title": "[Coder 2] Finding 10 \u2014 Antimine v17.6.3: white frame; 434 SGET-MISS burst + xml-resource NotFoundException + null-AttributeSet NPE named",
+   "state": "open",
+   "created_at": "2026-11-02T20:12:51Z",
+   "updated_at": "2026-11-02T20:12:51Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 465,
+   "title": "[Coder 2] Finding 11 \u2014 TicTacToe (itsfrz) v1.0.5: theme-navy #202230 background-only face confirmed; Compose stops after windowBackground",
+   "state": "open",
+   "created_at": "2026-11-02T20:12:52Z",
+   "updated_at": "2026-11-02T20:12:52Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 466,
+   "title": "[Coder 2] Finding 12 \u2014 OpenLauncher v39: FROZEN pin re-validated; #303030 face; 22 unrendered custom views = best paint-gap stress test in corpus",
+   "state": "open",
+   "created_at": "2026-11-02T20:12:53Z",
+   "updated_at": "2026-11-02T20:12:53Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 467,
+   "title": "[Coder 2] Finding 13 \u2014 Lexica v3.13.1: budget face retired (completes at 480s, lean schedule); underneath is a quiet crash-less white frame (Compose)",
+   "state": "open",
+   "created_at": "2026-11-02T20:12:54Z",
+   "updated_at": "2026-11-02T20:12:54Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 468,
+   "title": "[Coder 2] Wave 4 worklist \u2014 lean-schedule retests of the white family + corpus closure status + 4 decisions pending",
+   "state": "open",
+   "created_at": "2026-11-02T20:14:30Z",
+   "updated_at": "2026-11-02T20:18:23Z",
+   "last_comment_at": "2026-11-02T20:18:23Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2",
+   "issue": 472,
+   "title": "[Coder 5] MASTER ACHIEVEMENT LEDGER \u2014 Coder-2 campaign: every achievement, finding & evidence (living index)",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:15Z",
+   "updated_at": "2026-11-06T17:41:43Z",
+   "last_comment_at": "2026-11-06T17:41:43Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 7,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-574",
+    "F-C4-578",
+    "F-C4-587",
+    "F-C4-588",
+    "F-C4-589",
+    "F-C4-590",
+    "F-C4-591",
+    "F-C4-592",
+    "F-NEW-167",
+    "F-NEW-200",
+    "F-NEW-237",
+    "F-NEW-370",
+    "F-NEW-376",
+    "F-NEW-384",
+    "F-NEW-471"
+   ],
+   "law_mainline_presence": {
+    "F-C4-574": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-578": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-587": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-588": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-589": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-591": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-592": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-NEW-167": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 11
+    },
+    "F-NEW-200": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 277
+    },
+    "F-NEW-237": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-370": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-376": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 13
+    },
+    "F-NEW-384": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 9
+    },
+    "F-NEW-471": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    }
+   }
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 475,
+   "title": "[Coder 2] TicTacToe (emmanuelmess) (com.emmanuelmess.tictactoe) v3 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:18Z",
+   "updated_at": "2026-11-06T20:53:23Z",
+   "last_comment_at": "2026-11-06T20:53:23Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 3,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-NEW-219",
+    "F-NEW-579",
+    "F-NEW-587"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-219": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 22
+    },
+    "F-NEW-579": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-587": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 476,
+   "title": "[Coder 2] Chess Clock (com.chessclock.android) v29 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:18Z",
+   "updated_at": "2026-11-02T23:32:18Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 477,
+   "title": "[Coder 2] Simple Stopwatch (omegacentauri.mobi.simplestopwatch) v26 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:20Z",
+   "updated_at": "2026-11-02T23:32:20Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 478,
+   "title": "[Coder 2] MicroTimer (dubrowgn.microtimer) v8 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:21Z",
+   "updated_at": "2026-11-02T23:32:21Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 479,
+   "title": "[Coder 2] uNote (app.varlorg.unote) v30 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:22Z",
+   "updated_at": "2026-11-02T23:32:22Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 480,
+   "title": "[Coder 2] Notes (billthefarmer) (org.billthefarmer.notes) v139 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:23Z",
+   "updated_at": "2026-11-03T12:33:04Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 481,
+   "title": "[Coder 2] Heading Calculator (org.debian.eugen.headingcalculator) v1 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:24Z",
+   "updated_at": "2026-11-02T23:32:24Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 482,
+   "title": "[Coder 2] Tiny Music Player (com.martinmimigames.tinymusicplayer) v1 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:25Z",
+   "updated_at": "2026-11-02T23:32:25Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 483,
+   "title": "[Coder 2] Simple Keyboard (rkr.simplekeyboard.inputmethod) v145 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:26Z",
+   "updated_at": "2026-11-02T23:32:26Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 484,
+   "title": "[Coder 2] PF 2048 (org.secuso.privacyfriendly2048) v1.4.2 (vc100) \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:27Z",
+   "updated_at": "2026-11-06T12:24:24Z",
+   "last_comment_at": "2026-11-06T12:24:24Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 4,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-NEW-200",
+    "F-NEW-370",
+    "F-NEW-471"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-200": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 277
+    },
+    "F-NEW-370": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-471": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    }
+   }
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 485,
+   "title": "[Coder 2] Freebloks (de.saschahlusiak.freebloks) v1.8.4 (vc184) \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:28Z",
+   "updated_at": "2026-11-03T12:32:56Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 486,
+   "title": "[Coder 2] RTTT (kirkezz) (org.kirkezz.rttt) v1.3 (vc3) \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:29Z",
+   "updated_at": "2026-11-03T04:21:26Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 487,
+   "title": "[Coder 2] PF Dicer (org.secuso.privacyfriendlydicer) v2.0.0 (vc101) \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:30Z",
+   "updated_at": "2026-11-03T04:53:26Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 488,
+   "title": "[Coder 2] Antimine (dev.lucanlm.antimine) v17.6.3 F \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:31Z",
+   "updated_at": "2026-11-03T04:21:30Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 489,
+   "title": "[Coder 2] TicTacToe (itsfrz) (com.itsfrz.tictactoe) v1.0.5 (vc5) \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:32Z",
+   "updated_at": "2026-11-03T12:33:02Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 490,
+   "title": "[Coder 2] OpenLauncher (com.benny.openlauncher) v39 \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:33Z",
+   "updated_at": "2026-11-03T12:33:00Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C2/C5",
+   "issue": 491,
+   "title": "[Coder 2] Lexica (com.serwylo.lexica) v3.13.1 (vc30018) \u2014 app tracker \u00b7 living issue until full render",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:34Z",
+   "updated_at": "2026-11-03T12:33:06Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C3",
+   "issue": 492,
+   "title": "Coder 3 | Master Dashboard \u2014 every Issue, every app, one glance (progress % + statistics) \u2014 refreshed at refresh 12 (S181 \u00b7 A19: the S163 pending-meas",
+   "state": "open",
+   "created_at": "2026-11-02T23:32:56Z",
+   "updated_at": "2026-11-08T16:20:46Z",
+   "last_comment_at": "2026-11-08T16:20:46Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 13,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C8-149",
+    "F-C8-180",
+    "F-NEW-306",
+    "F-NEW-432",
+    "F-NEW-462",
+    "F-NEW-572",
+    "F-NEW-576",
+    "F-NEW-577",
+    "F-NEW-578",
+    "F-NEW-579",
+    "F-NEW-582",
+    "F-NEW-586",
+    "F-NEW-587",
+    "F-NEW-588",
+    "F-NEW-589",
+    "F-NEW-590",
+    "F-NEW-601",
+    "F-NEW-602",
+    "F-NEW-603",
+    "F-NEW-604",
+    "F-NEW-605",
+    "F-NEW-606",
+    "F-NEW-607",
+    "F-NEW-608",
+    "F-NEW-608b",
+    "F-NEW-609",
+    "F-NEW-609b",
+    "F-NEW-610",
+    "F-NEW-629"
+   ],
+   "law_mainline_presence": {
+    "F-C8-149": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-180": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-306": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-432": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-462": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 9
+    },
+    "F-NEW-572": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-576": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-577": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-578": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-579": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-586": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-587": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-588": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-589": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-590": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-601": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-602": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-603": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-604": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-605": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-606": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-607": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-608": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-608b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-609": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-609b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-610": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-629": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C5",
+   "issue": 505,
+   "title": "[CONT-4APP RECURRING][Coder-5] \u2014 per-session wave log: register \u2192 root-cause \u2192 fix \u2192 re-census \u2192 evidence",
+   "state": "open",
+   "created_at": "2026-11-03T03:38:07Z",
+   "updated_at": "2026-11-08T17:48:43Z",
+   "last_comment_at": "2026-11-08T17:48:42Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 22,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-566",
+    "F-NEW-215",
+    "F-NEW-232",
+    "F-NEW-282",
+    "F-NEW-287",
+    "F-NEW-309",
+    "F-NEW-326",
+    "F-NEW-432",
+    "F-NEW-467",
+    "F-NEW-483",
+    "F-NEW-530",
+    "F-NEW-536",
+    "F-NEW-537",
+    "F-NEW-542",
+    "F-NEW-543",
+    "F-NEW-544",
+    "F-NEW-545",
+    "F-NEW-546",
+    "F-NEW-547",
+    "F-NEW-548",
+    "F-NEW-549",
+    "F-NEW-550",
+    "F-NEW-551",
+    "F-NEW-552",
+    "F-NEW-553",
+    "F-NEW-554",
+    "F-NEW-557",
+    "F-NEW-558",
+    "F-NEW-559",
+    "F-NEW-55x",
+    "F-NEW-560",
+    "F-NEW-561",
+    "F-NEW-562",
+    "F-NEW-563",
+    "F-NEW-564",
+    "F-NEW-565",
+    "F-NEW-566",
+    "F-NEW-567",
+    "F-NEW-567b",
+    "F-NEW-568",
+    "F-NEW-568c",
+    "F-NEW-569",
+    "F-NEW-570",
+    "F-NEW-570b",
+    "F-NEW-571",
+    "F-NEW-626",
+    "F-NEW-627",
+    "F-NEW-628",
+    "NP-M0"
+   ],
+   "law_mainline_presence": {
+    "F-C4-566": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-215": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 10
+    },
+    "F-NEW-232": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 40
+    },
+    "F-NEW-282": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-287": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-309": {
+     "src": 9,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-326": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-432": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-467": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-483": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-530": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-536": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-537": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-542": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-543": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-544": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-545": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-546": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-547": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-548": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-549": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-550": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-551": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-552": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-553": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-554": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-557": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-558": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-559": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-55x": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-560": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-561": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-562": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 10
+    },
+    "F-NEW-563": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-564": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-565": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-566": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-567": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-567b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-568": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-568c": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-569": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-570": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-570b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-571": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-626": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-627": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-628": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "NP-M0": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 8
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 510,
+   "title": "[W3][Coder-4] Three verified laws \u2014 NC Dagger graph BUILDS (5730\u21928111 stubs) \u00b7 CB runs the real androidx super chain (8917\u219224715) \u00b7 TB reaches APP_DRA",
+   "state": "open",
+   "created_at": "2026-11-03T15:30:47Z",
+   "updated_at": "2026-11-03T15:32:10Z",
+   "last_comment_at": "2026-11-03T15:32:10Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-261x",
+    "F-C4-541",
+    "F-C4-542",
+    "F-C4-543",
+    "F-C4-544",
+    "F-C4-545",
+    "F-C4-546",
+    "F-C4-547",
+    "F-C4-548",
+    "F-C4-54x",
+    "F-C4-561",
+    "F-C4-562",
+    "F-C4-563",
+    "F-NEW-238",
+    "F-NEW-261",
+    "F-NEW-262",
+    "F-NEW-286",
+    "F-NEW-541",
+    "F-NEW-542",
+    "F-NEW-543",
+    "F-NEW-544",
+    "F-NEW-545",
+    "F-NEW-548",
+    "F-NEW-564"
+   ],
+   "law_mainline_presence": {
+    "F-C4-261x": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-541": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-542": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-543": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-544": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-545": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-546": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-547": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-548": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-54x": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-561": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-562": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-563": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-238": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-261": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-NEW-262": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-286": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-541": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-542": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-543": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-544": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-545": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-548": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-564": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 511,
+   "title": "Coder 3 | Achievement 12 - S139: the APK's own libgdx-box2d.so now EXECUTES \u2014 real physics (ball launches, moves, collides, deterministic 3x), in-game",
+   "state": "open",
+   "created_at": "2026-11-03T19:58:24Z",
+   "updated_at": "2026-11-03T19:59:14Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-NEW-463",
+    "F-NEW-508"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-463": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-508": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 3
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 512,
+   "title": "[W4][Coder-4] Tusky Theme.AppCompat ISE KILLED (theme bag 8\u2192819 keys, APP_PIXELS) \u00b7 CB renders real toString (Destination(0x0) + [hostId]) \u2014 2 verifie",
+   "state": "open",
+   "created_at": "2026-11-03T20:08:07Z",
+   "updated_at": "2026-11-03T20:08:22Z",
+   "last_comment_at": "2026-11-03T20:08:22Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-565"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-565": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 513,
+   "title": "Coder 3 | Achievement 13 - S140: bouncy renders its OWN palette - COMPLETE rendering (slate walls, blue/magenta bumpers, green targets, cyan rollovers",
+   "state": "open",
+   "created_at": "2026-11-03T21:25:16Z",
+   "updated_at": "2026-11-03T21:25:16Z",
+   "last_comment_at": null,
+   "last_comment_user": null,
+   "comments_fetched": 0,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-NEW-393"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-393": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 514,
+   "title": "[W5][Coder-4] F-C4-566: CHM compute-bypass was eating putVal \u2014 Koin's 510 registrations now EXECUTE (596 nodes, resize chains live) \u00b7 TB residual = Cl",
+   "state": "open",
+   "created_at": "2026-11-03T21:38:23Z",
+   "updated_at": "2026-11-03T21:47:37Z",
+   "last_comment_at": "2026-11-03T21:47:37Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 2,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-566",
+    "F-C4-567",
+    "F-C4-568",
+    "F-NEW-282",
+    "F-NEW-365"
+   ],
+   "law_mainline_presence": {
+    "F-C4-566": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-567": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-568": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-282": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-365": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    }
+   }
+  },
+  {
+   "coder": "C6",
+   "issue": 515,
+   "title": "CODER-6 ACHIEVEMENT 4 \u2014 WAVE 8: [C6-GLBD] index-mesh law set \u2014 Mindustry scene FBO receives REAL app geometry (40 guard skips \u2192 0, 313 real indexed dr",
+   "state": "open",
+   "created_at": "2026-11-03T21:39:34Z",
+   "updated_at": "2026-11-04T17:55:17Z",
+   "last_comment_at": "2026-11-04T17:55:17Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": false,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C3",
+   "issue": 516,
+   "title": "Coder 3 | Achievement 14 - S141: ContactListener callbacks go native-to-Java - the APK's own libgdx-box2d trampoline drives the game's OWN scoring (0-",
+   "state": "open",
+   "created_at": "2026-11-03T23:25:48Z",
+   "updated_at": "2026-11-05T14:06:33Z",
+   "last_comment_at": "2026-11-05T14:06:33Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 6,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-NEW-393"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-393": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 517,
+   "title": "[W6][Coder-4] TB NDFE \u00d732 root CHAINED to a HOLLOW includes list (full forensic path, every link proven) \u00b7 3 new laws F-C4-569/570/571 \u00b7 the never-del",
+   "state": "open",
+   "created_at": "2026-11-04T15:27:41Z",
+   "updated_at": "2026-11-04T15:28:08Z",
+   "last_comment_at": "2026-11-04T15:28:08Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 3,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-261x",
+    "F-C4-541",
+    "F-C4-542",
+    "F-C4-543",
+    "F-C4-544",
+    "F-C4-545",
+    "F-C4-546",
+    "F-C4-547",
+    "F-C4-548",
+    "F-C4-54x",
+    "F-C4-561",
+    "F-C4-562",
+    "F-C4-563",
+    "F-C4-564",
+    "F-C4-565",
+    "F-C4-566",
+    "F-C4-567",
+    "F-C4-568",
+    "F-C4-569",
+    "F-C4-570",
+    "F-C4-571",
+    "F-NEW-236b",
+    "F-NEW-237b",
+    "F-NEW-238",
+    "F-NEW-261",
+    "F-NEW-262",
+    "F-NEW-264b",
+    "F-NEW-267",
+    "F-NEW-282",
+    "F-NEW-286",
+    "F-NEW-541",
+    "F-NEW-542",
+    "F-NEW-543",
+    "F-NEW-544",
+    "F-NEW-545",
+    "F-NEW-564"
+   ],
+   "law_mainline_presence": {
+    "F-C4-261x": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-541": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-542": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-543": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-544": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-545": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-546": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-547": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-548": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-54x": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-561": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-562": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-C4-563": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-565": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-566": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-567": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-568": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-569": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-570": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-571": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-236b": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-237b": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 2
+    },
+    "F-NEW-238": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-261": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-NEW-262": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-264b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-NEW-267": {
+     "src": 7,
+     "worklog": 1,
+     "evidence": 14
+    },
+    "F-NEW-282": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-286": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-541": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-542": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-543": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-544": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-545": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-564": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 518,
+   "title": "[W7][Coder-4] TB Koin NDFE x32 KILLED \u2014 root: SecureRandom REC-MISS minted ONE uuid for ALL 100 modules \u2192 Module.equals TRUE for every pair \u2192 flatten ",
+   "state": "open",
+   "created_at": "2026-11-04T18:29:41Z",
+   "updated_at": "2026-11-06T12:24:22Z",
+   "last_comment_at": "2026-11-06T12:24:21Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 11,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-566",
+    "F-C4-569",
+    "F-C4-572",
+    "F-C4-574",
+    "F-C4-578",
+    "F-C4-587",
+    "F-C4-588",
+    "F-C4-589",
+    "F-C4-590",
+    "F-C4-591",
+    "F-C4-592",
+    "F-C4-593",
+    "F-NEW-167",
+    "F-NEW-271"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-566": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-569": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-572": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 8
+    },
+    "F-C4-574": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-578": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-587": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-588": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-589": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-591": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-592": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-593": {
+     "src": 7,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-NEW-167": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 11
+    },
+    "F-NEW-271": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 9
+    }
+   }
+  },
+  {
+   "coder": "C8",
+   "issue": 519,
+   "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime | Achievement Log (living reference, no-push delivery)",
+   "state": "open",
+   "created_at": "2026-11-04T18:30:26Z",
+   "updated_at": "2026-11-08T17:07:07Z",
+   "last_comment_at": "2026-11-08T17:06:38Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 77,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C8-141",
+    "F-C8-142",
+    "F-C8-143",
+    "F-C8-144",
+    "F-C8-144b",
+    "F-C8-145",
+    "F-C8-146",
+    "F-C8-147",
+    "F-C8-148",
+    "F-C8-149",
+    "F-C8-150",
+    "F-C8-151",
+    "F-C8-152",
+    "F-C8-153",
+    "F-C8-154",
+    "F-C8-156",
+    "F-C8-157",
+    "F-C8-158",
+    "F-C8-161",
+    "F-C8-162",
+    "F-C8-163",
+    "F-C8-164",
+    "F-C8-165",
+    "F-C8-166",
+    "F-C8-167",
+    "F-C8-168",
+    "F-C8-169",
+    "F-C8-170",
+    "F-C8-171",
+    "F-C8-172",
+    "F-C8-173",
+    "F-C8-174",
+    "F-C8-175",
+    "F-C8-176",
+    "F-C8-177",
+    "F-C8-178",
+    "F-C8-179",
+    "F-C8-180",
+    "F-C8-181",
+    "F-C8-182",
+    "F-C8-183",
+    "F-C8-184",
+    "F-C8-185",
+    "F-C8-186",
+    "F-C8-187",
+    "F-C8-188",
+    "F-C8-189",
+    "F-C8-190",
+    "F-C8-191",
+    "F-C8-192",
+    "F-C8-193",
+    "F-C8-194",
+    "F-C8-195",
+    "F-C8-197",
+    "F-C8-198",
+    "F-C8-199",
+    "F-C8-200",
+    "F-C8-201",
+    "F-C8-202",
+    "F-C8-203",
+    "F-C8-204",
+    "F-C8-205",
+    "F-C8-206",
+    "F-C8-207",
+    "F-C8-208",
+    "F-C8-209",
+    "F-C8-210",
+    "F-C8-211",
+    "F-C8-212",
+    "F-C8-213",
+    "F-C8-214",
+    "F-C8-215",
+    "F-C8-216",
+    "F-C8-217",
+    "F-C8-218",
+    "F-C8-221",
+    "F-C8-222",
+    "F-C8-223",
+    "F-C8-225",
+    "F-C8-226",
+    "F-C8-227",
+    "F-C8-228",
+    "F-C8-229",
+    "F-C8-230",
+    "F-C8-231",
+    "F-C8-232",
+    "F-C8-233",
+    "F-C8-234",
+    "F-C8-235",
+    "F-C8-236",
+    "F-C8-237",
+    "F-C8-238",
+    "F-C8-239",
+    "F-C8-240",
+    "F-NEW-167",
+    "F-NEW-188c",
+    "F-NEW-200",
+    "F-NEW-216",
+    "F-NEW-233",
+    "F-NEW-259g",
+    "F-NEW-272",
+    "F-NEW-281",
+    "F-NEW-332",
+    "F-NEW-491",
+    "F-NEW-576",
+    "F-NEW-590"
+   ],
+   "law_mainline_presence": {
+    "F-C8-141": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-142": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-143": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-144": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-144b": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-145": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-146": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-147": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-148": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-149": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-150": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-151": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-152": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-153": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-154": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-156": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-157": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-158": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-161": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-162": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-163": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-164": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-165": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-166": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-167": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-168": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-169": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-170": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-171": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-172": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-173": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-174": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-175": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-176": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-177": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-178": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-179": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-180": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-181": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-182": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-183": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-184": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-185": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-186": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-187": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-188": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-189": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-190": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-191": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-192": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-193": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-194": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-195": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-197": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-198": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-199": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-200": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-201": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-202": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-203": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-204": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-205": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-206": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-207": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-208": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-209": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-210": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-211": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-212": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-213": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-214": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-215": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-216": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-217": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-218": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-221": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-222": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-223": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-225": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-226": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-227": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-228": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-229": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-230": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-231": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-232": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-233": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-234": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-235": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-236": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-237": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-238": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-239": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-240": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-167": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 11
+    },
+    "F-NEW-188c": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-200": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 277
+    },
+    "F-NEW-216": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-233": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 199
+    },
+    "F-NEW-259g": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-NEW-272": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-281": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-332": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-491": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-576": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-590": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 6
+    }
+   }
+  },
+  {
+   "coder": "C7",
+   "issue": 520,
+   "title": "CODER 7 \u2014 Base Android Component Runtime: WAVE-5 PMS-LITE (cross-package component index + REAL-SQLite package cache; 16/16 \u00d76 store ops; 34/34 == W4 ",
+   "state": "open",
+   "created_at": "2026-11-04T20:42:24Z",
+   "updated_at": "2026-11-07T20:39:13Z",
+   "last_comment_at": "2026-11-07T20:37:44Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 27,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "C9-1",
+    "F-NEW-174",
+    "F-NEW-231",
+    "F-NEW-234",
+    "F-NEW-238",
+    "F-NEW-248",
+    "F-NEW-275",
+    "F-NEW-304",
+    "F-NEW-332",
+    "F-NEW-356",
+    "F-NEW-366",
+    "F-NEW-424",
+    "F-NEW-425"
+   ],
+   "law_mainline_presence": {
+    "C9-1": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-174": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-231": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 167
+    },
+    "F-NEW-234": {
+     "src": 8,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-238": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-248": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-275": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-304": {
+     "src": 6,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-332": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-356": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-366": {
+     "src": 7,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-424": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-425": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 3
+    }
+   }
+  },
+  {
+   "coder": "C9",
+   "issue": 521,
+   "title": "CODER 9 \u2014 Base Resources, Assets & Image Pipeline | Achievement Log (living reference, no-push delivery)",
+   "state": "open",
+   "created_at": "2026-11-04T21:08:00Z",
+   "updated_at": "2026-11-08T17:56:53Z",
+   "last_comment_at": "2026-11-08T17:56:53Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 37,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "C9-1",
+    "C9-10",
+    "C9-11",
+    "C9-12",
+    "C9-13",
+    "C9-14",
+    "C9-15",
+    "C9-16",
+    "C9-17",
+    "C9-18",
+    "C9-19",
+    "C9-2",
+    "C9-20",
+    "C9-21",
+    "C9-22",
+    "C9-23",
+    "C9-24",
+    "C9-24b",
+    "C9-25",
+    "C9-26",
+    "C9-27",
+    "C9-28",
+    "C9-28b",
+    "C9-29",
+    "C9-3",
+    "C9-4",
+    "C9-5",
+    "C9-6",
+    "C9-7",
+    "C9-8",
+    "C9-9",
+    "F-C4-542",
+    "F-C4-567",
+    "F-C4-567b",
+    "F-C4-585",
+    "F-C4-622",
+    "F-C4-625",
+    "F-C4-627",
+    "F-C4-628",
+    "F-C4-628b",
+    "F-C4-629",
+    "F-C4-631",
+    "F-C4-632",
+    "F-NEW-240",
+    "F-NEW-315",
+    "F-NEW-355",
+    "F-NEW-360",
+    "F-NEW-431",
+    "F-NEW-452",
+    "F-NEW-491",
+    "F-NEW-495b",
+    "F-NEW-588",
+    "P-NEW-1",
+    "P-NEW-2",
+    "P-NEW-3",
+    "P-NEW-4",
+    "P-NEW-5"
+   ],
+   "law_mainline_presence": {
+    "C9-1": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "C9-10": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-11": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-12": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-13": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-14": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-15": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-16": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-17": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-18": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-19": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-2": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "C9-20": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-21": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-22": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-23": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-24": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-24b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "C9-25": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "C9-26": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "C9-27": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-28": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-28b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "C9-29": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "C9-3": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "C9-4": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-5": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-6": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-7": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-8": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-9": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-542": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-567": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-567b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-585": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-622": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-625": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-627": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-628": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-628b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-629": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-631": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-632": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-240": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-315": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-355": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-360": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-431": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-452": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-491": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-495b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-588": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "P-NEW-1": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "P-NEW-2": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "P-NEW-3": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "P-NEW-4": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "P-NEW-5": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 522,
+   "title": "[W8][Coder-4] FIVE generic laws close the 20-problem work list \u2014 TB storage UPGRADES (setVersion law) \u00b7 NC Dagger injector map BUILDS (SimpleImmutable",
+   "state": "open",
+   "created_at": "2026-11-04T21:47:58Z",
+   "updated_at": "2026-11-05T16:40:41Z",
+   "last_comment_at": "2026-11-05T16:40:41Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 2,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-561",
+    "F-C4-573",
+    "F-C4-574",
+    "F-C4-575",
+    "F-C4-576",
+    "F-C4-577",
+    "F-NEW-267",
+    "F-NEW-487"
+   ],
+   "law_mainline_presence": {
+    "F-C4-561": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-573": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-574": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-575": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-576": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-577": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-267": {
+     "src": 7,
+     "worklog": 1,
+     "evidence": 14
+    },
+    "F-NEW-487": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 525,
+   "title": "[W9][Coder-4] NINE generic laws \u2014 TB command-queue spin DEAD (PBQ family law) \u00b7 Room converter family DEAD on NC+TK (isInstance runtime-class) \u00b7 gson ",
+   "state": "open",
+   "created_at": "2026-11-05T14:56:01Z",
+   "updated_at": "2026-11-05T16:40:40Z",
+   "last_comment_at": "2026-11-05T16:40:40Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 2,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-574",
+    "F-C4-578",
+    "F-C4-579",
+    "F-C4-58",
+    "F-C4-580",
+    "F-C4-581",
+    "F-C4-582",
+    "F-C4-583",
+    "F-C4-584",
+    "F-C4-585",
+    "F-C4-586",
+    "F-NEW-167",
+    "F-NEW-219",
+    "F-NEW-267",
+    "F-NEW-387",
+    "F-NEW-440",
+    "F-NEW-533"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-574": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-578": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-579": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-58": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-C4-580": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-583": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-584": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-585": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-586": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-167": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 11
+    },
+    "F-NEW-219": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 22
+    },
+    "F-NEW-267": {
+     "src": 7,
+     "worklog": 1,
+     "evidence": 14
+    },
+    "F-NEW-387": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 9
+    },
+    "F-NEW-440": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-533": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 526,
+   "title": "[W10][Coder-4] NINE generic laws \u2014 conscrypt natives EXECUTE for real (RegisterNatives dispatch + JNI object-array family + RTLD_DEEPBIND isolation: C",
+   "state": "open",
+   "created_at": "2026-11-05T18:14:18Z",
+   "updated_at": "2026-11-05T21:31:40Z",
+   "last_comment_at": "2026-11-05T21:31:40Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 3,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-581",
+    "F-C4-587",
+    "F-C4-588",
+    "F-C4-589",
+    "F-C4-590",
+    "F-C4-591",
+    "F-C4-591b",
+    "F-C4-592",
+    "F-C4-593",
+    "F-C4-594",
+    "F-C4-595",
+    "F-NEW-197",
+    "F-NEW-289",
+    "F-NEW-504"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-587": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-588": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-589": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-591": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-591b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-C4-592": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-593": {
+     "src": 7,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-594": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-C4-595": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-NEW-197": {
+     "src": 8,
+     "worklog": 1,
+     "evidence": 10
+    },
+    "F-NEW-289": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-504": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 528,
+   "title": "[W11][Coder-4] FIVE generic laws \u2014 Kotlin exception identity restored (EXP-045 sanitizeStackTrace gate REMOVED: checkNotNull/throwUninitializedPropert",
+   "state": "open",
+   "created_at": "2026-11-06T06:18:38Z",
+   "updated_at": "2026-11-06T21:13:30Z",
+   "last_comment_at": "2026-11-06T21:13:30Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 4,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-575",
+    "F-C4-587",
+    "F-C4-590",
+    "F-C4-592",
+    "F-C4-596",
+    "F-C4-597",
+    "F-C4-598",
+    "F-C4-599",
+    "F-C4-600",
+    "F-C4-601",
+    "F-C4-613",
+    "F-NEW-268e"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-575": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-587": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-592": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-596": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-597": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-598": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-599": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-600": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-601": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-613": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-268e": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C3",
+   "issue": 530,
+   "title": "Coder 3 | Achievement 18 \u2014 S180: Coder-D CONFIRMED findings fix batch \u2014 21 laws at base e0bbffaa (INTEGRATION_READY, full patch attached)",
+   "state": "open",
+   "created_at": "2026-11-06T09:16:50Z",
+   "updated_at": "2026-11-06T09:18:01Z",
+   "last_comment_at": "2026-11-06T09:18:01Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 2,
+   "patch_delivery_evidence": true,
+   "law_ids": [],
+   "law_mainline_presence": {}
+  },
+  {
+   "coder": "C8",
+   "issue": 533,
+   "title": "CODER 8 \u2014 Base Concurrency & Scheduling Runtime Engineering Worklog",
+   "state": "open",
+   "created_at": "2026-11-06T11:55:15Z",
+   "updated_at": "2026-11-06T20:24:29Z",
+   "last_comment_at": "2026-11-06T20:24:27Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-593",
+    "F-NEW-197",
+    "F-NEW-233",
+    "F-NEW-249",
+    "F-NEW-272",
+    "F-NEW-289",
+    "F-NEW-387"
+   ],
+   "law_mainline_presence": {
+    "F-C4-593": {
+     "src": 7,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-NEW-197": {
+     "src": 8,
+     "worklog": 1,
+     "evidence": 10
+    },
+    "F-NEW-233": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 199
+    },
+    "F-NEW-249": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 2
+    },
+    "F-NEW-272": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-289": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-387": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 9
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 534,
+   "title": "[W12][Coder-4] SEVEN generic laws \u2014 Collections.sort natural-order RESTORED (TK MainActivity AIOOBE dead: okio Options built on an UNSORTED list) \u00b7 Pa",
+   "state": "open",
+   "created_at": "2026-11-06T12:27:29Z",
+   "updated_at": "2026-11-06T21:13:29Z",
+   "last_comment_at": "2026-11-06T21:13:29Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 4,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-575",
+    "F-C4-582",
+    "F-C4-590",
+    "F-C4-596",
+    "F-C4-597",
+    "F-C4-598",
+    "F-C4-599",
+    "F-C4-600",
+    "F-C4-601",
+    "F-C4-602",
+    "F-C4-603",
+    "F-C4-604",
+    "F-C4-605",
+    "F-C4-606",
+    "F-C4-607",
+    "F-C4-612",
+    "F-C4-615",
+    "F-NEW-236d",
+    "F-NEW-268e",
+    "F-NEW-309",
+    "F-NEW-454"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-575": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-596": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-597": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-598": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-599": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-600": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-601": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-602": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-603": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-604": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-605": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-606": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-607": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-612": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-615": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-236d": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-268e": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-309": {
+     "src": 9,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-454": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C3",
+   "issue": 535,
+   "title": "Coder 3 | A21 \u00b7 S184 \u2014 F-NEW-572 bionic init-array null-skip law: the libGDX family's real, APK-bundled libgdx.so LOADS (S183 B1 frontier CLOSED) \u2014 by",
+   "state": "open",
+   "created_at": "2026-11-06T13:00:01Z",
+   "updated_at": "2026-11-06T13:00:25Z",
+   "last_comment_at": "2026-11-06T13:00:25Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 3,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-NEW-461",
+    "F-NEW-462",
+    "F-NEW-572"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-461": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-NEW-462": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 9
+    },
+    "F-NEW-572": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "GOV",
+   "issue": 536,
+   "title": "S185 \u2014 THE SQLITE RULE (standing law for all Coders): VEND, DON'T REWRITE \u00b7 LOAD-FIRST \u00b7 TRACER-THEN-PRUNE \u00b7 NOTHING BULKY IN GIT",
+   "state": "open",
+   "created_at": "2026-11-06T13:26:43Z",
+   "updated_at": "2026-11-06T21:13:43Z",
+   "last_comment_at": "2026-11-06T21:13:43Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 7,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-C4-614",
+    "F-NEW-159",
+    "F-NEW-188",
+    "F-NEW-188c",
+    "F-NEW-383"
+   ],
+   "law_mainline_presence": {
+    "F-C4-614": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-159": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 2
+    },
+    "F-NEW-188": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-188c": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-383": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C3",
+   "issue": 537,
+   "title": "Coder 3 | A22 \u00b7 S186 \u2014 B6 decode-chain audit: codec layer REFUTED as the gap (already real+proven); residuals are view-materialization blockers (setLi",
+   "state": "open",
+   "created_at": "2026-11-06T14:46:56Z",
+   "updated_at": "2026-11-06T15:32:41Z",
+   "last_comment_at": "2026-11-06T15:32:41Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 2,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-NEW-259g",
+    "F-NEW-432",
+    "F-NEW-471"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-259g": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-NEW-432": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-471": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 538,
+   "title": "[W13][Coder-4] FOUR generic laws from the stuck-corpus directive \u2014 ParcelUuid/UUID.fromString COMPLETE AOSP law (sunpiano FLIPPED 0\u2192576,907 px REAL_AP",
+   "state": "open",
+   "created_at": "2026-11-06T15:49:43Z",
+   "updated_at": "2026-11-06T21:13:28Z",
+   "last_comment_at": "2026-11-06T21:13:27Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 4,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-575",
+    "F-C4-582",
+    "F-C4-590",
+    "F-C4-596",
+    "F-C4-597",
+    "F-C4-598",
+    "F-C4-599",
+    "F-C4-600",
+    "F-C4-601",
+    "F-C4-602",
+    "F-C4-603",
+    "F-C4-604",
+    "F-C4-605",
+    "F-C4-606",
+    "F-C4-607",
+    "F-C4-608",
+    "F-C4-609",
+    "F-C4-610",
+    "F-C4-611",
+    "F-C4-612",
+    "F-C4-613",
+    "F-C4-614",
+    "F-NEW-216",
+    "F-NEW-236d",
+    "F-NEW-268e",
+    "F-NEW-303",
+    "F-NEW-454",
+    "F-NEW-572"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-575": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-596": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-597": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-598": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-599": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-600": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-601": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-602": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-603": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-604": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-605": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-606": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-607": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-608": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-609": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-610": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-611": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-612": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-613": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-614": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-216": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-236d": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-268e": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-303": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-454": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-572": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C3",
+   "issue": 540,
+   "title": "Coder 3 | S187 \u2014 THREE generic silent-null laws (String.replaceAll family \u00b7 java.util.Stack \u00b7 ExecutorService.submit+Future) + INVOKE-TRACE tool: the ",
+   "state": "open",
+   "created_at": "2026-11-06T17:33:01Z",
+   "updated_at": "2026-11-06T17:33:03Z",
+   "last_comment_at": "2026-11-06T17:33:03Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-NEW-246",
+    "F-NEW-282",
+    "F-NEW-576",
+    "F-NEW-577",
+    "F-NEW-578",
+    "F-NEW-578b"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-246": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-282": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-576": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-577": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-578": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-578b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "GOV",
+   "issue": 541,
+   "title": "[S188 MASTER] Unified Runtime Integration, Route-Aware Execution Graph, and Real Application Recovery \u2014 BINDING LAW FOR ALL CODERS",
+   "state": "open",
+   "created_at": "2026-11-06T19:49:28Z",
+   "updated_at": "2026-11-07T19:25:48Z",
+   "last_comment_at": "2026-11-07T19:25:48Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 6,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "C9-1",
+    "C9-15",
+    "C9-2",
+    "C9-23",
+    "C9-24",
+    "C9-27",
+    "C9-4",
+    "F-NEW-491",
+    "F-NEW-579"
+   ],
+   "law_mainline_presence": {
+    "C9-1": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "C9-15": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-2": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "C9-23": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-24": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-27": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "C9-4": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-491": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-579": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "GOV",
+   "issue": 542,
+   "title": "[S188-RULES] Binding working rules for all coders \u2014 UNOBSERVED is never PASS",
+   "state": "open",
+   "created_at": "2026-11-06T19:49:31Z",
+   "updated_at": "2026-11-07T15:15:22Z",
+   "last_comment_at": "2026-11-07T15:15:21Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 3,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-NEW-576",
+    "F-NEW-579"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-576": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-579": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "INT",
+   "issue": 556,
+   "title": "MINIANDROID \u2014 UNIFIED RUNTIME INTEGRATION, ROUTE-AWARE EXECUTION GRAPH, AND REAL APPLICATION RECOVERY",
+   "state": "open",
+   "created_at": "2026-11-06T19:55:38Z",
+   "updated_at": "2026-11-08T13:36:53Z",
+   "last_comment_at": "2026-11-08T13:36:53Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 25,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-616",
+    "F-C4-617",
+    "F-C8-149",
+    "F-NEW-169b",
+    "F-NEW-237",
+    "F-NEW-304",
+    "F-NEW-305",
+    "F-NEW-306",
+    "F-NEW-307",
+    "F-NEW-308",
+    "F-NEW-309",
+    "F-NEW-310",
+    "F-NEW-327",
+    "F-NEW-328",
+    "F-NEW-329",
+    "F-NEW-339",
+    "F-NEW-384",
+    "F-NEW-387",
+    "F-NEW-403",
+    "F-NEW-442b",
+    "F-NEW-453",
+    "F-NEW-454c",
+    "F-NEW-471",
+    "F-NEW-573",
+    "F-NEW-574",
+    "F-NEW-575",
+    "F-NEW-576",
+    "F-NEW-577",
+    "F-NEW-578",
+    "F-NEW-579",
+    "F-NEW-580",
+    "F-NEW-581",
+    "F-NEW-584",
+    "F-NEW-585",
+    "F-NEW-586",
+    "F-NEW-587",
+    "F-NEW-588",
+    "F-NEW-589",
+    "F-NEW-590",
+    "F-NEW-591",
+    "F-NEW-592",
+    "F-NEW-595",
+    "F-NEW-596",
+    "F-NEW-598",
+    "F-NEW-601",
+    "F-NEW-602",
+    "F-NEW-603",
+    "F-NEW-604",
+    "F-NEW-621",
+    "F-NEW-622",
+    "F-NEW-623",
+    "F-NEW-624",
+    "F-NEW-625",
+    "F-NEW-626",
+    "F-NEW-627",
+    "F-NEW-628a",
+    "F-NEW-628b",
+    "F-NEW-628c",
+    "F-NEW-629",
+    "F-NEW-630"
+   ],
+   "law_mainline_presence": {
+    "F-C4-616": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-617": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C8-149": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-169b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-237": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-304": {
+     "src": 6,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-305": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-306": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-307": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-308": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-309": {
+     "src": 9,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-310": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-327": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-328": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-329": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-339": {
+     "src": 8,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-384": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 9
+    },
+    "F-NEW-387": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 9
+    },
+    "F-NEW-403": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-442b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-453": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-454c": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-471": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-NEW-573": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-574": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-575": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-576": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-577": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-578": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-579": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-580": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-584": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-585": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-586": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-587": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-588": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-589": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-590": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-591": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-592": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-595": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-596": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-598": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-601": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-602": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-603": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-604": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-621": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-622": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-623": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-624": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-625": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-626": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-627": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-628a": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-628b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-628c": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-629": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-630": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C3",
+   "issue": 557,
+   "title": "A24 \u00b7 S188 \u2014 tictactoe_3 FULL EXECUTION (first new app to SUCCESS, rc=0): eleven generic laws from the gdx StringBuilder char[] wall to the JNI primit",
+   "state": "open",
+   "created_at": "2026-11-06T20:51:34Z",
+   "updated_at": "2026-11-08T16:19:48Z",
+   "last_comment_at": "2026-11-08T16:19:48Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 15,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-569",
+    "F-C4-581",
+    "F-C4-587",
+    "F-C4-594",
+    "F-C8-149",
+    "F-C8-180",
+    "F-NEW-225c",
+    "F-NEW-233",
+    "F-NEW-358",
+    "F-NEW-388",
+    "F-NEW-5",
+    "F-NEW-503",
+    "F-NEW-504",
+    "F-NEW-505",
+    "F-NEW-576",
+    "F-NEW-579",
+    "F-NEW-580",
+    "F-NEW-580b",
+    "F-NEW-581",
+    "F-NEW-582",
+    "F-NEW-582b",
+    "F-NEW-583",
+    "F-NEW-584",
+    "F-NEW-585",
+    "F-NEW-586",
+    "F-NEW-587",
+    "F-NEW-588",
+    "F-NEW-589",
+    "F-NEW-590",
+    "F-NEW-594",
+    "F-NEW-606",
+    "F-NEW-607",
+    "F-NEW-608",
+    "F-NEW-608b",
+    "F-NEW-609",
+    "F-NEW-609b",
+    "F-NEW-610"
+   ],
+   "law_mainline_presence": {
+    "F-C4-569": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-587": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-C4-594": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-C8-149": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C8-180": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-225c": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-233": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 199
+    },
+    "F-NEW-358": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-388": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-5": {
+     "src": 15,
+     "worklog": 1,
+     "evidence": 42
+    },
+    "F-NEW-503": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-504": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-505": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-576": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-579": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-580": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-580b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-582b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-583": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-584": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-585": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-586": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-587": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-588": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-589": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-590": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-594": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-606": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-607": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-608": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-608b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-609": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-609b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-610": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 558,
+   "title": "[W14][Coder-4] F-C4-613 unified <init> ARITY CLASSIFIER (sunpiano 576,907 px restored with ALL laws on \u2014 the S186h-ARITY/F-C4-610 interplay root-cause",
+   "state": "open",
+   "created_at": "2026-11-06T21:12:29Z",
+   "updated_at": "2026-11-06T21:12:44Z",
+   "last_comment_at": "2026-11-06T21:12:44Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 2,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-575",
+    "F-C4-582",
+    "F-C4-590",
+    "F-C4-596",
+    "F-C4-597",
+    "F-C4-598",
+    "F-C4-599",
+    "F-C4-600",
+    "F-C4-601",
+    "F-C4-602",
+    "F-C4-603",
+    "F-C4-604",
+    "F-C4-605",
+    "F-C4-606",
+    "F-C4-607",
+    "F-C4-608",
+    "F-C4-609",
+    "F-C4-610",
+    "F-C4-612",
+    "F-C4-613",
+    "F-C4-614",
+    "F-C4-615",
+    "F-C4-615b",
+    "F-C4-615c",
+    "F-NEW-188b",
+    "F-NEW-188c",
+    "F-NEW-200",
+    "F-NEW-233",
+    "F-NEW-236d",
+    "F-NEW-268e",
+    "F-NEW-304",
+    "F-NEW-339",
+    "F-NEW-396",
+    "F-NEW-454",
+    "F-NEW-572"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-575": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-596": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-597": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-598": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-599": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-600": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-601": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-602": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-603": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-604": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-605": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-606": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-607": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-608": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-609": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-610": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-612": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-613": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-614": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-615": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-615b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-615c": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-188b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-188c": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-200": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 277
+    },
+    "F-NEW-233": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 199
+    },
+    "F-NEW-236d": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-268e": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-304": {
+     "src": 6,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-339": {
+     "src": 8,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-396": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-454": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-572": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "GOV",
+   "issue": 559,
+   "title": "[S188 W2] Route map + per-app requirements: which alley each title takes, what each needs",
+   "state": "open",
+   "created_at": "2026-11-06T21:29:02Z",
+   "updated_at": "2026-11-07T19:38:58Z",
+   "last_comment_at": "2026-11-07T19:38:58Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 17,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-569",
+    "F-C4-590",
+    "F-C4-616",
+    "F-C4-617",
+    "F-C4-618",
+    "F-C4-619",
+    "F-C4-620",
+    "F-NEW-175",
+    "F-NEW-188d",
+    "F-NEW-188e",
+    "F-NEW-197",
+    "F-NEW-309",
+    "F-NEW-327",
+    "F-NEW-339",
+    "F-NEW-383",
+    "F-NEW-384",
+    "F-NEW-387",
+    "F-NEW-491",
+    "F-NEW-566",
+    "F-NEW-573",
+    "F-NEW-574",
+    "F-NEW-576",
+    "F-NEW-577",
+    "F-NEW-578",
+    "F-NEW-579",
+    "F-NEW-580",
+    "F-NEW-581",
+    "F-NEW-582",
+    "F-NEW-583",
+    "F-NEW-584",
+    "F-NEW-585"
+   ],
+   "law_mainline_presence": {
+    "F-C4-569": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-616": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-617": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-618": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-619": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-620": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-175": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 3
+    },
+    "F-NEW-188d": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-188e": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-197": {
+     "src": 8,
+     "worklog": 1,
+     "evidence": 10
+    },
+    "F-NEW-309": {
+     "src": 9,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-327": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-339": {
+     "src": 8,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-383": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-384": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 9
+    },
+    "F-NEW-387": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 9
+    },
+    "F-NEW-491": {
+     "src": 4,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-566": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-573": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-574": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-576": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-577": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-578": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-579": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-580": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-581": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-583": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-584": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-585": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C3",
+   "issue": 560,
+   "title": "S157 [A25+A26] Coder 3 \u2014 androguard-driven debug wave: headingcalculator COMPLETE gameplay (TH=343 GS=95 exact, deterministic x3) + chessclock ticking",
+   "state": "open",
+   "created_at": "2026-11-07T04:17:07Z",
+   "updated_at": "2026-11-07T14:47:21Z",
+   "last_comment_at": "2026-11-07T14:47:21Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 2,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-NEW-579",
+    "F-NEW-588",
+    "F-NEW-601"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-579": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-588": {
+     "src": 0,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-601": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C3",
+   "issue": 561,
+   "title": "S191 [A27] Coder 3 \u2014 androguard-driven: gmdice COMPLETE gameplay (ListActivity/ArrayAdapter law stack; 3x byte-identical; details dialog pixel-verifie",
+   "state": "open",
+   "created_at": "2026-11-07T09:07:53Z",
+   "updated_at": "2026-11-07T15:11:24Z",
+   "last_comment_at": "2026-11-07T15:11:24Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 3,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-NEW-432",
+    "F-NEW-515",
+    "F-NEW-601",
+    "F-NEW-602",
+    "F-NEW-603",
+    "F-NEW-604",
+    "F-NEW-605"
+   ],
+   "law_mainline_presence": {
+    "F-NEW-432": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-515": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-601": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-602": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 6
+    },
+    "F-NEW-603": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-604": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-605": {
+     "src": 5,
+     "worklog": 1,
+     "evidence": 6
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 562,
+   "title": "[W15][Coder-4] THREE new laws + the W11-14 stack RE-LANDED on current main (d3a8d0e): sunpiano REAL_APP_CONTENT restored af001924 x2, the 3-app mid-li",
+   "state": "open",
+   "created_at": "2026-11-07T14:49:51Z",
+   "updated_at": "2026-11-07T14:50:17Z",
+   "last_comment_at": "2026-11-07T14:50:17Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 4,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-575",
+    "F-C4-582",
+    "F-C4-590",
+    "F-C4-596",
+    "F-C4-597",
+    "F-C4-598",
+    "F-C4-599",
+    "F-C4-600",
+    "F-C4-601",
+    "F-C4-602",
+    "F-C4-603",
+    "F-C4-604",
+    "F-C4-605",
+    "F-C4-606",
+    "F-C4-607",
+    "F-C4-608",
+    "F-C4-609",
+    "F-C4-610",
+    "F-C4-612",
+    "F-C4-613",
+    "F-C4-614",
+    "F-C4-615",
+    "F-C4-615b",
+    "F-C4-615c",
+    "F-C4-616",
+    "F-C4-617",
+    "F-C4-618",
+    "F-NEW-188",
+    "F-NEW-188b",
+    "F-NEW-188c",
+    "F-NEW-197",
+    "F-NEW-200",
+    "F-NEW-233",
+    "F-NEW-236d",
+    "F-NEW-249",
+    "F-NEW-268e",
+    "F-NEW-298",
+    "F-NEW-304",
+    "F-NEW-309",
+    "F-NEW-327",
+    "F-NEW-339",
+    "F-NEW-396",
+    "F-NEW-454",
+    "F-NEW-572"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-575": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-582": {
+     "src": 1,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-596": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-597": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-598": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-599": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-600": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-601": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-602": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-603": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-604": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-605": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-606": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-607": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-608": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-609": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-610": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-612": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-613": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-614": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-615": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-615b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-615c": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-616": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-617": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-618": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-188": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-188b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-188c": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 4
+    },
+    "F-NEW-197": {
+     "src": 8,
+     "worklog": 1,
+     "evidence": 10
+    },
+    "F-NEW-200": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 277
+    },
+    "F-NEW-233": {
+     "src": 3,
+     "worklog": 1,
+     "evidence": 199
+    },
+    "F-NEW-236d": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-249": {
+     "src": 2,
+     "worklog": 1,
+     "evidence": 2
+    },
+    "F-NEW-268e": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-NEW-298": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-304": {
+     "src": 6,
+     "worklog": 1,
+     "evidence": 7
+    },
+    "F-NEW-309": {
+     "src": 9,
+     "worklog": 1,
+     "evidence": 5
+    },
+    "F-NEW-327": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-339": {
+     "src": 8,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-396": {
+     "src": 2,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-454": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-NEW-572": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 563,
+   "title": "[W15][Coder-4] FIVE generic laws \u2014 Nextcloud 4 death walls killed at the base layer (Room 2.7 onOpen lifecycle F-C4-616 \u00b7 SQLite error-throw contract ",
+   "state": "open",
+   "created_at": "2026-11-07T18:27:03Z",
+   "updated_at": "2026-11-07T19:12:31Z",
+   "last_comment_at": "2026-11-07T19:12:31Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 4,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-590",
+    "F-C4-616",
+    "F-C4-617",
+    "F-C4-618",
+    "F-C4-619",
+    "F-C4-620",
+    "F-C4-621",
+    "F-NEW-259g",
+    "F-NEW-282b",
+    "F-NEW-507"
+   ],
+   "law_mainline_presence": {
+    "F-C4-590": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-616": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    },
+    "F-C4-617": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-618": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-619": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-620": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-621": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-259g": {
+     "src": 5,
+     "worklog": 0,
+     "evidence": 7
+    },
+    "F-NEW-282b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-507": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 2
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 564,
+   "title": "[W16][Coder-4] SEVEN generic laws \u2014 four 4APP walls fall at the base layer (String.regionMatches okhttp scheme, Matcher.start/end regex-range, ArrayLi",
+   "state": "open",
+   "created_at": "2026-11-07T20:19:06Z",
+   "updated_at": "2026-11-08T16:28:25Z",
+   "last_comment_at": "2026-11-08T16:28:25Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 2,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-C4-564",
+    "F-C4-601",
+    "F-C4-62",
+    "F-C4-622",
+    "F-C4-623",
+    "F-C4-624",
+    "F-C4-625",
+    "F-C4-625b",
+    "F-C4-626",
+    "F-C4-627",
+    "F-C4-628",
+    "F-C4-628b",
+    "F-C4-629",
+    "F-NEW-363"
+   ],
+   "law_mainline_presence": {
+    "F-C4-564": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 6
+    },
+    "F-C4-601": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-62": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-622": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-623": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-624": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-625": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-625b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-626": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-627": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-628": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-628b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-629": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-363": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 5
+    }
+   }
+  },
+  {
+   "coder": "GOV",
+   "issue": 565,
+   "title": "GOVERNANCE \u2014 The Knowledge Transfer Law (K-1..K-7): every issue must be a complete, self-contained, landable transfer \u2014 registered by user directive",
+   "state": "open",
+   "created_at": "2026-11-08T15:41:33Z",
+   "updated_at": "2026-11-08T16:28:26Z",
+   "last_comment_at": "2026-11-08T16:28:26Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 1,
+   "patch_delivery_evidence": false,
+   "law_ids": [
+    "F-C4-62x"
+   ],
+   "law_mainline_presence": {
+    "F-C4-62x": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  },
+  {
+   "coder": "C4",
+   "issue": 566,
+   "title": "[W17][Coder-4] ELEVEN base-layer laws \u2014 CB NavHost + TSK okhttp + NC Conscrypt/provider walls DEAD; the S194-intake recovery (F-C4-619/620/621 re-land",
+   "state": "open",
+   "created_at": "2026-11-08T16:27:35Z",
+   "updated_at": "2026-11-08T16:29:10Z",
+   "last_comment_at": "2026-11-08T16:29:10Z",
+   "last_comment_user": "Sh-TB",
+   "comments_fetched": 6,
+   "patch_delivery_evidence": true,
+   "law_ids": [
+    "F-C4-601",
+    "F-C4-602",
+    "F-C4-619",
+    "F-C4-620",
+    "F-C4-621",
+    "F-C4-622",
+    "F-C4-622b",
+    "F-C4-622c",
+    "F-C4-622d",
+    "F-C4-623",
+    "F-C4-624",
+    "F-C4-625",
+    "F-C4-625b",
+    "F-C4-626",
+    "F-C4-627",
+    "F-C4-628",
+    "F-C4-628b",
+    "F-C4-629",
+    "F-C4-62x",
+    "F-C4-631",
+    "F-C4-632",
+    "F-NEW-236d",
+    "F-NEW-282b",
+    "F-NEW-358"
+   ],
+   "law_mainline_presence": {
+    "F-C4-601": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-602": {
+     "src": 3,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-619": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-620": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-621": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-622": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-622b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-622c": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-622d": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 2
+    },
+    "F-C4-623": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-624": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-625": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-625b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-626": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-627": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-628": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-628b": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-629": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-62x": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-631": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-C4-632": {
+     "src": 0,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-236d": {
+     "src": 4,
+     "worklog": 0,
+     "evidence": 3
+    },
+    "F-NEW-282b": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    },
+    "F-NEW-358": {
+     "src": 1,
+     "worklog": 0,
+     "evidence": 4
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -419,6 +419,14 @@ static const miniandroid::dalvik::KvPair kFrameworkViews[] = {
+     {"Landroid/widget/Space;", "Landroid/view/View;"},
+     {"Landroid/view/TextureView;", "Landroid/view/View;"},
+     {"Landroid/view/SurfaceView;", "Landroid/view/View;"},
++    // F-NEW-606 (S197): AOSP GLSurfaceView.java L163 — `public class
++    // GLSurfaceView extends SurfaceView` (verified live 2026-11-08,
++    // android.googlesource.com + aosp-mirror). Without this edge the
++    // GLSurfaceView20 -> GLSurfaceView -> (dead end) instance-of View
++    // walk failed inside AndroidInput.<init> and the ctor skipped
++    // setOnTouchListener — the libGDX family was tap-dead (see the full
++    // law comment in framework/view_ancestry.h).
++    {"Landroid/opengl/GLSurfaceView;", "Landroid/view/SurfaceView;"},
+     {"Landroid/content/Context;", "Ljava/lang/Object;"},
+     {"Landroid/content/ContextWrapper;", "Landroid/content/Context;"},
+     {"Landroid/app/Activity;", "Landroid/content/ContextWrapper;"},
+diff --git a/miniandroid/src/framework/view_ancestry.h b/miniandroid/src/framework/view_ancestry.h
+--- a/miniandroid/src/framework/view_ancestry.h
++++ b/miniandroid/src/framework/view_ancestry.h
+@@ -118,6 +118,31 @@ framework_direct_superclass() {
+         {"Landroid/widget/AbsListView;", "Landroid/widget/AdapterView;"},
+         {"Landroid/widget/Spinner;", "Landroid/widget/AbsSpinner;"},
+         {"Landroid/widget/AbsSpinner;", "Landroid/widget/AdapterView;"},
++        // ── F-NEW-606 (S197, Coder 3): GL VIEW FAMILY — AOSP frameworks/base
++        // opengl/java/android/opengl/GLSurfaceView.java L163 (verified live
++        // against android.googlesource.com AND aosp-mirror master,
++        // 2026-11-08): `public class GLSurfaceView extends SurfaceView
++        // implements SurfaceHolder.Callback2`. The extends edge was
++        // MISSING from this table, so for the libGDX view family
++        // (GLSurfaceView20 extends GLSurfaceView — a DEX class whose
++        // chain immediately exits app code into the framework) the
++        // instance-of/check-cast walk GLSurfaceView20 -> GLSurfaceView
++        // hit a dead end and answered FALSE against Landroid/view/View;.
++        // Live face (tictactoe_3 vc3, S197 tap-to-play decode): inside
++        // AndroidInput.<init> the guard `instance-of v7,
++        // Landroid/view/View;` failed -> the ctor branch SKIPPED
++        // setOnTouchListener/setOnKeyListener/requestFocus ->
++        // GLSurfaceView20's ViewNode kept touch_listener_id=0 ->
++        // TouchDispatcher::view_touchable answered false (no DEX
++        // onTouchEvent/dispatchTouchEvent override either) -> every F117
++        // scripted tap hit-tested target=0 -> the whole LIBGDX tap-to-play
++        // family was tap-dead (bouncy was NOT affected: its GLFieldView
++        // overrides onTouchEvent in app DEX, so the S122 arm covered it).
++        // With the edge, the chain resolves GLSurfaceView20 -> GLSurfaceView
++        // -> SurfaceView -> View (SurfaceView edge already seeded), the
++        // ctor registers AndroidInput as the view's OnTouchListener
++        // (F-110e), and the tap dispatches into DEX AndroidInput.onTouch.
++        {"Landroid/opengl/GLSurfaceView;", "Landroid/view/SurfaceView;"},
+         // ── F-NEW-225c (user campaign §B/§I companion): JDK COLLECTION
+         // HIERARCHY (OpenJDK/libcore source — the canonical direct
+         // superclass of every core container). The hierarchy walk and the

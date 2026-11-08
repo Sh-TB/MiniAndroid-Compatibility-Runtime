@@ -1,0 +1,10 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.emmanuelmess.tictactoe/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libgdx-box2d.so", "size": 268496},
+    {"entry": "lib/x86_64/libgdx-freetype.so", "size": 870496},
+    {"entry": "lib/x86_64/libgdx.so", "size": 260696}
+  ],
+  "count": 3
+}

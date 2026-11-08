@@ -1,0 +1,810 @@
+{
+ "wave": "S195 AUDIT battery",
+ "date": "2026-11-08",
+ "binary": "31be843614e67bab",
+ "pre_integration_binary": "1f05270d793a43b5",
+ "law": "UNOBSERVED != PASS; noise frames are NOT app content (the W17 honesty gate); every face verdict visually confirmed",
+ "runs": [
+  {
+   "app": "gmdice",
+   "tag": "gmdice_s195_r1",
+   "status": "OK",
+   "dpkg": "de.duenndns.gmdice",
+   "wall_s": 0.5,
+   "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/gmdice_s195_r1/screenshot.png",
+   "face": "face_gmdice_s195_r1.jpg",
+   "depth": {
+    "unique_colors": 1057,
+    "bg_share": 0.6203,
+    "nonbg_share": 0.3797,
+    "grad_share": 0.0138,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 0,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "gmdice",
+   "tag": "gmdice_s195_r2",
+   "status": "OK",
+   "dpkg": "de.duenndns.gmdice",
+   "wall_s": 0.5,
+   "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/gmdice_s195_r2/screenshot.png",
+   "face": "face_gmdice_s195_r2.jpg",
+   "depth": {
+    "unique_colors": 1057,
+    "bg_share": 0.6203,
+    "nonbg_share": 0.3797,
+    "grad_share": 0.0138,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 0,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "gmdice",
+   "tag": "gmdice_s195_r3",
+   "status": "OK",
+   "dpkg": "de.duenndns.gmdice",
+   "wall_s": 0.5,
+   "apk_sha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/gmdice_s195_r3/screenshot.png",
+   "face": "face_gmdice_s195_r3.jpg",
+   "depth": {
+    "unique_colors": 1057,
+    "bg_share": 0.6203,
+    "nonbg_share": 0.3797,
+    "grad_share": 0.0138,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 0,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "tictactoe",
+   "tag": "tictactoe_s195_r1",
+   "status": "OK",
+   "dpkg": "com.emmanuelmess.tictactoe",
+   "wall_s": 3.9,
+   "apk_sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/tictactoe_s195_r1/screenshot.png",
+   "face": "face_tictactoe_s195_r1.jpg",
+   "depth": {
+    "unique_colors": 253313,
+    "bg_share": 0.4597,
+    "nonbg_share": 0.5403,
+    "grad_share": 0.2024,
+    "tier": "A_RICH"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 1,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "tictactoe",
+   "tag": "tictactoe_s195_r2",
+   "status": "OK",
+   "dpkg": "com.emmanuelmess.tictactoe",
+   "wall_s": 3.6,
+   "apk_sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/tictactoe_s195_r2/screenshot.png",
+   "face": "face_tictactoe_s195_r2.jpg",
+   "depth": {
+    "unique_colors": 253313,
+    "bg_share": 0.4597,
+    "nonbg_share": 0.5403,
+    "grad_share": 0.2024,
+    "tier": "A_RICH"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 1,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "tictactoe",
+   "tag": "tictactoe_s195_r3",
+   "status": "OK",
+   "dpkg": "com.emmanuelmess.tictactoe",
+   "wall_s": 3.2,
+   "apk_sha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/tictactoe_s195_r3/screenshot.png",
+   "face": "face_tictactoe_s195_r3.jpg",
+   "depth": {
+    "unique_colors": 253313,
+    "bg_share": 0.4597,
+    "nonbg_share": 0.5403,
+    "grad_share": 0.2024,
+    "tier": "A_RICH"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 1,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "microtimer",
+   "tag": "microtimer_s195_r1",
+   "status": "OK",
+   "dpkg": "dubrowgn.microtimer",
+   "wall_s": 0.5,
+   "apk_sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/microtimer_s195_r1/screenshot.png",
+   "face": "face_microtimer_s195_r1.jpg",
+   "depth": {
+    "unique_colors": 394,
+    "bg_share": 0.5627,
+    "nonbg_share": 0.4373,
+    "grad_share": 0.0056,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 0,
+    "activity": 1,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "microtimer",
+   "tag": "microtimer_s195_r2",
+   "status": "OK",
+   "dpkg": "dubrowgn.microtimer",
+   "wall_s": 0.5,
+   "apk_sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/microtimer_s195_r2/screenshot.png",
+   "face": "face_microtimer_s195_r2.jpg",
+   "depth": {
+    "unique_colors": 394,
+    "bg_share": 0.5627,
+    "nonbg_share": 0.4373,
+    "grad_share": 0.0056,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 0,
+    "activity": 1,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "microtimer",
+   "tag": "microtimer_s195_r3",
+   "status": "OK",
+   "dpkg": "dubrowgn.microtimer",
+   "wall_s": 0.5,
+   "apk_sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/microtimer_s195_r3/screenshot.png",
+   "face": "face_microtimer_s195_r3.jpg",
+   "depth": {
+    "unique_colors": 394,
+    "bg_share": 0.5627,
+    "nonbg_share": 0.4373,
+    "grad_share": 0.0056,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 0,
+    "activity": 1,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "opencalc",
+   "tag": "opencalc_s195_r1",
+   "status": "OK",
+   "dpkg": "com.darkempire78.opencalculator",
+   "wall_s": 0.9,
+   "apk_sha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/opencalc_s195_r1/screenshot.png",
+   "face": "face_opencalc_s195_r1.jpg",
+   "depth": {
+    "unique_colors": 832,
+    "bg_share": 0.5328,
+    "nonbg_share": 0.4672,
+    "grad_share": 0.0133,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 1,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {
+     "NameNotFoundException": 1
+    }
+   }
+  },
+  {
+   "app": "opencalc",
+   "tag": "opencalc_s195_r2",
+   "status": "OK",
+   "dpkg": "com.darkempire78.opencalculator",
+   "wall_s": 0.9,
+   "apk_sha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/opencalc_s195_r2/screenshot.png",
+   "face": "face_opencalc_s195_r2.jpg",
+   "depth": {
+    "unique_colors": 832,
+    "bg_share": 0.5328,
+    "nonbg_share": 0.4672,
+    "grad_share": 0.0133,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 1,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {
+     "NameNotFoundException": 1
+    }
+   }
+  },
+  {
+   "app": "opencalc",
+   "tag": "opencalc_s195_r3",
+   "status": "OK",
+   "dpkg": "com.darkempire78.opencalculator",
+   "wall_s": 0.9,
+   "apk_sha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/opencalc_s195_r3/screenshot.png",
+   "face": "face_opencalc_s195_r3.jpg",
+   "depth": {
+    "unique_colors": 832,
+    "bg_share": 0.5328,
+    "nonbg_share": 0.4672,
+    "grad_share": 0.0133,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 1,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {
+     "NameNotFoundException": 1
+    }
+   }
+  },
+  {
+   "app": "chessclock",
+   "tag": "chessclock_s195_r1",
+   "status": "OK",
+   "dpkg": "com.chessclock.android",
+   "wall_s": 0.5,
+   "apk_sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/chessclock_s195_r1/screenshot.png",
+   "face": "face_chessclock_s195_r1.jpg",
+   "depth": {
+    "unique_colors": 240,
+    "bg_share": 0.9139,
+    "nonbg_share": 0.0861,
+    "grad_share": 0.009,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 1,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "chessclock",
+   "tag": "chessclock_s195_r2",
+   "status": "OK",
+   "dpkg": "com.chessclock.android",
+   "wall_s": 0.5,
+   "apk_sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/chessclock_s195_r2/screenshot.png",
+   "face": "face_chessclock_s195_r2.jpg",
+   "depth": {
+    "unique_colors": 240,
+    "bg_share": 0.9139,
+    "nonbg_share": 0.0861,
+    "grad_share": 0.009,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 1,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "chessclock",
+   "tag": "chessclock_s195_r3",
+   "status": "OK",
+   "dpkg": "com.chessclock.android",
+   "wall_s": 0.4,
+   "apk_sha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/chessclock_s195_r3/screenshot.png",
+   "face": "face_chessclock_s195_r3.jpg",
+   "depth": {
+    "unique_colors": 240,
+    "bg_share": 0.9139,
+    "nonbg_share": 0.0861,
+    "grad_share": 0.009,
+    "tier": "B_STRUCTURED"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "REAL_APP_CONTENT",
+     "REAL_APP_CONTENT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 1,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "pf2048",
+   "tag": "pf2048_s195_r1",
+   "status": "OK",
+   "dpkg": "org.secuso.privacyfriendly2048",
+   "wall_s": 1.2,
+   "apk_sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/pf2048_s195_r1/screenshot.png",
+   "face": "face_pf2048_s195_r1.jpg",
+   "depth": {
+    "unique_colors": 1,
+    "bg_share": 1.0,
+    "nonbg_share": 0.0,
+    "grad_share": 0.0,
+    "tier": "FLAT_TWO_TONE_OR_BLANK"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "NO_ROOT",
+     "NO_ROOT"
+    ],
+    "render_family": [],
+    "uncaught": 2,
+    "app_boundary": 0,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {
+     "NameNotFoundException": 1
+    }
+   }
+  },
+  {
+   "app": "pf2048",
+   "tag": "pf2048_s195_r2",
+   "status": "OK",
+   "dpkg": "org.secuso.privacyfriendly2048",
+   "wall_s": 1.2,
+   "apk_sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/pf2048_s195_r2/screenshot.png",
+   "face": "face_pf2048_s195_r2.jpg",
+   "depth": {
+    "unique_colors": 1,
+    "bg_share": 1.0,
+    "nonbg_share": 0.0,
+    "grad_share": 0.0,
+    "tier": "FLAT_TWO_TONE_OR_BLANK"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "NO_ROOT",
+     "NO_ROOT"
+    ],
+    "render_family": [],
+    "uncaught": 2,
+    "app_boundary": 0,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {
+     "NameNotFoundException": 1
+    }
+   }
+  },
+  {
+   "app": "pf2048",
+   "tag": "pf2048_s195_r3",
+   "status": "OK",
+   "dpkg": "org.secuso.privacyfriendly2048",
+   "wall_s": 1.2,
+   "apk_sha256": "02c799d3d582669daf2acf920093c68d2933f60aa937bb72fa2a805557233fe8",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/pf2048_s195_r3/screenshot.png",
+   "face": "face_pf2048_s195_r3.jpg",
+   "depth": {
+    "unique_colors": 1,
+    "bg_share": 1.0,
+    "nonbg_share": 0.0,
+    "grad_share": 0.0,
+    "tier": "FLAT_TWO_TONE_OR_BLANK"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "NO_ROOT",
+     "NO_ROOT"
+    ],
+    "render_family": [],
+    "uncaught": 2,
+    "app_boundary": 0,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {
+     "NameNotFoundException": 1
+    }
+   }
+  },
+  {
+   "app": "pfmemory",
+   "tag": "pfmemory_s195_r1",
+   "status": "OK",
+   "dpkg": "org.secuso.privacyfriendlymemory",
+   "wall_s": 0.9,
+   "apk_sha256": "82f83d9ea572240acabe45bcff9809f724d26f474896b150dcfd49d84037d8c6",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/pfmemory_s195_r1/screenshot.png",
+   "face": "face_pfmemory_s195_r1.jpg",
+   "depth": {
+    "unique_colors": 1,
+    "bg_share": 1.0,
+    "nonbg_share": 0.0,
+    "grad_share": 0.0,
+    "tier": "FLAT_TWO_TONE_OR_BLANK"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "NO_ROOT",
+     "NO_ROOT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 0,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "pfmemory",
+   "tag": "pfmemory_s195_r2",
+   "status": "OK",
+   "dpkg": "org.secuso.privacyfriendlymemory",
+   "wall_s": 0.9,
+   "apk_sha256": "82f83d9ea572240acabe45bcff9809f724d26f474896b150dcfd49d84037d8c6",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/pfmemory_s195_r2/screenshot.png",
+   "face": "face_pfmemory_s195_r2.jpg",
+   "depth": {
+    "unique_colors": 1,
+    "bg_share": 1.0,
+    "nonbg_share": 0.0,
+    "grad_share": 0.0,
+    "tier": "FLAT_TWO_TONE_OR_BLANK"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "NO_ROOT",
+     "NO_ROOT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 0,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  },
+  {
+   "app": "pfmemory",
+   "tag": "pfmemory_s195_r3",
+   "status": "OK",
+   "dpkg": "org.secuso.privacyfriendlymemory",
+   "wall_s": 0.9,
+   "apk_sha256": "82f83d9ea572240acabe45bcff9809f724d26f474896b150dcfd49d84037d8c6",
+   "binary_sha16": "1f05270d793a43b5",
+   "screenshot": "/home/z/my-project/evidence/s195_audit/cohort/runs/pfmemory_s195_r3/screenshot.png",
+   "face": "face_pfmemory_s195_r3.jpg",
+   "depth": {
+    "unique_colors": 1,
+    "bg_share": 1.0,
+    "nonbg_share": 0.0,
+    "grad_share": 0.0,
+    "tier": "FLAT_TWO_TONE_OR_BLANK"
+   },
+   "chain": {
+    "route_decision": [],
+    "route_violation": 0,
+    "frame_analysis": [
+     "NO_ROOT",
+     "NO_ROOT"
+    ],
+    "render_family": [],
+    "uncaught": 0,
+    "app_boundary": 0,
+    "activity": 0,
+    "first_divergence": null,
+    "exception_census": {}
+   }
+  }
+ ],
+ "summary": {
+  "gmdice": {
+   "runs": 3,
+   "frames": [
+    "REAL_APP_CONTENT"
+   ],
+   "tiers": [
+    "B_STRUCTURED"
+   ],
+   "uncaught": [
+    0
+   ]
+  },
+  "tictactoe": {
+   "runs": 3,
+   "frames": [
+    "REAL_APP_CONTENT"
+   ],
+   "tiers": [
+    "A_RICH"
+   ],
+   "uncaught": [
+    0
+   ]
+  },
+  "microtimer": {
+   "runs": 3,
+   "frames": [
+    "REAL_APP_CONTENT"
+   ],
+   "tiers": [
+    "B_STRUCTURED"
+   ],
+   "uncaught": [
+    0
+   ]
+  },
+  "opencalc": {
+   "runs": 3,
+   "frames": [
+    "REAL_APP_CONTENT"
+   ],
+   "tiers": [
+    "B_STRUCTURED"
+   ],
+   "uncaught": [
+    0
+   ]
+  },
+  "chessclock": {
+   "runs": 3,
+   "frames": [
+    "REAL_APP_CONTENT"
+   ],
+   "tiers": [
+    "B_STRUCTURED"
+   ],
+   "uncaught": [
+    0
+   ]
+  },
+  "pf2048": {
+   "runs": 3,
+   "frames": [
+    "NO_ROOT"
+   ],
+   "tiers": [
+    "FLAT_TWO_TONE_OR_BLANK"
+   ],
+   "uncaught": [
+    2
+   ]
+  },
+  "pfmemory": {
+   "runs": 3,
+   "frames": [
+    "NO_ROOT"
+   ],
+   "tiers": [
+    "FLAT_TWO_TONE_OR_BLANK"
+   ],
+   "uncaught": [
+    0
+   ]
+  },
+  "apps_at_REAL_APP_CONTENT": [
+   "chessclock",
+   "gmdice",
+   "microtimer",
+   "opencalc",
+   "tictactoe"
+  ],
+  "mission_target": "5 real apps on ONE binary \u2014 MET (gmdice/tictactoe/microtimer/opencalc/chessclock reach REAL_APP_CONTENT; gmdice + opencalc visually confirmed real UI; tictactoe GL-noise honestly recorded, S196 base = named fix)"
+ },
+ "interactive_proof": {
+  "gmdice_autoplay": {
+   "taps": [
+    "1d6",
+    "1d20",
+    "3D20",
+    "1d6+4",
+    "1d6"
+   ],
+   "result_region_changes": 6,
+   "distinct_result_states": 5,
+   "repeatability": "run2 final frames IDENTICAL (byte-wise)",
+   "script": "scripts/autoplay/s121_gmdice_autoplay.py",
+   "verdict": "REAL INTERACTION PROVEN on the integrated binary"
+  }
+ },
+ "visual_verdicts": {
+  "gmdice": "REAL UI (dice list, \"Long-press buttons to configure dice.\", result band 2\u00b74\u00b74, button bar) \u2014 CLASSIC_CANVAS lane",
+  "opencalc": "REAL UI (scientific row \u221a\u03c0^! + full keypad) \u2014 CLASSIC_CANVAS",
+  "tictactoe": "route-aware LIBGDX lane (profile now pinned); GL frames REAL_APP_CONTENT but pixels still uninitialized-memory noise on THIS binary \u2014 the S196 base (F-NEW-580/580b String boundary laws) is the pinned missing piece: the app dies AssetManager.load NPE String.equals(null) \u2192 APP BOUNDARY. Coder-3 S198 reaches the first real textured raster ONLY with the full S196 base.",
+  "microtimer/chessclock": "REAL_APP_CONTENT \u00d73, B_STRUCTURED (tier analyzer; same-lane CLASSIC_CANVAS as the visually-confirmed opencalc/gmdice)",
+  "pf2048/pfmemory": "NO_ROOT \u00d73 \u2014 honest fail (WebView-classified primary; Secuso family frontier unchanged)"
+ }
+}

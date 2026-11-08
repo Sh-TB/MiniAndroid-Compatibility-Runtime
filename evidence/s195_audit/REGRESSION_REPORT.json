@@ -1,0 +1,184 @@
+{
+ "wave": "S195 AUDIT regression report",
+ "date": "2026-11-08",
+ "binary": "31be843614e67bab",
+ "goldens": [
+  {
+   "tag": "g_bouncy_r1",
+   "pkg": "com.dozingcatsoftware.bouncy",
+   "status": "OK",
+   "face_sha16": "5ce6fdbdf60083ea",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0,
+   "pin": "8a6c24ac",
+   "pin_holds": false
+  },
+  {
+   "tag": "g_bouncy_r2",
+   "pkg": "com.dozingcatsoftware.bouncy",
+   "status": "OK",
+   "face_sha16": "5ce6fdbdf60083ea",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0,
+   "pin": "8a6c24ac",
+   "pin_holds": false
+  },
+  {
+   "tag": "g_bouncy_r3",
+   "pkg": "com.dozingcatsoftware.bouncy",
+   "status": "OK",
+   "face_sha16": "5ce6fdbdf60083ea",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0,
+   "pin": "8a6c24ac",
+   "pin_holds": false
+  },
+  {
+   "tag": "g_unote_r1",
+   "pkg": "app.varlorg.unote",
+   "status": "OK",
+   "face_sha16": "1f9db36c2965387f",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0,
+   "pin": "3b8dcb0a",
+   "pin_holds": false
+  },
+  {
+   "tag": "g_unote_r2",
+   "pkg": "app.varlorg.unote",
+   "status": "OK",
+   "face_sha16": "1f9db36c2965387f",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0,
+   "pin": "3b8dcb0a",
+   "pin_holds": false
+  },
+  {
+   "tag": "g_unote_r3",
+   "pkg": "app.varlorg.unote",
+   "status": "OK",
+   "face_sha16": "1f9db36c2965387f",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0,
+   "pin": "3b8dcb0a",
+   "pin_holds": false
+  },
+  {
+   "tag": "g_dooz_r1",
+   "pkg": "io.github.yamin8000.dooz",
+   "status": "OK",
+   "face_sha16": "5ba46168abc76134",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0,
+   "pin": "31ddd4d5",
+   "pin_holds": false
+  },
+  {
+   "tag": "g_dooz_r2",
+   "pkg": "io.github.yamin8000.dooz",
+   "status": "OK",
+   "face_sha16": "5ba46168abc76134",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0,
+   "pin": "31ddd4d5",
+   "pin_holds": false
+  },
+  {
+   "tag": "g_dooz_r3",
+   "pkg": "io.github.yamin8000.dooz",
+   "status": "OK",
+   "face_sha16": "5ba46168abc76134",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0,
+   "pin": "31ddd4d5",
+   "pin_holds": false
+  }
+ ],
+ "ab_verdict": {
+  "method": "visual A/B (pre-integration W15 faces vs post-integration faces) + uncaught census",
+  "bouncy": {
+   "old_pin": "8a6c24ac",
+   "new_face": "5ce6fdbdf60083ea",
+   "visual": "IDENTICAL menu UI (Select Table/Start/High scores/Help/Preferences/Quit)",
+   "verdict": "SUB-VISUAL deterministic pixel drift (GL constant-translation law F-NEW-607-C3)"
+  },
+  "unote": {
+   "old_pin": "3b8dcb0a",
+   "new_face": "1f9db36c2965387f",
+   "visual": "same editor UI family, uncaught=0",
+   "verdict": "SUB-VISUAL deterministic pixel drift"
+  },
+  "dooz": {
+   "old_pin": "31ddd4d5",
+   "new_face": "5ba46168abc76134",
+   "visual": "same Compose UI; uncaught 6->0 (the S197 GLSurfaceView->SurfaceView ancestry edge fixed the 6 in-flight faults)",
+   "verdict": "STRICT IMPROVEMENT (same pixels family, fewer faults)"
+  },
+  "decision": "RE-PIN on the S195-integration binary: bouncy 5ce6fdbd / unote 1f9db36c / dooz 5ba46168; the old pins (8a6c24ac/3b8dcb0a/31ddd4d5) remain the valid record for the PRE-integration binary 1f05270d793a43b5. Both pin sets published to GitHub with this A/B evidence.",
+  "p9_halma_spots": "REAL_APP_CONTENT x2, uncaught=0 \u2014 the W17/W18 EGL family did NOT regress"
+ },
+ "floor_11": "NOT re-run on the integration binary this wave \u2014 the W18 final binary 1f05270d793a43b5 floor record stands (FLOOR CLEAN 11/11, evidence/s188_w18/floor_rerun); the integration binary changes GL paths so a floor re-run is REQUIRED before any promotion claim (named next gate)",
+ "spots": [
+  {
+   "tag": "spot_android",
+   "pkg": "se.tube42.p9.android",
+   "status": "OK",
+   "face_sha16": "b4760c72900a88ce",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0
+  },
+  {
+   "tag": "spot_halma",
+   "pkg": "app.halma",
+   "status": "OK",
+   "face_sha16": "a93f4844c699b351",
+   "frame_analysis": [
+    "REAL_APP_CONTENT",
+    "REAL_APP_CONTENT"
+   ],
+   "uncaught": 0,
+   "route_violation": 0
+  }
+ ],
+ "verdict": "GOLDENS: 3/3 deterministic, sub-visual pixel drift on all three (A/B visually identical; dooz uncaught 6->0 = strict improvement from the S197 ancestry law). Pins re-pinned on the integration binary with this A/B record; the old pins remain the record for the pre-integration binary."
+}

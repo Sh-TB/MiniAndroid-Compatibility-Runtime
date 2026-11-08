@@ -1,0 +1,53 @@
+{
+ "wave": "S195 AUDIT patch reconstruction manifest",
+ "date": "2026-11-08",
+ "source": "GitHub issues fetched updated_at DESC (566 issues; 92 priority issues, 480 comments) \u2014 evidence/s195_audit/issues_raw.json + comments_raw.json",
+ "patches": [
+  {
+   "id": "C3-S196-PORTED",
+   "issue": 557,
+   "source_comments": [
+    "6717466211",
+    "6717466912",
+    "6717467358"
+   ],
+   "file": "evidence/s195_audit/patches/c3_s196_reconstructed.patch",
+   "bytes": 134248,
+   "sha16_computed": "9ee750b21afe89a0",
+   "sha16_published": "9ee750b21afe89a0",
+   "byte_exact": true,
+   "content": "the S196 ported 6-file stack (f582 registry, host-native substitution NOT-EXTRACTED shape, String boundary laws F-NEW-580/580b, dlopen_exec direct-buffer registry)",
+   "integration_state": "PENDING \u2014 9 hunks rejected against the W18 line (dalvik_engine.cpp x5, dlopen_exec.cpp x3, dlopen_exec.h x1); several are SUPERSEDED-OR-OVERLAPPING with the W18 F-NEW-605/608/609/611 family; the genuinely-missing core is the F-NEW-580/580b String-boundary normalization (tictactoe AssetManager.load NPE face) \u2014 named W19 integration work"
+  },
+  {
+   "id": "C3-S197-F606",
+   "issue": 557,
+   "source_comments": [
+    "6719905886"
+   ],
+   "file": "evidence/s195_audit/patches/c3_s197_reconstructed.patch",
+   "bytes": 3734,
+   "sha16_computed": "0ff0dbdf700f4b15",
+   "sha16_published": "0ff0dbdf700f4b15 (part)",
+   "byte_exact": true,
+   "content": "F-NEW-606(C3) GLSurfaceView->SurfaceView ancestry edge (AOSP GLSurfaceView.java L163), 2 files",
+   "integration_state": "INTEGRATED CLEAN (git apply rc=0)"
+  },
+  {
+   "id": "C3-S198-GLES-RASTER",
+   "issue": 557,
+   "source_comments": [
+    "6723924389",
+    "6723924642"
+   ],
+   "file": "evidence/s195_audit/patches/c3_s198_reconstructed.patch",
+   "bytes": 48591,
+   "sha16_computed": "d64ac52606e9a3e8",
+   "sha16_published": "d64ac52606e9a3e8",
+   "byte_exact": true,
+   "content": "the GLES raster stack: pgl_const_map.inc (spec->PGL translation, compile-time-extracted) + pgl_backend + gles20_bridge + SpriteBatch C-shader pair + typed-view position/limit setters (F-NEW-607/608/608b/609/610 C3)",
+   "integration_state": "PARTIAL \u2014 s198a (gles/, 863 lines) INTEGRATED CLEAN; s198b (gl_surface_shadow.cpp marshal fallback + ES1 sinks) PORTED MANUALLY with an adapter over the W18 engine hooks (nativeexec::lookup_direct_buffer \u2014 one shared registry law); s198c (dalvik_engine.cpp typed-view setters, 35 lines) TRUNCATED IN THE PUBLICATION ITSELF (the posted part2/2 ends mid-hunk at line 988; the posted part sha and the full sha both match the truncated text \u2014 protocol defect reported to Coder 3)",
+   "defect_filed": "S198c truncation \u2014 see the GitHub comment on #557"
+  }
+ ]
+}

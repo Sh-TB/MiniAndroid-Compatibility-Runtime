@@ -1,0 +1,87 @@
+--- a/miniandroid/src/framework/gl_surface_shadow.cpp
++++ b/miniandroid/src/framework/gl_surface_shadow.cpp
+@@ -3,6 +3,7 @@
+ #include "gles/pgl_backend.h"
+ #include "gles/gles20_bridge.h"
+ #include "diagnostics/gfx_trace.h"
++#include "jni/dlopen_exec.h"  // F-NEW-608: lookup_direct_buffer
+ 
+ #include <portablegl.h>
+ 
+@@ -158,6 +159,63 @@
+             uint32_t arr = 0;
+             std::string ed;
+             if (!chase_buffer(heap, a.object_id, arr, ed)) {
++                // ── F-NEW-608 (S198): DIRECT-BUFFER FALLBACK law ─────────
++                // Engine-minted direct ByteBuffers carry __bb_direct__
++                // (native addr, INT64) + __bb_direct_cap__ (bytes) — the
++                // F-NEW-582 registry face (allocateDirect /
++                // newDisposableByteBuffer / native-mint paths). Typed views
++                // (asFloatBuffer…) carry __bb_parent__ = the byte receiver
++                // and __bb_pos__ in ELEMENT units (the OPENJDK typed-view
++                // law). Real libGDX hands GL its direct buffers
++                // (Mesh.bind → glVertexAttribPointer; Pixmap pixels →
++                // glTexImage2D) — without this fallback every such call
++                // died "object arg not materializable" (234×/frame in the
++                // tictactoe probe) and nothing rasterized.
++                auto ocls = a.object_class;
++                bool is_buffer = ocls.find("Buffer;") != std::string::npos;
++                uint32_t owner = a.object_id;
++                size_t esz = 1;
++                void* dbuf_addr = nullptr;
++                int32_t dbuf_cap = 0;
++                bool have_direct = is_buffer &&
++                    nativeexec::lookup_direct_buffer(a.object_id, &dbuf_addr,
++                                                     &dbuf_cap);
++                if (!have_direct && is_buffer) {
++                    // typed view: chase __bb_parent__ to the byte receiver
++                    uint32_t par = 0;
++                    if (heap->get_object_ref_field(a.object_id,
++                                                   "__bb_parent__", par) &&
++                        par != 0 &&
++                        nativeexec::lookup_direct_buffer(par, &dbuf_addr,
++                                                         &dbuf_cap)) {
++                        have_direct = true;
++                        owner = par;
++                        static const struct { const char* n; size_t e; }
++                            kViewEsz[] = {
++                            {"FloatBuffer;", 4}, {"IntBuffer;", 4},
++                            {"ShortBuffer;", 2}, {"CharBuffer;", 2},
++                            {"LongBuffer;", 8}, {"DoubleBuffer;", 8},
++                            {"ByteBuffer;", 1},
++                        };
++                        for (const auto& ve : kViewEsz)
++                            if (ocls.find(ve.n) != std::string::npos)
++                                { esz = ve.e; break; }
++                    }
++                }
++                if (have_direct && dbuf_addr) {
++                    // __bb_pos__ semantics (the OPENJDK buffer-algebra law):
++                    // ByteBuffer pos is BYTES; a typed view's pos is in
++                    // ELEMENT units of the view class — always read it from
++                    // the ARG object (the view), never from the parent.
++                    int32_t pos = 0;
++                    heap->get_object_int_field(a.object_id, "__bb_pos__", pos);
++                    if (!(pos >= 0 &&
++                          (int64_t)pos * (int64_t)esz <= dbuf_cap))
++                        pos = 0;  // out-of-bounds position → honest base ptr
++                    m.pa.push_back((void*)(uintptr_t)(
++                        (uint64_t)(uintptr_t)dbuf_addr + (uint64_t)pos * esz));
++                    break;
++                }
+                 m.ok = false;
+                 m.why = "object arg not materializable (o#" +
+                         std::to_string(a.object_id) + " " + a.object_class + ")";
+@@ -617,9 +675,9 @@
+         glViewport(i(0), i(1), i(2), i(3));
+         return CallResult::handled_void();
+     }
+-    if (m == "glEnable") { glEnable(i(0)); return CallResult::handled_void(); }
+-    if (m == "glDisable") { glDisable(i(0)); return CallResult::handled_void(); }
+-    if (m == "glBlendFunc") { glBlendFunc(i(0), i(1)); return CallResult::handled_void(); }
++    if (m == "glEnable")  { glEnable(gles::pgl_from_spec(i(0)));  return CallResult::handled_void(); }   // F-NEW-607
++    if (m == "glDisable") { glDisable(gles::pgl_from_spec(i(0))); return CallResult::handled_void(); }  // F-NEW-607
++    if (m == "glBlendFunc") { glBlendFunc(gles::pgl_from_spec(i(0)), gles::pgl_from_spec(i(1))); return CallResult::handled_void(); }  // F-NEW-607
+     if (m == "glFlush") return CallResult::handled_void();
+     if (m == "glGetError") return CallResult::handled_int(0);
+     if (m == "glGetString") return CallResult::handled_string("PortableGL 0.101 (MiniAndroid software GL)");

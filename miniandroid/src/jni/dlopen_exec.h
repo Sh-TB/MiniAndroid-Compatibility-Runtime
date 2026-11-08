@@ -185,6 +185,12 @@ struct EngineHooks {
 };
 void set_engine_hooks(const EngineHooks& hooks);
 
+// F-NEW-608 (S198, C3): the GLES20 bridge's direct-buffer marshal fallback
+// asks for the {addr,cap} of an engine-minted direct ByteBuffer by oid.
+// Returns false when the oid is not a live direct buffer (the caller falls
+// through to the honest marshal-fail path).
+bool lookup_direct_buffer(uint32_t oid, void** addr, int32_t* cap);
+
 }  // namespace nativeexec
 }  // namespace miniandroid
 

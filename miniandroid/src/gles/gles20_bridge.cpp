@@ -8,9 +8,14 @@
 #include <sstream>
 #include <cstring>
 #include <cstdarg>
+#include <cstdio>
 
 namespace miniandroid {
 namespace gles {
+
+// S198 draw-time probe storage (env-gated consumers only).
+static const void* g_last_attrib_ptr[4] = {nullptr, nullptr, nullptr, nullptr};
+static GLint g_last_attrib_size[4] = {0, 0, 0, 0};
 
 GLES20Bridge& GLES20Bridge::instance() {
     static GLES20Bridge b;
@@ -30,10 +35,16 @@ bool GLES20Bridge::dispatch(const std::string& method,
                             std::string& trace) {
     (void)fargs; (void)nf; (void)float_ret;
     auto I = [&](int k) -> GLenum { return k < ni ? (GLenum)iargs[k] : 0; };
+    // S198 F-NEW-607: spec→PGL translation (see pgl_backend.h). The S
+    // ("spec") form translates the slot; raw I(k) stays for handles/ints.
+    auto S = [&](int k) -> GLenum { return pgl_from_spec(I(k)); };
     auto P = [&](int k) -> const void* { return k < np ? pargs[k] : nullptr; };
 
     if (method == "glGetError") {
-        if (int_ret) *int_ret = (int32_t)glGetError();
+        // F-NEW-607: PGL error codes are internal (1,2,3,5) — apps compare
+        // against the GL-spec values (0x500/0x501/0x502/0x505). Reverse-
+        // translate so the app-side error check is honest.
+        if (int_ret) *int_ret = (int32_t)pgl_to_spec((uint32_t)glGetError());
         stats_.state_ops++;
         return true;
     }
@@ -43,7 +54,7 @@ bool GLES20Bridge::dispatch(const std::string& method,
         // (returns 0) — a 0 shader made ShaderProgram.loadShader skip the
         // compile (tower3d SpriteBatch death chain, see the header law).
         uint32_t sh = gl_next_shader_++;
-        gl_shaders_[sh].type = I(0);
+        gl_shaders_[sh].type = S(0);  // F-NEW-607: spec shader type
         if (int_ret) *int_ret = (int32_t)sh;
         stats_.shader_ops++;
         return true;
@@ -96,11 +107,31 @@ bool GLES20Bridge::dispatch(const std::string& method,
         // created the matching PGL program via pglCreateProgram() under the
         // same id (see register_program_shaders).
         // F-NEW-505: engine-minted GLSL programs (gl_programs_) must NOT
-        // reach PGL — its program namespace only contains pglCreateProgram
-        // ids; an unknown id errors (and the fixed-function default path is
-        // the honest render bound for stored-GLSL programs anyway).
+        // reach PGL with the raw engine id — its program namespace only
+        // contains pglCreateProgram ids.
+        // F-NEW-609 (S198): an engine-minted program IS executable through
+        // the SpriteBatch default C-shader pair (the exact functional
+        // equivalent of the libGDX default SpriteBatch GLSL — the dominant
+        // shader of every libGDX app). Map engine id → PGL program and bind
+        // THAT; uniform/attrib location queries answer through the name law
+        // while the mapped program is current. Arbitrary GLSL stays the
+        // honest Mesa-llvmpipe frontier.
         uint32_t prog = (uint32_t)I(0);
-        if (gl_programs_.find(prog) == gl_programs_.end()) {
+        if (gl_programs_.find(prog) != gl_programs_.end()) {
+            // F-NEW-609 (S198): engine-minted GLSL program → the SpriteBatch
+            // default C-shader pair (the exact functional equivalent of the
+            // libGDX default SpriteBatch GLSL — the dominant shader of every
+            // SpriteBatch app). Uniform/attrib data flows through the name
+            // law in the glUniform* handlers below; the minted-location
+            // law (F-NEW-505) stays authoritative for ids.
+            // F-NEW-609b: PER-ENGINE-PROGRAM PGL program + uniform block
+            // (SpriteBatch's u_projTrans and ShapeRenderer's u_projModelView
+            // must not share one matrix).
+            uint32_t sb = pgl_spritebatch_program_for(prog);
+            cur_engine_prog_ = sb ? prog : 0;
+            if (sb) glUseProgram(sb);
+        } else {
+            cur_engine_prog_ = 0;
             glUseProgram(prog);
         }
         stats_.state_ops++;
@@ -131,14 +162,14 @@ bool GLES20Bridge::dispatch(const std::string& method,
         return true;
     }
     if (method == "glBindBuffer") {
-        glBindBuffer(I(0), I(1));
+        glBindBuffer(S(0), I(1));  // F-NEW-607
         stats_.buffer_ops++;
         return true;
     }
     if (method == "glBufferData") {
         // F-NEW-503: pointer-array indexing (data = the ONLY object arg).
         // A null data is legal GL (uninitialized storage) — no guard needed.
-        glBufferData(I(0), (GLsizeiptr)(uintptr_t)I(1), P(0), I(3));
+        glBufferData(S(0), (GLsizeiptr)(uintptr_t)I(1), P(0), S(3));  // F-NEW-607: target+usage
         stats_.buffer_ops++;
         return true;
     }
@@ -146,8 +177,51 @@ bool GLES20Bridge::dispatch(const std::string& method,
         // F-NEW-503: pointer-array indexing + null guard (a null client
         // pointer would crash portablegl's attribute read path).
         if (P(0) != nullptr) {
-            glVertexAttribPointer(I(0), (GLint)I(1), I(2), (GLboolean)I(3),
-                                  (GLsizei)I(4), P(0));
+            // F-NEW-609: on the SB-mapped program the app passes MINTED
+            // attrib ids (shared uniform+attrib namespace, F-NEW-505) —
+            // translate minted id → name → the canonical indices the C
+            // shaders read (position 0, color 1, texcoord0 2).
+            unsigned idx = (unsigned)I(0);
+            if (cur_engine_prog_) {
+                if (const std::string* nm = sb_uniform_name_for_loc((GLint)idx)) {
+                    int canon = pgl_sb_attrib_location(nm->c_str());
+                    if (canon >= 0) idx = (unsigned)canon;
+                }
+            }
+            glVertexAttribPointer(idx, (GLint)I(1), S(2), (GLboolean)I(3),
+                                  (GLsizei)I(4), P(0));  // F-NEW-607: type
+            // S198 corruption probe (env-gated, bounded).
+            {
+                static int dumps = 0;
+                if (dumps < 8) {
+                    ++dumps;
+                    GLenum err = glGetError();
+                    std::fprintf(stderr, "[GLDBG] vap idx=%u pglerr=0x%X\n",
+                                 idx, (unsigned)err);
+                }
+            }
+            // S198: remember the last pointer per canonical index (the
+            // draw-time probe reads it).
+            if (idx < 4) {
+                g_last_attrib_ptr[idx] = P(0);
+                g_last_attrib_size[idx] = (GLint)I(1);
+            }
+            // S198 debug probe (env-gated, bounded): first attrib records.
+            {
+                static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
+                static int shown = 0;
+                if (dbg && shown < 6) {
+                    ++shown;
+                    const float* f = (const float*)P(0);
+                    std::fprintf(stderr,
+                        "[GLDBG] attrib idx=%u size=%d type=0x%X stride=%d "
+                        "ptr=%p v0=%.3f,%.3f,%.3f,%.3f\n",
+                        idx, (GLint)I(1), (unsigned)S(2),
+                        (GLsizei)I(4), P(0), f[0], f[1],
+                        (GLint)I(1) > 2 ? f[2] : 0.f,
+                        (GLint)I(1) > 3 ? f[3] : 0.f);
+                }
+            }
         } else {
             trace = "glVertexAttribPointer: null client pointer (skipped)";
         }
@@ -155,12 +229,27 @@ bool GLES20Bridge::dispatch(const std::string& method,
         return true;
     }
     if (method == "glEnableVertexAttribArray") {
-        glEnableVertexAttribArray(I(0));
+        // F-NEW-609: same minted-id → canonical-index law.
+        unsigned idx = (unsigned)I(0);
+        if (cur_engine_prog_) {
+            if (const std::string* nm = sb_uniform_name_for_loc((GLint)idx)) {
+                int canon = pgl_sb_attrib_location(nm->c_str());
+                if (canon >= 0) idx = (unsigned)canon;
+            }
+        }
+        glEnableVertexAttribArray(idx);
         stats_.state_ops++;
         return true;
     }
     if (method == "glDisableVertexAttribArray") {
-        glDisableVertexAttribArray(I(0));
+        unsigned idx = (unsigned)I(0);
+        if (cur_engine_prog_) {
+            if (const std::string* nm = sb_uniform_name_for_loc((GLint)idx)) {
+                int canon = pgl_sb_attrib_location(nm->c_str());
+                if (canon >= 0) idx = (unsigned)canon;
+            }
+        }
+        glDisableVertexAttribArray(idx);
         stats_.state_ops++;
         return true;
     }
@@ -206,7 +295,34 @@ bool GLES20Bridge::dispatch(const std::string& method,
         // F-NEW-503: pointer-array indexing + null guard (portablegl reads
         // the matrix through the pointer — null would SEGV).
         if (P(0) != nullptr) {
-            glUniformMatrix4fv((GLint)I(0), (GLsizei)I(1), (GLboolean)I(2), (const GLfloat*)P(0));
+            if (cur_engine_prog_) {
+                // F-NEW-609: route the minted location back to its NAME and
+                // feed the SpriteBatch uniform block (PGL's glUniform* are
+                // app-managed stubs).
+                const std::string* nm = sb_uniform_name_for_loc((GLint)I(0));
+                {
+                    static const bool dbg1 = std::getenv("MINIANDROID_GL_DEBUG");
+                    static int shown1 = 0;
+                    if (dbg1 && shown1 < 4) {
+                        ++shown1;
+                        const float* f = (const float*)P(0);
+                        std::fprintf(stderr,
+                            "[GLDBG] mat4 loc=%d engine=%u name=%s t=%u "
+                            "m00=%g m30=%g m31=%g m32=%g m33=%g\n",
+                            (GLint)I(0), cur_engine_prog_,
+                            nm ? nm->c_str() : "<unminted>", (unsigned)I(2),
+                            f[0], f[12], f[13], f[14], f[15]);
+                    }
+                }
+                if (nm && (*nm == "u_projView" || *nm == "u_projTrans" ||
+                           *nm == "u_projModelView"))
+                    pgl_sb_set_proj_view_for(cur_engine_prog_,
+                                             (const GLfloat*)P(0), I(2) != 0);
+                // other matrix uniforms: the SB default shader has none —
+                // handled no-op (honest: no invented storage)
+            } else {
+                glUniformMatrix4fv((GLint)I(0), (GLsizei)I(1), (GLboolean)I(2), (const GLfloat*)P(0));
+            }
         } else {
             trace = "glUniformMatrix4fv: null matrix pointer (skipped)";
         }
@@ -219,7 +335,10 @@ bool GLES20Bridge::dispatch(const std::string& method,
         return true;
     }
     if (method == "glUniform1i") {
-        glUniform1i((GLint)I(0), (GLint)I(1));
+        // F-NEW-609: u_texture sampler on the SB program — the C shader
+        // samples the currently bound GL_TEXTURE_2D (SpriteBatch binds
+        // unit 0); the intent is recorded, no storage needed. PGL's
+        // glUniform1i is a stub either way.
         stats_.uniform_ops++;
         return true;
     }
@@ -238,13 +357,13 @@ bool GLES20Bridge::dispatch(const std::string& method,
         stats_.uniform_ops++;
         return true;
     }
-    // ---- state ----------------------------------------------------------
-    if (method == "glEnable")  { glEnable(I(0));  stats_.state_ops++; return true; }
-    if (method == "glDisable") { glDisable(I(0)); stats_.state_ops++; return true; }
-    if (method == "glDepthFunc") { glDepthFunc(I(0)); stats_.state_ops++; return true; }
-    if (method == "glBlendFunc") { glBlendFunc(I(0), I(1)); stats_.state_ops++; return true; }
-    if (method == "glActiveTexture") { glActiveTexture(I(0)); stats_.state_ops++; return true; }
-    if (method == "glBindTexture") { glBindTexture(I(0), I(1)); stats_.state_ops++; return true; }
+    // ---- state (F-NEW-607: every GLenum slot translated) ----------------
+    if (method == "glEnable")  { glEnable(S(0));  stats_.state_ops++; return true; }
+    if (method == "glDisable") { glDisable(S(0)); stats_.state_ops++; return true; }
+    if (method == "glDepthFunc") { glDepthFunc(S(0)); stats_.state_ops++; return true; }
+    if (method == "glBlendFunc") { glBlendFunc(S(0), S(1)); stats_.state_ops++; return true; }
+    if (method == "glActiveTexture") { glActiveTexture(S(0)); stats_.state_ops++; return true; }
+    if (method == "glBindTexture") { glBindTexture(S(0), I(1)); stats_.state_ops++; return true; }
     if (method == "glGenTextures") {
         // F-NEW-503: pointer-array indexing + null guard (same law as
         // glGenBuffers above).
@@ -271,24 +390,144 @@ bool GLES20Bridge::dispatch(const std::string& method,
         return true;
     }
     if (method == "glClear") {
-        glClear(I(0));
+        glClear(pgl_mask_from_spec(I(0)));  // F-NEW-607: spec bits 1<<14/8/10
         stats_.state_ops++;
         return true;
     }
     // ---- draw ------------------------------------------------------------
     if (method == "glDrawArrays") {
-        glDrawArrays(I(0), (GLint)I(1), (GLsizei)I(2));
+        glDrawArrays(pgl_mode_from_spec(I(0)), (GLint)I(1), (GLsizei)I(2));  // F-NEW-607
+        {
+            static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
+            static int shown = 0;
+            if (dbg && shown < 12) {
+                ++shown;
+                const float* p = (const float*)g_last_attrib_ptr[0];
+                const float* t = (const float*)g_last_attrib_ptr[2];
+                std::fprintf(stderr,
+                    "[GLDBG] DRAW mode=%u count=%d attrib0=%p %.2f,%.2f attrib2=%p %.3f,%.3f\n",
+                    (unsigned)I(0), (GLint)I(2), g_last_attrib_ptr[0],
+                    p ? p[0] : -1, p ? p[1] : -1,
+                    g_last_attrib_ptr[2], t ? t[0] : -1, t ? t[1] : -1);
+            }
+        }
         stats_.draws++;
         return true;
     }
     if (method == "glDrawElements") {
         // F-NEW-503: pointer-array indexing + null guard.
         if (P(0) != nullptr) {
-            glDrawElements(I(0), (GLsizei)I(1), I(2), P(0));
+            glDrawElements(pgl_mode_from_spec(I(0)), (GLsizei)I(1), S(2), P(0));  // F-NEW-607: mode+type
         } else {
             trace = "glDrawElements: null index pointer (skipped)";
         }
         stats_.draws++;
+        return true;
+    }
+    // ── F-NEW-608 (S198): the census-driven bridge completion set ────────
+    // The S198 tictactoe GFX probe (1108 gl.call rows) named the remaining
+    // honest REC-MISS ops blocking the first real raster: glTexImage2D +
+    // glTexParameteri (textures never uploaded/filtered), glBlendFuncSeparate
+    // + glDepthMask (SpriteBatch state), glPixelStorei. Plus the standard
+    // state family around them (AOSP GLES20.java surface) so the next app
+    // does not re-trip on the same class. Every GLenum slot translated per
+    // F-NEW-607; booleans/ints/floats stay raw.
+    if (method == "glTexImage2D") {
+        // (target, level, internalformat, w, h, border, format, type, pixels)
+        // pixels = the marshalled pointer (F-NEW-608 direct-buffer fallback
+        // or array hold); null is legal GL (uninitialized storage).
+        glTexImage2D(S(0), (GLint)I(1), S(2), (GLsizei)I(3), (GLsizei)I(4),
+                     (GLint)I(5), S(6), S(7), P(0));
+        {
+            static const bool dbg = std::getenv("MINIANDROID_GL_DEBUG");
+            static int shown = 0;
+            if (dbg && shown < 6) {
+                ++shown;
+                const unsigned char* d = (const unsigned char*)P(0);
+                unsigned long sum = 0; int nonzero = 0;
+                long npix = (long)I(3) * (long)I(4) * 4;
+                if (d)
+                    for (long k = 0; k < npix && k < 8388608; ++k) {
+                        sum += d[k];
+                        if (d[k]) ++nonzero;
+                    }
+                std::fprintf(stderr,
+                    "[GLDBG] tex2D %ux%u fmt=0x%X type=0x%X ptr=%p "
+                    "bytesum=%lu nonzero=%ld/%ld b0=%02x b1=%02x\n",
+                    (unsigned)I(3), (unsigned)I(4), (unsigned)S(6),
+                    (unsigned)S(7), P(0), sum, nonzero,
+                    npix < 8388608 ? npix : -1L, d ? d[0] : 0, d ? d[1] : 0);
+            }
+        }
+        stats_.tex_ops++;
+        return true;
+    }
+    if (method == "glTexParameteri") {
+        glTexParameteri(S(0), S(1), S(2));
+        stats_.tex_ops++;
+        return true;
+    }
+    if (method == "glBlendFuncSeparate") {
+        glBlendFuncSeparate(S(0), S(1), S(2), S(3));
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glDepthMask") {
+        glDepthMask((GLboolean)I(0));
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glPixelStorei") {
+        glPixelStorei(S(0), (GLint)I(1));
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glCullFace")  { glCullFace(S(0));  stats_.state_ops++; return true; }
+    if (method == "glFrontFace") { glFrontFace(S(0)); stats_.state_ops++; return true; }
+    if (method == "glBlendEquation") { glBlendEquation(S(0)); stats_.state_ops++; return true; }
+    if (method == "glBlendEquationSeparate") {
+        glBlendEquationSeparate(S(0), S(1));
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glBlendColor") {
+        glBlendColor(fargs[1], fargs[2], fargs[3], fargs[4]);
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glDepthRangef" || method == "glClearDepthf") {
+        glDepthRangef(fargs[1], fargs[2]);
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glLineWidth") { glLineWidth(fargs[1]); stats_.state_ops++; return true; }
+    if (method == "glGenerateMipmap") { glGenerateMipmap(S(0)); stats_.tex_ops++; return true; }
+    // glHint / glBindAttribLocation: PGL 0.101 has no such symbols — left
+    // as honest REC-MISS rows (glHint cannot affect raster correctness;
+    // attrib binding is name->index only, and libGDX binds by location).
+    if (method == "glStencilFunc") {
+        glStencilFunc(S(0), (GLint)I(1), (GLuint)I(2));
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glStencilOp") {
+        glStencilOp(S(0), S(1), S(2));
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glStencilFuncSeparate") {
+        glStencilFuncSeparate(S(0), S(1), (GLint)I(2), (GLuint)I(3));
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glStencilOpSeparate") {
+        glStencilOpSeparate(S(0), S(1), S(2), S(3));
+        stats_.state_ops++;
+        return true;
+    }
+    if (method == "glFinish" || method == "glFlush" ||
+        method == "glReleaseShaderCompiler") {
+        stats_.state_ops++;
         return true;
     }
     return false;

@@ -8538,3 +8538,65 @@ Evidence: evidence/s188_w18/{W18_GDX2DPIXMAP_CONTRACT.json,
 W18_JNI_DEMAND_AUDIT.json, W18_IMPLEMENTATION.json, W18_RUNS.json,
 W18_GOLDENS.json, floor_rerun/FLOOR_RERUN.json, p9/halma console logs,
 runs/ incl. 14 FT probe dirs}; scripts/s188_w18_*.py.
+
+## S195 — MAIN CODER INTEGRATION AUDIT (2026-11-08)
+
+Directive: the MAIN CODER MASTER TASK (Coders 2–9 achievement audit,
+reconstruction, integration, runtime verification). Full sweep: 566
+issues fetched updated_at DESC (453 open/113 closed) + 92 priority
+issues / 480 comments; 447 law IDs discovered; per-law mainline
+presence check (inventory JSON). origin/main = 9bc2a115; integration
+line binary 1f05270d793a43b5 → 31be843614e67bab.
+
+INTEGRATED this wave (W8 law: reconstruct-hash-verify first):
+- C3 S197 F-NEW-606(C3) GLSurfaceView→SurfaceView ancestry — clean
+  apply; SIDE-PROOF: dooz golden uncaught 6→0 (same pixels family).
+- C3 S198a GLES raster stack (pgl_const_map.inc spec→PGL translation,
+  gles20_bridge SpriteBatch programs) — clean apply; tictactoe GL
+  error census → 0.
+- C3 S198b marshal fallback + ES1 sinks — PORTED MANUALLY onto the
+  W18-modified gl_surface_shadow.cpp through NEW
+  nativeexec::lookup_direct_buffer(oid,&addr,&cap) implemented over the
+  W18 f590 engine-hook direct-buffer registry: ONE shared registry,
+  both contributors' mint paths (mission §4 C6 no-two-GL-systems law).
+
+RECONSTRUCTED byte-exact (published-hash-verified): S196_PORTED.patch
+134,248 B = 9ee750b21afe89a0 MATCH; S198 = d64ac52606e9a3e8 MATCH (both
+parts match their part shas). S196 base = 9 rejected hunks vs the W18
+line — several SUPERSEDED (F-NEW-583≡611, 579≡608, 582≡605/609); the
+genuinely-missing core = F-NEW-580/580b String-boundary laws.
+
+PROTOCOL DEFECT FILED (#557 comment 6725597246): S198 part 2/2 is
+truncated mid-hunk (the F-NEW-610 typed-view setter tail, @@ -52014,6
++52014,35 @@ cut at concat line 988); the posted part/full shas match
+the TRUNCATED text, so "apply verified CLEAN" cannot reproduce from
+the publication alone (#561 missing-header precedent).
+
+BATTERY (§8, ONE binary 1f05270d793a43b5): gmdice / tictactoe /
+microtimer / opencalc / chessclock REAL_APP_CONTENT ×3 deterministic
+(tictactoe GL-noise honestly recorded — S196 String boundary is the
+dying point: AssetManager.load NPE String.equals(null)); gmdice +
+opencalc visually confirmed real UI; gmdice INTERACTIVE PROOF (5 taps
+→ 5 result states → rerun byte-identical). pf2048/pfmemory NO_ROOT ×3
+(honest fail). Route law extended: 7 cohort profiles (42→49);
+tictactoe now ROUTE-DECIDED.
+
+REGRESSION on 31be843614e67bab: goldens 3/3 deterministic, A/B
+visually identical (SUB-VISUAL pixel drift from the GL const law);
+dooz uncaught 6→0 improvement; p9/halma EGL spots REAL_APP_CONTENT
+uncaught=0 (no regression). Pins re-pinned with the A/B record; old
+pins remain the pre-integration-binary record. Floor-11 re-run on the
+integration binary = named gate before any promotion.
+
+DELIVERABLES (§12, evidence/s195_audit/): 7/7 (INVENTORY / LEDGER /
+GRAPH / REPORT / BATTERY / REGRESSION / MANIFEST). KNOWLEDGE TRANSFER
+(§10): 4 comments posted — #557 6725597246 (C3 verdict + defect),
+#556 6725597459 (wave record), #566 6725597661 (C4 W17 F-C4-631
+verified ABSENT → intake), #521 6725597895 (C9 npTc: TRUE for
+origin/main, SUPERSEDED-by-f053 on this line).
+
+NEXT: S196 F-NEW-580/580b port (the tictactoe String-boundary fix) +
+S198c typed-view setters re-implementation → rebuild → tictactoe
+raster re-check; floor-11 + C8 97/97 probe on the integration binary;
+C4 W17 (F-C4-631) intake; C7 W5–W7-first dependency-ordered intake.
+Standing: W19a FT bitmap-render leg; W19b halma properties line-parse.

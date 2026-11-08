@@ -1,0 +1,20 @@
+{
+ "S196": {
+  "full_sha16_computed": "9ee750b21afe89a0",
+  "full_sha16_published": "9ee750b21afe89a0",
+  "match": true,
+  "bytes": 134248
+ },
+ "S197": {
+  "full_sha16_computed": "0ff0dbdf700f4b15",
+  "full_sha16_published": null,
+  "match": null,
+  "bytes": 3734
+ },
+ "S198": {
+  "full_sha16_computed": "d64ac52606e9a3e8",
+  "full_sha16_published": "d64ac52606e9a3e8",
+  "match": true,
+  "bytes": 48591
+ }
+}

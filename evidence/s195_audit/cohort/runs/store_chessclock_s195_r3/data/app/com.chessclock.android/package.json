@@ -1,0 +1,16 @@
+{
+  "package": "com.chessclock.android",
+  "versionName": "2.11.2",
+  "versionCode": 29,
+  "mainActivity": "com.chessclock.android.ChessClock",
+  "minSdk": "21",
+  "targetSdk": "25",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/com.chessclock.android/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s195_audit/cohort/runs/store_chessclock_s195_r3/data/app/com.chessclock.android/base.apk",
+  "apkSha256": "5ca6f2c54c05efe7df72b209988037b97e37be0faae133624ec352057445fafa",
+  "apkSize": 124222,
+  "installedAt": "2026-11-08T18:23:13Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

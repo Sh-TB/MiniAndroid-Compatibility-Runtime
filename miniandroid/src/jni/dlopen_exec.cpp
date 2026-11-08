@@ -1204,6 +1204,23 @@ void set_engine_hooks(const nativeexec::EngineHooks& hooks) {
     g_f590_hooks = hooks;
 }
 
+// F-NEW-608 (S198, C3) DIRECT-BUFFER LOOKUP — the GLES20 bridge's marshal
+// fallback asks for the {addr,cap} of an engine-minted direct ByteBuffer
+// by oid. INTEGRATION (S195 audit): implemented over THIS line's W18
+// engine hook (f590_direct_buffer_snapshot — the persistent direct-buffer
+// backing, F-NEW-609); C3's S196 registry and this line's hook registry
+// are the same contract — one lookup surface, both mint paths feed it.
+bool lookup_direct_buffer(uint32_t oid, void** addr, int32_t* cap) {
+    void* a = nullptr;
+    size_t c = 0;
+    if (!g_f590_hooks.direct_buffer) return false;
+    if (!g_f590_hooks.direct_buffer(oid, &a, &c)) return false;
+    if (!a) return false;
+    if (addr) *addr = a;
+    if (cap) *cap = (int32_t)c;
+    return true;
+}
+
 namespace {
 
 void init_tables() {

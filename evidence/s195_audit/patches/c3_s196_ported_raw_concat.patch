@@ -1,0 +1,1532 @@
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore
++++ b/.gitignore
+@@ -319,6 +319,7 @@ frames/
+ **/opcode_trace.json
+ **/register_trace.json
+ **/view_tree.json
++tools/native_host
+ 
+ # S186c: battery run dirs + probe dbs stay out of git (evidence law)
+ evidence/s186_s107/reruns_battery/
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -12718,7 +12718,64 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         // all_methods() copy moved the whole method table (bytecode vectors
+         // included) 13k+ times per run. Same order + overload semantics:
+         // the first ACC_NATIVE method with the requested name dispatches.
++        //
++        // F-NEW-584 (S188) — EXACT-DESCRIPTOR native resolution (ART law:
++        // the native implementation belongs to the method the invoke
++        // RESOLVED — resolution is (class, name, descriptor), never name
++        // alone). Live face: gdx FreeType$Library declares BOTH a private
++        // static native newMemoryFace(JLjava/nio/ByteBuffer;II)J AND the
++        // public Java wrapper newMemoryFace(Ljava/nio/ByteBuffer;I)LFace;
++        // the old name-only hit dispatched the REAL native with the
++        // WRAPPER's argument shape (receiver o596 + buffer + faceIndex →
++        // the C body read the library handle from the receiver tag and
++        // dataSize=0) → FT_New_Memory_Face returned NULL →
++        // "Couldn't load font" → face null → checkForBitmapFont NPE →
++        // AndroidLauncher.onCreate APP-BOUNDARY death (tictactoe_3).
++        // With the caller's descriptor: dispatch the native ONLY when the
++        // invoked descriptor IS the native's; when the descriptor selects
++        // a bytecode method (the wrapper), the wrapper's body runs — its
++        // own invoke-static then hits the native with the exact descriptor
++        // and the correct (J, L, I, I) marshaling. Internal callers that
++        // pass no descriptor keep the name-only behavior verbatim.
+         const dex::MethodInfo* native_hit = nullptr;
++        if (!method_descriptor.empty()) {
++            bool invoked_found = false;
++            for (const auto& mm : cls_ref.direct_methods) {
++                if (mm.name == method_name &&
++                    mm.descriptor == method_descriptor) {
++                    invoked_found = true;
++                    if (mm.access_flags & 0x100) native_hit = &mm;
++                    break;
++                }
++            }
++            if (!invoked_found) {
++                for (const auto& mm : cls_ref.virtual_methods) {
++                    if (mm.name == method_name &&
++                        mm.descriptor == method_descriptor) {
++                        invoked_found = true;
++                        if (mm.access_flags & 0x100) native_hit = &mm;
++                        break;
++                    }
++                }
++            }
++            // S188 diag (bounded): every freetype-family resolution —
++            // the exact (name, desc) the caller resolved and whether the
++            // native-hit gate answered.
++            static thread_local const bool s188_nh_diag =
++                std::getenv("MINIANDROID_S188_NATIVE_HIT") != nullptr;
++            if (s188_nh_diag && current_class_.find("freetype") !=
++                                    std::string::npos) {
++                static std::atomic<uint64_t> s188_nh_n{0};
++                if (s188_nh_n.fetch_add(1, std::memory_order_relaxed) < 300)
++                    std::cerr << "[S188-NH] " << class_descriptor << "."
++                              << method_name << method_descriptor
++                              << " found=" << invoked_found
++                              << " native=" << (native_hit ? 1 : 0)
++                              << std::endl;
++            }
++            // invoked_found but not native → the bytecode method runs (the
++            // normal flow below); not found at all → superclass walk.
++        } else {
+         for (const auto& mm : cls_ref.direct_methods) {
+             if (mm.name == method_name && (mm.access_flags & 0x100)) {
+                 native_hit = &mm; break;
+@@ -12731,6 +12788,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                 }
+             }
+         }
++        }
+         for (const dex::MethodInfo* method = native_hit; method != nullptr;
+              method = nullptr) {
+             // Found a native method — dispatch to JNI bridge
+@@ -12852,24 +12910,49 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                     // a faulting allocator) keeps precedence over the real
+                     // library. STUBBED + no loaded libs keeps the old
+                     // fail-soft semantics verbatim.
+-                    const bool stub_shadow = bres &&
+-                        bridge_status == ApiCallTrace::Status::STUBBED &&
+-                        nativeexec::has_loaded_libs();
+-                    if (stub_shadow) {
++                    // ── F-NEW-585 (S188) — REAL-NATIVE-FIRST law (the
++                    // F-C4-594 native-precedence completion; AOSP
++                    // art_jni.cc: an ACC_NATIVE method's implementation IS
++                    // the symbol the loader resolved — an IMPLEMENTED
++                    // engine/shadow answer must not shadow a symbol that
++                    // RESOLVES either). Live face: the gdx font pipeline's
++                    // FreeType$GlyphMetrics.getHeight(J)I was claimed by
++                    // the shadow-registry geometry law (answer 0 — a
++                    // View-geometry answer for a FOREIGN class) → xHeight 0
++                    // → "No x-height character found in font" →
++                    // AndroidLauncher.onCreate death (tictactoe_3) while the
++                    // REAL libgdx-freetype64.so symbol works. Ordering:
++                    //   1. no loaded libs → the bridge answer wins verbatim
++                    //      (the whole non-native corpus, zero change);
++                    //   2. libs loaded → the REAL symbol attempt runs FIRST
++                    //      (STUBBED and IMPLEMENTED answers alike are
++                    //      remembered); a symbol MISS or a guarded FAULT
++                    //      restores the remembered answer (the F-NEW-504
++                    //      tower3d heap-model allocator still owns the
++                    //      observable its law exists for — e.g. copyJni's
++                    //      Object-variant symbol is absent from the host
++                    //      build, so the engine-side byte-copy law answers).
++                    if (bres && !nativeexec::has_loaded_libs()) {
++                        return_val = bridge_val;
++                        recursion_depth_--;
++                        return true;
++                    }
++                    if (bres) {
+                         f594_stub_had_answer = true;
+                         f594_stub_answer = bridge_val;
+                         static thread_local uint64_t f594_n = 0;
+-                        if (f594_n++ < 12) {
++                        if (f594_n++ < 40) {
+                             std::cerr << "[F-C4-594] native precedence: "
+                                       << class_descriptor << "." << method_name
+-                                      << " bridge tail was STUBBED — trying the"
+-                                         " REAL registered/dlsym symbol first"
++                                      << (bridge_status ==
++                                                  ApiCallTrace::Status::STUBBED
++                                              ? " bridge tail was STUBBED"
++                                              : " bridge law answered — "
++                                                "deferred")
++                                      << " — trying the REAL registered/"
++                                         "dlsym symbol first"
+                                       << std::endl;
+                         }
+-                    } else if (bres) {
+-                        return_val = bridge_val;
+-                        recursion_depth_--;
+-                        return true;
+                     }
+                 }
+                 // ── #371 CLOSEOUT S-2: REAL native execution attempt ────
+@@ -12933,11 +13016,457 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                                     jargs.push_back(nativeexec::JArg::null());
+                             }
+                         }
++                        // ── F-NEW-586 (S188): primitive-array host
++                        // mirrors. The JNI Get<prim>ArrayElements /
++                        // GetPrimitiveArrayCritical family answers a
++                        // pointer to the array's storage (AOSP
++                        // jni_internal.cc); the engine heap stores arrays
++                        // as per-index fields, so the mirror is built
++                        // heap→host BEFORE the call and the native's
++                        // writes are synced back host→heap AFTER (calloc
++                        // zero-fill = the byte-determinism law). This is
++                        // the surface every real native array consumer
++                        // rides (gdx2d newPixmap, Box2D array params...).
++                        std::vector<uint32_t> f586_oids;
++                        std::vector<std::string> f586_cls;
++                        for (const auto& ja : jargs) {
++                            if (ja.kind != nativeexec::JArg::Kind::OBJECT)
++                                continue;
++                            std::string acls586;
++                            if (!heap_.get_object_class(ja.object_id, acls586))
++                                continue;
++                            if (acls586.size() != 2 || acls586[0] != '[' ||
++                                acls586[1] == 'L')
++                                continue;
++                            int32_t alen586 = 0;
++                            auto lf586 = heap_.get_object_field(
++                                ja.object_id, "__array_length__");
++                            if (lf586.has_value() &&
++                                lf586->type == DalvikType::INT32)
++                                alen586 = lf586->int_val;
++                            if (alen586 <= 0) {
++                                auto nf586 = heap_.get_object_field(
++                                    ja.object_id, "__new_array_length__");
++                                if (nf586.has_value() &&
++                                    nf586->type == DalvikType::INT32)
++                                    alen586 = nf586->int_val;
++                            }
++                            if (alen586 <= 0) continue;
++                            int32_t esz586 =
++                                (acls586[1] == 'J' || acls586[1] == 'D')
++                                    ? 8
++                                    : ((acls586[1] == 'I' ||
++                                        acls586[1] == 'F')
++                                           ? 4
++                                           : ((acls586[1] == 'C' ||
++                                               acls586[1] == 'S')
++                                                  ? 2
++                                                  : 1));
++                            void* mirror586 = nullptr;
++                            int32_t mc586 = 0, msz586 = 0;
++                            bool fresh586 =
++                                !nativeexec::lookup_primitive_array(
++                                    ja.object_id, &mirror586, &mc586, &msz586);
++                            if (fresh586 || mc586 < alen586 || msz586 != esz586) {
++                                void* nm586 = std::calloc(
++                                    (size_t)alen586, (size_t)esz586);
++                                nativeexec::register_primitive_array(
++                                    ja.object_id, nm586, alen586, esz586);
++                                mirror586 = nm586;
++                            }
++                            for (int32_t k586 = 0; k586 < alen586; ++k586) {
++                                auto ev586 = heap_.get_object_field(
++                                    ja.object_id,
++                                    "array[" + std::to_string(k586) + "]");
++                                unsigned char* slot586 =
++                                    (unsigned char*)mirror586 +
++                                    (size_t)k586 * esz586;
++                                switch (acls586[1]) {
++                                    case 'J': {
++                                        int64_t v = ev586.has_value()
++                                                        ? (ev586->type ==
++                                                                   DalvikType::INT64
++                                                               ? ev586->long_val
++                                                               : ev586->int_val)
++                                                        : 0;
++                                        memcpy(slot586, &v, 8);
++                                        break;
++                                    }
++                                    case 'I': {
++                                        int32_t v = ev586.has_value()
++                                                        ? ev586->int_val
++                                                        : 0;
++                                        memcpy(slot586, &v, 4);
++                                        break;
++                                    }
++                                    case 'F': {
++                                        float v = ev586.has_value()
++                                                      ? ev586->float_val
++                                                      : 0.f;
++                                        memcpy(slot586, &v, 4);
++                                        break;
++                                    }
++                                    case 'D': {
++                                        double v = ev586.has_value()
++                                                       ? ev586->double_val
++                                                       : 0.0;
++                                        memcpy(slot586, &v, 8);
++                                        break;
++                                    }
++                                    case 'Z': {
++                                        unsigned char v =
++                                            ev586.has_value()
++                                                ? (unsigned char)(ev586->bool_val
++                                                                      ? 1
++                                                                      : 0)
++                                                : 0;
++                                        slot586[0] = v;
++                                        break;
++                                    }
++                                    case 'B': {
++                                        signed char v =
++                                            ev586.has_value()
++                                                ? ev586->byte_val
++                                                : 0;
++                                        slot586[0] = (unsigned char)v;
++                                        break;
++                                    }
++                                    case 'C': {
++                                        // Java chars are 16-bit; the
++                                        // engine char model is 8-bit —
++                                        // zero-extended store, low byte
++                                        // on read-back (documented
++                                        // honest boundary).
++                                        unsigned short v =
++                                            ev586.has_value()
++                                                ? (unsigned short)(
++                                                      (unsigned char)
++                                                          ev586->char_val)
++                                                : 0;
++                                        memcpy(slot586, &v, 2);
++                                        break;
++                                    }
++                                    case 'S': {
++                                        short v = ev586.has_value()
++                                                      ? ev586->short_val
++                                                      : 0;
++                                        memcpy(slot586, &v, 2);
++                                        break;
++                                    }
++                                }
++                            }
++                            f586_oids.push_back(ja.object_id);
++                            f586_cls.push_back(acls586);
++                            {
++                                static std::atomic<uint64_t> s586_m{0};
++                                if (s586_m.fetch_add(
++                                        1, std::memory_order_relaxed) < 10)
++                                    std::cerr << "[F-NEW-586] mirror o"
++                                              << ja.object_id << " " << acls586
++                                              << " len=" << alen586
++                                              << " esz=" << esz586 << std::endl;
++                            }
++                        }
+                         nativeexec::JOutcome out;
+                         std::string nerr;
++                        // F-NEW-582 diag (bounded): the FreeType
++                        // newMemoryFace hand-off — the exact (library,
++                        // dataSize, faceIndex) the REAL FT_New_Memory_Face
++                        // receives and the first font bytes at the buffer's
++                        // registered real memory (validates the whole
++                        // copyJni → GetDirectBufferAddress → FT chain).
++                        if (method_name == "newMemoryFace") {
++                            static std::atomic<uint64_t> s582_nmf{0};
++                            if (s582_nmf.fetch_add(1,
++                                                   std::memory_order_relaxed) <
++                                4) {
++                                std::cerr << "[F-NEW-582] newMemoryFace jargs:";
++                                for (const auto& ja : jargs) {
++                                    if (ja.kind ==
++                                        nativeexec::JArg::Kind::LONG)
++                                        std::cerr << " J=" << ja.i64;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::OBJECT)
++                                        std::cerr << " L=o" << ja.object_id;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::INT)
++                                        std::cerr << " I=" << ja.i32;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::NULLREF)
++                                        std::cerr << " null";
++                                    else
++                                        std::cerr << " k"
++                                                  << (int)ja.kind;
++                                }
++                                std::cerr << std::endl;
++                                for (const auto& ja : jargs) {
++                                    if (ja.kind ==
++                                        nativeexec::JArg::Kind::OBJECT) {
++                                        void* da582 = nullptr;
++                                        int32_t dc582 = 0;
++                                        if (nativeexec::lookup_direct_buffer(
++                                                ja.object_id, &da582,
++                                                &dc582) &&
++                                            da582) {
++                                            std::cerr << "[F-NEW-582] font@"
++                                                      << da582 << " cap="
++                                                      << dc582 << " head=";
++                                            const unsigned char* p582 =
++                                                (const unsigned char*)da582;
++                                            // offset probes: head + 4 spread
++                                            // points (the FT Invalid_Table
++                                            // face means a BROKEN middle —
++                                            // compare with the APK's own
++                                            // bytes at the same offsets).
++                                            static const int32_t
++                                                k582_probe_off[4] = {0, 4096,
++                                                                     65536,
++                                                                     171640};
++                                            for (int pb582 = 0; pb582 < 4;
++                                                 ++pb582) {
++                                                int32_t o582 =
++                                                    k582_probe_off[pb582];
++                                                if (o582 >= dc582) continue;
++                                                std::cerr << "[F-NEW-582] @"
++                                                          << o582 << " =";
++                                                for (int b582 = 0; b582 < 12;
++                                                     ++b582)
++                                                    fprintf(stderr,
++                                                            " %02x",
++                                                            p582[o582 + b582]);
++                                                std::cerr << std::endl;
++                                            }
++                                        }
++                                        break;
++                                    }
++                                }
++                            }
++                        }
+                         bool f594_call_ok = nativeexec::call_native(
+                             fn, is_static, method->descriptor, jargs, out,
+                             nerr);
++                        if (f594_call_ok && method_name == "getHeight") {
++                            static std::atomic<uint64_t> s582_gh{0};
++                            if (s582_gh.fetch_add(
++                                    1, std::memory_order_relaxed) < 6)
++                                std::cerr << "[F-NEW-582] getHeight ret="
++                                          << out.i << " kind="
++                                          << (int)out.kind
++                                          << " cls=" << class_descriptor
++                                          << std::endl;
++                        }
++                        // S196 diag (bounded): pixmap pipeline truth —
++                        // Bitmap dims + the newPixmap native outcome (the
++                        // "Error loading pixmap." throw needs the exact
++                        // w/h/format gdx2d_new received).
++                        if (f594_call_ok && class_descriptor ==
++                                "Lcom/badlogic/gdx/graphics/g2d/freetype/"
++                                "FreeType$Bitmap;") {
++                            static std::atomic<uint64_t> s196_bm{0};
++                            if (s196_bm.fetch_add(
++                                    1, std::memory_order_relaxed) < 10)
++                                std::cerr << "[S196-PIX] Bitmap."
++                                          << method_name << " ret=" << out.i
++                                          << " kind=" << (int)out.kind
++                                          << std::endl;
++                        }
++                        if (f594_call_ok && method_name == "newPixmap") {
++                            static std::atomic<uint64_t> s196_np{0};
++                            if (s196_np.fetch_add(
++                                    1, std::memory_order_relaxed) < 8) {
++                                std::cerr << "[S196-PIX] newPixmap argc="
++                                          << jargs.size();
++                                for (const auto& ja : jargs) {
++                                    if (ja.kind == nativeexec::JArg::Kind::INT)
++                                        std::cerr << " I=" << ja.i32;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::OBJECT)
++                                        std::cerr << " J[]=o"
++                                                  << ja.object_id;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::LONG)
++                                        std::cerr << " L=" << ja.i64;
++                                    else
++                                        std::cerr << " k"
++                                                  << (int)ja.kind;
++                                }
++                                std::cerr << " ret kind=" << (int)out.kind
++                                          << " objid=" << out.object_id
++                                          << " addr=" << out.native_addr
++                                          << " cap=" << out.native_cap
++                                          << std::endl;
++                            }
++                        }
++                        if (f594_call_ok && method_name == "loadChar") {
++                            // F-NEW-582 diag (bounded): per-loadChar
++                            // native result + FT lastError (the x-height
++                            // throw needs the exact glyph that failed).
++                            static std::atomic<uint64_t> s582_lc{0};
++                            if (s582_lc.fetch_add(
++                                    1, std::memory_order_relaxed) < 6) {
++                                std::cerr << "[F-NEW-582] loadChar ret="
++                                          << (out.kind ==
++                                                      nativeexec::JOutcome::
++                                                          Kind::BOOLEAN
++                                                  ? (out.i ? 1 : 0)
++                                                  : (int)out.i)
++                                          << " argc=" << jargs.size();
++                                for (const auto& ja : jargs)
++                                    if (ja.kind ==
++                                        nativeexec::JArg::Kind::INT)
++                                        std::cerr << " I=" << ja.i32;
++                                std::string lerr_tried2;
++                                void* lerr_fn2 = nativeexec::find_symbol(
++                                    "Lcom/badlogic/gdx/graphics/g2d/"
++                                    "freetype/FreeType;",
++                                    "getLastErrorCode", "()I", lerr_tried2);
++                                if (lerr_fn2) {
++                                    nativeexec::JOutcome lout2;
++                                    std::string lerr2;
++                                    if (nativeexec::call_native(
++                                            lerr_fn2, true, "()I", {}, lout2,
++                                            lerr2))
++                                        std::cerr << " FTerr="
++                                                  << lout2.i;
++                                }
++                                std::cerr << std::endl;
++                            }
++                        }
++                        // F-NEW-586: mirror→heap sync after the native
++                        // (the native's writes — pixmap handles, pixel
++                        // pointers — land in the array's heap fields).
++                        if (f594_call_ok) {
++                            for (size_t ai586 = 0; ai586 < f586_oids.size();
++                                 ++ai586) {
++                                void* mirror586b = nullptr;
++                                int32_t mc586b = 0, msz586b = 0;
++                                if (!nativeexec::lookup_primitive_array(
++                                        f586_oids[ai586], &mirror586b,
++                                        &mc586b, &msz586b) ||
++                                    !mirror586b)
++                                    continue;
++                                char cc586 = f586_cls[ai586].size() == 2
++                                                 ? f586_cls[ai586][1]
++                                                 : 0;
++                                for (int32_t k586b = 0; k586b < mc586b;
++                                     ++k586b) {
++                                    const unsigned char* slot586b =
++                                        (const unsigned char*)mirror586b +
++                                        (size_t)k586b * msz586b;
++                                    switch (cc586) {
++                                        case 'J': {
++                                            int64_t v;
++                                            memcpy(&v, slot586b, 8);
++                                            DalvikValue dv;
++                                            dv.type = DalvikType::INT64;
++                                            dv.long_val = v;
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                dv);
++                                            break;
++                                        }
++                                        case 'I':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_int(
++                                                    *(const int32_t*)
++                                                        slot586b));
++                                            break;
++                                        case 'F':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_float(
++                                                    *(const float*)
++                                                        slot586b));
++                                            break;
++                                        case 'D':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_double(
++                                                    *(const double*)
++                                                        slot586b));
++                                            break;
++                                        case 'Z': {
++                                            bool b = slot586b[0] != 0;
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_bool(b));
++                                            break;
++                                        }
++                                        case 'B':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_byte(
++                                                    (int8_t)slot586b[0]));
++                                            break;
++                                        case 'C':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_char(
++                                                    (char)slot586b[0]));
++                                            break;
++                                        case 'S':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_short(
++                                                    *(const int16_t*)
++                                                        slot586b));
++                                            break;
++                                    }
++                                }
++                            }
++                        }
++                        if (f594_call_ok && method_name == "newMemoryFace") {
++                            static std::atomic<uint64_t> s582_nmf2{0};
++                            if (s582_nmf2.fetch_add(
++                                    1, std::memory_order_relaxed) < 4)
++                                std::cerr << "[F-NEW-582] newMemoryFace ret="
++                                          << out.i << " ok=1" << std::endl;
++                            if (out.i == 0) {
++                                // F-NEW-582 diag: the REAL FreeType
++                                // lastError — the exact FT_Error the
++                                // FT_New_Memory_Face call produced.
++                                std::string lerr_tried;
++                                void* lerr_fn = nativeexec::find_symbol(
++                                    "Lcom/badlogic/gdx/graphics/g2d/"
++                                    "freetype/FreeType;",
++                                    "getLastErrorCode", "()I", lerr_tried);
++                                if (lerr_fn) {
++                                    nativeexec::JOutcome lout;
++                                    std::string lerr;
++                                    if (nativeexec::call_native(
++                                            lerr_fn, true, "()I", {}, lout,
++                                            lerr))
++                                        std::cerr << "[F-NEW-582] FT "
++                                                     "lastError = "
++                                                  << lout.i << std::endl;
++                                }
++                            }
++                        }
+                         out.provenance = tried;
+                         if (!f594_call_ok && f594_stub_had_answer) {
+                             // F-C4-594 (W10) HONEST-FALLBACK: the real
+@@ -13025,6 +13554,46 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                                     arr587, elem_desc);
+                                 break;
+                             }
++                            case nativeexec::JOutcome::Kind::DIRECT_BUFFER: {
++                                // F-NEW-582 (S188): a native minted a direct
++                                // ByteBuffer (NewDirectByteBuffer(addr, cap)).
++                                // Mint a REAL heap ByteBuffer carrying the
++                                // SAME backing memory (__bb_direct__) and
++                                // register it — put/get writes land in the
++                                // memory the native hands out, and any later
++                                // GetDirectBufferAddress round-trips.
++                                uint32_t bid582 = heap_.allocate(
++                                    "Ljava/nio/ByteBuffer;", pc_,
++                                    call_stack_.empty()
++                                        ? 0
++                                        : call_stack_.top().frame_id);
++                                heap_.set_object_field(
++                                    bid582, "__bb_cap__",
++                                    DalvikValue::make_int(out.native_cap));
++                                heap_.set_object_field(
++                                    bid582, "__bb_pos__",
++                                    DalvikValue::make_int(0));
++                                heap_.set_object_field(
++                                    bid582, "__bb_lim__",
++                                    DalvikValue::make_int(out.native_cap));
++                                heap_.set_object_field(
++                                    bid582, "__bb_order__",
++                                    DalvikValue::make_int(1));
++                                DalvikValue d582;
++                                d582.type = DalvikType::INT64;
++                                d582.long_val =
++                                    (int64_t)(uintptr_t)out.native_addr;
++                                heap_.set_object_field(bid582, "__bb_direct__",
++                                                       d582);
++                                heap_.set_object_field(
++                                    bid582, "__bb_direct_cap__",
++                                    DalvikValue::make_int(out.native_cap));
++                                nativeexec::register_direct_buffer(
++                                    bid582, out.native_addr, out.native_cap);
++                                return_val = DalvikValue::make_object(
++                                    bid582, "Ljava/nio/ByteBuffer;");
++                                break;
++                            }
+                             case nativeexec::JOutcome::Kind::OBJECT:
+                                 return_val = out.object_id
+                                                  ? DalvikValue::make_object(
+@@ -34467,13 +35036,47 @@ void DalvikExecutionEngine::c7_service_bring_down(ServiceInstance& svc,
+ 
+ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                                           const std::string& method,
+-                                          const std::vector<DalvikValue>& args,
++                                          const std::vector<DalvikValue>& args_raw,
+                                           DalvikValue& result,
+                                           ApiCallTrace::Status& status,
+                                           uint32_t method_idx_hint) {
+     bridge_census_init();
+     BridgeCensusGuard c97_census_guard;
+     if (bridge_census().on) c97_census_guard.begin(class_name, method);
++    // ────────────────────────────────────────────────────────────────────────
++    // F-NEW-580b (S188) — String receiver identity-form normalization at
++    // the bridge boundary (the ONE chokepoint every String-method law
++    // funnels through — 5 invoke sites route here). A String may arrive as
++    // a HEAP OBJECT: the new-instance→<init> identity law keeps the
++    // caller's OBJECT_REF register alive and stores the content under
++    // __string_value__ (the new String(buf,0,offset) product inside
++    // PropertiesUtils.load is exactly this form). Every String-family law
++    // downstream reads args[0] as STRING_REF; without normalization the
++    // receiver read "" — the S186 "identity-form hole" family (File.toString
++    // at bridge layer), now proven a THIRD time for substring
++    // (SIOOBE length=0; begin=0; end=4 at PropertiesUtils.load pc=59 —
++    // tictactoe_3 wall 3, after getChars + String(char[],off,len) landed).
++    // libcore semantics are identical for both forms; normalize ONCE here —
++    // zero app-specific branches. The vector copy happens ONLY for the
++    // heap-String receiver shape; every other call keeps the zero-cost alias.
++    // ────────────────────────────────────────────────────────────────────────
++    std::vector<DalvikValue> f580_args_storage;
++    if (class_name == "Ljava/lang/String;" && !args_raw.empty() &&
++        args_raw[0].type == DalvikType::OBJECT_REF &&
++        args_raw[0].object_id != 0 &&
++        heap_.has_object(args_raw[0].object_id)) {
++        auto f580_sv = heap_.get_object_field(args_raw[0].object_id,
++                                              "__string_value__");
++        if (!f580_sv.has_value())
++            f580_sv = heap_.get_object_field(args_raw[0].object_id, "value");
++        if (f580_sv.has_value() && f580_sv->type == DalvikType::STRING_REF) {
++            f580_args_storage = args_raw;
++            f580_args_storage[0] =
++                DalvikValue::make_string(f580_sv->string_val, 0);
++        }
++    }
++    const std::vector<DalvikValue>& args =
++        f580_args_storage.empty() ? args_raw : f580_args_storage;
+     // S188-W2b diag (env-gated, bounded, read-only): WHICH createBitmap
+     // shapes enter the bridge and from where. Evidence gap: the
+     // battleship GameResources.rotateShipBitmaps 7-arg Matrix overload
+@@ -50499,10 +51102,183 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         heap_.set_object_field(bid, "__bb_pos__", DalvikValue::make_int(0));
+         heap_.set_object_field(bid, "__bb_lim__", DalvikValue::make_int(cap));
+         heap_.set_object_field(bid, "__bb_order__", DalvikValue::make_int(1));
++        // F-NEW-582 (S188): REAL host memory + JNI direct-buffer
++        // registration — the gdx unsafe-buffer pipeline (FreeType font
++        // generation) hands these to REAL natives via
++        // GetDirectBufferAddress; without the memory the copyJni faulted
++        // (tictactoe_3 wall) and the buffer stayed empty.
++        if (cap > 0) {
++            void* mem582 = std::calloc((size_t)cap, 1);
++            if (mem582) {
++                DalvikValue d582;
++                d582.type = DalvikType::INT64;
++                d582.long_val = (int64_t)(uintptr_t)mem582;
++                heap_.set_object_field(bid, "__bb_direct__", d582);
++                heap_.set_object_field(
++                    bid, "__bb_direct_cap__", DalvikValue::make_int(cap));
++                nativeexec::register_direct_buffer(bid, mem582, cap);
++            }
++        }
+         result = DalvikValue::make_object(bid, "Ljava/nio/ByteBuffer;");
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         return true;
+     }
++    // ────────────────────────────────────────────────────────────────────────
++    // F-NEW-582b (S188) — BufferUtils.copyJni family (the gdx byte-copy
++    // native) as an ENGINE-SIDE REAL law (F-NEW-504 tower3d layering: an
++    // IMPLEMENTED heap-side handler intentionally replaces a native whose
++    // ABI contract this runtime cannot honestly satisfy). The REAL
++    // libgdx64.so copyJni needs GetDirectBufferAddress on BOTH args + the
++    // GetPrimitiveArrayCritical family for the byte[] overloads; the
++    // Object-variant symbol is absent from the host build entirely
++    // (nm -D: only __3B/__3C/__3S/__3I/__3J/__3F/__3D/Buffer overloads) —
++    // the real call faulted on the NULL address (guarded, survived —
++    // tictactoe_3 font wall, 5× SIGSEGV per font). Shapes (gdx 1.9.10
++    // BufferUtils.java):
++    //   copyJni(src, srcOffset, dst, dstPosition, numBytes) — gdx 1.9.10
++    //   calls it with (Object|<prim>[]|Buffer src, int srcOffset, Buffer dst,
++    //   int dstPosition, int numBytes) — dstPosition BEFORE numBytes.
++    // Semantics: memcpy of numBytes from src+srcOffset into dst+dstOffset.
++    // The engine reads src bytes through ONE identity (a [B array's heap
++    // "array[N]" fields, or a buffer's real direct memory + lazy field
++    // store) and writes dst through the same identity — the real FreeType
++    // natives then parse the font from the REAL registered memory.
++    // Static-arg conventions differ by dispatch path (with/without a
++    // receiver slot) — resolve structurally: objects in order = [src, dst],
++    // ints in order = [srcOffset, numBytes, dstOffset].
++    // ────────────────────────────────────────────────────────────────────────
++    if (class_name == "Lcom/badlogic/gdx/utils/BufferUtils;" &&
++        method == "copyJni" && args.size() >= 5) {
++        // structural arg resolution
++        std::vector<uint32_t> c582_objs;   // heap ids of object args (in order)
++        std::vector<int32_t> c582_ints;    // int args (in order)
++        for (const auto& a : args) {
++            if (a.type == DalvikType::OBJECT_REF && a.object_id != 0) {
++                // skip the receiver slot when it is NOT a [B/array or buffer
++                std::string c582_cls;
++                bool c582_known = heap_.get_object_class(a.object_id, c582_cls);
++                if (c582_known && (c582_cls == "[B" || c582_cls == "[C" ||
++                                   c582_cls == "[S" || c582_cls == "[I" ||
++                                   c582_cls == "[J" || c582_cls == "[F" ||
++                                   c582_cls == "[D" ||
++                                   c582_cls == "Ljava/nio/ByteBuffer;" ||
++                                   c582_cls == "Ljava/nio/IntBuffer;" ||
++                                   c582_cls == "Ljava/nio/FloatBuffer;" ||
++                                   c582_cls == "Ljava/nio/ShortBuffer;" ||
++                                   c582_cls == "Ljava/nio/DoubleBuffer;" ||
++                                   c582_cls == "Ljava/nio/CharBuffer;" ||
++                                   c582_cls == "Ljava/nio/LongBuffer;" ||
++                                   c582_cls == "Ljava/nio/DirectByteBuffer;"))
++                    c582_objs.push_back(a.object_id);
++            } else if (a.type == DalvikType::INT32 ||
++                       a.type == DalvikType::BYTE ||
++                       a.type == DalvikType::SHORT) {
++                c582_ints.push_back(a.int_val);
++            } else if (a.type == DalvikType::INT64) {
++                c582_ints.push_back(static_cast<int32_t>(a.long_val));
++            }
++        }
++        if (c582_objs.size() < 2 || c582_ints.size() < 3) {
++            // unknown shape — do NOT claim it; let the native precedence
++            // own the call (honest miss, never a fake success)
++        } else {
++            uint32_t c582_src = c582_objs[0];
++            uint32_t c582_dst = c582_objs[1];
++            // gdx 1.9.10 BufferUtils.java calls
++            //   copyJni(src, srcOffset, dst, positionInBytes(dst), numElements)
++            // — the int order is [srcOffset, dstPosition, numBytes].
++            int32_t c582_src_off = c582_ints[0];
++            int32_t c582_dst_off = c582_ints[1];
++            int32_t c582_num = c582_ints[2];
++            if (c582_num < 0 || c582_src_off < 0 || c582_dst_off < 0) {
++                throw_deferred("Ljava/lang/IndexOutOfBoundsException;",
++                               "copyJni negative offset/length",
++                               "f582-copy-neg");
++                return true;
++            }
++            // src byte read: [B array fields, or buffer one-identity
++            auto c582_src_byte = [&](int32_t k) -> int {
++                std::string c_cls;
++                if (!heap_.get_object_class(c582_src, c_cls))
++                    return -1;
++                if (c_cls.size() > 1 && c_cls[0] == '[') {
++                    auto bv = heap_.get_object_field(
++                        c582_src, "array[" + std::to_string(k) + "]");
++                    if (!bv.has_value()) return -1;
++                    // F-NEW-582 FIX: byte_val is int8_t — mask to the
++                    // UNSIGNED byte value (a signed read turned every
++                    // 0x80..0xFF byte negative and the `v < 0 → 0` guard
++                    // zeroed it — the Roboto font's table directory lost
++                    // every high-bit byte → FT Invalid_Table, tictactoe_3).
++                    if (bv->type == DalvikType::BYTE)
++                        return (int)(bv->byte_val & 0xFF);
++                    if (bv->type == DalvikType::INT32 ||
++                        bv->type == DalvikType::CHAR ||
++                        bv->type == DalvikType::SHORT)
++                        return (int)(bv->int_val & 0xFF);
++                    return -1;
++                }
++                // buffer: real memory first, then the lazy field store
++                auto dv = heap_.get_object_field(c582_src, "__bb_direct__");
++                if (dv.has_value() && dv->type == DalvikType::INT64 &&
++                    dv->long_val != 0) {
++                    unsigned char* mem =
++                        reinterpret_cast<unsigned char*>((uintptr_t)dv->long_val);
++                    auto cv = heap_.get_object_field(c582_src,
++                                                     "__bb_direct_cap__");
++                    int32_t dcap = (cv.has_value() &&
++                                    cv->type == DalvikType::INT32)
++                                       ? cv->int_val
++                                       : 0;
++                    if (dcap == 0 || k < dcap) return (int)mem[k];
++                }
++                auto bv = heap_.get_object_field(
++                    c582_src, "__bb_b" + std::to_string(k) + "__");
++                if (bv.has_value() && bv->type == DalvikType::INT32)
++                    return (int)(bv->int_val & 0xFF);
++                char lo[32];
++                std::snprintf(lo, sizeof(lo), "__bb_w%d_lo__", k);
++                auto lv = heap_.get_object_field(c582_src, lo);
++                if (lv.has_value() && lv->type == DalvikType::INT32)
++                    return (int)(lv->int_val & 0xFF);
++                return -1;
++            };
++            // dst byte write: real memory + field store mirror
++            auto c582_dst_byte = [&](int32_t k, int v) {
++                auto dv = heap_.get_object_field(c582_dst, "__bb_direct__");
++                if (dv.has_value() && dv->type == DalvikType::INT64 &&
++                    dv->long_val != 0) {
++                    unsigned char* mem =
++                        reinterpret_cast<unsigned char*>((uintptr_t)dv->long_val);
++                    auto cv = heap_.get_object_field(c582_dst,
++                                                     "__bb_direct_cap__");
++                    int32_t dcap = (cv.has_value() &&
++                                    cv->type == DalvikType::INT32)
++                                       ? cv->int_val
++                                       : 0;
++                    if (dcap == 0 || k < dcap)
++                        mem[k] = (unsigned char)(v & 0xFF);
++                }
++                heap_.set_object_field(
++                    c582_dst, "__bb_b" + std::to_string(k) + "__",
++                    DalvikValue::make_int(v & 0xFF));
++            };
++            for (int32_t k = 0; k < c582_num; ++k) {
++                int v = c582_src_byte(c582_src_off + k);
++                if (v < 0) v = 0;  // unwritten slot reads as zero (deterministic)
++                c582_dst_byte(c582_dst_off + k, v);
++            }
++            static std::atomic<uint64_t> s582_copy{0};
++            if (s582_copy.fetch_add(1, std::memory_order_relaxed) < 8)
++                std::cerr << "[F-NEW-582b] copyJni src=o" << c582_src
++                          << "@+" << c582_src_off << " dst=o" << c582_dst
++                          << "@+" << c582_dst_off << " num=" << c582_num
++                          << std::endl;
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
+     if (class_name == "Lorg/telegram/tgnet/NativeByteBuffer;") {
+         // shared address→oid registry (both natives consult it)
+         static std::map<int64_t, uint32_t> nbb_addr_to_oid;
+@@ -50629,6 +51405,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             bb_set(bid, "__bb_pos__", 0);
+             bb_set(bid, "__bb_lim__", cap);
+             bb_set(bid, "__bb_order__", 0);  // BIG_ENDIAN default (OpenJDK)
++            // F-NEW-582 (S188): allocateDirect allocates REAL host memory
++            // (AOSP DirectByteBuffer ctor law — the backing is runtime-owned
++            // malloc'd memory, zero-filled; calloc keeps the byte-determinism
++            // law: fresh page zero-fill is the deterministic answer). The
++            // buffer registers with the JNI direct-buffer family so the REAL
++            // natives (gdx BufferUtils.copyJni/getAddressJNI — the FreeType
++            // font pipeline) read the address through GetDirectBufferAddress
++            // and the put/get laws below mirror bytes into that memory.
++            if (method == "allocateDirect" && cap > 0) {
++                void* mem582 = std::calloc((size_t)cap, 1);
++                if (mem582) {
++                    DalvikValue d582;
++                    d582.type = DalvikType::INT64;
++                    d582.long_val = (int64_t)(uintptr_t)mem582;
++                    heap_.set_object_field(bid, "__bb_direct__", d582);
++                    heap_.set_object_field(
++                        bid, "__bb_direct_cap__", DalvikValue::make_int(cap));
++                    nativeexec::register_direct_buffer(bid, mem582, cap);
++                    static std::atomic<uint64_t> s582_alloc{0};
++                    if (s582_alloc.fetch_add(1, std::memory_order_relaxed) < 8)
++                        std::cerr << "[F-NEW-582] allocateDirect(" << cap
++                                  << ") → obj#" << bid << " real-mem @"
++                                  << mem582 << std::endl;
++                }
++            }
+             // backing store: per-object byte fields are impractical; store
+             // as a run of __bb_b<i>__ int fields lazily on write.
+             result = DalvikValue::make_object(bid, "Ljava/nio/ByteBuffer;");
+diff --git a/miniandroid/src/framework/gl_surface_shadow.cpp b/miniandroid/src/framework/gl_surface_shadow.cpp
+--- a/miniandroid/src/framework/gl_surface_shadow.cpp
++++ b/miniandroid/src/framework/gl_surface_shadow.cpp
+@@ -221,6 +221,28 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
+ // Dispatch one GLES20 static through the bridge. Returns the handled flag;
+ // ret maps from the DEX prototype's return char (I/Z→int, F→float, V→void).
+ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
++    // ── F-NEW-587 (S188): GLES20.glGetString law ────────────────────────
++    // AOSP GLES20.glGetString(name): the Android GLES2 driver answers
++    // GL_EXTENSIONS (0x1F03) with the real extension list (real Android
++    // drivers do — libGDX AndroidGraphics.supportsExtension READS it and
++    // every gdx texture-init path rides the answer). PortableGL carries
++    // its own GL_EXTENSIONS too. The GL10 shadow body answered glGetString
++    // (line ~603) but the F-NEW-388 GLES20 static adapter did NOT — the
++    // tower3d GLTexture.<clinit> supportsExtension read NULL →
++    // String.contains NPE → AndroidLauncher.onCreate APP-BOUNDARY death.
++    // Version/Renderer/Vendor get the same PortableGL identity string the
++    // GL10 body answers (one GL — one identity).
++    if (ctx.method == "glGetString" && !ctx.args.empty() &&
++        ctx.args[0].kind == CallContext::Arg::Kind::INT) {
++        uint32_t name = (uint32_t)ctx.args[0].int_val;
++        if (name == 0x1F03u) {  // GL_EXTENSIONS (Android GLES2 driver law)
++            return CallResult::handled_string(
++                "GL_OES_texture_npot GL_OES_compressed_ETC1_RGB8_texture "
++                "GL_OES_standard_derivatives GL_EXT_texture_filter_anisotropic");
++        }
++        return CallResult::handled_string(
++            "PortableGL 0.101 (MiniAndroid software GL)");
++    }
+     // CONT-159 (F-NEW-503 decode diag, env-gated): every GLES20/GLES30
+     // static that reaches the shadow — method + arg kinds + ids. Answers
+     // WHICH calls the layering delivers and which miss it entirely.
+diff --git a/miniandroid/src/jni/dlopen_exec.cpp b/miniandroid/src/jni/dlopen_exec.cpp
+--- a/miniandroid/src/jni/dlopen_exec.cpp
++++ b/miniandroid/src/jni/dlopen_exec.cpp
+@@ -397,6 +397,154 @@ void arena_clear() {
+     arena().clear();
+ }
+ 
++// ────────────────────────────────────────────────────────────────────────
++// F-NEW-582 (S188) — JNI DIRECT-BUFFER FAMILY (AOSP/ART law,
++// art/runtime/jni/jni_internal.cc): a direct ByteBuffer's backing memory is
++// runtime-owned; GetDirectBufferAddress(env, buf) answers the memory
++// address (NULL for non-direct), GetDirectBufferCapacity answers the byte
++// capacity (-1 for non-direct), NewDirectByteBuffer(env, addr, cap) wraps
++// native memory into a ByteBuffer. Live face (tictactoe_3): the REAL
++// libgdx64.so's BufferUtils.copyJni / getAddressJNI both call
++// GetDirectBufferAddress — the slot answered 0 (unsupported stub) →
++// memcpy from NULL → guarded SIGSEGV → the FreeType font buffer stayed
++// empty → FT_New_Memory_Face → null Face → NPE → AndroidLauncher.onCreate
++// APP-BOUNDARY death. The engine registers REAL host memory it allocates
++// for direct buffers (allocateDirect / newDisposableByteBuffer) under the
++// heap object id; a buffer the NATIVE minted (NewDirectByteBuffer) comes
++// back as a DIRECT_BUFFER outcome and the engine registers it on minting.
++struct NativeDirectBuffer {
++    uint64_t magic = 0x4449524255462146ull;  // "DIRBUF!F"
++    void* addr = nullptr;
++    int32_t cap = 0;
++};
++// S196 merge: renamed f582_ — main's W10 DirectBufferBox registry already
++// owns the direct_buffer_boxes() name (F-NEW-594); this is the F-NEW-582
++// oid-keyed twin. The JNI slots below are supersets: F-NEW-582 registries
++// first, then the W10 engine-hook snapshot path as fallback.
++static std::vector<NativeDirectBuffer*>& f582_db_boxes() {
++    static std::vector<NativeDirectBuffer*> boxes;
++    return boxes;
++}
++// W10 originals (defined later in this TU) — superset fallbacks.
++void* jni_NewDirectByteBuffer(void*, void*, int64_t);
++void* jni_GetDirectBufferAddress(void*, void*);
++int64_t jni_GetDirectBufferCapacity(void*, void*);
++static std::map<uint32_t, NativeDirectBuffer*>& direct_buffer_registry() {
++    static std::map<uint32_t, NativeDirectBuffer*> reg;
++    return reg;
++}
++static NativeDirectBuffer* as_direct_buffer(void* ref) {
++    if (!ref) return nullptr;
++    for (NativeDirectBuffer* b : f582_db_boxes())
++        if (b == ref) return b;
++    return nullptr;
++}
++static NativeDirectBuffer* direct_buffer_for_tagged(void* buf) {
++    if (as_direct_buffer(buf)) return static_cast<NativeDirectBuffer*>(buf);
++    uintptr_t v = (uintptr_t)buf;
++    // decode the engine tag (0x5_00000000 | oid — see call_native marshaling)
++    if ((v >> 32) == 0x5) {
++        uint32_t oid = (uint32_t)(v & 0xffffffffull);
++        auto it = direct_buffer_registry().find(oid);
++        if (it != direct_buffer_registry().end()) return it->second;
++    }
++    return nullptr;
++}
++// ── F-NEW-586 (S188): primitive-array mirrors (engine-owned storage) ──
++struct PrimitiveArrayMirror {
++    void* data = nullptr;
++    int32_t count = 0;
++    int32_t elem_size = 1;
++};
++static std::map<uint32_t, PrimitiveArrayMirror*>& prim_array_registry() {
++    static std::map<uint32_t, PrimitiveArrayMirror*> reg;
++    return reg;
++}
++static PrimitiveArrayMirror* prim_array_for_tagged(void* arr) {
++    uintptr_t v = (uintptr_t)arr;
++    if ((v >> 32) == 0x5) {
++        uint32_t oid = (uint32_t)(v & 0xffffffffull);
++        auto it = prim_array_registry().find(oid);
++        if (it != prim_array_registry().end()) return it->second;
++    }
++    return nullptr;
++}
++static unsigned long long g_prim_array_slots_served = 0;
++static unsigned long long g_direct_buffer_slots_served = 0;
++void* f582_GetDirectBufferAddress(void*, void* buf) {
++    {
++        std::lock_guard<std::mutex> lk(g_mu);
++        ++g_direct_buffer_slots_served;
++    }
++    NativeDirectBuffer* db = direct_buffer_for_tagged(buf);
++    static unsigned long long f582_addr_n = 0;
++    if (f582_addr_n++ < 16)
++        fprintf(stderr, "[F-NEW-582] GetDirectBufferAddress buf=%p -> %s\n",
++                buf, db ? "FOUND" : "NULL (non-direct/unknown)");
++    if (db) return db->addr;
++    // S196 merge: W10 owner path — the g_f590_hooks engine snapshot
++    // (DartMessenger platform messages) answers its own shapes here.
++    return jni_GetDirectBufferAddress(nullptr, buf);
++}
++int64_t f582_GetDirectBufferCapacity(void*, void* buf) {
++    NativeDirectBuffer* db = direct_buffer_for_tagged(buf);
++    if (db) return db->cap;
++    return jni_GetDirectBufferCapacity(nullptr, buf);  // W10 path
++}
++void* f582_NewDirectByteBuffer(void*, void* addr, int32_t cap) {
++    // S196 fix (self-caught merge deviation): AOSP art jni_internal.cc
++    // NewDirectByteBuffer rejects capacity < 0 ONLY — libGDX mints EMPTY
++    // pixmaps via NewDirectByteBuffer(env, malloc(0)-data, 0) for empty
++    // glyphs (upstream createGlyph calls getPixmap unconditionally, even
++    // for 0x0 bitmaps); a cap=0 box must be minted, not refused.
++    if (addr && cap >= 0) {
++        NativeDirectBuffer* b = new NativeDirectBuffer();
++        b->addr = addr;
++        b->cap = cap;
++        f582_db_boxes().push_back(b);
++        return b;
++    }
++    return jni_NewDirectByteBuffer(nullptr, addr, (int64_t)cap);
++}
++
++// ── F-NEW-586 (S188): the primitive-array JNI slot family (spec slots
++// 183-190 Get<prim>ArrayElements, 191-198 Release, 222/223 Critical,
++// 199-214 Region) over the engine's host mirrors. A JNI pointer family
++// shared by EVERY native that touches engine arrays (gdx2d pixmaps,
++// Box2D, matrix ops...). spec-exact slots anchored against this table's
++// own correct entries (RegisterNatives 215, ExceptionCheck 228).
++static void* jni_prim_array_get(void*, void* arr, unsigned char* is_copy) {
++    {
++        std::lock_guard<std::mutex> lk(g_mu);
++        ++g_prim_array_slots_served;
++    }
++    PrimitiveArrayMirror* m = prim_array_for_tagged(arr);
++    if (!m) return nullptr;  // JNI spec: NULL on error
++    if (is_copy) *is_copy = 1;  // the mirror IS a copy; Release syncs back
++    return m->data;
++}
++static void jni_prim_array_release(void*, void*, void*) {}
++static void* jni_prim_array_critical(void* env, void* arr) {
++    return jni_prim_array_get(env, arr, nullptr);
++}
++// Get<prim>ArrayRegion / Set<prim>ArrayRegion over the mirror.
++static void jni_prim_array_get_region(void* env, void* arr, int32_t start,
++                                      int32_t len, void* buf) {
++    PrimitiveArrayMirror* m = prim_array_for_tagged(arr);
++    if (!m || !buf) return;
++    if (start < 0 || len < 0 || start + len > m->count) return;
++    memcpy(buf, (char*)m->data + (size_t)start * m->elem_size,
++           (size_t)len * m->elem_size);
++}
++static void jni_prim_array_set_region(void* env, void* arr, int32_t start,
++                                      int32_t len, const void* buf) {
++    PrimitiveArrayMirror* m = prim_array_for_tagged(arr);
++    if (!m || !buf) return;
++    if (start < 0 || len < 0 || start + len > m->count) return;
++    memcpy((char*)m->data + (size_t)start * m->elem_size, buf,
++           (size_t)len * m->elem_size);
++}
++
+ // ── JNI function table (spec slot indices) ─────────────────────────────
+ // F-C4-581 (W9): 181 → 240 — the spec table runs past 228 (ExceptionCheck);
+ // the old bound silently capped the spec-exact wiring above it.
+@@ -1107,6 +1255,49 @@ void init_tables() {
+     g_jni_table[172] = (void*)&jni_NewObjectArray;          // 172 NewObjectArray
+     g_jni_table[173] = (void*)&jni_GetObjectArrayElement;   // 173 GetObjectArrayElement
+     g_jni_table[174] = (void*)&jni_SetObjectArrayElement;   // 174 SetObjectArrayElement
++    // F-NEW-582 (S188): the direct-buffer family — TRUE spec slots
++    // (NewDirectByteBuffer 229, GetDirectBufferAddress 230,
++    // GetDirectBufferCapacity 231; previously the loud UNSUPPORTED stub —
++    // the copyJni/getAddressJNI fault face). Anchored against this table's
++    // own correct entries: RegisterNatives 215, ExceptionCheck 228.
++    g_jni_table[229] = (void*)&f582_NewDirectByteBuffer;      // 229 NewDirectByteBuffer
++    g_jni_table[230] = (void*)&f582_GetDirectBufferAddress;   // 230 GetDirectBufferAddress
++    g_jni_table[231] = (void*)&f582_GetDirectBufferCapacity;  // 231 GetDirectBufferCapacity
++    // F-NEW-586 (S188): the primitive-array family over host mirrors.
++    g_jni_table[183] = (void*)&jni_prim_array_get;  // 183 GetBooleanArrayElements
++    g_jni_table[184] = (void*)&jni_prim_array_get;  // 184 GetByteArrayElements
++    g_jni_table[185] = (void*)&jni_prim_array_get;  // 185 GetCharArrayElements
++    g_jni_table[186] = (void*)&jni_prim_array_get;  // 186 GetShortArrayElements
++    g_jni_table[187] = (void*)&jni_prim_array_get;  // 187 GetIntArrayElements
++    g_jni_table[188] = (void*)&jni_prim_array_get;  // 188 GetLongArrayElements
++    g_jni_table[189] = (void*)&jni_prim_array_get;  // 189 GetFloatArrayElements
++    g_jni_table[190] = (void*)&jni_prim_array_get;  // 190 GetDoubleArrayElements
++    g_jni_table[191] = (void*)&jni_prim_array_release;  // 191 ReleaseBoolean...
++    g_jni_table[192] = (void*)&jni_prim_array_release;  // 192 ReleaseByte...
++    g_jni_table[193] = (void*)&jni_prim_array_release;  // 193 ReleaseChar...
++    g_jni_table[194] = (void*)&jni_prim_array_release;  // 194 ReleaseShort...
++    g_jni_table[195] = (void*)&jni_prim_array_release;  // 195 ReleaseInt...
++    g_jni_table[196] = (void*)&jni_prim_array_release;  // 196 ReleaseLong...
++    g_jni_table[197] = (void*)&jni_prim_array_release;  // 197 ReleaseFloat...
++    g_jni_table[198] = (void*)&jni_prim_array_release;  // 198 ReleaseDouble...
++    g_jni_table[199] = (void*)&jni_prim_array_get_region;   // 199 GetBooleanArrayRegion
++    g_jni_table[200] = (void*)&jni_prim_array_get_region;   // 200 GetByteArrayRegion
++    g_jni_table[201] = (void*)&jni_prim_array_get_region;   // 201 GetCharArrayRegion
++    g_jni_table[202] = (void*)&jni_prim_array_get_region;   // 202 GetShortArrayRegion
++    g_jni_table[203] = (void*)&jni_prim_array_get_region;   // 203 GetIntArrayRegion
++    g_jni_table[204] = (void*)&jni_prim_array_get_region;   // 204 GetLongArrayRegion
++    g_jni_table[205] = (void*)&jni_prim_array_get_region;   // 205 GetFloatArrayRegion
++    g_jni_table[206] = (void*)&jni_prim_array_get_region;   // 206 GetDoubleArrayRegion
++    g_jni_table[207] = (void*)&jni_prim_array_set_region;   // 207 SetBooleanArrayRegion
++    g_jni_table[208] = (void*)&jni_prim_array_set_region;   // 208 SetByteArrayRegion
++    g_jni_table[209] = (void*)&jni_prim_array_set_region;   // 209 SetCharArrayRegion
++    g_jni_table[210] = (void*)&jni_prim_array_set_region;   // 210 SetShortArrayRegion
++    g_jni_table[211] = (void*)&jni_prim_array_set_region;   // 211 SetIntArrayRegion
++    g_jni_table[212] = (void*)&jni_prim_array_set_region;   // 212 SetLongArrayRegion
++    g_jni_table[213] = (void*)&jni_prim_array_set_region;   // 213 SetFloatArrayRegion
++    g_jni_table[214] = (void*)&jni_prim_array_set_region;   // 214 SetDoubleArrayRegion
++    g_jni_table[222] = (void*)&jni_prim_array_critical;         // 222 GetPrimitiveArrayCritical
++    g_jni_table[223] = (void*)&jni_prim_array_release;          // 223 ReleasePrimitiveArrayCritical
+     // registration + VM family — TRUE spec slots (were mis-wired at
+     // 163/164/167/176).
+     g_jni_table[215] = (void*)&jni_RegisterNatives;        // 215 RegisterNatives
+@@ -1120,9 +1311,11 @@ void init_tables() {
+     // F-NEW-590 (W10): the direct-Buffer family — W9 census env230=4
+     // (DartMessenger platform messages into libflutter's native
+     // dispatch); 229/231 complete the family.
+-    g_jni_table[229] = (void*)&jni_NewDirectByteBuffer;     // 229 NewDirectByteBuffer
+-    g_jni_table[230] = (void*)&jni_GetDirectBufferAddress;  // 230 GetDirectBufferAddress (W9 census: queens ×4)
+-    g_jni_table[231] = (void*)&jni_GetDirectBufferCapacity; // 231 GetDirectBufferCapacity
++    // S196 merge: the F-NEW-582 superset slots own the family (W10
++    // engine-hook snapshot path preserved as the in-function fallback).
++    g_jni_table[229] = (void*)&f582_NewDirectByteBuffer;     // 229 NewDirectByteBuffer
++    g_jni_table[230] = (void*)&f582_GetDirectBufferAddress;  // 230 GetDirectBufferAddress (W9 census: queens ×4)
++    g_jni_table[231] = (void*)&f582_GetDirectBufferCapacity; // 231 GetDirectBufferCapacity
+     FillUnsupported<kVmSlots - 1, true>::fill(g_vm_table);
+     // F-NEW-594 diag: the slot-152 identity — the throw-probe chain said
+     // libflutter's slot-152 call landed on exe code at 0x676ff7, not on
+@@ -1166,6 +1359,14 @@ void mangle_escape(const std::string& in, std::string& out) {
+         if (c == '_') out += "_1";
+         else if (c == ';') out += "_2";
+         else if (c == '[') out += "_3";
++        // F-NEW-583 (S188): JNI-spec inner-class escape — '$' mangles to
++        // _00024 (jni.h native-method naming law). Live face: the REAL
++        // libgdx-freetype64.so exports
++        // Java_..._FreeType_00024Library_newMemoryFace; the raw '$' form
++        // never matched, find_symbol answered nullptr, the F-C4-594
++        // honest-fallback restored the stub zero → null Face →
++        // checkForBitmapFont NPE → tictactoe_3 font wall.
++        else if (c == '$') out += "_00024";
+         else if (c == '/' || c == '.') out += '_';
+         else if (c < 0x20 || c > 0x7e) {
+             snprintf(buf, sizeof buf, "_0%04x", (unsigned)c);
+@@ -1216,6 +1417,55 @@ std::vector<std::string> param_types(const std::string& dex_sig) {
+ 
+ }  // namespace
+ 
++// F-NEW-586 (S188): primitive-array mirror registry — external-linkage
++// engine API. The engine materializes the mirror from the heap before a
++// native call and copies writes back after (sync = engine-side).
++void register_primitive_array(uint32_t oid, void* data, int32_t count,
++                              int32_t elem_size) {
++    std::lock_guard<std::mutex> lk(g_mu);
++    PrimitiveArrayMirror* m = new PrimitiveArrayMirror();
++    m->data = data;
++    m->count = count;
++    m->elem_size = elem_size;
++    prim_array_registry()[oid] = m;
++}
++bool lookup_primitive_array(uint32_t oid, void** data, int32_t* count,
++                            int32_t* elem_size) {
++    std::lock_guard<std::mutex> lk(g_mu);
++    auto it = prim_array_registry().find(oid);
++    if (it == prim_array_registry().end()) return false;
++    if (data) *data = it->second->data;
++    if (count) *count = it->second->count;
++    if (elem_size) *elem_size = it->second->elem_size;
++    return true;
++}
++
++// F-NEW-582 (S188): direct-buffer registry — external-linkage engine API.
++// The engine allocates REAL host memory for direct buffers and registers
++// the (heap id → memory) pair; GetDirectBufferAddress decodes the tagged
++// jobject back to the address (AOSP jni_internal.cc GetDirectBufferAddress
++// law).
++void register_direct_buffer(uint32_t oid, void* addr, int32_t cap) {
++    std::lock_guard<std::mutex> lk(g_mu);
++    NativeDirectBuffer* b = new NativeDirectBuffer();
++    b->addr = addr;
++    b->cap = cap;
++    f582_db_boxes().push_back(b);
++    direct_buffer_registry()[oid] = b;
++    static unsigned long long f582_reg_n = 0;
++    if (f582_reg_n++ < 12)
++        fprintf(stderr, "[F-NEW-582] register oid=%u addr=%p cap=%d\n", oid,
++                addr, cap);
++}
++bool lookup_direct_buffer(uint32_t oid, void** addr, int32_t* cap) {
++    std::lock_guard<std::mutex> lk(g_mu);
++    auto it = direct_buffer_registry().find(oid);
++    if (it == direct_buffer_registry().end()) return false;
++    if (addr) *addr = it->second->addr;
++    if (cap) *cap = it->second->cap;
++    return true;
++}
++
+ // ── Library lifecycle ──────────────────────────────────────────────────
+ LoadOutcome load_library(const std::string& libname,
+                          const std::string& host_path,
+@@ -1548,6 +1798,28 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
+ 
+     // overflow buffer must stay alive across the call
+     std::vector<uint64_t> overflow = stack_args;
++    // F-NEW-582 diag (bounded): raw INTEGER registers for the FreeType
++    // newMemoryFace call shape — the exact 6 register slots the native
++    // sees (env, jclass, library, buffer tag, dataSize, faceIndex).
++    { static bool f582_sig_dumped = false;
++      if (!f582_sig_dumped && int_regs[2] != 0) {
++        f582_sig_dumped = true;
++        fprintf(stderr, "[F-NEW-582] call_native sig=[%s] static=%d argc=%zu\n",
++                sig.c_str(), (int)static_call, args.size());
++      } }
++    if (sig.rfind("(JLjava/nio/ByteBuffer;II)J", 0) == 0) {
++        static unsigned long long f582_regs_n = 0;
++        if (f582_regs_n++ < 4) {
++            fprintf(stderr,
++                    "[F-NEW-582] raw int_regs: env=%p cls=%p lib=0x%llx "
++                    "tag=0x%llx size=%llu face=%llu\n",
++                    (void*)int_regs[0], (void*)int_regs[1],
++                    (unsigned long long)int_regs[2],
++                    (unsigned long long)int_regs[3],
++                    (unsigned long long)int_regs[4],
++                    (unsigned long long)int_regs[5]);
++        }
++    }
+     double sse_ret = 0.0;
+     // FIX-TTT (CONT-120): the same fault guard that covers the JNI_OnLoad
+     // handshake covers every real symbol call — foreign code we do not
+@@ -1617,6 +1889,13 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
+             if (!ref) {
+                 out.kind = JOutcome::Kind::OBJECT;
+                 out.object_id = 0;
++            } else if (NativeDirectBuffer* db = as_direct_buffer(ref)) {
++                // F-NEW-582 (S188): a native-minted direct ByteBuffer → the
++                // engine mints a real heap ByteBuffer with the SAME backing
++                // memory (DIRECT_BUFFER outcome — registered on minting).
++                out.kind = JOutcome::Kind::DIRECT_BUFFER;
++                out.native_addr = db->addr;
++                out.native_cap = db->cap;
+             } else if (NativeObjArray* arr = as_obj_array(ref)) {
+                 // F-C4-587 (W10): a native-built jobjectArray → the engine
+                 // mints a real DEX array (STRING_ARRAY outcome). Elements
+@@ -1672,6 +1951,14 @@ unsigned long long native_call_failures() {
+     std::lock_guard<std::mutex> lk(g_mu);
+     return g_unsupported_slot_calls;
+ }
++unsigned long long direct_buffer_slots_served() {
++    std::lock_guard<std::mutex> lk(g_mu);
++    return g_direct_buffer_slots_served;
++}
++unsigned long long primitive_array_slots_served() {
++    std::lock_guard<std::mutex> lk(g_mu);
++    return g_prim_array_slots_served;
++}
+ 
+ }  // namespace nativeexec
+ }  // namespace miniandroid
+diff --git a/miniandroid/src/jni/dlopen_exec.h b/miniandroid/src/jni/dlopen_exec.h
+--- a/miniandroid/src/jni/dlopen_exec.h
++++ b/miniandroid/src/jni/dlopen_exec.h
+@@ -72,7 +72,7 @@ struct JArg {
+ // Invocation result (return type per DEX descriptor).
+ struct JOutcome {
+     enum class Kind { VOID, INT, LONG, FLOAT, DOUBLE, BOOLEAN, CHAR, SHORT,
+-                      BYTE, STRING, OBJECT, STRING_ARRAY } kind = Kind::VOID;
++                      BYTE, STRING, OBJECT, STRING_ARRAY, DIRECT_BUFFER } kind = Kind::VOID;
+     int64_t i = 0;           // INT/LONG/BOOLEAN/CHAR/SHORT/BYTE
+     double d = 0.0;          // FLOAT/DOUBLE
+     std::string str;         // STRING (materialized from the native side)
+@@ -82,9 +82,45 @@ struct JOutcome {
+     // are the string payloads; a null element is carried as the empty
+     // string (the engine mints a null DEX element for it).
+     std::vector<std::string> str_elems;
++    // F-NEW-582 (S188): DIRECT_BUFFER — a native library built a direct
++    // ByteBuffer through NewDirectByteBuffer(addr, cap). The engine mints a
++    // real heap ByteBuffer with the SAME backing memory so put/get and any
++    // later GetDirectBufferAddress round-trip through one identity.
++    void* native_addr = nullptr;
++    int32_t native_cap = 0;
+     std::string provenance;  // symbol + lib that actually executed
+ };
+ 
++// ── F-NEW-582 (S188): direct-buffer registry (engine ↔ JNIEnv bridge) ──
++// AOSP/ART law (art/runtime/jni/jni_internal.cc GetDirectBufferAddress):
++// a direct ByteBuffer's backing memory is owned by the runtime; the JNI
++// slots answer its address/capacity. The engine allocates REAL host memory
++// for allocateDirect/newDisposableByteBuffer buffers and registers the
++// (heap object id → memory) pair here; GetDirectBufferAddress decodes the
++// tagged jobject (0x5…|oid) back to the address. Buffers the NATIVE minted
++// (NewDirectByteBuffer) come back as a DIRECT_BUFFER outcome and the
++// engine registers them on minting.
++void register_direct_buffer(uint32_t oid, void* addr, int32_t cap);
++bool lookup_direct_buffer(uint32_t oid, void** addr, int32_t* cap);
++
++// ── F-NEW-586 (S188): primitive-array host mirrors ───────────────────
++// AOSP/ART law (jni_internal.cc GetPrimitiveArrayCritical family): the
++// runtime hands the native a pointer to the array's storage. The engine
++// heap stores arrays as per-index fields, so the ENGINE materializes a
++// host mirror before every native call (register_primitive_array) and
++// copies the native's writes back after (sync_primitive_array). The JNI
++// slots (Get/Release<prim>ArrayElements, Get/ReleasePrimitiveArrayCritical,
++// Get/Set<prim>ArrayRegion) answer the mirror pointer; a null mirror means
++// the JNI-spec error contract (NULL) — the guarded call law owns the rest.
++// Live face (tictactoe_3): Gdx2DPixmap.newPixmap([JIII) — the REAL gdx2d
++// native writes the pixmap/pixels handles into nativeData[0..3] through
++// GetLongArrayElements — the unsupported slot answered 0 → SIGSEGV inside
++// gdx2d_new → the whole freetype → Pixmap pipeline died.
++void register_primitive_array(uint32_t oid, void* data, int32_t count,
++                              int32_t elem_size);
++bool lookup_primitive_array(uint32_t oid, void** data, int32_t* count,
++                            int32_t* elem_size);
++
+ // ── Library lifecycle (System.loadLibrary / System.load) ──────────────
+ // Attempts REAL dlopen + JNI_OnLoad. On success the handle stays live for
+ // symbol resolution; on failure outcome.detail carries the REAL dlerror.
+@@ -123,6 +159,7 @@ unsigned long long load_attempts();
+ unsigned long long load_successes();
+ unsigned long long native_calls();
+ unsigned long long native_call_failures();
++unsigned long long direct_buffer_slots_served();
+ 
+ // ─────────────────────────────────────────────────────────────────────
+ // F-NEW-590 (W10) — ENGINE-QUERY HOOKS. The JNI env-table serves REAL
+diff --git a/reports/apk_routes/com.emmanuelmess.tictactoe.json b/reports/apk_routes/com.emmanuelmess.tictactoe.json
++++ b/reports/apk_routes/com.emmanuelmess.tictactoe.json
+@@ -0,0 +1,108 @@
++{
++ "schema": "S188_APK_ROUTE_PROFILE_V1",
++ "pkg": "com.emmanuelmess.tictactoe",
++ "apk": "/home/z/my-project/upload/canonical_apks/com.emmanuelmess.tictactoe_3.apk",
++ "apk_sha256_16": "760fe5acf7b39435",
++ "static_analysis": {
++  "honest": true,
++  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
++ },
++ "routes_detected": [
++  {
++   "route": "LIBGDX",
++   "evidence": [
++    "dex:Lcom/badlogic/gdx/",
++    "lib:libgdx.so"
++   ],
++   "primary": true
++  },
++  {
++   "route": "VIEW",
++   "evidence": [
++    "dex:Landroid/opengl/GLSurfaceView;"
++   ],
++   "primary": false
++  },
++  {
++   "route": "MEDIA",
++   "evidence": [
++    "dex:Landroid/media/MediaPlayer|MediaCodec"
++   ],
++   "primary": false
++  }
++ ],
++ "primary_route": "LIBGDX",
++ "routes_forbidden": [
++  {
++   "route": "WEBVIEW_HTML5_PACKAGED",
++   "reason": "no WebView classes and no HTML assets in APK \u2014 a Java application must NOT pass through the HTML5 alley"
++  },
++  {
++   "route": "SDL",
++   "reason": "no SDLActivity in DEX"
++  },
++  {
++   "route": "FLUTTER",
++   "reason": "no Flutter embedding classes in DEX"
++  }
++ ],
++ "substitutions_forbidden": [],
++ "required_capabilities": [
++  {
++   "cap": "NATIVE_LIB_LOAD",
++   "evidence": [
++    "dex:Lcom/badlogic/gdx/",
++    "lib:libgdx.so"
++   ]
++  },
++  {
++   "cap": "JNI",
++   "evidence": [
++    "dex:Lcom/badlogic/gdx/",
++    "lib:libgdx.so"
++   ]
++  },
++  {
++   "cap": "EGL_GLES",
++   "evidence": [
++    "libGDX renders via GL"
++   ]
++  },
++  {
++   "cap": "ASSET_MANAGER",
++   "evidence": [
++    "libGDX FileHandle"
++   ]
++  },
++  {
++   "cap": "MEDIA_DEMUX_PER_ASSET",
++   "evidence": [
++    "media classes present; container set must match actual assets, never substituted"
++   ]
++  }
++ ],
++ "inventory": {
++  "native_libs": [
++   "lib/arm64-v8a/libgdx-box2d.so",
++   "lib/arm64-v8a/libgdx-freetype.so",
++   "lib/arm64-v8a/libgdx.so",
++   "lib/armeabi-v7a/libgdx-box2d.so",
++   "lib/armeabi-v7a/libgdx-freetype.so",
++   "lib/armeabi-v7a/libgdx.so",
++   "lib/armeabi/libgdx-box2d.so",
++   "lib/armeabi/libgdx-freetype.so",
++   "lib/armeabi/libgdx.so",
++   "lib/x86/libgdx-box2d.so",
++   "lib/x86/libgdx-freetype.so",
++   "lib/x86/libgdx.so",
++   "lib/x86_64/libgdx-box2d.so",
++   "lib/x86_64/libgdx-freetype.so",
++   "lib/x86_64/libgdx.so"
++  ],
++  "asset_count": 4,
++  "media_assets": [],
++  "html_assets": [],
++  "layouts": 0,
++  "values_strings_xml": 0
++ }
++}
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -419,6 +419,14 @@ static const miniandroid::dalvik::KvPair kFrameworkViews[] = {
+     {"Landroid/widget/Space;", "Landroid/view/View;"},
+     {"Landroid/view/TextureView;", "Landroid/view/View;"},
+     {"Landroid/view/SurfaceView;", "Landroid/view/View;"},
++    // F-NEW-606 (S197): AOSP GLSurfaceView.java L163 — `public class
++    // GLSurfaceView extends SurfaceView` (verified live 2026-11-08,
++    // android.googlesource.com + aosp-mirror). Without this edge the
++    // GLSurfaceView20 -> GLSurfaceView -> (dead end) instance-of View
++    // walk failed inside AndroidInput.<init> and the ctor skipped
++    // setOnTouchListener — the libGDX family was tap-dead (see the full
++    // law comment in framework/view_ancestry.h).
++    {"Landroid/opengl/GLSurfaceView;", "Landroid/view/SurfaceView;"},
+     {"Landroid/content/Context;", "Ljava/lang/Object;"},
+     {"Landroid/content/ContextWrapper;", "Landroid/content/Context;"},
+     {"Landroid/app/Activity;", "Landroid/content/ContextWrapper;"},
+diff --git a/miniandroid/src/framework/view_ancestry.h b/miniandroid/src/framework/view_ancestry.h
+--- a/miniandroid/src/framework/view_ancestry.h
++++ b/miniandroid/src/framework/view_ancestry.h
+@@ -118,6 +118,31 @@ framework_direct_superclass() {
+         {"Landroid/widget/AbsListView;", "Landroid/widget/AdapterView;"},
+         {"Landroid/widget/Spinner;", "Landroid/widget/AbsSpinner;"},
+         {"Landroid/widget/AbsSpinner;", "Landroid/widget/AdapterView;"},
++        // ── F-NEW-606 (S197, Coder 3): GL VIEW FAMILY — AOSP frameworks/base
++        // opengl/java/android/opengl/GLSurfaceView.java L163 (verified live
++        // against android.googlesource.com AND aosp-mirror master,
++        // 2026-11-08): `public class GLSurfaceView extends SurfaceView
++        // implements SurfaceHolder.Callback2`. The extends edge was
++        // MISSING from this table, so for the libGDX view family
++        // (GLSurfaceView20 extends GLSurfaceView — a DEX class whose
++        // chain immediately exits app code into the framework) the
++        // instance-of/check-cast walk GLSurfaceView20 -> GLSurfaceView
++        // hit a dead end and answered FALSE against Landroid/view/View;.
++        // Live face (tictactoe_3 vc3, S197 tap-to-play decode): inside
++        // AndroidInput.<init> the guard `instance-of v7,
++        // Landroid/view/View;` failed -> the ctor branch SKIPPED
++        // setOnTouchListener/setOnKeyListener/requestFocus ->
++        // GLSurfaceView20's ViewNode kept touch_listener_id=0 ->
++        // TouchDispatcher::view_touchable answered false (no DEX
++        // onTouchEvent/dispatchTouchEvent override either) -> every F117
++        // scripted tap hit-tested target=0 -> the whole LIBGDX tap-to-play
++        // family was tap-dead (bouncy was NOT affected: its GLFieldView
++        // overrides onTouchEvent in app DEX, so the S122 arm covered it).
++        // With the edge, the chain resolves GLSurfaceView20 -> GLSurfaceView
++        // -> SurfaceView -> View (SurfaceView edge already seeded), the
++        // ctor registers AndroidInput as the view's OnTouchListener
++        // (F-110e), and the tap dispatches into DEX AndroidInput.onTouch.
++        {"Landroid/opengl/GLSurfaceView;", "Landroid/view/SurfaceView;"},
+         // ── F-NEW-225c (user campaign §B/§I companion): JDK COLLECTION
+         // HIERARCHY (OpenJDK/libcore source — the canonical direct
+         // superclass of every core container). The hierarchy walk and the

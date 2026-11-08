@@ -1,0 +1,67 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "opencalculator_53",
+ "apk": "upload/opencalculator_53.apk",
+ "apk_sha256_16": "2642613868a8a80f",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/"
+   ],
+   "primary": true
+  }
+ ],
+ "primary_route": "VIEW",
+ "routes_forbidden": [
+  {
+   "route": "WEBVIEW_HTML5_PACKAGED",
+   "reason": "no WebView classes and no HTML assets in APK \u2014 a Java application must NOT pass through the HTML5 alley"
+  },
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "APPCOMPAT",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/"
+   ]
+  },
+  {
+   "cap": "ADAPTER_RECYCLE",
+   "evidence": [
+    "dex:Landroidx/appcompat/",
+    "dex:Landroidx/recyclerview/",
+    "dex:Landroidx/fragment/"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [],
+  "asset_count": 2,
+  "media_assets": [],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

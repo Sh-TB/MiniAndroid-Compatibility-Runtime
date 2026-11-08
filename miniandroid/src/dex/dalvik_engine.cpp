@@ -419,6 +419,14 @@ static const miniandroid::dalvik::KvPair kFrameworkViews[] = {
     {"Landroid/widget/Space;", "Landroid/view/View;"},
     {"Landroid/view/TextureView;", "Landroid/view/View;"},
     {"Landroid/view/SurfaceView;", "Landroid/view/View;"},
+    // F-NEW-606 (S197): AOSP GLSurfaceView.java L163 — `public class
+    // GLSurfaceView extends SurfaceView` (verified live 2026-11-08,
+    // android.googlesource.com + aosp-mirror). Without this edge the
+    // GLSurfaceView20 -> GLSurfaceView -> (dead end) instance-of View
+    // walk failed inside AndroidInput.<init> and the ctor skipped
+    // setOnTouchListener — the libGDX family was tap-dead (see the full
+    // law comment in framework/view_ancestry.h).
+    {"Landroid/opengl/GLSurfaceView;", "Landroid/view/SurfaceView;"},
     {"Landroid/content/Context;", "Ljava/lang/Object;"},
     {"Landroid/content/ContextWrapper;", "Landroid/content/Context;"},
     {"Landroid/app/Activity;", "Landroid/content/ContextWrapper;"},
