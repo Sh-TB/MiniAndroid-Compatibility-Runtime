@@ -1,0 +1,1 @@
+RUN /home/z/my-project/miniandroid/build/miniandroid run --execution-mode real-dalvik --data-root /home/z/my-project/evidence/s200/runs/store_s203_glyph -o /home/z/my-project/evidence/s200/runs/s203_glyph_probe --package com.emmanuelmess.tictactoe --frames 40 --frame-delay 250
