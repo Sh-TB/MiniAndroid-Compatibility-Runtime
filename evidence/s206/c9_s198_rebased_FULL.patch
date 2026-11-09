@@ -1,0 +1,2877 @@
+diff --git a/miniandroid/Makefile b/miniandroid/Makefile
+index e43fa77a..1b3ed607 100755
+--- a/miniandroid/Makefile
++++ b/miniandroid/Makefile
+@@ -42,7 +42,7 @@ APK_SOURCES = $(SRCDIR)/apk/apk_parser.cpp $(SRCDIR)/apk/manifest_reader.cpp
+ DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/mutf8.cpp $(SRCDIR)/dex/class_resolver.cpp $(SRCDIR)/dex/dex_interpreter_batch.cpp $(SRCDIR)/dex/dalvik_engine.cpp $(SRCDIR)/dex/trace_exporter.cpp  # EXP-031.5: Trace exporter
+ RUNTIME_SOURCES = $(SRCDIR)/runtime/execution_engine.cpp $(SRCDIR)/runtime/application_runtime.cpp $(SRCDIR)/runtime/route_law.cpp
+ DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp $(SRCDIR)/diagnostics/crash_forensics.cpp $(SRCDIR)/diagnostics/trace_overlay.cpp $(SRCDIR)/diagnostics/install_inspection.cpp
+-RESOURCES_SOURCES = $(SRCDIR)/resources/res_id.cpp $(SRCDIR)/resources/res_config.cpp $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/string_pool.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/vector_inflater.cpp $(SRCDIR)/resources/s132_svg_reader.cpp $(SRCDIR)/resources/resource_runtime.cpp
++RESOURCES_SOURCES = $(SRCDIR)/resources/res_id.cpp $(SRCDIR)/resources/res_config.cpp $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/string_pool.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/vector_inflater.cpp $(SRCDIR)/resources/s132_svg_reader.cpp $(SRCDIR)/resources/resource_runtime.cpp $(SRCDIR)/resources/font_family.cpp $(SRCDIR)/resources/plurals.cpp
+ RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp $(SRCDIR)/renderer/vector_decode.cpp $(SRCDIR)/renderer/gif_decoder.cpp $(SRCDIR)/gles/pgl_backend.cpp $(SRCDIR)/gles/gles20_bridge.cpp $(SRCDIR)/gles/gl_copy_bridge.cpp  # F-NEW-586: glCopyTexImage2D/ glCopyTexSubImage2D dlopen contract (libgdx)
+ # UNIFIED_007 text pipeline — REAL FriBidi/HarfBuzz/FreeType shaping now
+ # feeds BOTH the layout measure pass and the view draw path (was: orphaned
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 11cea802..4f471211 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -131,6 +131,10 @@ bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
+ #include "../framework/view_ancestry.h"  // G12 FIX-G12-001: AOSP framework ancestry law
+ #include "../storage/sqlite_shadow.h"    // M3 F-ROOM-CHAIN: SQLite family shadow
+ #include "../resources/resource_runtime.h"  // G10 FIX-G10-002: early classifier wiring
++#include "../resources/font_family.h"    // C9-16/C9-17 (CODER 9): font-family + weight law
++#include "../resources/plurals.h"        // C9-20 (CODER 9): CLDR plural-category law
++#include <png.h>                          // C9-7 (CODER 9): Bitmap.compress PNG encode
++#include <setjmp.h>                       // C9-7: libpng error contract
+ #include <chrono>
+ #include <unordered_map>  // CONT-29 W1: METHOD-CENSUS (env-gated, read-only)
+ #include <x86intrin.h>  // S61 PERF: __rdtsc phase timers
+@@ -35610,6 +35614,87 @@ void DalvikExecutionEngine::c7_service_bring_down(ServiceInstance& svc,
+         current_class_ + "." + current_method_);
+ }
+ 
++namespace {
++// ── C9-7 (CODER 9) — in-memory PNG encode (Bitmap.compress FORMAT_PNG) ──
++// libpng-backed RGBA encoder (the SAME library the runtime's PNG decoder
++// uses — one PNG authority). The write callback appends to a std::vector.
++// Error-path note: the setjmp branch leaks only the `rows` pointer array
++// (h * sizeof(void*) — bounded, error-only); no other C++ object crosses
++// the longjmp.
++static bool c9_png_encode_rgba(int w, int h,
++                               const std::vector<uint8_t>& rgba,
++                               std::vector<uint8_t>* out) {
++    if (w <= 0 || h <= 0 || rgba.size() != (size_t)w * h * 4 || !out)
++        return false;
++    png_structp p = png_create_write_struct(PNG_LIBPNG_VER_STRING,
++                                            nullptr, nullptr, nullptr);
++    if (!p) return false;
++    png_infop info = png_create_info_struct(p);
++    if (!info) {
++        png_destroy_write_struct(&p, nullptr);
++        return false;
++    }
++    std::vector<uint8_t*> rows(h);
++    for (int y = 0; y < h; ++y)
++        rows[y] = const_cast<uint8_t*>(&rgba[(size_t)y * w * 4]);
++    if (setjmp(png_jmpbuf(p))) {
++        png_destroy_write_struct(&p, &info);
++        return false;
++    }
++    auto write_fn = [](png_structp pp, png_bytep data, png_size_t len) {
++        static_cast<std::vector<uint8_t>*>(png_get_io_ptr(pp))
++            ->insert(static_cast<std::vector<uint8_t>*>(png_get_io_ptr(pp))
++                         ->end(),
++                     data, data + len);
++    };
++    auto flush_fn = [](png_structp) {};
++    png_set_write_fn(p, out, write_fn, flush_fn);
++    png_set_IHDR(p, info, (png_uint_32)w, (png_uint_32)h, 8,
++                 PNG_COLOR_TYPE_RGBA, PNG_INTERLACE_NONE,
++                 PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
++    png_write_info(p, info);
++    png_write_image(p, rows.data());
++    png_write_end(p, nullptr);
++    png_destroy_write_struct(&p, &info);
++    return true;
++}
++
++// ── C9-10 (CODER 9) — DisplayMetrics device-profile law ────────────────
++// ONE density authority: resources::device_config() — the SAME
++// ResTableConfig the bucket selection (AssetManager2 match) and the C9-1
++// BitmapFactory inTargetDensity use. The previous constants
++// (2.625/420/1080x1920 hardcoded) diverged from the runtime device the
++// moment MINIANDROID_DENSITY selected another bucket (the registered §2
++// gap: densityDpi answered 420 while the bucket law served 160/240-
++// selected resources). density = dpi/160 (AOSP DisplayMetrics law);
++// scaledDensity = density (fontScale 1.0); xdpi/ydpi = densityDpi.
++static void c9_fill_display_metrics(DalvikHeap& heap,
++                                    uint32_t dm_id) {
++    if (dm_id == 0 || !heap.has_object(dm_id)) return;
++    const auto& cfg = resources::device_config();
++    const float density = (float)cfg.density / 160.0f;
++    auto set_f = [&](const char* f, float v) {
++        heap.set_object_field(dm_id, f, DalvikValue::make_float(v));
++    };
++    auto set_i = [&](const char* f, int32_t v) {
++        heap.set_object_field(dm_id, f, DalvikValue::make_int(v));
++    };
++    set_f("density", density);
++    set_i("densityDpi", (int32_t)cfg.density);
++    set_f("scaledDensity", density);
++    set_i("widthPixels", (int32_t)cfg.screenWidth);
++    set_i("heightPixels", (int32_t)cfg.screenHeight);
++    set_f("xdpi", (float)cfg.density);
++    set_f("ydpi", (float)cfg.density);
++    static thread_local uint64_t c9_dm_log = 0;
++    if (c9_dm_log++ < 8)
++        std::cerr << "[C9-10] DisplayMetrics <- device_config(): density="
++                  << density << " dpi=" << cfg.density << " "
++                  << cfg.screenWidth << "x" << cfg.screenHeight
++                  << std::endl;
++}
++}  // namespace
++
+ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                                           const std::string& method,
+                                           const std::vector<DalvikValue>& args_raw,
+@@ -37754,6 +37839,101 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             return DalvikValue::make_object(tf_id,
+                                             "Landroid/graphics/Typeface;");
+         };
++        // ── C9-17 (CODER 9) — font-family resolution for CUSTOM families ───
++        // AOSP FontListFontFamilyTypefaceAdapter: Typeface.create(family,
++        // style/weight/italic) resolves the family through its font-family
++        // definition (res/font/<family>.xml), selecting the closest
++        // (weight, italic) face — NOT the filename heuristics. The law:
++        //   1. parse res/font/<fam>.xml via resources::parse_font_family
++        //   2. pick the face with resources::select_font_face_law
++        //   3. resolve @font/<name> → the real APK font-file entry via the
++        //      ARSC router (type "font"), extract the bytes
++        //   4. register the face (TextShaper::register_app_font_memory) and
++        //      answer its index — the SAME __font_face_idx__ channel the
++        //      createFromAsset law feeds (Paint.setTypeface consumes it).
++        // Framework aliases (sans-serif family) and missing XMLs fall back
++        // to the existing behavior (honest miss, no fake face).
++        auto tf_face_idx = [&](const std::string& fam, int32_t weight,
++                               bool italic) -> int {
++            auto& rt = resources::ResourceRuntime::instance();
++            if (!rt.ensure_loaded(apk_path_)) return -1;
++            std::vector<std::string> entries;
++            for (const auto& ze : rt.apk().list_entries_cached("res/"))
++                entries.push_back(ze.name);
++            // The family definition: res/font/<family>.xml — aapt2's font
++            // processing may version-qualify the ATTR-CARRYING file
++            // (res/font-v22/<family>.xml ground truth: the base res/font/
++            // file ships attr-less for the support-lib compat path; probe
++            // `aapt2 dump xmltree`). Law: try the plain file first, then
++            // the -vNN variants, and use the first that PARSES as a
++            // font-family with faces.
++            std::string xml_entry;
++            std::vector<uint8_t> xml_bytes;
++            auto try_xml = [&](const std::string& e) -> bool {
++                for (const auto& en : entries)
++                    if (en == e) {
++                        auto b = rt.apk().extract_entry(apk_path_, e);
++                        if (b.empty()) return false;
++                        auto doc = resources::parse_font_family(b, e);
++                        if (doc.valid()) {
++                            xml_entry = e;
++                            xml_bytes = std::move(b);
++                            return true;
++                        }
++                    }
++                return false;
++            };
++            if (!try_xml("res/font/" + fam + ".xml")) {
++                // version-qualified fallback: res/font-vNN/<fam>.xml
++                const std::string suffix = "/" + fam + ".xml";
++                for (const auto& en : entries) {
++                    if (en.rfind("res/font-v", 0) != 0 ||
++                        en.size() <= suffix.size() ||
++                        en.compare(en.size() - suffix.size(), suffix.size(),
++                                   suffix) != 0)
++                        continue;
++                    if (try_xml(en)) break;
++                }
++            }
++            if (xml_bytes.empty()) return -1;
++            auto fam_doc = resources::parse_font_family(xml_bytes, xml_entry);
++            if (!fam_doc.valid()) return -1;
++            const int idx = resources::select_font_face_law(fam_doc.faces,
++                                                            weight, italic);
++            if (idx < 0) return -1;
++            const auto& decl = fam_doc.faces[idx];
++            // The face FILE: res/font/<name>.ttf/.otf — from the compiled
++            // ref through the ARSC router (type "font"), else from the raw
++            // @font/<name> string.
++            std::string face_entry;
++            if (decl.font_ref_id != 0) {
++                auto sel = rt.arsc().select_file(
++                    decl.font_ref_id, entries, resources::device_config());
++                if (sel) face_entry = sel->path;
++            }
++            if (face_entry.empty() && decl.font_ref.rfind("@font/", 0) == 0) {
++                const std::string base = decl.font_ref.substr(6);
++                static const char* kSuffixes[] = {".ttf", ".otf"};
++                for (const char* suf : kSuffixes) {
++                    const std::string cand = "res/font/" + base + suf;
++                    for (const auto& e : entries)
++                        if (e == cand) { face_entry = cand; break; }
++                    if (!face_entry.empty()) break;
++                }
++            }
++            if (face_entry.empty()) return -1;
++            auto face_bytes = rt.apk().extract_entry(apk_path_, face_entry);
++            if (face_bytes.empty()) return -1;
++            const int face = fonts::TextShaper::instance().
++                register_app_font_memory(face_bytes, face_entry,
++                                         decl.italic || weight >= 600);
++            std::cerr << "[C9-17] font-family '" << fam << "' -> face idx "
++                      << face << " (" << face_entry << " weight="
++                      << decl.weight << " italic=" << decl.italic
++                      << " requested=" << weight << "/" << italic << ")"
++                      << std::endl;
++            return face;
++        };
+         // create(String, int) / create(Typeface, int)
+         if (method == "create" && args.size() == 2) {
+             std::string fam =
+@@ -37770,6 +37950,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 result = it->second;
+             } else {
+                 result = tf_make(fam, style, -1, -1);
++                // ── C9-17: resolve the font-family face for CUSTOM families
++                const auto req = resources::typeface_style_request(style);
++                const int face = tf_face_idx(fam, req.weight, req.italic);
++                if (face >= 0 && result.type == DalvikType::OBJECT_REF)
++                    heap_.set_object_field(result.object_id,
++                                           "__font_face_idx__",
++                                           DalvikValue::make_int(face));
+                 static_field_storage_[key] = result;
+             }
+             status = ApiCallTrace::Status::IMPLEMENTED;
+@@ -37793,6 +37980,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 result = it->second;
+             } else {
+                 result = tf_make(fam, -1, weight, italic);
++                // ── C9-17: resolve the font-family face for CUSTOM families
++                const int face = tf_face_idx(fam, weight, italic != 0);
++                if (face >= 0 && result.type == DalvikType::OBJECT_REF)
++                    heap_.set_object_field(result.object_id,
++                                           "__font_face_idx__",
++                                           DalvikValue::make_int(face));
+                 static_field_storage_[key] = result;
+             }
+             status = ApiCallTrace::Status::IMPLEMENTED;
+@@ -40906,6 +41099,67 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         }
+     }
+     // ────────────────────────────────────────────────────────────────────
++    // ── C9-7 (CODER 9) — Bitmap.compress: REAL PNG encode ─────────────
++    // AOSP Bitmap.compress(CompressFormat, int quality, OutputStream):
++    // FORMAT_PNG (1) encodes the bitmap's pixels and writes the bytes to
++    // the stream (quality is IGNORED for PNG — AOSP doc). FORMAT_JPEG (2)
++    // / FORMAT_WEBP (3): the runtime links NO lossy encoder — the law
++    // answers the AOSP FAILURE contract (false) LOUDLY instead of a fake
++    // success or a crash. The stream: the ByteArrayOutputStream family
++    // buffer (the same storage its toByteArray law reads) — one byte
++    // authority; the heap-field mirror gap for DEX subclasses is recorded
++    // honestly below.
++    if (method == "compress" && class_name == "Landroid/graphics/Bitmap;") {
++        const uint32_t recv =
++            (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                ? args[0].object_id : 0;
++        const int32_t fmt = args.size() >= 2
++                                ? dalvik_int_value(args[1]) : 0;
++        uint32_t stream_oid = 0;
++        if (args.size() >= 4 && args[3].type == DalvikType::OBJECT_REF)
++            stream_oid = args[3].object_id;
++        const framework::StoredBitmap* sb =
++            framework::BitmapStore::instance().get(recv);
++        if (!sb || sb->recycled || stream_oid == 0) {
++            std::cerr << "[C9-7] Bitmap.compress format=" << fmt
++                      << " -> false (" << (!sb ? "no store entry"
++                                          : sb->recycled ? "recycled"
++                                                         : "null stream")
++                      << ")" << std::endl;
++            result = DalvikValue::make_bool(false);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (fmt != 1) {   // FORMAT_PNG == 1; JPEG=2 / WEBP=3 unsupported
++            std::cerr << "[C9-7] Bitmap.compress format=" << fmt
++                      << " — EXPLICIT-UNSUPPORTED (no lossy encoder in the "
++                      << "runtime) -> false (AOSP failure contract)"
++                      << std::endl;
++            result = DalvikValue::make_bool(false);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        std::vector<uint8_t> png;
++        if (!c9_png_encode_rgba(sb->width, sb->height, sb->rgba, &png)) {
++            std::cerr << "[C9-7] Bitmap.compress PNG encode FAILED ("
++                      << sb->width << "x" << sb->height << ") -> false"
++                      << std::endl;
++            result = DalvikValue::make_bool(false);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        // One byte authority: append into the BAOS family buffer.
++        baos_buffers_[stream_oid] +=
++            std::string(png.begin(), png.end());
++        std::cerr << "[C9-7] Bitmap.compress PNG " << sb->width << "x"
++                  << sb->height << " -> " << png.size()
++                  << " bytes into BAOS o" << stream_oid
++                  << " (quality ignored per AOSP PNG law)" << std::endl;
++        result = DalvikValue::make_bool(true);
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    // ────────────────────────────────────────────────────────────────────
+     // LOADING-CAMPAIGN: java.io.ByteArrayOutputStream — the canonical
+     // in-memory byte sink of the readAll/toByteArray pattern (probe-proven
+     // first divergence: REC-MISS'd ctor → null array → FileOutputStream.
+@@ -50913,6 +51167,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     // threw NPE at the dooz composition (R8 z1/k.c = CollectionsKt.
+     // listOf). Heap-fields-backed ("array[N]" + "__array_length__") so
+     // the F-036 iterator law serves them with zero new machinery.
++    if (class_name == "Ljava/util/Collections;" &&
++        (method == "synchronizedList" || method == "synchronizedMap" ||
++         method == "synchronizedSet" ||
++         method == "synchronizedCollection") &&
++        args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF) {
++        // C9-25 (CODER 9, S188 Phase-K cohort) — OpenJDK
++        // Collections.synchronized{List,Map,Set,Collection}: each returns a
++        // NON-NULL delegating wrapper; every read AND write delegates to
++        // the backing container. Single-threaded law: the wrapper is
++        // observably the backing container (identity = exact delegation;
++        // same reasoning as the unmodifiable* branch below).
++        // Pre-fix: NO handler → STUB answered NULL → Kotlin Intrinsics NPE
++        // "synchronizedList(...) must not be null" (astroloop vc6
++        // HangarState.<init>, S188 cohort: hangar died at APP BOUNDARY →
++        // NO_ROOT default background). OpenJDK contract: never null.
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        result = args[0];
++        {
++            static thread_local uint64_t c9_sync_n = 0;
++            if (c9_sync_n < 16) {
++                ++c9_sync_n;
++                std::cerr << "[C9-25] Collections." << method
++                          << " → backing container (OpenJDK delegate view;"
++                          << " single-thread identity) caller="
++                          << current_class_ << "." << current_method_
++                          << std::endl;
++            }
++        }
++        return true;
++    }
+     if (class_name == "Ljava/util/Collections;" &&
+         (method == "singletonList" || method == "emptyList" ||
+          method == "emptyMap" || method == "emptySet" ||
+@@ -63190,23 +63474,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+         // Engine-bridge framing: args[0] = receiver (Display), args[1] = the
+         // DisplayMetrics OUT object (same convention as getSystemService's
+-        // args[1] string). Fill the SAME device-profile law as
+-        // Resources.getDisplayMetrics (density 2.625 / 420dpi / 1080x1920).
++        // args[1] string). C9-10: fill the SAME device-profile law as
++        // Resources.getDisplayMetrics — from device_config(), not the
++        // hardcoded 2.625/420/1080x1920 constants.
+         uint32_t dm_id = args[1].object_id;
+         if (dm_id != 0) {
+-            auto set_f = [&](const char* f, float v) {
+-                heap_.set_object_field(dm_id, f, DalvikValue::make_float(v));
+-            };
+-            auto set_i = [&](const char* f, int32_t v) {
+-                heap_.set_object_field(dm_id, f, DalvikValue::make_int(v));
+-            };
+-            set_f("density", 2.625f);        // device-density law (420/160)
+-            set_i("densityDpi", 420);        // DENSITY_420
+-            set_f("scaledDensity", 2.625f);  // fontScale 1.0
+-            set_i("widthPixels", 1080);      // device profile law
+-            set_i("heightPixels", 1920);
+-            set_f("xdpi", 420.0f);
+-            set_f("ydpi", 420.0f);
++            c9_fill_display_metrics(heap_, dm_id);
+         }
+         result = DalvikValue::make_void();
+         status = ApiCallTrace::Status::IMPLEMENTED;
+@@ -63356,24 +63629,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         return true;
+     }
+ 
++    // ── C9-10: the metric sites below feed from c9_fill_display_metrics
++    // (namespace-scope helper above) — ONE device-profile law for every
++    // DisplayMetrics surface.
+     if (method == "getDisplayMetrics" &&
+         class_name == "Landroid/content/res/Resources;") {
+         DalvikValue dm = get_or_create_singleton("Landroid/util/DisplayMetrics;");
+-        // Re-assert the device fields on every call (idempotent; guards any
++        // C9-10: re-assert the device fields on every call — now fed from
++        // device_config() (the ONE device law; idempotent against any
+         // earlier density=1.0 population from the legacy singleton path).
+-        auto set_f = [&](const char* f, float v) {
+-            heap_.set_object_field(dm.object_id, f, DalvikValue::make_float(v));
+-        };
+-        auto set_i = [&](const char* f, int32_t v) {
+-            heap_.set_object_field(dm.object_id, f, DalvikValue::make_int(v));
+-        };
+-        set_f("density", 2.625f);      // THE device-density law (2.625 = 420/160)
+-        set_i("densityDpi", 420);      // DENSITY_420 — matches density law
+-        set_f("scaledDensity", 2.625f);// fontScale 1.0 (F-023 default)
+-        set_i("widthPixels", 1080);    // device profile law
+-        set_i("heightPixels", 1920);
+-        set_f("xdpi", 420.0f);
+-        set_f("ydpi", 420.0f);
++        if (dm.type == DalvikType::OBJECT_REF)
++            c9_fill_display_metrics(heap_, dm.object_id);
+         result = dm;
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         return true;
+@@ -63736,6 +64002,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     if (method == "getDisplayMetrics" &&
+         class_name.find("Resources") != std::string::npos) {
+         result = get_or_create_singleton("Landroid/util/DisplayMetrics;");
++        // C9-10: the generic Resources family answers the same
++        // device_config-fed fields (no bare singleton without the law).
++        if (result.type == DalvikType::OBJECT_REF)
++            c9_fill_display_metrics(heap_, result.object_id);
+         status = ApiCallTrace::Status::IMPLEMENTED;
+         return true;
+     }
+@@ -63748,17 +64018,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         result = get_or_create_singleton("Landroid/content/res/Configuration;");
+         if (result.type == DalvikType::OBJECT_REF &&
+             heap_.has_object(result.object_id)) {
+-            // ── CONT-102 (F-NEW-431): Configuration.densityDpi law (AOSP
+-            // ConfigurationCompat). The Configuration answers the SAME
+-            // display identity the DisplayMetrics shadow serves
+-            // (display_shadow.cpp densityDpi=160 — ONE identity law, no
+-            // second value invented). Cold and warm reads answer the same
+-            // object (resource-selection coherence).
+-            auto cur = heap_.get_object_field(result.object_id, "densityDpi");
+-            if (!cur.has_value() || cur->type != DalvikType::INT32 ||
+-                cur->int_val == 0)
+-                heap_.set_object_field(result.object_id, "densityDpi",
+-                                       DalvikValue::make_int(160));
++            // ── C9-22 (CODER 9): Configuration fields fed from
++            // device_config() — the ONE device authority. The old constant
++            // densityDpi=160 was a SECOND device value inside one runtime
++            // (G04 single-device law violation): DisplayMetrics and bucket
++            // selection answered the requested density while Configuration
++            // answered 160. Law: densityDpi = device density, the dp
++            // fields = the configured dp screen, orientation = portrait.
++            auto set_if = [&](const char* f, int32_t v) {
++                auto cur = heap_.get_object_field(result.object_id, f);
++                if (!cur.has_value() || cur->type != DalvikType::INT32 ||
++                    cur->int_val != v)
++                    heap_.set_object_field(result.object_id, f,
++                                           DalvikValue::make_int(v));
++            };
++            const auto& cfg = resources::device_config();
++            set_if("densityDpi", (int32_t)cfg.density);
++            set_if("screenWidthDp", (int32_t)cfg.screenWidthDp);
++            set_if("screenHeightDp", (int32_t)cfg.screenHeightDp);
++            set_if("smallestScreenWidthDp",
++                   (int32_t)cfg.smallestScreenWidthDp);
++            // ── CONT-102 legacy note superseded by C9-22: the old code
++            // answered densityDpi=160 here (the "ONE identity" comment
++            // pointed at display_shadow's 160 — itself the divergence).
+             // ── F-NEW-452 (CONT-107): Configuration.locale non-null law
+             // (AOSP Configuration.setToDefaults: locale = Locale.getDefault()
+             // — Resources.getConfiguration() NEVER answers a Configuration
+@@ -64050,8 +64332,39 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 xo && yo && xo->class_descriptor == "Ljava/lang/Class;" &&
+                 yo->class_descriptor == "Ljava/lang/Class;";
+         }
++        // ── C9-27 (CODER 9, S188 Phase-K): MIXED-FORM CLASS IDENTITY law ─
++        // ART interns ONE java.lang.Class per class; the engine carries
++        // that identity in TWO register forms — the heap-backed token
++        // (OBJECT_REF, runtime class Ljava/lang/Class;, identity content
++        // = the __referent_desc field, F-069/F-103 convention) and the
++        // CLASS_REF register-form (identity content = class_desc). The VM
++        // law behind "Class.equals is Object identity": the VM guarantees
++        // ONE Class object per classloader+name — so ACROSS register
++        // forms the compare must resolve to the same descriptor identity.
++        // The F-C4-567 gates covered same-form pairs only (CLASS_REF×
++        // CLASS_REF, heap-token×heap-token); a MIXED pair matched NO gate
++        // → fail-soft false → androidx SavedStateHandlesVM initializer
++        // loop answered "No initializer set for given class
++        // androidx.lifecycle.G" (astroloop v6 MainActivity.onCreate, IAE
++        // ×8 escaping onCreate; [F069-EQUALS] x:type=7:oid=1355:cls=
++        // Ljava/lang/Class; y:type=6:oid=0:cls=Landroidx/lifecycle/G;).
++        // A/B on the real APK: uncaught 9→0 after this law.
++        bool mixed_class_form_pair = false;
++        if (x.type == DalvikType::OBJECT_REF &&
++            y.type == DalvikType::CLASS_REF && x.object_id != 0 &&
++            heap_.has_object(x.object_id)) {
++            const auto* xo = heap_.get(x.object_id);
++            mixed_class_form_pair =
++                xo && xo->class_descriptor == "Ljava/lang/Class;";
++        } else if (x.type == DalvikType::CLASS_REF &&
++                   y.type == DalvikType::OBJECT_REF && y.object_id != 0 &&
++                   heap_.has_object(y.object_id)) {
++            const auto* yo = heap_.get(y.object_id);
++            mixed_class_form_pair =
++                yo && yo->class_descriptor == "Ljava/lang/Class;";
++        }
+         if (app_dex_receiver || base_object_receiver || class_or_null_case ||
+-            heap_class_token_pair) {
++            heap_class_token_pair || mixed_class_form_pair) {
+             if (f069d) {
+                 std::cerr << "[F069-EQUALS] x:type=" << static_cast<int>(x.type)
+                           << ":oid=" << x.object_id
+@@ -64107,6 +64420,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                             eq = (xr->string_val == yr->string_val);
+                     }
+                 }
++            } else if (mixed_class_form_pair) {
++                // ── C9-27: descriptor identity ACROSS register forms ────
++                // token.__referent_desc == CLASS_REF.class_desc, and the
++                // symmetric orientation. Same law as the same-form gates:
++                // one interned Class per descriptor.
++                if (x.type == DalvikType::OBJECT_REF) {
++                    auto xr = heap_.get_object_field(x.object_id,
++                                                     "__referent_desc");
++                    eq = xr.has_value() &&
++                         xr->type == DalvikType::STRING_REF &&
++                         xr->string_val == y.class_desc;
++                } else {
++                    auto yr = heap_.get_object_field(y.object_id,
++                                                     "__referent_desc");
++                    eq = yr.has_value() &&
++                         yr->type == DalvikType::STRING_REF &&
++                         x.class_desc == yr->string_val;
++                }
+             } else if (x.type == DalvikType::NULL_REF &&
+                        y.type == DalvikType::NULL_REF) {
+                 eq = true;
+@@ -67598,6 +67929,397 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         return true;
+     }
+ 
++    // ────────────────────────────────────────────────────────────────────────
++    // C9-24 (CODER 9, S188 Phase-K cohort) — platform font-resource API
++    // laws (AOSP android.graphics.fonts.Font / FontFamily / Typeface.
++    // CustomFallbackBuilder, API 26+). AOSP ResourcesCompat.getFont
++    // (androidx.core) ends in EXACTLY these platform classes: Font.Builder
++    // (AssetManager, res-path).build() → FontFamily.Builder(font).
++    // build() → Typeface.CustomFallbackBuilder(family).build().
++    // Evidence (astroloop vc6, one binary main d3a8d0e, run_s188_c9):
++    //   R$font.exo2_regular=0x7f080001 → F513-GETVALUE resolved STRING
++    //   "res/Wx.ttf" → androidx Typefaces cache UID
++    //   "null-res/Wx.ttf-0-2131230721-0" ( getResourcePackageName STUB
++    //   answered null — C9-24b below) → cache miss → Font$Builder/
++    //   FontFamily$Builder/CustomFallbackBuilder all [S186I-STUB] null →
++    //   Font.getStyle() NPE → ResourcesCompat rethrow "Font resource ID
++    //   #0x7f080001 could not be retrieved." → FontManager.initialize
++    //   dead at APP BOUNDARY → NO_ROOT, 18 uncaught, default background.
++    // The real rasterizer behind these classes is the SAME FreeType
++    // registry the cont70-ANT6 Typeface.createFromAsset law serves
++    // (startup FIX-4/F-NEW-315 scan already registered res/Wx.ttf et al).
++    // One registry, one face identity — no second font authority.
++    // AOSP failure laws: Font.Builder.build throws IOException on a
++    // missing asset (real: `Cannot open font file` family); CustomFall-
++    // backBuilder.build throws IOException when the family is empty.
++    // ────────────────────────────────────────────────────────────────────────
++    if (class_name == "Landroid/graphics/fonts/Font$Builder;" &&
++        method == "<init>" && args.size() >= 3) {
++        // AOSP Font.Builder ctor family — TWO live shapes (astroloop q/k.h
++        // pins the (Resources, int resourceId) one via C9-24-DIAG:
++        //   a0=recv a1=t7 Resources a2=t1 resid):
++        //   1. (AssetManager, String path[, int ttcIndex]) → __font_path__
++        //   2. (Resources, int resourceId) → __font_resid__  (AOSP
++        //      buildFromResources: getValue(id, tv, true) → tv.string path)
++        // <init> convention (F-C4-585 house law): mutate args[0], VOID.
++        if (args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
++            if (args.size() >= 3 && args[2].type == DalvikType::INT32 &&
++                args[1].type == DalvikType::OBJECT_REF) {
++                heap_.set_object_field(args[0].object_id, "__font_resid__",
++                                       args[2]);
++            } else {
++                auto c9_str_arg = [&](const DalvikValue& a) -> std::string {
++                    if (a.type == DalvikType::STRING_REF) return a.string_val;
++                    if (a.type == DalvikType::OBJECT_REF && a.object_id != 0 &&
++                        a.class_desc.find("String") != std::string::npos) {
++                        for (const char* fld :
++                             {"__string_value__", "value", "sb_value"}) {
++                            auto s = heap_.get_object_field(a.object_id, fld);
++                            if (s.has_value() &&
++                                s->type == DalvikType::STRING_REF)
++                                return s->string_val;
++                        }
++                    }
++                    return "";
++                };
++                for (int ci = 1; ci < (int)args.size(); ++ci) {
++                    std::string p = c9_str_arg(args[ci]);
++                    if (!p.empty()) {
++                        heap_.set_object_field(
++                            args[0].object_id, "__font_path__",
++                            DalvikValue::make_string(p, 0));
++                        break;
++                    }
++                }
++            }
++        }
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        result = DalvikValue::make_void();
++        return true;
++    }
++    if (class_name == "Landroid/graphics/fonts/Font$Builder;" &&
++        (method == "build" || method == "setWeight" ||
++         method == "setSlant" || method == "setTtcIndex")) {
++        if (method == "build") {
++            std::string fpath;
++            if (args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&
++                args[0].object_id != 0) {
++                if (auto p = heap_.get_object_field(args[0].object_id,
++                                                    "__font_path__");
++                    p.has_value() && p->type == DalvikType::STRING_REF)
++                    fpath = p->string_val;
++                if (fpath.empty()) {
++                    // AOSP buildFromResources: getValue(id, tv, true) →
++                    // tv.string is the res/ zip path (F513 authority).
++                    if (auto rid = heap_.get_object_field(args[0].object_id,
++                                                          "__font_resid__");
++                        rid.has_value() && rid->type == DalvikType::INT32 &&
++                        rid->int_val != 0) {
++                        auto& rt_f = resources::ResourceRuntime::instance();
++                        if (rt_f.loaded() || rt_f.ensure_loaded(apk_path_)) {
++                            if (auto v = rt_f.arsc().resolve_value(
++                                    (uint32_t)rid->int_val);
++                                v && v->is_string())
++                                fpath = v->string_value;
++                        }
++                    }
++                }
++            }
++            int fface = fpath.empty()
++                            ? -1
++                            : fonts::TextShaper::instance().app_face_index_for_name(
++                                  fpath);
++            if (fface < 0) {
++                // AOSP Font.Builder.build: missing asset → IOException.
++                throw_deferred("Ljava/io/IOException;",
++                               "Cannot open font file " + fpath, "C9-24");
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            uint32_t fobj = heap_.allocate("Landroid/graphics/fonts/Font;",
++                                           pc_, 0);
++            heap_.set_object_field(fobj, "__font_path__",
++                                   DalvikValue::make_string(fpath, 0));
++            heap_.set_object_field(fobj, "__font_face_idx__",
++                                   DalvikValue::make_int(fface));
++            result = DalvikValue::make_object(
++                fobj, "Landroid/graphics/fonts/Font;");
++        } else {
++            // setWeight/setSlant/setTtcIndex: AOSP mutates the builder and
++            // returns it (fluent). The face identity is path-keyed in the
++            // registry; weight/slant variants remain a registered subset
++            // gap (named, same as C9-17 closest-face limit).
++            result = args.empty() ? DalvikValue::make_null()
++                                  : args[0];
++        }
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    if (class_name == "Landroid/graphics/fonts/Font;" &&
++        method == "getStyle" && args.size() >= 1) {
++        // AOSP Font.getStyle(): non-null FontStyle (weight/slant pair).
++        uint32_t fs = heap_.allocate("Landroid/graphics/fonts/FontStyle;",
++                                     pc_, 0);
++        heap_.set_object_field(fs, "getWeight", DalvikValue::make_int(400));
++        heap_.set_object_field(fs, "getSlant", DalvikValue::make_int(0));
++        result = DalvikValue::make_object(
++            fs, "Landroid/graphics/fonts/FontStyle;");
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    if (class_name == "Landroid/graphics/fonts/FontStyle;" &&
++        (method == "getWeight" || method == "getSlant")) {
++        result = DalvikValue::make_int(method == "getWeight" ? 400 : 0);
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    if (class_name == "Landroid/graphics/fonts/FontFamily$Builder;") {
++        if (method == "<init>" && args.size() >= 2) {
++            // ctor(Font first) — receiver-mutation convention (see C9-24
++            // Font$Builder.<init> note): family slots live on args[0].
++            if (args[0].type == DalvikType::OBJECT_REF &&
++                args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
++                if (args[1].type == DalvikType::OBJECT_REF &&
++                    args[1].object_id != 0) {
++                    heap_.set_object_field(args[0].object_id, "font0", args[1]);
++                    heap_.set_object_field(args[0].object_id, "font_count",
++                                           DalvikValue::make_int(1));
++                } else {
++                    heap_.set_object_field(args[0].object_id, "font_count",
++                                           DalvikValue::make_int(0));
++                }
++            }
++            result = DalvikValue::make_void();
++        } else if (method == "addFont" || method == "addFontDetails") {
++            uint32_t fam_id = args.empty()
++                                  ? 0
++                                  : (args[0].type == DalvikType::OBJECT_REF
++                                         ? args[0].object_id
++                                         : 0);
++            if (fam_id != 0 && args.size() >= 2 &&
++                args[1].type == DalvikType::OBJECT_REF &&
++                args[1].object_id != 0) {
++                int n = 0;
++                if (auto c = heap_.get_object_field(fam_id, "font_count");
++                    c.has_value() && c->type == DalvikType::INT32)
++                    n = c->int_val;
++                if (n < 16) {  // bounded: AOSP families are small
++                    heap_.set_object_field(
++                        fam_id, "font" + std::to_string(n), args[1]);
++                    heap_.set_object_field(fam_id, "font_count",
++                                           DalvikValue::make_int(n + 1));
++                }
++                result = args[0];  // fluent: returns the builder
++            } else {
++                result = args.empty() ? DalvikValue::make_null() : args[0];
++            }
++        } else if (method == "build") {
++            // AOSP FontFamily.Builder.build: IllegalStateException when
++            // empty (never a silent null family).
++            uint32_t fam_id = args.empty()
++                                  ? 0
++                                  : (args[0].type == DalvikType::OBJECT_REF
++                                         ? args[0].object_id
++                                         : 0);
++            int n = 0;
++            if (fam_id != 0) {
++                if (auto c = heap_.get_object_field(fam_id, "font_count");
++                    c.has_value() && c->type == DalvikType::INT32)
++                    n = c->int_val;
++            }
++            if (n <= 0) {
++                throw_deferred("Ljava/lang/IllegalStateException;",
++                               "Empty font family", "C9-24");
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            uint32_t ffam = heap_.allocate(
++                "Landroid/graphics/fonts/FontFamily;", pc_, 0);
++            for (int i = 0; i < n && i < 16; ++i) {
++                if (auto f = heap_.get_object_field(
++                        fam_id, "font" + std::to_string(i));
++                    f.has_value())
++                    heap_.set_object_field(ffam,
++                                           "font" + std::to_string(i), *f);
++            }
++            heap_.set_object_field(ffam, "font_count",
++                                   DalvikValue::make_int(n));
++            result = DalvikValue::make_object(
++                ffam, "Landroid/graphics/fonts/FontFamily;");
++        } else {
++            result = DalvikValue::make_null();
++        }
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    if (class_name == "Landroid/graphics/Typeface$CustomFallbackBuilder;" &&
++        (method == "<init>" || method == "build" || method == "setStyle" ||
++         method == "setWeight" || method == "setSystemFallback")) {
++        if (method == "<init>") {
++            // receiver-mutation convention: __family_oid__ lives on args[0].
++            if (args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
++                args[0].object_id != 0 && heap_.has_object(args[0].object_id) &&
++                args[1].type == DalvikType::OBJECT_REF)
++                heap_.set_object_field(args[0].object_id, "__family_oid__",
++                                       args[1]);
++            {
++                static thread_local uint64_t c9_cfb_diag = 0;
++                if (c9_cfb_diag < 6) {
++                    ++c9_cfb_diag;
++                    std::cerr << "[C9-24-DIAG] CustomFallbackBuilder.<init> argc="
++                              << args.size() << " a0=t" << (int)args[0].type
++                              << (args.size() >= 2
++                                      ? (" a1=t" + std::to_string((int)args[1].type))
++                                      : "")
++                              << std::endl;
++                }
++            }
++            result = DalvikValue::make_void();
++        } else if (method == "build") {
++            uint32_t cb_id = args.empty()
++                                 ? 0
++                                 : (args[0].type == DalvikType::OBJECT_REF
++                                        ? args[0].object_id
++                                        : 0);
++            uint32_t fam_oid = 0;
++            if (cb_id != 0) {
++                if (auto f = heap_.get_object_field(cb_id, "__family_oid__");
++                    f.has_value() && f->type == DalvikType::OBJECT_REF)
++                    fam_oid = f->object_id;
++            }
++            std::string fpath;
++            int n = 0;
++            if (fam_oid != 0) {
++                if (auto c = heap_.get_object_field(fam_oid, "font_count");
++                    c.has_value() && c->type == DalvikType::INT32)
++                    n = c->int_val;
++                if (n > 0) {
++                    if (auto f0 = heap_.get_object_field(fam_oid, "font0");
++                        f0.has_value() && f0->type == DalvikType::OBJECT_REF &&
++                        f0->object_id != 0) {
++                        if (auto p = heap_.get_object_field(
++                                f0->object_id, "__font_path__");
++                            p.has_value() && p->type == DalvikType::STRING_REF)
++                            fpath = p->string_val;
++                    }
++                }
++            }
++            int cface = fpath.empty()
++                            ? -1
++                            : fonts::TextShaper::instance().app_face_index_for_name(
++                                  fpath);
++            if (cface < 0) {
++                // AOSP: build() throws IOException when the family carried
++                // no loadable font — never a silent null Typeface.
++                throw_deferred("Ljava/io/IOException;",
++                               "font family failed to resolve " + fpath,
++                               "C9-24");
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            uint32_t tf = heap_.allocate("Landroid/graphics/Typeface;", pc_,
++                                         call_stack_.empty()
++                                             ? 0
++                                             : call_stack_.top().frame_id);
++            heap_.set_object_field(tf, "__font_face_idx__",
++                                   DalvikValue::make_int(cface));
++            result = DalvikValue::make_object(
++                tf, "Landroid/graphics/Typeface;");
++        } else {
++            // setStyle/setWeight/setSystemFallback: AOSP fluent setters
++            // return the builder itself — never null (the null build()
++            // receiver NPE family, astroloop q/k.h pc-chain pinned).
++            result = args.empty() ? DalvikValue::make_null() : args[0];
++        }
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++
++    // ────────────────────────────────────────────────────────────────────────
++    // C9-26 (CODER 9, S188 cohort) — VibratorManager / Vibrator contract
++    // (AOSP android.os.VibratorManager, API 31+; SDK_INT here reports 35).
++    // getSystemService("vibrator_manager") now returns the singleton (see
++    // the t_service_map row above) — its AOSP methods must answer real
++    // values: getDefaultVibrator() is NEVER null (VibratorManager.java:
++    // returns the default vibrator of the device), getVibratorIds() is a
++    // non-null (possibly length-1) int[]. Vibrator: hasVibrator() true on
++    // any real device; vibrate() family void (haptic fire is a device
++    // effect, unobservable in a headless runtime); hasAmplitudeControl()
++    // false (honest minimal device).
++    // ────────────────────────────────────────────────────────────────────────
++    if (class_name == "Landroid/os/VibratorManager;" &&
++        (method == "getDefaultVibrator" || method == "getVibratorIds")) {
++        if (method == "getDefaultVibrator") {
++            result = get_or_create_singleton("Landroid/os/Vibrator;");
++        } else {
++            uint32_t arr = heap_.allocate("[I", pc_, 0);
++            heap_.set_object_field(arr, "__array_length__",
++                                   DalvikValue::make_int(1));
++            heap_.set_object_field(arr, "array[0]",
++                                   DalvikValue::make_int(0));
++            result = DalvikValue::make_object(arr, "[I");
++        }
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++    if (class_name == "Landroid/os/Vibrator;" &&
++        (method == "hasVibrator" || method == "hasAmplitudeControl")) {
++        result = DalvikValue::make_bool(method == "hasVibrator");
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++
++    // ────────────────────────────────────────────────────────────────────────
++    // C9-24b (CODER 9, S188 cohort) — Resources.getResourcePackageName /
++    // getResourceTypeName / getResourceEntryName (AOSP Resources.java).
++    // The S186I-STUB answered NULL for a valid app id — impossible per the
++    // AOSP contract (throws NotFoundException on unknown id; never null).
++    // The null poisoned androidx Typefaces cache UIDs ("null-res/Wx.ttf-…"
++    // — astroloop trace, same run as C9-24 evidence) and any other
++    // resource-name consumer. All three answer from the ONE ARSC table the
++    // F513 law resolves against.
++    // ────────────────────────────────────────────────────────────────────────
++    if (class_name == "Landroid/content/res/Resources;" &&
++        (method == "getResourcePackageName" ||
++         method == "getResourceTypeName" ||
++         method == "getResourceEntryName") &&
++        args.size() >= 2 && args[1].type == DalvikType::INT32) {
++        int32_t rn_resid = args[1].int_val;
++        auto& rt_rn = resources::ResourceRuntime::instance();
++        if ((rt_rn.loaded() || rt_rn.ensure_loaded(apk_path_))) {
++            if (auto rr = rt_rn.arsc().resolve((uint32_t)rn_resid); rr) {
++                const std::string* ans = nullptr;
++                if (method == "getResourcePackageName")
++                    ans = &rr->package_name;
++                else if (method == "getResourceTypeName")
++                    ans = &rr->type_name;
++                else
++                    ans = &rr->name;
++                if (ans && !ans->empty()) {
++                    result = DalvikValue::make_string(*ans, 0);
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++            }
++        }
++        // AOSP: unknown id → NotFoundException (app-table ids only, same
++        // framework-res boundary scoping as the F513 law).
++        if ((((uint32_t)rn_resid) >> 24 & 0xFF) == 0x7f) {
++            throw_deferred(
++                "Landroid/content/res/Resources$NotFoundException;",
++                "Unable to find resource ID #0x" +
++                    to_hex((uint32_t)rn_resid),
++                "C9-24b");
++        }
++        result = DalvikValue::make_null();
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++
+     // ────────────────────────────────────────────────────────────────────────
+     // P1.3 — Window.getDecorView → View
+     // ────────────────────────────────────────────────────────────────────────
+@@ -68729,7 +69451,99 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     // EXP-067: Resources.getDrawable(int) → Drawable (returns resource name as string for now)
+     // Real drawable decoding (bitmap loading) is a future EXP. For now, return the
+     // drawable's resource name so the renderer can look up the asset path.
+-    if (method == "getDrawable" &&
++    // ── C9-20 (CODER 9) — Resources.getQuantityString law ───────────────
++    // AOSP Resources.java: getQuantityString(id, quantity[, formatArgs]) =
++    // CLDR plural category for (locale, quantity) → the matching item of
++    // the plurals BAG entry (complex entry, ResTable_map array), formatted
++    // with String.format when args are given. Missing entry →
++    // NotFoundException. The bag keys are the aapt2-pinned attrs
++    // (resources::kPluralsKey — probe-verified 0x01000004..0x01000009);
++    // the category comes from resources::cldr_quantity_law (documented
++    // CLDR 46 subset: default/en/fa/ar/ru).
++    if ((method == "getQuantityString" || method == "getQuantityText") &&
++        class_name.find("Resources") != std::string::npos &&
++        args.size() >= 3) {
++        const uint32_t resid = (uint32_t)dalvik_int_value(args[1]);
++        const int64_t quantity = (int64_t)dalvik_int_value(args[2]);
++        auto& rt = resources::ResourceRuntime::instance();
++        std::string picked;
++        bool found = false;
++        if (resid != 0 && rt.ensure_loaded(apk_path_)) {
++            auto r = rt.arsc().resolve(resid);
++            if (r) {
++                const resources::ArscEntry* best = r->best_for(resources::device_config());
++                if (best && best->is_complex) {
++                    const auto q = resources::cldr_quantity_law(
++                        resources::device_config().language_str(), quantity);
++                    const uint32_t want_key = resources::plurals_bag_key(q);
++                    // CLDR fallback law (AOSP PluralRules + ResTable lookups):
++                    // the exact category first; a MISSING category falls back
++                    // OTHER → OTHER missing → the LAST item in document order
++                    // (AOSP: ResTable + PluralRules fallback chain).
++                    for (int attempt = 0; attempt < 2 && !found; ++attempt) {
++                        uint32_t key = attempt == 0
++                                           ? want_key
++                                           : resources::plurals_bag_key(
++                                                 resources::PluralsQuantity::OTHER);
++                        for (size_t k = 0; k < best->complex_keys.size(); ++k) {
++                            if (best->complex_keys[k] != key) continue;
++                            if (k < best->complex_items.size() &&
++                                best->complex_items[k].is_string()) {
++                                picked = best->complex_items[k].string_value;
++                                found = true;
++                                break;
++                            }
++                        }
++                    }
++                }
++            }
++        }
++        if (!found) {
++            throw_deferred(
++                "Landroid/content/res/Resources$NotFoundException;",
++                "plurals resource 0x" +
++                    [](uint32_t r) {
++                        char b[16];
++                        std::snprintf(b, sizeof(b), "%08X", r);
++                        return std::string(b);
++                    }(resid),
++                "C9-20");
++            result = DalvikValue::make_null();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        // Format args law: %d / %s substitution from the varargs (the
++        // engine models the Object... tail as one scalar arg).
++        if (args.size() >= 4) {
++            const auto& fa = args[3];
++            std::string out;
++            for (size_t ci = 0; ci < picked.size(); ++ci) {
++                if (picked[ci] == '%' && ci + 1 < picked.size() &&
++                    picked[ci + 1] == 'd') {
++                    out += std::to_string(quantity);
++                    ++ci;
++                } else if (picked[ci] == '%' && ci + 1 < picked.size() &&
++                           picked[ci + 1] == 's') {
++                    if (fa.type == DalvikType::STRING_REF) out += fa.string_val;
++                    else out += std::to_string(dalvik_int_value(fa));
++                    ++ci;
++                } else {
++                    out += picked[ci];
++                }
++            }
++            picked = out;
++        }
++        static thread_local uint64_t c9_pl_log = 0;
++        if (c9_pl_log++ < 8)
++            std::cerr << "[C9-20] getQuantityString resid=0x" << std::hex
++                      << resid << std::dec << " quantity=" << quantity
++                      << " -> '" << picked << "'" << std::endl;
++        result = DalvikValue::make_string(picked, 0);
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++
++    if ((method == "getDrawable" || method == "getDrawableForDensity") &&
+         (class_name.find("Resources") != std::string::npos ||
+          class_name.find("Context") != std::string::npos ||
+          class_name.find("Activity") != std::string::npos)) {
+@@ -68739,6 +69553,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         // likewise delegates to its Resources.
+         // Receiver-first args: args[0] = this (Context/Resources),
+         // args[1] = the resid int.
++        // ── C9-11 (CODER 9): getDrawableForDensity(id, density) resolves
++        // the SAME law under a REQUESTED-density config (AOSP
++        // ResourcesImpl.getDrawableForDensity: value.density = density
++        // before decode — the selected bucket may differ from the device
++        // bucket, and the decode scales bucket→requested via C9-1).
++        const bool c9_dfd = method == "getDrawableForDensity";
++        int32_t requested_density = 0;
++        if (c9_dfd && args.size() >= 3 &&
++            (args[2].type == DalvikType::INT32 ||
++             args[2].type == DalvikType::BOOLEAN))
++            requested_density = args[2].int_val;
+         int32_t resid = args.size() >= 2 &&
+                                 (args[1].type == DalvikType::INT32 ||
+                                  args[1].type == DalvikType::BOOLEAN ||
+@@ -68762,15 +69587,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 std::vector<std::string> entries;
+                 for (const auto& e : rt.apk().list_entries_cached())
+                     entries.push_back(e.name);
++                // C9-11: the select config = the device config with the
++                // density OVERridden by the request (AOSP value.density
++                // override law); density 0/invalid keeps the device config.
++                resources::ResTableConfig sel_cfg = resources::device_config();
++                if (c9_dfd && requested_density > 0)
++                    sel_cfg.density = (uint16_t)requested_density;
+                 auto sel = rt.arsc().select_file(
+-                    static_cast<uint32_t>(resid), entries,
+-                    resources::device_config());
++                    static_cast<uint32_t>(resid), entries, sel_cfg);
+                 if (sel) {
+                     path = sel->path;
+                     resource_drawable_path_by_resid_[static_cast<uint32_t>(resid)] =
+                         sel->path;
+-                    resource_drawable_density_by_resid_[static_cast<uint32_t>(resid)] =
+-                        sel->selected_density();
++                    // C9-11: the recorded decode density = the REQUESTED
++                    // density (the C9-1 chain scales bucket → requested); the
++                    // plain getDrawable path keeps the bucket density.
++                    resource_drawable_density_by_resid_
++                        [static_cast<uint32_t>(resid)] =
++                        (c9_dfd && requested_density > 0)
++                            ? (uint16_t)requested_density
++                            : sel->selected_density();
+                 }
+             }
+         }
+@@ -69196,6 +70032,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     {"textservices", "Landroid/view/textservice/TextServicesManager;"},
+     {"restrictions", "Landroid/content/RestrictionsManager;"},
+     {"dropbox", "Landroid/os/DropBoxManager;"},
++    // C9-26 (CODER 9, S188 cohort; astroloop vc6 HangarSurfaceView.<init>
++    // pc=121: SDK_INT=35 → AOSP Context.VIBRATOR_MANAGER_SERVICE exists
++    // since API 31 — the app's Kotlin cast-to-nonnull NPE'd on the null
++    // answer: "null cannot be cast to non-null type android.os.
++    // VibratorManager"). Never-null row per the F-C4-542 family.
++    {"vibrator_manager", "Landroid/os/VibratorManager;"},
+ };
+ 
+         const char* smp = kv_table_find(t_service_map,
+@@ -78214,6 +79056,30 @@ measure_cm_done:;
+             // open(String, int) — second arg is access mode
+             asset_name = args[1].string_val;
+         }
++        // ── C9-21 (CODER 9) — access-mode validation law ────────────────
++        // AOSP AssetManager.open(String, int accessMode): the mode MUST be
++        // one of ACCESS_UNKNOWN(0) / ACCESS_STREAMING(1) / ACCESS_RANDOM(2)
++        // / ACCESS_BUFFER(3) — Preconditions.checkArgument rejects anything
++        // else (API 28+). The mode only selects the native read strategy;
++        // the SERVED BYTES are identical (the runtime's one stream law),
++        // so the accepted modes flow through unchanged.
++        if (args.size() >= 2 &&
++            (args[1].type == DalvikType::INT32 ||
++             args[1].type == DalvikType::BOOLEAN)) {
++            const int64_t access_mode = dalvik_int_value(args[1]);
++            if (access_mode < 0 || access_mode > 3) {
++                std::cerr << "[C9-21] AssetManager.open access mode "
++                          << access_mode << " REJECTED (AOSP Preconditions "
++                          << "contract: 0..3)" << std::endl;
++                throw_deferred("Ljava/lang/IllegalArgumentException;",
++                               "Invalid access mode " +
++                                   std::to_string(access_mode),
++                               "C9-21");
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
+         // R-1 FIX (bridge duplicate site): same AOSP FileNotFoundException
+         // contract as the try_recursive_invoke site — one contract, both
+         // dispatch layers (the audit's duplicate-open-site finding).
+diff --git a/miniandroid/src/framework/android_shadows.h b/miniandroid/src/framework/android_shadows.h
+index a07d13c6..330c57f8 100755
+--- a/miniandroid/src/framework/android_shadows.h
++++ b/miniandroid/src/framework/android_shadows.h
+@@ -1676,6 +1676,13 @@ public:
+             // activated=false.
+             int state_window_focused = -1;
+             int state_activated = -1;
++            // C9-18 (CODER 9): the remaining standard View states. Framework
++            // selectors (btn_default family) declare state_focused / 
++            // state_hovered items BEFORE the fallback item — without these
++            // tri-states the focused item parsed as a wildcard and
++            // first-match picked the WRONG variant for the default state.
++            int state_focused = -1;
++            int state_hovered = -1;
+             uint32_t color = 0;           // android:color or shape solid
+             bool has_color = false;
+             // S127: android:color as a REFERENCE (@color/…, the aapt2
+@@ -1685,6 +1692,11 @@ public:
+             // the ARSC router (resolve_framework_file_color).
+             uint32_t color_ref_id = 0;
+             std::string drawable_path;    // android:drawable file (may be empty)
++            // C9-19 (CODER 9): android:drawable as a COMPILED reference —
++            // aapt2 stores @drawable/x as Res_value REFERENCE (data = resid);
++            // the raw "@drawable/x" string only survives for string forms.
++            // The engine dereferences this id through the ARSC resolver.
++            uint32_t drawable_ref_id = 0;
+         };
+         std::vector<BgStateItem> bg_state_items;
+         // CAMPAIGN 013 B1: dialog window item/button routing. When
+diff --git a/miniandroid/src/framework/bitmap_shadow.cpp b/miniandroid/src/framework/bitmap_shadow.cpp
+index c11a4a78..bbc50582 100644
+--- a/miniandroid/src/framework/bitmap_shadow.cpp
++++ b/miniandroid/src/framework/bitmap_shadow.cpp
+@@ -260,6 +260,10 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
+     int32_t in_density = 0, in_target_density = 0, in_sample = 1;
+     int32_t in_scaled = 1;  // AOSP Java field default: inScaled = true
+     bool in_scaled_present = false;
++    // ── C9-4/5/6 (CODER 9): the remaining Options contract ────────────
++    int32_t in_preferred = 3;   // inPreferredConfig — AOSP default ARGB_8888
++    int32_t in_mutable = 0;     // inMutable — AOSP default false
++    int32_t in_premult = 1;     // inPremultiplied — AOSP default TRUE
+     if (resource_density >= 0) {
+         // decodeResourceStream law — TypedValue.density → opts.inDensity.
+         constexpr int32_t kDensityAny = 0xFFFE;      // TypedValue.DENSITY_ANY
+@@ -282,6 +286,12 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
+         }
+         in_scaled_present = heap->get_object_int_field(opts_id, "inScaled", in_scaled);
+         heap->get_object_int_field(opts_id, "inSampleSize", in_sample);
++        // C9-4/5/6: honor the rest of the Options contract (defaults above
++        // apply when the app never set the field — AOSP field-initializer
++        // law, not silent drops).
++        heap->get_object_int_field(opts_id, "inPreferredConfig", in_preferred);
++        heap->get_object_int_field(opts_id, "inMutable", in_mutable);
++        heap->get_object_int_field(opts_id, "inPremultiplied", in_premult);
+         // AOSP decodeResourceStream MUTATES the app's Options (the seeded
+         // values are app-visible afterwards).
+         if (in_density != 0)
+@@ -359,6 +369,29 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
+         sb->sample_size = law.sampled_width != decoded.width || law.sampled_height != decoded.height
+                               ? law_in.in_sample_size : 1;
+         sb->density_scaled = law.density_scaled;
++        // ── C9-4/5/6: record + apply the real Options contract ──────────
++        sb->config = (in_preferred == 0 || in_preferred == 1 || in_preferred == 2)
++                         ? in_preferred : 3;
++        sb->mutable_bitmap = in_mutable != 0;
++        sb->premultiplied = in_premult != 0;
++        if (sb->config != 3) {
++            const std::string cfg_name =
++                bitmap_preferred_config_law(sb->config, sb->rgba);
++            std::cerr << "[BITMAP-FACTORY] C9-4 inPreferredConfig honored: "
++                      << desc << " -> " << cfg_name << std::endl;
++        }
++        // ── C9-23: byte-derived cache identity (Glide/Coil substrate) ──
++        BitmapCacheIdentityInput id_in;
++        id_in.src_bytes = bytes.data();
++        id_in.src_len = bytes.size();
++        id_in.source_desc = desc;
++        id_in.source_density = sb->source_density;
++        id_in.target_density = sb->target_density;
++        id_in.sample_size = sb->sample_size;
++        id_in.config = sb->config;
++        id_in.density_scaled = sb->density_scaled;
++        std::cerr << "[BITMAP-FACTORY] C9-23 identity "
++                  << bitmap_cache_identity_law(id_in) << std::endl;
+     }
+     // CONT-65 F-NEW-355: keep the original container bytes for animated
+     // GIFs so the render walk can decode the full frame timeline
+@@ -398,6 +431,122 @@ static void resample_nearest(const StoredBitmap& src, int dw, int dh,
+     }
+ }
+ 
++// ── C9-4 (CODER 9) — inPreferredConfig conversion law ──────────────────
++// See bitmap_shadow.h for the source-backed contract. The store is RGBA;
++// the law rewrites the buffer in place and answers the canonical name.
++std::string bitmap_preferred_config_law(int32_t in_preferred_config,
++                                        std::vector<uint8_t>& rgba) {
++    switch (in_preferred_config) {
++        case 0: {  // ALPHA_8 — RGB forced 0, alpha preserved
++            for (size_t i = 0; i + 3 < rgba.size(); i += 4) {
++                rgba[i] = 0; rgba[i + 1] = 0; rgba[i + 2] = 0;
++            }
++            return "ALPHA_8";
++        }
++        case 1: {  // RGB_565 — alpha dropped, 565-quantized (REAL loss)
++            for (size_t i = 0; i + 3 < rgba.size(); i += 4) {
++                const uint8_t r5 = (uint8_t)(rgba[i] >> 3);
++                const uint8_t g6 = (uint8_t)(rgba[i + 1] >> 2);
++                const uint8_t b5 = (uint8_t)(rgba[i + 2] >> 3);
++                rgba[i]     = (uint8_t)((r5 * 255 + 15) / 31);
++                rgba[i + 1] = (uint8_t)((g6 * 255 + 31) / 63);
++                rgba[i + 2] = (uint8_t)((b5 * 255 + 15) / 31);
++                rgba[i + 3] = 0xFF;
++            }
++            return "RGB_565";
++        }
++        case 2: {  // ARGB_4444 — deprecated, 444-quantized
++            for (size_t i = 0; i + 3 < rgba.size(); i += 4) {
++                rgba[i]     = (uint8_t)(rgba[i] & 0xF0);
++                rgba[i + 1] = (uint8_t)(rgba[i + 1] & 0xF0);
++                rgba[i + 2] = (uint8_t)(rgba[i + 2] & 0xF0);
++                rgba[i + 3] = (uint8_t)(rgba[i + 3] & 0xF0);
++            }
++            return "ARGB_4444";
++        }
++        default:   // ARGB_8888 / unknown → AOSP default passthrough
++            return "ARGB_8888";
++    }
++}
++
++// ── C9-9 (CODER 9) — bilinear resample law (Skia kLinear sampling) ─────
++// Sample point = ((x + 0.5) * sw / dw) - 0.5, clamped to [0, sw-1]; the
++// 4 surrounding texels weight-blended, rounded to nearest u8. Identity
++// scale degenerates to integer coordinates → byte-exact passthrough.
++void resample_bilinear(const StoredBitmap& src, int dw, int dh,
++                       std::vector<uint8_t>& out) {
++    out.assign((size_t)dw * dh * 4, 0);
++    if (dw <= 0 || dh <= 0 || src.width <= 0 || src.height <= 0) return;
++    const float xr = (float)src.width / (float)dw;
++    const float yr = (float)src.height / (float)dh;
++    for (int y = 0; y < dh; y++) {
++        float fy = ((float)y + 0.5f) * yr - 0.5f;
++        fy = std::max(0.0f, std::min((float)(src.height - 1), fy));
++        const int y0 = (int)fy;
++        const int y1 = std::min(src.height - 1, y0 + 1);
++        const float ty = fy - (float)y0;
++        for (int x = 0; x < dw; x++) {
++            float fx = ((float)x + 0.5f) * xr - 0.5f;
++            fx = std::max(0.0f, std::min((float)(src.width - 1), fx));
++            const int x0 = (int)fx;
++            const int x1 = std::min(src.width - 1, x0 + 1);
++            const float tx = fx - (float)x0;
++            const uint8_t* p00 = &src.rgba[((size_t)y0 * src.width + x0) * 4];
++            const uint8_t* p10 = &src.rgba[((size_t)y0 * src.width + x1) * 4];
++            const uint8_t* p01 = &src.rgba[((size_t)y1 * src.width + x0) * 4];
++            const uint8_t* p11 = &src.rgba[((size_t)y1 * src.width + x1) * 4];
++            uint8_t* q = &out[((size_t)y * dw + x) * 4];
++            for (int c = 0; c < 4; ++c) {
++                const float v = (float)p00[c] * (1 - tx) * (1 - ty) +
++                                (float)p10[c] * tx * (1 - ty) +
++                                (float)p01[c] * (1 - tx) * ty +
++                                (float)p11[c] * tx * ty;
++                q[c] = (uint8_t)std::lround(v);
++            }
++        }
++    }
++}
++
++// ── C9-23 (CODER 9) — cache-identity law implementation ──────────────
++std::string bitmap_cache_identity_law(const BitmapCacheIdentityInput& in) {
++    auto fnv1a64 = [](const uint8_t* data, size_t len, uint64_t h) {
++        for (size_t i = 0; i < len; ++i) {
++            h ^= (uint64_t)data[i];
++            h *= 0x100000001b3ull;
++        }
++        return h;
++    };
++    uint64_t h = 0xcbf29ce484222325ull;
++    if (in.src_bytes && in.src_len)
++        h = fnv1a64(in.src_bytes, in.src_len, h);
++    h = fnv1a64((const uint8_t*)in.source_desc.data(),
++                in.source_desc.size(), h);
++    const uint8_t tail[] = {
++        (uint8_t)(in.source_density & 0xFF),
++        (uint8_t)(in.source_density >> 8),
++        (uint8_t)(in.target_density & 0xFF),
++        (uint8_t)(in.target_density >> 8),
++        (uint8_t)(in.sample_size & 0xFF),
++        (uint8_t)((in.sample_size >> 8) & 0xFF),
++        (uint8_t)((in.sample_size >> 16) & 0xFF),
++        (uint8_t)((in.sample_size >> 24) & 0xFF),
++        (uint8_t)(in.config & 0xFF),
++        (uint8_t)(in.density_scaled ? 1 : 0),
++    };
++    h = fnv1a64(tail, sizeof(tail), h);
++    char hex[32];
++    std::snprintf(hex, sizeof(hex), "%016llx", (unsigned long long)h);
++    std::string id = "c9:";
++    id += hex;
++    id += ":" + in.source_desc;
++    id += ":d" + std::to_string(in.source_density) + "->" +
++          std::to_string(in.target_density);
++    id += ":s" + std::to_string(in.sample_size);
++    id += ":c" + std::to_string(in.config);
++    if (in.density_scaled) id += ":scaled";
++    return id;
++}
++
+ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+     const std::string& cls = ctx.class_name;
+     const std::string& m = ctx.method;
+@@ -564,16 +713,37 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+             const StoredBitmap* sb = store.get(src);
+             if (!sb || dw <= 0 || dh <= 0 || !heap_)
+                 return CallResult::handled_null();
++            // ── C9-9 (CODER 9): filter=true now performs the REAL bilinear
++            // resample (Skia kLinear half-pixel-center law); filter=false
++            // keeps the nearest-neighbour law. filter=true on a RECYCLED
++            // source has no pixels to sample — AOSP throws; answer null
++            // loudly (recorded divergence, same spirit as decode refusal).
++            std::vector<uint8_t> out;
+             if (filter) {
+-                std::cerr << "[BITMAP] createScaledBitmap filter=true: bilinear "
+-                          << "resample not implemented — nearest used (registered)"
+-                          << std::endl;
++                if (sb->recycled) {
++                    std::cerr << "[BITMAP] createScaledBitmap(filter=true) "
++                              << "on RECYCLED source — null (no pixels to "
++                              << "sample)" << std::endl;
++                    return CallResult::handled_null();
++                }
++                resample_bilinear(*sb, dw, dh, out);
++            } else {
++                resample_nearest(*sb, dw, dh, out);
+             }
+-            std::vector<uint8_t> out;
+-            resample_nearest(*sb, dw, dh, out);
+             const uint32_t obj = heap_->allocate("Landroid/graphics/Bitmap;");
+             store.store(obj, dw, dh, std::move(out),
+                         "createScaledBitmap(" + sb->source_desc + ")");
++            if (auto* nb = store.get_mut(obj)) {
++                // AOSP createScaledBitmap: result inherits source mutability
++                // and premultiplied state; the config is preserved.
++                nb->config = sb->config;
++                nb->mutable_bitmap = sb->mutable_bitmap;
++                nb->premultiplied = sb->premultiplied;
++            }
++            std::cerr << "[BITMAP] createScaledBitmap " << sb->width << "x"
++                      << sb->height << " -> " << dw << "x" << dh
++                      << " filter=" << (filter ? "bilinear(C9-9)" : "nearest")
++                      << std::endl;
+             return CallResult::handled_object(obj, "Landroid/graphics/Bitmap;");
+         }
+         // createBitmap overloads:
+@@ -586,8 +756,25 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+             const int w = ctx.arg_as_int(0, 0);
+             const int h = ctx.arg_as_int(1, 0);
+             if (w <= 0 || h <= 0 || !heap_) return CallResult::handled_null();
++            // ── C9-4/C9-5 (CODER 9): createBitmap(w, h, Config) — the
++            // requested config is REAL (ALPHA_8/RGB_565/ARGB_4444 honored
++            // with the same conversion law as decode) and the result is
++            // MUTABLE (AOSP Bitmap.createBitmap(w,h,config) contract).
++            int32_t cfg = ctx.arg_as_int(2, 3);
++            if (cfg != 0 && cfg != 1 && cfg != 2) cfg = 3;
+             const uint32_t obj = heap_->allocate("Landroid/graphics/Bitmap;");
+             store.create(obj, w, h, "createBitmap(w,h,config)");
++            if (auto* nb = store.get_mut(obj)) {
++                nb->config = cfg;
++                nb->mutable_bitmap = true;
++                if (cfg != 3) {
++                    const std::string name =
++                        bitmap_preferred_config_law(cfg, nb->rgba);
++                    std::cerr << "[BITMAP] createBitmap config honored: "
++                              << name << " (" << w << "x" << h << ")"
++                              << std::endl;
++                }
++            }
+             return CallResult::handled_object(obj, "Landroid/graphics/Bitmap;");
+         }
+         // F-NEW-495b (CONT-157): androidx passes a DELIBERATE NULL dm —
+@@ -855,10 +1042,12 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+         return CallResult::handled_int(sb ? sb->width * sb->height * 4 : 0);
+     }
+     if (m == "getConfig") {
++        // ── C9-4 (CODER 9): answer the REAL stored config, never a constant.
+         // Bitmap$Config statics alias to ints (engine law at
+         // dalvik_engine.cpp Bitmap$Config table): ALPHA_8=0, RGB_565=1,
+-        // ARGB_4444=2, ARGB_8888=3. The runtime decodes to ARGB_8888.
+-        return CallResult::handled_int(3);
++        // ARGB_4444=2, ARGB_8888=3.
++        const StoredBitmap* sb = store.get(recv);
++        return CallResult::handled_int(sb ? sb->config : 3);
+     }
+     if (m == "eraseColor") {
+         StoredBitmap* sb = store.get_mut(recv);
+@@ -876,17 +1065,49 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+     if (m == "getPixel") {
+         const StoredBitmap* sb = store.get(recv);
+         if (!sb) return CallResult::handled_int(0);
++        // ── C9-8 (CODER 9): recycled bitmaps serve no pixels (AOSP
++        // Bitmap.getPixel throws IllegalStateException once recycled; the
++        // engine answers the failure LOUDLY and deterministically instead
++        // of reading freed storage).
++        if (sb->recycled) {
++            std::cerr << "[BITMAP] getPixel on RECYCLED bitmap "
++                      << sb->source_desc
++                      << " — IllegalStateException contract (0 answered)"
++                      << std::endl;
++            return CallResult::handled_int(0);
++        }
+         const int x = ctx.arg_as_int(0, 0), y = ctx.arg_as_int(1, 0);
+         if (x < 0 || y < 0 || x >= sb->width || y >= sb->height)
+             return CallResult::handled_int(0);
+         const uint8_t* p = &sb->rgba[((size_t)y * sb->width + x) * 4];
+-        const uint32_t argb = ((uint32_t)p[3] << 24) | ((uint32_t)p[0] << 16) |
+-                              ((uint32_t)p[1] << 8) | p[2];
++        uint32_t argb = ((uint32_t)p[3] << 24) | ((uint32_t)p[0] << 16) |
++                        ((uint32_t)p[1] << 8) | p[2];
++        // C9-4: ALPHA_8 getPixel contract — the pixel IS the alpha
++        // ((a<<24), RGB zero — AOSP Bitmap.java ALPHA_8 doc).
++        if (sb->config == 0) argb &= 0xFF000000u;
+         return CallResult::handled_int((int32_t)argb);
+     }
+     if (m == "setPixel") {
+         StoredBitmap* sb = store.get_mut(recv);
+         if (sb) {
++            // ── C9-8 (CODER 9): recycle + mutability contracts (AOSP
++            // Bitmap.setPixel throws IllegalStateException on recycled and
++            // on immutable bitmaps; the engine logs the violation loudly
++            // and leaves the store unchanged — never a silent fake write).
++            if (sb->recycled) {
++                std::cerr << "[BITMAP] setPixel on RECYCLED bitmap "
++                          << sb->source_desc
++                          << " — IllegalStateException contract (write dropped)"
++                          << std::endl;
++                return CallResult::handled_void();
++            }
++            if (!sb->mutable_bitmap) {
++                std::cerr << "[BITMAP] setPixel on IMMUTABLE bitmap "
++                          << sb->source_desc
++                          << " — IllegalStateException contract (write dropped)"
++                          << std::endl;
++                return CallResult::handled_void();
++            }
+             const int x = ctx.arg_as_int(0, 0), y = ctx.arg_as_int(1, 0);
+             const uint32_t argb = (uint32_t)ctx.arg_as_int(2, 0xFF000000);
+             if (x >= 0 && y >= 0 && x < sb->width && y < sb->height) {
+@@ -961,17 +1182,29 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+         return CallResult::handled_void();
+     }
+     if (m == "recycle") {
+-        return CallResult::handled_void();   // deterministic GC: no-op
++        // ── C9-8 (CODER 9): AOSP Bitmap.recycle() — frees the pixel data,
++        // marks the bitmap recycled (idempotent). isRecycled() flips;
++        // pixel access answers the loud IllegalStateException contract.
++        if (StoredBitmap* sb = store.get_mut(recv)) {
++            if (!sb->recycled)
++                std::cerr << "[BITMAP] recycle obj=" << recv << " ("
++                          << sb->source_desc << ") — pixels freed" << std::endl;
++            sb->recycled = true;
++            sb->rgba.clear();
++            sb->rgba.shrink_to_fit();
++            sb->has_pixels = false;
++        }
++        return CallResult::handled_void();
+     }
+     if (m == "isRecycled") {
+-        return CallResult::handled_bool(false);
+-    }
+-    if (m == "compress") {
+-        std::cerr << "[BITMAP] compress(): encoder not wired — "
+-                  << "EXPLICIT-UNSUPPORTED -> false (AOSP failure contract)"
+-                  << std::endl;
+-        return CallResult::handled_bool(false);
++        const StoredBitmap* sb = store.get(recv);
++        return CallResult::handled_bool(sb ? sb->recycled : false);
+     }
++    // ── C9-7 (CODER 9): compress DECLINED here — the real PNG encode lives
++    // in the engine bridge (same TU as the ByteArrayOutputStream law it
++    // must write through). Declining keeps the AOSP contract one-homed;
++    // the engine answers FORMAT_PNG with real bytes, other formats with
++    // the loud EXPLICIT-UNSUPPORTED false.
+     if (m == "sameAs") {
+         const StoredBitmap* a = store.get(recv);
+         const StoredBitmap* b = store.get(ctx.arg_as_object(0, 0));
+@@ -981,7 +1214,16 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+                                         a->rgba == b->rgba);
+     }
+     if (m == "isMutable" || m == "hasAlpha" || m == "isPremultiplied") {
+-        return CallResult::handled_bool(m == "hasAlpha" || m == "isMutable");
++        // ── C9-5/C9-6 (CODER 9): answer the REAL stored flags. AOSP:
++        // decodes are immutable unless Options.inMutable; the premultiplied
++        // default is TRUE (the old constant false answered the opposite of
++        // the AOSP field initializer). hasAlpha follows the config (RGB_565
++        // is opaque — AOSP Bitmap.hasAlpha doc).
++        const StoredBitmap* sb = store.get(recv);
++        if (!sb) return CallResult::handled_bool(m == "hasAlpha" || m == "isMutable");
++        if (m == "isMutable") return CallResult::handled_bool(sb->mutable_bitmap);
++        if (m == "isPremultiplied") return CallResult::handled_bool(sb->premultiplied);
++        return CallResult::handled_bool(sb->config != 1);   // RGB_565 opaque
+     }
+     if (m == "getGenerationId") {
+         // No render-node invalidation tracking yet — constant is honest here.
+diff --git a/miniandroid/src/framework/bitmap_shadow.h b/miniandroid/src/framework/bitmap_shadow.h
+index bee8740b..f8f144f4 100644
+--- a/miniandroid/src/framework/bitmap_shadow.h
++++ b/miniandroid/src/framework/bitmap_shadow.h
+@@ -55,6 +55,14 @@ struct StoredBitmap {
+     int32_t source_height = 0;
+     int32_t sample_size = 1;          // opts.inSampleSize applied (1 = none)
+     bool density_scaled = false;      // density scale actually applied
++    // ── C9-4/5/6 (CODER 9) — decode-law Options contract ──────────────────
++    // Bitmap$Config aliases to ints (engine law: ALPHA_8=0, RGB_565=1,
++    // ARGB_4444=2, ARGB_8888=3). Every decode/creation path records the
++    // REAL config it served; getConfig answers this, never a constant.
++    int32_t config = 3;               // ARGB_8888 default (AOSP Options default)
++    bool mutable_bitmap = false;      // decodes immutable; inMutable=true upgrades (C9-5)
++    bool premultiplied = true;        // AOSP inPremultiplied default TRUE (C9-6)
++    bool recycled = false;            // C9-8: recycle() law flag (frees pixels)
+     // CONT-65 F-NEW-355: original container bytes for ANIMATED formats
+     // (GIF89a/GIF87a only — stb_image first-frame decode can't recover
+     // delays). Populated by decode_and_register on GIF magic; empty for
+@@ -172,4 +180,47 @@ struct BitmapFactoryDensityResult {
+ BitmapFactoryDensityResult bitmap_factory_density_law(
+     const BitmapFactoryDensityInput& in);
+ 
++// ── C9-4 (CODER 9) — inPreferredConfig conversion law (pure, testable) ────
++// AOSP BitmapFactory native: the decode output pixel format follows
++// Options.inPreferredConfig. The store is RGBA; the law converts the buffer
++// to the requested config and reports the canonical config name:
++//   ALPHA_8 (0): RGB forced 0, alpha preserved (AOSP ALPHA_8 stores only
++//                alpha; getPixel answers (a<<24))
++//   RGB_565 (1): alpha dropped, 565-quantized (REAL precision loss:
++//                r5=r>>3, g6=g>>2, b5=b>>3, re-expanded)
++//   ARGB_4444 (2): 444-quantized (deprecated, same shape as 565 law)
++//   ARGB_8888 (3): passthrough
++// Unknown values keep ARGB_8888 (AOSP null/unknown → default 8888 path).
++std::string bitmap_preferred_config_law(int32_t in_preferred_config,
++                                        std::vector<uint8_t>& rgba);
++
++// ── C9-9 (CODER 9) — bilinear resample law (pure, testable) ─────────────
++// AOSP/Skia kLinear sampling for Bitmap.createScaledBitmap(src, dw, dh,
++// filter=true): sample point = ((x + 0.5) * sw / dw) - 0.5, clamped to
++// [0, sw-1]; the 4 surrounding texels are weight-blended (float, then
++// rounded to nearest u8). Identity scale (dw==sw, dh==sh) answers the
++// source bytes EXACTLY (the law degenerates to integer coordinates).
++void resample_bilinear(const StoredBitmap& src, int dw, int dh,
++                       std::vector<uint8_t>& out);
++
++// ── C9-23 (CODER 9) — cache-identity law (Glide/Coil substrate) ───────
++// The generic image-loader contract: a decode result is identified by
++// (source entry bytes, source desc, selected density pair, sample size,
++// config). Two decodes with the SAME identity MUST answer pixel-identical
++// bitmaps (byte-derived, deterministic — no timestamps, no pointers). The
++// identity is a 64-bit FNV-1a over all inputs rendered hex + a
++// human-readable provenance suffix. FNV-1a is a CACHE identity (collision
++// safety within one runtime run), not a security hash — documented here.
++struct BitmapCacheIdentityInput {
++    const uint8_t* src_bytes = nullptr;   // APK entry bytes (null = create path)
++    size_t src_len = 0;
++    std::string source_desc;
++    uint16_t source_density = 0;
++    uint16_t target_density = 0;
++    int32_t sample_size = 1;
++    int32_t config = 3;
++    bool density_scaled = false;
++};
++std::string bitmap_cache_identity_law(const BitmapCacheIdentityInput& in);
++
+ } } // namespace miniandroid::framework
+diff --git a/miniandroid/src/framework/state_list.cpp b/miniandroid/src/framework/state_list.cpp
+index 92df83fa..16a4c0bf 100644
+--- a/miniandroid/src/framework/state_list.cpp
++++ b/miniandroid/src/framework/state_list.cpp
+@@ -127,6 +127,12 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
+         // S127: window_focused/activated framework selector states.
+         it.state_window_focused = tri_state(item, "state_window_focused");
+         it.state_activated = tri_state(item, "state_activated");
++        // C9-18 (CODER 9): the remaining standard states — a declared
++        // focused/hovered item must now actually MATCH the view state
++        // instead of silently acting as a wildcard (first-match ordering
++        // law depends on it).
++        it.state_focused = tri_state(item, "state_focused");
++        it.state_hovered = tri_state(item, "state_hovered");
+         uint32_t c = 0;
+         uint32_t cref = 0;
+         if (item_color(item, &c, &cref)) {
+@@ -138,6 +144,15 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
+             // Reference form: raw "@drawable/name" or a typed reference —
+             // recorded for the caller's resolver; unresolved stays empty.
+             if (!d->raw_value.empty()) it.drawable_path = d->raw_value;
++            // ── C9-19 (CODER 9): the COMPILED form — aapt2 stores
++            // @drawable/x as Res_value REFERENCE (data = resid). Recorded
++            // alongside the raw string; the engine dereferences the id
++            // through the ARSC resolver (find_id/resolve_full), so the
++            // state-list item carries a resolvable identity, not a string.
++            if (d->value.type == resources::DataType::REFERENCE ||
++                d->value.type == resources::DataType::DYNAMIC_REFERENCE ||
++                d->value.type == resources::DataType::ATTRIBUTE)
++                it.drawable_ref_id = d->value.data;
+         }
+         items.push_back(std::move(it));
+     }
+@@ -148,7 +163,8 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
+ bool pick_state_list(
+     const std::vector<ViewShadow::ViewNode::BgStateItem>& items, bool pressed,
+     bool enabled, bool selected, uint32_t* color_out, std::string* path_out,
+-    bool checked) {
++    bool checked, bool focused, bool hovered,
++    const ViewShadow::ViewNode::BgStateItem** winner_out) {
+     // StateListDrawable.getStateDrawableIndex law: FIRST item in document
+     // order whose state spec is satisfied wins; a declared state must match
+     // exactly (state_pressed="true" requires pressed), undeclared = wildcard.
+@@ -165,8 +181,16 @@ bool pick_state_list(
+         if (it.state_checked >= 0 &&
+             it.state_checked != (checked ? 1 : 0))
+             continue;
++        // C9-18: focused/hovered declared states must match exactly.
++        if (it.state_focused >= 0 &&
++            it.state_focused != (focused ? 1 : 0))
++            continue;
++        if (it.state_hovered >= 0 &&
++            it.state_hovered != (hovered ? 1 : 0))
++            continue;
+         if (it.has_color && color_out) *color_out = it.color;
+         if (path_out) *path_out = it.drawable_path;
++        if (winner_out) *winner_out = &it;
+         return true;
+     }
+     return false;
+diff --git a/miniandroid/src/framework/state_list.h b/miniandroid/src/framework/state_list.h
+index 670991e5..4f0071be 100644
+--- a/miniandroid/src/framework/state_list.h
++++ b/miniandroid/src/framework/state_list.h
+@@ -38,11 +38,18 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
+                       std::vector<ViewShadow::ViewNode::BgStateItem>* out);
+ 
+ // AOSP first-match law. Returns true when an item matched and fills the
+-// winner's color (when has_color) or drawable path.
++// winner's color (when has_color) or drawable path. C9-18: focused/hovered
++// participate (defaults = the plain default view state).
+ bool pick_state_list(
+     const std::vector<ViewShadow::ViewNode::BgStateItem>& items, bool pressed,
+     bool enabled, bool selected, uint32_t* color_out, std::string* path_out,
+-    bool checked = false);  // S106 MG-022: android:state_checked law
++    bool checked = false,  // S106 MG-022: android:state_checked law
++    bool focused = false,  // C9-18: android:state_focused law
++    bool hovered = false,  // C9-18: android:state_hovered law
++    // C9-19 (CODER 9): when non-null, receives the MATCHED item — the
++    // engine dereferences its compiled drawable_ref_id through the ARSC
++    // router (the raw-string path alone left compiled refs unresolved).
++    const ViewShadow::ViewNode::BgStateItem** winner_out = nullptr);
+ 
+ }  // namespace framework
+ }  // namespace miniandroid
+diff --git a/miniandroid/src/resources/arsc_parser.cpp b/miniandroid/src/resources/arsc_parser.cpp
+index 5f70e8b3..28fbf108 100644
+--- a/miniandroid/src/resources/arsc_parser.cpp
++++ b/miniandroid/src/resources/arsc_parser.cpp
+@@ -414,7 +414,35 @@ bool ArscParser::parse_package(const uint8_t* base, size_t avail, size_t chunk_o
+         if (ctype == RES_TABLE_TYPE_TYPE) {
+             if (!parse_type_chunk(base, avail, pkg, pos, csize)) return false;
+         } else if (ctype == RES_TABLE_TYPE_SPEC_TYPE) {
+-            // skip
++            // ── C9-14 (CODER 9) — ResTable_typeSpec parse ────────────────
++            // AOSP ResourceTypes.h: { header(8), id@8, res0@9, res1@10,
++            // entryCount@12, flags[entryCount] }. Each u32 records the
++            // config-varies flags for the entry at its index. Multiple spec
++            // chunks per type are legal — flags OR-merge (deterministic).
++            if (pos + 20 <= avail && csize >= 20 && pos + csize <= avail) {
++                uint8_t spec_type_id = base[pos + 8];
++                uint32_t spec_count = rd32(base + pos + 12);
++                // C9-14 offset law (aapt2 8.13.2 ground truth, ff/plur
++                // probe dump): the ResTable_typeSpec struct is 16 bytes
++                // (header 8 + id 1 + res0 1 + res1 2 + entryCount 4) and
++                // the flags[entryCount] array starts at max(16,
++                // headerSize) — aapt2 writes headerSize=16, some writers
++                // pad to 20.
++                size_t spec_flags_off = pos + (rd16(base + pos + 2) > 16
++                                                   ? rd16(base + pos + 2)
++                                                   : 16);
++                const uint64_t need = (uint64_t)(spec_flags_off - pos) +
++                                      (uint64_t)spec_count * 4ull;
++                if (need <= csize) {
++                    auto& flags = pkg.type_specs[spec_type_id];
++                    if (flags.size() < spec_count) flags.resize(spec_count, 0);
++                    const uint8_t* fp = base + spec_flags_off;
++                    for (uint32_t si = 0; si < spec_count; ++si) {
++                        flags[si] |= rd32(fp + (size_t)si * 4);   // OR-merge
++                    }
++                }
++            }
++            // hostile/truncated spec chunk: skipped honestly (never fails parse)
+         } else {
+             // unknown — skip
+         }
+@@ -431,11 +459,18 @@ bool ArscParser::parse_package(const uint8_t* base, size_t avail, size_t chunk_o
+ // ---------------------------------------------------------------------------
+ bool ArscParser::parse(const std::vector<uint8_t>& data) {
+     valid_ = false;
+-    data_ = data.data();
++    // C9-13 (CODER 9): OWN the bytes. The old `data_ = data.data()` aliased
++    // the caller's vector — parse-only while it lived, but data_ stayed
++    // dangling after the call (latent use-after-free for any lazy reader).
++    data_owned_ = data;
++    data_ = data_owned_.data();
+     size_ = data.size();
+     packages_.clear();
+     type_entries_.clear();
+     id_index_.clear();
++    name_index_.clear();   // C9-12
++    libraries_.clear();    // C9-15
++    parsed_pkg_ids_.clear();
+     stats_ = Stats{};
+ 
+     if (size_ < 12) { last_error_ = "too small"; return false; }
+@@ -454,10 +489,47 @@ bool ArscParser::parse(const std::vector<uint8_t>& data) {
+ 
+     size_t pos = header_size + pool_size;
+     size_t pkg_seen = 0;
+-    while (pos + 8 <= total_size && pkg_seen < package_count) {
++    // C9-15: the loop no longer stops at package_count — RES_TABLE_LIBRARY
++    // chunks are table-level siblings of the packages (commonly FIRST, but
++    // a trailing chunk is legal too) and must not be silently dropped.
++    while (pos + 8 <= total_size) {
+         uint16_t ctype = rd16(p + pos);
+         uint32_t csize = rd32(p + pos + 4);
+         if (csize == 0) break;
++        if (ctype == RES_TABLE_LIBRARY_TYPE) {
++            // ── C9-15 (CODER 9) — LIBRARY chunk parse ────────────────
++            // AOSP ResTable_lib { header, count, entry[count] } with
++            // entry = { uint32 packageId; uint16 packageName[128]; }.
++            // Bounds-guarded; malformed entries skip honestly, the chunk
++            // never fails the whole parse (an unknown library cannot
++            // invalidate the packages that DID parse).
++            if (pos + 12 > total_size || csize > total_size - pos) { pos += csize; continue; }
++            uint32_t lib_count = rd32(p + pos + 8);
++            size_t lib_hdr = rd16(p + pos + 2);
++            if (lib_hdr < 12) lib_hdr = 12;
++            size_t ep = pos + lib_hdr;
++            for (uint32_t li = 0; li < lib_count; ++li) {
++                if (ep + 4 > total_size || ep + 4 > pos + csize) break;
++                uint32_t lib_pkg_id = rd32(p + ep);
++                // UTF-16LE name, NUL-terminated within 128 units.
++                std::string name;
++                bool ok = false;
++                for (int ci = 0; ci < 128; ++ci) {
++                    size_t ch_off = ep + 4 + (size_t)ci * 2;
++                    if (ch_off + 2 > total_size || ch_off + 2 > pos + csize) break;
++                    uint16_t ch = rd16(p + ch_off);
++                    if (ch == 0) { ok = true; break; }
++                    if (ch < 0x80) name += (char)ch;
++                    else { name.clear(); break; }  // non-ASCII: unusable name
++                }
++                if (ok && !name.empty() && lib_pkg_id != 0)
++                    libraries_[lib_pkg_id] = name;
++                ep += 4 + 128 * 2;
++            }
++            pos += csize;
++            continue;
++        }
++        if (pkg_seen >= package_count) break;   // C9-15: packages still capped
+         if (ctype == RES_TABLE_PACKAGE_TYPE) {
+             // S124 FW-PACKAGE (AOSP AssetManager2 staged-package law): API 31+
+             // tables append small STAGED package chunks that duplicate the
+@@ -516,6 +588,34 @@ void ArscParser::finish_index() {
+             }
+         }
+     }
++    // ── C9-14 (CODER 9): attach ResTable_typeSpec entry flags ───────────
++    // Flags were parsed per (package, type_id); entries receive the flag
++    // vector slot at their entry_index when in range.
++    for (auto& e : type_entries_) {
++        for (const auto& pkg : packages_) {
++            if (pkg.id != e.package_id) continue;
++            auto sit = pkg.type_specs.find((uint8_t)e.type_index);
++            if (sit != pkg.type_specs.end() && e.entry_index < sit->second.size())
++                e.spec_flags = sit->second[e.entry_index];
++            break;
++        }
++    }
++    // ── C9-12 (CODER 9): build the O(1) name→id index ───────────────────
++    // Exact (package,type,name) keys only. FIRST document-order id wins
++    // (type_entries_ is parse order — deterministic, unlike the unordered
++    // scan this replaces). Keys with an empty component never enter the
++    // index; find_id serves those through the legacy wildcard scan.
++    name_index_.clear();
++    for (const auto& e : type_entries_) {
++        if (e.name.empty() || e.type_name.empty()) continue;
++        std::string pkg_name;
++        for (const auto& pkg : packages_)
++            if (pkg.id == e.package_id) { pkg_name = pkg.name; break; }
++        if (pkg_name.empty()) continue;
++        std::string key = pkg_name;
++        key += '\x1f'; key += e.type_name; key += '\x1f'; key += e.name;
++        name_index_.emplace(key, e.resource_id);   // emplace = first wins
++    }
+     stats_.named_ids = (uint32_t)by_id_.size();
+     stats_.entries_by_type.clear();
+     for (const auto& kv : by_id_) {
+@@ -592,6 +692,16 @@ std::optional<ResolvedResource> ArscParser::resolve(uint32_t resource_id) const
+ 
+ std::optional<uint32_t> ArscParser::find_id(const std::string& package, const std::string& type,
+                                             const std::string& name) const {
++    // ── C9-12 (CODER 9): exact lookups answer through the parse-time index
++    // (O(1)). Legacy semantics preserved: empty ANY component = wildcard →
++    // falls through to the bounded scan below.
++    if (!package.empty() && !type.empty() && !name.empty()) {
++        std::string key = package;
++        key += '\x1f'; key += type; key += '\x1f'; key += name;
++        auto it = name_index_.find(key);
++        if (it != name_index_.end()) return it->second;
++        return std::nullopt;   // exact miss: no wildcard rescue (parity law)
++    }
+     for (const auto& kv : by_id_) {
+         const ArscEntry* e = kv.second.front();
+         if (!name.empty() && e->name != name) continue;
+@@ -607,6 +717,27 @@ std::optional<uint32_t> ArscParser::find_id(const std::string& package, const st
+     return std::nullopt;
+ }
+ 
++// ── C9-15 (CODER 9) — dynamic-reference translation law (pure) ────────────
++// AOSP DynamicRefTable.lookupResourceId: a DYNAMIC_REFERENCE value carries
++// a per-table LIBRARY package id in its high byte; the real id is recovered
++// by mapping the library slot to the package that is actually present under
++// the same NAME. No library slot, no same-name package, or a non-dynamic id
++// → honest nullopt (callers keep the raw id).
++std::optional<uint32_t> ArscParser::translate_dynamic_reference(uint32_t id) const {
++    if (libraries_.empty()) return std::nullopt;
++    const uint32_t pkg_bits = (id >> 24) & 0xFFu;
++    auto lit = libraries_.find(pkg_bits);
++    if (lit == libraries_.end()) return std::nullopt;
++    for (const auto& pkg : packages_) {
++        if (pkg.name == lit->second) {
++            const uint32_t real = ResId::pack(pkg.id, (uint8_t)((id >> 16) & 0xFFu),
++                                              (uint16_t)(id & 0xFFFFu));
++            return real;
++        }
++    }
++    return std::nullopt;
++}
++
+ // ─────────────────────────────────────────────────────────────────────────────
+ // GOLDEN-03 §4/§6 — canonical structured resolution.
+ // AOSP law: AssetManager2/ResTable resolveReference walks REFERENCE values
+diff --git a/miniandroid/src/resources/arsc_parser.h b/miniandroid/src/resources/arsc_parser.h
+index bf49c3cd..0bb64da9 100644
+--- a/miniandroid/src/resources/arsc_parser.h
++++ b/miniandroid/src/resources/arsc_parser.h
+@@ -6,7 +6,8 @@
+  *   RES_STRING_POOL_TYPE      (0x0001)  global + package string pools (UTF-8/UTF-16)
+  *   RES_TABLE_PACKAGE_TYPE    (0x0200)  package: id, name, typeStrings, keyStrings
+  *   RES_TABLE_TYPE_TYPE       (0x0201)  type (per config): entries incl. SPARSE
+- *   RES_TABLE_TYPE_SPEC_TYPE  (0x0202)  (skipped; config mask not needed)
++ *   RES_TABLE_TYPE_SPEC_TYPE  (0x0202)  C9-14: per-entry spec flags parsed
++*   RES_TABLE_LIBRARY_TYPE    (0x0203)  C9-15: dynamic-ref library registry
+  *
+  * Res_value dataTypes handled: NULL, REFERENCE, ATTRIBUTE, STRING, FLOAT,
+  * DIMENSION, FRACTION, INT_DEC, INT_HEX, INT_BOOLEAN, COLOR_ARGB8, COLOR_RGB8,
+@@ -49,6 +50,10 @@ static constexpr uint16_t RES_XML_START_ELEMENT     = 0x0102;
+ static constexpr uint16_t RES_XML_END_ELEMENT       = 0x0103;
+ static constexpr uint16_t RES_XML_RESOURCE_MAP      = 0x0180;
+ static constexpr uint16_t RES_TABLE_PACKAGE_TYPE    = 0x0200;
++// C9-15 (CODER 9): AOSP ResourceTypes.h — RES_TABLE_LIBRARY_TYPE. Sibling of
++// the package chunks under the root table; declares {packageId, packageName}
++// pairs the table's DYNAMIC_REFERENCE values refer to.
++static constexpr uint16_t RES_TABLE_LIBRARY_TYPE    = 0x0203;
+ static constexpr uint16_t RES_TABLE_TYPE_TYPE       = 0x0201;
+ static constexpr uint16_t RES_TABLE_TYPE_SPEC_TYPE  = 0x0202;
+ 
+@@ -126,6 +131,9 @@ struct ArscEntry {
+     uint32_t   bag_parent = 0;     // 0 = no parent
+     std::vector<uint32_t> complex_keys;           // VISUAL-CAMPAIGN G49: ResTable_map name keys
+     std::vector<ResValue> complex_items;  // for arrays/attrs
++    // C9-14 (CODER 9): ResTable_typeSpec entry flags (AOSP: OR of every
++    // spec chunk seen for the entry's type). 0 = no spec chunk present.
++    uint32_t   spec_flags = 0;
+ };
+ 
+ // ─────────────────────────────────────────────────────────────────────────────
+@@ -213,8 +221,27 @@ public:
+     // Resolve full resource by id.
+     std::optional<ResolvedResource> resolve(uint32_t resource_id) const;
+     // Find id by name (first package containing it). type e.g. "layout".
++    // C9-12 (CODER 9): exact (package,type,name) lookups answer through a
++    // parse-time hash index (O(1)); calls with ANY empty component keep the
++    // legacy wildcard scan semantics (documented AOSP getIdentifier allows
++    // null defType/defPackage). Results are identical to the O(n) walk —
++    // pinned by the c9_phase3 parity law.
+     std::optional<uint32_t> find_id(const std::string& package, const std::string& type,
+                                     const std::string& name) const;
++
++    // ── C9-15 (CODER 9) — LIBRARY chunk registry ───────────────────────
++    // Parsed RES_TABLE_LIBRARY_TYPE (0x0203) chunks: dynamic package id →
++    // package name. Empty map = table carried no library chunk (the common
++    // single-APK case — same answer as before, now explicit).
++    const std::map<uint32_t, std::string>& libraries() const { return libraries_; }
++
++    // C9-15 translation law (pure): a DYNAMIC_REFERENCE value whose package
++    // bits name a LIBRARY package is re-packed onto the REAL package with
++    // the same NAME (AOSP DynamicRefTable: library ids are per-table slots,
++    // resolved by name against the packages actually present). Returns
++    // nullopt when id is not a library ref or no same-name package exists
++    // (honest miss — the caller keeps the raw id and its own diagnostics).
++    std::optional<uint32_t> translate_dynamic_reference(uint32_t id) const;
+     // Convenience: resolve id → value of best config (follows one REFERENCE hop).
+     std::optional<ResValue> resolve_value(uint32_t resource_id) const;
+     // Resolve string by id (no reference hop).
+@@ -372,6 +399,8 @@ private:
+         // type_id → list of type chunks (one per config)
+         std::map<uint8_t, std::vector<TypeChunk>> types;
+         // entry_index → resource id mapping is implicit: id = (package<<24)|(type<<16)|entry
++    // C9-14: ResTable_typeSpec chunk flags per entry index (type_id → flags).
++    std::map<uint8_t, std::vector<uint32_t>> type_specs;
+     };
+ 
+     bool parse_string_pool(const uint8_t* base, size_t avail, size_t chunk_offset, Pool& out);
+@@ -383,8 +412,23 @@ private:
+                                  const Package& pkg, ResValue& out);
+     static std::string config_to_string(const uint8_t* cfg, size_t cfg_size);
+ 
++    // C9-13 (CODER 9): the parser OWNS its bytes. data_ previously aliased
++    // the caller's vector (dangling the moment that vector died — every
++    // post-parse resolve read freed memory). Law: parse() copies the bytes
++    // once; data_ points into the owned buffer only.
++    std::vector<uint8_t> data_owned_;
+     const uint8_t* data_ = nullptr;
+     size_t size_ = 0;
++
++    // C9-12 (CODER 9): parse-time name→id index. Key = package + 0x1f +
++    // type + 0x1f + name (0x1f never occurs in resource/type/package
++    // names). FIRST document-order id wins (deterministic; the legacy O(n)
++    // walk raced over unordered_map iteration order when several packages
++    // carried the same name).
++    std::unordered_map<std::string, uint32_t> name_index_;
++
++    // C9-15: RES_TABLE_LIBRARY_TYPE registry (dynamic pkg id → name).
++    std::map<uint32_t, std::string> libraries_;
+     Pool global_strings_;
+     std::vector<Package> packages_;
+     // S124 FW-PACKAGE: ids of packages already parsed (staged duplicates skip).
+diff --git a/miniandroid/src/resources/font_family.cpp b/miniandroid/src/resources/font_family.cpp
+new file mode 100644
+index 00000000..0fcf0729
+--- /dev/null
++++ b/miniandroid/src/resources/font_family.cpp
+@@ -0,0 +1,113 @@
++// font_family.cpp — C9-16/C9-17 (CODER 9) implementation. See font_family.h.
++
++#include "font_family.h"
++
++#include "axml_parser.h"
++
++#include <algorithm>
++#include <cstdlib>
++
++namespace miniandroid {
++namespace resources {
++
++namespace {
++// android:fontWeight range law (FontResourcesParser): values outside
++// 0..1000 clamp to the nearest bound; absent = 400.
++int32_t clamp_weight(int32_t w) {
++    if (w < 0) return 0;
++    if (w > 1000) return 1000;
++    return w;
++}
++}  // namespace
++
++FontFamily parse_font_family(const std::vector<uint8_t>& axml,
++                             const std::string& source_path) {
++    FontFamily out;
++    out.source_path = source_path;
++    resources::AxmlParser parser;
++    if (!parser.parse(axml) || !parser.valid()) return out;
++    const auto& root = parser.root();
++    if (root.name != "font-family") return out;   // honest miss
++    if (const auto* a = root.attr("fontFamily", "android"))
++        if (!a->raw_value.empty()) out.name = a->raw_value;
++
++    for (const auto& child : root.children) {
++        if (child.name != "font") continue;
++        FontFaceDecl decl;
++        decl.source_path = source_path;
++        if (const auto* f = child.attr("font", "android")) {
++            if (!f->raw_value.empty()) decl.font_ref = f->raw_value;
++            if (f->value.type == DataType::REFERENCE ||
++                f->value.type == DataType::DYNAMIC_REFERENCE)
++                decl.font_ref_id = f->value.data;
++        }
++        if (const auto* w = child.attr("fontWeight", "android")) {
++            int32_t v = 0;
++            if (w->value.type == DataType::INT_DEC ||
++                w->value.type == DataType::INT_HEX) {
++                v = (int32_t)w->value.data;
++            } else if (!w->raw_value.empty()) {
++                v = (int32_t)strtol(w->raw_value.c_str(), nullptr, 10);
++            }
++            decl.weight = clamp_weight(v == 0 && w->raw_value != "0" ? 400 : v);
++        }
++        if (const auto* s = child.attr("fontStyle", "android")) {
++            // AOSP FontResourcesParser: "italic" → ITALIC, anything else
++            // (absent / "normal") → NORMAL. The compiled value is an int
++            // (0 normal / 1 italic) for aapt2 — both forms accepted.
++            if (s->value.type == DataType::INT_DEC ||
++                s->value.type == DataType::INT_HEX) {
++                decl.italic = (s->value.data & 0x1) != 0;
++            } else {
++                decl.italic = (s->raw_value == "italic");
++            }
++        }
++        if (!decl.font_ref.empty() || decl.font_ref_id != 0)
++            out.faces.push_back(std::move(decl));
++    }
++    return out;
++}
++
++TypefaceRequest typeface_style_request(int style) {
++    TypefaceRequest r;
++    switch (style) {
++        case kTypefaceBold:
++        case kTypefaceBoldItalic:
++            r.weight = 700;
++            break;
++        default:
++            r.weight = 400;   // NORMAL / ITALIC / unknown styles
++            break;
++    }
++    r.italic = (style & kTypefaceItalic) != 0;
++    return r;
++}
++
++int select_font_face_law(const std::vector<FontFaceDecl>& faces,
++                         int32_t req_weight, bool req_italic) {
++    if (faces.empty()) return -1;
++    int best = -1;
++    int best_italic_penalty = 1;   // 0 = italic matches, 1 = mismatch
++    int32_t best_dist = 0;
++    for (size_t i = 0; i < faces.size(); ++i) {
++        const int ip = faces[i].italic == req_italic ? 0 : 1;
++        const int32_t dist = std::abs(faces[i].weight - req_weight);
++        if (best < 0 || ip < best_italic_penalty ||
++            (ip == best_italic_penalty && dist < best_dist)) {
++            best = (int)i;
++            best_italic_penalty = ip;
++            best_dist = dist;
++        }
++        // ties (ip == best_italic_penalty && dist == best_dist) keep the
++        // earlier candidate — document order, deterministic.
++    }
++    return best;
++}
++
++int select_font_face_law(const std::vector<FontFaceDecl>& faces, int style) {
++    const TypefaceRequest req = typeface_style_request(style);
++    return select_font_face_law(faces, req.weight, req.italic);
++}
++
++}  // namespace resources
++}  // namespace miniandroid
+diff --git a/miniandroid/src/resources/font_family.h b/miniandroid/src/resources/font_family.h
+new file mode 100644
+index 00000000..a58cd500
+--- /dev/null
++++ b/miniandroid/src/resources/font_family.h
+@@ -0,0 +1,87 @@
++// font_family.h — C9-16/C9-17 (CODER 9) — font-family XML + weight law.
++//
++// AOSP contract (frameworks/base, graphics/java/android/graphics/Typeface.java
++// + core/java/android/content/res/FontResourcesParser.java):
++//   * res/font/*.xml <font-family> declares a NAMED family whose <font>
++//     children each carry android:font="@font/file", android:fontWeight
++//     (0..1000, default 400) and android:fontStyle ("normal"|"italic").
++//   * Typeface.create(family, style) resolves the family to the face whose
++//     (weight, italic) is the CLOSEST to the request (the FontListFont-
++//     FamilyTypefaceAdapter style-distance law): italic mismatch is the
++//     dominant penalty, then absolute weight distance; document order
++//     breaks ties deterministically.
++//   * The legacy filename-heuristic path (face -bold/-italic suffixes) stays
++//     the fallback when no font-family XML exists for the name.
++//
++// Pure + unit-tested (tests/c9_phase3_laws_test.cpp); the engine hookup
++// (dalvik_engine.cpp Typeface laws) consumes these functions.
++
++#ifndef MINIANDROID_RESOURCES_FONT_FAMILY_H
++#define MINIANDROID_RESOURCES_FONT_FAMILY_H
++
++#include "arsc_parser.h"
++
++#include <cstdint>
++#include <string>
++#include <vector>
++
++namespace miniandroid {
++namespace resources {
++
++// One <font> child of a <font-family>.
++struct FontFaceDecl {
++    std::string font_ref;      // raw android:font value ("@font/foo_regular")
++    uint32_t font_ref_id = 0;  // compiled REFERENCE id (0 = none/raw only)
++    int32_t weight = 400;      // android:fontWeight (AOSP default 400)
++    bool italic = false;       // android:fontStyle == "italic"
++    // Provenance: res/font/<family>.xml the decl was parsed from.
++    std::string source_path;
++};
++
++// A parsed <font-family> document.
++struct FontFamily {
++    std::string name;  // android:fontFamily attr ("" = filename carries it)
++    std::vector<FontFaceDecl> faces;
++    std::string source_path;
++    bool valid() const { return !faces.empty(); }
++};
++
++// C9-16 — parse a compiled res/font/*.xml AXML document. Returns an
++// INVALID family (faces empty) for non-font-family roots (honest miss —
++// the caller falls back to the filename heuristics).
++FontFamily parse_font_family(const std::vector<uint8_t>& axml,
++                             const std::string& source_path);
++
++// AOSP Typeface style bits (Typeface.java): NORMAL=0, BOLD=1,
++// ITALIC=2, BOLD_ITALIC=3.
++constexpr int kTypefaceNormal = 0;
++constexpr int kTypefaceBold = 1;
++constexpr int kTypefaceItalic = 2;
++constexpr int kTypefaceBoldItalic = 3;
++
++// style → (requested weight, requested italic) — AOSP Typeface.create
++// defaults: BOLD maps to weight 700, everything else to 400 (the pre-
++// variable-font contract; create(Typeface,int weight,boolean italic)
++// passes the weight through, clamped to 0..1000).
++struct TypefaceRequest {
++    int32_t weight = 400;
++    bool italic = false;
++};
++TypefaceRequest typeface_style_request(int style);
++
++// C9-17 — the AOSP closest-face law (pure, deterministic). Returns the
++// index into `faces` of the winner, or -1 when faces is empty.
++//   1. italic mismatch dominates (an exact-italic candidate always beats
++//      a non-matching one — AOSP style-distance first component),
++//   2. then minimal |weight - requested weight|,
++//   3. ties answer the FIRST document-order candidate.
++int select_font_face_law(const std::vector<FontFaceDecl>& faces,
++                         int32_t req_weight, bool req_italic);
++
++// Convenience: style-bits overload.
++int select_font_face_law(const std::vector<FontFaceDecl>& faces, int style);
++
++}  // namespace resources
++}  // namespace miniandroid
++
++#endif  // MINIANDROID_RESOURCES_FONT_FAMILY_H
+diff --git a/miniandroid/src/resources/plurals.cpp b/miniandroid/src/resources/plurals.cpp
+new file mode 100644
+index 00000000..0d0845dd
+--- /dev/null
++++ b/miniandroid/src/resources/plurals.cpp
+@@ -0,0 +1,48 @@
++// plurals.cpp — C9-20 (CODER 9) implementation. See plurals.h for the
++// source-backed contract and the documented CLDR rule subset.
++
++#include "plurals.h"
++
++namespace miniandroid {
++namespace resources {
++
++PluralsQuantity cldr_quantity_law(const std::string& locale, int64_t n) {
++    // primary language subtag: strip region/script ("-IR", "-Latn"),
++    // lowercase (locale tags are case-insensitive for the subtag).
++    std::string lang;
++    for (char c : locale) {
++        if (c == '-' || c == '_') break;
++        lang += (char)((c >= 'A' && c <= 'Z') ? c + 32 : c);
++    }
++    if (lang == "fa") {
++        // CLDR fa: one for i = 0..1 (Persian counts zero as "one").
++        return (n == 0 || n == 1) ? PluralsQuantity::ONE
++                                  : PluralsQuantity::OTHER;
++    }
++    if (lang == "ar") {
++        if (n == 0) return PluralsQuantity::ZERO;
++        if (n == 1) return PluralsQuantity::ONE;
++        if (n == 2) return PluralsQuantity::TWO;
++        const int64_t m = n % 100;
++        if (m >= 3 && m <= 10) return PluralsQuantity::FEW;
++        if (m >= 11 && m <= 99) return PluralsQuantity::MANY;
++        return PluralsQuantity::OTHER;
++    }
++    if (lang == "ru") {
++        const int64_t i10 = n % 10, i100 = n % 100;
++        if (i10 == 1 && i100 != 11) return PluralsQuantity::ONE;
++        if (i10 >= 2 && i10 <= 4 && !(i100 >= 12 && i100 <= 14))
++            return PluralsQuantity::FEW;
++        return PluralsQuantity::MANY;
++    }
++    // default (en + every unlisted language): one iff n == 1.
++    return (n == 1) ? PluralsQuantity::ONE : PluralsQuantity::OTHER;
++}
++
++uint32_t plurals_bag_key(PluralsQuantity q) {
++    const uint8_t i = (uint8_t)q;
++    return i < 6 ? kPluralsKey[i] : kPluralsKey[5];
++}
++
++}  // namespace resources
++}  // namespace miniandroid
+diff --git a/miniandroid/src/resources/plurals.h b/miniandroid/src/resources/plurals.h
+new file mode 100644
+index 00000000..29edd3e8
+--- /dev/null
++++ b/miniandroid/src/resources/plurals.h
+@@ -0,0 +1,60 @@
++// plurals.h — C9-20 (CODER 9) — CLDR plural-category selection law.
++//
++// AOSP contract (frameworks/base, core/java/android/content/res/PluralRules
++// ↔ icu4c PluralRules.forLocale().select(quantity)):
++//   * Resources.getQuantityString(id, quantity) takes the NUMBER and
++//     internally maps it to the CLDR category (zero/one/two/few/many/other)
++//     for the resource's locale, THEN reads the matching bag item.
++//   * The plurals bag keys are the android attrs (aapt2 8.13.2 ground
++//     truth, probe /tmp/plur_probe — resources.arsc byte dump):
++//       zero=0x01000004  one=0x01000005  two=0x01000006
++//       few=0x01000007   many=0x01000008 other=0x01000009
++//
++// Documented law subset (CLDR 46 rules, integer operands only — the
++// runtime resolves integer quantities; fractional rules are recorded as
++// a PENDING divergence, honest-miss to OTHER):
++//   default / en: one iff n == 1; else other
++//   fa:           one iff n == 0 or n == 1; else other
++//   ar:           zero 0 · one 1 · two 2 · few n%100∈[3,10] ·
++//                 many n%100∈[11,99] · else other
++//   ru:           one (i%10==1 && i%100!=11) · few (i%10∈[2,4] &&
++//                 !(i%100∈[12,14])) · many (integral rest) · other
++// Unknown locales take the default (en) rules — the same fallback icu4c
++// ships for unlisted languages.
++
++#ifndef MINIANDROID_RESOURCES_PLURALS_H
++#define MINIANDROID_RESOURCES_PLURALS_H
++
++#include <cstdint>
++#include <string>
++
++namespace miniandroid {
++namespace resources {
++
++// The CLDR plural categories — bag-key order matches the attr ids above.
++enum class PluralsQuantity : uint8_t {
++    ZERO = 0, ONE, TWO, FEW, MANY, OTHER,
++};
++
++// The aapt2-pinned bag keys (see header comment — ground truth above).
++constexpr uint32_t kPluralsKey[6] = {
++    0x01000004,  // zero
++    0x01000005,  // one
++    0x01000006,  // two
++    0x01000007,  // few
++    0x01000008,  // many
++    0x01000009,  // other
++};
++
++// CLDR selection law (pure, deterministic). locale is the BCP-47/ISO form
++// ("en", "fa-IR", "ar", "ru-RU" — only the primary subtag matters for the
++// documented subset). n is the integer quantity.
++PluralsQuantity cldr_quantity_law(const std::string& locale, int64_t n);
++
++// Bag-key lookup: the ARSC complex-entry key for a category.
++uint32_t plurals_bag_key(PluralsQuantity q);
++
++}  // namespace resources
++}  // namespace miniandroid
++
++#endif  // MINIANDROID_RESOURCES_PLURALS_H
+diff --git a/miniandroid/src/resources/resource_runtime.cpp b/miniandroid/src/resources/resource_runtime.cpp
+index e5984791..98ca0069 100644
+--- a/miniandroid/src/resources/resource_runtime.cpp
++++ b/miniandroid/src/resources/resource_runtime.cpp
+@@ -193,7 +193,9 @@ std::optional<uint32_t> ResourceRuntime::resolve_framework_file_color(uint32_t r
+                     !tri_matches(it.state_selected, false) ||
+                     !tri_matches(it.state_checked, false) ||
+                     !tri_matches(it.state_window_focused, true) ||
+-                    !tri_matches(it.state_activated, false))
++                    !tri_matches(it.state_activated, false) ||
++                    !tri_matches(it.state_focused, false) ||
++                    !tri_matches(it.state_hovered, false))
+                     continue;   // requires a non-default state — not first match
+                 if (it.has_color && it.color != 0) return it.color;
+                 if (it.has_color && it.color_ref_id != 0)
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index b0417924..46609fa7 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -4003,10 +4003,45 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
+                                 sl_it->second.first) {
+                                 uint32_t c = 0;
+                                 std::string p;
++                                const framework::ViewShadow::ViewNode::
++                                    BgStateItem* win = nullptr;
+                                 if (framework::pick_state_list(
+                                         sl_it->second.second, node->pressed,
+-                                        node->enabled, node->selected, &c, &p)) {
++                                        node->enabled, node->selected, &c, &p,
++                                        node->checked, node->focused, false,
++                                        &win)) {
+                                     if (p.empty() && c != 0) eff_bg_color = c;
++                                    // ── C9-19 (CODER 9): the matched item
++                                    // may carry a COMPILED ref
++                                    // (@drawable/@color as Res_value
++                                    // REFERENCE — no raw string). Resolve
++                                    // the identity through the ARSC router:
++                                    // table colors PAINT; file-backed
++                                    // identities are logged with their real
++                                    // path (provenance — never faked).
++                                    if (win && win->drawable_ref_id != 0) {
++                                        auto& art = resources::
++                                            ResourceRuntime::instance()
++                                                .arsc();
++                                        auto v = art.resolve_value(
++                                            win->drawable_ref_id);
++                                        if (v && (v->is_color() || v->is_int())) {
++                                            eff_bg_color = v->data;
++                                        } else if (v && v->is_string() &&
++                                                   !v->string_value.empty()) {
++                                            trace_engine_.info(
++                                                "ExecutionEngine",
++                                                "stage_render_frame",
++                                                "STATE-LIST C9-19 ref 0x" +
++                                                    [] (uint32_t r) {
++                                                        char b[16];
++                                                        std::snprintf(
++                                                            b, sizeof(b), "%08X", r);
++                                                        return std::string(b);
++                                                    }(win->drawable_ref_id) +
++                                                    " -> " + v->string_value);
++                                        }
++                                    }
+                                 }
+                             }
+                             // F-053 (M9): GradientDrawable <shape> law. The
+diff --git a/miniandroid/tests/c9_phase3_laws_test.cpp b/miniandroid/tests/c9_phase3_laws_test.cpp
+new file mode 100644
+index 00000000..0d4ede91
+--- /dev/null
++++ b/miniandroid/tests/c9_phase3_laws_test.cpp
+@@ -0,0 +1,512 @@
++// C9-4..C9-23 (CODER 9) — phase-3 law test.
++//
++// Pins the 20 resource-pipeline laws delivered in phase 3 (see Issue #521):
++//   C9-4  bitmap_preferred_config_law   — inPreferredConfig conversion
++//   C9-9  resample_bilinear             — Skia kLinear sampling
++//   C9-12 ArscParser name→id hash index — exact parity + wildcard fallback
++//   C9-13 ArscParser owned bytes        — post-free resolve safety
++//   C9-14 ResTable_typeSpec flags       — parse + OR-merge + attach
++//   C9-15 LIBRARY chunk                 — registry + dynamic-ref translation
++//   C9-16 parse_font_family             — REAL aapt2-compiled AXML (embedded)
++//   C9-17 select_font_face_law          — AOSP closest-face law
++//   C9-18 pick_state_list focused/hovered — first-match tri-states
++//   C9-20 cldr_quantity_law             — CLDR category subset + bag keys
++//   C9-23 bitmap_cache_identity_law     — deterministic cache identity
++//
++// Synthetic ARSC tables are crafted in-memory (the resource_config_selection
++// test pattern — no fixture APK dependency). The font-family AXML bytes are
++// aapt2 8.13.2 REAL toolchain output (embedded array, deterministic).
++//
++// Build: link with the full object set (Issue #521 ACH-1 §7 command shape).
++
++#include <framework/bitmap_shadow.h>
++#include <framework/state_list.h>
++
++#include <resources/arsc_parser.h>
++#include <resources/font_family.h>
++#include <resources/plurals.h>
++
++#include <cstdint>
++#include <cstdio>
++#include <cstring>
++#include <string>
++#include <vector>
++
++using namespace miniandroid;
++using namespace miniandroid::resources;
++namespace fw = miniandroid::framework;
++
++static int g_pass = 0, g_fail = 0;
++static void law(bool ok, int num, const char* what) {
++    if (ok) { ++g_pass; }
++    else {
++        ++g_fail;
++        std::printf("  LAW %02d FAIL: %s\n", num, what);
++    }
++}
++
++// ── synthetic ARSC builder (resource_config_selection pattern) ───────────
++static void put16(std::vector<uint8_t>& v, size_t off, uint16_t x) {
++    v[off] = (uint8_t)(x & 0xFF); v[off + 1] = (uint8_t)((x >> 8) & 0xFF);
++}
++static void put32(std::vector<uint8_t>& v, size_t off, uint32_t x) {
++    v[off] = (uint8_t)(x & 0xFF); v[off+1] = (uint8_t)((x>>8)&0xFF);
++    v[off+2] = (uint8_t)((x>>16)&0xFF); v[off+3] = (uint8_t)((x>>24)&0xFF);
++}
++static void append16(std::vector<uint8_t>& v, uint16_t x) { size_t o=v.size(); v.resize(o+2); put16(v,o,x); }
++static void append32(std::vector<uint8_t>& v, uint32_t x) { size_t o=v.size(); v.resize(o+4); put32(v,o,x); }
++
++static std::vector<uint8_t> build_string_pool(const std::vector<std::string>& strings) {
++    std::vector<uint8_t> offsets_blob, data_blob;
++    for (const auto& s : strings) {
++        append32(offsets_blob, (uint32_t)data_blob.size());
++        data_blob.push_back((uint8_t)s.size());
++        data_blob.push_back((uint8_t)s.size());
++        data_blob.insert(data_blob.end(), s.begin(), s.end());
++        data_blob.push_back(0);
++    }
++    while (data_blob.size() % 4) data_blob.push_back(0);
++    const uint32_t sc = (uint32_t)strings.size();
++    const uint32_t hdr = 28, strs = hdr + sc * 4;
++    std::vector<uint8_t> out;
++    append16(out, 0x0001); append16(out, (uint16_t)hdr); append32(out, strs + (uint32_t)data_blob.size());
++    append32(out, sc); append32(out, 0); append32(out, 1u << 8);
++    append32(out, strs); append32(out, 0);
++    out.insert(out.end(), offsets_blob.begin(), offsets_blob.end());
++    out.insert(out.end(), data_blob.begin(), data_blob.end());
++    return out;
++}
++
++// One bag (complex) entry: count maps {name, STRING value}, 28-byte config.
++struct BagMap { uint32_t key; uint32_t string_idx; };
++static std::vector<uint8_t> build_type_chunk_bag(uint8_t type_id,
++                                                 const std::vector<BagMap>& maps) {
++    const uint32_t n = (uint32_t)maps.size();
++    const uint16_t hdr = 20 + 28;
++    const uint32_t entries_start = hdr + 4;
++    // chunk = fixed(20) + config(28) + offsets(4) + entry(16) + maps(12n)
++    //        = entries_start + 16 + 12n  (entry starts AT entries_start)
++    const uint32_t chunk_size = entries_start + 16 + n * 12;
++    std::vector<uint8_t> out;
++    append16(out, 0x0201); append16(out, (uint16_t)hdr); append32(out, chunk_size);
++    out.push_back(type_id); out.push_back(0); append16(out, 0);
++    append32(out, 1); append32(out, entries_start);
++    for (int i = 0; i < 7; ++i) append32(out, 0);   // config: 28 zero bytes
++    append32(out, 0);  // offset[0]
++    // ResTable_entry complex: {size=16, flags=COMPLEX(1), key=0, parent=0, count=n}
++    append16(out, 16); append16(out, 0x0001); append32(out, 0);
++    append32(out, 0); append32(out, n);
++    for (const auto& m : maps) {
++        append32(out, m.key);
++        append16(out, 8); out.push_back(0); out.push_back(0x03);  // Res_value STRING
++        append32(out, m.string_idx);
++    }
++    return out;
++}
++
++// Simple STRING entry, 28-byte config.
++static std::vector<uint8_t> build_type_chunk_string(uint8_t type_id,
++                                                    uint32_t string_idx,
++                                                    uint32_t key_idx = 0) {
++    const uint16_t hdr = 20 + 28;
++    const uint32_t entries_start = hdr + 4;
++    // chunk = fixed(20) + config(28) + offsets(4) + entry(8) + value(8)
++    //        = entries_start + 16
++    const uint32_t chunk_size = entries_start + 16;
++    std::vector<uint8_t> out;
++    append16(out, 0x0201); append16(out, (uint16_t)hdr); append32(out, chunk_size);
++    out.push_back(type_id); out.push_back(0); append16(out, 0);
++    append32(out, 1); append32(out, entries_start);
++    for (int i = 0; i < 7; ++i) append32(out, 0);   // config: 28 zero bytes
++    append32(out, 0);
++    append16(out, 8); append16(out, 0); append32(out, key_idx);
++    append16(out, 8); out.push_back(0); out.push_back(0x03); append32(out, string_idx);
++    return out;
++}
++
++static std::vector<uint8_t> build_type_spec(uint8_t type_id, uint32_t flags) {
++    std::vector<uint8_t> out;
++    append16(out, 0x0202); append16(out, 16); append32(out, 16 + 4);
++    out.push_back(type_id); out.push_back(0); append16(out, 0);
++    append32(out, 1);
++    append32(out, flags);
++    return out;
++}
++
++// LIBRARY chunk (0x0203): {header(12), count, entry*{pkgId u32, name utf16[128]}}
++static std::vector<uint8_t> build_library_chunk(
++        const std::vector<std::pair<uint32_t, std::string>>& libs) {
++    const uint32_t n = (uint32_t)libs.size();
++    const uint32_t chunk_size = 12 + n * (4 + 256);
++    std::vector<uint8_t> out;
++    append16(out, 0x0203); append16(out, 12); append32(out, chunk_size);
++    append32(out, n);
++    for (const auto& l : libs) {
++        append32(out, l.first);
++        for (int i = 0; i < 128; ++i) {
++            uint16_t ch = i < (int)l.second.size() ? (uint16_t)l.second[i] : 0;
++            append16(out, ch);
++        }
++    }
++    return out;
++}
++
++struct TableSpec {
++    std::vector<std::string> global_strings;
++    std::vector<std::string> type_strings;
++    std::vector<std::string> key_strings;
++    // chunks inside the package body (spec + types + libraries)
++    std::vector<std::vector<uint8_t>> inner_chunks;
++    std::vector<std::pair<uint32_t, std::string>> libraries;  // top-level chunk
++    std::string package_name = "t";
++};
++
++static std::vector<uint8_t> build_table(const TableSpec& t) {
++    std::vector<uint8_t> pool = build_string_pool(t.global_strings);
++    std::vector<uint8_t> type_pool = build_string_pool(t.type_strings);
++    std::vector<uint8_t> key_pool = build_string_pool(t.key_strings);
++    std::vector<uint8_t> lib = build_library_chunk(t.libraries);
++
++    std::vector<uint8_t> inner;
++    for (const auto& c : t.inner_chunks)
++        inner.insert(inner.end(), c.begin(), c.end());
++
++    const uint32_t pkg_hdr = 288;
++    const uint32_t tso = pkg_hdr;
++    const uint32_t kso = tso + (uint32_t)type_pool.size();
++    const uint32_t pkg_size = pkg_hdr + (uint32_t)type_pool.size() +
++                              (uint32_t)key_pool.size() + (uint32_t)inner.size();
++
++    std::vector<uint8_t> pkg(pkg_hdr, 0);
++    put16(pkg, 0, 0x0200); put16(pkg, 2, (uint16_t)pkg_hdr);
++    put32(pkg, 4, pkg_size); put32(pkg, 8, 0x7f);
++    for (size_t i = 0; i < t.package_name.size() && i < 256; ++i)
++        pkg[12 + i * 2] = (uint8_t)t.package_name[i];
++    put32(pkg, 268, tso); put32(pkg, 272, 1); put32(pkg, 276, kso); put32(pkg, 280, 1);
++    pkg.insert(pkg.end(), type_pool.begin(), type_pool.end());
++    pkg.insert(pkg.end(), key_pool.begin(), key_pool.end());
++    pkg.insert(pkg.end(), inner.begin(), inner.end());
++
++    const uint32_t table_size = 12 + (uint32_t)pool.size() + (uint32_t)lib.size() + (uint32_t)pkg.size();
++    std::vector<uint8_t> out;
++    append16(out, 0x0002); append16(out, 12); append32(out, table_size);
++    append32(out, 1);   // packageCount
++    out.insert(out.end(), pool.begin(), pool.end());
++    out.insert(out.end(), lib.begin(), lib.end());
++    out.insert(out.end(), pkg.begin(), pkg.end());
++    return out;
++}
++
++// aapt2 8.13.2-compiled res/font-v22/c9font.xml (REAL toolchain bytes —
++// the ATTR-carrying variant: aapt2 font-XML processing writes the
++// android:font/fontWeight/fontStyle attrs into the -v22 file, the
++// base res/font/ file ships attr-less for the support-lib compat path;
++// probe: aapt2 dump xmltree ff.apk --file res/font-v22/c9font.xml).
++static const uint8_t kFontFamilyAxml[] = {
++    0x03, 0x00, 0x08, 0x00, 0xd0, 0x02, 0x00, 0x00, 0x01, 0x00, 0x1c, 0x00, 0xc8, 0x00, 0x00, 0x00,
++    0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00,
++    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0d, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00,
++    0x21, 0x00, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00, 0x37, 0x00, 0x00, 0x00, 0x43, 0x00, 0x00, 0x00,
++    0x4a, 0x00, 0x00, 0x00, 0x58, 0x00, 0x00, 0x00, 0x0a, 0x0a, 0x66, 0x6f, 0x6e, 0x74, 0x46, 0x61,
++    0x6d, 0x69, 0x6c, 0x79, 0x00, 0x04, 0x04, 0x66, 0x6f, 0x6e, 0x74, 0x00, 0x0a, 0x0a, 0x66, 0x6f,
++    0x6e, 0x74, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x00, 0x09, 0x09, 0x66, 0x6f, 0x6e, 0x74, 0x53,
++    0x74, 0x79, 0x6c, 0x65, 0x00, 0x07, 0x07, 0x61, 0x6e, 0x64, 0x72, 0x6f, 0x69, 0x64, 0x00, 0x09,
++    0x09, 0x63, 0x39, 0x2d, 0x63, 0x75, 0x73, 0x74, 0x6f, 0x6d, 0x00, 0x04, 0x04, 0x66, 0x6f, 0x6e,
++    0x74, 0x00, 0x0b, 0x0b, 0x66, 0x6f, 0x6e, 0x74, 0x2d, 0x66, 0x61, 0x6d, 0x69, 0x6c, 0x79, 0x00,
++    0x2a, 0x2a, 0x68, 0x74, 0x74, 0x70, 0x3a, 0x2f, 0x2f, 0x73, 0x63, 0x68, 0x65, 0x6d, 0x61, 0x73,
++    0x2e, 0x61, 0x6e, 0x64, 0x72, 0x6f, 0x69, 0x64, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x61, 0x70, 0x6b,
++    0x2f, 0x72, 0x65, 0x73, 0x2f, 0x61, 0x6e, 0x64, 0x72, 0x6f, 0x69, 0x64, 0x00, 0x00, 0x00, 0x00,
++    0x80, 0x01, 0x08, 0x00, 0x18, 0x00, 0x00, 0x00, 0xac, 0x03, 0x01, 0x01, 0x32, 0x05, 0x01, 0x01,
++    0x33, 0x05, 0x01, 0x01, 0x3f, 0x05, 0x01, 0x01, 0x00, 0x01, 0x10, 0x00, 0x18, 0x00, 0x00, 0x00,
++    0x02, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x04, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00,
++    0x02, 0x01, 0x10, 0x00, 0x38, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
++    0xff, 0xff, 0xff, 0xff, 0x07, 0x00, 0x00, 0x00, 0x14, 0x00, 0x14, 0x00, 0x01, 0x00, 0x00, 0x00,
++    0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00,
++    0x08, 0x00, 0x00, 0x03, 0x05, 0x00, 0x00, 0x00, 0x02, 0x01, 0x10, 0x00, 0x60, 0x00, 0x00, 0x00,
++    0x04, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x06, 0x00, 0x00, 0x00,
++    0x14, 0x00, 0x14, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00,
++    0x01, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x08, 0x00, 0x00, 0x01, 0x03, 0x00, 0x01, 0x7f,
++    0x08, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x08, 0x00, 0x00, 0x10,
++    0x90, 0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
++    0x08, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x03, 0x01, 0x10, 0x00, 0x18, 0x00, 0x00, 0x00,
++    0x04, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x06, 0x00, 0x00, 0x00,
++    0x02, 0x01, 0x10, 0x00, 0x60, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
++    0xff, 0xff, 0xff, 0xff, 0x06, 0x00, 0x00, 0x00, 0x14, 0x00, 0x14, 0x00, 0x03, 0x00, 0x00, 0x00,
++    0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
++    0x08, 0x00, 0x00, 0x01, 0x01, 0x00, 0x01, 0x7f, 0x08, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
++    0xff, 0xff, 0xff, 0xff, 0x08, 0x00, 0x00, 0x10, 0xbc, 0x02, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00,
++    0x03, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x08, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00,
++    0x03, 0x01, 0x10, 0x00, 0x18, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
++    0xff, 0xff, 0xff, 0xff, 0x06, 0x00, 0x00, 0x00, 0x02, 0x01, 0x10, 0x00, 0x60, 0x00, 0x00, 0x00,
++    0x0c, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x06, 0x00, 0x00, 0x00,
++    0x14, 0x00, 0x14, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00,
++    0x01, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x08, 0x00, 0x00, 0x01, 0x02, 0x00, 0x01, 0x7f,
++    0x08, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x08, 0x00, 0x00, 0x10,
++    0x90, 0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
++    0x08, 0x00, 0x00, 0x10, 0x01, 0x00, 0x00, 0x00, 0x03, 0x01, 0x10, 0x00, 0x18, 0x00, 0x00, 0x00,
++    0x0c, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x06, 0x00, 0x00, 0x00,
++    0x03, 0x01, 0x10, 0x00, 0x18, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff,
++    0xff, 0xff, 0xff, 0xff, 0x07, 0x00, 0x00, 0x00, 0x01, 0x01, 0x10, 0x00, 0x18, 0x00, 0x00, 0x00,
++    0x02, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x04, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00,
++};
++
++int main() {
++    std::printf("C9 phase-3 law test\n");
++
++    // ── F-A: C9-4 inPreferredConfig conversion (laws 1–5) ────────────────
++    {
++        std::vector<uint8_t> rgba = {0xFF, 0x80, 0x7F, 0xC0,  0x10, 0x20, 0x30, 0x40};
++        std::vector<uint8_t> orig = rgba;
++        std::string n1 = fw::bitmap_preferred_config_law(1, rgba);
++        law(n1 == "RGB_565", 1, "RGB_565 answers canonical name");
++        law(rgba[0] == (uint8_t)(((0xFF >> 3) * 255 + 15) / 31) &&
++            rgba[1] == (uint8_t)(((0x80 >> 2) * 255 + 31) / 63) &&
++            rgba[3] == 0xFF, 2, "RGB_565 quantization + opaque alpha");
++        std::vector<uint8_t> a8 = {1, 2, 3, 0xAB};
++        std::string n2 = fw::bitmap_preferred_config_law(0, a8);
++        law(n2 == "ALPHA_8" && a8[0] == 0 && a8[1] == 0 && a8[2] == 0 &&
++            a8[3] == 0xAB, 3, "ALPHA_8 keeps only alpha");
++        std::vector<uint8_t> a4 = {0xF1, 0xE2, 0xD3, 0xC4};
++        std::string n3 = fw::bitmap_preferred_config_law(2, a4);
++        law(n3 == "ARGB_4444" && a4[0] == 0xF0 && a4[1] == 0xE0, 4,
++            "ARGB_4444 masks low nibble");
++        std::vector<uint8_t> p = orig;
++        std::string n4 = fw::bitmap_preferred_config_law(3, p);
++        law(n4 == "ARGB_8888" && p == orig, 5, "8888 passthrough");
++    }
++
++    // ── F-B: C9-9 bilinear (laws 6–10) ───────────────────────────────────
++    {
++        fw::StoredBitmap src;
++        src.width = 2; src.height = 2;
++        src.rgba = {0, 0, 0, 255,   200, 0, 0, 255,
++                    0, 200, 0, 255, 200, 200, 0, 255};
++        std::vector<uint8_t> out;
++        fw::resample_bilinear(src, 2, 2, out);
++        law(out == src.rgba, 6, "identity scale byte-exact");
++        fw::resample_bilinear(src, 3, 3, out);
++        // center pixel (1,1): halfway between all four = (100, 100, 0)
++        const uint8_t* c = &out[((size_t)1 * 3 + 1) * 4];
++        law(std::abs((int)c[0] - 100) <= 1 && std::abs((int)c[1] - 100) <= 1 &&
++            c[3] == 255, 7, "half-point center = 4-texel average");
++        fw::resample_bilinear(src, 1, 1, out);
++        const uint8_t* q = &out[0];
++        law(std::abs((int)q[0] - 100) <= 1, 8, "downsample to 1x1 = mean");
++        bool in_range = true;
++        for (size_t i = 0; i < out.size(); ++i)
++            if ((i % 4) != 3 && out[i] > 200) in_range = false;
++        law(in_range, 9, "downsample RGB stays within source range");
++        fw::StoredBitmap degenerate;
++        fw::resample_bilinear(degenerate, 4, 4, out);
++        law(out.size() == 64, 10, "degenerate source safe (zero-filled)");
++    }
++
++    // ── F-C/D/E/F: ARSC laws (laws 11–24) ────────────────────────────────
++    {
++        TableSpec t;
++        t.global_strings = {"res/layout/a.xml", "res/layout/b.xml",
++                            "res/values/strings.xml"};
++        t.type_strings = {"layout", "string"};
++        t.key_strings = {"activity_a", "activity_b", "app_name"};
++        // type 1 (layout): bag entry on key 0? layout entries must be
++        // SIMPLE (file refs) — bag on "app_name" (type 2, entry 2).
++        t.inner_chunks.push_back(build_type_chunk_string(1, 0));      // layout/activity_a
++        t.inner_chunks.push_back(build_type_spec(1, 0x02));           // spec layout: flag 2
++        t.inner_chunks.push_back(build_type_chunk_string(2, 2, 2));   // string/app_name (key idx 2)
++        t.inner_chunks.push_back(build_type_spec(2, 0x00000001 | 0x00000002));
++        t.libraries = {{0x02, "t"}};
++        auto table = build_table(t);
++
++        // C9-13: parse from a buffer that dies immediately after.
++        ArscParser p13;
++        {
++            std::vector<uint8_t> temp = table;
++            bool ok = p13.parse(temp);
++            law(ok, 11, "C9-13: parse from temporary buffer");
++        }
++        auto resolved = p13.resolve(0x7f010000);
++        law(resolved.has_value() && !resolved->configs.empty(), 12,
++            "C9-13: resolve after source buffer freed");
++
++        ArscParser p;
++        law(p.parse(table), 13, "crafted table parses");        // 0x7f010000 = pkg 0x7f, type 1, entry 0 (layout/activity_a)
++        auto id0 = p.find_id("t", "layout", "activity_a");
++        auto id1 = p.find_id("t", "layout", "activity_b");
++        auto id2 = p.find_id("t", "string", "app_name");
++        law(id0 && *id0 == 0x7f010000, 14, "C9-12: hash index exact hit (a)");
++        law(id2 && *id2 == 0x7f020000, 15, "C9-12: hash index exact hit (b)");
++        law(!id1.has_value(), 16, "C9-12: exact miss = nullopt (no wildcard rescue)");
++        // C9-12 parity: brute scan over resolve()'s entries for the same name.
++        bool parity = true;
++        const char* names[] = {"activity_a", "app_name"};
++        const char* types[] = {"layout", "string"};
++        for (int i = 0; i < 2; ++i) {
++            auto via_index = p.find_id("t", types[i], names[i]);
++            std::optional<uint32_t> via_scan;
++            for (uint32_t tid = 1; tid <= 2; ++tid)
++                for (uint32_t eid = 0; eid < 8; ++eid) {
++                    uint32_t rid = (0x7f << 24) | (tid << 16) | eid;
++                    auto r = p.resolve(rid);
++                    if (r && !r->configs.empty() && r->configs.front().name == names[i] &&
++                        r->type_name == types[i]) { via_scan = rid; break; }
++                }
++            if (via_index != via_scan) parity = false;
++        }
++        law(parity, 17, "C9-12: index == brute-scan parity");
++        // wildcard path (empty type) still answers through the scan.
++        auto wild = p.find_id("t", "", "app_name");
++        law(wild && *wild == 0x7f020000, 18, "C9-12: wildcard (empty type) scan");
++
++        // C9-14: spec flags attach.
++        auto r1 = p.resolve(0x7f010000);
++        law(r1 && r1->configs.front().spec_flags == 0x02, 19,
++            "C9-14: spec flags parsed + attached (0x02)");
++        auto r2 = p.resolve(0x7f020000);
++        law(r2 && r2->configs.front().spec_flags == 0x03, 20,
++            "C9-14: spec flags = 0x03 (entry flags law)");
++
++        // C9-15: library registry + translation.
++        law(p.libraries().size() == 1 &&
++            p.libraries().count(0x02) == 1 && p.libraries().at(0x02) == "t", 21,
++            "C9-15: LIBRARY chunk registry");
++        auto dyn = p.translate_dynamic_reference(0x02000000 | 0x010000);
++        law(dyn && *dyn == 0x7f010000, 22,
++            "C9-15: dynamic ref translated to same-name package");
++        law(!p.translate_dynamic_reference(0x7f010000).has_value(), 23,
++            "C9-15: non-library id = honest nullopt");
++        TableSpec t2 = t;
++        t2.libraries = {{0x02, "zzz"}};
++        auto table2 = build_table(t2);
++        ArscParser p2;
++        p2.parse(table2);
++        law(!p2.translate_dynamic_reference(0x02000000).has_value(), 24,
++            "C9-15: no same-name package = honest nullopt");
++    }
++
++    // ── F-G: C9-16 font-family parse on REAL aapt2 bytes (laws 25–26) ────
++    {
++        FontFamily fam = parse_font_family(
++            std::vector<uint8_t>(kFontFamilyAxml,
++                                 kFontFamilyAxml + sizeof(kFontFamilyAxml)),
++            "res/font/c9font.xml");
++        law(fam.valid() && fam.name == "c9-custom" && fam.faces.size() == 3, 25,
++            "C9-16: family name + 3 faces from REAL aapt2 AXML");
++        law(fam.faces.size() == 3 && fam.faces[1].weight == 700 &&
++            fam.faces[2].italic && fam.faces[0].weight == 400, 26,
++            "C9-16: weight/style attributes parsed");
++    }
++
++    // ── F-H: C9-17 closest-face law (laws 27–31) ─────────────────────────
++    {
++        std::vector<FontFaceDecl> faces = {
++            {"@font/r", 0, 400, false, "x"},
++            {"@font/b", 0, 700, false, "x"},
++            {"@font/i", 0, 400, true, "x"},
++            {"@font/bi", 0, 700, true, "x"},
++        };
++        law(select_font_face_law(faces, 700, false) == 1, 27,
++            "C9-17: bold request -> 700 normal face");
++        law(select_font_face_law(faces, 400, true) == 2, 28,
++            "C9-17: italic dominance over weight distance");
++        law(select_font_face_law(faces, 500, false) == 0, 29,
++            "C9-17: 500 tie -> FIRST document-order face (400 vs 700)");
++        auto req = typeface_style_request(kTypefaceBoldItalic);
++        law(req.weight == 700 && req.italic, 30, "C9-17: BOLD_ITALIC -> 700+italic");
++        law(select_font_face_law(faces, kTypefaceBoldItalic) == 3, 31,
++            "C9-17: style-bits overload picks the bold-italic face");
++    }
++
++    // ── F-I: C9-18 focused/hovered first-match (laws 32–34) ──────────────
++    {
++        using BgItem = framework::ViewShadow::ViewNode::BgStateItem;
++        std::vector<BgItem> items(2);
++        // item 0: state_focused=true, color red
++        items[0].state_focused = 1; items[0].color = 0xFFFF0000;
++        items[0].has_color = true;
++        // item 1: fallback (all wildcards), color blue
++        items[1].color = 0xFF0000FF; items[1].has_color = true;
++        uint32_t c = 0; std::string pth;
++        const BgItem* win = nullptr;
++        law(framework::pick_state_list(items, false, true, false, &c, &pth,
++                                       false, false, false, &win) &&
++            c == 0xFF0000FF, 32,
++            "C9-18: default state skips the focused item (was wildcard bug)");
++        law(framework::pick_state_list(items, false, true, false, &c, &pth,
++                                       false, true, false, &win) &&
++            c == 0xFFFF0000, 33,
++            "C9-18: focused view picks the focused item");
++        std::vector<BgItem> hover(2);
++        hover[0].state_hovered = 1; hover[0].has_color = true;
++        hover[0].color = 0xFF00FF00;
++        hover[1].has_color = true; hover[1].color = 0xFF0000FF;
++        law(framework::pick_state_list(hover, false, true, false, &c, &pth,
++                                       false, false, true) &&
++            c == 0xFF00FF00, 34,
++            "C9-18: hovered view picks the hovered item");
++    }
++
++    // ── F-J: C9-20 CLDR selection (laws 35–42) ───────────────────────────
++    {
++        using Q = PluralsQuantity;
++        law(cldr_quantity_law("en-US", 1) == Q::ONE, 35, "en 1 -> ONE");
++        law(cldr_quantity_law("en", 0) == Q::OTHER, 36, "en 0 -> OTHER");
++        law(cldr_quantity_law("fa-IR", 0) == Q::ONE &&
++            cldr_quantity_law("fa", 1) == Q::ONE &&
++            cldr_quantity_law("fa", 2) == Q::OTHER, 37,
++            "fa 0/1 -> ONE, 2 -> OTHER (Persian zero law)");
++        law(cldr_quantity_law("ar", 0) == Q::ZERO &&
++            cldr_quantity_law("ar", 1) == Q::ONE &&
++            cldr_quantity_law("ar", 2) == Q::TWO, 38, "ar 0/1/2 exact");
++        law(cldr_quantity_law("ar", 5) == Q::FEW &&
++            cldr_quantity_law("ar", 20) == Q::MANY &&
++            cldr_quantity_law("ar", 150) == Q::MANY, 39,
++            "ar few/many windows (n%100 3-10 / 11-99)");
++        law(cldr_quantity_law("ru", 21) == Q::ONE &&
++            cldr_quantity_law("ru", 3) == Q::FEW &&
++            cldr_quantity_law("ru", 11) == Q::MANY, 40,
++            "ru one/few/many exceptions");
++        law(plurals_bag_key(Q::OTHER) == 0x01000009 &&
++            plurals_bag_key(Q::ZERO) == 0x01000004, 41,
++            "C9-20: bag keys == aapt2-pinned attrs (probe-verified)");
++        // bag walk through the crafted parser: plurals entry on type 3.
++        TableSpec t3;
++        t3.global_strings = {"no items", "one item", "%d items"};
++        t3.type_strings = {"plurals"};
++        t3.key_strings = {"c9_items"};
++        t3.inner_chunks.push_back(build_type_chunk_bag(
++            1, {{kPluralsKey[1], 1}, {kPluralsKey[5], 2}}));  // one + other
++        auto t3b = build_table(t3);
++        ArscParser p3;
++        law(p3.parse(t3b), 42, "C9-20: plurals bag table parses");
++        auto pr = p3.resolve(0x7f010000);
++        law(pr && pr->configs.front().is_complex &&
++            pr->configs.front().complex_keys.size() == 2, 43,
++            "C9-20: bag entry exposes complex keys for the engine walk");
++    }
++
++    // ── F-K: C9-23 cache identity (laws 44–46) ───────────────────────────
++    {
++        const uint8_t bytes_a[] = {1, 2, 3, 4};
++        const uint8_t bytes_b[] = {1, 2, 3, 5};
++        fw::BitmapCacheIdentityInput in;
++        in.src_bytes = bytes_a; in.src_len = 4;
++        in.source_desc = "res/drawable/x.png";
++        in.source_density = 240; in.target_density = 420;
++        in.sample_size = 1; in.config = 3; in.density_scaled = true;
++        std::string id1 = fw::bitmap_cache_identity_law(in);
++        std::string id2 = fw::bitmap_cache_identity_law(in);
++        law(id1 == id2 && id1.find("res/drawable/x.png") != std::string::npos,
++            44, "C9-23: identity deterministic + provenance suffix");
++        fw::BitmapCacheIdentityInput inb = in;
++        inb.src_bytes = bytes_b;
++        law(fw::bitmap_cache_identity_law(inb) != id1, 45,
++            "C9-23: different bytes -> different identity");
++        fw::BitmapCacheIdentityInput inc = in;
++        inc.sample_size = 2;
++        law(fw::bitmap_cache_identity_law(inc) != id1, 46,
++            "C9-23: different opts -> different identity");
++    }
++
++    std::printf("c9_phase3_laws_test: %d/%d PASS\n", g_pass, g_pass + g_fail);
++    return g_fail == 0 ? 0 : 1;
++}

@@ -260,6 +260,10 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
     int32_t in_density = 0, in_target_density = 0, in_sample = 1;
     int32_t in_scaled = 1;  // AOSP Java field default: inScaled = true
     bool in_scaled_present = false;
+    // ── C9-4/5/6 (CODER 9): the remaining Options contract ────────────
+    int32_t in_preferred = 3;   // inPreferredConfig — AOSP default ARGB_8888
+    int32_t in_mutable = 0;     // inMutable — AOSP default false
+    int32_t in_premult = 1;     // inPremultiplied — AOSP default TRUE
     if (resource_density >= 0) {
         // decodeResourceStream law — TypedValue.density → opts.inDensity.
         constexpr int32_t kDensityAny = 0xFFFE;      // TypedValue.DENSITY_ANY
@@ -282,6 +286,12 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
         }
         in_scaled_present = heap->get_object_int_field(opts_id, "inScaled", in_scaled);
         heap->get_object_int_field(opts_id, "inSampleSize", in_sample);
+        // C9-4/5/6: honor the rest of the Options contract (defaults above
+        // apply when the app never set the field — AOSP field-initializer
+        // law, not silent drops).
+        heap->get_object_int_field(opts_id, "inPreferredConfig", in_preferred);
+        heap->get_object_int_field(opts_id, "inMutable", in_mutable);
+        heap->get_object_int_field(opts_id, "inPremultiplied", in_premult);
         // AOSP decodeResourceStream MUTATES the app's Options (the seeded
         // values are app-visible afterwards).
         if (in_density != 0)
@@ -359,6 +369,29 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
         sb->sample_size = law.sampled_width != decoded.width || law.sampled_height != decoded.height
                               ? law_in.in_sample_size : 1;
         sb->density_scaled = law.density_scaled;
+        // ── C9-4/5/6: record + apply the real Options contract ──────────
+        sb->config = (in_preferred == 0 || in_preferred == 1 || in_preferred == 2)
+                         ? in_preferred : 3;
+        sb->mutable_bitmap = in_mutable != 0;
+        sb->premultiplied = in_premult != 0;
+        if (sb->config != 3) {
+            const std::string cfg_name =
+                bitmap_preferred_config_law(sb->config, sb->rgba);
+            std::cerr << "[BITMAP-FACTORY] C9-4 inPreferredConfig honored: "
+                      << desc << " -> " << cfg_name << std::endl;
+        }
+        // ── C9-23: byte-derived cache identity (Glide/Coil substrate) ──
+        BitmapCacheIdentityInput id_in;
+        id_in.src_bytes = bytes.data();
+        id_in.src_len = bytes.size();
+        id_in.source_desc = desc;
+        id_in.source_density = sb->source_density;
+        id_in.target_density = sb->target_density;
+        id_in.sample_size = sb->sample_size;
+        id_in.config = sb->config;
+        id_in.density_scaled = sb->density_scaled;
+        std::cerr << "[BITMAP-FACTORY] C9-23 identity "
+                  << bitmap_cache_identity_law(id_in) << std::endl;
     }
     // CONT-65 F-NEW-355: keep the original container bytes for animated
     // GIFs so the render walk can decode the full frame timeline
@@ -396,6 +429,122 @@ static void resample_nearest(const StoredBitmap& src, int dw, int dh,
             q[0] = p[0]; q[1] = p[1]; q[2] = p[2]; q[3] = p[3];
         }
     }
+}
+
+// ── C9-4 (CODER 9) — inPreferredConfig conversion law ──────────────────
+// See bitmap_shadow.h for the source-backed contract. The store is RGBA;
+// the law rewrites the buffer in place and answers the canonical name.
+std::string bitmap_preferred_config_law(int32_t in_preferred_config,
+                                        std::vector<uint8_t>& rgba) {
+    switch (in_preferred_config) {
+        case 0: {  // ALPHA_8 — RGB forced 0, alpha preserved
+            for (size_t i = 0; i + 3 < rgba.size(); i += 4) {
+                rgba[i] = 0; rgba[i + 1] = 0; rgba[i + 2] = 0;
+            }
+            return "ALPHA_8";
+        }
+        case 1: {  // RGB_565 — alpha dropped, 565-quantized (REAL loss)
+            for (size_t i = 0; i + 3 < rgba.size(); i += 4) {
+                const uint8_t r5 = (uint8_t)(rgba[i] >> 3);
+                const uint8_t g6 = (uint8_t)(rgba[i + 1] >> 2);
+                const uint8_t b5 = (uint8_t)(rgba[i + 2] >> 3);
+                rgba[i]     = (uint8_t)((r5 * 255 + 15) / 31);
+                rgba[i + 1] = (uint8_t)((g6 * 255 + 31) / 63);
+                rgba[i + 2] = (uint8_t)((b5 * 255 + 15) / 31);
+                rgba[i + 3] = 0xFF;
+            }
+            return "RGB_565";
+        }
+        case 2: {  // ARGB_4444 — deprecated, 444-quantized
+            for (size_t i = 0; i + 3 < rgba.size(); i += 4) {
+                rgba[i]     = (uint8_t)(rgba[i] & 0xF0);
+                rgba[i + 1] = (uint8_t)(rgba[i + 1] & 0xF0);
+                rgba[i + 2] = (uint8_t)(rgba[i + 2] & 0xF0);
+                rgba[i + 3] = (uint8_t)(rgba[i + 3] & 0xF0);
+            }
+            return "ARGB_4444";
+        }
+        default:   // ARGB_8888 / unknown → AOSP default passthrough
+            return "ARGB_8888";
+    }
+}
+
+// ── C9-9 (CODER 9) — bilinear resample law (Skia kLinear sampling) ─────
+// Sample point = ((x + 0.5) * sw / dw) - 0.5, clamped to [0, sw-1]; the
+// 4 surrounding texels weight-blended, rounded to nearest u8. Identity
+// scale degenerates to integer coordinates → byte-exact passthrough.
+void resample_bilinear(const StoredBitmap& src, int dw, int dh,
+                       std::vector<uint8_t>& out) {
+    out.assign((size_t)dw * dh * 4, 0);
+    if (dw <= 0 || dh <= 0 || src.width <= 0 || src.height <= 0) return;
+    const float xr = (float)src.width / (float)dw;
+    const float yr = (float)src.height / (float)dh;
+    for (int y = 0; y < dh; y++) {
+        float fy = ((float)y + 0.5f) * yr - 0.5f;
+        fy = std::max(0.0f, std::min((float)(src.height - 1), fy));
+        const int y0 = (int)fy;
+        const int y1 = std::min(src.height - 1, y0 + 1);
+        const float ty = fy - (float)y0;
+        for (int x = 0; x < dw; x++) {
+            float fx = ((float)x + 0.5f) * xr - 0.5f;
+            fx = std::max(0.0f, std::min((float)(src.width - 1), fx));
+            const int x0 = (int)fx;
+            const int x1 = std::min(src.width - 1, x0 + 1);
+            const float tx = fx - (float)x0;
+            const uint8_t* p00 = &src.rgba[((size_t)y0 * src.width + x0) * 4];
+            const uint8_t* p10 = &src.rgba[((size_t)y0 * src.width + x1) * 4];
+            const uint8_t* p01 = &src.rgba[((size_t)y1 * src.width + x0) * 4];
+            const uint8_t* p11 = &src.rgba[((size_t)y1 * src.width + x1) * 4];
+            uint8_t* q = &out[((size_t)y * dw + x) * 4];
+            for (int c = 0; c < 4; ++c) {
+                const float v = (float)p00[c] * (1 - tx) * (1 - ty) +
+                                (float)p10[c] * tx * (1 - ty) +
+                                (float)p01[c] * (1 - tx) * ty +
+                                (float)p11[c] * tx * ty;
+                q[c] = (uint8_t)std::lround(v);
+            }
+        }
+    }
+}
+
+// ── C9-23 (CODER 9) — cache-identity law implementation ──────────────
+std::string bitmap_cache_identity_law(const BitmapCacheIdentityInput& in) {
+    auto fnv1a64 = [](const uint8_t* data, size_t len, uint64_t h) {
+        for (size_t i = 0; i < len; ++i) {
+            h ^= (uint64_t)data[i];
+            h *= 0x100000001b3ull;
+        }
+        return h;
+    };
+    uint64_t h = 0xcbf29ce484222325ull;
+    if (in.src_bytes && in.src_len)
+        h = fnv1a64(in.src_bytes, in.src_len, h);
+    h = fnv1a64((const uint8_t*)in.source_desc.data(),
+                in.source_desc.size(), h);
+    const uint8_t tail[] = {
+        (uint8_t)(in.source_density & 0xFF),
+        (uint8_t)(in.source_density >> 8),
+        (uint8_t)(in.target_density & 0xFF),
+        (uint8_t)(in.target_density >> 8),
+        (uint8_t)(in.sample_size & 0xFF),
+        (uint8_t)((in.sample_size >> 8) & 0xFF),
+        (uint8_t)((in.sample_size >> 16) & 0xFF),
+        (uint8_t)((in.sample_size >> 24) & 0xFF),
+        (uint8_t)(in.config & 0xFF),
+        (uint8_t)(in.density_scaled ? 1 : 0),
+    };
+    h = fnv1a64(tail, sizeof(tail), h);
+    char hex[32];
+    std::snprintf(hex, sizeof(hex), "%016llx", (unsigned long long)h);
+    std::string id = "c9:";
+    id += hex;
+    id += ":" + in.source_desc;
+    id += ":d" + std::to_string(in.source_density) + "->" +
+          std::to_string(in.target_density);
+    id += ":s" + std::to_string(in.sample_size);
+    id += ":c" + std::to_string(in.config);
+    if (in.density_scaled) id += ":scaled";
+    return id;
 }
 
 CallResult BitmapShadow::dispatch(const CallContext& ctx) {
@@ -564,16 +713,37 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
             const StoredBitmap* sb = store.get(src);
             if (!sb || dw <= 0 || dh <= 0 || !heap_)
                 return CallResult::handled_null();
-            if (filter) {
-                std::cerr << "[BITMAP] createScaledBitmap filter=true: bilinear "
-                          << "resample not implemented — nearest used (registered)"
-                          << std::endl;
-            }
+            // ── C9-9 (CODER 9): filter=true now performs the REAL bilinear
+            // resample (Skia kLinear half-pixel-center law); filter=false
+            // keeps the nearest-neighbour law. filter=true on a RECYCLED
+            // source has no pixels to sample — AOSP throws; answer null
+            // loudly (recorded divergence, same spirit as decode refusal).
             std::vector<uint8_t> out;
-            resample_nearest(*sb, dw, dh, out);
+            if (filter) {
+                if (sb->recycled) {
+                    std::cerr << "[BITMAP] createScaledBitmap(filter=true) "
+                              << "on RECYCLED source — null (no pixels to "
+                              << "sample)" << std::endl;
+                    return CallResult::handled_null();
+                }
+                resample_bilinear(*sb, dw, dh, out);
+            } else {
+                resample_nearest(*sb, dw, dh, out);
+            }
             const uint32_t obj = heap_->allocate("Landroid/graphics/Bitmap;");
             store.store(obj, dw, dh, std::move(out),
                         "createScaledBitmap(" + sb->source_desc + ")");
+            if (auto* nb = store.get_mut(obj)) {
+                // AOSP createScaledBitmap: result inherits source mutability
+                // and premultiplied state; the config is preserved.
+                nb->config = sb->config;
+                nb->mutable_bitmap = sb->mutable_bitmap;
+                nb->premultiplied = sb->premultiplied;
+            }
+            std::cerr << "[BITMAP] createScaledBitmap " << sb->width << "x"
+                      << sb->height << " -> " << dw << "x" << dh
+                      << " filter=" << (filter ? "bilinear(C9-9)" : "nearest")
+                      << std::endl;
             return CallResult::handled_object(obj, "Landroid/graphics/Bitmap;");
         }
         // createBitmap overloads:
@@ -586,8 +756,25 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
             const int w = ctx.arg_as_int(0, 0);
             const int h = ctx.arg_as_int(1, 0);
             if (w <= 0 || h <= 0 || !heap_) return CallResult::handled_null();
+            // ── C9-4/C9-5 (CODER 9): createBitmap(w, h, Config) — the
+            // requested config is REAL (ALPHA_8/RGB_565/ARGB_4444 honored
+            // with the same conversion law as decode) and the result is
+            // MUTABLE (AOSP Bitmap.createBitmap(w,h,config) contract).
+            int32_t cfg = ctx.arg_as_int(2, 3);
+            if (cfg != 0 && cfg != 1 && cfg != 2) cfg = 3;
             const uint32_t obj = heap_->allocate("Landroid/graphics/Bitmap;");
             store.create(obj, w, h, "createBitmap(w,h,config)");
+            if (auto* nb = store.get_mut(obj)) {
+                nb->config = cfg;
+                nb->mutable_bitmap = true;
+                if (cfg != 3) {
+                    const std::string name =
+                        bitmap_preferred_config_law(cfg, nb->rgba);
+                    std::cerr << "[BITMAP] createBitmap config honored: "
+                              << name << " (" << w << "x" << h << ")"
+                              << std::endl;
+                }
+            }
             return CallResult::handled_object(obj, "Landroid/graphics/Bitmap;");
         }
         // F-NEW-495b (CONT-157): androidx passes a DELIBERATE NULL dm —
@@ -855,10 +1042,12 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_int(sb ? sb->width * sb->height * 4 : 0);
     }
     if (m == "getConfig") {
+        // ── C9-4 (CODER 9): answer the REAL stored config, never a constant.
         // Bitmap$Config statics alias to ints (engine law at
         // dalvik_engine.cpp Bitmap$Config table): ALPHA_8=0, RGB_565=1,
-        // ARGB_4444=2, ARGB_8888=3. The runtime decodes to ARGB_8888.
-        return CallResult::handled_int(3);
+        // ARGB_4444=2, ARGB_8888=3.
+        const StoredBitmap* sb = store.get(recv);
+        return CallResult::handled_int(sb ? sb->config : 3);
     }
     if (m == "eraseColor") {
         StoredBitmap* sb = store.get_mut(recv);
@@ -876,17 +1065,49 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
     if (m == "getPixel") {
         const StoredBitmap* sb = store.get(recv);
         if (!sb) return CallResult::handled_int(0);
+        // ── C9-8 (CODER 9): recycled bitmaps serve no pixels (AOSP
+        // Bitmap.getPixel throws IllegalStateException once recycled; the
+        // engine answers the failure LOUDLY and deterministically instead
+        // of reading freed storage).
+        if (sb->recycled) {
+            std::cerr << "[BITMAP] getPixel on RECYCLED bitmap "
+                      << sb->source_desc
+                      << " — IllegalStateException contract (0 answered)"
+                      << std::endl;
+            return CallResult::handled_int(0);
+        }
         const int x = ctx.arg_as_int(0, 0), y = ctx.arg_as_int(1, 0);
         if (x < 0 || y < 0 || x >= sb->width || y >= sb->height)
             return CallResult::handled_int(0);
         const uint8_t* p = &sb->rgba[((size_t)y * sb->width + x) * 4];
-        const uint32_t argb = ((uint32_t)p[3] << 24) | ((uint32_t)p[0] << 16) |
-                              ((uint32_t)p[1] << 8) | p[2];
+        uint32_t argb = ((uint32_t)p[3] << 24) | ((uint32_t)p[0] << 16) |
+                        ((uint32_t)p[1] << 8) | p[2];
+        // C9-4: ALPHA_8 getPixel contract — the pixel IS the alpha
+        // ((a<<24), RGB zero — AOSP Bitmap.java ALPHA_8 doc).
+        if (sb->config == 0) argb &= 0xFF000000u;
         return CallResult::handled_int((int32_t)argb);
     }
     if (m == "setPixel") {
         StoredBitmap* sb = store.get_mut(recv);
         if (sb) {
+            // ── C9-8 (CODER 9): recycle + mutability contracts (AOSP
+            // Bitmap.setPixel throws IllegalStateException on recycled and
+            // on immutable bitmaps; the engine logs the violation loudly
+            // and leaves the store unchanged — never a silent fake write).
+            if (sb->recycled) {
+                std::cerr << "[BITMAP] setPixel on RECYCLED bitmap "
+                          << sb->source_desc
+                          << " — IllegalStateException contract (write dropped)"
+                          << std::endl;
+                return CallResult::handled_void();
+            }
+            if (!sb->mutable_bitmap) {
+                std::cerr << "[BITMAP] setPixel on IMMUTABLE bitmap "
+                          << sb->source_desc
+                          << " — IllegalStateException contract (write dropped)"
+                          << std::endl;
+                return CallResult::handled_void();
+            }
             const int x = ctx.arg_as_int(0, 0), y = ctx.arg_as_int(1, 0);
             const uint32_t argb = (uint32_t)ctx.arg_as_int(2, 0xFF000000);
             if (x >= 0 && y >= 0 && x < sb->width && y < sb->height) {
@@ -961,17 +1182,29 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "recycle") {
-        return CallResult::handled_void();   // deterministic GC: no-op
+        // ── C9-8 (CODER 9): AOSP Bitmap.recycle() — frees the pixel data,
+        // marks the bitmap recycled (idempotent). isRecycled() flips;
+        // pixel access answers the loud IllegalStateException contract.
+        if (StoredBitmap* sb = store.get_mut(recv)) {
+            if (!sb->recycled)
+                std::cerr << "[BITMAP] recycle obj=" << recv << " ("
+                          << sb->source_desc << ") — pixels freed" << std::endl;
+            sb->recycled = true;
+            sb->rgba.clear();
+            sb->rgba.shrink_to_fit();
+            sb->has_pixels = false;
+        }
+        return CallResult::handled_void();
     }
     if (m == "isRecycled") {
-        return CallResult::handled_bool(false);
+        const StoredBitmap* sb = store.get(recv);
+        return CallResult::handled_bool(sb ? sb->recycled : false);
     }
-    if (m == "compress") {
-        std::cerr << "[BITMAP] compress(): encoder not wired — "
-                  << "EXPLICIT-UNSUPPORTED -> false (AOSP failure contract)"
-                  << std::endl;
-        return CallResult::handled_bool(false);
-    }
+    // ── C9-7 (CODER 9): compress DECLINED here — the real PNG encode lives
+    // in the engine bridge (same TU as the ByteArrayOutputStream law it
+    // must write through). Declining keeps the AOSP contract one-homed;
+    // the engine answers FORMAT_PNG with real bytes, other formats with
+    // the loud EXPLICIT-UNSUPPORTED false.
     if (m == "sameAs") {
         const StoredBitmap* a = store.get(recv);
         const StoredBitmap* b = store.get(ctx.arg_as_object(0, 0));
@@ -981,7 +1214,16 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
                                         a->rgba == b->rgba);
     }
     if (m == "isMutable" || m == "hasAlpha" || m == "isPremultiplied") {
-        return CallResult::handled_bool(m == "hasAlpha" || m == "isMutable");
+        // ── C9-5/C9-6 (CODER 9): answer the REAL stored flags. AOSP:
+        // decodes are immutable unless Options.inMutable; the premultiplied
+        // default is TRUE (the old constant false answered the opposite of
+        // the AOSP field initializer). hasAlpha follows the config (RGB_565
+        // is opaque — AOSP Bitmap.hasAlpha doc).
+        const StoredBitmap* sb = store.get(recv);
+        if (!sb) return CallResult::handled_bool(m == "hasAlpha" || m == "isMutable");
+        if (m == "isMutable") return CallResult::handled_bool(sb->mutable_bitmap);
+        if (m == "isPremultiplied") return CallResult::handled_bool(sb->premultiplied);
+        return CallResult::handled_bool(sb->config != 1);   // RGB_565 opaque
     }
     if (m == "getGenerationId") {
         // No render-node invalidation tracking yet — constant is honest here.

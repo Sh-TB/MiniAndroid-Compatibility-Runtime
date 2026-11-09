@@ -6,7 +6,8 @@
  *   RES_STRING_POOL_TYPE      (0x0001)  global + package string pools (UTF-8/UTF-16)
  *   RES_TABLE_PACKAGE_TYPE    (0x0200)  package: id, name, typeStrings, keyStrings
  *   RES_TABLE_TYPE_TYPE       (0x0201)  type (per config): entries incl. SPARSE
- *   RES_TABLE_TYPE_SPEC_TYPE  (0x0202)  (skipped; config mask not needed)
+ *   RES_TABLE_TYPE_SPEC_TYPE  (0x0202)  C9-14: per-entry spec flags parsed
+*   RES_TABLE_LIBRARY_TYPE    (0x0203)  C9-15: dynamic-ref library registry
  *
  * Res_value dataTypes handled: NULL, REFERENCE, ATTRIBUTE, STRING, FLOAT,
  * DIMENSION, FRACTION, INT_DEC, INT_HEX, INT_BOOLEAN, COLOR_ARGB8, COLOR_RGB8,
@@ -49,6 +50,10 @@ static constexpr uint16_t RES_XML_START_ELEMENT     = 0x0102;
 static constexpr uint16_t RES_XML_END_ELEMENT       = 0x0103;
 static constexpr uint16_t RES_XML_RESOURCE_MAP      = 0x0180;
 static constexpr uint16_t RES_TABLE_PACKAGE_TYPE    = 0x0200;
+// C9-15 (CODER 9): AOSP ResourceTypes.h — RES_TABLE_LIBRARY_TYPE. Sibling of
+// the package chunks under the root table; declares {packageId, packageName}
+// pairs the table's DYNAMIC_REFERENCE values refer to.
+static constexpr uint16_t RES_TABLE_LIBRARY_TYPE    = 0x0203;
 static constexpr uint16_t RES_TABLE_TYPE_TYPE       = 0x0201;
 static constexpr uint16_t RES_TABLE_TYPE_SPEC_TYPE  = 0x0202;
 
@@ -126,6 +131,9 @@ struct ArscEntry {
     uint32_t   bag_parent = 0;     // 0 = no parent
     std::vector<uint32_t> complex_keys;           // VISUAL-CAMPAIGN G49: ResTable_map name keys
     std::vector<ResValue> complex_items;  // for arrays/attrs
+    // C9-14 (CODER 9): ResTable_typeSpec entry flags (AOSP: OR of every
+    // spec chunk seen for the entry's type). 0 = no spec chunk present.
+    uint32_t   spec_flags = 0;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -213,8 +221,27 @@ public:
     // Resolve full resource by id.
     std::optional<ResolvedResource> resolve(uint32_t resource_id) const;
     // Find id by name (first package containing it). type e.g. "layout".
+    // C9-12 (CODER 9): exact (package,type,name) lookups answer through a
+    // parse-time hash index (O(1)); calls with ANY empty component keep the
+    // legacy wildcard scan semantics (documented AOSP getIdentifier allows
+    // null defType/defPackage). Results are identical to the O(n) walk —
+    // pinned by the c9_phase3 parity law.
     std::optional<uint32_t> find_id(const std::string& package, const std::string& type,
                                     const std::string& name) const;
+
+    // ── C9-15 (CODER 9) — LIBRARY chunk registry ───────────────────────
+    // Parsed RES_TABLE_LIBRARY_TYPE (0x0203) chunks: dynamic package id →
+    // package name. Empty map = table carried no library chunk (the common
+    // single-APK case — same answer as before, now explicit).
+    const std::map<uint32_t, std::string>& libraries() const { return libraries_; }
+
+    // C9-15 translation law (pure): a DYNAMIC_REFERENCE value whose package
+    // bits name a LIBRARY package is re-packed onto the REAL package with
+    // the same NAME (AOSP DynamicRefTable: library ids are per-table slots,
+    // resolved by name against the packages actually present). Returns
+    // nullopt when id is not a library ref or no same-name package exists
+    // (honest miss — the caller keeps the raw id and its own diagnostics).
+    std::optional<uint32_t> translate_dynamic_reference(uint32_t id) const;
     // Convenience: resolve id → value of best config (follows one REFERENCE hop).
     std::optional<ResValue> resolve_value(uint32_t resource_id) const;
     // Resolve string by id (no reference hop).
@@ -372,6 +399,8 @@ private:
         // type_id → list of type chunks (one per config)
         std::map<uint8_t, std::vector<TypeChunk>> types;
         // entry_index → resource id mapping is implicit: id = (package<<24)|(type<<16)|entry
+    // C9-14: ResTable_typeSpec chunk flags per entry index (type_id → flags).
+    std::map<uint8_t, std::vector<uint32_t>> type_specs;
     };
 
     bool parse_string_pool(const uint8_t* base, size_t avail, size_t chunk_offset, Pool& out);
@@ -383,8 +412,23 @@ private:
                                  const Package& pkg, ResValue& out);
     static std::string config_to_string(const uint8_t* cfg, size_t cfg_size);
 
+    // C9-13 (CODER 9): the parser OWNS its bytes. data_ previously aliased
+    // the caller's vector (dangling the moment that vector died — every
+    // post-parse resolve read freed memory). Law: parse() copies the bytes
+    // once; data_ points into the owned buffer only.
+    std::vector<uint8_t> data_owned_;
     const uint8_t* data_ = nullptr;
     size_t size_ = 0;
+
+    // C9-12 (CODER 9): parse-time name→id index. Key = package + 0x1f +
+    // type + 0x1f + name (0x1f never occurs in resource/type/package
+    // names). FIRST document-order id wins (deterministic; the legacy O(n)
+    // walk raced over unordered_map iteration order when several packages
+    // carried the same name).
+    std::unordered_map<std::string, uint32_t> name_index_;
+
+    // C9-15: RES_TABLE_LIBRARY_TYPE registry (dynamic pkg id → name).
+    std::map<uint32_t, std::string> libraries_;
     Pool global_strings_;
     std::vector<Package> packages_;
     // S124 FW-PACKAGE: ids of packages already parsed (staged duplicates skip).

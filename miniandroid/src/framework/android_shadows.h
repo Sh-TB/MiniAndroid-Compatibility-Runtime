@@ -1676,6 +1676,13 @@ public:
             // activated=false.
             int state_window_focused = -1;
             int state_activated = -1;
+            // C9-18 (CODER 9): the remaining standard View states. Framework
+            // selectors (btn_default family) declare state_focused / 
+            // state_hovered items BEFORE the fallback item — without these
+            // tri-states the focused item parsed as a wildcard and
+            // first-match picked the WRONG variant for the default state.
+            int state_focused = -1;
+            int state_hovered = -1;
             uint32_t color = 0;           // android:color or shape solid
             bool has_color = false;
             // S127: android:color as a REFERENCE (@color/…, the aapt2
@@ -1685,6 +1692,11 @@ public:
             // the ARSC router (resolve_framework_file_color).
             uint32_t color_ref_id = 0;
             std::string drawable_path;    // android:drawable file (may be empty)
+            // C9-19 (CODER 9): android:drawable as a COMPILED reference —
+            // aapt2 stores @drawable/x as Res_value REFERENCE (data = resid);
+            // the raw "@drawable/x" string only survives for string forms.
+            // The engine dereferences this id through the ARSC resolver.
+            uint32_t drawable_ref_id = 0;
         };
         std::vector<BgStateItem> bg_state_items;
         // CAMPAIGN 013 B1: dialog window item/button routing. When

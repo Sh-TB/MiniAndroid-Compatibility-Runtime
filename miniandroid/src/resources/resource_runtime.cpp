@@ -193,7 +193,9 @@ std::optional<uint32_t> ResourceRuntime::resolve_framework_file_color(uint32_t r
                     !tri_matches(it.state_selected, false) ||
                     !tri_matches(it.state_checked, false) ||
                     !tri_matches(it.state_window_focused, true) ||
-                    !tri_matches(it.state_activated, false))
+                    !tri_matches(it.state_activated, false) ||
+                    !tri_matches(it.state_focused, false) ||
+                    !tri_matches(it.state_hovered, false))
                     continue;   // requires a non-default state — not first match
                 if (it.has_color && it.color != 0) return it.color;
                 if (it.has_color && it.color_ref_id != 0)

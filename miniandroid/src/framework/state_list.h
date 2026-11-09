@@ -38,11 +38,18 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
                       std::vector<ViewShadow::ViewNode::BgStateItem>* out);
 
 // AOSP first-match law. Returns true when an item matched and fills the
-// winner's color (when has_color) or drawable path.
+// winner's color (when has_color) or drawable path. C9-18: focused/hovered
+// participate (defaults = the plain default view state).
 bool pick_state_list(
     const std::vector<ViewShadow::ViewNode::BgStateItem>& items, bool pressed,
     bool enabled, bool selected, uint32_t* color_out, std::string* path_out,
-    bool checked = false);  // S106 MG-022: android:state_checked law
+    bool checked = false,  // S106 MG-022: android:state_checked law
+    bool focused = false,  // C9-18: android:state_focused law
+    bool hovered = false,  // C9-18: android:state_hovered law
+    // C9-19 (CODER 9): when non-null, receives the MATCHED item — the
+    // engine dereferences its compiled drawable_ref_id through the ARSC
+    // router (the raw-string path alone left compiled refs unresolved).
+    const ViewShadow::ViewNode::BgStateItem** winner_out = nullptr);
 
 }  // namespace framework
 }  // namespace miniandroid

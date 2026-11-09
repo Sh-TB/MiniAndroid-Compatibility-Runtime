@@ -1,0 +1,859 @@
+# CODER 8 — S200 wave-15 unified diff part 1/11 — the waves-11+12+13+14+15 cumulative REBASED patch vs main `9bc2a115` (SHA256 `0aca6d8ce05707f8e53d69e0f57b7c2251f2371fe7f714d1e557c922e102b86a`; concatenate 1→11 then apply ONCE)
+
+```diff
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index e6c5a4b..37ee66c 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -27527,6 +27527,30 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
+                 result_value = DalvikValue::make_object(enum_id,
+                                                         field_res.class_descriptor);
+                 static_field_storage_[static_key] = result_value;
++            } else if (field_res.class_descriptor ==
++                           "Lkotlinx/coroutines/Dispatchers;" &&
++                       field_res.field_name == "INSTANCE") {
++                // [S194-C8] F-C8-213 — kotlinx Dispatchers.INSTANCE
++                // synthesis. kotlin object holder: apps reach the
++                // dispatchers through the INSTANCE static (sget) and the
++                // getter methods (invoke-virtual). Was: the sget of the
++                // external INSTANCE answered NULL → invoke-virtual
++                // getUnconfined NPE'd before the F-C8-213 law could fire
++                // (the wave-11 probe re-run documented it deterministically).
++                // Cached per static_key so dispatcher identity is stable.
++                uint32_t inst =
++                    get_or_create_singleton(
++                        "Lkotlinx/coroutines/Dispatchers;")
++                        .object_id;
++                if (inst == 0) {
++                    inst = heap_.allocate(
++                        "Lkotlinx/coroutines/Dispatchers;", pc, 0);
++                }
++                result_value = DalvikValue::make_object(
++                    inst, "Lkotlinx/coroutines/Dispatchers;");
++                static_field_storage_[static_key] = result_value;
++                std::cerr << "[C8-KX] Dispatchers.INSTANCE → o" << inst
++                          << " (sget synthesis law)" << std::endl;
+             } else if (field_res.class_descriptor == "Ljava/lang/Boolean;" &&
+                        (field_res.field_name == "TRUE" ||
+                         field_res.field_name == "FALSE")) {
+@@ -32535,6 +32559,18 @@ static const miniandroid::dalvik::KvInt kOrdinals[] = {
+     {"Landroid/text/Layout$Alignment;.ALIGN_NORMAL", 0},
+     {"Landroid/text/Layout$Alignment;.ALIGN_OPPOSITE", 1},
+     {"Landroid/text/Layout$Alignment;.ALIGN_CENTER", 2},
++    // [S194-C8] F-C8-217 — kotlinx.coroutines CoroutineScheduler$WorkerState
++    // (kotlin-stdlib external enum, Kotlinx-Coroutines source declaration
++    // order: INIT, SLEEPING, PARKING, CPU_ACQUIRED, BLOCKING, TERMINATED).
++    // 3 APKs construct coroutines schedulers (androguard crossref); every
++    // sget of a WorkerState constant answered NULL on this line → the
++    // scheduler clinit died before its first dispatch.
++    {"Lkotlinx/coroutines/scheduling/CoroutineScheduler$WorkerState;.INIT", 0},
++    {"Lkotlinx/coroutines/scheduling/CoroutineScheduler$WorkerState;.SLEEPING", 1},
++    {"Lkotlinx/coroutines/scheduling/CoroutineScheduler$WorkerState;.PARKING", 2},
++    {"Lkotlinx/coroutines/scheduling/CoroutineScheduler$WorkerState;.CPU_ACQUIRED", 3},
++    {"Lkotlinx/coroutines/scheduling/CoroutineScheduler$WorkerState;.BLOCKING", 4},
++    {"Lkotlinx/coroutines/scheduling/CoroutineScheduler$WorkerState;.TERMINATED", 5},
+ };
+ static int framework_enum_ordinal(const std::string& class_desc,
+                                   const std::string& field_name) {
+@@ -33981,8 +34017,16 @@ void DalvikExecutionEngine::run_thread_start_body(uint32_t thread_oid,
+     // loop-visit cap halts it (anuto GameLoop.run).
+     int saved_drain_depth = park_drain_last_depth_;
+     park_drain_last_depth_ = (saved_drain_depth < 1) ? 1 : saved_drain_depth;
+-    bool ran = try_recursive_invoke(rcls, "run", run_args, run_ret, run_res,
+-                                    "()V");
++    // [S194-C8] F-C8-203 — kotlin thread{} BLOCK dispatch. A law-minted
++    // kotlin Thread (ThreadsKt.thread — 6 APKs) carries its captured
++    // block on the __kt_block__ heap field; AOSP Thread.start()
++    // virtual-dispatch lands on the BLOCK body, never on a missing run()
++    // (the external kotlin wrapper class has no DEX body on this engine).
++    bool ran = c8_kt_block_dispatch(run_oid, rcls, run_ret);
++    if (!ran) {
++        ran = try_recursive_invoke(rcls, "run", run_args, run_ret, run_res,
++                                   "()V");
++    }
+     park_drain_last_depth_ = saved_drain_depth;
+     if (ts_shadow) ts_shadow->set_active_drained_thread(saved_active_thread);
+     if (park_yield_pending_) {
+@@ -34017,6 +34061,107 @@ void DalvikExecutionEngine::run_thread_start_body(uint32_t thread_oid,
+               << std::endl;
+ }
+ 
++// [S194-C8] F-C8-202/203 — kotlin wrapper BLOCK dispatch. The law-minted
++// TimerTask/Thread wrappers and the external kotlin wrapper classes
++// (Lkotlin/concurrent/TimersKt$timerTask$1; / ThreadsKt$thread$thread$1;)
++// carry their captured block on the __kt_block__ heap field; run()/start
++// dispatch the block's REAL invoke() DEX body (kotlin Function0 contract).
++// Returns false when the shape does not apply so the caller falls through
++// to the generic run dispatch (never masks an app-carried run() body).
++bool DalvikExecutionEngine::c8_kt_block_dispatch(uint32_t recv,
++                                                 const std::string& cls,
++                                                 DalvikValue& result) {
++    const bool kt_wrapper =
++        cls.rfind("Lkotlin/concurrent/TimersKt$timerTask$", 0) == 0 ||
++        cls.rfind("Lkotlin/concurrent/ThreadsKt$thread$thread$", 0) == 0 ||
++        // [S195-C8] F-C8-230 — the BuildersKt.launch block wrapper
++        cls.rfind("Lkotlinx/coroutines/BuildersKt$launch$1", 0) == 0 ||
++        // [S196-C8] F-C8-255 — the BuildersKt.withContext block wrapper
++        cls.rfind("Lkotlinx/coroutines/BuildersKt$withContext$1", 0) == 0 ||
++        // [S197-C8] F-C8-276 — the BuildersKt.runBlocking block wrapper
++        cls.rfind("Lkotlinx/coroutines/BuildersKt$runBlocking$1", 0) == 0;
++    if (!kt_wrapper && cls != "Ljava/lang/Thread;") return false;
++    if (recv == 0 || !heap_.has_object(recv)) return false;
++    auto blk = heap_.get_object_field(recv, "__kt_block__");
++    if (!blk || blk->type != DalvikType::OBJECT_REF ||
++        blk->object_id == 0 || !heap_.has_object(blk->object_id))
++        return false;
++    const auto* bobj = heap_.get(blk->object_id);
++    if (!bobj || bobj->class_descriptor.empty()) return false;
++    DalvikValue bret;
++    DalvikExecutionResult bres;
++    std::vector<DalvikValue> bargs{
++        DalvikValue::make_object(blk->object_id, bobj->class_descriptor)};
++    // [S195-C8] F-C8-230 — the launch wrapper's block is a Function2:
++    // invoke(scope-receiver, continuation-slot). The scope arrives from
++    // the wrapper's __kt_scope__ stamp.
++    if (cls.rfind("Lkotlinx/coroutines/BuildersKt$launch$1", 0) == 0 ||
++        cls.rfind("Lkotlinx/coroutines/BuildersKt$withContext$1", 0) == 0 ||
++        // [S197-C8] F-C8-276 — runBlocking rides the SAME Function2 shape
++        cls.rfind("Lkotlinx/coroutines/BuildersKt$runBlocking$1", 0) == 0) {
++        auto sf = heap_.get_object_field(recv, "__kt_scope__");
++        bargs.push_back(sf ? *sf : DalvikValue::make_null());
++        bargs.push_back(DalvikValue::make_null());
++    }
++    bool ran = try_recursive_invoke(bobj->class_descriptor, "invoke", bargs,
++                                    bret, bres);
++    std::cerr << "[C8-KT] block dispatch o" << recv << " cls=" << cls
++              << " → block o" << blk->object_id << " ("
++              << bobj->class_descriptor << ") ran=" << (ran ? "yes" : "NO")
++              << std::endl;
++    if (ran) {
++        result = bret;
++        // [S195-C8] F-C8-230 — the launch job completes ONLY when its
++        // block body RAN (the real-completion law: never
++        // "enqueued = completed").
++        if (cls.rfind("Lkotlinx/coroutines/BuildersKt$launch$1", 0) == 0) {
++            auto jf = heap_.get_object_field(recv, "__kt_job__");
++            if (jf && jf->type == DalvikType::OBJECT_REF &&
++                jf->object_id != 0 && heap_.has_object(jf->object_id)) {
++                // [S196-C8] F-C8-244 — the completion arm ALSO notifies
++                // the registered handlers (REAL notify, invokeImmediately
++                // contract — never "registered = notified").
++                c8_job_complete_arm(jf->object_id, "Completed");
++            }
++        }
++    }
++    return ran;
++}
++
++// [S196-C8] WAVE 13 F-C8-244 — the JobSupport completion arm. Stamps the
++// target state and notifies the REGISTERED completion handlers through
++// their REAL DEX invoke bodies (kotlinx invokeImmediately contract: the
++// handler runs on the completing call site). Returns whether the state
++// actually moved (the kotlinx complete() boolean).
++bool DalvikExecutionEngine::c8_job_complete_arm(uint32_t job,
++                                                const char* st) {
++    if (job == 0 || !heap_.has_object(job)) return false;
++    std::string cur = "EmptyNew";
++    auto it = c8_kx_job_state_.find(job);
++    if (it != c8_kx_job_state_.end()) cur = it->second;
++    if (cur == st) return false;
++    c8_kx_job_state_[job] = st;
++    heap_.set_object_field(job, "__job_state__",
++                           DalvikValue::make_string(st, 0));
++    for (uint32_t h : c8_kx_job_handlers_[job]) {
++        if (h == 0 || !heap_.has_object(h)) continue;
++        std::string hcls = "Ljava/lang/Object;";
++        if (const auto* ho = heap_.get(h))
++            if (!ho->class_descriptor.empty()) hcls = ho->class_descriptor;
++        DalvikValue hret;
++        DalvikExecutionResult hres;
++        std::vector<DalvikValue> hargs{
++            DalvikValue::make_object(h, hcls),
++            DalvikValue::make_null()};
++        const bool nran = try_recursive_invoke(hcls, "invoke", hargs, hret,
++                                               hres);
++        std::cerr << "[C8-KXJOB] job o" << job << " → " << st
++                  << " handler o" << h << " notified ran="
++                  << (nran ? "yes" : "NO") << std::endl;
++    }
++    return true;
++}
++
+ // R-NEW-345: park = deterministic yield point. See the law note at the
+ // LockSupport case in bridge_to_api. Bounded rounds; reentrancy-guarded so
+ // a park reached THROUGH drained work yields instead of recursing.
+@@ -57955,7 +58100,59 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+              const uint32_t main_tid =
+                  get_or_create_singleton("Ljava/lang/Thread;").object_id;
+              return thread_interrupted_[main_tid];
+-         }())) {
++         }()) ||
++        // [S194-C8] wave-11 gate additions — androguard demand map
++        // (crossref 2748 CLASS_ABSENT / 240 PRESENT baseline): the kotlin
++        // timer/thread wrapper families (6 APKs — the top non-coroutines
++        // gap), the kotlinx static/debug/dispatcher surfaces (3 APKs;
++        // getASSERTIONS_ENABLED alone = 315 sites), the
++        // CoroutineScheduler$WorkerState enum, ExecutorCompletionService
++        // and the MessageQueue IdleHandler port-back (wave-3 law).
++        class_name.rfind("Lkotlin/concurrent/TimersKt", 0) == 0 ||
++        class_name.rfind("Lkotlin/concurrent/ThreadsKt", 0) == 0 ||
++        class_name == "Lkotlinx/coroutines/DebugKt;" ||
++        class_name == "Lkotlinx/coroutines/AbstractTimeSourceKt;" ||
++        class_name == "Lkotlinx/coroutines/DebugStringsKt;" ||
++        class_name == "Lkotlinx/coroutines/Dispatchers;" ||
++        class_name.rfind("Lkotlinx/coroutines/DefaultExecutor", 0) == 0 ||
++        class_name == "Lkotlinx/coroutines/DefaultExecutorKt;" ||
++        class_name.rfind(
++            "Lkotlinx/coroutines/scheduling/CoroutineScheduler$WorkerState",
++            0) == 0 ||
++        class_name == "Ljava/util/concurrent/ExecutorCompletionService;" ||
++        class_name == "Landroid/os/MessageQueue;" ||
++        class_name == "Ljava/util/concurrent/TimeUnit;" ||
++        // [S195-C8] wave-12 gate additions — androguard demand map
++        // (crossref baseline on this line: 2706 CLASS_ABSENT / 276
++        // PRESENT): the kotlinx channels/flow/JobSupport/EventLoop/
++        // internal-structure families (ChannelIterator.hasNext 96 +
++        // .next 88 + ReceiveChannel.iterator 82 + Flow.collect 138 +
++        // FlowCollector.emit 134 + JobSupport.getState 60 + ...), the
++        // select façade, the system-prop and symbol-identity surfaces,
++        // and the BuildersKt launch builder.
++        class_name.rfind("Lkotlinx/coroutines/channels/", 0) == 0 ||
++        class_name.rfind("Lkotlinx/coroutines/flow", 0) == 0 ||
++        class_name.rfind("Lkotlinx/coroutines/JobSupport", 0) == 0 ||
++        class_name == "Lkotlinx/coroutines/Job;" ||
++        class_name.rfind("Lkotlinx/coroutines/Job$", 0) == 0 ||
++        class_name == "Lkotlinx/coroutines/CoroutineScope;" ||
++        class_name == "Lkotlinx/coroutines/JobCancellationException;" ||
++        class_name == "Lkotlinx/coroutines/CompletedExceptionally;" ||
++        class_name.rfind("Lkotlinx/coroutines/CancellableContinuationImpl",
++                         0) == 0 ||
++        class_name == "Lkotlinx/coroutines/DisposableHandle;" ||
++        class_name.rfind("Lkotlinx/coroutines/EventLoop", 0) == 0 ||
++        class_name == "Lkotlinx/coroutines/DispatchedTask;" ||
++        class_name == "Lkotlinx/coroutines/CoroutineExceptionHandlerKt;" ||
++        class_name.rfind("Lkotlinx/coroutines/internal/", 0) == 0 ||
++        class_name == "Lkotlinx/coroutines/SystemPropsKt;" ||
++        class_name.rfind("Lkotlinx/coroutines/BuildersKt", 0) == 0 ||
++        class_name == "Lkotlinx/coroutines/DelayKt;" ||
++        class_name.rfind("Lkotlinx/coroutines/selects/", 0) == 0 ||
++        class_name.rfind("Lkotlinx/coroutines/debug/", 0) == 0 ||
++        class_name == "Lkotlinx/coroutines/UndispatchedCoroutine;" ||
++        class_name == "Lkotlinx/coroutines/StackTraceRecoveryKt;" ||
++        class_name.rfind("Lkotlinx/coroutines/Dispatchers$", 0) == 0) {
+         // helper: heap field read (get_object_field is optional-valued).
+         auto c8_getf = [&](uint32_t oid, const char* name) -> DalvikValue {
+             auto o = heap_.get_object_field(oid, name);
+@@ -57964,15 +58161,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         // helper: convert (amount, unit-arg) → ms. Unit arg is the CYCLE-E
+         // materialized TimeUnit constant (heap field "ordinal"). Missing
+         // ordinal → MILLISECONDS + loud note (never a silent guess).
++        // [S194-C8] F-C8-207 — EXACT CONVERSION LAW (the wave-8..10
++        // audit finding): the old kFactor table floored NANOSECONDS and
++        // MICROSECONDS amounts to 0ms — a 1.5e6 ns delay (1.5 ms) fired
++        // IMMEDIATELY instead of at its beat, and every sub-ms
++        // kotlin/coroutines delay collapsed to "now" (the kotlinx
++        // EventLoop beat order was silently corrupted). OpenJDK
++        // TimeUnit law: toMillis truncates toward zero
++        // (NANOSECONDS.toMillis(1500000) == 1). Per-unit exact factors:
++        // NANO/1e6, MICRO/1e3 (truncating division), MILLI ×1,
++        // SEC ×1e3, MIN ×60e3, HOUR ×3600e3, DAY ×86400e3.
+         auto c8_unit_ms = [&](const DalvikValue& amount,
+                               const DalvikValue& unit) -> int64_t {
+             int64_t amt = 0;
+             if (amount.type == DalvikType::INT64) amt = amount.long_val;
+             else if (amount.type == DalvikType::INT32) amt = amount.int_val;
+-            static const int64_t kFactor[7] = {
+-                0,            // NANOSECONDS → sub-ms; floor to 0ms (loud)
+-                0,            // MICROSECONDS → sub-ms for corpus values
+-                1, 1000, 60000, 3600000, 86400000};
+             int ord = 2;  // MILLISECONDS default
+             if (unit.type == DalvikType::OBJECT_REF && unit.object_id != 0) {
+                 DalvikValue ov = c8_getf(unit.object_id, "ordinal");
+@@ -57985,7 +58188,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                                  "LOUDLY" << std::endl;
+                 }
+             }
+-            return amt * kFactor[ord];
++            int64_t ms = 0;
++            switch (ord) {
++                case 0:  // NANOSECONDS — truncating division (JDK toMillis)
++                    ms = amt / 1000000;
++                    break;
++                case 1:  // MICROSECONDS — truncating division
++                    ms = amt / 1000;
++                    break;
++                case 2:  // MILLISECONDS
++                    ms = amt;
++                    break;
++                case 3:  // SECONDS
++                    ms = amt * 1000;
++                    break;
++                case 4:  // MINUTES
++                    ms = amt * 60000;
++                    break;
++                case 5:  // HOURS
++                    ms = amt * 3600000;
++                    break;
++                default:  // DAYS
++                    ms = amt * 86400000;
++                    break;
++            }
++            return ms;
+         };
+         // helper: monitor owner check (serialized engine: hold count > 0).
+         auto c8_monitor_owner = [&](uint32_t oid) -> bool {
+@@ -59088,92 +59315,5684 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             }
+         }
+ 
+-        // ── F-C8-187/188/189 — android.os.Process identity + signals ───
+-        // AOSP law (Process.java): myPid/myUid/myTid answer the OS ids;
+-        // isApplicationUid(uid) = uid >= FIRST_APPLICATION_UID (10000);
+-        // setThreadPriority(tid, prio) lowers the nice level (no getter
+-        // in the AOSP surface); killProcess/sendSignal terminate. 4
+-        // APKs/45 sites (androguard crossref). Serialized-engine laws:
+-        // ONE process → deterministic pid/uid constants; tids ride the
+-        // ThreadShadow tid table (main = 1, monotonic); the kill laws
+-        // are LOUD boundary records (the engine cannot suicide — never
+-        // silent, never a throw: real apps call these in exit flows).
+-        if (class_name == "Landroid/os/Process;") {
+-            auto* ts_p = shadow_registry_
+-                             ? shadow_registry_->find_as<
+-                                   framework::ThreadShadow>()
+-                             : nullptr;
+-            if (method == "myPid" || method == "myUid" ||
+-                method == "myTid" || method == "isApplicationUid" ||
+-                method == "setThreadPriority" || method == "killProcess" ||
+-                method == "sendSignal") {
+-                static thread_local uint64_t proc_log = 0;
+-                bool do_log = proc_log < 12;
+-                if (method == "myPid") {
+-                    if (do_log) { ++proc_log;
+-                        std::cerr << "[C8-PROC] myPid → 1 (serialized "
+-                                     "single-process law)" << std::endl; }
+-                    result = DalvikValue::make_int(1);
+-                } else if (method == "myUid") {
+-                    if (do_log) { ++proc_log;
+-                        std::cerr << "[C8-PROC] myUid → 10042 (app-uid "
+-                                     "law, isApplicationUid-coherent)"
+-                                  << std::endl; }
+-                    result = DalvikValue::make_int(10042);
+-                } else if (method == "myTid") {
+-                    int32_t tid = ts_p
+-                        ? ts_p->tid_of(ts_p->current_thread_id()) : 1;
+-                    if (do_log) { ++proc_log;
+-                        std::cerr << "[C8-PROC] myTid → " << tid
+-                                  << " (ThreadShadow tid table)"
+-                                  << std::endl; }
+-                    result = DalvikValue::make_int(tid);
+-                } else if (method == "isApplicationUid") {
+-                    int32_t uid = (!args.empty() &&
+-                                   args[0].type == DalvikType::INT32)
+-                                      ? args[0].int_val : 0;
+-                    // AOSP: FIRST_APPLICATION_UID = 10000.
+-                    bool app = uid >= 10000;
+-                    if (do_log) { ++proc_log;
+-                        std::cerr << "[C8-PROC] isApplicationUid(" << uid
+-                                  << ") → " << app << " (AOSP 10000 law)"
+-                                  << std::endl; }
+-                    result = DalvikValue::make_bool(app);
+-                } else if (method == "setThreadPriority") {
+-                    int32_t tid = (args.size() >= 2 &&
+-                                   args[0].type == DalvikType::INT32)
+-                                      ? args[0].int_val : 0;
+-                    int32_t prio = (args.size() >= 2 &&
+-                                    args[1].type == DalvikType::INT32)
+-                                       ? args[1].int_val
+-                                       : (args.size() >= 1 &&
+-                                          args[0].type == DalvikType::INT32
+-                                              ? args[0].int_val : 0);
+-                    c8_native_thread_prio_[tid] = prio;
+-                    if (do_log) { ++proc_log;
+-                        std::cerr << "[C8-PROC] setThreadPriority tid="
+-                                  << tid << " prio=" << prio
+-                                  << " (loud store — no OS nice)"
+-                                  << std::endl; }
+-                    result = DalvikValue::make_void();
+-                } else if (method == "killProcess") {
+-                    if (do_log) { ++proc_log;
+-                        std::cerr << "[C8-PROC] killProcess — LOUD "
+-                                     "boundary: serialized engine cannot "
+-                                     "suicide; run continues" << std::endl; }
+-                    result = DalvikValue::make_void();
+-                } else {  // sendSignal
+-                    if (do_log) { ++proc_log;
+-                        std::cerr << "[C8-PROC] sendSignal — LOUD "
+-                                     "boundary record (no OS signal)"
+-                                  << std::endl; }
+-                    result = DalvikValue::make_void();
++        // ════════════════════════════════════════════════════════════════
++        // [S194-C8] WAVE 11 laws (F-C8-201…218) — androguard-driven
++        // (S192 crossref baseline 2748 CLASS_ABSENT / 240 PRESENT; the
++        // ranked demand map drove every row). Contracts: kotlin-stdlib
++        // TimersKt/ThreadsKt (kotlin/concurrent/*.kt), kotlinx-coroutines
++        // DebugKt/AbstractTimeSourceKt/DebugStringsKt/Dispatchers/
++        // DefaultExecutor (kotlinx/coroutines/*.kt), OpenJDK
++        // ExecutorCompletionService.java, AOSP MessageQueue.java
++        // (IdleHandler), OpenJDK TimeUnit.java. All laws: loud
++        // diagnostics, engine-member state (F-025), no app-specific
++        // branches (S188 rule 5).
++        // ════════════════════════════════════════════════════════════════
++
++        // ── F-C8-201/202 — kotlin TimersKt timer family ─────────────────
++        // kotlin-stdlib law (kotlin/concurrent/Timer.kt):
++        //   timer(initialDelay, period, action) / timer(period, action) /
++        //   timer(nameOrNull, daemon, initialDelay, period, action) create
++        //   a REAL java.util.Timer, wrap the block in a TimerTask and
++        //   schedule it; timerTask(action) wraps WITHOUT scheduling;
++        //   fixedRateTimer/fixedDelayTimer are named schedule variants.
++        // 6 APKs / 48 timer + 90 timerTask$1 sites (crossref demand map).
++        // Was (this line): no law — the call fell through as silent void,
++        // the app's Timer handle answered NULL and the tick never fired.
++        if (class_name.rfind("Lkotlin/concurrent/TimersKt;", 0) == 0 &&
++            (method == "timer" || method == "timer$default" ||
++             method == "timerTask" || method == "timerTask$default" ||
++             method == "fixedRateTimer" || method == "fixedRateTimer$default" ||
++             method == "fixedDelayTimer" ||
++             method == "fixedDelayTimer$default")) {
++            // $default bridges append (mask:int, marker:Object) — the
++            // masked args arrive pre-filled with their DEFAULTS (delay 0,
++            // period 0, name null, daemon false), which are exactly the
++            // values the defaults table holds; the mask is honored by
++            // construction (documented law, kotlin $default contract).
++            std::vector<DalvikValue> a = args;
++            if (method.rfind("$default") != std::string::npos &&
++                a.size() >= 2)
++                a.resize(a.size() - 2);
++            // action = LAST object arg (the Function0 block).
++            uint32_t block = 0;
++            for (auto it = a.rbegin(); it != a.rend(); ++it) {
++                if (it->type == DalvikType::OBJECT_REF &&
++                    it->object_id != 0) {
++                    block = it->object_id;
++                    break;
++                }
++            }
++            // [S194-C8] POSITIONAL first (the wave-11 probe re-run caught
++            // the scan reading the daemon boolean as a delay number):
++            // 5-arg shape = (name, daemon, delay, period, action); the
++            // 2/3-arg shapes carry no boolean so the numeric scan is
++            // exact there (>=2 → (delay, period); ==1 → (0, period)).
++            int64_t kdelay = 0, kperiod = 0;
++            auto c8_bool_arg = [](const DalvikValue& v) -> bool {
++                return v.int_val != 0 || v.bool_val;
++            };
++            auto c8_num_arg = [](const DalvikValue& v) -> int64_t {
++                if (v.type == DalvikType::INT64) return v.long_val;
++                if (v.type == DalvikType::INT32) return v.int_val;
++                return 0;
++            };
++            if (a.size() >= 5) {
++                kdelay = c8_num_arg(a[2]);
++                kperiod = c8_num_arg(a[3]);
++            } else {
++                std::vector<int64_t> nums;
++                for (const auto& v : a) {
++                    if (v.type == DalvikType::INT64)
++                        nums.push_back(v.long_val);
++                    else if (v.type == DalvikType::INT32)
++                        nums.push_back(v.int_val);
++                }
++                if (nums.size() >= 2) {
++                    kdelay = nums[0];
++                    kperiod = nums[1];
++                } else if (nums.size() == 1) {
++                    kperiod = nums[0];
++                }
++            }
++            (void)c8_bool_arg;
++            if (block == 0 || !heap_.has_object(block)) {
++                std::cerr << "[C8-KTIMER] " << method
++                          << " without a captured block — LOUD gap"
++                          << std::endl;
++            }
++            // Mint the TimerTask wrapper (external kotlin class; the
++            // wrapper carries the block for the drain dispatch) +
++            // the F-C8-183 field stamps.
++            uint32_t tt = heap_.allocate(
++                "Lkotlin/concurrent/TimersKt$timerTask$1;", pc_, 0);
++            heap_.set_object_field(tt, "__kt_block__",
++                                   DalvikValue::make_object(
++                                       block, "Ljava/lang/Object;"));
++            heap_.set_object_field(tt, "__tt_sched_time__",
++                                   DalvikValue::make_long(0));
++            heap_.set_object_field(tt, "__tt_period__",
++                                   DalvikValue::make_long(0));
++            heap_.set_object_field(tt, "__tt_cancelled__",
++                                   DalvikValue::make_bool(false));
++            // Mint the REAL Timer handle (kotlin returns it to the app).
++            uint32_t timer = heap_.allocate("Ljava/util/Timer;", pc_, 0);
++            if (method.rfind("timerTask", 0) != 0) {
++                // timer/fixedRateTimer/fixedDelayTimer: schedule NOW at
++                // (initialDelay, period) — the exact F-115/F-C8-183 law
++                // shape the java.util.Timer.schedule path uses.
++                heap_.set_object_field(tt, "__timer_period__",
++                                       DalvikValue::make_long(kperiod));
++                if (auto* hs = shadow_registry_
++                                   ? shadow_registry_->find_as<
++                                         framework::HandlerShadow>()
++                                   : nullptr) {
++                    const int64_t base_now = hs->virtual_now_ms();
++                    heap_.set_object_field(
++                        tt, "__tt_sched_time__",
++                        DalvikValue::make_long(base_now + kdelay));
++                    heap_.set_object_field(tt, "__tt_period__",
++                                           DalvikValue::make_long(kperiod));
++                    c8_timer_tasks_[timer].push_back(tt);
++                    hs->enqueue(tt, kdelay, "TimersKt.timer");
++                    std::cerr << "[C8-KTIMER] " << method
++                              << " timer=o" << timer
++                              << " task=o" << tt << " block=o" << block
++                              << " delay=" << kdelay
++                              << "ms period=" << kperiod
++                              << "ms (kotlin-stdlib law)" << std::endl;
++                }
++            } else {
++                std::cerr << "[C8-KTIMER] timerTask → wrapper o" << tt
++                          << " block=o" << block
++                          << " (unscheduled — kotlin-stdlib law)"
++                          << std::endl;
++            }
++            result = DalvikValue::make_object(
++                timer,
++                method.rfind("timerTask", 0) == 0
++                    ? "Ljava/util/TimerTask;"
++                    : "Ljava/util/Timer;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        // F-C8-202 companion: the app-side timerTask(action) constructor —
++        // invoke-direct <init> on the external wrapper (90 sites) stamps
++        // the captured block + the F-C8-183 fields.
++        if (class_name.rfind("Lkotlin/concurrent/TimersKt$timerTask$",
++                             0) == 0) {
++            const uint32_t recv =
++                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    ? args[0].object_id : 0;
++            if (method == "<init>" && recv != 0) {
++                uint32_t blk = 0;
++                for (size_t i = 1; i < args.size(); ++i) {
++                    if (args[i].type == DalvikType::OBJECT_REF &&
++                        args[i].object_id != 0) {
++                        blk = args[i].object_id;
++                        break;
++                    }
++                }
++                heap_.set_object_field(
++                    recv, "__kt_block__",
++                    DalvikValue::make_object(blk, "Ljava/lang/Object;"));
++                heap_.set_object_field(recv, "__tt_sched_time__",
++                                       DalvikValue::make_long(0));
++                heap_.set_object_field(recv, "__tt_period__",
++                                       DalvikValue::make_long(0));
++                heap_.set_object_field(recv, "__tt_cancelled__",
++                                       DalvikValue::make_bool(false));
++                std::cerr << "[C8-KTIMER] wrapper <init> o" << recv
++                          << " block=o" << blk << std::endl;
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "run" && recv != 0) {
++                // The captured block dispatch (kotlin Function0 contract).
++                DalvikValue bret;
++                bool ran = c8_kt_block_dispatch(recv, class_name, bret);
++                if (!ran)
++                    std::cerr << "[C8-KTIMER] wrapper run o" << recv
++                              << " — block NOT dispatched (LOUD gap)"
++                              << std::endl;
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            // cancel/scheduledExecutionTime ride the F-C8-183 TimerTask
++            // law semantics on the SAME stamped fields (the wrapper
++            // IS-A TimerTask; c8_isa cannot walk external superclasses).
++            if ((method == "cancel" || method == "scheduledExecutionTime") &&
++                recv != 0) {
++                DalvikValue sched = c8_getf(recv, "__tt_sched_time__");
++                int64_t when =
++                    (sched.type == DalvikType::INT64) ? sched.long_val : 0;
++                if (method == "cancel") {
++                    bool already = c8_getf(recv, "__tt_cancelled__").bool_val;
++                    bool was = (when > 0) && !already;
++                    heap_.set_object_field(recv, "__tt_cancelled__",
++                                           DalvikValue::make_bool(true));
++                    if (auto* hs = shadow_registry_
++                                       ? shadow_registry_->find_as<
++                                             framework::HandlerShadow>()
++                                       : nullptr)
++                        hs->remove_callbacks(recv);
++                    std::cerr << "[C8-KTIMER] cancel o" << recv << " → "
++                              << (was ? "true" : "false") << std::endl;
++                    result = DalvikValue::make_bool(was);
++                } else {
++                    result = DalvikValue::make_long(when);
++                }
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++
++        // ── F-C8-203/204 — kotlin ThreadsKt thread family ───────────────
++        // kotlin-stdlib law (kotlin/concurrent/Threads.kt):
++        //   thread(start=true, isDaemon=false, contextClassLoader=null,
++        //          name=null, priority=-1, block) — constructs a REAL
++        //   Thread, applies the config, starts unless start=false and
++        //   returns it. 6 APKs / 42 sites (crossref demand map). The
++        //   $default bridge arrives with the mask last; masked args are
++        //   pre-filled with their DEFAULTS, so the mask only matters for
++        //   `start` (default TRUE — masked-out start=0 must become true).
++        if (class_name == "Lkotlin/concurrent/ThreadsKt;" &&
++            (method == "thread" || method == "thread$default")) {
++            bool start = true, daemon = false;
++            int64_t prio = -1;
++            std::string name;
++            uint32_t ccl = 0, block = 0;
++            // Positional shapes: thread(start, daemon, ccl, name, prio,
++            // block) / thread$default(same + mask + marker).
++            std::vector<DalvikValue> a = args;
++            int32_t mask = -1;
++            if (method == "thread$default" && a.size() >= 8) {
++                if (a[6].type == DalvikType::INT32) mask = a[6].int_val;
++                a.resize(6);
++            }
++            auto bit_set = [&](int i) {
++                return mask >= 0 && (mask & (1 << i)) != 0;
++            };
++            if (a.size() >= 6) {
++                // [S194-C8] DEX booleans arrive as DalvikType::BOOLEAN or
++                // INT32 depending on the emitter — accept BOTH (the
++                // wave-11 probe re-run documented start stuck at the
++                // default when only INT32 was accepted).
++                if (!bit_set(0) && (a[0].type == DalvikType::INT32 ||
++                                    a[0].type == DalvikType::BOOLEAN))
++                    start = a[0].int_val != 0 || a[0].bool_val;
++                if (!bit_set(1) && (a[1].type == DalvikType::INT32 ||
++                                    a[1].type == DalvikType::BOOLEAN))
++                    daemon = a[1].int_val != 0 || a[1].bool_val;
++                if (!bit_set(2) && a[2].type == DalvikType::OBJECT_REF)
++                    ccl = a[2].object_id;
++                if (!bit_set(3) && a[3].type == DalvikType::STRING_REF)
++                    name = a[3].string_val;
++                if (!bit_set(4) &&
++                    (a[4].type == DalvikType::INT32 ||
++                     a[4].type == DalvikType::INT64))
++                    prio = a[4].type == DalvikType::INT32 ? a[4].int_val
++                                                          : a[4].long_val;
++                if (a[5].type == DalvikType::OBJECT_REF) block = a[5].object_id;
++            } else {
++                // Fallback scan (loud): block = last object arg; name =
++                // first string arg; booleans/ints by first hit.
++                for (auto it = a.rbegin(); it != a.rend(); ++it) {
++                    if (it->type == DalvikType::OBJECT_REF &&
++                        it->object_id != 0) {
++                        block = it->object_id;
++                        break;
++                    }
++                }
++                for (const auto& v : a) {
++                    if (v.type == DalvikType::STRING_REF) name = v.string_val;
++                    else if (v.type == DalvikType::INT32 &&
++                             v.int_val >= 1 && v.int_val <= 10)
++                        prio = v.int_val;
++                }
++                std::cerr << "[C8-KTHREAD] " << method
++                          << " fallback arg scan (" << a.size()
++                          << " args) — LOUD" << std::endl;
++            }
++            uint32_t t = heap_.allocate("Ljava/lang/Thread;", pc_, 0);
++            heap_.set_object_field(t, "__kt_block__",
++                                   DalvikValue::make_object(
++                                       block, "Ljava/lang/Object;"));
++            if (auto* ts = shadow_registry_
++                               ? shadow_registry_->find_as<
++                                     framework::ThreadShadow>()
++                               : nullptr) {
++                if (!name.empty()) ts->set_thread_name(t, name);
++                if (daemon) ts->set_thread_daemon(t, true);
++                if (prio >= 1 && prio <= 10)
++                    ts->set_thread_priority(t, static_cast<int32_t>(prio));
++                if (ccl != 0) ts->set_thread_ccl(t, ccl);
++                ts->note_thread_seen(t);
++                std::cerr << "[C8-KTHREAD] " << method << " → thread o" << t
++                          << " name=\"" << name << "\" daemon=" << daemon
++                          << " prio=" << prio << " block=o" << block
++                          << " start=" << (start ? "yes" : "no")
++                          << " (kotlin-stdlib law)" << std::endl;
++                if (start) ts->queue_pending_start(t, t);
++            }
++            result = DalvikValue::make_object(t, "Ljava/lang/Thread;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        // F-C8-204 companion: the kotlin thread wrapper class — <init>
++        // stamps the captured block + config; run() dispatches the block;
++        // config setters ride the ThreadShadow tables (the wrapper IS-A
++        // Thread; c8_isa cannot walk external superclasses).
++        if (class_name.rfind("Lkotlin/concurrent/ThreadsKt$thread$thread$",
++                             0) == 0) {
++            const uint32_t recv =
++                (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    ? args[0].object_id : 0;
++            if (method == "<init>" && recv != 0) {
++                uint32_t blk = 0;
++                std::string name;
++                for (size_t i = 1; i < args.size(); ++i) {
++                    if (args[i].type == DalvikType::OBJECT_REF &&
++                        blk == 0 && args[i].object_id != 0)
++                        blk = args[i].object_id;
++                    if (args[i].type == DalvikType::STRING_REF)
++                        name = args[i].string_val;
++                }
++                heap_.set_object_field(
++                    recv, "__kt_block__",
++                    DalvikValue::make_object(blk, "Ljava/lang/Object;"));
++                if (auto* ts = shadow_registry_
++                                   ? shadow_registry_->find_as<
++                                         framework::ThreadShadow>()
++                                   : nullptr) {
++                    if (!name.empty()) ts->set_thread_name(recv, name);
++                    ts->note_thread_seen(recv);
++                }
++                std::cerr << "[C8-KTHREAD] wrapper <init> o" << recv
++                          << " block=o" << blk << std::endl;
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "run" && recv != 0) {
++                DalvikValue bret;
++                bool ran = c8_kt_block_dispatch(recv, class_name, bret);
++                if (!ran)
++                    std::cerr << "[C8-KTHREAD] wrapper run o" << recv
++                              << " — block NOT dispatched (LOUD gap)"
++                              << std::endl;
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "setContextClassLoader" && recv != 0) {
++                uint32_t loader =
++                    (args.size() >= 2 &&
++                     args[1].type == DalvikType::OBJECT_REF)
++                        ? args[1].object_id : 0;
++                if (auto* ts = shadow_registry_
++                                   ? shadow_registry_->find_as<
++                                         framework::ThreadShadow>()
++                                   : nullptr)
++                    ts->set_thread_ccl(recv, loader);
++                std::cerr << "[C8-KTHREAD] wrapper setContextClassLoader o"
++                          << recv << " → o" << loader << std::endl;
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if ((method == "setName" || method == "setDaemon" ||
++                 method == "setPriority") &&
++                recv != 0) {
++                if (auto* ts = shadow_registry_
++                                   ? shadow_registry_->find_as<
++                                         framework::ThreadShadow>()
++                                   : nullptr) {
++                    if (method == "setName" && args.size() >= 2 &&
++                        args[1].type == DalvikType::STRING_REF)
++                        ts->set_thread_name(recv, args[1].string_val);
++                    else if (method == "setDaemon" && args.size() >= 2)
++                        ts->set_thread_daemon(recv, dalvik_int_value(args[1]) != 0);
++                    else if (method == "setPriority" && args.size() >= 2)
++                        ts->set_thread_priority(recv, dalvik_int_value(args[1]));
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++
++        // ── F-C8-208/209 — kotlinx DebugKt debug flags ──────────────────
++        // kotlinx-coroutines law (Debug.kt): ASSERTIONS_ENABLED /
++        // RECOVER_STACK_TRACES / DEBUG / COROUTINE_ID are system-property
++        // gates (kotlinx.coroutines.debug et al.) — JVM default FALSE
++        // without -D flags. 315 + 78 + 24 + 3 static sites / 3 APKs — the
++        // single biggest (class,method) pair in the crossref demand map.
++        // Was (this line): no law → REC-MISS silent void → the flags read
++        // as garbage and every assert-enabled guard mis-fired.
++        if (class_name == "Lkotlinx/coroutines/DebugKt;" &&
++            (method == "getASSERTIONS_ENABLED" ||
++             method == "getRECOVER_STACK_TRACES" ||
++             method == "getDEBUG" || method == "getCOROUTINE_ID")) {
++            if (c8_kx_log_ < 8) {
++                ++c8_kx_log_;
++                std::cerr << "[C8-KX] DebugKt." << method
++                          << " → false (JVM default — no debug properties)"
++                          << std::endl;
++            }
++            result = DalvikValue::make_bool(false);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++
++        // ── F-C8-210 — kotlinx AbstractTimeSourceKt.getTimeSource ───────
++        // kotlinx-coroutines law (AbstractTimeSource.kt):
++        // `internal var timeSource: AbstractTimeSource? = null` — the
++        // JVM default is NULL until DebugKt.setTimeSource installs a
++        // debug source; every consumer null-guards it. 108 sites / 3
++        // APKs. Law: answer null (the REAL default), LOUD once.
++        if (class_name == "Lkotlinx/coroutines/AbstractTimeSourceKt;" &&
++            method == "getTimeSource") {
++            if (c8_kx_log_ < 8) {
++                ++c8_kx_log_;
++                std::cerr << "[C8-KX] AbstractTimeSourceKt.getTimeSource → "
++                             "null (kotlinx default — no debug source)"
++                          << std::endl;
++            }
++            result = DalvikValue::make_null();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++
++        // ── F-C8-211/212 — kotlinx DebugStringsKt ───────────────────────
++        // kotlinx-coroutines law (DebugStrings.kt): getHexAddress(o) =
++        // Integer.toHexString(System.identityHashCode(o)); getClassSimple
++        // Name(c) = the simple class name; toDebugString(o) = the
++        // "SimpleName@hex" shape. 63 + 51 + 6 sites / 3 APKs. The
++        // deterministic identity law: the hex derives from the heap oid
++        // (stable for the object's lifetime — the identity contract the
++        // coroutine debugging code consumes).
++        if (class_name == "Lkotlinx/coroutines/DebugStringsKt;" &&
++            (method == "getHexAddress" || method == "getClassSimpleName" ||
++             method == "toDebugString")) {
++            std::string simple, hex;
++            const uint32_t o = (!args.empty() &&
++                                args[0].type == DalvikType::OBJECT_REF)
++                                   ? args[0].object_id : 0;
++            if (o != 0 && heap_.has_object(o)) {
++                if (const auto* obj = heap_.get(o)) {
++                    const std::string& d = obj->class_descriptor;
++                    size_t slash = d.find_last_of('/');
++                    simple = d.substr(slash + 1);
++                    if (!simple.empty() && simple.back() == ';')
++                        simple.pop_back();
++                }
++                std::ostringstream oss;
++                oss << std::hex << o;
++                hex = oss.str();
++            }
++            if (method == "getHexAddress") {
++                result = DalvikValue::make_string(hex, 0);
++            } else if (method == "getClassSimpleName") {
++                result = simple.empty() ? DalvikValue::make_null()
++                                        : DalvikValue::make_string(simple, 0);
++            } else {
++                result = DalvikValue::make_string(
++                    simple + "@" + hex, 0);
++            }
++            if (c8_kx_log_ < 8) {
++                ++c8_kx_log_;
++                std::cerr << "[C8-KX] DebugStringsKt." << method
++                          << " o" << o << " → \"" << hex << "\"/\""
+```

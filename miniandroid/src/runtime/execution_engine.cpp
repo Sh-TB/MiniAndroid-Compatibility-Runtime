@@ -4003,10 +4003,45 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 sl_it->second.first) {
                                 uint32_t c = 0;
                                 std::string p;
+                                const framework::ViewShadow::ViewNode::
+                                    BgStateItem* win = nullptr;
                                 if (framework::pick_state_list(
                                         sl_it->second.second, node->pressed,
-                                        node->enabled, node->selected, &c, &p)) {
+                                        node->enabled, node->selected, &c, &p,
+                                        node->checked, node->focused, false,
+                                        &win)) {
                                     if (p.empty() && c != 0) eff_bg_color = c;
+                                    // ── C9-19 (CODER 9): the matched item
+                                    // may carry a COMPILED ref
+                                    // (@drawable/@color as Res_value
+                                    // REFERENCE — no raw string). Resolve
+                                    // the identity through the ARSC router:
+                                    // table colors PAINT; file-backed
+                                    // identities are logged with their real
+                                    // path (provenance — never faked).
+                                    if (win && win->drawable_ref_id != 0) {
+                                        auto& art = resources::
+                                            ResourceRuntime::instance()
+                                                .arsc();
+                                        auto v = art.resolve_value(
+                                            win->drawable_ref_id);
+                                        if (v && (v->is_color() || v->is_int())) {
+                                            eff_bg_color = v->data;
+                                        } else if (v && v->is_string() &&
+                                                   !v->string_value.empty()) {
+                                            trace_engine_.info(
+                                                "ExecutionEngine",
+                                                "stage_render_frame",
+                                                "STATE-LIST C9-19 ref 0x" +
+                                                    [] (uint32_t r) {
+                                                        char b[16];
+                                                        std::snprintf(
+                                                            b, sizeof(b), "%08X", r);
+                                                        return std::string(b);
+                                                    }(win->drawable_ref_id) +
+                                                    " -> " + v->string_value);
+                                        }
+                                    }
                                 }
                             }
                             // F-053 (M9): GradientDrawable <shape> law. The

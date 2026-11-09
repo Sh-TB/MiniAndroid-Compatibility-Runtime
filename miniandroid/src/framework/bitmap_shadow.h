@@ -55,6 +55,14 @@ struct StoredBitmap {
     int32_t source_height = 0;
     int32_t sample_size = 1;          // opts.inSampleSize applied (1 = none)
     bool density_scaled = false;      // density scale actually applied
+    // ── C9-4/5/6 (CODER 9) — decode-law Options contract ──────────────────
+    // Bitmap$Config aliases to ints (engine law: ALPHA_8=0, RGB_565=1,
+    // ARGB_4444=2, ARGB_8888=3). Every decode/creation path records the
+    // REAL config it served; getConfig answers this, never a constant.
+    int32_t config = 3;               // ARGB_8888 default (AOSP Options default)
+    bool mutable_bitmap = false;      // decodes immutable; inMutable=true upgrades (C9-5)
+    bool premultiplied = true;        // AOSP inPremultiplied default TRUE (C9-6)
+    bool recycled = false;            // C9-8: recycle() law flag (frees pixels)
     // CONT-65 F-NEW-355: original container bytes for ANIMATED formats
     // (GIF89a/GIF87a only — stb_image first-frame decode can't recover
     // delays). Populated by decode_and_register on GIF magic; empty for
@@ -171,5 +179,48 @@ struct BitmapFactoryDensityResult {
 };
 BitmapFactoryDensityResult bitmap_factory_density_law(
     const BitmapFactoryDensityInput& in);
+
+// ── C9-4 (CODER 9) — inPreferredConfig conversion law (pure, testable) ────
+// AOSP BitmapFactory native: the decode output pixel format follows
+// Options.inPreferredConfig. The store is RGBA; the law converts the buffer
+// to the requested config and reports the canonical config name:
+//   ALPHA_8 (0): RGB forced 0, alpha preserved (AOSP ALPHA_8 stores only
+//                alpha; getPixel answers (a<<24))
+//   RGB_565 (1): alpha dropped, 565-quantized (REAL precision loss:
+//                r5=r>>3, g6=g>>2, b5=b>>3, re-expanded)
+//   ARGB_4444 (2): 444-quantized (deprecated, same shape as 565 law)
+//   ARGB_8888 (3): passthrough
+// Unknown values keep ARGB_8888 (AOSP null/unknown → default 8888 path).
+std::string bitmap_preferred_config_law(int32_t in_preferred_config,
+                                        std::vector<uint8_t>& rgba);
+
+// ── C9-9 (CODER 9) — bilinear resample law (pure, testable) ─────────────
+// AOSP/Skia kLinear sampling for Bitmap.createScaledBitmap(src, dw, dh,
+// filter=true): sample point = ((x + 0.5) * sw / dw) - 0.5, clamped to
+// [0, sw-1]; the 4 surrounding texels are weight-blended (float, then
+// rounded to nearest u8). Identity scale (dw==sw, dh==sh) answers the
+// source bytes EXACTLY (the law degenerates to integer coordinates).
+void resample_bilinear(const StoredBitmap& src, int dw, int dh,
+                       std::vector<uint8_t>& out);
+
+// ── C9-23 (CODER 9) — cache-identity law (Glide/Coil substrate) ───────
+// The generic image-loader contract: a decode result is identified by
+// (source entry bytes, source desc, selected density pair, sample size,
+// config). Two decodes with the SAME identity MUST answer pixel-identical
+// bitmaps (byte-derived, deterministic — no timestamps, no pointers). The
+// identity is a 64-bit FNV-1a over all inputs rendered hex + a
+// human-readable provenance suffix. FNV-1a is a CACHE identity (collision
+// safety within one runtime run), not a security hash — documented here.
+struct BitmapCacheIdentityInput {
+    const uint8_t* src_bytes = nullptr;   // APK entry bytes (null = create path)
+    size_t src_len = 0;
+    std::string source_desc;
+    uint16_t source_density = 0;
+    uint16_t target_density = 0;
+    int32_t sample_size = 1;
+    int32_t config = 3;
+    bool density_scaled = false;
+};
+std::string bitmap_cache_identity_law(const BitmapCacheIdentityInput& in);
 
 } } // namespace miniandroid::framework

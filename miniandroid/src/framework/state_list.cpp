@@ -127,6 +127,12 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
         // S127: window_focused/activated framework selector states.
         it.state_window_focused = tri_state(item, "state_window_focused");
         it.state_activated = tri_state(item, "state_activated");
+        // C9-18 (CODER 9): the remaining standard states — a declared
+        // focused/hovered item must now actually MATCH the view state
+        // instead of silently acting as a wildcard (first-match ordering
+        // law depends on it).
+        it.state_focused = tri_state(item, "state_focused");
+        it.state_hovered = tri_state(item, "state_hovered");
         uint32_t c = 0;
         uint32_t cref = 0;
         if (item_color(item, &c, &cref)) {
@@ -138,6 +144,15 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
             // Reference form: raw "@drawable/name" or a typed reference —
             // recorded for the caller's resolver; unresolved stays empty.
             if (!d->raw_value.empty()) it.drawable_path = d->raw_value;
+            // ── C9-19 (CODER 9): the COMPILED form — aapt2 stores
+            // @drawable/x as Res_value REFERENCE (data = resid). Recorded
+            // alongside the raw string; the engine dereferences the id
+            // through the ARSC resolver (find_id/resolve_full), so the
+            // state-list item carries a resolvable identity, not a string.
+            if (d->value.type == resources::DataType::REFERENCE ||
+                d->value.type == resources::DataType::DYNAMIC_REFERENCE ||
+                d->value.type == resources::DataType::ATTRIBUTE)
+                it.drawable_ref_id = d->value.data;
         }
         items.push_back(std::move(it));
     }
@@ -148,7 +163,8 @@ bool parse_state_list(const std::vector<uint8_t>& axml,
 bool pick_state_list(
     const std::vector<ViewShadow::ViewNode::BgStateItem>& items, bool pressed,
     bool enabled, bool selected, uint32_t* color_out, std::string* path_out,
-    bool checked) {
+    bool checked, bool focused, bool hovered,
+    const ViewShadow::ViewNode::BgStateItem** winner_out) {
     // StateListDrawable.getStateDrawableIndex law: FIRST item in document
     // order whose state spec is satisfied wins; a declared state must match
     // exactly (state_pressed="true" requires pressed), undeclared = wildcard.
@@ -165,8 +181,16 @@ bool pick_state_list(
         if (it.state_checked >= 0 &&
             it.state_checked != (checked ? 1 : 0))
             continue;
+        // C9-18: focused/hovered declared states must match exactly.
+        if (it.state_focused >= 0 &&
+            it.state_focused != (focused ? 1 : 0))
+            continue;
+        if (it.state_hovered >= 0 &&
+            it.state_hovered != (hovered ? 1 : 0))
+            continue;
         if (it.has_color && color_out) *color_out = it.color;
         if (path_out) *path_out = it.drawable_path;
+        if (winner_out) *winner_out = &it;
         return true;
     }
     return false;

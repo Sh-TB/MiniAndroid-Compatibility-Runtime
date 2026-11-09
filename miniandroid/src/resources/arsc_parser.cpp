@@ -414,7 +414,35 @@ bool ArscParser::parse_package(const uint8_t* base, size_t avail, size_t chunk_o
         if (ctype == RES_TABLE_TYPE_TYPE) {
             if (!parse_type_chunk(base, avail, pkg, pos, csize)) return false;
         } else if (ctype == RES_TABLE_TYPE_SPEC_TYPE) {
-            // skip
+            // ── C9-14 (CODER 9) — ResTable_typeSpec parse ────────────────
+            // AOSP ResourceTypes.h: { header(8), id@8, res0@9, res1@10,
+            // entryCount@12, flags[entryCount] }. Each u32 records the
+            // config-varies flags for the entry at its index. Multiple spec
+            // chunks per type are legal — flags OR-merge (deterministic).
+            if (pos + 20 <= avail && csize >= 20 && pos + csize <= avail) {
+                uint8_t spec_type_id = base[pos + 8];
+                uint32_t spec_count = rd32(base + pos + 12);
+                // C9-14 offset law (aapt2 8.13.2 ground truth, ff/plur
+                // probe dump): the ResTable_typeSpec struct is 16 bytes
+                // (header 8 + id 1 + res0 1 + res1 2 + entryCount 4) and
+                // the flags[entryCount] array starts at max(16,
+                // headerSize) — aapt2 writes headerSize=16, some writers
+                // pad to 20.
+                size_t spec_flags_off = pos + (rd16(base + pos + 2) > 16
+                                                   ? rd16(base + pos + 2)
+                                                   : 16);
+                const uint64_t need = (uint64_t)(spec_flags_off - pos) +
+                                      (uint64_t)spec_count * 4ull;
+                if (need <= csize) {
+                    auto& flags = pkg.type_specs[spec_type_id];
+                    if (flags.size() < spec_count) flags.resize(spec_count, 0);
+                    const uint8_t* fp = base + spec_flags_off;
+                    for (uint32_t si = 0; si < spec_count; ++si) {
+                        flags[si] |= rd32(fp + (size_t)si * 4);   // OR-merge
+                    }
+                }
+            }
+            // hostile/truncated spec chunk: skipped honestly (never fails parse)
         } else {
             // unknown — skip
         }
@@ -431,11 +459,18 @@ bool ArscParser::parse_package(const uint8_t* base, size_t avail, size_t chunk_o
 // ---------------------------------------------------------------------------
 bool ArscParser::parse(const std::vector<uint8_t>& data) {
     valid_ = false;
-    data_ = data.data();
+    // C9-13 (CODER 9): OWN the bytes. The old `data_ = data.data()` aliased
+    // the caller's vector — parse-only while it lived, but data_ stayed
+    // dangling after the call (latent use-after-free for any lazy reader).
+    data_owned_ = data;
+    data_ = data_owned_.data();
     size_ = data.size();
     packages_.clear();
     type_entries_.clear();
     id_index_.clear();
+    name_index_.clear();   // C9-12
+    libraries_.clear();    // C9-15
+    parsed_pkg_ids_.clear();
     stats_ = Stats{};
 
     if (size_ < 12) { last_error_ = "too small"; return false; }
@@ -454,10 +489,47 @@ bool ArscParser::parse(const std::vector<uint8_t>& data) {
 
     size_t pos = header_size + pool_size;
     size_t pkg_seen = 0;
-    while (pos + 8 <= total_size && pkg_seen < package_count) {
+    // C9-15: the loop no longer stops at package_count — RES_TABLE_LIBRARY
+    // chunks are table-level siblings of the packages (commonly FIRST, but
+    // a trailing chunk is legal too) and must not be silently dropped.
+    while (pos + 8 <= total_size) {
         uint16_t ctype = rd16(p + pos);
         uint32_t csize = rd32(p + pos + 4);
         if (csize == 0) break;
+        if (ctype == RES_TABLE_LIBRARY_TYPE) {
+            // ── C9-15 (CODER 9) — LIBRARY chunk parse ────────────────
+            // AOSP ResTable_lib { header, count, entry[count] } with
+            // entry = { uint32 packageId; uint16 packageName[128]; }.
+            // Bounds-guarded; malformed entries skip honestly, the chunk
+            // never fails the whole parse (an unknown library cannot
+            // invalidate the packages that DID parse).
+            if (pos + 12 > total_size || csize > total_size - pos) { pos += csize; continue; }
+            uint32_t lib_count = rd32(p + pos + 8);
+            size_t lib_hdr = rd16(p + pos + 2);
+            if (lib_hdr < 12) lib_hdr = 12;
+            size_t ep = pos + lib_hdr;
+            for (uint32_t li = 0; li < lib_count; ++li) {
+                if (ep + 4 > total_size || ep + 4 > pos + csize) break;
+                uint32_t lib_pkg_id = rd32(p + ep);
+                // UTF-16LE name, NUL-terminated within 128 units.
+                std::string name;
+                bool ok = false;
+                for (int ci = 0; ci < 128; ++ci) {
+                    size_t ch_off = ep + 4 + (size_t)ci * 2;
+                    if (ch_off + 2 > total_size || ch_off + 2 > pos + csize) break;
+                    uint16_t ch = rd16(p + ch_off);
+                    if (ch == 0) { ok = true; break; }
+                    if (ch < 0x80) name += (char)ch;
+                    else { name.clear(); break; }  // non-ASCII: unusable name
+                }
+                if (ok && !name.empty() && lib_pkg_id != 0)
+                    libraries_[lib_pkg_id] = name;
+                ep += 4 + 128 * 2;
+            }
+            pos += csize;
+            continue;
+        }
+        if (pkg_seen >= package_count) break;   // C9-15: packages still capped
         if (ctype == RES_TABLE_PACKAGE_TYPE) {
             // S124 FW-PACKAGE (AOSP AssetManager2 staged-package law): API 31+
             // tables append small STAGED package chunks that duplicate the
@@ -515,6 +587,34 @@ void ArscParser::finish_index() {
                 break;
             }
         }
+    }
+    // ── C9-14 (CODER 9): attach ResTable_typeSpec entry flags ───────────
+    // Flags were parsed per (package, type_id); entries receive the flag
+    // vector slot at their entry_index when in range.
+    for (auto& e : type_entries_) {
+        for (const auto& pkg : packages_) {
+            if (pkg.id != e.package_id) continue;
+            auto sit = pkg.type_specs.find((uint8_t)e.type_index);
+            if (sit != pkg.type_specs.end() && e.entry_index < sit->second.size())
+                e.spec_flags = sit->second[e.entry_index];
+            break;
+        }
+    }
+    // ── C9-12 (CODER 9): build the O(1) name→id index ───────────────────
+    // Exact (package,type,name) keys only. FIRST document-order id wins
+    // (type_entries_ is parse order — deterministic, unlike the unordered
+    // scan this replaces). Keys with an empty component never enter the
+    // index; find_id serves those through the legacy wildcard scan.
+    name_index_.clear();
+    for (const auto& e : type_entries_) {
+        if (e.name.empty() || e.type_name.empty()) continue;
+        std::string pkg_name;
+        for (const auto& pkg : packages_)
+            if (pkg.id == e.package_id) { pkg_name = pkg.name; break; }
+        if (pkg_name.empty()) continue;
+        std::string key = pkg_name;
+        key += '\x1f'; key += e.type_name; key += '\x1f'; key += e.name;
+        name_index_.emplace(key, e.resource_id);   // emplace = first wins
     }
     stats_.named_ids = (uint32_t)by_id_.size();
     stats_.entries_by_type.clear();
@@ -592,6 +692,16 @@ std::optional<ResolvedResource> ArscParser::resolve(uint32_t resource_id) const 
 
 std::optional<uint32_t> ArscParser::find_id(const std::string& package, const std::string& type,
                                             const std::string& name) const {
+    // ── C9-12 (CODER 9): exact lookups answer through the parse-time index
+    // (O(1)). Legacy semantics preserved: empty ANY component = wildcard →
+    // falls through to the bounded scan below.
+    if (!package.empty() && !type.empty() && !name.empty()) {
+        std::string key = package;
+        key += '\x1f'; key += type; key += '\x1f'; key += name;
+        auto it = name_index_.find(key);
+        if (it != name_index_.end()) return it->second;
+        return std::nullopt;   // exact miss: no wildcard rescue (parity law)
+    }
     for (const auto& kv : by_id_) {
         const ArscEntry* e = kv.second.front();
         if (!name.empty() && e->name != name) continue;
@@ -603,6 +713,27 @@ std::optional<uint32_t> ArscParser::find_id(const std::string& package, const st
             if (!match) continue;
         }
         return kv.first;
+    }
+    return std::nullopt;
+}
+
+// ── C9-15 (CODER 9) — dynamic-reference translation law (pure) ────────────
+// AOSP DynamicRefTable.lookupResourceId: a DYNAMIC_REFERENCE value carries
+// a per-table LIBRARY package id in its high byte; the real id is recovered
+// by mapping the library slot to the package that is actually present under
+// the same NAME. No library slot, no same-name package, or a non-dynamic id
+// → honest nullopt (callers keep the raw id).
+std::optional<uint32_t> ArscParser::translate_dynamic_reference(uint32_t id) const {
+    if (libraries_.empty()) return std::nullopt;
+    const uint32_t pkg_bits = (id >> 24) & 0xFFu;
+    auto lit = libraries_.find(pkg_bits);
+    if (lit == libraries_.end()) return std::nullopt;
+    for (const auto& pkg : packages_) {
+        if (pkg.name == lit->second) {
+            const uint32_t real = ResId::pack(pkg.id, (uint8_t)((id >> 16) & 0xFFu),
+                                              (uint16_t)(id & 0xFFFFu));
+            return real;
+        }
     }
     return std::nullopt;
 }
