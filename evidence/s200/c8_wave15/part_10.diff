@@ -1,0 +1,1052 @@
++    public static Throwable tryCopyAndVerify(Throwable exception) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-293)
++    public static boolean elementWiseEquals(Throwable a, Throwable b) {
++        throw new RuntimeException("stub");
++    }
++    public static Throwable sanitizeStackTrace(Throwable exception) {
++        throw new RuntimeException("stub");
++    }
++    public static Object causeAndStacktrace(Throwable cause) {
++        throw new RuntimeException("stub");
++    }
++    public static Throwable createFinalException(Throwable cause, Throwable original, java.lang.StackTraceElement[] frames) {
++        throw new RuntimeException("stub");
++    }
++    public static Object createStackTrace(Throwable exception) {
++        throw new RuntimeException("stub");
++    }
++    public static Object mergeRecoveredTraces(Object a, Object b) {
++        throw new RuntimeException("stub");
++    }
++    public static Throwable recoverFromStackFrame(Throwable e) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/Symbol.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/Symbol.java
+new file mode 100644
+index 0000000..9b85843
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/Symbol.java
+@@ -0,0 +1,12 @@
++package kotlinx.coroutines.internal;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-238 owns the surface
++// (the symbol IDENTITY law — one heap object per description string).
++public class Symbol {
++    public Symbol(String description) {
++        throw new RuntimeException("stub");
++    }
++    public String toString() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/ThreadContextKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/ThreadContextKt.java
+new file mode 100644
+index 0000000..15e5f12
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/ThreadContextKt.java
+@@ -0,0 +1,18 @@
++package kotlinx.coroutines.internal;
++
++import kotlin.coroutines.CoroutineContext;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class ThreadContextKt {
++    public static Object updateThreadContext(CoroutineContext context,
++            Object oldState) {
++        throw new RuntimeException("stub");
++    }
++    public static void restoreThreadContext(CoroutineContext context,
++            Object oldState) {
++        throw new RuntimeException("stub");
++    }
++    public static Object threadContextElements(CoroutineContext c) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/ThreadSafeHeap.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/ThreadSafeHeap.java
+new file mode 100644
+index 0000000..e625f4a
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/ThreadSafeHeap.java
+@@ -0,0 +1,38 @@
++package kotlinx.coroutines.internal;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class ThreadSafeHeap {
++    public ThreadSafeHeap() {
++        throw new RuntimeException("stub");
++    }
++    public int getSize() {
++        throw new RuntimeException("stub");
++    }
++    public Object firstImpl() {
++        throw new RuntimeException("stub");
++    }
++    public void removeAtImpl(int index) {
++        throw new RuntimeException("stub");
++    }
++    public void swap(int from, int to) {
++        throw new RuntimeException("stub");
++    }
++
++    public void addImpl(Object item) {
++        throw new RuntimeException("stub");
++    }
++    public void siftUpFrom(int index) {
++        throw new RuntimeException("stub");
++    }
++    public void setSize(int size) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-285)
++    public void realloc() {
++        throw new RuntimeException("stub");
++    }
++    public void siftDownFrom(int index) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/scheduling/CoroutineScheduler.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/scheduling/CoroutineScheduler.java
+new file mode 100644
+index 0000000..2e4f39c
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/scheduling/CoroutineScheduler.java
+@@ -0,0 +1,12 @@
++package kotlinx.coroutines.scheduling;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlinx CoroutineScheduler + its
++// WorkerState enum). Never dex'd into the probe APK — the engine law
++// F-C8-217 (kOrdinals + valueOf/values) owns the surface. WorkerState is
++// NESTED so the DEX binary name matches the real kotlin-stdlib class
++// kotlinx.coroutines.scheduling.CoroutineScheduler$WorkerState.
++public class CoroutineScheduler {
++    public enum WorkerState {
++        INIT, SLEEPING, PARKING, CPU_ACQUIRED, BLOCKING, TERMINATED
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/selects/SelectInstance.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/selects/SelectInstance.java
+new file mode 100644
+index 0000000..3d670f2
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/selects/SelectInstance.java
+@@ -0,0 +1,33 @@
++package kotlinx.coroutines.selects;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class SelectInstance {
++    public SelectInstance() {
++        throw new RuntimeException("stub");
++    }
++    public Object getCompletion() {
++        throw new RuntimeException("stub");
++    }
++    public boolean trySelect(Object select, Object result) {
++        throw new RuntimeException("stub");
++    }
++    public boolean performAtomicTrySelect(Object select, Object result) {
++        throw new RuntimeException("stub");
++    }
++    public boolean isSelected() {
++        throw new RuntimeException("stub");
++    }
++    public void disposeOnSelect(Object handle) {
++        throw new RuntimeException("stub");
++    }
++    public void resumeSelectWithException(Throwable exception,
++            Object resumedState) {
++        throw new RuntimeException("stub");
++    }
++
++
++    // [S200-C8] wave-15 (F-C8-282)
++    public boolean trySelectOther(Object descriptor) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/selects/SelectKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/selects/SelectKt.java
+new file mode 100644
+index 0000000..32c0130
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/selects/SelectKt.java
+@@ -0,0 +1,24 @@
++package kotlinx.coroutines.selects;
++
++import kotlinx.coroutines.internal.Symbol;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine laws F-C8-239/243 own it.
++public class SelectKt {
++    public static Symbol getALREADY_SELECTED() {
++        throw new RuntimeException("stub");
++    }
++    public static Symbol getNOT_SELECTED() {
++        throw new RuntimeException("stub");
++    }
++    public static Symbol access$getUNDECIDED$p() {
++        throw new RuntimeException("stub");
++    }
++    public static Symbol access$getRESUMED$p() {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-283)
++    public static int access$getSelectOpSequenceNumber$p() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/src/com/miniandroid/c8probe/MainActivity.java b/tests/fixtures/c8_concurrency_probe/src/com/miniandroid/c8probe/MainActivity.java
+index 28b4cc6..9ab373d 100644
+--- a/tests/fixtures/c8_concurrency_probe/src/com/miniandroid/c8probe/MainActivity.java
++++ b/tests/fixtures/c8_concurrency_probe/src/com/miniandroid/c8probe/MainActivity.java
+@@ -6,6 +6,7 @@ import android.os.Handler;
+ import android.os.HandlerThread;
+ import android.os.Looper;
+ import android.os.Message;
++import android.os.MessageQueue;
+ import android.os.CountDownTimer;
+ import android.os.SystemClock;
+ 
+@@ -42,6 +43,64 @@ import java.util.concurrent.locks.ReentrantLock;
+ import java.util.concurrent.locks.ReentrantReadWriteLock;
+ import android.os.Process;
+ 
++// [S194-C8] wave-11 imports — COMPILE-TIME-ONLY kotlin/kotlinx stubs.
++// The stub jar is on the ecj classpath ONLY; d8 never dex's it, so the
++// probe DEX carries EXTERNAL references exactly like real kotlin apps —
++// the engine laws own the DEX surface.
++import kotlin.Unit;
++import kotlin.jvm.functions.Function0;
++import kotlin.concurrent.TimersKt;
++import kotlin.concurrent.ThreadsKt;
++import kotlinx.coroutines.AbstractTimeSource;
++import kotlinx.coroutines.AbstractTimeSourceKt;
++import kotlinx.coroutines.DebugKt;
++import kotlinx.coroutines.DebugStringsKt;
++import kotlinx.coroutines.CoroutineDispatcher;
++import kotlinx.coroutines.Dispatchers;
++import kotlinx.coroutines.DefaultExecutor;
++import kotlinx.coroutines.DefaultExecutorKt;
++import kotlinx.coroutines.scheduling.CoroutineScheduler.WorkerState;
++
++// [S195-C8] wave-12 imports — COMPILE-TIME-ONLY kotlin/kotlinx stubs.
++import kotlin.jvm.functions.Function1;
++import kotlin.jvm.functions.Function2;
++import kotlinx.coroutines.BuildersKt;
++import kotlinx.coroutines.CancellableContinuationImpl;
++import kotlinx.coroutines.CompletedExceptionally;
++import kotlinx.coroutines.CoroutineExceptionHandlerKt;
++import kotlinx.coroutines.CoroutineScope;
++import kotlinx.coroutines.DelayKt;
++import kotlinx.coroutines.DispatchedTask;
++import kotlinx.coroutines.EventLoop;
++import kotlinx.coroutines.Job;
++import kotlinx.coroutines.JobCancellationException;
++import kotlinx.coroutines.JobSupport;
++import kotlinx.coroutines.SystemPropsKt;
++import kotlinx.coroutines.UndispatchedCoroutine;
++import kotlinx.coroutines.channels.ChannelIterator;
++import kotlinx.coroutines.channels.ChannelResult;
++import kotlinx.coroutines.channels.ChannelsKt;
++import kotlinx.coroutines.channels.ProducerScope;
++import kotlinx.coroutines.channels.ProduceKt;
++import kotlinx.coroutines.channels.ReceiveChannel;
++import kotlinx.coroutines.debug.internal.DebugProbesImpl;
++import kotlinx.coroutines.flow.Flow;
++import kotlinx.coroutines.flow.FlowCollector;
++import kotlinx.coroutines.flow.FlowKt;
++import kotlinx.coroutines.flow.SharedFlowImpl;
++import kotlinx.coroutines.flow.internal.CombineKt;
++import kotlinx.coroutines.flow.internal.FlowExceptions_commonKt;
++import kotlinx.coroutines.internal.ConcurrentLinkedListKt;
++import kotlinx.coroutines.internal.LockFreeLinkedListNode;
++import kotlinx.coroutines.internal.MainDispatcherFactory;
++import kotlinx.coroutines.internal.OpDescriptor;
++import kotlinx.coroutines.internal.StackTraceRecoveryKt;
++import kotlinx.coroutines.internal.Symbol;
++import kotlinx.coroutines.internal.ThreadContextKt;
++import kotlinx.coroutines.internal.ThreadSafeHeap;
++import kotlinx.coroutines.selects.SelectInstance;
++import kotlinx.coroutines.selects.SelectKt;
++
+ /**
+  * S191 [C8] wave 8 + S192 [C8] wave 9 — Coder 8 concurrency-law probe
+  * APK. Every check prints exactly one marker line
+@@ -61,6 +120,46 @@ public class MainActivity extends Activity {
+     static boolean crossNotifierRan = false;
+     static boolean ccComputeRan = false;
+     static boolean ccOnCompletionRan = false;
++    // [S200-C8] wave-15 shared state
++    static int c8_w15_fold_ran = 0;
++
++    // [S194-C8] wave-11 shared state (probe-observable engine effects)
++    static int ktPeriodTicks = 0;              // F-C8-201 periodic ktimer
++    static boolean ktimerOnceRan = false;      // F-C8-201 single-shot ktimer
++    static boolean ktimerTaskRan = false;      // F-C8-202 timerTask block
++    static boolean kthreadBlockRan = false;    // F-C8-203 thread{} block
++    static boolean defexecRan = false;         // F-C8-216 schedule block
++    static int idleH1Fires = 0;                // F-C8-206 keep handler
++    static int idleH2Fires = 0;                // F-C8-206 self-removing
++    static String lastUnconfinedThread = null; // F-C8-213 unconfined inline
++
++    // [S195-C8] wave-12 shared state (probe-observable engine effects)
++    static int launchBlockRan = 0;      // F-C8-230 launch block side effect
++    static boolean dispatchRan = false; // F-C8-240 one-queue dispatch law
++    // [S196-C8] wave-13 shared state
++    static int completionHandlerRan = 0;  // F-C8-244 completion handler
++    static int withCtxRan = 0;         // F-C8-255 withContext block
++    static JobSupport launchedJob = null;
++
++    static class IdleH1 implements MessageQueue.IdleHandler {
++        public boolean queueIdle() {
++            idleH1Fires++;
++            android.util.Log.i("C8PROBE", "idle_handler "
++                    + (idleH1Fires >= 1 ? "PASS" : "FAIL")
++                    + " fires=" + idleH1Fires);
++            return true;  // keep registered
++        }
++    }
++
++    static class IdleH2 implements MessageQueue.IdleHandler {
++        public boolean queueIdle() {
++            idleH2Fires++;
++            android.util.Log.i("C8PROBE", "idle_handler2 "
++                    + (idleH2Fires == 1 ? "PASS" : "FAIL")
++                    + " fires=" + idleH2Fires);
++            return false;  // AOSP law: a false return REMOVES the handler
++        }
++    }
+ 
+     static class MyCC extends CountedCompleter {
+         public MyCC(CountedCompleter parent) { super(parent); }
+@@ -916,6 +1015,1512 @@ public class MainActivity extends Activity {
+             mark("handler_looper", false, t.getClass().getSimpleName());
+         }
+ 
++        // ── F-C8-208/209: kotlinx DebugKt debug-flag family ─────────────
++        try {
++            boolean d1 = DebugKt.getASSERTIONS_ENABLED() == false;
++            boolean d2 = DebugKt.getRECOVER_STACK_TRACES() == false;
++            boolean d3 = DebugKt.getDEBUG() == false;
++            boolean d4 = DebugKt.getCOROUTINE_ID() == false;
++            mark("kx_assertions", d1 && d2 && d3 && d4,
++                    d1 + "" + d2 + d3 + d4);
++        } catch (Throwable t) {
++            mark("kx_assertions", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-210: AbstractTimeSourceKt default-null law ─────────────
++        try {
++            AbstractTimeSource ts = AbstractTimeSourceKt.getTimeSource();
++            mark("kx_timesource", ts == null, "null=" + (ts == null));
++        } catch (Throwable t) {
++            mark("kx_timesource", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-211/212: DebugStringsKt identity laws ──────────────────
++        try {
++            Object o = new Object();
++            Object o2 = new Object();
++            String h1 = DebugStringsKt.getHexAddress(o);
++            String h1b = DebugStringsKt.getHexAddress(o);
++            String h2 = DebugStringsKt.getHexAddress(o2);
++            boolean x1 = h1 != null && !h1.isEmpty() && h1.equals(h1b)
++                    && !h1.equals(h2);
++            String sn = DebugStringsKt.getClassSimpleName(o);
++            boolean x2 = sn != null && sn.equals("Object");
++            String db = DebugStringsKt.toDebugString(o);
++            boolean x3 = db != null && db.contains("@");
++            mark("kx_hexaddr", x1 && x2 && x3,
++                    "stable=" + x1 + " simple=" + x2 + " dbg=" + x3);
++        } catch (Throwable t) {
++            mark("kx_hexaddr", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-213: Dispatchers shapes + unconfined-inline contract ───
++        try {
++            CoroutineDispatcher def = Dispatchers.INSTANCE.getDefault();
++            CoroutineDispatcher io = Dispatchers.INSTANCE.getIO();
++            CoroutineDispatcher main = Dispatchers.INSTANCE.getMain();
++            CoroutineDispatcher un = Dispatchers.INSTANCE.getUnconfined();
++            boolean g1 = def != null && io != null && main != null
++                    && un != null;
++            boolean g2 = Dispatchers.INSTANCE.getDefault() == def
++                    && Dispatchers.INSTANCE.getUnconfined() == un;
++            final boolean[] ranInline = {false};
++            un.dispatch(null, new Runnable() {
++                public void run() { ranInline[0] = true; }
++            });
++            boolean g3 = ranInline[0];  // the UNCONFINED contract: inline
++            // Default/IO/Main dispatch enqueue (no-throw) — the one-queue law.
++            def.dispatch(null, new Runnable() { public void run() { } });
++            io.dispatch(null, new Runnable() { public void run() { } });
++            main.dispatch(null, new Runnable() { public void run() { } });
++            mark("dispatchers_shape", g1 && g2 && g3,
++                    g1 + "" + g2 + g3);
++        } catch (Throwable t) {
++            mark("dispatchers_shape", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-215: DefaultExecutor singleton thread identity ─────────
++        try {
++            DefaultExecutor de = DefaultExecutor.getInstance();
++            DefaultExecutor de2 = DefaultExecutor.getInstance();
++            boolean e1 = de != null && de == de2;
++            Thread th = de.getThread();
++            boolean e2 = th != null;
++            boolean e3 = !de.isShutDown() && de.isEmpty();
++            mark("defexec_shape", e1 && e2 && e3, e1 + "" + e2 + e3);
++        } catch (Throwable t) {
++            mark("defexec_shape", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-216: DefaultExecutorKt default delay + schedule ────────
++        try {
++            long dl = DefaultExecutorKt.getDefaultDelay();
++            boolean f1 = dl == 1000L;
++            DefaultExecutor.getInstance().schedule(new Runnable() {
++                public void run() {
++                    defexecRan = true;
++                    android.util.Log.i("C8PROBE", "defexec_delay "
++                            + (defexecRan ? "PASS" : "FAIL") + " ran=true");
++                }
++            }, 0, TimeUnit.MILLISECONDS);
++            mark("defexec_kt_delay", f1, "delay=" + dl);
++        } catch (Throwable t) {
++            mark("defexec_kt_delay", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-217: WorkerState enum ordinals (kOrdinals + values) ────
++        // The DEX binary name is the REAL kotlin-stdlib class
++        // Lkotlinx/coroutines/scheduling/CoroutineScheduler$WorkerState; —
++        // the kOrdinals CYCLE-E law materializes the 6 constants and the
++        // bridge law completes values()/valueOf()/ordinal().
++        try {
++            boolean w1 = WorkerState.INIT.ordinal() == 0;
++            boolean w2 = WorkerState.TERMINATED.ordinal() == 5;
++            boolean w3 = WorkerState.values().length == 6;
++            boolean w4 = WorkerState.valueOf("PARKING").ordinal() == 2;
++            mark("worker_state_ord", w1 && w2 && w3 && w4,
++                    w1 + "" + w2 + w3 + w4);
++        } catch (Throwable t) {
++            mark("worker_state_ord", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-201: kotlin timer family — single shot + periodic ──────
++        try {
++            Timer t1 = TimersKt.timer(0L, 0L, () -> {
++                ktimerOnceRan = true;
++                android.util.Log.i("C8PROBE", "ktimer_once "
++                        + (ktimerOnceRan ? "PASS" : "FAIL") + " ran=true");
++                return Unit.INSTANCE;
++            });
++            Timer t2 = TimersKt.timer(100L, () -> {
++                ktPeriodTicks++;
++                if (ktPeriodTicks == 2) {
++                    android.util.Log.i("C8PROBE", "ktimer_period "
++                            + (ktPeriodTicks >= 2 ? "PASS" : "FAIL")
++                            + " ticks=" + ktPeriodTicks);
++                }
++                return Unit.INSTANCE;
++            });
++            mark("ktimer_basic", t1 != null && t2 != null,
++                    "timers=" + (t1 != null) + (t2 != null));
++        } catch (Throwable t) {
++            mark("ktimer_basic", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-202: kotlin timerTask wrapper + Timer.schedule ride ────
++        try {
++            TimerTask tt = TimersKt.timerTask(() -> {
++                ktimerTaskRan = true;
++                android.util.Log.i("C8PROBE", "ktimer_task "
++                        + (ktimerTaskRan ? "PASS" : "FAIL") + " ran=true");
++                return Unit.INSTANCE;
++            });
++            boolean u1 = tt != null;
++            boolean u2 = !tt.cancel();  // unscheduled: cancel answers false
++            new Timer().schedule(tt, 30L);
++            mark("ktimer_task", u1 && u2, u1 + "" + u2);
++        } catch (Throwable t) {
++            mark("ktimer_task", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-203: kotlin thread{} family — config + block run ───────
++        try {
++            Thread t1 = ThreadsKt.thread$default(false, false, null, "kt1",
++                    -1, () -> { return Unit.INSTANCE; }, 0, null);
++            boolean h1 = t1 != null && "kt1".equals(t1.getName())
++                    && !t1.isAlive();  // start=false: never started
++            Thread t2 = ThreadsKt.thread$default(true, true, null, null, -1,
++                    () -> {
++                        kthreadBlockRan = true;
++                        android.util.Log.i("C8PROBE", "kthread_run "
++                                + (kthreadBlockRan ? "PASS" : "FAIL")
++                                + " ran=true");
++                        return Unit.INSTANCE;
++                    }, 1, null);  // mask 1: start defaulted → TRUE
++            boolean h2 = t2 != null;
++            Thread t3 = ThreadsKt.thread$default(false, false, null, "kt3",
++                    3, () -> { return Unit.INSTANCE; }, 0, null);
++            boolean h3 = t3 != null && t3.getPriority() == 3;
++            mark("kthread_basic", h1 && h2 && h3, h1 + "" + h2 + h3);
++        } catch (Throwable t) {
++            mark("kthread_basic", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-204: Thread context-class-loader REAL store laws ───────
++        try {
++            Thread cur = Thread.currentThread();
++            ClassLoader before = cur.getContextClassLoader();
++            cur.setContextClassLoader(null);
++            ClassLoader after = cur.getContextClassLoader();
++            boolean c1 = after == null;
++            boolean c2 = cur.getContextClassLoader() == after;  // stable
++            mark("thread_ccl", c1 && c2,
++                    "before=" + (before == null) + " stable=" + c2);
++        } catch (Throwable t) {
++            mark("thread_ccl", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-205: ExecutorCompletionService completion order ────────
++        try {
++            java.util.concurrent.ExecutorCompletionService<String> ecs =
++                    new java.util.concurrent.ExecutorCompletionService<>(
++                            Executors.newSingleThreadExecutor());
++            ecs.submit(new Callable<String>() {
++                public String call() { return "A"; }
++            });
++            ecs.submit(new Callable<String>() {
++                public String call() { return "B"; }
++            });
++            java.util.concurrent.Future<String> f1 = ecs.take();
++            java.util.concurrent.Future<String> f2 = ecs.take();
++            java.util.concurrent.Future<String> f3 = ecs.poll();
++            boolean e1 = "A".equals(f1.get()) && "B".equals(f2.get());
++            boolean e2 = f3 == null;  // poll on the EMPTY queue answers null
++            mark("ecs_shape", e1 && e2, "order=" + e1 + " emptyNull=" + e2);
++        } catch (Throwable t) {
++            mark("ecs_shape", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-206: MessageQueue IdleHandler registration + episode ───
++        try {
++            MessageQueue q = Looper.myQueue();
++            boolean q1 = q != null;
++            q.addIdleHandler(new IdleH1());
++            q.addIdleHandler(new IdleH2());
++            mark("idle_register", q1, "queue=" + q1);
++        } catch (Throwable t) {
++            mark("idle_register", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-207: TimeUnit exact conversion audit (all 7 units) ─────
++        try {
++            boolean t01 = TimeUnit.NANOSECONDS.toMillis(1500000L) == 1L;
++            boolean t02 = TimeUnit.MICROSECONDS.toMillis(2500L) == 2L;
++            boolean t03 = TimeUnit.MILLISECONDS.toNanos(3L) == 3000000L;
++            boolean t04 = TimeUnit.SECONDS.toMillis(2L) == 2000L;
++            boolean t05 = TimeUnit.MINUTES.toSeconds(2L) == 120L;
++            boolean t06 = TimeUnit.HOURS.toMinutes(1L) == 60L;
++            boolean t07 = TimeUnit.DAYS.toHours(2L) == 48L;
++            boolean t08 = TimeUnit.SECONDS.convert(120L,
++                    TimeUnit.MILLISECONDS) == 0L;
++            boolean t09 = TimeUnit.MILLISECONDS.convert(2L,
++                    TimeUnit.SECONDS) == 2000L;
++            boolean t10 = TimeUnit.valueOf("SECONDS")
++                    == TimeUnit.SECONDS;
++            boolean t11 = TimeUnit.SECONDS.ordinal() == 3;
++            mark("timeunit_audit", t01 && t02 && t03 && t04 && t05 && t06
++                    && t07 && t08 && t09 && t10 && t11,
++                    t01 + "" + t02 + t03 + t04 + t05 + t06 + t07 + t08 + t09
++                            + t10 + t11);
++        } catch (Throwable t) {
++            mark("timeunit_audit", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-218: ConcurrentMap remove/replace interface surface ────
++        try {
++            ConcurrentMap<String, String> cm = new ConcurrentHashMap<>();
++            cm.put("k", "v");
++            boolean r1 = cm.remove("k", "v");          // conditional remove
++            boolean r2 = cm.remove("nope") == null;
++            String rr = cm.replace("nope", "x");       // absent → null
++            cm.put("k2", "v2");
++            boolean r3 = "v2".equals(cm.replace("k2", "w"));
++            boolean r4 = "w".equals(cm.get("k2"));
++            mark("chm_remove_replace", r1 && r2 && r3 && r4,
++                    r1 + "" + r2 + (r3) + (r4) + " rr=" + (rr == null));
++        } catch (Throwable t) {
++            mark("chm_remove_replace", false, t.getClass().getSimpleName());
++        }
++
++        // ════════ [S195-C8] WAVE 12 markers (F-C8-221..240) ════════
++
++        // ── F-C8-221: ReceiveChannel.iterator + ChannelIterator drain ──
++        try {
++            ProducerScope<Integer> ps = ProduceKt.produce(null);
++            ReceiveChannel<Integer> ch = ps.getChannel();
++            ps.send(1);
++            ps.send(2);
++            ps.send(3);
++            ChannelIterator<Integer> it = ch.iterator();
++            boolean a1 = it.hasNext();
++            int v1 = it.next();
++            int v2 = it.next();
++            int v3 = it.next();
++            boolean a2 = !it.hasNext();
++            Object extra = it.next();  // empty drain → the LOUD null law
++            boolean a3 = v1 == 1 && v2 == 2 && v3 == 3;
++            boolean a4 = extra == null;
++            mark("kx_channel_iter", a1 && a2 && a3 && a4,
++                    a1 + "" + a2 + a3 + a4);
++        } catch (Throwable t) {
++            mark("kx_channel_iter", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-222: send/cancelConsumed/cancel rejection law ──────────
++        try {
++            ProducerScope<Integer> ps2 = ProduceKt.produce(null);
++            ReceiveChannel<Integer> ch2 = ps2.getChannel();
++            ps2.send(9);
++            ChannelsKt.cancelConsumed(ch2);
++            ps2.send(10);  // rejected LOUD — nothing enqueued
++            ChannelIterator<Integer> it2 = ch2.iterator();
++            boolean b1 = !it2.hasNext();
++            ch2.cancel();
++            boolean b2 = !it2.hasNext();
++            mark("kx_channel_cancel", b1 && b2, b1 + "" + b2);
++        } catch (Throwable t) {
++            mark("kx_channel_cancel", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-223: ChannelResult fresh-box identity shape ────────────
++        try {
++            ChannelResult<Integer> cr = new ChannelResult<Integer>();
++            boolean c1 = !cr.isSuccess() && !cr.isClosed() && !cr.isFailed();
++            mark("kx_channel_result", c1, c1 + "");
++        } catch (Throwable t) {
++            mark("kx_channel_result", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-226: flow{} builder + collect drain (cold-flow law) ────
++        try {
++            final java.util.List<Integer> seen = new ArrayList<Integer>();
++            Flow<Integer> f = FlowKt.flow(new Function2() {
++                public Object invoke(Object c, Object cc) {
++                    ((FlowCollector<Integer>) c).emit(1);
++                    ((FlowCollector<Integer>) c).emit(2);
++                    ((FlowCollector<Integer>) c).emit(3);
++                    return Unit.INSTANCE;
++                }
++            });
++            f.collect(new FlowCollector<Integer>() {
++                public Object emit(Integer v) {
++                    seen.add(v);
++                    return Unit.INSTANCE;
++                }
++            });
++            boolean d1 = seen.size() == 3 && seen.get(0).intValue() == 1
++                    && seen.get(1).intValue() == 2
++                    && seen.get(2).intValue() == 3;
++            mark("kx_flow_collect", d1, "n=" + seen.size());
++        } catch (Throwable t) {
++            mark("kx_flow_collect", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-227: noImpl/checkOwnership LOUD boundaries ─────────────
++        try {
++            FlowKt.noImpl();                       // loud boundary law
++            FlowExceptions_commonKt.checkOwnership(null, null);
++            final int[] got = {0};
++            Flow<Integer> f2 = FlowKt.flow(new Function2() {
++                public Object invoke(Object c, Object cc) {
++                    ((FlowCollector<Integer>) c).emit(7);
++                    return Unit.INSTANCE;
++                }
++            });
++            f2.collect(new FlowCollector<Integer>() {
++                public Object emit(Integer v) {
++                    got[0] = v;
++                    return Unit.INSTANCE;
++                }
++            });
++            boolean e1 = got[0] == 7;  // state coherent after boundaries
++            mark("kx_flow_boundary", e1, "got=" + got[0]);
++        } catch (Throwable t) {
++            mark("kx_flow_boundary", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-230: launch mints a REAL Job + enqueues the block ──────
++        try {
++            CoroutineScope sc = new CoroutineScope();
++            launchedJob = null;
++            launchBlockRan = 0;
++            final JobSupport selfRef = null;  // job handle set below
++            Job j = BuildersKt.launch(sc, new Function2() {
++                public Object invoke(Object s, Object c) {
++                    launchBlockRan++;
++                    android.util.Log.i("C8PROBE", "kx_job_ran "
++                            + (launchBlockRan == 1 ? "PASS" : "FAIL")
++                            + " ran=" + launchBlockRan);
++                    return null;
++                }
++            });
++            launchedJob = (JobSupport) j;
++            boolean f1 = launchedJob != null && launchedJob.isActive()
++                    && !launchedJob.isCompleted();
++            mark("kx_job_state", f1, f1 + "");
++        } catch (Throwable t) {
++            mark("kx_job_state", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-229: cancellation/exception identity laws ──────────────
++        try {
++            String m1 = JobSupport.access$cancellationExceptionMessage(null);
++            boolean g1 = "Job was cancelled".equals(m1);
++            Job jb = new JobSupport();
++            JobCancellationException jce =
++                    new JobCancellationException("my job", null, jb);
++            boolean g2 = "my job".equals(jce.getMessage());
++            Throwable cause = new Throwable("why");
++            CompletedExceptionally ce = new CompletedExceptionally(cause);
++            boolean g3 = ce.getCause() == cause;
++            mark("kx_job_exc", g1 && g2 && g3, g1 + "" + g2 + g3);
++        } catch (Throwable t) {
++            mark("kx_job_exc", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-230: scope/context identity + Job.plus composition ─────
++        try {
++            Job jb2 = new JobSupport();
++            Job jp = Job.DefaultImpls.plus(jb2, null);
++            boolean h1 = jp == jb2;  // left-identity composition law
++            CoroutineScope sc2 = new CoroutineScope();
++            kotlin.coroutines.CoroutineContext cx1 = sc2.getCoroutineContext();
++            kotlin.coroutines.CoroutineContext cx2 = sc2.getCoroutineContext();
++            boolean h2 = cx1 != null && cx1 == cx2;  // identity-stable
++            mark("kx_job_plus", h1 && h2, h1 + "" + h2);
++        } catch (Throwable t) {
++            mark("kx_job_plus", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-232: CancellableContinuationImpl identity surface ──────
++        try {
++            CancellableContinuationImpl cc =
++                    new CancellableContinuationImpl(null, 0);
++            cc.initCancellability();
++            Object r1 = cc.getResult();
++            Object r2 = cc.getResult();
++            boolean i1 = r1 != null && r1 == r2;  // identity-stable token
++            mark("kx_cc", i1, "stable=" + i1);
++        } catch (Throwable t) {
++            mark("kx_cc", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-233: EventLoop use-count + processNextEvent laws ───────
++        try {
++            EventLoop el = new EventLoop();
++            el.incrementUseCount();
++            el.incrementUseCount();
++            el.decrementUseCount();
++            long ev = el.processNextEvent();
++            boolean j1 = ev == 0L;  // kotlinx contract: 0 = nothing now
++            boolean j2 = el.isUnconfinedQueueEmpty();
++            mark("kx_eventloop", j1 && j2, "ev=" + ev + " uq=" + j2);
++        } catch (Throwable t) {
++            mark("kx_eventloop", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-234: fatal dispatch + handler — the NO-SWALLOW laws ────
++        try {
++            DispatchedTask dt = new DispatchedTask();
++            dt.handleFatalException(new Throwable("fatal-probe"), null);
++            CoroutineExceptionHandlerKt.handleCoroutineException(
++                    null, new Throwable("handler-probe"));
++            mark("kx_fatal", true, "loud-boundary");
++        } catch (Throwable t) {
++            mark("kx_fatal", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-235: stack-recovery identity passthrough ───────────────
++        try {
++            Throwable te = new Throwable("stk");
++            Throwable tr =
++                    StackTraceRecoveryKt.access$recoverFromStackFrame(te, null);
++            boolean k1 = tr == te;
++            mark("kx_stkrec", k1, "identity=" + k1);
++        } catch (Throwable t) {
++            mark("kx_stkrec", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-236: thread-context symmetric accounting ───────────────
++        try {
++            Object tok = ThreadContextKt.updateThreadContext(null, null);
++            ThreadContextKt.restoreThreadContext(null, tok);
++            UndispatchedCoroutine uc =
++                    new UndispatchedCoroutine(null);
++            uc.clearThreadContext();
++            boolean l1 = tok != null;
++            mark("kx_threadctx", l1, "token=" + l1);
++        } catch (Throwable t) {
++            mark("kx_threadctx", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-237: internal-structure observables ────────────────────
++        try {
++            ThreadSafeHeap hp = new ThreadSafeHeap();
++            boolean m1 = hp.getSize() == 0;
++            LockFreeLinkedListNode ln = new LockFreeLinkedListNode();
++            boolean m2 = ln.getNext() == null && ln.getPrevNode() == null;
++            Object cl1 = ConcurrentLinkedListKt.access$getCLOSED$p();
++            Object cl2 = ConcurrentLinkedListKt.access$getCLOSED$p();
++            boolean m3 = cl1 != null && cl1 == cl2;
++            OpDescriptor od = new OpDescriptor();
++            boolean m4 = !od.perform(null);
++            mark("kx_internals", m1 && m2 && m3 && m4,
++                    m1 + "" + m2 + m3 + m4);
++        } catch (Throwable t) {
++            mark("kx_internals", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-238: symbol identity + systemProp defaults ─────────────
++        try {
++            Symbol s1 = new Symbol("FOO");
++            Symbol s2 = new Symbol("FOO");
++            Symbol s3 = new Symbol("BAR");
++            boolean n1 = s1 != s2 && s1 != s3;  // JVM distinct-instance law
++            boolean n2 = "Symbol(FOO)".equals(s1.toString())
++                    && "Symbol(FOO)".equals(s2.toString());
++            boolean n3 = SelectKt.getALREADY_SELECTED()
++                    == SelectKt.getALREADY_SELECTED();
++            String sv = SystemPropsKt.systemProp(
++                    "kotlinx.coroutines.debug", "off");
++            long lv = SystemPropsKt.systemProp(
++                    "kotlinx.coroutines.scheduler.core.pool.size", 1L);
++            int iv = SystemPropsKt.systemProp("x", 42);
++            boolean n4 = "off".equals(sv) && lv == 1L && iv == 42;
++            boolean n5 = DebugProbesImpl.isInstalled$kotlinx_coroutines_core()
++                    == false;
++            mark("kx_symbols", n1 && n2 && n3 && n4 && n5,
++                    n1 + "" + n2 + n3 + n4 + n5);
++        } catch (Throwable t) {
++            mark("kx_symbols", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-239: select one-shot identity + ALREADY_SELECTED ───────
++        try {
++            SelectInstance sel = new SelectInstance();
++            boolean o1 = sel.trySelect(null, null) == true;
++            boolean o2 = sel.trySelect(null, null) == false;
++            boolean o3 = sel.getCompletion() == null;
++            mark("kx_select", o1 && o2 && o3, o1 + "" + o2 + o3);
++        } catch (Throwable t) {
++            mark("kx_select", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-240: Default dispatcher dispatch — ENQUEUE, not inline ─
++        try {
++            dispatchRan = false;
++            Dispatchers.INSTANCE.getDefault().dispatch(null, new Runnable() {
++                public void run() {
++                    dispatchRan = true;
++                    android.util.Log.i("C8PROBE", "kx_dispatch_run "
++                            + (dispatchRan ? "PASS" : "FAIL") + " ran=yes");
++                }
++            });
++            mark("kx_dispatch_onequeue", !dispatchRan,
++                    "inline=" + dispatchRan);
++        } catch (Throwable t) {
++            mark("kx_dispatch_onequeue", false,
++                    t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-240: SharedFlow head + combineInternal boundary ────────
++        try {
++            SharedFlowImpl sf = new SharedFlowImpl();
++            boolean p1 = sf.getHead() == 0;
++            CombineKt.combineInternal(null, null, null);  // loud boundary
++            mark("kx_sharedflow", p1, "head0=" + p1);
++        } catch (Throwable t) {
++            mark("kx_sharedflow", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-231: top-level delay law (deterministic beats) ─────────
++        try {
++            DelayKt.delay(5);
++            DelayKt.delay(7);
++            mark("kx_delay_top", true, "queued");
++        } catch (Throwable t) {
++            mark("kx_delay_top", false, t.getClass().getSimpleName());
++        }
++
++
++        // ════════ [S196-C8] WAVE 13 markers (F-C8-241..260) ════════
++
++        // ── F-C8-241: ChannelResult depth + consumes token law ──────────
++        try {
++            ChannelResult<Integer> crf = new ChannelResult<Integer>();
++            boolean a0 = !crf.isSuccess();
++            Throwable ex1 = crf.exceptionOrNull();
++            Object v1 = crf.getOrNull();
++            ChannelsKt.consumes();
++            mark("kx_chanresult2", a0 && ex1 == null && v1 == null,
++                    "a0=" + a0);
++        } catch (Throwable t) {
++            mark("kx_chanresult2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-242: channel receive family — trySend/tryReceive FIFO ──
++        try {
++            ProducerScope<Integer> psA = ProduceKt.produce(null);
++            ReceiveChannel<Integer> chA = psA.getChannel();
++            ChannelResult<Integer> s1 = chA.trySend(11);
++            ChannelResult<Integer> s2 = chA.trySend(12);
++            boolean b1 = s1.isSuccess() && s2.isSuccess();
++            ChannelResult<Integer> r1 = chA.tryReceive();
++            ChannelResult<Integer> r2 = chA.tryReceive();
++            ChannelResult<Integer> r3 = chA.tryReceive();
++            boolean b2 = r1.isSuccess() && r1.getOrNull() != null
++                    && ((Integer) r1.getOrNull()).intValue() == 11;
++            boolean b3 = r2.isSuccess() && r2.getOrNull() != null
++                    && ((Integer) r2.getOrNull()).intValue() == 12;
++            boolean b4 = !r3.isSuccess() && r3.getOrNull() == null;
++            mark("kx_chan_receive", b1 && b2 && b3 && b4,
++                    b1 + "" + b2 + b3 + b4);
++        } catch (Throwable t) {
++            mark("kx_chan_receive", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-243: SelectKt state symbols + SelectInstance one-shot ──
++        try {
++            Symbol n1 = SelectKt.getNOT_SELECTED();
++            Symbol n2 = SelectKt.getNOT_SELECTED();
++            Symbol u1 = SelectKt.access$getUNDECIDED$p();
++            Symbol r1 = SelectKt.access$getRESUMED$p();
++            boolean c1 = n1 == n2 && n1 != u1 && u1 != r1 && n1 != r1;
++            SelectInstance sel = new SelectInstance();
++            boolean c2 = !sel.isSelected();
++            boolean c3 = sel.trySelect(null, null);
++            boolean c4 = !sel.trySelect(null, null);
++            boolean c5 = sel.isSelected();
++            boolean c6 = !sel.performAtomicTrySelect(null, null);
++            sel.disposeOnSelect(null);
++            mark("kx_select2", c1 && c2 && c3 && c4 && c5 && c6,
++                    c1 + "" + c2 + c3 + c4 + c5 + c6);
++        } catch (Throwable t) {
++            mark("kx_select2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-244: start/complete + REAL completion-handler notify ───
++        try {
++            JobSupport jb = new JobSupport();
++            jb.start();
++            boolean d1 =
++                "Active".equals(jb.getState$kotlinx_coroutines_core());
++            completionHandlerRan = 0;
++            Object h = new kotlin.jvm.functions.Function1() {
++                public Object invoke(Object cause) {
++                    completionHandlerRan++;
++                    return Unit.INSTANCE;
++                }
++            };
++            Object dh = jb.invokeOnCompletion(h);
++            jb.complete();
++            boolean d2 = jb.isCompleted() && "Completed".equals(
++                    jb.getState$kotlinx_coroutines_core());
++            boolean d3 = completionHandlerRan == 1;
++            mark("kx_job_complete", d1 && d2 && d3,
++                    d1 + "" + d2 + " ran=" + completionHandlerRan);
++        } catch (Throwable t) {
++            mark("kx_job_complete", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-245: parent-handle store/consume + children sequence ───
++        try {
++            JobSupport jb2 = new JobSupport();
++            Object tok = new Object();
++            jb2.setParentHandle$kotlinx_coroutines_core(tok);
++            Object back = jb2.getParentHandle$kotlinx_coroutines_core();
++            boolean e1 = back == tok;
++            kotlin.sequences.Sequence<Job> kids = jb2.getChildren();
++            boolean e2 = kids != null;
++            mark("kx_job_parent", e1 && e2, e1 + "" + e2);
++        } catch (Throwable t) {
++            mark("kx_job_parent", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-246: cancellation-exception identity law ───────────────
++        try {
++            JobSupport jb3 = new JobSupport();
++            JobCancellationException ce1 = jb3.getCancellationException();
++            JobCancellationException ce2 = jb3.getCancellationException();
++            boolean f1 = ce1 == ce2;
++            boolean f2 =
++                "Job was cancelled".equals(ce1.getMessage());
++            mark("kx_job_identity", f1 && f2, f1 + "" + f2);
++        } catch (Throwable t) {
++            mark("kx_job_identity", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-247: stack-recovery depth (identity passthrough) ───────
++        try {
++            RuntimeException re = new RuntimeException("stk");
++            Throwable s1 = StackTraceRecoveryKt.recoverStackTrace(re);
++            Throwable s2 = StackTraceRecoveryKt.unwrapImpl(re);
++            Object fr = StackTraceRecoveryKt.artificialFrame(new Object());
++            boolean g0 = s1 == re && s2 == re && fr != null;
++            mark("kx_stkrec2", g0, (s1 == re) + "" + (s2 == re));
++        } catch (Throwable t) {
++            mark("kx_stkrec2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-248: LockFreeLinkedList serialized traversal ───────────
++        try {
++            LockFreeLinkedListNode head = new LockFreeLinkedListNode();
++            LockFreeLinkedListNode n1 = new LockFreeLinkedListNode();
++            LockFreeLinkedListNode n2 = new LockFreeLinkedListNode();
++            head.addNext(n1, head);
++            head.addNext(n2, n1);
++            boolean g1 = head.getNextNode() == n1
++                    && n1.getNextNode() == n2 && n2.getNextNode() == null;
++            boolean g2 = !head.isRemoved();
++            boolean g3 = head.tryCondAddNext(
++                    new LockFreeLinkedListNode(), n2, null);
++            Object rn = n1.removeOrNext();
++            boolean g4 = n1.isRemoved() && rn == n2;
++            mark("kx_lfll", g1 && g2 && g3 && g4,
++                    g1 + "" + g2 + g3 + g4);
++        } catch (Throwable t) {
++            mark("kx_lfll", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-249: ThreadSafeHeap peek/swap bookkeeping ──────────────
++        try {
++            ThreadSafeHeap hp = new ThreadSafeHeap();
++            boolean h1 = hp.firstImpl() == null && hp.getSize() == 0;
++            hp.removeAtImpl(0);
++            boolean h2 = hp.getSize() == 0;
++            hp.swap(0, 0);
++            mark("kx_heap", h1 && h2, h1 + "" + h2);
++        } catch (Throwable t) {
++            mark("kx_heap", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-250: threadContextElements count law ───────────────────
++        try {
++            Object cnt = ThreadContextKt.threadContextElements(null);
++            boolean i1 = cnt instanceof Number
++                    && ((Number) cnt).longValue() == 0L;
++            mark("kx_threadctx2", i1, "cnt=" + cnt);
++        } catch (Throwable t) {
++            mark("kx_threadctx2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-251: DebugProbesImpl depth laws ────────────────────────
++        try {
++            boolean j1 = !DebugProbesImpl.access$isFinished();
++            Object owner = DebugProbesImpl.owner();
++            Object cap = DebugProbesImpl.getCapturedCoroutines();

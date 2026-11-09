@@ -1,0 +1,937 @@
+diff --git a/evidence/c7_w7/androguard_check.json b/evidence/c7_w7/androguard_check.json
+new file mode 100644
+index 00000000..b3d918f5
+--- /dev/null
++++ b/evidence/c7_w7/androguard_check.json
+@@ -0,0 +1,79 @@
++{
++ "all_ok": true,
++ "fixtures": {
++  "c7pkgstore_browser": {
++   "activities": {
++    "c7.store.browser.BrowserActivity": {
++     "enabled": true,
++     "exported": true,
++     "match": true
++    },
++    "c7.store.browser.DeadViewActivity": {
++     "enabled": false,
++     "exported": true,
++     "match": true
++    },
++    "c7.store.browser.HiddenViewActivity": {
++     "enabled": true,
++     "exported": false,
++     "match": true
++    },
++    "c7.store.browser.NoDefaultActivity": {
++     "enabled": true,
++     "exported": true,
++     "match": true
++    }
++   },
++   "package": "c7.store.browser",
++   "pkg_ok": true,
++   "providers": {
++    "c7.store.browser.ClipProvider": {
++     "enabled": true,
++     "exported": true,
++     "match": true
++    },
++    "c7.store.browser.DeadProvider": {
++     "enabled": false,
++     "exported": true,
++     "match": true
++    }
++   },
++   "receivers": {
++    "c7.store.browser.BrowserPingReceiver": {
++     "enabled": true,
++     "exported": true,
++     "match": true
++    },
++    "c7.store.browser.NoisyReceiver": {
++     "enabled": true,
++     "exported": false,
++     "match": true
++    }
++   },
++   "services": {}
++  },
++  "c7pkgstore_main": {
++   "activities": {},
++   "package": "c7.store.main",
++   "pkg_ok": true,
++   "providers": {},
++   "receivers": {},
++   "services": {}
++  },
++  "c7pkgstore_share": {
++   "activities": {},
++   "package": "c7.store.share",
++   "pkg_ok": true,
++   "providers": {},
++   "receivers": {},
++   "services": {
++    "c7.store.share.ShareService": {
++     "enabled": true,
++     "exported": true,
++     "match": true
++    }
++   }
++  }
++ },
++ "tool": "androguard-4.1.4"
++}
+diff --git a/evidence/c7_w7/c7store_results_cold1.jsonl b/evidence/c7_w7/c7store_results_cold1.jsonl
+new file mode 100644
+index 00000000..708426e2
+--- /dev/null
++++ b/evidence/c7_w7/c7store_results_cold1.jsonl
+@@ -0,0 +1,24 @@
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
++C7|X20|PASS|foreign onReceive executed: ping:pkg=c7.store.browser;action=c7.store.BrowserPing;deliveries=1
++
++C7|X21|PASS|foreign service lifecycle executed (create+start)
++C7|X22|PASS|foreign provider query rows=2
++C7|X23|PASS|non-exported foreign receiver denied
++C7|X24|PASS|implicit xpkg start dispatched (no throw; drain proves execution)
++C7|X25|PASS|SecurityException: : Permission Denial: starting activity c7.store.browser.HiddenViewActivity from package c7.store.main: not exported from package c7.store.browser
++C7|X26|PASS|ActivityNotFoundException (disabled target)
+diff --git a/evidence/c7_w7/x23_w6_golden.jsonl b/evidence/c7_w7/x23_w6_golden.jsonl
+new file mode 100644
+index 00000000..4620afd3
+--- /dev/null
++++ b/evidence/c7_w7/x23_w6_golden.jsonl
+@@ -0,0 +1,21 @@
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
++C7|X20|PASS|foreign onReceive executed: ping:pkg=c7.store.browser;action=c7.store.BrowserPing;deliveries=1
++
++C7|X21|PASS|foreign service lifecycle executed (create+start)
++C7|X22|PASS|foreign provider query rows=2
++C7|X23|PASS|non-exported foreign receiver denied
+diff --git a/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/BrowserActivity.java b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/BrowserActivity.java
+index 0aafeaa9..d13d4671 100644
+--- a/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/BrowserActivity.java
++++ b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/BrowserActivity.java
+@@ -1,7 +1,37 @@
+ package c7.store.browser;
+ 
+ import android.app.Activity;
++import android.content.Context;
++import android.os.Bundle;
++import java.io.FileOutputStream;
+ 
+-/** CODER7 WAVE-5 store fixture — the cross-package VIEW target. */
++/** CODER7 WAVE-5 store fixture — the cross-package VIEW target.
++ *
++ *  CODER7 WAVE-7: the activity now proves the cross-package LAUNCH law —
++ *  when the running app starts THIS activity (an exported component of a
++ *  DIFFERENT installed package), the engine must run THIS REAL onCreate
++ *  (LoadedApk-lite: the foreign dex was ingested into the unified class
++ *  index). onCreate appends the foreign identity to the shared sandbox
++ *  handshake file, written by the FOREIGN package's own bytecode — the
++ *  same execution-proof channel the WAVE-6 receiver/service/provider
++ *  components use. The marker also answers getPackageName() from THIS
++ *  context: the WAVE-6 ownership law must say c7.store.browser here. */
+ public class BrowserActivity extends Activity {
++    private static void handshake(android.content.Context ctx, String line) {
++        try {
++            FileOutputStream fos = ctx.openFileOutput(
++                "xpkg_handshake.txt", Context.MODE_APPEND);
++            fos.write((line + "\n").getBytes("UTF-8"));
++            fos.close();
++        } catch (Throwable t) {
++            // No silent fabrication: a failed handshake leaves the marker
++            // absent (the W7 runner-level execution proof fails honestly).
++        }
++    }
++
++    @Override protected void onCreate(Bundle b) {
++        super.onCreate(b);
++        handshake(this, "act-create:pkg=" + getPackageName()
++                          + ";cls=" + getClass().getName());
++    }
+ }
+diff --git a/fixtures/c7_pkg_store_probe/c7pkgstore_main/src/c7/store/main/Main.java b/fixtures/c7_pkg_store_probe/c7pkgstore_main/src/c7/store/main/Main.java
+index 1afe3351..23fce4cc 100644
+--- a/fixtures/c7_pkg_store_probe/c7pkgstore_main/src/c7/store/main/Main.java
++++ b/fixtures/c7_pkg_store_probe/c7pkgstore_main/src/c7/store/main/Main.java
+@@ -306,6 +306,60 @@ public class Main extends Activity {
+             else bad("X23", "marker PRESENT; hs=" + hs);
+         } catch (Throwable t) { bad("X23", "EX " + t.getClass().getName()); }
+ 
++        // ── CODER7 WAVE-7: the cross-package ACTIVITY LAUNCH ops ────────
++        // AOSP Instrumentation.checkStartActivityResult: the launch error
++        // contract is SYNCHRONOUS — the caller's frame sees the exception
++        // before startActivity returns. The successful launch is ASYNC
++        // (frame-boundary drain); its real-execution proof lives in the
++        // engine rows (ACT-XPKG-RESOLVE / ACT-XPKG-EXEC) and in the
++        // handshake marker the foreign onCreate writes.
++
++        // ── X24: implicit cross-package START of the browser activity ───
++        //    The intent has NO component; own-manifest resolution misses;
++        //    the store index resolves VIEW http://example.org →
++        //    c7.store.browser.BrowserActivity (exported=true ⇒ startable).
++        //    AOSP: no exception in-frame; the foreign onCreate runs at the
++        //    drain (runner-level proof: ACT-XPKG-RESOLVE + ACT-XPKG-EXEC
++        //    rows + the act-create handshake marker).
++        try {
++            Intent v = new Intent(VIEW, Uri.parse("http://example.org/w7"));
++            startActivity(v);
++            ok("X24", "implicit xpkg start dispatched (no throw; drain "
++                    + "proves execution)");
++        } catch (Throwable t) { bad("X24", "EX " + t.getClass().getName()); }
++
++        // ── X25: explicit start of a NON-EXPORTED foreign activity ──────
++        //    HiddenViewActivity is exported=false in ANOTHER package —
++        //    AOSP checkComponentPermission denies with SecurityException
++        //    (Permission Denial), thrown SYNCHRONOUSLY.
++        try {
++            Intent h = new Intent();
++            h.setClassName("c7.store.browser",
++                           "c7.store.browser.HiddenViewActivity");
++            startActivity(h);
++            bad("X25", "non-exported foreign start NOT denied");
++        } catch (SecurityException se) {
++            ok("X25", "SecurityException: " + se.getMessage());
++        } catch (Throwable t) {
++            bad("X25", "wrong EX " + t.getClass().getName());
++        }
++
++        // ── X26: explicit start of a DISABLED foreign activity ──────────
++        //    DeadViewActivity is android:enabled=false — AOSP
++        //    Instrumentation.checkStartActivityResult throws
++        //    ActivityNotFoundException, thrown SYNCHRONOUSLY.
++        try {
++            Intent d = new Intent();
++            d.setClassName("c7.store.browser",
++                           "c7.store.browser.DeadViewActivity");
++            startActivity(d);
++            bad("X26", "disabled foreign start NOT refused");
++        } catch (android.content.ActivityNotFoundException anfe) {
++            ok("X26", "ActivityNotFoundException (disabled target)");
++        } catch (Throwable t) {
++            bad("X26", "wrong EX " + t.getClass().getName());
++        }
++
+         // ── flush the verdict rows ────────────────────────────────────────
+         try {
+             FileOutputStream fos =
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 5cc1f895..407d0c48 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -1310,6 +1310,66 @@ const std::string& DalvikExecutionEngine::foreign_owner_package(
+     return c7_it != c7_foreign_class_owner_.end() ? c7_it->second : c7_none;
+ }
+ 
++// ── CODER7 WAVE-7: cross-package ACTIVITY launch laws ──────────────────────
++// AOSP ActivityManagerService.checkComponentPermission + ActivityStarter:
++// the launch of an activity component is gated on (a) the component being
++// ENABLED (PackageItemInfo.isEnabled — a disabled component is not
++// startable: android.content.ActivityNotFoundException) and (b) the
++// component being EXPORTED to the caller's uid (a non-exported activity
++// owned by a DIFFERENT package answers "Permission Denial": java.lang.
++// SecurityException; same-uid starts are granted). The WAVE-5 store index
++// is the single component table (register_own_package ingested the running
++// package, so own and foreign targets share one lookup — no per-app
++// special-casing). No store ⇒ "" (allowed; byte-identical pre-W7 runs).
++std::string DalvikExecutionEngine::c7_activity_launch_gate(
++    const std::string& dotted_cls) const {
++    if (!c7_pkg_index_ || c7_pkg_index_->empty() || dotted_cls.empty())
++        return std::string();
++    for (const auto& c7_name : c7_pkg_index_->package_names()) {
++        const C7IdxPackage* c7_pkg = c7_pkg_index_->find_package(c7_name);
++        if (!c7_pkg) continue;
++        for (const auto& c7_act : c7_pkg->activities) {
++            if (c7_act.cls != dotted_cls) continue;
++            if (!c7_act.enabled) {
++                // AOSP Instrumentation.checkStartActivityResult:
++                // "Unable to find explicit activity class" family — the
++                // disabled component is UNRESOLVABLE for starts.
++                return "ACTIVITY_NOT_FOUND: component disabled "
++                       "(android:enabled=false): " + dotted_cls;
++            }
++            if (!c7_act.exported && !c7_pkg->package_name.empty() &&
++                c7_pkg->package_name != package_name_) {
++                // AOSP checkComponentPermission wording (ActivityStarter):
++                // "Permission Denial: starting Intent ... not exported
++                // from uid ..." — the cross-package non-exported start.
++                return "SECURITY_EXCEPTION: Permission Denial: starting "
++                       "activity " + dotted_cls + " from package " +
++                       package_name_ + ": not exported from package " +
++                       c7_pkg->package_name;
++            }
++            return std::string();  // enabled + (exported OR same package)
++        }
++    }
++    // Not in any installed manifest: outside this gate's contract (the
++    // pre-W7 drain path keeps handling unknown classes unchanged).
++    return std::string();
++}
++
++std::string DalvikExecutionEngine::c7_resolve_activity_xpkg(
++    const std::string& action, const std::vector<std::string>& cats,
++    const std::string& mime, const std::string& scheme,
++    const std::string& host, const std::string& path,
++    bool default_only) const {
++    if (!c7_pkg_index_ || c7_pkg_index_->empty() || action.empty())
++        return std::string();
++    std::vector<C7IdxMatch> c7_matches = c7_pkg_index_->query_activities(
++        action, cats, mime, scheme, host, path, default_only);
++    if (c7_matches.empty()) return std::string();
++    // The index's ordering IS the best-match law (W5: priority desc, stable
++    // ingest order) — AOSP resolveIntent answers the top candidate.
++    return c7_matches[0].cls;
++}
++
+ // ============================================================================
+ // EXP-038 (BLOCKER-033): Per-DEX method resolution using raw DEX bytes.
+ // ============================================================================
+@@ -40888,6 +40948,58 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                             c7_pi->action);
+                         if (!c7_res.empty())
+                             c7_pi->component_class = c7_res;
++                        // CODER7 WAVE-7: cross-package implicit RESOLUTION
++                        // fallback (AOSP resolveIntent over ALL installed
++                        // packages) — own-manifest miss ⇒ store index.
++                        if (c7_pi->component_class.empty()) {
++                            std::string c7_x =
++                                c7_resolve_activity_xpkg(
++                                    c7_pi->action, c7_pi->categories,
++                                    c7_pi->type, c7_pi->data_scheme,
++                                    c7_pi->data_host, c7_pi->data_path,
++                                    /*default_only=*/true);
++                            if (!c7_x.empty()) {
++                                c7_pi->component_class = c7_x;
++                                miniandroid::diagnostics::FileIoTrace::
++                                    instance()
++                                        .record(
++                                            "ACT-XPKG-RESOLVE", c7_x, true,
++                                            "startActivities implicit "
++                                            "resolution via store index "
++                                            "(action=" + c7_pi->action + ")",
++                                            current_class_ + "." +
++                                                current_method_);
++                            }
++                        }
++                    }
++                    // CODER7 WAVE-7: the SYNCHRONOUS launch gate (AOSP
++                    // Instrumentation.checkStartActivityResult — a disabled
++                    // or cross-package non-exported target throws in the
++                    // caller's frame, before any queueing).
++                    if (!c7_pi->component_class.empty()) {
++                        std::string c7_err = c7_activity_launch_gate(
++                            c7_pi->component_class);
++                        if (!c7_err.empty()) {
++                            if (c7_err.rfind("SECURITY_EXCEPTION:", 0) == 0)
++                                throw_deferred(
++                                    "Ljava/lang/SecurityException;",
++                                    c7_err.substr(18), "ACT-START");
++                            else
++                                throw_deferred(
++                                    "Landroid/content/"
++                                    "ActivityNotFoundException;",
++                                    c7_err.substr(
++                                        c7_err.find(':') + 1),
++                                    "ACT-START");
++                            miniandroid::diagnostics::FileIoTrace::instance()
++                                .record("ACT-START", c7_pi->component_class,
++                                        false, c7_err,
++                                        current_class_ + "." +
++                                            current_method_);
++                            result = DalvikValue::make_void();
++                            status = ApiCallTrace::Status::IMPLEMENTED;
++                            return true;
++                        }
+                     }
+                     c7_ish->enqueue_pending(c7_pi);
+                 }
+@@ -40910,6 +41022,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 std::string c7_res =
+                     c7_ish->resolve_action_target(c7_first->action);
+                 if (!c7_res.empty()) c7_first->component_class = c7_res;
++                // CODER7 WAVE-7: cross-package implicit RESOLUTION fallback
++                // (AOSP resolveIntent over ALL installed packages) — the
++                // own-manifest miss is NOT the end of resolution.
++                if (c7_first->component_class.empty()) {
++                    std::string c7_x = c7_resolve_activity_xpkg(
++                        c7_first->action, c7_first->categories, c7_first->type,
++                        c7_first->data_scheme, c7_first->data_host,
++                        c7_first->data_path, /*default_only=*/true);
++                    if (!c7_x.empty()) {
++                        c7_first->component_class = c7_x;
++                        miniandroid::diagnostics::FileIoTrace::instance()
++                            .record("ACT-XPKG-RESOLVE", c7_x, true,
++                                    "startActivity implicit resolution via "
++                                    "store index (action=" +
++                                        c7_first->action + ")",
++                                    current_class_ + "." + current_method_);
++                    }
++                }
++            }
++            // CODER7 WAVE-7: the SYNCHRONOUS launch gate (AOSP
++            // Instrumentation.checkStartActivityResult) — disabled and
++            // cross-package non-exported targets throw HERE, in the
++            // caller's frame, before any queueing.
++            if (!c7_first->component_class.empty()) {
++                std::string c7_err =
++                    c7_activity_launch_gate(c7_first->component_class);
++                if (!c7_err.empty()) {
++                    if (c7_err.rfind("SECURITY_EXCEPTION:", 0) == 0)
++                        throw_deferred("Ljava/lang/SecurityException;",
++                                       c7_err.substr(18), "ACT-START");
++                    else
++                        throw_deferred(
++                            "Landroid/content/ActivityNotFoundException;",
++                            c7_err.substr(c7_err.find(':') + 1), "ACT-START");
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "ACT-START", c7_first->component_class, false, c7_err,
++                        current_class_ + "." + current_method_);
++                    result = DalvikValue::make_void();
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
+             }
+             c7_ish->set_pending(c7_first);
+         }
+diff --git a/miniandroid/src/dex/dalvik_engine.h b/miniandroid/src/dex/dalvik_engine.h
+index 71053c38..87980b9b 100755
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -2024,6 +2024,42 @@ public:
+     const std::string& foreign_owner_package(const std::string& class_desc)
+         const;
+ 
++    // ── CODER7 WAVE-7: CROSS-PACKAGE ACTIVITY LAUNCH (AOSP ActivityStarter
++    // + ActivityManagerService.checkComponentPermission) ───────────────────
++    // AOSP law: startActivity resolves implicit intents across ALL installed
++    // packages (PackageManagerService → IntentResolver), then gates the
++    // launch SYNCHRONOUSLY in the caller's frame (Instrumentation.
++    // checkStartActivityResult): a DISABLED target throws
++    // android.content.ActivityNotFoundException ("component disabled"),
++    // a NON-EXPORTED target owned by ANOTHER uid throws
++    // java.lang.SecurityException ("Permission Denial ... not exported").
++    // Same-uid (own-package) starts of non-exported activities are ALLOWED
++    // (checkComponentPermission: caller uid == owner uid ⇒ grant).
++    //
++    // Both answers consult the WAVE-5 store index (register_own_package
++    // ingests the running package too, so one lookup serves own and foreign
++    // targets alike). No store configured (c7_pkg_index_ null) ⇒ the gate
++    // answers "" (allowed) and the resolver answers "" (no cross-package
++    // candidate) — byte-identical pre-W7 behavior for non-store runs.
++    //
++    // c7_activity_launch_gate: "" = allowed; non-empty = the synchronous
++    // error contract, prefixed "ACTIVITY_NOT_FOUND:" or
++    // "SECURITY_EXCEPTION:" (the caller maps the prefix to the exception
++    // class and throws the remainder as the message).
++    std::string c7_activity_launch_gate(const std::string& dotted_cls) const;
++
++    // Implicit cross-package ACTIVITY resolution (AOSP
++    // ContextImpl.startActivity → PackageManager.resolveIntent): the
++    // WAVE-3 match law (action + categories + matchData + CATEGORY_DEFAULT
++    // for startActivity) evaluated over EVERY installed package. The first
++    // candidate follows the index's priority-then-ingest ordering (the W5
++    // best-match law). "" = no candidate.
++    std::string c7_resolve_activity_xpkg(
++        const std::string& action, const std::vector<std::string>& cats,
++        const std::string& mime, const std::string& scheme,
++        const std::string& host, const std::string& path,
++        bool default_only) const;
++
+     /**
+      * Execute APK through real DEX bytecode interpretation
+      */
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index 0c435545..6458e724 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -15,6 +15,9 @@
+ // S133 WEB-001: the S100 NET-001 HTTPS client is the runtime's existing
+ // fetch substrate — REUSED for network document loads (no new network code).
+ #include "../api/http_client.h"
++// CODER7 WAVE-7: the ACT-XPKG-RESOLVE / ACT-START launch-gate evidence rows
++// (the same FileIoTrace channel the engine dispatch sites record through).
++#include "../diagnostics/file_io_trace.h"
+ 
+ #include <atomic>
+ #include <algorithm>
+@@ -6056,7 +6059,12 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
+                 if (intent_id != 0) {
+                     auto pi = intent_shadow->get_or_create_intent(intent_id);
+                     pi->intent_object_id = intent_id;   // G08: keep the object
+-                    intent_shadow->set_pending(pi);
++                    // CODER7 WAVE-7 (AOSP ordering law): set_pending moves
++                    // BELOW the resolution+gate — a THROWN launch
++                    // (SecurityException / ActivityNotFoundException) must
++                    // NOT queue (Instrumentation.checkStartActivityResult
++                    // throws before ActivityStarter records anything); the
++                    // previously-queued valid pending stays untouched.
+                     {
+                         // S123 DIAG (bounded): launch-time intent state.
+                         static thread_local uint64_t sa_n = 0;
+@@ -6096,7 +6104,70 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
+                                       << pi->action << "\" -> " << resolved
+                                       << std::endl;
+                         }
++                        // CODER7 WAVE-7: cross-package implicit RESOLUTION
++                        // fallback (AOSP ContextImpl.startActivity →
++                        // PackageManager.resolveIntent resolves across ALL
++                        // installed packages). Own-manifest miss ⇒ the
++                        // store index (W5 component table); the resolved
++                        // class is recorded loudly (ACT-XPKG-RESOLVE).
++                        if (pi->component_class.empty() &&
++                            intent_shadow->c7_xpkg_activity_resolver_) {
++                            std::string c7_x =
++                                intent_shadow->c7_xpkg_activity_resolver_(
++                                    pi->action, pi->categories, pi->type,
++                                    pi->data_scheme, pi->data_host,
++                                    pi->data_path, /*default_only=*/true);
++                            if (!c7_x.empty()) {
++                                pi->component_class = c7_x;
++                                miniandroid::diagnostics::FileIoTrace::
++                                    instance()
++                                        .record(
++                                            "ACT-XPKG-RESOLVE", c7_x, true,
++                                            "startActivity implicit "
++                                            "resolution via store index "
++                                            "(action=" + pi->action + ")",
++                                            ctx.caller);
++                                std::cerr << "[C7-ACT-XPKG] implicit "
++                                             "resolution action=\""
++                                          << pi->action << "\" -> " << c7_x
++                                          << std::endl;
++                            }
++                        }
+                     }
++                    // CODER7 WAVE-7: the SYNCHRONOUS launch gate (AOSP
++                    // Instrumentation.checkStartActivityResult via
++                    // ActivityManagerService.checkComponentPermission): a
++                    // DISABLED target throws ActivityNotFoundException and a
++                    // cross-package NON-EXPORTED target throws
++                    // SecurityException — both HERE, in the caller's frame,
++                    // before any queueing (the pre-W7 behavior queued first
++                    // and silently no-op'd at the drain).
++                    if (!pi->component_class.empty() &&
++                        intent_shadow->c7_activity_gate_) {
++                        std::string c7_err =
++                            intent_shadow->c7_activity_gate_(
++                                pi->component_class);
++                        if (!c7_err.empty()) {
++                            miniandroid::diagnostics::FileIoTrace::instance()
++                                .record("ACT-START", pi->component_class,
++                                        false, c7_err, ctx.caller);
++                            std::cerr << "[C7-ACT-GATE] DENIED "
++                                      << pi->component_class << ": "
++                                      << c7_err << std::endl;
++                            if (c7_err.rfind("SECURITY_EXCEPTION:", 0) == 0)
++                                return CallResult::handled_exception(
++                                    "Ljava/lang/SecurityException;",
++                                    c7_err.substr(18));
++                            return CallResult::handled_exception(
++                                "Landroid/content/"
++                                "ActivityNotFoundException;",
++                                c7_err.substr(c7_err.find(':') + 1));
++                        }
++                    }
++                    // CODER7 WAVE-7: the gate PASSED — only NOW does the
++                    // launch record queue (AOSP ActivityStarter order:
++                    // checkComponentPermission BEFORE the task insert).
++                    intent_shadow->set_pending(pi);
+                     // G08: startActivityForResult(Intent, int) — capture the
+                     // request code for onActivityResult delivery on pop.
+                     if (m == "startActivityForResult" && ctx.args.size() >= 2 &&
+diff --git a/miniandroid/src/framework/android_shadows.h b/miniandroid/src/framework/android_shadows.h
+index 55cb6544..7133e778 100755
+--- a/miniandroid/src/framework/android_shadows.h
++++ b/miniandroid/src/framework/android_shadows.h
+@@ -764,6 +764,35 @@ public:
+         return pending_ != nullptr || !pending_queue_.empty();
+     }
+ 
++    // ── CODER7 WAVE-7: cross-package ACTIVITY LAUNCH consults ───────────
++    // The ENGINE owns the WAVE-5 store index (C7PackageIndex); the shadow
++    // layer has no engine access, so startActivity consults it through
++    // these callbacks — ONE component table, zero duplication (S185
++    // VEND/DON'T-REWRITE). Both are set at engine wiring when a package
++    // store is configured; UNSET (null) ⇒ byte-identical pre-W7 shadow
++    // behavior (own-manifest resolution only, no launch gate).
++    //
++    // resolver: AOSP PackageManager.resolveIntent across ALL installed
++    // packages (the W3 match law) — "" = no cross-package candidate.
++    // gate: AOSP ActivityManagerService.checkComponentPermission +
++    // Instrumentation.checkStartActivityResult — "" = allowed; else the
++    // error contract "ACTIVITY_NOT_FOUND:..." or "SECURITY_EXCEPTION:..."
++    // (the shadow maps the prefix to the synchronous exception).
++    std::function<std::string(
++        const std::string& action, const std::vector<std::string>& cats,
++        const std::string& mime, const std::string& scheme,
++        const std::string& host, const std::string& path, bool default_only)>
++        c7_xpkg_activity_resolver_;
++    std::function<std::string(const std::string& dotted_cls)>
++        c7_activity_gate_;
++    void set_c7_xpkg_activity_resolver(
++        decltype(c7_xpkg_activity_resolver_) f) {
++        c7_xpkg_activity_resolver_ = std::move(f);
++    }
++    void set_c7_activity_gate(decltype(c7_activity_gate_) f) {
++        c7_activity_gate_ = std::move(f);
++    }
++
+     // S123 ACTION-RESOLVE law: manifest intent-filter action → activity
+     // map (AOSP PackageManager.queryIntentActivities resolution). The
+     // runtime registers every <activity> <intent-filter> <action> pair at
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index f9e004e3..b824fd5b 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -1677,6 +1677,35 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+                         }
+                     }
+                     dalvik_engine_.set_package_index(std::move(c7_idx));
++                    // CODER7 WAVE-7: the ACTIVITY launch path consults the
++                    // SAME component table — the IntentShadow startActivity
++                    // site (the Activity-receiver launch path) resolves
++                    // cross-package through the store index and applies the
++                    // AOSP synchronous gate through these callbacks (one
++                    // C7PackageIndex, zero duplicated resolution law).
++                    if (shadow_registry_) {
++                        if (auto* c7_ish_w7 = shadow_registry_->find_as<
++                                framework::IntentShadow>()) {
++                            c7_ish_w7->set_c7_xpkg_activity_resolver(
++                                [this](const std::string& c7_a,
++                                       const std::vector<std::string>& c7_c,
++                                       const std::string& c7_mime,
++                                       const std::string& c7_sch,
++                                       const std::string& c7_h,
++                                       const std::string& c7_p,
++                                       bool c7_dflt) {
++                                    return dalvik_engine_
++                                        .c7_resolve_activity_xpkg(
++                                            c7_a, c7_c, c7_mime, c7_sch,
++                                            c7_h, c7_p, c7_dflt);
++                                });
++                            c7_ish_w7->set_c7_activity_gate(
++                                [this](const std::string& c7_cls) {
++                                    return dalvik_engine_
++                                        .c7_activity_launch_gate(c7_cls);
++                                });
++                        }
++                    }
+                 }
+             }
+         }
+@@ -8532,6 +8561,26 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
+         std::cerr << "[C7-ACT] disabled target refused: " << cls << std::endl;
+         return rec;
+     }
++    // ── CODER7 WAVE-7: the store-index launch GATE at the drain ─────────
++    // Defense-in-depth (AOSP re-checks at ActivityStarter after the
++    // Instrumentation gate): the W7 gate answers for classes the W3
++    // own-manifest helpers cannot see — foreign DISABLED and cross-package
++    // NON-EXPORTED targets are refused here with the same error contract
++    // the dispatch sites throw synchronously. No store ⇒ "" (unchanged).
++    {
++        std::string c7_w7_err = dalvik_engine_.c7_activity_launch_gate(
++            pi->component_class);
++        if (!c7_w7_err.empty()) {
++            rec["launched"] = false;
++            rec["error"] = c7_w7_err;
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "ACT-START", cls, false, c7_w7_err + " (drain gate)",
++                "ExecutionEngine.consume_pending_launch");
++            std::cerr << "[C7-ACT] W7 gate refused: " << cls << " — "
++                      << c7_w7_err << std::endl;
++            return rec;
++        }
++    }
+     const int c7_flags = pi->flags;
+     const int c7_lm = dalvik_engine_.c7_activity_launch_mode(cls);
+     const bool c7_single_top =
+@@ -8898,6 +8947,27 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
+             b_theme);
+     }
+     dispatch_cb("onCreate", b_id, cls, intent_arg, "callbacks");
++    // ── CODER7 WAVE-7: foreign ACTIVITY EXECUTION evidence ──────────────
++    // LoadedApk-lite (the W6 store-dex ingestion): a launched activity
++    // whose class belongs to ANOTHER installed package just ran its REAL
++    // foreign bytecode (the F-118 <init> constructor law + onCreate above
++    // both executed through the unified class index). The row is the
++    // engine-side execution proof; the app-side proof is the handshake
++    // marker the foreign onCreate itself writes (same channel the W6
++    // receiver/service/provider components use).
++    {
++        const std::string& c7_fowner =
++            dalvik_engine_.foreign_owner_package(cls);
++        if (!c7_fowner.empty()) {
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "ACT-XPKG-EXEC", c7_fowner + " -> " + cls, true,
++                "foreign activity REAL lifecycle executed (LoadedApk-lite: "
++                "<init>+onCreate ran foreign store dex)",
++                "ExecutionEngine.consume_pending_launch");
++            std::cerr << "[C7-ACT-XPKG] foreign activity executed: "
++                      << c7_fowner << " -> " << cls << std::endl;
++        }
++    }
+     rec["b_view_root"] = as->content_view_id();
+ 
+     // ── B.onStart + B.onResume ───────────────────────────────────────────
+diff --git a/scripts/c7_w6_androguard_check.py b/scripts/c7_w6_androguard_check.py
+index 0de8a8fa..4532d83b 100644
+--- a/scripts/c7_w6_androguard_check.py
++++ b/scripts/c7_w6_androguard_check.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-# c7_w6_androguard_check.py — CODER7 WAVE-6: INDEPENDENT third-party
++# c7_w6_androguard_check.py — CODER7 WAVE-6/7: INDEPENDENT third-party
+ # verification of the store-probe APKs with ANDROGUARD (user directive:
+ # use the androguard tool; the S186 work already uses it as its probe db).
+ #
+@@ -12,6 +12,12 @@
+ # semantics; agreement is cross-parser evidence for the W6 gates
+ # (exported/permission/enabled) that decide foreign execution.
+ #
++# CODER7 WAVE-7: the ACTIVITY table joined the cross-parser contract —
++# the launch gate (exported/enabled per activity) now decides cross-
++# package STARTS, so the same independent parser must verify the
++# activity facts (BrowserActivity exported / HiddenViewActivity
++# not-exported / DeadViewActivity disabled / NoDefaultActivity exported).
++#
+ # Output: JSON verdict to stdout; exit 0 iff every expectation holds.
+ import json
+ import sys
+@@ -41,6 +47,17 @@ EXPECTED = {
+                                               "enabled": False},
+         },
+         "services": {},
++        # CODER7 WAVE-7: the launch-gate facts (cross-parser evidence).
++        "activities": {
++            "c7.store.browser.BrowserActivity": {"exported": True,
++                                                  "enabled": True},
++            "c7.store.browser.NoDefaultActivity": {"exported": True,
++                                                   "enabled": True},
++            "c7.store.browser.HiddenViewActivity": {"exported": False,
++                                                    "enabled": True},
++            "c7.store.browser.DeadViewActivity": {"exported": True,
++                                                  "enabled": False},
++        },
+     },
+     "c7pkgstore_share": {
+         "package": "c7.store.share",
+@@ -50,12 +67,14 @@ EXPECTED = {
+         },
+         "receivers": {},
+         "providers": {},
++        "activities": {},
+     },
+     "c7pkgstore_main": {
+         "package": "c7.store.main",
+         "receivers": {},
+         "services": {},
+         "providers": {},
++        "activities": {},
+     },
+ }
+ 
+@@ -83,7 +102,7 @@ def flag(apk, kind, name, attr):
+     under <application>; None when the element (or attribute) is absent.
+     enabled absent ⇒ AOSP default true."""
+     tag = {"receiver": "receiver", "service": "service",
+-           "provider": "provider"}[kind]
++           "provider": "provider", "activity": "activity"}[kind]
+     root = manifest_tree(apk)
+     for app in root.findall("application"):
+         for el in app.findall(tag):
+@@ -113,8 +132,10 @@ def main():
+         comp = {"package": a.get_package(), "pkg_ok": pkg_ok}
+         if not pkg_ok:
+             all_ok = False
+-        for kind in ("receivers", "services", "providers"):
+-            singular = kind[:-1]
++        for kind in ("receivers", "services", "providers", "activities"):
++            singular = {"receivers": "receiver", "services": "service",
++                        "providers": "provider",
++                        "activities": "activity"}[kind]
+             got = {}
+             for cls, law in exp[kind].items():
+                 ex = flag(a, singular, cls, "exported")
+diff --git a/scripts/c7_w7_run_probe.sh b/scripts/c7_w7_run_probe.sh
+new file mode 100644
+index 00000000..91115680
+--- /dev/null
++++ b/scripts/c7_w7_run_probe.sh
+@@ -0,0 +1,143 @@
++#!/usr/bin/env bash
++# c7_w7_run_probe.sh — CODER7 WAVE-7 probe runner (cross-package ACTIVITY
++# LAUNCH: AOSP ActivityStarter + checkComponentPermission law). Extends the
++# WAVE-6 runner with:
++#   * the 23-op verdict contract (X01-X16 WAVE-5 rows + X20-X23 WAVE-6 rows
++#     + X24-X26 W7 rows: implicit cross-package start, non-exported deny,
++#     disabled deny)
++#   * the W7 engine-row evidence greps (ACT-XPKG-RESOLVE / ACT-XPKG-EXEC /
++#     C7-ACT-GATE) — the foreign activity's REAL lifecycle
++#   * the lifecycle_trace.json launch record (launched=true, callbacks)
++#   * the handshake act-create marker written by the FOREIGN onCreate
++#   * the androguard cross-parser check (now also the ACTIVITY gate facts)
++# COLD ×3 — the SQLite package cache is deleted before every run.
++# WARM ×3 — the cache persists (cache=WARM rows: no AXML re-parse).
++#
++# Usage: bash scripts/c7_w7_run_probe.sh <tag>
++set -uo pipefail
++R=$(cd "$(dirname "$0")/.." && pwd)
++BIN=${BIN:-$R/miniandroid/build/miniandroid}
++TAG=${1:?tag}
++OUT=$R/run/c7w7/$TAG
++rm -rf "$OUT"; mkdir -p "$OUT"
++STORE=$R/run/c7w7/store
++rm -rf "$STORE"; mkdir -p "$STORE"
++cp "$R"/fixtures/c7_pkg_store_probe/apks/*.apk "$STORE/"
++ls -la "$STORE"
++export MINIANDROID_PKG_STORE="$STORE"
++
++run_one() { # <dir> <apk>
++  local o=$1 apk=$2
++  rm -rf "$o"; mkdir -p "$o"
++  # fresh-install semantics: every run starts from an EMPTY app data dir
++  # (AOSP install wipes app data; the append-only handshake file would
++  # otherwise accumulate across the battery's runs and change the X20/X24
++  # detail bytes run-to-run).
++  rm -rf "$R/runtime/data/data/data/c7.store.main"
++  MINIANDROID_FILE_IO="$o/file_io.jsonl" timeout 240 "$BIN" run "$apk" \
++    --width 1080 --height 1920 --frames 3 --max-seconds 60 -o "$o" \
++    > "$o/run.log" 2>&1
++  echo "run rc=$? -> $o"
++  # snapshot the app-side verdict rows (MODE_PRIVATE file under the
++  # per-package sandbox) BEFORE the next run overwrites them.
++  local res="$R/runtime/data/data/data/c7.store.main/files/c7store_results.jsonl"
++  [ -f "$res" ] && cp "$res" "$o/c7store_results.jsonl"
++  local hs="$R/runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt"
++  [ -f "$hs" ] && cp "$hs" "$o/xpkg_handshake.txt"
++}
++
++# ── androguard cross-parser verification (independent AXML truth; W7 adds
++#    the ACTIVITY launch-gate facts) ────────────────────────────────────────
++python3 "$R/scripts/c7_w6_androguard_check.py" \
++  > "$OUT/androguard_check.json" 2> "$OUT/androguard_check.err"
++echo "androguard_check rc=$? (0 = every exported/enabled law incl. W7 activities matches)"
++
++# ── COLD ×3 ────────────────────────────────────────────────────────────────
++for i in 1 2 3; do
++  rm -f "$STORE/c7_pkg_cache.sqlite3"
++  run_one "$OUT/main_cold$i" "$STORE/c7pkgstore_main.apk"
++done
++
++# ── WARM ×3 (cache persists across runs; pre-run populates it) ────────────
++run_one "$OUT/main_warm_pre" "$STORE/c7pkgstore_main.apk"
++for i in 1 2 3; do
++  run_one "$OUT/main_warm$i" "$STORE/c7pkgstore_main.apk"
++done
++
++# ── evidence collection ───────────────────────────────────────────────────
++cd "$OUT"
++: > store_cache_rows_cold.txt
++: > store_cache_rows_warm.txt
++for i in 1 2 3; do
++  grep -E 'C7-STORE-DONE|C7-STORE\]' main_cold$i/run.log \
++    >> store_cache_rows_cold.txt 2>/dev/null
++  grep -E 'C7-STORE-DONE|C7-STORE\]' main_warm$i/run.log \
++    >> store_cache_rows_warm.txt 2>/dev/null
++done
++echo '═══ verdict op summary (cold1) ═══'
++cut -d'|' -f2,3 main_cold1/c7store_results.jsonl 2>/dev/null
++echo '═══ W7 launch evidence rows (cold1, file_io.jsonl) ═══'
++grep -E '"op":"(ACT-XPKG-RESOLVE|ACT-XPKG-EXEC|ACT-START)"' \
++  main_cold1/file_io.jsonl 2>/dev/null | head -12
++echo '═══ W7 stderr launch rows (cold1, run.log) ═══'
++grep -E 'C7-ACT-XPKG|C7-ACT-GATE|G08-LAUNCH\] launched' \
++  main_cold1/run.log 2>/dev/null | head -10
++echo '═══ lifecycle launch record (cold1; drained at the frame boundary) ═══'
++python3 - <<'PYEOF' 2>/dev/null || echo "(lifecycle parse failed)"
++import json
++d = json.load(open("main_cold1/frames/manifest.json"))
++al = d.get("activity_launch") or {}
++cbs = {c.get("method"): c for c in (al.get("callbacks") or [])}
++ok_launch = al.get("launched") is True
++ok_comp = al.get("component_descriptor") == "Lc7/store/browser/BrowserActivity;"
++init_ok = cbs.get("<init>", {}).get("dispatched") is True
++create_ok = cbs.get("onCreate", {}).get("dispatched") is True
++print("launched:", al.get("launched"), "| component:",
++      al.get("component_descriptor"))
++for name in ("<init>", "onCreate"):
++    c = cbs.get(name) or {}
++    print("  cb:", name, "class:", c.get("class"),
++          "dispatched:", c.get("dispatched"),
++          "instructions:", c.get("instructions"))
++hs = open("main_cold1/xpkg_handshake.txt").read() \
++    if __import__("os").path.exists("main_cold1/xpkg_handshake.txt") else ""
++marker_ok = "act-create:pkg=c7.store.browser" in hs
++verdict = "PASS" if (ok_launch and ok_comp and init_ok
++                     and create_ok and marker_ok) else "FAIL"
++print("W7-LAUNCH-CONTRACT:", verdict,
++      f"(launched={ok_launch} component={ok_comp} init={init_ok} "
++      f"create={create_ok} marker={marker_ok})")
++PYEOF
++echo '═══ handshake markers (cold1; the FOREIGN onCreate wrote act-create) ═══'
++cat main_cold1/xpkg_handshake.txt 2>/dev/null || echo "(no handshake file)"
++echo '═══ SHA-256 ═══'
++for i in 1 2 3; do
++  sha256sum main_cold$i/c7store_results.jsonl main_warm$i/c7store_results.jsonl \
++    2>/dev/null
++done
++cat main_cold1/c7store_results.jsonl main_cold2/c7store_results.jsonl \
++    main_cold3/c7store_results.jsonl > c7store_cold_results.jsonl 2>/dev/null
++cat main_warm1/c7store_results.jsonl main_warm2/c7store_results.jsonl \
++    main_warm3/c7store_results.jsonl > c7store_warm_results.jsonl 2>/dev/null
++sha256sum c7store_cold_results.jsonl c7store_warm_results.jsonl 2>/dev/null
++echo '═══ X01-X23 prefix equality vs WAVE-6 golden ═══'
++# NOTE: the X20 row detail embeds the handshake content (which carries a
++# trailing newline), so the W6 20-row file is 21 LINES. The prefix law:
++# the whole W6-era file (21 lines / 20 ops) is a byte-exact prefix of the
++# W7 23-op file.
++GOLDEN=$R/evidence/c7_w7/x23_w6_golden.jsonl
++if [ -f "$GOLDEN" ]; then
++  head -21 main_cold1/c7store_results.jsonl > /tmp/c7w7_prefix.jsonl
++  if cmp -s /tmp/c7w7_prefix.jsonl "$GOLDEN"; then
++    echo "X01-X23 prefix (20 W6 ops / 21 lines): BYTE-IDENTICAL to the WAVE-6 golden"
++  else
++    echo "X01-X23 prefix: DIFFERS from the WAVE-6 golden"
++    diff "$GOLDEN" /tmp/c7w7_prefix.jsonl | head
++  fi
++else
++  echo "(golden not found at $GOLDEN — snapshot after first cold run)"
++  head -21 main_cold1/c7store_results.jsonl > "$GOLDEN" 2>/dev/null || true
++fi
++echo '═══ cache rows (cold vs warm) ═══'
++cat store_cache_rows_cold.txt store_cache_rows_warm.txt
++echo "RUNNER DONE tag=$TAG"

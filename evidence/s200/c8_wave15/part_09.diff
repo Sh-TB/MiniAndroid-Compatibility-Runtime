@@ -1,0 +1,1233 @@
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CancellableContinuationImpl.java
+@@ -0,0 +1,14 @@
++package kotlinx.coroutines;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-232 owns the surface.
++public class CancellableContinuationImpl {
++    public CancellableContinuationImpl(Object delegate, int resumeMode) {
++        throw new RuntimeException("stub");
++    }
++    public void initCancellability() {
++        throw new RuntimeException("stub");
++    }
++    public Object getResult() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CompletedExceptionally.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CompletedExceptionally.java
+new file mode 100644
+index 0000000..815cdf9
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CompletedExceptionally.java
+@@ -0,0 +1,17 @@
++package kotlinx.coroutines;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-229 owns the surface.
++public class CompletedExceptionally {
++    public CompletedExceptionally(Throwable cause) {
++        throw new RuntimeException("stub");
++    }
++    public Throwable getCause() {
++        throw new RuntimeException("stub");
++    }
++    public boolean getHandled() {
++        throw new RuntimeException("stub");
++    }
++    public void makeHandled() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CoroutineDispatcher.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CoroutineDispatcher.java
+new file mode 100644
+index 0000000..987b354
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CoroutineDispatcher.java
+@@ -0,0 +1,11 @@
++package kotlinx.coroutines;
++
++import kotlin.coroutines.CoroutineContext;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlinx CoroutineDispatcher).
++public abstract class CoroutineDispatcher {
++    public abstract void dispatch(CoroutineContext context, Runnable block);
++    public boolean isDispatchNeeded(CoroutineContext context) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CoroutineExceptionHandlerKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CoroutineExceptionHandlerKt.java
+new file mode 100644
+index 0000000..8a7920b
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CoroutineExceptionHandlerKt.java
+@@ -0,0 +1,12 @@
++package kotlinx.coroutines;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-234 owns the surface.
++public class CoroutineExceptionHandlerKt {
++    public static void handleCoroutineException(kotlin.coroutines.CoroutineContext context,
++                                                Throwable exception) {
++        throw new RuntimeException("stub");
++    }
++    public static Throwable handlerException(Throwable originalException) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CoroutineScope.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CoroutineScope.java
+new file mode 100644
+index 0000000..c94be59
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CoroutineScope.java
+@@ -0,0 +1,11 @@
++package kotlinx.coroutines;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-230 owns the surface.
++public class CoroutineScope {
++    public CoroutineScope() {
++        throw new RuntimeException("stub");
++    }
++    public kotlin.coroutines.CoroutineContext getCoroutineContext() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DebugKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DebugKt.java
+new file mode 100644
+index 0000000..13c00cd
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DebugKt.java
+@@ -0,0 +1,18 @@
++package kotlinx.coroutines;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlinx DebugKt). Never dex'd into
++// the probe APK — the engine law F-C8-208/209 owns the surface.
++public class DebugKt {
++    public static boolean getASSERTIONS_ENABLED() {
++        throw new RuntimeException("stub");
++    }
++    public static boolean getRECOVER_STACK_TRACES() {
++        throw new RuntimeException("stub");
++    }
++    public static boolean getDEBUG() {
++        throw new RuntimeException("stub");
++    }
++    public static boolean getCOROUTINE_ID() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DebugStringsKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DebugStringsKt.java
+new file mode 100644
+index 0000000..9fc3edb
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DebugStringsKt.java
+@@ -0,0 +1,15 @@
++package kotlinx.coroutines;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlinx DebugStringsKt). Never dex'd
++// into the probe APK — the engine law F-C8-211/212 owns the surface.
++public class DebugStringsKt {
++    public static String getHexAddress(Object self) {
++        throw new RuntimeException("stub");
++    }
++    public static String getClassSimpleName(Object self) {
++        throw new RuntimeException("stub");
++    }
++    public static String toDebugString(Object self) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DefaultExecutor.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DefaultExecutor.java
+new file mode 100644
+index 0000000..5dff55d
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DefaultExecutor.java
+@@ -0,0 +1,44 @@
++package kotlinx.coroutines;
++
++import java.util.concurrent.TimeUnit;
++
++import kotlin.coroutines.CoroutineContext;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlinx DefaultExecutor). Never dex'd
++// into the probe APK — the engine law F-C8-215/216 owns the surface.
++public class DefaultExecutor {
++    private static DefaultExecutor INSTANCE;
++    public static DefaultExecutor getInstance() {
++        throw new RuntimeException("stub");
++    }
++    public Thread getThread() {
++        throw new RuntimeException("stub");
++    }
++    public void schedule(Runnable block, long time, TimeUnit unit) {
++        throw new RuntimeException("stub");
++    }
++    public void invokeOnTimeout(long timeNanos, Runnable block,
++                                CoroutineContext context) {
++        throw new RuntimeException("stub");
++    }
++    public boolean isShutDown() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isEmpty() {
++        throw new RuntimeException("stub");
++    }
++    public Thread createThreadSync(long threadNo) {
++        throw new RuntimeException("stub");
++    }
++    public static void shutdownError(Throwable cause) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-298)
++    public void resetAll() {
++        throw new RuntimeException("stub");
++    }
++    public Object scheduleInvokeOnTimeout(long timeNanos, Runnable block) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DefaultExecutorKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DefaultExecutorKt.java
+new file mode 100644
+index 0000000..9672ebc
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DefaultExecutorKt.java
+@@ -0,0 +1,12 @@
++package kotlinx.coroutines;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlinx DefaultExecutorKt). Never
++// dex'd into the probe APK — the engine law F-C8-216 owns the surface.
++public class DefaultExecutorKt {
++    public static long getDefaultDelay() {
++        throw new RuntimeException("stub");
++    }
++    public static long initializeDefaultDelay() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DelayKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DelayKt.java
+new file mode 100644
+index 0000000..f4a1cb3
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DelayKt.java
+@@ -0,0 +1,8 @@
++package kotlinx.coroutines;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-231 owns the surface.
++public class DelayKt {
++    public static Object delay(long timeMillis) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DispatchedTask.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DispatchedTask.java
+new file mode 100644
+index 0000000..f91e009
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DispatchedTask.java
+@@ -0,0 +1,29 @@
++package kotlinx.coroutines;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class DispatchedTask {
++    public DispatchedTask() {
++        throw new RuntimeException("stub");
++    }
++    public void handleFatalException(Throwable exception, Object mode) {
++        throw new RuntimeException("stub");
++    }
++    public Object getDelegate$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++    public Object getExceptionalResult$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++
++    public Object takeState$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++    public Object getSuccessfulResult$kotlinx_coroutines_core(Object state) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-300b)
++    public void cancelCompletedResult$kotlinx_coroutines_core(Object state, Object cause) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/Dispatchers.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/Dispatchers.java
+new file mode 100644
+index 0000000..d43002c
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/Dispatchers.java
+@@ -0,0 +1,21 @@
++package kotlinx.coroutines;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlinx Dispatchers object holder).
++// Never dex'd into the probe APK — the engine law F-C8-213 owns the
++// surface (the getters mint the real dispatcher singletons).
++public class Dispatchers {
++    public static final Dispatchers INSTANCE = new Dispatchers();
++    private Dispatchers() {}
++    public CoroutineDispatcher getDefault() {
++        throw new RuntimeException("stub");
++    }
++    public CoroutineDispatcher getIO() {
++        throw new RuntimeException("stub");
++    }
++    public CoroutineDispatcher getMain() {
++        throw new RuntimeException("stub");
++    }
++    public CoroutineDispatcher getUnconfined() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DisposableHandle.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DisposableHandle.java
+new file mode 100644
+index 0000000..f9a063e
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/DisposableHandle.java
+@@ -0,0 +1,6 @@
++package kotlinx.coroutines;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-232 owns the surface.
++public interface DisposableHandle {
++    void dispose();
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/EventLoop.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/EventLoop.java
+new file mode 100644
+index 0000000..69e1107
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/EventLoop.java
+@@ -0,0 +1,20 @@
++package kotlinx.coroutines;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-233 owns the surface.
++public class EventLoop {
++    public EventLoop() {
++        throw new RuntimeException("stub");
++    }
++    public long processNextEvent() {
++        throw new RuntimeException("stub");
++    }
++    public void incrementUseCount() {
++        throw new RuntimeException("stub");
++    }
++    public void decrementUseCount() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isUnconfinedQueueEmpty() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/Job.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/Job.java
+new file mode 100644
+index 0000000..e606c4f
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/Job.java
+@@ -0,0 +1,32 @@
++package kotlinx.coroutines;
++
++import kotlin.coroutines.CoroutineContext;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine laws own the surface.
++public class Job {
++    public static class DefaultImpls {
++        public static Job plus(Job job, CoroutineContext context) {
++            throw new RuntimeException("stub");
++        }
++        public static Object fold(Job job, Object initial, Object operation) {
++            throw new RuntimeException("stub");
++        }
++        public static Object minusKey(Job job, CoroutineContext key) {
++            throw new RuntimeException("stub");
++        }
++        public static void cancel$default(Job job, Throwable cause,
++                int mask, Object marker) {
++            throw new RuntimeException("stub");
++        }
++        public static Object invokeOnCompletion$default(Job job,
++                boolean onCancelling, boolean invokeImmediately,
++                Object handler, int mask, Object marker) {
++            throw new RuntimeException("stub");
++        }
++    }
++
++    // [S200-C8] wave-15 (F-C8-286)
++    public Object attachChild(Job child) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/JobCancellationException.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/JobCancellationException.java
+new file mode 100644
+index 0000000..336afd1
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/JobCancellationException.java
+@@ -0,0 +1,17 @@
++package kotlinx.coroutines;
++
++import java.util.concurrent.CancellationException;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-229 owns the surface.
++public class JobCancellationException extends CancellationException {
++    public JobCancellationException(String message, Throwable cause,
++                                    Job job) {
++        super(message);
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-299)
++    public JobCancellationException createCopy() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/JobSupport.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/JobSupport.java
+new file mode 100644
+index 0000000..e7d4051
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/JobSupport.java
+@@ -0,0 +1,169 @@
++package kotlinx.coroutines;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine laws F-C8-228/244/245/246/259.
++public class JobSupport extends Job {
++    public JobSupport() {
++        throw new RuntimeException("stub");
++    }
++    public String getState$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isActive() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isCompleted() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isCancelled() {
++        throw new RuntimeException("stub");
++    }
++    public static String access$cancellationExceptionMessage(Job job) {
++        throw new RuntimeException("stub");
++    }
++    public void start() {
++        throw new RuntimeException("stub");
++    }
++    public int startInternal() {
++        throw new RuntimeException("stub");
++    }
++    public boolean complete() {
++        throw new RuntimeException("stub");
++    }
++    public boolean tryMakeCompleting(Object state) {
++        throw new RuntimeException("stub");
++    }
++    public void cancel(Throwable cause) {
++        throw new RuntimeException("stub");
++    }
++    public void cancelImpl$kotlinx_coroutines_core(Object cause) {
++        throw new RuntimeException("stub");
++    }
++    public void cancelInternal(Object cause) {
++        throw new RuntimeException("stub");
++    }
++    public Object invokeOnCompletion(Object handler) {
++        throw new RuntimeException("stub");
++    }
++    public Object invokeOnCompletion(boolean onCancelling,
++            boolean invokeImmediately, Object handler) {
++        throw new RuntimeException("stub");
++    }
++    public void afterCompletion(Object state) {
++        throw new RuntimeException("stub");
++    }
++    public Object getParentHandle$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++    public void setParentHandle$kotlinx_coroutines_core(Object handle) {
++        throw new RuntimeException("stub");
++    }
++    public kotlin.sequences.Sequence<Job> getChildren() {
++        throw new RuntimeException("stub");
++    }
++    public Object nextChild() {
++        throw new RuntimeException("stub");
++    }
++    public void notifyCancelling(Object list, Object cause) {
++        throw new RuntimeException("stub");
++    }
++    public void onCancelling(Object cause) {
++        throw new RuntimeException("stub");
++    }
++    public String nameString$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++    public void handleOnCompletionException$kotlinx_coroutines_core(
++            Throwable t) {
++        throw new RuntimeException("stub");
++    }
++    public Object createCauseException(Object cause) {
++        throw new RuntimeException("stub");
++    }
++    public JobCancellationException getCancellationException() {
++        throw new RuntimeException("stub");
++    }
++    public Object toCancellationException$default(Object cause, int mask,
++            Object marker) {
++        throw new RuntimeException("stub");
++    }
++    public String stateString() {
++        throw new RuntimeException("stub");
++    }
++    public Throwable getExceptionOrNull() {
++        throw new RuntimeException("stub");
++    }
++    public java.util.concurrent.CancellationException toCancellationException(Throwable cause, String message) {
++        throw new RuntimeException("stub");
++    }
++    public void addLastAtomic(Object expect, Object node) {
++        throw new RuntimeException("stub");
++    }
++    public void promoteSingleToNodeList(Object state) {
++        throw new RuntimeException("stub");
++    }
++    public Object getOrPromoteCancellingList() {
++        throw new RuntimeException("stub");
++    }
++    public void completeStateFinalization(Object state, Object updateState) {
++        throw new RuntimeException("stub");
++    }
++    public Object finalizeFinishingState(Object state, Object proposedUpdate) {
++        throw new RuntimeException("stub");
++    }
++    public void onCompletionInternal(Object state, Object mode, boolean exceptional) {
++        throw new RuntimeException("stub");
++    }
++    public boolean cancelParent(Throwable cause) {
++        throw new RuntimeException("stub");
++    }
++    public boolean getHandlesException$kotlinx_coroutines_core(Object state) {
++        throw new RuntimeException("stub");
++    }
++    public boolean tryWaitForChild(Object child) {
++        throw new RuntimeException("stub");
++    }
++    public void joinSuspend() {
++        throw new RuntimeException("stub");
++    }
++    public void awaitSuspend() {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-286/287/288)
++    public Object firstChild() {
++        throw new RuntimeException("stub");
++    }
++    public boolean childCancelled(Throwable cause) {
++        throw new RuntimeException("stub");
++    }
++    public boolean makeCancelling() {
++        throw new RuntimeException("stub");
++    }
++    public boolean tryMakeCancelling(Object state) {
++        throw new RuntimeException("stub");
++    }
++    public Object getFinalRootCause() {
++        throw new RuntimeException("stub");
++    }
++    public boolean continueCompleting(Object state) {
++        throw new RuntimeException("stub");
++    }
++    public boolean tryFinalizeSimpleState(Object state, Object update) {
++        throw new RuntimeException("stub");
++    }
++    public void notifyCompletion(Object state) {
++        throw new RuntimeException("stub");
++    }
++    public Object getOnCancelComplete$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++    public boolean cancelMakeCompleting(Object proposed) {
++        throw new RuntimeException("stub");
++    }
++    public boolean isScopedCoroutine() {
++        throw new RuntimeException("stub");
++    }
++    public void handleJobException(Throwable exception) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/SystemPropsKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/SystemPropsKt.java
+new file mode 100644
+index 0000000..9a5d6a8
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/SystemPropsKt.java
+@@ -0,0 +1,14 @@
++package kotlinx.coroutines;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-238 owns the surface.
++public class SystemPropsKt {
++    public static String systemProp(String key, String defaultValue) {
++        throw new RuntimeException("stub");
++    }
++    public static long systemProp(String key, long defaultValue) {
++        throw new RuntimeException("stub");
++    }
++    public static int systemProp(String key, int defaultValue) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/UndispatchedCoroutine.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/UndispatchedCoroutine.java
+new file mode 100644
+index 0000000..4853603
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/UndispatchedCoroutine.java
+@@ -0,0 +1,12 @@
++package kotlinx.coroutines;
++
++import kotlin.coroutines.CoroutineContext;
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-236 owns the surface.
++public class UndispatchedCoroutine {
++    public UndispatchedCoroutine(CoroutineContext context) {
++        throw new RuntimeException("stub");
++    }
++    public void clearThreadContext() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ChannelIterator.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ChannelIterator.java
+new file mode 100644
+index 0000000..bfbbfb9
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ChannelIterator.java
+@@ -0,0 +1,7 @@
++package kotlinx.coroutines.channels;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-221 owns the surface.
++public interface ChannelIterator<T> {
++    boolean hasNext();
++    T next();
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ChannelResult.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ChannelResult.java
+new file mode 100644
+index 0000000..6fea1c5
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ChannelResult.java
+@@ -0,0 +1,27 @@
++package kotlinx.coroutines.channels;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class ChannelResult<T> {
++    public ChannelResult() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isSuccess() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isClosed() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isFailed() {
++        throw new RuntimeException("stub");
++    }
++    public Throwable exceptionOrNull() {
++        throw new RuntimeException("stub");
++    }
++    public Object getOrNull() {
++        throw new RuntimeException("stub");
++    }
++
++    public Object getOrThrow() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ChannelsKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ChannelsKt.java
+new file mode 100644
+index 0000000..7be39f4
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ChannelsKt.java
+@@ -0,0 +1,57 @@
++package kotlinx.coroutines.channels;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class ChannelsKt {
++    public static void cancelConsumed(ReceiveChannel<?> channel) {
++        throw new RuntimeException("stub");
++    }
++    public static Object consumes() {
++        throw new RuntimeException("stub");
++    }
++    public static <T> void toCollection(ReceiveChannel<T> channel,
++            java.util.Collection<T> collection) {
++        throw new RuntimeException("stub");
++    }
++
++    public static <T> ReceiveChannel<T> map(ReceiveChannel<T> channel, kotlin.jvm.functions.Function1<T, T> transform) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> ReceiveChannel<T> mapIndexed(ReceiveChannel<T> channel, kotlin.jvm.functions.Function2<Integer, T, T> transform) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> ReceiveChannel<T> filterNotNull(ReceiveChannel<T> channel) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> void filterNotNullTo(ReceiveChannel<T> channel, java.util.Collection<T> destination) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> void toMap(ReceiveChannel<T> channel, java.util.Map<T, T> destination) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-300)
++    public static <T> ReceiveChannel<T> drop(ReceiveChannel<T> channel, int n) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> ReceiveChannel<T> dropWhile(ReceiveChannel<T> channel, kotlin.jvm.functions.Function1<T, Boolean> predicate) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> ReceiveChannel<T> takeWhile(ReceiveChannel<T> channel, kotlin.jvm.functions.Function1<T, Boolean> predicate) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> ReceiveChannel<T> flatMap(ReceiveChannel<T> channel, kotlin.jvm.functions.Function1<T, ReceiveChannel<T>> transform) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> ReceiveChannel<T> zip(ReceiveChannel<T> a, ReceiveChannel<T> b) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> ReceiveChannel<T> distinctBy(ReceiveChannel<T> channel, kotlin.jvm.functions.Function1<T, Object> selector) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Object elementAtOrNull(ReceiveChannel<T> channel, int index) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Object consumesAll(ReceiveChannel<T> channel) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ProduceKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ProduceKt.java
+new file mode 100644
+index 0000000..a93d41c
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ProduceKt.java
+@@ -0,0 +1,10 @@
++package kotlinx.coroutines.channels;
++
++import kotlin.jvm.functions.Function2;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-225 owns the surface.
++public class ProduceKt {
++    public static <T> ProducerScope<T> produce(Function2 block) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ProducerScope.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ProducerScope.java
+new file mode 100644
+index 0000000..f8a4c77
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ProducerScope.java
+@@ -0,0 +1,19 @@
++package kotlinx.coroutines.channels;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-222 owns the surface.
++public class ProducerScope<T> {
++    public Object send(T value) {
++        throw new RuntimeException("stub");
++    }
++    public ReceiveChannel<T> getChannel() {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-291)
++    public boolean isClosedForSend() {
++        throw new RuntimeException("stub");
++    }
++    public void invokeOnClose(Object handler) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ReceiveChannel.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ReceiveChannel.java
+new file mode 100644
+index 0000000..3e44a59
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/channels/ReceiveChannel.java
+@@ -0,0 +1,17 @@
++package kotlinx.coroutines.channels;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine laws F-C8-221/242 own it.
++public interface ReceiveChannel<T> {
++    ChannelIterator<T> iterator();
++    void cancel();
++    ChannelResult<T> trySend(T value);
++    ChannelResult<T> tryReceive();
++    ChannelResult<T> receiveCatching();
++    // [S200-C8] wave-15 (F-C8-291)
++    boolean isClosedForReceive();
++    void invokeOnClose(Object handler);
++    Object getOnReceive();
++    Object getOnReceiveCatching();
++    Object getOnSend();
++    Object receiveOrNull();
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/debug/internal/DebugProbesImpl.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/debug/internal/DebugProbesImpl.java
+new file mode 100644
+index 0000000..c4ecca4
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/debug/internal/DebugProbesImpl.java
+@@ -0,0 +1,60 @@
++package kotlinx.coroutines.debug.internal;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class DebugProbesImpl {
++    public static boolean isInstalled$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++    public static Object getCapturedCoroutines() {
++        throw new RuntimeException("stub");
++    }
++    public static Object owner() {
++        throw new RuntimeException("stub");
++    }
++    public static Object realCaller(int depth) {
++        throw new RuntimeException("stub");
++    }
++    public static String toStringWithQuotes(Object value) {
++        throw new RuntimeException("stub");
++    }
++    public static void updateState(Object wasCancelled,
++            Object successfullyCancelled, Object hasResumed) {
++        throw new RuntimeException("stub");
++    }
++    public static boolean access$isFinished() {
++        throw new RuntimeException("stub");
++    }
++
++    public static boolean isInternalMethod(Object owner) {
++        throw new RuntimeException("stub");
++    }
++    public static String getDebugString(Object value) {
++        throw new RuntimeException("stub");
++    }
++    public static Throwable enhanceStackTraceWithThreadDumpImpl(Throwable exception, Thread thread) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-296)
++    public static void install() {
++        throw new RuntimeException("stub");
++    }
++    public static boolean isFinished() {
++        throw new RuntimeException("stub");
++    }
++    public static Object probeCoroutineCreated$kotlinx_coroutines_core(Object continuation) {
++        throw new RuntimeException("stub");
++    }
++    public static void probeCoroutineCompleted(Object continuation) {
++        throw new RuntimeException("stub");
++    }
++    public static boolean getDynamicAttach() {
++        throw new RuntimeException("stub");
++    }
++    public static boolean getEnableCreationStackTraces() {
++        throw new RuntimeException("stub");
++    }
++    public static void setEnableCreationStackTraces(boolean value) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/Flow.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/Flow.java
+new file mode 100644
+index 0000000..b3ecb6a
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/Flow.java
+@@ -0,0 +1,6 @@
++package kotlinx.coroutines.flow;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-226 owns the surface.
++public interface Flow<T> {
++    Object collect(FlowCollector<T> collector);
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/FlowCollector.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/FlowCollector.java
+new file mode 100644
+index 0000000..9c28791
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/FlowCollector.java
+@@ -0,0 +1,6 @@
++package kotlinx.coroutines.flow;
++
++// [S195-C8] COMPILE-TIME-ONLY stub (emit is the app-overridden law path).
++public interface FlowCollector<T> {
++    Object emit(T value);
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/FlowKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/FlowKt.java
+new file mode 100644
+index 0000000..8d401d1
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/FlowKt.java
+@@ -0,0 +1,78 @@
++package kotlinx.coroutines.flow;
++
++import kotlin.jvm.functions.Function2;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class FlowKt {
++    public static <T> Flow<T> flow(Function2 block) {
++        throw new RuntimeException("stub");
++    }
++    public static void noImpl() {
++        throw new RuntimeException("stub");
++    }
++    public static <T> void emitAll(FlowCollector<T> collector,
++            Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> combine(Flow<T> a, Flow<T> b,
++            Object transform) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> void toCollection(Flow<T> flow,
++            java.util.Collection<T> collection) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Object catchImpl(FlowCollector<T> collector,
++            Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> retry(Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> buffer$default(Flow<T> flow, int cap,
++            int mask, Object marker) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> transformLatest(Flow<T> flow,
++            Function2 block) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> retryWhen(Flow<T> flow, kotlin.jvm.functions.Function2<Throwable, Integer, Boolean> predicate) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> distinctUntilChanged(Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> ensureActive(Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Object firstOrNull(Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> flattenConcat(Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> flattenMerge(Flow<T> flow, int concurrency) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-294/295)
++    public static <T> Flow<T> flowOf(T value) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Flow<T> flowOf(T v1, T v2) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Object reduce(Flow<T> flow, kotlin.jvm.functions.Function2<T, T, T> operation) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Object lastOrNull(Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> Object singleOrNull(Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++    public static <T> java.util.Set<T> toSet(Flow<T> flow) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/SharedFlowImpl.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/SharedFlowImpl.java
+new file mode 100644
+index 0000000..e712d07
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/SharedFlowImpl.java
+@@ -0,0 +1,101 @@
++package kotlinx.coroutines.flow;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class SharedFlowImpl {
++    public SharedFlowImpl() {
++        throw new RuntimeException("stub");
++    }
++    public int getHead() {
++        throw new RuntimeException("stub");
++    }
++    public int getBufferEndIndex() {
++        throw new RuntimeException("stub");
++    }
++    public int getTotalSize() {
++        throw new RuntimeException("stub");
++    }
++    public int getReplaySize() {
++        throw new RuntimeException("stub");
++    }
++    public int getNCollectors() {
++        throw new RuntimeException("stub");
++    }
++    public Object emit(Object value) {
++        throw new RuntimeException("stub");
++    }
++    public Object collect(FlowCollector<?> collector) {
++        throw new RuntimeException("stub");
++    }
++    public void enqueueLocked(Object value) {
++        throw new RuntimeException("stub");
++    }
++    public int findSlotsToResumeLocked() {
++        throw new RuntimeException("stub");
++    }
++
++    public Object tryPeekLocked() {
++        throw new RuntimeException("stub");
++    }
++    public void updateBufferLocked() {
++        throw new RuntimeException("stub");
++    }
++    public boolean tryEmitLocked(Object value) {
++        throw new RuntimeException("stub");
++    }
++    public Object emitSuspend(Object value) {
++        throw new RuntimeException("stub");
++    }
++    public void awaitValue() {
++        throw new RuntimeException("stub");
++    }
++    public Object collect$suspendImpl(FlowCollector<?> collector) {
++        throw new RuntimeException("stub");
++    }
++    public void dropOldestLocked() {
++        throw new RuntimeException("stub");
++    }
++    public void cleanupTailLocked() {
++        throw new RuntimeException("stub");
++    }
++    public int getQueueEndIndex() {
++        throw new RuntimeException("stub");
++    }
++    public void growBuffer() {
++        throw new RuntimeException("stub");
++    }
++    public void updateCollectorIndexLocked$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++    public static int access$findSlotsToResumeLocked(SharedFlowImpl sf) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-289/290)
++    public boolean tryEmit(Object value) {
++        throw new RuntimeException("stub");
++    }
++    public boolean tryEmitNoCollectorsLocked(Object value) {
++        throw new RuntimeException("stub");
++    }
++    public Object tryTakeValue() {
++        throw new RuntimeException("stub");
++    }
++    public Object emit$suspendImpl(Object value) {
++        throw new RuntimeException("stub");
++    }
++    public void cancelEmitter(Object handle) {
++        throw new RuntimeException("stub");
++    }
++    public void correctCollectorIndexesOnDropOldest() {
++        throw new RuntimeException("stub");
++    }
++    public void updateNewCollectorIndexLocked$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++    public static void access$enqueueLocked(SharedFlowImpl sf, Object value) {
++        throw new RuntimeException("stub");
++    }
++    public static int access$getBufferCapacity$p(SharedFlowImpl sf) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/internal/CombineKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/internal/CombineKt.java
+new file mode 100644
+index 0000000..2674aca
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/internal/CombineKt.java
+@@ -0,0 +1,9 @@
++package kotlinx.coroutines.flow.internal;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-240 owns the surface.
++public class CombineKt {
++    public static Object combineInternal(Object flowA, Object flowB,
++                                         Object transform) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/internal/FlowExceptions_commonKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/internal/FlowExceptions_commonKt.java
+new file mode 100644
+index 0000000..73a5685
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/flow/internal/FlowExceptions_commonKt.java
+@@ -0,0 +1,8 @@
++package kotlinx.coroutines.flow.internal;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-227 owns the surface.
++public class FlowExceptions_commonKt {
++    public static boolean checkOwnership(Object abort, Object owner) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/ConcurrentLinkedListKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/ConcurrentLinkedListKt.java
+new file mode 100644
+index 0000000..70e9f22
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/ConcurrentLinkedListKt.java
+@@ -0,0 +1,8 @@
++package kotlinx.coroutines.internal;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-237 owns the surface.
++public class ConcurrentLinkedListKt {
++    public static Object access$getCLOSED$p() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/LockFreeLinkedListNode.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/LockFreeLinkedListNode.java
+new file mode 100644
+index 0000000..2687af4
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/LockFreeLinkedListNode.java
+@@ -0,0 +1,61 @@
++package kotlinx.coroutines.internal;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class LockFreeLinkedListNode {
++    public LockFreeLinkedListNode() {
++        throw new RuntimeException("stub");
++    }
++    public Object getNext() {
++        throw new RuntimeException("stub");
++    }
++    public Object getPrevNode() {
++        throw new RuntimeException("stub");
++    }
++    public Object getNextNode() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isRemoved() {
++        throw new RuntimeException("stub");
++    }
++    public void addNext(LockFreeLinkedListNode node,
++            LockFreeLinkedListNode prev) {
++        throw new RuntimeException("stub");
++    }
++    public Object correctPrev() {
++        throw new RuntimeException("stub");
++    }
++    public void helpRemovePrev() {
++        throw new RuntimeException("stub");
++    }
++    public boolean tryCondAddNext(LockFreeLinkedListNode node,
++            LockFreeLinkedListNode prev, Object condition) {
++        throw new RuntimeException("stub");
++    }
++    public Object removeOrNext() {
++        throw new RuntimeException("stub");
++    }
++
++    public boolean finishAdd(Object prev) {
++        throw new RuntimeException("stub");
++    }
++    public void helpRemove() {
++        throw new RuntimeException("stub");
++    }
++    public static Object access$correctPrev(LockFreeLinkedListNode node, Object op) {
++        throw new RuntimeException("stub");
++    }
++    public static boolean access$removed(LockFreeLinkedListNode node) {
++        throw new RuntimeException("stub");
++    }
++    public static void access$finishAdd(LockFreeLinkedListNode node, Object prev) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-284)
++    public Object findPrevNonRemoved() {
++        throw new RuntimeException("stub");
++    }
++    public void validateNode$kotlinx_coroutines_core() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/MainDispatcherFactory.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/MainDispatcherFactory.java
+new file mode 100644
+index 0000000..f7cde56
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/MainDispatcherFactory.java
+@@ -0,0 +1,12 @@
++package kotlinx.coroutines.internal;
++
++// [S197-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-268 owns the surface.
++public interface MainDispatcherFactory {
++    int getLoadPriority();
++    kotlinx.coroutines.CoroutineDispatcher createDispatcher(
++            java.util.List<MainDispatcherFactory> delegates);
++    boolean hintError();
++
++    // [S200-C8] wave-15 (F-C8-297)
++    Object hintOnError();
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/OpDescriptor.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/OpDescriptor.java
+new file mode 100644
+index 0000000..5523347
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/OpDescriptor.java
+@@ -0,0 +1,19 @@
++package kotlinx.coroutines.internal;
++
++// [S195-C8] COMPILE-TIME-ONLY stub. Engine law F-C8-237 owns the surface.
++public class OpDescriptor {
++    public OpDescriptor() {
++        throw new RuntimeException("stub");
++    }
++    public boolean perform(Object operation) {
++        throw new RuntimeException("stub");
++    }
++
++    // [S200-C8] wave-15 (F-C8-281)
++    public Object getAtomicOp() {
++        throw new RuntimeException("stub");
++    }
++    public boolean isEarlierThan(Object other) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/StackTraceRecoveryKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/StackTraceRecoveryKt.java
+new file mode 100644
+index 0000000..c58fbe1
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/internal/StackTraceRecoveryKt.java
+@@ -0,0 +1,55 @@
++package kotlinx.coroutines.internal;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class StackTraceRecoveryKt {
++    public static Throwable access$recoverFromStackFrame(Throwable e1,
++            Throwable e2) {
++        throw new RuntimeException("stub");
++    }
++    public static Throwable recoverStackTrace(Throwable exception) {
++        throw new RuntimeException("stub");
++    }
++    public static Throwable recoverStackTrace(Throwable exception,
++            Object receiver) {
++        throw new RuntimeException("stub");
++    }
++    public static Throwable unwrapImpl(Throwable exception) {
++        throw new RuntimeException("stub");
++    }
++    public static Object artificialFrame(Object frame) {
++        throw new RuntimeException("stub");
++    }
++
++    public static int frameIndex(java.lang.StackTraceElement[] frames) {
++        throw new RuntimeException("stub");
++    }
++    public static boolean isArtificial(Object frame) {
++        throw new RuntimeException("stub");
++    }

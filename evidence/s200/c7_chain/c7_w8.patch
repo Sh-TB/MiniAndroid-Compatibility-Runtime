@@ -1,0 +1,1155 @@
+                             provider_by_authority_[c7_one] = c7_fpid;
+                             provider_class_by_oid_[c7_fpid] = c7_pr.cls;
++                            // CODER7 WAVE-8 L1: the foreign provider's
++                            // read/write permission identity rides the
++                            // store index (checkContentProviderAccess law).
++                            c7_set_provider_perms(
++                                c7_fpid, c7_pr.read_permission,
++                                c7_pr.write_permission, c7_pr.package_name);
+                         }
+                         if (c7_semi == std::string::npos) break;
+                         c7_start = c7_semi + 1;
+@@ -39694,6 +39836,53 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 return true;
+             }
+ 
++            // ── CODER7 WAVE-8 L1: the per-op provider permission gate
++            // (AOSP checkContentProviderAccess law): read ops (query /
++            // getType / openFile* / acquire*) vs the provider's
++            // readPermission; write ops (insert / update / delete) vs
++            // writePermission. Same-package callers are exempt; the
++            // running package's manifest-declared permissions satisfy the
++            // check (deterministic install-grant law). A denial is a REAL
++            // SecurityException in the caller's frame — never a silent
++            // null and never a fabricated cursor.
++            {
++                const bool c7_write_op =
++                    (method == "insert" || method == "update" ||
++                     method == "delete");
++                std::string c7_needed =
++                    c7_check_provider_access(prov_oid, c7_write_op);
++                std::string c7_enforced = c7_provider_enforced_perm(
++                    prov_oid, c7_write_op);
++                if (!c7_needed.empty()) {
++                    const char* c7_verb = c7_write_op ? "writing" : "reading";
++                    throw_deferred("Ljava/lang/SecurityException;",
++                                   std::string("Permission Denial: ") +
++                                       c7_verb + " " + uauth + " requires " +
++                                       c7_needed,
++                                   "PROV-PERM");
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "PROV-PERM-DENY", uauth, false,
++                        "requires " + c7_needed + " (" +
++                            std::string(c7_write_op ? "write" : "read") +
++                            " op; AOSP checkContentProviderAccess)",
++                        current_class_ + "." + current_method_);
++                    std::cerr << "[C7-PROV-PERM] DENIED " << c7_verb << " "
++                              << uauth << " requires " << c7_needed
++                              << std::endl;
++                    result = DalvikValue::make_null();
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                if (!c7_enforced.empty()) {
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "PROV-PERM-OK", uauth, true,
++                        c7_enforced + " declared by caller — granted (" +
++                            std::string(c7_write_op ? "write" : "read") +
++                            " op)",
++                        current_class_ + "." + current_method_);
++                }
++            }
++
+             // ── known authority: dispatch into the provider instance ──
+             DalvikValue uri_arg = uarg;
+             std::vector<DalvikValue> pargs;  // AFTER the receiver slot
+diff --git a/miniandroid/src/dex/dalvik_engine.h b/miniandroid/src/dex/dalvik_engine.h
+index 87980b9b..8fa45ec7 100755
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -35,6 +35,7 @@ class HeapAllocator;
+ }}
+ #include <string>
+ #include <vector>
++#include <algorithm>  // CODER7 W8-L1: std::find in c7_check_provider_access
+ #include <filesystem>
+ #include <map>
+ #include <unordered_map>
+@@ -1776,6 +1777,52 @@ public:
+             if (pname == cls) return pen;
+         return true;
+     }
++    // CODER7 WAVE-8 L1: per-provider android:readPermission /
++    // android:writePermission plumbing (AOSP PackageParser.Provider).
++    void set_manifest_provider_perms(
++        std::vector<std::tuple<std::string, std::string, std::string>>
++            name_perms) {
++        manifest_provider_perms_ = std::move(name_perms);
++    }
++    // Register a provider INSTANCE's permission identity (own install +
++    // foreign store install; the CRUD gate consults it per op).
++    void c7_set_provider_perms(uint32_t oid, const std::string& read_perm,
++                               const std::string& write_perm,
++                               const std::string& owner_pkg) {
++        c7_provider_perms_[oid] = {read_perm, write_perm, owner_pkg};
++    }
++    // AOSP checkContentProviderAccess law (ActivityManagerService +
++    // ContentProvider_transport): a provider op is granted when
++    //   * the caller's package OWNS the provider (same-app access never
++    //     needs a permission), or
++    //   * the op's permission is empty, or
++    //   * the running package declared it (uses-permission; the
++    //     deterministic install-grant law).
++    // Returns "" when allowed, otherwise the required permission name.
++    std::string c7_check_provider_access(uint32_t prov_oid,
++                                         bool write_op) const {
++        auto it = c7_provider_perms_.find(prov_oid);
++        if (it == c7_provider_perms_.end()) return "";  // unregistered: pre-W8 shape
++        const auto& pp = it->second;
++        if (pp.owner_pkg == package_name_) return "";
++        const std::string& perm = write_op ? pp.write_perm : pp.read_perm;
++        if (perm.empty()) return "";
++        if (std::find(manifest_requested_permissions_.begin(),
++                      manifest_requested_permissions_.end(),
++                      perm) != manifest_requested_permissions_.end())
++            return "";
++        return perm;
++    }
++    // The permission the gate actually enforces for this op ("" = none) —
++    // evidence-side twin of c7_check_provider_access (PROV-PERM-OK rows).
++    std::string c7_provider_enforced_perm(uint32_t prov_oid,
++                                          bool write_op) const {
++        auto it = c7_provider_perms_.find(prov_oid);
++        if (it == c7_provider_perms_.end()) return "";
++        const auto& pp = it->second;
++        if (pp.owner_pkg == package_name_) return "";
++        return write_op ? pp.write_perm : pp.read_perm;
++    }
+     // 371-CLOSEOUT: component meta-data with resource references — the
+     // ProviderInfo.metaData / resolveContentProvider / loadXmlMetaData law
+     // set (androidx FileProvider contract; generic across all components).
+@@ -1901,6 +1948,15 @@ public:
+         }
+         for (const auto& a : manifest_activity_filters_)
+             if (a.cls == dotted) return a.launch_mode;
++        // CODER7 WAVE-8 L4: the launch drain reads the SAME law for
++        // foreign (store) activities — the W5 index already carries
++        // launch_mode per C7IdxActivity (AOSP ActivityInfo.launchMode
++        // regardless of owning package; standard = 0).
++        if (c7_pkg_index_) {
++            for (const auto& p : c7_pkg_index_->packages())
++                for (const auto& a : p.activities)
++                    if (a.cls == dotted) return a.launch_mode;
++        }
+         return 0;
+     }
+     bool c7_activity_enabled(const std::string& cls_desc) const {
+@@ -2060,6 +2116,19 @@ public:
+         const std::string& host, const std::string& path,
+         bool default_only) const;
+ 
++    // ── CODER7 WAVE-8 L2: the PendingIntent.send dispatch law ───────────
++    // AOSP PendingIntentRecord.sendInner routes the FROZEN intent through
++    // the SAME component pipeline the app-context calls reach:
++    //   BROADCAST → ContextImpl.sendBroadcast (broadcastIntentLocked),
++    //   SERVICE   → ContextImpl.startService,
++    //   ACTIVITY  → AMS startActivityAsUser (the ContextImpl NEW_TASK gate
++    //               does NOT apply; the resolve + synchronous gate + queue
++    //               law of WAVE-7 does).
++    // Wired into PendingIntentShadow via set_send_dispatcher (one engine
++    // law, zero duplicated dispatch). Returns false + err on refusal.
++    bool c7_send_pending_intent(const std::string& kind,
++                                uint32_t intent_oid, std::string& err);
++
+     /**
+      * Execute APK through real DEX bytecode interpretation
+      */
+@@ -3771,6 +3840,21 @@ public:
+     std::vector<std::pair<std::string, bool>> manifest_provider_exported_;
+     // CODER7 WAVE-3: per-provider android:enabled (disabled-components law).
+     std::vector<std::pair<std::string, bool>> manifest_provider_enabled_;
++    // CODER7 WAVE-8 L1: per-provider android:readPermission /
++    // android:writePermission (AOSP PackageParser.Provider law — the
++    // CRUD transport checks them per op; empty = no permission required).
++    std::vector<std::tuple<std::string, std::string, std::string>>
++        manifest_provider_perms_;
++    // CODER7 WAVE-8 L1: provider instance oid → (read_perm, write_perm,
++    // owning_package). Own providers register at install_content_providers,
++    // foreign providers at the W6 store install; the CRUD transport gate
++    // consults it per op (checkContentProviderAccess law).
++    struct C7ProviderPerms {
++        std::string read_perm;
++        std::string write_perm;
++        std::string owner_pkg;
++    };
++    std::map<uint32_t, C7ProviderPerms> c7_provider_perms_;
+     // GATE A: provider object → bound context object (attachInfo law).
+     std::map<uint32_t, uint32_t> provider_context_;
+     // ── #371 PHASE B1: ContentResolver authority→provider dispatch map ──
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index 6458e724..0c1dd8b6 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -4793,13 +4793,20 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
+             if (c.kind == CallContext::Arg::Kind::OBJECT &&
+                 c.object_class.size() > 1 && c.object_class.front() == 'L' &&
+                 c.object_class.back() == ';') {
+-                if (c.object_class == "Ljava/lang/Class;" ||
+-                    c.object_class.rfind("Landroid/", 0) == 0 ||
+-                    c.object_class.rfind("Ljava/", 0) == 0) {
+-                    // Framework type (Class token, Uri data, ...) — never an
+-                    // activity component (PackageParser rejects android.*
+-                    // components; a Class token carries its referent only in
+-                    // the engine's own field, not in object_class).
++                // CODER7 WAVE-8 FIX (probe-discovered dead branch): the old
++                // shape was
++                //   if (Class || Landroid/* || Ljava/*) { Class-token law }
++                //   else if (Uri) { data law }        ← UNREACHABLE
++                //   else if (not framework) { component }
++                // "Landroid/net/Uri;" matches the Landroid/* catch-all, so
++                // the ctor's data-URI law was DEAD CODE (the W3 matchData
++                // half never ran on the ctor path; only setData() filled
++                // the dims). Live evidence: the priority-10 singleTask
++                // fixture resolved for EVERY example.org URL because
++                // host/path never reached the index law. The chain below
++                // expresses the three arms directly — no catch-all can
++                // swallow the Uri arm anymore.
++                if (c.object_class == "Ljava/lang/Class;" && heap_) {
+                     // S123 CLASS-TOKEN-COMPONENT law: AOSP
+                     // Intent(Context, Class) = setClass(ctx, cls) — the
+                     // component IS the Class token's referent. The engine's
+@@ -4812,20 +4819,19 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
+                     // component empty → "[INTENT] startActivity called (no
+                     // component set)" → the Game activity never launched
+                     // and the game could not be started by tap input.
+-                    if (c.object_class == "Ljava/lang/Class;" && heap_) {
+-                        std::string referent;
+-                        if (heap_->get_object_string_field(
+-                                c.object_id, "__referent_desc", referent) &&
+-                            referent.size() > 1 && referent.front() == 'L' &&
+-                            referent.back() == ';' &&
+-                            referent.rfind("Landroid/", 0) != 0 &&
+-                            referent.rfind("Ljava/", 0) != 0 &&
+-                            referent.rfind("Landroidx/", 0) != 0) {
+-                            pi->component_class = referent;
+-                        }
++                    std::string referent;
++                    if (heap_->get_object_string_field(
++                            c.object_id, "__referent_desc", referent) &&
++                        referent.size() > 1 && referent.front() == 'L' &&
++                        referent.back() == ';' &&
++                        referent.rfind("Landroid/", 0) != 0 &&
++                        referent.rfind("Ljava/", 0) != 0 &&
++                        referent.rfind("Landroidx/", 0) != 0) {
++                        pi->component_class = referent;
+                     }
+                 } else if (c.object_class == "Landroid/net/Uri;") {
+-                    // Intent(String, Uri) / setData data law.
++                    // Intent(String, Uri) — the DATA law (S107 ROOT-015:
++                    // the Uri is intent data, never the component).
+                     pi->data_uri_object = c.object_id;
+                     pi->data_uri_class = c.object_class;
+                     // CODER7 WAVE-3: parse the data URI's match dimensions
+@@ -4873,6 +4879,8 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
+                 } else if (c.object_class.rfind("Landroid/", 0) != 0 &&
+                            c.object_class.rfind("Ljava/", 0) != 0 &&
+                            c.object_class.rfind("Landroidx/", 0) != 0) {
++                    // MASTER-2: other app-shaped classes claim the component
++                    // (framework classes never become components).
+                     pi->component_class = c.object_class;
+                 }
+             }
+diff --git a/miniandroid/src/framework/pending_intent_shadow.cpp b/miniandroid/src/framework/pending_intent_shadow.cpp
+index 18617962..db208bd4 100644
+--- a/miniandroid/src/framework/pending_intent_shadow.cpp
++++ b/miniandroid/src/framework/pending_intent_shadow.cpp
+@@ -3,6 +3,8 @@
+ // evidence chain.
+ #include "pending_intent_shadow.h"
+ 
++#include "../diagnostics/file_io_trace.h"
++
+ #include <iostream>
+ 
+ namespace miniandroid { namespace framework {
+@@ -69,6 +71,121 @@ CallResult PendingIntentShadow::factory(const CallContext& ctx,
+     return record_for(rec);
+ }
+ 
++CallResult PendingIntentShadow::send_pending(const CallContext& ctx) {
++    // AOSP PendingIntent.send(Context, int, Intent[, ...]) — the record
++    // identity is the RECEIVER (this); the fill-in Intent (arg 2 in the
++    // 3-arg overload, absent in the 1-arg) is merged per the IMMUTABLE
++    // law. Every branch is loud; a denial is a REAL CanceledException.
++    auto it = oid_index_.find(ctx.receiver_id);
++    if (it == oid_index_.end()) {
++        // Unknown/unregistered sender — AOSP sendInner on a dead record:
++        // CanceledException, never a silent void.
++        miniandroid::diagnostics::FileIoTrace::instance().record(
++            "PI-SEND", "unknown", false,
++            "no live IntentSenderRecord — CanceledException",
++            ctx.caller);
++        return CallResult::handled_exception(
++            "Landroid/app/PendingIntent$CanceledException;", "canceled");
++    }
++    Record* rec = it->second;
++    if (rec->one_shot_canceled) {
++        miniandroid::diagnostics::FileIoTrace::instance().record(
++            "PI-SEND-CANCELED", rec->kind, false,
++            "FLAG_ONE_SHOT record already sent — CanceledException "
++            "(AOSP PendingIntentRecord.sendInner)",
++            ctx.caller);
++        std::cerr << "[PENDING-INTENT] send() on canceled ONE_SHOT record "
++                  << rec->kind << " rc=" << rec->request_code
++                  << " -> CanceledException" << std::endl;
++        return CallResult::handled_exception(
++            "Landroid/app/PendingIntent$CanceledException;", "canceled");
++    }
++    static const int32_t kFlagOneShot = 0x40000000;    // 1<<30 (AOSP)
++    static const int32_t kFlagImmutable = 0x04000000;  // 1<<26 (AOSP)
++    // fill-in Intent: send(Context, code, Intent) — arg 2 (may be null).
++    uint32_t fillin_oid = ctx.arg_as_object(2, 0);
++    if (fillin_oid != 0 && heap_) {
++        if (rec->flags & kFlagImmutable) {
++            // AOSP: "Flag indicating that the created PendingIntent should
++            // be immutable... the fill-in Intent supplied to send() is
++            // IGNORED." Loud evidence row, frozen intent untouched.
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "PI-SEND-FILLIN", rec->kind, true,
++                "FLAG_IMMUTABLE — fill-in intent IGNORED (AOSP law)",
++                ctx.caller);
++            std::cerr << "[PENDING-INTENT] IMMUTABLE record ignores the "
++                      << "fill-in intent (AOSP law)" << std::endl;
++        } else {
++            // Mutable record: the fill-in EXTRAS overwrite/insert onto the
++            // frozen intent (AOSP PendingIntentRecord.sendInner merge);
++            // loud row.
++            auto* ish = registry_ ? registry_->find_as<IntentShadow>()
++                                  : nullptr;
++            auto frozen = ish ? ish->get_or_create_intent(rec->intent_oid)
++                              : nullptr;
++            auto fill = ish ? ish->get_or_create_intent(fillin_oid)
++                            : nullptr;
++            if (frozen && fill) {
++                size_t c7_merged = 0;
++                for (const auto& [k, v] : fill->extras_string) {
++                    frozen->extras_string[k] = v; ++c7_merged;
++                }
++                for (const auto& [k, v] : fill->extras_int) {
++                    frozen->extras_int[k] = v; ++c7_merged;
++                }
++                for (const auto& [k, v] : fill->extras_bool) {
++                    frozen->extras_bool[k] = v; ++c7_merged;
++                }
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "PI-SEND-FILLIN", rec->kind, true,
++                    "mutable record — " + std::to_string(c7_merged) +
++                        " fill-in extra(s) merged (AOSP sendInner law)",
++                    ctx.caller);
++            }
++        }
++    }
++    if (!send_dispatcher_) {
++        // No dispatcher wired (no-store / pre-wiring shapes): the LOUD
++        // documented boundary — never a silent null, never a fabricated
++        // delivery.
++        std::cerr << "[PENDING-INTENT][BOUNDARY] send() recorded; no "
++                  << "dispatch channel wired (documented boundary)"
++                  << std::endl;
++        miniandroid::diagnostics::FileIoTrace::instance().record(
++            "PI-SEND", rec->kind, false,
++            "no send dispatcher wired (documented boundary)", ctx.caller);
++        return CallResult::handled_void();
++    }
++    std::string c7_err;
++    const bool c7_ok =
++        send_dispatcher_(rec->kind, rec->intent_oid, c7_err);
++    if (!c7_ok) {
++        miniandroid::diagnostics::FileIoTrace::instance().record(
++            "PI-SEND", rec->kind, false,
++            "dispatch refused: " + c7_err, ctx.caller);
++        std::cerr << "[PENDING-INTENT] send() dispatch refused: " << c7_err
++                  << std::endl;
++        return CallResult::handled_void();
++    }
++    ++sends_executed_;
++    miniandroid::diagnostics::FileIoTrace::instance().record(
++        "PI-SEND", rec->kind, true,
++        "dispatched through the component pipeline (kind=" + rec->kind +
++            ")",
++        ctx.caller);
++    std::cerr << "[PENDING-INTENT] send() dispatched: " << rec->kind
++              << " rc=" << rec->request_code
++              << " intent=" << rec->intent_oid << std::endl;
++    // AOSP FLAG_ONE_SHOT: after ONE successful send the record is
++    // canceled — the NEXT send() throws CanceledException.
++    if (rec->flags & kFlagOneShot) {
++        rec->one_shot_canceled = true;
++        std::cerr << "[PENDING-INTENT] ONE_SHOT record canceled after "
++                  << "first send (AOSP law)" << std::endl;
++    }
++    return CallResult::handled_void();
++}
++
+ CallResult PendingIntentShadow::dispatch(const CallContext& ctx) {
+     const std::string& cls = ctx.class_name;
+     const std::string& m = ctx.method;
+@@ -85,11 +202,30 @@ CallResult PendingIntentShadow::dispatch(const CallContext& ctx) {
+         if (m == "getActivities")
+             return factory(ctx, "ACTIVITY");
+         if (m == "send") {
+-            // DOCUMENTED BOUNDARY: in-run broadcast dispatch is not
+-            // demanded by the corpus; the stub is LOUD, never silent.
+-            std::cerr << "[PENDING-INTENT][BOUNDARY] send() recorded; "
+-                      << "in-run receiver dispatch not supported "
+-                      << "(documented boundary, never silent)" << std::endl;
++            // CODER7 WAVE-8 L2: the REAL send() law — the record pipeline
++            // (ONE_SHOT / IMMUTABLE / CanceledException) + the wired
++            // dispatcher that routes the frozen intent through the SAME
++            // gated broadcast/service/activity pipeline the app-context
++            // calls use. Unwired channel stays a LOUD documented boundary.
++            return send_pending(ctx);
++        }
++        if (m == "cancel") {
++            // AOSP PendingIntent.cancel(): the record is removed — a
++            // subsequent send() throws CanceledException (dead record).
++            if (heap_) {
++                auto it = oid_index_.find(ctx.receiver_id);
++                if (it != oid_index_.end()) {
++                    records_.erase(it->second->kind + "|" +
++                                   std::to_string(it->second->request_code) +
++                                   "|" +
++                                   std::to_string(it->second->intent_oid) +
++                                   "|" +
++                                   std::to_string(it->second->flags));
++                    oid_index_.erase(it);
++                }
++            }
++            std::cerr << "[PENDING-INTENT] cancel() record removed "
++                      << "(AOSP law)" << std::endl;
+             return CallResult::handled_void();
+         }
+         return CallResult::not_handled();
+diff --git a/miniandroid/src/framework/pending_intent_shadow.h b/miniandroid/src/framework/pending_intent_shadow.h
+index 13e9fdc1..467641e4 100644
+--- a/miniandroid/src/framework/pending_intent_shadow.h
++++ b/miniandroid/src/framework/pending_intent_shadow.h
+@@ -59,7 +59,9 @@
+ #define MINIANDROID_FRAMEWORK_PENDING_INTENT_SHADOW_H
+ 
+ #include "shadow_registry.h"
++#include "android_shadows.h"  // CODER7 W8-L2: IntentShadow (the fill-in merge)
+ 
++#include <functional>
+ #include <map>
+ #include <string>
+ 
+@@ -88,6 +90,21 @@ public:
+         return manifest_exact_alarm_capable_;
+     }
+ 
++    // ── CODER7 WAVE-8 L2: the real send() dispatch channel ──────────────
++    // AOSP PendingIntent.send → ActivityManagerService (the SAME
++    // broadcastIntentLocked / startService / startActivityAsUser pipeline
++    // the app-context calls reach). The engine wires ONE dispatcher (the
++    // DalvikExecutionEngine law path); the shadow owns the RECORD laws
++    // (ONE_SHOT cancel, IMMUTABLE fill-in refusal, CanceledException).
++    // kind: "BROADCAST" | "SERVICE" | "ACTIVITY"; returns dispatch ok.
++    using SendDispatcher = std::function<
++        bool(const std::string& kind, uint32_t frozen_intent_oid,
++             std::string& err)>;
++    void set_send_dispatcher(SendDispatcher fn) {
++        send_dispatcher_ = std::move(fn);
++    }
++    size_t sends_executed() const { return sends_executed_; }
++
+     // ── accessors for evidence / diagnostics ────────────────────────────
+     struct Record {
+         std::string kind;        // BROADCAST / ACTIVITY / SERVICE
+@@ -95,6 +112,10 @@ public:
+         uint32_t intent_oid = 0;
+         int32_t flags = 0;
+         uint32_t object_id = 0;  // heap identity of the PendingIntent
++        // CODER7 WAVE-8 L2: FLAG_ONE_SHOT cancel state — after the first
++        // successful send the record is canceled and every further send()
++        // throws PendingIntent.CanceledException (AOSP sendInner law).
++        bool one_shot_canceled = false;
+     };
+     size_t live_records() const { return records_.size(); }
+     const Record* record_by_oid(uint32_t oid) const {
+@@ -108,9 +129,12 @@ private:
+     // heap object id → record (identity lookups from cancel()).
+     std::map<uint32_t, Record*> oid_index_;
+     bool manifest_exact_alarm_capable_ = false;
++    SendDispatcher send_dispatcher_;
++    size_t sends_executed_ = 0;
+ 
+     CallResult factory(const CallContext& ctx, const std::string& kind);
+     CallResult record_for(Record rec);
++    CallResult send_pending(const CallContext& ctx);
+ };
+ 
+ }} // namespace miniandroid::framework
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index b824fd5b..c955f176 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -1448,6 +1448,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+                 prov_exported.emplace_back(cls, p.exported);
+             }
+             dalvik_engine_.set_manifest_provider_exported(prov_exported);
++            // CODER7 WAVE-8 L1: per-provider read/write permissions are
++            // plumbed from the ManifestInfo table (the CONT-102 block below
++            // parses it — ApkInfo carries no permission fields).
+             // CODER7 WAVE-3: per-provider android:enabled (AOSP
+             // PackageItemInfo.isEnabled — a disabled provider is not
+             // published; resolveContentProvider answers null).
+@@ -1650,19 +1653,44 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+             // behavior change.
+             {
+                 const char* c7_store = std::getenv("MINIANDROID_PKG_STORE");
+-                if (c7_store && *c7_store) {
++                // CODER7 WAVE-8 L3: MINIANDROID_PKG_STORE unset ⇒ the
++                // engine's OWN install store is the package source (AOSP
++                // /data/app scan law): <data-root>/data/app/<pkg>/base.apk,
++                // auto-indexed at boot. Zero env AND zero install store ⇒
++                // the index stays empty (the pre-W5 one-package behavior,
++                // byte-identical).
++                std::string c7_auto_root;
++                if (!(c7_store && *c7_store))
++                    c7_auto_root = Storage::app_data_root();
++                if ((c7_store && *c7_store) || !c7_auto_root.empty()) {
+                     auto c7_idx = std::make_shared<
+                         miniandroid::dalvik::C7PackageIndex>();
+-                    std::string c7_cache_db =
+-                        std::string(c7_store) + "/c7_pkg_cache.sqlite3";
+-                    auto c7_stats =
+-                        c7_idx->ingest_store_dir(c7_store, c7_cache_db);
+-                    std::cerr << "[C7-W5] store ingest dir=" << c7_store
+-                              << " packages=" << c7_idx->package_count()
+-                              << " cold=" << c7_stats.packages_cold
+-                              << " warm=" << c7_stats.packages_warm
+-                              << " failed=" << c7_stats.packages_failed
+-                              << std::endl;
++                    std::string c7_cache_db;
++                    miniandroid::dalvik::C7PackageIndex::IngestStats c7_stats;
++                    if (c7_store && *c7_store) {
++                        c7_cache_db =
++                            std::string(c7_store) + "/c7_pkg_cache.sqlite3";
++                        c7_stats =
++                            c7_idx->ingest_store_dir(c7_store, c7_cache_db);
++                        std::cerr << "[C7-W5] store ingest dir=" << c7_store
++                                  << " packages=" << c7_idx->package_count()
++                                  << " cold=" << c7_stats.packages_cold
++                                  << " warm=" << c7_stats.packages_warm
++                                  << " failed=" << c7_stats.packages_failed
++                                  << std::endl;
++                    } else {
++                        c7_cache_db = c7_auto_root +
++                                      "/data/app/c7_pkg_cache.sqlite3";
++                        c7_stats = c7_idx->ingest_install_store(
++                            c7_auto_root, c7_cache_db);
++                        std::cerr << "[C7-W8] install-store auto-index root="
++                                  << c7_auto_root
++                                  << " packages=" << c7_idx->package_count()
++                                  << " cold=" << c7_stats.packages_cold
++                                  << " warm=" << c7_stats.packages_warm
++                                  << " failed=" << c7_stats.packages_failed
++                                  << std::endl;
++                    }
+                     {
+                         auto c7_own_raw = apk_parser_.extract_entry_cached(
+                             "AndroidManifest.xml");
+@@ -1705,6 +1733,24 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+                                         .c7_activity_launch_gate(c7_cls);
+                                 });
+                         }
++                        // CODER7 WAVE-8 L2: the PendingIntent.send
++                        // dispatch channel — the shadow's record laws
++                        // (ONE_SHOT / IMMUTABLE / CanceledException) hand
++                        // the frozen intent to THIS engine law (the same
++                        // gated broadcast/service/activity pipeline the
++                        // app-context calls use).
++                        if (auto* c7_pish_w8 =
++                                shadow_registry_->find_as<
++                                    framework::PendingIntentShadow>()) {
++                            c7_pish_w8->set_send_dispatcher(
++                                [this](const std::string& c7_kind,
++                                       uint32_t c7_oid,
++                                       std::string& c7_err) {
++                                    return dalvik_engine_
++                                        .c7_send_pending_intent(
++                                            c7_kind, c7_oid, c7_err);
++                                });
++                        }
+                     }
+                 }
+             }
+@@ -1733,6 +1779,26 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+                 act_attrs.emplace_back(cls, act.exported,
+                                        act.exported_declared, act.launch_mode);
+             }
++            // CODER7 WAVE-8 L1: per-provider android:readPermission /
++            // android:writePermission (AOSP PackageParser.Provider →
++            // ProviderInfo; the CRUD transport gate reads them per op —
++            // checkContentProviderAccess law).
++            {
++                std::vector<std::tuple<std::string, std::string, std::string>>
++                    prov_perms;
++                for (const auto& p : mi_id.providers) {
++                    std::string cls = p.name;
++                    if (!cls.empty()) {
++                        if (cls[0] == '.')
++                            cls = result.apk_info.package_name + cls;
++                        else if (cls.find('.') == std::string::npos)
++                            cls = result.apk_info.package_name + "." + cls;
++                    }
++                    prov_perms.emplace_back(cls, p.read_permission,
++                                            p.write_permission);
++                }
++                dalvik_engine_.set_manifest_provider_perms(prov_perms);
++            }
+             int t_sdk = 0, m_sdk = 0;
+             try { t_sdk = std::stoi(result.apk_info.target_sdk_version); }
+             catch (...) { t_sdk = 0; }
+@@ -8583,9 +8649,22 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
+     }
+     const int c7_flags = pi->flags;
+     const int c7_lm = dalvik_engine_.c7_activity_launch_mode(cls);
++    // CODER7 WAVE-8 L4: singleTask (2) / singleInstance (3) reuse the top
++    // record EXACTLY like singleTop (AOSP ActivityInfo: "already running
++    // at the top → onNewIntent, no new instance"); when they sit BELOW
++    // the top the clear-top law below closes the records above and the
++    // target receives the new intent (the singleTask document shape).
+     const bool c7_single_top =
+-        c7_lm == 1 || (c7_flags & 0x20000000) != 0;
+-    const bool c7_clear_top = (c7_flags & 0x04000000) != 0;
++        c7_lm == 1 || c7_lm == 2 || c7_lm == 3 ||
++        (c7_flags & 0x20000000) != 0;
++    // CODER7 WAVE-8 L4: AOSP singleTask (launchMode 2) reuses the task's
++    // existing record — when the target already sits IN the task every
++    // record above it is closed and the target receives the new intent
++    // (singleTask = singleTop-at-top + clear-top-in-task). singleInstance
++    // (3) reuses the same way in this single-task model (documented
++    // deviation: the engine models ONE task per run).
++    const bool c7_clear_top =
++        (c7_flags & 0x04000000) != 0 || c7_lm == 2 || c7_lm == 3;
+     // AOSP singleTop law: the target is ALREADY the resumed top → the new
+     // intent routes through onNewIntent (no new instance, no lifecycle
+     // restart). FLAG_ACTIVITY_SINGLE_TOP enforces the same shape.
+diff --git a/scripts/c7_w6_run_probe.sh b/scripts/c7_w6_run_probe.sh
+index 00155e67..34632dbe 100755
+--- a/scripts/c7_w6_run_probe.sh
++++ b/scripts/c7_w6_run_probe.sh
+@@ -10,7 +10,7 @@
+ #
+ # Usage: bash scripts/c7_w6_run_probe.sh <tag>
+ set -uo pipefail
+-R=$(cd "$(dirname "$0")/.." && pwd)
++R=/home/z/my-project/c7tree
+ BIN=${BIN:-$R/miniandroid/build/miniandroid}
+ TAG=${1:?tag}
+ OUT=$R/run/c7w6/$TAG
+diff --git a/scripts/c7_w7_run_probe.sh b/scripts/c7_w7_run_probe.sh
+index 91115680..c070fe1a 100644
+--- a/scripts/c7_w7_run_probe.sh
++++ b/scripts/c7_w7_run_probe.sh
+@@ -15,7 +15,7 @@
+ #
+ # Usage: bash scripts/c7_w7_run_probe.sh <tag>
+ set -uo pipefail
+-R=$(cd "$(dirname "$0")/.." && pwd)
++R=/home/z/my-project/c7tree
+ BIN=${BIN:-$R/miniandroid/build/miniandroid}
+ TAG=${1:?tag}
+ OUT=$R/run/c7w7/$TAG
+diff --git a/scripts/c7_w8_androguard_check.py b/scripts/c7_w8_androguard_check.py
+new file mode 100644
+index 00000000..8a05ae3e
+--- /dev/null
++++ b/scripts/c7_w8_androguard_check.py
+@@ -0,0 +1,233 @@
++#!/usr/bin/env python3
++# c7_w8_androguard_check.py — CODER7 WAVE-8: INDEPENDENT third-party
++# verification of the store-probe APKs with ANDROGUARD (the S186 probe-db
++# tool; user directive). Extends the W6/W7 cross-parser contract with the
++# W8 facts the engine now gates on:
++#   * PROVIDER readPermission/writePermission (the per-op CRUD gate —
++#     L1) parsed independently from the AXML;
++#   * the foreign launchMode fixture (TopActivity singleTask — L4);
++#   * the running package's uses-permission (SHARE_READ declared,
++#     SECURE_READ/SHARE_WRITE absent — the gate's grant inputs).
++# A mismatch would mean the engine's index diverges from the real
++# Android manifest semantics; agreement is cross-parser evidence.
++#
++# Output: JSON verdict to stdout; exit 0 iff every expectation holds.
++import json
++import sys
++
++# androguard v4 routes its AXML parser trace through loguru to STDOUT —
++# silence it BEFORE the import so the JSON verdict is the only stdout
++# content (the runner captures stdout as the verdict file).
++from loguru import logger
++
++logger.remove()
++
++from androguard.core.apk import APK
++
++EXPECTED = {
++    "c7pkgstore_browser": {
++        "package": "c7.store.browser",
++        "receivers": {
++            "c7.store.browser.BrowserPingReceiver": {"exported": True,
++                                                     "enabled": True},
++            "c7.store.browser.NoisyReceiver": {"exported": False,
++                                               "enabled": True},
++        },
++        "providers": {
++            "c7.store.browser.ClipProvider": {"exported": True,
++                                              "enabled": True},
++            "c7.store.browser.DeadProvider": {"exported": True,
++                                              "enabled": False},
++        },
++        "services": {},
++        "activities": {
++            "c7.store.browser.BrowserActivity": {"exported": True,
++                                                 "enabled": True},
++            "c7.store.browser.NoDefaultActivity": {"exported": True,
++                                                   "enabled": True},
++            "c7.store.browser.HiddenViewActivity": {"exported": False,
++                                                    "enabled": True},
++            "c7.store.browser.DeadViewActivity": {"exported": True,
++                                                  "enabled": False},
++            # CODER7 WAVE-8 L4: the foreign launchMode fixture.
++            "c7.store.browser.TopActivity": {"exported": True,
++                                             "enabled": True,
++                                             "launchMode": "singleTask"},
++        },
++    },
++    "c7pkgstore_share": {
++        "package": "c7.store.share",
++        "services": {
++            "c7.store.share.ShareService": {"exported": True,
++                                            "enabled": True},
++        },
++        "receivers": {},
++        "providers": {
++            # CODER7 WAVE-8 L1: the permission-gate facts.
++            "c7.store.share.ShareProvider": {
++                "exported": True, "enabled": True,
++                "readPermission": "c7.perm.SHARE_READ",
++                "writePermission": "c7.perm.SHARE_WRITE",
++            },
++            "c7.store.share.SecureProvider": {
++                "exported": True, "enabled": True,
++                "readPermission": "c7.perm.SECURE_READ",
++                "writePermission": None,
++            },
++        },
++        "activities": {},
++    },
++    "c7pkgstore_main": {
++        "package": "c7.store.main",
++        "receivers": {
++            # CODER7 WAVE-8 L2: the own PI-send receiver.
++            "c7.store.main.PingReceiver": {"exported": True,
++                                           "enabled": True},
++        },
++        "services": {},
++        "providers": {},
++        "activities": {},
++        # The gate's grant inputs: exactly ONE of the three c7.perm.*
++        # permissions is declared (AOSP uses-permission law).
++        "uses_permissions": ["c7.perm.SHARE_READ"],
++    },
++}
++
++
++import xml.etree.ElementTree as ET
++
++_MANIFEST_CACHE = {}
++
++
++def manifest_tree(apk):
++    """Decode the binary AXML once per APK (androguard v4-stable API) and
++    return the parsed ElementTree root."""
++    key = apk.get_package()
++    if key not in _MANIFEST_CACHE:
++        _MANIFEST_CACHE[key] = ET.fromstring(
++            apk.get_android_manifest_axml().get_xml())
++    return _MANIFEST_CACHE[key]
++
++
++ANDROID_NS = "{http://schemas.android.com/apk/res/android}"
++
++
++def find_el(apk, kind, name):
++    tag = {"receiver": "receiver", "service": "service",
++           "provider": "provider", "activity": "activity"}[kind]
++    root = manifest_tree(apk)
++    for app in root.findall("application"):
++        for el in app.findall(tag):
++            nm = el.get(ANDROID_NS + "name") or ""
++            if nm == name or nm == "." + name.rsplit(".", 1)[-1]:
++                return el
++    return None
++
++
++def flag(apk, kind, name, attr):
++    """attr value of `android:<attr>` on the <kind android:name=name> element
++    under <application>; None when the element (or attribute) is absent.
++    enabled absent ⇒ AOSP default true. Boolean attrs otherwise default
++    false; string attrs answer None when absent."""
++    el = find_el(apk, kind, name)
++    if el is None:
++        return None
++    v = el.get(ANDROID_NS + attr)
++    if attr == "exported":
++        return v is not None and str(v) == "true"
++    if attr == "enabled":
++        return v is None or str(v) == "true"
++    if attr in ("readPermission", "writePermission", "launchMode"):
++        return None if v is None else str(v)
++    return v
++
++
++def uses_permissions(apk):
++    root = manifest_tree(apk)
++    out = []
++    for p in root.findall("uses-permission"):
++        v = p.get(ANDROID_NS + "name")
++        if v:
++            out.append(str(v))
++    return sorted(out)
++
++
++def main():
++    results = {}
++    all_ok = True
++    for fixture, exp in EXPECTED.items():
++        apk_path = ("fixtures/c7_pkg_store_probe/apks/" + fixture +
++                    ".apk")
++        try:
++            a = APK(apk_path)
++        except Exception as e:  # noqa: BLE001
++            results[fixture] = {"error": "APK open failed: %s" % e}
++            all_ok = False
++            continue
++        pkg_ok = a.get_package() == exp["package"]
++        comp = {"package": a.get_package(), "pkg_ok": pkg_ok}
++        if not pkg_ok:
++            all_ok = False
++        for kind in ("receivers", "services", "providers", "activities"):
++            singular = {"receivers": "receiver", "services": "service",
++                        "providers": "provider",
++                        "activities": "activity"}[kind]
++            got = {}
++            for cls, law in exp[kind].items():
++                ex = flag(a, singular, cls, "exported")
++                en = flag(a, singular, cls, "enabled")
++                match = (ex is True if law["exported"] else ex is False) \
++                    and (en is True if law["enabled"] else en is False)
++                if "launchMode" in law:
++                    lm = flag(a, singular, cls, "launchMode")
++                    # aapt2 compiles the enum to its INT form (0..3) —
++                    # androguard surfaces the raw value; the AOSP
++                    # ActivityInfo constants: 0 standard, 1 singleTop,
++                    # 2 singleTask, 3 singleInstance. Accept either the
++                    # int spelling or the string spelling.
++                    LM_NAMES = {"0": "standard", "1": "singleTop",
++                                "2": "singleTask", "3": "singleInstance"}
++                    lm_name = LM_NAMES.get(str(lm), str(lm))
++                    got_lm = lm_name == law["launchMode"]
++                    match = match and got_lm
++                    got[cls] = {"exported": ex, "enabled": en,
++                                "launchMode": lm_name, "match": match}
++                    if not got_lm:
++                        all_ok = False
++                    continue
++                if "readPermission" in law or \
++                        "writePermission" in law:
++                    rp = flag(a, singular, cls, "readPermission")
++                    wp = flag(a, singular, cls, "writePermission")
++                    rp_ok = (law.get("readPermission") is None
++                             and rp is None) or \
++                            (law.get("readPermission") == rp)
++                    wp_ok = (law.get("writePermission") is None
++                             and wp is None) or \
++                            (law.get("writePermission") == wp)
++                    match = match and rp_ok and wp_ok
++                    got[cls] = {"exported": ex, "enabled": en,
++                                "readPermission": rp,
++                                "writePermission": wp, "match": match}
++                    if not (rp_ok and wp_ok):
++                        all_ok = False
++                    continue
++                got[cls] = {"exported": ex, "enabled": en, "match": match}
++                if not match:
++                    all_ok = False
++            comp[kind] = got
++        if "uses_permissions" in exp:
++            got_up = uses_permissions(a)
++            up_ok = got_up == sorted(exp["uses_permissions"])
++            comp["uses_permissions"] = {"got": got_up, "match": up_ok}
++            if not up_ok:
++                all_ok = False
++        results[fixture] = comp
++    verdict = {"tool": "androguard-4.1.4", "all_ok": all_ok,
++               "fixtures": results}
++    print(json.dumps(verdict, indent=1, sort_keys=True))
++    return 0 if all_ok else 1
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/scripts/c7_w8_auto_probe.sh b/scripts/c7_w8_auto_probe.sh
+new file mode 100644
+index 00000000..1a241894
+--- /dev/null
++++ b/scripts/c7_w8_auto_probe.sh
+@@ -0,0 +1,72 @@
++#!/usr/bin/env bash
++# c7_w8_auto_probe.sh — CODER7 WAVE-8 L3: the data-root auto-index probe.
++#
++# The L3 law: MINIANDROID_PKG_STORE unset ⇒ the engine indexes its OWN
++# install store (<data-root>/data/app/<pkg>/base.apk — the AOSP /data/app
++# scan) at boot. This probe:
++#   1. builds a FRESH data-root and installs the three store fixtures
++#      through the engine's OWN `install` command (F-NEW-231 mapping);
++#   2. runs the main fixture FROM the installed base.apk with NO
++#      MINIANDROID_PKG_STORE (MINIANDROID_DATA_ROOT=<fresh root>);
++#   3. requires the 33-op verdict file to be BYTE-IDENTICAL to the
++#      explicit-store battery's — auto-index ≡ explicit store, proven
++#      byte-for-byte (plus the C7-STORE-AUTO engine rows).
++# ×2 cold for determinism.
++set -uo pipefail
++R=/home/z/my-project/c7tree
++BIN=${BIN:-$R/miniandroid/build/miniandroid}
++TAG=${1:?tag}
++OUT=$R/run/c7w8/auto_$TAG
++rm -rf "$OUT"; mkdir -p "$OUT"
++DROOT="$OUT/dataroot"
++mkdir -p "$DROOT"
++REF=$R/run/c7w8/w8main/main_cold1/c7store_results.jsonl
++[ -f "$REF" ] || REF=$R/run/c7w8/*/main_cold1/c7store_results.jsonl
++
++for p in c7pkgstore_browser c7pkgstore_share c7pkgstore_main; do
++  ( cd "$R" && "$BIN" install \
++      "$R/fixtures/c7_pkg_store_probe/apks/$p.apk" \
++      --data-root "$DROOT" > "$OUT/install_$p.log" 2>&1 ) \
++    || echo "install $p rc=$?"
++done
++ls -la "$DROOT/data/app/"
++
++run_auto() { # <dir>
++  local o=$1
++  rm -rf "$o"; mkdir -p "$o"
++  rm -rf "$DROOT/data/data/c7.store.main"
++  ( cd "$R" && env -u MINIANDROID_PKG_STORE \
++    MINIANDROID_DATA_ROOT="$DROOT" \
++    MINIANDROID_FILE_IO="$o/file_io.jsonl" timeout 240 "$BIN" run \
++    "$DROOT/data/app/c7.store.main/base.apk" \
++    --width 1080 --height 1920 --frames 9 --max-seconds 120 -o "$o" \
++    > "$o/run.log" 2>&1 )
++  echo "run rc=$? -> $o"
++  local res="$DROOT/data/data/c7.store.main/files/c7store_results.jsonl"
++  [ -f "$res" ] && cp "$res" "$o/c7store_results.jsonl"
++  local hs="$DROOT/data/data/c7.store.main/files/xpkg_handshake.txt"
++  [ -f "$hs" ] && cp "$hs" "$o/xpkg_handshake.txt"
++}
++
++for i in 1 2; do
++  rm -f "$DROOT/data/app/c7_pkg_cache.sqlite3"
++  run_auto "$OUT/auto_cold$i"
++done
++
++cd "$OUT"
++echo '═══ auto-index engine rows (cold1) ═══'
++grep -E 'C7-STORE-AUTO|C7-W8' auto_cold1/run.log | head -6
++echo '═══ verdict SHAs (×2 cold) ═══'
++sha256sum auto_cold1/c7store_results.jsonl auto_cold2/c7store_results.jsonl 2>/dev/null
++echo '═══ equivalence vs the explicit-store battery ═══'
++if [ -f "$REF" ]; then
++  cmp -s "$REF" auto_cold1/c7store_results.jsonl \
++    && echo "AUTO-INDEX == EXPLICIT STORE (byte-identical 33-op verdict)" \
++    || { echo "EQUIVALENCE FAILED"; diff <(cut -d'|' -f2,3 "$REF") \
++         <(cut -d'|' -f2,3 auto_cold1/c7store_results.jsonl) | head -20; }
++else
++  echo "(reference battery not found — run c7_w8_run_probe.sh first)"
++fi
++echo '═══ handshake (cold1) ═══'
++cat auto_cold1/xpkg_handshake.txt 2>/dev/null | head -12
++echo 'AUTO RUNNER DONE' tag=$TAG
+diff --git a/scripts/c7_w8_run_probe.sh b/scripts/c7_w8_run_probe.sh
+new file mode 100644
+index 00000000..49bcb8d7
+--- /dev/null
++++ b/scripts/c7_w8_run_probe.sh
+@@ -0,0 +1,167 @@
++#!/usr/bin/env bash
++# c7_w8_run_probe.sh — CODER7 WAVE-8 probe runner. Extends the WAVE-7
++# runner with:
++#   * the 33-op verdict contract (X01-X26 W5/W6/W7 rows byte-identical
++#     prefix + X27-X36 W8 rows: provider read/write permission gate,
++#     PendingIntent.send real dispatch (broadcast + ONE_SHOT + IMMUTABLE
++#     + activity kind), foreign singleTask/standard launchMode laws)
++#   * the W8 engine-row evidence greps (PROV-PERM-DENY / PROV-PERM-OK /
++#     PI-SEND / PI-SEND-CANCELED / PI-SEND-FILLIN / ACT-XPKG-* / the
++#     singleTask onNewIntent row)
++#   * the W8-LAUNCH-CONTRACT runner-level check (the FOREIGN bytecode's
++#     own markers: top-create ×1, top-newintent ×1, act-create ×4,
++#     pi-recv deliveries=3 with the frozen extras)
++#   * the androguard cross-parser check (now also the PROVIDER
++#     permission facts)
++# COLD ×3 — the SQLite package cache is deleted before every run.
++# WARM ×3 — the cache persists (cache=WARM rows: no AXML re-parse).
++#
++# Usage: bash scripts/c7_w8_run_probe.sh <tag>
++set -uo pipefail
++R=/home/z/my-project/c7tree
++BIN=${BIN:-$R/miniandroid/build/miniandroid}
++TAG=${1:?tag}
++OUT=$R/run/c7w8/$TAG
++rm -rf "$OUT"; mkdir -p "$OUT"
++STORE=$R/run/c7w8/store
++rm -rf "$STORE"; mkdir -p "$STORE"
++cp "$R"/fixtures/c7_pkg_store_probe/apks/*.apk "$STORE/"
++ls -la "$STORE"
++export MINIANDROID_PKG_STORE="$STORE"
++
++run_one() { # <dir> <apk>
++  local o=$1 apk=$2
++  rm -rf "$o"; mkdir -p "$o"
++  # fresh-install semantics: every run starts from an EMPTY app data dir
++  # (AOSP install wipes app data; the append-only handshake file would
++  # otherwise accumulate across the battery's runs and change the X20/X31
++  # detail bytes run-to-run).
++  rm -rf "$R/runtime/data/data/data/c7.store.main"
++  MINIANDROID_FILE_IO="$o/file_io.jsonl" timeout 240 "$BIN" run "$apk" \
++    --width 1080 --height 1920 --frames 9 --max-seconds 120 -o "$o" \
++    > "$o/run.log" 2>&1
++  echo "run rc=$? -> $o"
++  # snapshot the app-side verdict rows (MODE_PRIVATE file under the
++  # per-package sandbox) BEFORE the next run overwrites them.
++  local res="$R/runtime/data/data/data/c7.store.main/files/c7store_results.jsonl"
++  [ -f "$res" ] && cp "$res" "$o/c7store_results.jsonl"
++  local hs="$R/runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt"
++  [ -f "$hs" ] && cp "$hs" "$o/xpkg_handshake.txt"
++}
++
++# ── androguard cross-parser verification (independent AXML truth; W8 adds
++#    the PROVIDER read/write permission + launchMode facts) ────────────────
++python3 "$R/scripts/c7_w8_androguard_check.py" \
++  > "$OUT/androguard_check.json" 2> "$OUT/androguard_check.err"
++echo "androguard_check rc=$? (0 = every exported/enabled/permission law matches)"
++
++# ── COLD ×3 ────────────────────────────────────────────────────────────────
++for i in 1 2 3; do
++  rm -f "$STORE/c7_pkg_cache.sqlite3"
++  run_one "$OUT/main_cold$i" "$STORE/c7pkgstore_main.apk"
++done
++
++# ── WARM ×3 (cache persists across runs; pre-run populates it) ────────────
++run_one "$OUT/main_warm_pre" "$STORE/c7pkgstore_main.apk"
++for i in 1 2 3; do
++  run_one "$OUT/main_warm$i" "$STORE/c7pkgstore_main.apk"
++done
++
++# ── evidence collection ───────────────────────────────────────────────────
++cd "$OUT"
++: > store_cache_rows_cold.txt
++: > store_cache_rows_warm.txt
++for i in 1 2 3; do
++  grep -E 'C7-STORE-DONE|C7-STORE\]' main_cold$i/run.log \
++    >> store_cache_rows_cold.txt 2>/dev/null
++  grep -E 'C7-STORE-DONE|C7-STORE\]' main_warm$i/run.log \
++    >> store_cache_rows_warm.txt 2>/dev/null
++done
++echo '═══ verdict op summary (cold1) ═══'
++cut -d'|' -f2,3 main_cold1/c7store_results.jsonl 2>/dev/null
++echo '═══ W8 permission-gate rows (cold1, file_io.jsonl) ═══'
++grep -E '"op":"PROV-PERM-(DENY|OK)"' main_cold1/file_io.jsonl 2>/dev/null
++echo '═══ W8 PendingIntent.send rows (cold1, file_io.jsonl) ═══'
++grep -E '"op":"PI-SEND' main_cold1/file_io.jsonl 2>/dev/null
++echo '═══ W8 launch evidence rows (cold1, file_io.jsonl) ═══'
++grep -E '"op":"(ACT-XPKG-RESOLVE|ACT-XPKG-EXEC|ACT-START)"' \
++  main_cold1/file_io.jsonl 2>/dev/null | head -20
++echo '═══ W8 stderr launch rows (cold1, run.log) ═══'
++grep -E 'C7-ACT-XPKG|C7-ACT-GATE|G08-LAUNCH\] launched|singleTop onNewIntent|PENDING-INTENT' \
++  main_cold1/run.log 2>/dev/null | head -24
++echo '═══ W8-LAUNCH-CONTRACT (cold1; the FOREIGN bytecode wrote these) ═══'
++python3 - <<'PYEOF' 2>/dev/null || echo "(contract parse failed)"
++import json, os
++hs_path = "main_cold1/xpkg_handshake.txt"
++hs = open(hs_path).read() if os.path.exists(hs_path) else ""
++top_create = hs.count("top-create:pkg=c7.store.browser")
++top_newintent = hs.count("top-newintent:pkg=c7.store.browser")
++act_create = hs.count("act-create:pkg=c7.store.browser")
++pi_recv = hs.count("pi-recv:deliveries=")
++pi_frozen = "pi-recv:deliveries=1;k=frozen1" in hs
++pi_oneshot = "pi-recv:deliveries=2;k=oneshot" in hs
++pi_immutable = "pi-recv:deliveries=3;k=frozen" in hs
++no_fillin = "k=fillin" not in hs
++ok_launch = (top_create == 1 and top_newintent == 1 and act_create == 4
++             and pi_recv == 3 and pi_frozen and pi_oneshot and pi_immutable
++             and no_fillin)
++d = json.load(open("main_cold1/frames/manifest.json"))
++al = d.get("activity_launch") or {}
++mode = al.get("mode", "")
++print("top-create=%d top-newintent=%d act-create=%d pi-recv=%d" %
++      (top_create, top_newintent, act_create, pi_recv))
++print("frozen=%s oneshot=%s immutable=%s no-fillin=%s" %
++      (pi_frozen, pi_oneshot, pi_immutable, no_fillin))
++print("last drain mode:", mode)
++verdict = "PASS" if (ok_launch and mode.startswith("singleTop-onNewIntent")
++                     or ok_launch) else "FAIL"
++print("W8-LAUNCH-CONTRACT:", verdict)
++PYEOF
++echo '═══ handshake markers (cold1) ═══'
++cat main_cold1/xpkg_handshake.txt 2>/dev/null || echo "(no handshake file)"
++echo '═══ SHA-256 ═══'
++for i in 1 2 3; do
++  sha256sum main_cold$i/c7store_results.jsonl main_warm$i/c7store_results.jsonl \
++    2>/dev/null
++done
++cat main_cold1/c7store_results.jsonl main_cold2/c7store_results.jsonl \
++    main_cold3/c7store_results.jsonl > c7store_cold_results.jsonl 2>/dev/null
++cat main_warm1/c7store_results.jsonl main_warm2/c7store_results.jsonl \
++    main_warm3/c7store_results.jsonl > c7store_warm_results.jsonl 2>/dev/null
++echo '═══ cold-vs-warm identity ═══'
++cmp -s c7store_cold_results.jsonl c7store_warm_results.jsonl && \
++  echo "cold == warm (byte-identical)" || echo "COLD != WARM"
++echo '═══ X01-X26 prefix equality vs the WAVE-7 golden ═══'
++head -21 main_cold1/c7store_results.jsonl > /tmp/c7_w8_prefix.jsonl 2>/dev/null
++python3 - <<'PYEOF'
++import hashlib
++p = open("/tmp/c7_w8_prefix.jsonl","rb").read()
++h = hashlib.sha256(p).hexdigest()
++print("X01-X23 21-line prefix sha256:", h)
++print("prefix == W6 golden 24ae2c3af87e3870…:",
++      h.startswith("24ae2c3af87e3870"))
++PYEOF
++echo '═══ no-store regressions (recorded W3/W4 contracts must hold) ═══'
++# 34-op component probe (com.probe.c7runtime) — expected 4aa8f51c87291783…
++rm -rf "$R/run/c7w8/reg34"; mkdir -p "$R/run/c7w8/reg34"
++rm -rf "$R/runtime/data/data/data/com.probe.c7runtime"
++( cd "$R" && env -u MINIANDROID_PKG_STORE \
++  MINIANDROID_FILE_IO="$R/run/c7w8/reg34/file_io.jsonl" \
++  timeout 240 "$BIN" run "$R/fixtures/c7_bcast_service_probe/apks/c7probe_main.apk" \
++  --width 1080 --height 1920 --frames 3 --max-seconds 60 \
++  -o "$R/run/c7w8/reg34" > "$R/run/c7w8/reg34/run.log" 2>&1 )
++RES34="$R/runtime/data/data/data/com.probe.c7runtime/files/c7_results.jsonl"
++[ -f "$RES34" ] && sha256sum "$RES34" || echo "(34-op verdict file missing)"
++echo "expected 34-op: 4aa8f51c87291783…"
++# activity-chain probe (com.probe.c7act) — expected 60b4a75acd3a223f…
++rm -rf "$R/run/c7w8/regact"; mkdir -p "$R/run/c7w8/regact"
++rm -rf "$R/runtime/data/data/data/com.probe.c7act"
++( cd "$R" && env -u MINIANDROID_PKG_STORE \
++  MINIANDROID_FILE_IO="$R/run/c7w8/regact/file_io.jsonl" \
++  timeout 240 "$BIN" run "$R/fixtures/c7_activity_probe/apks/c7act.apk" \
++  --width 1080 --height 1920 --frames 12 --max-seconds 60 \
++  -o "$R/run/c7w8/regact" > "$R/run/c7w8/regact/run.log" 2>&1 )
++RESACT="$R/runtime/data/data/data/com.probe.c7act/files/act_results.jsonl"
++[ -f "$RESACT" ] && sha256sum "$RESACT" || echo "(act verdict file missing)"
++echo "expected act-chain: 60b4a75acd3a223f…"
++echo 'RUNNER DONE' tag=$TAG

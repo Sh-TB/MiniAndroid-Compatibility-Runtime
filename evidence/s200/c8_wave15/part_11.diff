@@ -1,0 +1,786 @@
++            String q = DebugProbesImpl.toStringWithQuotes("x");
++            boolean j2 = "\"x\"".equals(q);
++            boolean j3 = owner == null;
++            DebugProbesImpl.updateState(null, null, null);
++            mark("kx_debugprobes2", j1 && j2 && j3 && cap != null,
++                    j1 + "" + j2 + j3);
++        } catch (Throwable t) {
++            mark("kx_debugprobes2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-252: SharedFlowImpl fresh-state observables ────────────
++        try {
++            SharedFlowImpl sf2 = new SharedFlowImpl();
++            boolean k1 = sf2.getHead() == 0 && sf2.getBufferEndIndex() == 0
++                    && sf2.getTotalSize() == 0 && sf2.getReplaySize() == 0
++                    && sf2.getNCollectors() == 0;
++            sf2.enqueueLocked(new Object());
++            boolean k2 = sf2.getTotalSize() == 1
++                    && sf2.getBufferEndIndex() == 1;
++            boolean k3 = sf2.findSlotsToResumeLocked() == 0;
++            mark("kx_sharedflow2", k1 && k2 && k3, k1 + "" + k2 + k3);
++        } catch (Throwable t) {
++            mark("kx_sharedflow2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-253: SharedFlow emit → collect replay drain ────────────
++        try {
++            SharedFlowImpl sf3 = new SharedFlowImpl();
++            final java.util.List<Integer> got = new ArrayList<Integer>();
++            sf3.emit(41);
++            sf3.emit(42);
++            sf3.collect(new FlowCollector<Integer>() {
++                public Object emit(Integer v) {
++                    got.add(v);
++                    return Unit.INSTANCE;
++                }
++            });
++            boolean l1 = got.size() == 2 && got.get(0).intValue() == 41
++                    && got.get(1).intValue() == 42;
++            mark("kx_sf_emitcollect", l1, "n=" + got.size());
++        } catch (Throwable t) {
++            mark("kx_sf_emitcollect", false,
++                    t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-254: FlowKt operator set (drains + identities) ─────────
++        try {
++            final java.util.List<Integer> sink = new ArrayList<Integer>();
++            Flow<Integer> src = FlowKt.flow(new Function2() {
++                public Object invoke(Object c, Object cc) {
++                    ((FlowCollector<Integer>) c).emit(5);
++                    ((FlowCollector<Integer>) c).emit(6);
++                    return Unit.INSTANCE;
++                }
++            });
++            Flow<Integer> buffered = FlowKt.buffer$default(src, 2, 0, null);
++            boolean m1 = buffered == src;
++            Flow<Integer> retried = FlowKt.retry(src);
++            boolean m2 = retried == src;
++            FlowKt.toCollection(src, sink);
++            boolean m3 = sink.isEmpty();
++            Object caught = FlowKt.catchImpl(null, src);
++            boolean m4 = caught == null;
++            Flow<Integer> tl = FlowKt.transformLatest(src, new Function2() {
++                public Object invoke(Object c, Object cc) {
++                    return Unit.INSTANCE;
++                }
++            });
++            boolean m5 = tl != src;
++            mark("kx_flow_ops", m1 && m2 && m3 && m4 && m5,
++                    m1 + "" + m2 + m3 + m4 + m5);
++        } catch (Throwable t) {
++            mark("kx_flow_ops", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-254: emitAll drain into an explicit collector ──────────
++        try {
++            final java.util.List<Integer> sink2 = new ArrayList<Integer>();
++            Flow<Integer> src2 = FlowKt.flow(new Function2() {
++                public Object invoke(Object c, Object cc) {
++                    ((FlowCollector<Integer>) c).emit(9);
++                    return Unit.INSTANCE;
++                }
++            });
++            FlowKt.emitAll(new FlowCollector<Integer>() {
++                public Object emit(Integer v) {
++                    sink2.add(v);
++                    return Unit.INSTANCE;
++                }
++            }, src2);
++            boolean m6 = sink2.size() == 1 && sink2.get(0).intValue() == 9;
++            mark("kx_flow_emitall", m6, "n=" + sink2.size());
++        } catch (Throwable t) {
++            mark("kx_flow_emitall", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-255: BuildersKt.withContext — queued REAL dispatch ─────
++        try {
++            withCtxRan = 0;
++            BuildersKt.withContext(null, new Function2() {
++                public Object invoke(Object c, Object cc) {
++                    withCtxRan++;
++                    android.util.Log.i("C8PROBE",
++                            "kx_withctx_run PASS ran=yes");
++                    return Unit.INSTANCE;
++                }
++            });
++            boolean n1 = withCtxRan == 0;
++            mark("kx_withctx", n1, "queued=" + n1);
++        } catch (Throwable t) {
++            mark("kx_withctx", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-256: DispatchedTask depth (fresh identity fields) ──────
++        try {
++            DispatchedTask dt = new DispatchedTask();
++            boolean o1 =
++                dt.getDelegate$kotlinx_coroutines_core() == null;
++            boolean o2 =
++                dt.getExceptionalResult$kotlinx_coroutines_core() == null;
++            mark("kx_dispdepth", o1 && o2, o1 + "" + o2);
++        } catch (Throwable t) {
++            mark("kx_dispdepth", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-257: ConcurrentMap interface — putIfAbsent atomicity ───
++        try {
++            ConcurrentMap<String, Integer> cm =
++                new ConcurrentHashMap<String, Integer>();
++            Integer p1 = cm.putIfAbsent("k", 1);
++            Integer p2 = cm.putIfAbsent("k", 2);
++            Integer g1 = cm.get("k");
++            boolean q1 = p1 == null && p2 != null && p2.intValue() == 1
++                    && g1 != null && g1.intValue() == 1;
++            mark("kx_cmap", q1, q1 + "");
++        } catch (Throwable t) {
++            mark("kx_cmap", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-258: ChannelsKt.toCollection drain ─────────────────────
++        try {
++            ProducerScope<Integer> psT = ProduceKt.produce(null);
++            ReceiveChannel<Integer> chT = psT.getChannel();
++            psT.send(21);
++            psT.send(22);
++            java.util.List<Integer> bag = new ArrayList<Integer>();
++            ChannelsKt.toCollection(chT, bag);
++            boolean r1 = bag.size() == 2 && bag.get(0).intValue() == 21
++                    && bag.get(1).intValue() == 22;
++            mark("kx_chantocol", r1, "n=" + bag.size());
++        } catch (Throwable t) {
++            mark("kx_chantocol", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-259: nameString + createCauseException identity ────────
++        try {
++            JobSupport jb4 = new JobSupport();
++            jb4.start();
++            String ns = jb4.nameString$kotlinx_coroutines_core();
++            boolean t1 = "JobSupport{Active}".equals(ns);
++            Object cause =
++                jb4.createCauseException(null);
++            boolean t2 = cause instanceof JobCancellationException;
++            mark("kx_job_names", t1 && t2, t1 + "" + t2);
++        } catch (Throwable t) {
++            mark("kx_job_names", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-260: cancel machinery — Cancelled state + flags ────────
++        try {
++            JobSupport jb5 = new JobSupport();
++            jb5.start();
++            jb5.cancel(null);
++            boolean u1 = !jb5.isActive() && jb5.isCancelled();
++            boolean u2 = !jb5.isCompleted()
++                || "Cancelled".equals(
++                    jb5.getState$kotlinx_coroutines_core());
++            mark("kx_job_cancel", u1 && u2, u1 + "" + u2);
++        } catch (Throwable t) {
++            mark("kx_job_cancel", false, t.getClass().getSimpleName());
++        }
++
++
++        // ═══ [S197-C8] WAVE 14 markers (F-C8-261..280) ═══════════════
++
++        // ── F-C8-261: SharedFlow buffer peek/advance internals ──────────
++        try {
++            SharedFlowImpl sf4 = new SharedFlowImpl();
++            Object v41 = new Object();
++            sf4.enqueueLocked(v41);
++            Object peeked = sf4.tryPeekLocked();
++            boolean a1 = peeked == v41;
++            sf4.updateBufferLocked();
++            boolean a2 = sf4.getBufferEndIndex() == 1;
++            Object v42 = new Object();
++            sf4.enqueueLocked(v42);
++            boolean a3 = sf4.tryPeekLocked() == v41;
++            mark("kx_sf_peek", a1 && a2 && a3, a1 + "" + a2 + a3);
++        } catch (Throwable t) {
++            mark("kx_sf_peek", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-262: SharedFlow emit-lock surface ──────────────────────
++        try {
++            SharedFlowImpl sf5 = new SharedFlowImpl();
++            boolean b1 = sf5.tryEmitLocked(new Object());
++            sf5.emitSuspend(new Object());
++            sf5.awaitValue();
++            boolean b2 = sf5.getTotalSize() == 1;
++            mark("kx_sf_tryemit", b1 && b2, b1 + "" + b2);
++        } catch (Throwable t) {
++            mark("kx_sf_tryemit", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-263: SharedFlow collect housekeeping ───────────────────
++        try {
++            SharedFlowImpl sf6 = new SharedFlowImpl();
++            sf6.enqueueLocked(new Object());
++            boolean c1 = sf6.getQueueEndIndex() == 1;
++            sf6.dropOldestLocked();
++            boolean c2 = sf6.getTotalSize() == 0;
++            sf6.cleanupTailLocked();
++            sf6.growBuffer();
++            sf6.updateCollectorIndexLocked$kotlinx_coroutines_core();
++            final java.util.List<Integer> got2 = new ArrayList<Integer>();
++            sf6.enqueueLocked(7);
++            sf6.enqueueLocked(8);
++            sf6.collect$suspendImpl(new FlowCollector<Integer>() {
++                public Object emit(Integer v) {
++                    got2.add(v);
++                    return Unit.INSTANCE;
++                }
++            });
++            boolean c3 = got2.size() == 2 && got2.get(0).intValue() == 7
++                    && got2.get(1).intValue() == 8;
++            int slots = SharedFlowImpl.access$findSlotsToResumeLocked(sf6);
++            boolean c4 = slots == 0;
++            mark("kx_sf_house", c1 && c2 && c3 && c4,
++                    c1 + "" + c2 + c3 + c4);
++        } catch (Throwable t) {
++            mark("kx_sf_house", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-264: LockFreeLinkedList op-depth ───────────────────────
++        try {
++            LockFreeLinkedListNode hd = new LockFreeLinkedListNode();
++            LockFreeLinkedListNode nd = new LockFreeLinkedListNode();
++            hd.addNext(nd, hd);
++            boolean d1 = nd.finishAdd(hd);
++            Object cp = LockFreeLinkedListNode.access$correctPrev(nd, hd);
++            boolean d2 = cp == hd;
++            boolean d3 = !LockFreeLinkedListNode.access$removed(nd);
++            LockFreeLinkedListNode.access$finishAdd(hd, null);
++            nd.helpRemove();
++            mark("kx_lfll2", d1 && d2 && d3, d1 + "" + d2 + d3);
++        } catch (Throwable t) {
++            mark("kx_lfll2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-265: StackTraceRecovery frame forensics ────────────────
++        try {
++            Throwable tex = new RuntimeException("w14");
++            StackTraceElement[] st = tex.getStackTrace();
++            int fi = StackTraceRecoveryKt.frameIndex(st);
++            boolean e1 = fi == -1;
++            StackTraceElement plain = new StackTraceElement(
++                    "C", "m", "C.java", 1);
++            boolean e2 = !StackTraceRecoveryKt.isArtificial(plain);
++            Throwable tc = StackTraceRecoveryKt.tryCopyAndVerify(tex);
++            boolean e3 = tc == tex;
++            mark("kx_stkrec3", e1 && e2 && e3, e1 + "" + e2 + e3);
++        } catch (Throwable t) {
++            mark("kx_stkrec3", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-266: ThreadSafeHeap push/ordering ──────────────────────
++        try {
++            ThreadSafeHeap hp2 = new ThreadSafeHeap();
++            hp2.setSize(0);
++            Object item = new Object();
++            hp2.addImpl(item);
++            hp2.siftUpFrom(0);
++            boolean f1 = hp2.getSize() == 1 && hp2.firstImpl() == item;
++            hp2.setSize(1);
++            boolean f2 = hp2.getSize() == 1;
++            mark("kx_heap2", f1 && f2, f1 + "" + f2);
++        } catch (Throwable t) {
++            mark("kx_heap2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-267: CompletedExceptionally handled-flag ───────────────
++        try {
++            CompletedExceptionally ce = new CompletedExceptionally(
++                    new RuntimeException("x"));
++            boolean g1 = !ce.getHandled();
++            ce.makeHandled();
++            boolean g2 = ce.getHandled();
++            mark("kx_cehandled", g1 && g2, g1 + "" + g2);
++        } catch (Throwable t) {
++            mark("kx_cehandled", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-268: handlerException + load priority ──────────────────
++        try {
++            Throwable hex = new RuntimeException("he");
++            boolean h1 = CoroutineExceptionHandlerKt.handlerException(hex)
++                    == hex;
++            int prio = new MainDispatcherFactory() {
++                public int getLoadPriority() {
++                    return 7;
++                }
++                public kotlinx.coroutines.CoroutineDispatcher
++                        createDispatcher(
++                            java.util.List<MainDispatcherFactory> d) {
++                    throw new RuntimeException("stub");
++                }
++                public boolean hintError() {
++                    throw new RuntimeException("stub");
++                }
++                public Object hintOnError() { return null; }
++            }.getLoadPriority();
++            boolean h2 = prio == 7;
++            mark("kx_handlerexc", h1 && h2, h1 + "" + h2);
++        } catch (Throwable t) {
++            mark("kx_handlerexc", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-269: DefaultExecutor thread band ───────────────────────
++        try {
++            DefaultExecutor de = DefaultExecutor.getInstance();
++            Thread dt = de.createThreadSync(1L);
++            boolean i1 = dt != null;
++            DefaultExecutor.shutdownError(
++                    new RuntimeException("se"));
++            boolean i2 = de.isShutDown();
++            mark("kx_defexec", i1 && i2, i1 + "" + i2);
++        } catch (Throwable t) {
++            mark("kx_defexec", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-270: DispatchedTask state band ─────────────────────────
++        try {
++            DispatchedTask tk2 = new DispatchedTask();
++            Object ts = tk2.takeState$kotlinx_coroutines_core();
++            Object gsr =
++                tk2.getSuccessfulResult$kotlinx_coroutines_core(ts);
++            boolean j1 = ts == null && gsr == null;
++            Object payload = new Object();
++            Object gsr2 =
++                tk2.getSuccessfulResult$kotlinx_coroutines_core(payload);
++            boolean j2 = gsr2 == payload;
++            mark("kx_dispstate", j1 && j2, j1 + "" + j2);
++        } catch (Throwable t) {
++            mark("kx_dispstate", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-271: JobSupport state forensics ────────────────────────
++        try {
++            JobSupport jb6 = new JobSupport();
++            jb6.start();
++            boolean k1 = "Active".equals(jb6.stateString());
++            boolean k2 = jb6.getExceptionOrNull() == null;
++            jb6.cancel(null);
++            boolean k3 =
++                jb6.getExceptionOrNull() instanceof CancellationException;
++            Object tce = jb6.toCancellationException(null, "msg");
++            boolean k4 = tce instanceof JobCancellationException;
++            mark("kx_jobstate2", k1 && k2 && k3 && k4,
++                    k1 + "" + k2 + k3 + k4);
++        } catch (Throwable t) {
++            mark("kx_jobstate2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-272: JobSupport queue ops ──────────────────────────────
++        try {
++            JobSupport jb7 = new JobSupport();
++            Object nl = jb7.getOrPromoteCancellingList();
++            Object nl2 = jb7.getOrPromoteCancellingList();
++            boolean l1 = nl != null && nl == nl2;
++            jb7.promoteSingleToNodeList(nl);
++            Object node = new Object();
++            jb7.addLastAtomic(null, node);
++            mark("kx_jobqueue", l1, l1 + "");
++        } catch (Throwable t) {
++            mark("kx_jobqueue", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-273: JobSupport completion forensics ───────────────────
++        try {
++            JobSupport jb8 = new JobSupport();
++            jb8.start();
++            Object probeState = new Object();
++            jb8.completeStateFinalization(probeState, probeState);
++            Object ffs = jb8.finalizeFinishingState(probeState,
++                    probeState);
++            boolean m2 = ffs == probeState;
++            jb8.onCompletionInternal(probeState, null, false);
++            boolean m3 = jb8.isActive() && !jb8.isCompleted();
++            mark("kx_jobcomp2", m2 && m3, m2 + "" + m3);
++        } catch (Throwable t) {
++            mark("kx_jobcomp2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-274: JobSupport exception attribution ──────────────────
++        try {
++            JobSupport jb9 = new JobSupport();
++            jb9.start();
++            boolean n1 = !jb9.cancelParent(new RuntimeException("cp"));
++            boolean n2 =
++                !jb9.getHandlesException$kotlinx_coroutines_core(null);
++            boolean n3 = jb9.tryWaitForChild(null);
++            mark("kx_jobcancel2", n1 && n2 && n3, n1 + "" + n2 + n3);
++        } catch (Throwable t) {
++            mark("kx_jobcancel2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-275: JobSupport suspend boundaries (documented) ────────
++        try {
++            JobSupport jb10 = new JobSupport();
++            jb10.start();
++            jb10.joinSuspend();
++            jb10.awaitSuspend();
++            boolean o1 = jb10.isActive() && !jb10.isCompleted()
++                    && !jb10.isCancelled();
++            mark("kx_jobsusp", o1, o1 + "");
++        } catch (Throwable t) {
++            mark("kx_jobsusp", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-276: runBlocking queued REAL dispatch ──────────────────
++        try {
++            final boolean[] rbRan = {false};
++            Object rb = BuildersKt.runBlocking$default(null,
++                    new Function2() {
++                        public Object invoke(Object a, Object b) {
++                            rbRan[0] = true;
++                            android.util.Log.i("C8PROBE",
++                                    "kx_runblocking_run ran="
++                                            + (rbRan[0] ? "yes" : "no"));
++                            return Unit.INSTANCE;
++                        }
++                    }, 0, null);
++            boolean p1 = rb != null;
++            mark("kx_runblocking", p1, "queued=" + p1);
++        } catch (Throwable t) {
++            mark("kx_runblocking", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-277: ChannelsKt transform family ───────────────────────
++        try {
++            ProducerScope<Integer> psU = ProduceKt.produce(null);
++            ReceiveChannel<Integer> chU = psU.getChannel();
++            psU.send(7);
++            psU.send(null);
++            psU.send(9);
++            java.util.List<Integer> dest = new ArrayList<Integer>();
++            ChannelsKt.filterNotNullTo(chU, dest);
++            boolean q1 = dest.size() == 2
++                    && dest.get(0).intValue() == 7
++                    && dest.get(1).intValue() == 9;
++            ReceiveChannel<Integer> mapped = ChannelsKt.map(chU,
++                    new Function1<Integer, Integer>() {
++                        public Integer invoke(Integer v) {
++                            return v;
++                        }
++                    });
++            boolean q2 = mapped != null;
++            mark("kx_ch_transform", q1 && q2, q1 + "" + q2);
++        } catch (Throwable t) {
++            mark("kx_ch_transform", false,
++                    t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-278: receiveCatching + getOrThrow ──────────────────────
++        try {
++            ProducerScope<Integer> psV = ProduceKt.produce(null);
++            ReceiveChannel<Integer> chV = psV.getChannel();
++            psV.send(33);
++            ChannelResult<Integer> cr2 = chV.receiveCatching();
++            boolean r1 = cr2.isSuccess();
++            Object got = cr2.getOrThrow();
++            boolean r2 = got instanceof Integer
++                    && ((Integer) got).intValue() == 33;
++            mark("kx_chanresult3", r1 && r2, r1 + "" + r2);
++        } catch (Throwable t) {
++            mark("kx_chanresult3", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-279: DebugProbesImpl forensics ─────────────────────────
++        try {
++            boolean s1 = !DebugProbesImpl.isInternalMethod(null);
++            String ds = DebugProbesImpl.getDebugString("v");
++            boolean s2 = "v".equals(ds);
++            Throwable etx = new RuntimeException("et");
++            Throwable et2 =
++                DebugProbesImpl.enhanceStackTraceWithThreadDumpImpl(
++                        etx, Thread.currentThread());
++            boolean s3 = et2 == etx;
++            mark("kx_debugprobes3", s1 && s2 && s3,
++                    s1 + "" + s2 + s3);
++        } catch (Throwable t) {
++            mark("kx_debugprobes3", false,
++                    t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-280: FlowKt operator depth ─────────────────────────────
++        try {
++            Flow<Integer> src3 = FlowKt.flow(new Function2() {
++                public Object invoke(Object c, Object cc) {
++                    ((FlowCollector<Integer>) c).emit(51);
++                    ((FlowCollector<Integer>) c).emit(52);
++                    return Unit.INSTANCE;
++                }
++            });
++            Object first = FlowKt.firstOrNull(src3);
++            boolean t1 = first instanceof Integer
++                    && ((Integer) first).intValue() == 51;
++            boolean t2 = FlowKt.ensureActive(src3) == src3;
++            boolean t3 = FlowKt.distinctUntilChanged(src3) == src3;
++            boolean t4 = FlowKt.retryWhen(src3, new Function2() {
++                public Object invoke(Object a, Object b) {
++                    return Boolean.FALSE;
++                }
++            }) == src3;
++            mark("kx_flow_ops2", t1 && t2 && t3 && t4,
++                    t1 + "" + t2 + t3 + t4);
++        } catch (Throwable t) {
++            mark("kx_flow_ops2", false, t.getClass().getSimpleName());
++        }
++
++
++        // ═══════════════ [S200-C8] WAVE 15 markers (F-C8-281..300) ═══════
++
++        // ── F-C8-281: OpDescriptor atomic-op band ───────────────────────
++        try {
++            OpDescriptor od = new OpDescriptor();
++            boolean a1 = od.getAtomicOp() == null;
++            boolean a2 = !od.isEarlierThan(od);
++            mark("kx_opdesc2", a1 && a2, a1 + "" + a2);
++        } catch (Throwable t) {
++            mark("kx_opdesc2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-282/283: trySelectOther + the select-op counter ────────
++        try {
++            SelectInstance si = new SelectInstance();
++            boolean b1 = !si.trySelectOther(null);
++            int s1 = SelectKt.access$getSelectOpSequenceNumber$p();
++            int s2 = SelectKt.access$getSelectOpSequenceNumber$p();
++            boolean b2 = s2 == s1 + 1;
++            mark("kx_selectseq", b1 && b2, b1 + "" + b2);
++        } catch (Throwable t) {
++            mark("kx_selectseq", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-284: LockFreeLinkedList removal forensics ──────────────
++        try {
++            LockFreeLinkedListNode nd = new LockFreeLinkedListNode();
++            boolean c1 = nd.findPrevNonRemoved() != null;
++            nd.validateNode$kotlinx_coroutines_core();
++            mark("kx_lfll3", c1, c1 + "true");
++        } catch (Throwable t) {
++            mark("kx_lfll3", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-285: ThreadSafeHeap order depth ────────────────────────
++        try {
++            ThreadSafeHeap hp = new ThreadSafeHeap();
++            hp.addImpl(new Object());
++            hp.realloc();
++            hp.siftDownFrom(0);
++            boolean d1 = hp.getSize() == 1;
++            mark("kx_heap3", d1, d1 + "true");
++        } catch (Throwable t) {
++            mark("kx_heap3", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-286: child registry + attachChild ──────────────────────
++        try {
++            JobSupport jbA = new JobSupport();
++            boolean e1 = jbA.firstChild() == null;
++            boolean e2 = jbA.childCancelled(
++                    new JobCancellationException("cc", null, jbA));
++            boolean e3 = "Cancelling".equals(jbA.stateString());
++            JobSupport kid = new JobSupport();
++            boolean e4 = jbA.attachChild(kid) != null;
++            mark("kx_jobchild", e1 && e2 && e3 && e4,
++                    e1 + "" + e2 + e3 + e4);
++        } catch (Throwable t) {
++            mark("kx_jobchild", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-287: cancelling state machine ──────────────────────────
++        try {
++            JobSupport jbB = new JobSupport();
++            boolean f1 = jbB.makeCancelling();
++            boolean f2 = "Cancelling".equals(jbB.stateString());
++            boolean f3 = !jbB.tryMakeCancelling(new Object());
++            boolean f4 = jbB.getFinalRootCause() != null;
++            mark("kx_jobcancel3", f1 && f2 && f3 && f4,
++                    f1 + "" + f2 + f3 + f4);
++        } catch (Throwable t) {
++            mark("kx_jobcancel3", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-288: completion forensics ──────────────────────────────
++        try {
++            JobSupport jbC = new JobSupport();
++            Object upd = new Object();
++            boolean g1 = jbC.tryFinalizeSimpleState(new Object(), upd);
++            boolean g2 = jbC.getOnCancelComplete$kotlinx_coroutines_core()
++                    != null;
++            jbC.continueCompleting(new Object());
++            jbC.notifyCompletion(new Object());
++            mark("kx_jobcomp3", g1 && g2, g1 + "" + g2);
++        } catch (Throwable t) {
++            mark("kx_jobcomp3", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-289: SharedFlow public emit + tryTakeValue ─────────────
++        try {
++            SharedFlowImpl sfA = new SharedFlowImpl();
++            boolean h1 = sfA.tryEmit(7);
++            Object t1 = sfA.tryTakeValue();
++            boolean h2 = t1 instanceof Integer
++                    && ((Integer) t1).intValue() == 7;
++            boolean h3 = sfA.tryTakeValue() == null;
++            boolean h4 = SharedFlowImpl
++                    .access$getBufferCapacity$p(sfA) == 64;
++            mark("kx_sf_emit2", h1 && h2 && h3 && h4,
++                    h1 + "" + h2 + h3 + h4);
++        } catch (Throwable t) {
++            mark("kx_sf_emit2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-290: SharedFlow collector band ─────────────────────────
++        try {
++            SharedFlowImpl sfB = new SharedFlowImpl();
++            Object er = sfB.emit$suspendImpl(8);
++            boolean i1 = er == null;
++            SharedFlowImpl.access$enqueueLocked(sfB, 9);
++            Object t2 = sfB.tryTakeValue();
++            boolean i2 = t2 instanceof Integer
++                    && ((Integer) t2).intValue() == 8;
++            sfB.correctCollectorIndexesOnDropOldest();
++            sfB.updateNewCollectorIndexLocked$kotlinx_coroutines_core();
++            sfB.cancelEmitter(null);
++            mark("kx_sf_house2", i1 && i2, i1 + "" + i2);
++        } catch (Throwable t) {
++            mark("kx_sf_house2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-291: Channel public state ──────────────────────────────
++        try {
++            ProducerScope<Integer> psW = ProduceKt.produce(null);
++            ReceiveChannel<Integer> chW = psW.getChannel();
++            psW.send(41);
++            boolean j1 = !psW.isClosedForSend();
++            boolean j2 = !chW.isClosedForReceive();
++            chW.invokeOnClose(null);
++            boolean j3 = chW.getOnReceive() != null
++                    && chW.getOnReceiveCatching() != null
++                    && chW.getOnSend() != null;
++            Object gotW = chW.receiveOrNull();
++            boolean j4 = gotW instanceof Integer
++                    && ((Integer) gotW).intValue() == 41;
++            mark("kx_chan4", j1 && j2 && j3 && j4,
++                    j1 + "" + j2 + j3 + j4);
++        } catch (Throwable t) {
++            mark("kx_chan4", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-293: StackTraceRecoveryKt forensics depth ──────────────
++        try {
++            Throwable ta = new RuntimeException("same");
++            boolean k1 = StackTraceRecoveryKt.elementWiseEquals(ta, ta);
++            boolean k2 = !StackTraceRecoveryKt.elementWiseEquals(
++                    ta, new RuntimeException("other"));
++            boolean k3 = StackTraceRecoveryKt.sanitizeStackTrace(ta) == ta;
++            boolean k4 = StackTraceRecoveryKt.causeAndStacktrace(ta) == ta;
++            mark("kx_stkrec4", k1 && k2 && k3 && k4,
++                    k1 + "" + k2 + k3 + k4);
++        } catch (Throwable t) {
++            mark("kx_stkrec4", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-294: FlowKt flowOf + REAL reduce fold ──────────────────
++        try {
++            Flow<Integer> fW = FlowKt.flowOf(61, 62);
++            Object rW = FlowKt.reduce(fW, new Function2() {
++                public Object invoke(Object a, Object b) {
++                    c8_w15_fold_ran++;
++                    return ((Integer) a) + ((Integer) b);
++                }
++            });
++            boolean l1 = rW instanceof Integer
++                    && ((Integer) rW).intValue() == 123;
++            mark("kx_flow3", l1, l1 + "true");
++        } catch (Throwable t) {
++            mark("kx_flow3", false, t.getClass().getSimpleName());
++        }
++        mark("kx_flow3_run", c8_w15_fold_ran >= 1,
++                "ran=" + c8_w15_fold_ran);
++
++        // ── F-C8-295: FlowKt terminal drains ────────────────────────────
++        try {
++            Flow<Integer> fX = FlowKt.flowOf(71, 72);
++            Object lo = FlowKt.lastOrNull(fX);
++            boolean m1 = lo instanceof Integer
++                    && ((Integer) lo).intValue() == 72;
++            boolean m2 = FlowKt.singleOrNull(fX) == null;
++            Object so = FlowKt.singleOrNull(FlowKt.flowOf(73));
++            boolean m3 = so instanceof Integer
++                    && ((Integer) so).intValue() == 73;
++            mark("kx_flow4", m1 && m2 && m3, m1 + "" + m2 + m3);
++        } catch (Throwable t) {
++            mark("kx_flow4", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-296: DebugProbesImpl lifecycle ─────────────────────────
++        try {
++            DebugProbesImpl.install();
++            boolean n1 = !DebugProbesImpl.isFinished();
++            Object ccW = new Object();
++            boolean n2 = DebugProbesImpl
++                    .probeCoroutineCreated$kotlinx_coroutines_core(ccW)
++                    == ccW;
++            DebugProbesImpl.probeCoroutineCompleted(ccW);
++            boolean n3 = DebugProbesImpl.getDynamicAttach()
++                    && !DebugProbesImpl.getEnableCreationStackTraces();
++            mark("kx_debug4", n1 && n2 && n3, n1 + "" + n2 + n3);
++        } catch (Throwable t) {
++            mark("kx_debug4", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-298: DefaultExecutor test-support ──────────────────────
++        try {
++            DefaultExecutor deW = DefaultExecutor.getInstance();
++            deW.resetAll();
++            Object dh = deW.scheduleInvokeOnTimeout(1000L, new Runnable() {
++                public void run() { }
++            });
++            boolean p1 = dh != null;
++            mark("kx_defexec2", p1, p1 + "true");
++        } catch (Throwable t) {
++            mark("kx_defexec2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-299: JobCancellationException.createCopy ───────────────
++        try {
++            JobSupport jbD = new JobSupport();
++            JobCancellationException ceW = jbD.getCancellationException();
++            JobCancellationException cpW = ceW.createCopy();
++            boolean q1 = cpW != ceW;
++            boolean q2 = java.util.Objects.equals(cpW.getMessage(),
++                    ceW.getMessage());
++            mark("kx_jce2", q1 && q2, q1 + "" + q2);
++        } catch (Throwable t) {
++            mark("kx_jce2", false, t.getClass().getSimpleName());
++        }
++
++        // ── F-C8-300: ChannelsKt operator breadth ───────────────────────
++        try {
++            ProducerScope<Integer> psX = ProduceKt.produce(null);
++            ReceiveChannel<Integer> chX = psX.getChannel();
++            psX.send(33);
++            boolean r1 = ChannelsKt.drop(chX, 1) == chX;
++            boolean r2 = ChannelsKt.distinctBy(chX,
++                    new Function1() {
++                        public Object invoke(Object v) { return v; }
++                    }) == chX;
++            Object ea = ChannelsKt.elementAtOrNull(chX, 0);
++            boolean r3 = ea instanceof Integer
++                    && ((Integer) ea).intValue() == 33;
++            boolean r4 = ChannelsKt.consumesAll(chX) != null;
++            mark("kx_ch_ops2", r1 && r2 && r3 && r4,
++                    r1 + "" + r2 + r3 + r4);
++        } catch (Throwable t) {
++            mark("kx_ch_ops2", false, t.getClass().getSimpleName());
++        }
++
+         android.util.Log.i("C8PROBE", "ALL-DONE");
+     }
+ }
++
+

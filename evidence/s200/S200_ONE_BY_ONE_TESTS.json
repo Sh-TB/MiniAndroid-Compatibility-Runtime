@@ -1,0 +1,21 @@
+{
+ "date": "2026-11-09",
+ "binary_sha16": "6c808c7448850756",
+ "binary_note": "byte-identical deterministic rebuild from HEAD f3499921 (build/ wiped by sandbox recycle; rebuilt make -j2; sha256 full 6c808c74488507562576f2fb6b94bd47cc62a9d6cfd87ddc70a6b4ff4e10feab)",
+ "tests": [
+  {"id": "T1", "name": "bouncy golden", "result": "HOLD", "face": "8a6c24ac8a7d718e", "pin": "8a6c24ac", "uncaught": 0},
+  {"id": "T2", "name": "unote golden", "result": "HOLD", "face": "3b8dcb0adbbc17a9", "pin": "3b8dcb0a", "uncaught": 0},
+  {"id": "T3", "name": "dooz golden (pin invocation --max-seconds 40 --frames 5)", "result": "HOLD-EXACT", "face": "31ddd4d5b8e6d18e", "pin": "31ddd4d5"},
+  {"id": "T4", "name": "gmdice 5-tap x2", "result": "RERUN-IDENTICAL", "r1": "3891679dff449331", "r2": "3891679dff449331"},
+  {"id": "T5", "name": "microtimer spot", "result": "0 uncaught", "face": "b39665f68f3938e6"},
+  {"id": "T6", "name": "tictactoe live run (2 frames, max-seconds 120)", "result": "SUCCESS rc=0", "face": "fc0997a63f3b2dec", "face_note": "== the committed S199/S200 tictactoe face identity", "errors": 0, "known_frontier": "[SYNTH-EXC] ASSET-FD deferred on assets/fonts/Roboto-Medium.ttf (compressed asset, C9 ACH-2 territory)"},
+  {"id": "T7", "name": "c9_bitmap_density_law_test (built from main tree)", "result": "36/36 PASS"},
+  {"id": "T8", "name": "c9_zip_data_offset_law_test", "result": "42/42 PASS"},
+  {"id": "T9", "name": "encoded_value_law_test", "result": "18/18 PASS"},
+  {"id": "T10", "name": "make test target (tests/simple_test.cpp)", "result": "BROKEN LINK", "detail": "undefined refs JS_GetException/__JS_FreeValue/miniandroid_native_thunk — test target object set was never updated for quickjs+native_thunk deps"},
+  {"id": "T11", "name": "C8 waves-11..15 cumulative diff (11 comment parts, #519)", "sha_assembled": "0aca6d8ce05707f8e53d69e0f57b7c2251f2371fe7f714d1e557c922e102b86a", "sha_claimed": "0aca6d8ce05707f8e53d69e0f57b7c2251f2371fe7f714d1e557c922e102b86a", "result": "SHA-EXACT-MATCH", "apply_check_9bc2a115": "CLEAN", "apply_check_f3499921_our_line": "CLEAN", "applied_files": 18, "build_on_combined_tree": "GREEN", "combined_binary_sha16": "9e32be2c0e241691", "probe_159": "INFRA-BLOCKED (tools/ ecj.jar r8.jar aapt2 android-34.jar wiped by sandbox recycle; re-vend pending)"},
+  {"id": "T12", "name": "C7 patch chain W5..W9 (#520 comment parts)", "w7_sha": "MATCH (8c76baccabba5cf2)", "w9_sha": "MATCH (fc38091deaae71f0)", "w5_apply": "FAIL at part5->part6 boundary: 'patch fragment without header' (two splittings mixed in one comment series)", "w6_sha": "MISMATCH (6 assembly variants tried)", "w8_sha": "MISMATCH (part1 has no closing fence; 6 variants tried)", "chain_verdict": "NOT INTEGRABLE AS POSTED beyond W7/W9 sha-level; W5 (SQLite PMS-Lite) needs re-post"},
+  {"id": "T13", "name": "floor 11/11", "result": "verified on this exact binary identity in commit 00783ccd (deterministic rebuild implies); today's T1-T6 add the fresh 6-app spot"}
+ ],
+ "sources": "evidence/s200/harvest/ (14 issues, bodies+all comments), scripts/s200_gate_rerun.py, scripts/s200_c8_diff_extract.py, scripts/s200_c7_chain_extract.py"
+}

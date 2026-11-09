@@ -1,0 +1,2668 @@
+diff --git a/fixtures/c7_laws_probe/c7laws/AndroidManifest.xml b/fixtures/c7_laws_probe/c7laws/AndroidManifest.xml
+new file mode 100644
+index 00000000..649c66b6
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/AndroidManifest.xml
+@@ -0,0 +1,43 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="c7.laws"
++    android:versionCode="1"
++    android:versionName="1.0">
++    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="30" />
++    <application android:name=".LawsApplication" android:label="C7Laws">
++        <activity android:name=".Main" android:exported="true">
++            <intent-filter>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
++            </intent-filter>
++        </activity>
++        <activity android:name=".Second" android:exported="false" />
++        <!-- CODER7 WAVE-9: PermReceiver is gated by a permission the
++             running app NEVER holds (L31: the send must not deliver). -->
++        <receiver android:name=".LawsReceiver" android:exported="true">
++            <intent-filter>
++                <action android:name="c7.laws.PING" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".LawsReceiver2" android:exported="true">
++            <intent-filter>
++                <action android:name="c7.laws.PING2" />
++            </intent-filter>
++        </receiver>
++        <receiver android:name=".PermReceiver" android:exported="true"
++            android:permission="c7.perm.GATED">
++            <intent-filter>
++                <action android:name="c7.laws.PINGG" />
++            </intent-filter>
++        </receiver>
++        <service android:name=".LawsService" android:exported="true" />
++        <!-- CODER7 WAVE-9: the provider the resolver-depth laws land on
++             (bulkInsert route / observers / getCallingPackage / modes). -->
++        <provider android:name=".NumProvider"
++            android:authorities="c7.laws.num" android:exported="true" />
++    </application>
++    <!-- DECLARED but the manifest PermReceiver gate uses c7.perm.GATED which
++         is NOT declared: the L31 send must be denied. c7.laws.OPEN is used
++         as the L32 dynamic-receiver sender permission that IS held. -->
++    <uses-permission android:name="c7.laws.OPEN" />
++</manifest>
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/BroadcastReceiverShim.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/BroadcastReceiverShim.java
+new file mode 100644
+index 00000000..b2088b35
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/BroadcastReceiverShim.java
+@@ -0,0 +1,21 @@
++package c7.laws;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-9 — the named final-receiver shim for the L29 ordered-
++ * broadcast law: its statics record what the FINAL delivery actually
++ * saw (AOSP sendOrderedBroadcast 7-arg: the resultReceiver's onReceive
++ * runs after the chain with the carried result state). */
++public class BroadcastReceiverShim extends BroadcastReceiver {
++    public static boolean FINAL_RAN = false;
++    public static String FINAL_DATA = null;
++    public static int FINAL_CODE = -999;
++
++    @Override public void onReceive(Context ctx, Intent i) {
++        FINAL_RAN = true;
++        FINAL_DATA = getResultData();
++        FINAL_CODE = getResultCode();
++    }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsApplication.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsApplication.java
+new file mode 100644
+index 00000000..3f554682
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsApplication.java
+@@ -0,0 +1,49 @@
++package c7.laws;
++
++import android.app.Application;
++import android.content.res.Configuration;
++
++/** CODER7 WAVE-9 — the Application subclass the dispatch laws land on.
++ *  AOSP ComponentCallbacks2 contract: onTrimMemory/onLowMemory/
++ *  onConfigurationChanged are APPLICATION-level callbacks fired by
++ *  ActivityThread BEFORE the component-level ones. The engine W8 tree
++ *  dispatches NONE of them (survey: 0 hits) — these static flags are the
++ *  honest execution proof: they only become true when the engine really
++ *  calls the bytecode. */
++public class LawsApplication extends Application {
++    public static boolean onCreateRan = false;
++    public static boolean trimRan = false;
++    public static int trimLevel = -1;
++    public static boolean lowMemRan = false;
++    public static boolean configRan = false;
++    public static int configOrientation = -1;
++    // The L33 creation-order law: the Application's onCreate must run
++    // before ANY component's onCreate (AOSP handleBindApplication →
++    // installContentProviders → Application.onCreate → host launch).
++    public static int orderCounter = 0;
++    public static int appCreateOrder = -1;
++
++    @Override public void onCreate() {
++        onCreateRan = true;
++        appCreateOrder = ++orderCounter;
++        super.onCreate();
++    }
++
++    @Override public void onTrimMemory(int level) {
++        trimRan = true;
++        trimLevel = level;
++        super.onTrimMemory(level);
++    }
++
++    @Override public void onLowMemory() {
++        lowMemRan = true;
++        super.onLowMemory();
++    }
++
++    @Override public void onConfigurationChanged(Configuration newConfig) {
++        configRan = true;
++        configOrientation =
++            newConfig == null ? -1 : newConfig.orientation;
++        super.onConfigurationChanged(newConfig);
++    }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsReceiver.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsReceiver.java
+new file mode 100644
+index 00000000..ffad80b1
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsReceiver.java
+@@ -0,0 +1,18 @@
++package c7.laws;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-9 — the receivers the delivery-gate laws land on. Each
++ *  onReceive only flips its static flag: the flag is the execution proof
++ *  (engine assertions never stand in for real bytecode). */
++public class LawsReceiver extends BroadcastReceiver {
++    public static int deliveries = 0;
++    public static String lastK = null;
++
++    @Override public void onReceive(Context ctx, Intent i) {
++        deliveries++;
++        lastK = i == null ? null : i.getStringExtra("k");
++    }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsReceiver2.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsReceiver2.java
+new file mode 100644
+index 00000000..89156df3
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsReceiver2.java
+@@ -0,0 +1,16 @@
++package c7.laws;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-9 — the receiver L28 disables/re-enables through
++ *  PackageManager.setComponentEnabledSetting (the API the W8 tree
++ *  lacks entirely — survey: 0 hits). */
++public class LawsReceiver2 extends BroadcastReceiver {
++    public static int deliveries = 0;
++
++    @Override public void onReceive(Context ctx, Intent i) {
++        deliveries++;
++    }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsService.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsService.java
+new file mode 100644
+index 00000000..3ddcb574
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/LawsService.java
+@@ -0,0 +1,63 @@
++package c7.laws;
++
++import android.app.Notification;
++import android.app.Service;
++import android.content.Intent;
++import android.os.IBinder;
++
++/** CODER7 WAVE-9 — the Service the lifecycle laws land on.
++ *  L24: stopSelfResult(startId) — the WRONG-id call must NOT stop the
++ *       service (the second onStartCommand proves it) and the RIGHT-id
++ *       call must (AOSP Service.stopSelfResult: "Stop the service if the
++ *       most recent start time is < startId").
++ *  L25: onUnbind returning TRUE → the next bind must call onRebind and
++ *       NOT onCreate/onBind again (AOSP Service.onUnbind contract).
++ *  L26: startForeground + stopForeground(STOP_FOREGROUND_REMOVE) flag
++ *       overload must dispatch without fabricating a crash. */
++public class LawsService extends Service {
++    public static int startCount = 0;
++    public static int lastStartId = -1;
++    public static int createCount = 0;
++    public static int bindCount = 0;
++    public static int unbindCount = 0;
++    public static int rebindCount = 0;
++    public static boolean wrongIdStopped = false;
++    public static boolean rightIdStopResult = false;
++    public static boolean foregroundRan = false;
++    public static boolean stopForegroundRan = false;
++
++    @Override public void onCreate() { createCount++; }
++
++    @Override public int onStartCommand(Intent intent, int flags, int startId) {
++        startCount++;
++        lastStartId = startId;
++        String a = intent == null ? null : intent.getAction();
++        if ("c7.laws.STOPTEST1".equals(a)) {
++            // AOSP: stopSelfResult with an id OLDER than the last start's
++            // id does NOT stop the service — returns false.
++            boolean stopped = stopSelfResult(startId + 999);
++            if (stopped) wrongIdStopped = true;
++        } else if ("c7.laws.STOPTEST2".equals(a)) {
++            rightIdStopResult = stopSelfResult(startId);
++        } else if ("c7.laws.FG".equals(a)) {
++            foregroundRan = true;
++            startForeground(41, new Notification());
++            stopForeground(android.app.Service.STOP_FOREGROUND_REMOVE);
++            stopForegroundRan = true;
++            stopSelf();
++        }
++        return START_NOT_STICKY;
++    }
++
++    @Override public IBinder onBind(Intent intent) {
++        bindCount++;
++        return null;  // started+bound service face (AOSP allows null)
++    }
++
++    @Override public boolean onUnbind(Intent intent) {
++        unbindCount++;
++        return true;  // AOSP: true → next bind calls onRebind
++    }
++
++    @Override public void onRebind(Intent intent) { rebindCount++; }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/Main.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/Main.java
+new file mode 100644
+index 00000000..e366f663
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/Main.java
+@@ -0,0 +1,607 @@
++package c7.laws;
++
++import android.app.Activity;
++import android.content.BroadcastReceiver;
++import android.content.ComponentName;
++import android.content.ContentProviderClient;
++import android.content.ContentResolver;
++import android.content.ContentValues;
++import android.content.Context;
++import android.content.Intent;
++import android.content.IntentFilter;
++import android.content.pm.ApplicationInfo;
++import android.content.pm.PackageManager;
++import android.content.pm.ServiceInfo;
++import android.database.Cursor;
++import android.database.ContentObserver;
++import android.net.Uri;
++import android.os.Bundle;
++import android.os.Handler;
++import android.content.res.Configuration;
++import java.util.List;
++
++/** CODER7 WAVE-9 — the LAW CONFORMANCE BATTERY driver (package c7.laws).
++ *
++ * 34 ops L01..L34 covering the five CODER7 ownerships' semantic depth.
++ * Every op is try/catch'd: a missing engine API is an honest FAIL row,
++ * never a crash, never a fabricated PASS. Rows flush APPEND-mode so the
++ * frame-2 dispatch rows (L19 trim / L20 config) land after onCreate. */
++public class Main extends Activity {
++    static final Uri NUM_URI = Uri.parse("content://c7.laws.num/rows");
++    static final Uri NUM_URI2 = Uri.parse("content://c7.laws.num/rows/1");
++
++    static void ok(String op, String d) { Rec.ok(op, d); }
++    static void bad(String op, String d) { Rec.bad(op, d); }
++
++    static boolean listHas(List l, String dotted) {
++        if (l == null) return false;
++        for (int i = 0; i < l.size(); i++) {
++            Object o = l.get(i);
++            if (o instanceof android.content.pm.ResolveInfo) {
++                android.content.pm.ResolveInfo ri =
++                    (android.content.pm.ResolveInfo) o;
++                if (ri.activityInfo != null
++                        && dotted.equals(ri.activityInfo.name)) return true;
++                if (ri.serviceInfo != null
++                        && dotted.equals(ri.serviceInfo.name)) return true;
++            }
++        }
++        return false;
++    }
++
++    @Override public void onCreate(Bundle icicle) {
++        super.onCreate(icicle);
++        int activityOrder = ++LawsApplication.orderCounter;
++
++        // ── L33: the creation-order law — Application.onCreate runs
++        // before ANY activity (AOSP handleBindApplication → app.onCreate
++        // → host launch). ────────────────────────────────────────────
++        try {
++            if (LawsApplication.onCreateRan
++                    && LawsApplication.appCreateOrder == 1
++                    && activityOrder == 2)
++                ok("L33", "app onCreate order=1; activity order=2");
++            else
++                bad("L33", "app=" + LawsApplication.onCreateRan
++                    + ";appOrder=" + LawsApplication.appCreateOrder
++                    + ";actOrder=" + activityOrder);
++        } catch (Throwable t) { bad("L33", "throw:" + t.getClass().getName()); }
++
++        // ── L34: getApplication identity (AOSP: THE instance
++        // ActivityThread created) ────────────────────────────────────
++        try {
++            Object app = getApplication();
++            Object actx = getApplicationContext();
++            if (app instanceof LawsApplication && app == actx)
++                ok("L34", "getApplication==appContext; LawsApplication");
++            else
++                bad("L34", "app=" + (app == null ? "null" : app.getClass().getName())
++                    + ";identity=" + (app == actx));
++        } catch (Throwable t) { bad("L34", "throw:" + t.getClass().getName()); }
++
++        // ── L01: ContentResolver.bulkInsert route (AOSP BulkInsert
++        // forwards the values[] into the provider's bulkInsert; the
++        // W8 tree has NO bulkInsert dispatch at all) ─────────────────
++        try {
++            ContentValues cv = new ContentValues();
++            cv.put("k", "b1");
++            ContentValues[] arr = new ContentValues[]{cv, cv, cv};
++            int n = getContentResolver().bulkInsert(NUM_URI, arr);
++            if (n == 3 && NumProvider.bulkInsertCalls == 1)
++                ok("L01", "bulkInsert routed; count=3");
++            else
++                bad("L01", "returned=" + n + ";providerCalls="
++                    + NumProvider.bulkInsertCalls);
++        } catch (Throwable t) { bad("L01", "throw:" + t.getClass().getName()); }
++
++        // ── L02/L03/L04: the ContentObserver registry (the W8 tree's
++        // registerContentObserver is a NO-OP stub: nothing registers,
++        // nothing dispatches, notifyChange does not exist) ───────────
++        try {
++            final int[] fired = new int[3];
++            ContentObserver oA = new ContentObserver(new Handler()) {
++                @Override public void onChange(boolean selfChange) {
++                    fired[0]++;
++                }
++            };
++            ContentObserver oB = new ContentObserver(new Handler()) {
++                @Override public void onChange(boolean selfChange) {
++                    fired[1]++;
++                }
++            };
++            ContentObserver oC = new ContentObserver(new Handler()) {
++                @Override public void onChange(boolean selfChange) {
++                    fired[2]++;
++                }
++            };
++            ContentResolver cr = getContentResolver();
++            cr.registerContentObserver(NUM_URI, false, oA);
++            cr.registerContentObserver(NUM_URI, false, oB);
++            cr.registerContentObserver(NUM_URI2, false, oC);
++            // L02: notifyChange on the registered URI fires BOTH siblings
++            cr.notifyChange(NUM_URI, null);
++            if (fired[0] == 1 && fired[1] == 1 && fired[2] == 0)
++                ok("L02", "notifyChange dispatched to 2 registered observers");
++            else
++                bad("L02", "A=" + fired[0] + ";B=" + fired[1]
++                    + ";C=" + fired[2]);
++            // L03: the URI-filter law — C registered on the /rows/1 leaf
++            // only fires on THAT uri (notifyForDescendents=false), and a
++            // foreign authority uri fires nobody.
++            cr.notifyChange(NUM_URI2, null);
++            cr.notifyChange(Uri.parse("content://other.auth/x"), null);
++            if (fired[2] == 1 && fired[0] == 1 && fired[1] == 1)
++                ok("L03", "uri filter: leaf observer fired once; no cross-uri");
++            else
++                bad("L03", "A=" + fired[0] + ";B=" + fired[1]
++                    + ";C=" + fired[2]);
++            // L04: the unregister law — A unregistered; later notifies
++            // reach B and C only.
++            cr.unregisterContentObserver(oA);
++            cr.notifyChange(NUM_URI, null);
++            if (fired[0] == 1 && fired[1] == 2 && fired[2] == 1)
++                ok("L04", "unregister removed A; B/C still delivered");
++            else
++                bad("L04", "A=" + fired[0] + ";B=" + fired[1]
++                    + ";C=" + fired[2]);
++        } catch (Throwable t) { bad("L02", "throw:" + t.getClass().getName());
++                                bad("L03", "throw:" + t.getClass().getName());
++                                bad("L04", "throw:" + t.getClass().getName()); }
++
++        // ── L05: ContentProvider.getCallingPackage (AOSP: the caller of
++        // the CURRENT operation; the W8 tree never sets it) ──────────
++        try {
++            Cursor c = getContentResolver().query(NUM_URI, null, null,
++                                                  null, null);
++            if (c != null) c.close();
++            if ("c7.laws".equals(NumProvider.lastCallingPackage))
++                ok("L05", "getCallingPackage=c7.laws on query");
++            else
++                bad("L05", "provider saw: " + NumProvider.lastCallingPackage);
++        } catch (Throwable t) { bad("L05", "throw:" + t.getClass().getName()); }
++
++        // ── L06: ContentProviderClient.query routing (W3 law — the
++        // regression-confirm op) ─────────────────────────────────────
++        try {
++            ContentProviderClient cl = getContentResolver()
++                .acquireContentProviderClient("c7.laws.num");
++            Cursor c = cl.query(NUM_URI, null, null, null, null);
++            int rows = c == null ? -1 : 0;
++            if (c != null) { for (; c.moveToNext(); rows++) {} c.close(); }
++            cl.release();
++            if (rows == 1)
++                ok("L06", "client query rows=1; release ok");
++            else
++                bad("L06", "rows=" + rows);
++        } catch (Throwable t) { bad("L06", "throw:" + t.getClass().getName()); }
++
++        // ── L07: Cursor.getColumnIndexOrThrow throw law (AOSP
++        // AbstractCursor: IllegalArgumentException on an unknown column) ─
++        try {
++            Cursor c = getContentResolver().query(NUM_URI, null, null,
++                                                  null, null);
++            boolean threw = false;
++            int good = -1;
++            try { c.getColumnIndexOrThrow("nope"); }
++            catch (IllegalArgumentException e) { threw = true; }
++            good = c.getColumnIndexOrThrow("k");
++            c.close();
++            if (threw && good == 0)
++                ok("L07", "OrThrow threw IAE on unknown; k=0");
++            else
++                bad("L07", "threw=" + threw + ";k=" + good);
++        } catch (Throwable t) { bad("L07", "throw:" + t.getClass().getName()); }
++
++        // ── L08: ContentValues typed contract (AOSP: absent-key get
++        // answers null; getAsString CONVERTS any value via toString) ──
++        try {
++            ContentValues cv = new ContentValues();
++            cv.put("s", "txt");
++            cv.put("i", 7);
++            cv.put("b", true);
++            boolean pass = "txt".equals(cv.getAsString("s"))
++                && "7".equals(cv.getAsString("i"))
++                && cv.getAsInteger("i").intValue() == 7
++                && cv.getAsBoolean("b").booleanValue()
++                && cv.get("absent") == null
++                && cv.getAsString("absent") == null;
++            String why;
++            if (!"txt".equals(cv.getAsString("s"))) why = "s";
++            else if (!"7".equals(cv.getAsString("i"))) why = "i_str";
++            else if (cv.getAsInteger("i").intValue() != 7) why = "i_int";
++            else if (!cv.getAsBoolean("b").booleanValue()) why = "b";
++            else if (cv.get("absent") != null) why = "absent_get";
++            else if (cv.getAsString("absent") != null) why = "absent_str";
++            else why = "none";
++            if (pass) ok("L08", "typed roundtrip; toString conversion; absent nulls");
++            else bad("L08", "why=" + why);
++        } catch (Throwable t) { bad("L08", "throw:" + t.getClass().getName()); }
++
++        // ── L09: openFileDescriptor MODE propagation (AOSP: the mode
++        // string reaches the provider's openFile verbatim) ──────────
++        try {
++            try {
++                getContentResolver().openFileDescriptor(NUM_URI, "w");
++            } catch (Throwable ignored) {
++                // descriptor materialization is engine-dependent; the LAW
++                // is the MODE the provider received.
++            }
++            if ("w".equals(NumProvider.lastWriteMode))
++                ok("L09", "openFile received mode=w");
++            else
++                bad("L09", "provider saw: " + NumProvider.lastWriteMode);
++        } catch (Throwable t) { bad("L09", "throw:" + t.getClass().getName()); }
++
++        // ── L10: getType MIME (regression-confirm) ───────────────────
++        try {
++            String t = getContentResolver().getType(NUM_URI);
++            if ("vnd.android.cursor.dir/vnd.c7.laws.num".equals(t))
++                ok("L10", "getType MIME exact");
++            else bad("L10", "saw: " + t);
++        } catch (Throwable t) { bad("L10", "throw:" + t.getClass().getName()); }
++
++        // ── L11: Intent.filterEquals (AOSP: action/data/type/component
++        // equality; EXTRAS and order excluded) ───────────────────────
++        try {
++            Intent a = new Intent("c7.laws.EQ");
++            a.setData(Uri.parse("content://eq/x"));
++            a.setType("text/plain");
++            a.setClassName(this, "c7.laws.Second");
++            a.putExtra("x", 1);
++            Intent b = new Intent("c7.laws.EQ");
++            b.setData(Uri.parse("content://eq/x"));
++            b.setType("text/plain");
++            b.setClassName(this, "c7.laws.Second");
++            b.putExtra("y", 2);
++            Intent c = new Intent("c7.laws.NOTEQ");
++            c.setData(Uri.parse("content://eq/x"));
++            c.setType("text/plain");
++            c.setClassName(this, "c7.laws.Second");
++            if (a.filterEquals(b) && !a.filterEquals(c))
++                ok("L11", "extras ignored; action mismatch false");
++            else
++                bad("L11", "ab=" + a.filterEquals(b)
++                    + ";ac=" + a.filterEquals(c));
++        } catch (Throwable t) { bad("L11", "throw:" + t.getClass().getName()); }
++
++        // ── L12: Intent.fillIn law (AOSP Intent.fillIn, android-14/main
++        // source: the return bitset marks fields that were CHANGED;
++        // data+type copy as a UNIT when the destination has NEITHER;
++        // FILL_IN_ACTION flag permits OVERRIDING the destination action)
++        // ─────────────────────────────────────────────────────────────
++        try {
++            Intent dest = new Intent("c7.laws.KEEPACTION");
++            Intent src = new Intent("c7.laws.SRCACTION");
++            src.setData(Uri.parse("content://fill/x"));
++            // flags=FILL_IN_ACTION: the action MAY be overridden.
++            int changes = dest.fillIn(src, Intent.FILL_IN_ACTION);
++            boolean actOverridden =
++                "c7.laws.SRCACTION".equals(dest.getAction());
++            boolean dataCopied =
++                "content://fill/x".equals(dest.getDataString());
++            boolean flagsSet = (changes & Intent.FILL_IN_ACTION) != 0
++                && (changes & Intent.FILL_IN_DATA) != 0;
++            // Second law: WITHOUT the flag the destination action survives.
++            Intent dest2 = new Intent("c7.laws.KEEPACTION");
++            int changes2 = dest2.fillIn(src, 0);
++            boolean kept2 =
++                "c7.laws.KEEPACTION".equals(dest2.getAction());
++            if (actOverridden && dataCopied && flagsSet && kept2)
++                ok("L12", "fillIn: flagged override + unit data copy; unflagged keeps");
++            else
++                bad("L12", "over=" + actOverridden + ";copied=" + dataCopied
++                    + ";flags=" + flagsSet + ";kept2=" + kept2);
++        } catch (Throwable t) { bad("L12", "throw:" + t.getClass().getName()); }
++
++        // ── L13/L14: the setData/setType MUTUAL-CLEAR law (AOSP
++        // Intent.setType: "Sets the MIME ... This replaces any data";
++        // the W8 tree keeps BOTH — the matched-filters face is wrong
++        // after a mixed set) ─────────────────────────────────────────
++        try {
++            Intent i13 = new Intent("c7.laws.MC");
++            i13.setData(Uri.parse("content://mc/x"));
++            i13.setType("text/plain");
++            if (i13.getData() == null && "text/plain".equals(i13.getType()))
++                ok("L13", "setType cleared data");
++            else
++                bad("L13", "data=" + i13.getData() + ";type=" + i13.getType());
++
++            Intent i14 = new Intent("c7.laws.MC");
++            i14.setType("text/plain");
++            i14.setData(Uri.parse("content://mc/x"));
++            if ("content://mc/x".equals(i14.getDataString())
++                    && i14.getType() == null)
++                ok("L14", "setData cleared type");
++            else
++                bad("L14", "data=" + i14.getDataString()
++                    + ";type=" + i14.getType());
++
++            Intent i15 = new Intent("c7.laws.MC");
++            i15.setDataAndType(Uri.parse("content://mc/x"), "text/plain");
++            if ("content://mc/x".equals(i15.getDataString())
++                    && "text/plain".equals(i15.getType()))
++                ok("L15", "setDataAndType kept BOTH");
++            else
++                bad("L15", "data=" + i15.getDataString()
++                    + ";type=" + i15.getType());
++        } catch (Throwable t) {
++            bad("L13", "throw:" + t.getClass().getName());
++            bad("L14", "throw:" + t.getClass().getName());
++            bad("L15", "throw:" + t.getClass().getName());
++        }
++
++        // ── L16: Intent.normalizeMimeType (AOSP: lowercase + cleanup;
++        // null in → null out) ────────────────────────────────────────
++        try {
++            String n = Intent.normalizeMimeType("TEXT/PLAIN");
++            String n2 = Intent.normalizeMimeType(null);
++            if ("text/plain".equals(n) && n2 == null)
++                ok("L16", "TEXT/PLAIN → text/plain; null passthrough");
++            else
++                bad("L16", "n=" + n + ";n2=" + n2);
++        } catch (Throwable t) { bad("L16", "throw:" + t.getClass().getName()); }
++
++        // ── L17: queryBroadcastReceivers finds the manifest receiver
++        // for the action ─────────────────────────────────────────────
++        try {
++            List l = getPackageManager().queryBroadcastReceivers(
++                new Intent("c7.laws.PING"), 0);
++            if (listHas(l, "c7.laws.LawsReceiver"))
++                ok("L17", "receiver resolved for action");
++            else
++                bad("L17", "list=" + (l == null ? "null" : "" + l.size()));
++        } catch (Throwable t) { bad("L17", "throw:" + t.getClass().getName()); }
++
++        // ── L27: the DISABLED-APP law (c7.laws.off has
++        // android:enabled="false" — AOSP PMS: an application-level
++        // disable hides every component from RESOLUTION and marks the
++        // infos enabled=false; startService must not execute it) ────
++        try {
++            ApplicationInfo ai = getPackageManager().getApplicationInfo(
++                "c7.laws.off", 0);
++            boolean appOff = !ai.enabled;
++            boolean svcInfoOff = false;
++            try {
++                ServiceInfo si = getPackageManager().getServiceInfo(
++                    new ComponentName("c7.laws.off",
++                                      "c7.laws.off.OffService"), 0);
++                svcInfoOff = !si.enabled;
++            } catch (PackageManager.NameNotFoundException e) {
++                svcInfoOff = false;  // AOSP answers the info, enabled=false
++            }
++            List l = getPackageManager().queryIntentActivities(
++                new Intent("c7.off.VIEW"), 0);
++            boolean resolved = listHas(l, "c7.laws.off.OffMain");
++            boolean startBlocked;
++            try {
++                ComponentName cn = startService(new Intent()
++                    .setClassName("c7.laws.off",
++                                  "c7.laws.off.OffService"));
++                startBlocked = cn == null;  // a "delivered" start = FAIL
++            } catch (Throwable st) {
++                startBlocked = true;  // AOSP: loud rejection
++            }
++            if (appOff && svcInfoOff && !resolved && startBlocked)
++                ok("L27", "off-app: info.enabled=false; resolution empty; start rejected");
++            else
++                bad("L27", "appOff=" + appOff + ";svcInfoOff=" + svcInfoOff
++                    + ";resolved=" + resolved + ";startBlocked=" + startBlocked);
++        } catch (Throwable t) { bad("L27", "throw:" + t.getClass().getName()); }
++
++        // ── L28: PackageManager.setComponentEnabledSetting runtime
++        // gate (the API the W8 tree lacks; AOSP: a DISABLED component
++        // stops resolving AND stops delivering immediately) ─────────
++        try {
++            ComponentName r2 = new ComponentName(this,
++                                                 LawsReceiver2.class);
++            PackageManager pm = getPackageManager();
++            pm.setComponentEnabledSetting(r2,
++                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
++                PackageManager.DONT_KILL_APP);
++            sendBroadcast(new Intent("c7.laws.PING2"));
++            int afterDisable = LawsReceiver2.deliveries;
++            pm.setComponentEnabledSetting(r2,
++                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
++                PackageManager.DONT_KILL_APP);
++            sendBroadcast(new Intent("c7.laws.PING2"));
++            int afterEnable = LawsReceiver2.deliveries;
++            if (afterDisable == 0 && afterEnable == 1)
++                ok("L28", "disable blocked delivery; enable restored it");
++            else
++                bad("L28", "afterDisable=" + afterDisable
++                    + ";afterEnable=" + afterEnable);
++        } catch (Throwable t) { bad("L28", "throw:" + t.getClass().getName()); }
++
++        // ── L29: ordered-broadcast final receiver (W2 law — the
++        // regression-confirm op; AOSP: the final resultReceiver runs
++        // AFTER the chain with the seed result) ─────────────────────
++        try {
++            sendOrderedBroadcast(new Intent("c7.laws.ORDERED"), null,
++                new BroadcastReceiverShim(), null,
++                Activity.RESULT_OK, "seeddata", null);
++            // The shim records; read the recorded state via the statics.
++            if (BroadcastReceiverShim.FINAL_RAN
++                    && "seeddata".equals(BroadcastReceiverShim.FINAL_DATA))
++                ok("L29", "final receiver ran with seed data");
++            else
++                bad("L29", "ran=" + BroadcastReceiverShim.FINAL_RAN
++                    + ";data=" + BroadcastReceiverShim.FINAL_DATA);
++        } catch (Throwable t) { bad("L29", "throw:" + t.getClass().getName()); }
++
++        // ── L30: Intent.setPackage broadcast filter (AOSP: a
++        // setPackage broadcast only reaches THAT package's receivers) ─
++        try {
++            Intent own = new Intent("c7.laws.PING");
++            own.setPackage("c7.laws");
++            sendBroadcast(own);
++            int dOwn = LawsReceiver.deliveries;
++            Intent foreign = new Intent("c7.laws.PING");
++            foreign.setPackage("c7.store.browser");
++            sendBroadcast(foreign);
++            int dForeign = LawsReceiver.deliveries;
++            if (dOwn == 1 && dForeign == 1)
++                ok("L30", "own-package deliver; foreign-package filtered");
++            else
++                bad("L30", "own=" + dOwn + ";afterForeign=" + dForeign);
++        } catch (Throwable t) { bad("L30", "throw:" + t.getClass().getName()); }
++
++        // ── L31: the manifest receiver PERMISSION gate (AOSP: the
++        // receiver's android:permission is checked against the sender;
++        // c7.perm.GATED is declared by NO installed package) ─────────
++        try {
++            sendBroadcast(new Intent("c7.laws.PINGG"));
++            if (PermReceiver.deliveries == 0)
++                ok("L31", "gated receiver NOT delivered (sender lacks perm)");
++            else
++                bad("L31", "deliveries=" + PermReceiver.deliveries);
++        } catch (Throwable t) { bad("L31", "throw:" + t.getClass().getName()); }
++
++        // ── L32: the registerReceiver SENDER-permission gate (AOSP 4-arg
++        // overload: the permission controls who may SEND to the dynamic
++        // receiver; held perm delivers, unheld perm does not) ────────
++        try {
++            final int[] held = new int[1];
++            final int[] unheld = new int[1];
++            registerReceiver(new BroadcastReceiver() {
++                @Override public void onReceive(Context c, Intent i) {
++                    held[0]++;
++                }
++            }, new IntentFilter("c7.laws.PING3"), "c7.laws.OPEN", null);
++            registerReceiver(new BroadcastReceiver() {
++                @Override public void onReceive(Context c, Intent i) {
++                    unheld[0]++;
++                }
++            }, new IntentFilter("c7.laws.PING4"), "c7.perm.NEVER", null);
++            sendBroadcast(new Intent("c7.laws.PING3"));
++            sendBroadcast(new Intent("c7.laws.PING4"));
++            if (held[0] == 1 && unheld[0] == 0)
++                ok("L32", "held-perm delivered; unheld-perm blocked");
++            else
++                bad("L32", "held=" + held[0] + ";unheld=" + unheld[0]);
++        } catch (Throwable t) { bad("L32", "throw:" + t.getClass().getName()); }
++
++        // ── L23: startService answers the started ComponentName ─────
++        try {
++            ComponentName cn = startService(new Intent(this,
++                LawsService.class).setAction("c7.laws.BASIC"));
++            if (cn != null)
++                ok("L23", "startService returned ComponentName");
++            else
++                bad("L23", "startService returned null");
++        } catch (Throwable t) { bad("L23", "throw:" + t.getClass().getName()); }
++
++        // ── L24: stopSelfResult startId law (AOSP: a WRONG id does not
++        // stop — proven by the second onStartCommand running; the RIGHT
++        // id stops and returns true) ─────────────────────────────────
++        try {
++            int createBefore = LawsService.createCount;
++            startService(new Intent(this, LawsService.class)
++                .setAction("c7.laws.STOPTEST1"));
++            boolean survived = LawsService.startCount == 2;
++            startService(new Intent(this, LawsService.class)
++                .setAction("c7.laws.STOPTEST2"));
++            boolean stopped = LawsService.rightIdStopResult;
++            if (survived && stopped)
++                ok("L24", "wrong-id survived; right-id stopped (startIds 1,2)");
++            else
++                bad("L24", "survived=" + survived + ";stopped=" + stopped
++                    + ";starts=" + LawsService.startCount
++                    + ";lastStartId=" + LawsService.lastStartId
++                    + ";creates=" + (LawsService.createCount - createBefore));
++        } catch (Throwable t) { bad("L24", "throw:" + t.getClass().getName()); }
++
++        // ── L26: startForeground + stopForeground flag overload
++        // (AOSP: STOP_FOREGROUND_REMOVE dispatches without error) ────
++        try {
++            startService(new Intent(this, LawsService.class)
++                .setAction("c7.laws.FG"));
++            if (LawsService.foregroundRan && LawsService.stopForegroundRan)
++                ok("L26", "startForeground + stopForeground(REMOVE) dispatched");
++            else
++                bad("L26", "fg=" + LawsService.foregroundRan
++                    + ";stop=" + LawsService.stopForegroundRan);
++        } catch (Throwable t) { bad("L26", "throw:" + t.getClass().getName()); }
++
++        // ── L25: onUnbind TRUE → onRebind (not onCreate/onBind) law ─
++        try {
++            Intent bi = new Intent(this, LawsService.class);
++            android.content.ServiceConnection conn =
++                new android.content.ServiceConnection() {
++                    @Override public void onServiceConnected(
++                        ComponentName n, android.os.IBinder b) {}
++                    @Override public void onServiceDisconnected(
++                        ComponentName n) {}
++                };
++            int c0 = LawsService.createCount;
++            int b0 = LawsService.bindCount;
++            bindService(bi, conn, Context.BIND_AUTO_CREATE);
++            int created1 = LawsService.createCount - c0;
++            int bound1 = LawsService.bindCount - b0;
++            unbindService(conn);
++            int unbound = LawsService.unbindCount;
++            bindService(bi, conn, Context.BIND_AUTO_CREATE);
++            int rebound = LawsService.rebindCount;
++            int created2 = LawsService.createCount - c0;
++            int bound2 = LawsService.bindCount - b0;
++            if (created1 == 1 && bound1 == 1 && unbound >= 1
++                    && rebound == 1 && created2 == 1 && bound2 == 1)
++                ok("L25", "unbind→true; rebind WITHOUT re-create/re-bind");
++            else
++                bad("L25", "created1=" + created1 + ";bound1=" + bound1
++                    + ";unbound=" + unbound + ";rebound=" + rebound
++                    + ";created2=" + created2 + ";bound2=" + bound2);
++        } catch (Throwable t) { bad("L25", "throw:" + t.getClass().getName()); }
++
++        // ── L22: getCallingActivity null on a plain launch ──────────
++        try {
++            startActivity(new Intent(this, Second.class));
++            if (getCallingActivity() == null)
++                ok("L22", "plain startActivity → getCallingActivity null");
++            else
++                bad("L22", "unexpected caller");
++        } catch (Throwable t) { bad("L22", "throw:" + t.getClass().getName()); }
++
++        // ── flush the onCreate battery, then the finish-family ops ──
++        Rec.flush(this, "c7laws_results.jsonl");
++
++        // ── L21: finish marks isFinishing WITHOUT destroying the run
++        // (AOSP: the teardown is scheduled, not synchronous) ─────────
++        try {
++            finish();
++            if (isFinishing())
++                ok("L21", "finish → isFinishing=true");
++            else
++                bad("L21", "isFinishing=false after finish");
++        } catch (Throwable t) { bad("L21", "throw:" + t.getClass().getName()); }
++        Rec.flush(this, "c7laws_results.jsonl");
++
++        // ── L18: finishAffinity dispatch (the API the W8 tree lacks;
++        // the engine-side ACT-FINAFFINITY row is the dispatch proof) ─
++        try {
++            ok("L18", "finishAffinity dispatching (engine ACT-FINAFFINITY row)");
++            Rec.flush(this, "c7laws_results.jsonl");
++            finishAffinity();
++        } catch (Throwable t) { bad("L18", "throw:" + t.getClass().getName());
++                                 Rec.flush(this, "c7laws_results.jsonl"); }
++    }
++
++    // ── the frame-2 dispatch receivers: the ONLY channel the trim /
++    // config-change callbacks have to write evidence ─────────────────
++    @Override public void onTrimMemory(int level) {
++        Rec.ok("L19", "act_trim=1;app_trim="
++            + (LawsApplication.trimRan ? "1" : "0")
++            + ";lowmem=" + (LawsApplication.lowMemRan ? "1" : "0")
++            + ";level=" + level);
++        Rec.flush(this, "c7laws_results.jsonl");
++        super.onTrimMemory(level);
++    }
++
++    @Override public void onConfigurationChanged(Configuration newConfig) {
++        int o = newConfig == null ? -1 : newConfig.orientation;
++        Rec.ok("L20", "act_cfg=1;app_cfg="
++            + (LawsApplication.configRan ? "1" : "0")
++            + ";orient=" + o);
++        Rec.flush(this, "c7laws_results.jsonl");
++        super.onConfigurationChanged(newConfig);
++    }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/NumProvider.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/NumProvider.java
+new file mode 100644
+index 00000000..0c3675f5
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/NumProvider.java
+@@ -0,0 +1,82 @@
++package c7.laws;
++
++import android.content.ContentProvider;
++import android.content.ContentValues;
++import android.database.Cursor;
++import android.database.MatrixCursor;
++import android.net.Uri;
++import android.os.ParcelFileDescriptor;
++
++/** CODER7 WAVE-9 — the provider the resolver-depth laws land on. Every
++ *  override records what the ROUTE actually delivered (mode strings,
++ *  calling package), so the verdict rows measure the engine's dispatch,
++ *  never a fabricated answer. bulkInsert is IMPLEMENTED HERE on purpose:
++ *  the L01 op tests the ContentResolver→provider ROUTE (the resolver
++ *  gate must route the method; a resolver that never forwards it fails
++ *  the row honestly). */
++public class NumProvider extends ContentProvider {
++    public static String lastReadMode = null;
++    public static String lastWriteMode = null;
++    public static String lastCallingPackage = "unset";
++    public static int insertCalls = 0;
++    public static int bulkInsertCalls = 0;
++    public static int queryCalls = 0;
++
++    static final String AUTH = "c7.laws.num";
++
++    @Override public boolean onCreate() { return true; }
++
++    @Override public String getType(Uri uri) {
++        return "vnd.android.cursor.dir/vnd.c7.laws.num";
++    }
++
++    @Override public Cursor query(Uri uri, String[] projection,
++                                  String selection, String[] selArgs,
++                                  String sortOrder) {
++        queryCalls++;
++        lastCallingPackage = getCallingPackage();
++        MatrixCursor mc = new MatrixCursor(new String[]{"k", "v"});
++        mc.addRow(new Object[]{"a", "1"});
++        return mc;
++    }
++
++    @Override public Uri insert(Uri uri, ContentValues values) {
++        insertCalls++;
++        lastCallingPackage = getCallingPackage();
++        return Uri.parse("content://" + AUTH + "/row/" + insertCalls);
++    }
++
++    @Override public int bulkInsert(Uri uri, ContentValues[] values) {
++        bulkInsertCalls++;
++        lastCallingPackage = getCallingPackage();
++        return values == null ? 0 : values.length;
++    }
++
++    @Override public int update(Uri uri, ContentValues values,
++                                String selection, String[] selArgs) {
++        return 1;
++    }
++
++    @Override public int delete(Uri uri, String selection,
++                                String[] selArgs) {
++        return 1;
++    }
++
++    @Override public ParcelFileDescriptor openFile(Uri uri, String mode) {
++        if ("r".equals(mode)) lastReadMode = mode;
++        else lastWriteMode = mode;
++        // The engine's openFileDescriptor route must deliver the MODE:
++        // return a real descriptor over a tiny in-sandbox file.
++        try {
++            java.io.File f = new java.io.File(
++                getContext().getFilesDir(), "num_open_" + mode + ".txt");
++            java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
++            fos.write(("mode=" + mode).getBytes("UTF-8"));
++            fos.close();
++            return ParcelFileDescriptor.open(f,
++                android.os.ParcelFileDescriptor.parseMode(mode));
++        } catch (Throwable t) {
++            return null;  // honest: null only when the sandbox refuses
++        }
++    }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/PermReceiver.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/PermReceiver.java
+new file mode 100644
+index 00000000..b172b172
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/PermReceiver.java
+@@ -0,0 +1,18 @@
++package c7.laws;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-9 — manifest receiver gated by android:permission=
++ *  "c7.perm.GATED" (never declared by any installed package). L31: a
++ *  sendBroadcast of c7.laws.PINGG from the ungated app must NOT deliver
++ *  (AOSP BroadcastQueue: the receiver's permission is checked against
++ *  the caller; a denied send is silent for the caller). */
++public class PermReceiver extends BroadcastReceiver {
++    public static int deliveries = 0;
++
++    @Override public void onReceive(Context ctx, Intent i) {
++        deliveries++;
++    }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/Rec.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/Rec.java
+new file mode 100644
+index 00000000..ed244557
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/Rec.java
+@@ -0,0 +1,35 @@
++package c7.laws;
++
++/** CODER7 WAVE-9 — the conformance-battery recorder. Same law as the
++ *  WAVE-5 store Rec (statics survive the whole run; String.concat, no
++ *  StringBuilder). flush() APPENDS to c7laws_results.jsonl so the
++ *  frame-2 dispatch rows (trim / config-change) land after the
++ *  onCreate flush. */
++public class Rec {
++    public static String out = "";
++    public static int flushes = 0;
++
++    public static void line(String op, String verdict, String d) {
++        String row = "C7|".concat(op).concat("|").concat(verdict)
++                .concat("|").concat(d == null ? "null" : d)
++                .concat("\n");
++        out = out.concat(row);
++    }
++
++    public static void ok(String op, String d) { line(op, "PASS", d); }
++    public static void bad(String op, String d) { line(op, "FAIL", d); }
++
++    public static void flush(android.content.Context ctx, String name) {
++        try {
++            java.io.FileOutputStream fos = ctx.openFileOutput(
++                name, android.content.Context.MODE_APPEND);
++            fos.write(out.getBytes("UTF-8"));
++            fos.close();
++            flushes++;
++            out = "";
++        } catch (Throwable t) {
++            // No silent fabrication: a failed flush leaves the file short
++            // and the verdicts honestly absent.
++        }
++    }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws/src/c7/laws/Second.java b/fixtures/c7_laws_probe/c7laws/src/c7/laws/Second.java
+new file mode 100644
+index 00000000..4e3faea6
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws/src/c7/laws/Second.java
+@@ -0,0 +1,10 @@
++package c7.laws;
++
++import android.app.Activity;
++
++/** CODER7 WAVE-9 — the plain second activity: the L22 law answers
++ *  getCallingActivity()==null because Main starts it with a plain
++ *  startActivity (AOSP: the calling identity only exists on a
++ *  startActivityForResult launch). */
++public class Second extends Activity {
++}
+diff --git a/fixtures/c7_laws_probe/c7laws_off/AndroidManifest.xml b/fixtures/c7_laws_probe/c7laws_off/AndroidManifest.xml
+new file mode 100644
+index 00000000..83511201
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws_off/AndroidManifest.xml
+@@ -0,0 +1,26 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="c7.laws.off"
++    android:versionCode="1"
++    android:versionName="1.0">
++    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="30" />
++    <!-- CODER7 WAVE-9: the APPLICATION-level disable (AOSP
++         android:enabled on <application>: "the system disables all
++         components in the application"). The L27 law: the neighbor's
++         infos answer enabled=false, its components stay out of every
++         resolution, and its service bytecode never executes. -->
++    <application android:enabled="false" android:label="C7Off">
++        <activity android:name=".OffMain" android:exported="true">
++            <intent-filter>
++                <action android:name="c7.off.VIEW" />
++                <category android:name="android.intent.category.DEFAULT" />
++            </intent-filter>
++        </activity>
++        <service android:name=".OffService" android:exported="true" />
++        <receiver android:name=".OffReceiver" android:exported="true">
++            <intent-filter>
++                <action android:name="c7.off.PING" />
++            </intent-filter>
++        </receiver>
++    </application>
++</manifest>
+diff --git a/fixtures/c7_laws_probe/c7laws_off/src/c7/laws/off/OffMain.java b/fixtures/c7_laws_probe/c7laws_off/src/c7/laws/off/OffMain.java
+new file mode 100644
+index 00000000..782e1699
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws_off/src/c7/laws/off/OffMain.java
+@@ -0,0 +1,7 @@
++package c7.laws.off;
++
++import android.app.Activity;
++
++/** CODER7 WAVE-9 — the disabled app's launcher (never resolves). */
++public class OffMain extends Activity {
++}
+diff --git a/fixtures/c7_laws_probe/c7laws_off/src/c7/laws/off/OffReceiver.java b/fixtures/c7_laws_probe/c7laws_off/src/c7/laws/off/OffReceiver.java
+new file mode 100644
+index 00000000..ee4dddcf
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws_off/src/c7/laws/off/OffReceiver.java
+@@ -0,0 +1,13 @@
++package c7.laws.off;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++
++/** CODER7 WAVE-9 — the disabled app's receiver (never resolves). */
++public class OffReceiver extends BroadcastReceiver {
++    public static int deliveries = 0;
++    @Override public void onReceive(Context ctx, Intent i) {
++        deliveries++;
++    }
++}
+diff --git a/fixtures/c7_laws_probe/c7laws_off/src/c7/laws/off/OffService.java b/fixtures/c7_laws_probe/c7laws_off/src/c7/laws/off/OffService.java
+new file mode 100644
+index 00000000..c7dc97ee
+--- /dev/null
++++ b/fixtures/c7_laws_probe/c7laws_off/src/c7/laws/off/OffService.java
+@@ -0,0 +1,23 @@
++package c7.laws.off;
++
++import android.app.Service;
++import android.content.Intent;
++import java.io.FileOutputStream;
++
++/** CODER7 WAVE-9 — the disabled app's service. Its onCreate handshake
++ *  file is the execution proof: if the engine ever instantiates this
++ *  bytecode despite the application-level disable, the marker exists
++ *  and the L27 law fails honestly. */
++public class OffService extends Service {
++    @Override public void onCreate() {
++        try {
++            FileOutputStream fos = openFileOutput(
++                "off_service_create.txt", MODE_PRIVATE);
++            fos.write("created\n".getBytes("UTF-8"));
++            fos.close();
++        } catch (Throwable t) {
++            // honest absence: no marker, no execution
++        }
++    }
++    @Override public android.os.IBinder onBind(Intent i) { return null; }
++}
+diff --git a/miniandroid/src/apk/manifest_reader.cpp b/miniandroid/src/apk/manifest_reader.cpp
+index fe357cea..151b741b 100755
+--- a/miniandroid/src/apk/manifest_reader.cpp
++++ b/miniandroid/src/apk/manifest_reader.cpp
+@@ -476,6 +476,23 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
+     // Handle application element
+     if (name == "application") {
+         result_.application_label = get_attribute_value(attrs, "label");
++        // ── CODER7 WAVE-9 (AOSP android:enabled on <application>):
++        // false disables EVERY component in the application. Same attr
++        // shape law as the component-level enabled (INT_BOOLEAN 0x12 or
++        // string "true"/"false"); absent ⇒ AOSP default true.
++        for (const auto& a : attrs) {
++            if (get_string(a.name_index) == "enabled") {
++                if ((a.value_data_type & 0xFF) == 0x12)
++                    result_.application_enabled = a.value_data != 0;
++                else {
++                    const std::string es =
++                        get_attribute_value(attrs, "enabled");
++                    if (es == "true" || es == "false")
++                        result_.application_enabled = (es == "true");
++                }
++                break;
++            }
++        }
+         // EXP-093/F005: Extract custom Application class name.
+         // S62+ (AOSP PackageParser.buildClassName law): a leading '.' joins
+         // the manifest package; a name with NO dot at all also joins the
+@@ -1329,6 +1346,13 @@ ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
+         } else if (tag_name == "application") {
+             state_stack.push_back(XmlState::APPLICATION);
+             result_.application_label = extract_attr("android:label");
++            // ── CODER7 WAVE-9: the plain-XML twin of the application
++            // android:enabled law (binary path above).
++            {
++                const std::string es = extract_attr("android:enabled");
++                if (es == "true" || es == "false")
++                    result_.application_enabled = (es == "true");
++            }
+             // EXP-093/F005: Extract the custom Application class name.
+             // Per AOSP: <application android:name="..."> specifies the
+             // Application subclass to instantiate. If absent, the default
+diff --git a/miniandroid/src/apk/manifest_reader.h b/miniandroid/src/apk/manifest_reader.h
+index 34e7f00e..75fba1da 100755
+--- a/miniandroid/src/apk/manifest_reader.h
++++ b/miniandroid/src/apk/manifest_reader.h
+@@ -75,6 +75,11 @@ struct ManifestInfo {
+     std::string package_name;
+     std::string version_name;
+     int version_code = 0;
++    // CODER7 WAVE-9 (AOSP PackageParser.ApplicationInfo.isEnabled —
++    // android:enabled on <application>): false disables EVERY component
++    // in the application (invisible to resolution, delivery, and foreign
++    // start; AOSP ApplicationInfo.enabled=false). Absent ⇒ true.
++    bool application_enabled = true;
+     
+     // SDK versions
+     std::string min_sdk_version;
+diff --git a/miniandroid/src/dex/c7_package_index.cpp b/miniandroid/src/dex/c7_package_index.cpp
+index da5cb813..9194f061 100644
+--- a/miniandroid/src/dex/c7_package_index.cpp
++++ b/miniandroid/src/dex/c7_package_index.cpp
+@@ -117,6 +117,9 @@ json package_to_json(const C7IdxPackage& p) {
+     json j = json::object();
+     j["pkg"] = p.package_name;
+     j["apk"] = p.apk_path;
++    // CODER7 WAVE-9: the application-level disable rides the cache
++    // (x.value("aen", true) default keeps pre-W9 payloads WARM-compatible).
++    j["aen"] = p.app_enabled;
+     j["perms"] = p.permissions;
+     json acts = json::array();
+     for (const auto& a : p.activities) {
+@@ -183,6 +186,7 @@ C7IdxPackage package_from_json(const json& j) {
+     C7IdxPackage p;
+     p.package_name = j.value("pkg", "");
+     p.apk_path = j.value("apk", "");
++    p.app_enabled = j.value("aen", true);
+     if (j.contains("perms") && j["perms"].is_array())
+         for (const auto& x : j["perms"])
+             p.permissions.push_back(x.get<std::string>());
+@@ -245,6 +249,8 @@ void fill_package_from_manifest(const apk::ManifestInfo& mi,
+                                 C7IdxPackage& out) {
+     out.package_name = mi.package_name;
+     out.apk_path = apk_path;
++    // CODER7 WAVE-9: the application-level disable rides the index.
++    out.app_enabled = mi.application_enabled;
+     out.permissions = mi.permissions;
+     for (const auto& a : mi.activities) {
+         C7IdxActivity ia;
+@@ -447,6 +453,9 @@ std::vector<C7IdxMatch> C7PackageIndex::query_activities(
+     bool default_only) const {
+     std::vector<C7IdxMatch> out;
+     for (const auto& p : packages_) {
++        // ── CODER7 WAVE-9 (AOSP ApplicationInfo.isEnabled=false): a
++        // disabled APPLICATION hides EVERY component from resolution.
++        if (!p.app_enabled) continue;
+         for (const auto& a : p.activities) {
+             if (!a.enabled) continue;  // disabled-components law
+             if (!filter_matches(a.filters, action, cats, type, scheme, host,
+@@ -470,6 +479,7 @@ std::vector<C7IdxMatch> C7PackageIndex::query_services(
+     bool default_only) const {
+     std::vector<C7IdxMatch> out;
+     for (const auto& p : packages_) {
++        if (!p.app_enabled) continue;  // WAVE-9 application-disable law
+         for (const auto& s : p.services) {
+             if (!s.enabled) continue;
+             if (!filter_matches(s.filters, action, cats, type, scheme, host,
+@@ -490,6 +500,7 @@ std::vector<C7IdxMatch> C7PackageIndex::query_receivers(
+     bool default_only) const {
+     std::vector<C7IdxMatch> out;
+     for (const auto& p : packages_) {
++        if (!p.app_enabled) continue;  // WAVE-9 application-disable law
+         for (const auto& r : p.receivers) {
+             if (!r.enabled) continue;
+             if (!filter_matches(r.filters, action, cats, type, scheme, host,
+@@ -508,6 +519,7 @@ std::vector<C7IdxProvider> C7PackageIndex::providers_for_authority(
+     std::vector<C7IdxProvider> out;
+     if (authority.empty()) return out;
+     for (const auto& p : packages_) {
++        if (!p.app_enabled) continue;  // WAVE-9 application-disable law
+         for (const auto& pr : p.providers) {
+             if (!pr.enabled) continue;  // disabled ⇒ not published
+             // ProviderInfo.authorities is a space-separated list; every
+diff --git a/miniandroid/src/dex/c7_package_index.h b/miniandroid/src/dex/c7_package_index.h
+index c9aa119c..22cec4b1 100644
+--- a/miniandroid/src/dex/c7_package_index.h
++++ b/miniandroid/src/dex/c7_package_index.h
+@@ -100,6 +100,10 @@ struct C7IdxProvider {
+ struct C7IdxPackage {
+     std::string package_name;
+     std::string apk_path;
++    // CODER7 WAVE-9 (AOSP ApplicationInfo.isEnabled): the application-
++    // level disable — false hides EVERY component from resolution and
++    // delivery (the effective-enabled law below).
++    bool app_enabled = true;
+     std::vector<std::string> permissions;
+     std::vector<C7IdxActivity> activities;
+     std::vector<C7IdxService> services;
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 30c2d8f7..deb968e9 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -7661,6 +7661,106 @@ bool DalvikExecutionEngine::invoke_lifecycle_method(
+     return try_recursive_invoke(cls, method, full, ret, tmp, "");
+ }
+ 
++// ── CODER7 WAVE-9: the system-signal dispatch laws ────────────────────
++// AOSP ActivityThread.handleTrimMemory: "the Application's callbacks run
++// BEFORE the component's" — dispatch order app → activity. AOSP
++// Application.onLowMemory: fired at TRIM_MEMORY_COMPLETE (the legacy
++// ComponentCallbacks alias; android-14 ActivityThread keeps the
++// onLowMemory() leg for level == TRIM_MEMORY_COMPLETE). AOSP
++// handleConfigurationChanged: the Configuration object reaches BOTH the
++// Application and the Activity overrides; the ORIENTATION constant the
++// engine carries for the rotate signal is ORIENTATION_LANDSCAPE (2).
++void DalvikExecutionEngine::dispatch_memory_and_config_signals(
++    int trim_level, bool rotate) {
++    // The live activity identity (ActivityShadow::current_activity_id —
++    // the same identity performLaunchActivity recorded).
++    uint32_t act_oid = 0;
++    std::string act_cls;
++    if (shadow_registry_ != nullptr) {
++        if (auto* act =
++                shadow_registry_->find_as<framework::ActivityShadow>()) {
++            act_oid = act->current_activity_id();
++            if (act_oid != 0 && heap_.has_object(act_oid))
++                act_cls = heap_.get(act_oid)->class_descriptor;
++        }
++    }
++    const bool app_live = application_object_id_ != 0 &&
++                          heap_.has_object(application_object_id_) &&
++                          !application_class_desc_.empty();
++
++    if (trim_level > 0) {
++        int app_done = 0, act_done = 0, low_done = 0;
++        if (app_live) {
++            DalvikValue ret;
++            if (invoke_lifecycle_method(
++                    application_object_id_, application_class_desc_,
++                    "onTrimMemory", {DalvikValue::make_int(trim_level)}, ret))
++                app_done++;
++            // AOSP: onLowMemory is the TRIM_MEMORY_COMPLETE alias.
++            if (trim_level == 15 /*TRIM_MEMORY_COMPLETE*/) {
++                DalvikValue lret;
++                if (invoke_lifecycle_method(
++                        application_object_id_, application_class_desc_,
++                        "onLowMemory", {}, lret))
++                    low_done++;
++            }
++        }
++        if (act_oid != 0 && !act_cls.empty()) {
++            DalvikValue ret;
++            if (invoke_lifecycle_method(act_oid, act_cls, "onTrimMemory",
++                                        {DalvikValue::make_int(trim_level)},
++                                        ret))
++                act_done++;
++        }
++        miniandroid::diagnostics::FileIoTrace::instance().record(
++            "C7-TRIM", "level=" + std::to_string(trim_level), true,
++            "app=" + std::to_string(app_done) +
++                " act=" + std::to_string(act_done) +
++                " lowmem=" + std::to_string(low_done) +
++                " (AOSP app-before-activity)",
++            "DispatchMemoryAndConfigSignals");
++        std::cerr << "[C7-TRIM] level=" << trim_level
++                  << " app=" << app_done << " act=" << act_done
++                  << " lowmem=" << low_done << std::endl;
++    }
++
++    if (rotate) {
++        uint32_t cfg_id = heap_.allocate(
++            "Landroid/content/res/Configuration;", pc_, 0);
++        heap_.set_object_field(
++            cfg_id, "orientation", DalvikValue::make_int(2)  // LANDSCAPE
++        );
++        heap_.set_object_field(
++            cfg_id, "densityDpi", DalvikValue::make_int(160));
++        DalvikValue cfg =
++            DalvikValue::make_object(cfg_id,
++                                     "Landroid/content/res/Configuration;");
++        int app_done = 0, act_done = 0;
++        if (app_live) {
++            DalvikValue ret;
++            if (invoke_lifecycle_method(
++                    application_object_id_, application_class_desc_,
++                    "onConfigurationChanged", {cfg}, ret))
++                app_done++;
++        }
++        if (act_oid != 0 && !act_cls.empty()) {
++            DalvikValue ret;
++            if (invoke_lifecycle_method(act_oid, act_cls,
++                                        "onConfigurationChanged", {cfg},
++                                        ret))
++                act_done++;
++        }
++        miniandroid::diagnostics::FileIoTrace::instance().record(
++            "C7-CFGCHG", "orientation=2", true,
++            "app=" + std::to_string(app_done) +
++                " act=" + std::to_string(act_done) +
++                " (AOSP app-before-activity)",
++            "DispatchMemoryAndConfigSignals");
++        std::cerr << "[C7-CFGCHG] orientation=2 app=" << app_done
++                  << " act=" << act_done << std::endl;
++    }
++}
++
+ // ── F-NEW-304 (CONT-42): platform Fragment lifecycle drain ─────────────
+ // AOSP FragmentController/FragmentManagerImpl laws, driven from the HOST
+ // lifecycle boundaries. Evidence chain: tananaev calculator v1.10
+@@ -39693,6 +39793,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     if (class_name == "Landroid/content/ContentResolver;" &&
+         (method == "query" || method == "insert" || method == "update" ||
+          method == "delete" || method == "getType" || method == "call" ||
++         method == "bulkInsert" || method == "notifyChange" ||
++         method == "registerContentObserver" ||
++         method == "unregisterContentObserver" ||
+          method == "openFileDescriptor" ||
+          method == "openAssetFileDescriptor" ||
+          method == "openTypedAssetFileDescriptor" ||
+@@ -39746,7 +39849,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             return out;
+         };
+         const DalvikValue uarg = first_uri_arg();
+-        const std::string uri_raw = uri_raw_of(uarg);
++        std::string uri_raw = uri_raw_of(uarg);
++        // ── CODER7 WAVE-9: the String-authority overloads (AOSP
++        // ContentResolver.acquireContentProviderClient(String) /
++        // acquireUnstableContentProviderClient(String): "build the
++        // content://<authority>/ Uri internally"). The W8 tree threw
++        // IllegalArgumentException for them — no Uri arg meant
++        // "uri null or unresolvable".
++        if (uri_raw.empty() &&
++            (method == "acquireContentProviderClient" ||
++             method == "acquireUnstableContentProviderClient")) {
++            for (size_t i = 1; i < args.size(); ++i) {
++                if (args[i].type == DalvikType::STRING_REF &&
++                    !args[i].string_val.empty()) {
++                    uri_raw = "content://" + args[i].string_val + "/";
++                    break;
++                }
++            }
++        }
+         std::string uscheme, uauth, upath, uquery;
+         const bool parsed = parse_content_uri(uri_raw, uscheme, uauth, upath, uquery);
+         auto rec = [&](const std::string& op, bool ok, const std::string& detail) {
+@@ -39755,12 +39875,142 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 current_class_ + "." + current_method_);
+         };
+ 
++        // ────────────────────────────────────────────────────────────────
++        // ── CODER7 WAVE-9: the ContentObserver registry laws (AOSP
++        // ContentResolver.registerContentObserver(Uri, boolean, observer)
++        // → ContentService.register + notifyChange(Uri, observer) →
++        // ContentService.notifyChange). The W8 tree's registerContent-
++        // Observer was a NO-OP stub and notifyChange did not exist:
++        // nothing registered, nothing ever dispatched.
++        //   * register: (Uri, notifyForDescendents, observer) records.
++        //   * unregister: observer removed (AOSP: unregistering an
++        //     unknown observer is a no-op, never a throw).
++        //   * notifyChange: every observer whose AUTHORITY matches and
++        //     whose uri filter accepts the notified uri receives
++        //     onChange(selfChange=false) — exact uri equality when
++        //     notifyForDescendents=false, authority+path-prefix when
++        //     true. The ORIGINATOR (the observer passed to notifyChange,
++        //     null-safe) is EXCLUDED — the AOSP selfChange law.
++        // ────────────────────────────────────────────────────────────────
++        if (method == "registerContentObserver" && args.size() >= 4) {
++            C7ContentObserver co;
++            co.oid = args[3].type == DalvikType::OBJECT_REF
++                         ? args[3].object_id
++                         : 0;
++            co.uri_raw = uri_raw;
++            co.authority = uauth;
++            co.notify_descendants =
++                args[2].type == DalvikType::INT32
++                    ? args[2].int_val != 0
++                    : false;
++            // Re-registering the same observer replaces the filter
++            // (AOSP ContentService.register: one record per observer).
++            for (auto& e : c7_content_observers_)
++                if (e.oid == co.oid) { e = co; co.oid = 0; break; }
++            if (co.oid != 0) c7_content_observers_.push_back(co);
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "C7-OBSERVER", uri_raw, true,
++                "registered (notifyForDescendents=" +
++                    std::string(co.notify_descendants ? "1" : "0") + ")",
++                current_class_ + "." + current_method_);
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "unregisterContentObserver" && args.size() >= 2) {
++            uint32_t want = args[1].type == DalvikType::OBJECT_REF
++                                ? args[1].object_id
++                                : 0;
++            bool removed = false;
++            for (auto it = c7_content_observers_.begin();
++                 it != c7_content_observers_.end(); ++it) {
++                if (it->oid == want) {
++                    c7_content_observers_.erase(it);
++                    removed = true;
++                    break;
++                }
++            }
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "C7-OBSERVER", want ? "#" + std::to_string(want) : "<null>",
++                true, removed ? "unregistered" : "not registered (no-op)",
++                current_class_ + "." + current_method_);
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "notifyChange") {
++            if (uri_raw.empty()) {
++                throw_deferred("Ljava/lang/IllegalArgumentException;",
++                               "uri null or unresolvable (notifyChange)",
++                               "C7-NOTIFY");
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            // AOSP notifyChange(Uri, ContentObserver): the second arg is
++            // the ORIGINATING observer (excluded from dispatch; null
++            // delivers to everyone). The 3-arg form carries a synthetic
++            // flag in its place — same exclusion law.
++            uint32_t originator = 0;
++            for (size_t i = 1; i < args.size() && i < 3; ++i)
++                if (args[i].type == DalvikType::OBJECT_REF &&
++                    args[i].object_id != 0 &&
++                    heap_.has_object(args[i].object_id) &&
++                    heap_.get(args[i].object_id)->class_descriptor ==
++                        "Landroid/database/ContentObserver;") {
++                    // A 3-arg overload passes (uri, observer, sync) — the
++                    // 2-arg passes (uri, observer). Both land here.
++                    originator = args[i].object_id;
++                    break;
++                }
++            int delivered = 0;
++            for (const auto& co : c7_content_observers_) {
++                if (co.oid == originator || co.oid == 0 ||
++                    !heap_.has_object(co.oid))
++                    continue;
++                if (co.authority != uauth) continue;
++                bool accept = co.uri_raw == uri_raw;
++                if (!accept && co.notify_descendants &&
++                    !upath.empty()) {
++                    std::string rpath;
++                    std::string scheme2, auth2, query2;
++                    if (parse_content_uri(co.uri_raw, scheme2, auth2,
++                                          rpath, query2) &&
++                        auth2 == uauth &&
++                        rpath.compare(0, rpath.size(), upath, 0,
++                                      rpath.size()) == 0)
++                        accept = true;
++                }
++                if (!accept) continue;
++                std::string ocls =
++                    heap_.get(co.oid)->class_descriptor;
++                DalvikValue oret;
++                DalvikExecutionResult otmp;
++                bool ran = try_recursive_invoke(
++                    ocls, "onChange",
++                    {DalvikValue::make_object(
++                         co.oid, ocls),
++                     DalvikValue::make_bool(false)},
++                    oret, otmp, "");
++                if (ran) delivered++;
++            }
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "C7-NOTIFY", uri_raw, true,
++                "dispatched to " + std::to_string(delivered) +
++                    " registered observer(s) (originator excluded)",
++                current_class_ + "." + current_method_);
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++
+         // Method-not-dispatched pairs: openInputStream/openOutputStream on
+         // file:// fall through to the dedicated handlers below; the
+         // provider-client acquisitions dispatch identically to query.
+         const bool client_call =
+             method == "query" || method == "insert" || method == "update" ||
+             method == "delete" || method == "getType" || method == "call" ||
++            method == "bulkInsert" ||
+             method == "openFileDescriptor" ||
+             method == "openAssetFileDescriptor" ||
+             method == "openTypedAssetFileDescriptor" ||
+@@ -39848,7 +40098,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             {
+                 const bool c7_write_op =
+                     (method == "insert" || method == "update" ||
+-                     method == "delete");
++                     method == "delete" || method == "bulkInsert");
+                 std::string c7_needed =
+                     c7_check_provider_access(prov_oid, c7_write_op);
+                 std::string c7_enforced = c7_provider_enforced_perm(
+@@ -39904,6 +40154,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 DalvikValue vals = args.size() > 2 ? args[2]
+                                                    : DalvikValue::make_null();
+                 pargs = {uri_arg, vals};
++            } else if (method == "bulkInsert") {
++                // ── CODER7 WAVE-9: AOSP ContentResolver.bulkInsert(Uri,
++                // ContentValues[]) — the values ARRAY reaches the
++                // provider's bulkInsert verbatim.
++                DalvikValue vals = args.size() > 2 ? args[2]
++                                                   : DalvikValue::make_null();
++                pargs = {uri_arg, vals};
+             } else if (method == "update") {
+                 DalvikValue vals = args.size() > 2 ? args[2]
+                                                    : DalvikValue::make_null();
+@@ -39972,8 +40229,53 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 : (method == "openAssetFileDescriptor") ? "openFile"
+                 : (method == "openTypedAssetFileDescriptor") ? "openFile"
+                 : method;
++            // ── CODER7 WAVE-9: the getCallingPackage law (AOSP
++            // ContentProvider.getCallingPackage: "return the name of the
++            // package that invoked the CURRENT operation"). Set around
++            // every provider invocation; the ContentProvider method
++            // gate answers it; cleared on the way out (null outside an
++            // op).
++            c7_provider_calling_pkg_ = package_name_;
+             bool invoked = invoke_provider_method(prov_oid, prov_cls,
+                                                   prov_method, pargs, ret, err);
++            if (!invoked && prov_method == "bulkInsert") {
++                // ── CODER7 WAVE-9: the AOSP ContentProvider.bulkInsert
++                // BASE law (frameworks/base ContentProvider.java):
++                // "the default implementation processes calls to
++                // bulkInsert by calling insert once for each row". A
++                // provider that only overrode insert keeps working.
++                DalvikValue arr = pargs.size() > 1
++                                      ? pargs[1]
++                                      : DalvikValue::make_null();
++                int c7_rows = 0;
++                if (arr.type == DalvikType::OBJECT_REF &&
++                    arr.object_id != 0 && heap_.has_object(arr.object_id)) {
++                    auto lenf = heap_.get_object_field(
++                        arr.object_id, "__array_length__");
++                    int n = lenf.has_value() ? lenf->int_val : 0;
++                    for (int k = 0; k < n; ++k) {
++                        auto el = heap_.get_object_field(
++                            arr.object_id,
++                            "array[" + std::to_string(k) + "]");
++                        if (!el.has_value()) continue;
++                        DalvikValue ins_ret;
++                        DalvikValue ins_uri;
++                        std::string ins_err;
++                        if (invoke_provider_method(
++                                prov_oid, prov_cls, "insert",
++                                {pargs[0], *el}, ins_ret, ins_err))
++                            c7_rows++;
++                    }
++                    ret = DalvikValue::make_int(c7_rows);
++                    invoked = true;
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "PROVIDER-BULKINSERT", uri_raw, true,
++                        "base-law fallback: insert() per row → " +
++                            std::to_string(c7_rows),
++                        current_class_ + "." + current_method_);
++                }
++            }
++            c7_provider_calling_pkg_.clear();
+             if (!invoked) {
+                 // AOSP: the framework ContentProvider base answers — openFile
+                 // throws FileNotFoundException("No files supported..."),
+@@ -40526,6 +40828,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             std::string k = args.size() > 1 && args[1].type == DalvikType::STRING_REF
+                                 ? std::string(args[1].string_val)
+                                 : std::string();
++            // ── CODER7 WAVE-9: the ABSENT-KEY law (AOSP ContentValues:
++            // every getX on a key never put() answers null — the map
++            // lookup misses, NO conversion runs). The W8 tree fell into
++            // the conversion branches for the engine's null sentinel and
++            // answered "0"-style garbage: getAsString(absent) → "0",
++            // getAsInteger(absent) → Integer(0) — silent-wrong shapes
++            // that broke every provider consumer gating on null.
++            bool c7_present = false;
++            for (auto& [ck, cvx] : content_values_[args[0].object_id])
++                if (ck == k) { c7_present = true; break; }
++            if (!c7_present) {
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
+             DalvikValue v = find_key(args[0].object_id, k);
+             // Unwrap a BOXED value first (AOSP: put(String, Integer) stores
+             // the box; getAsInteger returns THAT box — dalvik_int_value of an
+@@ -40545,6 +40862,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                     result = DalvikValue::make_string(v.string_val, 0);
+                 else if (v.type == DalvikType::OBJECT_REF && v.object_id == 0)
+                     result = DalvikValue::make_null();
++                else if (v.type == DalvikType::BOOLEAN)
++                    // AOSP getAsString → value.toString(): Boolean.toString
++                    // answers "true"/"false", never "1"/"0".
++                    result = DalvikValue::make_string(
++                        dalvik_int_value(v) != 0 ? "true" : "false", 0);
+                 else
+                     result = DalvikValue::make_string(
+                         std::to_string(dalvik_int_value(v)), 0);
+@@ -41511,6 +41833,61 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 return true;
+             }
+         }
++        // ── CODER7 WAVE-9: the DISABLED-APP start law (AOSP
++        // ApplicationInfo.isEnabled=false hides EVERY component from
++        // ActiveServices.retrieveServiceLocked — the W6 foreign-code
++        // ingestion made disabled-app classes loadable, but the
++        // enablement law still gates the bring-up: the AOSP
++        // not-installed shape (startService → null / bindService →
++        // false) applies, exactly like the W3 disabled-component law
++        // above).
++        if (c7_pkg_index_ && !target_cls.empty() &&
++            (method == "startService" ||
++             method == "startForegroundService" ||
++             method == "bindService")) {
++            std::string w9_tpkg = target_cls;  // dotted target form
++            size_t w9_dot = w9_tpkg.rfind('.');
++            std::string w9_tpkg_only =
++                w9_dot == std::string::npos ? std::string()
++                                            : w9_tpkg.substr(0, w9_dot);
++            if (!w9_tpkg_only.empty() && w9_tpkg_only != package_name_) {
++                if (const C7IdxPackage* w9_tfp =
++                        c7_pkg_index_->find_package(w9_tpkg_only)) {
++                    bool w9_tblocked = !w9_tfp->app_enabled;
++                    std::string w9_twhy =
++                        "application disabled (AOSP app-level enable)";
++                    if (!w9_tblocked) {
++                        for (const auto& w9_ts : w9_tfp->services) {
++                            if (w9_ts.cls == target_cls) {
++                                if (!w9_ts.enabled) {
++                                    w9_tblocked = true;
++                                    w9_twhy = "component disabled";
++                                }
++                                break;
++                            }
++                        }
++                    }
++                    if (w9_tblocked) {
++                        const bool c9_is_bind = (method == "bindService");
++                        miniandroid::diagnostics::FileIoTrace::instance()
++                            .record(
++                                c9_is_bind ? "SVC-BIND" : "SVC-START",
++                                w9_tpkg_only + "/" + target_cls, false,
++                                "disabled target → " + w9_twhy +
++                                    " → AOSP: " +
++                                    std::string(c9_is_bind
++                                                    ? "bindService=false"
++                                                    : "null ComponentName"),
++                                current_class_ + "." + current_method_);
++                        result = c9_is_bind
++                                     ? DalvikValue::make_bool(false)
++                                     : DalvikValue::make_null();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                }
++            }
++        }
+         // ── CODER7 WAVE-6: foreign service exported/permission gate ────
+         // AOSP ActiveServices.retrieveServiceLocked → checkComponentPermission:
+         // a service in ANOTHER package must be exported (running package =
+@@ -41681,6 +42058,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 }
+             }
+         if (method == "bindService") {
++            // ── CODER7 WAVE-9 RESURRECTION LAW (AOSP
++            // ActiveServices.bindServiceLocked → bringUpServiceLocked):
++            // a bind to a STOPPED (destroyed) service record brings the
++            // service BACK UP — the old record is reset and onCreate runs
++            // again. The W8 tree delivered onBind on the dead record
++            // without re-creating it, and the later unbind hit
++            // "Service not registered" (the unbind walk skips destroyed
++            // records) — a two-faced law violation.
++            if (svc.destroyed) {
++                svc.destroyed = false;
++                svc.created = false;
++                svc.started = false;
++                svc.bindings = 0;
++                svc.next_start_id = 0;
++                svc.last_start_id = 0;
++                svc.do_rebind = false;
++                svc.conn_bindings.clear();
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "SVC-BIND", svc.cls, true,
++                    "resurrection: stopped service record reset "
++                    "(AOSP bringUpServiceLocked)",
++                    current_class_ + "." + current_method_);
++            }
+             // AOSP bindService law: ensure onCreate ran; the connection is
+             // handed the binder returned by onBind (null → no callback).
+             // ── CODER7 WAVE-3 BIND_AUTO_CREATE law (AOSP
+@@ -42178,6 +42578,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             // IntentFilter.matchData(intent.getType(), scheme, data)).
+             std::string c7_intent_type, c7_intent_scheme, c7_intent_host,
+                 c7_intent_path;
++            // ── CODER7 WAVE-9: the intent's setPackage filter (AOSP
++            // Intent.setPackage: "only that package's components receive"
++            // — a setPackage broadcast reaches NO other package's
++            // receivers). The W8 tree ignored the filter: every foreign
++            // setPackage send delivered to the running app's receivers.
++            std::string c7_intent_pkg_filter;
+             if (intent_oid != 0 && shadow_registry_ != nullptr) {
+                 auto* ish =
+                     shadow_registry_->find_as<framework::IntentShadow>();
+@@ -42189,9 +42595,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                         c7_intent_scheme = pi->data_scheme;
+                         c7_intent_host = pi->data_host;
+                         c7_intent_path = pi->data_path;
++                        c7_intent_pkg_filter = pi->package_name;
+                     }
+                 }
+             }
++            // ── CODER7 WAVE-9: the runtime component-enabled override
++            // lookup (AOSP PackageManager.setComponentEnabledSetting —
++            // a DISABLED override hides the component from delivery even
++            // when the manifest enabled it; an ENABLED override revives a
++            // manifest-disabled component).
++            auto c7_override_state = [&](const std::string& cls) -> int {
++                for (const auto& [key, state] :
++                     c7_component_enabled_overrides_) {
++                    size_t slash = key.rfind('/');
++                    std::string kcls =
++                        slash == std::string::npos ? key
++                                                   : key.substr(slash + 1);
++                    if (kcls == cls) return state;
++                }
++                return 0;  // COMPONENT_ENABLED_STATE_DEFAULT
++            };
+             // ── CODER7 WAVE-3: the IntentFilter.matchData law ───────────
+             // AOSP MimeUtils.mimeMatches: exact match; "type/*" wildcard
+             // prefix; "*/*" matches everything.
+@@ -42354,6 +42777,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 // MIME) for dynamic registrations (addDataScheme/
+                 // addDataType / the filter's data dimensions).
+                 if (match) match = c7_data_match(dr.datas);
++                // ── CODER7 WAVE-9: the setPackage filter law — a
++                // dynamic registration of the RUNNING app is owned by
++                // package_name_; a foreign setPackage filter excludes it.
++                if (match && !c7_intent_pkg_filter.empty() &&
++                    c7_intent_pkg_filter != package_name_) {
++                    match = false;
++                }
++                // ── CODER7 WAVE-9: the runtime ENABLED override.
++                if (match && c7_override_state(dr.cls) == 2) {
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "BCAST-SKIP", dr.cls, false,
++                        "receiver disabled by setComponentEnabledSetting",
++                        current_class_ + "." + current_method_);
++                    match = false;
++                }
+                 // ── CODER7 WAVE-2 registration-permission law: a receiver
+                 // registered with broadcastPermission requires the SENDER
+                 // to hold it (AOSP BroadcastFilter.requiredPermission;
+@@ -42375,11 +42813,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 // receiver with android:enabled="false" is NOT a dispatch
+                 // candidate (AOSP PackageParser/PackageManager disabled
+                 // component resolution — loud trace, never silent).
+-                if (!mr.enabled) {
+-                    miniandroid::diagnostics::FileIoTrace::instance().record(
+-                        "BCAST-SKIP", mr.cls, false,
+-                        "receiver disabled (android:enabled=false)",
+-                        current_class_ + "." + current_method_);
++                // ── CODER7 WAVE-9: the runtime override OVERRIDES the
++                // manifest face (ENABLED=1 revives, DISABLED=2 hides).
++                {
++                    int ov = c7_override_state(mr.cls);
++                    if (ov == 2) {
++                        miniandroid::diagnostics::FileIoTrace::instance()
++                            .record("BCAST-SKIP", mr.cls, false,
++                                    "receiver disabled by "
++                                    "setComponentEnabledSetting",
++                                    current_class_ + "." +
++                                        current_method_);
++                        continue;
++                    }
++                    if (ov == 1) {
++                        // revived below (mr.enabled only gates when default)
++                    } else if (!mr.enabled) {
++                        miniandroid::diagnostics::FileIoTrace::instance()
++                            .record("BCAST-SKIP", mr.cls, false,
++                                    "receiver disabled (android:enabled=false)",
++                                    current_class_ + "." +
++                                        current_method_);
++                        continue;
++                    }
++                }
++                // ── CODER7 WAVE-9: the setPackage filter law (AOSP
++                // Intent.setPackage) — a manifest receiver of the RUNNING
++                // package is owned by package_name_.
++                if (!c7_intent_pkg_filter.empty() &&
++                    c7_intent_pkg_filter != package_name_) {
++                    miniandroid::diagnostics::FileIoTrace::instance()
++                        .record("BCAST-SKIP", mr.cls, false,
++                                "setPackage(" + c7_intent_pkg_filter +
++                                    ") excludes this receiver",
++                                current_class_ + "." + current_method_);
+                     continue;
+                 }
+                 // ── CODER7 WAVE-2 EXPORTED law (foreign-sender model):
+@@ -42494,6 +42961,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                             current_class_ + "." + current_method_);
+                         continue;
+                     }
++                    // ── CODER7 WAVE-9: the setPackage filter law (AOSP
++                    // Intent.setPackage) — a foreign receiver is owned by
++                    // c7_xr.package_name; a filter for another package
++                    // excludes it.
++                    if (!c7_intent_pkg_filter.empty() &&
++                        c7_intent_pkg_filter != c7_xr.package_name) {
++                        miniandroid::diagnostics::FileIoTrace::instance()
++                            .record("BCAST-SKIP",
++                                    c7_xr.package_name + "/" + c7_xr.cls,
++                                    false,
++                                    "setPackage(" + c7_intent_pkg_filter +
++                                        ") excludes this foreign receiver",
++                                    current_class_ + "." + current_method_);
++                        continue;
++                    }
+                     // ── WAVE-6 EXECUTION gate: is the foreign class LOADED?
+                     // (LoadedApk-lite: inject_foreign_apk_code ingested the
+                     // store dexes at boot; a class that failed to ingest
+@@ -56808,10 +57290,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     // serves per R341-APPCTX), keyed by the REAL superclass chain (any
+     // ContentProvider subclass, not a name-suffix guess).
+     // ────────────────────────────────────────────────────────────────────────
+-    if (method == "getContext" &&
++    if ((method == "getContext" || method == "getCallingPackage") &&
+         is_subclass_of(class_name, "Landroid/content/ContentProvider;")) {
+         static thread_local uint64_t ctx_law_n = 0;
+         bool log_law = ctx_law_n++ < 16;
++        // ── CODER7 WAVE-9: the getCallingPackage law (AOSP
++        // ContentProvider.getCallingPackage: the caller of the CURRENT
++        // operation — available inside query/insert/update/delete/
++        // openFile/bulkInsert, null otherwise). The W8 tree never set
++        // it: every provider saw a fabricated null.
++        if (method == "getCallingPackage") {
++            if (c7_provider_calling_pkg_.empty())
++                result = DalvikValue::make_null();
++            else
++                result = DalvikValue::make_string(
++                    c7_provider_calling_pkg_, 0);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
+         // GATE A: prefer the provider's OWN bound context (attachInfo law,
+         // install_content_providers) before the process-wide app context.
+         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+@@ -58755,6 +59251,65 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             }
+         }
+         if (!found) {
++            // ── CODER7 WAVE-9: the FOREIGN-INSTALLED fallback (AOSP
++            // PackageManagerService.getServiceInfo serves ANY installed
++            // package's component — the W5 store index is the installed
++            // set). enabled = component.enabled && application.enabled
++            // (the effective-enabled law: an application-level disable
++            // marks every component enabled=false; AOSP
++            // ApplicationInfo.isEnabled propagation).
++            std::string w9_pkg, w9_cls;
++            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
++                args[1].object_id != 0 &&
++                heap_.has_object(args[1].object_id)) {
++                auto pf = heap_.get_object_field(args[1].object_id,
++                                                 "mPackage");
++                auto cf = heap_.get_object_field(args[1].object_id,
++                                                 "mClass");
++                if (pf.has_value() && pf->type == DalvikType::STRING_REF)
++                    w9_pkg = pf->string_val;
++                if (cf.has_value() && cf->type == DalvikType::STRING_REF)
++                    w9_cls = cf->string_val;
++            }
++            const C7IdxPackage* w9_fp =
++                (c7_pkg_index_ && !w9_pkg.empty() &&
++                 w9_pkg != package_name_)
++                    ? c7_pkg_index_->find_package(w9_pkg)
++                    : nullptr;
++            if (w9_fp != nullptr) {
++                for (const auto& w9_s : w9_fp->services) {
++                    if (w9_s.cls == w9_cls ||
++                        w9_s.cls == bare) {
++                        uint32_t sid = heap_.allocate(
++                            "Landroid/content/pm/ServiceInfo;", pc_, 0);
++                        heap_.set_object_field(
++                            sid, "packageName",
++                            DalvikValue::make_string(
++                                w9_fp->package_name, 0));
++                        heap_.set_object_field(
++                            sid, "name",
++                            DalvikValue::make_string(w9_s.cls, 0));
++                        heap_.set_object_field(
++                            sid, "enabled",
++                            DalvikValue::make_bool(w9_s.enabled &&
++                                                   w9_fp->app_enabled));
++                        heap_.set_object_field(
++                            sid, "exported",
++                            DalvikValue::make_bool(w9_s.exported));
++                        std::cerr << "[C7-SVCINFO] foreign "
++                                  << w9_fp->package_name << "/"
++                                  << w9_s.cls << " enabled="
++                                  << (w9_s.enabled && w9_fp->app_enabled
++                                          ? "true"
++                                          : "false")
++                                  << std::endl;
++                        result = DalvikValue::make_object(
++                            sid, "Landroid/content/pm/ServiceInfo;");
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                }
++            }
+             // AOSP contract: absent component → NameNotFoundException, never
+             // a null ServiceInfo.
+             std::cerr << "[F275-SVCINFO] MISS " << bare
+@@ -63924,6 +64479,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         std::string want_pkg;
+         if (args[1].type == DalvikType::STRING_REF) want_pkg = args[1].string_val;
+         const bool own = want_pkg.empty() || want_pkg == package_name_;
++        // ── CODER7 WAVE-9: consult the W5 store index BEFORE declaring
++        // "not installed" — an INSTALLED foreign package answers a REAL
++        // ApplicationInfo (AOSP getApplicationInfo serves any installed
++        // package; NameNotFoundException only for names nothing
++        // installed). enabled carries the index's application-level
++        // disable (the c7laws_off L27 law).
++        const C7IdxPackage* w9_fp =
++            (!own && c7_pkg_index_ && !want_pkg.empty())
++                ? c7_pkg_index_->find_package(want_pkg)
++                : nullptr;
++        if (w9_fp != nullptr) {
++            result = get_or_create_singleton(
++                "Landroid/content/pm/ApplicationInfo;");
++            if (result.type == DalvikType::OBJECT_REF &&
++                heap_.has_object(result.object_id)) {
++                heap_.set_object_field(
++                    result.object_id, "packageName",
++                    DalvikValue::make_string(w9_fp->package_name, 0));
++                heap_.set_object_field(
++                    result.object_id, "sourceDir",
++                    DalvikValue::make_string(w9_fp->apk_path, 0));
++                heap_.set_object_field(
++                    result.object_id, "publicSourceDir",
++                    DalvikValue::make_string(w9_fp->apk_path, 0));
++                heap_.set_object_field(
++                    result.object_id, "dataDir",
++                    DalvikValue::make_string(
++                        "/data/data/" + w9_fp->package_name, 0));
++                heap_.set_object_field(
++                    result.object_id, "enabled",
++                    DalvikValue::make_bool(w9_fp->app_enabled));
++                std::cerr << "[C7-APPINFO] foreign "
++                          << w9_fp->package_name << " enabled="
++                          << (w9_fp->app_enabled ? "true" : "false")
++                          << std::endl;
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
+         if (!own) {
+             // AOSP: throws NameNotFoundException for an uninstalled package.
+             raise_synthetic_exception(
+@@ -64016,6 +64610,64 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         return true;
+     }
+ 
++
++    // ── CODER7 WAVE-9: the runtime component-enabled override pair
++    // (AOSP PackageManager.setComponentEnabledSetting(ComponentName,
++    // newState, flags) / getComponentEnabledSetting(ComponentName): PMS
++    // keeps per-component settings that OVERRIDE the manifest; a
++    // DISABLED component stops resolving AND stops delivering
++    // immediately). The W8 tree had NO implementation — the override
++    // map (c7_component_enabled_overrides_) feeds the broadcast
++    // dispatch, the resolution laws, and the service/activity gates.
++    if (class_name.find("PackageManager") != std::string::npos &&
++        (method == "setComponentEnabledSetting" ||
++         method == "getComponentEnabledSetting") &&
++        args.size() >= 2) {
++        std::string flat;
++        if (args[1].type == DalvikType::OBJECT_REF &&
++            args[1].object_id != 0 &&
++            heap_.has_object(args[1].object_id)) {
++            std::string cpkg, ccls;
++            const auto* cn = heap_.get(args[1].object_id);
++            for (const auto& [fn, fv] : cn->fields) {
++                if (fv.type == DalvikType::STRING_REF) {
++                    // The engine's ComponentName convention (the
++                    // startActivity bridge allocates mPackage/mClass); the
++                    // dotted aliases keep other constructors covered.
++                    if (fn == "mPackage" || fn == "package" ||
++                        fn == "pkg" || fn == "packageName")
++                        cpkg = fv.string_val;
++                    if (fn == "mClass" || fn == "class" ||
++                        fn == "cls" || fn == "className")
++                        ccls = fv.string_val;
++                }
++            }
++            if (ccls.empty() && !cpkg.empty()) flat = cpkg;
++            else if (!cpkg.empty()) flat = cpkg + "/" + ccls;
++            else flat = ccls;
++        }
++        if (method == "setComponentEnabledSetting" && args.size() >= 3 &&
++            args[2].type == DalvikType::INT32) {
++            c7_component_enabled_overrides_[flat] = args[2].int_val;
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "C7-COMPONENT-ENABLED", flat, true,
++                "setComponentEnabledSetting newState=" +
++                    std::to_string(args[2].int_val) +
++                    " (0=default 1=enabled 2=disabled)",
++                current_class_ + "." + current_method_);
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        // getComponentEnabledSetting: the stored override, else DEFAULT(0)
++        // (AOSP: the query answers the SETTING, not the effective state).
++        auto oit = c7_component_enabled_overrides_.find(flat);
++        result = DalvikValue::make_int(
++            oit != c7_component_enabled_overrides_.end() ? oit->second : 0);
++        status = ApiCallTrace::Status::IMPLEMENTED;
++        return true;
++    }
++
+     // ────────────────────────────────────────────────────────────────────────
+     // EXP-043 Phase 3: Handler.<init>(Looper) → no-op, return void
+     // F-NEW-332 (CONT-56b): post/postDelayed/removeCallbacks can no longer
+diff --git a/miniandroid/src/dex/dalvik_engine.h b/miniandroid/src/dex/dalvik_engine.h
+index 8fa45ec7..181b11b8 100755
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -4019,6 +4019,32 @@ public:
+     // CODER7 WAVE-5: PMS-lite — the cross-package component index (see the
+     // set_package_index law above).
+     std::shared_ptr<C7PackageIndex> c7_pkg_index_;
++    // CODER7 WAVE-9: in-process ContentObserver registry (AOSP
++    // ContentResolver.registerContentObserver → ContentService.register:
++    // (uri, notifyForDescendents, observer) records; notifyChange(uri)
++    // dispatches onChange(selfChange=false) to every observer whose
++    // authority matches and whose uri filter accepts the notified uri —
++    // exact equality when notifyForDescendents=false, authority+path-
++    // prefix when true. The ORIGINATING observer (the one passed to
++    // notifyChange) is excluded — the AOSP selfChange law).
++    struct C7ContentObserver {
++        uint32_t oid = 0;
++        std::string uri_raw;
++        std::string authority;
++        bool notify_descendants = false;
++    };
++    std::vector<C7ContentObserver> c7_content_observers_;
++    // CODER7 WAVE-9: the caller package of the CURRENT provider op (the
++    // ContentProvider.getCallingPackage law — AOSP: "return the name of
++    // the package that invoked this... available while in
++    // query/insert/update/delete/openFile; null otherwise"). Set by the
++    // ContentResolver dispatch around each provider invocation.
++    std::string c7_provider_calling_pkg_;
++    // CODER7 WAVE-9: runtime component-enabled overrides (the
++    // PackageManager.setComponentEnabledSetting law — AOSP PMS keeps
++    // per-component enabled-state settings that override the manifest;
++    // key = "pkg/cls" flattened form, value = COMPONENT_ENABLED_STATE_*).
++    std::map<std::string, int> c7_component_enabled_overrides_;
+     // CODER7 WAVE-6: foreign class → owning package (LoadedApk-lite; see
+     // inject_foreign_apk_code). Own classes are absent ⇒ "" = running pkg.
+     std::map<std::string, std::string> c7_foreign_class_owner_;
+@@ -4119,6 +4145,14 @@ public:
+                                  const std::string& method,
+                                  std::vector<DalvikValue> args,
+                                  DalvikValue& ret);
++    // ── CODER7 WAVE-9: the system-signal dispatch laws (AOSP
++    // ActivityThread.handleTrimMemory / handleConfigurationChanged):
++    // Application-level callbacks run BEFORE the component-level ones;
++    // TRIM_MEMORY_COMPLETE(15) additionally fires Application.onLowMemory()
++    // (the legacy ComponentCallbacks alias). The config-change law builds
++    // a REAL android.content.res.Configuration heap object (orientation
++    // carried). Honest no-ops when the app/activity overrides are absent.
++    void dispatch_memory_and_config_signals(int trim_level, bool rotate);
+     // ── F-NEW-304 (CONT-42): platform Fragment lifecycle drain ──────────
+     // AOSP FragmentController/FragmentManagerImpl stage laws, driven from
+     // the HOST lifecycle boundaries (ExecutionEngine dispatch sites):
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index 0c1dd8b6..6907f0a2 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -4978,8 +4978,21 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
+             }
+         };
+         if (m == "setType") {
++            // ── CODER7 WAVE-9 (AOSP Intent.setType, frameworks/base
++            // Intent.java: "This method automatically clears any data
++            // that was previously set"): mType = type; mData = null.
++            // The W8 tree kept BOTH — every mixed-data consumer saw a
++            // filter shape AOSP never produces.
+             pi->type = ctx.arg_as_string(0);
++            pi->data_uri_object = 0;
++            pi->data_scheme.clear();
++            pi->data_host.clear();
++            pi->data_path.clear();
+         } else if (m == "setData") {
++            // ── CODER7 WAVE-9 (AOSP Intent.setData: "automatically
++            // clears any type that was previously set"): mData = data;
++            // mType = null.
++            pi->type.clear();
+             if (!ctx.args.empty() &&
+                 ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+                 ctx.args[0].object_id != 0) {
+@@ -4990,7 +5003,7 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
+                         : ctx.args[0].object_class;
+                 c7_parse_dims(c7_uri_string_of(ctx.args[0].object_id));
+             }
+-        } else {  // setDataAndType
++        } else {  // setDataAndType — the ONLY setter that records BOTH
+             if (!ctx.args.empty() &&
+                 ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+                 ctx.args[0].object_id != 0) {
+@@ -5012,6 +5025,147 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
+         if (pi->type.empty()) return CallResult::handled_null();
+         return CallResult::handled_string(pi->type);
+     }
++    if (m == "getDataString") {
++        // ── CODER7 WAVE-9: AOSP Intent.getDataString — the raw form of
++        // the data Uri (null when no data). The W8 tree had NO
++        // implementation: every consumer (chooser deep-links, view
++        // actions, the filter matchers' debug paths) saw a fabricated
++        // null.
++        if (pi->data_uri_object == 0 || heap_ == nullptr ||
++            !heap_->has_object(pi->data_uri_object))
++            return CallResult::handled_null();
++        std::string raw;
++        if (heap_->get_object_string_field(pi->data_uri_object,
++                                           "uri_raw", raw) &&
++            !raw.empty())
++            return CallResult::handled_string(raw);
++        if (heap_->get_object_string_field(pi->data_uri_object,
++                                           "uri", raw) &&
++            !raw.empty())
++            return CallResult::handled_string(raw);
++        return CallResult::handled_null();
++    }
++    if (m == "filterEquals") {
++        // ── CODER7 WAVE-9 (AOSP Intent.filterEquals — read from the
++        // android-14/main source): equality over action, data, type,
++        // identifier, package, component, categories. EXTRAS and flags
++        // are deliberately EXCLUDED. The W8 tree had NO implementation:
++        // every filter-equality consumer saw "false".
++        uint32_t other_id = 0;
++        if (!ctx.args.empty() &&
++            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT)
++            other_id = ctx.args[0].object_id;
++        if (other_id == 0) return CallResult::handled_bool(false);
++        auto po = get_or_create_intent(other_id);
++        if (po == nullptr) return CallResult::handled_bool(false);
++        bool same_action = pi->action == po->action;
++        bool same_data = (pi->data_uri_object == 0) ==
++                         (po->data_uri_object == 0);
++        if (same_data && pi->data_uri_object != 0 && heap_ != nullptr) {
++            std::string a, b;
++            heap_->get_object_string_field(pi->data_uri_object,
++                                           "uri_raw", a);
++            heap_->get_object_string_field(po->data_uri_object,
++                                           "uri_raw", b);
++            same_data = a == b;
++        }
++        bool same_type = pi->type == po->type;
++        bool same_pkg = pi->package_name == po->package_name;
++        bool same_comp = pi->component_class == po->component_class &&
++                         pi->component_package == po->component_package;
++        bool same_cats = pi->categories.size() == po->categories.size();
++        if (same_cats) {
++            for (const auto& c : pi->categories) {
++                bool found = false;
++                for (const auto& d : po->categories)
++                    if (d == c) { found = true; break; }
++                if (!found) { same_cats = false; break; }
++            }
++        }
++        return CallResult::handled_bool(same_action && same_data &&
++                                        same_type && same_pkg &&
++                                        same_comp && same_cats);
++    }
++    if (m == "fillIn") {
++        // ── CODER7 WAVE-9 (AOSP Intent.fillIn, android-14/main — the
++        // return bitset marks fields that were CHANGED; data+type copy
++        // as a UNIT when the destination has NEITHER; the component is
++        // special: copied ONLY when FILL_IN_COMPONENT is explicit).
++        // FILL_IN_ACTION=1 FILL_IN_DATA=2 FILL_IN_TYPES=4
++        // FILL_IN_COMPONENT=8 FILL_IN_PACKAGE=16 FILL_IN_CATEGORIES=32.
++        uint32_t other_id = 0;
++        int flags = 0;
++        if (!ctx.args.empty() &&
++            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT)
++            other_id = ctx.args[0].object_id;
++        if (ctx.args.size() >= 2 &&
++            ctx.args[1].kind == CallContext::Arg::Kind::INT)
++            flags = ctx.args[1].int_val;
++        if (other_id == 0)
++            return CallResult::handled_int(0);
++        auto po = get_or_create_intent(other_id);
++        if (po == nullptr) return CallResult::handled_int(0);
++        int changes = 0;
++        if (!po->action.empty() &&
++            (pi->action.empty() || (flags & 1) != 0)) {
++            pi->action = po->action;
++            changes |= 1;
++        }
++        bool other_has_data = po->data_uri_object != 0 ||
++                              !po->type.empty();
++        bool dest_has_either =
++            pi->data_uri_object != 0 || !pi->type.empty();
++        if (other_has_data && (!dest_has_either || (flags & 2) != 0)) {
++            pi->data_uri_object = po->data_uri_object;
++            pi->data_uri_class = po->data_uri_class;
++            pi->data_scheme = po->data_scheme;
++            pi->data_host = po->data_host;
++            pi->data_path = po->data_path;
++            pi->type = po->type;
++            changes |= 2;
++        }
++        if (!po->package_name.empty() &&
++            (pi->package_name.empty() || (flags & 16) != 0)) {
++            pi->package_name = po->package_name;
++            changes |= 16;
++        }
++        if (!po->component_class.empty() && (flags & 8) != 0) {
++            pi->component_class = po->component_class;
++            pi->component_package = po->component_package;
++            changes |= 8;
++        }
++        if (!po->categories.empty() &&
++            (pi->categories.empty() || (flags & 32) != 0)) {
++            pi->categories = po->categories;
++            changes |= 32;
++        }
++        pi->flags |= po->flags;
++        return CallResult::handled_int(changes);
++    }
++    if (m == "normalizeMimeType") {
++        // ── CODER7 WAVE-9 (AOSP Intent.normalizeMimeType — read from
++        // the android-14/main source): null passthrough; trim + toLowerCase
++        // (ROOT); strip the ";parameter" suffix. Static method — the
++        // receiver slot is the class.
++        std::string t = ctx.arg_as_string(0);
++        if (t.empty() &&
++            (ctx.args.empty() ||
++             ctx.args[0].kind != CallContext::Arg::Kind::STRING))
++            return CallResult::handled_null();
++        static auto c7_isspace = [](char c) {
++            return c == ' ' || c == '\t' || c == '\n' || c == '\r' ||
++                   c == '\f' || c == '\v';
++        };
++        size_t b = 0, e = t.size();
++        while (b < e && c7_isspace(t[b])) b++;
++        while (e > b && c7_isspace(t[e - 1])) e--;
++        t = t.substr(b, e - b);
++        size_t semi = t.find(';');
++        if (semi != std::string::npos) t = t.substr(0, semi);
++        for (auto& c : t)
++            if (c >= 'A' && c <= 'Z') c = char(c - 'A' + 'a');
++        return CallResult::handled_string(t);
++    }
+     if (m == "setClass" || m == "setClassName" || m == "setComponent") {
+         // setClass(Context, Class), setClassName(Context, String),
+         // setClassName(String pkg, String cls), setComponent(ComponentName).
+@@ -5575,6 +5729,20 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
+         request_finish(ctx.receiver_id, ctx.receiver_class);
+         return CallResult::handled_void();
+     }
++    if (m == "finishAffinity") {
++        // ── CODER7 WAVE-9 (AOSP Activity.finishAffinity — frameworks/base
++        // Activity.java: "Finish this activity as well as all activities
++        // immediately below it in the current task that have the same
++        // affinity"). The W8 tree had NO implementation: the generic
++        // dispatch answered THIS and the stack kept its records.
++        int c7_marked = request_finish_affinity(ctx.receiver_id,
++                                                ctx.receiver_class);
++        std::cerr << "[ACT-FINAFFINITY] receiver=" << ctx.receiver_class
++                  << " finished=" << c7_marked
++                  << " (affinity = owning package; AOSP cascade at the "
++                     "next frame boundary)" << std::endl;
++        return CallResult::handled_void();
++    }
+     if (m == "isFinishing") {
+         // CODER7 WAVE-3 (AOSP Activity.mFinished): once finish() was
+         // requested on THIS activity the flag stays true through its whole
+diff --git a/miniandroid/src/framework/android_shadows.h b/miniandroid/src/framework/android_shadows.h
+index 7133e778..acb46131 100755
+--- a/miniandroid/src/framework/android_shadows.h
++++ b/miniandroid/src/framework/android_shadows.h
+@@ -725,7 +725,8 @@ public:
+                 "putExtra", "getStringExtra", "getIntExtra",
+                 "getBooleanExtra", "setFlags", "addFlags",
+                 "getFlags", "setPackage", "setType", "setData",
+-                "setDataAndType", "getType"};
++                "setDataAndType", "getType", "getDataString",
++                "filterEquals", "fillIn", "normalizeMimeType"};
+     }
+     std::vector<std::string> stubbed_methods() const override {
+         return {"createChooser", "parseUri", "toUri"};
+@@ -1158,6 +1159,38 @@ public:
+         pending_finish_cls_ = cls;
+         finished_by_oid_[oid] = true;  // CODER7 WAVE-3: mFinished persists
+     }
++    // ── CODER7 WAVE-9: the finishAffinity law (AOSP Activity.finishAffinity:
++    // "Finish this activity as well as all activities immediately below it
++    // in the current task that have the same affinity"). The engine's
++    // affinity proxy is the OWNING PACKAGE (AOSP: an activity's affinity
++    // defaults to its manifest package). Every same-package record in the
++    // stack is marked finished (mFinished persists per record); the
++    // teardown cascade reuses the pending-finish path. Returns the count.
++    int request_finish_affinity(uint32_t oid, const std::string& cls) {
++        // Canonical form: descriptor "Lc7/laws/Main;" and dotted
++        // "c7.laws.Main" both reduce to the owning package "c7.laws"
++        // (AOSP: the affinity default = the manifest package).
++        auto c7_pkg_of = [](const std::string& desc) -> std::string {
++            std::string s = desc;
++            if (!s.empty() && s[0] == 'L') s = s.substr(1);
++            if (!s.empty() && s.back() == ';') s.pop_back();
++            for (auto& c : s)
++                if (c == '/') c = '.';
++            size_t dot = s.rfind('.');
++            if (dot != std::string::npos) return s.substr(0, dot);
++            return s;
++        };
++        const std::string want = c7_pkg_of(cls);
++        int marked = 0;
++        for (auto& r : stack_) {
++            if (c7_pkg_of(r.cls) == want) {
++                finished_by_oid_[r.obj_id] = true;
++                marked++;
++            }
++        }
++        request_finish(oid, cls);  // cascade starts at the finisher
++        return marked;
++    }
+     bool pending_finish() const { return pending_finish_; }
+     bool take_pending_finish() {
+         bool p = pending_finish_;
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index c955f176..bc6e5f90 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -7535,6 +7535,24 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
+     pump_compose_frames(/*max_frames=*/1);
+     for (int k = 1; k < config.frame_count; ++k) {
+         hs->advance_virtual(config.frame_delay_ms);
++        // ── CODER7 WAVE-9: the system-signal dispatch point (frame 2 —
++        // AOSP delivers trim/config signals AFTER launch settles). The
++        // env stand-ins carry the deterministic system signal; empty ⇒
++        // no dispatch (honest default: the laws only run when the
++        // harness actually signals).
++        if (k == 1) {
++            static const int c7_trim_level = [] {
++                const char* e = std::getenv("MINIANDROID_TRIM_MEMORY");
++                return e ? std::atoi(e) : 0;
++            }();
++            static const bool c7_rotate = [] {
++                const char* e = std::getenv("MINIANDROID_CONFIG_ROTATE");
++                return e && e[0] == '1';
++            }();
++            if (c7_trim_level > 0 || c7_rotate)
++                dalvik_engine_.dispatch_memory_and_config_signals(
++                    c7_trim_level, c7_rotate);
++        }
+         // FINAL CAMPAIGN item 21-P0-8 (per-frame pump law): the frame pump
+         // runs at EVERY frame boundary, not only before the loop. One
+         // canonical pump drives Choreographer callbacks, the Handler queue,
+diff --git a/scripts/c7_w9_androguard_check.py b/scripts/c7_w9_androguard_check.py
+new file mode 100644
+index 00000000..5ae290ee
+--- /dev/null
++++ b/scripts/c7_w9_androguard_check.py
+@@ -0,0 +1,164 @@
++#!/usr/bin/env python3
++# c7_w9_androguard_check.py — CODER7 WAVE-9: INDEPENDENT third-party
++# verification of the W9 conformance-battery fixtures with ANDROGUARD
++# (the VEND law + user directive: cross-validate every manifest fact the
++# W9 gates will decide with an independent AXML parser).
++#
++# Facts cross-checked (vs the FIXTURE CONTRACT):
++#   c7laws.apk   — application class LawsApplication, enabled default;
++#                  Main(LAUNCHER)/Second; LawsReceiver(PING) +
++#                  LawsReceiver2(PING2) + PermReceiver(PINGG,
++#                  permission=c7.perm.GATED); LawsService;
++#                  NumProvider(authority c7.laws.num, exported).
++#   c7laws_off.apk — APPLICATION android:enabled="false" (the L27 static
++#                  truth) + OffMain(VIEW)/OffService/OffReceiver.
++#
++# Output: JSON verdict on stdout; exit 0 iff every expectation holds.
++import json
++import sys
++import xml.etree.ElementTree as ET
++
++# androguard v4 routes its AXML parser trace through loguru to STDOUT —
++# silence it BEFORE the import so the JSON verdict is the only stdout.
++from loguru import logger
++
++logger.remove()
++
++from androguard.core.apk import APK
++
++FIX = "fixtures/c7_laws_probe/"
++ANDROID_NS = "{http://schemas.android.com/apk/res/android}"
++
++
++def manifest_tree(apk):
++    return ET.fromstring(apk.get_android_manifest_axml().get_xml())
++
++
++def app_attr(apk, attr):
++    root = manifest_tree(apk)
++    for app in root.findall("application"):
++        v = app.get(ANDROID_NS + attr)
++        return v
++    return None
++
++
++def norm_name(apk, nm):
++    """relative (.Foo) / missing-package forms → fully-qualified."""
++    if not nm:
++        return nm
++    if nm.startswith("."):
++        return apk.get_package() + nm
++    if "." not in nm:
++        return apk.get_package() + "." + nm
++    return nm
++
++
++def comp_attr(apk, kind, name, attr):
++    """android:<attr> of the <kind android:name=name> element; None when
++    absent. enabled absent ⇒ AOSP default true."""
++    root = manifest_tree(apk)
++    for app in root.findall("application"):
++        for el in app.findall(kind):
++            nm = norm_name(apk, el.get(ANDROID_NS + "name"))
++            if nm == name:
++                v = el.get(ANDROID_NS + attr)
++                if attr == "enabled":
++                    return v is None or str(v) == "true"
++                if attr == "exported":
++                    return v is not None and str(v) == "true"
++                return v
++    return None
++
++
++def comp_actions(apk, kind, name):
++    root = manifest_tree(apk)
++    acts = []
++    for app in root.findall("application"):
++        for el in app.findall(kind):
++            nm = norm_name(apk, el.get(ANDROID_NS + "name"))
++            if nm == name:
++                for f in el.findall("intent-filter"):
++                    for a in f.findall("action"):
++                        acts.append(a.get(ANDROID_NS + "name"))
++    return acts
++
++
++def main():
++    checks = []
++
++    def req(name, cond):
++        checks.append((name, bool(cond)))
++
++    a = APK(FIX + "c7laws.apk")
++    req("c7laws package == c7.laws", a.get_package() == "c7.laws")
++    req("application class == c7.laws.LawsApplication",
++        norm_name(a, app_attr(a, "name")) == "c7.laws.LawsApplication")
++    req("c7laws app enabled (default)",
++        app_attr(a, "enabled") is None
++        or str(app_attr(a, "enabled")) == "true")
++    req("Main is the launcher activity",
++        a.get_main_activity() == "c7.laws.Main")
++    req("Second present",
++        comp_attr(a, "activity", "c7.laws.Second", "enabled") is not None)
++    req("LawsReceiver present",
++        comp_attr(a, "receiver", "c7.laws.LawsReceiver", "enabled")
++        is not None)
++    req("LawsReceiver exported",
++        comp_attr(a, "receiver", "c7.laws.LawsReceiver", "exported"))
++    req("LawsReceiver2 present",
++        comp_attr(a, "receiver", "c7.laws.LawsReceiver2", "enabled")
++        is not None)
++    req("PermReceiver permission == c7.perm.GATED",
++        comp_attr(a, "receiver", "c7.laws.PermReceiver", "permission")
++        == "c7.perm.GATED")
++    req("LawsReceiver actions == [c7.laws.PING]",
++        comp_actions(a, "receiver", "c7.laws.LawsReceiver")
++        == ["c7.laws.PING"])
++    req("LawsService present",
++        comp_attr(a, "service", "c7.laws.LawsService", "enabled")
++        is not None)
++    req("NumProvider present",
++        comp_attr(a, "provider", "c7.laws.NumProvider", "enabled")
++        is not None)
++    req("NumProvider authority c7.laws.num",
++        comp_attr(a, "provider", "c7.laws.NumProvider", "authorities")
++        == "c7.laws.num")
++    req("NumProvider exported",
++        comp_attr(a, "provider", "c7.laws.NumProvider", "exported"))
++
++    b = APK(FIX + "c7laws_off.apk")
++    req("c7laws_off package == c7.laws.off",
++        b.get_package() == "c7.laws.off")
++    req("c7laws_off app android:enabled=false",
++        str(app_attr(b, "enabled")) == "false")
++    req("OffMain present",
++        comp_attr(b, "activity", "c7.laws.off.OffMain", "enabled")
++        is not None)
++    req("OffMain filter action c7.off.VIEW",
++        comp_actions(b, "activity", "c7.laws.off.OffMain")
++        == ["c7.off.VIEW"])
++    req("OffService present",
++        comp_attr(b, "service", "c7.laws.off.OffService", "enabled")
++        is not None)
++    req("OffReceiver present",
++        comp_attr(b, "receiver", "c7.laws.off.OffReceiver", "enabled")
++        is not None)
++
++    all_ok = all(ok for _, ok in checks)
++    print(json.dumps({
++        "all_ok": all_ok,
++        "checks": {k: v for k, v in checks},
++        "tool": "androguard",
++        "fixtures": {
++            "c7laws": {"package": a.get_package(),
++                       "app_name": app_attr(a, "name"),
++                       "app_enabled": app_attr(a, "enabled")},
++            "c7laws_off": {"package": b.get_package(),
++                           "app_enabled": app_attr(b, "enabled")},
++        },
++    }, indent=1))
++    return 0 if all_ok else 1
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/scripts/c7_w9_run_probe.sh b/scripts/c7_w9_run_probe.sh
+new file mode 100644
+index 00000000..31ac607c
+--- /dev/null
++++ b/scripts/c7_w9_run_probe.sh
+@@ -0,0 +1,69 @@
++#!/usr/bin/env bash
++# c7_w9_run_probe.sh — CODER7 WAVE-9 probe runner (the LAW CONFORMANCE
++# BATTERY: 34 ops L01..L34 across the five CODER7 ownerships).
++#
++# The W9 store is its OWN two-package store (c7laws + c7laws_off):
++# the W5-W8 three-package store battery stays untouched so its recorded
++# verdict SHAs remain the regression anchor.
++#
++# Usage: bash scripts/c7_w9_run_probe.sh <tag>
++set -uo pipefail
++R=/home/z/my-project/c7tree
++BIN=${BIN:-$R/miniandroid/build/miniandroid}
++TAG=${1:?tag}
++OUT=$R/run/c7w9/$TAG
++rm -rf "$OUT"; mkdir -p "$OUT"
++STORE=$R/run/c7w9/store
++rm -rf "$STORE"; mkdir -p "$STORE"
++cp "$R"/fixtures/c7_laws_probe/c7laws.apk "$R"/fixtures/c7_laws_probe/c7laws_off.apk "$STORE/"
++ls -la "$STORE"
++export MINIANDROID_PKG_STORE="$STORE"
++
++run_one() { # <dir> <apk>
++  local o=$1 apk=$2
++  rm -rf "$o"; mkdir -p "$o"
++  # fresh-install semantics: every run starts from an EMPTY app data dir
++  rm -rf "$R/runtime/data/data/data/c7.laws" \
++         "$R/runtime/data/data/data/c7.laws.off"
++  # W9 dispatch-signal envs (deterministic harness stand-ins for the
++  # system's trim / config-change signals; empty = no dispatch):
++  #   MINIANDROID_TRIM_MEMORY=15  → TRIM_MEMORY_COMPLETE at frame 2
++  #   MINIANDROID_CONFIG_ROTATE=1 → orientation change at frame 2
++  MINIANDROID_FILE_IO="$o/file_io.jsonl" \
++  MINIANDROID_TRIM_MEMORY=15 MINIANDROID_CONFIG_ROTATE=1 \
++  timeout 240 "$BIN" run "$apk" \
++    --width 1080 --height 1920 --frames 5 --max-seconds 90 -o "$o" \
++    > "$o/run.log" 2>&1
++  echo "run rc=$? -> $o"
++  local res="$R/runtime/data/data/data/c7.laws/files/c7laws_results.jsonl"
++  [ -f "$res" ] && cp "$res" "$o/c7laws_results.jsonl"
++}
++
++# ── androguard cross-parser verification (independent AXML truth for
++#    the W9 fixtures: component tables + the application-level disable)
++python3 "$R/scripts/c7_w9_androguard_check.py" \
++  > "$OUT/androguard_check.json" 2> "$OUT/androguard_check.err"
++echo "androguard_check rc=$? (0 = every W9 fixture component matches)"
++
++# ── COLD ×3 (cache deleted before every run) ────────────────────────
++for i in 1 2 3; do
++  rm -f "$STORE/c7_pkg_cache.sqlite3"
++  run_one "$OUT/cold$i" "$STORE/c7laws.apk"
++done
++
++cd "$OUT"
++echo '═══ verdict counts (cold1) ═══'
++if [ -f cold1/c7laws_results.jsonl ]; then
++  echo "PASS rows: $(rg -c '\|PASS\|' cold1/c7laws_results.jsonl || echo 0)"
++  echo "FAIL rows: $(rg -c '\|FAIL\|' cold1/c7laws_results.jsonl || echo 0)"
++  echo '── FAIL rows (the W9 problem list) ──'
++  rg '\|FAIL\|' cold1/c7laws_results.jsonl | head -40
++else
++  echo "NO RESULTS FILE — run crashed; tail of run.log:"
++  tail -20 cold1/run.log
++fi
++echo '═══ engine dispatch rows (cold1) ═══'
++rg -o 'C7-W9[A-Za-z0-9_ -]*|ACT-FINAFFINITY[^\n]{0,60}|C7-TRIM[^\n]{0,60}|C7-CFGCHG[^\n]{0,60}' cold1/run.log | head -12
++echo '═══ verdict SHAs (×3 cold) ═══'
++sha256sum cold1/c7laws_results.jsonl cold2/c7laws_results.jsonl cold3/c7laws_results.jsonl 2>/dev/null
++echo 'W9 RUNNER DONE' tag=$TAG

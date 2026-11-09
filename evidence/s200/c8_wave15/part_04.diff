@@ -1,0 +1,933 @@
++                                  << buf.size() << " (send-order law)"
++                                  << std::endl;
++                    }
++                } else {
++                    heap_.set_object_field(
++                        box, "__cr_closed__",
++                        DalvikValue::make_bool(true));
++                    heap_.set_object_field(
++                        box, "__cr_hasvalue__",
++                        DalvikValue::make_bool(false));
++                    std::cerr << "[C8-KXCH] tryReceive ch=o" << recv
++                              << " → EMPTY (the failure box law)"
++                              << std::endl;
++                }
++                result = DalvikValue::make_object(
++                    box, "Lkotlinx/coroutines/channels/ChannelResult;");
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-243 — the SelectKt state machine + SelectInstance depth ─
++        // kotlinx law (Select.kt): NOT_SELECTED / UNDECIDED / RESUMED are
++        // canonical SINGLETON symbols (identity-stable ×N — the same
++        // dedupe table as ALREADY_SELECTED/CLOSED);
++        // performAtomicTrySelect = the same ONE-SHOT CAS contract as
++        // trySelect (first true, subsequent ALREADY_SELECTED-false);
++        // isSelected reads the decided flag; disposeOnSelect = the
++        // disposal record; resumeSelectWithException = the resume record.
++        if (class_name == "Lkotlinx/coroutines/selects/SelectKt;" &&
++            (method == "getNOT_SELECTED" ||
++             method == "access$getUNDECIDED$p" ||
++             method == "access$getRESUMED$p")) {
++            const std::string desc =
++                method == "getNOT_SELECTED" ? "NOT_SELECTED"
++                : method == "access$getUNDECIDED$p" ? "UNDECIDED"
++                                                    : "RESUMED";
++            uint32_t sym = 0;
++            auto it = c8_kx_symbols_.find(desc);
++            if (it != c8_kx_symbols_.end()) {
++                sym = it->second;
++            } else {
++                sym = heap_.allocate(
++                    "Lkotlinx/coroutines/internal/Symbol;", pc_, 0);
++                heap_.set_object_field(
++                    sym, "__sym_desc__", DalvikValue::make_string(desc, 0));
++                c8_kx_symbols_[desc] = sym;
++                std::cerr << "[C8-KXLOOP] minted Symbol(" << desc
++                          << ") o" << sym << " (canonical singleton law)"
++                          << std::endl;
++            }
++            result = DalvikValue::make_object(
++                sym, "Lkotlinx/coroutines/internal/Symbol;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (class_name == "Lkotlinx/coroutines/selects/SelectInstance;") {
++            const uint32_t recv = c8_recv();
++            if (method == "performAtomicTrySelect" && recv != 0) {
++                const bool done = c8_kx_select_done_[recv];
++                if (!done) {
++                    c8_kx_select_done_[recv] = true;
++                    uint32_t res = 0;
++                    for (size_t i = 2; i < args.size(); ++i)
++                        if (args[i].type == DalvikType::OBJECT_REF &&
++                            args[i].object_id != 0) {
++                            res = args[i].object_id;
++                            break;
++                        }
++                    c8_kx_select_result_[recv] = res;
++                    std::cerr << "[C8-KXLOOP] performAtomicTrySelect o"
++                              << recv << " → WIN (one-shot CAS law)"
++                              << std::endl;
++                } else {
++                    std::cerr << "[C8-KXLOOP] performAtomicTrySelect o"
++                              << recv << " → ALREADY_SELECTED" << std::endl;
++                }
++                result = DalvikValue::make_bool(!done);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "isSelected" && recv != 0) {
++                result = DalvikValue::make_bool(c8_kx_select_done_[recv]);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "disposeOnSelect" && recv != 0) {
++                if (c8_kx13_log_ < 16) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXLOOP] disposeOnSelect o" << recv
++                              << " — disposal record (LOUD)" << std::endl;
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "resumeSelectWithException" && recv != 0) {
++                uint32_t exc = 0;
++                for (size_t i = 1; i < args.size(); ++i)
++                    if (args[i].type == DalvikType::OBJECT_REF &&
++                        args[i].object_id != 0) {
++                        exc = args[i].object_id;
++                        break;
++                    }
++                c8_kx_select_result_[recv] = exc;
++                std::cerr << "[C8-KXLOOP] resumeSelectWithException o"
++                          << recv << " exc=o" << exc
++                          << " — resume record (LOUD)" << std::endl;
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-244 — JobSupport start/complete machinery ──────────────
++        // kotlinx law (JobSupport.kt): start() = the EmptyNew → Active
++        // transition (startInternal answers 1 when it started, 0 when
++        // already active); complete()/tryMakeCompleting(state) = the REAL
++        // completion arm (state stamped + the registered completion
++        // handlers notified — never "registered = notified"); the arm
++        // lives in c8_job_complete_arm (shared with the launch drain).
++        if (class_name == "Lkotlinx/coroutines/JobSupport;") {
++            const uint32_t recv = c8_recv();
++            if (method == "start" && recv != 0) {
++                std::string st = "EmptyNew";
++                auto it = c8_kx_job_state_.find(recv);
++                if (it != c8_kx_job_state_.end()) st = it->second;
++                if (st == "EmptyNew") {
++                    c8_kx_job_state_[recv] = "Active";
++                    heap_.set_object_field(
++                        recv, "__job_state__",
++                        DalvikValue::make_string("Active", 0));
++                    std::cerr << "[C8-KXJOB] start o" << recv
++                              << " → Active (EmptyNew transition law)"
++                              << std::endl;
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "startInternal" && recv != 0) {
++                std::string st = "EmptyNew";
++                auto it = c8_kx_job_state_.find(recv);
++                if (it != c8_kx_job_state_.end()) st = it->second;
++                if (st == "EmptyNew") {
++                    c8_kx_job_state_[recv] = "Active";
++                    heap_.set_object_field(
++                        recv, "__job_state__",
++                        DalvikValue::make_string("Active", 0));
++                    result = DalvikValue::make_int(1);
++                } else {
++                    result = DalvikValue::make_int(0);
++                }
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if ((method == "complete" || method == "tryMakeCompleting") &&
++                recv != 0) {
++                const bool changed = c8_job_complete_arm(recv, "Completed");
++                result = DalvikValue::make_bool(changed);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "afterCompletion" && recv != 0) {
++                if (c8_kx13_log_ < 24) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXJOB] afterCompletion o" << recv
++                              << " — the completion-side record (LOUD)"
++                              << std::endl;
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if ((method == "invokeOnCompletion" ||
++                 method == "invokeOnCompletion$default") && recv != 0) {
++                // The handler = the last object arg (the $default bridge
++                // carries the mask tail; the plain form takes the handler
++                // last). kotlinx: DisposableHandle returned.
++                uint32_t handler = 0;
++                for (auto it = args.rbegin(); it != args.rend(); ++it)
++                    if (it->type == DalvikType::OBJECT_REF &&
++                        it->object_id != 0 && it->object_id != recv) {
++                        handler = it->object_id;
++                        break;
++                    }
++                if (handler != 0)
++                    c8_kx_job_handlers_[recv].push_back(handler);
++                std::cerr << "[C8-KXJOB] invokeOnCompletion o" << recv
++                          << " handler=o" << handler
++                          << " registered (" << c8_kx_job_handlers_[recv].size()
++                          << " total — notify on completion, REAL)"
++                          << std::endl;
++                uint32_t dh = heap_.allocate(
++                    "Lkotlinx/coroutines/DisposableHandle;", pc_, 0);
++                result = DalvikValue::make_object(
++                    dh, "Lkotlinx/coroutines/DisposableHandle;");
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-245 — the parent/child wiring ──────────────────────────
++        // kotlinx law: setParentHandle$/getParentHandle$ = the symmetric
++        // handle store/consume (the child's cancellation propagates
++        // through it — the token identity is engine-map-backed);
++        // children = the child SEQUENCE (fresh job → an empty sequence —
++        // the child registry rides the parent-handle wiring, the
++        // iterator depth stays a documented boundary); nextChild = the
++        // LOUD traversal record.
++        if (class_name == "Lkotlinx/coroutines/JobSupport;") {
++            const uint32_t recv = c8_recv();
++            if (method == "setParentHandle$kotlinx_coroutines_core" &&
++                recv != 0) {
++                uint32_t tok = 0;
++                for (size_t i = 1; i < args.size(); ++i)
++                    if (args[i].type == DalvikType::OBJECT_REF &&
++                        args[i].object_id != 0) {
++                        tok = args[i].object_id;
++                        break;
++                    }
++                c8_kx_job_parenttok_[recv] = tok;
++                if (c8_kx13_log_ < 24) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXJOB] setParentHandle o" << recv
++                              << " → handle o" << tok << std::endl;
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getParentHandle$kotlinx_coroutines_core" &&
++                recv != 0) {
++                uint32_t tok = c8_kx_job_parenttok_[recv];
++                result = tok != 0 ? DalvikValue::make_object(
++                                        tok, "Ljava/lang/Object;")
++                                  : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getChildren" && recv != 0) {
++                uint32_t seq = heap_.allocate(
++                    "Lkotlin/sequences/Sequence;", pc_, 0);
++                if (c8_kx13_log_ < 24) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXJOB] getChildren o" << recv
++                              << " → sequence o" << seq
++                              << " (empty child registry — documented "
++                                 "boundary)" << std::endl;
++                }
++                result = DalvikValue::make_object(
++                    seq, "Lkotlin/sequences/Sequence;");
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "nextChild" && recv != 0) {
++                if (c8_kx13_log_ < 24) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXJOB] nextChild o" << recv
++                              << " — traversal record (LOUD)" << std::endl;
++                }
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-246 — the job identity helpers ─────────────────────────
++        // kotlinx law: getCancellationException() = the canonical
++        // JobCancellationException per job (identity-stable ×N calls —
++        // the SAME instance, "Job was cancelled"); toCancellationException
++        // = the cause when it IS the JCE, else the job's canonical one;
++        // Job$DefaultImpls.fold = the REAL operation dispatch (the
++        // CoroutineContext fold contract) with the LOUD identity
++        // fallback; minusKey = the element-identity law (key !== element
++        // → the element itself); the $default bridges drop the mask tail
++        // and delegate to the real laws.
++        if (class_name == "Lkotlinx/coroutines/JobSupport;" ||
++            class_name == "Lkotlinx/coroutines/Job;") {
++            const uint32_t recv = c8_recv();
++            if (method == "getCancellationException" && recv != 0) {
++                uint32_t& tok = c8_kx_job_canceltok_[recv];
++                if (tok == 0 || !heap_.has_object(tok)) {
++                    tok = heap_.allocate(
++                        "Lkotlinx/coroutines/JobCancellationException;",
++                        pc_, 0);
++                    heap_.set_object_field(
++                        tok, "__jce_msg__",
++                        DalvikValue::make_string("Job was cancelled", 0));
++                    std::cerr << "[C8-KXJOB] minted canonical "
++                                 "JobCancellationException o" << tok
++                              << " for job o" << recv
++                              << " (identity-stable law)" << std::endl;
++                }
++                result = DalvikValue::make_object(
++                    tok, "Lkotlinx/coroutines/JobCancellationException;");
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "toCancellationException$default" && recv != 0) {
++                // args[0] = the instance (static $default bridge shape).
++                uint32_t inst = 0, cause = 0;
++                for (size_t i = 0; i < args.size(); ++i)
++                    if (args[i].type == DalvikType::OBJECT_REF &&
++                        args[i].object_id != 0) {
++                        if (inst == 0)
++                            inst = args[i].object_id;
++                        else if (cause == 0)
++                            cause = args[i].object_id;
++                    }
++                uint32_t tok = (inst != 0) ? c8_kx_job_canceltok_[inst] : 0;
++                if (tok == 0) {
++                    tok = heap_.allocate(
++                        "Lkotlinx/coroutines/JobCancellationException;",
++                        pc_, 0);
++                    heap_.set_object_field(
++                        tok, "__jce_msg__",
++                        DalvikValue::make_string("Job was cancelled", 0));
++                    if (inst != 0)
++                        c8_kx_job_canceltok_[inst] = tok;
++                }
++                (void)cause;
++                result = DalvikValue::make_object(
++                    tok, "Lkotlinx/coroutines/JobCancellationException;");
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        if (class_name == "Lkotlinx/coroutines/Job$DefaultImpls;") {
++            if (method == "fold") {
++                // CoroutineContext.Element.fold(initial, operation):
++                // the REAL contract applies operation(initial, this).
++                uint32_t initial = 0, op = 0, job = 0;
++                if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    job = args[0].object_id;
++                if (args.size() >= 2 &&
++                    args[1].type == DalvikType::OBJECT_REF)
++                    initial = args[1].object_id;
++                if (args.size() >= 3 &&
++                    args[2].type == DalvikType::OBJECT_REF)
++                    op = args[2].object_id;
++                if (op != 0 && heap_.has_object(op)) {
++                    std::string ocls = "Ljava/lang/Object;";
++                    if (const auto* o = heap_.get(op))
++                        if (!o->class_descriptor.empty())
++                            ocls = o->class_descriptor;
++                    DalvikValue fret;
++                    DalvikExecutionResult fres;
++                    std::vector<DalvikValue> fargs{
++                        DalvikValue::make_object(op, ocls),
++                        initial != 0 ? DalvikValue::make_object(
++                                           initial, "Ljava/lang/Object;")
++                                     : DalvikValue::make_null(),
++                        job != 0 ? DalvikValue::make_object(
++                                       job, "Lkotlinx/coroutines/Job;")
++                                 : DalvikValue::make_null()};
++                    if (try_recursive_invoke(ocls, "invoke", fargs, fret,
++                                             fres)) {
++                        result = fret;
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                }
++                std::cerr << "[C8-KXJOB] fold — operation NOT dispatched "
++                             "(identity fallback, LOUD)" << std::endl;
++                result = initial != 0
++                             ? DalvikValue::make_object(
++                                   initial, "Ljava/lang/Object;")
++                             : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "minusKey") {
++                // Element law: key !== element → the element itself
++                // (identity composition under the serialized engine).
++                uint32_t job = 0;
++                if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    job = args[0].object_id;
++                result = job != 0
++                             ? DalvikValue::make_object(
++                                   job, "Lkotlinx/coroutines/Job;")
++                             : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "cancel$default") {
++                uint32_t job = 0;
++                if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    job = args[0].object_id;
++                c8_job_complete_arm(job, "Cancelled");
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "invokeOnCompletion$default") {
++                uint32_t job = 0, handler = 0;
++                if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
++                    job = args[0].object_id;
++                for (auto it = args.rbegin(); it != args.rend(); ++it)
++                    if (it->type == DalvikType::OBJECT_REF &&
++                        it->object_id != 0 && it->object_id != job) {
++                        handler = it->object_id;
++                        break;
++                    }
++                if (job != 0 && handler != 0)
++                    c8_kx_job_handlers_[job].push_back(handler);
++                uint32_t dh = heap_.allocate(
++                    "Lkotlinx/coroutines/DisposableHandle;", pc_, 0);
++                result = DalvikValue::make_object(
++                    dh, "Lkotlinx/coroutines/DisposableHandle;");
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-247 — StackTraceRecoveryKt depth ───────────────────────
++        // kotlinx law (StackTraceRecovery.kt): recoverStackTrace wraps
++        // with synthetic frames — the serialized engine has NO synthetic
++        // frames, so the ORIGINAL exception identity is the deterministic
++        // answer (both arities); unwrapImpl strips the artificial wrapper
++        // (the un-stamped exception IS its own unwrap); artificialFrame =
++        // the frame record (identity).
++        if (class_name ==
++            "Lkotlinx/coroutines/internal/StackTraceRecoveryKt;") {
++            if (method == "recoverStackTrace") {
++                uint32_t e = 0;
++                for (const auto& av : args)
++                    if (av.type == DalvikType::OBJECT_REF &&
++                        av.object_id != 0) {
++                        e = av.object_id;
++                        break;
++                    }
++                if (c8_kx13_log_ < 32) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXLOOP] recoverStackTrace o" << e
++                              << " → identity passthrough (no synthetic "
++                                 "frames — documented law)" << std::endl;
++                }
++                result = e != 0 ? DalvikValue::make_object(
++                                      e, "Ljava/lang/Throwable;")
++                                : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "unwrapImpl") {
++                uint32_t e = c8_recv();
++                DalvikValue cause = c8_getf(e, "__ce_cause__");
++                result = (cause.type == DalvikType::OBJECT_REF &&
++                          cause.object_id != 0)
++                             ? cause
++                             : (e != 0 ? DalvikValue::make_object(
++                                             e, "Ljava/lang/Throwable;")
++                                       : DalvikValue::make_null());
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "artificialFrame") {
++                uint32_t f = 0;
++                for (const auto& av : args)
++                    if (av.type == DalvikType::OBJECT_REF &&
++                        av.object_id != 0) {
++                        f = av.object_id;
++                        break;
++                    }
++                result = f != 0
++                             ? DalvikValue::make_object(
++                                   f, "Ljava/lang/Object;")
++                             : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-248 — LockFreeLinkedListNode serialized traversal ──────
++        // kotlinx law (LockFreeLinkedList.kt): the serialized engine
++        // embodies the list as REAL field-backed links (__lfll_next__/
++        // __lfll_prev__/__lfll_removed__) — addNext(node, prev) inserts
++        // node after prev (the kotlinx arg shape), getNextNode/getPrevNode
++        // read the links (unset → null), isRemoved reads the flag,
++        // tryCondAddNext = the cond-add contract (holds under the
++        // serialized engine → true + real links), removeOrNext = the
++        // removal law (flag set, next returned), correctPrev = the
++        // self-consistent prev, helpRemovePrev = the help record.
++        if (class_name.rfind(
++                "Lkotlinx/coroutines/internal/LockFreeLinkedListNode",
++                0) == 0) {
++            const uint32_t recv = c8_recv();
++            if (method == "addNext" && recv != 0) {
++                uint32_t node = 0, prev = 0;
++                for (size_t i = 1; i < args.size() && i <= 2; ++i)
++                    if (args[i].type == DalvikType::OBJECT_REF) {
++                        if (i == 1) node = args[1].object_id;
++                        if (i == 2) prev = args[2].object_id;
++                    }
++                if (node != 0 && prev != 0 && heap_.has_object(node) &&
++                    heap_.has_object(prev)) {
++                    DalvikValue old_next =
++                        c8_getf(prev, "__lfll_next__");
++                    uint32_t on = (old_next.type ==
++                                   DalvikType::OBJECT_REF)
++                                      ? old_next.object_id : 0;
++                    heap_.set_object_field(
++                        prev, "__lfll_next__",
++                        DalvikValue::make_object(
++                            node,
++                            "Lkotlinx/coroutines/internal/"
++                            "LockFreeLinkedListNode;"));
++                    heap_.set_object_field(
++                        node, "__lfll_prev__",
++                        DalvikValue::make_object(
++                            prev,
++                            "Lkotlinx/coroutines/internal/"
++                            "LockFreeLinkedListNode;"));
++                    if (on != 0)
++                        heap_.set_object_field(
++                            node, "__lfll_next__",
++                            DalvikValue::make_object(
++                                on,
++                                "Lkotlinx/coroutines/internal/"
++                                "LockFreeLinkedListNode;"));
++                    if (c8_kx13_log_ < 40) {
++                        ++c8_kx13_log_;
++                        std::cerr << "[C8-KXLOOP] addNext node=o" << node
++                                  << " after o" << prev
++                                  << " (REAL link law)" << std::endl;
++                    }
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getNextNode" && recv != 0) {
++                DalvikValue n = c8_getf(recv, "__lfll_next__");
++                result = (n.type == DalvikType::OBJECT_REF &&
++                          n.object_id != 0)
++                             ? n
++                             : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getPrevNode" && recv != 0) {
++                DalvikValue p = c8_getf(recv, "__lfll_prev__");
++                result = (p.type == DalvikType::OBJECT_REF &&
++                          p.object_id != 0)
++                             ? p
++                             : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "isRemoved" && recv != 0) {
++                DalvikValue r = c8_getf(recv, "__lfll_removed__");
++                const bool removed =
++                    r.type == DalvikType::BOOLEAN ? r.bool_val
++                    : (r.type == DalvikType::INT32 ? r.int_val != 0
++                                                   : false);
++                result = DalvikValue::make_bool(removed);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "tryCondAddNext" && recv != 0) {
++                // Serialized: the condition holds, the add is REAL.
++                uint32_t node = 0, prev = 0;
++                if (args.size() >= 2 &&
++                    args[1].type == DalvikType::OBJECT_REF)
++                    node = args[1].object_id;
++                if (args.size() >= 3 &&
++                    args[2].type == DalvikType::OBJECT_REF)
++                    prev = args[2].object_id;
++                if (node != 0 && prev != 0 && heap_.has_object(node) &&
++                    heap_.has_object(prev)) {
++                    heap_.set_object_field(
++                        prev, "__lfll_next__",
++                        DalvikValue::make_object(
++                            node,
++                            "Lkotlinx/coroutines/internal/"
++                            "LockFreeLinkedListNode;"));
++                    heap_.set_object_field(
++                        node, "__lfll_prev__",
++                        DalvikValue::make_object(
++                            prev,
++                            "Lkotlinx/coroutines/internal/"
++                            "LockFreeLinkedListNode;"));
++                }
++                if (c8_kx13_log_ < 40) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXLOOP] tryCondAddNext node=o" << node
++                              << " prev=o" << prev
++                              << " → TRUE (cond holds serialized)"
++                              << std::endl;
++                }
++                result = DalvikValue::make_bool(true);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "removeOrNext" && recv != 0) {
++                heap_.set_object_field(recv, "__lfll_removed__",
++                                       DalvikValue::make_bool(true));
++                DalvikValue n = c8_getf(recv, "__lfll_next__");
++                result = (n.type == DalvikType::OBJECT_REF &&
++                          n.object_id != 0)
++                             ? n
++                             : DalvikValue::make_null();
++                std::cerr << "[C8-KXLOOP] removeOrNext o" << recv
++                          << " → removed, next=o"
++                          << (n.type == DalvikType::OBJECT_REF
++                                  ? n.object_id : 0)
++                          << " (removal law)" << std::endl;
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "correctPrev" && recv != 0) {
++                DalvikValue p = c8_getf(recv, "__lfll_prev__");
++                result = (p.type == DalvikType::OBJECT_REF &&
++                          p.object_id != 0)
++                             ? p
++                             : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "helpRemovePrev" && recv != 0) {
++                if (c8_kx13_log_ < 40) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXLOOP] helpRemovePrev o" << recv
++                              << " — help record (LOUD)" << std::endl;
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-249 — ThreadSafeHeap ordering bookkeeping ──────────────
++        // kotlinx law (ThreadSafeHeap.kt): firstImpl = the peek (null on
++        // the fresh heap), removeAtImpl = the REAL size bookkeeping,
++        // swap = the index-swap record (the serialized heap holds no
++        // entries on these routes — documented).
++        if (class_name == "Lkotlinx/coroutines/internal/ThreadSafeHeap;") {
++            const uint32_t recv = c8_recv();
++            if (method == "firstImpl" && recv != 0) {
++                // [S197-C8] F-C8-266 RE-OWN: the peek reads the OWNED
++                // element store (the wave-13 no-store boundary replaced
++                // by the REAL store peek — never a fabricated non-null;
++                // the stale-slot sweep keeps the store honest).
++                auto& store = c8_kx_heap_[recv];
++                while (!store.empty() &&
++                       (store.front() == 0 ||
++                        !heap_.has_object(store.front())))
++                    store.erase(store.begin());
++                result = (!store.empty())
++                             ? DalvikValue::make_object(
++                                   store.front(), "Ljava/lang/Object;")
++                             : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "removeAtImpl" && recv != 0) {
++                DalvikValue sz = c8_getf(recv, "__heap_size__");
++                int32_t n = sz.type == DalvikType::INT32 ? sz.int_val : 0;
++                if (n > 0) n -= 1;
++                heap_.set_object_field(recv, "__heap_size__",
++                                       DalvikValue::make_int(n));
++                if (c8_kx13_log_ < 40) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXLOOP] removeAtImpl o" << recv
++                              << " → size " << n
++                              << " (REAL bookkeeping)" << std::endl;
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "swap" && recv != 0) {
++                if (c8_kx13_log_ < 40) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXLOOP] swap o" << recv
++                              << " — index-swap record (serialized heap)"
++                              << std::endl;
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-250 — thread-context elements + Duration→ms ────────────
++        // kotlinx law (ThreadContext.kt): threadContextElements(context)
++        // = the count of ThreadContextElement instances in the context —
++        // 0 under the serialized engine (no element registry, LOUD once).
++        // Delay.kt: toDelayMillis-LRDsOJo = the kotlin.time Duration
++        // decode — the packed long's bit 0 discriminates the unit family
++        // (1 = time units: the delay IS the value >> 1 milliseconds; 0 =
++        // binary units: not a delay → 0). Engine-law-only name (the
++        // mangled suffix is unreachable from Java probe code — the
++        // crossref PRESENT flip carries the proof, per the wave-12
++        // mangled-factory precedent).
++        if (class_name ==
++                "Lkotlinx/coroutines/internal/ThreadContextKt;" &&
++            method == "threadContextElements") {
++            if (c8_kx13_log_ < 48) {
++                ++c8_kx13_log_;
++                std::cerr << "[C8-KXLOOP] threadContextElements → 0 (no "
++                             "element registry under the serialized "
++                             "engine — kotlinx contract)" << std::endl;
++            }
++            // The kotlinx return type is Any → the count materializes as
++            // a REAL boxed Long (the SystemPropsKt boxing law) so the
++            // caller's instance-of Number classification is honest.
++            uint32_t box = heap_.allocate("Ljava/lang/Long;", pc_, 0);
++            heap_.set_object_field(box, "value", DalvikValue::make_long(0));
++            result = DalvikValue::make_object(box, "Ljava/lang/Long;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (class_name == "Lkotlinx/coroutines/DelayKt;" &&
++            (method.rfind("toDelayMillis", 0) == 0 ||
++             method == "toDelayMillis-LRDsOJo")) {
++            int64_t raw = 0;
++            if (!args.empty()) {
++                if (args[0].type == DalvikType::INT64)
++                    raw = args[0].long_val;
++                else if (args[0].type == DalvikType::INT32)
++                    raw = args[0].int_val;
++            }
++            const int64_t ms = (raw & 1) != 0 ? (raw >> 1) : 0;
++            if (c8_kx13_log_ < 48) {
++                ++c8_kx13_log_;
++                std::cerr << "[C8-KXLOOP] toDelayMillis raw=" << raw
++                          << " → " << ms << "ms (Duration decode law)"
++                          << std::endl;
++            }
++            result = DalvikValue::make_long(ms);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        // ── F-C8-251 — DebugProbesImpl depth ────────────────────────────
++        // kotlinx law (DebugProbesImpl.kt): the probe facade —
++        // access$isFinished answers the finished flag (fresh → false),
++        // owner() the owner frame (none → null), realCaller the caller
++        // frame (no synthetic frames → null, documented), the captured
++        // coroutine list = a FRESH empty snapshot per call (the debug
++        // copy contract — never a shared mutable), toStringWithQuotes =
++        // the quoted-string law, updateState = the state record.
++        if (class_name ==
++                "Lkotlinx/coroutines/debug/internal/DebugProbesImpl;") {
++            if (method == "access$isFinished") {
++                result = DalvikValue::make_bool(false);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "owner") {
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "realCaller") {
++                if (c8_kx13_log_ < 48) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXLOOP] realCaller → null (no "
++                                 "synthetic caller frames — documented "
++                                 "boundary)" << std::endl;
++                }
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getCapturedCoroutines") {
++                uint32_t list = heap_.allocate("Ljava/util/ArrayList;",
++                                               pc_, 0);
++                if (auto* cs = shadow_registry_ ? shadow_registry_->find_as<
++                                      framework::CollectionShadow>()
++                                    : nullptr) {
++                    cs->get_or_create(list, false);
++                }
++                result = DalvikValue::make_object(list,
++                                                  "Ljava/util/ArrayList;");
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "toStringWithQuotes") {
++                std::string v;
++                for (const auto& av : args)
++                    if (av.type == DalvikType::STRING_REF) {
++                        v = av.string_val;
++                        break;
++                    }
++                result = DalvikValue::make_string("\"" + v + "\"", 0);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "updateState") {
++                if (c8_kx13_log_ < 48) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXLOOP] DebugProbesImpl.updateState "
++                                 "— state record (LOUD)" << std::endl;
++                }
++                result = DalvikValue::make_void();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-252/253 — SharedFlowImpl state + emit/collect ──────────
++        // kotlinx law (SharedFlow.kt): the fresh flow answers 0 for
++        // bufferEndIndex/totalSize/replaySize/nCollectors (the <init> head
++        // law from wave-12 stands); enqueueLocked/emit = the REAL buffer
++        // advance (totalSize+1, bufferEndIndex+1, the value retained in
++        // emit order); collect = the REAL replay drain (each collector
++        // receives the buffered values in emit order through its REAL
++        // DEX emit body — the hot-flow replay contract, serialized);
++        // findSlotsToResumeLocked = 0 (no collector slots — documented).
++        if (class_name == "Lkotlinx/coroutines/flow/SharedFlowImpl;") {
++            const uint32_t recv = c8_recv();
++            auto sf_int = [&](const char* f) -> int32_t {
++                DalvikValue v = c8_getf(recv, f);
++                return v.type == DalvikType::INT32 ? v.int_val : 0;
++            };
++            auto sf_set = [&](const char* f, int32_t v) {
++                heap_.set_object_field(recv, f, DalvikValue::make_int(v));
++            };
++            if (method == "getBufferEndIndex" && recv != 0) {
++                result = DalvikValue::make_int(
++                    sf_int("__sf_buffer_end__"));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getTotalSize" && recv != 0) {
++                result = DalvikValue::make_int(sf_int("__sf_total__"));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getReplaySize" && recv != 0) {
++                result = DalvikValue::make_int(sf_int("__sf_replay__"));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "getNCollectors" && recv != 0) {
++                result = DalvikValue::make_int(sf_int("__sf_ncollect__"));
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if ((method == "enqueueLocked" || method == "emit") &&
++                recv != 0) {
++                uint32_t val = 0;
++                for (size_t i = 1; i < args.size(); ++i)
++                    if (args[i].type == DalvikType::OBJECT_REF &&
++                        args[i].object_id != 0) {
++                        val = args[i].object_id;
++                        break;
++                    }
++                c8_kx_sf_buf_[recv].push_back(val);
++                sf_set("__sf_total__", sf_int("__sf_total__") + 1);
++                sf_set("__sf_buffer_end__",
++                       sf_int("__sf_buffer_end__") + 1);
++                sf_set("__sf_replay__", sf_int("__sf_replay__") + 1);
++                if (c8_kx13_log_ < 56) {
++                    ++c8_kx13_log_;
++                    std::cerr << "[C8-KXFLOW] " << method << " o" << recv
++                              << " val=o" << val
++                              << " → buffer total="
++                              << sf_int("__sf_total__")
++                              << " (REAL advance law)" << std::endl;
++                }
++                result = method == "emit" ? DalvikValue::make_object(0,
++                                                    "Ljava/lang/Object;")
++                                          : DalvikValue::make_void();
++                if (method == "emit") result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "collect" && recv != 0) {
++                uint32_t collector = 0;
++                for (size_t i = 1; i < args.size(); ++i)
++                    if (args[i].type == DalvikType::OBJECT_REF &&
++                        args[i].object_id != 0) {
++                        collector = args[i].object_id;
++                        break;
++                    }
++                int drained = 0;
++                if (collector != 0 && heap_.has_object(collector)) {
++                    std::string ccls = "Ljava/lang/Object;";
++                    if (const auto* co = heap_.get(collector))
++                        if (!co->class_descriptor.empty())
++                            ccls = co->class_descriptor;
++                    for (uint32_t val : c8_kx_sf_buf_[recv]) {
++                        if (val == 0 || !heap_.has_object(val)) continue;
++                        DalvikValue eret;
++                        DalvikExecutionResult eres;
++                        std::vector<DalvikValue> eargs{
++                            DalvikValue::make_object(collector, ccls),
++                            DalvikValue::make_object(
++                                val, "Ljava/lang/Object;")};
++                        if (try_recursive_invoke(ccls, "emit", eargs,
++                                                 eret, eres))
++                            ++drained;
++                    }
++                }
++                sf_set("__sf_ncollect__", sf_int("__sf_ncollect__") + 1);
++                std::cerr << "[C8-KXFLOW] collect o" << recv
++                          << " collector=o" << collector
++                          << " → replay drain " << drained << "/"
++                          << c8_kx_sf_buf_[recv].size()
++                          << " (emit-order law)" << std::endl;
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "findSlotsToResumeLocked" && recv != 0) {
++                result = DalvikValue::make_int(0);
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++        }
++        // ── F-C8-254 — the FlowKt operator set ──────────────────────────
++        // kotlinx law (Builders.kt/Operators.kt): retry/buffer = the
++        // builder identity (the same flow object — the serialized
++        // operator pipeline has no extra stage to insert, documented);
++        // transformLatest = a REAL new flow carrying the block (the
++        // builder law); catchImpl = the REAL drain episode + null when
++        // it completes clean (the kotlinx contract: null = no exception);
++        // toCollection/combine = LOUD PENDING boundaries (the
++        // synthetic-collector / multi-flow pipeline internals stay out of
++        // scope — documented, never silent).
++        if (class_name == "Lkotlinx/coroutines/flow/FlowKt;") {
++            if (method == "retry") {
++                uint32_t f = 0;
++                for (const auto& av : args)
++                    if (av.type == DalvikType::OBJECT_REF &&
++                        av.object_id != 0) {
++                        f = av.object_id;
++                        break;
++                    }
++                result = f != 0 ? DalvikValue::make_object(
++                                      f, "Lkotlinx/coroutines/flow/Flow;")
++                                : DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            if (method == "buffer$default" || method == "buffer") {
++                uint32_t f = 0;
++                for (const auto& av : args)
++                    if (av.type == DalvikType::OBJECT_REF &&
++                        av.object_id != 0) {
