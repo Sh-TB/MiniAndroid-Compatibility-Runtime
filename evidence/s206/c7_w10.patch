@@ -1,0 +1,804 @@
+diff --git a/fixtures/c7_w10_probe/c7w10/AndroidManifest.xml b/fixtures/c7_w10_probe/c7w10/AndroidManifest.xml
+new file mode 100644
+index 00000000..2956eae4
+--- /dev/null
++++ b/fixtures/c7_w10_probe/c7w10/AndroidManifest.xml
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="c7.w10"
++    android:versionCode="1"
++    android:versionName="1.0">
++    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="30" />
++    <application android:label="C7W10">
++        <activity android:name=".Main" android:exported="true">
++            <intent-filter>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
++            </intent-filter>
++        </activity>
++        <!-- CODER7 WAVE-10: the provider the applyBatch laws land on. -->
++        <provider android:name=".BatchProvider"
++            android:authorities="c7.w10.batch" android:exported="true" />
++    </application>
++</manifest>
+diff --git a/fixtures/c7_w10_probe/c7w10/src/c7/w10/BatchProvider.java b/fixtures/c7_w10_probe/c7w10/src/c7/w10/BatchProvider.java
+new file mode 100644
+index 00000000..2c44c2b0
+--- /dev/null
++++ b/fixtures/c7_w10_probe/c7w10/src/c7/w10/BatchProvider.java
+@@ -0,0 +1,65 @@
++package c7.w10;
++
++import android.content.ContentProvider;
++import android.content.ContentValues;
++import android.database.Cursor;
++import android.database.MatrixCursor;
++import android.net.Uri;
++
++/** CODER7 WAVE-10 — the provider the BATCH-CRUD laws land on. The in-memory
++ *  table is deliberately deterministic: insert grows rows, update answers
++ *  the live row count, delete clears it, query mirrors it — so every
++ *  ContentProviderResult the engine builds is assertable from the app side.
++ *  getStreamTypes is overridden on purpose (the resolver must route it; the
++ *  AOSP base answers null — the no-override arm is a separate honest row). */
++public class BatchProvider extends ContentProvider {
++    public static int rows = 0;
++    public static int insertCalls = 0;
++    public static int updateCalls = 0;
++    public static int deleteCalls = 0;
++    public static int streamTypesCalls = 0;
++    public static String lastMimeFilter = "unset";
++
++    static final String AUTH = "c7.w10.batch";
++
++    @Override public boolean onCreate() { return true; }
++
++    @Override public String getType(Uri uri) {
++        return "vnd.android.cursor.dir/vnd.c7.w10.batch";
++    }
++
++    @Override public Cursor query(Uri uri, String[] projection,
++                                  String selection, String[] selArgs,
++                                  String sortOrder) {
++        MatrixCursor mc = new MatrixCursor(new String[]{"k", "v"});
++        for (int i = 0; i < rows; i++)
++            mc.addRow(new Object[]{"k" + i, String.valueOf(i)});
++        return mc;
++    }
++
++    @Override public Uri insert(Uri uri, ContentValues values) {
++        insertCalls++;
++        rows++;
++        return Uri.parse("content://" + AUTH + "/row/" + rows);
++    }
++
++    @Override public int update(Uri uri, ContentValues values,
++                                String selection, String[] selArgs) {
++        updateCalls++;
++        return rows;
++    }
++
++    @Override public int delete(Uri uri, String selection,
++                                String[] selArgs) {
++        deleteCalls++;
++        int gone = rows;
++        rows = 0;
++        return gone;
++    }
++
++    @Override public String[] getStreamTypes(Uri uri, String mimeTypeFilter) {
++        streamTypesCalls++;
++        lastMimeFilter = mimeTypeFilter;
++        return new String[]{"vnd.android.cursor.dir/vnd.c7.w10.batch"};
++    }
++}
+diff --git a/fixtures/c7_w10_probe/c7w10/src/c7/w10/Main.java b/fixtures/c7_w10_probe/c7w10/src/c7/w10/Main.java
+new file mode 100644
+index 00000000..1e0406d3
+--- /dev/null
++++ b/fixtures/c7_w10_probe/c7w10/src/c7/w10/Main.java
+@@ -0,0 +1,165 @@
++package c7.w10;
++
++import android.app.Activity;
++import android.content.ContentProviderOperation;
++import android.content.ContentProviderResult;
++import android.content.ContentResolver;
++import android.content.ContentValues;
++import android.content.OperationApplicationException;
++import android.database.Cursor;
++import android.net.Uri;
++import android.os.Bundle;
++import android.os.RemoteException;
++import java.util.ArrayList;
++
++/** CODER7 WAVE-10 — the BATCH-CRUD conformance battery (package c7.w10).
++ *  Ops B01..B09 cover the applyBatch value model end-to-end:
++ *   B01 the Builder value model (newInsert→isInsert, newAssert→isAssertQuery)
++ *   B02 applyBatch [insert, insert] → 2 Uri results
++ *   B03 the rows are REALLY there (plain query mirror)
++ *   B04 applyBatch [update] → count == live rows
++ *   B05 applyBatch [assert expected=2] over 2 rows → no throw (assert law)
++ *   B06 applyBatch [delete] → count == 2; B07 the mirror query reads 0
++ *   B08 applyBatch [assert expected=1] over 0 rows → REAL
++ *       OperationApplicationException (the assert failure law)
++ *   B09 getStreamTypes routes the provider override (mimeFilter verbatim)
++ *  Every op try/catch'd: a missing engine API is an honest FAIL row. */
++public class Main extends Activity {
++    static final Uri BATCH_URI = Uri.parse("content://c7.w10.batch/rows");
++
++    static void ok(String op, String d) { Rec.ok(op, d); }
++    static void bad(String op, String d) { Rec.bad(op, d); }
++
++    @Override public void onCreate(Bundle icicle) {
++        super.onCreate(icicle);
++        ContentResolver cr = getContentResolver();
++
++        // ── B01: the Builder value model ────────────────────────────────
++        try {
++            ContentProviderOperation ins = ContentProviderOperation
++                .newInsert(BATCH_URI)
++                .withValues(cv("n", "1")).build();
++            ContentProviderOperation asrt = ContentProviderOperation
++                .newAssertQuery(BATCH_URI)
++                .withExpectedCount(2).build();
++            if (ins.isInsert() && !ins.isUpdate() && !ins.isDelete()
++                    && asrt.isAssertQuery() && !asrt.isInsert())
++                ok("B01", "builder model: insert+assert typed");
++            else
++                bad("B01", "predicates wrong");
++        } catch (Throwable t) { bad("B01", "throw:" + t.getClass().getName()); }
++
++        // ── B02: applyBatch [insert, insert] → 2 results ───────────────
++        try {
++            ArrayList<ContentProviderOperation> ops =
++                new ArrayList<ContentProviderOperation>();
++            ops.add(ContentProviderOperation.newInsert(BATCH_URI)
++                    .withValues(cv("n", "1")).build());
++            ops.add(ContentProviderOperation.newInsert(BATCH_URI)
++                    .withValues(cv("n", "2")).build());
++            ContentProviderResult[] res = cr.applyBatch("c7.w10.batch", ops);
++            boolean uris = res != null && res.length == 2
++                && res[0].uri != null && res[1].uri != null;
++            if (uris)
++                ok("B02", "2 inserts → 2 Uri results; res0="
++                    + res[0].uri.toString());
++            else
++                bad("B02", "results=" + (res == null ? "null"
++                    : String.valueOf(res.length)));
++        } catch (Throwable t) { bad("B02", "throw:" + t.getClass().getName()); }
++
++        // ── B03: the rows REALLY exist (query mirror) ──────────────────
++        try {
++            Cursor c = cr.query(BATCH_URI, null, null, null, null);
++            int n = c == null ? -1 : c.getCount();
++            if (n == 2) ok("B03", "mirror query count=2");
++            else bad("B03", "count=" + n);
++        } catch (Throwable t) { bad("B03", "throw:" + t.getClass().getName()); }
++
++        // ── B04: applyBatch [update] → count == live rows ──────────────
++        try {
++            ArrayList<ContentProviderOperation> ops =
++                new ArrayList<ContentProviderOperation>();
++            ops.add(ContentProviderOperation.newUpdate(BATCH_URI)
++                    .withValues(cv("n", "9")).build());
++            ContentProviderResult[] res = cr.applyBatch("c7.w10.batch", ops);
++            if (res != null && res.length == 1 && res[0].count == 2)
++                ok("B04", "update batch count=2");
++            else
++                bad("B04", "res=" + (res == null ? "null"
++                    : (res.length == 1 ? String.valueOf(res[0].count)
++                                       : "len" + res.length)));
++        } catch (Throwable t) { bad("B04", "throw:" + t.getClass().getName()); }
++
++        // ── B05: applyBatch [assert expected=2] over 2 rows → no throw ─
++        try {
++            ArrayList<ContentProviderOperation> ops =
++                new ArrayList<ContentProviderOperation>();
++            ops.add(ContentProviderOperation.newAssertQuery(BATCH_URI)
++                    .withExpectedCount(2).build());
++            ContentProviderResult[] res = cr.applyBatch("c7.w10.batch", ops);
++            if (res != null && res.length == 1 && res[0].count == 2)
++                ok("B05", "assert(2) over 2 rows → count=2, no throw");
++            else
++                bad("B05", "res shape wrong");
++        } catch (Throwable t) { bad("B05", "throw:" + t.getClass().getName()); }
++
++        // ── B06: applyBatch [delete] → count == 2 ──────────────────────
++        try {
++            ArrayList<ContentProviderOperation> ops =
++                new ArrayList<ContentProviderOperation>();
++            ops.add(ContentProviderOperation.newDelete(BATCH_URI).build());
++            ContentProviderResult[] res = cr.applyBatch("c7.w10.batch", ops);
++            if (res != null && res.length == 1 && res[0].count == 2)
++                ok("B06", "delete batch count=2");
++            else
++                bad("B06", "res shape wrong");
++        } catch (Throwable t) { bad("B06", "throw:" + t.getClass().getName()); }
++
++        // ── B07: the mirror query reads 0 after the delete ─────────────
++        try {
++            Cursor c = cr.query(BATCH_URI, null, null, null, null);
++            int n = c == null ? -1 : c.getCount();
++            if (n == 0) ok("B07", "mirror query count=0 after delete");
++            else bad("B07", "count=" + n);
++        } catch (Throwable t) { bad("B07", "throw:" + t.getClass().getName()); }
++
++        // ── B08: assert over the WRONG count → REAL
++        //     OperationApplicationException ─────────────────────────────
++        try {
++            ArrayList<ContentProviderOperation> ops =
++                new ArrayList<ContentProviderOperation>();
++            ops.add(ContentProviderOperation.newAssertQuery(BATCH_URI)
++                    .withExpectedCount(1).build());
++            try {
++                cr.applyBatch("c7.w10.batch", ops);
++                bad("B08", "assert(1) over 0 rows did NOT throw");
++            } catch (OperationApplicationException oae) {
++                ok("B08", "OperationApplicationException: "
++                    + oae.getMessage());
++            }
++        } catch (Throwable t) { bad("B08", "outer:" + t.getClass().getName()); }
++
++        // ── B09: getStreamTypes routes the provider override ───────────
++        try {
++            String[] st = cr.getStreamTypes(BATCH_URI, "vnd.android.cursor.*");
++            boolean routed = st != null && st.length == 1
++                && "vnd.android.cursor.dir/vnd.c7.w10.batch".equals(st[0])
++                && BatchProvider.streamTypesCalls == 1
++                && "vnd.android.cursor.*".equals(BatchProvider.lastMimeFilter);
++            if (routed)
++                ok("B09", "streamTypes routed; mimeFilter verbatim");
++            else
++                bad("B09", "st=" + (st == null ? "null" : st.length)
++                    + ";calls=" + BatchProvider.streamTypesCalls);
++        } catch (Throwable t) { bad("B09", "throw:" + t.getClass().getName()); }
++
++        Rec.flush(this, "c7w10_results.jsonl");
++    }
++
++    static ContentValues cv(String k, String v) {
++        ContentValues cvv = new ContentValues();
++        cvv.put(k, v);
++        return cvv;
++    }
++}
+diff --git a/fixtures/c7_w10_probe/c7w10/src/c7/w10/Rec.java b/fixtures/c7_w10_probe/c7w10/src/c7/w10/Rec.java
+new file mode 100644
+index 00000000..de55e2cc
+--- /dev/null
++++ b/fixtures/c7_w10_probe/c7w10/src/c7/w10/Rec.java
+@@ -0,0 +1,33 @@
++package c7.w10;
++
++/** CODER7 WAVE-10 — the conformance-battery recorder (same law as the
++ *  WAVE-9 Rec: statics survive the whole run; String.concat, no
++ *  StringBuilder; flush() APPENDS so every row lands verbatim). */
++public class Rec {
++    public static String out = "";
++    public static int flushes = 0;
++
++    public static void line(String op, String verdict, String d) {
++        String row = "C7W10|".concat(op).concat("|").concat(verdict)
++                .concat("|").concat(d == null ? "null" : d)
++                .concat("\n");
++        out = out.concat(row);
++    }
++
++    public static void ok(String op, String d) { line(op, "PASS", d); }
++    public static void bad(String op, String d) { line(op, "FAIL", d); }
++
++    public static void flush(android.content.Context ctx, String name) {
++        try {
++            java.io.FileOutputStream fos = ctx.openFileOutput(
++                name, android.content.Context.MODE_APPEND);
++            fos.write(out.getBytes("UTF-8"));
++            fos.close();
++            flushes++;
++            out = "";
++        } catch (Throwable t) {
++            // No silent fabrication: a failed flush leaves the file short
++            // and the verdicts honestly absent.
++        }
++    }
++}
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index deb968e9..1a826846 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -10693,6 +10693,136 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         return true;
+     }
+ 
++    // ── CODER7 WAVE-10 (AOSP android.content.ContentProviderOperation):
++    // the batch-op VALUE MODEL. newInsert/newUpdate/newDelete/newAssert
++    // answer a Builder; withValues/withSelection/withSelectionArgs/
++    // withExpectedCount return this; build() freezes the op into engine-
++    // private __c7_* fields (type 1=insert 2=update 3=delete 4=assert).
++    // ContentProviderResult carries the per-op answer: insert → the
++    // provider's returned Uri, update/delete/assert → the row count.
++    if ((declaring_class == "Landroid/content/ContentProviderOperation;" ||
++         declaring_class ==
++             "Landroid/content/ContentProviderOperation$Builder;" ||
++         declaring_class == "Landroid/content/ContentProviderResult;") &&
++        (method_name == "newInsert" || method_name == "newUpdate" ||
++         method_name == "newDelete" || method_name == "newAssert" ||
++         method_name == "newAssertQuery" ||
++         method_name == "withValues" || method_name == "withSelection" ||
++         method_name == "withSelectionArgs" ||
++         method_name == "withExpectedCount" || method_name == "build" ||
++         method_name == "isInsert" || method_name == "isUpdate" ||
++         method_name == "isDelete" || method_name == "isAssertQuery" ||
++         method_name == "getCount" || method_name == "getUri")) {
++        auto c7_op_type = [&](uint32_t oid) -> int {
++            auto t = heap_.get_object_field(oid, "__c7_type__");
++            return t.has_value() ? t->int_val : 0;
++        };
++        // static factories: (no receiver) args[0] = the target Uri
++        if (method_name == "newInsert" || method_name == "newUpdate" ||
++            method_name == "newDelete" || method_name == "newAssert" ||
++            method_name == "newAssertQuery") {
++            if (args.empty() || args[0].type != DalvikType::OBJECT_REF ||
++                args[0].object_id == 0 ||
++                !heap_.has_object(args[0].object_id)) {
++                throw_deferred("Ljava/lang/NullPointerException;",
++                               std::string(method_name) +
++                                   " on a null Uri",
++                               "c7-cpo-null");
++                return_val = DalvikValue::make_null();
++                recursion_depth_--;
++                return true;
++            }
++            uint32_t b = heap_.allocate(
++                "Landroid/content/ContentProviderOperation$Builder;", pc_,
++                0);
++            int t = method_name == "newInsert"
++                        ? 1
++                        : method_name == "newUpdate"
++                              ? 2
++                              : (method_name == "newDelete") ? 3 : 4;
++            heap_.set_object_field(b, "__c7_type__",
++                                   DalvikValue::make_int(t));
++            heap_.set_object_field(b, "__c7_uri__", args[0]);
++            return_val = DalvikValue::make_object(
++                b, "Landroid/content/ContentProviderOperation$Builder;");
++            recursion_depth_--;
++            return true;
++        }
++        // Builder fluent chain: receiver = args[0], return THIS.
++        if (method_name == "withValues" && args.size() >= 2) {
++            heap_.set_object_field(args[0].object_id, "__c7_values__",
++                                   args[1]);
++            return_val = args[0];
++            recursion_depth_--;
++            return true;
++        }
++        if (method_name == "withSelection" && args.size() >= 2) {
++            heap_.set_object_field(args[0].object_id, "__c7_sel__",
++                                   args[1]);
++            return_val = args[0];
++            recursion_depth_--;
++            return true;
++        }
++        if (method_name == "withSelectionArgs" && args.size() >= 2) {
++            heap_.set_object_field(args[0].object_id, "__c7_selargs__",
++                                   args[1]);
++            return_val = args[0];
++            recursion_depth_--;
++            return true;
++        }
++        if (method_name == "withExpectedCount" && args.size() >= 2) {
++            heap_.set_object_field(args[0].object_id, "__c7_expected__",
++                                   DalvikValue::make_int(
++                                       dalvik_int_value(args[1])));
++            return_val = args[0];
++            recursion_depth_--;
++            return true;
++        }
++        if (method_name == "build") {
++            uint32_t op = heap_.allocate(
++                "Landroid/content/ContentProviderOperation;", pc_, 0);
++            for (const char* f : {"__c7_type__", "__c7_uri__",
++                                  "__c7_values__", "__c7_sel__",
++                                  "__c7_selargs__", "__c7_expected__"}) {
++                auto fv = heap_.get_object_field(args[0].object_id, f);
++                if (fv.has_value()) heap_.set_object_field(op, f, *fv);
++            }
++            return_val = DalvikValue::make_object(
++                op, "Landroid/content/ContentProviderOperation;");
++            recursion_depth_--;
++            return true;
++        }
++        // op predicates (AOSP names)
++        if (method_name.size() > 2 && method_name[0] == 'i' &&
++            method_name[1] == 's') {
++            int t = c7_op_type(args[0].object_id);
++            bool want = method_name == "isInsert"
++                            ? t == 1
++                            : method_name == "isUpdate"
++                                  ? t == 2
++                                  : method_name == "isDelete"
++                                        ? t == 3
++                                        : t == 4;  // isAssertQuery
++            return_val = DalvikValue::make_bool(want);
++            recursion_depth_--;
++            return true;
++        }
++        // ContentProviderResult accessors
++        if (method_name == "getCount") {
++            auto c = heap_.get_object_field(args[0].object_id, "count");
++            return_val = c.has_value() ? *c : DalvikValue::make_int(0);
++            recursion_depth_--;
++            return true;
++        }
++        if (method_name == "getUri") {
++            auto u = heap_.get_object_field(args[0].object_id,
++                                            "__c7_result_uri__");
++            return_val = u.has_value() ? *u : DalvikValue::make_null();
++            recursion_depth_--;
++            return true;
++        }
++    }
++
+     // R-NEW-538 (CONT-36): AssetManager.list(String) — AOSP AssetManager2:
+     // list(dir) answers the immediate children of dir (namespace dirs
+     // included); a missing dir answers null (documented quirk). Live
+@@ -39799,6 +39929,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+          method == "openFileDescriptor" ||
+          method == "openAssetFileDescriptor" ||
+          method == "openTypedAssetFileDescriptor" ||
++         method == "applyBatch" || method == "getStreamTypes" ||
+          method == "openOutputStream" || method == "openInputStream" ||
+          method == "acquireContentProviderClient" ||
+          method == "acquireUnstableContentProviderClient")) {
+@@ -39876,6 +40007,249 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         };
+ 
+         // ────────────────────────────────────────────────────────────────
++        // ── CODER7 WAVE-10: the BATCH-CRUD law (AOSP
++        // ContentResolver.applyBatch(String authority,
++        // ArrayList<ContentProviderOperation>) → ContentProviderResult[]):
++        // the provider is resolved ONCE from the authority argument
++        // (applyBatch carries NO uri), every op applies through that
++        // instance behind the per-op permission gate (insert/update/delete
++        // are WRITE ops; assert reads), insert answers a Uri result,
++        // update/delete answer a count result, and a failed assert
++        // (expected row count mismatch) throws a REAL
++        // OperationApplicationException — never a silent wrong answer.
++        if (method == "applyBatch") {
++            std::string bauth =
++                (args.size() > 1 && args[1].type == DalvikType::STRING_REF)
++                    ? std::string(args[1].string_val)
++                    : std::string();
++            auto c7_rec = [&](const std::string& op, bool ok,
++                              const std::string& detail) {
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    op, bauth, ok, detail,
++                    current_class_ + "." + current_method_);
++            };
++            std::string bcls;
++            uint32_t bprov =
++                bauth.empty()
++                    ? 0
++                    : resolve_provider_for_authority(bauth, bcls);
++            if (bprov == 0) {
++                throw_deferred("Ljava/lang/IllegalArgumentException;",
++                               "Unknown authority: " + bauth,
++                               "PROV-BATCH");
++                c7_rec("PROVIDER-APPLYBATCH", false,
++                       "unknown authority");
++                result = DalvikValue::make_null();
++                status = ApiCallTrace::Status::IMPLEMENTED;
++                return true;
++            }
++            DalvikValue ops = args.size() > 2 ? args[2]
++                                              : DalvikValue::make_null();
++            // AOSP applyBatch takes an ArrayList<ContentProviderOperation>:
++            // elements live in the CollectionShadow store (kind 1 = object
++            // id); the engine-array backing is honored only as a fallback.
++            framework::CollectionShadow* csh =
++                shadow_registry_
++                    ? shadow_registry_->find_as<
++                          framework::CollectionShadow>()
++                    : nullptr;
++            framework::CollectionShadow::CollectionState* cst =
++                (csh && ops.type == DalvikType::OBJECT_REF &&
++                 ops.object_id != 0)
++                    ? csh->get_or_create(ops.object_id, false)
++                    : nullptr;
++            int nops = cst ? (int)cst->elements.size() : 0;
++            uint32_t res_arr = heap_.allocate(
++                "[Landroid/content/ContentProviderResult;", pc_, 0);
++            DalvikValue rlen = DalvikValue::make_int(nops);
++            heap_.set_object_field(res_arr, "__array_length__", rlen);
++            heap_.set_object_field(res_arr, "__new_array_length__", rlen);
++            heap_.set_object_field(
++                res_arr, "__element_type__",
++                DalvikValue::make_string(
++                    "[Landroid/content/ContentProviderResult;", 0));
++            int done = 0;
++            // AOSP ContentProviderResult.count is a plain int, but the
++            // vendored android-34 stub declares it as Ljava/lang/Integer;
++            // — the result field is therefore a REAL boxed Integer (the
++            // F-NEW-141 box law: value field + heap object), never a raw
++            // int the app cannot unbox.
++            auto c7_box_count = [&](int v) -> DalvikValue {
++                uint32_t box =
++                    heap_.allocate("Ljava/lang/Integer;", pc_, 0);
++                heap_.set_object_field(
++                    box, "value", DalvikValue::make_int(v));
++                return DalvikValue::make_object(box,
++                                                "Ljava/lang/Integer;");
++            };
++            for (int k = 0; k < nops; ++k) {
++                if (k >= (int)cst->elem_kinds.size() ||
++                    cst->elem_kinds[k] != 1 || cst->elements[k] == 0)
++                    continue;
++                uint32_t opid = cst->elements[k];
++                if (!heap_.has_object(opid)) continue;
++                auto tif = heap_.get_object_field(opid, "__c7_type__");
++                int t = tif.has_value() ? tif->int_val : 0;
++                DalvikValue urf = heap_.get_object_field(opid, "__c7_uri__")
++                                      .value_or(DalvikValue::make_null());
++                std::string op_uri_raw;
++                if (urf.type == DalvikType::OBJECT_REF &&
++                    urf.object_id != 0 && heap_.has_object(urf.object_id)) {
++                    auto rw = heap_.get_object_field(urf.object_id,
++                                                     "uri_raw");
++                    if (rw.has_value() &&
++                        rw->type == DalvikType::STRING_REF)
++                        op_uri_raw = rw->string_val;
++                }
++                DalvikValue opuri =
++                    op_uri_raw.empty()
++                        ? DalvikValue::make_null()
++                        : DalvikValue::make_object(
++                              make_uri_object(op_uri_raw),
++                              "Landroid/net/Uri;");
++                const bool wop = (t == 1 || t == 2 || t == 3);
++                std::string need = c7_check_provider_access(bprov, wop);
++                if (!need.empty()) {
++                    const char* verb = wop ? "writing" : "reading";
++                    throw_deferred("Ljava/lang/SecurityException;",
++                                   std::string("Permission Denial: ") +
++                                       verb + " " + bauth + " requires " +
++                                       need,
++                                   "PROV-PERM");
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "PROV-PERM-DENY", bauth, false,
++                        "batch op " + std::to_string(k) + " requires " +
++                            need,
++                        current_class_ + "." + current_method_);
++                    result = DalvikValue::make_null();
++                    status = ApiCallTrace::Status::IMPLEMENTED;
++                    return true;
++                }
++                DalvikValue vals =
++                    heap_.get_object_field(opid, "__c7_values__")
++                        .value_or(DalvikValue::make_null());
++                DalvikValue sel =
++                    heap_.get_object_field(opid, "__c7_sel__")
++                        .value_or(DalvikValue::make_null());
++                DalvikValue sargs =
++                    heap_.get_object_field(opid, "__c7_selargs__")
++                        .value_or(DalvikValue::make_null());
++                auto expf = heap_.get_object_field(opid, "__c7_expected__");
++                int expected = expf.has_value() ? expf->int_val : -1;
++                DalvikValue pret;
++                std::string perr;
++                uint32_t resobj = 0;
++                if (t == 1) {  // insert → ContentProviderResult(Uri)
++                    if (invoke_provider_method(
++                            bprov, bcls, "insert", {opuri, vals}, pret,
++                            perr)) {
++                        resobj = heap_.allocate(
++                            "Landroid/content/ContentProviderResult;", pc_,
++                            0);
++                        heap_.set_object_field(resobj, "uri",
++                                               pret);
++                        heap_.set_object_field(resobj, "__c7_result_uri__",
++                                               pret);
++                        heap_.set_object_field(resobj, "count",
++                                               c7_box_count(0));
++                    }
++                } else if (t == 2 || t == 3) {  // update/delete → count
++                    std::vector<DalvikValue> pa =
++                        (t == 2)
++                            ? std::vector<DalvikValue>{opuri, vals, sel,
++                                                       sargs}
++                            : std::vector<DalvikValue>{opuri, sel, sargs};
++                    if (invoke_provider_method(
++                            bprov, bcls, t == 2 ? "update" : "delete", pa,
++                            pret, perr)) {
++                        resobj = heap_.allocate(
++                            "Landroid/content/ContentProviderResult;", pc_,
++                            0);
++                        heap_.set_object_field(
++                            resobj, "count",
++                            c7_box_count(dalvik_int_value(pret)));
++                    }
++                } else if (t == 4) {  // assert → row-count law
++                    DalvikValue cur;
++                    if (invoke_provider_method(
++                            bprov, bcls, "query",
++                            {opuri, DalvikValue::make_null(), sel, sargs,
++                             DalvikValue::make_null()},
++                            cur, perr) &&
++                        cur.type == DalvikType::OBJECT_REF &&
++                        cur.object_id != 0) {
++                        auto sit = matrix_cursors_.find(cur.object_id);
++                        int rows = sit != matrix_cursors_.end()
++                                       ? (int)sit->second.rows.size()
++                                       : 0;
++                        if (expected >= 0 && rows != expected) {
++                            throw_deferred(
++                                "Landroid/content/OperationApplicationException;",
++                                "Assert failed: expected " +
++                                    std::to_string(expected) +
++                                    " rows but got " + std::to_string(rows) +
++                                    " (op " + std::to_string(k) + ")",
++                                "PROV-BATCH-ASSERT");
++                            c7_rec("PROVIDER-BATCH-ASSERT", false,
++                                   op_uri_raw + " expected " +
++                                       std::to_string(expected) + " got " +
++                                       std::to_string(rows));
++                            result = DalvikValue::make_null();
++                            status = ApiCallTrace::Status::IMPLEMENTED;
++                            return true;
++                        }
++                        resobj = heap_.allocate(
++                            "Landroid/content/ContentProviderResult;", pc_,
++                            0);
++                        heap_.set_object_field(resobj, "count",
++                                               c7_box_count(rows));
++                    }
++                }
++                if (resobj) {
++                    heap_.set_object_field(
++                        res_arr, "array[" + std::to_string(k) + "]",
++                        DalvikValue::make_object(
++                            resobj, "Landroid/content/ContentProviderResult;"));
++                    done++;
++                }
++            }
++            c7_rec("PROVIDER-APPLYBATCH", true,
++                   std::to_string(done) + "/" + std::to_string(nops) +
++                       " ops applied (AOSP batch law)");
++            result = DalvikValue::make_object(
++                res_arr, "[Landroid/content/ContentProviderResult;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        // ── CODER7 WAVE-10: getStreamTypes — AOSP base ContentProvider
++        // answers null unless the provider overrides it; an override is
++        // dispatched with (uri, mimeFilter) verbatim.
++        if (method == "getStreamTypes") {
++            std::string scls;
++            uint32_t sprov = uauth.empty()
++                                 ? 0
++                                 : resolve_provider_for_authority(uauth,
++                                                                  scls);
++            DalvikValue sret;
++            std::string serr;
++            if (sprov != 0 &&
++                invoke_provider_method(
++                    sprov, scls, "getStreamTypes",
++                    {uarg, args.size() > 2 ? args[2]
++                                           : DalvikValue::make_null()},
++                    sret, serr)) {
++                rec("PROVIDER-STREAMTYPES", true,
++                    "provider dispatched (mimeFilter verbatim)");
++                result = sret;
++            } else {
++                rec("PROVIDER-STREAMTYPES", true,
++                    "no-override → null (AOSP base)");
++                result = DalvikValue::make_null();
++            }
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++
+         // ── CODER7 WAVE-9: the ContentObserver registry laws (AOSP
+         // ContentResolver.registerContentObserver(Uri, boolean, observer)
+         // → ContentService.register + notifyChange(Uri, observer) →
+diff --git a/scripts/c7_w10_run_probe.sh b/scripts/c7_w10_run_probe.sh
+new file mode 100644
+index 00000000..cfdb40c3
+--- /dev/null
++++ b/scripts/c7_w10_run_probe.sh
+@@ -0,0 +1,68 @@
++#!/usr/bin/env bash
++# c7_w10_run_probe.sh — CODER7 WAVE-10 probe runner (the BATCH-CRUD
++# battery: ops B01..B09 over the c7.w10.batch provider).
++# Single-package run (no store): the batch laws ride the OWN provider.
++#
++# Usage: bash scripts/c7_w10_run_probe.sh <tag>
++set -uo pipefail
++R=/home/z/my-project/c7tree
++BIN=${BIN:-$R/miniandroid/build/miniandroid}
++TAG=${1:?tag}
++OUT=$R/run/c7w10/$TAG
++rm -rf "$OUT"; mkdir -p "$OUT"
++
++run_one() { # <dir> <apk>
++  local o=$1 apk=$2
++  rm -rf "$o"; mkdir -p "$o"
++  rm -rf "$R/runtime/data/data/data/c7.w10"
++  MINIANDROID_FILE_IO="$o/file_io.jsonl" \
++  timeout 240 "$BIN" run "$apk" \
++    --width 1080 --height 1920 --frames 2 --max-seconds 90 -o "$o" \
++    > "$o/run.log" 2>&1
++  echo "run rc=$? -> $o"
++  local res="$R/runtime/data/data/data/c7.w10/files/c7w10_results.jsonl"
++  [ -f "$res" ] && cp "$res" "$o/c7w10_results.jsonl"
++}
++
++# androguard cross-check of the W10 fixture (independent AXML truth)
++python3 - "$R/fixtures/c7_w10_probe/c7w10.apk" <<'PY' \
++    > "$OUT/androguard_check.json" 2> "$OUT/androguard_check.err"
++import json, sys
++import xml.etree.ElementTree as ET
++from loguru import logger
++logger.remove()
++from androguard.core.apk import APK
++a = APK(sys.argv[1])
++root = ET.fromstring(a.get_android_manifest_axml().get_xml())
++A = '{http://schemas.android.com/apk/res/android}'
++pkg = root.get('package')
++app = root.find('application')
++prov = [p.get(A + 'name') for p in app.findall('provider')]
++auths = [p.get(A + 'authorities') for p in app.findall('provider')]
++acts = [a2.get(A + 'name') for a2 in app.findall('activity')]
++ok = (pkg == 'c7.w10' and 'c7.w10.batch' in auths
++      and '.Main' in acts and '.BatchProvider' in prov)
++print(json.dumps({'all_ok': ok, 'package': pkg,
++                  'providers': prov, 'authorities': auths, 'activities': acts}))
++PY
++echo "androguard_check rc=$? (0 = fixture contract holds)"
++
++for i in 1 2 3; do
++  run_one "$OUT/cold$i" "$R/fixtures/c7_w10_probe/c7w10.apk"
++done
++
++cd "$OUT"
++echo '═══ verdict counts (cold1) ═══'
++if [ -f cold1/c7w10_results.jsonl ]; then
++  echo "PASS rows: $(rg -c '\|PASS\|' cold1/c7w10_results.jsonl || echo 0)"
++  echo "FAIL rows: $(rg -c '\|FAIL\|' cold1/c7w10_results.jsonl || echo 0)"
++  rg '\|FAIL\|' cold1/c7w10_results.jsonl | head -20
++else
++  echo "NO RESULTS FILE — tail of run.log:"
++  tail -20 cold1/run.log
++fi
++echo '═══ engine batch rows (cold1) ═══'
++rg -o 'PROVIDER-APPLYBATCH[^\n]{0,90}|PROVIDER-BATCH-ASSERT[^\n]{0,90}|PROVIDER-STREAMTYPES[^\n]{0,70}' cold1/file_io.jsonl 2>/dev/null | head -10
++echo '═══ verdict SHAs (×3 cold) ═══'
++sha256sum cold1/c7w10_results.jsonl cold2/c7w10_results.jsonl cold3/c7w10_results.jsonl 2>/dev/null
++echo 'W10 RUNNER DONE' tag=$TAG
+diff --git a/scripts/c7_w5_run_probe.sh b/scripts/c7_w5_run_probe.sh
+index 2feaebaa..5ab81f12 100644
+--- a/scripts/c7_w5_run_probe.sh
++++ b/scripts/c7_w5_run_probe.sh
+@@ -9,7 +9,7 @@
+ #
+ # Usage: bash scripts/c7_w5_run_probe.sh <tag>
+ set -uo pipefail
+-R=/home/z/my-project/MiniAndroid-Compatibility-Runtime
++R=/home/z/my-project/c7tree
+ BIN=${BIN:-$R/miniandroid/build/miniandroid}
+ TAG=${1:?tag}
+ OUT=$R/run/c7w5/$TAG
+@@ -23,6 +23,11 @@ export MINIANDROID_PKG_STORE="$STORE"
+ run_one() { # <dir> <apk>
+   local o=$1 apk=$2
+   rm -rf "$o"; mkdir -p "$o"
++  # fresh-install semantics: every run starts from an EMPTY app data dir
++  # (the verdict file is MODE_APPEND — a stale dir would accumulate rows)
++  rm -rf "$R/runtime/data/data/data/c7.store.main" \
++         "$R/runtime/data/data/data/c7.store.browser" \
++         "$R/runtime/data/data/data/c7.store.share"
+   MINIANDROID_FILE_IO="$o/file_io.jsonl" timeout 180 "$BIN" run "$apk" \
+     --width 1080 --height 1920 --frames 3 --max-seconds 60 -o "$o" \
+     > "$o/run.log" 2>&1
+

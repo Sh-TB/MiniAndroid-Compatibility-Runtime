@@ -8795,3 +8795,42 @@ NEXT P0 (single task): FreeType real-symbol resolution (F-C4-594 for
 libgdx-freetype.so) or a real-bitmap stub leg on the runtime's own
 FreeType — then text renders, the menu becomes tappable, the board/X-O
 screen is reachable, and the full interaction proof follows.
+
+## S206 — the unreviewed-coder wave REVIEWED + C9 INTEGRATED + first real app WIN recorded (2026-11-09)
+
+Trigger: «تصویر رندر بازی رو اپلود بکن در یک وب سایت اپلود عکس / کدر های کلی دیتاورد داشتن اونای که
+بررسی نکردی رو بررسی بکن و اگر مورد بود پوش بکن و کار خودتو هم ادامه بده».
+
+1. GAME RENDER UPLOAD: the two S204 tictactoe faces (board; X/O tap face) uploaded to external
+   hosts (uguu.se d.uguu.se/CEBorfie.png + tmpfiles.org) AND embedded via the public repo raw URLs
+   (permanent) — #557 c=6744704882, fetch-verified. Repo confirmed PUBLIC (raw 200).
+2. UNREVIEWED SWEEP (the author-field is useless — every comment posts under Sh-TB; classification
+   is by CONTENT): 5 genuinely unreviewed coder deliveries found:
+   a) #521 C9 S198 rebased phase-3 parts 1-4 → **INTEGRATED**: apply-check 4/4 CLEAN on 45d019fc,
+      c9_phase3_laws_test 46/46 + density 36/36 + zip 42/42 in-container, gates goldens 3/3
+      (bouncy 8a6c24ac ORIGINAL / unote 3b8dcb0a / dooz a0fae907) + gmdice 3891679d
+      rerun-identical + microtimer 0-uncaught face b39665f6 ALL HOLD; tictactoe no-tap face
+      re-pin f1157d7e→7354c1b2 ROOT-CAUSED (C9-16/17 font-family law, Typeface.create →
+      parse_font_family + select_font_face_law; score-row re-measure, 992px bbox). Commit 8a37aab1.
+      Verdict #521 c=6745395108.
+   b) #557 C3 L-06 win/judge intel → 5-tap 0-4-8 recipe executed on the INTEGRATED main: rc=0,
+      0 uncaught, final face 9174827c1488280e BYTE-IDENTICAL to the coder's independent-build
+      record (cross-container determinism); X/X/X + RED win line + score 1|0 ON SCREEN — the
+      first real app WIN end-to-end. Verdict #557 c=6745476427. O-win/stalemate/restart recipes
+      minted as the next exact tests; §4 pin-hygiene (framework-table annotation) ACCEPTED.
+   c) #492 C3 S205 FINAL 30-problem ledger (29 CLOSED + 1 PARTIAL) → verified: Lane C law-file
+      counts 9/9 EXACT by grep; win run cross-verified; FINDING 1 (framework-table pin
+      dependence) ACCEPTED; FINDING 2 (TextView.setText REC-MISS in CalculatorDisplay) accepted
+      as named generic gap; FINDING 3 (reassembly defect live repro) adopted into protocol.
+      Gap: s205-evidence branch NOT on origin. Verdict #492 c=6745567177.
+   d) #520 C7 MASTER LEDGER (44 rows) + T21/T22 reposts + W10 → format ACCEPTED as the model;
+      census self-corrections (P-39/40/42) = honesty law working; P-44 harness-freshness fix
+      adopted. W10 patch INTAKE-BLOCKED on main (dalvik_engine.cpp:39876 drift +
+      scripts/c7_w5_run_probe.sh absent — main carries W1-W3 only); counting nit named
+      (42 vs 44 vs 43). Verdict #520 c=6745653910.
+   e) #519 C8 wave-15 → method accepted (§0.3 comment-channel self-containment PROVEN: wave-14
+      patch rebuilt from comments, probe digest 7b129e63 reproduced ×3); delivery INCOMPLETE
+      (parts 1-3 of 11 posted; 4-11 missing → unverifiable); base 9bc2a115 two days behind.
+      Verdict #519 c=6745683059.
+3. STATE: main = 8a37aab1 (C9 phase-3 integrated); binary e6287d1a2c175cf0; the S206 win run +
+   gate battery committed under evidence/s206/.
