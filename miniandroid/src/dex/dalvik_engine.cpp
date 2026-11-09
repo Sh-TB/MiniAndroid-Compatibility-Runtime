@@ -13713,12 +13713,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                     const void* p =
                                         (const void*)(uintptr_t)args[0]
                                             .long_val;
-                                    unsigned char dump[32];
+                                    // S202: 96-byte dump — the FT_Glyph/
+                                    // FT_SlotRec head fields (format at
+                                    // +80, bitmap rows/width/pitch/buffer
+                                    // at +88..+120, outline n_cont at
+                                    // +136) must be visible to bracket
+                                    // the zeroing window precisely.
+                                    unsigned char dump[96];
                                     if (p && ((uintptr_t)p & 0xfff)) {
                                         std::memcpy(dump, p, sizeof(dump));
                                         std::cerr << " mem:";
                                         char b8[8];
-                                        for (size_t di = 0; di < 32; ++di) {
+                                        for (size_t di = 0; di < 96; ++di) {
                                             snprintf(b8, sizeof b8, "%02x",
                                                      dump[di]);
                                             std::cerr << b8;
@@ -13728,10 +13734,155 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                 std::cerr << std::endl;
                             }
                         }
+                        // ── S202 F-NEW-612b — INTER-INVOKE SLOT-RESTORE
+                        // LAW (completes the S199 F-NEW-612 render-at-fill
+                        // goal at the dispatch boundary) ─────────────────
+                        // S199 bracketed the glyph loss EXACTLY: the FT
+                        // slot is healthy at the Face.loadChar return AND
+                        // at the Face.getGlyph return, and ZEROED (metrics
+                        // + outline) by the time GlyphSlot.getGlyph runs —
+                        // the writer lives in the engine's own inter-invoke
+                        // machinery and never inside a native. S202 ground
+                        // truth (scripts/s202_ft_probe2.cpp, host freetype
+                        // 2.13.3): the SAME chain renders REAL bitmaps
+                        // (86x78 'A' @120px) outside the engine. LAW: the
+                        // native-dispatch boundary is the one place with
+                        // NO window — (1) capture a healthy 256-byte
+                        // snapshot of every handle the DEX will pass
+                        // onward (Face.getGlyph→slot, GlyphSlot.getGlyph→
+                        // glyph, Glyph.toBitmap→bitmap-glyph,
+                        // Glyph.getBitmap→bitmap) at the dispatch where it
+                        // is born; (2) at every later FreeType-family
+                        // dispatch on a registered handle, if the live
+                        // bytes read as the emptied struct, restore the
+                        // snapshot FIRST and run the real native on
+                        // restored memory (one memcpy, zero window). The
+                        // data served is the REAL library's own output —
+                        // nothing is fabricated; an honestly-empty glyph
+                        // (space) never registers (rows/n_points==0).
+                        static std::mutex ft612b_mu;
+                        // handle → (256-byte snapshot, kind: 0=slot,
+                        // 1=glyph, 2=bitmap-glyph, 3=bitmap)
+                        static std::map<uint64_t,
+                                        std::pair<std::vector<unsigned char>,
+                                                  int>>
+                            ft612b_snap;
+                        auto ft612b_kind_of = [](const std::string& cls,
+                                                 const std::string& mth)
+                            -> int {
+                            // the handle KIND by the dispatch that BORN it
+                            if (cls.find("FreeType$Face;") !=
+                                        std::string::npos &&
+                                mth == "getGlyph")
+                                return 0;  // slot
+                            if (cls.find("FreeType$GlyphSlot;") !=
+                                    std::string::npos &&
+                                mth == "getGlyph")
+                                return 1;  // glyph
+                            if (cls.find("FreeType$Glyph;") !=
+                                        std::string::npos &&
+                                mth == "toBitmap")
+                                return 2;  // bitmap-glyph
+                            if (cls.find("FreeType$Glyph;") !=
+                                        std::string::npos &&
+                                mth == "getBitmap")
+                                return 3;  // bitmap
+                            return -1;
+                        };
+                        auto ft612b_healthy = [](uint64_t h,
+                                                 int kind) -> bool {
+                            const unsigned char* m =
+                                (const unsigned char*)(uintptr_t)h;
+                            if (!m) return false;
+                            auto q64 = [&](size_t o) {
+                                uint64_t v; memcpy(&v, m + o, 8);
+                                return v;
+                            };
+                            auto q32 = [&](size_t o) {
+                                uint32_t v; memcpy(&v, m + o, 4);
+                                return v;
+                            };
+                            switch (kind) {
+                                case 0:  // slot: metrics width/height/
+                                         // horiAdvance
+                                    return q64(32) || q64(40) || q64(64);
+                                case 1: {  // glyph: outline n_cont/n_points
+                                    short nc = 0, np = 0;
+                                    memcpy(&nc, m + 24, 2);
+                                    memcpy(&np, m + 26, 2);
+                                    return nc || np;
+                                }
+                                case 2:  // bitmap-glyph: rows@32
+                                    return q32(32) != 0;
+                                default:  // bitmap: rows@0
+                                    return q32(0) != 0;
+                            }
+                        };
+                        const bool ft612b_family =
+                            class_descriptor.find("freetype/FreeType") !=
+                            std::string::npos;
+                        if (ft612b_family && !args.empty() &&
+                            args[0].type == DalvikType::INT64 &&
+                            args[0].long_val != 0) {
+                            uint64_t h612b = (uint64_t)args[0].long_val;
+                            std::lock_guard<std::mutex> g612b(ft612b_mu);
+                            auto it612b = ft612b_snap.find(h612b);
+                            if (it612b != ft612b_snap.end() &&
+                                !ft612b_healthy(h612b,
+                                                it612b->second.second)) {
+                                memcpy((void*)(uintptr_t)h612b,
+                                       it612b->second.first.data(),
+                                       it612b->second.first.size());
+                                static thread_local uint64_t f612b_r = 0;
+                                if (f612b_r++ < 10)
+                                    std::cerr << "[F-NEW-612b] restored "
+                                              << std::hex << h612b
+                                              << std::dec << " for "
+                                              << class_descriptor << "."
+                                              << method_name << std::endl;
+                            }
+                        }
                         bool f594_call_ok = nativeexec::call_native(
                             fn, is_static, method->descriptor, jargs, out,
                             nerr);
                         out.provenance = tried;
+                        if (ft612b_family && f594_call_ok &&
+                            out.kind == nativeexec::JOutcome::Kind::LONG &&
+                            out.i != 0) {
+                            int k612b = ft612b_kind_of(class_descriptor,
+                                                       method_name);
+                            if (k612b >= 0) {
+                                // A NEW handle the DEX will pass onward —
+                                // snapshot it while the dispatch boundary
+                                // guarantees no writer.
+                                uint64_t h612b = (uint64_t)out.i;
+                                if (ft612b_healthy(h612b, k612b)) {
+                                    std::lock_guard<std::mutex> g612b(
+                                        ft612b_mu);
+                                    if (ft612b_snap.size() > 4096)
+                                        ft612b_snap.clear();
+                                    std::pair<std::vector<unsigned char>,
+                                              int>& s612b =
+                                        ft612b_snap[h612b];
+                                    s612b.first.assign(
+                                        (const unsigned char*)(uintptr_t)
+                                            h612b,
+                                        (const unsigned char*)(uintptr_t)
+                                            h612b +
+                                            256);
+                                    s612b.second = k612b;
+                                    static thread_local uint64_t f612b_c = 0;
+                                    if (f612b_c++ < 10)
+                                        std::cerr << "[F-NEW-612b] snapshot "
+                                                  << std::hex << h612b
+                                                  << std::dec << " kind="
+                                                  << k612b << " ("
+                                                  << class_descriptor << "."
+                                                  << method_name << ")"
+                                                  << std::endl;
+                                }
+                            }
+                        }
                         if (w18ft_on &&
                             (class_descriptor.find("freetype/FreeType") !=
                                  std::string::npos ||
@@ -81805,36 +81956,117 @@ measure_cm_done:;
             // honesty below is unchanged: a refused ELF still reports the
             // real refusal. Every failure shape stays honest (empty extract
             // → skip to the ABI-availability branch).
-            if (native_lib_dir_host_.empty() && !apk_path_.empty() &&
-                !package_name_.empty()) {
-                static const char* kAbiOrder3[] = {"x86_64", "x86",
-                                                   "arm64-v8a",
-                                                   "armeabi-v7a"};
-                std::error_code odx_ec;
-                for (const char* abi : kAbiOrder3) {
-                    std::string entry =
-                        std::string("lib/") + abi + "/lib" + lib + ".so";
-                    std::vector<uint8_t> bytes = asset_entry_bytes(entry);
-                    if (bytes.empty()) continue;
-                    std::filesystem::path host_dir =
-                        std::filesystem::path(Storage::app_data_root()) /
-                        "data" / "app" / package_name_ / "lib" / abi;
-                    std::filesystem::create_directories(host_dir, odx_ec);
-                    std::filesystem::path dst = host_dir /
-                                                ("lib" + lib + ".so");
-                    FILE* of = fopen(dst.string().c_str(), "wb");
-                    if (!of) break;
-                    size_t wn = fwrite(bytes.data(), 1, bytes.size(), of);
-                    fclose(of);
-                    if (wn != bytes.size()) break;
-                    native_lib_dir_logical_ =
-                        "/data/app/" + package_name_ + "/lib/" + abi;
-                    native_lib_dir_host_ = host_dir.string();
-                    native_primary_abi_ = abi;
-                    std::cerr << "[F-NEW-441] on-demand extract " << entry
-                              << " → " << native_lib_dir_logical_
-                              << " (" << bytes.size() << " bytes)" << std::endl;
-                    break;
+            // ── S202 F-NEW-625 — INSTALL-EXTRACTION COMPLETION LAW
+            // (GATE A, generalizes F-NEW-441) ────────────────────────────
+            // AOSP NativeLibraryHelper.copyNativeBinaries extracts EVERY
+            // entry of the chosen ABI at install time. The F-NEW-441
+            // per-lib on-demand extract wrote only the REQUESTED lib but
+            // set nativeLibraryDir as if the whole ABI tree were
+            // materialized — so the NEXT loadLibrary of a SIBLING lib
+            // found the derived dir, skipped its own extraction (both the
+            // G-4 lazy derivation and the 441 block gate on
+            // native_lib_dir_host_.empty()) and died "present in the
+            // installed APK but extracted a different primary ABI" —
+            // although the APK carries the lib (live face: tictactoe
+            // SharedLibraryLoader.load: "gdx" extracted+host-loaded, then
+            // "gdx-freetype" died; the tictactoe font wall). Two generic
+            // legs, both AOSP install truth, zero per-app knowledge:
+            //  (a) when the derived dir is ABSENT, materialize EVERY
+            //      lib/<abi>/*.so of the chosen ABI (the install law);
+            //  (b) when the dir EXISTS but the requested lib is missing
+            //      from it, complete the SAME dir restricted to its bound
+            //      ABI (the honest completion of the same install —
+            //      never an ABI switch).
+            // The REAL dlopen + host-native substitution order below is
+            // unchanged; every failure shape stays honest (the requested
+            // lib genuinely absent from the APK still reaches the
+            // "not found" branch untouched).
+            {
+                bool need_dir625 = native_lib_dir_host_.empty();
+                bool need_lib625 = false;
+                if (!need_dir625) {
+                    std::error_code wl_ec;
+                    std::filesystem::path wl =
+                        std::filesystem::path(native_lib_dir_host_) /
+                        ("lib" + lib + ".so");
+                    need_lib625 =
+                        !std::filesystem::exists(wl, wl_ec) || wl_ec;
+                }
+                if ((need_dir625 || need_lib625) && !apk_path_.empty() &&
+                    !package_name_.empty()) {
+                    static const char* kAbiOrder3[] = {"x86_64", "x86",
+                                                       "arm64-v8a",
+                                                       "armeabi-v7a"};
+                    std::error_code odx_ec;
+                    for (const char* abi : kAbiOrder3) {
+                        // Leg (b): the dir is already bound to its ABI —
+                        // never switch ABIs for a missing sibling.
+                        if (!need_dir625 && native_primary_abi_ != abi)
+                            continue;
+                        // The ABI's native entries, enumerated once.
+                        std::vector<std::string> raw625 =
+                            asset_entry_names(std::string("lib/") + abi +
+                                              "/");
+                        std::vector<std::string> lib_entries;
+                        for (const std::string& nm : raw625) {
+                            // ends-with(".so") — the SUFFIX is 3 bytes.
+                            bool ok625 =
+                                nm.size() >= 3 &&
+                                nm.compare(nm.size() - 3, 3, ".so") == 0;
+                            if (ok625) lib_entries.push_back(nm);
+                        }
+                        if (lib_entries.empty()) continue;
+                        std::filesystem::path host_dir =
+                            std::filesystem::path(Storage::app_data_root()) /
+                            "data" / "app" / package_name_ / "lib" / abi;
+                        std::filesystem::create_directories(host_dir, odx_ec);
+                        size_t wrote_n = 0;
+                        bool requested_present = false;
+                        for (const std::string& entry : lib_entries) {
+                            std::string leaf =
+                                entry.substr(entry.rfind('/') + 1);
+                            if (leaf == "lib" + lib + ".so")
+                                requested_present = true;
+                            std::filesystem::path dst = host_dir / leaf;
+                            std::error_code ex_ec;
+                            if (std::filesystem::exists(dst, ex_ec) && !ex_ec)
+                                continue;  // already materialized
+                            std::vector<uint8_t> bytes =
+                                asset_entry_bytes(entry);
+                            if (bytes.empty()) continue;
+                            FILE* of = fopen(dst.string().c_str(), "wb");
+                            if (!of) break;
+                            size_t wn =
+                                fwrite(bytes.data(), 1, bytes.size(), of);
+                            fclose(of);
+                            if (wn != bytes.size()) break;
+                            ++wrote_n;
+                            std::cerr << "[F-NEW-625] install extract "
+                                      << entry << " (" << bytes.size()
+                                      << " bytes)" << std::endl;
+                        }
+                        // The INSTALL LAW binds the dir to the FIRST ABI
+                        // (x86_64-first, the host-executable order) that
+                        // CARRIES the requested lib — regardless of how
+                        // many entries were freshly written this run (a
+                        // dir populated by an earlier run is the SAME
+                        // install, not a failure; the pre-S202
+                        // `wrote_n > 0` gate walked PAST a complete dir,
+                        // bound nativeLibraryDir to armeabi-v7a and left
+                        // later runs with NO dir at all).
+                        if (requested_present) {
+                            native_lib_dir_logical_ =
+                                "/data/app/" + package_name_ + "/lib/" + abi;
+                            native_lib_dir_host_ = host_dir.string();
+                            native_primary_abi_ = abi;
+                            std::cerr << "[F-NEW-625] nativeLibraryDir="
+                                      << native_lib_dir_logical_
+                                      << " materialized=" << wrote_n
+                                      << " libs (ABI " << abi << ")"
+                                      << std::endl;
+                            break;
+                        }
+                    }
                 }
             }
             if (!native_lib_dir_host_.empty()) {

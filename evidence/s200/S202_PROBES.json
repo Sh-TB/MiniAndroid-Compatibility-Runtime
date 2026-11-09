@@ -1,0 +1,34 @@
+{
+ "dooz_pin": {
+  "face": "31ddd4d5b8e6d18e",
+  "pin": "31ddd4d5",
+  "exact": true,
+  "uncaught": 0
+ },
+ "f625_forced": {
+  "removed": [
+   "libgdx-freetype.so",
+   "libgdx-box2d.so"
+  ],
+  "extract_lines": [
+   "[F-NEW-625] install extract lib/x86_64/libgdx-box2d.so (268496 bytes)",
+   "[F-NEW-625] install extract lib/x86_64/libgdx-freetype.so (870496 bytes)"
+  ],
+  "bind_lines": [
+   "[F-NEW-625] nativeLibraryDir=/data/app/com.emmanuelmess.tictactoe/lib/x86_64 materialized=2 libs (ABI x86_64)"
+  ],
+  "gdx_host": [
+   "[GDX-HOST] System.loadLibrary(\"gdx-freetype\"): bionic binary skipped (would fault the host loader); LOADED REAL host-native build /home/z/my-project/miniandroid/build/../../tools/native_host/libgdx-freetype64.so sha16=e21240cdc8106ec0 (APK bionic sha16=96e407539d21ee73, upstream sources gdx-parent-1.9.10)"
+  ],
+  "abi_error": 0,
+  "restored": 2,
+  "face": "800b6ac49bddca76"
+ },
+ "ttt_sweep": {
+  "8": "7d7ec7b3e7bab5ba",
+  "20": "7d7ec7b3e7bab5ba",
+  "60": "7d7ec7b3e7bab5ba",
+  "claim": "3ca1db0cf92badc7",
+  "claim_hit": false
+ }
+}

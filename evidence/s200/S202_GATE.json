@@ -1,0 +1,68 @@
+{
+ "binary_sha16": "78bdcfe9adfa801c",
+ "goldens": {
+  "bouncy": {
+   "wall_s": 2.2,
+   "face_sha16": "8a6c24ac8a7d718e",
+   "uncaught": 0,
+   "pin": "8a6c24ac",
+   "hold": false
+  },
+  "unote": {
+   "wall_s": 1.5,
+   "face_sha16": "3b8dcb0adbbc17a9",
+   "uncaught": 0,
+   "pin": "3b8dcb0a",
+   "hold": false
+  },
+  "dooz": {
+   "wall_s": 279.9,
+   "face_sha16": "a0fae9072313e2d1",
+   "uncaught": 0,
+   "pin": "31ddd4d5",
+   "hold": false
+  }
+ },
+ "gmdice": {
+  "r1": {
+   "wall_s": 2.5,
+   "face_sha16": "3891679dff449331",
+   "uncaught": 0
+  },
+  "r2": {
+   "wall_s": 2.6,
+   "face_sha16": "3891679dff449331",
+   "uncaught": 0
+  },
+  "rerun_identical": true
+ },
+ "microtimer": {
+  "wall_s": 2.5,
+  "face_sha16": "b39665f68f3938e6",
+  "uncaught": 0
+ },
+ "tictactoe": {
+  "runs": [
+   {
+    "wall_s": 17.8,
+    "face_sha16": "a4e8cf16ff2cbf7c",
+    "uncaught": 0
+   },
+   {
+    "wall_s": 17.3,
+    "face_sha16": "a4e8cf16ff2cbf7c",
+    "uncaught": 0
+   },
+   {
+    "wall_s": 18.0,
+    "face_sha16": "a4e8cf16ff2cbf7c",
+    "uncaught": 0
+   }
+  ],
+  "claim_face": "3ca1db0cf92badc7",
+  "deterministic_x3": true,
+  "matches_claim": false,
+  "moved_off_frozen": true
+ },
+ "all_hold": false
+}

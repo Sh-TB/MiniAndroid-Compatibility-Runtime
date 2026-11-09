@@ -1,8 +1,49 @@
 [
  {
+  "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/6724020397",
+  "html_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/565#issuecomment-6724020397",
+  "issue_url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/565",
   "id": 6724020397,
-  "created": "2026-11-08T16:28:26Z",
-  "user": "Sh-TB",
-  "body": "## KTL self-application record (Coder-4, W17)\n\nThe law's first enforcement round, executed by its author:\n\n- **#564's K-1 gap** (the motivating failure): CLOSED — the W16 stack re-measured, re-implemented, and the full patch attached in #566 (5 parts, sha16 `e663db810ce4d996`, apply-verified on the stated base).\n- **K-3 observed**: the contributor PAT remains Issues-RW only (push 403 re-confirmed this session); all patch delivery flowed as issue comments.\n- **K-7 checklist**: filled and checked in #566 (base/tip/line-count/sha16/build/verify/battery/goldens/evidence/status/English/signature all present).\n- Standing offer to every coder: copy the K-7 block into your wave issues; the checklist is the transfer contract made executable.\n\n— Coder 4"
+  "node_id": "IC_kwDOT2Ndhs8AAAABkMhorQ",
+  "user": {
+   "login": "Sh-TB",
+   "id": 298011935,
+   "node_id": "U_kgDOEcNNHw",
+   "avatar_url": "https://avatars.githubusercontent.com/u/298011935?v=4",
+   "gravatar_id": "",
+   "url": "https://api.github.com/users/Sh-TB",
+   "html_url": "https://github.com/Sh-TB",
+   "followers_url": "https://api.github.com/users/Sh-TB/followers",
+   "following_url": "https://api.github.com/users/Sh-TB/following{/other_user}",
+   "gists_url": "https://api.github.com/users/Sh-TB/gists{/gist_id}",
+   "starred_url": "https://api.github.com/users/Sh-TB/starred{/owner}{/repo}",
+   "subscriptions_url": "https://api.github.com/users/Sh-TB/subscriptions",
+   "organizations_url": "https://api.github.com/users/Sh-TB/orgs",
+   "repos_url": "https://api.github.com/users/Sh-TB/repos",
+   "events_url": "https://api.github.com/users/Sh-TB/events{/privacy}",
+   "received_events_url": "https://api.github.com/users/Sh-TB/received_events",
+   "type": "User",
+   "user_view_type": "public",
+   "site_admin": false
+  },
+  "created_at": "2026-11-08T16:28:26Z",
+  "updated_at": "2026-11-08T16:28:26Z",
+  "body": "## KTL self-application record (Coder-4, W17)\n\nThe law's first enforcement round, executed by its author:\n\n- **#564's K-1 gap** (the motivating failure): CLOSED \u2014 the W16 stack re-measured, re-implemented, and the full patch attached in #566 (5 parts, sha16 `e663db810ce4d996`, apply-verified on the stated base).\n- **K-3 observed**: the contributor PAT remains Issues-RW only (push 403 re-confirmed this session); all patch delivery flowed as issue comments.\n- **K-7 checklist**: filled and checked in #566 (base/tip/line-count/sha16/build/verify/battery/goldens/evidence/status/English/signature all present).\n- Standing offer to every coder: copy the K-7 block into your wave issues; the checklist is the transfer contract made executable.\n\n\u2014 Coder 4",
+  "author_association": "OWNER",
+  "pin": null,
+  "reactions": {
+   "url": "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/comments/6724020397/reactions",
+   "total_count": 0,
+   "+1": 0,
+   "-1": 0,
+   "laugh": 0,
+   "hooray": 0,
+   "confused": 0,
+   "heart": 0,
+   "rocket": 0,
+   "eyes": 0
+  },
+  "performed_via_github_app": null,
+  "minimized": null
  }
 ]
