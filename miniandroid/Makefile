@@ -166,7 +166,12 @@ $(LAWS130_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(LAWS130_SOURCE)
 test: $(TEST_EXECUTABLE)
 	./$(TEST_EXECUTABLE)
 
-$(TEST_EXECUTABLE): $(CORE_OBJECTS) $(TEST_OBJECT)
+# S202 repair — the registered BROKEN-LINK defect: the test link used
+# CORE_OBJECTS alone while webview_engine.o references the QuickJS API and
+# the runtime references the S-2 native thunk — the EXECUTABLE rule (line
+# 102) always linked QUICKJS_OBJECTS + THUNK_OBJECT; the test rule must
+# match or `make test` dies on undefined JS_*/thunk symbols.
+$(TEST_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(TEST_OBJECT)
 	@mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)
 	@echo "Test build complete: $(TEST_EXECUTABLE)"
