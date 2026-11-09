@@ -436,6 +436,35 @@ bool GLES20Bridge::dispatch(const std::string& method,
                     p ? p[0] : -1, p ? p[1] : -1,
                     g_last_attrib_ptr[2], t ? t[0] : -1, t ? t[1] : -1);
             }
+            // S203 F-NEW-626e: bounded vertex-run dump — when
+            // MINIANDROID_VBODUMP_PREFIX is set, the first two
+            // glDrawArrays calls spill the interleaved SpriteBatch run
+            // (count * stride bytes at attrib0) so the quads' pos/color/UV
+            // tuples can be reconstructed off-line against the dumped
+            // atlas (MINIANDROID_TEXDUMP_PREFIX).
+            {
+                static const char* vdump_prefix =
+                    std::getenv("MINIANDROID_VBODUMP_PREFIX");
+                static int vdumped = 0;
+                if (vdump_prefix && vdumped < 2 &&
+                    g_last_attrib_ptr[0] && (GLint)I(2) > 0) {
+                    char vpath[512];
+                    std::snprintf(vpath, sizeof(vpath), "%s_%d_count%d.vtx",
+                                  vdump_prefix, vdumped, (GLint)I(2));
+                    std::FILE* vf = std::fopen(vpath, "wb");
+                    if (vf) {
+                        // stride: last glVertexAttribPointer stride — the
+                        // bridge stores it per index; default 20 is the
+                        // SpriteBatch layout (x,y,color,u,v).
+                        size_t vsz = (size_t)(GLint)I(2) * 20;
+                        std::fwrite(g_last_attrib_ptr[0], 1, vsz, vf);
+                        std::fclose(vf);
+                        std::fprintf(stderr,
+                            "[F-NEW-626e] vertex dump %s\n", vpath);
+                    }
+                    ++vdumped;
+                }
+            }
         }
         stats_.draws++;
         return true;
@@ -443,6 +472,22 @@ bool GLES20Bridge::dispatch(const std::string& method,
     if (method == "glDrawElements") {
         // F-NEW-503: pointer-array indexing + null guard.
         if (P(0) != nullptr) {
+            // S203 F-NEW-626e probe (bounded): the first index values of
+            // each DrawElements — distinguishes a real quad index run
+            // (0,1,2,2,3,0 …) from an EMPTY/garbage index buffer (the
+            // ShortBuffer.put([SII) silent-no-op hypothesis).
+            {
+                static int eshown = 0;
+                if (eshown < 8) {
+                    ++eshown;
+                    const unsigned short* ix =
+                        (const unsigned short*)P(0);
+                    std::fprintf(stderr,
+                        "[GLDBG] DELE count=%d i0..5=%u,%u,%u,%u,%u,%u\n",
+                        (GLsizei)I(1), ix[0], ix[1], ix[2], ix[3], ix[4],
+                        ix[5]);
+                }
+            }
             glDrawElements(pgl_mode_from_spec(I(0)), (GLsizei)I(1), S(2), P(0));  // F-NEW-607: mode+type
         } else {
             trace = "glDrawElements: null index pointer (skipped)";
@@ -477,6 +522,32 @@ bool GLES20Bridge::dispatch(const std::string& method,
                         sum += d[k];
                         if (d[k]) ++nonzero;
                     }
+                // S203 F-NEW-626e: bounded atlas dump — when
+                // MINIANDROID_TEXDUMP_PREFIX is set, the first three
+                // uploads spill their RAW RGBA bytes (w*h*4) to
+                // <prefix>_<n>.rgba so the atlas content can be
+                // reconstructed off-line and compared against the UV
+                // layout the SpriteBatch quads sample.
+                {
+                    static const char* dump_prefix =
+                        std::getenv("MINIANDROID_TEXDUMP_PREFIX");
+                    static int dumped = 0;
+                    if (dump_prefix && dumped < 3 && d && npix > 0 &&
+                        npix <= 8388608) {
+                        char path[512];
+                        std::snprintf(path, sizeof(path), "%s_%d_%ux%u.rgba",
+                                      dump_prefix, dumped, (unsigned)I(3),
+                                      (unsigned)I(4));
+                        std::FILE* df = std::fopen(path, "wb");
+                        if (df) {
+                            std::fwrite(d, 1, (size_t)npix, df);
+                            std::fclose(df);
+                            std::fprintf(stderr,
+                                "[F-NEW-626e] atlas dump %s\n", path);
+                        }
+                        ++dumped;
+                    }
+                }
                 std::fprintf(stderr,
                     "[GLDBG] tex2D %ux%u fmt=0x%X type=0x%X ptr=%p "
                     "bytesum=%lu nonzero=%ld/%ld b0=%02x b1=%02x\n",

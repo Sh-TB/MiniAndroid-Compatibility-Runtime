@@ -13821,7 +13821,35 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                         const bool ft612b_family =
                             class_descriptor.find("freetype/FreeType") !=
                             std::string::npos;
-                        if (ft612b_family && !args.empty() &&
+                        // ── F-NEW-626d (S203) — the 612b RESTORE is now
+                        // OPT-IN (MINIANDROID_FT612B_RESTORE=1), default
+                        // OFF. Root-cause: the "unhealthy → restore stale
+                        // snapshot" heuristic misfires on LIVE freetype
+                        // structs that freetype legitimately re-fills with
+                        // zeros — the slot/glyph handles are REUSED across
+                        // every loadChar, and a freshly-loaded EMPTY glyph
+                        // (space: rows=0, n_points=0) or sparse metrics
+                        // reads as "unhealthy", so the pre-call restore
+                        // memcpy'd STALE bytes over the FRESH outline.
+                        // Pre-626d this was masked: the getPixmap underflow
+                        // aborted the font chain before the corruption
+                        // could feed the pixel loops. With the cursor law
+                        // (626b) the chain runs — and the restored structs
+                        // drove freetype's rasterizer over garbage outlines
+                        // (deterministic spin: 874 glyphs then ¥ hang; the
+                        // untraced run spun at 99.9% CPU with 1.5M+
+                        // interpreted instructions in the generator).
+                        // Standalone freetype renders the SAME font/char
+                        // clean (scripts/s203_ft165_test.c: ¥@120px =
+                        // 64x85, e=0, 169/169 chars) — the native data is
+                        // the truth; the engine must never write stale
+                        // bytes over native-owned live memory. Snapshots
+                        // (read-only) stay for diagnosis; the restore
+                        // needs the env opt-in.
+                        static thread_local const bool ft612b_restore_on =
+                            diag_env("MINIANDROID_FT612B_RESTORE");
+                        if (ft612b_restore_on && ft612b_family &&
+                            !args.empty() &&
                             args[0].type == DalvikType::INT64 &&
                             args[0].long_val != 0) {
                             uint64_t h612b = (uint64_t)args[0].long_val;
@@ -14013,6 +14041,38 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                                        addr605);
                                 heap_.set_object_field(
                                     bb605, "__bb_cap__",
+                                    DalvikValue::make_int(
+                                        (int32_t)out.bb_cap));
+                                // F-NEW-626b (S203) — ONE-ALGEBRA CURSOR
+                                // LAW: the mint MUST store the cursors
+                                // under the names the S108/F-NEW-582
+                                // ByteBuffer algebra reads
+                                // (__bb_pos__/__bb_lim__). The pre-626b
+                                // mint wrote DEX-articulated
+                                // "position"/"limit" fields the algebra
+                                // never reads — every native-minted direct
+                                // buffer answered position()=0,
+                                // limit()=0, remaining()=0. LIVE face
+                                // (tictactoe, canonical 78bdcfe9adfa801c):
+                                // FreeType$Bitmap.getBuffer minted
+                                // __bb_addr__=REAL bitmap, cap=7568 — but
+                                // remaining()=0, so the first
+                                // `src.get(srcRow[88])` in gdx
+                                // Bitmap.getPixmap threw
+                                // BufferUnderflowException(len=88;
+                                // remaining=0) at pc=162, generateData
+                                // unwound, AssetManager.update swallowed
+                                // it (catch-all), and the font page
+                                // rendered the S202 NOISE face
+                                // (NOISE_NOT_UI, center 64x64 = 4,093
+                                // colors). The "position"/"limit" names
+                                // stay written for any DEX-side iget
+                                // reader; the algebra owns the truth.
+                                heap_.set_object_field(
+                                    bb605, "__bb_pos__",
+                                    DalvikValue::make_int(0));
+                                heap_.set_object_field(
+                                    bb605, "__bb_lim__",
                                     DalvikValue::make_int(
                                         (int32_t)out.bb_cap));
                                 heap_.set_object_field(
@@ -52501,6 +52561,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                        "f582-put-overflow");
                         return true;
                     }
+                    // F-NEW-626c bulk-direct fast path (S203): the
+                    // receiver's REAL direct memory covering [pos, pos+len)
+                    // takes the run as ONE memcpy; the per-byte lazy field
+                    // stores are skipped for the covered range — the
+                    // algebra reads the parent's REAL memory first
+                    // (buf_byte_read), so the field run is a fallback for
+                    // non-direct receivers only (same one-identity store).
+                    {
+                        int32_t p626_dcap = 0;
+                        unsigned char* p626_mem =
+                            bb_direct_mem(bb, &p626_dcap);
+                        if (p626_mem && (p626_dcap == 0 ||
+                                         pos + len <= p626_dcap)) {
+                            std::vector<unsigned char> p626_blk(
+                                (size_t)len);
+                            for (int32_t k = 0; k < len; ++k) {
+                                int v = byte_arr_read(args[1].object_id,
+                                                      off + k);
+                                if (v < 0) v = 0;
+                                p626_blk[(size_t)k] =
+                                    (unsigned char)(v & 0xFF);
+                            }
+                            std::memcpy(p626_mem + pos, p626_blk.data(),
+                                        (size_t)len);
+                            bb_set(bb, "__bb_pos__", pos + len);
+                            result = args[0];
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                    }
                     for (int32_t k = 0; k < len; ++k) {
                         int v = byte_arr_read(args[1].object_id, off + k);
                         if (v < 0) v = 0;
@@ -52586,6 +52676,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                 std::to_string(lim - pos),
                             "f582-get-underflow");
                         return true;
+                    }
+                    // F-NEW-626c bulk-direct fast path (S203): the
+                    // receiver's REAL direct memory covering [pos, pos+len)
+                    // is read with ONE memcpy (see the put arm above for
+                    // the one-identity rationale); array stores stay
+                    // per-element (the DEX array model).
+                    {
+                        int32_t g626_dcap = 0;
+                        unsigned char* g626_mem =
+                            bb_direct_mem(bb, &g626_dcap);
+                        if (g626_mem && (g626_dcap == 0 ||
+                                         pos + len <= g626_dcap)) {
+                            std::vector<unsigned char> g626_blk(
+                                (size_t)len);
+                            std::memcpy(g626_blk.data(), g626_mem + pos,
+                                        (size_t)len);
+                            for (int32_t k = 0; k < len; ++k)
+                                heap_.set_object_field(
+                                    args[1].object_id,
+                                    "array[" + std::to_string(off + k) +
+                                        "]",
+                                    DalvikValue::make_byte(
+                                        static_cast<int8_t>(
+                                            g626_blk[(size_t)k])));
+                            bb_set(bb, "__bb_pos__", pos + len);
+                            result = args[0];
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
                     }
                     for (int32_t k = 0; k < len; ++k) {
                         int v = buf_byte_read(bb, pos + k);
@@ -52776,6 +52895,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (vf && !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
             args[0].object_id != 0) {
             uint32_t vb = args[0].object_id;
+            // F-NEW-626 diag (bounded): which shapes reach the typed-view
+            // family at all — root-causing the gdx getPixmap slow-path
+            // IntBuffer.put(int[]) that the pre-626 family never saw.
+            static std::atomic<uint64_t> s626_seen{0};
+            if (s626_seen.fetch_add(1, std::memory_order_relaxed) < 400)
+                std::cerr << "[F-NEW-626-SEEN] " << vf->simple
+                          << "Buffer." << method
+                          << " argc=" << args.size()
+                          << " a1t="
+                          << (args.size() > 1
+                                  ? static_cast<int>(args[1].type)
+                                  : -1)
+                          << std::endl;
             auto v_field = [&](const char* f) -> int32_t {
                 auto v = heap_.get_object_field(vb, f);
                 return (v.has_value() && v->type == DalvikType::INT32) ? v->int_val : 0;
@@ -52881,6 +53013,347 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 result = args[0];
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
+            }
+            // ── F-NEW-626 (S203) — typed-view BULK get/put ARRAY family ──
+            // OpenJDK law: XBuffer.put(int[] src) / put(int[] src, int off,
+            // int len) / get(int[] dst) / get(int[] dst, int off, int len)
+            // transfer `len` elements through the receiver's position
+            // cursor. THE live face: gdx FreeType Bitmap.getPixmap slow
+            // path — `IntBuffer dst = pixmap.getPixels().asIntBuffer(); …
+            // dst.put(dstRow);` per glyph row (FreeType.java:676-707). The
+            // pre-626 family stopped at the single/indexed element shapes —
+            // the bulk shape fell through the dispatch chain silently, the
+            // glyph pixmap kept its UNINITIALIZED gdx2d malloc memory, the
+            // page blit (real native Gdx2DPixmap.drawPixmap) copied that
+            // garbage, and the tictactoe font page rendered the NOISE face
+            // (2,073,423/2,073,600 nonwhite, center 64x64 = 4,093 colors —
+            // the S202 honest-gate NOISE_NOT_UI verdict, L-03 wall).
+            // Bounds per OpenJDK: offset<0 || len<0 || offset >
+            // a.length - len → IndexOutOfBoundsException; len >
+            // remaining() → BufferOverflow (put) / BufferUnderflow (get).
+            // Element storage ONE identity: the parent's REAL direct
+            // memory (F-NEW-616b/616d — full esize, little-endian) first,
+            // the lazy __bb_b<i>__ run second (heap-side readers).
+            {
+                static const struct { const char* simple; char adesc; }
+                    kF626Arr[] = {{"Char",'C'}, {"Short",'S'}, {"Int",'I'},
+                                  {"Long",'J'}, {"Float",'F'}, {"Double",'D'}};
+                char want_desc[3] = {'[', 0, 0};
+                for (const auto& e : kF626Arr)
+                    if (!std::strcmp(e.simple, vf->simple))
+                        want_desc[1] = e.adesc;
+                if (want_desc[1] && (method == "put" || method == "get") &&
+                    args.size() >= 2 &&
+                    args[1].type == DalvikType::OBJECT_REF &&
+                    args[1].object_id != 0 &&
+                    heap_.has_object(args[1].object_id)) {
+                    std::string acls626;
+                    heap_.get_object_class(args[1].object_id, acls626);
+                    if (acls626 == want_desc) {
+                        int32_t alen = 0;
+                        auto lf626 = heap_.get_object_field(
+                            args[1].object_id, "__array_length__");
+                        if (lf626.has_value() &&
+                            lf626->type == DalvikType::INT32)
+                            alen = lf626->int_val;
+                        if (alen == 0) {
+                            auto nf626 = heap_.get_object_field(
+                                args[1].object_id, "__new_array_length__");
+                            if (nf626.has_value() &&
+                                nf626->type == DalvikType::INT32)
+                                alen = nf626->int_val;
+                        }
+                        int32_t off626 = 0, len626 = alen;
+                        if (args.size() >= 4 &&
+                            args[2].type == DalvikType::INT32 &&
+                            args[3].type == DalvikType::INT32) {
+                            off626 = args[2].int_val;
+                            len626 = args[3].int_val;
+                        }
+                        int32_t pos626 = v_field("__bb_pos__");
+                        int32_t lim626 = v_field("__bb_lim__");
+                        if (off626 < 0 || len626 < 0 ||
+                            off626 > alen - len626) {
+                            throw_deferred(
+                                "Ljava/lang/IndexOutOfBoundsException;",
+                                std::string(vf->simple) + "Buffer." + method +
+                                    "(array, " +
+                                    std::to_string(off626) + ", " +
+                                    std::to_string(len626) + ") of len-" +
+                                    std::to_string(alen) + " array",
+                                "f626-oob");
+                            return true;
+                        }
+                        if (method == "put" && len626 > lim626 - pos626) {
+                            throw_deferred(
+                                "Ljava/nio/BufferOverflowException;",
+                                "len=" + std::to_string(len626) +
+                                    "; remaining=" +
+                                    std::to_string(lim626 - pos626),
+                                "f626-put-overflow");
+                            return true;
+                        }
+                        if (method == "get" && len626 > lim626 - pos626) {
+                            throw_deferred(
+                                "Ljava/nio/BufferUnderflowException;",
+                                "len=" + std::to_string(len626) +
+                                    "; remaining=" +
+                                    std::to_string(lim626 - pos626),
+                                "f626-get-underflow");
+                            return true;
+                        }
+                        auto f626_read_elem = [&](int32_t k) -> int64_t {
+                            auto ev = heap_.get_object_field(
+                                args[1].object_id,
+                                "array[" + std::to_string(k) + "]");
+                            if (!ev.has_value()) return 0;
+                            switch (ev->type) {
+                                case DalvikType::BYTE:
+                                    return (int64_t)(int8_t)ev->byte_val;
+                                case DalvikType::SHORT:
+                                    return (int64_t)ev->short_val;
+                                case DalvikType::CHAR:
+                                    return (int64_t)(uint16_t)ev->char_val;
+                                case DalvikType::INT32:
+                                    return (int64_t)ev->int_val;
+                                case DalvikType::FLOAT32: {
+                                    int32_t bits;
+                                    std::memcpy(&bits, &ev->float_val, 4);
+                                    return (int64_t)bits;
+                                }
+                                case DalvikType::INT64:
+                                    return ev->long_val;
+                                case DalvikType::FLOAT64: {
+                                    int64_t bits;
+                                    std::memcpy(&bits, &ev->double_val, 8);
+                                    return bits;
+                                }
+                                default:
+                                    return 0;
+                            }
+                        };
+                        // parent real memory + lazy field run (one identity)
+                        // F-NEW-626c (S203) — BULK-CONTIGUITY performance
+                        // law: when the view's parent real memory covers
+                        // [pos, pos+len) * esize, the transfer is ONE
+                        // memcpy of the packed element run (OpenJDK
+                        // semantics: elements are contiguous in the direct
+                        // memory) and the lazy __bb_b<i>__ field stores are
+                        // SKIPPED for the covered range — the algebra reads
+                        // the parent's REAL memory FIRST (buf_byte_read /
+                        // v_elem_get / 616b), so the field run is a fallback
+                        // for non-direct views only. This is not an
+                        // optimization at the cost of identity: the field
+                        // run and the direct memory are the same store; the
+                        // covered range simply has one canonical home. The
+                        // per-element path below stays for heap-only views.
+                        auto [f626_pm, f626_pcap] = v_parent_mem();
+                        auto f626_direct_covers = [&](int32_t first_byte,
+                                                      int32_t span) -> bool {
+                            if (!f626_pm) return false;
+                            if (f626_pcap == 0) return true;  // unbounded
+                            return first_byte >= 0 &&
+                                   first_byte + span <= f626_pcap;
+                        };
+                        const int32_t f626_span = len626 * vf->esize;
+                        if (method == "put" &&
+                            f626_direct_covers(pos626 * vf->esize,
+                                               f626_span)) {
+                            std::vector<unsigned char> packed(
+                                (size_t)f626_span, 0);
+                            for (int32_t k = 0; k < len626; ++k) {
+                                int64_t raw = f626_read_elem(off626 + k);
+                                unsigned char* slot =
+                                    &packed[(size_t)k * vf->esize];
+                                for (int b = 0; b < vf->esize; ++b)
+                                    slot[b] = (unsigned char)(
+                                        (raw >> (8 * b)) & 0xFF);
+                            }
+                            std::memcpy(f626_pm +
+                                            (size_t)pos626 * vf->esize,
+                                        packed.data(), (size_t)f626_span);
+                            v_set("__bb_pos__", pos626 + len626);
+                            static std::atomic<uint64_t> s626_put{0};
+                            if (s626_put.fetch_add(
+                                    1, std::memory_order_relaxed) < 8)
+                                std::cerr << "[F-NEW-626] "
+                                          << vf->simple << "Buffer.put(["
+                                          << want_desc[1]
+                                          << "] len=" << len626
+                                          << " pos=" << pos626
+                                          << " src=o" << args[1].object_id
+                                          << " (bulk-direct)"
+                                          << std::endl;
+                            result = args[0];
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                        // parent real memory + lazy field run (one identity)
+                        auto f626_write_view = [&](int32_t idx,
+                                                   int64_t raw) {
+                            {
+                                auto [mem626, dcap626] = v_parent_mem();
+                                if (mem626) {
+                                    int32_t base = idx * vf->esize;
+                                    for (int b = 0; b < vf->esize; ++b) {
+                                        int32_t o = base + b;
+                                        if (dcap626 == 0 || o < dcap626)
+                                            mem626[o] =
+                                                (unsigned char)((raw >>
+                                                                 (8 * b)) &
+                                                                0xFF);
+                                    }
+                                }
+                            }
+                            heap_.set_object_field(
+                                vb,
+                                ("__bb_b" + std::to_string(idx) + "__")
+                                    .c_str(),
+                                DalvikValue::make_int(
+                                    (int32_t)(uint32_t)(uint64_t)raw));
+                        };
+                        if (method == "put") {
+                            for (int32_t k = 0; k < len626; ++k)
+                                f626_write_view(pos626 + k,
+                                                f626_read_elem(off626 + k));
+                            v_set("__bb_pos__", pos626 + len626);
+                            static std::atomic<uint64_t> s626_put2{0};
+                            if (s626_put2.fetch_add(
+                                    1, std::memory_order_relaxed) < 8)
+                                std::cerr << "[F-NEW-626] "
+                                          << vf->simple << "Buffer.put(["
+                                          << want_desc[1]
+                                          << "] len=" << len626
+                                          << " pos=" << pos626
+                                          << " src=o" << args[1].object_id
+                                          << " (per-element)"
+                                          << std::endl;
+                            result = args[0];
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                        // get([X dst) — bulk read parent-first, store with
+                        // the array's own element lane.
+                        if (f626_direct_covers(pos626 * vf->esize,
+                                               f626_span)) {
+                            std::vector<unsigned char> packed(
+                                (size_t)f626_span, 0);
+                            std::memcpy(packed.data(),
+                                        f626_pm +
+                                            (size_t)pos626 * vf->esize,
+                                        (size_t)f626_span);
+                            for (int32_t k = 0; k < len626; ++k) {
+                                int64_t raw = 0;
+                                const unsigned char* slot =
+                                    &packed[(size_t)k * vf->esize];
+                                for (int b = 0; b < vf->esize; ++b)
+                                    raw |= ((int64_t)slot[b]) << (8 * b);
+                            DalvikValue dv626;
+                            switch (vf->esize) {
+                                case 1:
+                                    dv626 = DalvikValue::make_byte(
+                                        (int8_t)(raw & 0xFF));
+                                    break;
+                                case 2:
+                                    if (vf->simple[0] == 'C')
+                                        dv626 = DalvikValue::make_char(
+                                            (int32_t)(uint16_t)raw);
+                                    else
+                                        dv626 = DalvikValue::make_short(
+                                            (int32_t)(int16_t)raw);
+                                    break;
+                                case 4:
+                                    if (vf->simple[0] == 'F') {
+                                        float fv626;
+                                        int32_t bits =
+                                            (int32_t)(uint32_t)(uint64_t)raw;
+                                        std::memcpy(&fv626, &bits, 4);
+                                        dv626 =
+                                            DalvikValue::make_float(fv626);
+                                    } else {
+                                        dv626 = DalvikValue::make_int(
+                                            (int32_t)(uint32_t)(uint64_t)
+                                                raw);
+                                    }
+                                    break;
+                                default:
+                                    dv626 = DalvikValue::make_long(raw);
+                                    break;
+                            }
+                            heap_.set_object_field(
+                                args[1].object_id,
+                                "array[" + std::to_string(off626 + k) + "]",
+                                dv626);
+                            }
+                            v_set("__bb_pos__", pos626 + len626);
+                            static std::atomic<uint64_t> s626_get2{0};
+                            if (s626_get2.fetch_add(
+                                    1, std::memory_order_relaxed) < 8)
+                                std::cerr << "[F-NEW-626] " << vf->simple
+                                          << "Buffer.get([" << want_desc[1]
+                                          << "] len=" << len626
+                                          << " pos=" << pos626
+                                          << " dst=o" << args[1].object_id
+                                          << " (bulk-direct)"
+                                          << std::endl;
+                            result = args[0];
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                        for (int32_t k = 0; k < len626; ++k) {
+                            int64_t raw = v_elem_get(pos626 + k);
+                            DalvikValue dv626;
+                            switch (vf->esize) {
+                                case 1:
+                                    dv626 = DalvikValue::make_byte(
+                                        (int8_t)(raw & 0xFF));
+                                    break;
+                                case 2:
+                                    if (vf->simple[0] == 'C')
+                                        dv626 = DalvikValue::make_char(
+                                            (int32_t)(uint16_t)raw);
+                                    else
+                                        dv626 = DalvikValue::make_short(
+                                            (int32_t)(int16_t)raw);
+                                    break;
+                                case 4:
+                                    if (vf->simple[0] == 'F') {
+                                        float fv626;
+                                        int32_t bits =
+                                            (int32_t)(uint32_t)(uint64_t)raw;
+                                        std::memcpy(&fv626, &bits, 4);
+                                        dv626 =
+                                            DalvikValue::make_float(fv626);
+                                    } else {
+                                        dv626 = DalvikValue::make_int(
+                                            (int32_t)(uint32_t)(uint64_t)
+                                                raw);
+                                    }
+                                    break;
+                                default:
+                                    dv626 = DalvikValue::make_long(raw);
+                                    break;
+                            }
+                            heap_.set_object_field(
+                                args[1].object_id,
+                                "array[" + std::to_string(off626 + k) + "]",
+                                dv626);
+                        }
+                        v_set("__bb_pos__", pos626 + len626);
+                        static std::atomic<uint64_t> s626_get{0};
+                        if (s626_get.fetch_add(1, std::memory_order_relaxed) <
+                            8)
+                            std::cerr << "[F-NEW-626] " << vf->simple
+                                      << "Buffer.get([" << want_desc[1]
+                                      << "] len=" << len626
+                                      << " pos=" << pos626
+                                      << " dst=o" << args[1].object_id
+                                      << std::endl;
+                        result = args[0];
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                }
             }
             if (method == "position" && args.size() == 1) {
                 result = DalvikValue::make_int(v_field("__bb_pos__"));
