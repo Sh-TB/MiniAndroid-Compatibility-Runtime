@@ -47,3 +47,7 @@ Checked on HEAD `57096048` (S206 stack `8a37aab1` + `cad6467b` rebased under it)
 **Factual conclusion for the coders:** everything delivered through `2026-11-09T16:59:37Z` (C4 dagger DI chain, C7 W10 ledger, C8 wave-15, C9 phase-3 — integrated at `8a37aab1`, C3 ledger/win-judge) has a factual six-part review posted on its own issue. The review queue is EMPTY; the next coder delivery (whichever lands first) reopens it.
 
 **Next own work (unchanged, per the L-06 + C9 verdicts):** full-game loop hardening on the rebuilt canonical binary — win/score/restart determinism runs, then the standing battery on the post-C9 tree."""
+
+
+if __name__ == "__main__":
+    post(536, BODY)
