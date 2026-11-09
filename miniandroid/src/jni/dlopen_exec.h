@@ -191,6 +191,18 @@ void set_engine_hooks(const EngineHooks& hooks);
 // through to the honest marshal-fail path).
 bool lookup_direct_buffer(uint32_t oid, void** addr, int32_t* cap);
 
+// ── S200-T03 F-NEW-622 — ONE-IDENTITY DIRECT-BUFFER LAW ────────────────
+// Set by the f590 direct-buffer hook when the answered addr is the
+// buffer's REAL memory (native-mint __bb_addr__ / engine-mint
+// __bb_direct__ / F-NEW-619 parent chase). GetDirectBufferAddress must
+// answer THAT pointer — minting a persistent copy split the identity:
+// writers (copyJni, criticals, pixel blits) hit the real memory while
+// Get readers parsed a first-Get snapshot (the tictactoe font buffer
+// minted mid-copy: head chunk real, tail uninitialized malloc — FreeType
+// read a truncated font → cmap garbage → FT_Get_Char_Index=1 for every
+// char → empty outlines → 0×0 bitmaps → white font pages).
+extern thread_local bool f590_served_real_identity;
+
 }  // namespace nativeexec
 }  // namespace miniandroid
 

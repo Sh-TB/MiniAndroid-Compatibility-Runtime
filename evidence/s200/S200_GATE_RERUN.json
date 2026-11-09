@@ -2,29 +2,25 @@
  "binary_sha16": "6c808c7448850756",
  "goldens": {
   "bouncy": {
-   "wall_s": 2.2,
+   "wall_s": 2.1,
    "face_sha16": "8a6c24ac8a7d718e",
    "uncaught": 0,
    "pin": "8a6c24ac",
-   "hold": false,
-   "hold_prefix": true
+   "hold": false
   },
   "unote": {
    "wall_s": 1.4,
    "face_sha16": "3b8dcb0adbbc17a9",
    "uncaught": 0,
    "pin": "3b8dcb0a",
-   "hold": false,
-   "hold_prefix": true
+   "hold": false
   },
   "dooz": {
-   "wall_s": 289.8,
+   "wall_s": 278.8,
    "face_sha16": "a0fae9072313e2d1",
    "uncaught": 0,
    "pin": "31ddd4d5",
-   "hold": false,
-   "hold_prefix": false,
-   "note": "frames=8 face differs (frame-count artifact); the pin invocation (--max-seconds 40 --frames 5) holds: see dooz_pinchk"
+   "hold": false
   }
  },
  "gmdice": {
@@ -45,12 +41,5 @@
   "face_sha16": "b39665f68f3938e6",
   "uncaught": 0
  },
- "all_hold": false,
- "dooz_pinchk": {
-  "r1": "31ddd4d5b8e6d18e",
-  "r2": "31ddd4d5b8e6d18e",
-  "invocation": "--max-seconds 40 --frames 5",
-  "hold": true
- },
- "all_hold_corrected": true
+ "all_hold": false
 }

@@ -765,6 +765,8 @@ bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
             std::cerr << "[F-NEW-605] direct-buffer oid=" << oid
                       << " served REAL addr=" << *addr << " cap=" << bcap
                       << " (no copy)" << std::endl;
+        // F-NEW-622: REAL identity — the caller must not copy
+        miniandroid::nativeexec::f590_served_real_identity = true;
         return true;
     }
     // ── S196 F-NEW-582 (C3, S199 integration): the ENGINE-MINTED direct
@@ -795,6 +797,8 @@ bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
                     std::cerr << "[F-NEW-582] direct-buffer oid=" << oid
                               << " served REAL engine-mem addr=" << *addr
                               << " cap=" << dcap << " (no copy)" << std::endl;
+                // F-NEW-622: REAL identity — the caller must not copy
+                miniandroid::nativeexec::f590_served_real_identity = true;
                 return true;
             }
             static thread_local uint64_t n2 = 0;
@@ -841,6 +845,8 @@ bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
                               << " chased parent oid=" << cur
                               << " → REAL addr=" << *addr << " cap=" << *cap
                               << std::endl;
+                // F-NEW-622: REAL identity — the caller must not copy
+                miniandroid::nativeexec::f590_served_real_identity = true;
                 return true;
             }
             auto pdv = heap.get_object_field(cur, "__bb_direct__");
@@ -860,6 +866,8 @@ bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
                               << " chased parent oid=" << cur
                               << " → REAL engine-mem addr=" << *addr
                               << " cap=" << *cap << std::endl;
+                // F-NEW-622: REAL identity — the caller must not copy
+                miniandroid::nativeexec::f590_served_real_identity = true;
                 return true;
             }
         }
@@ -893,6 +901,9 @@ bool DalvikExecutionEngine::f590_direct_buffer_snapshot(uint32_t oid,
         std::cerr << "[F-NEW-590] direct-buffer oid=" << oid
                   << " snapshot cap=" << bcap << " (REAL malloc memory)"
                   << std::endl;
+    // F-NEW-622: snapshot arm — NOT a real identity; the 609 persistent
+    // copy path in the caller owns the stability of this malloc.
+    miniandroid::nativeexec::f590_served_real_identity = false;
     return true;
 }
 
@@ -13608,6 +13619,30 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                 case DalvikType::STRING_REF:
                                     jargs.push_back(nativeexec::JArg::of_string(a.string_val));
                                     break;
+                                // ── S200-T03 F-NEW-623 — TYPED-SCALAR MARSHAL
+                                // LAW (AOSP art_jni.cc / JNI spec §3.8: jchar/
+                                // jbyte/jshort args ride the call as their
+                                // integral VALUES in an int register). The
+                                // pre-623 switch answered only INT32 — a
+                                // CHAR/BYTE/SHORT-typed register (the DEX
+                                // int-to-char conversion output) fell to the
+                                // default arm and marshaled as a JNI NULL:
+                                // the gdx FreeType generator's createGlyph
+                                // passed char c as a CHAR-typed register and
+                                // every getCharIndex/loadChar/toBitmap native
+                                // received charCode=0 → .notdef → 0×0 glyph
+                                // bitmaps → EMPTY font pages (the tictactoe
+                                // T03 wall, 3 fonts × 164 glyphs proven with
+                                // the instrumented libgdx-freetype.so: 492/492
+                                // native calls saw char=0 while the DEX
+                                // register held the real 65..). Values ride
+                                // in int_val for all three scalar kinds.
+                                case DalvikType::CHAR:
+                                case DalvikType::BYTE:
+                                case DalvikType::SHORT:
+                                    jargs.push_back(
+                                        nativeexec::JArg::of_int(a.int_val));
+                                    break;
                                 case DalvikType::OBJECT_REF:
                                     // F-NEW-592 (W10) NULL-OBJECT MARSHAL
                                     // LAW: a null reference typed
@@ -13646,7 +13681,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                              class_descriptor.find("Gdx2DPixmap") !=
                                  std::string::npos)) {
                             static thread_local uint64_t w18ft_n = 0;
-                            if (w18ft_n++ < 400) {
+                            if (w18ft_n++ < 40000) {
                                 std::cerr << "[W18-FT] call "
                                           << class_descriptor << "."
                                           << method_name
@@ -13703,7 +13738,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                              class_descriptor.find("Gdx2DPixmap") !=
                                  std::string::npos)) {
                             static thread_local uint64_t w18ft_rn = 0;
-                            if (w18ft_rn++ < 400)
+                            if (w18ft_rn++ < 40000)
                                 std::cerr << "[W18-FT] ret "
                                           << class_descriptor << "."
                                           << method_name << " ok="
@@ -20713,6 +20748,39 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         heap_.has_object(arr_val.object_id)) { \
                         std::string field = "array[" + std::to_string(idx) + "]"; \
                         auto elem = heap_.get_object_field(arr_val.object_id, field); \
+                        /* S200-T03 diag (env-gated, bounded): aget-char/aput \
+                         * views inside the gdx font generator — the createGlyph \
+                         * sort reads characters[best] AFTER the aput-char swaps; \
+                         * every observed getCharIndex native call received \
+                         * char=0 while pass-1 read real chars — this probe \
+                         * shows the stored byte and the produced register. */ \
+                        { \
+                            static thread_local const bool t03_arr_on = \
+                                std::getenv("MINIANDROID_T03_ARR_TRACE") != nullptr; \
+                            static thread_local uint64_t t03_arr_n = 0; \
+                            if (t03_arr_on && t03_arr_n < 90 && \
+                                current_class_.find("FreeTypeFontGenerator") != \
+                                    std::string::npos) { \
+                                ++t03_arr_n; \
+                                std::cerr << "[T03-ARR] " << op_name \
+                                          << " arr=o" << arr_val.object_id \
+                                          << " idx=" << idx \
+                                          << " len=" << arr_len \
+                                          << " stored="; \
+                                if (elem.has_value()) { \
+                                    std::cerr << (int)elem->type << ":"; \
+                                    if (elem->type == DalvikType::CHAR) \
+                                        std::cerr << (int)elem->char_val; \
+                                    else if (elem->type == DalvikType::BYTE) \
+                                        std::cerr << (int)elem->byte_val; \
+                                    else \
+                                        std::cerr << elem->int_val; \
+                                } else { \
+                                    std::cerr << "MISSING"; \
+                                } \
+                                std::cerr << std::endl; \
+                            } \
+                        } \
                         if (elem.has_value()) { \
                             result_val = elem.value(); \
                             /* PASS-3 (K-41): normalize typed scalar elements to INT. \

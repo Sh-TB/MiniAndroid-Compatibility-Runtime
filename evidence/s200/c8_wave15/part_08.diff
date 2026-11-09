@@ -1,0 +1,1126 @@
++    // sat in the F-150 no-op family → kotlin thread{}'s
++    // setContextClassLoader (6 APKs) was swallowed and the kotlinx
++    // ThreadContextElement read back the wrong identity.
++    void set_thread_ccl(uint32_t oid, uint32_t loader_oid) {
++        if (!oid) return;
++        thread_ccl_[oid] = loader_oid;
++        note_thread_seen(oid);
++    }
++    uint32_t thread_ccl_of(uint32_t oid) {
++        auto it = thread_ccl_.find(oid);
++        return it != thread_ccl_.end() ? it->second : 0;
++    }
+ 
+     // Pops the earliest-wake due thread (deterministic order law). Returns
+     // false when nothing is due at now_ms.
+@@ -313,6 +361,10 @@ private:
+     std::map<uint32_t, bool> thread_daemons_;
+     std::map<uint32_t, bool> thread_terminated_;
+     std::map<uint32_t, int32_t> thread_tids_;
++    // [S194-C8] F-C8-204 per-thread context-class-loader store.
++    std::map<uint32_t, uint32_t> thread_ccl_;
++    // [S194-C8] F-C8-203 per-thread STARTED state (JDK lifecycle law).
++    std::map<uint32_t, bool> thread_started_;
+     int32_t next_tid_ = 2;  // main = 1 (assigned in init)
+ };
+ 
+diff --git a/miniandroid/src/framework/view_ancestry.h b/miniandroid/src/framework/view_ancestry.h
+index a868334..4595feb 100644
+--- a/miniandroid/src/framework/view_ancestry.h
++++ b/miniandroid/src/framework/view_ancestry.h
+@@ -39,6 +39,19 @@ namespace framework {
+ inline const std::unordered_map<std::string, std::string>&
+ framework_direct_superclass() {
+     static const std::unordered_map<std::string, std::string> kTable = {
++        // [S196-C8] F-C8-250 — the JDK boxed-numeric hierarchy (JLS:
++        // Long/Integer/Short/Byte/Float/Double extend java.lang.Number;
++        // Number extends Object). `instance-of Number` on a boxed value
++        // answered FALSE before this edge (the probe face: the wave-13
++        // threadContextElements law's Long answer failed the probe's
++        // Number classification).
++        {"Ljava/lang/Long;", "Ljava/lang/Number;"},
++        {"Ljava/lang/Integer;", "Ljava/lang/Number;"},
++        {"Ljava/lang/Short;", "Ljava/lang/Number;"},
++        {"Ljava/lang/Byte;", "Ljava/lang/Number;"},
++        {"Ljava/lang/Float;", "Ljava/lang/Number;"},
++        {"Ljava/lang/Double;", "Ljava/lang/Number;"},
++        {"Ljava/lang/Number;", "Ljava/lang/Object;"},
+         // R-NEW-010 store-check completion (CONT-122, telegram live face):
+         // the android.animation family — dalvik_class_assignable walked
+         // ValueAnimator → <unknown> → FALSE and the aput-object
+@@ -203,6 +216,13 @@ framework_direct_superclass() {
+         // the family below is the standard libcore chain apps hit daily.
+         {"Ljava/util/concurrent/CancellationException;",
+          "Ljava/lang/IllegalStateException;"},
++        // [S197-C8] F-C8-271 — the kotlinx JCE extends-edge: the engine
++        // mints JobCancellationException for the canonical cancellation
++        // identity; `instance-of CancellationException` on it failed the
++        // same platform-boundary walk the dooz carrier hit (no DEX
++        // class_def for external kotlinx classes).
++        {"Lkotlinx/coroutines/JobCancellationException;",
++         "Ljava/util/concurrent/CancellationException;"},
+         {"Ljava/io/IOException;", "Ljava/lang/Exception;"},
+         {"Ljava/util/concurrent/ExecutionException;",
+          "Ljava/lang/Exception;"},
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index b041792..60f0c8b 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -7170,7 +7170,55 @@ void ExecutionEngine::invoke_handler_runnable(uint32_t rid,
+                 return;  // the CountDownTimer family never has run()
+             }
+         }
+-        dalvik_engine_.try_recursive_invoke(cls, "run", args, ret, drain_result);
++        // [S194-C8] F-C8-202 — kotlin wrapper BLOCK dispatch (drain arm).
++        // The law-minted kotlin TimerTask wrapper (TimersKt.timer — 6 APKs)
++        // carries its block on __kt_block__; the external wrapper class has
++        // NO run() DEX body, so the generic dispatch below would find
++        // nothing and the tick would be LOST (silent wrongness). The block
++        // dispatch runs the REAL invoke() body of the captured lambda.
++        // NOTE: no early return — the F-115 periodic re-enqueue below MUST
++        // still run (the first draft returned early and the periodic
++        // kotlin timer fired exactly once; the wave-11 probe re-run
++        // documented it: ktimer_period never reached ticks=2).
++        bool c8_kt_ran = false;
++        {
++            miniandroid::dalvik::DalvikValue kt_ret;
++            if (cls.rfind("Lkotlin/concurrent/TimersKt$timerTask$", 0) == 0 ||
++                cls.rfind("Lkotlin/concurrent/ThreadsKt$thread$thread$", 0) ==
++                    0 ||
++                // [S195-C8] F-C8-230 — the launch wrapper rides the SAME
++                // drain arm (c8_kt_block_dispatch dispatches the Function2
++                // block and stamps the REAL job completion: ran →
++                // Completed — never "enqueued = completed").
++                cls.rfind("Lkotlinx/coroutines/BuildersKt$launch$1", 0) ==
++                    0 ||
++                // [S196-C8] F-C8-255 — the withContext wrapper rides the
++                // SAME drain arm (the same drain-arm-key lesson waves 11
++                // and 12 recorded: the gate run-arm alone never sees the
++                // drained wrapper).
++                cls.rfind("Lkotlinx/coroutines/BuildersKt$withContext$1",
++                          0) == 0 ||
++                // [S197-C8] F-C8-276 — the runBlocking wrapper rides the
++                // SAME drain arm (the drain-arm-key lesson, fourth
++                // recording: BOTH gates carry the class or the drained
++                // wrapper never runs).
++                cls.rfind("Lkotlinx/coroutines/BuildersKt$runBlocking$1",
++                          0) == 0 ||
++                (cls == "Ljava/lang/Thread;" &&
++                 heap.get_object_field(rid, "__kt_block__").has_value())) {
++                c8_kt_ran = dalvik_engine_.c8_kt_block_dispatch(rid, cls,
++                                                                kt_ret);
++                if (!c8_kt_ran)
++                    std::cerr << "[C8-KT] drain arm o" << rid
++                              << " cls=" << cls
++                              << " — block NOT dispatched (LOUD gap)"
++                              << std::endl;
++            }
++        }
++        if (!c8_kt_ran) {
++            dalvik_engine_.try_recursive_invoke(cls, "run", args, ret,
++                                                drain_result);
++        }
+         if (bound289) ts289->set_active_drained_thread(saved289);
+         // F-115 (R-NEW-384) java.util.Timer periodic re-enqueue law: a
+         // TimerTask enqueued with period>0 re-posts itself after every
+@@ -7524,6 +7572,56 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
+         for (uint32_t rid : drained) {
+             invoke_handler_runnable(rid);
+         }
++        // [S194-C8] F-C8-206 — MessageQueue IDLE EPISODE dispatch (AOSP
++        // MessageQueue.java): when the queue runs out of messages, the
++        // looper dispatches queueIdle() on each registered IdleHandler IN
++        // REGISTRATION ORDER; a false return REMOVES the handler. The
++        // deterministic counterpart: a frame boundary whose drain found
++        // ZERO entries IS the idle episode. The registry rides the
++        // MessageQueue.addIdleHandler/removeIdleHandler engine law.
++        if (n == 0) {
++            std::vector<uint32_t> idle = dalvik_engine_.c8_idle_handlers_;
++            bool any_fired = false;
++            for (uint32_t hid : idle) {
++                if (!dalvik_engine_.get_heap_public().has_object(hid))
++                    continue;
++                std::string hcls = "Ljava/lang/Object;";
++                if (const auto* hobj =
++                        dalvik_engine_.get_heap_public().get(hid))
++                    if (!hobj->class_descriptor.empty())
++                        hcls = hobj->class_descriptor;
++                miniandroid::dalvik::DalvikValue qret;
++                miniandroid::dalvik::DalvikExecutionResult qres;
++                std::vector<miniandroid::dalvik::DalvikValue> qargs{
++                    miniandroid::dalvik::DalvikValue::make_object(hid,
++                                                                  hcls)};
++                bool ran = dalvik_engine_.try_recursive_invoke(
++                    hcls, "queueIdle", qargs, qret, qres, "()Z");
++                any_fired = true;
++                std::cerr << "[C8-IDLE] queueIdle o" << hid << " (" << hcls
++                          << ") ran=" << (ran ? "yes" : "NO")
++                          << " keep="
++                          << ((ran && qret.type ==
++                                    miniandroid::dalvik::DalvikType::BOOLEAN)
++                                  ? (qret.bool_val ? "true" : "false")
++                                  : "true")
++                          << std::endl;
++                if (ran && qret.type ==
++                        miniandroid::dalvik::DalvikType::BOOLEAN &&
++                    !qret.bool_val) {
++                    // AOSP law: a false queueIdle return removes the
++                    // handler from the registry.
++                    auto& reg = dalvik_engine_.c8_idle_handlers_;
++                    for (auto it = reg.begin(); it != reg.end(); ++it) {
++                        if (*it == hid) {
++                            reg.erase(it);
++                            break;
++                        }
++                    }
++                }
++            }
++            (void)any_fired;
++        }
+         // G07/G08: frame boundary transitions — finish() cascades and
+         // startActivity() launches requested by callbacks drained this
+         // frame apply at THIS boundary.
+diff --git a/scripts/s194_c8_ab_metrics.py b/scripts/s194_c8_ab_metrics.py
+new file mode 100644
+index 0000000..760d070
+--- /dev/null
++++ b/scripts/s194_c8_ab_metrics.py
+@@ -0,0 +1,29 @@
++#!/usr/bin/env python3
++"""S193 [C8] A/B metric extraction: api_trace.json calls minus engine-session
++bookkeeping rows + UNCAUGHT count — the wave-9 A/B metric shape."""
++import json
++from pathlib import Path
++
++RUNS = Path('/home/z/my-project/work/miniandroid/evidence/s194_c8/ab_runs')
++W9 = {"eu.veldsoft.free.klondike": "494/33", "stack.tower3d": "9214/63",
++      "dubrowgn.microtimer": "1052/19", "eu.veldsoft.tri.peaks": "19/2"}
++
++rows = []
++for rj in sorted(RUNS.glob('run_*/api_trace.json')):
++    pkg = rj.parent.name[4:]
++    d = json.loads(rj.read_text())
++    calls = d.get('calls', [])
++    # Wave-9 counted API-surface rows (the per-call trace), which excludes
++    # the TraceEngine session bookkeeping rows.
++    api = [c for c in calls
++           if c.get('class') != 'TraceEngine' and c.get('category') != 'SYSTEM']
++    console = RUNS / (rj.parent.name + '.err')
++    uncaught = console.read_text(errors='replace').count('UNCAUGHT') \
++        if console.exists() else -1
++    rows.append({"pkg": pkg, "api_rows": len(api),
++                 "total_trace_rows": len(calls), "uncaught": uncaught,
++                 "wave9_metric": W9.get(pkg, "-")})
++    print(json.dumps(rows[-1]))
++out = RUNS / 'ab_metrics.json'
++out.write_text(json.dumps(rows, indent=1))
++print("→", out)
+diff --git a/scripts/s194_c8_probe_build.sh b/scripts/s194_c8_probe_build.sh
+new file mode 100644
+index 0000000..f109d93
+--- /dev/null
++++ b/scripts/s194_c8_probe_build.sh
+@@ -0,0 +1,50 @@
++#!/usr/bin/env bash
++# s194_c8_probe_build.sh — [S194-C8] wave-11 probe APK build.
++# The c7 recipe + the KSTUB step: the kotlin/kotlinx stub jar is compiled
++# FIRST and placed on the ecj classpath ONLY — d8 never dex's it, so the
++# probe DEX carries EXTERNAL kotlin/kotlinx references exactly like real
++# apps and the engine laws own the DEX surface.
++# Usage: bash scripts/s194_c8_probe_build.sh <fixture_dir> <out.apk>
++set -euo pipefail
++REPO=/home/z/my-project/work/miniandroid
++TOOLS=/home/z/my-project/tools
++FIX=$1; OUT=$2; WORK=$(mktemp -d)
++
++# 1) KSTUB — compile the kotlin/kotlinx stubs to a jar (compile-time only).
++find "$FIX/kstub" -name "*.java" > "$WORK/kstub-sources.txt"
++java -jar "$TOOLS/ecj/ecj.jar" -1.8 -nowarn -d "$WORK/kstub-obj" \
++    @"$WORK/kstub-sources.txt"
++python3 - "$WORK/kstub-obj" "$WORK/kstub.jar" <<'PYEOF'
++import sys, zipfile, os
++objdir, out = sys.argv[1], sys.argv[2]
++with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
++    for root, _, files in os.walk(objdir):
++        for f in files:
++            p = os.path.join(root, f)
++            z.write(p, os.path.relpath(p, objdir))
++print("kstub jar written:", out)
++PYEOF
++
++# 2) Resources + manifest (the c7 recipe, verbatim).
++if [ -d "$FIX/res" ]; then
++  "$TOOLS/aapt2/aapt2" compile --dir "$FIX/res" -o "$WORK/res.zip"
++  "$TOOLS/aapt2/aapt2" link -o "$WORK/base.apk" -I "$TOOLS/android-34.jar" \
++    --manifest "$FIX/AndroidManifest.xml" --java "$WORK/gen" --auto-add-overlay "$WORK/res.zip"
++else
++  mkdir -p "$WORK/gen"
++  "$TOOLS/aapt2/aapt2" link -o "$WORK/base.apk" -I "$TOOLS/android-34.jar" \
++    --manifest "$FIX/AndroidManifest.xml" --java "$WORK/gen"
++fi
++
++# 3) Compile the probe against android-34 + the KSTUB jar.
++find "$FIX/src" "$WORK/gen" -name "*.java" > "$WORK/sources.txt"
++java -jar "$TOOLS/ecj/ecj.jar" -1.8 -nowarn -d "$WORK/obj" \
++    -cp "$TOOLS/android-34.jar:$WORK/kstub.jar" @"$WORK/sources.txt"
++
++# 4) D8 — only the probe classes (the kstub stays OUT of the APK).
++find "$WORK/obj" -name "*.class" > "$WORK/classes.txt"
++mkdir -p "$WORK/dex"
++java -cp "$TOOLS/d8/r8.jar" com.android.tools.r8.D8 --release \
++  --lib "$TOOLS/android-34.jar" --output "$WORK/dex" @"$WORK/classes.txt"
++cp "$WORK/base.apk" "$OUT"; ( cd "$WORK/dex" && zip -j -q -X "$OUT" classes.dex )
++sha256sum "$OUT"
+diff --git a/scripts/s194_c8_probe_run.sh b/scripts/s194_c8_probe_run.sh
+new file mode 100644
+index 0000000..c433977
+--- /dev/null
++++ b/scripts/s194_c8_probe_run.sh
+@@ -0,0 +1,19 @@
++#!/usr/bin/env bash
++# s194_c8_probe_run.sh — [S194-C8] probe runner: install + run + marker
++# extraction (S188 rule 9 — the assertion truth is the C8PROBE marker set).
++# Usage: bash scripts/s194_c8_probe_run.sh <binary> <apk> <store> <rundir> <secs>
++set -euo pipefail
++BIN=$1; APK=$2; STORE=$3; RUNDIR=$4; SECS=${5:-30}
++rm -rf "$STORE" "$RUNDIR"; mkdir -p "$STORE" "$RUNDIR"
++"$BIN" install "$APK" --data-root "$STORE" > "$RUNDIR/install.log" 2>&1 || true
++DPKG=$(ls "$STORE/data/app" 2>/dev/null | grep -v staging | head -1)
++if [ -z "$DPKG" ]; then echo "INSTALL_FAIL"; exit 2; fi
++"$BIN" run --execution-mode real-dalvik --data-root "$STORE" \
++    -o "$RUNDIR/run" --max-seconds "$SECS" --frames 5 --trace \
++    --package "$DPKG" > "$RUNDIR/console.log" 2>&1 || true
++grep -a 'C8PROBE' "$RUNDIR/console.log" | sed 's/.*C8PROBE[: ]*//' \
++    | sed 's/^[[:space:]]*//' > "$RUNDIR/markers.txt"
++echo "--- markers ($(wc -l < "$RUNDIR/markers.txt") lines) ---"
++cat "$RUNDIR/markers.txt"
++# 3-run byte-identity digest over the normalized marker set
++sha256sum "$RUNDIR/markers.txt"
+diff --git a/scripts/s196_c8_ab_runs.py b/scripts/s196_c8_ab_runs.py
+new file mode 100644
+index 0000000..a1a1b01
+--- /dev/null
++++ b/scripts/s196_c8_ab_runs.py
+@@ -0,0 +1,68 @@
++#!/usr/bin/env python3
++"""S196 [C8] wave-13 live A/B (S188 rule 10): install + 30 s run of the five
++live titles on the CURRENT tree (main 9bc2a115 + waves 8..13),
++extracting (api_rows / uncaught) per title — the same metric shape the S192
++wave-9 A/B published (klondike 494/33, tower3d 9214/63, microtimer 1052/19,
++tri-peaks 19/2)."""
++import json, shutil, subprocess, sys
++from pathlib import Path
++
++BASE = Path('/home/z/my-project/work/miniandroid')
++BIN = BASE / 'miniandroid/build/miniandroid'
++APKS = Path('/home/z/my-project/upload/canonical_apks')
++RUNS = BASE / 'evidence/s196_c8/ab_runs'
++SECS = 30
++
++TITLES = [
++    ("eu.veldsoft.free.klondike", "klondike_veldsoft_3.apk"),
++    ("stack.tower3d", "stack.tower3d_1.apk"),
++    ("dubrowgn.microtimer", "dubrowgn.microtimer_8.apk"),
++    ("eu.veldsoft.tri.peaks", "tripeaks_v1.2.1_vc4.apk"),
++    ("de.duenndns.gmdice", "de.duenndns.gmdice_11.apk"),
++]
++
++results = []
++for pkg, apk in TITLES:
++    store = RUNS / f'store_{pkg}'
++    if store.exists():
++        shutil.rmtree(store)
++    store.mkdir(parents=True)
++    apps = store / 'data' / 'app'
++    subprocess.run([str(BIN), 'install', str(APKS / apk),
++                    '--data-root', str(store)],
++                   capture_output=True, timeout=300)
++    dpkg = None
++    if apps.exists():
++        ds = [d.name for d in apps.iterdir()
++              if d.is_dir() and not d.name.endswith('.staging')]
++        dpkg = ds[0] if ds else None
++    if not dpkg:
++        results.append({"pkg": pkg, "status": "INSTALL_FAIL"})
++        continue
++    rundir = RUNS / f'run_{pkg}'
++    console = RUNS / f'{pkg}.err'
++    with open(console, 'w') as cf:
++        subprocess.run([str(BIN), 'run', '--execution-mode', 'real-dalvik',
++                        '--data-root', str(store), '-o', str(rundir),
++                        '--max-seconds', str(SECS), '--frames', '5',
++                        '--trace', '--package', dpkg],
++                       stdout=cf, stderr=subprocess.STDOUT,
++                       timeout=SECS + 240)
++    text = console.read_text(errors='replace')
++    uncaught = text.count('UNCAUGHT')
++    api_rows = 0
++    aj = rundir / 'api_calls.json'
++    if aj.exists():
++        try:
++            data = json.loads(aj.read_text())
++            api_rows = len(data) if isinstance(data, list) else len(
++                data.get('calls', data.get('rows', [])))
++        except Exception:
++            api_rows = -1
++    results.append({"pkg": pkg, "api_rows": api_rows,
++                    "uncaught": uncaught})
++    print(json.dumps(results[-1]))
++
++out = RUNS / 'ab_summary.json'
++out.write_text(json.dumps(results, indent=1))
++print("A/B COMPLETE →", out)
+diff --git a/scripts/s196_c8_crossref.py b/scripts/s196_c8_crossref.py
+new file mode 100644
+index 0000000..0efe65a
+--- /dev/null
++++ b/scripts/s196_c8_crossref.py
+@@ -0,0 +1,71 @@
++#!/usr/bin/env python3
++"""S196 [C8] — CODER 8 WAVE 13 — coverage cross-ref against the CURRENT tree
++(main 9bc2a115 + waves 8..12). Same conservative adjudication as S191: for
++each androguard-decoded (class, method) pair, is it handled by the runtime
++source? Anything ambiguous is flagged REVIEW, never silently passed.
++"""
++import json
++from pathlib import Path
++
++DECODE = Path("/home/z/my-project/work/miniandroid/evidence/s196_c8/"
++              "S196_C8_CONCURRENCY_DECODE.json")
++SRC = Path("/home/z/my-project/work/miniandroid/miniandroid/src")
++OUT = Path("/home/z/my-project/work/miniandroid/evidence/s196_c8/"
++           "S196_C8_COVERAGE_CROSSREF.json")
++
++CORE_OBJECT = {"<init>", "toString", "getClass", "equals", "hashCode", "clone"}
++
++files = {}
++for p in SRC.rglob("*.cpp"):
++    files[str(p)] = p.read_text(errors="replace")
++for p in SRC.rglob("*.h"):
++    files[str(p)] = p.read_text(errors="replace")
++
++data = json.loads(DECODE.read_text())
++agg = data["aggregate"]
++
++rows = []
++for cls, meths in sorted(agg.items()):
++    cls_files = [f for f, t in files.items() if cls in t]
++    for met, e in sorted(meths.items()):
++        if cls == "Ljava/lang/Object;" and met in CORE_OBJECT:
++            status = "ENGINE_CORE"
++            hits = []
++        else:
++            hits = []
++            for f in cls_files:
++                t = files[f]
++                if f'"{met}"' in t or f'"{cls[:-1]}->{met}"' in t:
++                    hits.append(Path(f).name)
++            if hits:
++                status = "PRESENT"
++            elif not cls_files:
++                status = "CLASS_ABSENT"
++            else:
++                status = "METHOD_ABSENT"
++        rows.append({
++            "class": cls, "method": met,
++            "apk_count": len(set(e["apks"])),
++            "sites": e["total"],
++            "apks": sorted(set(e["apks"])),
++            "status": status,
++            "src_hits": sorted(set(hits))[:6],
++        })
++
++order = {"CLASS_ABSENT": 0, "METHOD_ABSENT": 1, "PRESENT": 2, "ENGINE_CORE": 3}
++rows.sort(key=lambda r: (order[r["status"]], -r["apk_count"], -r["sites"]))
++OUT.write_text(json.dumps(rows, indent=1))
++
++print(f"{'STATUS':14s} {'#APK':>4s} {'SITES':>6s}  PAIR")
++for r in rows:
++    if r["status"] in ("CLASS_ABSENT", "METHOD_ABSENT") and r["apk_count"] >= 1:
++        print(f"{r['status']:14s} {r['apk_count']:4d} {r['sites']:6d}  "
++              f"{r['class']}.{r['method']}")
++
++n_abs = sum(1 for r in rows if r["status"] == "CLASS_ABSENT")
++n_mab = sum(1 for r in rows if r["status"] == "METHOD_ABSENT")
++n_pre = sum(1 for r in rows if r["status"] == "PRESENT")
++n_core = sum(1 for r in rows if r["status"] == "ENGINE_CORE")
++print(f"\nPAIRS: {len(rows)} = CLASS_ABSENT {n_abs} + METHOD_ABSENT {n_mab} "
++      f"+ PRESENT {n_pre} + ENGINE_CORE {n_core}")
++print("wrote", OUT)
+diff --git a/scripts/s196_c8_decode.py b/scripts/s196_c8_decode.py
+new file mode 100644
+index 0000000..049a8df
+--- /dev/null
++++ b/scripts/s196_c8_decode.py
+@@ -0,0 +1,140 @@
++#!/usr/bin/env python3
++"""S196 [C8] — CODER 8 WAVE 13 — androguard-driven concurrency-surface decode
++(defects 161–180). Same method as S191 (waves 8): static decode of the
++canonical APK corpus → app contract → evidence-backed defect list.
++
++Wave-9 additions to the scan window (carried forward from the S191 ledger):
++  - Ljava/util/concurrent/LinkedBlockingDeque (F-C8-158 carried)
++  - Looper quit/quitSafely + MessageQueue deeper (wave-7 pending)
++  - ExecutorService invokeAll/invokeAny (wave-7 pending)
++  - Timer/TimerTask surface detail + CountDownTimer
++  - Thread.UncaughtExceptionHandler family
++  - Phaser / CompletableFuture deeper / FutureTask cancel
++  - ThreadLocal.withInitial / InheritableThreadLocal
++  - Atomic*FieldUpdater family (83 sites / 4 APKs in S191 — never enumerated)
++
++Output: evidence/s196_c8/S196_C8_CONCURRENCY_DECODE.json
++"""
++import glob
++import json
++import os
++import re
++import sys
++
++from loguru import logger
++logger.remove()
++
++from androguard.misc import AnalyzeAPK
++
++APKS = sorted(glob.glob("/home/z/my-project/upload/canonical_apks/*.apk"))
++OUT = "/home/z/my-project/work/miniandroid/evidence/s196_c8/S196_C8_CONCURRENCY_DECODE.json"
++
++CONC = re.compile(
++    r"^(?:"
++    r"Landroid/os/(?:Handler|Looper|Message|MessageQueue|HandlerThread|"
++    r"SystemClock|CountDownTimer|AsyncTask|Messenger|Process);"
++    r"|Ljava/lang/(?:Thread|Runnable|ThreadLocal|InheritableThreadLocal|"
++    r"ThreadGroup|Object|InterruptedException|IllegalMonitorStateException|"
++    r"Thread\$UncaughtExceptionHandler|Thread\$State|AutoCloseable);"
++    r"|Ljava/util/concurrent/.+"
++    r"|Ljava/util/(?:Timer|TimerTask|concurrent/.+);"
++    r"|Lkotlin/concurrent/.+"
++    r"|Lkotlinx/coroutines/.+"
++    r")$")
++
++INVOKE_RE = re.compile(r"(L[^;]+;)->([^:\s(]+)")
++
++
++def decode(apk):
++    a, d, dx = AnalyzeAPK(apk)
++    refs = {}
++    monitors = 0
++    sync_methods = 0
++    total_invokes = 0
++    classes_total = set()
++    pkg = a.get_package()
++
++    for meth_analysis in dx.get_methods():
++        if meth_analysis.is_external():
++            continue
++        enc = meth_analysis.get_method()
++        code = enc.get_code() if enc is not None else None
++        if code is None:
++            continue
++        if enc.get_access_flags() & 0x100:
++            sync_methods += 1
++        cls = "L" + enc.get_class_name().replace(".", "/") + ";"
++        classes_total.add(cls)
++        for ins in enc.get_instructions():
++            name = ins.get_name()
++            if name == "monitor-enter":
++                monitors += 1
++                continue
++            if name == "monitor-exit":
++                continue
++            if not name.startswith("invoke"):
++                continue
++            out = ins.get_output()
++            mm = INVOKE_RE.search(out)
++            if not mm:
++                continue
++            tcls, tmet = mm.group(1), mm.group(2)
++            if not CONC.match(tcls):
++                continue
++            total_invokes += 1
++            refs.setdefault(tcls, {}).setdefault(tmet, 0)
++            refs[tcls][tmet] += 1
++
++    return {
++        "apk": os.path.basename(apk),
++        "pkg": pkg,
++        "app_classes": len(classes_total),
++        "conc_invoke_sites": total_invokes,
++        "monitor_enter": monitors,
++        "synchronized_methods": sync_methods,
++        "refs": {c: dict(sorted(v.items(), key=lambda kv: -kv[1]))
++                 for c, v in sorted(refs.items())},
++    }
++
++
++def main():
++    per_apk = []
++    for apk in APKS:
++        try:
++            r = decode(apk)
++            per_apk.append(r)
++            print(f"[OK] {r['apk']:42s} conc_sites={r['conc_invoke_sites']:5d} "
++                  f"monitors={r['monitor_enter']:4d} sync_m={r['synchronized_methods']:3d} "
++                  f"classes={r['app_classes']}", flush=True)
++        except Exception as e:  # noqa: BLE001
++            print(f"[FAIL] {apk}: {e}", file=sys.stderr)
++            per_apk.append({"apk": os.path.basename(apk), "error": str(e)})
++
++    agg = {}
++    for r in per_apk:
++        if "error" in r:
++            continue
++        for c, meths in r["refs"].items():
++            for met, n in meths.items():
++                e = agg.setdefault(c, {}).setdefault(met, {"apks": [], "total": 0})
++                e["apks"].append(r["apk"])
++                e["total"] += n
++
++    os.makedirs(os.path.dirname(OUT), exist_ok=True)
++    with open(OUT, "w") as f:
++        json.dump({"per_apk": per_apk, "aggregate": agg}, f, indent=1, sort_keys=True)
++
++    print("\n=== TOP consumed concurrency (class · method · #apks · total) ===")
++    flat = []
++    for c, meths in agg.items():
++        for met, e in meths.items():
++            flat.append((len(set(e["apks"])), e["total"], c, met))
++    flat.sort(reverse=True)
++    for napks, tot, c, met in flat[:100]:
++        print(f"{napks} apk {tot:5d}x  {c}.{met}")
++    print(f"\nunique (class,method) pairs in Coder-8 domain: {len(flat)}")
++    print("wrote", OUT)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/s197_c8_ab_metrics.py b/scripts/s197_c8_ab_metrics.py
+new file mode 100644
+index 0000000..7061852
+--- /dev/null
++++ b/scripts/s197_c8_ab_metrics.py
+@@ -0,0 +1,29 @@
++#!/usr/bin/env python3
++"""S197 [C8] wave-14 A/B metric extraction: api_trace.json calls minus engine-session
++bookkeeping rows + UNCAUGHT count — the wave-9 A/B metric shape."""
++import json
++from pathlib import Path
++
++RUNS = Path('/home/z/my-project/work/miniandroid/evidence/s197_c8/ab_runs')
++W9 = {"eu.veldsoft.free.klondike": "494/33", "stack.tower3d": "9214/63",
++      "dubrowgn.microtimer": "1052/19", "eu.veldsoft.tri.peaks": "19/2"}
++
++rows = []
++for rj in sorted(RUNS.glob('run_*/api_trace.json')):
++    pkg = rj.parent.name[4:]
++    d = json.loads(rj.read_text())
++    calls = d.get('calls', [])
++    # Wave-9 counted API-surface rows (the per-call trace), which excludes
++    # the TraceEngine session bookkeeping rows.
++    api = [c for c in calls
++           if c.get('class') != 'TraceEngine' and c.get('category') != 'SYSTEM']
++    console = RUNS / (rj.parent.name + '.err')
++    uncaught = console.read_text(errors='replace').count('UNCAUGHT') \
++        if console.exists() else -1
++    rows.append({"pkg": pkg, "api_rows": len(api),
++                 "total_trace_rows": len(calls), "uncaught": uncaught,
++                 "wave9_metric": W9.get(pkg, "-")})
++    print(json.dumps(rows[-1]))
++out = RUNS / 'ab_metrics.json'
++out.write_text(json.dumps(rows, indent=1))
++print("→", out)
+diff --git a/scripts/s197_c8_ab_runs.py b/scripts/s197_c8_ab_runs.py
+new file mode 100644
+index 0000000..658b58e
+--- /dev/null
++++ b/scripts/s197_c8_ab_runs.py
+@@ -0,0 +1,68 @@
++#!/usr/bin/env python3
++"""S197 [C8] wave-14 live A/B (S188 rule 10): install + 30 s run of the five
++live titles on the CURRENT tree (main 9bc2a115 + waves 8..13),
++extracting (api_rows / uncaught) per title — the same metric shape the S192
++wave-9 A/B published (klondike 494/33, tower3d 9214/63, microtimer 1052/19,
++tri-peaks 19/2)."""
++import json, shutil, subprocess, sys
++from pathlib import Path
++
++BASE = Path('/home/z/my-project/work/miniandroid')
++BIN = BASE / 'miniandroid/build/miniandroid'
++APKS = Path('/home/z/my-project/upload/canonical_apks')
++RUNS = BASE / 'evidence/s197_c8/ab_runs'
++SECS = 30
++
++TITLES = [
++    ("eu.veldsoft.free.klondike", "klondike_veldsoft_3.apk"),
++    ("stack.tower3d", "stack.tower3d_1.apk"),
++    ("dubrowgn.microtimer", "dubrowgn.microtimer_8.apk"),
++    ("eu.veldsoft.tri.peaks", "tripeaks_v1.2.1_vc4.apk"),
++    ("de.duenndns.gmdice", "de.duenndns.gmdice_11.apk"),
++]
++
++results = []
++for pkg, apk in TITLES:
++    store = RUNS / f'store_{pkg}'
++    if store.exists():
++        shutil.rmtree(store)
++    store.mkdir(parents=True)
++    apps = store / 'data' / 'app'
++    subprocess.run([str(BIN), 'install', str(APKS / apk),
++                    '--data-root', str(store)],
++                   capture_output=True, timeout=300)
++    dpkg = None
++    if apps.exists():
++        ds = [d.name for d in apps.iterdir()
++              if d.is_dir() and not d.name.endswith('.staging')]
++        dpkg = ds[0] if ds else None
++    if not dpkg:
++        results.append({"pkg": pkg, "status": "INSTALL_FAIL"})
++        continue
++    rundir = RUNS / f'run_{pkg}'
++    console = RUNS / f'{pkg}.err'
++    with open(console, 'w') as cf:
++        subprocess.run([str(BIN), 'run', '--execution-mode', 'real-dalvik',
++                        '--data-root', str(store), '-o', str(rundir),
++                        '--max-seconds', str(SECS), '--frames', '5',
++                        '--trace', '--package', dpkg],
++                       stdout=cf, stderr=subprocess.STDOUT,
++                       timeout=SECS + 240)
++    text = console.read_text(errors='replace')
++    uncaught = text.count('UNCAUGHT')
++    api_rows = 0
++    aj = rundir / 'api_calls.json'
++    if aj.exists():
++        try:
++            data = json.loads(aj.read_text())
++            api_rows = len(data) if isinstance(data, list) else len(
++                data.get('calls', data.get('rows', [])))
++        except Exception:
++            api_rows = -1
++    results.append({"pkg": pkg, "api_rows": api_rows,
++                    "uncaught": uncaught})
++    print(json.dumps(results[-1]))
++
++out = RUNS / 'ab_summary.json'
++out.write_text(json.dumps(results, indent=1))
++print("A/B COMPLETE →", out)
+diff --git a/scripts/s197_c8_crossref.py b/scripts/s197_c8_crossref.py
+new file mode 100644
+index 0000000..d78b3f5
+--- /dev/null
++++ b/scripts/s197_c8_crossref.py
+@@ -0,0 +1,72 @@
++#!/usr/bin/env python3
++"""S197 [C8] — CODER 8 WAVE 14 — coverage cross-ref against the CURRENT tree
++(main @9bc2a115 + the published waves-8..13 stack, the wave-13 delta
++validated by the 119-marker ×3 byte-identical probe, marker sha16
++97be91308e75d346). EXACT copy of scripts/s196_c8_crossref.py with paths
++pointed at the S197 decode slot. Same conservative adjudication as
++S191–S196: for each androguard-decoded (class, method) pair, is it handled
++by the runtime source? Anything ambiguous is flagged REVIEW, never silently
++passed. OUT = evidence/s197_c8/S197_C8_COVERAGE_CROSSREF.json (the BEFORE
++state; the AFTER re-run overwrites the same slot — the BEFORE copy is
++preserved as S197_C8_COVERAGE_CROSSREF_BEFORE.json by the wave driver)."""
++import json
++from pathlib import Path
++
++DECODE = Path("/home/z/my-project/work/miniandroid/evidence/s197_c8/"
++              "S197_C8_CONCURRENCY_DECODE.json")
++SRC = Path("/home/z/my-project/work/miniandroid/miniandroid/src")
++OUT = Path("/home/z/my-project/work/miniandroid/evidence/s197_c8/"
++           "S197_C8_COVERAGE_CROSSREF.json")
++
++CORE_OBJECT = {"<init>", "toString", "getClass", "equals", "hashCode", "clone"}
++
++files = {}
++for p in SRC.rglob("*.cpp"):
++    files[str(p)] = p.read_text(errors="replace")
++for p in SRC.rglob("*.h"):
++    files[str(p)] = p.read_text(errors="replace")
++
++data = json.loads(DECODE.read_text())
++agg = data["aggregate"]
++
++rows = []
++for cls, meths in sorted(agg.items()):
++    cls_files = [f for f, t in files.items() if cls in t]
++    for met, e in sorted(meths.items()):
++        if cls == "Ljava/lang/Object;" and met in CORE_OBJECT:
++            status = "ENGINE_CORE"
++            hits = []
++        else:
++            hits = []
++            for f in cls_files:
++                t = files[f]
++                if f'"{met}"' in t or f'"{cls[:-1]}->{met}"' in t:
++                    hits.append(Path(f).name)
++            if hits:
++                status = "PRESENT"
++            elif not cls_files:
++                status = "CLASS_ABSENT"
++            else:
++                status = "METHOD_ABSENT"
++        rows.append({
++            "class": cls, "method": met,
++            "apk_count": len(set(e["apks"])),
++            "sites": e["total"],
++            "apks": sorted(set(e["apks"])),
++            "status": status,
++            "src_hits": sorted(set(hits))[:6],
++        })
++
++order = {"CLASS_ABSENT": 0, "METHOD_ABSENT": 1, "PRESENT": 2, "ENGINE_CORE": 3}
++rows.sort(key=lambda r: (order[r["status"]], -r["apk_count"], -r["sites"]))
++OUT.write_text(json.dumps(rows, indent=1))
++
++print(f"{'STATUS':14s} {'#APK':>4s} {'SITES':>6s}  PAIR")
++for r in rows:
++    if r["status"] in ("CLASS_ABSENT", "METHOD_ABSENT"):
++        print(f"{r['status']:14s} {r['apk_count']:4d} {r['sites']:6d}  "
++              f"{r['class']}.{r['method']}")
++from collections import Counter
++c = Counter(r["status"] for r in rows)
++print("\nSUMMARY:", dict(c))
++print("wrote", OUT)
+diff --git a/scripts/s197_c8_decode.py b/scripts/s197_c8_decode.py
+new file mode 100644
+index 0000000..2753f1c
+--- /dev/null
++++ b/scripts/s197_c8_decode.py
+@@ -0,0 +1,139 @@
++#!/usr/bin/env python3
++"""S197 [C8] — CODER 8 WAVE 14 — androguard-driven decode.
++EXACT copy of scripts/s196_c8_decode.py (the published wave-13 method) with
++exactly one delta, for honest comparability with the published §0 numbers:
++  OUT = evidence/s197_c8/S197_C8_CONCURRENCY_DECODE.json (wave-14 slot).
++Same 8 content-unique canonical APKs, same CONC regex, same census.
++"""
++import glob
++import json
++import os
++import re
++import sys
++
++from loguru import logger
++logger.remove()
++
++from androguard.misc import AnalyzeAPK
++
++APKS = [
++    "/home/z/my-project/upload/canonical_apks/app.varlorg.unote_30.apk",
++    "/home/z/my-project/upload/canonical_apks/com.dozingcatsoftware.bouncy_43.apk",
++    "/home/z/my-project/upload/canonical_apks/com.emmanuelmess.tictactoe_3.apk",
++    "/home/z/my-project/upload/canonical_apks/de.duenndns.gmdice_11.apk",
++    "/home/z/my-project/upload/canonical_apks/dubrowgn.microtimer_8.apk",
++    "/home/z/my-project/upload/canonical_apks/eu.veldsoft.free.klondike_3.apk",
++    "/home/z/my-project/upload/canonical_apks/eu.veldsoft.tri.peaks_4.apk",
++    "/home/z/my-project/upload/canonical_apks/stack.tower3d_1.apk",
++]
++OUT = "/home/z/my-project/work/miniandroid/evidence/s197_c8/S197_C8_CONCURRENCY_DECODE.json"
++
++CONC = re.compile(
++    r"^(?:"
++    r"Landroid/os/(?:Handler|Looper|Message|MessageQueue|HandlerThread|"
++    r"SystemClock|CountDownTimer|AsyncTask|Messenger|Process);"
++    r"|Ljava/lang/(?:Thread|Runnable|ThreadLocal|InheritableThreadLocal|"
++    r"ThreadGroup|Object|InterruptedException|IllegalMonitorStateException|"
++    r"Thread\$UncaughtExceptionHandler|Thread\$State|AutoCloseable);"
++    r"|Ljava/util/concurrent/.+"
++    r"|Ljava/util/(?:Timer|TimerTask|concurrent/.+);"
++    r"|Lkotlin/concurrent/.+"
++    r"|Lkotlinx/coroutines/.+"
++    r")$")
++
++INVOKE_RE = re.compile(r"(L[^;]+;)->([^:\s(]+)")
++
++
++def decode(apk):
++    a, d, dx = AnalyzeAPK(apk)
++    refs = {}
++    monitors = 0
++    sync_methods = 0
++    total_invokes = 0
++    classes_total = set()
++    pkg = a.get_package()
++
++    for meth_analysis in dx.get_methods():
++        if meth_analysis.is_external():
++            continue
++        enc = meth_analysis.get_method()
++        code = enc.get_code() if enc is not None else None
++        if code is None:
++            continue
++        if enc.get_access_flags() & 0x100:
++            sync_methods += 1
++        cls = "L" + enc.get_class_name().replace(".", "/") + ";"
++        classes_total.add(cls)
++        for ins in enc.get_instructions():
++            name = ins.get_name()
++            if name == "monitor-enter":
++                monitors += 1
++                continue
++            if name == "monitor-exit":
++                continue
++            if not name.startswith("invoke"):
++                continue
++            out = ins.get_output()
++            mm = INVOKE_RE.search(out)
++            if not mm:
++                continue
++            tcls, tmet = mm.group(1), mm.group(2)
++            if not CONC.match(tcls):
++                continue
++            total_invokes += 1
++            refs.setdefault(tcls, {}).setdefault(tmet, 0)
++            refs[tcls][tmet] += 1
++
++    return {
++        "apk": os.path.basename(apk),
++        "pkg": pkg,
++        "app_classes": len(classes_total),
++        "conc_invoke_sites": total_invokes,
++        "monitor_enter": monitors,
++        "synchronized_methods": sync_methods,
++        "refs": {c: dict(sorted(v.items(), key=lambda kv: -kv[1]))
++                 for c, v in sorted(refs.items())},
++    }
++
++
++def main():
++    per_apk = []
++    for apk in APKS:
++        try:
++            r = decode(apk)
++            per_apk.append(r)
++            print(f"[OK] {r['apk']:42s} conc_sites={r['conc_invoke_sites']:5d} "
++                  f"monitors={r['monitor_enter']:4d} sync_m={r['synchronized_methods']:3d} "
++                  f"classes={r['app_classes']}", flush=True)
++        except Exception as e:  # noqa: BLE001
++            print(f"[FAIL] {apk}: {e}", file=sys.stderr)
++            per_apk.append({"apk": os.path.basename(apk), "error": str(e)})
++
++    agg = {}
++    for r in per_apk:
++        if "error" in r:
++            continue
++        for c, meths in r["refs"].items():
++            for met, n in meths.items():
++                e = agg.setdefault(c, {}).setdefault(met, {"apks": [], "total": 0})
++                e["apks"].append(r["apk"])
++                e["total"] += n
++
++    os.makedirs(os.path.dirname(OUT), exist_ok=True)
++    with open(OUT, "w") as f:
++        json.dump({"per_apk": per_apk, "aggregate": agg}, f, indent=1, sort_keys=True)
++
++    print("\n=== TOP consumed concurrency (class · method · #apks · total) ===")
++    flat = []
++    for c, meths in agg.items():
++        for met, e in meths.items():
++            flat.append((len(set(e["apks"])), e["total"], c, met))
++    flat.sort(reverse=True)
++    for napks, tot, c, met in flat[:100]:
++        print(f"{napks} apk {tot:5d}x  {c}.{met}")
++    print(f"\nunique (class,method) pairs in Coder-8 domain: {len(flat)}")
++    print("wrote", OUT)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlin/Unit.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/Unit.java
+new file mode 100644
+index 0000000..a6bfa7b
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/Unit.java
+@@ -0,0 +1,9 @@
++package kotlin;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlin.Unit). Never dex'd into the
++// probe APK — the engine law owns the DEX surface.
++public final class Unit {
++    public static final Unit INSTANCE = new Unit();
++    private Unit() {}
++    @Override public String toString() { return "kotlin.Unit"; }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlin/concurrent/ThreadsKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/concurrent/ThreadsKt.java
+new file mode 100644
+index 0000000..5ab7dfd
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/concurrent/ThreadsKt.java
+@@ -0,0 +1,22 @@
++package kotlin.concurrent;
++
++import kotlin.Unit;
++import kotlin.jvm.functions.Function0;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlin-stdlib ThreadsKt). Never dex'd
++// into the probe APK — the engine law F-C8-203/204 owns the DEX surface.
++// Signatures mirror kotlin-stdlib 1.9 kotlin/concurrent/Threads.kt.
++public class ThreadsKt {
++    public static Thread thread(boolean start, boolean isDaemon,
++                                ClassLoader contextClassLoader, String name,
++                                int priority, Function0<Unit> block) {
++        throw new RuntimeException("stub");
++    }
++    public static Thread thread$default(boolean start, boolean isDaemon,
++                                        ClassLoader contextClassLoader,
++                                        String name, int priority,
++                                        Function0<Unit> block, int mask,
++                                        Object marker) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlin/concurrent/TimersKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/concurrent/TimersKt.java
+new file mode 100644
+index 0000000..77e316e
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/concurrent/TimersKt.java
+@@ -0,0 +1,28 @@
++package kotlin.concurrent;
++
++import java.util.Timer;
++import java.util.TimerTask;
++
++import kotlin.Unit;
++import kotlin.jvm.functions.Function0;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlin-stdlib TimersKt). Never dex'd
++// into the probe APK — the engine law F-C8-201/202 owns the DEX surface.
++// Signatures mirror kotlin-stdlib 1.9 kotlin/concurrent/Timer.kt.
++public class TimersKt {
++    public static Timer timer(long initialDelayMillis, long periodMillis,
++                              Function0<Unit> action) {
++        throw new RuntimeException("stub");
++    }
++    public static Timer timer(long periodMillis, Function0<Unit> action) {
++        throw new RuntimeException("stub");
++    }
++    public static Timer timer(String name, boolean daemon,
++                              long initialDelayMillis, long periodMillis,
++                              Function0<Unit> action) {
++        throw new RuntimeException("stub");
++    }
++    public static TimerTask timerTask(Function0<Unit> action) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlin/coroutines/CoroutineContext.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/coroutines/CoroutineContext.java
+new file mode 100644
+index 0000000..d14b74c
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/coroutines/CoroutineContext.java
+@@ -0,0 +1,4 @@
++package kotlin.coroutines;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (CoroutineContext marker).
++public interface CoroutineContext {}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlin/jvm/functions/Function0.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/jvm/functions/Function0.java
+new file mode 100644
+index 0000000..3598585
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/jvm/functions/Function0.java
+@@ -0,0 +1,7 @@
++package kotlin.jvm.functions;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlin Function0). Never dex'd into
++// the probe APK — the engine block-dispatch law owns the DEX surface.
++public interface Function0<R> {
++    R invoke();
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlin/jvm/functions/Function1.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/jvm/functions/Function1.java
+new file mode 100644
+index 0000000..b90ba3a
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/jvm/functions/Function1.java
+@@ -0,0 +1,6 @@
++package kotlin.jvm.functions;
++
++// [S196-C8] COMPILE-TIME-ONLY stub (CompletionHandler shape).
++public interface Function1<P1, R> {
++    R invoke(P1 p1);
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlin/jvm/functions/Function2.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/jvm/functions/Function2.java
+new file mode 100644
+index 0000000..3673733
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/jvm/functions/Function2.java
+@@ -0,0 +1,7 @@
++package kotlin.jvm.functions;
++
++// [S195-C8] COMPILE-TIME-ONLY stub (kotlin Function2). Never dex'd —
++// the engine laws own the captured-block dispatch.
++public interface Function2<P1, P2, R> {
++    R invoke(P1 p1, P2 p2);
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlin/sequences/Sequence.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/sequences/Sequence.java
+new file mode 100644
+index 0000000..55705ac
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlin/sequences/Sequence.java
+@@ -0,0 +1,6 @@
++package kotlin.sequences;
++
++// [S196-C8] COMPILE-TIME-ONLY stub.
++public interface Sequence<T> {
++    java.util.Iterator<T> iterator();
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/AbstractTimeSource.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/AbstractTimeSource.java
+new file mode 100644
+index 0000000..7380c87
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/AbstractTimeSource.java
+@@ -0,0 +1,14 @@
++package kotlinx.coroutines;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlinx AbstractTimeSource). Never
++// dex'd into the probe APK.
++public abstract class AbstractTimeSource {
++    public abstract long nanoTime();
++    public abstract long currentTimeMillis();
++    public abstract void parkNanos(Object owner, long nanos);
++    public abstract void unpark(Object owner);
++    public abstract void trackTask();
++    public abstract void unTrackTask();
++    public abstract void registerTimeLoopThread();
++    public abstract void unregisterTimeLoopThread();
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/AbstractTimeSourceKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/AbstractTimeSourceKt.java
+new file mode 100644
+index 0000000..64c54b5
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/AbstractTimeSourceKt.java
+@@ -0,0 +1,9 @@
++package kotlinx.coroutines;
++
++// [S194-C8] COMPILE-TIME-ONLY stub (kotlinx AbstractTimeSourceKt). Never
++// dex'd into the probe APK — the engine law F-C8-210 owns the surface.
++public class AbstractTimeSourceKt {
++    public static AbstractTimeSource getTimeSource() {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/BuildersKt.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/BuildersKt.java
+new file mode 100644
+index 0000000..f86c682
+--- /dev/null
++++ b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/BuildersKt.java
+@@ -0,0 +1,17 @@
++package kotlinx.coroutines;
++
++import kotlin.jvm.functions.Function2;
++
++// [S196-C8] COMPILE-TIME-ONLY stub. Engine law owns the surface.
++public class BuildersKt {
++    public static Job launch(CoroutineScope scope, Function2 block) {
++        throw new RuntimeException("stub");
++    }
++    public static Object withContext(kotlin.coroutines.CoroutineContext ctx,
++            Function2 block) {
++        throw new RuntimeException("stub");
++    }
++    public static Object runBlocking$default(kotlin.coroutines.CoroutineContext ctx, Function2 block, int mask, Object marker) {
++        throw new RuntimeException("stub");
++    }
++}
+diff --git a/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CancellableContinuationImpl.java b/tests/fixtures/c8_concurrency_probe/kstub/kotlinx/coroutines/CancellableContinuationImpl.java
+new file mode 100644
+index 0000000..a715b84
+--- /dev/null

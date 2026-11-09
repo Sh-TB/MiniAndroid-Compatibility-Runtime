@@ -1,0 +1,1682 @@
+diff --git a/evidence/c7_w6/EVIDENCE.txt b/evidence/c7_w6/EVIDENCE.txt
+new file mode 100644
+index 00000000..e7a987a6
+--- /dev/null
++++ b/evidence/c7_w6/EVIDENCE.txt
+@@ -0,0 +1,11 @@
++probe APKs:
++8fa92989583a444273411aa3154c55ad2a0a3689364b40539e6c2b0a75880680  fixtures/c7_pkg_store_probe/apks/c7pkgstore_browser.apk
++ac30d91307fa42aff9b5fe0678e3a7bb189ef15371cf52c4b715c8311b6f93f7  fixtures/c7_pkg_store_probe/apks/c7pkgstore_main.apk
++6d8ec1d9d17efe6c11646cc8681aee936198162c3605f484505044a4c6bc1b7f  fixtures/c7_pkg_store_probe/apks/c7pkgstore_share.apk
++binary:
++85352ae03982fc4c03534dbd3dca4b3ccb0a9228da06aee4bdf9b4b7850ad67f  miniandroid/build/miniandroid
++base: S185 8057943143282b0875d52faa47f5c433bb92639b + W5 patch 520-c18/c19 (sha256 b4aeb36281d41495 reconstruction)
++w6 20-op per-run (x6 identical): 24ae2c3af87e3870...
++w5 16-op golden on W6 binary: 664564f24cb19f52 (== recorded)
++34-op no-store: 4aa8f51c87291783 (== recorded)
++activity-chain no-store: 60b4a75acd3a223f (== recorded)
+diff --git a/evidence/c7_w6/androguard_check.json b/evidence/c7_w6/androguard_check.json
+new file mode 100644
+index 00000000..e64684cf
+--- /dev/null
++++ b/evidence/c7_w6/androguard_check.json
+@@ -0,0 +1,55 @@
++{
++ "all_ok": true,
++ "fixtures": {
++  "c7pkgstore_browser": {
++   "package": "c7.store.browser",
++   "pkg_ok": true,
++   "providers": {
++    "c7.store.browser.ClipProvider": {
++     "enabled": true,
++     "exported": true,
++     "match": true
++    },
++    "c7.store.browser.DeadProvider": {
++     "enabled": false,
++     "exported": true,
++     "match": true
++    }
++   },
++   "receivers": {
++    "c7.store.browser.BrowserPingReceiver": {
++     "enabled": true,
++     "exported": true,
++     "match": true
++    },
++    "c7.store.browser.NoisyReceiver": {
++     "enabled": true,
++     "exported": false,
++     "match": true
++    }
++   },
++   "services": {}
++  },
++  "c7pkgstore_main": {
++   "package": "c7.store.main",
++   "pkg_ok": true,
++   "providers": {},
++   "receivers": {},
++   "services": {}
++  },
++  "c7pkgstore_share": {
++   "package": "c7.store.share",
++   "pkg_ok": true,
++   "providers": {},
++   "receivers": {},
++   "services": {
++    "c7.store.share.ShareService": {
++     "enabled": true,
++     "exported": true,
++     "match": true
++    }
++   }
++  }
++ },
++ "tool": "androguard-4.1.4"
++}
+diff --git a/evidence/c7_w6/c7store_cold_results.jsonl b/evidence/c7_w6/c7store_cold_results.jsonl
+new file mode 100644
+index 00000000..bfd5e9a4
+--- /dev/null
++++ b/evidence/c7_w6/c7store_cold_results.jsonl
+@@ -0,0 +1,63 @@
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
++C7|X20|PASS|foreign onReceive executed: ping:pkg=c7.store.browser;action=c7.store.BrowserPing;deliveries=1
++
++C7|X21|PASS|foreign service lifecycle executed (create+start)
++C7|X22|PASS|foreign provider query rows=2
++C7|X23|PASS|non-exported foreign receiver denied
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
++C7|X20|PASS|foreign onReceive executed: ping:pkg=c7.store.browser;action=c7.store.BrowserPing;deliveries=1
++
++C7|X21|PASS|foreign service lifecycle executed (create+start)
++C7|X22|PASS|foreign provider query rows=2
++C7|X23|PASS|non-exported foreign receiver denied
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
++C7|X20|PASS|foreign onReceive executed: ping:pkg=c7.store.browser;action=c7.store.BrowserPing;deliveries=1
++
++C7|X21|PASS|foreign service lifecycle executed (create+start)
++C7|X22|PASS|foreign provider query rows=2
++C7|X23|PASS|non-exported foreign receiver denied
+diff --git a/evidence/c7_w6/c7store_results.jsonl b/evidence/c7_w6/c7store_results.jsonl
+new file mode 100644
+index 00000000..4620afd3
+--- /dev/null
++++ b/evidence/c7_w6/c7store_results.jsonl
+@@ -0,0 +1,21 @@
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
++C7|X20|PASS|foreign onReceive executed: ping:pkg=c7.store.browser;action=c7.store.BrowserPing;deliveries=1
++
++C7|X21|PASS|foreign service lifecycle executed (create+start)
++C7|X22|PASS|foreign provider query rows=2
++C7|X23|PASS|non-exported foreign receiver denied
+diff --git a/evidence/c7_w6/c7store_warm_results.jsonl b/evidence/c7_w6/c7store_warm_results.jsonl
+new file mode 100644
+index 00000000..bfd5e9a4
+--- /dev/null
++++ b/evidence/c7_w6/c7store_warm_results.jsonl
+@@ -0,0 +1,63 @@
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
++C7|X20|PASS|foreign onReceive executed: ping:pkg=c7.store.browser;action=c7.store.BrowserPing;deliveries=1
++
++C7|X21|PASS|foreign service lifecycle executed (create+start)
++C7|X22|PASS|foreign provider query rows=2
++C7|X23|PASS|non-exported foreign receiver denied
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
++C7|X20|PASS|foreign onReceive executed: ping:pkg=c7.store.browser;action=c7.store.BrowserPing;deliveries=1
++
++C7|X21|PASS|foreign service lifecycle executed (create+start)
++C7|X22|PASS|foreign provider query rows=2
++C7|X23|PASS|non-exported foreign receiver denied
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
++C7|X20|PASS|foreign onReceive executed: ping:pkg=c7.store.browser;action=c7.store.BrowserPing;deliveries=1
++
++C7|X21|PASS|foreign service lifecycle executed (create+start)
++C7|X22|PASS|foreign provider query rows=2
++C7|X23|PASS|non-exported foreign receiver denied
+diff --git a/evidence/c7_w6/cold1_file_io.jsonl b/evidence/c7_w6/cold1_file_io.jsonl
+new file mode 100644
+index 00000000..853857ff
+--- /dev/null
++++ b/evidence/c7_w6/cold1_file_io.jsonl
+@@ -0,0 +1,50 @@
++{"seq":0,"op":"C7-STORE","path":"c7pkgstore_browser.apk","result":"SUCCESS","subsystem":"pkg=c7.store.browser cache=COLD","caller":"C7PackageIndex","package":"c7.store.main"}
++{"seq":1,"op":"C7-STORE","path":"c7pkgstore_main.apk","result":"SUCCESS","subsystem":"pkg=c7.store.main cache=COLD","caller":"C7PackageIndex","package":"c7.store.main"}
++{"seq":2,"op":"C7-STORE","path":"c7pkgstore_share.apk","result":"SUCCESS","subsystem":"pkg=c7.store.share cache=COLD","caller":"C7PackageIndex","package":"c7.store.main"}
++{"seq":3,"op":"C7-STORE-DONE","path":"/home/z/my-project/c7tree/run/c7w6/store","result":"SUCCESS","subsystem":"packages=3 cold=3 warm=0 failed=0","caller":"C7PackageIndex","package":"c7.store.main"}
++{"seq":4,"op":"C7-STORE-OWN","path":"c7.store.main","result":"SUCCESS","subsystem":"components: a=1 s=0 r=0 p=0","caller":"C7PackageIndex","package":"c7.store.main"}
++{"seq":5,"op":"C7-STORE-DEX","path":"c7.store.browser","result":"SUCCESS","subsystem":"foreign code ingested from c7pkgstore_browser.apk: classes=9","caller":"inject_foreign_apk_code","package":"c7.store.main"}
++{"seq":6,"op":"C7-STORE-DEX","path":"c7.store.share","result":"SUCCESS","subsystem":"foreign code ingested from c7pkgstore_share.apk: classes=3","caller":"inject_foreign_apk_code","package":"c7.store.main"}
++{"seq":7,"op":"PM-INSTALLED","path":"getInstalledPackages","result":"SUCCESS","subsystem":"packages=3","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":8,"op":"PM-INSTALLED","path":"getInstalledApplications","result":"SUCCESS","subsystem":"packages=3","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":9,"op":"PM-RESOLVE","path":"android.intent.action.VIEW","result":"SUCCESS","subsystem":"queryIntentActivities matches=2 (MATCH_DEFAULT_ONLY)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":10,"op":"PM-RESOLVE","path":"android.intent.action.VIEW","result":"SUCCESS","subsystem":"queryIntentActivities matches=2 (MATCH_DEFAULT_ONLY)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":11,"op":"PM-RESOLVE","path":"android.intent.action.SEND","result":"SUCCESS","subsystem":"queryIntentActivities matches=1 (MATCH_DEFAULT_ONLY)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":12,"op":"PM-RESOLVE","path":"android.intent.action.VIEW","result":"SUCCESS","subsystem":"queryIntentActivities matches=3","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":13,"op":"PM-RESOLVE","path":"android.intent.action.VIEW","result":"SUCCESS","subsystem":"queryIntentActivities matches=2 (MATCH_DEFAULT_ONLY)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":14,"op":"PM-RESOLVE","path":"c7.store.BrowserPing","result":"SUCCESS","subsystem":"queryBroadcastReceivers matches=1","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":15,"op":"PM-RESOLVE","path":"c7.store.SHARE_SVC","result":"SUCCESS","subsystem":"queryIntentServices matches=1","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":16,"op":"PM-RCP-XPKG","path":"c7.store.clips","result":"SUCCESS","subsystem":"pkg=c7.store.browser cls=c7.store.browser.ClipProvider","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":17,"op":"PM-PROVIDERS","path":"queryContentProviders","result":"SUCCESS","subsystem":"providers=1","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":18,"op":"PM-PKGINFO-XPKG","path":"c7.store.browser","result":"SUCCESS","subsystem":"foreign package identity from store (flags=8)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":19,"op":"PM-PKGINFO-XPKG","path":"c7.store.share","result":"SUCCESS","subsystem":"foreign package identity from store (flags=4)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":20,"op":"PM-INSTALLED","path":"getInstalledPackages","result":"SUCCESS","subsystem":"packages=3","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":21,"op":"BCAST-XPKG-EXEC","path":"c7.store.browser/c7.store.browser.BrowserPingReceiver","result":"SUCCESS","subsystem":"foreign receiver candidate — REAL onReceive will execute (action=c7.store.BrowserPing)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":22,"op":"CTX-XPKG-PKGNAME","path":"Lc7/store/browser/BrowserPingReceiver; → c7.store.browser","result":"SUCCESS","subsystem":"foreign component context identity (AOSP ContextImpl per-package base context)","caller":"Lc7/store/browser/BrowserPingReceiver;.onReceive","package":"c7.store.main"}
++{"seq":23,"op":"OPEN","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt (write+append)","result":"SUCCESS","subsystem":"Context.openFileOutput","caller":"Lc7/store/browser/BrowserPingReceiver;.handshake","package":"c7.store.main"}
++{"seq":24,"op":"WRITE","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt","result":"SUCCESS","subsystem":"FileOutputStream.write (67 bytes)","caller":"Lc7/store/browser/BrowserPingReceiver;.handshake","package":"c7.store.main"}
++{"seq":25,"op":"CLOSE","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt","result":"SUCCESS","subsystem":"FileOutputStream.close","caller":"Lc7/store/browser/BrowserPingReceiver;.handshake","package":"c7.store.main"}
++{"seq":26,"op":"BCAST-SEND","path":"c7.store.BrowserPing","result":"SUCCESS","subsystem":"delivered=1 order=[c7.store.browser.BrowserPingReceiver@0]","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":27,"op":"OPEN","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt","result":"SUCCESS","subsystem":"Context.openFileInput","caller":"Lc7/store/main/Main;.readHandshake","package":"c7.store.main"}
++{"seq":28,"op":"SVC-XPKG","path":"c7.store.share/c7.store.share.ShareService","result":"SUCCESS","subsystem":"foreign service gates passed (exported, permission ok) — REAL lifecycle will execute","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":29,"op":"SVC-INIT","path":"Lc7/store/share/ShareService;","result":"SUCCESS","subsystem":"newInstance() law: <init>()V dispatched before onCreate","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":30,"op":"CTX-XPKG-PKGNAME","path":"Lc7/store/share/ShareService; → c7.store.share","result":"SUCCESS","subsystem":"foreign component context identity (AOSP ContextImpl per-package base context)","caller":"Lc7/store/share/ShareService;.onCreate","package":"c7.store.main"}
++{"seq":31,"op":"OPEN","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt (write+append)","result":"SUCCESS","subsystem":"Context.openFileOutput","caller":"Lc7/store/share/ShareService;.handshake","package":"c7.store.main"}
++{"seq":32,"op":"WRITE","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt","result":"SUCCESS","subsystem":"FileOutputStream.write (30 bytes)","caller":"Lc7/store/share/ShareService;.handshake","package":"c7.store.main"}
++{"seq":33,"op":"CLOSE","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt","result":"SUCCESS","subsystem":"FileOutputStream.close","caller":"Lc7/store/share/ShareService;.handshake","package":"c7.store.main"}
++{"seq":34,"op":"SVC-START","path":"Lc7/store/share/ShareService;","result":"SUCCESS","subsystem":"onCreate delivered","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":35,"op":"CTX-XPKG-PKGNAME","path":"Lc7/store/share/ShareService; → c7.store.share","result":"SUCCESS","subsystem":"foreign component context identity (AOSP ContextImpl per-package base context)","caller":"Lc7/store/share/ShareService;.onStartCommand","package":"c7.store.main"}
++{"seq":36,"op":"OPEN","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt (write+append)","result":"SUCCESS","subsystem":"Context.openFileOutput","caller":"Lc7/store/share/ShareService;.handshake","package":"c7.store.main"}
++{"seq":37,"op":"WRITE","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt","result":"SUCCESS","subsystem":"FileOutputStream.write (46 bytes)","caller":"Lc7/store/share/ShareService;.handshake","package":"c7.store.main"}
++{"seq":38,"op":"CLOSE","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt","result":"SUCCESS","subsystem":"FileOutputStream.close","caller":"Lc7/store/share/ShareService;.handshake","package":"c7.store.main"}
++{"seq":39,"op":"SVC-START","path":"Lc7/store/share/ShareService;","result":"SUCCESS","subsystem":"onStartCommand startId=1 (live service)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":40,"op":"OPEN","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt","result":"SUCCESS","subsystem":"Context.openFileInput","caller":"Lc7/store/main/Main;.readHandshake","package":"c7.store.main"}
++{"seq":41,"op":"PROV-XPKG-EXEC","path":"c7.store.browser/c7.store.browser.ClipProvider","result":"SUCCESS","subsystem":"foreign provider INSTALLED from store (authority=c7.store.clips) attachInfo+onCreate OK — REAL CRUD dispatch follows","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":42,"op":"PROVIDER-query","path":"content://c7.store.clips/rows","result":"SUCCESS","subsystem":"provider=c7.store.browser.ClipProvider dispatched","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":43,"op":"BCAST-DENY","path":"c7.store.browser/c7.store.browser.NoisyReceiver","result":"FAILURE","subsystem":"foreign receiver not exported (AOSP checkComponentPermission: foreign sender)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":44,"op":"BCAST-SEND","path":"c7.store.Noisy","result":"SUCCESS","subsystem":"delivered=0 order=[]","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":45,"op":"OPEN","path":"runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt","result":"SUCCESS","subsystem":"Context.openFileInput","caller":"Lc7/store/main/Main;.readHandshake","package":"c7.store.main"}
++{"seq":46,"op":"OPEN","path":"runtime/data/data/data/c7.store.main/files/c7store_results.jsonl (write)","result":"SUCCESS","subsystem":"Context.openFileOutput","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":47,"op":"WRITE","path":"runtime/data/data/data/c7.store.main/files/c7store_results.jsonl","result":"SUCCESS","subsystem":"FileOutputStream.write (953 bytes)","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"seq":48,"op":"CLOSE","path":"runtime/data/data/data/c7.store.main/files/c7store_results.jsonl","result":"SUCCESS","subsystem":"FileOutputStream.close","caller":"Lc7/store/main/Main;.onCreate","package":"c7.store.main"}
++{"summary":{"total_ops":49,"failures":1,"events_emitted":49,"events_dropped":0,"package":"c7.store.main","BCAST-DENY":1,"BCAST-SEND":2,"BCAST-XPKG-EXEC":1,"C7-STORE":3,"C7-STORE-DEX":2,"C7-STORE-DONE":1,"C7-STORE-OWN":1,"CLOSE":4,"CTX-XPKG-PKGNAME":3,"OPEN":7,"PM-INSTALLED":3,"PM-PKGINFO-XPKG":2,"PM-PROVIDERS":1,"PM-RCP-XPKG":1,"PM-RESOLVE":7,"PROV-XPKG-EXEC":1,"PROVIDER-query":1,"SVC-INIT":1,"SVC-START":2,"SVC-XPKG":1,"WRITE":4}}
+diff --git a/evidence/c7_w6/x16_w5_golden.jsonl b/evidence/c7_w6/x16_w5_golden.jsonl
+new file mode 100644
+index 00000000..119f60c6
+--- /dev/null
++++ b/evidence/c7_w6/x16_w5_golden.jsonl
+@@ -0,0 +1,16 @@
++C7|X01|PASS|installed=3
++C7|X02|PASS|apps=3
++C7|X03|PASS|browser resolved; dead+nodefault excluded
++C7|X04|PASS|resolve=c7.store.browser.BrowserActivity
++C7|X05|PASS|exported=false identity visible to query
++C7|X06|PASS|share resolved by MIME
++C7|X07|PASS|CATEGORY_DEFAULT law across packages
++C7|X08|PASS|foreign receiver resolved (list=1)
++C7|X09|PASS|foreign service resolved
++C7|X10|PASS|authority -> c7.store.browser.ClipProvider
++C7|X11|PASS|published table lists c7.store.clips
++C7|X12|PASS|disabled provider unpublished
++C7|X13|PASS|unknown authority answers null
++C7|X14|PASS|foreign PackageInfo providers=2
++C7|X15|PASS|foreign PackageInfo services=1
++C7|X16|PASS|own package in the installed set
+diff --git a/fixtures/c7_pkg_store_probe/c7pkgstore_browser/AndroidManifest.xml b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/AndroidManifest.xml
+index 5b9f7bd8..3fc785bd 100644
+--- a/fixtures/c7_pkg_store_probe/c7pkgstore_browser/AndroidManifest.xml
++++ b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/AndroidManifest.xml
+@@ -64,5 +64,13 @@
+                 <action android:name="c7.store.BrowserPing" />
+             </intent-filter>
+         </receiver>
++        <!-- CODER7 WAVE-6: the exported=false receiver — the foreign
++             sender (running package) must be DENIED (X23 negative law;
++             the real onReceive must never run). -->
++        <receiver android:name=".NoisyReceiver" android:exported="false">
++            <intent-filter>
++                <action android:name="c7.store.Noisy" />
++            </intent-filter>
++        </receiver>
+     </application>
+ </manifest>
+diff --git a/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/BrowserPingReceiver.java b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/BrowserPingReceiver.java
+index c00f7487..684419aa 100644
+--- a/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/BrowserPingReceiver.java
++++ b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/BrowserPingReceiver.java
+@@ -3,9 +3,38 @@ package c7.store.browser;
+ import android.content.BroadcastReceiver;
+ import android.content.Context;
+ import android.content.Intent;
++import java.io.FileOutputStream;
+ 
+-/** The foreign-receiver fixture (BCAST-XPKG resolution row evidence). */
++/** CODER7 WAVE-6: the foreign receiver that now EXECUTES real code
++ *  (LoadedApk-lite). The pre-W6 engine only emitted a BCAST-XPKG
++ *  "resolved, not executed" row; WAVE-6 delivers the broadcast into THIS
++ *  real onReceive. The receiver appends its FOREIGN identity to the
++ *  shared sandbox handshake file — the file content is written by the
++ *  foreign package's own bytecode, so the running app's verdict row
++ *  X20 is a real execution proof, not an engine assertion. */
+ public class BrowserPingReceiver extends BroadcastReceiver {
++    public static int deliveries = 0;
++
++    private static void handshake(Context ctx, String line) {
++        try {
++            // AOSP MODE_APPEND law: append when present, create when
++            // absent — no java.io.File probe needed (the engine sandbox
++            // maps Context paths, not bare relative File paths).
++            FileOutputStream fos = ctx.openFileOutput(
++                "xpkg_handshake.txt", Context.MODE_APPEND);
++            fos.write((line + "\n").getBytes("UTF-8"));
++            fos.close();
++        } catch (Throwable t) {
++            // No silent fabrication: a failed handshake leaves the marker
++            // absent (the X20 verdict then fails honestly).
++        }
++    }
++
+     @Override public void onReceive(Context ctx, Intent i) {
++        deliveries++;
++        String action = i == null ? "null" : i.getAction();
++        handshake(ctx, "ping:pkg=" + ctx.getPackageName()
++                          + ";action=" + action
++                          + ";deliveries=" + deliveries);
+     }
+ }
+diff --git a/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/ClipProvider.java b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/ClipProvider.java
+index 0c781bb3..e073d2ad 100644
+--- a/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/ClipProvider.java
++++ b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/ClipProvider.java
+@@ -3,14 +3,30 @@ package c7.store.browser;
+ import android.content.ContentProvider;
+ import android.content.ContentValues;
+ import android.database.Cursor;
++import android.database.MatrixCursor;
+ import android.net.Uri;
+ 
+-/** The cross-package authority fixture (c7.store.clips). */
++/** CODER7 WAVE-6: the cross-package authority fixture (c7.store.clips)
++ *  now serves REAL rows — the LoadedApk-lite install path
++ *  (attachInfo+onCreate) followed by the unmodified CRUD dispatch into
++ *  THIS query bytecode. Two rows: the X22 verdict counts them across
++ *  the process boundary. */
+ public class ClipProvider extends ContentProvider {
++    public static int queryCalls = 0;
++    public static final String[] COLS = {"_id", "clip"};
++
+     @Override public boolean onCreate() { return true; }
+     @Override public Cursor query(Uri uri, String[] p, String sel,
+-                                  String[] args, String sort) { return null; }
+-    @Override public String getType(Uri uri) { return "vnd.android.cursor.item/clip"; }
++                                  String[] args, String sort) {
++        queryCalls++;
++        MatrixCursor c = new MatrixCursor(COLS);
++        c.addRow(new Object[]{"1", "clip-alpha"});
++        c.addRow(new Object[]{"2", "clip-beta"});
++        return c;
++    }
++    @Override public String getType(Uri uri) {
++        return "vnd.android.cursor.item/clip";
++    }
+     @Override public Uri insert(Uri uri, ContentValues v) { return null; }
+     @Override public int delete(Uri uri, String sel, String[] args) { return 0; }
+     @Override public int update(Uri uri, ContentValues v, String sel, String[] a) { return 0; }
+diff --git a/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/NoisyReceiver.java b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/NoisyReceiver.java
+new file mode 100644
+index 00000000..605c3527
+--- /dev/null
++++ b/fixtures/c7_pkg_store_probe/c7pkgstore_browser/src/c7/store/browser/NoisyReceiver.java
+@@ -0,0 +1,29 @@
++package c7.store.browser;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import java.io.FileOutputStream;
++
++/** CODER7 WAVE-6: the exported=false foreign receiver — the negative
++ *  law fixture. The running package (a FOREIGN sender) broadcasts the
++ *  Noisy action; AOSP checkComponentPermission denies the delivery.
++ *  The marker must stay ABSENT from the handshake file (X23 reads it:
++ *  no "noisy-fired" line). If WAVE-6 execution ever bypassed the
++ *  exported gate, this class's real bytecode would write the marker
++ *  and the verdict would fail loudly. */
++public class NoisyReceiver extends BroadcastReceiver {
++    @Override public void onReceive(Context ctx, Intent i) {
++        try {
++            // AOSP MODE_APPEND law: append when present, create when
++            // absent — no java.io.File probe needed (the engine sandbox
++            // maps Context paths, not bare relative File paths).
++            FileOutputStream fos = ctx.openFileOutput(
++                "xpkg_handshake.txt", Context.MODE_APPEND);
++            fos.write("noisy-fired\n".getBytes("UTF-8"));
++            fos.close();
++        } catch (Throwable t) {
++            // marker absent = deny held; a failed write is not a pass.
++        }
++    }
++}
+diff --git a/fixtures/c7_pkg_store_probe/c7pkgstore_main/src/c7/store/main/Main.java b/fixtures/c7_pkg_store_probe/c7pkgstore_main/src/c7/store/main/Main.java
+index f729a83e..1afe3351 100644
+--- a/fixtures/c7_pkg_store_probe/c7pkgstore_main/src/c7/store/main/Main.java
++++ b/fixtures/c7_pkg_store_probe/c7pkgstore_main/src/c7/store/main/Main.java
+@@ -38,6 +38,23 @@ public class Main extends Activity {
+         return false;
+     }
+ 
++    /** Reads the shared sandbox handshake file the foreign components'
++     *  REAL bytecode appends to (the WAVE-6 execution-proof channel). */
++    static String readHandshake(android.content.Context ctx) {
++        // AOSP openFileInput contract: FileNotFoundException when the file
++        // is absent (the deny case for X23 — no marker was ever written).
++        try {
++            java.io.FileInputStream fis = ctx.openFileInput(
++                "xpkg_handshake.txt");
++            byte[] buf = new byte[4096];
++            int got = fis.read(buf);
++            fis.close();
++            return got > 0 ? new String(buf, 0, got, "UTF-8") : "";
++        } catch (java.io.FileNotFoundException absent) {
++            return "";
++        } catch (Throwable t) { return ""; }
++    }
++
+     @Override protected void onCreate(android.os.Bundle b) {
+         super.onCreate(b);
+         PackageManager pm = getPackageManager();
+@@ -232,11 +249,62 @@ public class Main extends Activity {
+             else bad("X16", "own package missing");
+         } catch (Throwable t) { bad("X16", "EX " + t.getClass().getName()); }
+ 
+-        // ── The dispatch-side evidence: this action matches ONLY the
+-        //    foreign receiver — the engine records the BCAST-XPKG row ────
++        // ── CODER7 WAVE-6: the foreign-component EXECUTION ops ──────────
++        // X20-X23 exercise the LoadedApk-lite path: the store receiver,
++        // service and provider run their REAL bytecode inside this
++        // process, and the handshake file (written by the FOREIGN
++        // package's own code) carries the execution proof back.
++
++        // ── X20: foreign receiver EXECUTES real onReceive (the W5
++        //    BCAST-XPKG "resolved, not executed" row becomes a real
++        //    delivery — the handshake line is written by the foreign
++        //    package's own bytecode, with the WAVE-6 context-identity law
++        //    answering the FOREIGN package name) ─────────────────────────
+         try {
+             sendBroadcast(new Intent("c7.store.BrowserPing"));
+-        } catch (Throwable t) { bad("SEND", "EX " + t.getClass().getName()); }
++            String hs = readHandshake(this);
++            boolean pinged = hs.indexOf("ping:pkg=c7.store.browser") >= 0;
++            if (pinged) ok("X20", "foreign onReceive executed: " + hs);
++            else bad("X20", "no ping marker; hs=" + hs);
++        } catch (Throwable t) { bad("X20", "EX " + t.getClass().getName()); }
++
++        // ── X21: foreign service EXECUTES real onCreate+onStartCommand ──
++        try {
++            Intent s = new Intent();
++            s.setClassName("c7.store.share", "c7.store.share.ShareService");
++            startService(s);
++            String hs = readHandshake(this);
++            boolean created =
++                hs.indexOf("svc-create:pkg=c7.store.share") >= 0;
++            boolean started =
++                hs.indexOf("svc-start:pkg=c7.store.share") >= 0;
++            if (created && started)
++                ok("X21", "foreign service lifecycle executed (create+start)");
++            else bad("X21", "created=" + created + " started=" + started);
++        } catch (Throwable t) { bad("X21", "EX " + t.getClass().getName()); }
++
++        // ── X22: foreign provider INSTALLED + REAL query rows cross the
++        //    process boundary (the W5 identity-only resolution becomes a
++        //    live acquireProvider → attachInfo+onCreate → MatrixCursor) ──
++        try {
++            android.database.Cursor c = getContentResolver().query(
++                Uri.parse("content://c7.store.clips/rows"), null, null,
++                null, null);
++            int n = c == null ? -1 : c.getCount();
++            if (n == 2) ok("X22", "foreign provider query rows=2");
++            else bad("X22", "rows=" + n + "(nullCursor=" + (c == null) + ")");
++        } catch (Throwable t) { bad("X22", "EX " + t.getClass().getName()); }
++
++        // ── X23: exported=false foreign receiver DENIED (AOSP
++        //    checkComponentPermission) — the NoisyReceiver's real code
++        //    must NOT run; the marker stays absent ────────────────────────
++        try {
++            sendBroadcast(new Intent("c7.store.Noisy"));
++            String hs = readHandshake(this);
++            boolean fired = hs.indexOf("noisy-fired") >= 0;
++            if (!fired) ok("X23", "non-exported foreign receiver denied");
++            else bad("X23", "marker PRESENT; hs=" + hs);
++        } catch (Throwable t) { bad("X23", "EX " + t.getClass().getName()); }
+ 
+         // ── flush the verdict rows ────────────────────────────────────────
+         try {
+diff --git a/fixtures/c7_pkg_store_probe/c7pkgstore_share/src/c7/store/share/ShareService.java b/fixtures/c7_pkg_store_probe/c7pkgstore_share/src/c7/store/share/ShareService.java
+index 7aee8b28..fd7116c3 100644
+--- a/fixtures/c7_pkg_store_probe/c7pkgstore_share/src/c7/store/share/ShareService.java
++++ b/fixtures/c7_pkg_store_probe/c7pkgstore_share/src/c7/store/share/ShareService.java
+@@ -1,10 +1,44 @@
+ package c7.store.share;
+ 
+ import android.app.Service;
++import android.content.Context;
+ import android.content.Intent;
+ import android.os.IBinder;
++import java.io.FileOutputStream;
+ 
+-/** The queryIntentServices fixture. */
++/** CODER7 WAVE-6: the foreign service that now EXECUTES its real
++ *  lifecycle (LoadedApk-lite). startService from the running package
++ *  brings THIS instance up (newInstance law: <init>()V → onCreate →
++ *  onStartCommand); onStartCommand appends the service's foreign
++ *  identity to the shared sandbox handshake file — the X21 verdict
++ *  reads it back. */
+ public class ShareService extends Service {
++    public static int startCommands = 0;
++
++    private static void handshake(Context ctx, String line) {
++        try {
++            // AOSP MODE_APPEND law: append when present, create when
++            // absent — no java.io.File probe needed (the engine sandbox
++            // maps Context paths, not bare relative File paths).
++            FileOutputStream fos = ctx.openFileOutput(
++                "xpkg_handshake.txt", Context.MODE_APPEND);
++            fos.write((line + "\n").getBytes("UTF-8"));
++            fos.close();
++        } catch (Throwable t) {
++            // marker absent = lifecycle did not run; X21 fails honestly.
++        }
++    }
++
++    @Override public void onCreate() {
++        super.onCreate();
++        handshake(this, "svc-create:pkg=" + getPackageName());
++    }
++    @Override public int onStartCommand(Intent intent, int flags, int startId) {
++        startCommands++;
++        handshake(this, "svc-start:pkg=" + getPackageName()
++                            + ";startId=" + startId
++                            + ";cmds=" + startCommands);
++        return START_STICKY;
++    }
+     @Override public IBinder onBind(Intent i) { return null; }
+ }
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index b0659efa..5cc1f895 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -1135,6 +1135,181 @@ size_t DalvikExecutionEngine::inject_secondary_dex_classes() {
+     return injected_count;
+ }
+ 
++// ============================================================================
++// CODER7 WAVE-6 (issue #520; S185 SQLITE RULE #536): LoadedApk-lite —
++// FOREIGN APK CODE INGESTION.
++//
++// AOSP law: frameworks/base/core/java/android/app/LoadedApk.java — every
++// installed package owns a LoadedApk with its own ClassLoader, and
++// ActivityThread.handleReceiver/handleCreateService deliver components
++// cross-package by LOADING the target package's code and running the REAL
++// component class. WAVE-5 resolved foreign components from the package
++// index and honestly did not execute them (issue #520 W5.7 limitation #1:
++// "the foreign dex is not loaded by this engine"). This method is the
++// generic fix: it parses every store APK's DEX files and injects the
++// classes into the SAME merged class index (class_info_index_ +
++// superclass/interfaces/annotations closure maps) the running app uses —
++// the exact mechanics of inject_secondary_dex_classes() above, generalized
++// from per-APK to per-STORE (S185 LOAD-FIRST clause: milestone 0 = full
++// load; the dispatch sites below then run real foreign bytecode).
++//
++// Dedup law (no-shadow): a class the RUNNING package defines wins — AOSP
++// resolves through the app's own ClassLoader first; the store can never
++// shadow it. Skipped duplicates are counted, never silent.
++//
++// Honesty laws: a missing store APK or a failed DEX parse records a loud
++// C7-STORE-DEX ok=false row and leaves the dispatch fallback (the WAVE-5
++// "resolved, not executed" rows) intact. No fabricated components.
++// ============================================================================
++size_t DalvikExecutionEngine::inject_foreign_apk_code(
++    const std::vector<std::pair<std::string, std::string>>&
++        apk_package_pairs) {
++    if (!dex_report_ || apk_package_pairs.empty() ||
++        c7_foreign_code_injected_)
++        return 0;
++    c7_foreign_code_injected_ = true;  // once-per-boot (AOSP LoadedApk model)
++
++    auto& mutable_classes =
++        const_cast<std::vector<dex::ClassInfo>&>(dex_report_->classes);
++    size_t injected_total = 0;
++    size_t skipped_dup = 0;
++    miniandroid::apk::ApkParser c7_apk;
++
++    // The AOSP multi-DEX naming law: classes.dex, classes2.dex .. classesN.dex.
++    std::vector<std::string> c7_dex_names{"classes.dex"};
++    for (int i = 2; i <= 32; ++i)
++        c7_dex_names.push_back("classes" + std::to_string(i) + ".dex");
++
++    for (const auto& c7_pair : apk_package_pairs) {
++        const std::string& apk_path = c7_pair.first;
++        const std::string& owner_pkg = c7_pair.second;
++        if (apk_path.empty() || owner_pkg.empty()) continue;
++        if (!std::filesystem::exists(apk_path)) {
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "C7-STORE-DEX", owner_pkg, false,
++                "store apk missing on disk: " + apk_path +
++                    " — foreign code NOT loaded (honest)",
++                "inject_foreign_apk_code");
++            continue;
++        }
++        size_t per_apk = 0;
++        for (const auto& c7_name : c7_dex_names) {
++            auto c7_raw = c7_apk.extract_entry(apk_path, c7_name);
++            if (c7_raw.empty()) continue;  // classes2.. absent — normal
++            dex::DexParser c7_parser;
++            c7_parser.set_verbose(false);
++            auto c7_report = c7_parser.parse_data(c7_raw, "XPKG:" + c7_name);
++            if (!c7_report.is_valid) {
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "C7-STORE-DEX", owner_pkg + "/" + c7_name, false,
++                    "foreign dex parse failed: " + c7_report.validation_error,
++                    "inject_foreign_apk_code");
++                continue;
++            }
++            // ── EXP-038 per-DEX resolution law: the foreign dex joins
++            // per_dex_raw_data_ and every foreign class maps to its slot
++            // via class_to_dex_index_ — the SAME mechanism secondary-DEX
++            // classes use. Without this, string/type/method IDX values
++            // inside foreign bytecode resolve against the WRONG dex
++            // tables (first live evidence: BrowserPingReceiver.onReceive
++            // resolved its string idx to Landroid/content/pm/ActivityInfo
++            // constants — garbage from dex 0's table).
++            const uint32_t c7_dex_slot =
++                (uint32_t)per_dex_raw_data_.size();
++            per_dex_raw_data_.push_back(c7_raw);
++            is_multidex_ = per_dex_raw_data_.size() > 1;
++            for (auto& c7_cls : c7_report.classes) {
++                if (class_info_index_.find(c7_cls.name) !=
++                    class_info_index_.end()) {
++                    skipped_dup++;
++                    continue;
++                }
++                mutable_classes.push_back(std::move(c7_cls));
++                size_t c7_new_idx = mutable_classes.size() - 1;
++                class_info_index_[mutable_classes.back().name] = c7_new_idx;
++                class_to_dex_index_[mutable_classes.back().name] =
++                    c7_dex_slot;
++                set_foreign_class_owner(mutable_classes.back().name,
++                                        owner_pkg);
++                per_apk++;
++            }
++        }
++        injected_total += per_apk;
++        miniandroid::diagnostics::FileIoTrace::instance().record(
++            "C7-STORE-DEX", owner_pkg, true,
++            "foreign code ingested from " +
++                apk_path.substr(apk_path.find_last_of("/\\") + 1) +
++                ": classes=" + std::to_string(per_apk),
++            "inject_foreign_apk_code");
++        std::cerr << "[C7-W6] foreign code ingested: " << owner_pkg
++                  << " classes=" << per_apk << std::endl;
++    }
++
++    if (injected_total == 0) {
++        if (skipped_dup > 0)
++            std::cerr << "[C7-W6] foreign injection: 0 new, " << skipped_dup
++                      << " duplicates skipped (own-package definitions win)"
++                      << std::endl;
++        return 0;
++    }
++
++    // Aggregate count reflects the merged state (same law as the secondary
++    // injection).
++    const_cast<uint32_t&>(dex_report_->classes_count) =
++        (uint32_t)mutable_classes.size();
++
++    // ── Closure laws: the injected foreign classes must satisfy the SAME
++    // structural indexes the multi-DEX injection maintains — EXP-095
++    // (superclass map: a foreign BroadcastReceiver/Service subclass must
++    // resolve is_subclass_of), S102 (declared-interfaces closure:
++    // check-cast/instanceof), F-087 (runtime-annotation closure).
++    // Same loops, same dedup law, zero package knowledge.
++    {
++        size_t c7_sup = 0, c7_ifc = 0, c7_ann = 0;
++        for (const auto& c7_cls : mutable_classes) {
++            if (!c7_cls.superclass_name.empty()) {
++                const std::string c7_key =
++                    framework::normalize_class_desc(c7_cls.name);
++                const std::string c7_val = framework::normalize_class_desc(
++                    c7_cls.superclass_name);
++                if (class_to_superclass_.find(c7_key) ==
++                    class_to_superclass_.end())
++                    c7_sup++;
++                class_to_superclass_[c7_key] = c7_val;
++            }
++            if (!c7_cls.interfaces.empty() &&
++                class_to_interfaces_.find(c7_cls.name) ==
++                    class_to_interfaces_.end()) {
++                class_to_interfaces_[c7_cls.name] = c7_cls.interfaces;
++                c7_ifc++;
++            }
++            if (!c7_cls.class_annotations.empty() &&
++                class_annotations_.find(c7_cls.name) ==
++                    class_annotations_.end()) {
++                class_annotations_[c7_cls.name] = c7_cls.class_annotations;
++                c7_ann++;
++            }
++        }
++        std::cerr << "[C7-W6] foreign closure: superclass+" << c7_sup
++                  << " interfaces+" << c7_ifc << " annotations+" << c7_ann
++                  << " (dup skipped " << skipped_dup << ")" << std::endl;
++    }
++    return injected_total;
++}
++
++void DalvikExecutionEngine::set_foreign_class_owner(
++    const std::string& class_desc, const std::string& package_name) {
++    if (!class_desc.empty() && !package_name.empty())
++        c7_foreign_class_owner_[class_desc] = package_name;
++}
++
++const std::string& DalvikExecutionEngine::foreign_owner_package(
++    const std::string& class_desc) const {
++    static const std::string c7_none;
++    auto c7_it = c7_foreign_class_owner_.find(class_desc);
++    return c7_it != c7_foreign_class_owner_.end() ? c7_it->second : c7_none;
++}
++
+ // ============================================================================
+ // EXP-038 (BLOCKER-033): Per-DEX method resolution using raw DEX bytes.
+ // ============================================================================
+@@ -2083,6 +2258,27 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
+     // this is the earliest point we can call inject_secondary_dex_classes().
+     inject_secondary_dex_classes();
+ 
++    // ── CODER7 WAVE-6: LoadedApk-lite — foreign store code injection ────
++    // The S185 LOAD-FIRST law (#536): foreign components must EXECUTE, so
++    // every store package's DEX classes are injected BEFORE any dispatch
++    // can consult them (AOSP LoadedApk: the code is loaded before the
++    // component is delivered). Runs only when a package store exists
++    // (WAVE-5 MINIANDROID_PKG_STORE) — the no-store path is byte-identical.
++    if (c7_pkg_index_ && !c7_pkg_index_->empty()) {
++        std::vector<std::pair<std::string, std::string>> c7_xpairs;
++        for (const auto& c7_pname : c7_pkg_index_->package_names()) {
++            const auto* c7_pkg = c7_pkg_index_->find_package(c7_pname);
++            if (c7_pkg && !c7_pkg->apk_path.empty() &&
++                c7_pkg->apk_path != apk_path)
++                c7_xpairs.emplace_back(c7_pkg->apk_path, c7_pname);
++        }
++        size_t c7_fx = inject_foreign_apk_code(c7_xpairs);
++        if (c7_fx > 0)
++            std::cerr << "[C7-W6] LoadedApk-lite: " << c7_fx
++                      << " foreign classes loadable for cross-package "
++                      << "component dispatch" << std::endl;
++    }
++
+     DalvikExecutionResult result;
+     result.apk_name = apk_path.substr(apk_path.find_last_of("/\\") + 1);
+     result.timestamp = get_timestamp();
+@@ -6177,8 +6373,33 @@ bool DalvikExecutionEngine::resolve_asset_stream(uint32_t start_id,
+ // cached; 4 MiB bound with an honest diagnostic on oversize) — the
+ // FileInputStream/FileReader ctor law registers those keys.
+ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& path) {
+-    auto it = asset_bytes_cache_.find(path);
+-    if (it != asset_bytes_cache_.end()) return it->second;
++    // ── CODER7 WAVE-6: LIVE file: observability law ─────────────────────
++    // AOSP FileInputStream semantics: every read() observes the file's
++    // CURRENT bytes — content written by another stream in the same
++    // process is fully visible once that stream closes (the WAVE-6 store
++    // probe's handshake channel depends on it: the main app reads what
++    // the foreign components' real bytecode appended AFTER the first
++    // read primed the cache). APK/asset entries are runtime-immutable —
++    // those keys keep the insert-once cache. The freshness check is
++    // structural: (file size, mtime) changed ⇒ re-read.
++    auto c7_it = asset_bytes_cache_.find(path);
++    if (c7_it != asset_bytes_cache_.end()) {
++        if (path.rfind("file:", 0) != 0) return c7_it->second;
++        namespace lfs = std::filesystem;
++        lfs::path c7_fp(path.substr(5));
++        std::error_code c7_ec;
++        auto c7_sz = lfs::file_size(c7_fp, c7_ec);
++        auto c7_lt = lfs::last_write_time(c7_fp, c7_ec);
++        auto c7_fit = asset_file_stamp_.find(path);
++        bool c7_same = !c7_ec &&
++                       c7_fit != asset_file_stamp_.end() &&
++                       c7_fit->second.first == (long long)c7_sz &&
++                       c7_fit->second.second ==
++                           (long long)c7_lt.time_since_epoch().count();
++        if (c7_same) return c7_it->second;
++        asset_bytes_cache_.erase(c7_it);
++        asset_file_stamp_.erase(path);
++    }
+     std::string content;
+     if (path.rfind("file:", 0) == 0) {
+         // LOADING-CAMPAIGN: the registered backing path is already the
+@@ -6270,6 +6491,19 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string&
+             }
+         }
+     }
++    // CODER7 WAVE-6: record the (size, mtime) stamp for file: keys so the
++    // next cached_asset_bytes call can detect a live change.
++    if (path.rfind("file:", 0) == 0) {
++        namespace lfs = std::filesystem;
++        lfs::path c7_fp2(path.substr(5));
++        std::error_code c7_ec2;
++        auto c7_sz2 = lfs::file_size(c7_fp2, c7_ec2);
++        auto c7_lt2 = lfs::last_write_time(c7_fp2, c7_ec2);
++        if (!c7_ec2)
++            asset_file_stamp_[path] = {(long long)c7_sz2,
++                                       (long long)c7_lt2.time_since_epoch()
++                                           .count()};
++    }
+     return asset_bytes_cache_.emplace(path, std::move(content)).first->second;
+ }
+ 
+@@ -7019,7 +7253,152 @@ bool DalvikExecutionEngine::parse_content_uri(const std::string& raw,
+ uint32_t DalvikExecutionEngine::resolve_provider_for_authority(
+     const std::string& authority, std::string& provider_cls) {
+     auto it = provider_by_authority_.find(authority);
+-    if (it == provider_by_authority_.end()) return 0;
++    if (it == provider_by_authority_.end()) {
++        // ── CODER7 WAVE-6: foreign provider acquisition (LoadedApk-lite) ──
++        // AOSP ActivityThread.acquireProvider: the authority is resolved
++        // through the PMS provider map across ALL packages; when the
++        // provider lives in ANOTHER package, its process is started, the
++        // REAL ContentProvider class is INSTALLED (attachInfo + onCreate)
++        // and the binder returned. The engine mirrors that: on an
++        // own-provider miss, install the foreign provider from the WAVE-5
++        // index (its dex classes were ingested by inject_foreign_apk_code
++        // — the S185 LOAD-FIRST law) and let the unmodified CRUD dispatch
++        // run the foreign query/insert/update/delete/openFile bytecode.
++        // Gates (AOSP checkComponentPermission + ProviderUriPermissions):
++        // enabled (the index only publishes enabled providers), exported
++        // (running package is a foreign caller), grantUriPermissions OR
++        // exported grants access — non-exported + no grant ⇒ deny row.
++        // Re-resolve after install; a failure falls through to the honest
++        // unknown-authority path (never a fabricated provider).
++        if (c7_pkg_index_ && !c7_pkg_index_->empty()) {
++            auto c7_fprov = c7_pkg_index_->providers_for_authority(authority);
++            for (const auto& c7_pr : c7_fprov) {
++                if (c7_pr.package_name == package_name_) continue;
++                if (!c7_pr.exported && !c7_pr.grant_uri_permissions) {
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "PROV-XPKG-DENY",
++                        c7_pr.package_name + "/" + c7_pr.cls, false,
++                        "foreign provider not exported and grantUri"
++                        "Permissions=false (AOSP checkComponentPermission)",
++                        current_class_ + "." + current_method_);
++                    continue;
++                }
++                std::string c7_fdesc = c7_pr.cls;
++                if (!c7_fdesc.empty() && c7_fdesc[0] != 'L') {
++                    std::replace(c7_fdesc.begin(), c7_fdesc.end(), '.', '/');
++                    c7_fdesc = "L" + c7_fdesc + ";";
++                }
++                if (c7_fdesc.empty() || class_to_superclass_.find(c7_fdesc) ==
++                                            class_to_superclass_.end()) {
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "PROV-XPKG", c7_pr.package_name + "/" + c7_pr.cls,
++                        false,
++                        "foreign provider RESOLVED but class not loaded — "
++                        "honest miss (no fabrication)",
++                        current_class_ + "." + current_method_);
++                    continue;
++                }
++                // ── Install (mirror of install_content_providers GATE-A):
++                // allocate → <init>()V → ProviderInfo(identity from the
++                // index) → attachInfo(context, info) → onCreate → publish
++                // every declared authority.
++                uint32_t c7_fpid = heap_.allocate(c7_fdesc, pc_, 0);
++                if (c7_fpid == 0) continue;
++                DalvikValue c7_fpobj =
++                    DalvikValue::make_object(c7_fpid, c7_fdesc);
++                DalvikValue c7_fret;
++                DalvikExecutionResult c7_ftmp;
++                std::vector<DalvikValue> c7_finit{c7_fpobj};
++                try_recursive_invoke(c7_fdesc, "<init>", c7_finit, c7_fret,
++                                     c7_ftmp, "()V");
++                {
++                    uint32_t c7_finfo_id = heap_.allocate(
++                        "Landroid/content/pm/ProviderInfo;", pc_, 0);
++                    heap_.set_object_field(
++                        c7_finfo_id, "name",
++                        DalvikValue::make_string(c7_fdesc, 1));
++                    heap_.set_object_field(
++                        c7_finfo_id, "authority",
++                        DalvikValue::make_string(c7_pr.authorities, 1));
++                    heap_.set_object_field(
++                        c7_finfo_id, "authorities",
++                        DalvikValue::make_string(c7_pr.authorities, 1));
++                    heap_.set_object_field(
++                        c7_finfo_id, "grantUriPermissions",
++                        DalvikValue::make_bool(
++                            c7_pr.grant_uri_permissions));
++                    heap_.set_object_field(
++                        c7_finfo_id, "exported",
++                        DalvikValue::make_bool(c7_pr.exported));
++                    heap_.set_object_field(
++                        c7_finfo_id, "multiprocess",
++                        DalvikValue::make_bool(false));
++                    DalvikValue c7_finfo;
++                    c7_finfo.type = DalvikType::OBJECT_REF;
++                    c7_finfo.object_id = c7_finfo_id;
++                    c7_finfo.class_desc =
++                        "Landroid/content/pm/ProviderInfo;";
++                    DalvikValue c7_fctx;
++                    if (application_object_id_ != 0 &&
++                        heap_.has_object(application_object_id_)) {
++                        c7_fctx.type = DalvikType::OBJECT_REF;
++                        c7_fctx.object_id = application_object_id_;
++                        c7_fctx.class_desc =
++                            application_class_desc_.empty()
++                                ? "Landroid/app/Application;"
++                                : application_class_desc_;
++                    } else {
++                        c7_fctx = get_or_create_singleton(
++                            "Landroid/content/Context;");
++                    }
++                    std::vector<DalvikValue> c7_fattach{c7_fpobj, c7_fctx,
++                                                        c7_finfo};
++                    try_recursive_invoke(
++                        c7_fdesc, "attachInfo", c7_fattach, c7_fret, c7_ftmp,
++                        "(Landroid/content/Context;"
++                        "Landroid/content/pm/ProviderInfo;)V");
++                    provider_context_[c7_fpid] = c7_fctx.object_id;
++                    // Publish EVERY ';'-joined authority (AOSP
++                    // installContentProviders map law).
++                    const std::string& c7_auth_all = c7_pr.authorities;
++                    size_t c7_start = 0;
++                    while (c7_start <= c7_auth_all.size()) {
++                        size_t c7_semi = c7_auth_all.find(';', c7_start);
++                        std::string c7_one = c7_auth_all.substr(
++                            c7_start,
++                            c7_semi == std::string::npos
++                                ? std::string::npos
++                                : c7_semi - c7_start);
++                        if (!c7_one.empty()) {
++                            provider_by_authority_[c7_one] = c7_fpid;
++                            provider_class_by_oid_[c7_fpid] = c7_pr.cls;
++                        }
++                        if (c7_semi == std::string::npos) break;
++                        c7_start = c7_semi + 1;
++                    }
++                }
++                std::vector<DalvikValue> c7_fcreate;
++                c7_fcreate.push_back(c7_fpobj);
++                bool c7_fok = try_recursive_invoke(c7_fdesc, "onCreate",
++                                                   c7_fcreate, c7_fret,
++                                                   c7_ftmp, "()Z");
++                miniandroid::diagnostics::FileIoTrace::instance().record(
++                    "PROV-XPKG-EXEC", c7_pr.package_name + "/" + c7_pr.cls,
++                    c7_fok,
++                    "foreign provider INSTALLED from store (authority=" +
++                        authority + ") attachInfo+onCreate " +
++                        (c7_fok ? "OK" : "SKIPPED") +
++                        " — REAL CRUD dispatch follows",
++                    current_class_ + "." + current_method_);
++                std::cerr << "[C7-W6] foreign provider installed: "
++                          << c7_pr.package_name << "/" << c7_pr.cls
++                          << " auth=" << authority << std::endl;
++                it = provider_by_authority_.find(authority);
++                break;
++            }
++        }
++        if (it == provider_by_authority_.end()) return 0;
++    }
+     provider_cls.clear();
+     auto cls_it = provider_class_by_oid_.find(it->second);
+     if (cls_it != provider_class_by_oid_.end()) {
+@@ -40790,6 +41169,64 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                 return true;
+             }
+         }
++        // ── CODER7 WAVE-6: foreign service exported/permission gate ────
++        // AOSP ActiveServices.retrieveServiceLocked → checkComponentPermission:
++        // a service in ANOTHER package must be exported (running package =
++        // foreign caller) and the caller must hold android:permission.
++        // Denied = loud trace + the AOSP not-started shape (null/false).
++        if (c7_pkg_index_ && !c7_pkg_index_->empty() && !target_cls.empty()) {
++            for (const auto& c7_pname : c7_pkg_index_->package_names()) {
++                const auto* c7_spkg = c7_pkg_index_->find_package(c7_pname);
++                if (!c7_spkg || c7_pname == package_name_) continue;
++                for (const auto& c7_s : c7_spkg->services) {
++                    if (c7_s.cls != target_cls) continue;
++                    if (!c7_s.exported) {
++                        miniandroid::diagnostics::FileIoTrace::instance().record(
++                            "SVC-XPKG-DENY", c7_pname + "/" + c7_s.cls, false,
++                            "foreign service not exported (AOSP "
++                            "checkComponentPermission)",
++                            current_class_ + "." + current_method_);
++                        result = (method == "bindService")
++                                     ? DalvikValue::make_bool(false)
++                                     : DalvikValue::make_null();
++                        status = ApiCallTrace::Status::IMPLEMENTED;
++                        return true;
++                    }
++                    if (!c7_s.permission.empty()) {
++                        // Same sender-holds law as the broadcast dispatch
++                        // lambda (the running package's uses-permissions;
++                        // no modeled foreign-sender env on this path — the
++                        // CALLER here IS the running package).
++                        const bool c7_perm_ok =
++                            std::find(manifest_requested_permissions_.begin(),
++                                      manifest_requested_permissions_.end(),
++                                      c7_s.permission) !=
++                            manifest_requested_permissions_.end();
++                        if (!c7_perm_ok) {
++                            miniandroid::diagnostics::FileIoTrace::instance()
++                                .record(
++                                    "SVC-XPKG-DENY", c7_pname + "/" + c7_s.cls,
++                                    false,
++                                    "foreign service permission " +
++                                        c7_s.permission +
++                                        " not held by sender " + package_name_,
++                                    current_class_ + "." + current_method_);
++                            result = (method == "bindService")
++                                         ? DalvikValue::make_bool(false)
++                                         : DalvikValue::make_null();
++                            status = ApiCallTrace::Status::IMPLEMENTED;
++                            return true;
++                        }
++                    }
++                    miniandroid::diagnostics::FileIoTrace::instance().record(
++                        "SVC-XPKG", c7_pname + "/" + c7_s.cls, true,
++                        "foreign service gates passed (exported, "
++                        "permission ok) — REAL lifecycle will execute",
++                        current_class_ + "." + current_method_);
++                    break;
++                }
++            }
++        }
+         ServiceInstance& svc = live_services_[svc_key];
+         // ── CODER7 WAVE-3: the shared bind-delivery law (AOSP
+         // ActivityThread.handleBindService + ActiveServices bringUp):
+@@ -41540,14 +41977,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             }
+             // Candidate model: dynamic (registration order) then manifest
+             // (parse order); stable priority-descending sort keeps that
+-            // order inside an equal-priority band.
++            // order inside an equal-priority band. CODER7 WAVE-6: foreign
++            // store receivers join the SAME candidate model (xidx >= 0).
+             struct C7Cand {
+                 int prio;
+                 bool dyn;
+                 size_t idx;
+                 bool match;
++                int xidx;  // WAVE-6: >= 0 ⇒ foreign store receiver (xrcv pool)
+             };
+             std::vector<C7Cand> c7_cands;
++            // WAVE-6: the foreign-receiver pool the xidx candidates index.
++            struct C7XRcv {
++                std::string cls;   // dotted class name
++                std::string desc;  // L-form descriptor for heap allocation
++                std::string pkg;   // owning package (ComponentInfo.packageName)
++            };
++            std::vector<C7XRcv> c7_xrcvs;
+             for (size_t i = 0; i < dynamic_receivers_.size(); ++i) {
+                 const auto& dr = dynamic_receivers_[i];
+                 bool match = false;
+@@ -41579,7 +42025,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                         current_class_ + "." + current_method_);
+                     match = false;
+                 }
+-                c7_cands.push_back({dr.priority, true, i, match});
++                c7_cands.push_back({dr.priority, true, i, match, -1});
+             }
+             for (size_t i = 0; i < manifest_receivers_.size(); ++i) {
+                 const auto& mr = manifest_receivers_[i];
+@@ -41644,30 +42090,101 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                     // CODER7 WAVE-3: the matchData half for manifest filters
+                     // (the <data> mimeType/scheme/host/pathPrefix specs).
+                     if (match) match = c7_data_match(c7f.datas);
+-                    c7_cands.push_back({c7f.priority, false, i, match});
++                    c7_cands.push_back({c7f.priority, false, i, match, -1});
+                 }
+             }
+-            // ── CODER7 WAVE-5: foreign receiver RESOLUTION from the
+-            // package store ────────────────────────────────────────────────
++            // ── CODER7 WAVE-6: foreign receiver RESOLUTION + EXECUTION from
++            // the package store ────────────────────────────────────────────
+             // AOSP BroadcastQueue resolves receivers across ALL installed
+-            // packages. This engine loads exactly ONE package's dex, so a
+-            // foreign receiver is RESOLVED here (loud BCAST-XPKG rows with
+-            // the full AOSP identity: pkg/class/action) and HONESTLY not
+-            // executed — no fabricated onReceive, no silent swallow. The
+-            // row IS the delivery surface; the structural next step is a
+-            // multi-APK code loader (documented, outside this wave).
++            // packages. WAVE-5 resolved foreign receivers from the package
++            // index and honestly did not execute them ("foreign dex not
++            // loaded by this engine"). WAVE-6 (the S185 LOAD-FIRST law,
++            // issue #536) closes that: with the LoadedApk-lite injection
++            // (inject_foreign_apk_code) the foreign receiver's REAL class
++            // lives in the merged class index, so the dispatch DELIVERS to
++            // it exactly like a manifest receiver — real onReceive bytecode,
++            // same ordered-chain/sticky/permission laws, no fabricated
++            // callbacks (if the class did not load, the WAVE-5 honest
++            // "resolved, not executed" row is kept).
++            // Gates BEFORE execution (AOSP ActivityManagerService
++            // .checkComponentPermission + BroadcastFilter laws — the running
++            // package is a FOREIGN sender relative to the receiver's package):
++            //   1. exported gate: exported=false ⇒ BCAST-DENY, no delivery;
++            //   2. permission gate: ReceiverInfo.permission must be held by
++            //      the sender (c7_sender_holds) ⇒ BCAST-DENY on miss;
++            //   3. enabled gate: disabled receivers are invisible (the W5
++            //      index never publishes them — enforced at ingest).
+             if (c7_pkg_index_ && !c7_pkg_index_->empty()) {
+-                auto c7_xrcv = c7_pkg_index_->query_receivers(
++                auto c7_xrcv_list = c7_pkg_index_->query_receivers(
+                     action, c7_intent_cats, c7_intent_type, c7_intent_scheme,
+                     c7_intent_host, c7_intent_path, false);
+-                for (const auto& c7_xr : c7_xrcv) {
++                for (const auto& c7_xr : c7_xrcv_list) {
+                     if (c7_xr.package_name == package_name_) continue;
++                    // Resolve the full index record (exported/permission law
++                    // needs the record, not just the C7IdxMatch projection).
++                    const auto* c7_xpkg =
++                        c7_pkg_index_->find_package(c7_xr.package_name);
++                    const C7IdxReceiver* c7_xrec = nullptr;
++                    if (c7_xpkg) {
++                        for (const auto& c7_r : c7_xpkg->receivers) {
++                            if (c7_r.cls == c7_xr.cls) { c7_xrec = &c7_r; break; }
++                        }
++                    }
++                    const bool c7_xexported = c7_xrec ? c7_xrec->exported
++                                                      : c7_xr.exported;
++                    const std::string c7_xperm =
++                        c7_xrec ? c7_xrec->permission : std::string();
++                    if (!c7_xexported) {
++                        miniandroid::diagnostics::FileIoTrace::instance().record(
++                            "BCAST-DENY",
++                            c7_xr.package_name + "/" + c7_xr.cls, false,
++                            "foreign receiver not exported (AOSP "
++                            "checkComponentPermission: foreign sender)",
++                            current_class_ + "." + current_method_);
++                        continue;
++                    }
++                    if (!c7_xperm.empty() && !c7_sender_holds(c7_xperm)) {
++                        miniandroid::diagnostics::FileIoTrace::instance().record(
++                            "BCAST-DENY",
++                            c7_xr.package_name + "/" + c7_xr.cls, false,
++                            "foreign receiver permission " + c7_xperm +
++                                " not held by sender " + package_name_,
++                            current_class_ + "." + current_method_);
++                        continue;
++                    }
++                    // ── WAVE-6 EXECUTION gate: is the foreign class LOADED?
++                    // (LoadedApk-lite: inject_foreign_apk_code ingested the
++                    // store dexes at boot; a class that failed to ingest
++                    // falls back to the WAVE-5 honest row.)
++                    std::string c7_xdesc = c7_xr.cls;
++                    if (!c7_xdesc.empty() && c7_xdesc[0] != 'L') {
++                        std::replace(c7_xdesc.begin(), c7_xdesc.end(), '.',
++                                     '/');
++                        c7_xdesc = "L" + c7_xdesc + ";";
++                    }
++                    const bool c7_xloaded =
++                        !c7_xdesc.empty() &&
++                        class_to_superclass_.find(c7_xdesc) !=
++                            class_to_superclass_.end();
++                    if (!c7_xloaded) {
++                        miniandroid::diagnostics::FileIoTrace::instance().record(
++                            "BCAST-XPKG", c7_xr.package_name + "/" + c7_xr.cls,
++                            true,
++                            "foreign receiver RESOLVED from store (action=" +
++                                action + ") — not executed: foreign dex not "
++                                "loaded by this engine",
++                            current_class_ + "." + current_method_);
++                        continue;
++                    }
++                    c7_xrcvs.push_back({c7_xr.cls, c7_xdesc,
++                                        c7_xr.package_name});
++                    c7_cands.push_back({c7_xr.priority, false, 0, true,
++                                        (int)c7_xrcvs.size() - 1});
+                     miniandroid::diagnostics::FileIoTrace::instance().record(
+-                        "BCAST-XPKG", c7_xr.package_name + "/" + c7_xr.cls,
++                        "BCAST-XPKG-EXEC", c7_xr.package_name + "/" + c7_xr.cls,
+                         true,
+-                        "foreign receiver RESOLVED from store (action=" +
+-                            action + ") — not executed: foreign dex not "
+-                            "loaded by this engine",
++                        "foreign receiver candidate — REAL onReceive will "
++                        "execute (action=" + action + ")",
+                         current_class_ + "." + current_method_);
+                 }
+             }
+@@ -41736,6 +42253,48 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                     if (c7_ordered && ordered_broadcast_.pending_go_async_oid
+                             == dr.oid)
+                         ordered_broadcast_.pending_go_async_oid = 0;
++                } else if (cd.xidx >= 0) {
++                    // ── CODER7 WAVE-6: FOREIGN store receiver delivery ──
++                    // The REAL foreign class (LoadedApk-lite injection) runs
++                    // the SAME delivery shape as a manifest receiver (AOSP
++                    // ActivityThread.handleReceiver: allocate → <init> →
++                    // onReceive(context, intent) per delivery). The
++                    // exported/permission gates already filtered the
++                    // candidate pool above.
++                    const auto& c7_xr = c7_xrcvs[(size_t)cd.xidx];
++                    const std::string& desc = c7_xr.desc;
++                    uint32_t c7_xrid = heap_.allocate(desc, pc_, 0);
++                    DalvikValue c7_xrobj =
++                        DalvikValue::make_object(c7_xrid, desc);
++                    DalvikValue c7_xign;
++                    DalvikExecutionResult c7_xctor;
++                    std::vector<DalvikValue> c7_xctor_args{c7_xrobj};
++                    try_recursive_invoke(desc, "<init>", c7_xctor_args,
++                                         c7_xign, c7_xctor, "");
++                    DalvikExecutionResult c7_xtmp;
++                    DalvikValue c7_xret;
++                    std::vector<DalvikValue> c7_xargs{c7_xrobj, ctx_obj,
++                                                      intent_val};
++                    if (c7_ordered) {
++                        ordered_broadcast_.pending_receiver_oid = c7_xrid;
++                        ordered_broadcast_.pending_is_final = false;
++                    }
++                    if (!c7_order_seq.empty()) c7_order_seq += ",";
++                    c7_order_seq += c7_xr.cls + "@" + std::to_string(cd.prio);
++                    bool c7_xok = try_recursive_invoke(desc, "onReceive",
++                                                       c7_xargs, c7_xret,
++                                                       c7_xtmp, "");
++                    if (c7_xok) ++delivered;
++                    else
++                        miniandroid::diagnostics::FileIoTrace::instance()
++                            .record("BCAST-XPKG-EXEC",
++                                    c7_xr.pkg + "/" + c7_xr.cls, false,
++                                    "foreign onReceive unresolved after "
++                                    "ingest (honest, no fabrication)",
++                                    current_class_ + "." + current_method_);
++                    if (c7_ordered &&
++                        ordered_broadcast_.pending_go_async_oid == c7_xrid)
++                        ordered_broadcast_.pending_go_async_oid = 0;
+                 } else {
+                     const auto& mr = manifest_receivers_[cd.idx];
+                     std::string desc = mr.cls;
+@@ -58506,10 +59065,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     // ────────────────────────────────────────────────────────────────────────
+     // P0.8 — Context.getPackageName → String
+     // EXP-093/F011: Use manifest-derived package name
++    // CODER7 WAVE-6: the foreign-owner law (AOSP ContextImpl: every
++    // component receives a base Context bound to ITS OWN package — a
++    // foreign receiver/service/provider executing inside this process
++    // still answers getPackageName with ITS package, ComponentInfo
++    // .packageName semantics; the LoadedApk-lite ownership map provides
++    // the identity). Own classes are absent from the map ⇒ "" ⇒ the
++    // running package (unchanged behavior).
+     // ────────────────────────────────────────────────────────────────────────
+     if (method == "getPackageName" &&
+         (class_name.find("Context") != std::string::npos ||
+          class_name.find("Activity") != std::string::npos)) {
++        const std::string& c7_fowner =
++            foreign_owner_package(current_class_);
++        if (!c7_fowner.empty() && c7_fowner != package_name_) {
++            miniandroid::diagnostics::FileIoTrace::instance().record(
++                "CTX-XPKG-PKGNAME", current_class_ + " → " + c7_fowner, true,
++                "foreign component context identity (AOSP ContextImpl "
++                "per-package base context)",
++                current_class_ + "." + current_method_);
++            result = DalvikValue::make_string(c7_fowner, 1);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
+         result = DalvikValue::make_string(
+             package_name_.empty() ? "unknown.package" : package_name_, 1);
+         status = ApiCallTrace::Status::IMPLEMENTED;
+@@ -73018,8 +73596,36 @@ measure_cm_done:;
+     // ────────────────────────────────────────────────────────────────────────
+     if (class_name == "Ljava/lang/String;" && args.size() >= 1) {
+         const DalvikValue& recv = args[0];
+-        if (recv.type == DalvikType::STRING_REF) {
+-            const std::string& sv = recv.string_val;
++        // ── CODER7 WAVE-6: HEAP-STRING RECEIVER LAW ─────────────────────
++        // OpenJDK String.java: every instance method answers from the
++        // instance's value. The engine materializes runtime-built strings
++        // (new String(byte[]), StringBuilder.toString(), String.copy
++        // forms) as HEAP String objects whose content lives in the
++        // __string_value__ field (the F-NEW-248/299 law). This bridge
++        // gated on STRING_REF receivers only, so any String method on a
++        // HEAP string fell through to the typed-default answer — live
++        // WAVE-6 evidence (store probe X23): hs.indexOf("noisy-fired")
++        // on a heap string built from new String(buf,0,n,"UTF-8")
++        // answered a non-negative garbage int on a MISS (the typed-zero
++        // default), flipping a negative containment probe. The fix is
++        // receiver-shape-generic: an OBJECT_REF receiver whose heap class
++        // is Ljava/lang/String; is read through __string_value__ and
++        // processed by the SAME arms (no name matching, no app
++        // knowledge). A heap object without a __string_value__ field is
++        // NOT a materialized string — it keeps falling through honestly.
++        DalvikValue c7_hsv;
++        if (recv.type == DalvikType::OBJECT_REF && recv.object_id != 0 &&
++            heap_.has_object(recv.object_id)) {
++            auto c7_f = heap_.get_object_field(recv.object_id,
++                                               "__string_value__");
++            if (c7_f.has_value() && c7_f->type == DalvikType::STRING_REF)
++                c7_hsv = *c7_f;
++        }
++        if (recv.type == DalvikType::STRING_REF ||
++            c7_hsv.type == DalvikType::STRING_REF) {
++            const std::string& sv =
++                c7_hsv.type == DalvikType::STRING_REF ? c7_hsv.string_val
++                                                      : recv.string_val;
+             if (method == "trim") {
+                 size_t b = 0, e = sv.size();
+                 while (b < e && (unsigned char)sv[b] <= 0x20) ++b;
+diff --git a/miniandroid/src/dex/dalvik_engine.h b/miniandroid/src/dex/dalvik_engine.h
+index 05e167b7..71053c38 100755
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -1988,7 +1988,42 @@ public:
+     //
+     // Returns the number of newly-injected classes.
+     size_t inject_secondary_dex_classes();
+-    
++
++    // ── CODER7 WAVE-6 (S185 SQLITE RULE applied to cross-package code):
++    // LoadedApk-lite — FOREIGN APK CODE INGESTION ──────────────────────────────
++    // AOSP law (LoadedApk.java + ActivityThread.handleReceiver): every
++    // installed package owns a LoadedApk with its OWN ClassLoader; the system
++    // delivers components cross-package by LOADING the target package's code
++    // and running the REAL component class. WAVE-5 resolved foreign components
++    // from the package index and honestly did not execute them ("foreign dex
++    // not loaded by this engine" — issue #520 W5.7 limitation #1). WAVE-6
++    // closes that gap with the S185 LOAD-FIRST law (#536): every store APK's
++    // classes.dex/classes2..N are parsed at boot, their classes injected into
++    // the SAME merged class index the running app uses (the EXP-088+ multi-DEX
++    // injection mechanics, generalized from per-APK to per-STORE), and the
++    // dispatch sites (broadcast delivery, service bring-up, provider
++    // acquisition) then run the foreign component's REAL bytecode through the
++    // unmodified try_recursive_invoke machinery. No synthetic components, no
++    // fabricated callbacks: a foreign class that fails to parse/load falls
++    // back to the WAVE-5 honest "resolved, not executed" rows.
++    //
++    // apk_package_pairs: (apk_path, owning_package_name) — the owning package
++    // identity comes from the WAVE-5 C7PackageIndex (ComponentInfo.packageName).
++    // Returns the number of newly-injected foreign classes.
++    size_t inject_foreign_apk_code(
++        const std::vector<std::pair<std::string, std::string>>&
++            apk_package_pairs);
++
++    // The class → owning-package map for foreign classes (AOSP LoadedApk:
++    // the package every injected class belongs to). Own (running-package)
++    // classes are intentionally absent — the lookup answers "" for them,
++    // which every caller must treat as "owned by the running package".
++    void set_foreign_class_owner(const std::string& class_desc,
++                                 const std::string& package_name);
++    // "" ⇒ not a foreign class (the running package owns it).
++    const std::string& foreign_owner_package(const std::string& class_desc)
++        const;
++
+     /**
+      * Execute APK through real DEX bytecode interpretation
+      */
+@@ -3864,6 +3899,13 @@ public:
+     // CODER7 WAVE-5: PMS-lite — the cross-package component index (see the
+     // set_package_index law above).
+     std::shared_ptr<C7PackageIndex> c7_pkg_index_;
++    // CODER7 WAVE-6: foreign class → owning package (LoadedApk-lite; see
++    // inject_foreign_apk_code). Own classes are absent ⇒ "" = running pkg.
++    std::map<std::string, std::string> c7_foreign_class_owner_;
++    // CODER7 WAVE-6: whether the foreign code pass already ran for this
++    // execution (idempotence guard — injection is once-per-boot, the AOSP
++    // LoadedApk model).
++    bool c7_foreign_code_injected_ = false;
+     // CODER7 WAVE-3: acquired ContentProviderClient objects (AOSP
+     // ContentResolver.acquireContentProviderClient) — heap object id → the
+     // authority the client is bound to; every client call routes through
+@@ -3997,6 +4039,11 @@ public:
+     // extracted once per path and cached, so InputStream.read()/available()
+     // (and readLine) read REAL bytes without re-running `unzip -p` per call.
+     std::map<std::string, std::string> asset_bytes_cache_;
++    // CODER7 WAVE-6: (size, mtime) stamp per "file:" cached stream — the
++    // live-observability law (a file: stream re-reads when the backing
++    // file changed; APK/asset entries stay insert-once immutable).
++    std::map<std::string, std::pair<long long, long long>>
++        asset_file_stamp_;
+     // Pass-3 (K-35): one parser state per parser object (heap id keyed).
+     std::map<uint32_t, XmlPullState> xml_parsers_;
+ private:
+diff --git a/scripts/c7_w6_androguard_check.py b/scripts/c7_w6_androguard_check.py
+new file mode 100644
+index 00000000..0de8a8fa
+--- /dev/null
++++ b/scripts/c7_w6_androguard_check.py
+@@ -0,0 +1,136 @@
++#!/usr/bin/env python3
++# c7_w6_androguard_check.py — CODER7 WAVE-6: INDEPENDENT third-party
++# verification of the store-probe APKs with ANDROGUARD (user directive:
++# use the androguard tool; the S186 work already uses it as its probe db).
++#
++# The engine's C7PackageIndex (miniandroid/src/dex/c7_package_index.cpp)
++# parses binary AXML manifests itself. This script re-derives the SAME
++# normalized facts (package name, receivers/services/providers, exported
++# and enabled flags) with androguard — a completely independent AXML
++# parser — and diffs them against the expected fixture law. A mismatch
++# would mean the engine's index diverges from the real Android manifest
++# semantics; agreement is cross-parser evidence for the W6 gates
++# (exported/permission/enabled) that decide foreign execution.
++#
++# Output: JSON verdict to stdout; exit 0 iff every expectation holds.
++import json
++import sys
++
++# androguard v4 routes its AXML parser trace through loguru to STDOUT —
++# silence it BEFORE the import so the JSON verdict is the only stdout
++# content (the runner captures stdout as the verdict file).
++from loguru import logger
++
++logger.remove()
++
++from androguard.core.apk import APK
++
++EXPECTED = {
++    "c7pkgstore_browser": {
++        "package": "c7.store.browser",
++        "receivers": {
++            "c7.store.browser.BrowserPingReceiver": {"exported": True,
++                                                     "enabled": True},
++            "c7.store.browser.NoisyReceiver": {"exported": False,
++                                               "enabled": True},
++        },
++        "providers": {
++            "c7.store.browser.ClipProvider": {"exported": True,
++                                              "enabled": True},
++            "c7.store.browser.DeadProvider": {"exported": True,
++                                              "enabled": False},
++        },
++        "services": {},
++    },
++    "c7pkgstore_share": {
++        "package": "c7.store.share",
++        "services": {
++            "c7.store.share.ShareService": {"exported": True,
++                                            "enabled": True},
++        },
++        "receivers": {},
++        "providers": {},
++    },
++    "c7pkgstore_main": {
++        "package": "c7.store.main",
++        "receivers": {},
++        "services": {},
++        "providers": {},
++    },
++}
++
++
++import xml.etree.ElementTree as ET
++
++_MANIFEST_CACHE = {}
++
++
++def manifest_tree(apk):
++    """Decode the binary AXML once per APK (androguard v4-stable API) and
++    return the parsed ElementTree root."""
++    key = apk.get_package()
++    if key not in _MANIFEST_CACHE:
++        _MANIFEST_CACHE[key] = ET.fromstring(
++            apk.get_android_manifest_axml().get_xml())
++    return _MANIFEST_CACHE[key]
++
++
++ANDROID_NS = "{http://schemas.android.com/apk/res/android}"
++
++
++def flag(apk, kind, name, attr):
++    """attr value of `android:<attr>` on the <kind android:name=name> element
++    under <application>; None when the element (or attribute) is absent.
++    enabled absent ⇒ AOSP default true."""
++    tag = {"receiver": "receiver", "service": "service",
++           "provider": "provider"}[kind]
++    root = manifest_tree(apk)
++    for app in root.findall("application"):
++        for el in app.findall(tag):
++            nm = el.get(ANDROID_NS + "name") or ""
++            if nm == name or nm == "." + name.rsplit(".", 1)[-1]:
++                v = el.get(ANDROID_NS + attr)
++                if attr == "exported":
++                    return v is not None and str(v) == "true"
++                if attr == "enabled":
++                    return v is None or str(v) == "true"
++    return None
++
++
++def main():
++    results = {}
++    all_ok = True
++    for fixture, exp in EXPECTED.items():
++        apk_path = ("fixtures/c7_pkg_store_probe/apks/" + fixture +
++                    ".apk")
++        try:
++            a = APK(apk_path)
++        except Exception as e:  # noqa: BLE001
++            results[fixture] = {"error": "APK open failed: %s" % e}
++            all_ok = False
++            continue
++        pkg_ok = a.get_package() == exp["package"]
++        comp = {"package": a.get_package(), "pkg_ok": pkg_ok}
++        if not pkg_ok:
++            all_ok = False
++        for kind in ("receivers", "services", "providers"):
++            singular = kind[:-1]
++            got = {}
++            for cls, law in exp[kind].items():
++                ex = flag(a, singular, cls, "exported")
++                en = flag(a, singular, cls, "enabled")
++                match = (ex is True if law["exported"] else ex is False) \
++                    and (en is True if law["enabled"] else en is False)
++                got[cls] = {"exported": ex, "enabled": en, "match": match}
++                if not match:
++                    all_ok = False
++            comp[kind] = got
++        results[fixture] = comp
++    verdict = {"tool": "androguard-4.1.4", "all_ok": all_ok,
++               "fixtures": results}
++    print(json.dumps(verdict, indent=1, sort_keys=True))
++    return 0 if all_ok else 1
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/scripts/c7_w6_run_probe.sh b/scripts/c7_w6_run_probe.sh
+new file mode 100755
+index 00000000..00155e67
+--- /dev/null
++++ b/scripts/c7_w6_run_probe.sh
+@@ -0,0 +1,102 @@
++#!/usr/bin/env bash
++# c7_w6_run_probe.sh — CODER7 WAVE-6 probe runner (LoadedApk-lite:
++# foreign component EXECUTION). Extends the WAVE-5 runner with:
++#   * the 20-op verdict contract (X01-X16 WAVE-5 rows + X20-X23 W6 rows)
++#   * the W6 engine-row evidence greps (C7-STORE-DEX / BCAST-XPKG-EXEC /
++#     SVC-XPKG / PROV-XPKG-EXEC / CTX-XPKG-PKGNAME / BCAST-DENY)
++#   * the androguard cross-parser check (independent AXML verification)
++# COLD ×3 — the SQLite package cache is deleted before every run.
++# WARM ×3 — the cache persists (cache=WARM rows: no AXML re-parse).
++#
++# Usage: bash scripts/c7_w6_run_probe.sh <tag>
++set -uo pipefail
++R=$(cd "$(dirname "$0")/.." && pwd)
++BIN=${BIN:-$R/miniandroid/build/miniandroid}
++TAG=${1:?tag}
++OUT=$R/run/c7w6/$TAG
++rm -rf "$OUT"; mkdir -p "$OUT"
++STORE=$R/run/c7w6/store
++rm -rf "$STORE"; mkdir -p "$STORE"
++cp "$R"/fixtures/c7_pkg_store_probe/apks/*.apk "$STORE/"
++ls -la "$STORE"
++export MINIANDROID_PKG_STORE="$STORE"
++
++run_one() { # <dir> <apk>
++  local o=$1 apk=$2
++  rm -rf "$o"; mkdir -p "$o"
++  # fresh-install semantics: every run starts from an EMPTY app data dir
++  # (AOSP install wipes app data; the append-only handshake file would
++  # otherwise accumulate across the battery's runs and change the
++  # X20 detail bytes run-to-run).
++  rm -rf "$R/runtime/data/data/data/c7.store.main"
++  MINIANDROID_FILE_IO="$o/file_io.jsonl" timeout 240 "$BIN" run "$apk" \
++    --width 1080 --height 1920 --frames 3 --max-seconds 60 -o "$o" \
++    > "$o/run.log" 2>&1
++  echo "run rc=$? -> $o"
++  # snapshot the app-side verdict rows (MODE_PRIVATE file under the
++  # per-package sandbox) BEFORE the next run overwrites them.
++  local res="$R/runtime/data/data/data/c7.store.main/files/c7store_results.jsonl"
++  [ -f "$res" ] && cp "$res" "$o/c7store_results.jsonl"
++  local hs="$R/runtime/data/data/data/c7.store.main/files/xpkg_handshake.txt"
++  [ -f "$hs" ] && cp "$hs" "$o/xpkg_handshake.txt"
++}
++
++# ── androguard cross-parser verification (independent AXML truth) ────────
++python3 "$R/scripts/c7_w6_androguard_check.py" \
++  > "$OUT/androguard_check.json" 2> "$OUT/androguard_check.err"
++echo "androguard_check rc=$? (0 = every exported/enabled law matches)"
++
++# ── COLD ×3 ────────────────────────────────────────────────────────────────
++for i in 1 2 3; do
++  rm -f "$STORE/c7_pkg_cache.sqlite3"
++  run_one "$OUT/main_cold$i" "$STORE/c7pkgstore_main.apk"
++done
++
++# ── WARM ×3 (cache persists across runs; pre-run populates it) ────────────
++run_one "$OUT/main_warm_pre" "$STORE/c7pkgstore_main.apk"
++for i in 1 2 3; do
++  run_one "$OUT/main_warm$i" "$STORE/c7pkgstore_main.apk"
++done
++
++# ── evidence collection ───────────────────────────────────────────────────
++cd "$OUT"
++: > store_cache_rows_cold.txt
++: > store_cache_rows_warm.txt
++for i in 1 2 3; do
++  grep -E 'C7-STORE-DONE|C7-STORE\]' main_cold$i/run.log \
++    >> store_cache_rows_cold.txt 2>/dev/null
++  grep -E 'C7-STORE-DONE|C7-STORE\]' main_warm$i/run.log \
++    >> store_cache_rows_warm.txt 2>/dev/null
++done
++echo '═══ verdict op summary (cold1) ═══'
++cut -d'|' -f2,3 main_cold1/c7store_results.jsonl 2>/dev/null
++echo '═══ W6 engine rows (cold1) ═══'
++grep -E '"op":"(C7-STORE-DEX|BCAST-XPKG|SVC-XPKG|PROV-XPKG|CTX-XPKG)' \
++  main_cold1/file_io.jsonl 2>/dev/null | head -20
++echo '═══ SHA-256 ═══'
++for i in 1 2 3; do
++  sha256sum main_cold$i/c7store_results.jsonl main_warm$i/c7store_results.jsonl \
++    2>/dev/null
++done
++cat main_cold1/c7store_results.jsonl main_cold2/c7store_results.jsonl \
++    main_cold3/c7store_results.jsonl > c7store_cold_results.jsonl 2>/dev/null
++cat main_warm1/c7store_results.jsonl main_warm2/c7store_results.jsonl \
++    main_warm3/c7store_results.jsonl > c7store_warm_results.jsonl 2>/dev/null
++sha256sum c7store_cold_results.jsonl c7store_warm_results.jsonl 2>/dev/null
++echo '═══ X01-X16 prefix equality vs WAVE-5 golden ═══'
++GOLDEN=$R/evidence/c7_w6/x16_w5_golden.jsonl
++if [ -f "$GOLDEN" ]; then
++  head -16 main_cold1/c7store_results.jsonl > /tmp/c7w6_prefix.jsonl
++  if cmp -s /tmp/c7w6_prefix.jsonl "$GOLDEN"; then
++    echo "X01-X16 prefix: BYTE-IDENTICAL to the WAVE-5 golden"
++  else
++    echo "X01-X16 prefix: DIFFERS from the WAVE-5 golden"
++    diff "$GOLDEN" /tmp/c7w6_prefix.jsonl | head
++  fi
++else
++  echo "(golden not found at $GOLDEN — snapshot after first cold run)"
++  head -16 main_cold1/c7store_results.jsonl > "$GOLDEN" 2>/dev/null || true
++fi
++echo '═══ cache rows (cold vs warm) ═══'
++cat store_cache_rows_cold.txt store_cache_rows_warm.txt
++echo "RUNNER DONE tag=$TAG"

@@ -44,6 +44,11 @@ extern "C" uint64_t miniandroid_native_thunk(void* fn, const void* stack_args,
                                              const double* sse_regs,
                                              void* sse_ret);
 
+// S200-T03 F-NEW-622 — ONE-IDENTITY DIRECT-BUFFER LAW (declaration in
+// dlopen_exec.h): the f590 hook sets this when the answered addr is the
+// buffer's REAL memory; GetDirectBufferAddress then answers it verbatim.
+thread_local bool f590_served_real_identity = false;
+
 namespace {
 
 // ── counters (pkginspect runtime section) ──────────────────────────────
@@ -1080,8 +1085,53 @@ void* jni_GetDirectBufferAddress(void*, void* buf) {
         }
         void* addr = nullptr;
         size_t cap = 0;
+        f590_served_real_identity = false;  // F-NEW-622: per-call reset
         if (g_f590_hooks.direct_buffer &&
             g_f590_hooks.direct_buffer(oid, &addr, &cap)) {
+            // ── S200-T03 F-NEW-622 — ONE-IDENTITY DIRECT LAW ────────────
+            // When the hook answered the buffer's REAL memory (__bb_addr__
+            // native mint / __bb_direct__ engine mint / F-NEW-619 parent
+            // chase), answer THAT pointer. The 609 mint-copy captured the
+            // buffer at FIRST-GET time and every later reader parsed the
+            // copy — for the tictactoe font buffer the first Get happened
+            // mid-stream (chunk 1 of 42): the copy held a real head and an
+            // uninitialized tail, FreeType parsed a truncated font (cmap
+            // garbage → FT_Get_Char_Index=1 for every char → empty
+            // outlines → 0×0 bitmaps → white font pages). Stability law
+            // (the 609 promise) holds WITHOUT a copy: the real malloc
+            // lives for the buffer's lifetime, and now DEX-side bridge
+            // writes (copyJni real-mem arm) and native writes share the
+            // one address — the old documented boundary closes.
+            // The 609 persistent-copy below remains for the DEX-mirror
+            // arm only (its snapshot is a fresh malloc per call — only
+            // the registry makes that address stable).
+            if (f590_served_real_identity) {
+                static thread_local uint64_t real_n = 0;
+                if (real_n++ < 100)
+                    fprintf(stderr,
+                            "[F-NEW-622] GetDirectBufferAddress(oid=%u) "
+                            "served REAL identity addr=%p cap=%zu "
+                            "(no copy, one identity)\n",
+                            oid, addr, cap);
+                // S200-T03 diag (env-gated): the served memory's content —
+                // byte-sum + head/tail vs the real font (sum=13464079,
+                // tail=001d0000 for Roboto-Medium) answers whether the
+                // engine-side copyJni arm actually filled the real memory.
+                if (cap > 0 && std::getenv("MINIANDROID_T03_BUF_DIAG")) {
+                    unsigned char* p622 = (unsigned char*)addr;
+                    unsigned long long s622 = 0;
+                    for (size_t i = 0; i < cap; ++i) s622 += p622[i];
+                    fprintf(stderr,
+                            "[T03-BUF] real oid=%u cap=%zu sum=%llu head="
+                            "%02x%02x%02x%02x %02x%02x%02x%02x tail="
+                            "%02x%02x%02x%02x\n",
+                            oid, cap, s622, p622[0], p622[1], p622[2],
+                            p622[3], p622[4], p622[5], p622[6], p622[7],
+                            p622[cap - 4], p622[cap - 3], p622[cap - 2],
+                            p622[cap - 1]);
+                }
+                return addr;
+            }
             void* backing = std::malloc(cap ? cap : 1);
             if (!backing) return nullptr;
             if (addr && cap) memcpy(backing, addr, cap);
@@ -1097,6 +1147,21 @@ void* jni_GetDirectBufferAddress(void*, void* buf) {
                         "[F-NEW-609] GetDirectBufferAddress(oid=%u) "
                         "persistent backing minted cap=%zu\n",
                         oid, cap);
+            // S200-T03 diag (env-gated, zero behavior): WHICH bytes did the
+            // persistent mint capture? First-16 hex + byte-sum answer the
+            // font-buffer identity split (copyJni real-mem write vs the
+            // 609 snapshot taken at first-Get time).
+            if (cap > 0 && std::getenv("MINIANDROID_T03_BUF_DIAG")) {
+                unsigned char* p609 = (unsigned char*)backing;
+                unsigned long long s609 = 0;
+                for (size_t i = 0; i < cap; ++i) s609 += p609[i];
+                fprintf(stderr,
+                        "[T03-BUF] mint oid=%u cap=%zu sum=%llu head=%02x"
+                        "%02x%02x%02x %02x%02x%02x%02x tail=%02x%02x%02x%02x\n",
+                        oid, cap, s609, p609[0], p609[1], p609[2], p609[3],
+                        p609[4], p609[5], p609[6], p609[7], p609[cap - 4],
+                        p609[cap - 3], p609[cap - 2], p609[cap - 1]);
+            }
             return backing;
         }
     }
