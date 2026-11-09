@@ -53392,6 +53392,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }
+            if (method == "limit" && args.size() == 1) {
+                // ── F-NEW-630 (S204) — typed-view limit() GETTER. The
+                // setter (610) existed; the getter never landed. OpenJDK
+                // law: limit() reads the view's own cursor (independent of
+                // the byte parent's). LIVE face (tictactoe, S204): gdx
+                // VertexBufferObject.getNumVertices = buffer.limit() * 4 /
+                // attributes.vertexSize — with no getter the generic miss
+                // answered 0 → Mesh.render's `if (count == 0) return;`
+                // early-out swallowed EVERY shape pass (ShapeRenderer grid,
+                // XActor.rectLine, OActor.circle: Mesh.render ×120, zero
+                // glDrawArrays from prog=2) — the board never drew while
+                // the SpriteBatch menu (its limit() rides the ByteBuffer
+                // parent law, which HAS the getter) rendered fine.
+                result = DalvikValue::make_int(v_field("__bb_lim__"));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "hasRemaining" && args.size() == 1) {
+                // F-NEW-630: the parent law has it; the view block must too
+                // (same algebra, OpenJDK).
+                result = DalvikValue::make_bool(
+                    v_field("__bb_lim__") - v_field("__bb_pos__") > 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             if (method == "capacity" && args.size() == 1) {
                 result = DalvikValue::make_int(v_field("__bb_cap__"));
                 status = ApiCallTrace::Status::IMPLEMENTED;

@@ -1,0 +1,42 @@
+{
+ "ttt_gl": {
+  "wall_s": 21.4,
+  "face_sha16": null,
+  "uncaught": 0,
+  "draw_modes": {
+   "mode4 count24": 12
+  },
+  "dele": 8,
+  "dele_samples": [
+   "[GLDBG] DELE count=66 i0..5=0,1,2,2,3,0",
+   "[GLDBG] DELE count=30 i0..5=0,1,2,2,3,0",
+   "[GLDBG] DELE count=6 i0..5=0,1,2,2,3,0",
+   "[GLDBG] DELE count=12 i0..5=0,1,2,2,3,0"
+  ],
+  "draw_samples": [
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=(nil) -1.000,-1.000",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197",
+   "[GLDBG] DRAW mode=4 count=24 attrib0=(nil) -1.00,-1.00 attrib2=0x7f196374063c 0.638,0.197"
+  ],
+  "f626_seen": [
+   "[F-NEW-626-SEEN] IntBuffer.put argc=2 a1t=7"
+  ],
+  "f626_hits": 8,
+  "vbo_dump": [],
+  "taskFailed_tail": [],
+  "synth_exc": [
+   "[SYNTH",
+   "[SYNTH",
+   "[SYNTH"
+  ]
+ }
+}
