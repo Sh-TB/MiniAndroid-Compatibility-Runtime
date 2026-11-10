@@ -1,0 +1,11 @@
+{
+ "session": "S213-attempt (within S212 session)",
+ "attempt": "Coder-9 s206_part2_rebased_for_main.patch (sha16 fa41afad5bd4876b) integration on main 80f7e403",
+ "apply": "CLEAN rc=0 (as verified in S212 receipt verdict)",
+ "build": "FAIL \u2014 dalvik_engine.cpp:86237:41: error: 'effective_density_dpi' is not a member of 'miniandroid::resources' (call: const int dpi_s206 = resources::effective_density_dpi();)",
+ "symbol_ground_truth": "effective_density_dpi hits in miniandroid/src/ on clean main: 0 (both hits under patch are the patch's own call sites)",
+ "also": "patch adds unwired test file miniandroid/tests/c9_assetfd_dpi_law_test.cpp",
+ "conclusion": "apply-CLEAN != build-CLEAN \u2014 patch is DEPENDENCY-INCOMPLETE on main; the S206 C9 lineage on main went through a different integration (8a37aab1). Returned to lane with exact error.",
+ "binary_unchanged": "ec447fd49bbb335b (A-R3 landing) untouched; tree restored to 80f7e403",
+ "log": "evidence/s213/c9_reconcile_build_fail.log"
+}
