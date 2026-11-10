@@ -6,23 +6,23 @@
    "face_sha16": "8a6c24ac8a7d718e",
    "uncaught": 0,
    "pin": "8a6c24ac",
-   "binary": "e6287d1a2c175cf0",
+   "binary": "40db2fc5f200f0db",
    "hold": true
   },
   "unote": {
-   "wall_s": 1.4,
+   "wall_s": 1.7,
    "face_sha16": "3b8dcb0adbbc17a9",
    "uncaught": 0,
    "pin": "3b8dcb0a",
-   "binary": "e6287d1a2c175cf0",
+   "binary": "40db2fc5f200f0db",
    "hold": true
   },
   "dooz": {
-   "wall_s": 284.2,
+   "wall_s": 290.0,
    "face_sha16": "a0fae9072313e2d1",
    "uncaught": 0,
    "pin": "a0fae907",
-   "binary": "e6287d1a2c175cf0",
+   "binary": "40db2fc5f200f0db",
    "hold": true
   }
  },

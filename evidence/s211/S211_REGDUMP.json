@@ -1,0 +1,29 @@
+{
+ "wall_s": 320.1,
+ "face_sha16": "8ae704198ba0c7d4",
+ "binary_sha16": "9e00ea54d590467e",
+ "s36_first8": [
+  "[S36-AOOB] arr=o80620 cls=[I len=7 idx=1458633404 caller=Lso1;.b",
+  "[S36-AOOB] arr=o80677 cls=[I len=7 idx=993147359 caller=Lso1;.b",
+  "[S36-AOOB] arr=o80677 cls=[I len=7 idx=1458633404 caller=Lso1;.b",
+  "[S36-AOOB] arr=o15312 cls=[J len=2 idx=99652321 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o14941 cls=[J len=2 idx=-128070506 caller=Lbw0;.d",
+  "[S36-AOOB-aput] arr=o15244 cls=[Ljava/lang/Object; len=7 idx=-1329363308 caller=Lbw0;.k",
+  "[S36-AOOB-aput] arr=o14928 cls=[Ljava/lang/Object; len=7 idx=-1024564041 caller=Lbw0;.a",
+  "[S36-AOOB-aput] arr=o15234 cls=[Ljava/lang/Object; len=7 idx=-1329363308 caller=Lbw0;.a"
+ ],
+ "locals_diag_headers": [
+  "[LOCALS-DIAG] F141-OP Lnt1;.Q regs=15 ins=2 pc=80",
+  "[LOCALS-DIAG] AGET-OOB Lso1;.b regs=25 ins=5 pc=25",
+  "[LOCALS-DIAG] AGET-OOB Lso1;.b regs=25 ins=5 pc=25",
+  "[LOCALS-DIAG] AGET-OOB Lso1;.b regs=25 ins=5 pc=25",
+  "[LOCALS-DIAG] F141-OP Lqs0;.L0 regs=1 ins=1 pc=8",
+  "[LOCALS-DIAG] F141-OP Lqs0;.L0 regs=1 ins=1 pc=8",
+  "[LOCALS-DIAG] AGET-OOB Lbw0;.d regs=36 ins=2 pc=618",
+  "[LOCALS-DIAG] F141-OP Lqs0;.L0 regs=1 ins=1 pc=8",
+  "[LOCALS-DIAG] F141-OP Lqs0;.L0 regs=1 ins=1 pc=8",
+  "[LOCALS-DIAG] F141-OP Lqs0;.L0 regs=1 ins=1 pc=8",
+  "[LOCALS-DIAG] AGET-OOB Lbw0;.d regs=36 ins=2 pc=618",
+  "[LOCALS-DIAG] APUT-OOB Lbw0;.k regs=3 ins=2 pc=6"
+ ]
+}

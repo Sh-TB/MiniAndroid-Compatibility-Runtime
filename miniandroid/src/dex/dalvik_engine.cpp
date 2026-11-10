@@ -20900,6 +20900,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             /* UNIFIED_014: message aligned to ART canonical \
                              * "length=<len>; index=<idx>" (mirror/array.cc \
                              * ThrowArrayIndexOutOfBoundsException chain). */ \
+                            dump_frame_locals_diag("AGET-OOB"); \
                             std::string oob_msg = "length=" + std::to_string(arr_len) + \
                                                   "; index=" + std::to_string(idx); \
                             raise_synthetic_exception( \
@@ -26410,6 +26411,29 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
                     }
                 }
             }
+            // ── S211 (DIAG-ONLY, env-gated MINIANDROID_S211_SEGTRACE):
+            // dooz post-nav zombie probe — every iget of a Lbw0; (kotlinx
+            // Segment family) INT field logs (obj#, field, value, caller,
+            // pc). Answers: what did the .e scanner's mask register
+            // (this.c) actually read at the divergence — 7 or garbage?
+            {
+                static const bool s211_on = diag_env("MINIANDROID_S211_SEGTRACE");
+                if (s211_on && field_res.class_descriptor == "Lbw0;" &&
+                    field_res.field_name == "c") {
+                    static thread_local uint64_t s211_n = 0;
+                    if (s211_n++ < 400) {
+                        std::cerr << "[S211-IGET] Lbw0;." << field_res.field_name
+                                  << " obj#" << obj_ref.object_id
+                                  << " hit=" << (field_val.has_value() ? 1 : 0)
+                                  << " val="
+                                  << (field_val.has_value()
+                                          ? dalvik_value_to_string(*field_val)
+                                          : std::string("(none)"))
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << " pc=" << pc << std::endl;
+                    }
+                }
+            }
             // ── TRAIN-68 (T68-JOBGET): the pointerInputJob null-check reads.
             // Lor1;.v:Lkp1; = the lazy coroutine job — every node reads it on
             // the first event (if-null-launch). Log the READ + the value with
@@ -27678,6 +27702,29 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                 "' on a null object reference",
             "iput-null-recv");
         return true;  /* pc_ set by raise (catch handler) or frame unwind */
+    }
+
+    // ── S211 (DIAG-ONLY, env-gated MINIANDROID_S211_SEGTRACE): dooz zombie
+    // probe — every iput into a Lbw0; (kotlinx Segment family) field logs
+    // (obj#, field, written value, caller, pc). The initializer `.f` writes
+    // the mask `c` — the writer identity + value answers whether c is
+    // capacity-consistent (7 -> Object[7]) or garbage-sourced.
+    {
+        static const bool s211w_on = diag_env("MINIANDROID_S211_SEGTRACE");
+        if (s211w_on && field_res.resolved &&
+            field_res.class_descriptor == "Lbw0;") {
+            static thread_local uint64_t s211_wn = 0;
+            if (s211_wn++ < 400) {
+                uint32_t s211_recv =
+                    (obj_ref.type == DalvikType::OBJECT_REF)
+                        ? obj_ref.object_id : 0;
+                std::cerr << "[S211-IPUT] Lbw0;." << field_res.field_name
+                          << " obj#" << s211_recv
+                          << " val=" << dalvik_value_to_string(src_val)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << " pc=" << pc << std::endl;
+            }
+        }
     }
 
     // ── CONT-47 D8 (DIAG-ONLY, env-gated): place-descent witness — every
