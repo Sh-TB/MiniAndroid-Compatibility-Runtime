@@ -1,0 +1,429 @@
+{
+ "watermark": 6771180657,
+ "scanned": [
+  536,
+  575,
+  557,
+  492,
+  520,
+  519,
+  574,
+  521,
+  573,
+  570,
+  565,
+  527,
+  515,
+  505,
+  566,
+  450,
+  556,
+  572,
+  533,
+  441,
+  571,
+  438,
+  439,
+  569,
+  568,
+  567,
+  440,
+  559,
+  564,
+  437,
+  541,
+  563,
+  542,
+  561,
+  436,
+  562,
+  560,
+  528,
+  534,
+  538,
+  558,
+  475,
+  547,
+  555,
+  554,
+  553,
+  552,
+  551,
+  550,
+  549
+ ],
+ "issues": {
+  "536": {
+   "title": "S185 — THE SQLITE RULE (standing law for all Coders): VEND, DON'T REWRITE · LOAD-FIRST · TRACER-THEN-PRUNE · NOTHING BULKY IN GIT",
+   "total": 24,
+   "last_id": 6771180657,
+   "last_at": "2026-11-10T15:18:05Z",
+   "new_count": 0,
+   "new": []
+  },
+  "575": {
+   "title": "W21 — The W17-W20 stack LANDED ON S206 + the dooz F720 ZOMBIE root-cause + the gated landing",
+   "total": 17,
+   "last_id": 6771180003,
+   "last_at": "2026-11-10T15:18:03Z",
+   "new_count": 0,
+   "new": []
+  },
+  "557": {
+   "title": "A24 · S188 — tictactoe_3 FULL EXECUTION (first new app to SUCCESS, rc=0): eleven generic laws from the gdx StringBuilder char[] wall to the JNI primitive-array family",
+   "total": 39,
+   "last_id": 6770741508,
+   "last_at": "2026-11-10T15:00:58Z",
+   "new_count": 0,
+   "new": []
+  },
+  "492": {
+   "title": "Coder 3 | Master Dashboard — every Issue, every app, one glance (progress % + statistics) — refreshed at refresh 12 (S181 · A19: the S163 pending-measure traverse law — four shapes built+measured, FIRST real post-tap dooz content frame, ISE −85% opt-in, byte-inert off ×3+30/30; counts 531 issues / 20 Coder-3 achievement reports)",
+   "total": 27,
+   "last_id": 6748869722,
+   "last_at": "2026-11-09T19:07:25Z",
+   "new_count": 0,
+   "new": []
+  },
+  "520": {
+   "title": "CODER 7 — Base Android Component Runtime: WAVE-5 PMS-LITE (cross-package component index + REAL-SQLite package cache; 16/16 ×6 store ops; 34/34 == W4 sha; act 8/8; gate_a A/B identical) · waves W1–W4 in body",
+   "total": 46,
+   "last_id": 6746124034,
+   "last_at": "2026-11-09T16:59:37Z",
+   "new_count": 0,
+   "new": []
+  },
+  "519": {
+   "title": "CODER 8 — Base Concurrency & Scheduling Runtime | Achievement Log (living reference, no-push delivery)",
+   "total": 110,
+   "last_id": 6745683059,
+   "last_at": "2026-11-09T16:42:26Z",
+   "new_count": 0,
+   "new": []
+  },
+  "574": {
+   "title": "[W20][Coder-4] The COMPLETE dagger DI chain LIVE — base-onCreate fan-out + activity-identity gate + the 136-binding injector map (F-C4-696..721, 26 work items); NC Hilt injects end-to-end; battery 11/11 CLEAN",
+   "total": 3,
+   "last_id": 6745619515,
+   "last_at": "2026-11-09T16:40:03Z",
+   "new_count": 0,
+   "new": []
+  },
+  "521": {
+   "title": "CODER 9 — Base Resources, Assets & Image Pipeline | Achievement Log (living reference, no-push delivery)",
+   "total": 59,
+   "last_id": 6745395108,
+   "last_at": "2026-11-09T16:30:45Z",
+   "new_count": 0,
+   "new": []
+  },
+  "573": {
+   "title": "S168 — THE 20-PROBLEM RENDER LADDER for dooz full render (#1 CLOSED: framework-table restore → #527 byte-exact reproduction a0fae9072313e2d1; #2..20 OPEN: the board frontier F-NEW-277/562/378 + the paint/font/asset ladder)",
+   "total": 3,
+   "last_id": 6744610392,
+   "last_at": "2026-11-09T15:57:21Z",
+   "new_count": 0,
+   "new": []
+  },
+  "570": {
+   "title": "[RESEARCH] External Tool Audit — independent tool validation for DEX/native/GL (60-sec report)",
+   "total": 6,
+   "last_id": 6743645782,
+   "last_at": "2026-11-09T15:16:51Z",
+   "new_count": 0,
+   "new": []
+  },
+  "565": {
+   "title": "GOVERNANCE — The Knowledge Transfer Law (K-1..K-7): every issue must be a complete, self-contained, landable transfer — registered by user directive",
+   "total": 2,
+   "last_id": 6743645269,
+   "last_at": "2026-11-09T15:16:50Z",
+   "new_count": 0,
+   "new": []
+  },
+  "527": {
+   "title": "Coder 3 | Achievement 17 — dooz renders its COMPLETE Material You UI: the dynamic-color baseline-palette law (all-black → 121 real colors, rc=0/SUCCESS, byte-exact ×4, re-proven in a 6th fresh environment)",
+   "total": 2,
+   "last_id": 6736576949,
+   "last_at": "2026-11-09T09:23:59Z",
+   "new_count": 0,
+   "new": []
+  },
+  "515": {
+   "title": "CODER-6 ACHIEVEMENT 4 — WAVE 8: [C6-GLBD] index-mesh law set — Mindustry scene FBO receives REAL app geometry (40 guard skips → 0, 313 real indexed draws)",
+   "total": 3,
+   "last_id": 6732819454,
+   "last_at": "2026-11-09T05:15:12Z",
+   "new_count": 0,
+   "new": []
+  },
+  "505": {
+   "title": "[CONT-4APP RECURRING][Coder-5] — per-session wave log: register → root-cause → fix → re-census → evidence",
+   "total": 27,
+   "last_id": 6732819199,
+   "last_at": "2026-11-09T05:15:11Z",
+   "new_count": 0,
+   "new": []
+  },
+  "566": {
+   "title": "[W17][Coder-4] ELEVEN base-layer laws — CB NavHost + TSK okhttp + NC Conscrypt/provider walls DEAD; the S194-intake recovery (F-C4-619/620/621 re-landed); battery 11/11 + goldens ALL HOLD",
+   "total": 9,
+   "last_id": 6732818945,
+   "last_at": "2026-11-09T05:15:10Z",
+   "new_count": 0,
+   "new": []
+  },
+  "450": {
+   "title": "[Coder 2] Mission Board & Worklist — canonical-corpus breadth campaign + Telegram-family priority (fresh-sandbox lane)",
+   "total": 3,
+   "last_id": 6732818375,
+   "last_at": "2026-11-09T05:15:08Z",
+   "new_count": 0,
+   "new": []
+  },
+  "556": {
+   "title": "MINIANDROID — UNIFIED RUNTIME INTEGRATION, ROUTE-AWARE EXECUTION GRAPH, AND REAL APPLICATION RECOVERY",
+   "total": 29,
+   "last_id": 6729247399,
+   "last_at": "2026-11-09T00:19:53Z",
+   "new_count": 0,
+   "new": []
+  },
+  "572": {
+   "title": "A25 · S195 — unote_30 FULL EXECUTION (first REAL SQLite app journey: create→insert→select→rendered row): five platform laws",
+   "total": 3,
+   "last_id": 6729247152,
+   "last_at": "2026-11-09T00:19:51Z",
+   "new_count": 0,
+   "new": []
+  },
+  "533": {
+   "title": "CODER 8 — Base Concurrency & Scheduling Runtime Engineering Worklog",
+   "total": 2,
+   "last_id": 6728863403,
+   "last_at": "2026-11-08T23:46:51Z",
+   "new_count": 0,
+   "new": []
+  },
+  "441": {
+   "title": "Coder 6 | Case File — Mindustry (io.anuke.mindustry) · ladder M0–M6",
+   "total": 30,
+   "last_id": 6727451754,
+   "last_at": "2026-11-08T21:36:22Z",
+   "new_count": 0,
+   "new": []
+  },
+  "571": {
+   "title": "[W19][Coder-4] UriMatcher Java-split ROOT (NC uncaught KILLED) + 28-item law stack + appcompat pending-content re-parent — battery 12/12 CLEAN",
+   "total": 3,
+   "last_id": 6727393044,
+   "last_at": "2026-11-08T21:30:53Z",
+   "new_count": 0,
+   "new": []
+  },
+  "438": {
+   "title": "Coder 6 | Case File — VLC for Android (org.videolan.vlc) · ladder V0–V6",
+   "total": 19,
+   "last_id": 6726750653,
+   "last_at": "2026-11-08T20:32:37Z",
+   "new_count": 0,
+   "new": []
+  },
+  "439": {
+   "title": "Coder 6 | Case File — Termux (com.termux) · ladder T0–T5",
+   "total": 27,
+   "last_id": 6726750443,
+   "last_at": "2026-11-08T20:32:36Z",
+   "new_count": 0,
+   "new": []
+  },
+  "569": {
+   "title": "[S196][Coder-5] getSupportFragmentManager identity-first repair (F-NEW-629) + Godot IO chain (F-NEW-630/631) — the ball2box Godot fragment attaches — complete landable transfer",
+   "total": 1,
+   "last_id": 6726388932,
+   "last_at": "2026-11-08T20:00:31Z",
+   "new_count": 0,
+   "new": []
+  },
+  "568": {
+   "title": "[S195][Coder-5] androidx host-boundary completion — F-NEW-626/627/628 + androguard FM census — complete landable transfer",
+   "total": 1,
+   "last_id": 6726091180,
+   "last_at": "2026-11-08T19:33:01Z",
+   "new_count": 0,
+   "new": []
+  },
+  "567": {
+   "title": "[W18][Coder-4] androguard demand census + F-C4-633 GENERIC-STUB CENSUS oracle + fifteen law families — the live silent-stub surface 7,032→279 calls (96.0%); opencalc face collapse CAUGHT and gated in-wave (S194 third convergence); battery 12/12 A/B, goldens ALL HOLD",
+   "total": 5,
+   "last_id": 6726011273,
+   "last_at": "2026-11-08T19:25:49Z",
+   "new_count": 0,
+   "new": []
+  },
+  "440": {
+   "title": "Coder 6 | Case File — Organic Maps (app.organicmaps) · ladder O0–O6",
+   "total": 9,
+   "last_id": 6725808803,
+   "last_at": "2026-11-08T19:09:21Z",
+   "new_count": 0,
+   "new": []
+  },
+  "559": {
+   "title": "[S188 W2] Route map + per-app requirements: which alley each title takes, what each needs",
+   "total": 19,
+   "last_id": 6725526001,
+   "last_at": "2026-11-08T18:43:55Z",
+   "new_count": 0,
+   "new": []
+  },
+  "564": {
+   "title": "[W16][Coder-4] SEVEN generic laws — four 4APP walls fall at the base layer (String.regionMatches okhttp scheme, Matcher.start/end regex-range, ArrayList dual-store coherence, MediaStore CONTENT_URI+getContentUri, JobScheduler methods, java.time.Duration)",
+   "total": 2,
+   "last_id": 6724020133,
+   "last_at": "2026-11-08T16:28:25Z",
+   "new_count": 0,
+   "new": []
+  },
+  "437": {
+   "title": "Coder 6 | Mission & Achievement Board — Full Execution of the 4 Hardest (VLC · Termux · Organic Maps · Mindustry) — Master Tracking",
+   "total": 17,
+   "last_id": 6713332291,
+   "last_at": "2026-11-07T21:37:00Z",
+   "new_count": 0,
+   "new": []
+  },
+  "541": {
+   "title": "[S188 MASTER] Unified Runtime Integration, Route-Aware Execution Graph, and Real Application Recovery — BINDING LAW FOR ALL CODERS",
+   "total": 6,
+   "last_id": 6711955894,
+   "last_at": "2026-11-07T19:25:48Z",
+   "new_count": 0,
+   "new": []
+  },
+  "563": {
+   "title": "[W15][Coder-4] FIVE generic laws — Nextcloud 4 death walls killed at the base layer (Room 2.7 onOpen lifecycle F-C4-616 · SQLite error-throw contract F-C4-617 · EXP-058 emoji ctor gates REMOVED F-C4-618 · Class.resolveName law F-C4-619 · java.util.Properties real law F-C4-620) — app now logs “Using Conscrypt/2.6.2 for TLS”; ZERO regressions (goldens byte-exact)",
+   "total": 4,
+   "last_id": 6711813612,
+   "last_at": "2026-11-07T19:12:31Z",
+   "new_count": 0,
+   "new": []
+  },
+  "542": {
+   "title": "[S188-RULES] Binding working rules for all coders — UNOBSERVED is never PASS",
+   "total": 3,
+   "last_id": 6708828434,
+   "last_at": "2026-11-07T15:15:21Z",
+   "new_count": 0,
+   "new": []
+  },
+  "561": {
+   "title": "S191 [A27] Coder 3 — androguard-driven: gmdice COMPLETE gameplay (ListActivity/ArrayAdapter law stack; 3x byte-identical; details dialog pixel-verified)",
+   "total": 3,
+   "last_id": 6708770925,
+   "last_at": "2026-11-07T15:11:24Z",
+   "new_count": 0,
+   "new": []
+  },
+  "436": {
+   "title": "[CONT-4APP4 RECURRING][Coder-4] Wave log — census → roots → fixes → battery → evidence",
+   "total": 13,
+   "last_id": 6708460465,
+   "last_at": "2026-11-07T14:50:33Z",
+   "new_count": 0,
+   "new": []
+  },
+  "562": {
+   "title": "[W15][Coder-4] THREE new laws + the W11-14 stack RE-LANDED on current main (d3a8d0e): sunpiano REAL_APP_CONTENT restored af001924 x2, the 3-app mid-line regression root-caused to ONE count_params bug (TB pin 43bfdac6 / CB 0 / pfdicer 0), NC 32->20, TK 33->16, onInflate DISPATCHED (F-C4-616/617/618)",
+   "total": 4,
+   "last_id": 6708456694,
+   "last_at": "2026-11-07T14:50:17Z",
+   "new_count": 0,
+   "new": []
+  },
+  "560": {
+   "title": "S157 [A25+A26] Coder 3 — androguard-driven debug wave: headingcalculator COMPLETE gameplay (TH=343 GS=95 exact, deterministic x3) + chessclock ticking — zero engine changes",
+   "total": 2,
+   "last_id": 6708416593,
+   "last_at": "2026-11-07T14:47:21Z",
+   "new_count": 0,
+   "new": []
+  },
+  "528": {
+   "title": "[W11][Coder-4] FIVE generic laws — Kotlin exception identity restored (EXP-045 sanitizeStackTrace gate REMOVED: checkNotNull/throwUninitializedProperty keep their REAL class+message+stack) · AOSP onOpen lifecycle dispatched (Room 2.7 invalidation tracker lives: NC 32→17, TK 32→20, ALL base families dead) · bridge-class toString in concat (TB preferences_pb poisoned-path root: TB at ZERO uncaught, FIRST in the program) · 67 base rows closed · CB census-zero held",
+   "total": 4,
+   "last_id": 6695738758,
+   "last_at": "2026-11-06T21:13:30Z",
+   "new_count": 0,
+   "new": []
+  },
+  "534": {
+   "title": "[W12][Coder-4] SEVEN generic laws — Collections.sort natural-order RESTORED (TK MainActivity AIOOBE dead: okio Options built on an UNSORTED list) · Pattern.pattern() (CB 13-row Compose family dead) · JobScheduler job-store · Matcher position/identity (hostId EXTRACTED live) · single-truth collection render · parseInclude override · compileStmt-throws + W11 five PORTED onto S179 main — corpus 5/5 byte-inert",
+   "total": 4,
+   "last_id": 6695738259,
+   "last_at": "2026-11-06T21:13:29Z",
+   "new_count": 0,
+   "new": []
+  },
+  "538": {
+   "title": "[W13][Coder-4] FOUR generic laws from the stuck-corpus directive — ParcelUuid/UUID.fromString COMPLETE AOSP law (sunpiano FLIPPED 0→576,907 px REAL_APP_CONTENT, uncaught 32→7) · ctor receiver-arity law (itsfrz FragmentContainerView fm-null chain dead 12→7) · collection-render double-bracket fix (OpenJDK-exact [mode]) · AudioFocusRequest.Builder — gates 3/3 + 4APP faces byte-inert",
+   "total": 4,
+   "last_id": 6695737816,
+   "last_at": "2026-11-06T21:13:27Z",
+   "new_count": 0,
+   "new": []
+  },
+  "558": {
+   "title": "[W14][Coder-4] F-C4-613 unified <init> ARITY CLASSIFIER (sunpiano 576,907 px restored with ALL laws on — the S186h-ARITY/F-C4-610 interplay root-caused, pure-main repro + env-off switch) · F-C4-614/615/615b/615c FragmentContainerView android:name + findFragmentById STORE (R8-complete, itsfrz NavHostFragment BORN, null-cast family DEAD)",
+   "total": 2,
+   "last_id": 6695717835,
+   "last_at": "2026-11-06T21:12:44Z",
+   "new_count": 0,
+   "new": []
+  },
+  "475": {
+   "title": "[Coder 2] TicTacToe (emmanuelmess) (com.emmanuelmess.tictactoe) v3 — app tracker · living issue until full render",
+   "total": 3,
+   "last_id": 6695243076,
+   "last_at": "2026-11-06T20:53:23Z",
+   "new_count": 0,
+   "new": []
+  },
+  "547": {
+   "title": "[S188 Phase E] View & draw pipeline recovery — gmdice real Adapter rows, unote Toolbar children",
+   "total": 1,
+   "last_id": 6694921857,
+   "last_at": "2026-11-06T20:35:56Z",
+   "new_count": 0,
+   "new": []
+  },
+  "555": {
+   "total": 0,
+   "note": "fetch-fail-or-empty"
+  },
+  "554": {
+   "total": 0,
+   "note": "fetch-fail-or-empty"
+  },
+  "553": {
+   "total": 0,
+   "note": "fetch-fail-or-empty"
+  },
+  "552": {
+   "total": 0,
+   "note": "fetch-fail-or-empty"
+  },
+  "551": {
+   "total": 0,
+   "note": "fetch-fail-or-empty"
+  },
+  "550": {
+   "total": 0,
+   "note": "fetch-fail-or-empty"
+  },
+  "549": {
+   "total": 0,
+   "note": "fetch-fail-or-empty"
+  }
+ }
+}

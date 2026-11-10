@@ -1,0 +1,28 @@
+{
+ "wall_s": 293.7,
+ "face_sha16": "2ae3e6be47682259",
+ "uncaught_escapes": 6,
+ "s36_oob_lines": [
+  "[S36-AOOB] arr=o14868 cls=[I len=7 idx=931677749 caller=Lso1;.b",
+  "[S36-AOOB] arr=o15180 cls=[I len=7 idx=15 caller=Lso1;.b",
+  "[S36-AOOB] arr=o15180 cls=[I len=7 idx=25943954 caller=Lso1;.b",
+  "[S36-AOOB] arr=o14899 cls=[J len=2 idx=155410227 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15230 cls=[J len=2 idx=134549155 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15240 cls=[J len=2 idx=134549155 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15056 cls=[Ljava/lang/Object; len=7 idx=7 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15056 cls=[Ljava/lang/Object; len=7 idx=7 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15056 cls=[Ljava/lang/Object; len=7 idx=7 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15056 cls=[Ljava/lang/Object; len=7 idx=7 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15056 cls=[Ljava/lang/Object; len=7 idx=7 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15056 cls=[Ljava/lang/Object; len=7 idx=7 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o19420 cls=[J len=2 idx=-261367374 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15056 cls=[Ljava/lang/Object; len=7 idx=7 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15056 cls=[Ljava/lang/Object; len=7 idx=7 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15809 cls=[J len=2 idx=33833596 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15240 cls=[J len=2 idx=134549155 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o15309 cls=[J len=2 idx=164486881 caller=Lbw0;.d",
+  "[S36-AOOB] arr=o16033 cls=[J len=2 idx=33833596 caller=Lbw0;.d"
+ ],
+ "apk_sha16": "299eab21ac8b3c61",
+ "binary_sha16": "e6287d1a2c175cf0"
+}
