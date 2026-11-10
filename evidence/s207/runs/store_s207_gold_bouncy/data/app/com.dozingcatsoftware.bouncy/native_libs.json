@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.dozingcatsoftware.bouncy/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libgdx-box2d.so", "size": 270816}
+  ],
+  "count": 1
+}

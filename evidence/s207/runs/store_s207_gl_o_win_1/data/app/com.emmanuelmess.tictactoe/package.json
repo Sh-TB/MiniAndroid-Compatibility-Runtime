@@ -1,0 +1,16 @@
+{
+  "package": "com.emmanuelmess.tictactoe",
+  "versionName": "1.0.0",
+  "versionCode": 3,
+  "mainActivity": "com.emmanuelmess.tictactoe.AndroidLauncher",
+  "minSdk": "14",
+  "targetSdk": "29",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/com.emmanuelmess.tictactoe/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gl_o_win_1/data/app/com.emmanuelmess.tictactoe/base.apk",
+  "apkSha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+  "apkSize": 4474946,
+  "installedAt": "2026-11-10T05:32:48Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

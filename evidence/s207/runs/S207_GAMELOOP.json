@@ -1,0 +1,74 @@
+{
+ "o_win": {
+  "seq": [
+   "X@0",
+   "O@2",
+   "X@1",
+   "O@4",
+   "X@3",
+   "O@6"
+  ],
+  "runs": [
+   {
+    "wall_s": 20.7,
+    "face_sha16": "bbdeaad5539ba7e0",
+    "uncaught": 0
+   },
+   {
+    "wall_s": 20.7,
+    "face_sha16": "bbdeaad5539ba7e0",
+    "uncaught": 0
+   }
+  ],
+  "deterministic_x2": true
+ },
+ "stalemate": {
+  "seq": [
+   "X@0",
+   "O@4",
+   "X@2",
+   "O@5",
+   "X@3",
+   "O@6",
+   "X@7",
+   "O@1",
+   "X@8"
+  ],
+  "runs": [
+   {
+    "wall_s": 26.5,
+    "face_sha16": "d9394231c249087e",
+    "uncaught": 0
+   },
+   {
+    "wall_s": 26.5,
+    "face_sha16": "d9394231c249087e",
+    "uncaught": 0
+   }
+  ],
+  "deterministic_x2": true
+ },
+ "restart_after_win": {
+  "seq": [
+   "X@4",
+   "O@0",
+   "X@8",
+   "O@1",
+   "X@6",
+   "TAP@1-after-win"
+  ],
+  "runs": [
+   {
+    "wall_s": 21.4,
+    "face_sha16": "f76d1beb895ca237",
+    "uncaught": 0
+   },
+   {
+    "wall_s": 21.4,
+    "face_sha16": "f76d1beb895ca237",
+    "uncaught": 0
+   }
+  ],
+  "deterministic_x2": true
+ }
+}

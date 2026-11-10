@@ -1,0 +1,86 @@
+{
+ "p_r1_c1": {
+  "tap": [
+   250,
+   480
+  ],
+  "face": "7354c1b231cd581d",
+  "uncaught": 0,
+  "ink_center": null,
+  "ink_bbox": null
+ },
+ "p_r1_c2": {
+  "tap": [
+   540,
+   480
+  ],
+  "face": "7354c1b231cd581d",
+  "uncaught": 0,
+  "ink_center": null,
+  "ink_bbox": null
+ },
+ "p_r1_c3": {
+  "tap": [
+   830,
+   480
+  ],
+  "face": "7354c1b231cd581d",
+  "uncaught": 0,
+  "ink_center": null,
+  "ink_bbox": null
+ },
+ "p_center": {
+  "tap": [
+   540,
+   760
+  ],
+  "face": "b887a2492f0b3fcf",
+  "uncaught": 0,
+  "ink_center": [
+   539,
+   648
+  ],
+  "ink_bbox": [
+   446,
+   526,
+   633,
+   771
+  ]
+ },
+ "p_r3_c1": {
+  "tap": [
+   250,
+   1040
+  ],
+  "face": "2f924228ecf1f393",
+  "uncaught": 0,
+  "ink_center": [
+   287,
+   972
+  ],
+  "ink_bbox": [
+   194,
+   850,
+   381,
+   1095
+  ]
+ },
+ "p_r3_c3": {
+  "tap": [
+   830,
+   1040
+  ],
+  "face": "4ccc29102ff510a3",
+  "uncaught": 0,
+  "ink_center": [
+   791,
+   972
+  ],
+  "ink_bbox": [
+   698,
+   850,
+   885,
+   1095
+  ]
+ }
+}
