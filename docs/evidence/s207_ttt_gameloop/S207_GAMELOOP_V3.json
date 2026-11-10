@@ -1,0 +1,47 @@
+{
+ "x_win": {
+  "seq": [
+   "X@2",
+   "O@0",
+   "X@4",
+   "O@1",
+   "X@6"
+  ],
+  "runs": [
+   {
+    "wall_s": 19.6,
+    "face_sha16": "db2db9f5b176eb28",
+    "uncaught": 0
+   },
+   {
+    "wall_s": 19.5,
+    "face_sha16": "db2db9f5b176eb28",
+    "uncaught": 0
+   }
+  ],
+  "deterministic_x2": true
+ },
+ "restart_v2": {
+  "seq": [
+   "X@2",
+   "O@0",
+   "X@4",
+   "O@1",
+   "X@6",
+   "TAP@8-after-win"
+  ],
+  "runs": [
+   {
+    "wall_s": 21.4,
+    "face_sha16": "a5ae21eeb4f19bed",
+    "uncaught": 0
+   },
+   {
+    "wall_s": 21.5,
+    "face_sha16": "a5ae21eeb4f19bed",
+    "uncaught": 0
+   }
+  ],
+  "deterministic_x2": true
+ }
+}
