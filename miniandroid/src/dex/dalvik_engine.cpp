@@ -66102,14 +66102,89 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
             perm_name = args[1].string_val;
         }
-        // Same logic as checkSelfPermission
+        // ── [A-R3] R4 (A-R1 #576, lane P0) — the SIBLING law. The old body
+        // consulted ONLY permission_state_ and answered -1 (DENIED)
+        // otherwise, while its own comment claimed "Same logic as
+        // checkSelfPermission" — false: the F-NEW-428 install-grant law
+        // lived only in checkSelfPermission. For the running package's own
+        // manifest-declared NORMAL permission never runtime-requested,
+        // checkSelfPermission answered GRANTED(0) while checkPermission
+        // answered DENIED(-1) — the two AOSP APIs are ONE query by
+        // construction (ContextImpl.checkSelfPermission delegates to
+        // PackageManager.checkPermission(permission, getPackageName()))
+        // and can never disagree. This block now runs the SAME classifier:
+        // runtime state → manifest install-grant → normal table → DENIED.
+        // Tables duplicated inline (the file's established pattern — see
+        // the service-name tables at the getSystemService blocks);
+        // checkSelfPermission itself is untouched (proven law, zero
+        // regression risk to its goldens).
         auto pit = permission_state_.find(perm_name);
         int result_val;
         if (pit != permission_state_.end()) {
             result_val = pit->second;
+        } else if (!manifest_requested_permissions_.empty() &&
+                   std::find(manifest_requested_permissions_.begin(),
+                             manifest_requested_permissions_.end(),
+                             perm_name) !=
+                       manifest_requested_permissions_.end()) {
+            // CONT-102 (F-NEW-428) install-grant law, same as
+            // checkSelfPermission: requested-in-manifest normal/signature
+            // permissions are granted at install time; dangerous keep the
+            // runtime-grant law (DENIED until requestPermissions).
+            static const miniandroid::dalvik::KvPair t_dangerous[] = {
+                {"android.permission.CAMERA", ""},
+                {"android.permission.RECORD_AUDIO", ""},
+                {"android.permission.ACCESS_FINE_LOCATION", ""},
+                {"android.permission.ACCESS_COARSE_LOCATION", ""},
+                {"android.permission.ACCESS_BACKGROUND_LOCATION", ""},
+                {"android.permission.READ_CONTACTS", ""},
+                {"android.permission.WRITE_CONTACTS", ""},
+                {"android.permission.GET_ACCOUNTS", ""},
+                {"android.permission.READ_PHONE_STATE", ""},
+                {"android.permission.CALL_PHONE", ""},
+                {"android.permission.SEND_SMS", ""},
+                {"android.permission.RECEIVE_SMS", ""},
+                {"android.permission.READ_SMS", ""},
+                {"android.permission.RECEIVE_MMS", ""},
+                {"android.permission.READ_EXTERNAL_STORAGE", ""},
+                {"android.permission.WRITE_EXTERNAL_STORAGE", ""},
+                {"android.permission.READ_CALENDAR", ""},
+                {"android.permission.WRITE_CALENDAR", ""},
+                {"android.permission.BODY_SENSORS", ""},
+                {"android.permission.ACTIVITY_RECOGNITION", ""},
+            };
+            if (kv_table_contains(t_dangerous,
+                    sizeof(t_dangerous) / sizeof(t_dangerous[0]),
+                    perm_name)) {
+                result_val = -1;  // runtime-grant law: DENIED until asked
+            } else {
+                result_val = 0;   // install-grant law: normal → GRANTED
+            }
         } else {
-            // Default: denied for dangerous, granted for normal
-            result_val = -1;  // PERMISSION_DENIED (conservative default)
+            // Not requested in the manifest: normal-table permissions stay
+            // GRANTED (AOSP install-time default), everything else DENIED.
+            static const miniandroid::dalvik::KvPair t_normal_permissions[] = {
+                {"android.permission.INTERNET", ""},
+                {"android.permission.ACCESS_NETWORK_STATE", ""},
+                {"android.permission.ACCESS_WIFI_STATE", ""},
+                {"android.permission.CHANGE_WIFI_STATE", ""},
+                {"android.permission.VIBRATE", ""},
+                {"android.permission.WAKE_LOCK", ""},
+                {"android.permission.RECEIVE_BOOT_COMPLETED", ""},
+                {"android.permission.NFC", ""},
+                {"android.permission.BLUETOOTH", ""},
+                {"android.permission.BLUETOOTH_ADMIN", ""},
+                {"android.permission.FOREGROUND_SERVICE", ""},
+                {"android.permission.POST_NOTIFICATIONS", ""},
+                {"android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS", ""},
+            };
+            if (kv_table_contains(t_normal_permissions,
+                    sizeof(t_normal_permissions) / sizeof(t_normal_permissions[0]),
+                    perm_name)) {
+                result_val = 0;  // PERMISSION_GRANTED
+            } else {
+                result_val = -1;  // PERMISSION_DENIED
+            }
         }
         result = DalvikValue::make_int(result_val);
         status = ApiCallTrace::Status::IMPLEMENTED;
@@ -71427,6 +71502,51 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                      url_s.c_str(), r.status, r.body.size());
             }
         }
+        // ── [A-R3] R9 (A-R2 #578, lane P0) — the LOUD METHOD LAW. Before
+        // this law setRequestMethod stored the string and returned
+        // IMPLEMENTED, and the fetch-once block below unconditionally
+        // performed mininet::http_get — setRequestMethod("POST") answered
+        // IMPLEMENTED and then executed a GET: the app parsed the GET page
+        // as if it were the POST answer (the exact false-success shape
+        // UC-CM-001 closed for the bridge tail, still open on the network
+        // tail — A-R2 R9). AOSP/libcore law
+        // (HttpURLConnection.setRequestMethod): the standard 7 methods are
+        // accepted; unknown methods → java.net.ProtocolException; a
+        // body-bearing method (POST/PUT) with setDoOutput(true) streams
+        // through getOutputStream — which this GET-only transport does not
+        // implement (api/http_client.h scope line: "No POST"). Honest
+        // boundary (A-R2 R9 branch (a)): GET/HEAD stay accepted (stored);
+        // every other standard method → deferred ProtocolException (NET-002)
+        // at the setRequestMethod site — loud, census-visible, catchable as
+        // the AOSP contract's own IOException family. Regression note
+        // (K-6): apps that today silently read a GET page after POSTing
+        // will now observe the exception the AOSP contract prescribes; the
+        // runtime's own law is "never silent".
+        if (method == "setRequestMethod" && args.size() >= 2 &&
+            args[1].type == DalvikType::STRING_REF) {
+            const std::string& req = args[1].string_val;
+            if (req != "GET" && req != "HEAD") {
+                throw_deferred("Ljava/net/ProtocolException;",
+                               "HttpURLConnection: method '" + req +
+                                   "' requires a request body or non-GET "
+                                   "transport; this runtime's network layer "
+                                   "is GET-only (NET-002, A-R3 R9 boundary)",
+                               "NET-002");
+                return true;
+            }
+        }
+        if (method == "getOutputStream") {
+            // AOSP: getOutputStream() never returns null; it switches the
+            // connection to POST. The GET-only transport cannot honor it —
+            // the honest answer is the deferred ProtocolException (the
+            // pre-A-R3 tail answered typed default NULL, a silent lie).
+            throw_deferred("Ljava/net/ProtocolException;",
+                           "HttpURLConnection.getOutputStream: request-body "
+                           "transport not implemented (GET-only, NET-002, "
+                           "A-R3 R9 boundary)",
+                           "NET-002");
+            return true;
+        }
         if (method == "setRequestMethod" || method == "setRequestProperty" ||
             method == "setConnectTimeout" || method == "setReadTimeout" ||
             method == "setInstanceFollowRedirects" || method == "disconnect" ||
@@ -76687,6 +76807,41 @@ measure_cm_done:;
                 return true;
             }
         }
+    }
+    // ────────────────────────────────────────────────────────────────────────
+    // [A-R3] R2 (A-R1 #576, lane P1) — Math.random() law. Before this arm
+    // the static no-arg call fell through the bridge tail and answered the
+    // typed-zero 0.0d with STUBBED status — a silent CONSTANT for every
+    // consumer (shuffle/dice/AI-jitter), the exact "silent zero →
+    // false-success" shape A-R1 R2 recorded. OpenJDK law (Math.java):
+    // random() = "a double uniformly in [0,1)" delivered by ONE shared
+    // internal Random — a single stream shared by every call site in the
+    // process. Implementation note (honest, K-6): A-R1 prescribed
+    // dispatching onto the F-C8-170 stream; that stream's state is a
+    // block-local thread_local inside the F-C8-170 arm, so this arm runs
+    // the SAME xorshift algorithm + the SAME OpenJDK nextDouble body
+    // ((next(26)<<27|next(27))·2^-53) on its OWN documented lane constant.
+    // One process-wide stream per Math.random (OpenJDK identity), distinct
+    // lanes from F-086 / F-C8-170 (provenance law — streams never mix).
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Ljava/lang/Math;" && method == "random") {
+        static thread_local uint64_t ar3_math_random_state =
+            0x9E3779B97F4A7C15ULL;  // distinct lane from F-086 / F-C8-170
+        auto ar3_next_u32 = [&]() -> uint32_t {
+            uint64_t x = ar3_math_random_state;
+            x ^= x << 13; x ^= x >> 17; x ^= x << 5;
+            ar3_math_random_state = x;
+            return static_cast<uint32_t>(x);
+        };
+        // OpenJDK Random.nextDouble body (verbatim from the F-C8-170 law):
+        // ((long)next(26) << 27) + next(27) → double × 2^-53, uniform [0,1).
+        uint64_t a = ar3_next_u32() & 0x03FFFFFF;  // 26 bits
+        uint64_t b = ar3_next_u32() & 0x07FFFFFF;  // 27 bits
+        double d = static_cast<double>((a << 27) | b) *
+                   (1.0 / 9007199254740992.0);
+        result = DalvikValue::make_double(d);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
     }
     if (class_name == "Ljava/lang/Math;" && args.size() >= 1) {
         auto num = [](const DalvikValue& v) -> double {

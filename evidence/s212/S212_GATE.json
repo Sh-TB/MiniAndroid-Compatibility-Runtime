@@ -1,0 +1,73 @@
+{
+ "session": "S212",
+ "landing": "A-R3 4-law patch (R2 Math.random stream / R4 checkPermission sibling classifier / R9 loud setRequestMethod+getOutputStream NET-002 / R10 MINIANDROID_HTTP_MODE gate) from #579 c=6777258543",
+ "patch_sha256": "200bcde9896a4b0c94f1d74ca7213c062308f5b294f76753e7a2c115df4d43e2",
+ "base_commit": "6619c34a",
+ "apply_check": "CLEAN rc=0, +230/-3 exact (http_client.cpp +72, dalvik_engine.cpp +161/-3)",
+ "binary_sha16": "ec447fd49bbb335b",
+ "binary_full_sha256": "ec447fd49bbb335b80a566e6c5dcfad39d8b31995c1e87065a765255b778e107",
+ "smoke": "version -> 'MiniAndroid Runtime v0.1' + EXP-001 HelloWorld Loader; build note: make -j4 OOM-killed cc1plus on dalvik_engine.cpp (3GB sandbox), make -j2 green",
+ "r10_unit_probe": "rebuilt from #579 quoted source against my build/api/http_client.o: R10 GATE PROBE: 5/5 PASS rc=0 (live-default/deny/mock/missing-fixture/unknown-mode all exact-match strings)",
+ "gate_battery": {
+  "bouncy": {
+   "face": "8a6c24ac8a7d718e",
+   "pin": "8a6c24ac",
+   "hold": true
+  },
+  "unote": {
+   "face": "3b8dcb0adbbc17a9",
+   "pin": "3b8dcb0a",
+   "hold": true
+  },
+  "dooz": {
+   "face": "a0fae9072313e2d1",
+   "pin": "a0fae907",
+   "hold": true
+  },
+  "gmdice": {
+   "r1": "3891679dff449331",
+   "r2": "3891679dff449331",
+   "rerun_identical": true,
+   "pin": "3891679d",
+   "uncaught": 0
+  },
+  "microtimer": {
+   "face": "b39665f68f3938e6",
+   "pin": "b39665f6",
+   "uncaught": 0
+  },
+  "tictactoe": {
+   "faces": [
+    "7354c1b231cd581d",
+    "7354c1b231cd581d",
+    "7354c1b231cd581d"
+   ],
+   "deterministic_x3": true,
+   "pin": "7354c1b2",
+   "uncaught": [
+    0,
+    0,
+    0
+   ]
+  }
+ },
+ "gate_verdict": "ALL 6 PINS BYTE-EXACT HOLD on patched binary ec447fd49bbb335b \u2014 A-R3 default-off/behavior-neutral PROVEN at APK level (the coder lane's BLOCKED item)",
+ "sweep": {
+  "since": "2026-11-10T17:00:00Z",
+  "new_coder_comments": 43,
+  "threads": [
+   "#9",
+   "#519",
+   "#520",
+   "#521",
+   "#533",
+   "#567",
+   "#576",
+   "#577",
+   "#578",
+   "#579",
+   "#536(coder reg)",
+   "#492"
+  ]
+ }
+}

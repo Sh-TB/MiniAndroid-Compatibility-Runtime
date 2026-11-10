@@ -13,7 +13,10 @@
 
 #include <cctype>
 #include <cerrno>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <mutex>
 #include <vector>
 
@@ -360,9 +363,78 @@ HttpResponse http_get(const std::string& url, int max_redirects,
     return http_get_ex(url, {}, max_redirects, timeout_ms);
 }
 
+namespace {
+
+// ── [A-R3] R10 (A-R2 #578, lane P1) — the HTTP MODE GATE. §27's demand is
+// a deterministic boundary: today every HttpURLConnection fetch performs
+// REAL host network I/O inline on the DEX thread, with no mock layer, no
+// recorded-response replay, and no env gate (A-R2 R10: `HTTP_MODE|HTTP_MOCK`
+// 0 hits; this file read no getenv at all). The corpus stayed hermetic only
+// because its apps happen not to touch the network — the determinism
+// property was undocumented and unprotected. Gate semantics (K-4):
+//   MINIANDROID_HTTP_MODE=live (default) — today's behavior, byte-identical.
+//   MINIANDROID_HTTP_MODE=deny  — every fetch answers the honest transport
+//                                 failure shape (status 0 + error string);
+//                                 loud on stderr, census-visible.
+//   MINIANDROID_HTTP_MODE=mock  — serve MINIANDROID_HTTP_MOCK_FILE's bytes
+//                                 as a deterministic 200 (the §27
+//                                 "deterministic injected response");
+//                                 missing file → deny semantics.
+// The gate sits at the http_get_ex funnel (http_get delegates here), so
+// every engine fetch path (URL.openStream + the fetch-once block) is
+// covered by one law. Contract: returns false ONLY for mode=live (the
+// caller proceeds to the socket path); returns true with `out` filled for
+// every gated mode (mock fixture or loud failure shape).
+bool http_gate_consume(const std::string& url, HttpResponse& out) {
+    const char* mode = std::getenv("MINIANDROID_HTTP_MODE");
+    std::string m = mode ? mode : "live";
+    if (m == "live") return false;  // caller proceeds — today's behavior
+    if (m == "mock") {
+        const char* mf = std::getenv("MINIANDROID_HTTP_MOCK_FILE");
+        if (mf && *mf) {
+            FILE* f = std::fopen(mf, "rb");
+            if (f) {
+                char buf[4096];
+                size_t n;
+                while ((n = std::fread(buf, 1, sizeof(buf), f)) > 0)
+                    out.body.append(buf, n);
+                std::fclose(f);
+                out.status = 200;
+                out.status_line = "HTTP/1.1 200 OK (mock)";
+                out.headers["content-type"] = "application/octet-stream";
+                out.final_url = url;
+                std::cerr << "[NET-002] HTTP MOCK: " << out.body.size()
+                          << " bytes from " << mf << " for " << url
+                          << std::endl;
+                return true;
+            }
+        }
+        out.error = "HTTP mock requested (MINIANDROID_HTTP_MODE=mock) but no "
+                    "fixture available (NET-002, A-R3 R10)";
+    } else if (m == "deny") {
+        out.error = "HTTP disabled by MINIANDROID_HTTP_MODE=deny (NET-002, "
+                    "A-R3 R10)";
+    } else {
+        out.error = "unknown MINIANDROID_HTTP_MODE '" + m +
+                    "' (valid: live|mock|deny) (NET-002, A-R3 R10)";
+    }
+    out.status = 0;
+    out.status_line = "MINIANDROID_HTTP_MODE=" + m;
+    std::cerr << "[NET-002] HTTP GATE " << out.status_line << " for " << url
+              << " (A-R3 R10)" << std::endl;
+    return true;
+}
+
+}  // namespace
+
 HttpResponse http_get_ex(const std::string& url,
                          const std::map<std::string, std::string>& extra_headers,
                          int max_redirects, int timeout_ms) {
+    // [A-R3] R10 — the determinism gate runs BEFORE any socket is opened.
+    {
+        HttpResponse gated;
+        if (http_gate_consume(url, gated)) return gated;
+    }
     HttpResponse combined;
     std::string current = url;
     for (int hop = 0; hop <= (max_redirects > 0 ? max_redirects : 0) + 1; ++hop) {
