@@ -1,0 +1,56 @@
+{
+ "binary_sha16": "e6287d1a2c175cf0",
+ "gate_reconfirmed_on_this_sandbox": {
+  "goldens": [
+   "8a6c24ac",
+   "3b8dcb0a",
+   "a0fae907"
+  ],
+  "gmdice_rerun_identical": true,
+  "microtimer": "b39665f6",
+  "ttt_det": "7354c1b2"
+ },
+ "ttt_round2_score_accumulation": {
+  "face": "b8cfbf735d3eda6d",
+  "deterministic_x2": true,
+  "uncaught": [
+   0,
+   0
+  ],
+  "result": "X wins round1 anti-diag 2-4-6 -> restart (board cleared, score persists 1|0) -> X wins round2 top row 0-1-2 -> score 2|0 (wide digit pixel-distinct from 1 and 0)",
+  "turn_law_correction": {
+   "v3_docstring_assumption": "restart tap lands as fresh X@8 -> O starts round 2",
+   "observed": "restart tap does NOT place a piece; turn resets to X; round-2 taps alternated X,O,X,O,X from frame 34; X won TOP ROW (cells 0,1,2) with red line; O at cells 3,5",
+   "score_proof": "bottom score digit changed narrow(1) -> wide digit pixel-distinct from both 1 (L1=1633614) and 0 (L1=325821) => glyph \"2\" => score 1|0 -> 2|0 accumulated across restart"
+  }
+ },
+ "gmdice_roll_loop": {
+  "no_tap_face": "3891679dff449331",
+  "tap_1d6_540_1200_was_NOOP": "gate taps at (540,1200) hit empty space; button bar is at y~1836",
+  "roll1_face": "d540433a06dc6431",
+  "roll1_value": "6",
+  "roll2_face": "86aec2bdf0799294",
+  "roll2_value": "5",
+  "roll3_face": "8eedc7aaf4af018e",
+  "roll3_value": "3",
+  "each_face_reproducible": true,
+  "uncaught": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "verdict": "tap(576,1836) -> RNG advance -> app-owned rendered result 6->5->3; deterministic per tap-count"
+ },
+ "dooz_first_divergence": {
+  "golden_face": "a0fae907",
+  "tap_newgame_875_1818_1st_run": "face unchanged (screenshot captured pre-settle; run killed at 500s)",
+  "tap_newgame_875_1823_frames12": {
+   "face": "eccabf418a7cce52",
+   "uncaught": 0,
+   "observed": "face CHANGED -> chrome (title/bottom bar) gone -> navigation happened; new screen renders BLANK WHITE - Compose game-board content not drawn"
+  },
+  "status": "interaction=PROVEN (state transition), board-render=BLOCKED (blank post-nav screen = next frontier)"
+ }
+}
