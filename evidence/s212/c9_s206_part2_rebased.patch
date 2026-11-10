@@ -1,0 +1,373 @@
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 11cea802..20c29f8b 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -78370,10 +78384,20 @@ measure_cm_done:;
+             return true;
+         }
+         if (hit->compression_method != 0) {
++            // AOSP AssetManager2.openFd law: a COMPRESSED asset is not a
++            // nested file — openFd throws FileNotFoundException carrying the
++            // canonical sentence below (message aligned S206/T31; the
++            // historical tail said "nested file"). The throw stays
++            // DEFERRED-CATCHABLE (throw_deferred delivers into a handler
++            // covering the invoke site — the gdx AndroidFileHandle.length()
++            // try/catch shape), and the stream path (AssetManager.open)
++            // serves the inflated bytes regardless — the FIX-4/F-NEW-315
++            // startup scan rides the same inflate for .ttf/.otf faces
++            // (VAL03 receipt: open=2000 bytes; openFd=FileNotFoundException).
+             throw_deferred("Ljava/io/FileNotFoundException;",
+                            "assets/" + asset_name +
+-                               " (compressed — this file can not be opened as a"
+-                               " file descriptor; the asset is a nested file)",
++                               ": this file can not be opened as a file"
++                               " descriptor; it is probably compressed",
+                            "ASSET-FD");
+             result = DalvikValue::make_null();
+             status = ApiCallTrace::Status::IMPLEMENTED;
+@@ -85152,19 +85176,25 @@ DalvikValue DalvikExecutionEngine::get_or_create_singleton(const std::string& cl
+     }
+     // Pre-populate known fields for some singletons
+     if (class_desc == "Landroid/util/DisplayMetrics;") {
++        // C9-31/DPI (S206): single-source density — the SAME value the
++        // ARSC config selection, the Display shadow, Configuration and
++        // Resources.getDisplayMetrics answer
++        // (resources::effective_density_dpi(), env-following, 420 default).
++        const int dpi_s206 = resources::effective_density_dpi();
+         DalvikValue density;
+         density.type = DalvikType::FLOAT32;
+-        density.float_val = 2.625f;  // THE device-density law (F-149: was
+-                                     // 1.0 — silently diverged from the
+-                                     // inflater DeviceMetrics authority)
++        density.float_val = (float)dpi_s206 / 160.0f;  // device-density law
++                                     // (F-149: was 1.0 — silently diverged
++                                     // from the inflater DeviceMetrics
++                                     // authority)
+         heap_.set_object_field(obj_id, "density", density);
+         DalvikValue density_dpi;
+         density_dpi.type = DalvikType::INT32;
+-        density_dpi.int_val = 420;  // DENSITY_420 — matches 2.625 density
++        density_dpi.int_val = dpi_s206;  // DENSITY_420 — matches density law
+         heap_.set_object_field(obj_id, "densityDpi", density_dpi);
+         DalvikValue scaled_d;
+         scaled_d.type = DalvikType::FLOAT32;
+-        scaled_d.float_val = 2.625f;  // fontScale 1.0 (F-023 default)
++        scaled_d.float_val = (float)dpi_s206 / 160.0f;  // fontScale 1.0 (F-023)
+         heap_.set_object_field(obj_id, "scaledDensity", scaled_d);
+         DalvikValue width_px;
+         width_px.type = DalvikType::INT32;
+
+diff --git a/miniandroid/tests/c9_assetfd_dpi_law_test.cpp b/miniandroid/tests/c9_assetfd_dpi_law_test.cpp
+new file mode 100644
+index 00000000..90de13de
+--- /dev/null
++++ b/miniandroid/tests/c9_assetfd_dpi_law_test.cpp
+@@ -0,0 +1,307 @@
++/*
++ * C9-31/DPI (CODER 9, S206) — compressed-asset fd law + single-source
++ * density law, unit law test.
++ *
++ * Serves the S200 ONE-BY-ONE TEST CYCLE items T31 + T32 (issue #521,
++ * comment 6732820375):
++ *   T31 — the compressed-font ASSET-FD case (live repro: gdx
++ *         assets/fonts/Roboto-Medium.ttf, "[SYNTH-EXC] ASSET-FD
++ *         (deferred) FileNotFoundException"). The chain this test pins:
++ *         a DEFLATED asset entry carries compression_method==8 (the
++ *         openFd-refusal precondition — dalvik_engine.cpp openFd law
++ *         throws catchable FileNotFoundException, message aligned to the
++ *         canonical AOSP sentence) while the inflate path
++ *         (ApkParser::extract_entry — the SAME call the FIX-4/F-NEW-315
++ *         startup font scan rides, execution_engine.cpp) serves the
++ *         ORIGINAL bytes BIT-EXACT. A real system TTF is used for the
++ *         font-shape family so the bit-exact receipt is over real font
++ *         bytes, not a synthetic payload. (FreeType face-parse itself is
++ *         receipted by the resourceval fixture VAL05-07 chain, not here.)
++ *   T32 — the densityDpi shadow feed. res_config::effective_density_dpi()
++ *         is THE single source: MINIANDROID_DENSITY env-following, 420
++ *         default (G04 FIND-G04-AUDIT-002 pixel-proven device), invalid
++ *         and non-positive env values honestly ignored. Every
++ *         density-serving surface (ARSC config selection,
++ *         Resources.getDisplayMetrics, Display.getRealMetrics via
++ *         display_shadow, Configuration.densityDpi, the DisplayMetrics
++ *         singleton pre-population) must answer THIS value — the
++ *         historical pins (420 in the engine, 160 in display_shadow /
++ *         Configuration) were two more devices in one runtime.
++ *
++ * 24 laws across 6 families, all on crafted in-memory ZIP archives +
++ * the env-driven density helper:
++ *   A1 STORED AFD window · A2 DEFLATE method + bit-exact inflate ·
++ *   A3 compressed REAL-FONT shape (T31) · A4 mixed independence ·
++ *   A5 hostile honest-miss · D1-D8 single-source density (T32).
++ *
++ * Build: g++ -std=c++17 -w -g -O1 -Isrc -o build/c9_assetfd_dpi_law_test
++ *   tests/c9_assetfd_dpi_law_test.cpp build/apk/apk_parser.o
++ *   build/apk/manifest_reader.o build/resources/string_pool.o
++ *   build/resources/arsc_parser.o build/resources/res_id.o
++ *   build/resources/res_config.o build/dex/mutf8.o -lz -lpthread
++ */
++
++#include <apk/apk_parser.h>
++#include <resources/res_config.h>
++#include <zlib.h>
++
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
++#include <fstream>
++#include <string>
++#include <vector>
++
++using miniandroid::apk::ApkParser;
++using miniandroid::apk::ZipEntry;
++
++static int g_pass = 0, g_fail = 0;
++#define LAW(cond, num, name)                                                    \
++    do {                                                                        \
++        if (cond) { ++g_pass; }                                                 \
++        else { ++g_fail;                                                        \
++            std::printf("  LAW %02d FAIL: %s\n", (num), (name)); }              \
++    } while (0)
++
++static constexpr uint32_t SIG_LFH = 0x04034b50u;
++static constexpr uint32_t SIG_CDE = 0x02014b50u;
++static constexpr uint32_t SIG_EOCD = 0x06054b50u;
++
++static void put16(std::vector<uint8_t>& b, uint16_t v) {
++    b.push_back(v & 0xFF); b.push_back((v >> 8) & 0xFF);
++}
++static void put32(std::vector<uint8_t>& b, uint32_t v) {
++    b.push_back(v & 0xFF); b.push_back((v >> 8) & 0xFF);
++    b.push_back((v >> 16) & 0xFF); b.push_back((v >> 24) & 0xFF);
++}
++
++// Raw-DEFLATE (ZIP method 8 uses raw deflate, windowBits -15) — same
++// helper shape as the C9-2 zip law test (NOT compress2: that wraps the
++// stream in a zlib header + adler32 trailer, which is NOT method 8).
++static std::vector<uint8_t> raw_deflate(const std::vector<uint8_t>& in) {
++    z_stream zs{};
++    deflateInit2(&zs, Z_BEST_SPEED, Z_DEFLATED, -15, 8, Z_DEFAULT_STRATEGY);
++    zs.next_in = const_cast<Bytef*>(in.data());
++    zs.avail_in = (uInt)in.size();
++    std::vector<uint8_t> out;
++    uint8_t buf[4096];
++    int ret = Z_OK;
++    do {
++        zs.next_out = buf; zs.avail_out = sizeof(buf);
++        ret = deflate(&zs, Z_FINISH);
++        out.insert(out.end(), buf, buf + (sizeof(buf) - zs.avail_out));
++    } while (ret != Z_STREAM_END);
++    deflateEnd(&zs);
++    return out;
++}
++
++struct CraftedEntry {
++    std::string name;
++    std::vector<uint8_t> payload;   // ORIGINAL (uncompressed) bytes
++    uint16_t method = 0;            // 0 = STORED, 8 = DEFLATE
++    bool corrupt_lfh_sig = false;   // hostile: LFH signature is not PK\x03\x04
++    bool hide_lfh = false;          // hostile: offset points outside the file
++};
++
++// Minimal honest ZIP writer: CDE sizes/crc authoritative, no descriptor,
++// no extra fields (data_offset = LFH + 30 + namelen).
++static std::vector<uint8_t> craft_zip(const std::vector<CraftedEntry>& entries,
++                                      size_t stub, std::vector<size_t>* offs) {
++    std::vector<uint8_t> z;
++    struct CdeRec { std::vector<uint8_t> bytes; };
++    std::vector<CdeRec> cdes;
++    for (const auto& e : entries) {
++        std::vector<uint8_t> stored = (e.method == 8) ? raw_deflate(e.payload)
++                                                      : e.payload;
++        const uint32_t csize = (uint32_t)stored.size();
++        const uint32_t usize = (uint32_t)e.payload.size();
++        const uint32_t lfh_off = (uint32_t)(z.size() + stub);
++        if (offs) offs->push_back(lfh_off);
++        if (!e.corrupt_lfh_sig) put32(z, SIG_LFH); else put32(z, 0xdeadbeefu);
++        put16(z, 20); put16(z, 0);
++        put16(z, e.method); put16(z, 0); put16(z, 0);
++        put32(z, crc32(0L, e.payload.data(), e.payload.size()));
++        put32(z, csize); put32(z, usize);
++        put16(z, (uint16_t)e.name.size()); put16(z, 0);
++        z.insert(z.end(), e.name.begin(), e.name.end());
++        z.insert(z.end(), stored.begin(), stored.end());
++
++        CdeRec& rec = cdes.emplace_back();
++        std::vector<uint8_t>& c = rec.bytes;
++        put32(c, SIG_CDE);
++        put16(c, 0x031E); put16(c, 20); put16(c, 0);
++        put16(c, e.method); put16(c, 0); put16(c, 0);
++        put32(c, crc32(0L, e.payload.data(), e.payload.size()));
++        put32(c, csize); put32(c, usize);
++        put16(c, (uint16_t)e.name.size()); put16(c, 0); put16(c, 0);
++        put16(c, 0); put16(c, 0); put32(c, 0100644 << 16);
++        put32(c, e.hide_lfh ? (uint32_t)(z.size() + 1 << 20) : lfh_off);
++        c.insert(c.end(), e.name.begin(), e.name.end());
++    }
++    const uint32_t cd_offset = (uint32_t)z.size();
++    for (auto& c : cdes) z.insert(z.end(), c.bytes.begin(), c.bytes.end());
++    const uint32_t cd_size = (uint32_t)z.size() - cd_offset;
++    put32(z, SIG_EOCD);
++    put16(z, 0); put16(z, 0);
++    put16(z, (uint16_t)entries.size()); put16(z, (uint16_t)entries.size());
++    put32(z, cd_size); put32(z, cd_offset); put16(z, 0);
++    return z;
++}
++
++static bool write_file(const std::string& path, const std::vector<uint8_t>& b) {
++    std::ofstream f(path, std::ios::binary | std::ios::trunc);
++    f.write(reinterpret_cast<const char*>(b.data()), (std::streamsize)b.size());
++    return (bool)f;
++}
++
++static std::vector<uint8_t> read_file(const std::string& path) {
++    std::ifstream f(path, std::ios::binary);
++    return std::vector<uint8_t>((std::istreambuf_iterator<char>(f)),
++                                std::istreambuf_iterator<char>());
++}
++
++static const ZipEntry* find(const std::vector<ZipEntry>& v, const std::string& n) {
++    for (const auto& e : v) if (e.name == n) return &e;
++    return nullptr;
++}
++
++int main() {
++    const std::string dir = "/tmp/c9_assetfd_dpi_law";
++    (void)system(("mkdir -p " + dir).c_str());
++
++    const std::vector<uint8_t> payload_a = {'C','9','-','3','1',' ','a','s','s','e','t','f','d'};
++    const std::vector<uint8_t> payload_big(2000, 'x');
++
++    // ── A1: STORED AFD window law (the openFd success path) (laws 1–3) ───
++    {
++        std::vector<size_t> offs;
++        auto z = craft_zip({{"assets/stored.txt", payload_a, 0, false, false}}, 0, &offs);
++        const std::string p = dir + "/stored.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        const ZipEntry* e = find(es, "assets/stored.txt");
++        LAW(e && e->compression_method == 0, 1, "stored: method 0 (openFd eligible)");
++        LAW(e && e->has_data_offset &&
++            e->data_offset == offs[0] + 30 + e->name.size(), 2,
++            "stored: data_offset == lfh+30+namelen (AFD startOffset source)");
++        auto ex = parser.extract_entry(p, "assets/stored.txt");
++        LAW(ex == payload_a, 3, "stored: extraction == payload");
++    }
++
++    // ── A2: DEFLATE method flag + bit-exact inflate (laws 4–7) ───────────
++    {
++        std::vector<size_t> offs;
++        auto z = craft_zip({{"assets/deflated.txt", payload_big, 8, false, false}}, 0, &offs);
++        const std::string p = dir + "/deflated.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        const ZipEntry* e = find(es, "assets/deflated.txt");
++        // The openFd-refusal precondition: method 8 → FileNotFoundException
++        // (dalvik_engine openFd law; message aligned to the canonical AOSP
++        // sentence "…it is probably compressed", throw stays catchable).
++        LAW(e && e->compression_method == 8, 4, "deflate: method 8 (openFd refusal precondition)");
++        LAW(e && e->uncompressed_size == payload_big.size(), 5, "deflate: uncompressed_size declared");
++        // The stream path the app falls back to (AssetManager.open) — and
++        // the same call shape the FIX-4/F-NEW-315 startup font scan uses.
++        auto ex = parser.extract_entry(p, "assets/deflated.txt");
++        LAW(ex == payload_big, 6, "deflate: extraction BIT-EXACT == original");
++        const std::vector<uint8_t> comp = raw_deflate(payload_big);
++        LAW(e && e->compressed_size == comp.size(), 7, "deflate: compressed_size == raw deflate size");
++    }
++
++    // ── A3: compressed REAL-FONT shape — the T31 family (laws 8–11) ──────
++    {
++        // A REAL system TTF (the same font family the runtime's base chain
++        // registers): compressed into the APK the way aapt2 ships it
++        // (DEFLATE — .ttf is not in the AGP no-compress set), extracted
++        // through the exact call the FIX-4/F-NEW-315 startup scan makes.
++        const std::string ttf_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf";
++        const std::vector<uint8_t> ttf = read_file(ttf_path);
++        LAW(!ttf.empty() && ttf.size() > 1000, 8, "font: real system TTF readable (DejaVuSans)");
++        if (!ttf.empty()) {
++            std::vector<size_t> offs;
++            auto z = craft_zip({{"assets/fonts/Roboto-Medium.ttf", ttf, 8, false, false}},
++                               0, &offs);
++            const std::string p = dir + "/font.zip";
++            write_file(p, z);
++            ApkParser parser;
++            auto es = parser.list_entries(p);
++            const ZipEntry* e = find(es, "assets/fonts/Roboto-Medium.ttf");
++            LAW(e && e->compression_method == 8, 9,
++                "font: shipped-compressed font entry is method 8 (openFd refuses — catchable)");
++            auto ex = parser.extract_entry(p, "assets/fonts/Roboto-Medium.ttf");
++            LAW(ex == ttf, 10,
++                "font: startup-scan inflate serves the REAL font bytes BIT-EXACT (face registration precondition)");
++            LAW(ex.size() == ttf.size() && !ex.empty(), 11, "font: extracted size == source size");
++        }
++    }
++
++    // ── A4: mixed STORED+DEFLATE independence (laws 12–14) ───────────────
++    {
++        auto z = craft_zip({
++            {"assets/m1_stored.bin", payload_a, 0, false, false},
++            {"assets/m2_deflate.bin", payload_big, 8, false, false},
++        }, 0, nullptr);
++        const std::string p = dir + "/mixed.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        const ZipEntry *e1 = find(es, "assets/m1_stored.bin"),
++                       *e2 = find(es, "assets/m2_deflate.bin");
++        LAW(e1 && e2 && e1->compression_method == 0 && e2->compression_method == 8,
++            12, "mixed: per-entry method flags independent");
++        auto ex1 = parser.extract_entry(p, "assets/m1_stored.bin");
++        auto ex2 = parser.extract_entry(p, "assets/m2_deflate.bin");
++        LAW(ex1 == payload_a, 13, "mixed: STORED extract exact");
++        LAW(ex2 == payload_big, 14, "mixed: DEFLATE extract exact");
++    }
++
++    // ── A5: hostile honest-miss (laws 15–16) ─────────────────────────────
++    {
++        auto z = craft_zip({{"assets/hid.txt", payload_a, 0, false, true}}, 0, nullptr);
++        const std::string p = dir + "/hostile.zip";
++        write_file(p, z);
++        ApkParser parser;
++        auto es = parser.list_entries(p);
++        const ZipEntry* hid = find(es, "assets/hid.txt");
++        LAW(hid && !hid->has_data_offset, 15, "hostile: LFH offset out of file → honest miss");
++        auto ex = parser.extract_entry(p, "assets/hid.txt");
++        LAW(ex.empty(), 16, "hostile: extraction refuses the unresolvable entry (no pretend bytes)");
++    }
++
++    // ── D1-D8: the single-source density law (T32) (laws 17–24) ──────────
++    {
++        const char* kEnv = "MINIANDROID_DENSITY";
++        unsetenv(kEnv);
++        LAW(miniandroid::resources::effective_density_dpi() == 420, 17,
++            "dpi: unset env → 420 (G04 pixel-proven device default)");
++        setenv(kEnv, "480", 1);
++        LAW(miniandroid::resources::effective_density_dpi() == 480, 18,
++            "dpi: MINIANDROID_DENSITY=480 → 480 (env-following)");
++        setenv(kEnv, "160", 1);
++        LAW(miniandroid::resources::effective_density_dpi() == 160, 19,
++            "dpi: MINIANDROID_DENSITY=160 → 160 (env-following)");
++        setenv(kEnv, "240", 1);
++        LAW(miniandroid::resources::effective_density_dpi() == 240, 20,
++            "dpi: MINIANDROID_DENSITY=240 → 240 (env-following)");
++        setenv(kEnv, "abc", 1);
++        LAW(miniandroid::resources::effective_density_dpi() == 420, 21,
++            "dpi: non-numeric env → honest default (no garbage dpi)");
++        setenv(kEnv, "0", 1);
++        LAW(miniandroid::resources::effective_density_dpi() == 420, 22,
++            "dpi: zero env → honest default (d>0 gate)");
++        setenv(kEnv, "-5", 1);
++        LAW(miniandroid::resources::effective_density_dpi() == 420, 23,
++            "dpi: negative env → honest default (d>0 gate)");
++        unsetenv(kEnv);
++        // The device identity: 420dpi IS density 2.625 (the historical
++        // engine pin) — one device, two representations, exact float law.
++        LAW((float)miniandroid::resources::effective_density_dpi() / 160.0f == 2.625f, 24,
++            "dpi: 420/160 == 2.625 exactly (single device identity)");
++    }
++
++    std::printf("c9_assetfd_dpi_law_test: %d/%d PASS\n", g_pass, g_pass + g_fail);
++    return g_fail == 0 ? 0 : 1;
++}
+
