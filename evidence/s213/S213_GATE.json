@@ -1,0 +1,29 @@
+{
+ "session": "S213",
+ "landing": "Coder-3 SIM-L2 SDL bootstrap family patch (#492 c=6776717422 + c=6776718635, 2 parts) \u2014 F-NEW-626 AOSP launch-entry law (both launch paths) + F-NEW-627 SDL family law (71 JNIBridge registrations + 3 engine-route natives: nativeGetVersion scan / nativeRunMain park / nativeInit park) + F-NEW-628 AbsoluteLayout ancestry edge",
+ "assembled_sha16": "0da5ff11183ae847",
+ "base": "6619c34a (lane) \u2014 applied+landed on main 97c127d2 (post A-R3 f34a4b12 + S212 verdicts)",
+ "apply": "CLEAN rc=0 on 97c127d2",
+ "diffstat": "dalvik_engine.cpp +280/-11, jni_bridge.h +373 => +642/-11 total",
+ "build": "make -j1 (after the C9 OOM/-j4 note) \u2014 Build complete: build/miniandroid; smoke PASS",
+ "binary_sha16": "73758864391985ae",
+ "gate_battery": "ALL 6 PINS BYTE-EXACT HOLD on 73758864391985ae (bouncy 8a6c24ac8a7d718e / unote 3b8dcb0adbbc17a9 / dooz a0fae9072313e2d1 / gmdice 3891679dff449331 rerun-identical / microtimer b39665f68f3938e6 / ttt 7354c1b231cd581d det-x3)",
+ "positive_repro": {
+  "apks": {
+   "org.kirkezz.rttt_3.apk": "704fa51869ad7ff441edb8831fad7044141d62c4ccce610cfe5117476770a8af (f-droid, lane manifest source)",
+   "com.traffar.gomoku_4.apk": "d5dd197010476582e7865adc0d54bef5225cc3cd109af6f2e6f6d2def82b9159 (f-droid, lane manifest source)"
+  },
+  "claimed_face": "b5a7a35d5fe0564b",
+  "my_faces": [
+   "b5a7a35d5fe0564b",
+   "b5a7a35d5fe0564b",
+   "b5a7a35d5fe0564b",
+   "b5a7a35d5fe0564b"
+  ],
+  "runs": "rttt x2 + gomoku x2, fresh data-roots, rc=1 PARTIAL (honest app-content verdict preserved: native SDL_main PARKED-active = frontier)",
+  "uncaught": "0 in all 4 runs",
+  "markers": "rttt: [SDL-NATIVE] nativeGetVersion() -> \"3.2.5\" (scanned from the bundled libSDL3.so) + [SDL-NATIVE-MAIN] handoff libmain.so SDL_main PARKED + 2 bridge-satisfied; gomoku: [SDL-NATIVE-MAIN] handoff (SDL2 nativeInit) PARKED + 4 bridge-satisfied (the clinit x4)",
+  "verdict": "LANE CLAIM REPRODUCED BYTE-EXACT x4 on post-A-R3 main"
+ },
+ "repo_hygiene": "APKs NOT committed (canonical_apks untracked); console logs trimmed to keylines; face pins live here"
+}

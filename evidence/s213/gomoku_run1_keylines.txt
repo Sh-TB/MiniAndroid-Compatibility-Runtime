@@ -1,0 +1,27 @@
+[DalvikEngine]   METHOD [HAS CODE]: surfaceCreated(Landroid/view/SurfaceHolder;)V | code_off=0x14188 | insns_size=12 | first_insn=0x26
+[GATEA-NATIVE] bridge-satisfied load of "SDL2": host dlopen refused (dlopen failed: runtime/data/data/app/com.traffar.gomoku/lib/x86/libSDL2.so: wrong ELF class: ELFCLASS32), but 70 REAL native implementations registered under Lorg/libsdl/ — native dispatch flows through the bridge
+[GATEA-NATIVE] bridge-satisfied load of "SDL2_image": host dlopen refused (dlopen failed: runtime/data/data/app/com.traffar.gomoku/lib/x86/libSDL2_image.so: wrong ELF class: ELFCLASS32), but 70 REAL native implementations registered under Lorg/libsdl/ — native dispatch flows through the bridge
+[GATEA-NATIVE] bridge-satisfied load of "SDL2_mixer": host dlopen refused (dlopen failed: runtime/data/data/app/com.traffar.gomoku/lib/x86/libSDL2_mixer.so: wrong ELF class: ELFCLASS32), but 70 REAL native implementations registered under Lorg/libsdl/ — native dispatch flows through the bridge
+[GATEA-NATIVE] bridge-satisfied load of "main": host dlopen refused (dlopen failed: runtime/data/data/app/com.traffar.gomoku/lib/x86/libmain.so: wrong ELF class: ELFCLASS32), but 70 REAL native implementations registered under Lorg/libsdl/ — native dispatch flows through the bridge
+[DalvikEngine]   ALLOCATED: Landroid/widget/AbsoluteLayout; -> obj#26
+[DalvikEngine]   INVOKE-DIRECT: Landroid/widget/AbsoluteLayout;.<init>() on obj#26
+[REC-MISS] Landroid/widget/AbsoluteLayout;.<init> caller=Lorg/libsdl/app/SDLActivity;.onCreate
+[DalvikEngine]   API BRIDGE: Landroid/widget/AbsoluteLayout;.<init>
+[EXP062-ADDVIEW-TRACE] invoke-virtual addView argc=2 this_id=26 this_class=Landroid/widget/AbsoluteLayout; child_type=7 child_id=18 child_class=Lorg/libsdl/app/SDLSurface; caller=Lorg/libsdl/app/SDLActivity;.onCreate pc=69
+[REC-MISS] Landroid/widget/AbsoluteLayout;.addView caller=Lorg/libsdl/app/SDLActivity;.onCreate
+[DalvikEngine]   API BRIDGE: Landroid/widget/AbsoluteLayout;.addView
+[C013-HIER] addView dispatched via superclass chain: Landroid/widget/AbsoluteLayout; -> Landroid/view/ViewGroup; (declared=Landroid/widget/AbsoluteLayout; receiver=Landroid/widget/AbsoluteLayout;)
+[REC-MISS] Landroid/widget/AbsoluteLayout;.onAttachedToWindow caller=Lorg/libsdl/app/SDLActivity;.onCreate
+[REC-MISS] Landroid/widget/AbsoluteLayout;.dispatchApplyWindowInsets caller=<unknown>.<unknown>
+[REC-MISS] Landroid/widget/AbsoluteLayout;.onApplyWindowInsets caller=<unknown>.<unknown>
+[F384-ROOTINSETS] root=o26 cls=Landroid/widget/AbsoluteLayout; insets=o27 dispatched=false
+[EXP092-RENDER] node=26 class=Landroid/widget/AbsoluteLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[DalvikEngine] 🔄 RECURSIVE INVOKE: Lorg/libsdl/app/SDLSurface;.surfaceCreated(Landroid/view/SurfaceHolder;)V (12 instructions)
+[DalvikEngine] Executing: Lorg/libsdl/app/SDLSurface;.surfaceCreated(Landroid/view/SurfaceHolder;)V
+[REC-MISS] Landroid/util/Log;.v caller=Lorg/libsdl/app/SDLSurface;.surfaceCreated
+LOG/v/SDL: surfaceCreated()
+[REC-MISS] Landroid/view/SurfaceHolder;.setType caller=Lorg/libsdl/app/SDLSurface;.surfaceCreated
+[DalvikEngine] ✅ RECURSIVE INVOKE completed: Lorg/libsdl/app/SDLSurface;.surfaceCreated
+[F-NEW-164] surfaceCreated dispatched view=18 callback=Lorg/libsdl/app/SDLSurface;
+[SDL-NATIVE-MAIN] handoff (SDL2 nativeInit) — native SDL_main PARKED (runs for the process lifetime on-device; wake beyond the capture window)
+[EXP092-RENDER] node=26 class=Landroid/widget/AbsoluteLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)

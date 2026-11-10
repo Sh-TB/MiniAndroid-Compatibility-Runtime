@@ -1,0 +1,11 @@
+[DalvikEngine]   METHOD [HAS CODE]: surfaceCreated(Landroid/view/SurfaceHolder;)V | code_off=0x51560 | insns_size=11 | first_insn=0x538
+[GATEA-NATIVE] bridge-satisfied load of "SDL3": host dlopen refused (dlopen failed: libGLESv1_CM.so: cannot open shared object file: No such file or directory), but 70 REAL native implementations registered under Lorg/libsdl/ — native dispatch flows through the bridge
+[GATEA-NATIVE] bridge-satisfied load of "main": host dlopen refused (dlopen failed: libSDL3_ttf.so: cannot open shared object file: No such file or directory), but 70 REAL native implementations registered under Lorg/libsdl/ — native dispatch flows through the bridge
+[SDL-NATIVE] nativeGetVersion() -> "3.2.5" (scanned from the bundled libSDL3.so)
+[DalvikEngine] 🔄 RECURSIVE INVOKE: Lorg/libsdl/app/SDLSurface;.surfaceCreated(Landroid/view/SurfaceHolder;)V (11 instructions)
+[DalvikEngine] Executing: Lorg/libsdl/app/SDLSurface;.surfaceCreated(Landroid/view/SurfaceHolder;)V
+[REC-MISS] Landroid/util/Log;.v caller=Lorg/libsdl/app/SDLSurface;.surfaceCreated
+LOG/v/SDL: surfaceCreated()
+[DalvikEngine] ✅ RECURSIVE INVOKE completed: Lorg/libsdl/app/SDLSurface;.surfaceCreated
+[F-NEW-164] surfaceCreated dispatched view=46 callback=Lorg/libsdl/app/SDLSurface;
+[SDL-NATIVE-MAIN] handoff library="/data/app/~~miniandroid/base/lib/arm64/libmain.so" function="SDL_main" — native SDL_main PARKED (runs for the process lifetime on-device; wake beyond the capture window)

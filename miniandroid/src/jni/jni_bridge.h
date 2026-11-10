@@ -226,6 +226,379 @@ public:
             [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {
                 ir = 0;
             }, NativeImplType::HOST_COMPATIBILITY_STUB, "Returns 0");
+
+        // ── F-NEW-627 (S209): SDL BOOTSTRAP FAMILY REGISTRATIONS ──────
+        // The org.libsdl.app Java bootstrap native surface (the union
+        // of every ACC_NATIVE declared by the SDL2 (gomoku, com.
+        // traffar.gomoku 4) and SDL3 (rttt, org.kirkezz.rttt 3) Java
+        // bootstraps — 71 natives over 6 classes, generated from the
+        // two dexes). Semantics: honest fail-soft defaults (void no-op,
+        // I/Z -> 0) EXCEPT nativeAllowRecreateActivity()Z -> true (the
+        // SDL3 C default before the native main starts; a 0 answer
+        // drives the app's own System.exit(0) path) and the two
+        // ()Ljava/lang/String; natives (empty string over the S108
+        // string channel — a NULL from the fail-soft path would NPE the
+        // version handshake). The THREE load-bearing natives
+        // (nativeGetVersion, nativeRunMain, nativeInit) are answered
+        // engine-side BEFORE this registry (dalvik_engine.cpp F-NEW-627
+        // route); these registrations are their honest fallbacks AND
+        // make the GATE A S143 bridge-satisfied load law fire for SDL
+        // libs the host dlopen refuses (32-bit ELF, missing GL deps).
+        register_native("Lorg/libsdl/app/HIDDeviceManager;", "HIDDeviceConnected",
+            "(ILjava/lang/String;IILjava/lang/String;ILjava/lang/String;Ljava/lang/String;IIIIZ)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/HIDDeviceManager;", "HIDDeviceDisconnected",
+            "(I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/HIDDeviceManager;", "HIDDeviceInputReport",
+            "(I[B)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/HIDDeviceManager;", "HIDDeviceOpenPending",
+            "(I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/HIDDeviceManager;", "HIDDeviceOpenResult",
+            "(IZ)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/HIDDeviceManager;", "HIDDeviceRegisterCallback",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/HIDDeviceManager;", "HIDDeviceReleaseCallback",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/HIDDeviceManager;", "HIDDeviceReportResponse",
+            "(I[B)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeAddJoystick",
+            "(ILjava/lang/String;IIIII)I",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeAddTouch",
+            "(ILjava/lang/String;)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeAllowRecreateActivity",
+            "()Z",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 1; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns true (SDL3 pre-main default)");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeCheckSDLThreadCounter",
+            "()I",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeCleanupMainThread",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeFlipBuffers",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeFocusChanged",
+            "(Z)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeGetHint",
+            "(Ljava/lang/String;)Ljava/lang/String;",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string& sr, uint32_t&, bool&) { sr.clear(); mark_string_result(); },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns "" (string channel)");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeGetHintBoolean",
+            "(Ljava/lang/String;Z)Z",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeGetVersion",
+            "()Ljava/lang/String;",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string& sr, uint32_t&, bool&) { sr.clear(); mark_string_result(); },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns "" (string channel)");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeInit",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeInitMainThread",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeLowMemory",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativePause",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativePermissionResult",
+            "(IZ)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeQuit",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeRemoveJoystick",
+            "(I)I",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeResume",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeRunMain",
+            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)I",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeSendQuit",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeSetNaturalOrientation",
+            "(I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeSetScreenResolution",
+            "(IIIIFF)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeSetenv",
+            "(Ljava/lang/String;Ljava/lang/String;)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "nativeSetupJNI",
+            "()I",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeAccel",
+            "(FFF)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeClipboardChanged",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeDarkModeChanged",
+            "(Z)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeDropFile",
+            "(Ljava/lang/String;)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeFileDialog",
+            "(I[Ljava/lang/String;I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeHat",
+            "(IIII)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeInsetsChanged",
+            "(IIII)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeJoy",
+            "(IIF)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeKeyDown",
+            "(I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeKeyUp",
+            "(I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeKeyboardFocusLost",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeLocaleChanged",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeMouse",
+            "(IIFFZ)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativePadDown",
+            "(II)I",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativePadUp",
+            "(II)I",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativePen",
+            "(IIIFFF)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeResize",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeResize",
+            "(III)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeRotationChanged",
+            "(I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeSoftReturnKey",
+            "()Z",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeSurfaceChanged",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeSurfaceCreated",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeSurfaceDestroyed",
+            "()V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLActivity;", "onNativeTouch",
+            "(IIIFFF)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLAudioManager;", "addAudioDevice",
+            "(ZLjava/lang/String;I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLAudioManager;", "nativeSetupJNI",
+            "()I",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLAudioManager;", "removeAudioDevice",
+            "(ZI)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLControllerManager;", "nativeAddHaptic",
+            "(ILjava/lang/String;)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLControllerManager;", "nativeAddJoystick",
+            "(ILjava/lang/String;Ljava/lang/String;IIIIIIZ)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLControllerManager;", "nativeRemoveHaptic",
+            "(I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLControllerManager;", "nativeRemoveJoystick",
+            "(I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLControllerManager;", "nativeSetupJNI",
+            "()I",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLControllerManager;", "onNativeHat",
+            "(IIII)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLControllerManager;", "onNativeJoy",
+            "(IIF)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLControllerManager;", "onNativePadDown",
+            "(II)Z",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLControllerManager;", "onNativePadUp",
+            "(II)Z",
+            [](const NativeCallContext&, int32_t& ir, int64_t&, float&, double&, std::string&, uint32_t&, bool&) { ir = 0; },
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "Returns 0");
+        register_native("Lorg/libsdl/app/SDLInputConnection;", "nativeCommitText",
+            "(Ljava/lang/String;I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLInputConnection;", "nativeGenerateScancodeForUnichar",
+            "(C)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
+        register_native("Lorg/libsdl/app/SDLInputConnection;", "nativeSetComposingText",
+            "(Ljava/lang/String;I)V",
+            [](const NativeCallContext&, int32_t&, int64_t&, float&, double&, std::string&, uint32_t&, bool&) {},
+            NativeImplType::HOST_COMPATIBILITY_STUB,
+            "No-op");
     }
 
     size_t registered_count() const { return methods_.size(); }

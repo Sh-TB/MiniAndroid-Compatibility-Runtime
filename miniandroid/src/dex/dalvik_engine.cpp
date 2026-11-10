@@ -407,6 +407,17 @@ static const miniandroid::dalvik::KvPair kFrameworkViews[] = {
     {"Landroid/widget/LinearLayout;", "Landroid/view/ViewGroup;"},
     {"Landroid/widget/FrameLayout;", "Landroid/view/ViewGroup;"},
     {"Landroid/widget/RelativeLayout;", "Landroid/view/ViewGroup;"},
+    // ── F-NEW-628 (S209): AOSP AbsoluteLayout.java — `public class
+    // AbsoluteLayout extends ViewGroup` (deprecated since API 3, still a
+    // public platform widget). The SDL2 ≤2.0.x Java bootstrap's CONTENT
+    // ROOT: gomoku's SDLActivity.onCreate builds AbsoluteLayout(this) →
+    // addView(SDLSurface) → setContentView (live evidence run
+    // s209/ab2/gomoku_run1: without this edge the class fell to the
+    // unknown-class stub — no view node, addView stubbed, and the
+    // F-NEW-233 window-root check answered NO_ROOT despite the completed
+    // R349 attach+measure wave, because root id 26 was a bare heap
+    // object, not a view node).
+    {"Landroid/widget/AbsoluteLayout;", "Landroid/view/ViewGroup;"},
     {"Landroid/widget/ScrollView;", "Landroid/widget/FrameLayout;"},
     {"Landroid/widget/HorizontalScrollView;", "Landroid/widget/FrameLayout;"},
     {"Landroid/widget/TextView;", "Landroid/view/View;"},
@@ -2926,11 +2937,65 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                               << "' id=" << activity_obj_id << std::endl;
 
                     // Find onCreate method
+                    // ── F-NEW-626 (S209): AOSP LAUNCH-ENTRY LAW — onCreate
+                    // FIRST, classic-JVM main FALLBACK. AOSP
+                    // ActivityThread.performLaunchActivity launches an
+                    // Activity-derived class through onCreate(Bundle); a
+                    // `main` method in an activity class is a NON-launch
+                    // helper unless it is the classic JVM signature
+                    // public static void main(String[]) — the shape the
+                    // original heuristic targeted. Live defect (rttt
+                    // org.kirkezz.rttt, SDL3 bootstrap): SDL 2.30.x declares
+                    // `protected void main()V` — the SDL NATIVE-THREAD main
+                    // invoked LATER by SDLMain.run (AOSP SDLActivity.java
+                    // flow: onCreate → SDLThread → SDLMain.run → main() →
+                    // nativeRunMain) — BEFORE onCreate in the dex method
+                    // table; the old single-pass `onCreate || main` scan
+                    // matched main()V first, onCreate never ran,
+                    // mSingleton stayed null, SDLActivity.main pc=1 →
+                    // getMainSharedObject on a null receiver → f141 NPE →
+                    // APP BOUNDARY → white face 31ddd4d5b8e6d18e (baseline
+                    // ×3 deterministic, binary 6da4574d2105529c). Two-pass
+                    // law on BOTH launch paths (manifest launcher + legacy
+                    // heuristic): Pass 1 picks onCreate when the class
+                    // declares one; Pass 2 (only when NO onCreate exists)
+                    // picks a STATIC main([Ljava/lang/String;)V — a bare
+                    // main()V can never be a launch entry.
+                    bool e626_has_oncreate = false;
+                    bool e626_has_classic_main = false;
+                    for (const auto& m626 : cls.all_methods()) {
+                        if (m626.name == "onCreate") {
+                            e626_has_oncreate = true;
+                            break;
+                        }
+                    }
+                    if (!e626_has_oncreate) {
+                        for (const auto& m626 : cls.all_methods()) {
+                            if (m626.name == "main" &&
+                                m626.descriptor == "([Ljava/lang/String;)V" &&
+                                (m626.access_flags & 0x0008)) {
+                                e626_has_classic_main = true;
+                                break;
+                            }
+                        }
+                    }
                     for (const auto& method : cls.all_methods()) {
-                        if (method.name == "onCreate" || method.name == "main") {
-                            result.main_method = method.name;
-                            log("Found entry point: " + method.name + method.descriptor);
-                            if (!method.bytecode.empty()) {
+                        bool e626_pick;
+                        if (e626_has_oncreate) {
+                            e626_pick = (method.name == "onCreate");
+                        } else {
+                            e626_pick = (e626_has_classic_main &&
+                                         method.name == "main" &&
+                                         method.descriptor ==
+                                             "([Ljava/lang/String;)V" &&
+                                         (method.access_flags & 0x0008));
+                        }
+                        if (!e626_pick) {
+                            continue;
+                        }
+                        result.main_method = method.name;
+                        log("Found entry point: " + method.name + method.descriptor);
+                        if (!method.bytecode.empty()) {
                                 log("🎯 CALLING execute_method_internal() for " + method.name +
                                     " with " + std::to_string(method.bytecode.size()) + " instructions");
 
@@ -3086,7 +3151,6 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                                 log("⚠️ Method " + method.name + " has EMPTY bytecode - skipping");
                             }
                             break;
-                        }
                     }
                     // ── F-NEW-482 (CONT-155): INHERITED onCreate DISPATCH ──
                     // AOSP ActivityThread.performLaunchActivity law: the
@@ -3441,13 +3505,46 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                 log("Found main class candidate: " + cls.name);
 
                 // Find onCreate method
+                // ── F-NEW-626 (S209): AOSP LAUNCH-ENTRY LAW — identical
+                // two-pass shape on the legacy heuristic path (see the full
+                // law comment at the manifest-launcher site above).
+                bool e626_has_oncreate = false;
+                bool e626_has_classic_main = false;
+                for (const auto& m626 : cls.all_methods()) {
+                    if (m626.name == "onCreate") {
+                        e626_has_oncreate = true;
+                        break;
+                    }
+                }
+                if (!e626_has_oncreate) {
+                    for (const auto& m626 : cls.all_methods()) {
+                        if (m626.name == "main" &&
+                            m626.descriptor == "([Ljava/lang/String;)V" &&
+                            (m626.access_flags & 0x0008)) {
+                            e626_has_classic_main = true;
+                            break;
+                        }
+                    }
+                }
                 for (const auto& method : cls.all_methods()) {
-                    if (method.name == "onCreate" || method.name == "main") {
-                        result.main_method = method.name;
-                        log("Found entry point: " + method.name + method.descriptor);
+                    bool e626_pick;
+                    if (e626_has_oncreate) {
+                        e626_pick = (method.name == "onCreate");
+                    } else {
+                        e626_pick = (e626_has_classic_main &&
+                                     method.name == "main" &&
+                                     method.descriptor ==
+                                         "([Ljava/lang/String;)V" &&
+                                     (method.access_flags & 0x0008));
+                    }
+                    if (!e626_pick) {
+                        continue;
+                    }
+                    result.main_method = method.name;
+                    log("Found entry point: " + method.name + method.descriptor);
 
-                        // Execute this method
-                        if (!method.bytecode.empty()) {
+                    // Execute this method
+                    if (!method.bytecode.empty()) {
                             log("🎯 CALLING execute_method_internal() for " + method.name +
                                 " with " + std::to_string(method.bytecode.size()) + " instructions");
                             // DEMO-ACTIVITY-THIS (2026-09-04): same fix as the
@@ -3502,7 +3599,6 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
                             log("⚠️ Method " + method.name + " has EMPTY bytecode - skipping");
                         }
                         break;
-                    }
                 }
                 break;
             }
@@ -13366,6 +13462,168 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                     return true;  // mirrors the JNI-dispatch success path
                 }
                 // engine driver miss → pre-W17 order (real symbol attempt)
+            }
+            // ── F-NEW-627 (S209): SDL BOOTSTRAP FAMILY — ENGINE-SIDE LAW ───
+            // The org.libsdl.app SDL Java bootstrap (SDL2 ≤2.0.x and SDL
+            // 2.30.x/SDL3) is a de-facto framework family (SIMILAR-10: 2 of
+            // 10 tictactoe-like F-Droid titles are SDL shells). Its native
+            // method surface is declared in the APP dex (org.libsdl.app.*)
+            // and implemented by the app's bundled libSDL2/libSDL3 — machine
+            // code the interpreter cannot execute. The family law answers
+            // the THREE load-bearing bootstrap natives engine-side (the
+            // remaining family natives are registered in the JNIBridge with
+            // honest fail-soft defaults — those registrations also make the
+            // GATE A S143 bridge-satisfied load law fire for SDL libs the
+            // host dlopen refuses, e.g. the 32-bit libSDL2.so of a
+            // 32-bit-only APK on this x86_64 host, and rttt's x86_64
+            // libSDL3.so whose DT_NEEDED libGLESv1_CM.so the host lacks):
+            //
+            //  1. nativeGetVersion()Ljava/lang/String; — the SDL3 C/Java
+            //     version handshake. Real SDL: the native returns the
+            //     compiled SDL version ("3.2.5"); the Java side builds the
+            //     SAME string and equals() them (mismatch → the app's OWN
+            //     broken-libraries AlertDialog path). Engine law: scan the
+            //     APK's bundled libSDL3.so bytes for the vendor version
+            //     marker "SDL3-<major>.<minor>.<patch>" (live evidence:
+            //     rttt lib/x86_64/libSDL3.so carries "SDL3-3.2.5-v1.3") —
+            //     the answer comes from the APK's own native lib, never
+            //     fabricated. Marker absent → "" (the honest empty answer;
+            //     the Java equals() then takes the app's own error path).
+            //  2. nativeRunMain(lib, fn, args)I — the SDL3 native-main
+            //     handoff. On-device this call BLOCKS for the app's whole
+            //     lifetime (SDL_main runs the game inside). Engine law:
+            //     log the handoff, return 0 (success), and PARK the drained
+            //     SDLMain thread body at this boundary (the same R-NEW-345
+            //     park-yield machinery the F-110b Thread.sleep game-loop
+            //     law uses) with a wake time beyond any capture window —
+            //     "the native main is active for the process lifetime".
+            //     Without the park, the instant return would run SDLMain's
+            //     post-main tail (mSDLMainFinished=true → activity.finish())
+            //     — modeling "the app quit instantly", which is NOT what a
+            //     running SDL app does.
+            //  3. nativeInit()V — the SDL2 (≤2.0.x) native-main handoff
+            //     (gomoku's SDLMain.run body is a single nativeInit call):
+            //     the same park semantics.
+            if (class_descriptor == "Lorg/libsdl/app/SDLActivity;") {
+                if (method_name == "nativeGetVersion") {
+                    std::string sdl_ver;
+                    if (!native_lib_dir_host_.empty()) {
+                        std::filesystem::path sdl3_path =
+                            std::filesystem::path(native_lib_dir_host_) /
+                            "libSDL3.so";
+                        std::error_code sdl_ec;
+                        if (std::filesystem::exists(sdl3_path, sdl_ec)) {
+                            std::ifstream sdl_file(
+                                sdl3_path, std::ios::binary);
+                            std::string blob((std::istreambuf_iterator<char>(
+                                                  sdl_file)),
+                                             std::istreambuf_iterator<char>());
+                            // vendor marker scan: "SDL3-<digits>.<digits>.
+                            // <digits>" (SDL3 revision string embedded in
+                            // every official libSDL3 build).
+                            size_t marker = blob.find("SDL3-");
+                            while (marker != std::string::npos) {
+                                size_t p = marker + 5;
+                                std::string candidate;
+                                int dots = 0;
+                                while (p < blob.size()) {
+                                    char ch = blob[p];
+                                    if (ch >= '0' && ch <= '9') {
+                                        candidate += ch;
+                                        ++p;
+                                    } else if (ch == '.' && dots < 2 &&
+                                               !candidate.empty() &&
+                                               candidate.back() != '.') {
+                                        candidate += ch;
+                                        ++dots;
+                                        ++p;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                if (dots == 2 && !candidate.empty() &&
+                                    candidate.back() != '.') {
+                                    sdl_ver = candidate;
+                                    break;
+                                }
+                                marker = blob.find("SDL3-", marker + 1);
+                            }
+                        }
+                    }
+                    std::cerr << "[SDL-NATIVE] nativeGetVersion() -> \""
+                              << sdl_ver
+                              << "\" (scanned from the bundled libSDL3.so)"
+                              << std::endl;
+                    return_val = DalvikValue::make_string(sdl_ver, 1);
+                    last_invoke_return_ = return_val;
+                    recursion_depth_--;
+                    return true;  // mirrors the JNI-dispatch success path
+                }
+                bool sdl627_park = false;
+                if (method_name == "nativeRunMain" &&
+                    method->descriptor ==
+                        "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/"
+                        "Object;)I") {
+                    // nativeRunMain is STATIC: the marshalled args carry NO
+                    // receiver — scan the first two STRING_REF slots (lib,
+                    // function) instead of guessing fixed positions.
+                    std::string sdl_lib, sdl_fn;
+                    for (const auto& a627 : args) {
+                        if (a627.type != DalvikType::STRING_REF) continue;
+                        if (sdl_lib.empty()) sdl_lib = a627.string_val;
+                        else if (sdl_fn.empty()) {
+                            sdl_fn = a627.string_val;
+                            break;
+                        }
+                    }
+                    std::cerr << "[SDL-NATIVE-MAIN] handoff library=\""
+                              << sdl_lib << "\" function=\"" << sdl_fn
+                              << "\" — native SDL_main PARKED (runs for the"
+                              << " process lifetime on-device; wake beyond"
+                              << " the capture window)" << std::endl;
+                    sdl627_park = true;
+                }
+                if (method_name == "nativeInit" && method->descriptor == "()V") {
+                    std::cerr << "[SDL-NATIVE-MAIN] handoff (SDL2 nativeInit)"
+                              << " — native SDL_main PARKED (runs for the"
+                              << " process lifetime on-device; wake beyond"
+                              << " the capture window)" << std::endl;
+                    sdl627_park = true;
+                }
+                if (sdl627_park) {
+                    // R-NEW-345 park-yield (the F-110b machinery): only a
+                    // DRAINED thread body parks (park_drain_last_depth_ >=
+                    // 1); a hypothetical main-thread call returns 0 without
+                    // parking (the caller observes an instant native return
+                    // — the honest serialized model for that shape).
+                    if (park_drain_last_depth_ >= 1) {
+                        park_yield_pending_ = true;
+                        if (auto* hs = shadow_registry_
+                                           ? shadow_registry_->find_as<
+                                                 framework::HandlerShadow>()
+                                           : nullptr) {
+                            // wake = now + 1h virtual: no scheduler boundary
+                            // inside any capture window re-drains the body.
+                            park_yield_wake_at_ =
+                                hs->virtual_now_ms() + 3600000;
+                        } else {
+                            park_yield_wake_at_ = 0;
+                        }
+                    }
+                    char ret627 = 'V';
+                    size_t paren627 = method->descriptor.rfind(')');
+                    if (paren627 != std::string::npos &&
+                        paren627 + 1 < method->descriptor.size())
+                        ret627 = method->descriptor[paren627 + 1];
+                    return_val = (ret627 == 'I' || ret627 == 'Z' ||
+                                  ret627 == 'B' || ret627 == 'S' ||
+                                  ret627 == 'C')
+                                     ? DalvikValue::make_int(0)
+                                     : DalvikValue::make_void();
+                    last_invoke_return_ = return_val;
+                    recursion_depth_--;
+                    return true;  // mirrors the JNI-dispatch success path
+                }
             }
             // Found a native method — dispatch to JNI bridge
             log("🔌 JNI DISPATCH: " + class_descriptor + "." + method_name +
