@@ -78,8 +78,14 @@ static DecodedPcm decode_sndfile(const std::string& path) {
         return out;
     }
     out.samples.resize((size_t)read);
-    out.duration_sec = info.frames > 0
-        ? (double)info.frames / info.samplerate : 0.0;
+    // GP-AUDIO-001 (issue #582): a POSITIVE short read was accepted but the
+    // reported duration still covered the full DECLARED frame count — the
+    // tail of the buffer was decoded-less yet advertised as playable
+    // duration. Duration now answers the frames actually decoded.
+    out.duration_sec = (info.samplerate > 0 && read >= 0)
+        ? (double)(read / (info.channels > 0 ? info.channels : 1)) /
+              (double)info.samplerate
+        : 0.0;
     return out;
 }
 

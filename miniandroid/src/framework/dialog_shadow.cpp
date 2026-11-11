@@ -3,6 +3,7 @@
 
 #include "dialog_shadow.h"
 #include "android_shadows.h"
+#include "../resources/resource_runtime.h"  // GP-COMPOSE-001
 #include "../renderer/software_renderer.h"
 
 #include <algorithm>
@@ -123,6 +124,32 @@ void DialogShadow::build_decor_tree(DialogWindow& win, ViewShadow* vs) {
             cv->lp_width = -1;
             root->children.push_back(win.custom_view_id);
         }
+    }
+    // GP-COMPOSE-001 (issue #582): androidx ComponentDialog installs the
+    // dialog as the ViewTreeLifecycleOwner / SavedStateRegistryOwner /
+    // ViewModelStoreOwner of the WINDOW DECOR before content attaches;
+    // Compose content hosted in a Dialog (DialogWindowRecomposer) walks
+    // the decor tree for those tags and ISEs without them. The engine's
+    // DialogShadow performs that contract here on the decor root, with
+    // the DIALOG object as the owner. Keys resolve through the app's
+    // resources.arsc (same law as F-105); when the ids are absent the
+    // install is skipped silently (the app has no such consumer either).
+    {
+        resources::ResourceRuntime& rt = resources::ResourceRuntime::instance();
+        auto install = [&](const char* res_name) {
+            auto key = rt.arsc().find_id("", "id", res_name);
+            if (!key) return;
+            auto* rn = vs->get_or_create_node(
+                win.decor_root_id, "Landroid/widget/LinearLayout;");
+            ViewShadow::ViewNode::TagValue tv;
+            tv.kind = ViewShadow::ViewNode::TagValue::OBJECT;
+            tv.object_id = win.dialog_obj_id;
+            tv.object_class = "Landroid/app/Dialog;";
+            rn->keyed_tags[static_cast<int32_t>(*key)] = tv;
+        };
+        install("view_tree_lifecycle_owner");
+        install("view_tree_saved_state_registry_owner");
+        install("view_tree_view_model_store_owner");
     }
     // Item rows: REAL clickable ViewNodes owned by this dialog window.
     const int item_h = 88;  // Material list row height (px, density=1)

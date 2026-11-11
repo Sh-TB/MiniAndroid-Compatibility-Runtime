@@ -1,0 +1,1753 @@
+diff --git a/evidence/s207/runs/S207_GATE.json b/evidence/s207/runs/S207_GATE.json
+index 8ae1e8fc..5da0512f 100644
+--- a/evidence/s207/runs/S207_GATE.json
++++ b/evidence/s207/runs/S207_GATE.json
+@@ -6,34 +6,34 @@
+    "face_sha16": "8a6c24ac8a7d718e",
+    "uncaught": 0,
+    "pin": "8a6c24ac",
+-   "binary": "60265b6180cc849a",
++   "binary": "e0ea2d7da9ea78db",
+    "hold": true
+   },
+   "unote": {
+-   "wall_s": 1.4,
++   "wall_s": 1.5,
+    "face_sha16": "3b8dcb0adbbc17a9",
+    "uncaught": 0,
+    "pin": "3b8dcb0a",
+-   "binary": "60265b6180cc849a",
++   "binary": "e0ea2d7da9ea78db",
+    "hold": true
+   },
+   "dooz": {
+-   "wall_s": 287.0,
++   "wall_s": 289.1,
+    "face_sha16": "a0fae9072313e2d1",
+    "uncaught": 0,
+    "pin": "a0fae907",
+-   "binary": "60265b6180cc849a",
++   "binary": "e0ea2d7da9ea78db",
+    "hold": true
+   }
+  },
+  "gmdice": {
+   "r1": {
+-   "wall_s": 2.5,
++   "wall_s": 2.6,
+    "face_sha16": "3891679dff449331",
+    "uncaught": 0
+   },
+   "r2": {
+-   "wall_s": 2.5,
++   "wall_s": 2.6,
+    "face_sha16": "3891679dff449331",
+    "uncaught": 0
+   },
+@@ -47,17 +47,17 @@
+  "tictactoe": {
+   "runs": [
+    {
+-    "wall_s": 20.6,
++    "wall_s": 21.0,
+     "face_sha16": "7354c1b231cd581d",
+     "uncaught": 0
+    },
+    {
+-    "wall_s": 20.3,
++    "wall_s": 20.8,
+     "face_sha16": "7354c1b231cd581d",
+     "uncaught": 0
+    },
+    {
+-    "wall_s": 20.5,
++    "wall_s": 20.7,
+     "face_sha16": "7354c1b231cd581d",
+     "uncaught": 0
+    }
+diff --git a/evidence/s207/runs/s207_gmdice_r1/report.md b/evidence/s207/runs/s207_gmdice_r1/report.md
+index 973104c3..cf16e9aa 100644
+--- a/evidence/s207/runs/s207_gmdice_r1/report.md
++++ b/evidence/s207/runs/s207_gmdice_r1/report.md
+@@ -70,5 +70,5 @@
+ 
+ ## Session Info
+ 
+-- **Session ID:** `EXP-001-20261111-054748-8967`
+-- **Generated:** 2026-11-11 05:47:51 UTC
++- **Session ID:** `EXP-001-20261111-173948-8793`
++- **Generated:** 2026-11-11 17:39:50 UTC
+diff --git a/evidence/s207/runs/s207_gmdice_r2/report.md b/evidence/s207/runs/s207_gmdice_r2/report.md
+index e36d9c3c..87ac5858 100644
+--- a/evidence/s207/runs/s207_gmdice_r2/report.md
++++ b/evidence/s207/runs/s207_gmdice_r2/report.md
+@@ -70,5 +70,5 @@
+ 
+ ## Session Info
+ 
+-- **Session ID:** `EXP-001-20261111-054751-1003`
+-- **Generated:** 2026-11-11 05:47:53 UTC
++- **Session ID:** `EXP-001-20261111-173950-5632`
++- **Generated:** 2026-11-11 17:39:53 UTC
+diff --git a/evidence/s207/runs/s207_gold_bouncy/report.md b/evidence/s207/runs/s207_gold_bouncy/report.md
+index ec6a5557..ab9d9eb0 100644
+--- a/evidence/s207/runs/s207_gold_bouncy/report.md
++++ b/evidence/s207/runs/s207_gold_bouncy/report.md
+@@ -70,5 +70,5 @@
+ 
+ ## Session Info
+ 
+-- **Session ID:** `EXP-001-20261111-054255-7740`
+-- **Generated:** 2026-11-11 05:42:57 UTC
++- **Session ID:** `EXP-001-20261111-173448-6076`
++- **Generated:** 2026-11-11 17:34:50 UTC
+diff --git a/evidence/s207/runs/s207_gold_dooz/lifecycle_trace.json b/evidence/s207/runs/s207_gold_dooz/lifecycle_trace.json
+index d868a885..afbd62cd 100644
+--- a/evidence/s207/runs/s207_gold_dooz/lifecycle_trace.json
++++ b/evidence/s207/runs/s207_gold_dooz/lifecycle_trace.json
+@@ -10,21 +10,21 @@
+       "reason": "Activity.onCreate() executed via DEX interpreter (ActivityThread.performLaunchActivity law)",
+       "success": true,
+       "to": "ACTIVITY_CREATED",
+-      "virtual_ms": 0
++      "virtual_ms": 5873
+     },
+     {
+       "from": "ACTIVITY_CREATED",
+       "reason": "Activity.onStart() dispatched via DEX engine (framework stub answered — super-class law; record state advances regardless)",
+       "success": true,
+       "to": "STARTED",
+-      "virtual_ms": 0
++      "virtual_ms": 5873
+     },
+     {
+       "from": "STARTED",
+       "reason": "Activity.onResume() dispatched via DEX engine (handleResumeActivity law) (framework stub answered — super-class law; record state advances regardless)",
+       "success": true,
+       "to": "RESUMED",
+-      "virtual_ms": 0
++      "virtual_ms": 5873
+     }
+   ]
+ }
+\ No newline at end of file
+diff --git a/evidence/s207/runs/s207_gold_dooz/report.md b/evidence/s207/runs/s207_gold_dooz/report.md
+index d7d2fd8f..cfda14bb 100644
+--- a/evidence/s207/runs/s207_gold_dooz/report.md
++++ b/evidence/s207/runs/s207_gold_dooz/report.md
+@@ -22,7 +22,7 @@
+ | Class | Calls |
+ |-------|-------|
+ | `DalvikEngine` | 3 |
+-| `ExecutionEngine` | 3104 |
++| `ExecutionEngine` | 3105 |
+ | `TraceEngine` | 3 |
+ | `Unknown` | 6 |
+ 
+@@ -39,8 +39,8 @@
+ | `TraceEngine.log_screenshot` | 2 |
+ | `ExecutionEngine.trace_export` | 2 |
+ | `ExecutionEngine.stage_parse_dex` | 2 |
+-| `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
+ | `ExecutionEngine.stage_load_apk` | 2 |
++| `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
+ | `ExecutionEngine.stage_initialize_runtime` | 2 |
+ | `ExecutionEngine.stage_frame_sequence` | 1 |
+ | `TraceEngine.start_session` | 1 |
+@@ -109,5 +109,5 @@
+ 
+ ## Session Info
+ 
+-- **Session ID:** `EXP-001-20261111-054259-3503`
+-- **Generated:** 2026-11-11 05:47:45 UTC
++- **Session ID:** `EXP-001-20261111-173452-1169`
++- **Generated:** 2026-11-11 17:39:41 UTC
+diff --git a/evidence/s207/runs/s207_gold_unote/report.md b/evidence/s207/runs/s207_gold_unote/report.md
+index a6058ba5..ae34c985 100644
+--- a/evidence/s207/runs/s207_gold_unote/report.md
++++ b/evidence/s207/runs/s207_gold_unote/report.md
+@@ -70,5 +70,5 @@
+ 
+ ## Session Info
+ 
+-- **Session ID:** `EXP-001-20261111-054257-1524`
+-- **Generated:** 2026-11-11 05:42:58 UTC
++- **Session ID:** `EXP-001-20261111-173451-1680`
++- **Generated:** 2026-11-11 17:34:52 UTC
+diff --git a/evidence/s207/runs/s207_mtm_spot/report.md b/evidence/s207/runs/s207_mtm_spot/report.md
+index ead116d2..90ab5edc 100644
+--- a/evidence/s207/runs/s207_mtm_spot/report.md
++++ b/evidence/s207/runs/s207_mtm_spot/report.md
+@@ -70,5 +70,5 @@
+ 
+ ## Session Info
+ 
+-- **Session ID:** `EXP-001-20261111-054753-6129`
+-- **Generated:** 2026-11-11 05:47:56 UTC
++- **Session ID:** `EXP-001-20261111-173953-0180`
++- **Generated:** 2026-11-11 17:39:55 UTC
+diff --git a/evidence/s207/runs/s207_ttt0/report.md b/evidence/s207/runs/s207_ttt0/report.md
+index 6dc9ad1c..bc8273a5 100644
+--- a/evidence/s207/runs/s207_ttt0/report.md
++++ b/evidence/s207/runs/s207_ttt0/report.md
+@@ -70,5 +70,5 @@
+ 
+ ## Session Info
+ 
+-- **Session ID:** `EXP-001-20261111-054756-0294`
+-- **Generated:** 2026-11-11 05:48:16 UTC
++- **Session ID:** `EXP-001-20261111-173956-5310`
++- **Generated:** 2026-11-11 17:40:17 UTC
+diff --git a/evidence/s207/runs/s207_ttt1/report.md b/evidence/s207/runs/s207_ttt1/report.md
+index 4696f7c6..fd7fbddc 100644
+--- a/evidence/s207/runs/s207_ttt1/report.md
++++ b/evidence/s207/runs/s207_ttt1/report.md
+@@ -70,5 +70,5 @@
+ 
+ ## Session Info
+ 
+-- **Session ID:** `EXP-001-20261111-054817-9701`
+-- **Generated:** 2026-11-11 05:48:37 UTC
++- **Session ID:** `EXP-001-20261111-174017-6309`
++- **Generated:** 2026-11-11 17:40:37 UTC
+diff --git a/evidence/s207/runs/s207_ttt2/report.md b/evidence/s207/runs/s207_ttt2/report.md
+index 1b1cf450..d25c769e 100644
+--- a/evidence/s207/runs/s207_ttt2/report.md
++++ b/evidence/s207/runs/s207_ttt2/report.md
+@@ -70,5 +70,5 @@
+ 
+ ## Session Info
+ 
+-- **Session ID:** `EXP-001-20261111-054837-2547`
+-- **Generated:** 2026-11-11 05:48:57 UTC
++- **Session ID:** `EXP-001-20261111-174038-2771`
++- **Generated:** 2026-11-11 17:40:58 UTC
+diff --git a/evidence/s207/runs/store_s207_gmdice_r1/data/app/c7_pkg_cache.sqlite3 b/evidence/s207/runs/store_s207_gmdice_r1/data/app/c7_pkg_cache.sqlite3
+index 7521c5a1..a9542652 100644
+Binary files a/evidence/s207/runs/store_s207_gmdice_r1/data/app/c7_pkg_cache.sqlite3 and b/evidence/s207/runs/store_s207_gmdice_r1/data/app/c7_pkg_cache.sqlite3 differ
+diff --git a/evidence/s207/runs/store_s207_gmdice_r1/data/app/de.duenndns.gmdice/package.json b/evidence/s207/runs/store_s207_gmdice_r1/data/app/de.duenndns.gmdice/package.json
+index 492c3663..6e6c7b28 100644
+--- a/evidence/s207/runs/store_s207_gmdice_r1/data/app/de.duenndns.gmdice/package.json
++++ b/evidence/s207/runs/store_s207_gmdice_r1/data/app/de.duenndns.gmdice/package.json
+@@ -11,6 +11,6 @@
+   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gmdice_r1/data/app/de.duenndns.gmdice/base.apk",
+   "apkSha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+   "apkSize": 63998,
+-  "installedAt": "2026-11-11T05:47:48Z",
++  "installedAt": "2026-11-11T17:39:48Z",
+   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+ }
+diff --git a/evidence/s207/runs/store_s207_gmdice_r1/data/system/device_clock b/evidence/s207/runs/store_s207_gmdice_r1/data/system/device_clock
+index 49e4b8c6..e52488a8 100644
+--- a/evidence/s207/runs/store_s207_gmdice_r1/data/system/device_clock
++++ b/evidence/s207/runs/store_s207_gmdice_r1/data/system/device_clock
+@@ -1 +1 @@
+-57400
+\ No newline at end of file
++61500
+\ No newline at end of file
+diff --git a/evidence/s207/runs/store_s207_gmdice_r2/data/app/c7_pkg_cache.sqlite3 b/evidence/s207/runs/store_s207_gmdice_r2/data/app/c7_pkg_cache.sqlite3
+index e33b3dee..b7ffcfe7 100644
+Binary files a/evidence/s207/runs/store_s207_gmdice_r2/data/app/c7_pkg_cache.sqlite3 and b/evidence/s207/runs/store_s207_gmdice_r2/data/app/c7_pkg_cache.sqlite3 differ
+diff --git a/evidence/s207/runs/store_s207_gmdice_r2/data/app/de.duenndns.gmdice/package.json b/evidence/s207/runs/store_s207_gmdice_r2/data/app/de.duenndns.gmdice/package.json
+index 9a3c1432..3b17afc0 100644
+--- a/evidence/s207/runs/store_s207_gmdice_r2/data/app/de.duenndns.gmdice/package.json
++++ b/evidence/s207/runs/store_s207_gmdice_r2/data/app/de.duenndns.gmdice/package.json
+@@ -11,6 +11,6 @@
+   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gmdice_r2/data/app/de.duenndns.gmdice/base.apk",
+   "apkSha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
+   "apkSize": 63998,
+-  "installedAt": "2026-11-11T05:47:51Z",
++  "installedAt": "2026-11-11T17:39:50Z",
+   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+ }
+diff --git a/evidence/s207/runs/store_s207_gmdice_r2/data/system/device_clock b/evidence/s207/runs/store_s207_gmdice_r2/data/system/device_clock
+index 49e4b8c6..e52488a8 100644
+--- a/evidence/s207/runs/store_s207_gmdice_r2/data/system/device_clock
++++ b/evidence/s207/runs/store_s207_gmdice_r2/data/system/device_clock
+@@ -1 +1 @@
+-57400
+\ No newline at end of file
++61500
+\ No newline at end of file
+diff --git a/evidence/s207/runs/store_s207_gold_bouncy/data/app/c7_pkg_cache.sqlite3 b/evidence/s207/runs/store_s207_gold_bouncy/data/app/c7_pkg_cache.sqlite3
+index 23996459..f7011bbf 100644
+Binary files a/evidence/s207/runs/store_s207_gold_bouncy/data/app/c7_pkg_cache.sqlite3 and b/evidence/s207/runs/store_s207_gold_bouncy/data/app/c7_pkg_cache.sqlite3 differ
+diff --git a/evidence/s207/runs/store_s207_gold_bouncy/data/app/com.dozingcatsoftware.bouncy/package.json b/evidence/s207/runs/store_s207_gold_bouncy/data/app/com.dozingcatsoftware.bouncy/package.json
+index cb07a976..62488f7d 100644
+--- a/evidence/s207/runs/store_s207_gold_bouncy/data/app/com.dozingcatsoftware.bouncy/package.json
++++ b/evidence/s207/runs/store_s207_gold_bouncy/data/app/com.dozingcatsoftware.bouncy/package.json
+@@ -11,6 +11,6 @@
+   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gold_bouncy/data/app/com.dozingcatsoftware.bouncy/base.apk",
+   "apkSha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+   "apkSize": 3233743,
+-  "installedAt": "2026-11-11T05:42:55Z",
++  "installedAt": "2026-11-11T17:34:48Z",
+   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+ }
+diff --git a/evidence/s207/runs/store_s207_gold_bouncy/data/system/device_clock b/evidence/s207/runs/store_s207_gold_bouncy/data/system/device_clock
+index c310e26e..a3e09b1c 100644
+--- a/evidence/s207/runs/store_s207_gold_bouncy/data/system/device_clock
++++ b/evidence/s207/runs/store_s207_gold_bouncy/data/system/device_clock
+@@ -1 +1 @@
+-5250
+\ No newline at end of file
++7000
+\ No newline at end of file
+diff --git a/evidence/s207/runs/store_s207_gold_dooz/data/app/c7_pkg_cache.sqlite3 b/evidence/s207/runs/store_s207_gold_dooz/data/app/c7_pkg_cache.sqlite3
+index e954f5cc..484bdc6b 100644
+Binary files a/evidence/s207/runs/store_s207_gold_dooz/data/app/c7_pkg_cache.sqlite3 and b/evidence/s207/runs/store_s207_gold_dooz/data/app/c7_pkg_cache.sqlite3 differ
+diff --git a/evidence/s207/runs/store_s207_gold_dooz/data/app/io.github.yamin8000.dooz/package.json b/evidence/s207/runs/store_s207_gold_dooz/data/app/io.github.yamin8000.dooz/package.json
+index 130e203d..fd55062b 100644
+--- a/evidence/s207/runs/store_s207_gold_dooz/data/app/io.github.yamin8000.dooz/package.json
++++ b/evidence/s207/runs/store_s207_gold_dooz/data/app/io.github.yamin8000.dooz/package.json
+@@ -14,6 +14,6 @@
+   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gold_dooz/data/app/io.github.yamin8000.dooz/base.apk",
+   "apkSha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+   "apkSize": 1840400,
+-  "installedAt": "2026-11-11T05:42:59Z",
++  "installedAt": "2026-11-11T17:34:52Z",
+   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+ }
+diff --git a/evidence/s207/runs/store_s207_gold_dooz/data/system/device_clock b/evidence/s207/runs/store_s207_gold_dooz/data/system/device_clock
+index e9379705..98b4a152 100644
+--- a/evidence/s207/runs/store_s207_gold_dooz/data/system/device_clock
++++ b/evidence/s207/runs/store_s207_gold_dooz/data/system/device_clock
+@@ -1 +1 @@
+-22869
+\ No newline at end of file
++30508
+\ No newline at end of file
+diff --git a/evidence/s207/runs/store_s207_gold_unote/data/app/app.varlorg.unote/package.json b/evidence/s207/runs/store_s207_gold_unote/data/app/app.varlorg.unote/package.json
+index b11c58df..9df26414 100644
+--- a/evidence/s207/runs/store_s207_gold_unote/data/app/app.varlorg.unote/package.json
++++ b/evidence/s207/runs/store_s207_gold_unote/data/app/app.varlorg.unote/package.json
+@@ -19,6 +19,6 @@
+   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gold_unote/data/app/app.varlorg.unote/base.apk",
+   "apkSha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+   "apkSize": 163498,
+-  "installedAt": "2026-11-11T05:42:57Z",
++  "installedAt": "2026-11-11T17:34:51Z",
+   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+ }
+diff --git a/evidence/s207/runs/store_s207_gold_unote/data/app/c7_pkg_cache.sqlite3 b/evidence/s207/runs/store_s207_gold_unote/data/app/c7_pkg_cache.sqlite3
+index 9882caae..0416d6b0 100644
+Binary files a/evidence/s207/runs/store_s207_gold_unote/data/app/c7_pkg_cache.sqlite3 and b/evidence/s207/runs/store_s207_gold_unote/data/app/c7_pkg_cache.sqlite3 differ
+diff --git a/evidence/s207/runs/store_s207_gold_unote/data/data/app.varlorg.unote/databases/notes.db b/evidence/s207/runs/store_s207_gold_unote/data/data/app.varlorg.unote/databases/notes.db
+index 8fb98d88..1f2ff8bf 100644
+Binary files a/evidence/s207/runs/store_s207_gold_unote/data/data/app.varlorg.unote/databases/notes.db and b/evidence/s207/runs/store_s207_gold_unote/data/data/app.varlorg.unote/databases/notes.db differ
+diff --git a/evidence/s207/runs/store_s207_gold_unote/data/system/device_clock b/evidence/s207/runs/store_s207_gold_unote/data/system/device_clock
+index c310e26e..a3e09b1c 100644
+--- a/evidence/s207/runs/store_s207_gold_unote/data/system/device_clock
++++ b/evidence/s207/runs/store_s207_gold_unote/data/system/device_clock
+@@ -1 +1 @@
+-5250
+\ No newline at end of file
++7000
+\ No newline at end of file
+diff --git a/evidence/s207/runs/store_s207_mtm_spot/data/app/c7_pkg_cache.sqlite3 b/evidence/s207/runs/store_s207_mtm_spot/data/app/c7_pkg_cache.sqlite3
+index 4a086c81..41791ac9 100644
+Binary files a/evidence/s207/runs/store_s207_mtm_spot/data/app/c7_pkg_cache.sqlite3 and b/evidence/s207/runs/store_s207_mtm_spot/data/app/c7_pkg_cache.sqlite3 differ
+diff --git a/evidence/s207/runs/store_s207_mtm_spot/data/app/dubrowgn.microtimer/package.json b/evidence/s207/runs/store_s207_mtm_spot/data/app/dubrowgn.microtimer/package.json
+index 3447bc33..f84c0e96 100644
+--- a/evidence/s207/runs/store_s207_mtm_spot/data/app/dubrowgn.microtimer/package.json
++++ b/evidence/s207/runs/store_s207_mtm_spot/data/app/dubrowgn.microtimer/package.json
+@@ -19,6 +19,6 @@
+   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_mtm_spot/data/app/dubrowgn.microtimer/base.apk",
+   "apkSha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+   "apkSize": 208895,
+-  "installedAt": "2026-11-11T05:47:53Z",
++  "installedAt": "2026-11-11T17:39:53Z",
+   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+ }
+diff --git a/evidence/s207/runs/store_s207_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data-shm b/evidence/s207/runs/store_s207_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data-shm
+index 47ec683d..851950fd 100644
+Binary files a/evidence/s207/runs/store_s207_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data-shm and b/evidence/s207/runs/store_s207_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data-shm differ
+diff --git a/evidence/s207/runs/store_s207_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data-wal b/evidence/s207/runs/store_s207_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data-wal
+index 889f99dc..e7604e4c 100644
+Binary files a/evidence/s207/runs/store_s207_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data-wal and b/evidence/s207/runs/store_s207_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data-wal differ
+diff --git a/evidence/s207/runs/store_s207_mtm_spot/data/system/device_clock b/evidence/s207/runs/store_s207_mtm_spot/data/system/device_clock
+index b490b07e..e0559b07 100644
+--- a/evidence/s207/runs/store_s207_mtm_spot/data/system/device_clock
++++ b/evidence/s207/runs/store_s207_mtm_spot/data/system/device_clock
+@@ -1 +1 @@
+-52220
+\ No newline at end of file
++55950
+\ No newline at end of file
+diff --git a/evidence/s207/runs/store_s207_ttt0/data/app/c7_pkg_cache.sqlite3 b/evidence/s207/runs/store_s207_ttt0/data/app/c7_pkg_cache.sqlite3
+index 7a9f9db7..9b63de45 100644
+Binary files a/evidence/s207/runs/store_s207_ttt0/data/app/c7_pkg_cache.sqlite3 and b/evidence/s207/runs/store_s207_ttt0/data/app/c7_pkg_cache.sqlite3 differ
+diff --git a/evidence/s207/runs/store_s207_ttt0/data/app/com.emmanuelmess.tictactoe/package.json b/evidence/s207/runs/store_s207_ttt0/data/app/com.emmanuelmess.tictactoe/package.json
+index cf1c85aa..1218c728 100644
+--- a/evidence/s207/runs/store_s207_ttt0/data/app/com.emmanuelmess.tictactoe/package.json
++++ b/evidence/s207/runs/store_s207_ttt0/data/app/com.emmanuelmess.tictactoe/package.json
+@@ -11,6 +11,6 @@
+   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_ttt0/data/app/com.emmanuelmess.tictactoe/base.apk",
+   "apkSha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+   "apkSize": 4474946,
+-  "installedAt": "2026-11-11T05:47:56Z",
++  "installedAt": "2026-11-11T17:39:56Z",
+   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+ }
+diff --git a/evidence/s207/runs/store_s207_ttt0/data/system/device_clock b/evidence/s207/runs/store_s207_ttt0/data/system/device_clock
+index 802cd48a..79c7b4b7 100644
+--- a/evidence/s207/runs/store_s207_ttt0/data/system/device_clock
++++ b/evidence/s207/runs/store_s207_ttt0/data/system/device_clock
+@@ -1 +1 @@
+-136500
+\ No newline at end of file
++146250
+\ No newline at end of file
+diff --git a/evidence/s207/runs/store_s207_ttt1/data/app/c7_pkg_cache.sqlite3 b/evidence/s207/runs/store_s207_ttt1/data/app/c7_pkg_cache.sqlite3
+index 826e4bcb..f1007dcb 100644
+Binary files a/evidence/s207/runs/store_s207_ttt1/data/app/c7_pkg_cache.sqlite3 and b/evidence/s207/runs/store_s207_ttt1/data/app/c7_pkg_cache.sqlite3 differ
+diff --git a/evidence/s207/runs/store_s207_ttt1/data/app/com.emmanuelmess.tictactoe/package.json b/evidence/s207/runs/store_s207_ttt1/data/app/com.emmanuelmess.tictactoe/package.json
+index 10967f94..d054327c 100644
+--- a/evidence/s207/runs/store_s207_ttt1/data/app/com.emmanuelmess.tictactoe/package.json
++++ b/evidence/s207/runs/store_s207_ttt1/data/app/com.emmanuelmess.tictactoe/package.json
+@@ -11,6 +11,6 @@
+   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_ttt1/data/app/com.emmanuelmess.tictactoe/base.apk",
+   "apkSha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+   "apkSize": 4474946,
+-  "installedAt": "2026-11-11T05:48:17Z",
++  "installedAt": "2026-11-11T17:40:17Z",
+   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+ }
+diff --git a/evidence/s207/runs/store_s207_ttt1/data/system/device_clock b/evidence/s207/runs/store_s207_ttt1/data/system/device_clock
+index 802cd48a..79c7b4b7 100644
+--- a/evidence/s207/runs/store_s207_ttt1/data/system/device_clock
++++ b/evidence/s207/runs/store_s207_ttt1/data/system/device_clock
+@@ -1 +1 @@
+-136500
+\ No newline at end of file
++146250
+\ No newline at end of file
+diff --git a/evidence/s207/runs/store_s207_ttt2/data/app/c7_pkg_cache.sqlite3 b/evidence/s207/runs/store_s207_ttt2/data/app/c7_pkg_cache.sqlite3
+index e92d09d7..02e92009 100644
+Binary files a/evidence/s207/runs/store_s207_ttt2/data/app/c7_pkg_cache.sqlite3 and b/evidence/s207/runs/store_s207_ttt2/data/app/c7_pkg_cache.sqlite3 differ
+diff --git a/evidence/s207/runs/store_s207_ttt2/data/app/com.emmanuelmess.tictactoe/package.json b/evidence/s207/runs/store_s207_ttt2/data/app/com.emmanuelmess.tictactoe/package.json
+index eaf3064a..9a3137d7 100644
+--- a/evidence/s207/runs/store_s207_ttt2/data/app/com.emmanuelmess.tictactoe/package.json
++++ b/evidence/s207/runs/store_s207_ttt2/data/app/com.emmanuelmess.tictactoe/package.json
+@@ -11,6 +11,6 @@
+   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_ttt2/data/app/com.emmanuelmess.tictactoe/base.apk",
+   "apkSha256": "760fe5acf7b394354bf02b7b3484c3eb442b491c1fa4325603ad3250f0dfa394",
+   "apkSize": 4474946,
+-  "installedAt": "2026-11-11T05:48:37Z",
++  "installedAt": "2026-11-11T17:40:38Z",
+   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+ }
+diff --git a/evidence/s207/runs/store_s207_ttt2/data/system/device_clock b/evidence/s207/runs/store_s207_ttt2/data/system/device_clock
+index 802cd48a..79c7b4b7 100644
+--- a/evidence/s207/runs/store_s207_ttt2/data/system/device_clock
++++ b/evidence/s207/runs/store_s207_ttt2/data/system/device_clock
+@@ -1 +1 @@
+-136500
+\ No newline at end of file
++146250
+\ No newline at end of file
+diff --git a/miniandroid/src/api/http_client.cpp b/miniandroid/src/api/http_client.cpp
+index fb0ff3e1..58e1478f 100644
+--- a/miniandroid/src/api/http_client.cpp
++++ b/miniandroid/src/api/http_client.cpp
+@@ -87,12 +87,30 @@ bool read_line_ssl(SSL* ssl, int fd, std::string& line) {
+             return true;
+         }
+         line.push_back(c);
+-        if (line.size() > 64 * 1024) return true;  // header line bound
++        if (line.size() > 64 * 1024) {
++            // GP-NET-002: the old bound returned `true` WITHOUT consuming
++            // the rest of the peer's line — the next header read resumed in
++            // the middle of the oversized line. Drain the remainder, then
++            // report the line as unusable (false) so the caller aborts.
++            char sink;
++            int drained = 0;
++            while ((ssl ? SSL_read(ssl, &sink, 1)
++                        : (int)recv(fd, &sink, 1, 0)) == 1) {
++                if (sink == '\n') break;
++                if (++drained > (1 << 20)) break;
++            }
++            return false;
++        }
+     }
+ }
+ 
+ // Read exactly n body bytes (or until EOF).
++// GP-NET-001 (issue #582): `n` is peer-controlled; the cap must bound what
++// is READ/RETAINED, not truncate afterwards. read_exact clamps its own work
++// to the response cap; callers pre-check their declared lengths and mark
++// oversize bodies as transport errors (below).
+ std::string read_exact(SSL* ssl, int fd, size_t n) {
++    if (n > kMaxBody) n = kMaxBody;
+     std::string out;
+     out.reserve(n < (1u << 20) ? n : (1u << 20));
+     char buf[16384];
+@@ -114,21 +132,50 @@ std::string read_chunked(SSL* ssl, int fd) {
+         if (!read_line_ssl(ssl, fd, sz_line)) break;
+         size_t semi = sz_line.find(';');
+         if (semi != std::string::npos) sz_line = sz_line.substr(0, semi);
+-        unsigned long chunk = strtoul(sz_line.c_str(), nullptr, 16);
+-        if (chunk == 0) {
+-            // trailers until blank line
+-            std::string t;
+-            while (read_line_ssl(ssl, fd, t) && !t.empty()) {}
++        // GP-NET-001: strict chunk-size parse (hex digits only, overflow
++        // checked) — strtoul accepted overflow wraps and junk silently.
++        if (sz_line.empty() ||
++            sz_line.find_first_not_of("0123456789abcdefABCDEF") !=
++                std::string::npos) {
++            std::cerr << "[HTTP] malformed chunk size line — abort body"
++                      << std::endl;
++            break;
++        }
++        unsigned long long chunk = 0;
++        bool ovf = false;
++        for (char c : sz_line) {
++            chunk = chunk * 16ull + (unsigned long long)
++                (c <= '9' ? c - '0' : (c | 0x20) - 'a' + 10);
++            if (chunk > (unsigned long long)kMaxBody) { ovf = true; break; }
++        }
++        if (ovf || chunk == 0) {
++            if (chunk == 0) {
++                // trailers until blank line
++                std::string t;
++                while (read_line_ssl(ssl, fd, t) && !t.empty()) {}
++                break;
++            }
++            std::cerr << "[HTTP] chunk size exceeds body cap — abort body"
++                      << std::endl;
+             break;
+         }
+-        out += read_exact(ssl, fd, chunk);
++        if (out.size() + chunk > kMaxBody) {
++            // budget enforced BEFORE the read: read only what remains,
++            // then stop (the retained body never exceeds the cap).
++            size_t remain = kMaxBody - out.size();
++            out += read_exact(ssl, fd, remain);
++            std::cerr << "[HTTP] chunked body exceeded 8 MiB cap — truncated "
++                      << "at cap" << std::endl;
++            break;
++        }
++        out += read_exact(ssl, fd, (size_t)chunk);
+         std::string crlf;
+         read_line_ssl(ssl, fd, crlf);  // consume chunk terminator
+-        if (out.size() > kMaxBody) break;
+     }
+     return out;
+ }
+ 
++
+ // ── S133 COOKIE STORE LAW (RFC 6265 §5.3/§5.4) ────────────────────────
+ // A real browser keeps a cookie store: Set-Cookie values are stored per
+ // host and echoed back on subsequent requests to that host (measured:
+@@ -274,10 +321,22 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
+     if (status_line.size() > 12 && status_line.compare(0, 5, "HTTP/") == 0)
+         r.status = atoi(status_line.c_str() + 9);
+     std::vector<std::string> set_cookies;   // S133: preserve every Set-Cookie line
++    // GP-NET-002 (issue #582): no aggregate header budget existed — a peer
++    // could stream unlimited header lines. 256 KiB / 256 lines bound.
++    size_t header_bytes = 0;
++    size_t header_lines = 0;
++    bool header_overflow = false;
+     for (;;) {
+         std::string h;
+         if (!read_line_ssl(ssl, fd, h)) break;
+         if (h.empty()) break;
++        header_bytes += h.size() + 2;
++        if (++header_lines > 256 || header_bytes > (256u << 10)) {
++            std::cerr << "[HTTP] response header budget exceeded — headers "
++                         "closed, body rejected" << std::endl;
++            header_overflow = true;
++            break;
++        }
+         size_t colon = h.find(':');
+         if (colon != std::string::npos) {
+             std::string name = lower(h.substr(0, colon));
+@@ -304,21 +363,58 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
+     // S133 cookie-store law: every Set-Cookie lands in the host jar.
+     for (auto& sc : set_cookies) cookie_jar().store(host, sc);
+ 
++    if (header_overflow) {
++        r.error = "response header budget exceeded";
++        r.status = 0;
++        if (ssl) SSL_free(ssl);
++        if (ctx) SSL_CTX_free(ctx);
++        close(fd);
++        return r;
++    }
+     std::string te, cl;
+     bool chunked = r.header("transfer-encoding", te) &&
+                    te.find("chunked") != std::string::npos;
+     bool has_len = r.header("content-length", cl);
++    // GP-NET-001 (issue #582): every receive path enforces the 8 MiB cap
++    // BEFORE reading/retaining; the declared length is parsed strictly
++    // (digits only + overflow) instead of strtoul's silent wrap.
+     if (chunked) {
+         r.body = read_chunked(ssl, fd);
+     } else if (has_len) {
+-        r.body = read_exact(ssl, fd, (size_t)strtoul(cl.c_str(), nullptr, 10));
++        bool cl_ok = !cl.empty() &&
++                     cl.find_first_not_of("0123456789") == std::string::npos;
++        unsigned long long cl_len = 0;
++        if (cl_ok) {
++            cl_ok = cl.size() <= 19;  // 19 digits cannot overflow u64
++            if (cl_ok) {
++                for (char c : cl)
++                    cl_len = cl_len * 10ull + (unsigned long long)(c - '0');
++            }
++        }
++        if (!cl_ok) {
++            r.error = "malformed Content-Length";
++            r.status = 0;
++        } else if (cl_len > kMaxBody) {
++            r.error = "response body exceeds 8 MiB cap (Content-Length)";
++            r.status = 0;
++        } else {
++            r.body = read_exact(ssl, fd, (size_t)cl_len);
++        }
+     } else {
+-        // read until close
++        // read until close — append only while inside the cap.
+         char buf[16384];
+         int n;
+         while ((n = ssl ? SSL_read(ssl, buf, sizeof(buf))
+-                        : (int)recv(fd, buf, sizeof(buf), 0)) > 0)
++                        : (int)recv(fd, buf, sizeof(buf), 0)) > 0) {
++            if (r.body.size() + (size_t)n > kMaxBody) {
++                size_t take = kMaxBody - r.body.size();
++                r.body.append(buf, take);
++                std::cerr << "[HTTP] EOF-delimited body exceeded 8 MiB cap — "
++                             "truncated at cap" << std::endl;
++                break;
++            }
+             r.body.append(buf, (size_t)n);
++        }
+     }
+     if (r.body.size() > kMaxBody) r.body.resize(kMaxBody);
+ 
+diff --git a/miniandroid/src/api/shared_prefs.cpp b/miniandroid/src/api/shared_prefs.cpp
+index c7f87396..4c744f94 100755
+--- a/miniandroid/src/api/shared_prefs.cpp
++++ b/miniandroid/src/api/shared_prefs.cpp
+@@ -815,7 +815,15 @@ bool SharedPreferences::parseXml(const std::string& content) {
+                 size_t val_end = element.find('"', val_start);
+                 if (val_end != std::string::npos) {
+                     std::string val_str(element, val_start, val_end - val_start);
+-                    m_data[key] = PrefValue::fromInt(static_cast<int32_t>(std::stoi(val_str)));
++                    // GP-EXC-002 (issue #582): corrupt prefs XML must not terminate the
++                    // host — checked parse, malformed value skipped honestly.
++                    try {
++                        m_data[key] = PrefValue::fromInt(
++                            static_cast<int32_t>(std::stoi(val_str)));
++                    } catch (...) {
++                        std::cerr << "[GP-EXC-002] prefs int value malformed: "
++                                  << val_str << " (skipped)" << std::endl;
++                    }
+                 }
+             }
+         }
+@@ -828,7 +836,12 @@ bool SharedPreferences::parseXml(const std::string& content) {
+                 size_t val_end = element.find('"', val_start);
+                 if (val_end != std::string::npos) {
+                     std::string val_str(element, val_start, val_end - val_start);
+-                    m_data[key] = PrefValue::fromLong(std::stoll(val_str));
++                    try {
++                        m_data[key] = PrefValue::fromLong(std::stoll(val_str));
++                    } catch (...) {
++                        std::cerr << "[GP-EXC-002] prefs long value malformed: "
++                                  << val_str << " (skipped)" << std::endl;
++                    }
+                 }
+             }
+         }
+@@ -841,7 +854,12 @@ bool SharedPreferences::parseXml(const std::string& content) {
+                 size_t val_end = element.find('"', val_start);
+                 if (val_end != std::string::npos) {
+                     std::string val_str(element, val_start, val_end - val_start);
+-                    m_data[key] = PrefValue::fromFloat(std::stof(val_str));
++                    try {
++                        m_data[key] = PrefValue::fromFloat(std::stof(val_str));
++                    } catch (...) {
++                        std::cerr << "[GP-EXC-002] prefs float value malformed: "
++                                  << val_str << " (skipped)" << std::endl;
++                    }
+                 }
+             }
+         }
+diff --git a/miniandroid/src/apk/apk_parser.cpp b/miniandroid/src/apk/apk_parser.cpp
+index 6693f20a..16274feb 100755
+--- a/miniandroid/src/apk/apk_parser.cpp
++++ b/miniandroid/src/apk/apk_parser.cpp
+@@ -474,7 +474,21 @@ std::vector<uint8_t> ApkParser::decompress_data(const std::vector<uint8_t>& comp
+     }
+     
+     if (method == 8) {
+-        // Deflate compression
++        // GP-APK-008 (issue #582): uncompressed_size is a peer-controlled
++        // uint32 used directly as the allocation size — a crafted entry
++        // (e.g. declared 4 GiB) tried a proportional allocation before any
++        // cap. Bound: absolute 256 MiB AND a 128x expansion ratio (the
++        // ratio arm keeps legitimately-large assets working while rejecting
++        // the classic small-deflate-huge-declared bomb).
++        constexpr uint32_t kMaxUncompressed = 256u << 20;
++        if (uncompressed_size > kMaxUncompressed ||
++            (uncompressed_size > (64u << 20) &&
++             compressed_size != 0 &&
++             uncompressed_size / compressed_size > 128u)) {
++            last_error_ = "ZIP entry uncompressed_size exceeds safe bound "
++                          "(decompression-bomb guard)";
++            return {};
++        }
+         std::vector<uint8_t> result(uncompressed_size);
+         
+         z_stream strm = {};
+diff --git a/miniandroid/src/audio/audio_engine.cpp b/miniandroid/src/audio/audio_engine.cpp
+index c07e2588..5e12d803 100644
+--- a/miniandroid/src/audio/audio_engine.cpp
++++ b/miniandroid/src/audio/audio_engine.cpp
+@@ -78,8 +78,14 @@ static DecodedPcm decode_sndfile(const std::string& path) {
+         return out;
+     }
+     out.samples.resize((size_t)read);
+-    out.duration_sec = info.frames > 0
+-        ? (double)info.frames / info.samplerate : 0.0;
++    // GP-AUDIO-001 (issue #582): a POSITIVE short read was accepted but the
++    // reported duration still covered the full DECLARED frame count — the
++    // tail of the buffer was decoded-less yet advertised as playable
++    // duration. Duration now answers the frames actually decoded.
++    out.duration_sec = (info.samplerate > 0 && read >= 0)
++        ? (double)(read / (info.channels > 0 ? info.channels : 1)) /
++              (double)info.samplerate
++        : 0.0;
+     return out;
+ }
+ 
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 151f946c..e1078a06 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -23617,22 +23617,29 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                     /* MASTER RECONCILIATION (K-29, 2026-09-03): was guard-yield-0 — */ \
+                     /* AND the unguarded a_val / b_val below was C++ UB on zero.   */ \
+                     /* Now throws ArithmeticException (deferred mechanism).        */ \
+-                    if ((op == "div" || op == "rem") && b_val == 0) { \
++                    /* GP-INT-012 (issue #582): signed add/sub/mul/shl and the     */ \
++                    /* MIN/-1 div/rem edge are C++ UB on the signed values; DEX/   */ \
++                    /* Java law is width-defined two's-complement wrap and defined */ \
++                    /* MIN/-1 results. Computed in unsigned width, stored as the   */ \
++                    /* identical bit pattern.                                      */ \
++                    /* GP-INT-015 (issue #582): `op == "lit"` compared literal     */ \
++                    /* POINTER addresses — strcmp by content, portable.            */ \
++                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && b_val == 0) { \
+                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-2ADDR"); \
+                         pc_ = pc_ + 1; \
+                         break; \
+                     } \
+-                    else if (op == "add") result_val.int_val = a_val + b_val; \
+-                    else if (op == "sub") result_val.int_val = a_val - b_val; \
+-                    else if (op == "mul") result_val.int_val = a_val * b_val; \
+-                    else if (op == "div") result_val.int_val = a_val / b_val; \
+-                    else if (op == "rem") result_val.int_val = a_val % b_val; \
+-                    else if (op == "and") result_val.int_val = a_val & b_val; \
+-                    else if (op == "or")  result_val.int_val = a_val | b_val; \
+-                    else if (op == "xor") result_val.int_val = a_val ^ b_val; \
+-                    else if (op == "shl") result_val.int_val = a_val << (b_val & 0x1f); \
+-                    else if (op == "shr") result_val.int_val = a_val >> (b_val & 0x1f); \
+-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) >> (b_val & 0x1f)); \
++                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) + static_cast<uint32_t>(b_val)); \
++                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) - static_cast<uint32_t>(b_val)); \
++                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) * static_cast<uint32_t>(b_val)); \
++                    else if (strcmp(op, "div") == 0) result_val.int_val = (b_val == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(a_val)) : a_val / b_val; \
++                    else if (strcmp(op, "rem") == 0) result_val.int_val = (b_val == -1) ? 0 : a_val % b_val; \
++                    else if (strcmp(op, "and") == 0) result_val.int_val = a_val & b_val; \
++                    else if (strcmp(op, "or") == 0)  result_val.int_val = a_val | b_val; \
++                    else if (strcmp(op, "xor") == 0) result_val.int_val = a_val ^ b_val; \
++                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) << (b_val & 0x1f)); \
++                    else if (strcmp(op, "shr") == 0) result_val.int_val = a_val >> (b_val & 0x1f); \
++                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) >> (b_val & 0x1f)); \
+                     static thread_local const bool wide_diag_on = \
+                         diag_env("MINIANDROID_WIDE_DIAG"); /* R-NEW-558 */ \
+                     if (wide_diag_on) { \
+@@ -23674,22 +23681,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                     result_val.type = DalvikType::INT32; \
+                     int32_t b_val = dalvik_int_value(b); \
+                     int32_t c_val = dalvik_int_value(c); \
+-                    if ((op == "div" || op == "rem") && c_val == 0) { \
++                    /* GP-INT-012/015 (issue #582): wrap-defined signed math, */ \
++                    /* MIN/-1 div/rem edge, strcmp dispatch (was literal-ptr).  */ \
++                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && c_val == 0) { \
+                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-23X"); \
+                         pc_ = pc_ + 2; \
+                         break; \
+                     } \
+-                    if (op == "add") result_val.int_val = b_val + c_val; \
+-                    else if (op == "sub") result_val.int_val = b_val - c_val; \
+-                    else if (op == "mul") result_val.int_val = b_val * c_val; \
+-                    else if (op == "div") result_val.int_val = (c_val != 0) ? b_val / c_val : 0; \
+-                    else if (op == "rem") result_val.int_val = (c_val != 0) ? b_val % c_val : 0; \
+-                    else if (op == "and") result_val.int_val = b_val & c_val; \
+-                    else if (op == "or")  result_val.int_val = b_val | c_val; \
+-                    else if (op == "xor") result_val.int_val = b_val ^ c_val; \
+-                    else if (op == "shl") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint32_t>(b_val) << (c_val & 0x1f))); \
+-                    else if (op == "shr") result_val.int_val = b_val >> (c_val & 0x1f); \
+-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (c_val & 0x1f)); \
++                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(c_val)); \
++                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(c_val)); \
++                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(c_val)); \
++                    else if (strcmp(op, "div") == 0) result_val.int_val = (c_val == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / c_val; \
++                    else if (strcmp(op, "rem") == 0) result_val.int_val = (c_val == -1) ? 0 : b_val % c_val; \
++                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & c_val; \
++                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | c_val; \
++                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ c_val; \
++                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint32_t>(b_val) << (c_val & 0x1f))); \
++                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (c_val & 0x1f); \
++                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (c_val & 0x1f)); \
+                     set_register(vAA, result_val); \
+                     trace.opcode_name = op_name; \
+                     pc_ = pc_ + 2; \
+@@ -24156,10 +24165,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                     /* F-028 law: slots reinterpreted AS float32 (see conv block) */ \
+                     uint32_t ab28 = dalvik_raw_bits32(b); std::memcpy(&bf, &ab28, 4); \
+                     uint32_t cb28 = dalvik_raw_bits32(c); std::memcpy(&cf, &cb28, 4); \
+-                    if (op == "add") result_val.float_val = bf + cf; \
+-                    else if (op == "sub") result_val.float_val = bf - cf; \
+-                    else if (op == "mul") result_val.float_val = bf * cf; \
+-                    else if (op == "div") result_val.float_val = (cf != 0) ? bf / cf : 0; \
++                    if (strcmp(op, "add") == 0) result_val.float_val = bf + cf; \
++                    else if (strcmp(op, "sub") == 0) result_val.float_val = bf - cf; \
++                    else if (strcmp(op, "mul") == 0) result_val.float_val = bf * cf; \
++                    else if (strcmp(op, "div") == 0) result_val.float_val = bf / cf; \
+                     else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
+                     set_register(vAA, result_val); \
+                     trace.opcode_name = op_name; \
+@@ -24302,22 +24311,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                                : (b.type == DalvikType::INT32 ? static_cast<int64_t>(b.int_val) : 0); \
+                     int64_t cv = (c.type == DalvikType::INT64) ? c.long_val \
+                                : (c.type == DalvikType::INT32 ? static_cast<int64_t>(c.int_val) : 0); \
+-                    if ((op == "div" || op == "rem") && cv == 0) { \
++                    /* GP-INT-012/015 (issue #582): wrap-defined int64 math, */ \
++                    /* MIN64/-1 div/rem edge, strcmp dispatch.                 */ \
++                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && cv == 0) { \
+                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LONG"); \
+                         pc_ += 2; \
+                         break; \
+                     } \
+-                    if (op == "add") result_val.long_val = bv + cv; \
+-                    else if (op == "sub") result_val.long_val = bv - cv; \
+-                    else if (op == "mul") result_val.long_val = bv * cv; \
+-                    else if (op == "div") result_val.long_val = (cv != 0) ? bv / cv : 0; \
+-                    else if (op == "rem") result_val.long_val = (cv != 0) ? bv % cv : 0; \
+-                    else if (op == "and") result_val.long_val = bv & cv; \
+-                    else if (op == "or")  result_val.long_val = bv | cv; \
+-                    else if (op == "xor") result_val.long_val = bv ^ cv; \
+-                    else if (op == "shl") result_val.long_val = bv << static_cast<int>(cv & 0x3f); \
+-                    else if (op == "shr") result_val.long_val = bv >> static_cast<int>(cv & 0x3f); \
+-                    else if (op == "ushr") result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) >> static_cast<int>(cv & 0x3f)); \
++                    if (strcmp(op, "add") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) + static_cast<uint64_t>(cv)); \
++                    else if (strcmp(op, "sub") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) - static_cast<uint64_t>(cv)); \
++                    else if (strcmp(op, "mul") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) * static_cast<uint64_t>(cv)); \
++                    else if (strcmp(op, "div") == 0) result_val.long_val = (cv == -1) ? static_cast<int64_t>(0ull - static_cast<uint64_t>(bv)) : bv / cv; \
++                    else if (strcmp(op, "rem") == 0) result_val.long_val = (cv == -1) ? 0 : bv % cv; \
++                    else if (strcmp(op, "and") == 0) result_val.long_val = bv & cv; \
++                    else if (strcmp(op, "or") == 0)  result_val.long_val = bv | cv; \
++                    else if (strcmp(op, "xor") == 0) result_val.long_val = bv ^ cv; \
++                    else if (strcmp(op, "shl") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) << static_cast<int>(cv & 0x3f)); \
++                    else if (strcmp(op, "shr") == 0) result_val.long_val = bv >> static_cast<int>(cv & 0x3f); \
++                    else if (strcmp(op, "ushr") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) >> static_cast<int>(cv & 0x3f)); \
+                     set_register(vAA, result_val); \
+                     trace.opcode_name = op_name; \
+                     pc_ += 2; \
+@@ -25093,10 +25104,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                         pc_ = handler_addr;
+                         break;
+                     } else {
++                        // GP-INT-014 (issue #582): the out-of-bounds handler
++                        // target previously LOGGED "falling through to halt"
++                        // and then DID fall through — control reached the
++                        // next case label (MOVE_16) and executed its body
++                        // with pc_ still on the THROW instruction (register
++                        // mutation from operand words + PC desync). A
++                        // malformed handler target is now the same
++                        // structured unwind as "no handler in this frame".
+                         std::cerr << "[EXCEPTION] WARNING: handler_addr "
+                                   << handler_addr << " out of bounds (bytecode_size="
+-                                  << bytecode_.size() << ") — falling through to halt"
++                                  << bytecode_.size() << ") — malformed catch "
++                                     "metadata, unwinding frame"
+                                   << std::endl;
++                        frame_unwind_exception_valid_ = true;
++                        frame_unwind_exception_ = exc;
++                        last_invoke_return_ = DalvikValue::make_null();
++                        halted_on_return_ = true;
++                        pc_ += 1;
++                        break;
+                     }
+                 }
+ 
+@@ -25279,9 +25305,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                 DalvikValue c = get_register(vCC);
+                 DalvikValue result_val;
+                 result_val.type = DalvikType::FLOAT64;
+-                double bd = (b.type == DalvikType::FLOAT64) ? b.double_val : (double)b.int_val;
+-                double cd = (c.type == DalvikType::FLOAT64) ? c.double_val : (double)c.int_val;
+-                result_val.double_val = (cd != 0) ? fmod(bd, cd) : 0;
++                // GP-INT-013 (issue #582): REM_DOUBLE is the ONE 23x double
++                // op that missed the typed-operand law — an INT64-backed
++                // double was decoded from its low-32 int_val instead of the
++                // bit-reinterpreted long_val (ARITH_23X_DOUBLE_CASE applies
++                // bits_l2d); and divisor 0 answered 0 instead of IEEE NaN.
++                // Both now follow the same law as the neighbouring macro.
++                // F-028 law: FLOAT32-backed slots are raw-bit views.
++                float bf_r = 0.0f, cf_r = 0.0f;
++                uint32_t bb32 = dalvik_raw_bits32(b); std::memcpy(&bf_r, &bb32, 4);
++                uint32_t cb32 = dalvik_raw_bits32(c); std::memcpy(&cf_r, &cb32, 4);
++                double bd = (b.type == DalvikType::FLOAT64) ? b.double_val
++                          : (b.type == DalvikType::INT64 ? bits_l2d(b.long_val)
++                          : (b.type == DalvikType::FLOAT32 ? (double)bf_r
++                          : (double)b.int_val));
++                double cd = (c.type == DalvikType::FLOAT64) ? c.double_val
++                          : (c.type == DalvikType::INT64 ? bits_l2d(c.long_val)
++                          : (c.type == DalvikType::FLOAT32 ? (double)cf_r
++                          : (double)c.int_val));
++                result_val.double_val = fmod(bd, cd);  // IEEE: %0 → NaN
+                 set_register(vAA, result_val);
+                 trace.opcode_name = "rem-double";
+                 pc_ += 2;
+@@ -25302,10 +25344,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                               : (b.type == DalvikType::INT64 ? bits_l2d(b.long_val) : (double)b.int_val); \
+                     double cd = (c.type == DalvikType::FLOAT64) ? c.double_val \
+                               : (c.type == DalvikType::INT64 ? bits_l2d(c.long_val) : (double)c.int_val); \
+-                    if (op == "add") result_val.double_val = bd + cd; \
+-                    else if (op == "sub") result_val.double_val = bd - cd; \
+-                    else if (op == "mul") result_val.double_val = bd * cd; \
+-                    else if (op == "div") result_val.double_val = (cd != 0) ? bd / cd : 0; \
++                    if (strcmp(op, "add") == 0) result_val.double_val = bd + cd; \
++                    else if (strcmp(op, "sub") == 0) result_val.double_val = bd - cd; \
++                    else if (strcmp(op, "mul") == 0) result_val.double_val = bd * cd; \
++                    else if (strcmp(op, "div") == 0) result_val.double_val = bd / cd; \
+                     set_register(vAA, result_val); \
+                     trace.opcode_name = op_name; \
+                     pc_ += 2; \
+@@ -25351,15 +25393,16 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                             pc_ += 1; \
+                             break; \
+                         } \
+-                        if (strcmp(op, "add") == 0) result_val.long_val = av + bv; \
+-                        else if (strcmp(op, "sub") == 0) result_val.long_val = av - bv; \
+-                        else if (strcmp(op, "mul") == 0) result_val.long_val = av * bv; \
+-                        else if (strcmp(op, "div") == 0) result_val.long_val = (bv != 0) ? av / bv : 0; \
+-                        else if (strcmp(op, "rem") == 0) result_val.long_val = (bv != 0) ? av % bv : 0; \
++                        /* GP-INT-012 (issue #582): wrap-defined int64 math + MIN64/-1 */ \
++                        if (strcmp(op, "add") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) + static_cast<uint64_t>(bv)); \
++                        else if (strcmp(op, "sub") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) - static_cast<uint64_t>(bv)); \
++                        else if (strcmp(op, "mul") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) * static_cast<uint64_t>(bv)); \
++                        else if (strcmp(op, "div") == 0) result_val.long_val = (bv == -1) ? static_cast<int64_t>(0ull - static_cast<uint64_t>(av)) : av / bv; \
++                        else if (strcmp(op, "rem") == 0) result_val.long_val = (bv == -1) ? 0 : av % bv; \
+                         else if (strcmp(op, "and") == 0) result_val.long_val = av & bv; \
+                         else if (strcmp(op, "or") == 0)  result_val.long_val = av | bv; \
+                         else if (strcmp(op, "xor") == 0) result_val.long_val = av ^ bv; \
+-                        else if (strcmp(op, "shl") == 0) result_val.long_val = av << static_cast<int>(bv & 0x3f); \
++                        else if (strcmp(op, "shl") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) << static_cast<int>(bv & 0x3f)); \
+                         else if (strcmp(op, "shr") == 0) result_val.long_val = av >> static_cast<int>(bv & 0x3f); \
+                         else if (strcmp(op, "ushr") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) >> static_cast<int>(bv & 0x3f)); \
+                         static thread_local const bool wide_diag_on = \
+@@ -25376,7 +25419,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                         if (strcmp(op, "add") == 0) result_val.float_val = af + bf; \
+                         else if (strcmp(op, "sub") == 0) result_val.float_val = af - bf; \
+                         else if (strcmp(op, "mul") == 0) result_val.float_val = af * bf; \
+-                        else if (strcmp(op, "div") == 0) result_val.float_val = (bf != 0) ? af / bf : 0; \
++                        else if (strcmp(op, "div") == 0) result_val.float_val = af / bf; \
+                         else if (strcmp(op, "rem") == 0) result_val.float_val = fmodf(af, bf); \
+                     } else { \
+                         double ad = (a.type == DalvikType::FLOAT64) ? a.double_val \
+@@ -25388,7 +25431,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                         if (strcmp(op, "add") == 0) result_val.double_val = ad + bd; \
+                         else if (strcmp(op, "sub") == 0) result_val.double_val = ad - bd; \
+                         else if (strcmp(op, "mul") == 0) result_val.double_val = ad * bd; \
+-                        else if (strcmp(op, "div") == 0) result_val.double_val = (bd != 0) ? ad / bd : 0; \
++                        else if (strcmp(op, "div") == 0) result_val.double_val = ad / bd; \
+                         else if (strcmp(op, "rem") == 0) result_val.double_val = fmod(ad, bd); \
+                     } \
+                     set_register(vA, result_val); \
+@@ -32460,7 +32503,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
+                 }
+             } else if (lo.type == DalvikType::FLOAT64) {
+                 args.push_back(lo);
+-            } else {
++            } else if (reg_idx + 1 < 5) {
+                 // Case 2: merge two registers (split wide value).
+                 DalvikValue hi = get_register(regs[reg_idx + 1]);
+                 int64_t combined = (static_cast<int64_t>(hi.int_val) << 32) |
+@@ -32473,6 +32516,26 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
+                     std::memcpy(&d, &bits, sizeof(d));
+                     args.push_back(DalvikValue::make_double(d));
+                 }
++            } else {
++                // GP-INT-001 (issue #582): a wide param starting at the 5th
++                // 35c slot cannot have a second encoded word (regs is the
++                // 5-slot local array; the pre-fix code read regs[5] — one
++                // past the end, stack garbage). Verifier-valid DEX cannot
++                // encode it (the pair needs 6 registers); treat as a
++                // malformed-invoke face: loud, hi = 0, no OOB.
++                static thread_local uint64_t gp_int001_n = 0;
++                if (gp_int001_n++ < 8)
++                    std::cerr << "[GP-INT-001] invoke-static wide param at "
++                                 "slot 4 has no second encoded register — "
++                                 "malformed 35c args (hi=0)"
++                              << std::endl;
++                if (pt == "J") {
++                    args.push_back(DalvikValue::make_long(
++                        static_cast<int64_t>(static_cast<uint32_t>(
++                            get_register(regs[reg_idx]).int_val))));
++                } else {
++                    args.push_back(DalvikValue::make_double(0.0));
++                }
+             }
+             reg_idx += 2;
+         } else {
+@@ -34992,8 +35055,46 @@ void DalvikExecutionEngine::handle_unimplemented(uint16_t opcode, uint32_t pc,
+         halted_ = true;
+         halt_reason_ = "Unimplemented opcode: 0x" + to_hex16(opcode) + " at PC=" + to_hex(pc);
+     }
+-    
+-    pc_ = pc + 1;  // Skip past unimplemented instruction
++
++    // GP-INT-002 (issue #582): the old resume was unconditionally `pc + 1`,
++    // so a multi-unit unsupported opcode resumed INSIDE its operand words
++    // (PC desync — every later decode misaligned). Resume law now:
++    //   - defined-but-unimplemented opcodes: spec-correct instruction width
++    //     (the DEX opcode → size table below), so the next fetch lands on
++    //     the next instruction boundary;
++    //   - UNDEFINED opcode values (no spec format exists): there IS no
++    //     valid boundary — the method halts with a structured unsupported
++    //     report instead of silently continuing.
++    static const uint8_t kDalvikWidth[256] = {
++        1, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 1, 1, 1, 1, 1,  // 0x00-0x0f
++        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2, 1, 1, 2,  // 0x10-0x1f
++        2, 1, 2, 2, 3, 3, 3, 1, 1, 2, 3, 3, 3, 2, 2, 2,  // 0x20-0x2f
++        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0,  // 0x30-0x3f
++        0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0x40-0x4f
++        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0x50-0x5f
++        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3,  // 0x60-0x6f
++        3, 3, 3, 0, 3, 3, 3, 3, 3, 0, 0, 1, 1, 1, 1, 1,  // 0x70-0x7f
++        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  // 0x80-0x8f
++        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  // 0x90-0x9f
++        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  // 0xa0-0xaf
++        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0xb0-0xbf
++        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0xc0-0xcf
++        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0xd0-0xdf
++        2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // 0xe0-0xef
++        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,  // 0xf0-0xff
++    };
++
++    const uint8_t w = kDalvikWidth[opcode & 0xFF];
++    if (w == 0) {
++        // Undefined opcode value: no valid resume boundary exists.
++        halted_ = true;
++        halt_reason_ = "Undefined opcode 0x" + to_hex16(opcode) + " at PC=" +
++                       to_hex(pc) + " — no DEX instruction width exists; "
++                       "execution cannot resume at an instruction boundary";
++        trace.opcode_name = "undefined(0x" + to_hex16(opcode) + ")";
++        return;
++    }
++    pc_ = pc + w;  // spec-correct boundary for defined-but-unimplemented opcodes
+ }
+ 
+ // ============================================================================
+@@ -41989,7 +42090,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                     } else if (!sv.empty() &&
+                                sv.find_first_not_of("-0123456789") ==
+                                    std::string::npos) {
+-                        result = DalvikValue::make_int(std::stoi(sv));
++                        // GP-EXC-003 (issue #582): the charset filter alone
++                        // accepts "-" / "--5" and the unguarded stoi then
++                        // threw std::invalid_argument out of the bridge
++                        // (process abort). Strict grammar + checked parse.
++                        size_t digits = sv.find_first_of("0123456789");
++                        size_t first_non_sign =
++                            sv.find_first_not_of("-");
++                        bool grammar_ok = first_non_sign != std::string::npos &&
++                                          first_non_sign == digits &&
++                                          sv.find('-', first_non_sign) ==
++                                              std::string::npos;
++                        if (grammar_ok) {
++                            try {
++                                result = DalvikValue::make_int(std::stoi(sv));
++                            } catch (...) {
++                                result = DalvikValue::make_string(sv, 0);
++                            }
++                        } else {
++                            result = DalvikValue::make_string(sv, 0);
++                        }
+                     } else {
+                         result = DalvikValue::make_string(sv, 0);
+                     }
+@@ -70754,8 +70874,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                     if (val_pos != std::string::npos) {
+                         size_t val_start = val_pos + 7;
+                         size_t val_end = line.find("\"", val_start);
+-                        int32_t v = std::stoi(line.substr(val_start, val_end - val_start));
+-                        heap_.set_object_field(obj_id, key, DalvikValue::make_int(v));
++                        // GP-EXC-002 (issue #582): a corrupt/truncated
++                        // persisted-state line aborted the whole host on
++                        // restore — checked parse, malformed line skipped.
++                        try {
++                            int32_t v = std::stoi(
++                                line.substr(val_start, val_end - val_start));
++                            heap_.set_object_field(
++                                obj_id, key, DalvikValue::make_int(v));
++                        } catch (...) {
++                            std::cerr << "[GP-EXC-002] state int malformed "
++                                         "(skipped)" << std::endl;
++                        }
+                     }
+                 } else if (line.find("<boolean ") != std::string::npos) {
+                     size_t val_pos = line.find("value=\"", name_end);
+@@ -70770,11 +70900,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                     if (val_pos != std::string::npos) {
+                         size_t val_start = val_pos + 7;
+                         size_t val_end = line.find("\"", val_start);
+-                        int64_t v = std::stoll(line.substr(val_start, val_end - val_start));
+-                        DalvikValue lv;
+-                        lv.type = DalvikType::INT64;
+-                        lv.long_val = v;
+-                        heap_.set_object_field(obj_id, key, lv);
++                        try {
++                            int64_t v = std::stoll(
++                                line.substr(val_start, val_end - val_start));
++                            DalvikValue lv;
++                            lv.type = DalvikType::INT64;
++                            lv.long_val = v;
++                            heap_.set_object_field(obj_id, key, lv);
++                        } catch (...) {
++                            std::cerr << "[GP-EXC-002] state long malformed "
++                                         "(skipped)" << std::endl;
++                        }
+                     }
+                 } else if (line.find("<float ") != std::string::npos) {
+                     // S99: the loader must mirror the writer (putFloat
+@@ -70785,8 +70921,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                     if (val_pos != std::string::npos) {
+                         size_t val_start = val_pos + 7;
+                         size_t val_end = line.find("\"", val_start);
+-                        float v = std::stof(line.substr(val_start, val_end - val_start));
+-                        heap_.set_object_field(obj_id, key, DalvikValue::make_float(v));
++                        try {
++                            float v = std::stof(
++                                line.substr(val_start, val_end - val_start));
++                            heap_.set_object_field(
++                                obj_id, key, DalvikValue::make_float(v));
++                        } catch (...) {
++                            std::cerr << "[GP-EXC-002] state float malformed "
++                                         "(skipped)" << std::endl;
++                        }
+                     }
+                 }
+             }
+@@ -72785,6 +72928,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                               << r005_sub << " linked under decor="
+                               << r005_decor << " (activity=" << r005_act_view
+                               << ")" << std::endl;
++                    // GP-COMPOSE-003 (issue #582): the AppCompat
++                    // createSubDecor route reaches the runtime through
++                    // Window.setContentView — which linked the decor but
++                    // SKIPPED the F-105 owner family, so Compose consumers
++                    // walking the sub-decor found no ViewTreeLifecycleOwner.
++                    // AOSP ComponentActivity.installViewFactories/
++                    // PhoneWindow law: the owner tags ride the window decor
++                    // regardless of WHICH setContentView entry point ran.
++                    // Same activity-as-owner, same app-resource keys.
++                    if (r005_act_view != 0) {
++                        auto install_owner = [&](const char* res_name) {
++                            auto key = resources::ResourceRuntime::instance()
++                                           .arsc()
++                                           .find_id("", "id", res_name);
++                            if (!key) return;
++                            auto* dn = vs->get_or_create_node(
++                                r005_decor, "Landroid/view/View;");
++                            framework::ViewShadow::ViewNode::TagValue tv;
++                            tv.kind =
++                                framework::ViewShadow::ViewNode::TagValue::OBJECT;
++                            tv.object_id = r005_act_view;
++                            tv.object_class = "Landroid/app/Activity;";
++                            dn->keyed_tags[static_cast<int32_t>(*key)] = tv;
++                        };
++                        install_owner("view_tree_lifecycle_owner");
++                        install_owner("view_tree_saved_state_registry_owner");
++                        install_owner("view_tree_view_model_store_owner");
++                    }
+                 }
+ 
+                 // ────────────────────────────────────────────────────────
+diff --git a/miniandroid/src/dex/dex_parser.cpp b/miniandroid/src/dex/dex_parser.cpp
+index 1ba84caf..9d4f4ccc 100755
+--- a/miniandroid/src/dex/dex_parser.cpp
++++ b/miniandroid/src/dex/dex_parser.cpp
+@@ -455,12 +455,16 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
+         // its implementors (R8-merged) do not redeclare it — without this
+         // set, CoroutineContext assembly in every Compose app NPEs.
+         // ====================================================================
++        // GP-DEX-012 (issue #582): all class_def sub-offset checks widened
++        // to 64-bit — `uint32_offset + 4` wrapped before the comparison
++        // (interfaces_off = 0xFFFFFFFC passed the guard and memcpy read
++        // ~4 GiB past the buffer; ASan SEGV reproduced pre-fix).
+         if (class_def.interfaces_off != 0 &&
+-            class_def.interfaces_off + 4 <= current_size_) {
++            (uint64_t)class_def.interfaces_off + 4 <= current_size_) {
+             uint32_t if_size = 0;
+             std::memcpy(&if_size, data + class_def.interfaces_off, sizeof(if_size));
+             if (if_size > 0 && if_size < 0x10000u &&
+-                class_def.interfaces_off + 4 + (uint64_t)if_size * 2 <= current_size_) {
++                (uint64_t)class_def.interfaces_off + 4 + (uint64_t)if_size * 2 <= current_size_) {
+                 for (uint32_t k = 0; k < if_size; ++k) {
+                     uint16_t type_idx = 0;
+                     std::memcpy(&type_idx,
+@@ -496,26 +500,26 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
+                                                               std::string>>>>>
+             pending_method_anns;
+         if (class_def.annotations_off != 0 &&
+-            class_def.annotations_off + 4 <= current_size_) {
++            (uint64_t)class_def.annotations_off + 4 <= current_size_) {
+             uint32_t class_ann_off = 0;
+             std::memcpy(&class_ann_off, data + class_def.annotations_off,
+                         sizeof(class_ann_off));
+             if (class_ann_off != 0 &&
+-                class_ann_off + 4 <= current_size_) {
++                (uint64_t)class_ann_off + 4 <= current_size_) {
+                 uint32_t ann_set_size = 0;
+                 std::memcpy(&ann_set_size, data + class_ann_off,
+                             sizeof(ann_set_size));
+                 // Security law (§N): bound every read against the file end
+                 // before any pointer arithmetic.
+                 if (ann_set_size > 0 && ann_set_size < 0x1000u &&
+-                    class_ann_off + 4 + (uint64_t)ann_set_size * 4 <=
++                    (uint64_t)class_ann_off + 4 + (uint64_t)ann_set_size * 4 <=
+                         current_size_) {
+                     for (uint32_t k = 0; k < ann_set_size; ++k) {
+                         uint32_t item_off = 0;
+                         std::memcpy(&item_off,
+                                     data + class_ann_off + 4 + (size_t)k * 4,
+                                     sizeof(item_off));
+-                        if (item_off == 0 || item_off + 2 > current_size_)
++                        if (item_off == 0 || (uint64_t)item_off + 2 > current_size_)
+                             continue;
+                         uint8_t visibility = data[item_off];
+                         if (visibility == 2) {
+@@ -768,7 +772,7 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
+         // contract never reaches.
+         // ====================================================================
+         if (class_def.annotations_off != 0 &&
+-            class_def.annotations_off + 16 <= current_size_) {
++            (uint64_t)class_def.annotations_off + 16 <= current_size_) {
+             uint32_t fields_size = 0, ann_method_size = 0;
+             std::memcpy(&fields_size,
+                         data + class_def.annotations_off + 4,
+@@ -824,7 +828,7 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
+                         std::memcpy(&item_off,
+                                     data + set_off + 4 + (size_t)a * 4,
+                                     sizeof(item_off));
+-                        if (item_off == 0 || item_off + 2 > current_size_)
++                        if (item_off == 0 || (uint64_t)item_off + 2 > current_size_)
+                             continue;
+                         uint8_t visibility = data[item_off];
+                         if (visibility != 1) continue;  // RUNTIME only
+diff --git a/miniandroid/src/diagnostics/gfx_trace.h b/miniandroid/src/diagnostics/gfx_trace.h
+index e6c3eded..eb6babe2 100644
+--- a/miniandroid/src/diagnostics/gfx_trace.h
++++ b/miniandroid/src/diagnostics/gfx_trace.h
+@@ -213,6 +213,12 @@ private:
+     // cannot flood the sink; the first N rows + the drop counter tell the
+     // whole story. kMaxSameOp keeps mixed traces useful.
+     bool budget(const std::string& key) {
++        // GP-DIAG-001 (issue #582): budget() mutated counts_ with no lock
++        // while commit()/first_missing_now() hold mu_ — a concurrent trace
++        // caller raced the shared std::map. budget() now runs under mu_ too
++        // (the map is small; the lock is uncontended in the deterministic
++        // single-thread engine and correct under native threads).
++        std::lock_guard<std::mutex> lk(mu_);
+         auto& n = counts_[key];
+         if (n >= kMaxSameOp) {
+             if (n == kMaxSameOp) ++dropped_;  // count the flood once per key
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index dc0d0a79..c93d28ab 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -6174,7 +6174,10 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
+                             auto owner_key =
+                                 rt.arsc().find_id("", "id",
+                                                   "view_tree_lifecycle_owner");
+-                            if (owner_key) {
++                            auto install_owner_tag = [&](const char* res_name)
++                                -> bool {
++                                auto key = rt.arsc().find_id("", "id", res_name);
++                                if (!key) return false;
+                                 auto* an = view_shadow->get_or_create_node(
+                                     ctx.receiver_id, "Landroid/view/View;");
+                                 ViewShadow::ViewNode::TagValue tv;
+@@ -6183,15 +6186,32 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
+                                 tv.object_class = ctx.receiver_class.empty()
+                                                       ? ctx.class_name
+                                                       : ctx.receiver_class;
+-                                an->keyed_tags[static_cast<int32_t>(*owner_key)] = tv;
++                                an->keyed_tags[static_cast<int32_t>(*key)] = tv;
+                                 if (std::getenv("MINIANDROID_TAG_TRACE")) {
+                                     std::cerr << "[F105-OWNER] activity="
+                                               << ctx.receiver_id
+-                                              << " installed as ViewTreeLifecycleOwner key="
+-                                              << *owner_key
++                                              << " installed as " << res_name
++                                              << " key=" << *key
+                                               << " on activity-as-view node"
+                                               << std::endl;
+                                 }
++                                return true;
++                            };
++                            if (install_owner_tag("view_tree_lifecycle_owner")) {
++                                // GP-COMPOSE-002 (issue #582): ComponentActivity
++                                // installs the FULL owner family
++                                // (ComponentActivity.onCreate →
++                                //   setViewTreeLifecycleOwner(this) +
++                                //   setViewTreeSavedStateRegistryOwner(this) +
++                                //   (ViewModelStoreOwner via the same activity
++                                //    object)). The old F-105 arm installed ONLY
++                                //    the lifecycle tag; androidx consumers of
++                                //    SavedStateRegistry / ViewModelStore walked
++                                //    the same tree and found no owner.
++                                install_owner_tag(
++                                    "view_tree_saved_state_registry_owner");
++                                install_owner_tag(
++                                    "view_tree_view_model_store_owner");
+                             } else {
+                                 std::cerr << "[F105-OWNER] view_tree_lifecycle_owner id "
+                                              "not in app resources — owner install skipped"
+@@ -7274,6 +7294,19 @@ bool ViewShadow::add_child(uint32_t parent_id, uint32_t child_id) {
+     }
+     // Remove from previous parent if any.
+     if (child->parent_id != 0 && child->parent_id != parent_id) {
++        // GP-LAYOUT-003 (issue #582): AOSP ViewGroup.addView throws
++        // IllegalStateException "The specified child already has a parent";
++        // this path silently re-parented. The hard throw needs the
++        // app-visible ISE channel audited against the adapter-recycling
++        // flows first (RecyclerView detach/attach), so the violation is
++        // LOUD now (one row per mount site) — zero behavior change, the
++        // silent face is at least diagnosable. QUEUED: AOSP-exact throw.
++        static thread_local uint64_t gp_l003_n = 0;
++        if (gp_l003_n++ < 12)
++            std::cerr << "[GP-LAYOUT-003] addView child=" << child_id
++                      << " re-parented " << child->parent_id << " -> "
++                      << parent_id << " (AOSP would throw IllegalStateException)"
++                      << std::endl;
+         if (auto* prev = find_node(child->parent_id)) {
+             prev->children.erase(
+                 std::remove(prev->children.begin(), prev->children.end(), child_id),
+diff --git a/miniandroid/src/framework/bitmap_shadow.cpp b/miniandroid/src/framework/bitmap_shadow.cpp
+index bbc50582..60c0d088 100644
+--- a/miniandroid/src/framework/bitmap_shadow.cpp
++++ b/miniandroid/src/framework/bitmap_shadow.cpp
+@@ -1165,6 +1165,14 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+         const int w = ctx.arg_as_int(5, 0), h = ctx.arg_as_int(6, 0);
+         const StoredBitmap* sb = store.get(recv);
+         if (!sb || dst == 0 || !heap_) return CallResult::handled_void();
++        // GP-GFX-001 (issue #582): the destination array length was never
++        // validated — idx = off + row*stride + col could exceed (or under-
++        // flow below zero) the Java int[] extent, writing phantom
++        // "array[N]" slots instead of the AOSP ArrayIndexOutOfBoundsException
++        // contract. Bound every write to the real array extent.
++        int32_t dst_len = -1;
++        heap_->get_object_array_length(dst, dst_len);
++        bool bounds_logged = false;
+         for (int row = 0; row < h; row++) {
+             for (int col = 0; col < w; col++) {
+                 const int sx = x + col, sy = y + row;
+@@ -1175,6 +1183,17 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
+                            ((uint32_t)p[1] << 8) | p[2];
+                 }
+                 const int idx = off + row * stride + col;
++                if (dst_len >= 0 && (idx < 0 || idx >= dst_len)) {
++                    if (!bounds_logged) {
++                        std::cerr << "[GP-GFX-001] getPixels destination "
++                                     "index " << idx << " outside array "
++                                     "extent " << dst_len << " — write "
++                                     "clipped (AOSP AIOOBE face)"
++                                  << std::endl;
++                        bounds_logged = true;
++                    }
++                    continue;
++                }
+                 heap_->set_object_int_field(dst, "array[" + std::to_string(idx) + "]",
+                                            (int32_t)argb);
+             }
+diff --git a/miniandroid/src/framework/dialog_shadow.cpp b/miniandroid/src/framework/dialog_shadow.cpp
+index ae87109a..5c3db68a 100644
+--- a/miniandroid/src/framework/dialog_shadow.cpp
++++ b/miniandroid/src/framework/dialog_shadow.cpp
+@@ -3,6 +3,7 @@
+ 
+ #include "dialog_shadow.h"
+ #include "android_shadows.h"
++#include "../resources/resource_runtime.h"  // GP-COMPOSE-001
+ #include "../renderer/software_renderer.h"
+ 
+ #include <algorithm>
+@@ -124,6 +125,32 @@ void DialogShadow::build_decor_tree(DialogWindow& win, ViewShadow* vs) {
+             root->children.push_back(win.custom_view_id);
+         }
+     }
++    // GP-COMPOSE-001 (issue #582): androidx ComponentDialog installs the
++    // dialog as the ViewTreeLifecycleOwner / SavedStateRegistryOwner /
++    // ViewModelStoreOwner of the WINDOW DECOR before content attaches;
++    // Compose content hosted in a Dialog (DialogWindowRecomposer) walks
++    // the decor tree for those tags and ISEs without them. The engine's
++    // DialogShadow performs that contract here on the decor root, with
++    // the DIALOG object as the owner. Keys resolve through the app's
++    // resources.arsc (same law as F-105); when the ids are absent the
++    // install is skipped silently (the app has no such consumer either).
++    {
++        resources::ResourceRuntime& rt = resources::ResourceRuntime::instance();
++        auto install = [&](const char* res_name) {
++            auto key = rt.arsc().find_id("", "id", res_name);
++            if (!key) return;
++            auto* rn = vs->get_or_create_node(
++                win.decor_root_id, "Landroid/widget/LinearLayout;");
++            ViewShadow::ViewNode::TagValue tv;
++            tv.kind = ViewShadow::ViewNode::TagValue::OBJECT;
++            tv.object_id = win.dialog_obj_id;
++            tv.object_class = "Landroid/app/Dialog;";
++            rn->keyed_tags[static_cast<int32_t>(*key)] = tv;
++        };
++        install("view_tree_lifecycle_owner");
++        install("view_tree_saved_state_registry_owner");
++        install("view_tree_view_model_store_owner");
++    }
+     // Item rows: REAL clickable ViewNodes owned by this dialog window.
+     const int item_h = 88;  // Material list row height (px, density=1)
+     for (size_t i = 0; i < win.items.size(); i++) {
+diff --git a/miniandroid/src/jni/dlopen_exec.cpp b/miniandroid/src/jni/dlopen_exec.cpp
+index f0c0caf1..ca2ce42c 100644
+--- a/miniandroid/src/jni/dlopen_exec.cpp
++++ b/miniandroid/src/jni/dlopen_exec.cpp
+@@ -28,6 +28,7 @@
+ #include <cstdint>
+ #include <cstdio>
+ #include <cstring>
++#include <cerrno>
+ #include <cstdlib>
+ #include <sys/wait.h>
+ #include <unistd.h>
+@@ -86,10 +87,17 @@ std::map<std::string, std::string>& loader_notes() {  // caller class → lib
+ // is saved and restored around every guarded region, so faults OUTSIDE a
+ // guarded region keep their full forensics path.
+ sigjmp_buf& guard_jb() {
+-    static sigjmp_buf jb;
++    // GP-JNI-003 (issue #582): one process-global sigjmp_buf + one global
++    // g_guard_active meant a fault on thread B while thread A held the
++    // guard longjmp'd on A's context — cross-thread siglongjmp is UB and
++    // corrupts execution state. The guard context is per-thread now: the
++    // signal handler runs on the faulting thread and jumps on THAT
++    // thread's own setjmp context. The deterministic single-thread engine
++    // keeps its existing behavior.
++    static thread_local sigjmp_buf jb;
+     return jb;
+ }
+-volatile sig_atomic_t g_guard_active = 0;
++volatile thread_local sig_atomic_t g_guard_active = 0;
+ // F-NEW-593 (W10): the honest reason of the last guard landing (exception
+ // text or signal) — surfaced in call_native's fault detail.
+ std::string g_guard_last_reason;
+@@ -322,15 +330,22 @@ ProbeVerdict dlopen_probe(const char* host_path) {
+         _exit(h ? 0 : 2);
+     }
+     int st = 0;
++    // GP-APK-010 (issue #582): EINTR must be retried (the old loop broke on
++    // the first error leaving st=0, which WIFEXITED/WEXITSTATUS decode as
++    // exit 0 → the probe classified an UNKNOWN wait state as SAFE). A
++    // genuine waitpid failure now forces verdict REFUSED, never SAFE.
++    bool wait_failed = false;
+     while (waitpid(p, &st, 0) < 0) {
+-        // EINTR only; other errors would leave the child unreaped — accept.
++        if (errno == EINTR) continue;
++        wait_failed = true;  // genuine error: child unreaped
+         break;
+     }
+     g_probe_status = st;
+     {
+         // W15: honest verdict row — settles WHICH process faulted and the
+         // raw waitpid status, evidence instead of inference.
+-        const char* v = WIFSIGNALED(st) ? "FAULTED"
++        const char* v = wait_failed ? "REFUSED"
++                      : WIFSIGNALED(st) ? "FAULTED"
+                       : (WIFEXITED(st) && WEXITSTATUS(st) == 0) ? "SAFE"
+                                                                 : "REFUSED";
+         fprintf(stderr,
+@@ -339,8 +354,9 @@ ProbeVerdict dlopen_probe(const char* host_path) {
+                 v, (unsigned)st, (int)p, (int)getpid());
+         fflush(stderr);
+     }
+-    if (WIFSIGNALED(st)) return ProbeVerdict::FAULTED;
+-    if (WIFEXITED(st) && WEXITSTATUS(st) == 0) return ProbeVerdict::SAFE;
++    if (!wait_failed && WIFSIGNALED(st)) return ProbeVerdict::FAULTED;
++    if (!wait_failed && WIFEXITED(st) && WEXITSTATUS(st) == 0)
++        return ProbeVerdict::SAFE;
+     return ProbeVerdict::REFUSED;
+ }
+ struct RegisteredNative {
+@@ -1209,10 +1225,30 @@ void* jni_GetDirectBufferAddress(void*, void* buf) {
+             if (!backing) return nullptr;
+             if (addr && cap) memcpy(backing, addr, cap);
+             {
++                // GP-JNI-005 (issue #582): two threads could pass the
++                // registry check above simultaneously, each mint its OWN
++                // backing, and the two losers/winners returned DIFFERENT
++                // pointers for the same buffer oid (last insert wins the
++                // registry, the first returner's pointer is orphaned).
++                // Re-check under the insert lock: the first insert wins,
++                // every other caller frees its own backing and serves the
++                // registry pointer — ONE identity per oid.
+                 std::lock_guard<std::mutex> lk(g_direct_buffer_mu);
++                auto& reg5 = persistent_direct_buffers();
++                auto it5 = reg5.find(oid);
++                if (it5 != reg5.end()) {
++                    std::free(backing);  // loser's copy never published
++                    static thread_local uint64_t lost5 = 0;
++                    if (lost5++ < 8)
++                        fprintf(stderr,
++                                "[GP-JNI-005] concurrent first-Get on oid=%u "
++                                "resolved to the registry pointer %p\n",
++                                oid, it5->second.addr);
++                    return it5->second.addr;
++                }
+                 DirectBufferBox* b = new DirectBufferBox{backing, cap};
+                 direct_buffer_boxes().push_back(b);
+-                persistent_direct_buffers()[oid] = {backing, cap};
++                reg5[oid] = {backing, cap};
+             }
+             static thread_local uint64_t n = 0;
+             if (n++ < 8)
+@@ -1331,6 +1367,17 @@ static void jni_ReleasePrimitiveArrayCritical(void*, void* arr, void* cdata,
+     (void)arr;
+     CriticalArrayBox* b = as_critical_box(cdata);
+     if (!b) return;  // mismatched release — nothing to commit
++    // GP-JNI-001 (issue #582): JNI spec — mode JNI_COMMIT (1) commits the
++    // changes but KEEPS the array available for continued native access;
++    // the final release (mode 0 / JNI_ABORT) frees it. The old code erased
++    // the box and freed the copy for EVERY non-ABORT mode, so a legal
++    // Get→COMMIT→use→Release sequence used freed memory. COMMIT now
++    // writes back and returns with the box/copy alive.
++    if (mode == 1 /* JNI_COMMIT */) {
++        if (g_f590_hooks.primitive_array_write)
++            g_f590_hooks.primitive_array_write(b->oid, b->copy, b->len);
++        return;  // box + copy stay registered for the final release
++    }
+     if (mode != 2 /* JNI_ABORT */ && g_f590_hooks.primitive_array_write) {
+         // The write hook snapshots the CURRENT element content and skips
+         // untouched elements (memcmp per element) — the load encodedData
+@@ -1875,7 +1922,14 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
+     };
+     auto push_double = [&](double d) {
+         if (sse_i < 8) sse_regs[sse_i++] = d;
+-        else stack_args.push_back(*(uint64_t*)&d);
++        // GP-JNI-002 (issue #582): `*(uint64_t*)&d` violated strict
++        // aliasing (UB; -Wstrict-aliasing diagnostic). memcpy the bit
++        // pattern — same instruction on -O2, defined semantics.
++        else {
++            uint64_t bits_d = 0;
++            std::memcpy(&bits_d, &d, sizeof(bits_d));
++            stack_args.push_back(bits_d);
++        }
+     };
+ 
+     // slot 0: JNIEnv*
+diff --git a/miniandroid/src/resources/arsc_parser.cpp b/miniandroid/src/resources/arsc_parser.cpp
+index 28fbf108..94e8a51c 100644
+--- a/miniandroid/src/resources/arsc_parser.cpp
++++ b/miniandroid/src/resources/arsc_parser.cpp
+@@ -47,19 +47,23 @@ bool ArscParser::parse_string_pool(const uint8_t* base, size_t avail, size_t chu
+ // ---------------------------------------------------------------------------
+ // Config → human string (subset of AOSP ResTable_config)
+ // ---------------------------------------------------------------------------
+-std::string ArscParser::config_to_string(const uint8_t* cfg, size_t /*cfg_size*/) {
++std::string ArscParser::config_to_string(const uint8_t* cfg, size_t cfg_size) {
+     if (!cfg) return "";
+-    uint32_t size = rd32(cfg);
+     std::string out;
+     auto add = [&](const char* q) { if (!out.empty()) out += "-"; out += q; };
++    // GP-RES-003 (issue #582): every read below is bounded by cfg_size —
++    // the CALLER-VALIDATED extent — not by the untrusted embedded size word.
++    // Thresholds are (max byte index + 1) of each AOSP ResTable_config field
++    // group, so a short buffer degrades to the shorter qualifier string
++    // instead of reading out of bounds.
+     // language[8..9], country[10..11] (2-byte ISO, possibly unicode pack suffix)
+-    if (size >= 12) {
++    if (cfg_size >= 12) {
+         char lang[3] = {(char)cfg[8], (char)cfg[9], 0};
+         char country[3] = {(char)cfg[10], (char)cfg[11], 0};
+         if (cfg[8] || cfg[9]) add(lang);
+         if (cfg[10] || cfg[11]) { out += "-r"; out += country; }
+     }
+-    if (size >= 16) {
++    if (cfg_size >= 15) {
+         uint8_t orientation = cfg[12], touchscreen = cfg[13], density = cfg[14];
+         if (orientation == 1) add("port");
+         else if (orientation == 2) add("land");
+@@ -70,27 +74,25 @@ std::string ArscParser::config_to_string(const uint8_t* cfg, size_t /*cfg_size*/
+             out += "dpi";
+         }
+     }
+-    if (size >= 20) {
++    if (cfg_size >= 22) {
+         uint8_t keyboard = cfg[15], navigation = cfg[16], input_flags = cfg[17];
+         (void)keyboard; (void)navigation; (void)input_flags;
+         uint16_t screen_w = rd16(cfg + 18), screen_h = rd16(cfg + 20);
+         if (screen_w || screen_h) { out += "-"; out += std::to_string(screen_w) + "x" + std::to_string(screen_h); }
+     }
+-    if (size >= 28) {
++    if (cfg_size >= 28) {
+         uint16_t sdk = rd16(cfg + 26);
+         (void)sdk;
+-        uint8_t screen_layout = cfg[28];
+         // smallest width dp
+-        if (size >= 32) {
++        if (cfg_size >= 32) {
+             uint16_t sw = rd16(cfg + 30);
+             if (sw) { out += "-sw" + std::to_string(sw) + "dp"; }
+         }
+-        if (size >= 36) {
++        if (cfg_size >= 36) {
+             uint16_t wdp = rd16(cfg + 32), hdp = rd16(cfg + 34);
+             if (wdp) out += "-w" + std::to_string(wdp) + "dp";
+             if (hdp) out += "-h" + std::to_string(hdp) + "dp";
+         }
+-        (void)screen_layout;
+     }
+     return out;
+ }
+@@ -151,7 +153,10 @@ bool ArscParser::decode_res_value(const uint8_t* p, size_t avail, const Pool& /*
+ // ---------------------------------------------------------------------------
+ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pkg,
+                                   size_t chunk_offset, size_t chunk_size) {
+-    if (chunk_offset + 20 > avail) { last_error_ = "type: truncated"; return false; }
++    // GP-RES-002 (issue #582): the old 20-byte guard let the config_size
++    // read at p+20 (bytes [20,24)) run past the supplied buffer
++    // (ASan heap-buffer-overflow reproduced pre-fix) — 24-byte guard now.
++    if (chunk_offset + 24 > avail) { last_error_ = "type: truncated"; return false; }
+     const uint8_t* p = base + chunk_offset;
+     uint16_t header_size = rd16(p + 2);
+     uint8_t  type_id = p[8];
+@@ -192,7 +197,15 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
+     TypeChunk tc;
+     tc.type_id = type_id;
+     tc.entry_count = entry_count;
+-    tc.config_desc = config_to_string(p + 20, config_size);
++    // GP-RES-003 (issue #582): config_to_string previously IGNORED cfg_size
++    // and trusted the embedded size word — a claim of 36 against a 12-byte
++    // tail read cfg[26..35] outside the buffer (ASan heap-buffer-overflow
++    // reproduced). Bound the decode by the bytes actually present between
++    // the type-chunk header and the chunk/table end.
++    const size_t cfg_avail_real = std::min(
++        (size_t)config_size,
++        std::min((size_t)chunk_size - 20, avail - (chunk_offset + 20)));
++    tc.config_desc = config_to_string(p + 20, cfg_avail_real);
+     const uint8_t* cfg = p + 20;
+     // CAMPAIGN 009 §6: parse the full AOSP ResTable_config for this bucket
+     {
+diff --git a/miniandroid/src/resources/layout_inflater.cpp b/miniandroid/src/resources/layout_inflater.cpp
+index 84815da0..f5985e34 100644
+--- a/miniandroid/src/resources/layout_inflater.cpp
++++ b/miniandroid/src/resources/layout_inflater.cpp
+@@ -93,17 +93,41 @@ uint32_t LayoutInflater::parse_hex_color(const std::string& s) {
+ }
+ 
+ int LayoutInflater::gravity_bits(const std::string& s) {
++    // GP-LAYOUT-001 (issue #582): the substring matcher collapsed axis-
++    // specific tokens — has("fill") matched "fill_horizontal"/"fill_vertical"
++    // and set BOTH fill bits (0x77) for each; has("center") relies on the
++    // ordering of the following corrections; start/end carried no relative
++    // flag. Tokenize on '|' + whitespace and map EXACT tokens instead.
++    // AOSP Gravity: LEFT=0x3 RIGHT=0x5 CENTER_HORIZONTAL=0x1
++    //               CENTER_VERTICAL=0x10 FILL_HORIZONTAL=0x7
++    //               FILL_VERTICAL=0x70 FILL=0x77 TOP=0x30 BOTTOM=0x50.
++    // RTL law: START/END are the RELATIVE flags (0x80000003/0x80000005);
++    // the renderer consumes the low axis bits — start/end keep the
++    // LTR-mapped low bits (documented limitation, RTL resolve is pending).
+     int g = 0;
+-    auto has = [&](const char* k) { return s.find(k) != std::string::npos; };
+-    // AOSP Gravity: LEFT=3 RIGHT=5 CENTER_HORIZONTAL=1 START=8388611 END=8388613
+-    if (has("center")) g |= 0x11;
+-    if (has("center_horizontal")) g = (g & ~0x7) | 0x1;
+-    if (has("center_vertical")) g = (g & ~0x70) | 0x10;
+-    if (has("left") || has("start")) g |= 0x3;
+-    if (has("right") || has("end")) g |= 0x5;
+-    if (has("top")) g |= 0x30;
+-    if (has("bottom")) g |= 0x50;
+-    if (has("fill")) g |= 0x77;
++    size_t i = 0;
++    auto is_sep = [](char c) {
++        return c == '|' || c == ',' || c == ' ' || c == '\t';
++    };
++    while (i < s.size()) {
++        while (i < s.size() && is_sep(s[i])) ++i;
++        size_t b = i;
++        while (i < s.size() && !is_sep(s[i])) ++i;
++        if (i == b) break;
++        std::string tok = s.substr(b, i - b);
++        if (tok == "center") g |= 0x11;
++        else if (tok == "center_horizontal") g = (g & ~0x7) | 0x1;
++        else if (tok == "center_vertical") g = (g & ~0x70) | 0x10;
++        else if (tok == "left" || tok == "start") g |= 0x3;
++        else if (tok == "right" || tok == "end") g |= 0x5;
++        else if (tok == "top") g |= 0x30;
++        else if (tok == "bottom") g |= 0x50;
++        else if (tok == "fill") g |= 0x77;
++        else if (tok == "fill_horizontal") g |= 0x7;
++        else if (tok == "fill_vertical") g |= 0x70;
++        else if (tok == "clip_horizontal") g &= ~0x7;
++        else if (tok == "clip_vertical") g &= ~0x70;
++    }
+     return g;
+ }
+ 
+diff --git a/miniandroid/src/resources/string_pool.cpp b/miniandroid/src/resources/string_pool.cpp
+index 5d59a4c5..b2e0eb0c 100644
+--- a/miniandroid/src/resources/string_pool.cpp
++++ b/miniandroid/src/resources/string_pool.cpp
+@@ -62,11 +62,27 @@ bool ResStringPool::parse(const uint8_t* p, size_t avail, size_t& consumed,
+         p[20] | (p[21] << 8) | (p[22] << 16) | (static_cast<uint32_t>(p[23]) << 24));
+ 
+     utf8_pool = (flags & RES_STRING_POOL_UTF8_FLAG) != 0;
+-    strings.clear();
+-    strings.resize(string_count);
+ 
+-    if (header_size + string_count * 4u > chunk_size)
++    // GP-RES-001 (issue #582) — three wrap/allocation faces, all ASan-reproduced
++    // pre-fix on current main:
++    //   1. strings.resize(string_count) ran BEFORE the offset-table size was
++    //      validated: attacker-controlled count allocated ~32 GB of strings
++    //      (0x40000000 entries) before rejection (ASan OOM abort reproduced).
++    //   2. header_size + string_count * 4u multiplied in uint32:
++    //      0x40000000 * 4 wrapped to 0 and the check passed.
++    //   3. strings_start + off wrapped in uint32 (0xFFFFFFF0 + 0x20 -> 0x10)
++    //      and the OOB pointer sdata + off was decoded (ASan SEGV reproduced).
++    // All arithmetic below is 64-bit and validation precedes the resize.
++    const uint64_t strings_start64 = strings_start;
++    if ((uint64_t)header_size + (uint64_t)string_count * 4ull > chunk_size)
+         return fail("pool: offset table overruns chunk");
++    if (string_count > 0 &&
++        strings_start64 < (uint64_t)header_size + (uint64_t)string_count * 4ull)
++        return fail("pool: strings_start overlaps offset table");
++
++    // bounded by the 64-bit check above: count*4 <= chunk_size-header_size
++    strings.clear();
++    strings.resize(string_count);
+ 
+     const uint8_t* sdata = p + strings_start;
+     for (uint32_t i = 0; i < string_count; i++) {
+@@ -75,7 +91,7 @@ bool ResStringPool::parse(const uint8_t* p, size_t avail, size_t& consumed,
+             (p[header_size + i * 4 + 1] << 8) |
+             (p[header_size + i * 4 + 2] << 16) |
+             (static_cast<uint32_t>(p[header_size + i * 4 + 3]) << 24));
+-        if (strings_start + off >= chunk_size) {
++        if (strings_start64 + (uint64_t)off >= chunk_size) {
+             strings[i].clear();  // malformed entry → empty (Arsc law)
+             continue;
+         }

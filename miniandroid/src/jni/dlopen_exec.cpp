@@ -28,6 +28,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <cerrno>
 #include <cstdlib>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -86,10 +87,17 @@ std::map<std::string, std::string>& loader_notes() {  // caller class → lib
 // is saved and restored around every guarded region, so faults OUTSIDE a
 // guarded region keep their full forensics path.
 sigjmp_buf& guard_jb() {
-    static sigjmp_buf jb;
+    // GP-JNI-003 (issue #582): one process-global sigjmp_buf + one global
+    // g_guard_active meant a fault on thread B while thread A held the
+    // guard longjmp'd on A's context — cross-thread siglongjmp is UB and
+    // corrupts execution state. The guard context is per-thread now: the
+    // signal handler runs on the faulting thread and jumps on THAT
+    // thread's own setjmp context. The deterministic single-thread engine
+    // keeps its existing behavior.
+    static thread_local sigjmp_buf jb;
     return jb;
 }
-volatile sig_atomic_t g_guard_active = 0;
+volatile thread_local sig_atomic_t g_guard_active = 0;
 // F-NEW-593 (W10): the honest reason of the last guard landing (exception
 // text or signal) — surfaced in call_native's fault detail.
 std::string g_guard_last_reason;
@@ -322,15 +330,22 @@ ProbeVerdict dlopen_probe(const char* host_path) {
         _exit(h ? 0 : 2);
     }
     int st = 0;
+    // GP-APK-010 (issue #582): EINTR must be retried (the old loop broke on
+    // the first error leaving st=0, which WIFEXITED/WEXITSTATUS decode as
+    // exit 0 → the probe classified an UNKNOWN wait state as SAFE). A
+    // genuine waitpid failure now forces verdict REFUSED, never SAFE.
+    bool wait_failed = false;
     while (waitpid(p, &st, 0) < 0) {
-        // EINTR only; other errors would leave the child unreaped — accept.
+        if (errno == EINTR) continue;
+        wait_failed = true;  // genuine error: child unreaped
         break;
     }
     g_probe_status = st;
     {
         // W15: honest verdict row — settles WHICH process faulted and the
         // raw waitpid status, evidence instead of inference.
-        const char* v = WIFSIGNALED(st) ? "FAULTED"
+        const char* v = wait_failed ? "REFUSED"
+                      : WIFSIGNALED(st) ? "FAULTED"
                       : (WIFEXITED(st) && WEXITSTATUS(st) == 0) ? "SAFE"
                                                                 : "REFUSED";
         fprintf(stderr,
@@ -339,8 +354,9 @@ ProbeVerdict dlopen_probe(const char* host_path) {
                 v, (unsigned)st, (int)p, (int)getpid());
         fflush(stderr);
     }
-    if (WIFSIGNALED(st)) return ProbeVerdict::FAULTED;
-    if (WIFEXITED(st) && WEXITSTATUS(st) == 0) return ProbeVerdict::SAFE;
+    if (!wait_failed && WIFSIGNALED(st)) return ProbeVerdict::FAULTED;
+    if (!wait_failed && WIFEXITED(st) && WEXITSTATUS(st) == 0)
+        return ProbeVerdict::SAFE;
     return ProbeVerdict::REFUSED;
 }
 struct RegisteredNative {
@@ -1209,10 +1225,30 @@ void* jni_GetDirectBufferAddress(void*, void* buf) {
             if (!backing) return nullptr;
             if (addr && cap) memcpy(backing, addr, cap);
             {
+                // GP-JNI-005 (issue #582): two threads could pass the
+                // registry check above simultaneously, each mint its OWN
+                // backing, and the two losers/winners returned DIFFERENT
+                // pointers for the same buffer oid (last insert wins the
+                // registry, the first returner's pointer is orphaned).
+                // Re-check under the insert lock: the first insert wins,
+                // every other caller frees its own backing and serves the
+                // registry pointer — ONE identity per oid.
                 std::lock_guard<std::mutex> lk(g_direct_buffer_mu);
+                auto& reg5 = persistent_direct_buffers();
+                auto it5 = reg5.find(oid);
+                if (it5 != reg5.end()) {
+                    std::free(backing);  // loser's copy never published
+                    static thread_local uint64_t lost5 = 0;
+                    if (lost5++ < 8)
+                        fprintf(stderr,
+                                "[GP-JNI-005] concurrent first-Get on oid=%u "
+                                "resolved to the registry pointer %p\n",
+                                oid, it5->second.addr);
+                    return it5->second.addr;
+                }
                 DirectBufferBox* b = new DirectBufferBox{backing, cap};
                 direct_buffer_boxes().push_back(b);
-                persistent_direct_buffers()[oid] = {backing, cap};
+                reg5[oid] = {backing, cap};
             }
             static thread_local uint64_t n = 0;
             if (n++ < 8)
@@ -1331,6 +1367,17 @@ static void jni_ReleasePrimitiveArrayCritical(void*, void* arr, void* cdata,
     (void)arr;
     CriticalArrayBox* b = as_critical_box(cdata);
     if (!b) return;  // mismatched release — nothing to commit
+    // GP-JNI-001 (issue #582): JNI spec — mode JNI_COMMIT (1) commits the
+    // changes but KEEPS the array available for continued native access;
+    // the final release (mode 0 / JNI_ABORT) frees it. The old code erased
+    // the box and freed the copy for EVERY non-ABORT mode, so a legal
+    // Get→COMMIT→use→Release sequence used freed memory. COMMIT now
+    // writes back and returns with the box/copy alive.
+    if (mode == 1 /* JNI_COMMIT */) {
+        if (g_f590_hooks.primitive_array_write)
+            g_f590_hooks.primitive_array_write(b->oid, b->copy, b->len);
+        return;  // box + copy stay registered for the final release
+    }
     if (mode != 2 /* JNI_ABORT */ && g_f590_hooks.primitive_array_write) {
         // The write hook snapshots the CURRENT element content and skips
         // untouched elements (memcmp per element) — the load encodedData
@@ -1875,7 +1922,14 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
     };
     auto push_double = [&](double d) {
         if (sse_i < 8) sse_regs[sse_i++] = d;
-        else stack_args.push_back(*(uint64_t*)&d);
+        // GP-JNI-002 (issue #582): `*(uint64_t*)&d` violated strict
+        // aliasing (UB; -Wstrict-aliasing diagnostic). memcpy the bit
+        // pattern — same instruction on -O2, defined semantics.
+        else {
+            uint64_t bits_d = 0;
+            std::memcpy(&bits_d, &d, sizeof(bits_d));
+            stack_args.push_back(bits_d);
+        }
     };
 
     // slot 0: JNIEnv*

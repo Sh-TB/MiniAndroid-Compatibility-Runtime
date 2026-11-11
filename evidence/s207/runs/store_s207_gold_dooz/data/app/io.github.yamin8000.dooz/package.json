@@ -14,6 +14,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gold_dooz/data/app/io.github.yamin8000.dooz/base.apk",
   "apkSha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
   "apkSize": 1840400,
-  "installedAt": "2026-11-11T05:42:59Z",
+  "installedAt": "2026-11-11T17:34:52Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

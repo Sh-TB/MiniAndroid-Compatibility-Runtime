@@ -47,19 +47,23 @@ bool ArscParser::parse_string_pool(const uint8_t* base, size_t avail, size_t chu
 // ---------------------------------------------------------------------------
 // Config → human string (subset of AOSP ResTable_config)
 // ---------------------------------------------------------------------------
-std::string ArscParser::config_to_string(const uint8_t* cfg, size_t /*cfg_size*/) {
+std::string ArscParser::config_to_string(const uint8_t* cfg, size_t cfg_size) {
     if (!cfg) return "";
-    uint32_t size = rd32(cfg);
     std::string out;
     auto add = [&](const char* q) { if (!out.empty()) out += "-"; out += q; };
+    // GP-RES-003 (issue #582): every read below is bounded by cfg_size —
+    // the CALLER-VALIDATED extent — not by the untrusted embedded size word.
+    // Thresholds are (max byte index + 1) of each AOSP ResTable_config field
+    // group, so a short buffer degrades to the shorter qualifier string
+    // instead of reading out of bounds.
     // language[8..9], country[10..11] (2-byte ISO, possibly unicode pack suffix)
-    if (size >= 12) {
+    if (cfg_size >= 12) {
         char lang[3] = {(char)cfg[8], (char)cfg[9], 0};
         char country[3] = {(char)cfg[10], (char)cfg[11], 0};
         if (cfg[8] || cfg[9]) add(lang);
         if (cfg[10] || cfg[11]) { out += "-r"; out += country; }
     }
-    if (size >= 16) {
+    if (cfg_size >= 15) {
         uint8_t orientation = cfg[12], touchscreen = cfg[13], density = cfg[14];
         if (orientation == 1) add("port");
         else if (orientation == 2) add("land");
@@ -70,27 +74,25 @@ std::string ArscParser::config_to_string(const uint8_t* cfg, size_t /*cfg_size*/
             out += "dpi";
         }
     }
-    if (size >= 20) {
+    if (cfg_size >= 22) {
         uint8_t keyboard = cfg[15], navigation = cfg[16], input_flags = cfg[17];
         (void)keyboard; (void)navigation; (void)input_flags;
         uint16_t screen_w = rd16(cfg + 18), screen_h = rd16(cfg + 20);
         if (screen_w || screen_h) { out += "-"; out += std::to_string(screen_w) + "x" + std::to_string(screen_h); }
     }
-    if (size >= 28) {
+    if (cfg_size >= 28) {
         uint16_t sdk = rd16(cfg + 26);
         (void)sdk;
-        uint8_t screen_layout = cfg[28];
         // smallest width dp
-        if (size >= 32) {
+        if (cfg_size >= 32) {
             uint16_t sw = rd16(cfg + 30);
             if (sw) { out += "-sw" + std::to_string(sw) + "dp"; }
         }
-        if (size >= 36) {
+        if (cfg_size >= 36) {
             uint16_t wdp = rd16(cfg + 32), hdp = rd16(cfg + 34);
             if (wdp) out += "-w" + std::to_string(wdp) + "dp";
             if (hdp) out += "-h" + std::to_string(hdp) + "dp";
         }
-        (void)screen_layout;
     }
     return out;
 }
@@ -151,7 +153,10 @@ bool ArscParser::decode_res_value(const uint8_t* p, size_t avail, const Pool& /*
 // ---------------------------------------------------------------------------
 bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pkg,
                                   size_t chunk_offset, size_t chunk_size) {
-    if (chunk_offset + 20 > avail) { last_error_ = "type: truncated"; return false; }
+    // GP-RES-002 (issue #582): the old 20-byte guard let the config_size
+    // read at p+20 (bytes [20,24)) run past the supplied buffer
+    // (ASan heap-buffer-overflow reproduced pre-fix) — 24-byte guard now.
+    if (chunk_offset + 24 > avail) { last_error_ = "type: truncated"; return false; }
     const uint8_t* p = base + chunk_offset;
     uint16_t header_size = rd16(p + 2);
     uint8_t  type_id = p[8];
@@ -192,7 +197,15 @@ bool ArscParser::parse_type_chunk(const uint8_t* base, size_t avail, Package& pk
     TypeChunk tc;
     tc.type_id = type_id;
     tc.entry_count = entry_count;
-    tc.config_desc = config_to_string(p + 20, config_size);
+    // GP-RES-003 (issue #582): config_to_string previously IGNORED cfg_size
+    // and trusted the embedded size word — a claim of 36 against a 12-byte
+    // tail read cfg[26..35] outside the buffer (ASan heap-buffer-overflow
+    // reproduced). Bound the decode by the bytes actually present between
+    // the type-chunk header and the chunk/table end.
+    const size_t cfg_avail_real = std::min(
+        (size_t)config_size,
+        std::min((size_t)chunk_size - 20, avail - (chunk_offset + 20)));
+    tc.config_desc = config_to_string(p + 20, cfg_avail_real);
     const uint8_t* cfg = p + 20;
     // CAMPAIGN 009 §6: parse the full AOSP ResTable_config for this bucket
     {

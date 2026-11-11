@@ -1,0 +1,19 @@
+# gp582_engine_probe_test run against the PRE-FIX dalvik_engine.cpp
+# (git stash of the GP-582 wave; binary = rebuilt baseline engine on d5c958e3 tree)
+# command: /tmp/gp582_probe_baseline > evidence/gp582/engine_probe_prefix_SIGFPE.txt 2>&1
+# observed exit code: 136 (128+SIGFPE=8) — process KILLED by floating-point
+# exception at the div_int_min_by_minus1 row (INT_MIN / -1 hits the hardware
+# divide fault in the unguarded signed division). bash prints the job-death
+# notice ("Floating point exception") on the DRIVER's stderr, which is why
+# the message itself is not inside this capture; the truncated row list
+# below (2 PASS rows, then silence) is the in-file evidence of the kill.
+# POST-FIX run of the identical probe: 12/12 PASS (engine_probe_postfix.txt).
+
+== gp582_engine_probe_test — issue #582 boundary vectors ==
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+[MEM] method_exit: LGP582Test;.add_int_min_minus1_wraps_to_max insns=4 RSS=8.05469 MB
+  PASS  add_int_min_minus1_wraps_to_max — expected 2147483647.000000, got 2147483647.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+[MEM] method_exit: LGP582Test;.mul_int_65536_squared_wraps_to_zero insns=3 RSS=8.05469 MB
+  PASS  mul_int_65536_squared_wraps_to_zero — expected 0.000000, got 0.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES

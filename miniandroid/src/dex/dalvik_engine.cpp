@@ -23617,22 +23617,29 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     /* MASTER RECONCILIATION (K-29, 2026-09-03): was guard-yield-0 — */ \
                     /* AND the unguarded a_val / b_val below was C++ UB on zero.   */ \
                     /* Now throws ArithmeticException (deferred mechanism).        */ \
-                    if ((op == "div" || op == "rem") && b_val == 0) { \
+                    /* GP-INT-012 (issue #582): signed add/sub/mul/shl and the     */ \
+                    /* MIN/-1 div/rem edge are C++ UB on the signed values; DEX/   */ \
+                    /* Java law is width-defined two's-complement wrap and defined */ \
+                    /* MIN/-1 results. Computed in unsigned width, stored as the   */ \
+                    /* identical bit pattern.                                      */ \
+                    /* GP-INT-015 (issue #582): `op == "lit"` compared literal     */ \
+                    /* POINTER addresses — strcmp by content, portable.            */ \
+                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && b_val == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-2ADDR"); \
                         pc_ = pc_ + 1; \
                         break; \
                     } \
-                    else if (op == "add") result_val.int_val = a_val + b_val; \
-                    else if (op == "sub") result_val.int_val = a_val - b_val; \
-                    else if (op == "mul") result_val.int_val = a_val * b_val; \
-                    else if (op == "div") result_val.int_val = a_val / b_val; \
-                    else if (op == "rem") result_val.int_val = a_val % b_val; \
-                    else if (op == "and") result_val.int_val = a_val & b_val; \
-                    else if (op == "or")  result_val.int_val = a_val | b_val; \
-                    else if (op == "xor") result_val.int_val = a_val ^ b_val; \
-                    else if (op == "shl") result_val.int_val = a_val << (b_val & 0x1f); \
-                    else if (op == "shr") result_val.int_val = a_val >> (b_val & 0x1f); \
-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) >> (b_val & 0x1f)); \
+                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) + static_cast<uint32_t>(b_val)); \
+                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) - static_cast<uint32_t>(b_val)); \
+                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) * static_cast<uint32_t>(b_val)); \
+                    else if (strcmp(op, "div") == 0) result_val.int_val = (b_val == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(a_val)) : a_val / b_val; \
+                    else if (strcmp(op, "rem") == 0) result_val.int_val = (b_val == -1) ? 0 : a_val % b_val; \
+                    else if (strcmp(op, "and") == 0) result_val.int_val = a_val & b_val; \
+                    else if (strcmp(op, "or") == 0)  result_val.int_val = a_val | b_val; \
+                    else if (strcmp(op, "xor") == 0) result_val.int_val = a_val ^ b_val; \
+                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) << (b_val & 0x1f)); \
+                    else if (strcmp(op, "shr") == 0) result_val.int_val = a_val >> (b_val & 0x1f); \
+                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(a_val) >> (b_val & 0x1f)); \
                     static thread_local const bool wide_diag_on = \
                         diag_env("MINIANDROID_WIDE_DIAG"); /* R-NEW-558 */ \
                     if (wide_diag_on) { \
@@ -23674,22 +23681,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     result_val.type = DalvikType::INT32; \
                     int32_t b_val = dalvik_int_value(b); \
                     int32_t c_val = dalvik_int_value(c); \
-                    if ((op == "div" || op == "rem") && c_val == 0) { \
+                    /* GP-INT-012/015 (issue #582): wrap-defined signed math, */ \
+                    /* MIN/-1 div/rem edge, strcmp dispatch (was literal-ptr).  */ \
+                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && c_val == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-23X"); \
                         pc_ = pc_ + 2; \
                         break; \
                     } \
-                    if (op == "add") result_val.int_val = b_val + c_val; \
-                    else if (op == "sub") result_val.int_val = b_val - c_val; \
-                    else if (op == "mul") result_val.int_val = b_val * c_val; \
-                    else if (op == "div") result_val.int_val = (c_val != 0) ? b_val / c_val : 0; \
-                    else if (op == "rem") result_val.int_val = (c_val != 0) ? b_val % c_val : 0; \
-                    else if (op == "and") result_val.int_val = b_val & c_val; \
-                    else if (op == "or")  result_val.int_val = b_val | c_val; \
-                    else if (op == "xor") result_val.int_val = b_val ^ c_val; \
-                    else if (op == "shl") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint32_t>(b_val) << (c_val & 0x1f))); \
-                    else if (op == "shr") result_val.int_val = b_val >> (c_val & 0x1f); \
-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (c_val & 0x1f)); \
+                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(c_val)); \
+                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(c_val)); \
+                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(c_val)); \
+                    else if (strcmp(op, "div") == 0) result_val.int_val = (c_val == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / c_val; \
+                    else if (strcmp(op, "rem") == 0) result_val.int_val = (c_val == -1) ? 0 : b_val % c_val; \
+                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & c_val; \
+                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | c_val; \
+                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ c_val; \
+                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint32_t>(b_val) << (c_val & 0x1f))); \
+                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (c_val & 0x1f); \
+                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (c_val & 0x1f)); \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ = pc_ + 2; \
@@ -24156,10 +24165,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     /* F-028 law: slots reinterpreted AS float32 (see conv block) */ \
                     uint32_t ab28 = dalvik_raw_bits32(b); std::memcpy(&bf, &ab28, 4); \
                     uint32_t cb28 = dalvik_raw_bits32(c); std::memcpy(&cf, &cb28, 4); \
-                    if (op == "add") result_val.float_val = bf + cf; \
-                    else if (op == "sub") result_val.float_val = bf - cf; \
-                    else if (op == "mul") result_val.float_val = bf * cf; \
-                    else if (op == "div") result_val.float_val = (cf != 0) ? bf / cf : 0; \
+                    if (strcmp(op, "add") == 0) result_val.float_val = bf + cf; \
+                    else if (strcmp(op, "sub") == 0) result_val.float_val = bf - cf; \
+                    else if (strcmp(op, "mul") == 0) result_val.float_val = bf * cf; \
+                    else if (strcmp(op, "div") == 0) result_val.float_val = bf / cf; \
                     else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
@@ -24302,22 +24311,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                : (b.type == DalvikType::INT32 ? static_cast<int64_t>(b.int_val) : 0); \
                     int64_t cv = (c.type == DalvikType::INT64) ? c.long_val \
                                : (c.type == DalvikType::INT32 ? static_cast<int64_t>(c.int_val) : 0); \
-                    if ((op == "div" || op == "rem") && cv == 0) { \
+                    /* GP-INT-012/015 (issue #582): wrap-defined int64 math, */ \
+                    /* MIN64/-1 div/rem edge, strcmp dispatch.                 */ \
+                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && cv == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LONG"); \
                         pc_ += 2; \
                         break; \
                     } \
-                    if (op == "add") result_val.long_val = bv + cv; \
-                    else if (op == "sub") result_val.long_val = bv - cv; \
-                    else if (op == "mul") result_val.long_val = bv * cv; \
-                    else if (op == "div") result_val.long_val = (cv != 0) ? bv / cv : 0; \
-                    else if (op == "rem") result_val.long_val = (cv != 0) ? bv % cv : 0; \
-                    else if (op == "and") result_val.long_val = bv & cv; \
-                    else if (op == "or")  result_val.long_val = bv | cv; \
-                    else if (op == "xor") result_val.long_val = bv ^ cv; \
-                    else if (op == "shl") result_val.long_val = bv << static_cast<int>(cv & 0x3f); \
-                    else if (op == "shr") result_val.long_val = bv >> static_cast<int>(cv & 0x3f); \
-                    else if (op == "ushr") result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) >> static_cast<int>(cv & 0x3f)); \
+                    if (strcmp(op, "add") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) + static_cast<uint64_t>(cv)); \
+                    else if (strcmp(op, "sub") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) - static_cast<uint64_t>(cv)); \
+                    else if (strcmp(op, "mul") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) * static_cast<uint64_t>(cv)); \
+                    else if (strcmp(op, "div") == 0) result_val.long_val = (cv == -1) ? static_cast<int64_t>(0ull - static_cast<uint64_t>(bv)) : bv / cv; \
+                    else if (strcmp(op, "rem") == 0) result_val.long_val = (cv == -1) ? 0 : bv % cv; \
+                    else if (strcmp(op, "and") == 0) result_val.long_val = bv & cv; \
+                    else if (strcmp(op, "or") == 0)  result_val.long_val = bv | cv; \
+                    else if (strcmp(op, "xor") == 0) result_val.long_val = bv ^ cv; \
+                    else if (strcmp(op, "shl") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) << static_cast<int>(cv & 0x3f)); \
+                    else if (strcmp(op, "shr") == 0) result_val.long_val = bv >> static_cast<int>(cv & 0x3f); \
+                    else if (strcmp(op, "ushr") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(bv) >> static_cast<int>(cv & 0x3f)); \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ += 2; \
@@ -25093,10 +25104,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         pc_ = handler_addr;
                         break;
                     } else {
+                        // GP-INT-014 (issue #582): the out-of-bounds handler
+                        // target previously LOGGED "falling through to halt"
+                        // and then DID fall through — control reached the
+                        // next case label (MOVE_16) and executed its body
+                        // with pc_ still on the THROW instruction (register
+                        // mutation from operand words + PC desync). A
+                        // malformed handler target is now the same
+                        // structured unwind as "no handler in this frame".
                         std::cerr << "[EXCEPTION] WARNING: handler_addr "
                                   << handler_addr << " out of bounds (bytecode_size="
-                                  << bytecode_.size() << ") — falling through to halt"
+                                  << bytecode_.size() << ") — malformed catch "
+                                     "metadata, unwinding frame"
                                   << std::endl;
+                        frame_unwind_exception_valid_ = true;
+                        frame_unwind_exception_ = exc;
+                        last_invoke_return_ = DalvikValue::make_null();
+                        halted_on_return_ = true;
+                        pc_ += 1;
+                        break;
                     }
                 }
 
@@ -25279,9 +25305,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 DalvikValue c = get_register(vCC);
                 DalvikValue result_val;
                 result_val.type = DalvikType::FLOAT64;
-                double bd = (b.type == DalvikType::FLOAT64) ? b.double_val : (double)b.int_val;
-                double cd = (c.type == DalvikType::FLOAT64) ? c.double_val : (double)c.int_val;
-                result_val.double_val = (cd != 0) ? fmod(bd, cd) : 0;
+                // GP-INT-013 (issue #582): REM_DOUBLE is the ONE 23x double
+                // op that missed the typed-operand law — an INT64-backed
+                // double was decoded from its low-32 int_val instead of the
+                // bit-reinterpreted long_val (ARITH_23X_DOUBLE_CASE applies
+                // bits_l2d); and divisor 0 answered 0 instead of IEEE NaN.
+                // Both now follow the same law as the neighbouring macro.
+                // F-028 law: FLOAT32-backed slots are raw-bit views.
+                float bf_r = 0.0f, cf_r = 0.0f;
+                uint32_t bb32 = dalvik_raw_bits32(b); std::memcpy(&bf_r, &bb32, 4);
+                uint32_t cb32 = dalvik_raw_bits32(c); std::memcpy(&cf_r, &cb32, 4);
+                double bd = (b.type == DalvikType::FLOAT64) ? b.double_val
+                          : (b.type == DalvikType::INT64 ? bits_l2d(b.long_val)
+                          : (b.type == DalvikType::FLOAT32 ? (double)bf_r
+                          : (double)b.int_val));
+                double cd = (c.type == DalvikType::FLOAT64) ? c.double_val
+                          : (c.type == DalvikType::INT64 ? bits_l2d(c.long_val)
+                          : (c.type == DalvikType::FLOAT32 ? (double)cf_r
+                          : (double)c.int_val));
+                result_val.double_val = fmod(bd, cd);  // IEEE: %0 → NaN
                 set_register(vAA, result_val);
                 trace.opcode_name = "rem-double";
                 pc_ += 2;
@@ -25302,10 +25344,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                               : (b.type == DalvikType::INT64 ? bits_l2d(b.long_val) : (double)b.int_val); \
                     double cd = (c.type == DalvikType::FLOAT64) ? c.double_val \
                               : (c.type == DalvikType::INT64 ? bits_l2d(c.long_val) : (double)c.int_val); \
-                    if (op == "add") result_val.double_val = bd + cd; \
-                    else if (op == "sub") result_val.double_val = bd - cd; \
-                    else if (op == "mul") result_val.double_val = bd * cd; \
-                    else if (op == "div") result_val.double_val = (cd != 0) ? bd / cd : 0; \
+                    if (strcmp(op, "add") == 0) result_val.double_val = bd + cd; \
+                    else if (strcmp(op, "sub") == 0) result_val.double_val = bd - cd; \
+                    else if (strcmp(op, "mul") == 0) result_val.double_val = bd * cd; \
+                    else if (strcmp(op, "div") == 0) result_val.double_val = bd / cd; \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ += 2; \
@@ -25351,15 +25393,16 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                             pc_ += 1; \
                             break; \
                         } \
-                        if (strcmp(op, "add") == 0) result_val.long_val = av + bv; \
-                        else if (strcmp(op, "sub") == 0) result_val.long_val = av - bv; \
-                        else if (strcmp(op, "mul") == 0) result_val.long_val = av * bv; \
-                        else if (strcmp(op, "div") == 0) result_val.long_val = (bv != 0) ? av / bv : 0; \
-                        else if (strcmp(op, "rem") == 0) result_val.long_val = (bv != 0) ? av % bv : 0; \
+                        /* GP-INT-012 (issue #582): wrap-defined int64 math + MIN64/-1 */ \
+                        if (strcmp(op, "add") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) + static_cast<uint64_t>(bv)); \
+                        else if (strcmp(op, "sub") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) - static_cast<uint64_t>(bv)); \
+                        else if (strcmp(op, "mul") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) * static_cast<uint64_t>(bv)); \
+                        else if (strcmp(op, "div") == 0) result_val.long_val = (bv == -1) ? static_cast<int64_t>(0ull - static_cast<uint64_t>(av)) : av / bv; \
+                        else if (strcmp(op, "rem") == 0) result_val.long_val = (bv == -1) ? 0 : av % bv; \
                         else if (strcmp(op, "and") == 0) result_val.long_val = av & bv; \
                         else if (strcmp(op, "or") == 0)  result_val.long_val = av | bv; \
                         else if (strcmp(op, "xor") == 0) result_val.long_val = av ^ bv; \
-                        else if (strcmp(op, "shl") == 0) result_val.long_val = av << static_cast<int>(bv & 0x3f); \
+                        else if (strcmp(op, "shl") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) << static_cast<int>(bv & 0x3f)); \
                         else if (strcmp(op, "shr") == 0) result_val.long_val = av >> static_cast<int>(bv & 0x3f); \
                         else if (strcmp(op, "ushr") == 0) result_val.long_val = static_cast<int64_t>(static_cast<uint64_t>(av) >> static_cast<int>(bv & 0x3f)); \
                         static thread_local const bool wide_diag_on = \
@@ -25376,7 +25419,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         if (strcmp(op, "add") == 0) result_val.float_val = af + bf; \
                         else if (strcmp(op, "sub") == 0) result_val.float_val = af - bf; \
                         else if (strcmp(op, "mul") == 0) result_val.float_val = af * bf; \
-                        else if (strcmp(op, "div") == 0) result_val.float_val = (bf != 0) ? af / bf : 0; \
+                        else if (strcmp(op, "div") == 0) result_val.float_val = af / bf; \
                         else if (strcmp(op, "rem") == 0) result_val.float_val = fmodf(af, bf); \
                     } else { \
                         double ad = (a.type == DalvikType::FLOAT64) ? a.double_val \
@@ -25388,7 +25431,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         if (strcmp(op, "add") == 0) result_val.double_val = ad + bd; \
                         else if (strcmp(op, "sub") == 0) result_val.double_val = ad - bd; \
                         else if (strcmp(op, "mul") == 0) result_val.double_val = ad * bd; \
-                        else if (strcmp(op, "div") == 0) result_val.double_val = (bd != 0) ? ad / bd : 0; \
+                        else if (strcmp(op, "div") == 0) result_val.double_val = ad / bd; \
                         else if (strcmp(op, "rem") == 0) result_val.double_val = fmod(ad, bd); \
                     } \
                     set_register(vA, result_val); \
@@ -32460,7 +32503,7 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
                 }
             } else if (lo.type == DalvikType::FLOAT64) {
                 args.push_back(lo);
-            } else {
+            } else if (reg_idx + 1 < 5) {
                 // Case 2: merge two registers (split wide value).
                 DalvikValue hi = get_register(regs[reg_idx + 1]);
                 int64_t combined = (static_cast<int64_t>(hi.int_val) << 32) |
@@ -32472,6 +32515,26 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
                     int64_t bits = combined;
                     std::memcpy(&d, &bits, sizeof(d));
                     args.push_back(DalvikValue::make_double(d));
+                }
+            } else {
+                // GP-INT-001 (issue #582): a wide param starting at the 5th
+                // 35c slot cannot have a second encoded word (regs is the
+                // 5-slot local array; the pre-fix code read regs[5] — one
+                // past the end, stack garbage). Verifier-valid DEX cannot
+                // encode it (the pair needs 6 registers); treat as a
+                // malformed-invoke face: loud, hi = 0, no OOB.
+                static thread_local uint64_t gp_int001_n = 0;
+                if (gp_int001_n++ < 8)
+                    std::cerr << "[GP-INT-001] invoke-static wide param at "
+                                 "slot 4 has no second encoded register — "
+                                 "malformed 35c args (hi=0)"
+                              << std::endl;
+                if (pt == "J") {
+                    args.push_back(DalvikValue::make_long(
+                        static_cast<int64_t>(static_cast<uint32_t>(
+                            get_register(regs[reg_idx]).int_val))));
+                } else {
+                    args.push_back(DalvikValue::make_double(0.0));
                 }
             }
             reg_idx += 2;
@@ -34992,8 +35055,46 @@ void DalvikExecutionEngine::handle_unimplemented(uint16_t opcode, uint32_t pc,
         halted_ = true;
         halt_reason_ = "Unimplemented opcode: 0x" + to_hex16(opcode) + " at PC=" + to_hex(pc);
     }
-    
-    pc_ = pc + 1;  // Skip past unimplemented instruction
+
+    // GP-INT-002 (issue #582): the old resume was unconditionally `pc + 1`,
+    // so a multi-unit unsupported opcode resumed INSIDE its operand words
+    // (PC desync — every later decode misaligned). Resume law now:
+    //   - defined-but-unimplemented opcodes: spec-correct instruction width
+    //     (the DEX opcode → size table below), so the next fetch lands on
+    //     the next instruction boundary;
+    //   - UNDEFINED opcode values (no spec format exists): there IS no
+    //     valid boundary — the method halts with a structured unsupported
+    //     report instead of silently continuing.
+    static const uint8_t kDalvikWidth[256] = {
+        1, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 1, 1, 1, 1, 1,  // 0x00-0x0f
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2, 1, 1, 2,  // 0x10-0x1f
+        2, 1, 2, 2, 3, 3, 3, 1, 1, 2, 3, 3, 3, 2, 2, 2,  // 0x20-0x2f
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0,  // 0x30-0x3f
+        0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0x40-0x4f
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0x50-0x5f
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3,  // 0x60-0x6f
+        3, 3, 3, 0, 3, 3, 3, 3, 3, 0, 0, 1, 1, 1, 1, 1,  // 0x70-0x7f
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  // 0x80-0x8f
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  // 0x90-0x9f
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  // 0xa0-0xaf
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0xb0-0xbf
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0xc0-0xcf
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0xd0-0xdf
+        2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // 0xe0-0xef
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3,  // 0xf0-0xff
+    };
+
+    const uint8_t w = kDalvikWidth[opcode & 0xFF];
+    if (w == 0) {
+        // Undefined opcode value: no valid resume boundary exists.
+        halted_ = true;
+        halt_reason_ = "Undefined opcode 0x" + to_hex16(opcode) + " at PC=" +
+                       to_hex(pc) + " — no DEX instruction width exists; "
+                       "execution cannot resume at an instruction boundary";
+        trace.opcode_name = "undefined(0x" + to_hex16(opcode) + ")";
+        return;
+    }
+    pc_ = pc + w;  // spec-correct boundary for defined-but-unimplemented opcodes
 }
 
 // ============================================================================
@@ -41989,7 +42090,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     } else if (!sv.empty() &&
                                sv.find_first_not_of("-0123456789") ==
                                    std::string::npos) {
-                        result = DalvikValue::make_int(std::stoi(sv));
+                        // GP-EXC-003 (issue #582): the charset filter alone
+                        // accepts "-" / "--5" and the unguarded stoi then
+                        // threw std::invalid_argument out of the bridge
+                        // (process abort). Strict grammar + checked parse.
+                        size_t digits = sv.find_first_of("0123456789");
+                        size_t first_non_sign =
+                            sv.find_first_not_of("-");
+                        bool grammar_ok = first_non_sign != std::string::npos &&
+                                          first_non_sign == digits &&
+                                          sv.find('-', first_non_sign) ==
+                                              std::string::npos;
+                        if (grammar_ok) {
+                            try {
+                                result = DalvikValue::make_int(std::stoi(sv));
+                            } catch (...) {
+                                result = DalvikValue::make_string(sv, 0);
+                            }
+                        } else {
+                            result = DalvikValue::make_string(sv, 0);
+                        }
                     } else {
                         result = DalvikValue::make_string(sv, 0);
                     }
@@ -70754,8 +70874,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     if (val_pos != std::string::npos) {
                         size_t val_start = val_pos + 7;
                         size_t val_end = line.find("\"", val_start);
-                        int32_t v = std::stoi(line.substr(val_start, val_end - val_start));
-                        heap_.set_object_field(obj_id, key, DalvikValue::make_int(v));
+                        // GP-EXC-002 (issue #582): a corrupt/truncated
+                        // persisted-state line aborted the whole host on
+                        // restore — checked parse, malformed line skipped.
+                        try {
+                            int32_t v = std::stoi(
+                                line.substr(val_start, val_end - val_start));
+                            heap_.set_object_field(
+                                obj_id, key, DalvikValue::make_int(v));
+                        } catch (...) {
+                            std::cerr << "[GP-EXC-002] state int malformed "
+                                         "(skipped)" << std::endl;
+                        }
                     }
                 } else if (line.find("<boolean ") != std::string::npos) {
                     size_t val_pos = line.find("value=\"", name_end);
@@ -70770,11 +70900,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     if (val_pos != std::string::npos) {
                         size_t val_start = val_pos + 7;
                         size_t val_end = line.find("\"", val_start);
-                        int64_t v = std::stoll(line.substr(val_start, val_end - val_start));
-                        DalvikValue lv;
-                        lv.type = DalvikType::INT64;
-                        lv.long_val = v;
-                        heap_.set_object_field(obj_id, key, lv);
+                        try {
+                            int64_t v = std::stoll(
+                                line.substr(val_start, val_end - val_start));
+                            DalvikValue lv;
+                            lv.type = DalvikType::INT64;
+                            lv.long_val = v;
+                            heap_.set_object_field(obj_id, key, lv);
+                        } catch (...) {
+                            std::cerr << "[GP-EXC-002] state long malformed "
+                                         "(skipped)" << std::endl;
+                        }
                     }
                 } else if (line.find("<float ") != std::string::npos) {
                     // S99: the loader must mirror the writer (putFloat
@@ -70785,8 +70921,15 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     if (val_pos != std::string::npos) {
                         size_t val_start = val_pos + 7;
                         size_t val_end = line.find("\"", val_start);
-                        float v = std::stof(line.substr(val_start, val_end - val_start));
-                        heap_.set_object_field(obj_id, key, DalvikValue::make_float(v));
+                        try {
+                            float v = std::stof(
+                                line.substr(val_start, val_end - val_start));
+                            heap_.set_object_field(
+                                obj_id, key, DalvikValue::make_float(v));
+                        } catch (...) {
+                            std::cerr << "[GP-EXC-002] state float malformed "
+                                         "(skipped)" << std::endl;
+                        }
                     }
                 }
             }
@@ -72785,6 +72928,34 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                               << r005_sub << " linked under decor="
                               << r005_decor << " (activity=" << r005_act_view
                               << ")" << std::endl;
+                    // GP-COMPOSE-003 (issue #582): the AppCompat
+                    // createSubDecor route reaches the runtime through
+                    // Window.setContentView — which linked the decor but
+                    // SKIPPED the F-105 owner family, so Compose consumers
+                    // walking the sub-decor found no ViewTreeLifecycleOwner.
+                    // AOSP ComponentActivity.installViewFactories/
+                    // PhoneWindow law: the owner tags ride the window decor
+                    // regardless of WHICH setContentView entry point ran.
+                    // Same activity-as-owner, same app-resource keys.
+                    if (r005_act_view != 0) {
+                        auto install_owner = [&](const char* res_name) {
+                            auto key = resources::ResourceRuntime::instance()
+                                           .arsc()
+                                           .find_id("", "id", res_name);
+                            if (!key) return;
+                            auto* dn = vs->get_or_create_node(
+                                r005_decor, "Landroid/view/View;");
+                            framework::ViewShadow::ViewNode::TagValue tv;
+                            tv.kind =
+                                framework::ViewShadow::ViewNode::TagValue::OBJECT;
+                            tv.object_id = r005_act_view;
+                            tv.object_class = "Landroid/app/Activity;";
+                            dn->keyed_tags[static_cast<int32_t>(*key)] = tv;
+                        };
+                        install_owner("view_tree_lifecycle_owner");
+                        install_owner("view_tree_saved_state_registry_owner");
+                        install_owner("view_tree_view_model_store_owner");
+                    }
                 }
 
                 // ────────────────────────────────────────────────────────

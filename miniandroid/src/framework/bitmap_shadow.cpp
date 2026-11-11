@@ -1165,6 +1165,14 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
         const int w = ctx.arg_as_int(5, 0), h = ctx.arg_as_int(6, 0);
         const StoredBitmap* sb = store.get(recv);
         if (!sb || dst == 0 || !heap_) return CallResult::handled_void();
+        // GP-GFX-001 (issue #582): the destination array length was never
+        // validated — idx = off + row*stride + col could exceed (or under-
+        // flow below zero) the Java int[] extent, writing phantom
+        // "array[N]" slots instead of the AOSP ArrayIndexOutOfBoundsException
+        // contract. Bound every write to the real array extent.
+        int32_t dst_len = -1;
+        heap_->get_object_array_length(dst, dst_len);
+        bool bounds_logged = false;
         for (int row = 0; row < h; row++) {
             for (int col = 0; col < w; col++) {
                 const int sx = x + col, sy = y + row;
@@ -1175,6 +1183,17 @@ CallResult BitmapShadow::dispatch(const CallContext& ctx) {
                            ((uint32_t)p[1] << 8) | p[2];
                 }
                 const int idx = off + row * stride + col;
+                if (dst_len >= 0 && (idx < 0 || idx >= dst_len)) {
+                    if (!bounds_logged) {
+                        std::cerr << "[GP-GFX-001] getPixels destination "
+                                     "index " << idx << " outside array "
+                                     "extent " << dst_len << " — write "
+                                     "clipped (AOSP AIOOBE face)"
+                                  << std::endl;
+                        bounds_logged = true;
+                    }
+                    continue;
+                }
                 heap_->set_object_int_field(dst, "array[" + std::to_string(idx) + "]",
                                            (int32_t)argb);
             }

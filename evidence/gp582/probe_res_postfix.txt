@@ -1,0 +1,6 @@
+[GP-RES-001] parse ok=1 err= strings=1
+[GP-RES-001b] parse ok=0 err=pool: offset table overruns chunk strings=0
+[S124-ARSC] package chunk skipped: type: truncated
+[GP-RES-002] arsc parse ok=1 err=
+[GP-RES-003] arsc parse ok=1 err=
+[PROBES-DONE]

@@ -815,7 +815,15 @@ bool SharedPreferences::parseXml(const std::string& content) {
                 size_t val_end = element.find('"', val_start);
                 if (val_end != std::string::npos) {
                     std::string val_str(element, val_start, val_end - val_start);
-                    m_data[key] = PrefValue::fromInt(static_cast<int32_t>(std::stoi(val_str)));
+                    // GP-EXC-002 (issue #582): corrupt prefs XML must not terminate the
+                    // host — checked parse, malformed value skipped honestly.
+                    try {
+                        m_data[key] = PrefValue::fromInt(
+                            static_cast<int32_t>(std::stoi(val_str)));
+                    } catch (...) {
+                        std::cerr << "[GP-EXC-002] prefs int value malformed: "
+                                  << val_str << " (skipped)" << std::endl;
+                    }
                 }
             }
         }
@@ -828,7 +836,12 @@ bool SharedPreferences::parseXml(const std::string& content) {
                 size_t val_end = element.find('"', val_start);
                 if (val_end != std::string::npos) {
                     std::string val_str(element, val_start, val_end - val_start);
-                    m_data[key] = PrefValue::fromLong(std::stoll(val_str));
+                    try {
+                        m_data[key] = PrefValue::fromLong(std::stoll(val_str));
+                    } catch (...) {
+                        std::cerr << "[GP-EXC-002] prefs long value malformed: "
+                                  << val_str << " (skipped)" << std::endl;
+                    }
                 }
             }
         }
@@ -841,7 +854,12 @@ bool SharedPreferences::parseXml(const std::string& content) {
                 size_t val_end = element.find('"', val_start);
                 if (val_end != std::string::npos) {
                     std::string val_str(element, val_start, val_end - val_start);
-                    m_data[key] = PrefValue::fromFloat(std::stof(val_str));
+                    try {
+                        m_data[key] = PrefValue::fromFloat(std::stof(val_str));
+                    } catch (...) {
+                        std::cerr << "[GP-EXC-002] prefs float value malformed: "
+                                  << val_str << " (skipped)" << std::endl;
+                    }
                 }
             }
         }

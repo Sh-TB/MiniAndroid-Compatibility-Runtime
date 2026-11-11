@@ -87,12 +87,30 @@ bool read_line_ssl(SSL* ssl, int fd, std::string& line) {
             return true;
         }
         line.push_back(c);
-        if (line.size() > 64 * 1024) return true;  // header line bound
+        if (line.size() > 64 * 1024) {
+            // GP-NET-002: the old bound returned `true` WITHOUT consuming
+            // the rest of the peer's line — the next header read resumed in
+            // the middle of the oversized line. Drain the remainder, then
+            // report the line as unusable (false) so the caller aborts.
+            char sink;
+            int drained = 0;
+            while ((ssl ? SSL_read(ssl, &sink, 1)
+                        : (int)recv(fd, &sink, 1, 0)) == 1) {
+                if (sink == '\n') break;
+                if (++drained > (1 << 20)) break;
+            }
+            return false;
+        }
     }
 }
 
 // Read exactly n body bytes (or until EOF).
+// GP-NET-001 (issue #582): `n` is peer-controlled; the cap must bound what
+// is READ/RETAINED, not truncate afterwards. read_exact clamps its own work
+// to the response cap; callers pre-check their declared lengths and mark
+// oversize bodies as transport errors (below).
 std::string read_exact(SSL* ssl, int fd, size_t n) {
+    if (n > kMaxBody) n = kMaxBody;
     std::string out;
     out.reserve(n < (1u << 20) ? n : (1u << 20));
     char buf[16384];
@@ -114,20 +132,49 @@ std::string read_chunked(SSL* ssl, int fd) {
         if (!read_line_ssl(ssl, fd, sz_line)) break;
         size_t semi = sz_line.find(';');
         if (semi != std::string::npos) sz_line = sz_line.substr(0, semi);
-        unsigned long chunk = strtoul(sz_line.c_str(), nullptr, 16);
-        if (chunk == 0) {
-            // trailers until blank line
-            std::string t;
-            while (read_line_ssl(ssl, fd, t) && !t.empty()) {}
+        // GP-NET-001: strict chunk-size parse (hex digits only, overflow
+        // checked) — strtoul accepted overflow wraps and junk silently.
+        if (sz_line.empty() ||
+            sz_line.find_first_not_of("0123456789abcdefABCDEF") !=
+                std::string::npos) {
+            std::cerr << "[HTTP] malformed chunk size line — abort body"
+                      << std::endl;
             break;
         }
-        out += read_exact(ssl, fd, chunk);
+        unsigned long long chunk = 0;
+        bool ovf = false;
+        for (char c : sz_line) {
+            chunk = chunk * 16ull + (unsigned long long)
+                (c <= '9' ? c - '0' : (c | 0x20) - 'a' + 10);
+            if (chunk > (unsigned long long)kMaxBody) { ovf = true; break; }
+        }
+        if (ovf || chunk == 0) {
+            if (chunk == 0) {
+                // trailers until blank line
+                std::string t;
+                while (read_line_ssl(ssl, fd, t) && !t.empty()) {}
+                break;
+            }
+            std::cerr << "[HTTP] chunk size exceeds body cap — abort body"
+                      << std::endl;
+            break;
+        }
+        if (out.size() + chunk > kMaxBody) {
+            // budget enforced BEFORE the read: read only what remains,
+            // then stop (the retained body never exceeds the cap).
+            size_t remain = kMaxBody - out.size();
+            out += read_exact(ssl, fd, remain);
+            std::cerr << "[HTTP] chunked body exceeded 8 MiB cap — truncated "
+                      << "at cap" << std::endl;
+            break;
+        }
+        out += read_exact(ssl, fd, (size_t)chunk);
         std::string crlf;
         read_line_ssl(ssl, fd, crlf);  // consume chunk terminator
-        if (out.size() > kMaxBody) break;
     }
     return out;
 }
+
 
 // ── S133 COOKIE STORE LAW (RFC 6265 §5.3/§5.4) ────────────────────────
 // A real browser keeps a cookie store: Set-Cookie values are stored per
@@ -274,10 +321,22 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
     if (status_line.size() > 12 && status_line.compare(0, 5, "HTTP/") == 0)
         r.status = atoi(status_line.c_str() + 9);
     std::vector<std::string> set_cookies;   // S133: preserve every Set-Cookie line
+    // GP-NET-002 (issue #582): no aggregate header budget existed — a peer
+    // could stream unlimited header lines. 256 KiB / 256 lines bound.
+    size_t header_bytes = 0;
+    size_t header_lines = 0;
+    bool header_overflow = false;
     for (;;) {
         std::string h;
         if (!read_line_ssl(ssl, fd, h)) break;
         if (h.empty()) break;
+        header_bytes += h.size() + 2;
+        if (++header_lines > 256 || header_bytes > (256u << 10)) {
+            std::cerr << "[HTTP] response header budget exceeded — headers "
+                         "closed, body rejected" << std::endl;
+            header_overflow = true;
+            break;
+        }
         size_t colon = h.find(':');
         if (colon != std::string::npos) {
             std::string name = lower(h.substr(0, colon));
@@ -304,21 +363,58 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
     // S133 cookie-store law: every Set-Cookie lands in the host jar.
     for (auto& sc : set_cookies) cookie_jar().store(host, sc);
 
+    if (header_overflow) {
+        r.error = "response header budget exceeded";
+        r.status = 0;
+        if (ssl) SSL_free(ssl);
+        if (ctx) SSL_CTX_free(ctx);
+        close(fd);
+        return r;
+    }
     std::string te, cl;
     bool chunked = r.header("transfer-encoding", te) &&
                    te.find("chunked") != std::string::npos;
     bool has_len = r.header("content-length", cl);
+    // GP-NET-001 (issue #582): every receive path enforces the 8 MiB cap
+    // BEFORE reading/retaining; the declared length is parsed strictly
+    // (digits only + overflow) instead of strtoul's silent wrap.
     if (chunked) {
         r.body = read_chunked(ssl, fd);
     } else if (has_len) {
-        r.body = read_exact(ssl, fd, (size_t)strtoul(cl.c_str(), nullptr, 10));
+        bool cl_ok = !cl.empty() &&
+                     cl.find_first_not_of("0123456789") == std::string::npos;
+        unsigned long long cl_len = 0;
+        if (cl_ok) {
+            cl_ok = cl.size() <= 19;  // 19 digits cannot overflow u64
+            if (cl_ok) {
+                for (char c : cl)
+                    cl_len = cl_len * 10ull + (unsigned long long)(c - '0');
+            }
+        }
+        if (!cl_ok) {
+            r.error = "malformed Content-Length";
+            r.status = 0;
+        } else if (cl_len > kMaxBody) {
+            r.error = "response body exceeds 8 MiB cap (Content-Length)";
+            r.status = 0;
+        } else {
+            r.body = read_exact(ssl, fd, (size_t)cl_len);
+        }
     } else {
-        // read until close
+        // read until close — append only while inside the cap.
         char buf[16384];
         int n;
         while ((n = ssl ? SSL_read(ssl, buf, sizeof(buf))
-                        : (int)recv(fd, buf, sizeof(buf), 0)) > 0)
+                        : (int)recv(fd, buf, sizeof(buf), 0)) > 0) {
+            if (r.body.size() + (size_t)n > kMaxBody) {
+                size_t take = kMaxBody - r.body.size();
+                r.body.append(buf, take);
+                std::cerr << "[HTTP] EOF-delimited body exceeded 8 MiB cap — "
+                             "truncated at cap" << std::endl;
+                break;
+            }
             r.body.append(buf, (size_t)n);
+        }
     }
     if (r.body.size() > kMaxBody) r.body.resize(kMaxBody);
 

@@ -213,6 +213,12 @@ private:
     // cannot flood the sink; the first N rows + the drop counter tell the
     // whole story. kMaxSameOp keeps mixed traces useful.
     bool budget(const std::string& key) {
+        // GP-DIAG-001 (issue #582): budget() mutated counts_ with no lock
+        // while commit()/first_missing_now() hold mu_ — a concurrent trace
+        // caller raced the shared std::map. budget() now runs under mu_ too
+        // (the map is small; the lock is uncontended in the deterministic
+        // single-thread engine and correct under native threads).
+        std::lock_guard<std::mutex> lk(mu_);
         auto& n = counts_[key];
         if (n >= kMaxSameOp) {
             if (n == kMaxSameOp) ++dropped_;  // count the flood once per key

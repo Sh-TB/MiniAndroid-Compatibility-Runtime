@@ -6174,7 +6174,10 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                             auto owner_key =
                                 rt.arsc().find_id("", "id",
                                                   "view_tree_lifecycle_owner");
-                            if (owner_key) {
+                            auto install_owner_tag = [&](const char* res_name)
+                                -> bool {
+                                auto key = rt.arsc().find_id("", "id", res_name);
+                                if (!key) return false;
                                 auto* an = view_shadow->get_or_create_node(
                                     ctx.receiver_id, "Landroid/view/View;");
                                 ViewShadow::ViewNode::TagValue tv;
@@ -6183,15 +6186,32 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                                 tv.object_class = ctx.receiver_class.empty()
                                                       ? ctx.class_name
                                                       : ctx.receiver_class;
-                                an->keyed_tags[static_cast<int32_t>(*owner_key)] = tv;
+                                an->keyed_tags[static_cast<int32_t>(*key)] = tv;
                                 if (std::getenv("MINIANDROID_TAG_TRACE")) {
                                     std::cerr << "[F105-OWNER] activity="
                                               << ctx.receiver_id
-                                              << " installed as ViewTreeLifecycleOwner key="
-                                              << *owner_key
+                                              << " installed as " << res_name
+                                              << " key=" << *key
                                               << " on activity-as-view node"
                                               << std::endl;
                                 }
+                                return true;
+                            };
+                            if (install_owner_tag("view_tree_lifecycle_owner")) {
+                                // GP-COMPOSE-002 (issue #582): ComponentActivity
+                                // installs the FULL owner family
+                                // (ComponentActivity.onCreate →
+                                //   setViewTreeLifecycleOwner(this) +
+                                //   setViewTreeSavedStateRegistryOwner(this) +
+                                //   (ViewModelStoreOwner via the same activity
+                                //    object)). The old F-105 arm installed ONLY
+                                //    the lifecycle tag; androidx consumers of
+                                //    SavedStateRegistry / ViewModelStore walked
+                                //    the same tree and found no owner.
+                                install_owner_tag(
+                                    "view_tree_saved_state_registry_owner");
+                                install_owner_tag(
+                                    "view_tree_view_model_store_owner");
                             } else {
                                 std::cerr << "[F105-OWNER] view_tree_lifecycle_owner id "
                                              "not in app resources — owner install skipped"
@@ -7274,6 +7294,19 @@ bool ViewShadow::add_child(uint32_t parent_id, uint32_t child_id) {
     }
     // Remove from previous parent if any.
     if (child->parent_id != 0 && child->parent_id != parent_id) {
+        // GP-LAYOUT-003 (issue #582): AOSP ViewGroup.addView throws
+        // IllegalStateException "The specified child already has a parent";
+        // this path silently re-parented. The hard throw needs the
+        // app-visible ISE channel audited against the adapter-recycling
+        // flows first (RecyclerView detach/attach), so the violation is
+        // LOUD now (one row per mount site) — zero behavior change, the
+        // silent face is at least diagnosable. QUEUED: AOSP-exact throw.
+        static thread_local uint64_t gp_l003_n = 0;
+        if (gp_l003_n++ < 12)
+            std::cerr << "[GP-LAYOUT-003] addView child=" << child_id
+                      << " re-parented " << child->parent_id << " -> "
+                      << parent_id << " (AOSP would throw IllegalStateException)"
+                      << std::endl;
         if (auto* prev = find_node(child->parent_id)) {
             prev->children.erase(
                 std::remove(prev->children.begin(), prev->children.end(), child_id),

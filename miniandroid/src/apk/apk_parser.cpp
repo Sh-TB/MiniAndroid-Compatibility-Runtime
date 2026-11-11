@@ -474,7 +474,21 @@ std::vector<uint8_t> ApkParser::decompress_data(const std::vector<uint8_t>& comp
     }
     
     if (method == 8) {
-        // Deflate compression
+        // GP-APK-008 (issue #582): uncompressed_size is a peer-controlled
+        // uint32 used directly as the allocation size — a crafted entry
+        // (e.g. declared 4 GiB) tried a proportional allocation before any
+        // cap. Bound: absolute 256 MiB AND a 128x expansion ratio (the
+        // ratio arm keeps legitimately-large assets working while rejecting
+        // the classic small-deflate-huge-declared bomb).
+        constexpr uint32_t kMaxUncompressed = 256u << 20;
+        if (uncompressed_size > kMaxUncompressed ||
+            (uncompressed_size > (64u << 20) &&
+             compressed_size != 0 &&
+             uncompressed_size / compressed_size > 128u)) {
+            last_error_ = "ZIP entry uncompressed_size exceeds safe bound "
+                          "(decompression-bomb guard)";
+            return {};
+        }
         std::vector<uint8_t> result(uncompressed_size);
         
         z_stream strm = {};

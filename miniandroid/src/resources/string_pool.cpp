@@ -62,11 +62,27 @@ bool ResStringPool::parse(const uint8_t* p, size_t avail, size_t& consumed,
         p[20] | (p[21] << 8) | (p[22] << 16) | (static_cast<uint32_t>(p[23]) << 24));
 
     utf8_pool = (flags & RES_STRING_POOL_UTF8_FLAG) != 0;
+
+    // GP-RES-001 (issue #582) — three wrap/allocation faces, all ASan-reproduced
+    // pre-fix on current main:
+    //   1. strings.resize(string_count) ran BEFORE the offset-table size was
+    //      validated: attacker-controlled count allocated ~32 GB of strings
+    //      (0x40000000 entries) before rejection (ASan OOM abort reproduced).
+    //   2. header_size + string_count * 4u multiplied in uint32:
+    //      0x40000000 * 4 wrapped to 0 and the check passed.
+    //   3. strings_start + off wrapped in uint32 (0xFFFFFFF0 + 0x20 -> 0x10)
+    //      and the OOB pointer sdata + off was decoded (ASan SEGV reproduced).
+    // All arithmetic below is 64-bit and validation precedes the resize.
+    const uint64_t strings_start64 = strings_start;
+    if ((uint64_t)header_size + (uint64_t)string_count * 4ull > chunk_size)
+        return fail("pool: offset table overruns chunk");
+    if (string_count > 0 &&
+        strings_start64 < (uint64_t)header_size + (uint64_t)string_count * 4ull)
+        return fail("pool: strings_start overlaps offset table");
+
+    // bounded by the 64-bit check above: count*4 <= chunk_size-header_size
     strings.clear();
     strings.resize(string_count);
-
-    if (header_size + string_count * 4u > chunk_size)
-        return fail("pool: offset table overruns chunk");
 
     const uint8_t* sdata = p + strings_start;
     for (uint32_t i = 0; i < string_count; i++) {
@@ -75,7 +91,7 @@ bool ResStringPool::parse(const uint8_t* p, size_t avail, size_t& consumed,
             (p[header_size + i * 4 + 1] << 8) |
             (p[header_size + i * 4 + 2] << 16) |
             (static_cast<uint32_t>(p[header_size + i * 4 + 3]) << 24));
-        if (strings_start + off >= chunk_size) {
+        if (strings_start64 + (uint64_t)off >= chunk_size) {
             strings[i].clear();  // malformed entry → empty (Arsc law)
             continue;
         }

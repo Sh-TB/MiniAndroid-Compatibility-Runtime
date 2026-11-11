@@ -1,0 +1,31 @@
+== gp582_engine_probe_test — issue #582 boundary vectors ==
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+[MEM] method_exit: LGP582Test;.add_int_min_minus1_wraps_to_max insns=4 RSS=8.02734 MB
+  PASS  add_int_min_minus1_wraps_to_max — expected 2147483647.000000, got 2147483647.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+[MEM] method_exit: LGP582Test;.mul_int_65536_squared_wraps_to_zero insns=3 RSS=8.02734 MB
+  PASS  mul_int_65536_squared_wraps_to_zero — expected 0.000000, got 0.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+  PASS  div_int_min_by_minus1_java_min — expected -2147483648.000000, got -2147483648.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+  PASS  rem_int_min_by_minus1_java_zero — expected 0.000000, got 0.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+  PASS  shl_int_1_to_31_wraps_to_min — expected -2147483648.000000, got -2147483648.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+  PASS  add_long_min64_minus1_wraps_to_max — expected 9223372036854775808.000000, got 9223372036854775808.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+  PASS  div_long_min_by_minus1_java_min — expected -9223372036854775808.000000, got -9223372036854775808.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+  PASS  div_float_by_zero_positive_inf — expected inf, got inf
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+  PASS  div_double_neg_by_zero_negative_inf — expected -inf, got -inf
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+  PASS  rem_double_by_zero_nan — expected nan, got -nan
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+  PASS  rem_double_int64_backed_operand_fmod_3_2 — expected 1.000000, got 1.000000
+[EXP068] Built class→superclass map: 51 entries (1 from APK + 50 framework) — LinearLayout present: YES
+[UNIMPL-DIAG] LGP582Test;.undefined_opcode_halt@0x3 units[pc-4..pc+5]:  0014  002a  0000 [00e3 ] 0000  000f 
+[MEM] method_exit: LGP582Test;.undefined_opcode_halt insns=2 RSS=10.7266 MB
+  PASS  undefined_opcode_halts_no_resume — halted before return (structured, no desync)
+----
+gp582: 12 passed, 0 failed

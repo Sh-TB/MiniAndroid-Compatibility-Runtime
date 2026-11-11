@@ -455,12 +455,16 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
         // its implementors (R8-merged) do not redeclare it — without this
         // set, CoroutineContext assembly in every Compose app NPEs.
         // ====================================================================
+        // GP-DEX-012 (issue #582): all class_def sub-offset checks widened
+        // to 64-bit — `uint32_offset + 4` wrapped before the comparison
+        // (interfaces_off = 0xFFFFFFFC passed the guard and memcpy read
+        // ~4 GiB past the buffer; ASan SEGV reproduced pre-fix).
         if (class_def.interfaces_off != 0 &&
-            class_def.interfaces_off + 4 <= current_size_) {
+            (uint64_t)class_def.interfaces_off + 4 <= current_size_) {
             uint32_t if_size = 0;
             std::memcpy(&if_size, data + class_def.interfaces_off, sizeof(if_size));
             if (if_size > 0 && if_size < 0x10000u &&
-                class_def.interfaces_off + 4 + (uint64_t)if_size * 2 <= current_size_) {
+                (uint64_t)class_def.interfaces_off + 4 + (uint64_t)if_size * 2 <= current_size_) {
                 for (uint32_t k = 0; k < if_size; ++k) {
                     uint16_t type_idx = 0;
                     std::memcpy(&type_idx,
@@ -496,26 +500,26 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
                                                               std::string>>>>>
             pending_method_anns;
         if (class_def.annotations_off != 0 &&
-            class_def.annotations_off + 4 <= current_size_) {
+            (uint64_t)class_def.annotations_off + 4 <= current_size_) {
             uint32_t class_ann_off = 0;
             std::memcpy(&class_ann_off, data + class_def.annotations_off,
                         sizeof(class_ann_off));
             if (class_ann_off != 0 &&
-                class_ann_off + 4 <= current_size_) {
+                (uint64_t)class_ann_off + 4 <= current_size_) {
                 uint32_t ann_set_size = 0;
                 std::memcpy(&ann_set_size, data + class_ann_off,
                             sizeof(ann_set_size));
                 // Security law (§N): bound every read against the file end
                 // before any pointer arithmetic.
                 if (ann_set_size > 0 && ann_set_size < 0x1000u &&
-                    class_ann_off + 4 + (uint64_t)ann_set_size * 4 <=
+                    (uint64_t)class_ann_off + 4 + (uint64_t)ann_set_size * 4 <=
                         current_size_) {
                     for (uint32_t k = 0; k < ann_set_size; ++k) {
                         uint32_t item_off = 0;
                         std::memcpy(&item_off,
                                     data + class_ann_off + 4 + (size_t)k * 4,
                                     sizeof(item_off));
-                        if (item_off == 0 || item_off + 2 > current_size_)
+                        if (item_off == 0 || (uint64_t)item_off + 2 > current_size_)
                             continue;
                         uint8_t visibility = data[item_off];
                         if (visibility == 2) {
@@ -768,7 +772,7 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
         // contract never reaches.
         // ====================================================================
         if (class_def.annotations_off != 0 &&
-            class_def.annotations_off + 16 <= current_size_) {
+            (uint64_t)class_def.annotations_off + 16 <= current_size_) {
             uint32_t fields_size = 0, ann_method_size = 0;
             std::memcpy(&fields_size,
                         data + class_def.annotations_off + 4,
@@ -824,7 +828,7 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
                         std::memcpy(&item_off,
                                     data + set_off + 4 + (size_t)a * 4,
                                     sizeof(item_off));
-                        if (item_off == 0 || item_off + 2 > current_size_)
+                        if (item_off == 0 || (uint64_t)item_off + 2 > current_size_)
                             continue;
                         uint8_t visibility = data[item_off];
                         if (visibility != 1) continue;  // RUNTIME only

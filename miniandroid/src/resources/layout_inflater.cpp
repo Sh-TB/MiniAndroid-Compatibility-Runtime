@@ -93,17 +93,41 @@ uint32_t LayoutInflater::parse_hex_color(const std::string& s) {
 }
 
 int LayoutInflater::gravity_bits(const std::string& s) {
+    // GP-LAYOUT-001 (issue #582): the substring matcher collapsed axis-
+    // specific tokens — has("fill") matched "fill_horizontal"/"fill_vertical"
+    // and set BOTH fill bits (0x77) for each; has("center") relies on the
+    // ordering of the following corrections; start/end carried no relative
+    // flag. Tokenize on '|' + whitespace and map EXACT tokens instead.
+    // AOSP Gravity: LEFT=0x3 RIGHT=0x5 CENTER_HORIZONTAL=0x1
+    //               CENTER_VERTICAL=0x10 FILL_HORIZONTAL=0x7
+    //               FILL_VERTICAL=0x70 FILL=0x77 TOP=0x30 BOTTOM=0x50.
+    // RTL law: START/END are the RELATIVE flags (0x80000003/0x80000005);
+    // the renderer consumes the low axis bits — start/end keep the
+    // LTR-mapped low bits (documented limitation, RTL resolve is pending).
     int g = 0;
-    auto has = [&](const char* k) { return s.find(k) != std::string::npos; };
-    // AOSP Gravity: LEFT=3 RIGHT=5 CENTER_HORIZONTAL=1 START=8388611 END=8388613
-    if (has("center")) g |= 0x11;
-    if (has("center_horizontal")) g = (g & ~0x7) | 0x1;
-    if (has("center_vertical")) g = (g & ~0x70) | 0x10;
-    if (has("left") || has("start")) g |= 0x3;
-    if (has("right") || has("end")) g |= 0x5;
-    if (has("top")) g |= 0x30;
-    if (has("bottom")) g |= 0x50;
-    if (has("fill")) g |= 0x77;
+    size_t i = 0;
+    auto is_sep = [](char c) {
+        return c == '|' || c == ',' || c == ' ' || c == '\t';
+    };
+    while (i < s.size()) {
+        while (i < s.size() && is_sep(s[i])) ++i;
+        size_t b = i;
+        while (i < s.size() && !is_sep(s[i])) ++i;
+        if (i == b) break;
+        std::string tok = s.substr(b, i - b);
+        if (tok == "center") g |= 0x11;
+        else if (tok == "center_horizontal") g = (g & ~0x7) | 0x1;
+        else if (tok == "center_vertical") g = (g & ~0x70) | 0x10;
+        else if (tok == "left" || tok == "start") g |= 0x3;
+        else if (tok == "right" || tok == "end") g |= 0x5;
+        else if (tok == "top") g |= 0x30;
+        else if (tok == "bottom") g |= 0x50;
+        else if (tok == "fill") g |= 0x77;
+        else if (tok == "fill_horizontal") g |= 0x7;
+        else if (tok == "fill_vertical") g |= 0x70;
+        else if (tok == "clip_horizontal") g &= ~0x7;
+        else if (tok == "clip_vertical") g &= ~0x70;
+    }
     return g;
 }
 
