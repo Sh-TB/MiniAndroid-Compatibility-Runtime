@@ -1,0 +1,8 @@
+[UI-EVENT] event=CLICK view_object=134 view_class=Landroid/widget/Button; listener=150 listener_class=Lk/d;
+[UI-EVENT] event=CLICK result=DISPATCHED listener=Lk/d;
+[UI-EVENT] event=CLICK view_object=135 view_class=Landroid/widget/Button; listener=151 listener_class=Lk/d;
+[UI-EVENT] event=CLICK result=DISPATCHED listener=Lk/d;
+[UI-EVENT] event=CLICK view_object=136 view_class=Landroid/widget/Button; listener=152 listener_class=Lk/d;
+[UI-EVENT] event=CLICK result=DISPATCHED listener=Lk/d;
+[UI-EVENT] event=CLICK view_object=139 view_class=Landroid/widget/Button; listener=154 listener_class=Lk/d;
+[UI-EVENT] event=CLICK result=DISPATCHED listener=Lk/d;

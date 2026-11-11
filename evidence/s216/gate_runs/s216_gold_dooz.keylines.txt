@@ -1,0 +1,3 @@
+[SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lub1;.<clinit> pc=3 → deferred handler @0x0xe type=Ljava/lang/ClassNotFoundException;
+[SYNTH-EXC] STREAM-OPEN (deferred): Ljava/io/FileNotFoundException; (/home/z/my-project/evidence/s216/gate_runs/store_s216_gold_dooz/data/data/io.github.yamin8000.dooz/files/datastore/settings.preferences_pb (open failed: ENOENT)) method=Ly8;.q pc=59 → deferred handler @0x0x54 type=Ljava/io/FileNotFoundException;
+[SYNTH-EXC] S102-CLASSLOADER (deferred): Ljava/lang/ClassNotFoundException; (androidx.compose.ui.platform.AndroidCompositionLocals_androidKt) method=Lgq0;.<clinit> pc=14 → deferred handler @0x0x2c type=<catch-all>

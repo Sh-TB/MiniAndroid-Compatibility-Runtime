@@ -2564,6 +2564,11 @@ public:
     // ────────────────────────────────────────────────────────────────────
     void awaitup_gate_begin(int64_t ms) {
         awaitup_deadline_hit_ = false;
+        // CONT-130b: fresh per-tap state — every tap re-arms the gate with
+        // the soft channel DISARMED (the previous window's soft stop left
+        // no artifact behind by law; begin() owns the reset too).
+        awaitup_soft_stop_ = false;
+        awaitup_soft_stop_active_ = false;
         if (ms > 0) {
             awaitup_deadline_ = std::chrono::steady_clock::now() +
                                 std::chrono::milliseconds(ms);
@@ -2574,20 +2579,6 @@ public:
     }
     void awaitup_gate_end() { awaitup_deadline_active_ = false; }
     bool awaitup_gate_hit() const { return awaitup_deadline_hit_; }
-    // CONT-130b SOFT DRAW-WINDOW STOP (the coder-lane law, landed on main):
-    // when the scoped gate fires INSIDE a draw window the unwind takes the
-    // R-NEW-345 park-yield channel — the fetch loop breaks on
-    // awaitup_soft_stop_, every enclosing DEX frame exits BY RETURN, no
-    // exception is synthesized, and the compose draw state survives
-    // (measured: the hard channel's deferred VirtualMachineError unwound
-    // mid-draw, half-mutated MultiParagraphLayoutCache (density=0.0), and
-    // 4,685 "could not provide TextLayoutResult" throws poisoned every
-    // later draw pass). The hard F084 channel remains as a DELAYED BACKSTOP
-    // (15 s grace) for a body that never returns. Frame honesty unchanged:
-    // draw_window_budget_halted_ arms in both channels — an unfinished
-    // frame is never presented. Flags clear at the draw-window boundary
-    // (render_draw_window close) + awaitup_gate_abort_reset (per-tap).
-    bool awaitup_soft_stop_ = false;
     // Post-gate cleanup: the scoped halt unwound through the draw window as
     // a deferred VirtualMachineError (the same channel as a wall halt).
     // That error is OUR budget artifact — clear it so the UP dispatch (the
@@ -2597,6 +2588,59 @@ public:
     void awaitup_gate_abort_reset();
     // Consulted by the interpreter loop next to the S60 wall check.
     void awaitup_gate_check();
+
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-130b: AWAIT-UP-GATE SOFT DRAW-WINDOW STOP. Inside a draw window
+    // the gate unwinds GRACEFULLY at method boundaries — the fetch loop
+    // breaks on awaitup_soft_stop_, every enclosing frame exits by RETURN,
+    // NO exception is synthesized: the compose draw state survives the
+    // gate stop (the hard F084 unwind left MultiParagraphLayoutCache
+    // density=0.0 half-mutated and poisoned 4,685 later draws — the S215
+    // decode). The hard F084 channel remains as a DELAYED backstop (15 s
+    // grace) for a method body that never returns. Frame honesty is
+    // UNCHANGED: draw_window_budget_halted_ arms in BOTH channels (an
+    // unfinished frame is never presented — the F-NEW-298 law).
+    // ────────────────────────────────────────────────────────────────────
+    bool awaitup_soft_stop_ = false;        // armed: fetch loops break at the boundary
+    bool awaitup_soft_stop_active_ = false; // soft channel engaged in this window
+    std::chrono::steady_clock::time_point awaitup_hard_deadline_{};
+    // Draw-window boundary clear (dispatch_custom_view_draw exit): a
+    // soft-stopped window leaves NO artifact state; frame honesty stays
+    // armed for the presentation point (frame_honesty_begin owns that
+    // reset at the NEXT render pass).
+    void awaitup_soft_stop_clear() {
+        awaitup_soft_stop_ = false;
+        awaitup_soft_stop_active_ = false;
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-130 F-NEW-277 slice-2: VSYNC-CONTINUITY KEEP-ALIVE (row #21).
+    // AOSP law: vsync belongs to the DISPLAY — a long DEX body (class-init
+    // chains, bitmap decode, big compute) must NOT starve the frame
+    // pipeline. The interpreter epilogue calls vsync_keepalive_tick();
+    // every 256K instructions (MINIANDROID_VSYNC_TICK_INTERVAL env-tunable,
+    // floor 4096) the tick fires the ONE canonical compose pump through
+    // the hook ExecutionEngine wired on the real-dalvik app path
+    // (pump_compose_frames(8) — G06 token routing + F-NEW-289 main-looper
+    // identity stay in one place, the CONT-129 re-land scope law). Guards:
+    // reentrancy flag, env opt-out (MINIANDROID_VSYNC_KEEPALIVE=0),
+    // pending-callback + queue scope guard. BYTE-INERT while the hook is
+    // unset (one null check per instruction — the CONT-42 zero-cost law).
+    // The INTERACTIVE-SESSION CLOCK (row #22 law) rides inside the tick:
+    // when a frame callback is pending AND the handler queue head is
+    // future-due, ONE bounded deterministic advance_virtual(next_ready -
+    // now) happens before the pump — the delay(100ms) dice / delay(500ms)
+    // AI chains resume while a frame callback is pending.
+    // ────────────────────────────────────────────────────────────────────
+    void vsync_keepalive_tick(uint64_t total_insns);
+    void set_vsync_keepalive_hook(std::function<int(int)> hook) {
+        vsync_keepalive_hook_ = std::move(hook);
+    }
+    std::function<int(int)> vsync_keepalive_hook_;  // = pump_compose_frames
+    bool vsync_tick_active_ = false;       // reentrancy guard (the pump interprets)
+    uint64_t vsync_insn_acc_ = 0;          // instructions since the last fire
+    int vsync_keepalive_enabled_ = -1;     // tri-state env verdict cache
+    uint64_t vsync_tick_interval_ = 0;     // env-tunable cadence cache (256K default)
 
     
     // Configuration
@@ -3695,6 +3739,14 @@ public:
     // MASTER CAMPAIGN FIX: lifecycle-provenance flag (see lifecycle_methods_from_dex).
     bool lifecycle_from_dex_ = false;
     bool halted_on_return_ = false;
+    // CONT-132 SOFT-STOP RETURN-VALUE LAW: the fetch loop sets this at the
+    // soft-stop break (and the deadline-hit break — the same graceful
+    // channel). A soft-stop frame exit executes NO return instruction, so
+    // the frame has no defined return value; try_recursive_invoke must
+    // answer the caller's move-result with the DEFINED polymorphic zero
+    // instead of the stale last_invoke_return_ (the callee's last internal
+    // invoke result — live face: the raw key hashCode inside Lbw0;.d).
+    bool soft_stopped_no_return_ = false;
     std::string halt_reason_;
     // T61 (S145): scripted-tap wall rebate accumulator (see rebate_wall_ms).
     int64_t wall_rebate_ms_ = 0;

@@ -1,0 +1,31 @@
+{
+ "rc": 0,
+ "wall_s": 196.7,
+ "final_face_sha16": "a0fae9072313e2d1",
+ "faces": {
+  "frame_000.png": "a0fae9072313e2d1",
+  "frame_001.png": "a0fae9072313e2d1",
+  "frame_002.png": "a0fae9072313e2d1",
+  "frame_003.png": "a0fae9072313e2d1",
+  "frame_004.png": "a0fae9072313e2d1",
+  "screenshot.png": "a0fae9072313e2d1"
+ },
+ "uncaught": 0,
+ "gate_soft": 0,
+ "gate_hard": 0,
+ "gate_hard_backstop": 0,
+ "poison_throws": 0,
+ "vsync_ticks": 6,
+ "keep_rows": 0,
+ "clock_arms": 0,
+ "aput_oob": 0,
+ "oob_dumps": 0,
+ "newgame_clicked": 0,
+ "onClick": 0,
+ "dice_hits": 0,
+ "parent_cancel": 0,
+ "events": 0,
+ "up_dispatched": 0,
+ "down_dispatched": 0,
+ "choreo": 25
+}

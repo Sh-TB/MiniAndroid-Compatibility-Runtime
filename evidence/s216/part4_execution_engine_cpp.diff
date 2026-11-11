@@ -1,0 +1,105 @@
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index dd85bb8f..e803a176 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -667,6 +667,15 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+             }
+         }
+         dalvik_engine_.set_per_dex_raw_data(std::move(per_dex_raw));
++        // CONT-130 F-NEW-277 slice-2: wire the VSYNC-CONTINUITY keep-alive
++        // hook — ONLY on the real-dalvik app path (GATE goldens and legacy
++        // runs keep the pre-law cadence byte-exact; the tick is guarded by
++        // the MINIANDROID_VSYNC_KEEPALIVE=0 opt-out and the pending/queue
++        // scope guard). The fire stays the ONE canonical pump
++        // (pump_compose_frames — G06 token routing + F-NEW-289 main-looper
++        // identity in one place, the CONT-129 re-land scope law).
++        dalvik_engine_.set_vsync_keepalive_hook(
++            [this](int max_frames) { return pump_compose_frames(max_frames); });
+         dalvik_engine_.set_apk_path(result.apk_info.apk_path);
+         // EXP-093/F011: Set manifest-derived package identity
+         dalvik_engine_.set_package_info(
+@@ -6077,6 +6086,68 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
+                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
+                         const auto& pixels = fb.get_pixels();
+                         fb_pixels_total = pixels.size();
++                        // ── CONT-130 F-NEW-298-KEEP: KEEP-LAST-COMPLETE ────
++                        // A walked-empty UNIFORM re-render (distinct=1: the
++                        // 100% #FAFAFA framework / #FAF9FD app-theme bare
++                        // window background) NEVER replaces the presented
++                        // surface — AOSP/SurfaceFlinger: the compositor never
++                        // swaps a real frame for an empty one (the CONT-130
++                        // PRE decode: dooz tap chain collapsed to
++                        // d602648e/distinct=1 100% #FAFAFA, chrome GONE).
++                        // Arms ONLY when the compose family is live (frame
++                        // clock past base) AND the previous presented face
++                        // was NON-uniform; non-uniform transient walks
++                        // present as-is (frame honesty unchanged). Applied
++                        // at the per-frame boundary AND the F-NEW-497 drain
++                        // render — both present through this same point.
++                        size_t keep_distinct = 0;
++                        {
++                            std::map<uint32_t, size_t> keep_hist;
++                            for (const auto& px : pixels) {
++                                keep_hist[(uint32_t(px.r) << 16) |
++                                          (uint32_t(px.g) << 8) |
++                                          uint32_t(px.b)]++;
++                                if (keep_hist.size() > 1) {
++                                    keep_distinct = 2;  // non-uniform (early exit)
++                                    break;
++                                }
++                            }
++                            if (keep_distinct == 0)
++                                keep_distinct = keep_hist.size();  // 0 (empty) or 1
++                        }
++                        const bool face_uniform_298 = keep_distinct == 1;
++                        bool keep_298 = false;
++                        {
++                            auto* cs298 =
++                                shadow_registry_
++                                    ? shadow_registry_->find_as<
++                                          framework::ChoreographerShadow>()
++                                    : nullptr;
++                            const bool compose_live_298 =
++                                cs298 && cs298->last_frame_time_nanos() >
++                                             framework::ChoreographerShadow::
++                                                 kFrameBaseNanos;
++                            if (compose_live_298 &&
++                                !last_presented_face_uniform_ && face_uniform_298)
++                                keep_298 = true;
++                        }
++                        if (keep_298) {
++                            std::cerr << "[F-NEW-298-KEEP] walked-empty uniform "
++                                      << "face (distinct=1) — presentation "
++                                      << "SKIPPED, keeping the last complete "
++                                      << "frame (CONT-130 keep-last-complete)"
++                                      << std::endl;
++                            dalvik_engine_.sf_order_log(
++                                "PRESENT",
++                                "keep_last_complete=1 (uniform walk face)");
++                            fb_non_white = -1;   // honest signal: not presented
++                            fb_pixels_total = framebuffer_.size() / 4;
++                            frame_census_.keep_last_complete = true;
++                            frame_census_.kept_prior_frame = true;
++                            frame_census_.kept_prior_app_draw_ops =
++                                last_presented_app_draw_ops_;
++                        } else {
++                        last_presented_face_uniform_ = face_uniform_298;
+                         // EXP-092: Debug — check if any non-white pixels exist in fb
+                         int non_white = 0;
+                         for (size_t i = 0; i < pixels.size(); i++) {
+@@ -6121,6 +6192,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
+                         }
+                         std::cerr << "[EXP092-COPY] framebuffer_ has " << fb_non_white << " non-white pixels" << std::endl;
+                         }
++                        }
+                         // S135 §3: DRAW/MEASURE/LAYOUT confirmation — the
+                         // composed frame IS the evidence the pipeline
+                         // reached the end of the draw walk.
+@@ -6680,6 +6752,7 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
+                     {"render_exception", frame_census_.render_exception},
+                     {"budget_exhausted", frame_census_.budget_exhausted},
+                     {"draw_budget_halt", frame_census_.draw_budget_halt},
++                    {"keep_last_complete", frame_census_.keep_last_complete},
+                     {"presentation", frame_census_.kept_prior_frame
+                                           ? "kept_prior_frame"
+                                           : "this_frame"},

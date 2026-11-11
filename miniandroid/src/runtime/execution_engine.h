@@ -363,6 +363,12 @@ private:
     // F-NEW-307 (CONT-44): the app-op ledger of the last PRESENTED frame
     // (0 before any presentation) — the kept-frame census attribution source.
     uint64_t last_presented_app_draw_ops_ = 0;
+    // CONT-130 F-NEW-298-KEEP: uniform-face signature of the last PRESENTED
+    // frame. `true` before any presentation (the keep law cannot arm until
+    // a REAL face — non-uniform — has been presented). A 100%-uniform walk
+    // face (distinct=1: the #FAFAFA/#FAF9FD bare-window collapse) never
+    // replaces a presented non-uniform face (keep-last-complete law).
+    bool last_presented_face_uniform_ = true;
 
 public:
     // ═══════════════════════════════════════════════════════════════════
@@ -394,6 +400,12 @@ public:
         bool draw_budget_halt = false;        // the F084 halt fired inside THIS draw walk
         bool kept_prior_frame = false;        // presentation skipped; PNG holds the prior frame
         uint64_t kept_prior_app_draw_ops = 0; // the kept frame's app-op ledger count
+        // ── CONT-130 F-NEW-298-KEEP: keep-last-complete ──
+        // A walked-empty UNIFORM re-render (distinct=1: the bare-window
+        // collapse face) never replaces the presented surface. Honest
+        // per-frame record: this frame's walk produced the uniform face
+        // and the presentation was skipped (keep-last-complete law).
+        bool keep_last_complete = false;
         int  nodes_visited = 0;              // P0-7 census
         int  nodes_skipped_depth = 0;        // P0-7 census
         int  depth_max = 0;                  // P0-7 census

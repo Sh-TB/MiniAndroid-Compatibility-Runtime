@@ -1,0 +1,101 @@
+{
+ "binary_sha16": "74f1d2c24cb8e40b",
+ "bouncy": {
+  "rc": 0,
+  "wall_s": 2.2,
+  "face_sha16": "8a6c24ac8a7d718e",
+  "png_bytes": 37496,
+  "noise_suspect": false,
+  "uncaught": 0,
+  "in_flight": 0,
+  "pin": "8a6c24ac8a7d718e",
+  "hold": true
+ },
+ "unote": {
+  "rc": 0,
+  "wall_s": 1.5,
+  "face_sha16": "3b8dcb0adbbc17a9",
+  "png_bytes": 17205,
+  "noise_suspect": false,
+  "uncaught": 0,
+  "in_flight": 0,
+  "pin": "3b8dcb0adbbc17a9",
+  "hold": true
+ },
+ "gmdice": {
+  "r1": {
+   "rc": 0,
+   "wall_s": 2.6,
+   "face_sha16": "3891679dff449331",
+   "png_bytes": 34865,
+   "noise_suspect": false,
+   "uncaught": 0,
+   "in_flight": 0
+  },
+  "r2": {
+   "rc": 0,
+   "wall_s": 2.6,
+   "face_sha16": "3891679dff449331",
+   "png_bytes": 34865,
+   "noise_suspect": false,
+   "uncaught": 0,
+   "in_flight": 0
+  },
+  "rerun_identical": true,
+  "hold": true
+ },
+ "microtimer": {
+  "rc": 0,
+  "wall_s": 2.5,
+  "face_sha16": "b39665f68f3938e6",
+  "png_bytes": 32322,
+  "noise_suspect": false,
+  "uncaught": 0,
+  "in_flight": 0,
+  "hold": true
+ },
+ "ttt": {
+  "runs": [
+   {
+    "rc": 0,
+    "wall_s": 20.9,
+    "face_sha16": "7354c1b231cd581d",
+    "png_bytes": 11386,
+    "noise_suspect": false,
+    "uncaught": 0,
+    "in_flight": 0
+   },
+   {
+    "rc": 0,
+    "wall_s": 20.7,
+    "face_sha16": "7354c1b231cd581d",
+    "png_bytes": 11386,
+    "noise_suspect": false,
+    "uncaught": 0,
+    "in_flight": 0
+   },
+   {
+    "rc": 0,
+    "wall_s": 20.6,
+    "face_sha16": "7354c1b231cd581d",
+    "png_bytes": 11386,
+    "noise_suspect": false,
+    "uncaught": 0,
+    "in_flight": 0
+   }
+  ],
+  "deterministic_x3": true,
+  "hold": true
+ },
+ "dooz": {
+  "rc": 0,
+  "wall_s": 199.2,
+  "face_sha16": "a0fae9072313e2d1",
+  "png_bytes": 16160,
+  "noise_suspect": false,
+  "uncaught": 0,
+  "in_flight": 0,
+  "pin": "a0fae9072313e2d1",
+  "hold": true
+ }
+}

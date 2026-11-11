@@ -1,0 +1,516 @@
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 47ca3562..151f946c 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -4747,6 +4747,7 @@ bool DalvikExecutionEngine::execute_method_internal(
+     bytecode_ = bytecode;
+     halted_ = false;
+     halted_on_return_ = false;
++    soft_stopped_no_return_ = false;  // CONT-132: per-frame exit discriminator
+     instruction_sequence_ = 0;
+     // G12 FIX-G12-003 (AOSP parent-delegation law, FIND-G09-ACF-001): the
+     // boot classpath owns android.*/java.* classes — an app-bundled copy
+@@ -6747,6 +6748,48 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
+         phase_clock().ci_warm.fetch_add(1, std::memory_order_relaxed);
+         return true;
+     }
++    // ── R14 (A-R3 #580) SUPERCLASS-FIRST CLASS-INIT LAW (A-R3, S216) ──
++    // JVMS 5.5 / AOSP ClassLinker::EnsureInitialized: initializing class C
++    // requires C's DIRECT SUPERCLASS to be initialized FIRST (recursively).
++    // The engine already builds class_to_superclass_ (EXP-068) and walks it
++    // for semantic ancestry — but no init site ever walked it UPWARD (11
++    // insert sites, 0 super-init calls at the R14 audit). Observable
++    // divergence: a superclass whose <clinit> publishes state (registration
++    // singletons, static tables consumed reflectively, counters) never ran
++    // until the subclass actively referenced a superclass member — on ART
++    // it runs at subclass-init time. One walk here covers all call sites.
++    // Re-entrancy safe: the initialized_classes_ guard above (checked again
++    // inside the recursive call) breaks cycles A→B→A before any <clinit>
++    // re-runs, and the framework-namespace skip below is re-applied for the
++    // superclass by the recursive call itself.
++    if (!initialized_classes_.count(normalized)) {
++        // A/B gate: MINIANDROID_R14_SUPER_INIT=0 disables (default ON —
++        // the AOSP-faithful order; the 6-pin gate decides the final ship).
++        static const bool r14_off =
++            [] { const char* e = std::getenv("MINIANDROID_R14_SUPER_INIT");
++                 return e && std::string(e) == "0"; }();
++        auto sup_it = class_to_superclass_.find(normalized);
++        if (sup_it == class_to_superclass_.end() || sup_it->second.empty())
++            sup_it = class_to_superclass_.find(class_descriptor);
++        if (!r14_off && sup_it != class_to_superclass_.end() &&
++            !sup_it->second.empty()) {
++            const std::string super_desc = sup_it->second;
++            // App-DEX superclasses only: framework namespaces keep the
++            // platform-skip (their statics ride the shadow/bridge layer).
++            static const char* f_skip[] = {"Landroid/", "Ljava/", "Ljavax/"};
++            bool fns = false;
++            for (const char* p : f_skip)
++                if (super_desc.compare(0, strlen(p), p) == 0) { fns = true; break; }
++            if (!fns) {
++                static thread_local int r14_depth = 0;
++                if (r14_depth < 24) {  // bounded: never deeper than a real chain
++                    r14_depth++;
++                    ensure_class_initialized(super_desc);
++                    r14_depth--;
++                }
++            }
++        }
++    }
+     // Framework classes — skip <clinit> (they're stubbed).
+     // The shadow registry / bridge_to_api handles their static fields.
+     //
+@@ -16381,6 +16424,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         // EXP-055: Save last_invoke_return_ so the callee's return value
+         // doesn't corrupt the caller's pending return from a different call.
+         auto saved_last_invoke_return = last_invoke_return_;
++        // CONT-132: the caller's soft-stop exit flag is OUT-of-frame state —
++        // save it so the callee's exit cannot leak into the caller's
++        // post-call discriminator (same discipline as EXP-054/055).
++        bool saved_soft_stopped_no_return = soft_stopped_no_return_;
+         // UNIFIED_011.3 EXC-PROPAGATE: save + isolate any in-flight unwind
+         // exception so a stale sibling-call exception is never misattributed
+         // to this callee.
+@@ -16573,6 +16620,29 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                 "F084 interpreter halt in callee (no return value): " +
+                     callee_halt_reason,
+                 "F084-HALT-RETURN");
++        } else if (soft_stopped_no_return_) {
++            // CONT-132 SOFT-STOP RETURN-VALUE LAW (the F-084 contamination
++            // law's soft-channel twin): a soft-stop frame exit breaks the
++            // fetch loop BEFORE any return instruction — halted_ stays false
++            // and halted_on_return_ stays false, so the callee_halted
++            // discriminator above cannot see it and the old code handed
++            // last_invoke_return_ (the callee's LAST INTERNAL invoke result
++            // — e.g. the raw key hashCode computed inside Lbw0;.d) to the
++            // caller's move-result. Live face (S216 tap battery, binary
++            // 3c3c4aa8): aput-oob index = the exact raw key hash
++            // (-879540352 / 832694404 / -2087608294 …) into a length-7
++            // Object[] → ArrayIndexOutOfBoundsException → coroutine job
++            // cancellation ("Parent job is Cancelling") → the gesture chain
++            // dies before onClick — rows #22/#25. ART law unchanged: a
++            // method that cannot complete never returns a value. The soft
++            // channel's contract is the graceful draw-state unwind (no
++            // synthesized exception), so the interrupted callee's return is
++            // DEFINED as the polymorphic zero; the caller's own fetch loop
++            // breaks at the next soft-stop check and never consumes it
++            // meaningfully.
++            return_val = DalvikValue::make_null();
++            last_invoke_return_ = DalvikValue::make_null();
++            soft_stopped_no_return_ = false;
+         } else {
+             // EXP-055: Propagate the return value from execute_method_internal.
+             // execute_return/execute_return_object stores the return value in
+@@ -17220,6 +17290,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         current_result_ = saved_current_result;
+         pending_exception_ = saved_pending_exception;
+         last_invoke_return_ = saved_last_invoke_return;
++        soft_stopped_no_return_ = saved_soft_stopped_no_return;  // CONT-132
+ 
+         // UNIFIED_011.3 EXC-PROPAGATE (§18): did the callee end with an
+         // uncaught exception? If so, search THIS frame's try table at the
+@@ -17475,6 +17546,12 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
+         ops = ok ? (int)canvas_shadow->ops().size() : 0;
+     }
+     draw_window_active_ = false;
++    // CONT-130b: a soft-stopped draw window leaves NO artifact state —
++    // the unwind already exited by return; clear the soft channel here so
++    // the next window starts clean (frame honesty stays armed for the
++    // presentation point — draw_window_budget_halted_ is NOT cleared here;
++    // frame_honesty_begin() owns that at the next render pass).
++    awaitup_soft_stop_clear();
+     std::cerr << "[C013-ONDRAW] view=" << view_object_id << " class=" << cls
+               << " dispatched=" << (ok ? "YES" : "NO") << " ops=" << ops << std::endl;
+     // ── S152 TRAIN-70e v1 (T70-ATTACH) RETIRED: the D7-PLACECHECK
+@@ -21009,8 +21086,52 @@ inline float bits_i2f(int32_t i) {
+ // channel the S60 wall uses so the unwind semantics are the already-proven
+ // F084 family path.
+ void DalvikExecutionEngine::awaitup_gate_check() {
+-    if (!awaitup_deadline_active_ || awaitup_deadline_hit_) return;
++    if (!awaitup_deadline_active_) return;
++    // CONT-130b: soft channel armed — only the hard backstop can escalate.
++    // The 15 s grace covers a method body that never returns; every method
++    // that DOES hit a boundary exits by return via the fetch-loop break.
++    if (awaitup_soft_stop_active_) {
++        if (std::chrono::steady_clock::now() >= awaitup_hard_deadline_) {
++            halted_ = true;
++            halted_on_return_ = false;
++            halt_reason_ =
++                "AWAIT-UP-GATE: soft-stop grace exhausted — hard F084 "
++                "backstop (15 s) fired; a method body never returned";
++            log("HALT(scoped-backstop): " + halt_reason_);
++            std::cerr << "[AWAIT-UP-GATE] soft-stop grace exhausted in "
++                      << current_class_ << "." << current_method_
++                      << " — hard F084 backstop fires" << std::endl;
++        }
++        return;
++    }
++    if (awaitup_deadline_hit_) return;
+     if (std::chrono::steady_clock::now() < awaitup_deadline_) return;
++    // CONT-130b SOFT DRAW-WINDOW STOP: inside a draw window the gate
++    // unwinds GRACEFULLY at method boundaries — NO exception is
++    // synthesized (the F084 unwind left the compose draw state
++    // half-mutated: MultiParagraphLayoutCache density=0.0 poisoned 4,685
++    // later draws — the S215 decode). The draw state survives; frame
++    // honesty STILL arms (an unfinished frame is never presented —
++    // F-NEW-298 unchanged in both channels).
++    if (draw_window_active_) {
++        awaitup_soft_stop_ = true;
++        awaitup_soft_stop_active_ = true;
++        awaitup_deadline_hit_ = true;      // the gate fired (per-tap marker)
++        draw_window_budget_halted_ = true; // frame honesty — both channels
++        awaitup_hard_deadline_ = std::chrono::steady_clock::now() +
++                                 std::chrono::seconds(15);
++        log("AWAIT-UP-GATE(SOFT): draw-window budget reached — graceful "
++            "method-boundary unwind, draw state preserved");
++        std::cerr << "[AWAIT-UP-GATE-SOFT] draw-window budget reached in "
++                  << current_class_ << "." << current_method_
++                  << " — graceful unwind (no synthesized exception; draw "
++                     "state survives; hard F084 backstop in 15s)"
++                  << std::endl;
++        return;
++    }
++    // Outside any draw window: the S154 hard channel is preserved (the
++    // runaway is not a draw walk — the UP-priority unwind semantics are
++    // the already-proven F084 family path).
+     awaitup_deadline_hit_ = true;
+     if (draw_window_active_) draw_window_budget_halted_ = true;
+     halted_ = true;
+@@ -21044,10 +21165,73 @@ void DalvikExecutionEngine::awaitup_gate_abort_reset() {
+     frame_unwind_exception_ = DalvikValue::make_null();
+     exc_redirect_pending_ = false;
+     exc_redirect_addr_ = 0;
++    // CONT-130b: the soft channel's flags clear here too (the tap path
++    // owns the per-tap state cycle begin → window → end → abort_reset).
++    awaitup_soft_stop_ = false;
++    awaitup_soft_stop_active_ = false;
+     std::cerr << "[AWAIT-UP-GATE] artifact state reset — UP dispatch clean"
+               << std::endl;
+ }
+ 
++// ── CONT-130 F-NEW-277 slice-2: VSYNC-CONTINUITY KEEP-ALIVE (row #21) ───
++// Called from the interpreter instruction epilogue. AOSP law: vsync
++// belongs to the DISPLAY — a long DEX body (class-init chains, bitmap
++// decode, big compute) must NOT starve the frame pipeline; on a device
++// the display delivers vsync every 16.6 ms regardless of what the main
++// thread runs. Every 256K instructions the tick fires the ONE canonical
++// compose pump through the hook wired on the real-dalvik app path.
++// BYTE-INERT while the hook is unset (one null check per instruction).
++void DalvikExecutionEngine::vsync_keepalive_tick(uint64_t /*total_insns*/) {
++    if (!vsync_keepalive_hook_) return;  // zero-cost when unwired (CONT-42)
++    if (vsync_keepalive_enabled_ < 0) {
++        const char* off = std::getenv("MINIANDROID_VSYNC_KEEPALIVE");
++        vsync_keepalive_enabled_ =
++            (off && off[0] == '0' && off[1] == '\0') ? 0 : 1;
++        vsync_tick_interval_ = 262144;  // 256K-insn cadence
++        if (const char* e = std::getenv("MINIANDROID_VSYNC_TICK_INTERVAL")) {
++            unsigned long long v = strtoull(e, nullptr, 10);
++            if (v >= 4096) vsync_tick_interval_ = (uint64_t)v;  // floor 4096
++        }
++    }
++    if (vsync_keepalive_enabled_ == 0) return;
++    if (++vsync_insn_acc_ < vsync_tick_interval_) return;
++    vsync_insn_acc_ = 0;
++    if (vsync_tick_active_) return;  // reentrancy guard (the pump interprets)
++    // Scope guard: the keep-alive only matters while the compose family
++    // actually owns (part of) the screen — pending frame callbacks — or
++    // while the handler queue holds work the pipeline must drain.
++    auto* registry = get_shadow_registry();
++    auto* cs = registry ? registry->find_as<framework::ChoreographerShadow>()
++                        : nullptr;
++    auto* hs = registry ? registry->find_as<framework::HandlerShadow>() : nullptr;
++    const bool cb_pending = cs && cs->has_pending_callbacks();
++    const bool queue_work = hs && hs->queue_size() > 0;
++    if (!cb_pending && !queue_work) return;
++    vsync_tick_active_ = true;
++    // INTERACTIVE-SESSION CLOCK (row #22 law): when a frame callback is
++    // pending AND the handler queue head is future-due, ONE bounded
++    // deterministic advance(next_ready - now) before the pump — the
++    // delay(100ms) dice / delay(500ms) AI chains resume while a frame
++    // callback is pending (the compose family owns the screen).
++    if (cb_pending && queue_work) {
++        int64_t next_ready = hs->next_ready_ms();
++        int64_t now_ms = hs->virtual_now_ms();
++        if (next_ready > now_ms) {
++            hs->advance_virtual(next_ready - now_ms);
++            std::cerr << "[F-NEW-277-CLOCK] interactive session advance to "
++                      << "virtual_ms=" << next_ready
++                      << " (delta=" << (next_ready - now_ms)
++                      << "ms; frame callback pending)" << std::endl;
++        }
++    }
++    int fired = vsync_keepalive_hook_(8);  // the ONE canonical pump
++    if (fired > 0)
++        std::cerr << "[VSYNC-KEEPALIVE] tick fired " << fired
++                  << " compose frame(s) from the interpreter epilogue"
++                  << std::endl;
++    vsync_tick_active_ = false;
++}
++
+ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) {
+     uint64_t f107_t0 = 0; phase_clock().enter(phase_clock().fetch_exec, f107_t0);
+     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().fetch_exec, f107_t0};
+@@ -25363,6 +25547,12 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+         result.total_instructions_executed++;
+         result.total_opcodes_decoded++;
+ 
++        // CONT-130 F-NEW-277 slice-2: VSYNC-CONTINUITY keep-alive — vsync
++        // belongs to the display; a long DEX body must not starve the frame
++        // pipeline. BYTE-INERT when no hook is wired (zero-cost: one null
++        // check per instruction — the CONT-42 law).
++        vsync_keepalive_tick(result.total_instructions_executed);
++
+         // EXP-045 Phase 2: Global instruction counter — log every 100K instructions
+         // to track execution speed and progress.
+         static thread_local uint64_t global_insn_counter = 0;
+@@ -26343,7 +26533,24 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+         if (++awaitup_probe_n_ >= 4096) {
+             awaitup_probe_n_ = 0;
+             awaitup_gate_check();
+-            if (awaitup_deadline_hit_) break;  // same graceful channel as the wall
++            if (awaitup_deadline_hit_) {  // same graceful channel as the wall
++                soft_stopped_no_return_ = true;  // CONT-132: no return ran
++                break;
++            }
++        }
++        // CONT-130b: SOFT draw-window stop — enclosing frames unwind at the
++        // method boundary by RETURN (no synthesized exception, the draw
++        // state survives). Unconditional per-iteration check: the flag arms
++        // once and every frame exits normally, like a method that simply
++        // returns. Cleared at the draw-window boundary / abort_reset / begin.
++        // CONT-132: the exit is mechanical-return only — no return
++        // instruction ran, so the frame's return value is UNDEFINED; the
++        // flag tells try_recursive_invoke to answer the caller's move-result
++        // with the defined polymorphic zero (never the stale
++        // last_invoke_return_).
++        if (awaitup_soft_stop_) {
++            soft_stopped_no_return_ = true;  // CONT-132: no return ran
++            break;
+         }
+ 
+         // Check for return
+diff --git a/miniandroid/src/dex/dalvik_engine.h b/miniandroid/src/dex/dalvik_engine.h
+index 56fc2125..7c7750df 100755
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -2564,6 +2564,11 @@ public:
+     // ────────────────────────────────────────────────────────────────────
+     void awaitup_gate_begin(int64_t ms) {
+         awaitup_deadline_hit_ = false;
++        // CONT-130b: fresh per-tap state — every tap re-arms the gate with
++        // the soft channel DISARMED (the previous window's soft stop left
++        // no artifact behind by law; begin() owns the reset too).
++        awaitup_soft_stop_ = false;
++        awaitup_soft_stop_active_ = false;
+         if (ms > 0) {
+             awaitup_deadline_ = std::chrono::steady_clock::now() +
+                                 std::chrono::milliseconds(ms);
+@@ -2584,6 +2589,59 @@ public:
+     // Consulted by the interpreter loop next to the S60 wall check.
+     void awaitup_gate_check();
+ 
++    // ────────────────────────────────────────────────────────────────────
++    // CONT-130b: AWAIT-UP-GATE SOFT DRAW-WINDOW STOP. Inside a draw window
++    // the gate unwinds GRACEFULLY at method boundaries — the fetch loop
++    // breaks on awaitup_soft_stop_, every enclosing frame exits by RETURN,
++    // NO exception is synthesized: the compose draw state survives the
++    // gate stop (the hard F084 unwind left MultiParagraphLayoutCache
++    // density=0.0 half-mutated and poisoned 4,685 later draws — the S215
++    // decode). The hard F084 channel remains as a DELAYED backstop (15 s
++    // grace) for a method body that never returns. Frame honesty is
++    // UNCHANGED: draw_window_budget_halted_ arms in BOTH channels (an
++    // unfinished frame is never presented — the F-NEW-298 law).
++    // ────────────────────────────────────────────────────────────────────
++    bool awaitup_soft_stop_ = false;        // armed: fetch loops break at the boundary
++    bool awaitup_soft_stop_active_ = false; // soft channel engaged in this window
++    std::chrono::steady_clock::time_point awaitup_hard_deadline_{};
++    // Draw-window boundary clear (dispatch_custom_view_draw exit): a
++    // soft-stopped window leaves NO artifact state; frame honesty stays
++    // armed for the presentation point (frame_honesty_begin owns that
++    // reset at the NEXT render pass).
++    void awaitup_soft_stop_clear() {
++        awaitup_soft_stop_ = false;
++        awaitup_soft_stop_active_ = false;
++    }
++
++    // ────────────────────────────────────────────────────────────────────
++    // CONT-130 F-NEW-277 slice-2: VSYNC-CONTINUITY KEEP-ALIVE (row #21).
++    // AOSP law: vsync belongs to the DISPLAY — a long DEX body (class-init
++    // chains, bitmap decode, big compute) must NOT starve the frame
++    // pipeline. The interpreter epilogue calls vsync_keepalive_tick();
++    // every 256K instructions (MINIANDROID_VSYNC_TICK_INTERVAL env-tunable,
++    // floor 4096) the tick fires the ONE canonical compose pump through
++    // the hook ExecutionEngine wired on the real-dalvik app path
++    // (pump_compose_frames(8) — G06 token routing + F-NEW-289 main-looper
++    // identity stay in one place, the CONT-129 re-land scope law). Guards:
++    // reentrancy flag, env opt-out (MINIANDROID_VSYNC_KEEPALIVE=0),
++    // pending-callback + queue scope guard. BYTE-INERT while the hook is
++    // unset (one null check per instruction — the CONT-42 zero-cost law).
++    // The INTERACTIVE-SESSION CLOCK (row #22 law) rides inside the tick:
++    // when a frame callback is pending AND the handler queue head is
++    // future-due, ONE bounded deterministic advance_virtual(next_ready -
++    // now) happens before the pump — the delay(100ms) dice / delay(500ms)
++    // AI chains resume while a frame callback is pending.
++    // ────────────────────────────────────────────────────────────────────
++    void vsync_keepalive_tick(uint64_t total_insns);
++    void set_vsync_keepalive_hook(std::function<int(int)> hook) {
++        vsync_keepalive_hook_ = std::move(hook);
++    }
++    std::function<int(int)> vsync_keepalive_hook_;  // = pump_compose_frames
++    bool vsync_tick_active_ = false;       // reentrancy guard (the pump interprets)
++    uint64_t vsync_insn_acc_ = 0;          // instructions since the last fire
++    int vsync_keepalive_enabled_ = -1;     // tri-state env verdict cache
++    uint64_t vsync_tick_interval_ = 0;     // env-tunable cadence cache (256K default)
++
+     
+     // Configuration
+     struct Config {
+@@ -3681,6 +3739,14 @@ public:
+     // MASTER CAMPAIGN FIX: lifecycle-provenance flag (see lifecycle_methods_from_dex).
+     bool lifecycle_from_dex_ = false;
+     bool halted_on_return_ = false;
++    // CONT-132 SOFT-STOP RETURN-VALUE LAW: the fetch loop sets this at the
++    // soft-stop break (and the deadline-hit break — the same graceful
++    // channel). A soft-stop frame exit executes NO return instruction, so
++    // the frame has no defined return value; try_recursive_invoke must
++    // answer the caller's move-result with the DEFINED polymorphic zero
++    // instead of the stale last_invoke_return_ (the callee's last internal
++    // invoke result — live face: the raw key hashCode inside Lbw0;.d).
++    bool soft_stopped_no_return_ = false;
+     std::string halt_reason_;
+     // T61 (S145): scripted-tap wall rebate accumulator (see rebate_wall_ms).
+     int64_t wall_rebate_ms_ = 0;
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index dd85bb8f..e803a176 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -667,6 +667,15 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
+             }
+         }
+         dalvik_engine_.set_per_dex_raw_data(std::move(per_dex_raw));
++        // CONT-130 F-NEW-277 slice-2: wire the VSYNC-CONTINUITY keep-alive
++        // hook — ONLY on the real-dalvik app path (GATE goldens and legacy
++        // runs keep the pre-law cadence byte-exact; the tick is guarded by
++        // the MINIANDROID_VSYNC_KEEPALIVE=0 opt-out and the pending/queue
++        // scope guard). The fire stays the ONE canonical pump
++        // (pump_compose_frames — G06 token routing + F-NEW-289 main-looper
++        // identity in one place, the CONT-129 re-land scope law).
++        dalvik_engine_.set_vsync_keepalive_hook(
++            [this](int max_frames) { return pump_compose_frames(max_frames); });
+         dalvik_engine_.set_apk_path(result.apk_info.apk_path);
+         // EXP-093/F011: Set manifest-derived package identity
+         dalvik_engine_.set_package_info(
+@@ -6077,6 +6086,68 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
+                         // Copy FrameBuffer pixels (RGBA) back to framebuffer_ (uint8_t RGBA)
+                         const auto& pixels = fb.get_pixels();
+                         fb_pixels_total = pixels.size();
++                        // ── CONT-130 F-NEW-298-KEEP: KEEP-LAST-COMPLETE ────
++                        // A walked-empty UNIFORM re-render (distinct=1: the
++                        // 100% #FAFAFA framework / #FAF9FD app-theme bare
++                        // window background) NEVER replaces the presented
++                        // surface — AOSP/SurfaceFlinger: the compositor never
++                        // swaps a real frame for an empty one (the CONT-130
++                        // PRE decode: dooz tap chain collapsed to
++                        // d602648e/distinct=1 100% #FAFAFA, chrome GONE).
++                        // Arms ONLY when the compose family is live (frame
++                        // clock past base) AND the previous presented face
++                        // was NON-uniform; non-uniform transient walks
++                        // present as-is (frame honesty unchanged). Applied
++                        // at the per-frame boundary AND the F-NEW-497 drain
++                        // render — both present through this same point.
++                        size_t keep_distinct = 0;
++                        {
++                            std::map<uint32_t, size_t> keep_hist;
++                            for (const auto& px : pixels) {
++                                keep_hist[(uint32_t(px.r) << 16) |
++                                          (uint32_t(px.g) << 8) |
++                                          uint32_t(px.b)]++;
++                                if (keep_hist.size() > 1) {
++                                    keep_distinct = 2;  // non-uniform (early exit)
++                                    break;
++                                }
++                            }
++                            if (keep_distinct == 0)
++                                keep_distinct = keep_hist.size();  // 0 (empty) or 1
++                        }
++                        const bool face_uniform_298 = keep_distinct == 1;
++                        bool keep_298 = false;
++                        {
++                            auto* cs298 =
++                                shadow_registry_
++                                    ? shadow_registry_->find_as<
++                                          framework::ChoreographerShadow>()
++                                    : nullptr;
++                            const bool compose_live_298 =
++                                cs298 && cs298->last_frame_time_nanos() >
++                                             framework::ChoreographerShadow::
++                                                 kFrameBaseNanos;
++                            if (compose_live_298 &&
++                                !last_presented_face_uniform_ && face_uniform_298)
++                                keep_298 = true;
++                        }
++                        if (keep_298) {
++                            std::cerr << "[F-NEW-298-KEEP] walked-empty uniform "
++                                      << "face (distinct=1) — presentation "
++                                      << "SKIPPED, keeping the last complete "
++                                      << "frame (CONT-130 keep-last-complete)"
++                                      << std::endl;
++                            dalvik_engine_.sf_order_log(
++                                "PRESENT",
++                                "keep_last_complete=1 (uniform walk face)");
++                            fb_non_white = -1;   // honest signal: not presented
++                            fb_pixels_total = framebuffer_.size() / 4;
++                            frame_census_.keep_last_complete = true;
++                            frame_census_.kept_prior_frame = true;
++                            frame_census_.kept_prior_app_draw_ops =
++                                last_presented_app_draw_ops_;
++                        } else {
++                        last_presented_face_uniform_ = face_uniform_298;
+                         // EXP-092: Debug — check if any non-white pixels exist in fb
+                         int non_white = 0;
+                         for (size_t i = 0; i < pixels.size(); i++) {
+@@ -6121,6 +6192,7 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
+                         }
+                         std::cerr << "[EXP092-COPY] framebuffer_ has " << fb_non_white << " non-white pixels" << std::endl;
+                         }
++                        }
+                         // S135 §3: DRAW/MEASURE/LAYOUT confirmation — the
+                         // composed frame IS the evidence the pipeline
+                         // reached the end of the draw walk.
+@@ -6680,6 +6752,7 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
+                     {"render_exception", frame_census_.render_exception},
+                     {"budget_exhausted", frame_census_.budget_exhausted},
+                     {"draw_budget_halt", frame_census_.draw_budget_halt},
++                    {"keep_last_complete", frame_census_.keep_last_complete},
+                     {"presentation", frame_census_.kept_prior_frame
+                                           ? "kept_prior_frame"
+                                           : "this_frame"},
+diff --git a/miniandroid/src/runtime/execution_engine.h b/miniandroid/src/runtime/execution_engine.h
+index 19fa2209..dffad118 100755
+--- a/miniandroid/src/runtime/execution_engine.h
++++ b/miniandroid/src/runtime/execution_engine.h
+@@ -363,6 +363,12 @@ private:
+     // F-NEW-307 (CONT-44): the app-op ledger of the last PRESENTED frame
+     // (0 before any presentation) — the kept-frame census attribution source.
+     uint64_t last_presented_app_draw_ops_ = 0;
++    // CONT-130 F-NEW-298-KEEP: uniform-face signature of the last PRESENTED
++    // frame. `true` before any presentation (the keep law cannot arm until
++    // a REAL face — non-uniform — has been presented). A 100%-uniform walk
++    // face (distinct=1: the #FAFAFA/#FAF9FD bare-window collapse) never
++    // replaces a presented non-uniform face (keep-last-complete law).
++    bool last_presented_face_uniform_ = true;
+ 
+ public:
+     // ═══════════════════════════════════════════════════════════════════
+@@ -394,6 +400,12 @@ public:
+         bool draw_budget_halt = false;        // the F084 halt fired inside THIS draw walk
+         bool kept_prior_frame = false;        // presentation skipped; PNG holds the prior frame
+         uint64_t kept_prior_app_draw_ops = 0; // the kept frame's app-op ledger count
++        // ── CONT-130 F-NEW-298-KEEP: keep-last-complete ──
++        // A walked-empty UNIFORM re-render (distinct=1: the bare-window
++        // collapse face) never replaces the presented surface. Honest
++        // per-frame record: this frame's walk produced the uniform face
++        // and the presentation was skipped (keep-last-complete law).
++        bool keep_last_complete = false;
+         int  nodes_visited = 0;              // P0-7 census
+         int  nodes_skipped_depth = 0;        // P0-7 census
+         int  depth_max = 0;                  // P0-7 census

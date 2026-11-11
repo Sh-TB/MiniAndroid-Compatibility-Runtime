@@ -1,0 +1,123 @@
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 47ca3562..255e3729 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -38964,6 +38964,49 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+             return true;
+         }
+     }
++    // ────────────────────────────────────────────────────────────────────
++    // F-NEW-633 (SIM-L3, Coder 3) — VibrationAttributes$Builder fluent-
++    // builder contract — the API-33 sibling of the AudioAttributes$Builder
++    // law above, same §12 family. Evidence (dima.defense vc15, SIMILAR-10
++    // wave row 5 re-anchored on main 01586a17 / binary f6e580cfcadabacc):
++    // Lo/k;.<init> pc=68 — SDK_INT=35 → `new VibrationAttributes$Builder()
++    // .setUsage(19).build()`; the S186I stub answered NULL for the fluent
++    // setUsage, so build() NPEd on a null receiver → onCreate APP-BOUNDARY
++    // unwind (baseline face d602648e8e401895 ×3, 2 uncaught; the f141-era
++    // receipt of the same family died at pc=17 `VibratorManager.
++    // getDefaultVibrator` on null — closed by C9-26, moving the death one
++    // builder layer deeper). AOSP VibrationAttributes.Builder
++    // (frameworks/base core/java/android/os/VibrationAttributes.java):
++    // setUsage(int) returns this Builder; build() returns a non-null
++    // VibrationAttributes. The object law mirrors AudioAttributes$Builder:
++    // Builder non-null, setters fluent-this, build() non-null
++    // VibrationAttributes (haptic firing remains a device effect,
++    // unobservable in a headless runtime — the C9-26 law boundary).
++    // ────────────────────────────────────────────────────────────────────
++    if (class_name == "Landroid/os/VibrationAttributes$Builder;") {
++        if (method == "<init>") {
++            result = DalvikValue::make_void();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
++            args[0].object_id != 0 && method == "setUsage") {
++            result = args[0];  // fluent: return THIS (AOSP Builder law)
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "build" && !args.empty() &&
++            args[0].type == DalvikType::OBJECT_REF) {
++            uint32_t va_id =
++                heap_.allocate("Landroid/os/VibrationAttributes;", pc_, 0);
++            heap_.set_object_field(va_id, "__from_builder__",
++                                   DalvikValue::make_int(1));
++            result = DalvikValue::make_object(
++                va_id, "Landroid/os/VibrationAttributes;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
+     if (class_name == "Landroid/media/MediaPlayer;") {
+         auto mp_state_of = [&](uint32_t oid) -> int {
+             auto v = heap_.get_object_field(oid, "__mp_state__");
+@@ -72399,6 +72442,68 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+         return true;
+     }
+ 
++    // ────────────────────────────────────────────────────────────────────────
++    // F-NEW-634 (SIM-L3, Coder 3) — SensorManager AOSP contract (the honest
++    // minimal device: ZERO sensors, contract-true answers). AOSP
++    // SensorManager.java (aosp-mirror main, frameworks/base core/java/
++    // android/hardware/SensorManager.java): getSensorList(int) NEVER returns
++    // null — an absent type yields an empty `Collections.unmodifiableList`
++    // — and getDefaultSensor(int) is @Nullable (null when no sensor of the
++    // type exists); SystemSensorManager.registerListenerImpl returns false
++    // on a null listener/sensor, true otherwise. The S186I stub answered
++    // NULL for getSensorList — impossible per the AOSP contract — NPEing
++    // every AOSP-defensive consumer at the isEmpty()/size() deref
++    // (dima.defense Lo/b;.onResume pc=40 `getSensorList(1).isEmpty()`,
++    // SIMILAR-10 wave f141 ×2 receipt + the d602648e re-anchor; the S206
++    // SIM-L3 row's "the List.isEmpty null is the app's own state" hypothesis
++    // is REFUTED by the AOSP source — the null was an engine fault; the app
++    // is exactly the AOSP-defensive shape the contract expects). Sibling of
++    // C9-26 above: service object + never-null contract law pair.
++    // ────────────────────────────────────────────────────────────────────────
++    if (class_name == "Landroid/hardware/SensorManager;") {
++        if (method == "getSensorList") {
++            // Non-null EMPTY list (honest minimal device: zero sensors —
++            // consumers branch on isEmpty() exactly per the contract).
++            uint32_t sl_id = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
++            heap_.set_object_field(sl_id, "__array_length__",
++                                   DalvikValue::make_int(0));
++            if (shadow_registry_) {
++                if (auto* sl_cs = shadow_registry_->find_as<
++                        framework::CollectionShadow>()) {
++                    // 0-element CollectionState: isEmpty()=true, size()=0.
++                    sl_cs->get_or_create(sl_id);
++                }
++            }
++            result = DalvikValue::make_object(sl_id, "Ljava/util/ArrayList;");
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "getDefaultSensor") {
++            // AOSP @Nullable: null when the type does not exist (honest
++            // minimal device — no sensor of ANY type). Consumers null-check
++            // per the contract (dima.defense Lo/b; does exactly this).
++            result = DalvikValue::make_null();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++        if (method == "registerListener") {
++            // args[0]=receiver, args[1]=listener, args[2]=sensor (the
++            // EXP-071 instance-method law). false on a null listener or
++            // sensor (AOSP registerListenerImpl); true otherwise — the
++            // registration is accepted, event DELIVERY is a device effect
++            // unobservable in a headless runtime (the vibrate() parity
++            // boundary of C9-26).
++            bool sl_ok = args.size() >= 3 &&
++                         args[1].type == DalvikType::OBJECT_REF &&
++                         args[1].object_id != 0 &&
++                         args[2].type == DalvikType::OBJECT_REF &&
++                         args[2].object_id != 0;
++            result = DalvikValue::make_bool(sl_ok);
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
++    }
++
+     // ────────────────────────────────────────────────────────────────────────
+     // C9-24b (CODER 9, S188 cohort) — Resources.getResourcePackageName /
+     // getResourceTypeName / getResourceEntryName (AOSP Resources.java).

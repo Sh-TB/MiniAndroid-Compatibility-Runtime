@@ -1,0 +1,17 @@
+[SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (kotlin.reflect.jvm.internal.ReflectionFactoryImpl) method=Lub1;.<clinit> pc=3 → deferred handler @0x0xe type=Ljava/lang/ClassNotFoundException;
+[SYNTH-EXC] STREAM-OPEN (deferred): Ljava/io/FileNotFoundException; (/home/z/my-project/evidence/s216/cont131/store_g3/data/data/io.github.yamin8000.dooz/files/datastore/settings.preferences_pb (open failed: ENOENT)) method=Ly8;.q pc=59 → deferred handler @0x0x54 type=Ljava/io/FileNotFoundException;
+[SYNTH-EXC] S102-CLASSLOADER (deferred): Ljava/lang/ClassNotFoundException; (androidx.compose.ui.platform.AndroidCompositionLocals_androidKt) method=Lgq0;.<clinit> pc=14 → deferred handler @0x0x2c type=<catch-all>
+[CHOREO-PUMP] 1 frame(s) fired (bound=8)
+[VSYNC-KEEPALIVE] tick fired 1 compose frame(s) from the interpreter epilogue
+[CHOREO-PUMP] 1 frame(s) fired (bound=8)
+[VSYNC-KEEPALIVE] tick fired 1 compose frame(s) from the interpreter epilogue
+[CHOREO-PUMP] 1 frame(s) fired (bound=8)
+[CHOREO-PUMP] 1 frame(s) fired (bound=8)
+[VSYNC-KEEPALIVE] tick fired 1 compose frame(s) from the interpreter epilogue
+[CHOREO-PUMP] 1 frame(s) fired (bound=8)
+[VSYNC-KEEPALIVE] tick fired 1 compose frame(s) from the interpreter epilogue
+[CHOREO-PUMP] 1 frame(s) fired (bound=8)
+[VSYNC-KEEPALIVE] tick fired 1 compose frame(s) from the interpreter epilogue
+[CHOREO-PUMP] 1 frame(s) fired (bound=8)
+[VSYNC-KEEPALIVE] tick fired 1 compose frame(s) from the interpreter epilogue
+[EXC-PROPAGATE] Ljava/lang/ClassNotFoundException; uncaught at caller Lio/github/yamin8000/dooz/ui/MainActivity;.onCreate invoke_pc=317 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)

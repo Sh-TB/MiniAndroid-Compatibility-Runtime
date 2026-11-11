@@ -1,0 +1,5 @@
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d2") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d6") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d6+1") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d10") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;
+[SYNTH-EXC] PARSE-BRIDGE (deferred): Ljava/lang/NumberFormatException; (For input string: "1d20") method=Lde/duenndns/gmdice/DiceSet;.getDiceSet pc=25 → deferred handler @0x0x61 type=Ljava/lang/NumberFormatException;

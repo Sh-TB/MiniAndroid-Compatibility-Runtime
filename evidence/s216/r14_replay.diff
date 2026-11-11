@@ -1,0 +1,53 @@
+a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 47ca3562..774727f9 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -6747,6 +6747,48 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
+         phase_clock().ci_warm.fetch_add(1, std::memory_order_relaxed);
+         return true;
+     }
++    // ── R14 (A-R3 #580) SUPERCLASS-FIRST CLASS-INIT LAW (A-R3, S216) ──
++    // JVMS 5.5 / AOSP ClassLinker::EnsureInitialized: initializing class C
++    // requires C's DIRECT SUPERCLASS to be initialized FIRST (recursively).
++    // The engine already builds class_to_superclass_ (EXP-068) and walks it
++    // for semantic ancestry — but no init site ever walked it UPWARD (11
++    // insert sites, 0 super-init calls at the R14 audit). Observable
++    // divergence: a superclass whose <clinit> publishes state (registration
++    // singletons, static tables consumed reflectively, counters) never ran
++    // until the subclass actively referenced a superclass member — on ART
++    // it runs at subclass-init time. One walk here covers all call sites.
++    // Re-entrancy safe: the initialized_classes_ guard above (checked again
++    // inside the recursive call) breaks cycles A→B→A before any <clinit>
++    // re-runs, and the framework-namespace skip below is re-applied for the
++    // superclass by the recursive call itself.
++    if (!initialized_classes_.count(normalized)) {
++        // A/B gate: MINIANDROID_R14_SUPER_INIT=0 disables (default ON —
++        // the AOSP-faithful order; the 6-pin gate decides the final ship).
++        static const bool r14_off =
++            [] { const char* e = std::getenv("MINIANDROID_R14_SUPER_INIT");
++                 return e && std::string(e) == "0"; }();
++        auto sup_it = class_to_superclass_.find(normalized);
++        if (sup_it == class_to_superclass_.end() || sup_it->second.empty())
++            sup_it = class_to_superclass_.find(class_descriptor);
++        if (!r14_off && sup_it != class_to_superclass_.end() &&
++            !sup_it->second.empty()) {
++            const std::string super_desc = sup_it->second;
++            // App-DEX superclasses only: framework namespaces keep the
++            // platform-skip (their statics ride the shadow/bridge layer).
++            static const char* f_skip[] = {"Landroid/", "Ljava/", "Ljavax/"};
++            bool fns = false;
++            for (const char* p : f_skip)
++                if (super_desc.compare(0, strlen(p), p) == 0) { fns = true; break; }
++            if (!fns) {
++                static thread_local int r14_depth = 0;
++                if (r14_depth < 24) {  // bounded: never deeper than a real chain
++                    r14_depth++;
++                    ensure_class_initialized(super_desc);
++                    r14_depth--;
++                }
++            }
++        }
++    }
+     // Framework classes — skip <clinit> (they're stubbed).
+     // The shadow registry / bridge_to_api handles their static fields.
+     //
