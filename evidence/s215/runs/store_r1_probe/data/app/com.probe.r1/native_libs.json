@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/com.probe.r1/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libr1probe.so", "size": 15264}
+  ],
+  "count": 1
+}

@@ -1,0 +1,19 @@
+{
+  "package": "com.probe.ar",
+  "versionName": "",
+  "versionCode": 0,
+  "mainActivity": "com.probe.ar.MainActivity",
+  "minSdk": "",
+  "targetSdk": "",
+  "requestedPermissions": [
+    "android.permission.INTERNET",
+    "android.permission.CAMERA"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.probe.ar/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s215/runs/store_ar_probe/data/app/com.probe.ar/base.apk",
+  "apkSha256": "058ce6a5ebc6dfa91ac8bdb1c5ae931cda458d95b4a86dd6009945b5f151fbaf",
+  "apkSize": 4184,
+  "installedAt": "2026-11-11T05:52:43Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

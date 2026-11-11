@@ -8940,3 +8940,24 @@ Work Log:
 - The coder's 13/13 battery (c7.w12 fixture) + W13 frontier (getNameForUid →
   setSelector/getSelector → checkSignatures(int,int)) queued; battery rides a
   toolchain container (see the S2xx recipe reconciliation on #577).
+
+## S215c — APK battery UNBLOCKED and CLOSED on the line + S2xx reconciliation + final sweep
+- Toolchain re-fetch (S2xx recipe adopted): aapt2 2.19-11315950 (Google Maven) +
+  ecj 3.36.0 (Google's Maven-Central mirror; repo1 429s) + r8 8.5.35 + android-34.jar
+  (Sable). scripts/s215_build_probes.sh = the landed s211 recipe with these paths.
+- A-R probes BUILT and RUN on the W12-integrated binary 60265b6180cc849a:
+  ar_probe 15/15 rows ALL PASS (x2 rerun-identical face a48cf00b16701109, 0 uncaught)
+  + r1_probe 2/2 PASS with face c4284c2b42b1d9ec BYTE-EXACT == the lane record and
+  libr1probe.so 6b25a1c7b486a7ff byte-identical — R1 P0 verified end-to-end across
+  three containers. evidence/s215/A_R_BATTERY_S215.json.
+- W12's 13-row battery: c7.w12 fixture sources landed; full run blocked on ONE
+  lane-side artifact (fixtures/c7_laws_probe/c7laws.apk pair) — ship-with-W13
+  request posted on #520.
+- S2xx parallel integration reconciled (#577): the pushed line (b24e1765→73a238ce)
+  is canonical; their battery/recipe/registry findings adopted; their queue (a)/(b)
+  moot (W5→W11 landed S214, re-verified thrice since).
+- Verdicts: #581 c=6787989040, #577 c=6787989675, #519 c=6787990298, #570
+  c=6787990965, #573 c=6787991616, #536 c=6787992285, #520 c=6788300201,
+  #577 c=6788300863, #536 c=6788301622 (all fetch-verified).
+- STATE: main = 73a238ce (A-R4 + W12 landed); binary 60265b6180cc849a; 6 pins +
+  noise heuristic green; watermark 6787880719; ledger 68→69.

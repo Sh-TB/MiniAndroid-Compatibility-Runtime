@@ -1,0 +1,16 @@
+{
+  "package": "com.probe.r1",
+  "versionName": "",
+  "versionCode": 0,
+  "mainActivity": "com.probe.r1.MainActivity",
+  "minSdk": "",
+  "targetSdk": "",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/com.probe.r1/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s215/runs/store_r1_probe/data/app/com.probe.r1/base.apk",
+  "apkSha256": "62d49053c1ad9b73aed464902b6a2b2efdf06827c21a055dfd3c9f91aef6dc9c",
+  "apkSize": 4956,
+  "installedAt": "2026-11-11T05:52:44Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}
