@@ -8961,3 +8961,25 @@ Work Log:
   #577 c=6788300863, #536 c=6788301622 (all fetch-verified).
 - STATE: main = 73a238ce (A-R4 + W12 landed); binary 60265b6180cc849a; 6 pins +
   noise heuristic green; watermark 6787880719; ledger 68→69.
+
+## S216 — CONT-131 WAVE LANDED + F-NEW-635 (the soft-stop return-value law) — the #25 storm EXTINCT
+- CONT-131 wave (4 parts, sha16-verified x4) applied after the source-restore
+  reconciliation (the interrupted session's partial soft-stop fragments
+  discarded per T21/T22; its own R14 law replayed, default-ON, gate-decided).
+- ROOT of the dooz #25 wild-aput storm (evidence-complete): the soft
+  draw-window stop breaks frames BEFORE any return instruction; the F-084
+  discriminator misses soft exits (both halt flags false) and
+  try_recursive_invoke handed the stale last_invoke_return_ (the callee's
+  last internal invoke result = the raw key hashCode inside Lbw0;.d) to the
+  caller's move-result. APUT-OOB dump proved the receiver map CLEAN — the
+  ctor-zombie is NOT this face's mechanism. FIX = F-NEW-635: the interrupted
+  callee's return is DEFINED as the polymorphic zero (7 edit sites).
+- A/B: aput-oob 12-15→0, cancellation storm→0, uncaught 2→0, face chain to
+  NEW face 10d4a156. GOLDEN x3 byte-exact + FULL 6-PIN GATE ALL HOLD on
+  74f1d2c2 + make test 4/4 + 0 NOISE-SUSPECT.
+- Coverage gap found for the lane: dooz180 missing from the wave battery —
+  the 180s boot does NOT complete post-wave (84.9M insns, NOT R14, NOT
+  keep-alive); re-pin requested on #573 (c=6800130309).
+- Verdicts: #573 6800130309 + #536 6800140357 (watermark 6797337480) + #575
+  6797337480 (W21 part-17 request; SIM-L3 verified rc=0 QUEUED). Sweep
+  pass-2: 11 new / 0 EDITED (full snapshot baseline stored). Commit 11fe8d65.
