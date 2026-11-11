@@ -9028,3 +9028,54 @@ Work Log:
   wave diff fec4f15a3cf7ab56); probes scripts/gp582_probe_res.cpp,
   scripts/gp582_probe_dex012.cpp, tests/gp582_engine_probe_test.cpp.
 - Per-item verdict table posted on #582 (comment 6803177793). Commit b0bcf54b.
+
+## S218 — GP583 wave-2: build-truth + GLES honest-boundary wave (issue #583)
+
+- Scope decision (user directive: coders idle → GP does the work directly):
+  issue #583's wave-B (build/test truth) + wave-C (GLES path repair) +
+  GP583-LAYOUT-001 actioned in one dependency-coherent batch, 12 findings,
+  commit 4d2c4b66, binary a76c8661dc96e195.
+- BUILD truth: GP583-BUILD-001 fixed (Lottie include order — the base INCLUDES
+  assignment overwrote the append); GP583-BUILD-002 closed via ONE shared
+  source manifest (core_sources.manifest, 74 TUs) consumed by both Makefile and
+  CMake (was 12-TU divergent runtime) + full include/lib/native-object parity +
+  make check-source-parity (every src/**.cpp classified; 6 dormant modules
+  documented, never silently dropped); GP583-BUILD-003 USE_VULKAN typo fixed.
+- TEST truth: GP583-TEST-001 make test-core/test-hostile/test-law/test-all
+  (24 required suites, timeout + machine-readable summary; was simple_test
+  only while 69 test/probe files existed) + CMake add_test registered
+  (ctest -N was 0) + GP583-TEST-002 gtest_discover_tests target guard.
+  LATENT DEFECT surfaced: tests/s130_laws_test.cpp did not compile against the
+  F-NEW-400 6-float Cb payload — repaired (the old default `test` never built it).
+- GLES honest boundary (wave-C 1-5 + 006-010): DrawElements probe env-gated +
+  type-validated + count-bounded + EBO-offset-aware (never dereferences a
+  bound-buffer offset); PGL program cache context-generation-owned (stale-id
+  face closed) + fixed 8-slot ceiling replaced by a context-owned map;
+  glDeleteShader/glDeleteProgram/glDetachShader/glIsShader/glIsProgram
+  dispatched with deferred-destruction semantics; glUseProgram family-GATED
+  (unknown GLSL gets the explicit unsupported verdict — no silent SpriteBatch
+  substitution); copyTexImage family bounded (checked multiply, 64 MiB cap,
+  framebuffer-extent clip, bad_alloc caught at the C ABI); compile/link status
+  family-gated through a structural classifier; per-program introspection
+  (ATTACHED_SHADERS real count, ACTIVE_ATTRIBUTES family count, per-program
+  attrib enumeration); GL composition consumes the View walk's accumulated
+  translation/scroll/clip geometry (no second GL-only model);
+  glGetActiveAttrib honors bufsize + all four Java offsets + destination
+  capacities (incl. the direct-ByteBuffer face) + the skipped size holder.
+- LAYOUT: GP583-LAYOUT-001 fixed — "12dip" was UNREACHABLE (substr(size-2)
+  == "ip"); strict strtod-prefix + trimmed-suffix law, malformed rejected.
+- Honest-status regression chain (documented for the ledger): the family-gated
+  status transiently broke the ttt pin (7d7ec7b3 noise face) because the
+  engine had NO fragment-shader type check (GL_FRAGMENT_SHADER is 0x8B30, not
+  the 0x8B32 the first patch assumed — a value that exists in neither GLES2
+  nor desktop GL2) and the family law initially hardcoded v_color while gdx
+  ShapeRenderer declares v_col, plus "#endif\nvarying vec4 …" merged in the
+  statement scan. All three fixed; ttt restored BYTE-EXACT 7354c1b2 ×3.
+- Regression: make test-all 24/24 + parity OK; new tests/gp583_gles_law_test.cpp
+  31/31; FULL 6-PIN GATE ALL HOLD on a76c8661dc96e195 (bouncy 8a6c24ac / unote
+  3b8dcb0a / dooz a0fae907 / gmdice 3891679d ×2 identical / microtimer
+  b39665f6 / ttt 7354c1b2 ×3 — all byte-exact, 0 uncaught).
+- Evidence: evidence/gp583/ (test_all_final.txt, S207_GATE_wave2.json,
+  ttt_shader_classification_glsldebug.log, ttt_gfx_trace_shader_chain.jsonl,
+  cmake_cache_74tus.txt). Per-item six-part verdicts posted on #583; pointer
+  receipt on #582.
