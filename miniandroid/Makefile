@@ -9,6 +9,13 @@ RLOTTIE_DIR ?= /home/z/my-project/tools/rlottie
 # optional so the runtime also builds where those libs are not ported yet.
 MINIANDROID_HAVE_WEBP ?= 1
 MINIANDROID_HAVE_LOTTIE ?= 0
+# GP583-BUILD-001 fix: the BASE include assignment must come BEFORE every
+# optional `INCLUDES +=` block. The old order appended the Lottie include
+# first and then REPLACED INCLUDES wholesale on the next line, so a custom
+# RLOTTIE_DIR build enabled the feature and linked librlottie.a yet could
+# not find rlottie_capi.h (make -pn showed the expanded INCLUDES without
+# the Lottie path). Base first, appends after — the += blocks now survive.
+INCLUDES = -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include
 ifeq ($(MINIANDROID_HAVE_WEBP),1)
 CXXFLAGS += -DMINIANDROID_HAVE_WEBP
 endif
@@ -16,7 +23,6 @@ ifeq ($(MINIANDROID_HAVE_LOTTIE),1)
 INCLUDES += -I$(RLOTTIE_DIR)/inc
 CXXFLAGS += -DMINIANDROID_HAVE_LOTTIE
 endif
-INCLUDES = -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include
 # EXP-097 §5/§6: image codec libraries.
 # libwebp — Google reference WebP decoder (used by AOSP Skia / BitmapFactory)
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
@@ -36,32 +42,22 @@ SRCDIR = src
 BUILDDIR = build
 TESTDIR = tests
 
-# Source files (excluding main.cpp for library)
-APK_SOURCES = $(SRCDIR)/apk/apk_parser.cpp $(SRCDIR)/apk/manifest_reader.cpp
-# Note: Use EITHER dex_interpreter.cpp OR dex_interpreter_batch.cpp, NOT BOTH
-DEX_SOURCES = $(SRCDIR)/dex/dex_parser.cpp $(SRCDIR)/dex/mutf8.cpp $(SRCDIR)/dex/class_resolver.cpp $(SRCDIR)/dex/dex_interpreter_batch.cpp $(SRCDIR)/dex/dalvik_engine.cpp $(SRCDIR)/dex/c7_package_index.cpp $(SRCDIR)/dex/trace_exporter.cpp  # EXP-031.5: Trace exporter
-RUNTIME_SOURCES = $(SRCDIR)/runtime/execution_engine.cpp $(SRCDIR)/runtime/application_runtime.cpp $(SRCDIR)/runtime/route_law.cpp
-DIAGNOSTICS_SOURCES = $(SRCDIR)/diagnostics/trace_engine.cpp $(SRCDIR)/diagnostics/crash_forensics.cpp $(SRCDIR)/diagnostics/trace_overlay.cpp $(SRCDIR)/diagnostics/install_inspection.cpp
-RESOURCES_SOURCES = $(SRCDIR)/resources/res_id.cpp $(SRCDIR)/resources/res_config.cpp $(SRCDIR)/resources/resource_parser.cpp $(SRCDIR)/resources/string_pool.cpp $(SRCDIR)/resources/arsc_parser.cpp $(SRCDIR)/resources/axml_parser.cpp $(SRCDIR)/resources/layout_inflater.cpp $(SRCDIR)/resources/vector_inflater.cpp $(SRCDIR)/resources/s132_svg_reader.cpp $(SRCDIR)/resources/resource_runtime.cpp $(SRCDIR)/resources/font_family.cpp $(SRCDIR)/resources/plurals.cpp
-RENDERER_SOURCES = $(SRCDIR)/renderer/software_renderer.cpp $(SRCDIR)/renderer/vector_decode.cpp $(SRCDIR)/renderer/gif_decoder.cpp $(SRCDIR)/gles/pgl_backend.cpp $(SRCDIR)/gles/gles20_bridge.cpp $(SRCDIR)/gles/gl_copy_bridge.cpp  # F-NEW-586: glCopyTexImage2D/ glCopyTexSubImage2D dlopen contract (libgdx)
-# UNIFIED_007 text pipeline — REAL FriBidi/HarfBuzz/FreeType shaping now
-# feeds BOTH the layout measure pass and the view draw path (was: orphaned
-# out of the build; the 8x16 BitmapFont answered all text geometry).
-FONTS_SOURCES = $(SRCDIR)/fonts/text_shaper.cpp
-# EXP-084: framework and storage sources are required for linkage
-# G06: touch_dispatcher = canonical input pipeline; state_list = StateListDrawable law
-FRAMEWORK_SOURCES = $(SRCDIR)/framework/executor_shadow.cpp $(SRCDIR)/framework/matrix_shadow.cpp $(SRCDIR)/framework/locale_insets_shadow.cpp $(SRCDIR)/framework/window_insets_shadow.cpp $(SRCDIR)/framework/display_shadow.cpp $(SRCDIR)/framework/gl_surface_shadow.cpp $(SRCDIR)/framework/surface_view_shadow.cpp $(SRCDIR)/framework/android_shadows.cpp $(SRCDIR)/framework/shadow_registry.cpp $(SRCDIR)/framework/choreographer_shadow.cpp $(SRCDIR)/framework/dialog_shadow.cpp $(SRCDIR)/framework/clipboard_shadow.cpp $(SRCDIR)/framework/canvas_shadow.cpp $(SRCDIR)/framework/bitmap_shadow.cpp $(SRCDIR)/framework/velocity_tracker.cpp $(SRCDIR)/framework/scroller_shadow.cpp $(SRCDIR)/framework/gesture_detector_shadow.cpp $(SRCDIR)/framework/key_event_shadow.cpp $(SRCDIR)/framework/touch_dispatcher.cpp $(SRCDIR)/framework/state_list.cpp $(SRCDIR)/framework/lifecycle_controller.cpp $(SRCDIR)/framework/locks_shadow.cpp $(SRCDIR)/framework/atomic_shadow.cpp $(SRCDIR)/framework/pending_intent_shadow.cpp $(SRCDIR)/framework/task_stack_builder_shadow.cpp $(SRCDIR)/framework/animator_shadow.cpp $(SRCDIR)/audio/audio_engine.cpp
-API_SOURCES = $(SRCDIR)/api/application_context.cpp $(SRCDIR)/api/shared_prefs.cpp $(SRCDIR)/api/http_client.cpp
-STORAGE_SOURCES = $(wildcard $(SRCDIR)/storage/*.cpp)
-
-# S109 WEBVIEW-ENGINE: real HTML5 execution subsystem (QuickJS + DOM + canvas2d)
-WEBVIEW_SOURCES = $(SRCDIR)/webview/webview_engine.cpp $(SRCDIR)/webview/html_dom.cpp $(SRCDIR)/webview/canvas2d.cpp
+# GP583-BUILD-002: ONE shared source manifest consumed by BOTH build
+# graphs. The old duplicated list drifted (CMake carried 12 TUs while the
+# Makefile linked 74) so two build commands produced materially different
+# runtime capability. core_sources.manifest is the single source of truth:
+# the Makefile and miniandroid/CMakeLists.txt both read it, and
+# `make check-source-parity` asserts the Makefile expansion equals the
+# manifest (run in the test battery).
+CORE_SOURCES := $(shell grep -v '^#' core_sources.manifest)
+# Per-lane views of the manifest are kept for documentation purposes only;
+# the canonical list is the manifest. (The old hand-maintained duplicates
+# were removed — they were the drift surface BUILD-002 documents.)
 QUICKJS_DIR = third_party/quickjs
 QUICKJS_SOURCES = $(QUICKJS_DIR)/quickjs.c $(QUICKJS_DIR)/libregexp.c $(QUICKJS_DIR)/libunicode.c $(QUICKJS_DIR)/cutils.c $(QUICKJS_DIR)/libbf.c
 QUICKJS_OBJECTS = $(patsubst $(QUICKJS_DIR)/%.c,$(BUILDDIR)/quickjs/%.o,$(QUICKJS_SOURCES))
 QUICKJS_CFLAGS = -O2 -std=gnu11 -D_GNU_SOURCE -DCONFIG_VERSION=\"2024-01-13\" -DCONFIG_BIGNUM -w -I$(QUICKJS_DIR)
 
-CORE_SOURCES = $(APK_SOURCES) $(DEX_SOURCES) $(RUNTIME_SOURCES) $(DIAGNOSTICS_SOURCES) $(RESOURCES_SOURCES) $(RENDERER_SOURCES) $(FONTS_SOURCES) $(FRAMEWORK_SOURCES) $(API_SOURCES) $(STORAGE_SOURCES) $(WEBVIEW_SOURCES) $(SRCDIR)/jni/dlopen_exec.cpp $(SRCDIR)/jni/native_dep.cpp $(SRCDIR)/jni/ma_native_bridge.cpp
 CORE_OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(CORE_SOURCES))
 # S-2 native execution thunk (System V x86_64 dynamic call)
 THUNK_OBJECT = $(BUILDDIR)/jni/native_thunk.o
@@ -87,7 +83,7 @@ JSON_INCLUDE = -I$(JSON_DIR)/include
 # every libGDX-family APK dies with "dlopen failed: ... invalid ELF
 # header" (the host libm.so is a GNU ld script, not an ELF). `all` builds
 # them so the anchor set can never go stale/missing again.
-.PHONY: all clean test run help version megabatch run-megabatch anchors
+.PHONY: all clean test test-core test-hostile test-law test-all run-battery check-source-parity run help version megabatch run-megabatch anchors laws130
 
 # Explicit default goal: rule order must not silently demote `all`.
 .DEFAULT_GOAL := all
@@ -162,6 +158,105 @@ laws130: $(LAWS130_EXECUTABLE)
 $(LAWS130_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(LAWS130_SOURCE)
 	@mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $(LAWS130_SOURCE) $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(LIBS) $(FONTS_LIBS)
+
+# GP583-TEST-001: the default `test` target ran ONLY simple_test while the
+# tests/ directory carries the real regression battery (law tests, hostile-
+# resource suites, the GP-582 engine boundary probe, opcode probes). A green
+# `make test` therefore coexisted with dozens of unexecuted law tests. ONE
+# pattern rule builds every tests/*.cpp against the full core closure; the
+# battery targets below give every REQUIRED suite one automatic entry point
+# with a timeout, an exit status and a machine-readable summary.
+#
+# Classification (GP583-TEST-001 remediation ledger):
+#   required-core        : simple_test, s130_laws_test, gp582_engine_probe_test
+#   required-hostile     : g04_hostile, g06g08_hostile, resource_hostile
+#   required-law         : lifecycle, input_pipeline, linear_layout, g10_layout,
+#                          g11_ctor, m3_arsc_style, mutf8_string_pool,
+#                          resource_core, resource_config_selection, s98_prefs,
+#                          s98_scroll_transform, s98_text, s106_* (6),
+#                          c013_arsc_probe, encoded_value_law, gp583_gles_law
+#   manual diagnostic    : dbg_test, exp088_*, exp092, font_pipeline_probe,
+#                          probe_arsc_layout, mwr_opcode_probe (run by hand /
+#                          dedicated waves; not in test-all)
+#   fixture-argument probe: m3_arsc_style_law_test, s106_drawables_law_test,
+#                          c013_arsc_probe — these take a resources.arsc /
+#                          APK fixture path as argv (exit 2 = usage); they
+#                          run inside their dedicated waves with fixtures,
+#                          NOT from the zero-arg battery.
+TEST_CORE = simple_test s130_laws_test gp582_engine_probe_test
+TEST_HOSTILE = g04_hostile_test g06g08_hostile_test resource_hostile_test
+TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
+	g10_layout_law_test g11_ctor_law_test \
+	mutf8_string_pool_test resource_core_law_test resource_config_selection_test \
+	s98_prefs_law_test s98_scroll_transform_law_test s98_text_law_test \
+	s106_cia_law_test s106_gif_law_test \
+	s106_layout_net_law_test s106_text2_law_test \
+	encoded_value_law_test gp583_gles_law_test c9_bitmap_density_law_test
+TEST_BATTERY = $(TEST_CORE) $(TEST_HOSTILE) $(TEST_LAW)
+TEST_TIMEOUT = 300
+
+$(BUILDDIR)/tests/%: $(TESTDIR)/%.cpp $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT)
+	@mkdir -p $(BUILDDIR)/tests
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $< \
+		$(filter-out $<,$^) $(LIBS) $(FONTS_LIBS)
+
+# Run one battery with per-test timeout + PASS/FAIL lines + exit status.
+# Usage: make run-battery TESTS="a b c"
+define RUN_BATTERY
+failed=0; total=0; \
+for t in $(1); do \
+	exe="$(BUILDDIR)/tests/$$t"; \
+	total=$$((total+1)); \
+	if timeout $(TEST_TIMEOUT) ./"$$exe" > "$(BUILDDIR)/tests/$$t.log" 2>&1; then \
+		echo "[PASS] $$t"; \
+	else \
+		rc=$$?; echo "[FAIL] $$t (rc=$$rc) — log: $(BUILDDIR)/tests/$$t.log"; failed=$$((failed+1)); \
+	fi; \
+done; \
+echo "BATTERY SUMMARY: total=$$total passed=$$((total-failed)) failed=$$failed"; \
+test $$failed -eq 0
+endef
+
+run-battery:
+	@$(call RUN_BATTERY,$(TESTS))
+
+test-core: $(addprefix $(BUILDDIR)/tests/,$(TEST_CORE))
+	@$(call RUN_BATTERY,$(TEST_CORE))
+
+test-hostile: $(addprefix $(BUILDDIR)/tests/,$(TEST_HOSTILE))
+	@$(call RUN_BATTERY,$(TEST_HOSTILE))
+
+test-law: $(addprefix $(BUILDDIR)/tests/,$(TEST_LAW))
+	@$(call RUN_BATTERY,$(TEST_LAW))
+
+# ONE main-runtime test-all entry point (GP583-TEST-001 wave-B requirement):
+# source-parity + core + hostile + law, every suite with timeout + status.
+test-all: check-source-parity $(addprefix $(BUILDDIR)/tests/,$(TEST_BATTERY))
+	@$(call RUN_BATTERY,$(TEST_BATTERY))
+
+# GP583-BUILD-002 companion: the manifest is the single source of truth, so
+# parity = (a) every manifest entry exists on disk, (b) every src/**.cpp is
+# classified: in the manifest, the main executable, or on the documented
+# dormant/experimental whitelist (headers present but not linked — never
+# silently dropped).
+DORMANT_SOURCES = src/dex/api_dispatcher.cpp src/dex/exception_system.cpp \
+	src/dex/execution_guard.cpp src/dex/execution_observatory.cpp \
+	src/renderer/view_renderer.cpp src/resources/real_layout.cpp
+check-source-parity:
+	@status=0; \
+	for f in $(CORE_SOURCES); do \
+		[ -f "$$f" ] || { echo "[PARITY-FAIL] manifest entry missing: $$f"; status=1; }; \
+	done; \
+	for f in $$(ls src/*/*.cpp src/*.cpp 2>/dev/null | sort); do \
+		case "$$f" in \
+			src/main.cpp|src/exp007_012_megabatch_main.cpp|src/exp*) continue;; \
+		esac; \
+		if echo "$(CORE_SOURCES)" | tr ' ' '\n' | grep -qx "$$f"; then continue; fi; \
+		if echo "$(DORMANT_SOURCES)" | tr ' ' '\n' | grep -qx "$$f"; then echo "[PARITY-DORMANT] $$f (documented dormant — not linked)"; continue; fi; \
+		echo "[PARITY-FAIL] unclassified source (not in manifest, not exp-main, not dormant): $$f"; status=1; \
+	done; \
+	if [ $$status -eq 0 ]; then echo "[PARITY-OK] $(words $(CORE_SOURCES)) core sources manifest-parity"; fi; \
+	exit $$status
 
 test: $(TEST_EXECUTABLE)
 	./$(TEST_EXECUTABLE)

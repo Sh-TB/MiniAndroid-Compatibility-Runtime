@@ -78,6 +78,17 @@ uint32_t pgl_spritebatch_program_for(uint32_t engine_id);  // F-NEW-609b
 void pgl_sb_set_proj_view(const float* m16, bool transpose);   // legacy
 void pgl_sb_set_proj_view_for(uint32_t engine_id, const float* m16,
                               bool transpose);      // F-NEW-609b
+// GP583-GLES-007: glDeleteProgram releases the engine program's PGL slot.
+void pgl_sb_release_program(uint32_t engine_id);
+// GP583-GLES-002: drop every cached PGL program id (context destroyed —
+// called by PGLBackend::init on context recreation; also the test hook).
+void pgl_sb_cache_reset();
+// GP583-GLES-001 (offset clarification): when true, the glDrawElements
+// `indices` argument is a byte offset into the bound element-array buffer,
+// NOT a host pointer — diagnostics must never dereference it.
+bool pgl_element_buffer_bound();
+// GP583-GLES-005: current read-framebuffer extent (false = no context).
+bool pgl_framebuffer_size(int* w, int* h);
 int pgl_sb_uniform_location(const char* name);      // u_projView→0, u_texture→1
 int pgl_sb_attrib_location(const char* name);       // position→0 color→1 tex0→2
 void pgl_debug_attrib_dump(const char* tag);        // S198 corruption probe

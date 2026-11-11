@@ -6350,10 +6350,79 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
         auto* n = views->find_node(vid);
         if (!n || n->class_desc.find("GLSurfaceView") == std::string::npos)
             continue;
-        const int gw = n->laid_out ? n->measured_width : n->width;
-        const int gh = n->laid_out ? n->measured_height : n->height;
-        const int gx = n->laid_out ? n->measured_left : n->x;
-        const int gy = n->laid_out ? n->measured_top : n->y;
+        int gw = n->laid_out ? n->measured_width : n->width;
+        int gh = n->laid_out ? n->measured_height : n->height;
+        // ── GP583-GLES-009 fix: the blit consumes the SAME accumulated
+        // geometry model as the ordinary View draw walk (RenderTask law —
+        // FINAL CAMPAIGN 21-P1-5/21-P1-6), not a second GL-only geometry
+        // model. The old composer pasted the PGL back buffer at the RAW
+        // measured_left/top: no ViewNode translation_x/y, no ancestor
+        // scroll offsets, no ancestor clip — a GLSurfaceView under an
+        // animated parent, a scrolled container or a clipped ViewGroup
+        // presented at the wrong root position or leaked outside the
+        // region Android would clip. AOSP law (android_shadows getX/getY
+        // + View.java mTransformationInfo):
+        //   draw origin = layout bounds + Σ ancestor translations
+        //               + own translation − Σ strict-ancestor scrolls
+        //   clip        = the NEAREST scrolling strict ancestor's visible
+        //                 rect (none = unclipped), intersected with root.
+        int gx = n->laid_out ? n->measured_left : n->x;
+        int gy = n->laid_out ? n->measured_top : n->y;
+        bool have_clip = false;
+        int clip_l = 0, clip_t = 0, clip_r = 0, clip_b = 0;
+        {
+            std::vector<const framework::ViewShadow::ViewNode*> chain;
+            for (uint32_t pid = n->parent_id; pid != 0;) {
+                const auto* p = views->find_node(pid);
+                if (!p) break;
+                chain.push_back(p);
+                pid = p->parent_id;
+            }
+            // Translations of EVERY node on the path (view itself + all
+            // ancestors) shift the subtree; scrolls of STRICT ancestors
+            // shift content only (a node's own scroll never moves itself).
+            int acc_tx = (int)std::lround(n->translation_x);
+            int acc_ty = (int)std::lround(n->translation_y);
+            for (const auto* p : chain) {
+                acc_tx += (int)std::lround(p->translation_x);
+                acc_ty += (int)std::lround(p->translation_y);
+            }
+            int acc_sx = 0, acc_sy = 0;
+            // chain is child→root. ALL strict-ancestor scrolls accumulate
+            // into the offset (the walk's off_sx law — a higher scroller
+            // shifts the whole subtree including the nearer one); the
+            // NEAREST scrolling ancestor's visible rect wins the clip
+            // (S130 R-NEW-436 law — it replaces the inherited rect).
+            for (size_t i = 0; i < chain.size(); ++i) {
+                const auto* p = chain[i];
+                if (!have_clip && (p->scroll_x != 0 || p->scroll_y != 0)) {
+                    int ax = p->laid_out ? p->measured_left : p->x;
+                    int ay = p->laid_out ? p->measured_top : p->y;
+                    int atx = (int)std::lround(p->translation_x);
+                    int aty = (int)std::lround(p->translation_y);
+                    int asx = 0, asy = 0;
+                    for (size_t j = i + 1; j < chain.size(); ++j) {
+                        atx += (int)std::lround(chain[j]->translation_x);
+                        aty += (int)std::lround(chain[j]->translation_y);
+                        asx += chain[j]->scroll_x;
+                        asy += chain[j]->scroll_y;
+                    }
+                    ax += atx - asx;
+                    ay += aty - asy;
+                    const int aw = p->laid_out ? p->measured_width : p->width;
+                    const int ah = p->laid_out ? p->measured_height : p->height;
+                    clip_l = ax;
+                    clip_t = ay;
+                    clip_r = ax + std::max(1, aw);
+                    clip_b = ay + std::max(1, ah);
+                    have_clip = true;
+                }
+                acc_sx += p->scroll_x;
+                acc_sy += p->scroll_y;
+            }
+            gx += acc_tx - acc_sx;
+            gy += acc_ty - acc_sy;
+        }
         if (gw <= 0 || gh <= 0) continue;
         // PGL context FIRST: the renderer callbacks issue real gl* calls —
         // the context must be current before onSurfaceCreated runs (the
@@ -6372,13 +6441,30 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
         any = true;
         const uint32_t* src = pgl.pixels();
         if (!src) continue;
-        const int cw = std::min(gw, config.screen_width - gx);
-        const int ch = std::min(gh, config.screen_height - gy);
-        for (int y = 0; y < ch; ++y) {
-            for (int x = 0; x < cw; ++x) {
-                const uint32_t px = src[(size_t)y * gw + x];
+        // Blit window: the draw origin intersected with the ancestor clip
+        // rect AND the root framebuffer (21-P1-6 outside-check law — clip
+        // and draw agree in DRAW space). The source sampling shifts by the
+        // clipped-away margin so the visible region stays pixel-anchored.
+        int x0 = gx, y0 = gy;
+        int x1 = gx + gw, y1 = gy + gh;
+        if (have_clip) {
+            x0 = std::max(x0, clip_l);
+            y0 = std::max(y0, clip_t);
+            x1 = std::min(x1, clip_r);
+            y1 = std::min(y1, clip_b);
+        }
+        x0 = std::max(x0, 0);
+        y0 = std::max(y0, 0);
+        x1 = std::min(x1, config.screen_width);
+        y1 = std::min(y1, config.screen_height);
+        for (int y = y0; y < y1; ++y) {
+            for (int x = x0; x < x1; ++x) {
+                const int sx = x - gx;
+                const int sy = y - gy;
+                if (sx < 0 || sy < 0 || sx >= gw || sy >= gh) continue;
+                const uint32_t px = src[(size_t)sy * gw + sx];
                 const size_t idx =
-                    ((size_t)(gy + y) * config.screen_width + (gx + x)) * 4;
+                    ((size_t)y * config.screen_width + x) * 4;
                 if (idx + 3 >= framebuffer_.size()) continue;
                 // PGL pix_t = RGBA8888 (R lowest byte, little-endian order)
                 framebuffer_[idx + 0] = (uint8_t)(px & 0xFF);

@@ -11,6 +11,7 @@
 #include <portablegl.h>
 
 #include <cstring>
+#include <map>
 
 // S198 F-NEW-607: GENERATED spec→PGL pairs (scripts/s198_gen_pgl_map.py).
 // Numeric only — no PGL macros needed; see the header for the law.
@@ -147,35 +148,84 @@ void sb_frag(float* fs_input, Shader_Builtins* builtins, void* uniforms) {
 uint32_t g_sb_program = 0;  // 0 = not created (PGL ids are 1-based)
 SBUniforms g_sb_uniforms;   // legacy single uniform block
 
-// F-NEW-609b (S198): PER-ENGINE-PROGRAM uniform blocks. Two libGDX shaders
-// (SpriteBatch u_projTrans + ShapeRenderer u_projModelView) map onto the
-// same C pair; sharing ONE block made the last-bound matrix win (the
-// ShapeRenderer grid rendered with SpriteBatch's matrix → mostly clipped).
-// Each engine program gets its own PGL program + uniform block.
-constexpr int kMaxSbPrograms = 8;
+// GP583-GLES-002/003 fix: the old cache was a FIXED EIGHT-SLOT process-
+// static array (kMaxSbPrograms=8) with no release path. Three real defects:
+//   (1) PGLBackend::init destroyed and recreated the PGL context on any
+//       resize but the slots kept PGL program ids minted in the DEAD
+//       context — the cache then returned stale ids that render nothing
+//       (GLES-002);
+//   (2) after eight distinct engine program ids in one process lifetime
+//       every later glCreateProgram could not get a PGL mapping (GLES-003);
+//   (3) there was no glDeleteProgram dispatch to retire a slot even when
+//       the app correctly disposed its ShaderPrograms (GLES-007).
+// New law: a context-OWNED map keyed by engine id. Lifetime = context:
+// PGLBackend::init bumps g_pgl_context_gen and clears the map + legacy
+// g_sb_program; glDeleteProgram releases its slot explicitly. PGL program
+// ids are re-minted in the CURRENT context on demand.
 struct SbProgramSlot {
-    uint32_t engine_id = 0;
     uint32_t pgl_id = 0;
+    uint64_t context_gen = 0;  // PGL context generation this id was minted in
     SBUniforms uniforms;
 };
-static SbProgramSlot g_sb_slots[kMaxSbPrograms];
+static std::map<uint32_t, SbProgramSlot> g_sb_map;   // engine_id → slot
+static uint64_t g_pgl_context_gen = 0;               // bumped by PGLBackend::init
 
 static SbProgramSlot* sb_slot_for(uint32_t engine_id) {
-    for (auto& s : g_sb_slots)
-        if (s.engine_id == engine_id && s.pgl_id != 0) return &s;
-    for (auto& s : g_sb_slots) {
-        if (s.pgl_id == 0) {
-            s.engine_id = engine_id;
-            GLenum interp[6] = {PGL_SMOOTH4, PGL_SMOOTH2};
-            s.pgl_id = pglCreateProgram(sb_vert, sb_frag, 6, interp, GL_FALSE);
-            if (s.pgl_id) pglSetProgramUniform(s.pgl_id, &s.uniforms);
-            return s.pgl_id ? &s : nullptr;
-        }
+    auto it = g_sb_map.find(engine_id);
+    if (it != g_sb_map.end()) {
+        // Context-generation law (GLES-002): an id minted in a destroyed
+        // context is invalid — remint in the current one.
+        if (it->second.pgl_id != 0 &&
+            it->second.context_gen == g_pgl_context_gen)
+            return &it->second;
+        it->second.pgl_id = 0;
     }
-    return nullptr;
+    SbProgramSlot& s = g_sb_map[engine_id];
+    GLenum interp[6] = {PGL_SMOOTH4, PGL_SMOOTH2};
+    s.pgl_id = pglCreateProgram(sb_vert, sb_frag, 6, interp, GL_FALSE);
+    s.context_gen = g_pgl_context_gen;
+    if (s.pgl_id) pglSetProgramUniform(s.pgl_id, &s.uniforms);
+    return s.pgl_id ? &s : nullptr;
 }
 
 }  // namespace
+
+// GP583-GLES-007: glDeleteProgram releases the engine program's PGL slot;
+// the next use of the same engine id remints a fresh PGL program in the
+// current context. (GL semantics: names are never reused — the engine-side
+// handle stays retired; only the PGL-side storage is released.)
+void pgl_sb_release_program(uint32_t engine_id) {
+    g_sb_map.erase(engine_id);
+}
+
+// GP583-GLES-002: explicit cache reset — called by PGLBackend::init when
+// the PGL context is destroyed/recreated; also usable by tests. Every
+// cached PGL id belongs to the dead context and must not survive it.
+void pgl_sb_cache_reset() {
+    g_sb_map.clear();
+    g_sb_program = 0;
+}
+
+// GP583-GLES-001 (offset clarification): is an ELEMENT_ARRAY_BUFFER bound?
+// When it is, the glDrawElements `indices` argument is a BYTE OFFSET into
+// that buffer — never a host pointer. The bridge's (env-gated) diagnostic
+// must consult this before touching any address.
+bool pgl_element_buffer_bound() {
+    return c != nullptr &&
+           c->bound_buffers[GL_ELEMENT_ARRAY_BUFFER - GL_ARRAY_BUFFER] != 0;
+}
+
+// GP583-GLES-005: the read-framebuffer extent — copies may never allocate
+// for more pixels than the framebuffer actually holds.
+bool pgl_framebuffer_size(int* w, int* h) {
+    // A live PGL context with a real back buffer is the truth (free
+    // functions cannot reach PGLBackend's private init state).
+    if (c == nullptr || c->back_buffer.w <= 0 || c->back_buffer.h <= 0)
+        return false;
+    if (w) *w = (int)c->back_buffer.w;
+    if (h) *h = (int)c->back_buffer.h;
+    return true;
+}
 
 uint32_t pgl_spritebatch_program() {
     // Legacy face: returns the first slot's PGL program (the bridge probe
@@ -262,7 +312,14 @@ bool PGLBackend::init(int width, int height, std::string& error) {
     if (inited_ && width == width_ && height == height_) return true;
     // Re-init at new size: PGL owns its buffers; a fresh context is the
     // supported path (init_glContext allocates the back buffer).
-    if (inited_) free_glContext(&s_ctx);
+    if (inited_) {
+        free_glContext(&s_ctx);
+        // GP583-GLES-002: the old context is gone — every PGL object id
+        // minted in it (SpriteBatch cache included) is invalid. Bump the
+        // generation and drop the cache so stale ids can never be bound.
+        ++g_pgl_context_gen;
+        pgl_sb_cache_reset();
+    }
     std::memset(&s_ctx, 0, sizeof(s_ctx));
     if (!init_glContext(&s_ctx, &backbuf_, width, height)) {
         error = "init_glContext failed (out of memory?)";

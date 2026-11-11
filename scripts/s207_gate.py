@@ -15,12 +15,16 @@ RUNS = BASE / 'evidence/s207/runs'
 RUNS.mkdir(parents=True, exist_ok=True)
 BIN_SHA = hashlib.sha256(BIN.read_bytes()).hexdigest()[:16]
 GATE = RUNS / 'S207_GATE.json'
-OUT = {'binary_sha16': BIN_SHA}
+OUT = {}
 if GATE.exists():
     try:
         OUT.update(json.loads(GATE.read_text()))
     except Exception:
         pass
+# Current binary identity LAST — the cached file's binary_sha16 must never
+# mask the binary this gate is actually verifying (wave-2 fix: the old order
+# let a stale cache row mislabel the gate record).
+OUT['binary_sha16'] = BIN_SHA
 
 
 def sha16(p):

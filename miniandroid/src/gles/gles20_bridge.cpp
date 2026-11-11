@@ -9,13 +9,290 @@
 #include <cstring>
 #include <cstdarg>
 #include <cstdio>
+#include <cstdlib>
+#include <algorithm>
 
 namespace miniandroid {
 namespace gles {
 
+// ── GP583-GLES-006: shader-family classification law ───────────────────
+// PGL executes C-function shaders; there is no GLSL compiler in this
+// runtime. The honest contract (GP583-GLES-006/004): ONLY a positively
+// identified, source-verified shader family with a registered functional
+// C equivalent may report compile/link success and be mapped at glUseProgram.
+// Everything else answers GL_FALSE and records the unsupported boundary.
+//
+// Supported families (structural signature, not byte-exact — aapt-compiled
+// constant concatenation and app-side whitespace differ while the declared
+// interface stays identical):
+//   SPRITEBATCH   vertex: attributes a_position (vec4) + a_color (vec4) +
+//                 a_texCoord0 (vec2), one mat4 projection uniform, gl_Position
+//                 assigned from proj * a_position; fragment: one sampler2D
+//                 (u_texture), gl_FragColor from the declared varying ×
+//                 texture2D.
+//   SHAPERENDERER vertex: attributes a_position + a_color, one mat4 uniform,
+//                 no sampler; fragment: NO sampler, gl_FragColor = the
+//                 declared vec4 varying. (libGDX's real ShapeRenderer
+//                 varying is named v_col — the family contract is the
+//                 DECLARED varying, not a hardcoded name.)
+// Preprocessor lines (#ifdef GL_ES / #define LOWP / precision) are ignored.
+namespace {
+
+struct GlslFace {
+    bool syntax_ok = false;
+    std::string raw;                       // comment-stripped source
+    std::vector<std::string> attributes;   // declared attribute names (order)
+    std::vector<std::pair<std::string, std::string>> uniforms; // (type, name)
+    std::vector<std::string> varyings;     // declared varying names (order)
+    bool has_main = false;
+    bool assigns_gl_position = false;
+    bool assigns_fragcolor = false;
+    bool uses_texture2d = false;
+};
+
+std::string glsl_strip_comments(const std::string& src) {
+    std::string out;
+    out.reserve(src.size());
+    bool in_line = false, in_block = false;
+    for (size_t i = 0; i < src.size(); ++i) {
+        if (in_line) {
+            if (src[i] == '\n') { in_line = false; out.push_back('\n'); }
+            continue;
+        }
+        if (in_block) {
+            if (i + 1 < src.size() && src[i] == '*' && src[i + 1] == '/') {
+                in_block = false; ++i;
+            }
+            continue;
+        }
+        if (i + 1 < src.size() && src[i] == '/' && src[i + 1] == '/') {
+            in_line = true; ++i; continue;
+        }
+        if (i + 1 < src.size() && src[i] == '/' && src[i + 1] == '*') {
+            in_block = true; ++i; continue;
+        }
+        out.push_back(src[i]);
+    }
+    return out;
+}
+
+// Drop preprocessor LINES entirely: "#endif\nvarying vec4 v_col;" has no
+// ';' between the two, so the #endif merged with the following declaration
+// and the statement scan lost the varying (the single-varying ShapeRenderer
+// fragment face). Preprocessor lines carry nothing the family law reads.
+std::string glsl_drop_preprocessor(const std::string& src) {
+    std::string out;
+    out.reserve(src.size());
+    bool at_line_start = true;
+    for (size_t i = 0; i < src.size(); ++i) {
+        if (at_line_start && src[i] == '#') {
+            while (i < src.size() && src[i] != '\n') ++i;
+            continue;  // skip the whole directive line (incl. its newline)
+        }
+        at_line_start = (src[i] == '\n');
+        out.push_back(src[i]);
+    }
+    return out;
+}
+
+// Tokenize into identifier/number/symbol words (whitespace-separated model is
+// not enough: "uniform mat4\nu_projTrans;" — split on whitespace AND keep
+// ';'/braces visible).
+void glsl_analyze(const std::string& raw_src, GlslFace& f) {
+    std::string src =
+        glsl_drop_preprocessor(glsl_strip_comments(raw_src));
+    f.raw = src;
+    // brace balance + main presence
+    int depth = 0, min_depth = 0;
+    for (char ch : src) {
+        if (ch == '{') ++depth;
+        else if (ch == '}') { --depth; if (depth < min_depth) min_depth = depth; }
+    }
+    f.syntax_ok = (depth == 0 && min_depth == 0);
+    if (!f.syntax_ok) return;
+    f.has_main = src.find("main") != std::string::npos;
+    f.assigns_gl_position = src.find("gl_Position") != std::string::npos &&
+                            src.find("gl_Position =") != std::string::npos;
+    f.assigns_fragcolor = src.find("gl_FragColor") != std::string::npos &&
+                          src.find("gl_FragColor =") != std::string::npos;
+    f.uses_texture2d = src.find("texture2D") != std::string::npos;
+
+    // declaration scan: split on ';' and whitespace-normalize each statement
+    std::vector<std::string> stmts;
+    std::string cur;
+    for (char ch : src) {
+        if (ch == ';') { stmts.push_back(cur); cur.clear(); }
+        else cur.push_back(ch);
+    }
+    for (auto& st : stmts) {
+        // normalize whitespace to single spaces
+        std::string w;
+        for (char ch : st) w.push_back((ch == '\n' || ch == '\t' || ch == '\r') ? ' ' : ch);
+        std::string tok;
+        std::vector<std::string> words;
+        for (char ch : w) {
+            if (ch == ' ') { if (!tok.empty()) words.push_back(tok); tok.clear(); }
+            else tok.push_back(ch);
+        }
+        if (!tok.empty()) words.push_back(tok);
+        if (words.size() < 2) continue;
+        if (words[0] == "attribute" && words.size() >= 3) {
+            f.attributes.push_back(words[2]);
+        } else if (words[0] == "uniform" && words.size() >= 3) {
+            f.uniforms.emplace_back(words[1], words[2]);
+        } else if (words[0] == "varying" && words.size() >= 3) {
+            // "varying [LOWP] vec4 name" — the precision qualifier may sit
+            // between (e.g. gdx's "varying LOWP vec4 v_color"); the name is
+            // the LAST word of the statement.
+            f.varyings.push_back(words[words.size() - 1]);
+        }
+    }
+}
+
+// The declared-attribute contract of each supported family (canonical order
+// — the same order the pgl_sb_attrib_location bind law and the per-program
+// introspection answer).
+struct FamilySig {
+    GLES20Bridge::ShaderFamily family;
+    const char* attribs[4];
+    uint32_t types[4];
+    int n_attribs;
+    bool fragment_sampler;
+};
+const FamilySig kFamilySigs[] = {
+    {GLES20Bridge::ShaderFamily::SPRITEBATCH,
+     {"a_position", "a_color", "a_texCoord0"},
+     {0x8B52u, 0x8B52u, 0x8B53u}, 3, true},
+    {GLES20Bridge::ShaderFamily::SHAPERENDERER,
+     {"a_position", "a_color"},
+     {0x8B52u, 0x8B52u}, 2, false},
+};
+
+// Is this VERTEX source a member of the family? Structural checks only —
+// the app-visible contract is the declared interface + the projection
+// pipeline, not the exact source text.
+bool vertex_matches_family(const GlslFace& f, const FamilySig& sig) {
+    if (!f.syntax_ok || !f.has_main || !f.assigns_gl_position) return false;
+    if ((int)f.attributes.size() != sig.n_attribs) return false;
+    for (int i = 0; i < sig.n_attribs; ++i)
+        if (f.attributes[i] != sig.attribs[i]) return false;
+    // exactly one mat4 uniform, no sampler in a vertex shader
+    // (uniform pairs are (type, name) — the TYPE is first)
+    int mat4 = 0;
+    for (const auto& u : f.uniforms) {
+        if (u.first == "sampler2D") return false;
+        if (u.first == "mat4") ++mat4;
+        else return false;  // any other uniform type is outside the families
+    }
+    return mat4 == 1;
+}
+
+bool fragment_matches_family(const GlslFace& f, const FamilySig& sig) {
+    if (!f.syntax_ok || !f.has_main || !f.assigns_fragcolor) return false;
+    if (!f.attributes.empty()) return false;  // no attributes in a fragment shader
+    int samplers = 0;
+    for (const auto& u : f.uniforms) {
+        // uniforms are stored (type, name) — the TYPE is first.
+        if (u.first == "sampler2D") ++samplers;
+        else return false;
+    }
+    if (samplers != (sig.fragment_sampler ? 1 : 0)) return false;
+    // Family fragments pipe the declared vec4 varying into gl_FragColor —
+    // the name is whatever the source declares (gdx SpriteBatch uses
+    // v_color, ShapeRenderer uses v_col). A degenerate no-varying fragment
+    // ("gl_FragColor = vec4(…)") is NOT a family member.
+    if (f.varyings.empty()) return false;
+    const std::string& v = f.varyings[0];
+    // the declared varying must actually feed gl_FragColor (referenced in
+    // the body, not merely declared)
+    const bool used = f.raw.find(v) != std::string::npos;
+    return (f.uses_texture2d == sig.fragment_sampler) && used;
+}
+
+GLES20Bridge::ShaderFamily classify_vertex(const std::string& src) {
+    GlslFace f;
+    glsl_analyze(src, f);
+    for (const auto& sig : kFamilySigs)
+        if (vertex_matches_family(f, sig)) return sig.family;
+    return GLES20Bridge::ShaderFamily::UNKNOWN;
+}
+
+GLES20Bridge::ShaderFamily classify_fragment(const std::string& src) {
+    GlslFace f;
+    glsl_analyze(src, f);
+    for (const auto& sig : kFamilySigs)
+        if (fragment_matches_family(f, sig)) return sig.family;
+    return GLES20Bridge::ShaderFamily::UNKNOWN;
+}
+
+}  // namespace
+
 // S198 draw-time probe storage (env-gated consumers only).
 static const void* g_last_attrib_ptr[4] = {nullptr, nullptr, nullptr, nullptr};
 static GLint g_last_attrib_size[4] = {0, 0, 0, 0};
+
+// ── GP583-GLES-008: per-program introspection implementation ──────────
+bool GLES20Bridge::shader_query(uint32_t shader, uint32_t pname,
+                                int32_t* out) const {
+    auto it = gl_shaders_.find(shader);
+    if (it == gl_shaders_.end()) return false;
+    switch (pname) {
+        case 0x8B80u: if (out) *out = it->second.deleted ? 1 : 0; return true;   // DELETE_STATUS
+        case 0x8B81u: if (out) *out = it->second.compiled ? 1 : 0; return true;  // COMPILE_STATUS
+        default: return false;
+    }
+}
+
+bool GLES20Bridge::program_query(uint32_t program, uint32_t pname,
+                                 int32_t* out) const {
+    auto it = gl_programs_.find(program);
+    if (it == gl_programs_.end()) return false;
+    switch (pname) {
+        case 0x8B80u: if (out) *out = it->second.deleted ? 1 : 0; return true;   // DELETE_STATUS
+        case 0x8B82u: if (out) *out = it->second.linked ? 1 : 0; return true;    // LINK_STATUS
+        case 0x8B87u: if (out) *out = (int32_t)it->second.attached.size(); return true;  // ATTACHED_SHADERS
+        case 0x8B89u: {  // ACTIVE_ATTRIBUTES — the classified family's count
+            if (!it->second.supported) { if (out) *out = 0; return true; }
+            for (const auto& sig : kFamilySigs)
+                if (sig.family == it->second.family) {
+                    if (out) *out = sig.n_attribs;
+                    return true;
+                }
+            if (out) *out = 0;
+            return true;
+        }
+        case 0x8B8Au: {  // ACTIVE_ATTRIBUTE_MAX_LENGTH — real max name len + NUL
+            if (!it->second.supported) { if (out) *out = 0; return true; }
+            int mx = 0;
+            for (const auto& sig : kFamilySigs)
+                if (sig.family == it->second.family)
+                    for (int i = 0; i < sig.n_attribs; ++i)
+                        mx = std::max(mx, (int)std::strlen(sig.attribs[i]) + 1);
+            if (out) *out = mx;
+            return true;
+        }
+        default: return false;
+    }
+}
+
+bool GLES20Bridge::program_attrib(uint32_t program, uint32_t index,
+                                  const char** name, uint32_t* gl_type) const {
+    auto it = gl_programs_.find(program);
+    if (it == gl_programs_.end() || !it->second.supported) return false;
+    for (const auto& sig : kFamilySigs) {
+        if (sig.family != it->second.family) continue;
+        if (index >= (uint32_t)sig.n_attribs) return false;
+        if (name) *name = sig.attribs[index];
+        if (gl_type) *gl_type = sig.types[index];
+        return true;
+    }
+    return false;
+}
+
+bool GLES20Bridge::program_supported(uint32_t program) const {
+    auto it = gl_programs_.find(program);
+    return it != gl_programs_.end() && it->second.supported;
+}
 
 GLES20Bridge& GLES20Bridge::instance() {
     static GLES20Bridge b;
@@ -69,14 +346,50 @@ bool GLES20Bridge::dispatch(const std::string& method,
         return true;
     }
     if (method == "glCompileShader") {
-        // F-NEW-505: engine-side compile-status law — the engine-minted
-        // shader compiles (the status queries answer through the Java-side
-        // F-NEW-503b law; the GLSL source itself is stored, not executed —
-        // the glsl-not-compiled honesty note stands).
+        // GP583-GLES-006: family-gated compile-status law. The old behavior
+        // set compiled=true UNCONDITIONALLY — an arbitrary GLSL source was
+        // reported compiled although no GLSL compilation occurs, then
+        // glUseProgram silently substituted the SpriteBatch C pair (the
+        // false-success chain GLES-004 documents). The source is classified
+        // first: only a positively identified supported family (whose exact
+        // functional C pair executes in PGL) answers GL_TRUE; everything
+        // else answers GL_FALSE with the honest diagnostic in the trace.
         auto git = gl_shaders_.find((uint32_t)I(0));
-        if (git != gl_shaders_.end()) git->second.compiled = true;
+        if (git != gl_shaders_.end()) {
+            auto sit = shader_sources_.find((uint32_t)I(0));
+            const std::string src = sit != shader_sources_.end()
+                                        ? sit->second : std::string();
+            // glCreateShader stores the PGL-TRANSLATED type slot (S(0) —
+            // spec 0x8B31 → pgl 339); pgl_to_spec restores the spec value
+            // the family law classifies against. GLES2 law: 0x8B31 =
+            // GL_VERTEX_SHADER, 0x8B30 = GL_FRAGMENT_SHADER (there is no
+            // 0x8B32 — that value exists in neither GLES2 nor desktop GL2).
+            const bool is_vertex =
+                pgl_to_spec(git->second.type) == 0x8B31u;  // GL_VERTEX_SHADER
+            const auto fam = is_vertex ? classify_vertex(src)
+                                       : classify_fragment(src);
+            git->second.family = fam;
+            git->second.compiled = (fam != ShaderFamily::UNKNOWN) && !src.empty();
+            // GP583-GLES-006 diagnostic: dump the classified source + verdict
+            // (MINIANDROID_GLSL_DEBUG only) — shows exactly what text the
+            // family classifier saw when an app shader misclassifies.
+            {
+                static const bool glsl_dbg = std::getenv("MINIANDROID_GLSL_DEBUG");
+                if (glsl_dbg) {
+                    std::fprintf(stderr,
+                        "[GLSLDBG] shader=%u type-vertex=%d len=%zu compiled=%d\n"
+                        "--- source ---\n%s\n--------------\n",
+                        (uint32_t)I(0), is_vertex ? 1 : 0, src.size(),
+                        git->second.compiled ? 1 : 0, src.c_str());
+                }
+            }
+            trace += git->second.compiled
+                         ? "glsl-family-verified;compile-emulated-by-c-shader"
+                         : "glsl-unsupported-source;compile-honest-false";
+        } else {
+            trace += "glCompileShader: unknown shader handle";
+        }
         stats_.shader_ops++;
-        trace += "glsl-not-compiled-by-pgl;engine-handle-compiled";
         return true;
     }
     if (method == "glCreateProgram") {
@@ -89,16 +402,123 @@ bool GLES20Bridge::dispatch(const std::string& method,
     }
     if (method == "glAttachShader") {
         auto pit = gl_programs_.find((uint32_t)I(0));
-        if (pit != gl_programs_.end())
-            pit->second.attached.push_back((uint32_t)I(1));
+        if (pit != gl_programs_.end()) {
+            // GP583-GLES-007: attachment bookkeeping mirrors GL semantics —
+            // an already-attached shader is NOT appended twice.
+            const uint32_t sh = (uint32_t)I(1);
+            auto& att = pit->second.attached;
+            if (std::find(att.begin(), att.end(), sh) == att.end())
+                att.push_back(sh);
+        }
+        stats_.shader_ops++;
+        return true;
+    }
+    if (method == "glDetachShader") {
+        // GP583-GLES-007: GL object deletion/lifecycle family.
+        auto pit = gl_programs_.find((uint32_t)I(0));
+        if (pit != gl_programs_.end()) {
+            auto& att = pit->second.attached;
+            att.erase(std::remove(att.begin(), att.end(), (uint32_t)I(1)),
+                      att.end());
+        }
+        stats_.shader_ops++;
+        return true;
+    }
+    if (method == "glDeleteShader") {
+        // GP583-GLES-007: GLES 2.0 deletion semantics — flag the shader as
+        // deleted; DELETE_STATUS reflects it. The handle stays retired for
+        // reuse (GL names are never recycled). Attachments are legal until
+        // the owning programs detach or delete (deferred destruction).
+        auto git = gl_shaders_.find((uint32_t)I(0));
+        if (git != gl_shaders_.end()) git->second.deleted = true;
+        stats_.shader_ops++;
+        return true;
+    }
+    if (method == "glDeleteProgram") {
+        // GP583-GLES-007: delete law — flag the program, release the PGL
+        // slot (the SpriteBatch mapping storage), clear the minted-location
+        // map, and stop tracking it as the current engine program. A still-
+        // bound program keeps rendering until the app binds another one
+        // (deferred destruction per GL spec).
+        const uint32_t prog = (uint32_t)I(0);
+        auto pit = gl_programs_.find(prog);
+        if (pit != gl_programs_.end()) pit->second.deleted = true;
+        pgl_sb_release_program(prog);
+        gl_locations_.erase(prog);
+        if (cur_engine_prog_ == prog) cur_engine_prog_ = 0;
+        stats_.shader_ops++;
+        return true;
+    }
+    if (method == "glIsProgram") {
+        auto pit = gl_programs_.find((uint32_t)I(0));
+        if (int_ret)
+            *int_ret = (pit != gl_programs_.end() && !pit->second.deleted) ? 1 : 0;
+        stats_.shader_ops++;
+        return true;
+    }
+    if (method == "glIsShader") {
+        auto git = gl_shaders_.find((uint32_t)I(0));
+        if (int_ret)
+            *int_ret = (git != gl_shaders_.end() && !git->second.deleted) ? 1 : 0;
         stats_.shader_ops++;
         return true;
     }
     if (method == "glLinkProgram") {
-        // F-NEW-505: engine-side link-status law (pairs with the F-NEW-503b
-        // LINK_STATUS query answer).
+        // GP583-GLES-006: family-gated link-status law. linked=true ONLY
+        // when the program carries exactly one vertex + one fragment shader,
+        // both compiled, and both classify into the SAME supported family.
+        // Anything else answers GL_FALSE — use of such a program is the
+        // app-visible unsupported boundary, not a silent substitution.
         auto pit = gl_programs_.find((uint32_t)I(0));
-        if (pit != gl_programs_.end()) pit->second.linked = true;
+        if (pit != gl_programs_.end()) {
+            uint32_t nv = 0, nf = 0;
+            ShaderFamily fvert = ShaderFamily::UNKNOWN;
+            ShaderFamily ffrag = ShaderFamily::UNKNOWN;
+            bool all_compiled = true;
+            for (uint32_t sh : pit->second.attached) {
+                auto git = gl_shaders_.find(sh);
+                if (git == gl_shaders_.end()) { all_compiled = false; continue; }
+                const uint32_t spec_type = pgl_to_spec(git->second.type);
+                if (spec_type == 0x8B31u) {  // GL_VERTEX_SHADER
+                    ++nv;
+                    fvert = git->second.family;
+                } else if (spec_type == 0x8B30u) {  // GL_FRAGMENT_SHADER
+                    ++nf;
+                    ffrag = git->second.family;
+                }
+                if (!git->second.compiled) all_compiled = false;
+            }
+            pit->second.family = fvert;
+            pit->second.supported =
+                all_compiled && nv == 1 && nf == 1 &&
+                fvert != ShaderFamily::UNKNOWN && fvert == ffrag;
+            pit->second.linked = pit->second.supported;
+            // GP583-GLES-006 diagnostic (MINIANDROID_GLSL_DEBUG): the link
+            // gate inputs — shows why a pair was rejected.
+            {
+                static const bool glsl_dbg2 = std::getenv("MINIANDROID_GLSL_DEBUG");
+                if (glsl_dbg2) {
+                    std::fprintf(stderr,
+                        "[GLSLDBG] link prog=%u nv=%u nf=%u all_compiled=%d "
+                        "fvert=%d ffrag=%d supported=%d attached=[%zu]",
+                        (uint32_t)I(0), nv, nf, all_compiled ? 1 : 0,
+                        (int)fvert, (int)ffrag,
+                        pit->second.supported ? 1 : 0,
+                        pit->second.attached.size());
+                    for (uint32_t sh : pit->second.attached) {
+                        auto g2 = gl_shaders_.find(sh);
+                        std::fprintf(stderr, " (id=%u found=%d rawtype=%u)",
+                                     sh, g2 != gl_shaders_.end() ? 1 : 0,
+                                     g2 != gl_shaders_.end() ? g2->second.type
+                                                             : 0u);
+                    }
+                    std::fprintf(stderr, "\n");
+                }
+            }
+            trace += pit->second.linked
+                         ? "link-family-verified"
+                         : "link-honest-false (unsupported/invalid shader pair)";
+        }
         stats_.shader_ops++;
         return true;
     }
@@ -114,16 +534,29 @@ bool GLES20Bridge::dispatch(const std::string& method,
         // equivalent of the libGDX default SpriteBatch GLSL — the dominant
         // shader of every libGDX app). Map engine id → PGL program and bind
         // THAT; uniform/attrib location queries answer through the name law
-        // while the mapped program is current. Arbitrary GLSL stays the
-        // honest Mesa-llvmpipe frontier.
+        // while the mapped program is current.
+        //
+        // GP583-GLES-004 fix: the mapping is now family-GATED. The old
+        // dispatch routed EVERY engine-minted program to the SpriteBatch C
+        // pair regardless of its source — a custom shader was reported
+        // linked/used but actually ran the fixed SpriteBatch shader
+        // (silently semantically-wrong pixels). Only programs whose shader
+        // pair classified into a supported family at glLinkProgram (see
+        // GLES-006) get the mapping; anything else leaves the current
+        // program unchanged and records the explicit unsupported verdict
+        // (the GL-law face of using a program that never linked —
+        // GL_INVALID_OPERATION — with the current program unchanged).
         uint32_t prog = (uint32_t)I(0);
-        if (gl_programs_.find(prog) != gl_programs_.end()) {
-            // F-NEW-609 (S198): engine-minted GLSL program → the SpriteBatch
-            // default C-shader pair (the exact functional equivalent of the
-            // libGDX default SpriteBatch GLSL — the dominant shader of every
-            // SpriteBatch app). Uniform/attrib data flows through the name
-            // law in the glUniform* handlers below; the minted-location
-            // law (F-NEW-505) stays authoritative for ids.
+        auto pit = gl_programs_.find(prog);
+        if (pit != gl_programs_.end()) {
+            if (!pit->second.supported) {
+                trace = "glUseProgram: unsupported-program "
+                        "(family unverified; PGL executes C-function shaders "
+                        "only; SpriteBatch/ShapeRenderer families supported)";
+                cur_engine_prog_ = 0;
+                stats_.state_ops++;
+                return true;
+            }
             // F-NEW-609b: PER-ENGINE-PROGRAM PGL program + uniform block
             // (SpriteBatch's u_projTrans and ShapeRenderer's u_projModelView
             // must not share one matrix).
@@ -472,20 +905,63 @@ bool GLES20Bridge::dispatch(const std::string& method,
     if (method == "glDrawElements") {
         // F-NEW-503: pointer-array indexing + null guard.
         if (P(0) != nullptr) {
-            // S203 F-NEW-626e probe (bounded): the first index values of
-            // each DrawElements — distinguishes a real quad index run
-            // (0,1,2,2,3,0 …) from an EMPTY/garbage index buffer (the
-            // ShortBuffer.put([SII) silent-no-op hypothesis).
+            // GP583-GLES-001 fix (with the offset-clarification follow-up):
+            // the old S203 probe was NOT environment-gated, ALWAYS read six
+            // indices regardless of the requested count, ALWAYS interpreted
+            // them as unsigned short regardless of the supplied GL index
+            // type, and dereferenced the indices argument unconditionally —
+            // but when an element-array buffer is bound, GLES defines that
+            // argument as a BYTE OFFSET into the buffer, not a host pointer
+            // (Khronos glDrawElements refpage). A legal one-index draw with
+            // a four-byte client buffer, or a bound-EBO draw with offset 4,
+            // made the diagnostic read outside the caller's memory.
+            // New law: OFF by default (MINIANDROID_GL_DEBUG only), type-
+            // validated, count-bounded (never beyond the declared count),
+            // and NEVER a pointer dereference — the offset/pointer question
+            // is recorded in the trace instead of being dereferenced.
             {
+                static const bool gldbg = std::getenv("MINIANDROID_GL_DEBUG");
                 static int eshown = 0;
-                if (eshown < 8) {
+                const GLsizei count = (GLsizei)I(1);
+                const GLenum type = S(2);
+                if (gldbg && eshown < 8 && count > 0) {
                     ++eshown;
-                    const unsigned short* ix =
-                        (const unsigned short*)P(0);
-                    std::fprintf(stderr,
-                        "[GLDBG] DELE count=%d i0..5=%u,%u,%u,%u,%u,%u\n",
-                        (GLsizei)I(1), ix[0], ix[1], ix[2], ix[3], ix[4],
-                        ix[5]);
+                    // GP583-GLES-001 offset clarification: with a bound
+                    // element-array buffer the indices argument is a byte
+                    // offset — record it, NEVER dereference it.
+                    if (pgl_element_buffer_bound()) {
+                        std::fprintf(stderr,
+                            "[GLDBG] DELE count=%d type=0x%x ebo-offset=%lu "
+                            "(not dereferenced: offset face)\n",
+                            (int)count, (unsigned)type,
+                            (unsigned long)(uintptr_t)P(0));
+                    } else if (type == 0x1401u || type == 0x1403u ||
+                               type == 0x1405u) {  // UBYTE / USHORT / UINT
+                        // width-validated, count-bounded peek of the
+                        // client-pointer face (never beyond the declared
+                        // count, never the old fixed six).
+                        size_t iw = type == 0x1401u ? 1
+                                    : type == 0x1403u ? 2 : 4;
+                        const unsigned char* base =
+                            (const unsigned char*)P(0);
+                        const size_t n = std::min((size_t)count,
+                                                  (size_t)6);
+                        std::fprintf(stderr,
+                            "[GLDBG] DELE count=%d type=0x%x "
+                            "i0..%zu=", (int)count, (unsigned)type,
+                            n - 1);
+                        for (size_t k = 0; k < n; ++k) {
+                            unsigned long v = 0;
+                            std::memcpy(&v, base + k * iw, iw);
+                            std::fprintf(stderr, "%s%lu", k ? "," : "", v);
+                        }
+                        std::fprintf(stderr, "\n");
+                    } else {
+                        std::fprintf(stderr,
+                            "[GLDBG] DELE count=%d type=0x%x "
+                            "(probe skipped: invalid index type)\n",
+                            (int)count, (unsigned)type);
+                    }
                 }
             }
             glDrawElements(pgl_mode_from_spec(I(0)), (GLsizei)I(1), S(2), P(0));  // F-NEW-607: mode+type

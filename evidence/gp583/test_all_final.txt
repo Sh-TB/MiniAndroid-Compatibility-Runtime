@@ -1,0 +1,32 @@
+[PARITY-DORMANT] src/dex/api_dispatcher.cpp (documented dormant — not linked)
+[PARITY-DORMANT] src/dex/exception_system.cpp (documented dormant — not linked)
+[PARITY-DORMANT] src/dex/execution_guard.cpp (documented dormant — not linked)
+[PARITY-DORMANT] src/dex/execution_observatory.cpp (documented dormant — not linked)
+[PARITY-DORMANT] src/renderer/view_renderer.cpp (documented dormant — not linked)
+[PARITY-DORMANT] src/resources/real_layout.cpp (documented dormant — not linked)
+[PARITY-OK] 74 core sources manifest-parity
+[PASS] simple_test
+[PASS] s130_laws_test
+[PASS] gp582_engine_probe_test
+[PASS] g04_hostile_test
+[PASS] g06g08_hostile_test
+[PASS] resource_hostile_test
+[PASS] lifecycle_law_test
+[PASS] input_pipeline_law_test
+[PASS] linear_layout_law_test
+[PASS] g10_layout_law_test
+[PASS] g11_ctor_law_test
+[PASS] mutf8_string_pool_test
+[PASS] resource_core_law_test
+[PASS] resource_config_selection_test
+[PASS] s98_prefs_law_test
+[PASS] s98_scroll_transform_law_test
+[PASS] s98_text_law_test
+[PASS] s106_cia_law_test
+[PASS] s106_gif_law_test
+[PASS] s106_layout_net_law_test
+[PASS] s106_text2_law_test
+[PASS] encoded_value_law_test
+[PASS] gp583_gles_law_test
+[PASS] c9_bitmap_density_law_test
+BATTERY SUMMARY: total=24 passed=24 failed=0

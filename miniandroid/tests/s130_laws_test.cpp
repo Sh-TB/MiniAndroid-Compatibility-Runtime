@@ -75,10 +75,19 @@ static void test_gesture_laws() {
         float fling_vy = 0;
     } log;
     GdModel gd;
-    gd.cb = [&](const char* cb, float a, float b, float c, float d) {
+    // F-NEW-400 payload law: the callback signature carries SIX floats —
+    // onFling: (down_x, down_y, up_x, up_y, velocityX, velocityY). The
+    // 5-float lambda below no longer compiled against the drifted Cb
+    // typedef (latent defect surfaced by GP583-TEST-001's battery
+    // registration — the old `make test` never built this suite).
+    gd.cb = [&](const char* cb, float a, float b, float c, float d,
+                float e, float f) {
         log.seq += cb;
         log.seq += ";";
-        if (std::string(cb) == "onFling") { log.fling_vy = c; (void)a; (void)b; (void)d; }
+        if (std::string(cb) == "onFling") {
+            log.fling_vy = f;
+            (void)a; (void)b; (void)c; (void)d; (void)e;
+        }
         return true;
     };
     // Tap: DOWN at 0ms, UP at 60ms → onDown + onSingleTapUp; confirmed at +300.
@@ -93,7 +102,7 @@ static void test_gesture_laws() {
     // Long press: DOWN then poll at 500ms → onLongPress fires.
     GdModel gd2;
     bool long_fired = false;
-    gd2.cb = [&](const char* cb, float, float, float, float) {
+    gd2.cb = [&](const char* cb, float, float, float, float, float, float) {
         if (std::string(cb) == "onLongPress") long_fired = true;
         return true;
     };
@@ -107,10 +116,11 @@ static void test_gesture_laws() {
     GdModel gd3;
     int scrolls = 0;
     float fling_vy = 0;
-    gd3.cb = [&](const char* cb, float, float, float c, float d) {
+    gd3.cb = [&](const char* cb, float, float, float c, float d, float e,
+                 float f) {
         const std::string s(cb);
-        if (s == "onScroll") ++scrolls;
-        if (s == "onFling") fling_vy = d;
+        if (s == "onScroll") ++scrolls;  // distanceX=e, distanceY=f (F-NEW-400)
+        if (s == "onFling") fling_vy = f;  // velocityY = 6th payload
         return true;
     };
     CHECK(gd3.feed(0, 100, 1000, 0));

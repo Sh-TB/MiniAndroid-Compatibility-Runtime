@@ -45,6 +45,33 @@
 
 extern "C" {
 
+// GP583-GLES-005: bounded copy-allocation law. The old code only rejected
+// negative dimensions and then allocated (size_t)width*height*4 unchecked —
+// an accidental or adversarial very large positive size requested enormous
+// host memory straight from APK-controlled native code. Law (both faces):
+//   (1) checked multiplication (no silent 32-bit wrap, no size_t overflow);
+//   (2) a hard byte budget (64 MiB) — every GLES max texture dimension is
+//       far below it, so legit app faces never trip;
+//   (3) the copy extent is clipped to the READ framebuffer — a copy larger
+//       than the pixels that can actually be read must not allocate its
+//       full request (PGL fb geometry, pgl_read_extent());
+//   (4) allocation failure is caught at the C ABI boundary — a bad_alloc
+//       must never escape into bionic-compiled caller frames.
+// PortableGL exposes no public per-call error setter (documented face above);
+// an over-budget copy returns without touching the texture, keeping the
+// previous texture contents intact — the honest degradation this module
+// already documents for read failures.
+static constexpr size_t kGlCopyMaxBytes = 64ull * 1024 * 1024;  // 64 MiB
+
+// Read-framebuffer extent (false = no current context — nothing to read).
+// pgl_framebuffer_size comes from pgl_backend.h (C++ linkage — the local
+// extern "C" forward declared a mangled C++ symbol as a C symbol and the
+// link died on the namespace-mangled definition).
+static bool pgl_read_extent(int* fb_w, int* fb_h) {
+    return miniandroid::gles::pgl_framebuffer_size(fb_w, fb_h) &&
+           fb_w != nullptr && fb_h != nullptr && *fb_w > 0 && *fb_h > 0;
+}
+
 // GLES2 §3.7.2: copy a w×h block at (x,y) of the read color buffer into
 // a fresh texture image (target level). border must be 0 (GLES2).
 void glCopyTexImage2D(GLenum target, GLint level, GLint internalformat,
@@ -53,13 +80,24 @@ void glCopyTexImage2D(GLenum target, GLint level, GLint internalformat,
     if (width < 0 || height < 0 || border != 0) {
         return; // GLES2: INVALID_VALUE (no public error setter in PortableGL)
     }
-    // Read as the universally-guaranteed RGBA8 combo, then upload with
-    // the caller's internalformat; the software backend converts on
-    // upload (same path as a client RGBA bitmap into an RGB texture).
-    // (PortableGL exposes no public per-call error setter; a failed read
-    // simply leaves the texture undefined — acceptable for the software
-    // backend where a valid (x,y,w,h) within the viewport always reads.)
-    std::vector<unsigned char> buf((size_t)width * height * 4);
+    int fb_w = 0, fb_h = 0;
+    if (pgl_read_extent(&fb_w, &fb_h)) {
+        // Clip the request to the readable extent (spec: reading outside
+        // the framebuffer is undefined — allocating for it is never useful).
+        if (x < 0) { width += x; x = 0; }
+        if (y < 0) { height += y; y = 0; }
+        if (x >= fb_w || y >= fb_h) return;
+        if (width > fb_w - x) width = fb_w - x;
+        if (height > fb_h - y) height = fb_h - y;
+    }
+    const size_t bytes = (size_t)width * (size_t)height * 4;
+    if (width <= 0 || height <= 0 || bytes > kGlCopyMaxBytes) return;
+    std::vector<unsigned char> buf;
+    try {
+        buf.resize(bytes);
+    } catch (...) {
+        return;  // C ABI boundary: host exceptions never escape to APK code
+    }
     glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buf.data());
     glTexImage2D(target, level, internalformat, width, height, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, buf.data());
@@ -72,7 +110,22 @@ void glCopyTexSubImage2D(GLenum target, GLint level,
     if (width < 0 || height < 0) {
         return; // GLES2: INVALID_VALUE (no public error setter in PortableGL)
     }
-    std::vector<unsigned char> buf((size_t)width * height * 4);
+    int fb_w = 0, fb_h = 0;
+    if (pgl_read_extent(&fb_w, &fb_h)) {
+        if (x < 0) { width += x; x = 0; }
+        if (y < 0) { height += y; y = 0; }
+        if (x >= fb_w || y >= fb_h) return;
+        if (width > fb_w - x) width = fb_w - x;
+        if (height > fb_h - y) height = fb_h - y;
+    }
+    const size_t bytes = (size_t)width * (size_t)height * 4;
+    if (width <= 0 || height <= 0 || bytes > kGlCopyMaxBytes) return;
+    std::vector<unsigned char> buf;
+    try {
+        buf.resize(bytes);
+    } catch (...) {
+        return;  // C ABI boundary: host exceptions never escape to APK code
+    }
     glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buf.data());
     glTexSubImage2D(target, level, xoffset, yoffset, width, height,
                     GL_RGBA, GL_UNSIGNED_BYTE, buf.data());

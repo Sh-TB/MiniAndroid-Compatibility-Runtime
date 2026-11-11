@@ -431,21 +431,55 @@ int LayoutInflater::resolve_dimen_px(const std::string& v, InflateStats& stats) 
         return 0;
     }
     if (!ref.is_ref) {
-        // raw string form "12dp" / "14sp" / "8px" / "1in" / "12pt" / "5mm"
+        // raw string form "12dp" / "12dip" / "14sp" / "8px" / "1in" /
+        // "12pt" / "5mm"
         // GOLDEN-03 §9: same canonical law for literal dimensions.
+        //
+        // GP583-LAYOUT-001 fix: the old code took the FINAL TWO characters
+        // as the suffix, so "12dip".substr(size-2) == "ip" — the "dip" arm
+        // was UNREACHABLE and every literal `dip` dimension silently
+        // answered 0 (Android's resource docs accept dp AND dip). The unit
+        // is now the validated non-numeric TAIL, and the numeric prefix is
+        // parsed with strtod + endptr: a malformed value ("abc", "12zap",
+        // "--5") is REJECTED, never silently converted through atof's
+        // partial-prefix acceptance.
         std::string s = v;
-        if (s.size() > 2) {
-            std::string suf = s.substr(s.size() - 2);
-            float val = (float)atof(s.c_str());
-            uint8_t unit;
-            if (suf == "dp" || suf == "dip") unit = COMPLEX_UNIT_DIP;
-            else if (suf == "sp")           unit = COMPLEX_UNIT_SP;
-            else if (suf == "px")           unit = COMPLEX_UNIT_PX;
-            else if (suf == "in")           unit = COMPLEX_UNIT_IN;
-            else if (suf == "pt")           unit = COMPLEX_UNIT_PT;
-            else if (suf == "mm")           unit = COMPLEX_UNIT_MM;
-            else return 0;
-            return complex_unit_to_dimension_pixel_size(unit, val, density_context());
+        // trim ASCII whitespace (AOSP TypedValue.convertDimension... accepts
+        // padded literals in raw attribute strings)
+        size_t b = 0, e = s.size();
+        while (b < e && (s[b] == ' ' || s[b] == '\t' || s[b] == '\r' ||
+                         s[b] == '\n'))
+            ++b;
+        while (e > b && (s[e - 1] == ' ' || s[e - 1] == '\t' ||
+                         s[e - 1] == '\r' || s[e - 1] == '\n'))
+            --e;
+        s = s.substr(b, e - b);
+        // numeric prefix = the longest strtod-acceptable head
+        if (s.size() > 1) {
+            const char* c = s.c_str();
+            char* endp = nullptr;
+            const double num = std::strtod(c, &endp);
+            if (endp != nullptr && endp != c && s.size() >= 3) {
+                // trim the suffix tail as well ("12 dp" ≡ "12dp" — AOSP
+                // TypedValue.applyDimension trims both ends)
+                std::string suf(endp);
+                size_t sb = 0, se = suf.size();
+                while (sb < se && (suf[sb] == ' ' || suf[sb] == '\t'))
+                    ++sb;
+                while (se > sb && (suf[se - 1] == ' ' || suf[se - 1] == '\t'))
+                    --se;
+                suf = suf.substr(sb, se - sb);
+                float val = (float)num;
+                uint8_t unit;
+                if (suf == "dp" || suf == "dip")      unit = COMPLEX_UNIT_DIP;
+                else if (suf == "sp")                 unit = COMPLEX_UNIT_SP;
+                else if (suf == "px")                 unit = COMPLEX_UNIT_PX;
+                else if (suf == "in")                 unit = COMPLEX_UNIT_IN;
+                else if (suf == "pt")                 unit = COMPLEX_UNIT_PT;
+                else if (suf == "mm")                 unit = COMPLEX_UNIT_MM;
+                else return 0;  // malformed/unsupported suffix → reject
+                return complex_unit_to_dimension_pixel_size(unit, val, density_context());
+            }
         }
     }
     return 0;

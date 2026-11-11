@@ -7,13 +7,16 @@
 // glBufferData, glVertexAttribPointer, glDrawArrays, glDrawElements,
 // glClear, glViewport, glEnable, depth/stencil/blend state, uniforms).
 //
-// GLSL SOURCE HONESTY: glShaderSource stores the GLSL string (traceable),
-// glCompileShader records a compile attempt but PortableGL does NOT parse
-// GLSL — programs execute C-function shaders registered via
-// register_program_shaders(). For the golden cube the C shaders are exact
-// functional equivalents of the GLSL source shipped in the harness. This
-// limitation is documented in GLES_BACKEND_COMPARISON_010.md with the
-// Mesa-llvmpipe alternative for arbitrary APK GLSL.
+// GLSL SOURCE HONESTY: glShaderSource stores the GLSL string (traceable).
+// GP583-GLES-006: glCompileShader/glLinkProgram NO LONGER report success
+// unconditionally — the source is classified first, and only a positively
+// identified, source-verified shader family (the libGDX default SpriteBatch
+// and ShapeRenderer pairs, whose exact functional C equivalents execute in
+// PGL) answers COMPILE_STATUS/LINK_STATUS = GL_TRUE. Unknown GLSL answers
+// GL_FALSE with an honest diagnostic — the app sees the unsupported
+// boundary instead of silently running a substituted shader (GLES-004).
+// Arbitrary GLSL stays the documented Mesa-llvmpipe frontier
+// (GLES_BACKEND_COMPARISON_010.md).
 #ifndef MINIANDROID_GLES20_BRIDGE_H
 #define MINIANDROID_GLES20_BRIDGE_H
 
@@ -37,6 +40,36 @@ struct PGLShaderFuncs {
 class GLES20Bridge {
 public:
     static GLES20Bridge& instance();
+
+    // ── GP583-GLES-006: positively-identified shader families ───────────
+    enum class ShaderFamily {
+        UNKNOWN = 0,       // arbitrary/unverifiable GLSL — NOT executable
+        SPRITEBATCH = 1,   // libGDX SpriteBatch default shader family
+        SHAPERENDERER = 2, // libGDX ShapeRenderer default shader family
+    };
+
+    // ── GP583-GLES-008: PER-PROGRAM introspection (was canned/global) ──
+    // Query answers are keyed by the actual engine-side object state.
+    // Returns true when the handle is engine-minted and pname is answered
+    // (out receives the value); false → caller falls back (PGL-native
+    // handles). pnames answered: DELETE_STATUS (0x8B80), COMPILE_STATUS
+    // (0x8B81), LINK_STATUS (0x8B82), ATTACHED_SHADERS (0x8B87 — the real
+    // attached count, was canned 0), ACTIVE_ATTRIBUTES (0x8B89 — the
+    // classified family's declared attribute count, was canned 3 for EVERY
+    // program), ACTIVE_ATTRIBUTE_MAX_LENGTH (0x8B8A).
+    bool shader_query(uint32_t shader, uint32_t pname, int32_t* out) const;
+    bool program_query(uint32_t program, uint32_t pname, int32_t* out) const;
+
+    // GP583-GLES-008: per-program active-attribute enumeration for a
+    // supported family (index < ACTIVE_ATTRIBUTES). Returns false for
+    // unknown-family/unknown programs — the caller must NOT fabricate
+    // canonical names for unverifiable shaders.
+    bool program_attrib(uint32_t program, uint32_t index,
+                        const char** name, uint32_t* gl_type) const;
+
+    // GP583-GLES-004: is this program a positively identified family whose
+    // PGL C-shader mapping may be installed at glUseProgram?
+    bool program_supported(uint32_t program) const;
 
     // Dispatch one GLES20 static method by Java name. Types mirror JNI:
     // args are int/float/bool/pointer(void*) values; returns true if the
@@ -86,8 +119,27 @@ private:
     // F-NEW-503b: COMPILE_STATUS/LINK_STATUS → GL_TRUE for engine-minted
     // handles). The GLSL source itself is stored for the trace (the
     // glsl-not-compiled honesty note stands).
-    struct GlShader { uint32_t type = 0; bool compiled = false; bool deleted = false; };
-    struct GlProgram { std::vector<uint32_t> attached; bool linked = false; bool deleted = false; };
+    //
+    // GP583-GLES-006 UPDATE: "engine-minted → GL_TRUE" was exactly the
+    // false-success the finding documents (compile status answered TRUE
+    // although no GLSL compilation occurs). The status law is now
+    // family-gated: a shader compiles only when its stored source belongs
+    // to a positively identified supported family; a program links only
+    // when its attached vertex+fragment pair compiles and is compatible.
+    // The GlShader/GlProgram records carry the classification.
+    struct GlShader {
+        uint32_t type = 0;
+        bool compiled = false;
+        bool deleted = false;
+        ShaderFamily family = ShaderFamily::UNKNOWN;  // source classification
+    };
+    struct GlProgram {
+        std::vector<uint32_t> attached;
+        bool linked = false;
+        bool deleted = false;
+        ShaderFamily family = ShaderFamily::UNKNOWN;
+        bool supported = false;  // positively identified at link time
+    };
     std::map<uint32_t, GlShader> gl_shaders_;
     std::map<uint32_t, GlProgram> gl_programs_;
     std::map<uint32_t, std::map<std::string, int32_t>> gl_locations_;

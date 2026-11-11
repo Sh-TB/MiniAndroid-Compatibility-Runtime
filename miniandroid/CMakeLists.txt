@@ -25,7 +25,11 @@ find_package(ZLIB REQUIRED)
 
 # Optional: Vulkan (for future GPU rendering)
 option(USE_VULKAN "Enable Vulkan backend" OFF)
-if(USE_VULCAN)
+# GP583-BUILD-003 fix: the option is spelled USE_VULKAN; the branches below
+# tested USE_VULCAN (missing K), so -DUSE_VULKAN=ON configured fine but the
+# discovery/link/summary branches never fired (empty Vulkan row in the
+# summary). One spelling everywhere.
+if(USE_VULKAN)
     find_package(Vulkan)
     if(Vulkan_FOUND)
         message(STATUS "Vulkan found, enabling GPU backend")
@@ -69,34 +73,18 @@ else()
 endif()
 
 # ============== Core Library ==============
-add_library(miniandroid_core STATIC
-    # APK Parser
-    src/apk/apk_parser.cpp
-    src/apk/manifest_reader.cpp
-    
-    # DEX Parser
-    src/dex/dex_parser.cpp
-    src/dex/class_resolver.cpp
-    src/dex/dex_interpreter_batch.cpp
-    src/dex/c7_package_index.cpp  # CODER7 WAVE-5: PMS-lite
-    
-    # Runtime
-    src/runtime/execution_engine.cpp
-    src/runtime/route_law.cpp  # S188: alley-law route decision at launch
-    
-    # Resources (EXP-006)
-    src/resources/resource_parser.cpp
-    
-    # Renderer (EXP-005)
-    src/renderer/software_renderer.cpp
-    src/renderer/vector_decode.cpp
-    
-    # API Stubs
-    # (header-only, no separate .cpp needed for now)
-    
-    # Diagnostics
-    src/diagnostics/trace_engine.cpp
-)
+# GP583-BUILD-002 fix: the source list now comes from the SAME manifest the
+# Makefile consumes (miniandroid/core_sources.manifest, 74 TUs). The old
+# hand-maintained CMake list carried only 12 translation units while the
+# Makefile linked 74 — two build commands produced materially different
+# runtime capability (dalvik_engine, shadows, JNI loader/bridge, ARSC/
+# string-pool/layout-inflater, GLES backend, HTTP/storage/audio/font,
+# QuickJS WebView were all absent from the CMake runtime).
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/core_sources.manifest" MINIANDROID_CORE_SOURCES
+    REGEX "^[^#].*\\.cpp$")
+list(LENGTH MINIANDROID_CORE_SOURCES MINIANDROID_CORE_SOURCE_COUNT)
+message(STATUS "miniandroid_core: ${MINIANDROID_CORE_SOURCE_COUNT} TUs from core_sources.manifest (shared with Makefile)")
+add_library(miniandroid_core STATIC ${MINIANDROID_CORE_SOURCES})
 
 target_include_directories(miniandroid_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -108,6 +96,16 @@ target_include_directories(miniandroid_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/diagnostics
     ${CMAKE_CURRENT_SOURCE_DIR}/src/resources
     ${CMAKE_CURRENT_SOURCE_DIR}/src/renderer
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/framework
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/storage
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/fonts
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/gles
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/audio
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/webview
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/portablegl
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/nlohmann_json/include
+    /usr/include/freetype2
 )
 
 target_link_libraries(miniandroid_core PUBLIC
@@ -132,6 +130,19 @@ foreach(_syslib crypto sqlite3)
     endif()
 endforeach()
 
+# GP583-BUILD-002: the Makefile runtime links the FULL library set; the CMake
+# runtime must consume the same capability surface or the two build commands
+# still diverge. Every entry is optional-found (silent skip when absent) so
+# minimal hosts keep configuring; the summary prints what actually resolved.
+foreach(_syslib jpeg sndfile mpg123 ssl webp webpdemux freetype harfbuzz fribidi)
+    find_library(_FOUND_${_syslib} NAMES ${_syslib})
+    if(_FOUND_${_syslib})
+        target_link_libraries(miniandroid_core PUBLIC ${_FOUND_${_syslib}})
+    endif()
+endforeach()
+find_package(Threads REQUIRED)
+target_link_libraries(miniandroid_core PUBLIC Threads::Threads)
+
 if(TARGET nlohmann_json::nlohmann_json)
     # BUILD-TRAIN fix: stray "()" typo became "-l(" "-l)" link items
     target_link_libraries(miniandroid_core PUBLIC nlohmann_json::nlohmann_json)
@@ -141,7 +152,7 @@ else()
     message(FATAL_ERROR "nlohmann/json library not found")
 endif()
 
-if(USE_VULCAN AND Vulkan_FOUND)
+if(USE_VULKAN AND Vulkan_FOUND)
     target_link_libraries(miniandroid_core PUBLIC Vulkan::Vulkan)
 endif()
 
@@ -158,6 +169,26 @@ add_executable(miniandroid
 )
 
 target_link_libraries(miniandroid PRIVATE miniandroid_core)
+
+# GP583-BUILD-002: the executable-side native objects the Makefile links
+# (S-2 thunk assembly + bionic C compat shims). Same objects, same role.
+enable_language(ASM)
+target_sources(miniandroid PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
+)
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
+    PROPERTIES LANGUAGE ASM)
+target_link_libraries(miniandroid PRIVATE
+    miniandroid_core
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.o
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.o
+)
+add_custom_command(TARGET miniandroid PRE_LINK
+    COMMAND cc -O2 -fPIC -c -o ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.o
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.c
+    COMMAND cc -O2 -fPIC -c -o ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.o
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.c
+)
 
 # ============== EXP-002 Executable (Class Resolution) ==============
 add_executable(miniandroid_exp002
@@ -242,35 +273,52 @@ option(BUILD_TESTS "Build unit tests" ON)
 
 if(BUILD_TESTS)
     enable_testing()
-    
+
     # Try to find Google Test
     find_package(GTest QUIET)
-    
+
+    # GP583-TEST-002 fix: the GoogleTest branch created `miniandroid_test`
+    # ONLY when tests/main.cpp exists but then called
+    # gtest_discover_tests(miniandroid_test) UNCONDITIONALLY — with main.cpp
+    # absent (the audited tree) CMake configure died at
+    # "get_property could not find TARGET miniandroid_test". Target
+    # existence is now the outer condition for discovery.
+    # GP583-TEST-001 fix (CMake face): the no-GTest fallback created the
+    # simple_test executable without any add_test registration — ctest -N
+    # reported Total Tests: 0 and a green ctest coexisted with zero executed
+    # tests. Every branch now registers at least one real test.
     if(GTest_FOUND OR TARGET GTest::gtest)
-        if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp)  # BUILD-TRAIN: dead-target guard (cleanup waves removed sources; cmake-4.x generate fails otherwise)
-add_executable(miniandroid_test
-            tests/main.cpp
-        )
-        
-        target_link_libraries(miniandroid_test PRIVATE 
-            miniandroid_core
-            GTest::gtest_main
-        )
-endif()
-        
-        include(GoogleTest)
-        gtest_discover_tests(miniandroid_test)
-        
-        message(STATUS "Tests enabled")
-    else()
-        message(STATUS "Google Test not found, disabling tests")
-        
+        if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp)
+            add_executable(miniandroid_test
+                tests/main.cpp
+            )
+            target_link_libraries(miniandroid_test PRIVATE
+                miniandroid_core
+                GTest::gtest_main
+            )
+            include(GoogleTest)
+            gtest_discover_tests(miniandroid_test)
+            message(STATUS "Tests enabled (GoogleTest discovered)")
+        else()
+            # GTest present but the maintained GTest main.cpp is not —
+            # fall through to the simple-test executable (created below) and
+            # register it; never discover tests from a nonexistent target.
+            message(STATUS "GoogleTest found but tests/main.cpp absent — simple-test fallback (registered)")
+        endif()
+    endif()
+
+    if(NOT TARGET miniandroid_test)
         # Create a simple test executable without GTest
         add_executable(miniandroid_test
             tests/simple_test.cpp
         )
-        
+
         target_link_libraries(miniandroid_test PRIVATE miniandroid_core)
+        add_test(NAME miniandroid-smoke COMMAND miniandroid_test)
+        set_tests_properties(miniandroid-smoke PROPERTIES TIMEOUT 300)
+        if(NOT (GTest_FOUND OR TARGET GTest::gtest))
+            message(STATUS "Google Test not found — simple-test fallback registered with CTest (miniandroid-smoke)")
+        endif()
     endif()
 endif()
 
@@ -331,7 +379,7 @@ message(STATUS "Version: ${PROJECT_VERSION}")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ Standard: ${CMAKE_CXX_STANDARD}")
 message(Status "Install Prefix: ${CMAKE_INSTALL_PREFIX}")
-message(STATUS "Vulkan: ${USE_VULCAN}")
+message(STATUS "Vulkan: ${USE_VULKAN}")
 message(STATUS "Tests: ${BUILD_TESTS}")
 message(STATUS "=====================================================")
 message(STATUS "")
