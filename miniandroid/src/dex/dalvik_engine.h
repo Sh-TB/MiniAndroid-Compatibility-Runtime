@@ -107,6 +107,11 @@ namespace Opcode {
     constexpr uint16_t MOVE_16 = 0x03;       // move/16 vAAAA, vBBBB
     constexpr uint16_t MOVE_WIDE = 0x04;     // move-wide vA, vB
     constexpr uint16_t MOVE_WIDE_FROM16 = 0x05; // move-wide/from16 vAA, vBBBB
+    // S211 KNOWLEDGE-TRANSFER PROBE (#529 D-P0-5 residue): 0x06 was the only
+    // member of the move family with NO constant here and NO dispatch case —
+    // any method using it died at the unimplemented-opcode handler. AOSP
+    // instruction-formats: 32x, "move-wide/16 vAAAA, vBBBB".
+    constexpr uint16_t MOVE_WIDE_16 = 0x06;  // move-wide/16 vAAAA, vBBBB (32x)
     constexpr uint16_t MOVE_OBJECT = 0x07;   // move-object vA, vB
     constexpr uint16_t MOVE_OBJECT_FROM16 = 0x08; // move-object/from16 vAA, vBBBB
     constexpr uint16_t MOVE_OBJECT_16 = 0x09; // move-object/16 vAAAA, vBBBB

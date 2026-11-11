@@ -1,0 +1,146 @@
+{
+ "session": "S211 \u2014 A-R delivery: the #576 findings R1-R5 implemented, gated, and the never-reviewed sweep closed",
+ "base_commit": "bdf777d9",
+ "binaries": {
+  "PRE_rebuild": "332bd6a6143d8bae",
+  "PRE_rebuild_note": "byte-identical to the pre-fix baseline rebuild \u2014 build determinism re-proven twice (332bd6a6143d8bae both times)",
+  "POST_with_isEnabled_true": "8e13a4d90643672d",
+  "FINAL": "dec3cd58db8080cf"
+ },
+ "sweep_closure": {
+  "what": "the S208 sweep recorded 177 open issues as fetch-fail-or-empty (rate-limited) and the S209/S210 scans covered only 40/50 watermark-hot issues \u2014 413 open issues were never re-scanned",
+  "method": "per-issue comments fetch for all 177 fetch-fails + all 7 active-unscanned (179 targets), compared against the S208 watermarks",
+  "artifact": "s211_fetchfails_sweep.json (committed beside this file)",
+  "result": "0 comments after watermarks across 178/179 issues; the single post-watermark comment is the A-R1 frontier note on #9 (the audit lane's own record) \u2014 NO unreviewed coder delivery anywhere in the open-issue set"
+ },
+ "findings_delivered": {
+  "R1_jni_pending_exception": {
+   "status": "LANDED",
+   "files": [
+    "miniandroid/src/jni/dlopen_exec.cpp (exception channel: record/Occurred/Clear/Check/Throw/ThrowNew)",
+    "miniandroid/src/jni/dlopen_exec.h (take_pending_jni_exception)",
+    "miniandroid/src/dex/dalvik_engine.cpp (call-site check: discard native return, throw_deferred(JNI-PENDING))"
+   ],
+   "verify": {
+    "probe": "fixtures/s211_r1_jni_probe",
+    "PRE_rows": "R1-01 FAIL (native ret 42 reached the DEX, no throw \u2014 exactly the #576 prediction)",
+    "POST_rows": "2/2 PASS (ThrowNew discards 42 \u2192 IllegalStateException caught; native-side ExceptionCheck+Clear consumes \u2192 7, no throw)",
+    "chain_rows": [
+     "RegisterNatives: 2 methods",
+     "ThrowNew: Ljava/lang/IllegalStateException;: r1-probe native ThrowNew",
+     "[A-R1] pending JNI exception from native ... \u2192 throw_deferred",
+     "[SYNTH-EXC] JNI-PENDING (deferred) \u2192 handler @0xd type=IllegalStateException"
+    ]
+   }
+  },
+  "R2_math_random": {
+   "status": "LANDED",
+   "files": [
+    "miniandroid/src/dex/dalvik_engine.cpp (dedicated Math.random lane, F-C8-170 algebra, own seed constant)"
+   ],
+   "verify": {
+    "probe_rows": "R2-01/R2-02 PASS (in [0,1); two draws differ)",
+    "PRE_rows": "R2-02 FAIL (0.000000 vs 0.000000 \u2014 the silent constant)",
+    "standing_gates": "colorpipe 17/17, classkey 15/15 byte-stable \u2014 lane independence held"
+   }
+  },
+  "R3_random_seed": {
+   "status": "LANDED",
+   "files": [
+    "miniandroid/src/dex/dalvik_engine.cpp (Random(long)/setSeed \u2192 __random_state__ per-object splitmix64; nextInt/nextDouble/nextFloat/nextBoolean draw prefer the per-object lane; unseeded keep the shared lanes EXACTLY)"
+   ],
+   "verify": {
+    "probe_rows": "R3-01..R3-06 PASS (same-seed identical sequences; setSeed reset; unseeded regression row)",
+    "PRE_rows": "R3-01 FAIL (873 vs 214 \u2014 shared-stream drain), R3-03 FAIL (setSeed ignored 303 vs 383)"
+   }
+  },
+  "R4_checkPermission_sibling": {
+   "status": "LANDED (refactored onto ONE classifier)",
+   "files": [
+    "miniandroid/src/dex/dalvik_engine.cpp (s211_permission_classify \u2014 checkSelfPermission AND checkPermission both call it; F-NEW-428 tables moved verbatim)"
+   ],
+   "verify": {
+    "probe_rows": "R4-01..R4-04 PASS (delegate agreement 0 vs 0; dangerous DENIED in both)",
+    "PRE_rows": "R4-02 FAIL (-1 vs sibling 0 \u2014 the #576 disagreement)",
+    "regression": "R4-01/R4-04 identical PRE vs POST \u2014 the refactor is behavior-identical on the checkSelfPermission side"
+   }
+  },
+  "R5_accessibility": {
+   "status": "PARTIAL LANDED \u2014 isEnabled RECORDED, NOT SHIPPED (A/B evidence)",
+   "files": [
+    "miniandroid/src/dex/dalvik_engine.cpp (AccessibilityManager isTouchExplorationEnabled=false + sendAccessibilityEvent/notify* recorded-void; isEnabled arm deliberately absent)",
+    "miniandroid/src/framework/android_shadows.h/.cpp (contentDescription capture + getter, EXP-065 mirror)",
+    "miniandroid/src/dex/dalvik_engine.cpp (view_tree export: content_description key emitted ONLY when non-empty \u2014 byte-stable)"
+   ],
+   "isEnabled_AB": {
+    "with_isEnabled_true": {
+     "binary": "8e13a4d90643672d",
+     "dooz_face": "d602648e8e401895",
+     "rc": 1,
+     "uncaught_rows": 26,
+     "signature": "12 \u00d7 f141-null-recv NPE Ly4;.n pc=19 Collection.isEmpty on null (the unclassified Compose accessibility-delegate family)"
+    },
+    "final_isEnabled_absent": {
+     "binary": "dec3cd58db8080cf",
+     "dooz_face": "a0fae9072313e2d1",
+     "rc": 0,
+     "uncaught_rows": 3
+    },
+    "verdict": "the R5 \u2192 true proposal is a REAL contract but the family behind it is OPEN \u2014 shipping it alone regresses the dooz golden; named next step for the accessibility lane"
+   }
+  }
+ },
+ "probes": {
+  "ar_probe": {
+   "apk_sha16": "79c6f8e1384f5c8a",
+   "face_final_x2": "0b7819139390f555",
+   "rows_final": "15/15 PASS",
+   "rows_PRE": "7/15 (R2-02, R3-01, R3-02, R3-03, R4-02, R4-03, R5-01, R5-03 FAIL \u2014 the discriminating set)"
+  },
+  "r1_probe": {
+   "apk_sha16": "aab9bc9ff6e51f37 (rebuild 6763e54d shell; lib/x86_64/libr1probe.so 6b25a1c7b486a7ff)",
+   "face_final_x2": "c4284c2b42b1d9ec",
+   "rows_final": "2/2 PASS",
+   "rows_PRE": "1/2 (R1-01 FAIL \u2014 42 escaped)"
+  },
+  "standing": {
+   "colorpipe": "17/17 face e5b937c1f2279808 (standing record held)",
+   "classkey": "15/15 face a2d724a1e1126e69 (standing record held)"
+  }
+ },
+ "goldens": {
+  "command": "install --data-root <store>; run --execution-mode real-dalvik --frames 8 --frame-delay 250",
+  "unote_30": {
+   "face": "3b8dcb0adbbc17a9",
+   "standing": "3b8dcb0a EXACT",
+   "PRE": "3b8dcb0adbbc17a9",
+   "rc": 0
+  },
+  "dooz_23": {
+   "face": "a0fae9072313e2d1",
+   "standing": "a0fae907 EXACT",
+   "PRE": "a0fae9072313e2d1",
+   "rc": 0
+  },
+  "gmdice_8": {
+   "face": "3891679dff449331",
+   "standing": "3891679d EXACT",
+   "PRE": "3891679dff449331",
+   "rc": 0
+  },
+  "microtimer_8": {
+   "face": "bbd350b6c14fbd52",
+   "standing": "bbd350b6 anchor EXACT",
+   "PRE": "bbd350b6c14fbd52",
+   "rc": 0
+  },
+  "bouncy_1": {
+   "face": "b5a7a35d5fe0564b",
+   "PRE": "b5a7a35d5fe0564b",
+   "rc": 1,
+   "note": "era-record 8a6c24ac predates the current build stack (toolchain/lib refresh in this container); the ZERO-DRIFT gate is the PRE==POST byte-identity, which HOLDS"
+  },
+  "make_test": "4 passed / 0 failed"
+ },
+ "verdict": "ALL GATES GREEN on dec3cd58db8080cf \u2014 ZERO DRIFT on every locally-runnable golden and probe; the four P0/P1 findings are LANDED with executable evidence; the R5 isEnabled law is honestly recorded-not-shipped with the root-caused A/B."
+}

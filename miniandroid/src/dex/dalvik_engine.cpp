@@ -15134,6 +15134,39 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                             recursion_depth_--;
                             return true;
                         }
+                        // ── A-R1 (S211): JNI pending-exception law ─────
+                        // A native that raised a pending exception
+                        // (ThrowNew/Throw) must NOT hand its return value
+                        // to the DEX: JNI spec — on native return with a
+                        // pending exception the VM discards the return
+                        // value and throws at the call site (AOSP
+                        // art_jni.cc). Before this check the channel did
+                        // not exist and a failing native's typed default
+                        // continued the DEX (the silent-zero →
+                        // false-success pattern, native tail). The runtime's
+                        // deferred-raise machinery owns the unwind from
+                        // here (same contract as every throw_deferred law).
+                        {
+                            std::string exc_class, exc_msg;
+                            if (nativeexec::take_pending_jni_exception(
+                                    exc_class, exc_msg)) {
+                                std::cerr << "[A-R1] pending JNI exception "
+                                          << "from native "
+                                          << class_descriptor << "."
+                                          << method_name << " → "
+                                          << exc_class << ": " << exc_msg
+                                          << std::endl;
+                                throw_deferred(
+                                    exc_class,
+                                    exc_msg.empty()
+                                        ? "exception raised by native code"
+                                        : exc_msg,
+                                    "JNI-PENDING");
+                                return_val = DalvikValue::make_void();
+                                recursion_depth_--;
+                                return true;
+                            }
+                        }
                         switch (out.kind) {
                             case nativeexec::JOutcome::Kind::VOID:
                                 return_val = DalvikValue::make_void();
@@ -20729,6 +20762,12 @@ bool DalvikExecutionEngine::dump_view_tree(const std::string& path) {
         n["y"] = node->y;
         n["text"] = node->text;
         n["hint"] = node->hint;  // EXP-065: EditText hint
+        // A-R5 (S211): accessibility contentDescription in the view_tree
+        // export (roadmap §39 AK) — mirrors the hint row. Byte-stability
+        // law: the key is emitted ONLY when the app set a non-empty
+        // description, so every pre-S211 export stays byte-identical.
+        if (!node->content_desc.empty())
+            n["content_description"] = node->content_desc;
         // EXP-074: Text resource ID for setText(int) resolution
         n["text_resource_id"] = node->text_resource_id;
         // EXP-068: Semantic View type classification via superclass chain.
@@ -24787,14 +24826,42 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
                 // If handler was found, the code above already jumped to it.
             }
-            // move/16 (32x: AAAA|op BBBB, 3 code units)
+            // move/16 (32x: op|AAAA|BBBB, 3 code units)
+            // S211 DIRECTION LAW (C3-N1 residue — #530 claimed it, never
+            // landed): AOSP 32x is "op vAAAA, vBBBB" with A = DEST (unit 1),
+            // B = SOURCE (unit 2) — the same law execute_move_object_16
+            // already follows. The pre-fix case read unit 1 as src and unit 2
+            // as dest, so `move/16 v5, v3` clobbered v3 with v5's value and
+            // left v5 stale (silent-wrong). The probe row
+            // move_16_direction_aosp_law discriminates (111 vs 222).
             case Opcode::MOVE_16: {
                 if (pc_ + 2 >= bytecode_.size()) return false;
-                uint16_t src = bytecode_[pc_ + 1];
-                uint16_t dest = bytecode_[pc_ + 2];
+                uint16_t dest = bytecode_[pc_ + 1];  // vAAAA — destination
+                uint16_t src = bytecode_[pc_ + 2];   // vBBBB — source
                 DalvikValue val = get_register(src);
                 set_register(dest, val);
                 trace.opcode_name = "move/16";
+                pc_ += 3;
+                break;
+            }
+            // move-wide/16 (32x: op|AAAA|BBBB, 3 code units) — S211 PROBE:
+            // previously ABSENT from this dispatcher entirely (#529 D-P0-5,
+            // claimed harness-tested in #530 but never landed on main); any
+            // method containing it died at handle_unimplemented. AOSP 32x law:
+            // unit 1 = vAAAA (dest), unit 2 = vBBBB (source) — the same law
+            // execute_move_object_16 follows. Wide semantics mirror
+            // MOVE_WIDE_FROM16: non-wide sources coerce to INT64 and the
+            // F-028b shadow pair is filled (set_wide_pair).
+            case Opcode::MOVE_WIDE_16: {
+                if (pc_ + 2 >= bytecode_.size()) return false;
+                uint16_t dest = bytecode_[pc_ + 1];  // vAAAA — destination
+                uint16_t src = bytecode_[pc_ + 2];   // vBBBB — source
+                DalvikValue val = get_register(src);
+                if (val.type != DalvikType::INT64 && val.type != DalvikType::FLOAT64) {
+                    val = DalvikValue::make_long(static_cast<int64_t>(static_cast<uint32_t>(val.int_val)));
+                }
+                set_wide_pair(dest, val);
+                trace.opcode_name = "move-wide/16";
                 pc_ += 3;
                 break;
             }
@@ -25054,6 +25121,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             ARITH_WIDE_2ADDR_CASE(SUB_DOUBLE_2ADDR, "sub-double/2addr", DalvikType::FLOAT64, "sub")
             ARITH_WIDE_2ADDR_CASE(MUL_DOUBLE_2ADDR, "mul-double/2addr", DalvikType::FLOAT64, "mul")
             ARITH_WIDE_2ADDR_CASE(DIV_DOUBLE_2ADDR, "div-double/2addr", DalvikType::FLOAT64, "div")
+            // S211 PROBE: 0xCF was the ONE hole in the 2addr wide family —
+            // the constant existed (PASS-3 K-37 corrected its value) but this
+            // dispatch line never did, so rem-double/2addr fell to the
+            // unimplemented handler and the destination pair kept its STALE
+            // bits (silent state corruption). Same fmod law as the 23x
+            // rem-double and the sibling rem-float/2addr (both dispatched).
+            ARITH_WIDE_2ADDR_CASE(REM_DOUBLE_2ADDR, "rem-double/2addr", DalvikType::FLOAT64, "rem")
             #undef ARITH_WIDE_2ADDR_CASE
 
             // const-wide/16 (21s: AA|op BBBB, 2 code units)
@@ -60325,6 +60399,60 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+    // ────────────────────────────────────────────────────────────────────────
+    // A-R3 (S211) — Random(long seed) / setSeed(long) per-object seed law
+    // (roadmap §32 AD). OpenJDK Random.java:97: "two Random objects created
+    // with the same seed generate identical sequences" — and setSeed resets
+    // to that sequence. Before this law NO <init>(J)/setSeed arm existed
+    // (grep setSeed == 0 at bdf777d9): every Random drained ONE shared
+    // thread-local stream, so two new Random(42) objects answered DIFFERENT
+    // sequences and a mid-run re-seed changed nothing (replay/restore
+    // control absent — §32's own demand). Law: the seed scrambles into a
+    // per-object state on the heap (__random_state__, splitmix64 — one
+    // canonical home for the seed→state law; never zero, the xorshift
+    // fixed point). The draw laws (nextInt/nextDouble/nextFloat/
+    // nextBoolean) prefer the per-object state when present; unseeded
+    // receivers keep the standing shared lanes EXACTLY (zero drift).
+    // Sequence identity with OpenJDK's 48-bit LCG is NOT claimed — the
+    // deterministic-runtime adaptation stands (same policy as F-086).
+    // ────────────────────────────────────────────────────────────────────────
+    if ((class_name == "Ljava/util/Random;" ||
+         class_name == "Ljava/util/concurrent/ThreadLocalRandom;" ||
+         class_name == "Ljava/security/SecureRandom;") &&
+        (method == "setSeed" ||
+         (method == "<init>" && args.size() >= 2))) {
+        bool have_seed = false;
+        int64_t seed_val = 0;
+        if (args.size() >= 2) {
+            if (args[1].type == DalvikType::INT64) {
+                seed_val = args[1].long_val;
+                have_seed = true;
+            } else if (args[1].type == DalvikType::INT32) {
+                seed_val = (int64_t)args[1].int_val;
+                have_seed = true;
+            }
+        }
+        if (have_seed && args.size() >= 1 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0) {
+            uint64_t z = (uint64_t)seed_val + 0x9E3779B97F4A7C15ull;
+            z ^= z >> 30; z *= 0xBF58476D1CE4E5B9ull;
+            z ^= z >> 27; z *= 0x94D049BB133111EBull;
+            z ^= z >> 31;
+            if (z == 0) z = 0x9E3779B97F4A7C15ull;
+            heap_.set_object_field(args[0].object_id, "__random_state__",
+                                   DalvikValue::make_long((int64_t)z));
+            static int a_r3_rows = 0;
+            if (diag_env("MINIANDROID_A_R3_TRACE") && a_r3_rows++ < 24) {
+                std::cerr << "[A-R3] " << class_name << " seed=" << seed_val
+                          << " → o" << args[0].object_id
+                          << " state=" << z << std::endl;
+            }
+        }
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     // F-113 (R-NEW-382) — SecureRandom IS-A Random: the bridge dispatch
     // receives the STATIC receiver class (SecureRandom), so a subclass
     // instance never reached the F-086 Random law and nextInt(bound)
@@ -60344,7 +60472,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // Deterministic xorshift32 seeded per-engine; identical across runs
         // (provenance law). nextInt(bound) uses the OpenJDK modulo-bias
         // rejection loop so every bound answers in [0, bound).
-        auto next_u32 = []() -> uint32_t {
+        // A-R3 (S211): SEEDED receivers (they went through the
+        // Random(long)/setSeed law and carry __random_state__) draw from
+        // their OWN per-object stream — the OpenJDK same-seed /
+        // identical-sequence and per-object independence laws. Unseeded
+        // receivers keep the standing shared lane EXACTLY (zero drift).
+        auto next_u32 = [&]() -> uint32_t {
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                auto st = heap_.get_object_field(args[0].object_id,
+                                                 "__random_state__");
+                if (st.has_value() && st->type == DalvikType::INT64) {
+                    uint64_t x = (uint64_t)st->long_val;
+                    x ^= x << 13; x ^= x >> 7; x ^= x << 17;
+                    heap_.set_object_field(args[0].object_id,
+                                           "__random_state__",
+                                           DalvikValue::make_long(
+                                               (int64_t)x));
+                    return (uint32_t)(x >> 32);
+                }
+            }
             static thread_local uint32_t rng_state = 0x9E3779B9u;
             uint32_t x = rng_state;
             x ^= x << 13; x ^= x >> 17; x ^= x << 5;
@@ -60460,6 +60607,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         static thread_local uint64_t c8_tlr_state =
             0x2545F4914F6CDD1DULL;  // distinct lane from F-086's stream
         auto next_u32_f086sib = [&]() -> uint32_t {
+            // A-R3 (S211): SEEDED receivers (they carry __random_state__
+            // from the Random(long)/setSeed law) draw from their OWN
+            // per-object stream; unseeded receivers keep the standing
+            // shared F-C8-170 lane EXACTLY (zero drift).
+            if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+                args[0].object_id != 0) {
+                auto st = heap_.get_object_field(args[0].object_id,
+                                                 "__random_state__");
+                if (st.has_value() && st->type == DalvikType::INT64) {
+                    uint64_t x = (uint64_t)st->long_val;
+                    x ^= x << 13; x ^= x >> 7; x ^= x << 17;
+                    heap_.set_object_field(args[0].object_id,
+                                           "__random_state__",
+                                           DalvikValue::make_long(
+                                               (int64_t)x));
+                    return (uint32_t)(x >> 32);
+                }
+            }
             uint64_t x = c8_tlr_state;
             x ^= x << 13; x ^= x >> 17; x ^= x << 5;
             c8_tlr_state = x;
@@ -69639,6 +69804,44 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_int(result_val);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+
+    // ── A-R5 (S211): AccessibilityManager family law (roadmap §39 AK) ──
+    // Before this arm the class existed ONLY as a getSystemService
+    // name↔class mapping row and every method fell to the bridge tail →
+    // typed defaults. Census-visible arms, honest classification:
+    //   isTouchExplorationEnabled → false (the real-device default for a
+    //     fresh profile — same value the bridge tail answered, now
+    //     IMPLEMENTED so the census stops counting it as a stub);
+    //   sendAccessibilityEvent / notifyViewEntered / notifyViewExited →
+    //     recorded-void (no accessibility-event pump exists — the R5
+    //     UNSUPPORTED classification for the semantic tree stays).
+    // ── isEnabled: DELIBERATELY NOT LANDED (the #576 R5 proposal is
+    // recorded, not shipped). A/B EVIDENCE (S211 golden battery, dooz_23
+    // pin 299eab21ac8b3c61, 8 frames × 250 ms): with isEnabled → true the
+    // Compose accessibility chain activates — dooz answers 12 ×
+    // f141-null-recv NPE (`Ly4;.n` pc=19, Collection.isEmpty on a null
+    // receiver — the unclassified Compose accessibility-delegate family)
+    // and the default face moves a0fae9072313e2d1 → d602648e8e401895
+    // (26 uncaught rows vs 3). The law is a REAL contract (AOSP: enabled
+    // on real devices) but the family behind it is the OPEN R5
+    // classification — shipping it alone regresses the dooz golden.
+    // Recorded as the named next step for the accessibility lane: land
+    // isEnabled TOGETHER with the Compose delegate collection laws.
+    if (class_name == "Landroid/view/accessibility/AccessibilityManager;") {
+        if (method == "isTouchExplorationEnabled") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(false);
+            return true;
+        }
+        if (method == "sendAccessibilityEvent" ||
+            method == "notifyViewEntered" || method == "notifyViewExited") {
+            // recorded-void: the runtime has no accessibility-event pump
+            // (the R5 UNSUPPORTED classification for the semantic tree).
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
     }
 
     // Activity.requestPermissions(String[], int)

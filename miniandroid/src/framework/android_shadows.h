@@ -1566,6 +1566,10 @@ public:
         // Common properties used by Android code paths.
         std::string text;     // TextView.getText()
         std::string hint;     // TextView.getHint() / EditText hint (EXP-065)
+        // A-R5 (S211): View.setContentDescription capture (roadmap §39 AK —
+        // before this field `contentDescription` had ZERO hits in the whole
+        // runtime: never captured on ViewNode, never exported in view_tree).
+        std::string content_desc;
         // EXP-071: Context — set during View creation (constructor receives Context).
         // When getContext() is called on this View, return this object_id.
         // In real Android, Views store the Context passed to their constructor.

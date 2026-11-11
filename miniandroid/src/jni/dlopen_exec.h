@@ -129,6 +129,22 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
                  const std::vector<JArg>& args, JOutcome& out,
                  std::string& error);
 
+// ── A-R1 (S211) — JNI pending-exception channel ───────────────────────
+// A real library that raises a pending exception (ThrowNew/Throw) must
+// have it observed by the DEX caller: on native return with a pending
+// exception the VM DISCARDS the return value and throws at the call site
+// (JNI spec; AOSP art_jni.cc). Before this channel the five exception
+// slots answered "no exception" unconditionally — a failing native
+// returned its typed default and the DEX continued on a wrong value
+// (the silent-zero → false-success pattern, native tail). The engine
+// polls take_… ONCE per native call at the call boundary; the take
+// clears the channel (the call site is the channel's single consumer —
+// the ExceptionOccurred/ExceptionCheck slots inside native code read
+// the same state without clearing).
+bool has_pending_jni_exception();
+bool take_pending_jni_exception(std::string& out_class,
+                                std::string& out_msg);
+
 // ── Diagnostics counters (pkginspect runtime section) ─────────────────
 unsigned long long load_attempts();
 unsigned long long load_successes();

@@ -1,28 +1,28 @@
 {
- "binary_sha16": "e6287d1a2c175cf0",
+ "binary_sha16": "c13dfdef7e0e8796",
  "goldens": {
   "bouncy": {
    "wall_s": 2.1,
    "face_sha16": "8a6c24ac8a7d718e",
    "uncaught": 0,
    "pin": "8a6c24ac",
-   "binary": "ec447fd49bbb335b",
+   "binary": "c13dfdef7e0e8796",
    "hold": true
   },
   "unote": {
-   "wall_s": 1.5,
+   "wall_s": 1.4,
    "face_sha16": "3b8dcb0adbbc17a9",
    "uncaught": 0,
    "pin": "3b8dcb0a",
-   "binary": "ec447fd49bbb335b",
+   "binary": "c13dfdef7e0e8796",
    "hold": true
   },
   "dooz": {
-   "wall_s": 293.6,
+   "wall_s": 281.5,
    "face_sha16": "a0fae9072313e2d1",
    "uncaught": 0,
    "pin": "a0fae907",
-   "binary": "ec447fd49bbb335b",
+   "binary": "c13dfdef7e0e8796",
    "hold": true
   }
  },
@@ -47,17 +47,17 @@
  "tictactoe": {
   "runs": [
    {
-    "wall_s": 21.0,
+    "wall_s": 20.1,
     "face_sha16": "7354c1b231cd581d",
     "uncaught": 0
    },
    {
-    "wall_s": 20.8,
+    "wall_s": 20.0,
     "face_sha16": "7354c1b231cd581d",
     "uncaught": 0
    },
    {
-    "wall_s": 21.0,
+    "wall_s": 19.7,
     "face_sha16": "7354c1b231cd581d",
     "uncaught": 0
    }

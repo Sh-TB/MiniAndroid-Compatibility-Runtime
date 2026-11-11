@@ -8834,3 +8834,92 @@ Trigger: «تصویر رندر بازی رو اپلود بکن در یک وب س
       Verdict #519 c=6745683059.
 3. STATE: main = 8a37aab1 (C9 phase-3 integrated); binary e6287d1a2c175cf0; the S206 win run +
    gate battery committed under evidence/s206/.
+
+## S211 — the A-R delivery: #576's never-reviewed families IMPLEMENTED + the sweep gap closed (2026-11-10)
+
+Task ID: S211-AR
+Agent: Azad (user-directed audit lane — "check coders 2-9, find what they and the
+main coder NEVER reviewed, review it, do the forgotten work, transfer knowledge on GitHub")
+Task: close the two documented coverage gaps the previous sessions could not
+close, and land the fixes the #576 audit located but (per K-3) did not land.
+
+Work Log:
+- SWEEP GAP CLOSED: S208 recorded 177 open issues as "fetch-fail-or-empty"
+  (rate-limited) and S209/S210 scanned only 40/50 watermark-hot issues — 413
+  open issues had never been re-scanned. Per-issue comments fetch over all 179
+  targets (artifact evidence/s211/s211_fetchfails_sweep.json): 0 unreviewed
+  coder comments anywhere in the open-issue set (the only post-watermark
+  comment is the audit lane's own A-R1 frontier note on #9). The standing
+  "sweep: 0 unreviewed" claim is now FULLY evidenced for the first time.
+- THE FORGOTTEN WORK LANDED (HEAD bdf777d9 + 5 files; K-3 respected by the
+  audit issue, then the fixes delivered by the same lane under the user's
+  push-capable token — the coder-lane Issues-RW limit did not apply here):
+  R1 JNI pending-exception channel (dlopen_exec.cpp/.h + engine call site:
+  ThrowNew/Throw record; the engine DISCARDS the native return and
+  throw_deferred(JNI-PENDING)); R2 Math.random() law (dedicated lane, F-C8-170
+  algebra); R3 Random(long)/setSeed per-object __random_state__ (splitmix64;
+  draw laws prefer the object lane, unseeded lanes byte-unchanged);
+  R4 checkPermission = the F-NEW-428 sibling (ONE classifier,
+  s211_permission_classify, both AOSP-equivalent queries share it);
+  R5 accessibility census arms (isTouchExplorationEnabled=false,
+  sendAccessibilityEvent recorded-void, contentDescription capture + getter +
+  view_tree export byte-stable).
+- PROBES (new fixtures, real aapt2/ECJ/D8 + host gcc .so):
+  fixtures/s211_ar_probe (15 rows over R2/R3/R4/R5) and
+  fixtures/s211_r1_jni_probe (RegisterNatives .so: ThrowNew-then-return-42).
+  PRE binary 332bd6a6143d8bae (byte-identical baseline rebuild ×2 — build
+  determinism re-proven): ar 7/15, r1 1/2 with EXACTLY the #576 predictions
+  (Math.random constant 0.0; same-seed Randoms diverge 873 vs 214; setSeed
+  ignored; checkPermission DENIED vs sibling GRANTED; native ret 42 escaped).
+  FINAL binary dec3cd58db8080cf: ar 15/15 ×2 (face 0b7819139390f555), r1 2/2
+  ×2 (face c4284c2b42b1d9ec), colorpipe 17/17, classkey 15/15 standing,
+  make test 4/4.
+- GOLDEN BATTERY (unote_30/dooz_23/gmdice_8/microtimer_8 version-pinned from
+  F-Droid, sha-verified; bouncy_1): unote 3b8dcb0a EXACT, dooz a0fae907 EXACT,
+  gmdice 3891679d EXACT, microtimer bbd350b6 anchor EXACT, bouncy PRE==POST
+  byte-identical — ZERO DRIFT.
+- HONEST FINDING (the isEnabled A/B): R5's AccessibilityManager.isEnabled →
+  true proposal REGRESSES the dooz golden (binary 8e13a4d90643672d: dooz face
+  a0fae907 → d602648e, 12 × f141-null-recv NPE Ly4;.n pc=19 Collection.isEmpty
+  on null — the unclassified Compose accessibility-delegate family; 26 vs 3
+  uncaught rows). The arm was ROOT-CAUSED and REVERTED; the law is RECORDED,
+  NOT SHIPPED (comment block at the law site carries the full A/B). Named
+  next step: land isEnabled TOGETHER with the Compose delegate collection laws.
+- STATE: main candidate = bdf777d9 + S211 (evidence/s211/ + 2 fixtures +
+  build script + worklog row); knowledge transfer pushed per golden rule
+  (#576 delivery comment + #536 central record + #9 roadmap reconciliation).
+
+## S215 — A-R4 INTEGRATION LANDED (#581) + the queue-discipline law + the missed-sweep closure
+- A-R4 (the re-based forgotten-work patch, #581 parts 1+2, supersedes the stranded
+  S212 #577 transfer) INTEGRATED on current main `56962181`: apply-check CLEAN rc=0
+  (4 commits past the declared base `34927880`; the S214 C7 rebase did not collide —
+  all 8 dalvik_engine.cpp hunks apply with offsets 1193-3525); build green -j1
+  (binary c13dfdef7e0e8796); make test 4/4; mwr_opcode_probe 5/5 (LAWS130 pattern +
+  THUNK_OBJECT); FULL 6-pin gate BYTE-EXACT HOLD (bouncy 8a6c24ac / unote 3b8dcb0a /
+  dooz a0fae907 281.5s / gmdice 3891679d x2 identical / microtimer b39665f6 /
+  ttt 7354c1b2 x3) = R1+R3+R5+interpreter neutrality re-proven.
+- INTEGRITY (K-2.4): posted sha16 8bdf0881e0d39bcd NOT reproducible (8 assembly
+  variants → 8046eadf...); blob check on the declared base: 6/7 modified files
+  post-image EXACT, dalvik_engine.cpp MISMATCH (patch says 4e448918, application
+  yields cda66364) — posted hunks differ from the hashed tree state; functionally
+  clean (builds+probes), confirmation request posted to the lane.
+- QUEUE DISCIPLINE (the A-R4 request, ACCEPTED): registered transfers now get a
+  queue row or an explicit DECLINE in the central record — the S212 #577 transfer
+  aged stale precisely because this was missing; the S215 central record carries
+  the full queue table (A-R4 LANDED / C8 batch-2 lane-source / C8 batch-4 re-queued /
+  Coder-9 reconciliation re-queued).
+- SWEEP CLOSURE: S214's "zero unreviewed" covered the watermark id-window only —
+  Coder-8 batch-2 (#519 c=6787031911, posted 04:28:42, 10 min after the batch-4
+  verdict) had NO verdict; audited now: integration line shows c8_concurrency.cpp
+  ABSENT (0 hits), no make-coder8 target, no register json → lane-source only,
+  ledger does not flip; T21/T22 re-delivery required (verdict on #519). #570
+  close-out (25/25, DexDec + PAT probe) audited: honesty laws ACCEPTED, the
+  pin-one-tool census law adopted standing (dexdec 19,546 vs androguard 17,176
+  bouncy methods). #573 body was edited 04:06:53 — content reads as the S168
+  ladder unchanged; edit-summary request posted.
+- APK battery (ar_probe/r1_jni_probe): BLOCKED at the environment level —
+  tools/aapt2+d8+ecj+android-34.jar are dead symlinks to the old container's
+  /tmp/my-project/tools (never in git; doctor.sh ABSENT x4; Google re-download
+  attempt failed). Fixtures + scripts/s211_build_probes.sh ship in the landed
+  patch; battery runs when a bootstrap toolchain container exists.
+- Evidence: evidence/s215/A_R4_INTEGRATION_RECORD.md + evidence/s215/A_R4_GATE.json.

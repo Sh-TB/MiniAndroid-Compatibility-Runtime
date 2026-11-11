@@ -56,7 +56,7 @@
 
 - **File:** `/home/z/my-project/evidence/s207/runs/s207_mtm_spot/screenshot.png`
 - **Resolution:** 1080x1920
-- **Size:** 7.91 MB
+- **Size:** 23.12 KB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_mtm_spot/screenshot.png)
 
@@ -64,11 +64,11 @@
 
 - **File:** `/home/z/my-project/evidence/s207/runs/s207_mtm_spot/screenshot.png`
 - **Resolution:** 1080x1920
-- **Size:** 7.91 MB
+- **Size:** 31.56 KB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_mtm_spot/screenshot.png)
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261110-194956-0003`
-- **Generated:** 2026-11-10 19:49:59 UTC
+- **Session ID:** `EXP-001-20261111-052513-3190`
+- **Generated:** 2026-11-11 05:25:15 UTC

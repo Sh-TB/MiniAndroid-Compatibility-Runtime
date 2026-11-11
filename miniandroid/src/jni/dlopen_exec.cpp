@@ -493,10 +493,59 @@ struct FillUnsupported<-1, V> {
 
 // implemented slots — signatures per JNI spec (jni.h)
 int jni_GetVersion(void*) { return 0x00010006; }
-void* jni_ExceptionOccurred(void*) { return nullptr; }
-void jni_ExceptionDescribe(void*) {}
-void jni_ExceptionClear(void*) {}
-unsigned char jni_ExceptionCheck(void*) { return 0; }
+
+// ── A-R1 (S211): the JNI pending-exception channel ─────────────────────
+// Before this channel the four exception slots were unconditional no-ops
+// (Occurred→null, Clear→{}, Check→0) and Throw/ThrowNew were log-only —
+// the native tail of the UC-CM-001 silent-zero pattern: a library that
+// signalled failure via ThrowNew returned its typed default and the DEX
+// continued on a wrong value. JNI spec law: ThrowNew/Throw "record the
+// pending exception"; ExceptionCheck "returns JNI_TRUE if there is a
+// pending exception"; on native return with a pending exception the VM
+// DISCARDS the return value and throws at the call site (AOSP
+// art_jni.cc). One process-wide channel (the runtime's minimal bridge
+// serves one JNIEnv, g_env); the engine consumes it once per native call
+// via take_pending_jni_exception (declaration in dlopen_exec.h).
+std::mutex g_exc_mu;
+bool g_exc_pending = false;
+std::string g_exc_class = "Ljava/lang/Exception;";
+std::string g_exc_msg;
+
+void record_pending_exc(std::string cls, std::string msg) {
+    std::lock_guard<std::mutex> lk(g_exc_mu);
+    // First raise wins within one native call (JNI: a second throw while
+    // an exception is pending is ignored by the VM).
+    if (!g_exc_pending) {
+        g_exc_pending = true;
+        g_exc_class = std::move(cls);
+        g_exc_msg = std::move(msg);
+    }
+}
+
+// F-NEW-596 interned class tokens (defined below; forward-declared so
+// ExceptionOccurred can answer a non-null jthrowable marker).
+static void* intern_class_token(const std::string& name);
+
+void* jni_ExceptionOccurred(void*) {
+    std::lock_guard<std::mutex> lk(g_exc_mu);
+    if (!g_exc_pending) return nullptr;
+    // Non-null jthrowable marker: the interned class token box. The call
+    // boundary consumes the channel (take_pending_jni_exception), so the
+    // marker only needs identity ≠ null for in-native polling code.
+    return intern_class_token(g_exc_class);
+}
+void jni_ExceptionDescribe(void*) {}  // loud describe stays a no-op (stderr
+                                      // already carries the ThrowNew row)
+void jni_ExceptionClear(void*) {
+    std::lock_guard<std::mutex> lk(g_exc_mu);
+    g_exc_pending = false;
+    g_exc_class = "Ljava/lang/Exception;";
+    g_exc_msg.clear();
+}
+unsigned char jni_ExceptionCheck(void*) {
+    std::lock_guard<std::mutex> lk(g_exc_mu);
+    return g_exc_pending ? 1 : 0;
+}
 void* jni_NewStringUTF(void*, const char* utf) {
     if (!utf) return nullptr;
     return box_string(std::string(utf));
@@ -616,9 +665,33 @@ void* jni_NewGlobalRef(void*, void* r) { return r; }
 void* jni_NewLocalRef(void*, void* r) { return r; }
 void jni_DeleteGlobalRef(void*, void*) {}
 void jni_DeleteLocalRef(void*, void*) {}
-int jni_Throw(void*, void*) { return 0; }
-int jni_ThrowNew(void*, void*, const char* msg) {
-    fprintf(stderr, "[MINIANDROID-JNI] ThrowNew: %s\n", msg ? msg : "");
+int jni_Throw(void*, void* throwable) {
+    // A-R1 (S211): the pending-exception channel. The throwable jobject
+    // rides as a tagged-oid handle the engine owns; the channel carries
+    // the generic Throwable family here (ThrowNew is the classified arm —
+    // it knows the FindClass token). The [MINIANDROID-JNI] row stays loud.
+    record_pending_exc("Ljava/lang/Throwable;", "");
+    fprintf(stderr, "[MINIANDROID-JNI] Throw recorded (pending)\n");
+    return 0;
+}
+int jni_ThrowNew(void*, void* jclass, const char* msg) {
+    // A-R1 (S211): log AND record. The jclass token is an interned box
+    // whose payload is the plain binary name ("java/lang/IllegalStateException",
+    // F-NEW-596) — normalized to the L-form the engine's deferred-raise
+    // machinery dispatches on. An unresolvable token falls to the generic
+    // Exception family (never a fabricated class name).
+    std::string cls = "Ljava/lang/Exception;";
+    if (jclass) {
+        std::string name = *static_cast<std::string*>(jclass);
+        if (!name.empty() && name.front() == 'L' && name.back() == ';')
+            cls = name;  // already L-form
+        else if (!name.empty() && name.front() != '[')
+            cls = "L" + name + ";";
+    }
+    std::string m = msg ? msg : "";
+    fprintf(stderr, "[MINIANDROID-JNI] ThrowNew: %s%s%s\n", cls.c_str(),
+            m.empty() ? "" : ": ", m.c_str());
+    record_pending_exc(std::move(cls), std::move(m));
     return 0;
 }
 void jni_FatalError(void*, const char* msg) {
@@ -1732,6 +1805,23 @@ void* find_symbol(const std::string& class_desc, const std::string& method,
     if (long_name != short_name) tried += ", " + long_name;
     tried += ", RegisterNatives";
     return nullptr;
+}
+
+// ── A-R1 (S211) — the engine-side channel API (dlopen_exec.h) ──────────
+bool has_pending_jni_exception() {
+    std::lock_guard<std::mutex> lk(g_exc_mu);
+    return g_exc_pending;
+}
+bool take_pending_jni_exception(std::string& out_class,
+                                std::string& out_msg) {
+    std::lock_guard<std::mutex> lk(g_exc_mu);
+    if (!g_exc_pending) return false;
+    g_exc_pending = false;
+    out_class = std::move(g_exc_class);
+    out_msg = std::move(g_exc_msg);
+    g_exc_class = "Ljava/lang/Exception;";
+    g_exc_msg.clear();
+    return true;
 }
 
 bool call_native(void* fn, bool static_call, const std::string& sig,

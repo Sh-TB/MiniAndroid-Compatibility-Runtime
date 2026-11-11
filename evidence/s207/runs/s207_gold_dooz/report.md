@@ -95,7 +95,7 @@
 
 - **File:** `/home/z/my-project/evidence/s207/runs/s207_gold_dooz/screenshot.png`
 - **Resolution:** 1080x1920
-- **Size:** 7.91 MB
+- **Size:** 15.78 KB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gold_dooz/screenshot.png)
 
@@ -103,11 +103,11 @@
 
 - **File:** `/home/z/my-project/evidence/s207/runs/s207_gold_dooz/screenshot.png`
 - **Resolution:** 1080x1920
-- **Size:** 7.91 MB
+- **Size:** 15.78 KB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gold_dooz/screenshot.png)
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261110-194450-5446`
-- **Generated:** 2026-11-10 19:49:43 UTC
+- **Session ID:** `EXP-001-20261111-052018-6392`
+- **Generated:** 2026-11-11 05:25:00 UTC

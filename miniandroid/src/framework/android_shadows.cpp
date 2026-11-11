@@ -9747,6 +9747,26 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                   << std::endl;
         return CallResult::handled_void();
     }
+    // A-R5 (S211): View.setContentDescription / getContentDescription —
+    // the accessibility one-line capture (roadmap §39 AK). Before this arm
+    // `contentDescription` had ZERO hits in the entire runtime (#576 R5):
+    // never captured on ViewNode, never exported in view_tree. Law mirrors
+    // the EXP-065 hint capture verbatim (store on the ViewNode, round-trip
+    // through the getter). AOSP View.java: mContentDescription — apps set
+    // it for TalkBack; Compose populates it for merged semantics.
+    if (m == "setContentDescription") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->content_desc = ctx.arg_as_string(0);
+        std::cerr << "[A-R5-CONTENTDESC] view_id=" << ctx.receiver_id
+                  << " class=" << ctx.class_name
+                  << " contentDescription=\"" << n->content_desc << "\""
+                  << std::endl;
+        return CallResult::handled_void();
+    }
+    if (m == "getContentDescription") {
+        const auto* n = find_node(ctx.receiver_id);
+        return CallResult::handled_string(n ? n->content_desc : "");
+    }
     if (m == "getText") {
         const auto* n = find_node(ctx.receiver_id);
         return CallResult::handled_string(n ? n->text : "");
