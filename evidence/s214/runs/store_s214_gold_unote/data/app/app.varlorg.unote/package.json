@@ -1,0 +1,24 @@
+{
+  "package": "app.varlorg.unote",
+  "versionName": "1.8.0",
+  "versionCode": 30,
+  "mainActivity": "app.varlorg.unote.NoteMain",
+  "minSdk": "21",
+  "targetSdk": "34",
+  "requestedPermissions": [
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.MANAGE_EXTERNAL_STORAGE",
+    "android.permission.SET_ALARM",
+    "android.permission.ALARM_SERVICE",
+    "android.permission.SCHEDULE_EXACT_ALARM",
+    "android.permission.POST_NOTIFICATIONS"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/app.varlorg.unote/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s214/runs/store_s214_gold_unote/data/app/app.varlorg.unote/base.apk",
+  "apkSha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+  "apkSize": 163498,
+  "installedAt": "2026-11-11T04:26:32Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}
