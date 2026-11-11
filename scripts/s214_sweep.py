@@ -3,7 +3,7 @@
 import json, subprocess, sys, os
 
 REPO = "Sh-TB/MiniAndroid-Compatibility-Runtime"
-WATERMARK = 6778202729
+WATERMARK = 6787176796
 ME = "Sh-TB"
 
 def token():
