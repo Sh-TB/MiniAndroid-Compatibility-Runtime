@@ -1076,7 +1076,12 @@ public:
                 // CODER7 WAVE-11: AOSP Activity.moveTaskToBack(boolean) —
                 // the containing task moves to the BACK of the activity
                 // stack (never finishes the activity).
-                "moveTaskToBack"};
+                "moveTaskToBack",
+                // GP-582 (S220, TheXTech reproducer): AOSP Activity.isTaskRoot —
+                // true iff no other activity lives beneath this one in the
+                // task. TheXTech Launcher.onCreate early-exits (finish()
+                // BEFORE super.onCreate) when it answers false.
+                "isTaskRoot"};
     }
     std::vector<std::string> stubbed_methods() const override {
         return {"runOnUiThread", "overridePendingTransition",
