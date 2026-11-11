@@ -1,0 +1,51 @@
+{
+ "wall_s": 267.2,
+ "face_sha16": "eccabf418a7cce52",
+ "marks": {
+  "tap_receipt": 2,
+  "phase_b_click": 0,
+  "newgame_action": 23102,
+  "coroutine_dispatch": 0,
+  "delay_seen": 37,
+  "datastore": 0,
+  "stateflow": 0,
+  "compose_recompose": 0,
+  "animated_visibility": 0,
+  "lazygrid": 0,
+  "gameboard": 0,
+  "s36_aoob": 0,
+  "bw0_d": 153,
+  "abort_flow": 0,
+  "uncaught": 0,
+  "exc_unwind": 0
+ },
+ "frame_changes": {
+  "frame_000.png": "CHANGED",
+  "frame_006.png": "CHANGED",
+  "frame_007.png": "CHANGED",
+  "frame_008.png": "CHANGED",
+  "frame_010.png": "CHANGED",
+  "frame_012.png": "CHANGED",
+  "frame_013.png": "CHANGED",
+  "frame_014.png": "CHANGED",
+  "frame_022.png": "CHANGED",
+  "frame_023.png": "CHANGED"
+ },
+ "n_frame_changes": 10,
+ "frame_truth": {
+  "verdict": "FLAT_TWO_TONE_OR_BLANK",
+  "reasons": [
+   "two-tone flat frame (W16 FLAT_TWO_TONE_OR_BLANK tier)"
+  ],
+  "metrics": {
+   "png_bytes": 10372,
+   "face_sha16": "eccabf418a7cce52",
+   "draw_event_hits": 52,
+   "identical_peers": 0,
+   "unique_colors": 2,
+   "sampled": 129600,
+   "nonwhite": 129600,
+   "top_color_share": 0.9945833333333334
+  }
+ }
+}

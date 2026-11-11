@@ -11,6 +11,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gold_bouncy/data/app/com.dozingcatsoftware.bouncy/base.apk",
   "apkSha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
   "apkSize": 3233743,
-  "installedAt": "2026-11-11T19:07:02Z",
+  "installedAt": "2026-11-11T21:59:58Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

@@ -9079,3 +9079,60 @@ Work Log:
   ttt_shader_classification_glsldebug.log, ttt_gfx_trace_shader_chain.jsonl,
   cmake_cache_74tus.txt). Per-item six-part verdicts posted on #583; pointer
   receipt on #582.
+
+---
+Task ID: S220-MAIN
+Agent: Super Z (main)
+Task: #582 + #583 + #584 triple-issue wave — A-R5 landing, IMG-004 V2,
+isTaskRoot/TheXTech, frame-truth verifier, DEX-003 fuzz, dooz state advance.
+
+Work Log:
+- A-R5 LANDED (issue #584 patch sha16 35e0c189b6d21746, byte-identical at
+  extraction, re-based onto S218 f3c5aae3): R27 CLASS-INFO PROTO FALLBACK LAW
+  (resolve_method_proto_uncached consults the class-info method tables before
+  the "()V" constant; raw-DEX path untouched), R25 deliverable MATERIALIZED
+  (tests/r25_dispatch_matrix_test.cpp, 14/14 — v_declared_super flipped 1->2
+  exactly as predicted; R28 residual + R29 observational cells recorded),
+  R23 Collections algorithmic face + R24 AbstractStringBuilder mutation
+  family landed verbatim. Makefile: mwr_opcode_probe + r25_matrix dedicated
+  targets ported by hand (wave-2 Makefile divergence); battery 24->26 suites.
+- GP583-IMG-004 V2 (the 2026-11-12 GP correction): inJustDecodeBounds moved
+  ABOVE the full decode in f240_decode_with_options — bounds pass = pure
+  bitmap_bounds_only_law (header-only probe, ZERO codec invocations / pixel
+  bytes) for ALL FOUR entry paths; invalid headers answer fresh-Options 0x0;
+  ImageSizeProbe.header_dims_known distinguishes header-dims-known from
+  payload-fully-valid; tests/gp583_img004_bounds_law_test.cpp 10/10.
+- GP-582 TheXTech early-exit gate CLOSED: Activity.isTaskRoot implemented
+  (AOSP law over the G08 task-record stack; CLEAR_TASK empties stack ->
+  newcomer answers true). APK-level evidence on the pinned
+  ru.wohlsoft.thextech.fdroid APK: pre-fix W16 = 1 unique color / DESTROYED /
+  first_missing_stage=WINDOW_ROOT; post-fix = 754 unique colors, 99.9%
+  non-white, activity_finish=0, initUiSetup ran, launcher OWN UI RENDERED
+  (sky/logo/Start game/Settings). Input into the SDL route = the named next
+  blocker (0 tap receipts on that route).
+- S220 frame-truth verifier (GP-582 false-PASS family): scripts/
+  s220_frame_truth.py — NOISE (png>800KB) / IDENTICAL_ARTIFACT (EXP-086
+  shape: >=3 identical faces + zero draw/frame/ViewTree events -> rejected,
+  never PASS) / DEFAULT_BACKGROUND_ONLY / FLAT_TWO_TONE_OR_BLANK /
+  PASS_UI_EVIDENCED; self-test 7/7 incl. the 3 historical EXP086 Phase-4
+  rows re-judged from the recorded booleans.
+- GP-DEX-003 fuzz battery: tests/gp_dex003_fuzz_law_test.cpp 11/11 — header
+  coherence rows, UINT32_MAX count/offset OOM-guard rows, misalignment,
+  truncation (report.is_valid=false + validation_error contract), 512-input
+  LCG header fuzz no-crash.
+- Dooz state advance (pinned io.github.yamin8000.dooz_23): gold pin a0fae907
+  = the REAL launch UI (title bar + theme icons + New game FAB) — the old
+  "white screen" label was stale. New Game tap dispatches; 10 frame changes
+  (recompositions animate); uncaught 6 -> 0; exc-unwind family gone. Named
+  next blocker: post-NewGame transition freeze (dice 5x100ms delay +
+  AnimatedVisibility completion need the virtual-time/clock chain) — the
+  GP "one deterministic event-time model" item with the demanded proof chain.
+- W21 17/17: part 17 never arrived (nothing on #575 since the S216 request);
+  S210 proved the symbol chain build-specific (Lm7;.j absent from the pinned
+  corpus build) -> declared SUPERSEDED rather than assembling a stale diff.
+- Regression: make test-all 26/26; mwr_opcode_probe 5/5; r25_matrix 14/14;
+  FULL 6-PIN GATE ALL HOLD byte-exact on new binary 9adf7d627bcbdac6
+  (bouncy 8a6c24ac / unote 3b8dcb0a / dooz a0fae907 / gmdice 3891679d x2
+  identical / microtimer b39665f6 / ttt 7354c1b2 x3).
+- Commits: 39b7ab69 (A-R5 + IMG-004 + isTaskRoot + frame-truth), then the
+  fuzz-battery commit. Receipts posted on #584 (landing) / #582 / #583.

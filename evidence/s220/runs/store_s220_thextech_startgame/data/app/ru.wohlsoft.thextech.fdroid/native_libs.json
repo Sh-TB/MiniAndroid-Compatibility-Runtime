@@ -1,0 +1,8 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/ru.wohlsoft.thextech.fdroid/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libthextech.so", "size": 15487136}
+  ],
+  "count": 1
+}

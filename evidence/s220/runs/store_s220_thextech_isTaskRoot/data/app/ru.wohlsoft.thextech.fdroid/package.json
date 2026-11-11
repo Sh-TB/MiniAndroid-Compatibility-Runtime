@@ -1,0 +1,23 @@
+{
+  "package": "ru.wohlsoft.thextech.fdroid",
+  "versionName": "1.7.4.1",
+  "versionCode": 1070401,
+  "mainActivity": "ru.wohlsoft.thextech.Launcher",
+  "minSdk": "16",
+  "targetSdk": "36",
+  "requestedPermissions": [
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.MANAGE_EXTERNAL_STORAGE",
+    "android.permission.VIBRATE",
+    "android.permission.BLUETOOTH",
+    "ru.wohlsoft.thextech.fdroid.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/ru.wohlsoft.thextech.fdroid/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s220/runs/store_s220_thextech_isTaskRoot/data/app/ru.wohlsoft.thextech.fdroid/base.apk",
+  "apkSha256": "852e0566661fc09e139e1316b61f130b1a5170e84cf4f41d241ef3dc01cc3869",
+  "apkSize": 28030316,
+  "installedAt": "2026-11-11T22:07:59Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

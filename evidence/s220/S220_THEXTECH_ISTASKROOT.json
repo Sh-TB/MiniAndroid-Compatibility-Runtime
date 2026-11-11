@@ -1,0 +1,30 @@
+{
+ "wall_s": 3.6,
+ "face_sha16": "6c9f40bedac766ab",
+ "marks": {
+  "isTaskRoot_calls": 26,
+  "setContentView": 6,
+  "activity_finish": 0,
+  "DESTROYED": 8,
+  "initUiSetup": 2,
+  "launcher_layout": 1,
+  "first_missing_stage": [],
+  "uncaught": 0
+ },
+ "frame_truth": {
+  "verdict": "CONTENT_NO_EVIDENCE",
+  "reasons": [
+   "content pixels present but console shows no app-owned draw/frame events \u2014 not claimed as UI"
+  ],
+  "metrics": {
+   "png_bytes": 44234,
+   "face_sha16": "6c9f40bedac766ab",
+   "draw_event_hits": 0,
+   "identical_peers": 0,
+   "unique_colors": 754,
+   "sampled": 129600,
+   "nonwhite": 129468,
+   "top_color_share": 0.4672530864197531
+  }
+ }
+}
