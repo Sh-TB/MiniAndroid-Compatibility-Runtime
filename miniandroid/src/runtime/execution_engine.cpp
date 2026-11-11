@@ -12,6 +12,7 @@
 #include "../diagnostics/gfx_provenance.h"  // S82-GFX §6: evidence-bit pixel chain
 #include "../diagnostics/gfx_trace.h"  // CONT-83 WS-B: op-level graphics trace
 #include "../diagnostics/file_io_trace.h"   // IAPK: file-IO provenance (F-NEW-234 wave)
+#include <cstdlib>                           // CODER7 WAVE-5: MINIANDROID_PKG_STORE
 #include "../storage/data_root.h"           // F-NEW-234: per-package context law
 #include "../diagnostics/trace_overlay.h"   // S135: visual runtime boot/trace logger
 // EXP-086 Phase 3 (B1 FIX): PNGWriter for direct PNG output
@@ -1453,6 +1454,9 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 prov_exported.emplace_back(cls, p.exported);
             }
             dalvik_engine_.set_manifest_provider_exported(prov_exported);
+            // CODER7 WAVE-8 L1: per-provider read/write permissions are
+            // plumbed from the ManifestInfo table (the CONT-102 block below
+            // parses it — ApkInfo carries no permission fields).
             // CODER7 WAVE-3: per-provider android:enabled (AOSP
             // PackageItemInfo.isEnabled — a disabled provider is not
             // published; resolveContentProvider answers null).
@@ -1641,6 +1645,121 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
             }
             dalvik_engine_.set_manifest_services(svc_classes);
             dalvik_engine_.set_manifest_receivers(std::move(rcv_entries));
+            // ── CODER7 WAVE-5: PMS-lite package-store ingest ──────────────
+            // MINIANDROID_PKG_STORE = a directory of installed *.apk files
+            // (the engine-side analogue of the AOSP /data/app scan). Every
+            // APK's manifest is parsed ONCE per (apk_size, apk_mtime,
+            // manifest-sha) — cached in a REAL SQLite database next to the
+            // store (S185 SQLITE RULE: the vend is libsqlite3, already
+            // linked; the AOSP pattern is PMS's package cache) — into the
+            // cross-package component index the PM / broadcast /
+            // provider laws consult. The RUNNING package registers too
+            // (PMS resolves across ALL packages, self included). All
+            // failures are loud C7-STORE-* rows; no env var ⇒ zero
+            // behavior change.
+            {
+                const char* c7_store = std::getenv("MINIANDROID_PKG_STORE");
+                // CODER7 WAVE-8 L3: MINIANDROID_PKG_STORE unset ⇒ the
+                // engine's OWN install store is the package source (AOSP
+                // /data/app scan law): <data-root>/data/app/<pkg>/base.apk,
+                // auto-indexed at boot. Zero env AND zero install store ⇒
+                // the index stays empty (the pre-W5 one-package behavior,
+                // byte-identical).
+                std::string c7_auto_root;
+                if (!(c7_store && *c7_store))
+                    c7_auto_root = Storage::app_data_root();
+                if ((c7_store && *c7_store) || !c7_auto_root.empty()) {
+                    auto c7_idx = std::make_shared<
+                        miniandroid::dalvik::C7PackageIndex>();
+                    std::string c7_cache_db;
+                    miniandroid::dalvik::C7PackageIndex::IngestStats c7_stats;
+                    if (c7_store && *c7_store) {
+                        c7_cache_db =
+                            std::string(c7_store) + "/c7_pkg_cache.sqlite3";
+                        c7_stats =
+                            c7_idx->ingest_store_dir(c7_store, c7_cache_db);
+                        std::cerr << "[C7-W5] store ingest dir=" << c7_store
+                                  << " packages=" << c7_idx->package_count()
+                                  << " cold=" << c7_stats.packages_cold
+                                  << " warm=" << c7_stats.packages_warm
+                                  << " failed=" << c7_stats.packages_failed
+                                  << std::endl;
+                    } else {
+                        c7_cache_db = c7_auto_root +
+                                      "/data/app/c7_pkg_cache.sqlite3";
+                        c7_stats = c7_idx->ingest_install_store(
+                            c7_auto_root, c7_cache_db);
+                        std::cerr << "[C7-W8] install-store auto-index root="
+                                  << c7_auto_root
+                                  << " packages=" << c7_idx->package_count()
+                                  << " cold=" << c7_stats.packages_cold
+                                  << " warm=" << c7_stats.packages_warm
+                                  << " failed=" << c7_stats.packages_failed
+                                  << std::endl;
+                    }
+                    {
+                        auto c7_own_raw = apk_parser_.extract_entry_cached(
+                            "AndroidManifest.xml");
+                        if (!c7_own_raw.empty()) {
+                            apk::ManifestReader c7_own_reader;
+                            apk::ManifestInfo c7_own_mi =
+                                c7_own_reader.parse(c7_own_raw);
+                            if (c7_own_mi.parse_success &&
+                                !c7_own_mi.package_name.empty())
+                                c7_idx->register_own_package(
+                                    c7_own_mi, result.apk_info.apk_path);
+                        }
+                    }
+                    dalvik_engine_.set_package_index(std::move(c7_idx));
+                    // CODER7 WAVE-7: the ACTIVITY launch path consults the
+                    // SAME component table — the IntentShadow startActivity
+                    // site (the Activity-receiver launch path) resolves
+                    // cross-package through the store index and applies the
+                    // AOSP synchronous gate through these callbacks (one
+                    // C7PackageIndex, zero duplicated resolution law).
+                    if (shadow_registry_) {
+                        if (auto* c7_ish_w7 = shadow_registry_->find_as<
+                                framework::IntentShadow>()) {
+                            c7_ish_w7->set_c7_xpkg_activity_resolver(
+                                [this](const std::string& c7_a,
+                                       const std::vector<std::string>& c7_c,
+                                       const std::string& c7_mime,
+                                       const std::string& c7_sch,
+                                       const std::string& c7_h,
+                                       const std::string& c7_p,
+                                       bool c7_dflt) {
+                                    return dalvik_engine_
+                                        .c7_resolve_activity_xpkg(
+                                            c7_a, c7_c, c7_mime, c7_sch,
+                                            c7_h, c7_p, c7_dflt);
+                                });
+                            c7_ish_w7->set_c7_activity_gate(
+                                [this](const std::string& c7_cls) {
+                                    return dalvik_engine_
+                                        .c7_activity_launch_gate(c7_cls);
+                                });
+                        }
+                        // CODER7 WAVE-8 L2: the PendingIntent.send
+                        // dispatch channel — the shadow's record laws
+                        // (ONE_SHOT / IMMUTABLE / CanceledException) hand
+                        // the frozen intent to THIS engine law (the same
+                        // gated broadcast/service/activity pipeline the
+                        // app-context calls use).
+                        if (auto* c7_pish_w8 =
+                                shadow_registry_->find_as<
+                                    framework::PendingIntentShadow>()) {
+                            c7_pish_w8->set_send_dispatcher(
+                                [this](const std::string& c7_kind,
+                                       uint32_t c7_oid,
+                                       std::string& c7_err) {
+                                    return dalvik_engine_
+                                        .c7_send_pending_intent(
+                                            c7_kind, c7_oid, c7_err);
+                                });
+                        }
+                    }
+                }
+            }
         }
         // ── CONT-102 (F-NEW-424/425/427/428): manifest package-identity
         // transfer — permissions, per-activity exported/launchMode and the
@@ -1665,6 +1784,26 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                 if (cls.empty()) continue;
                 act_attrs.emplace_back(cls, act.exported,
                                        act.exported_declared, act.launch_mode);
+            }
+            // CODER7 WAVE-8 L1: per-provider android:readPermission /
+            // android:writePermission (AOSP PackageParser.Provider →
+            // ProviderInfo; the CRUD transport gate reads them per op —
+            // checkContentProviderAccess law).
+            {
+                std::vector<std::tuple<std::string, std::string, std::string>>
+                    prov_perms;
+                for (const auto& p : mi_id.providers) {
+                    std::string cls = p.name;
+                    if (!cls.empty()) {
+                        if (cls[0] == '.')
+                            cls = result.apk_info.package_name + cls;
+                        else if (cls.find('.') == std::string::npos)
+                            cls = result.apk_info.package_name + "." + cls;
+                    }
+                    prov_perms.emplace_back(cls, p.read_permission,
+                                            p.write_permission);
+                }
+                dalvik_engine_.set_manifest_provider_perms(prov_perms);
             }
             int t_sdk = 0, m_sdk = 0;
             try { t_sdk = std::stoi(result.apk_info.target_sdk_version); }
@@ -7547,6 +7686,33 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
     pump_compose_frames(/*max_frames=*/1);
     for (int k = 1; k < config.frame_count; ++k) {
         hs->advance_virtual(config.frame_delay_ms);
+        // ── CODER7 WAVE-9: the system-signal dispatch point (frame 2 —
+        // AOSP delivers trim/config signals AFTER launch settles). The
+        // env stand-ins carry the deterministic system signal; empty ⇒
+        // no dispatch (honest default: the laws only run when the
+        // harness actually signals).
+        if (k == 1) {
+            static const int c7_trim_level = [] {
+                const char* e = std::getenv("MINIANDROID_TRIM_MEMORY");
+                return e ? std::atoi(e) : 0;
+            }();
+            static const bool c7_rotate = [] {
+                const char* e = std::getenv("MINIANDROID_CONFIG_ROTATE");
+                return e && e[0] == '1';
+            }();
+            // CODER7 WAVE-11: the SERVICE stand-ins (task-removed /
+            // FGS timeout) ride the SAME frame-2 dispatch point — the
+            // gate opens for them too (empty envs keep the honest
+            // no-dispatch default).
+            static const bool c7_svc_signals = [] {
+                const char* a = std::getenv("MINIANDROID_TASK_REMOVED");
+                const char* b = std::getenv("MINIANDROID_SVC_TIMEOUT");
+                return (a && a[0]) || (b && b[0] == '1');
+            }();
+            if (c7_trim_level > 0 || c7_rotate || c7_svc_signals)
+                dalvik_engine_.dispatch_memory_and_config_signals(
+                    c7_trim_level, c7_rotate);
+        }
         // FINAL CAMPAIGN item 21-P0-8 (per-frame pump law): the frame pump
         // runs at EVERY frame boundary, not only before the loop. One
         // canonical pump drives Choreographer callbacks, the Handler queue,
@@ -8639,11 +8805,44 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
         std::cerr << "[C7-ACT] disabled target refused: " << cls << std::endl;
         return rec;
     }
+    // ── CODER7 WAVE-7: the store-index launch GATE at the drain ─────────
+    // Defense-in-depth (AOSP re-checks at ActivityStarter after the
+    // Instrumentation gate): the W7 gate answers for classes the W3
+    // own-manifest helpers cannot see — foreign DISABLED and cross-package
+    // NON-EXPORTED targets are refused here with the same error contract
+    // the dispatch sites throw synchronously. No store ⇒ "" (unchanged).
+    {
+        std::string c7_w7_err = dalvik_engine_.c7_activity_launch_gate(
+            pi->component_class);
+        if (!c7_w7_err.empty()) {
+            rec["launched"] = false;
+            rec["error"] = c7_w7_err;
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "ACT-START", cls, false, c7_w7_err + " (drain gate)",
+                "ExecutionEngine.consume_pending_launch");
+            std::cerr << "[C7-ACT] W7 gate refused: " << cls << " — "
+                      << c7_w7_err << std::endl;
+            return rec;
+        }
+    }
     const int c7_flags = pi->flags;
     const int c7_lm = dalvik_engine_.c7_activity_launch_mode(cls);
+    // CODER7 WAVE-8 L4: singleTask (2) / singleInstance (3) reuse the top
+    // record EXACTLY like singleTop (AOSP ActivityInfo: "already running
+    // at the top → onNewIntent, no new instance"); when they sit BELOW
+    // the top the clear-top law below closes the records above and the
+    // target receives the new intent (the singleTask document shape).
     const bool c7_single_top =
-        c7_lm == 1 || (c7_flags & 0x20000000) != 0;
-    const bool c7_clear_top = (c7_flags & 0x04000000) != 0;
+        c7_lm == 1 || c7_lm == 2 || c7_lm == 3 ||
+        (c7_flags & 0x20000000) != 0;
+    // CODER7 WAVE-8 L4: AOSP singleTask (launchMode 2) reuses the task's
+    // existing record — when the target already sits IN the task every
+    // record above it is closed and the target receives the new intent
+    // (singleTask = singleTop-at-top + clear-top-in-task). singleInstance
+    // (3) reuses the same way in this single-task model (documented
+    // deviation: the engine models ONE task per run).
+    const bool c7_clear_top =
+        (c7_flags & 0x04000000) != 0 || c7_lm == 2 || c7_lm == 3;
     // AOSP singleTop law: the target is ALREADY the resumed top → the new
     // intent routes through onNewIntent (no new instance, no lifecycle
     // restart). FLAG_ACTIVITY_SINGLE_TOP enforces the same shape.
@@ -9005,6 +9204,27 @@ nlohmann::json ExecutionEngine::consume_pending_intent() {
             b_theme);
     }
     dispatch_cb("onCreate", b_id, cls, intent_arg, "callbacks");
+    // ── CODER7 WAVE-7: foreign ACTIVITY EXECUTION evidence ──────────────
+    // LoadedApk-lite (the W6 store-dex ingestion): a launched activity
+    // whose class belongs to ANOTHER installed package just ran its REAL
+    // foreign bytecode (the F-118 <init> constructor law + onCreate above
+    // both executed through the unified class index). The row is the
+    // engine-side execution proof; the app-side proof is the handshake
+    // marker the foreign onCreate itself writes (same channel the W6
+    // receiver/service/provider components use).
+    {
+        const std::string& c7_fowner =
+            dalvik_engine_.foreign_owner_package(cls);
+        if (!c7_fowner.empty()) {
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "ACT-XPKG-EXEC", c7_fowner + " -> " + cls, true,
+                "foreign activity REAL lifecycle executed (LoadedApk-lite: "
+                "<init>+onCreate ran foreign store dex)",
+                "ExecutionEngine.consume_pending_launch");
+            std::cerr << "[C7-ACT-XPKG] foreign activity executed: "
+                      << c7_fowner << " -> " << cls << std::endl;
+        }
+    }
     rec["b_view_root"] = as->content_view_id();
 
     // ── B.onStart + B.onResume ───────────────────────────────────────────

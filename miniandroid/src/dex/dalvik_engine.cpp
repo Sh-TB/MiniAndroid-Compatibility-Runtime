@@ -1767,6 +1767,252 @@ size_t DalvikExecutionEngine::inject_secondary_dex_classes() {
 }
 
 // ============================================================================
+// CODER7 WAVE-6 (issue #520; S185 SQLITE RULE #536): LoadedApk-lite —
+// FOREIGN APK CODE INGESTION.
+//
+// AOSP law: frameworks/base/core/java/android/app/LoadedApk.java — every
+// installed package owns a LoadedApk with its own ClassLoader, and
+// ActivityThread.handleReceiver/handleCreateService deliver components
+// cross-package by LOADING the target package's code and running the REAL
+// component class. WAVE-5 resolved foreign components from the package
+// index and honestly did not execute them (issue #520 W5.7 limitation #1:
+// "the foreign dex is not loaded by this engine"). This method is the
+// generic fix: it parses every store APK's DEX files and injects the
+// classes into the SAME merged class index (class_info_index_ +
+// superclass/interfaces/annotations closure maps) the running app uses —
+// the exact mechanics of inject_secondary_dex_classes() above, generalized
+// from per-APK to per-STORE (S185 LOAD-FIRST clause: milestone 0 = full
+// load; the dispatch sites below then run real foreign bytecode).
+//
+// Dedup law (no-shadow): a class the RUNNING package defines wins — AOSP
+// resolves through the app's own ClassLoader first; the store can never
+// shadow it. Skipped duplicates are counted, never silent.
+//
+// Honesty laws: a missing store APK or a failed DEX parse records a loud
+// C7-STORE-DEX ok=false row and leaves the dispatch fallback (the WAVE-5
+// "resolved, not executed" rows) intact. No fabricated components.
+// ============================================================================
+size_t DalvikExecutionEngine::inject_foreign_apk_code(
+    const std::vector<std::pair<std::string, std::string>>&
+        apk_package_pairs) {
+    if (!dex_report_ || apk_package_pairs.empty() ||
+        c7_foreign_code_injected_)
+        return 0;
+    c7_foreign_code_injected_ = true;  // once-per-boot (AOSP LoadedApk model)
+
+    auto& mutable_classes =
+        const_cast<std::vector<dex::ClassInfo>&>(dex_report_->classes);
+    size_t injected_total = 0;
+    size_t skipped_dup = 0;
+    miniandroid::apk::ApkParser c7_apk;
+
+    // The AOSP multi-DEX naming law: classes.dex, classes2.dex .. classesN.dex.
+    std::vector<std::string> c7_dex_names{"classes.dex"};
+    for (int i = 2; i <= 32; ++i)
+        c7_dex_names.push_back("classes" + std::to_string(i) + ".dex");
+
+    for (const auto& c7_pair : apk_package_pairs) {
+        const std::string& apk_path = c7_pair.first;
+        const std::string& owner_pkg = c7_pair.second;
+        if (apk_path.empty() || owner_pkg.empty()) continue;
+        if (!std::filesystem::exists(apk_path)) {
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "C7-STORE-DEX", owner_pkg, false,
+                "store apk missing on disk: " + apk_path +
+                    " — foreign code NOT loaded (honest)",
+                "inject_foreign_apk_code");
+            continue;
+        }
+        size_t per_apk = 0;
+        for (const auto& c7_name : c7_dex_names) {
+            auto c7_raw = c7_apk.extract_entry(apk_path, c7_name);
+            if (c7_raw.empty()) continue;  // classes2.. absent — normal
+            dex::DexParser c7_parser;
+            c7_parser.set_verbose(false);
+            auto c7_report = c7_parser.parse_data(c7_raw, "XPKG:" + c7_name);
+            if (!c7_report.is_valid) {
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "C7-STORE-DEX", owner_pkg + "/" + c7_name, false,
+                    "foreign dex parse failed: " + c7_report.validation_error,
+                    "inject_foreign_apk_code");
+                continue;
+            }
+            // ── EXP-038 per-DEX resolution law: the foreign dex joins
+            // per_dex_raw_data_ and every foreign class maps to its slot
+            // via class_to_dex_index_ — the SAME mechanism secondary-DEX
+            // classes use. Without this, string/type/method IDX values
+            // inside foreign bytecode resolve against the WRONG dex
+            // tables (first live evidence: BrowserPingReceiver.onReceive
+            // resolved its string idx to Landroid/content/pm/ActivityInfo
+            // constants — garbage from dex 0's table).
+            const uint32_t c7_dex_slot =
+                (uint32_t)per_dex_raw_data_.size();
+            per_dex_raw_data_.push_back(c7_raw);
+            is_multidex_ = per_dex_raw_data_.size() > 1;
+            for (auto& c7_cls : c7_report.classes) {
+                if (class_info_index_.find(c7_cls.name) !=
+                    class_info_index_.end()) {
+                    skipped_dup++;
+                    continue;
+                }
+                mutable_classes.push_back(std::move(c7_cls));
+                size_t c7_new_idx = mutable_classes.size() - 1;
+                class_info_index_[mutable_classes.back().name] = c7_new_idx;
+                class_to_dex_index_[mutable_classes.back().name] =
+                    c7_dex_slot;
+                set_foreign_class_owner(mutable_classes.back().name,
+                                        owner_pkg);
+                per_apk++;
+            }
+        }
+        injected_total += per_apk;
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "C7-STORE-DEX", owner_pkg, true,
+            "foreign code ingested from " +
+                apk_path.substr(apk_path.find_last_of("/\\") + 1) +
+                ": classes=" + std::to_string(per_apk),
+            "inject_foreign_apk_code");
+        std::cerr << "[C7-W6] foreign code ingested: " << owner_pkg
+                  << " classes=" << per_apk << std::endl;
+    }
+
+    if (injected_total == 0) {
+        if (skipped_dup > 0)
+            std::cerr << "[C7-W6] foreign injection: 0 new, " << skipped_dup
+                      << " duplicates skipped (own-package definitions win)"
+                      << std::endl;
+        return 0;
+    }
+
+    // Aggregate count reflects the merged state (same law as the secondary
+    // injection).
+    const_cast<uint32_t&>(dex_report_->classes_count) =
+        (uint32_t)mutable_classes.size();
+
+    // ── Closure laws: the injected foreign classes must satisfy the SAME
+    // structural indexes the multi-DEX injection maintains — EXP-095
+    // (superclass map: a foreign BroadcastReceiver/Service subclass must
+    // resolve is_subclass_of), S102 (declared-interfaces closure:
+    // check-cast/instanceof), F-087 (runtime-annotation closure).
+    // Same loops, same dedup law, zero package knowledge.
+    {
+        size_t c7_sup = 0, c7_ifc = 0, c7_ann = 0;
+        for (const auto& c7_cls : mutable_classes) {
+            if (!c7_cls.superclass_name.empty()) {
+                const std::string c7_key =
+                    framework::normalize_class_desc(c7_cls.name);
+                const std::string c7_val = framework::normalize_class_desc(
+                    c7_cls.superclass_name);
+                if (class_to_superclass_.find(c7_key) ==
+                    class_to_superclass_.end())
+                    c7_sup++;
+                class_to_superclass_[c7_key] = c7_val;
+            }
+            if (!c7_cls.interfaces.empty() &&
+                class_to_interfaces_.find(c7_cls.name) ==
+                    class_to_interfaces_.end()) {
+                class_to_interfaces_[c7_cls.name] = c7_cls.interfaces;
+                c7_ifc++;
+            }
+            if (!c7_cls.class_annotations.empty() &&
+                class_annotations_.find(c7_cls.name) ==
+                    class_annotations_.end()) {
+                class_annotations_[c7_cls.name] = c7_cls.class_annotations;
+                c7_ann++;
+            }
+        }
+        std::cerr << "[C7-W6] foreign closure: superclass+" << c7_sup
+                  << " interfaces+" << c7_ifc << " annotations+" << c7_ann
+                  << " (dup skipped " << skipped_dup << ")" << std::endl;
+    }
+    return injected_total;
+}
+
+void DalvikExecutionEngine::set_foreign_class_owner(
+    const std::string& class_desc, const std::string& package_name) {
+    if (!class_desc.empty() && !package_name.empty())
+        c7_foreign_class_owner_[class_desc] = package_name;
+}
+
+const std::string& DalvikExecutionEngine::foreign_owner_package(
+    const std::string& class_desc) const {
+    static const std::string c7_none;
+    auto c7_it = c7_foreign_class_owner_.find(class_desc);
+    return c7_it != c7_foreign_class_owner_.end() ? c7_it->second : c7_none;
+}
+
+// ── CODER7 WAVE-7: cross-package ACTIVITY launch laws ──────────────────────
+// AOSP ActivityManagerService.checkComponentPermission + ActivityStarter:
+// the launch of an activity component is gated on (a) the component being
+// ENABLED (PackageItemInfo.isEnabled — a disabled component is not
+// startable: android.content.ActivityNotFoundException) and (b) the
+// component being EXPORTED to the caller's uid (a non-exported activity
+// owned by a DIFFERENT package answers "Permission Denial": java.lang.
+// SecurityException; same-uid starts are granted). The WAVE-5 store index
+// is the single component table (register_own_package ingested the running
+// package, so own and foreign targets share one lookup — no per-app
+// special-casing). No store ⇒ "" (allowed; byte-identical pre-W7 runs).
+std::string DalvikExecutionEngine::c7_activity_launch_gate(
+    const std::string& dotted_cls) const {
+    if (!c7_pkg_index_ || c7_pkg_index_->empty() || dotted_cls.empty())
+        return std::string();
+    for (const auto& c7_name : c7_pkg_index_->package_names()) {
+        const C7IdxPackage* c7_pkg = c7_pkg_index_->find_package(c7_name);
+        if (!c7_pkg) continue;
+        for (const auto& c7_act : c7_pkg->activities) {
+            if (c7_act.cls != dotted_cls) continue;
+            if (!c7_act.enabled) {
+                // AOSP Instrumentation.checkStartActivityResult:
+                // "Unable to find explicit activity class" family — the
+                // disabled component is UNRESOLVABLE for starts.
+                return "ACTIVITY_NOT_FOUND: component disabled "
+                       "(android:enabled=false): " + dotted_cls;
+            }
+            if (!c7_act.exported && !c7_pkg->package_name.empty() &&
+                c7_pkg->package_name != package_name_) {
+                // AOSP checkComponentPermission wording (ActivityStarter):
+                // "Permission Denial: starting Intent ... not exported
+                // from uid ..." — the cross-package non-exported start.
+                return "SECURITY_EXCEPTION: Permission Denial: starting "
+                       "activity " + dotted_cls + " from package " +
+                       package_name_ + ": not exported from package " +
+                       c7_pkg->package_name;
+            }
+            return std::string();  // enabled + (exported OR same package)
+        }
+    }
+    // Not in any installed manifest: outside this gate's contract (the
+    // pre-W7 drain path keeps handling unknown classes unchanged).
+    return std::string();
+}
+
+std::string DalvikExecutionEngine::c7_resolve_activity_xpkg(
+    const std::string& action, const std::vector<std::string>& cats,
+    const std::string& mime, const std::string& scheme,
+    const std::string& host, const std::string& path,
+    bool default_only) const {
+    if (!c7_pkg_index_ || c7_pkg_index_->empty() || action.empty())
+        return std::string();
+    // TEMP-W8-DEBUG (bounded): the resolution dims as received.
+    {
+        static thread_local const bool c7_dbg =
+            std::getenv("MINIANDROID_C7_RESOLVE_DEBUG") != nullptr;
+        static thread_local uint64_t c7_n = 0;
+        if (c7_dbg && c7_n++ < 40)
+            std::cerr << "[C7-RESOLVE-DBG] action=" << action
+                      << " scheme=" << scheme << " host=" << host
+                      << " path=" << path << " mime=" << mime
+                      << " cats=" << cats.size() << std::endl;
+    }
+    std::vector<C7IdxMatch> c7_matches = c7_pkg_index_->query_activities(
+        action, cats, mime, scheme, host, path, default_only);
+    if (c7_matches.empty()) return std::string();
+    // The index's ordering IS the best-match law (W5: priority desc, stable
+    // ingest order) — AOSP resolveIntent answers the top candidate.
+    return c7_matches[0].cls;
+}
+
+// ============================================================================
 // EXP-038 (BLOCKER-033): Per-DEX method resolution using raw DEX bytes.
 // ============================================================================
 
@@ -2140,6 +2386,13 @@ bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
     // row for the ViewShadow.checkThread law so app catch(RuntimeException)
     // / catch(Exception) handlers can receive it.
     {"Landroid/view/CalledFromWrongThreadException;", "Ljava/lang/RuntimeException;"},
+    // CODER7 WAVE-8 L2: android.app.PendingIntent$CanceledException
+    // extends android.os.OperationCanceledException extends
+    // java.lang.RuntimeException? — AOSP: OperationCanceledException
+    // extends android.util.AndroidException extends java.lang.Exception.
+    // The row (as Exception) lets app catch(Exception)/typed handlers
+    // receive the ONE_SHOT re-send denial.
+    {"Landroid/app/PendingIntent$CanceledException;", "Ljava/lang/Exception;"},
     // FIX-D12-ADJACENT / unified0113 (CONT-120): the five reflective
     // NoSuch*/Illegal* families are OpenJDK java.lang facts of the SAME
     // kind as the ClassNotFoundException row above (java.lang §7 parent
@@ -2713,6 +2966,27 @@ DalvikExecutionResult DalvikExecutionEngine::execute_apk_with_activity(
     // The merged dex_report pointer (dex_report_) was just set above, so
     // this is the earliest point we can call inject_secondary_dex_classes().
     inject_secondary_dex_classes();
+
+    // ── CODER7 WAVE-6: LoadedApk-lite — foreign store code injection ────
+    // The S185 LOAD-FIRST law (#536): foreign components must EXECUTE, so
+    // every store package's DEX classes are injected BEFORE any dispatch
+    // can consult them (AOSP LoadedApk: the code is loaded before the
+    // component is delivered). Runs only when a package store exists
+    // (WAVE-5 MINIANDROID_PKG_STORE) — the no-store path is byte-identical.
+    if (c7_pkg_index_ && !c7_pkg_index_->empty()) {
+        std::vector<std::pair<std::string, std::string>> c7_xpairs;
+        for (const auto& c7_pname : c7_pkg_index_->package_names()) {
+            const auto* c7_pkg = c7_pkg_index_->find_package(c7_pname);
+            if (c7_pkg && !c7_pkg->apk_path.empty() &&
+                c7_pkg->apk_path != apk_path)
+                c7_xpairs.emplace_back(c7_pkg->apk_path, c7_pname);
+        }
+        size_t c7_fx = inject_foreign_apk_code(c7_xpairs);
+        if (c7_fx > 0)
+            std::cerr << "[C7-W6] LoadedApk-lite: " << c7_fx
+                      << " foreign classes loadable for cross-package "
+                      << "component dispatch" << std::endl;
+    }
 
     DalvikExecutionResult result;
     result.apk_name = apk_path.substr(apk_path.find_last_of("/\\") + 1);
@@ -6911,8 +7185,33 @@ bool DalvikExecutionEngine::resolve_asset_stream(uint32_t start_id,
 // cached; 4 MiB bound with an honest diagnostic on oversize) — the
 // FileInputStream/FileReader ctor law registers those keys.
 const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& path) {
-    auto it = asset_bytes_cache_.find(path);
-    if (it != asset_bytes_cache_.end()) return it->second;
+    // ── CODER7 WAVE-6: LIVE file: observability law ─────────────────────
+    // AOSP FileInputStream semantics: every read() observes the file's
+    // CURRENT bytes — content written by another stream in the same
+    // process is fully visible once that stream closes (the WAVE-6 store
+    // probe's handshake channel depends on it: the main app reads what
+    // the foreign components' real bytecode appended AFTER the first
+    // read primed the cache). APK/asset entries are runtime-immutable —
+    // those keys keep the insert-once cache. The freshness check is
+    // structural: (file size, mtime) changed ⇒ re-read.
+    auto c7_it = asset_bytes_cache_.find(path);
+    if (c7_it != asset_bytes_cache_.end()) {
+        if (path.rfind("file:", 0) != 0) return c7_it->second;
+        namespace lfs = std::filesystem;
+        lfs::path c7_fp(path.substr(5));
+        std::error_code c7_ec;
+        auto c7_sz = lfs::file_size(c7_fp, c7_ec);
+        auto c7_lt = lfs::last_write_time(c7_fp, c7_ec);
+        auto c7_fit = asset_file_stamp_.find(path);
+        bool c7_same = !c7_ec &&
+                       c7_fit != asset_file_stamp_.end() &&
+                       c7_fit->second.first == (long long)c7_sz &&
+                       c7_fit->second.second ==
+                           (long long)c7_lt.time_since_epoch().count();
+        if (c7_same) return c7_it->second;
+        asset_bytes_cache_.erase(c7_it);
+        asset_file_stamp_.erase(path);
+    }
     std::string content;
     if (path.rfind("file:", 0) == 0) {
         // LOADING-CAMPAIGN: the registered backing path is already the
@@ -7003,6 +7302,19 @@ const std::string& DalvikExecutionEngine::cached_asset_bytes(const std::string& 
                 content.assign(bytes.begin(), bytes.end());
             }
         }
+    }
+    // CODER7 WAVE-6: record the (size, mtime) stamp for file: keys so the
+    // next cached_asset_bytes call can detect a live change.
+    if (path.rfind("file:", 0) == 0) {
+        namespace lfs = std::filesystem;
+        lfs::path c7_fp2(path.substr(5));
+        std::error_code c7_ec2;
+        auto c7_sz2 = lfs::file_size(c7_fp2, c7_ec2);
+        auto c7_lt2 = lfs::last_write_time(c7_fp2, c7_ec2);
+        if (!c7_ec2)
+            asset_file_stamp_[path] = {(long long)c7_sz2,
+                                       (long long)c7_lt2.time_since_epoch()
+                                           .count()};
     }
     return asset_bytes_cache_.emplace(path, std::move(content)).first->second;
 }
@@ -7551,6 +7863,15 @@ void DalvikExecutionEngine::install_content_providers(
         try {
             const uint32_t pid = heap_.allocate(desc, pc_, 0);
             if (pid == 0) continue;
+            // CODER7 WAVE-8 L1: the OWN provider's read/write permission
+            // identity (manifest android:readPermission/writePermission;
+            // same-app access is exempt at the gate — AOSP same-uid law).
+            for (const auto& c7_pp : manifest_provider_perms_)
+                if (std::get<0>(c7_pp) == pcls) {
+                    c7_set_provider_perms(pid, std::get<1>(c7_pp),
+                                          std::get<2>(c7_pp), package_name_);
+                    break;
+                }
             DalvikValue pobj = DalvikValue::make_object(pid, desc);
             DalvikValue ret;
             std::vector<DalvikValue> pinit;
@@ -7750,10 +8071,270 @@ bool DalvikExecutionEngine::parse_content_uri(const std::string& raw,
     return true;
 }
 
+// ── CODER7 WAVE-8 L2: PendingIntent.send dispatch (the AOSP sendInner
+// law). The shadow owns the RECORD laws (ONE_SHOT / IMMUTABLE /
+// CanceledException); this method IS the dispatch channel — the frozen
+// intent re-enters the exact bridge law the app-context calls use. No
+// duplicated broadcast/service/activity resolution exists here by design
+// (S185 VEND/DON'T-REWRITE: one component table, one pipeline).
+bool DalvikExecutionEngine::c7_send_pending_intent(const std::string& kind,
+                                                   uint32_t intent_oid,
+                                                   std::string& err) {
+    if (intent_oid == 0 || !heap_.has_object(intent_oid)) {
+        err = "frozen intent object missing from heap";
+        return false;
+    }
+    DalvikValue c7_ctx =
+        (application_object_id_ != 0 &&
+         heap_.has_object(application_object_id_))
+            ? DalvikValue::make_object(
+                  application_object_id_,
+                  application_class_desc_.empty()
+                      ? "Landroid/app/Application;"
+                      : application_class_desc_)
+            : get_or_create_singleton("Landroid/content/Context;");
+    DalvikValue c7_iv =
+        DalvikValue::make_object(intent_oid, "Landroid/content/Intent;");
+    if (kind == "BROADCAST") {
+        // ContextImpl.sendBroadcast — the full gated law (own + xpkg
+        // resolution, exported/permission gates, sticky/category laws)
+        // runs unmodified; its evidence rows are the dispatch proof.
+        DalvikValue c7_ret;
+        ApiCallTrace::Status c7_st;
+        std::vector<DalvikValue> c7_args{c7_ctx, c7_iv};
+        bridge_to_api("Landroid/content/ContextWrapper;", "sendBroadcast",
+                      c7_args, c7_ret, c7_st, 0);
+        return true;
+    }
+    if (kind == "SERVICE") {
+        DalvikValue c7_ret;
+        ApiCallTrace::Status c7_st;
+        std::vector<DalvikValue> c7_args{c7_ctx, c7_iv};
+        bridge_to_api("Landroid/content/ContextWrapper;", "startService",
+                      c7_args, c7_ret, c7_st, 0);
+        return true;
+    }
+    if (kind == "ACTIVITY") {
+        // AOSP sendInner → AMS.startActivityAsUser: the ContextImpl
+        // NEW_TASK gate does NOT apply to a PendingIntent send; the
+        // WAVE-7 resolve + SYNCHRONOUS gate + queue law DOES.
+        auto* c7_ish = shadow_registry_
+                           ? shadow_registry_->find_as<
+                                 framework::IntentShadow>()
+                           : nullptr;
+        if (!c7_ish) {
+            err = "no IntentShadow wired";
+            return false;
+        }
+        auto c7_pi = c7_ish->get_or_create_intent(intent_oid);
+        if (!c7_pi) {
+            err = "no intent record for the frozen intent";
+            return false;
+        }
+        c7_pi->intent_object_id = intent_oid;
+        if (c7_pi->component_class.empty() && !c7_pi->action.empty()) {
+            std::string c7_res = c7_ish->resolve_action_target(c7_pi->action);
+            if (!c7_res.empty()) c7_pi->component_class = c7_res;
+            if (c7_pi->component_class.empty()) {
+                std::string c7_x = c7_resolve_activity_xpkg(
+                    c7_pi->action, c7_pi->categories, c7_pi->type,
+                    c7_pi->data_scheme, c7_pi->data_host, c7_pi->data_path,
+                    /*default_only=*/true);
+                if (!c7_x.empty()) {
+                    c7_pi->component_class = c7_x;
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "ACT-XPKG-RESOLVE", c7_x, true,
+                        "PendingIntent send implicit resolution via store "
+                        "index (action=" +
+                            c7_pi->action + ")",
+                        "DalvikExecutionEngine.c7_send_pending_intent");
+                }
+            }
+        }
+        if (!c7_pi->component_class.empty()) {
+            std::string c7_gerr =
+                c7_activity_launch_gate(c7_pi->component_class);
+            if (!c7_gerr.empty()) {
+                // The gate refusal is a REAL exception in the caller's
+                // frame (AOSP sendInner rethrows before dispatch).
+                if (c7_gerr.rfind("SECURITY_EXCEPTION:", 0) == 0)
+                    throw_deferred("Ljava/lang/SecurityException;",
+                                   c7_gerr.substr(18), "PI-SEND");
+                else
+                    throw_deferred(
+                        "Landroid/content/ActivityNotFoundException;",
+                        c7_gerr.substr(c7_gerr.find(':') + 1), "PI-SEND");
+                err = c7_gerr;
+                return false;
+            }
+        }
+        c7_ish->enqueue_pending(c7_pi);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "PI-SEND", "ACTIVITY", true,
+            "launch queued (component=" + c7_pi->component_class +
+                "; drain applies the task/launchMode laws)",
+            "DalvikExecutionEngine.c7_send_pending_intent");
+        return true;
+    }
+    err = "unknown PendingIntent kind " + kind;
+    return false;
+}
+
 uint32_t DalvikExecutionEngine::resolve_provider_for_authority(
     const std::string& authority, std::string& provider_cls) {
     auto it = provider_by_authority_.find(authority);
-    if (it == provider_by_authority_.end()) return 0;
+    if (it == provider_by_authority_.end()) {
+        // ── CODER7 WAVE-6: foreign provider acquisition (LoadedApk-lite) ──
+        // AOSP ActivityThread.acquireProvider: the authority is resolved
+        // through the PMS provider map across ALL packages; when the
+        // provider lives in ANOTHER package, its process is started, the
+        // REAL ContentProvider class is INSTALLED (attachInfo + onCreate)
+        // and the binder returned. The engine mirrors that: on an
+        // own-provider miss, install the foreign provider from the WAVE-5
+        // index (its dex classes were ingested by inject_foreign_apk_code
+        // — the S185 LOAD-FIRST law) and let the unmodified CRUD dispatch
+        // run the foreign query/insert/update/delete/openFile bytecode.
+        // Gates (AOSP checkComponentPermission + ProviderUriPermissions):
+        // enabled (the index only publishes enabled providers), exported
+        // (running package is a foreign caller), grantUriPermissions OR
+        // exported grants access — non-exported + no grant ⇒ deny row.
+        // Re-resolve after install; a failure falls through to the honest
+        // unknown-authority path (never a fabricated provider).
+        if (c7_pkg_index_ && !c7_pkg_index_->empty()) {
+            auto c7_fprov = c7_pkg_index_->providers_for_authority(authority);
+            for (const auto& c7_pr : c7_fprov) {
+                if (c7_pr.package_name == package_name_) continue;
+                if (!c7_pr.exported && !c7_pr.grant_uri_permissions) {
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "PROV-XPKG-DENY",
+                        c7_pr.package_name + "/" + c7_pr.cls, false,
+                        "foreign provider not exported and grantUri"
+                        "Permissions=false (AOSP checkComponentPermission)",
+                        current_class_ + "." + current_method_);
+                    continue;
+                }
+                std::string c7_fdesc = c7_pr.cls;
+                if (!c7_fdesc.empty() && c7_fdesc[0] != 'L') {
+                    std::replace(c7_fdesc.begin(), c7_fdesc.end(), '.', '/');
+                    c7_fdesc = "L" + c7_fdesc + ";";
+                }
+                if (c7_fdesc.empty() || class_to_superclass_.find(c7_fdesc) ==
+                                            class_to_superclass_.end()) {
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "PROV-XPKG", c7_pr.package_name + "/" + c7_pr.cls,
+                        false,
+                        "foreign provider RESOLVED but class not loaded — "
+                        "honest miss (no fabrication)",
+                        current_class_ + "." + current_method_);
+                    continue;
+                }
+                // ── Install (mirror of install_content_providers GATE-A):
+                // allocate → <init>()V → ProviderInfo(identity from the
+                // index) → attachInfo(context, info) → onCreate → publish
+                // every declared authority.
+                uint32_t c7_fpid = heap_.allocate(c7_fdesc, pc_, 0);
+                if (c7_fpid == 0) continue;
+                DalvikValue c7_fpobj =
+                    DalvikValue::make_object(c7_fpid, c7_fdesc);
+                DalvikValue c7_fret;
+                DalvikExecutionResult c7_ftmp;
+                std::vector<DalvikValue> c7_finit{c7_fpobj};
+                try_recursive_invoke(c7_fdesc, "<init>", c7_finit, c7_fret,
+                                     c7_ftmp, "()V");
+                {
+                    uint32_t c7_finfo_id = heap_.allocate(
+                        "Landroid/content/pm/ProviderInfo;", pc_, 0);
+                    heap_.set_object_field(
+                        c7_finfo_id, "name",
+                        DalvikValue::make_string(c7_fdesc, 1));
+                    heap_.set_object_field(
+                        c7_finfo_id, "authority",
+                        DalvikValue::make_string(c7_pr.authorities, 1));
+                    heap_.set_object_field(
+                        c7_finfo_id, "authorities",
+                        DalvikValue::make_string(c7_pr.authorities, 1));
+                    heap_.set_object_field(
+                        c7_finfo_id, "grantUriPermissions",
+                        DalvikValue::make_bool(
+                            c7_pr.grant_uri_permissions));
+                    heap_.set_object_field(
+                        c7_finfo_id, "exported",
+                        DalvikValue::make_bool(c7_pr.exported));
+                    heap_.set_object_field(
+                        c7_finfo_id, "multiprocess",
+                        DalvikValue::make_bool(false));
+                    DalvikValue c7_finfo;
+                    c7_finfo.type = DalvikType::OBJECT_REF;
+                    c7_finfo.object_id = c7_finfo_id;
+                    c7_finfo.class_desc =
+                        "Landroid/content/pm/ProviderInfo;";
+                    DalvikValue c7_fctx;
+                    if (application_object_id_ != 0 &&
+                        heap_.has_object(application_object_id_)) {
+                        c7_fctx.type = DalvikType::OBJECT_REF;
+                        c7_fctx.object_id = application_object_id_;
+                        c7_fctx.class_desc =
+                            application_class_desc_.empty()
+                                ? "Landroid/app/Application;"
+                                : application_class_desc_;
+                    } else {
+                        c7_fctx = get_or_create_singleton(
+                            "Landroid/content/Context;");
+                    }
+                    std::vector<DalvikValue> c7_fattach{c7_fpobj, c7_fctx,
+                                                        c7_finfo};
+                    try_recursive_invoke(
+                        c7_fdesc, "attachInfo", c7_fattach, c7_fret, c7_ftmp,
+                        "(Landroid/content/Context;"
+                        "Landroid/content/pm/ProviderInfo;)V");
+                    provider_context_[c7_fpid] = c7_fctx.object_id;
+                    // Publish EVERY ';'-joined authority (AOSP
+                    // installContentProviders map law).
+                    const std::string& c7_auth_all = c7_pr.authorities;
+                    size_t c7_start = 0;
+                    while (c7_start <= c7_auth_all.size()) {
+                        size_t c7_semi = c7_auth_all.find(';', c7_start);
+                        std::string c7_one = c7_auth_all.substr(
+                            c7_start,
+                            c7_semi == std::string::npos
+                                ? std::string::npos
+                                : c7_semi - c7_start);
+                        if (!c7_one.empty()) {
+                            provider_by_authority_[c7_one] = c7_fpid;
+                            provider_class_by_oid_[c7_fpid] = c7_pr.cls;
+                            // CODER7 WAVE-8 L1: the foreign provider's
+                            // read/write permission identity rides the
+                            // store index (checkContentProviderAccess law).
+                            c7_set_provider_perms(
+                                c7_fpid, c7_pr.read_permission,
+                                c7_pr.write_permission, c7_pr.package_name);
+                        }
+                        if (c7_semi == std::string::npos) break;
+                        c7_start = c7_semi + 1;
+                    }
+                }
+                std::vector<DalvikValue> c7_fcreate;
+                c7_fcreate.push_back(c7_fpobj);
+                bool c7_fok = try_recursive_invoke(c7_fdesc, "onCreate",
+                                                   c7_fcreate, c7_fret,
+                                                   c7_ftmp, "()Z");
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "PROV-XPKG-EXEC", c7_pr.package_name + "/" + c7_pr.cls,
+                    c7_fok,
+                    "foreign provider INSTALLED from store (authority=" +
+                        authority + ") attachInfo+onCreate " +
+                        (c7_fok ? "OK" : "SKIPPED") +
+                        " — REAL CRUD dispatch follows",
+                    current_class_ + "." + current_method_);
+                std::cerr << "[C7-W6] foreign provider installed: "
+                          << c7_pr.package_name << "/" << c7_pr.cls
+                          << " auth=" << authority << std::endl;
+                it = provider_by_authority_.find(authority);
+                break;
+            }
+        }
+        if (it == provider_by_authority_.end()) return 0;
+    }
     provider_cls.clear();
     auto cls_it = provider_class_by_oid_.find(it->second);
     if (cls_it != provider_class_by_oid_.end()) {
@@ -7812,6 +8393,182 @@ bool DalvikExecutionEngine::invoke_lifecycle_method(
     full.push_back(DalvikValue::make_object(oid, cls));
     for (auto& a : args) full.push_back(a);
     return try_recursive_invoke(cls, method, full, ret, tmp, "");
+}
+
+// ── CODER7 WAVE-9: the system-signal dispatch laws ────────────────────
+// AOSP ActivityThread.handleTrimMemory: "the Application's callbacks run
+// BEFORE the component's" — dispatch order app → activity. AOSP
+// Application.onLowMemory: fired at TRIM_MEMORY_COMPLETE (the legacy
+// ComponentCallbacks alias; android-14 ActivityThread keeps the
+// onLowMemory() leg for level == TRIM_MEMORY_COMPLETE). AOSP
+// handleConfigurationChanged: the Configuration object reaches BOTH the
+// Application and the Activity overrides; the ORIENTATION constant the
+// engine carries for the rotate signal is ORIENTATION_LANDSCAPE (2).
+void DalvikExecutionEngine::dispatch_memory_and_config_signals(
+    int trim_level, bool rotate) {
+    // The live activity identity (ActivityShadow::current_activity_id —
+    // the same identity performLaunchActivity recorded).
+    uint32_t act_oid = 0;
+    std::string act_cls;
+    if (shadow_registry_ != nullptr) {
+        if (auto* act =
+                shadow_registry_->find_as<framework::ActivityShadow>()) {
+            act_oid = act->current_activity_id();
+            if (act_oid != 0 && heap_.has_object(act_oid))
+                act_cls = heap_.get(act_oid)->class_descriptor;
+        }
+    }
+    const bool app_live = application_object_id_ != 0 &&
+                          heap_.has_object(application_object_id_) &&
+                          !application_class_desc_.empty();
+
+    if (trim_level > 0) {
+        int app_done = 0, act_done = 0, low_done = 0;
+        if (app_live) {
+            DalvikValue ret;
+            if (invoke_lifecycle_method(
+                    application_object_id_, application_class_desc_,
+                    "onTrimMemory", {DalvikValue::make_int(trim_level)}, ret))
+                app_done++;
+            // AOSP: onLowMemory is the TRIM_MEMORY_COMPLETE alias.
+            if (trim_level == 15 /*TRIM_MEMORY_COMPLETE*/) {
+                DalvikValue lret;
+                if (invoke_lifecycle_method(
+                        application_object_id_, application_class_desc_,
+                        "onLowMemory", {}, lret))
+                    low_done++;
+            }
+        }
+        if (act_oid != 0 && !act_cls.empty()) {
+            DalvikValue ret;
+            if (invoke_lifecycle_method(act_oid, act_cls, "onTrimMemory",
+                                        {DalvikValue::make_int(trim_level)},
+                                        ret))
+                act_done++;
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "C7-TRIM", "level=" + std::to_string(trim_level), true,
+            "app=" + std::to_string(app_done) +
+                " act=" + std::to_string(act_done) +
+                " lowmem=" + std::to_string(low_done) +
+                " (AOSP app-before-activity)",
+            "DispatchMemoryAndConfigSignals");
+        std::cerr << "[C7-TRIM] level=" << trim_level
+                  << " app=" << app_done << " act=" << act_done
+                  << " lowmem=" << low_done << std::endl;
+    }
+
+    if (rotate) {
+        uint32_t cfg_id = heap_.allocate(
+            "Landroid/content/res/Configuration;", pc_, 0);
+        heap_.set_object_field(
+            cfg_id, "orientation", DalvikValue::make_int(2)  // LANDSCAPE
+        );
+        heap_.set_object_field(
+            cfg_id, "densityDpi", DalvikValue::make_int(160));
+        DalvikValue cfg =
+            DalvikValue::make_object(cfg_id,
+                                     "Landroid/content/res/Configuration;");
+        int app_done = 0, act_done = 0;
+        if (app_live) {
+            DalvikValue ret;
+            if (invoke_lifecycle_method(
+                    application_object_id_, application_class_desc_,
+                    "onConfigurationChanged", {cfg}, ret))
+                app_done++;
+        }
+        if (act_oid != 0 && !act_cls.empty()) {
+            DalvikValue ret;
+            if (invoke_lifecycle_method(act_oid, act_cls,
+                                        "onConfigurationChanged", {cfg},
+                                        ret))
+                act_done++;
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "C7-CFGCHG", "orientation=2", true,
+            "app=" + std::to_string(app_done) +
+                " act=" + std::to_string(act_done) +
+                " (AOSP app-before-activity)",
+            "DispatchMemoryAndConfigSignals");
+        std::cerr << "[C7-CFGCHG] orientation=2 app=" << app_done
+                  << " act=" << act_done << std::endl;
+    }
+
+    // ── CODER7 WAVE-11: the SERVICE system-signal stand-ins (the same
+    // honest harness pattern the W9 trim/config dispatch uses — the env
+    // carries the deterministic system signal; empty ⇒ no dispatch).
+    //   MINIANDROID_TASK_REMOVED=<root-intent action or "1">  → AOSP
+    //       ActiveServices.killServicesLocked → onTaskRemoved(rootIntent)
+    //       delivered to every STARTED live service when the launching
+    //       task is removed.
+    //   MINIANDROID_SVC_TIMEOUT="1" → AOSP Service.onTimeout(int startId)
+    //       (API 34 shortService FGS budget exhaustion): delivered to
+    //       every STARTED live service with ITS OWN lastStartId; the
+    //       timeout-kill contract (stopSelf or the system kills) is the
+    //       app's obligation — tracked, never faked.
+    static const bool c7_task_removed = [] {
+        const char* e = std::getenv("MINIANDROID_TASK_REMOVED");
+        return e && e[0];
+    }();
+    static const bool c7_svc_timeout = [] {
+        const char* e = std::getenv("MINIANDROID_SVC_TIMEOUT");
+        return e && e[0] == '1';
+    }();
+    if (c7_task_removed || c7_svc_timeout) {
+        static const std::string c7_root_action = [] {
+            const char* e = std::getenv("MINIANDROID_TASK_REMOVED");
+            if (!e || !e[0] || std::string(e) == "1") return std::string();
+            return std::string(e);
+        }();
+        uint32_t root_oid = 0;
+        if (c7_task_removed) {
+            root_oid = heap_.allocate("Landroid/content/Intent;", pc_, 0);
+            if (shadow_registry_ != nullptr) {
+                auto* tish =
+                    shadow_registry_->find_as<framework::IntentShadow>();
+                if (tish) {
+                    auto tpi = tish->get_or_create_intent(root_oid);
+                    if (tpi)
+                        tpi->action = c7_root_action.empty()
+                                          ? "android.intent.action.MAIN"
+                                          : c7_root_action;
+                }
+            }
+        }
+        int tr_done = 0, to_done = 0;
+        for (auto& [tsvc_cls, tsvc] : live_services_) {
+            if (!tsvc.started || tsvc.destroyed || !tsvc.created) continue;
+            if (c7_task_removed && root_oid != 0) {
+                DalvikValue tret;
+                DalvikValue tint =
+                    DalvikValue::make_object(root_oid,
+                                             "Landroid/content/Intent;");
+                if (invoke_lifecycle_method(tsvc.oid, tsvc.cls,
+                                            "onTaskRemoved", {tint}, tret))
+                    tr_done++;
+            }
+            if (c7_svc_timeout) {
+                DalvikValue tret;
+                if (invoke_lifecycle_method(
+                        tsvc.oid, tsvc.cls, "onTimeout",
+                        {DalvikValue::make_int(tsvc.last_start_id)}, tret))
+                    to_done++;
+            }
+        }
+        if (c7_task_removed)
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "SVC-TASKREMOVED",
+                c7_root_action.empty() ? "MAIN" : c7_root_action, true,
+                "onTaskRemoved delivered=" + std::to_string(tr_done) +
+                    " (ActiveServices task-removal law, env stand-in)",
+                "DispatchMemoryAndConfigSignals");
+        if (c7_svc_timeout)
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "SVC-TIMEOUT", "shortService", true,
+                "onTimeout delivered=" + std::to_string(to_done) +
+                    " (API 34 FGS budget law, env stand-in)",
+                "DispatchMemoryAndConfigSignals");
+    }
 }
 
 // ── F-NEW-304 (CONT-42): platform Fragment lifecycle drain ─────────────
@@ -11033,6 +11790,184 @@ bool DalvikExecutionEngine::try_recursive_invoke(
         return_val = DalvikValue::make_object(uri_id537c, "Landroid/net/Uri;");
         recursion_depth_--;
         return true;
+    }
+
+    // ── CODER7 WAVE-10 (AOSP android.content.ContentProviderOperation):
+    // the batch-op VALUE MODEL. newInsert/newUpdate/newDelete/newAssert
+    // answer a Builder; withValues/withSelection/withSelectionArgs/
+    // withExpectedCount return this; build() freezes the op into engine-
+    // private __c7_* fields (type 1=insert 2=update 3=delete 4=assert).
+    // ContentProviderResult carries the per-op answer: insert → the
+    // provider's returned Uri, update/delete/assert → the row count.
+    if ((declaring_class == "Landroid/content/ContentProviderOperation;" ||
+         declaring_class ==
+             "Landroid/content/ContentProviderOperation$Builder;" ||
+         declaring_class == "Landroid/content/ContentProviderResult;") &&
+        (method_name == "newInsert" || method_name == "newUpdate" ||
+         method_name == "newDelete" || method_name == "newAssert" ||
+         method_name == "newAssertQuery" ||
+         method_name == "withValues" || method_name == "withSelection" ||
+         method_name == "withSelectionArgs" ||
+         method_name == "withValueBackReference" ||
+         method_name == "withSelectionBackReference" ||
+         method_name == "withExpectedCount" || method_name == "build" ||
+         method_name == "isInsert" || method_name == "isUpdate" ||
+         method_name == "isDelete" || method_name == "isAssertQuery" ||
+         method_name == "getCount" || method_name == "getUri")) {
+        auto c7_op_type = [&](uint32_t oid) -> int {
+            auto t = heap_.get_object_field(oid, "__c7_type__");
+            return t.has_value() ? t->int_val : 0;
+        };
+        // static factories: (no receiver) args[0] = the target Uri
+        if (method_name == "newInsert" || method_name == "newUpdate" ||
+            method_name == "newDelete" || method_name == "newAssert" ||
+            method_name == "newAssertQuery") {
+            if (args.empty() || args[0].type != DalvikType::OBJECT_REF ||
+                args[0].object_id == 0 ||
+                !heap_.has_object(args[0].object_id)) {
+                throw_deferred("Ljava/lang/NullPointerException;",
+                               std::string(method_name) +
+                                   " on a null Uri",
+                               "c7-cpo-null");
+                return_val = DalvikValue::make_null();
+                recursion_depth_--;
+                return true;
+            }
+            uint32_t b = heap_.allocate(
+                "Landroid/content/ContentProviderOperation$Builder;", pc_,
+                0);
+            int t = method_name == "newInsert"
+                        ? 1
+                        : method_name == "newUpdate"
+                              ? 2
+                              : (method_name == "newDelete") ? 3 : 4;
+            heap_.set_object_field(b, "__c7_type__",
+                                   DalvikValue::make_int(t));
+            heap_.set_object_field(b, "__c7_uri__", args[0]);
+            return_val = DalvikValue::make_object(
+                b, "Landroid/content/ContentProviderOperation$Builder;");
+            recursion_depth_--;
+            return true;
+        }
+        // Builder fluent chain: receiver = args[0], return THIS.
+        if (method_name == "withValues" && args.size() >= 2) {
+            heap_.set_object_field(args[0].object_id, "__c7_values__",
+                                   args[1]);
+            return_val = args[0];
+            recursion_depth_--;
+            return true;
+        }
+        if (method_name == "withSelection" && args.size() >= 2) {
+            heap_.set_object_field(args[0].object_id, "__c7_sel__",
+                                   args[1]);
+            // ── CODER7 WAVE-11 (AOSP Builder.withSelection(String
+            // selection, String[] selectionArgs)): the stub's two-arg
+            // shape carries BOTH halves — the args array is the
+            // selectionArgs the back-references write into. The old
+            // single-arg dispatch dropped args[2] entirely: every
+            // withSelection(sel, args) caller applied with a NULL
+            // selectionArgs (N10 evidence: the provider saw null).
+            if (args.size() >= 3)
+                heap_.set_object_field(args[0].object_id, "__c7_selargs__",
+                                       args[2]);
+            return_val = args[0];
+            recursion_depth_--;
+            return true;
+        }
+        if (method_name == "withSelectionArgs" && args.size() >= 2) {
+            heap_.set_object_field(args[0].object_id, "__c7_selargs__",
+                                   args[1]);
+            return_val = args[0];
+            recursion_depth_--;
+            return true;
+        }
+        if (method_name == "withExpectedCount" && args.size() >= 2) {
+            heap_.set_object_field(args[0].object_id, "__c7_expected__",
+                                   DalvikValue::make_int(
+                                       dalvik_int_value(args[1])));
+            return_val = args[0];
+            recursion_depth_--;
+            return true;
+        }
+        if (method_name == "withValueBackReference" && args.size() >= 3) {
+            // ── CODER7 WAVE-11 (AOSP ContentProviderOperation.
+            // withValueBackReference(String key, int fromIndex)): the
+            // VALUES entry named `key` is resolved AT APPLY time from
+            // the earlier result at fromIndex (its Uri when present,
+            // else its count as a boxed Integer). The builder only
+            // RECORDS the back-reference (the AOSP mValuesBackReferences
+            // Bundle law) — the resolution is the apply loop's job.
+            heap_.set_object_field(
+                args[0].object_id, "__c7_vref_key__",
+                DalvikValue::make_string(args[1].string_val, 0));
+            heap_.set_object_field(
+                args[0].object_id, "__c7_vref_idx__",
+                DalvikValue::make_int(dalvik_int_value(args[2])));
+            return_val = args[0];
+            recursion_depth_--;
+            return true;
+        }
+        if (method_name == "withSelectionBackReference" &&
+            args.size() >= 3) {
+            // AOSP withSelectionBackReference(int selectionArgIndex,
+            // int fromIndex): the selection arg at selectionArgIndex is
+            // replaced by the COUNT result of the op at fromIndex.
+            heap_.set_object_field(
+                args[0].object_id, "__c7_selref_argidx__",
+                DalvikValue::make_int(dalvik_int_value(args[1])));
+            heap_.set_object_field(
+                args[0].object_id, "__c7_selref_from__",
+                DalvikValue::make_int(dalvik_int_value(args[2])));
+            return_val = args[0];
+            recursion_depth_--;
+            return true;
+        }
+        if (method_name == "build") {
+            uint32_t op = heap_.allocate(
+                "Landroid/content/ContentProviderOperation;", pc_, 0);
+            for (const char* f : {"__c7_type__", "__c7_uri__",
+                                  "__c7_values__", "__c7_sel__",
+                                  "__c7_selargs__", "__c7_expected__",
+                                  "__c7_vref_key__", "__c7_vref_idx__",
+                                  "__c7_selref_argidx__",
+                                  "__c7_selref_from__"}) {
+                auto fv = heap_.get_object_field(args[0].object_id, f);
+                if (fv.has_value()) heap_.set_object_field(op, f, *fv);
+            }
+            return_val = DalvikValue::make_object(
+                op, "Landroid/content/ContentProviderOperation;");
+            recursion_depth_--;
+            return true;
+        }
+        // op predicates (AOSP names)
+        if (method_name.size() > 2 && method_name[0] == 'i' &&
+            method_name[1] == 's') {
+            int t = c7_op_type(args[0].object_id);
+            bool want = method_name == "isInsert"
+                            ? t == 1
+                            : method_name == "isUpdate"
+                                  ? t == 2
+                                  : method_name == "isDelete"
+                                        ? t == 3
+                                        : t == 4;  // isAssertQuery
+            return_val = DalvikValue::make_bool(want);
+            recursion_depth_--;
+            return true;
+        }
+        // ContentProviderResult accessors
+        if (method_name == "getCount") {
+            auto c = heap_.get_object_field(args[0].object_id, "count");
+            return_val = c.has_value() ? *c : DalvikValue::make_int(0);
+            recursion_depth_--;
+            return true;
+        }
+        if (method_name == "getUri") {
+            auto u = heap_.get_object_field(args[0].object_id,
+                                            "__c7_result_uri__");
+            return_val = u.has_value() ? *u : DalvikValue::make_null();
+            recursion_depth_--;
+            return true;
+        }
     }
 
     // R-NEW-538 (CONT-36): AssetManager.list(String) — AOSP AssetManager2:
@@ -33330,8 +34265,18 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
        CLASS_REF carried int_val=0, so if-eq on two DIFFERENT Class
        values was TAKEN and if-eq on two SAME-Class values was
        indistinguishable from any other zero. */ \
-    bool a_is_ref = (a.type == DalvikType::OBJECT_REF || a.type == DalvikType::NULL_REF || a.type == DalvikType::CLASS_REF); \
-    bool b_is_ref = (b.type == DalvikType::OBJECT_REF || b.type == DalvikType::NULL_REF || b.type == DalvikType::CLASS_REF); \
+    /* CODER7 WAVE-11 (P-58): STRING_REF participates in reference \
+       comparison — the engine's STRING_REF is a VALUE (no identity; equal \
+       contents collapse to one value), so two string registers compare BY \
+       CONTENT, and a string-vs-null pair answers never-equal (a string \
+       value is never the null reference). The old set excluded STRING_REF: \
+       every pair fell to the int tail where dalvik_int_value collapses \
+       both to 0 — if-eq TAKEN and if-ne NOT taken for ANY two strings \
+       (`str != "lit"` never branched, `str == null` always true). The \
+       N10 evidence: `lastSelArg0 != "unset"` answered false for content \
+       "2" — the delete loop never ran. */ \
+    bool a_is_ref = (a.type == DalvikType::OBJECT_REF || a.type == DalvikType::NULL_REF || a.type == DalvikType::CLASS_REF || a.type == DalvikType::STRING_REF); \
+    bool b_is_ref = (b.type == DalvikType::OBJECT_REF || b.type == DalvikType::NULL_REF || b.type == DalvikType::CLASS_REF || b.type == DalvikType::STRING_REF); \
     if (a_is_ref && b_is_ref && a.type == DalvikType::CLASS_REF && b.type == DalvikType::CLASS_REF) { \
         /* F-NEW-225d (completes F-NEW-218/F-069) — CLASS TOKEN DESCRIPTOR \
            IDENTITY LAW. ART: a class has exactly ONE Class object, so \
@@ -33436,6 +34381,18 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
                           << " caller=" << current_class_ << "." \
                           << current_method_ << std::endl; \
             } \
+        } else if (a.type == DalvikType::STRING_REF && \
+                   b.type == DalvikType::STRING_REF) { \
+            /* P-58 (the value-model identity arm): two string registers \
+               compare BY CONTENT — the engine's STRING_REF carries no \
+               identity, so content equality IS the interning law the \
+               compiler's acmp-on-interned-literals realizes. std::string \
+               wrappers: CowStr has ==/!= natively; the relational ops \
+               compare content lexicographically through the const-string& \
+               conversion (a string "reference" compare that reaches the \
+               relational opcodes is a malformed-verifier shape anyway — \
+               the content order is the honest total order). */ \
+            taken = (std::string(a.string_val) op std::string(b.string_val)); \
         } else { \
             uint32_t a_obj = (a.type == DalvikType::OBJECT_REF) ? a.object_id \
                             : (a.type == DalvikType::CLASS_REF) ? a.ref_id : 0; \
@@ -42499,12 +43456,22 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Landroid/content/ContentResolver;" &&
         (method == "query" || method == "insert" || method == "update" ||
          method == "delete" || method == "getType" || method == "call" ||
+         method == "bulkInsert" || method == "notifyChange" ||
+         method == "registerContentObserver" ||
+         method == "unregisterContentObserver" ||
          method == "openFileDescriptor" ||
          method == "openAssetFileDescriptor" ||
          method == "openTypedAssetFileDescriptor" ||
+         method == "applyBatch" || method == "getStreamTypes" ||
          method == "openOutputStream" || method == "openInputStream" ||
+         method == "canonicalize" || method == "uncanonicalize" ||
          method == "acquireContentProviderClient" ||
          method == "acquireUnstableContentProviderClient")) {
+        // C7 W11 diagnostic (env-gated, zero default cost): the resolver
+        // block entry — proves the gate matched and with which shape.
+        if (std::getenv("MINIANDROID_C7_GATE_TRACE"))
+            std::cerr << "[C7-GATE] resolver block method=" << method
+                      << " args=" << args.size() << std::endl;
         // ── shared arg-shape helpers (receiver slot may or may not lead) ──
         auto uri_raw_of = [&](const DalvikValue& v) -> std::string {
             if (v.type != DalvikType::OBJECT_REF || v.object_id == 0 ||
@@ -42552,7 +43519,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return out;
         };
         const DalvikValue uarg = first_uri_arg();
-        const std::string uri_raw = uri_raw_of(uarg);
+        std::string uri_raw = uri_raw_of(uarg);
+        // ── CODER7 WAVE-9: the String-authority overloads (AOSP
+        // ContentResolver.acquireContentProviderClient(String) /
+        // acquireUnstableContentProviderClient(String): "build the
+        // content://<authority>/ Uri internally"). The W8 tree threw
+        // IllegalArgumentException for them — no Uri arg meant
+        // "uri null or unresolvable".
+        if (uri_raw.empty() &&
+            (method == "acquireContentProviderClient" ||
+             method == "acquireUnstableContentProviderClient")) {
+            for (size_t i = 1; i < args.size(); ++i) {
+                if (args[i].type == DalvikType::STRING_REF &&
+                    !args[i].string_val.empty()) {
+                    uri_raw = "content://" + args[i].string_val + "/";
+                    break;
+                }
+            }
+        }
         std::string uscheme, uauth, upath, uquery;
         const bool parsed = parse_content_uri(uri_raw, uscheme, uauth, upath, uquery);
         auto rec = [&](const std::string& op, bool ok, const std::string& detail) {
@@ -42561,12 +43545,511 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 current_class_ + "." + current_method_);
         };
 
+        // ────────────────────────────────────────────────────────────────
+        // ── CODER7 WAVE-10: the BATCH-CRUD law (AOSP
+        // ContentResolver.applyBatch(String authority,
+        // ArrayList<ContentProviderOperation>) → ContentProviderResult[]):
+        // the provider is resolved ONCE from the authority argument
+        // (applyBatch carries NO uri), every op applies through that
+        // instance behind the per-op permission gate (insert/update/delete
+        // are WRITE ops; assert reads), insert answers a Uri result,
+        // update/delete answer a count result, and a failed assert
+        // (expected row count mismatch) throws a REAL
+        // OperationApplicationException — never a silent wrong answer.
+        if (method == "applyBatch") {
+            std::string bauth =
+                (args.size() > 1 && args[1].type == DalvikType::STRING_REF)
+                    ? std::string(args[1].string_val)
+                    : std::string();
+            auto c7_rec = [&](const std::string& op, bool ok,
+                              const std::string& detail) {
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    op, bauth, ok, detail,
+                    current_class_ + "." + current_method_);
+            };
+            std::string bcls;
+            uint32_t bprov =
+                bauth.empty()
+                    ? 0
+                    : resolve_provider_for_authority(bauth, bcls);
+            if (bprov == 0) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "Unknown authority: " + bauth,
+                               "PROV-BATCH");
+                c7_rec("PROVIDER-APPLYBATCH", false,
+                       "unknown authority");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            DalvikValue ops = args.size() > 2 ? args[2]
+                                              : DalvikValue::make_null();
+            // AOSP applyBatch takes an ArrayList<ContentProviderOperation>:
+            // elements live in the CollectionShadow store (kind 1 = object
+            // id); the engine-array backing is honored only as a fallback.
+            framework::CollectionShadow* csh =
+                shadow_registry_
+                    ? shadow_registry_->find_as<
+                          framework::CollectionShadow>()
+                    : nullptr;
+            framework::CollectionShadow::CollectionState* cst =
+                (csh && ops.type == DalvikType::OBJECT_REF &&
+                 ops.object_id != 0)
+                    ? csh->get_or_create(ops.object_id, false)
+                    : nullptr;
+            int nops = cst ? (int)cst->elements.size() : 0;
+            uint32_t res_arr = heap_.allocate(
+                "[Landroid/content/ContentProviderResult;", pc_, 0);
+            DalvikValue rlen = DalvikValue::make_int(nops);
+            heap_.set_object_field(res_arr, "__array_length__", rlen);
+            heap_.set_object_field(res_arr, "__new_array_length__", rlen);
+            heap_.set_object_field(
+                res_arr, "__element_type__",
+                DalvikValue::make_string(
+                    "[Landroid/content/ContentProviderResult;", 0));
+            int done = 0;
+            // AOSP ContentProviderResult.count is a plain int, but the
+            // vendored android-34 stub declares it as Ljava/lang/Integer;
+            // — the result field is therefore a REAL boxed Integer (the
+            // F-NEW-141 box law: value field + heap object), never a raw
+            // int the app cannot unbox.
+            auto c7_box_count = [&](int v) -> DalvikValue {
+                uint32_t box =
+                    heap_.allocate("Ljava/lang/Integer;", pc_, 0);
+                heap_.set_object_field(
+                    box, "value", DalvikValue::make_int(v));
+                return DalvikValue::make_object(box,
+                                                "Ljava/lang/Integer;");
+            };
+            for (int k = 0; k < nops; ++k) {
+                if (k >= (int)cst->elem_kinds.size() ||
+                    cst->elem_kinds[k] != 1 || cst->elements[k] == 0)
+                    continue;
+                uint32_t opid = cst->elements[k];
+                if (!heap_.has_object(opid)) continue;
+                auto tif = heap_.get_object_field(opid, "__c7_type__");
+                int t = tif.has_value() ? tif->int_val : 0;
+                DalvikValue urf = heap_.get_object_field(opid, "__c7_uri__")
+                                      .value_or(DalvikValue::make_null());
+                std::string op_uri_raw;
+                if (urf.type == DalvikType::OBJECT_REF &&
+                    urf.object_id != 0 && heap_.has_object(urf.object_id)) {
+                    auto rw = heap_.get_object_field(urf.object_id,
+                                                     "uri_raw");
+                    if (rw.has_value() &&
+                        rw->type == DalvikType::STRING_REF)
+                        op_uri_raw = rw->string_val;
+                }
+                DalvikValue opuri =
+                    op_uri_raw.empty()
+                        ? DalvikValue::make_null()
+                        : DalvikValue::make_object(
+                              make_uri_object(op_uri_raw),
+                              "Landroid/net/Uri;");
+                const bool wop = (t == 1 || t == 2 || t == 3);
+                std::string need = c7_check_provider_access(bprov, wop);
+                if (!need.empty()) {
+                    const char* verb = wop ? "writing" : "reading";
+                    throw_deferred("Ljava/lang/SecurityException;",
+                                   std::string("Permission Denial: ") +
+                                       verb + " " + bauth + " requires " +
+                                       need,
+                                   "PROV-PERM");
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "PROV-PERM-DENY", bauth, false,
+                        "batch op " + std::to_string(k) + " requires " +
+                            need,
+                        current_class_ + "." + current_method_);
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                DalvikValue vals =
+                    heap_.get_object_field(opid, "__c7_values__")
+                        .value_or(DalvikValue::make_null());
+                DalvikValue sel =
+                    heap_.get_object_field(opid, "__c7_sel__")
+                        .value_or(DalvikValue::make_null());
+                DalvikValue sargs =
+                    heap_.get_object_field(opid, "__c7_selargs__")
+                        .value_or(DalvikValue::make_null());
+                auto expf = heap_.get_object_field(opid, "__c7_expected__");
+                int expected = expf.has_value() ? expf->int_val : -1;
+                // ── CODER7 WAVE-11: the back-reference resolution law
+                // (AOSP ContentProviderOperation.apply →
+                // resolveValueBackReferences): recorded back-references
+                // resolve from the EARLIER results of THIS batch before
+                // the op invokes — a value back-reference takes the
+                // earlier result's Uri (present) or its count (boxed
+                // Integer); a selection back-reference writes
+                // String.valueOf(count) into the selection arg slot.
+                auto vref_key = heap_.get_object_field(opid,
+                                                       "__c7_vref_key__");
+                auto vref_idx = heap_.get_object_field(opid,
+                                                       "__c7_vref_idx__");
+                auto sref_arg = heap_.get_object_field(
+                    opid, "__c7_selref_argidx__");
+                auto sref_from = heap_.get_object_field(opid,
+                                                        "__c7_selref_from__");
+                auto c7_result_at = [&](int j) -> uint32_t {
+                    if (j < 0) return 0;
+                    auto rf =
+                        heap_.get_object_field(res_arr, "array[" +
+                                                            std::to_string(j) +
+                                                            "]");
+                    if (!rf.has_value() ||
+                        rf->type != DalvikType::OBJECT_REF)
+                        return 0;
+                    return rf->object_id;
+                };
+                if (vref_key.has_value() &&
+                    vref_key->type == DalvikType::STRING_REF &&
+                    !vref_key->string_val.empty() &&
+                    vref_idx.has_value() && vref_idx->type == DalvikType::INT32) {
+                    int from = vref_idx->int_val;
+                    uint32_t robj = c7_result_at(from);
+                    DalvikValue vval = DalvikValue::make_null();
+                    if (robj != 0 && heap_.has_object(robj)) {
+                        auto urv = heap_.get_object_field(robj, "uri");
+                        if (urv.has_value() &&
+                            urv->type == DalvikType::OBJECT_REF &&
+                            urv->object_id != 0)
+                            vval = *urv;
+                        else {
+                            auto cv = heap_.get_object_field(robj, "count");
+                            if (cv.has_value()) {
+                                if (cv->type == DalvikType::INT32)
+                                    vval = DalvikValue::make_int(cv->int_val);
+                                else if (cv->type == DalvikType::OBJECT_REF &&
+                                         cv->object_id != 0)
+                                    vval = *cv;  // the boxed Integer stub law
+                            }
+                        }
+                    }
+                    uint32_t vobj = vals.object_id;
+                    if (vals.type != DalvikType::OBJECT_REF ||
+                        vobj == 0 || !heap_.has_object(vobj)) {
+                        // The values object MUST carry the ContentValues
+                        // class: the provider-side getAsInteger dispatch
+                        // keys on the heap class descriptor (an "Bundle"
+                        // object would miss the ContentValues block and
+                        // answer null — the N09 evidence).
+                        vobj = heap_.allocate(
+                            "Landroid/content/ContentValues;", pc_, 0);
+                        vals = DalvikValue::make_object(
+                            vobj, "Landroid/content/ContentValues;");
+                        heap_.set_object_field(opid, "__c7_values__", vals);
+                    }
+                    // The ContentValues storage convention (the put law):
+                    // the engine-side key/value store is what getAsInteger
+                    // reads — a bare heap field write would MISS the
+                    // absent-key law. Both mirrors land.
+                    heap_.set_object_field(vobj, vref_key->string_val, vval);
+                    content_values_[vobj].emplace_back(vref_key->string_val,
+                                                       vval);
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "PROVIDER-BATCH-REF", vref_key->string_val, true,
+                        "value back-reference from result " +
+                            std::to_string(from) +
+                            " (AOSP resolveValueBackReferences)",
+                        current_class_ + "." + current_method_);
+                }
+                if (sref_arg.has_value() && sref_from.has_value() &&
+                    sref_arg->type == DalvikType::INT32 &&
+                    sref_from->type == DalvikType::INT32 &&
+                    sref_from->int_val >= 0) {
+                    int from = sref_from->int_val;
+                    int argi = sref_arg->int_val;
+                    int cnt = 0;
+                    uint32_t robj = c7_result_at(from);
+                    if (robj != 0 && heap_.has_object(robj)) {
+                        auto cv = heap_.get_object_field(robj, "count");
+                        if (cv.has_value()) {
+                            if (cv->type == DalvikType::INT32)
+                                cnt = cv->int_val;
+                            else if (cv->type == DalvikType::OBJECT_REF &&
+                                     cv->object_id != 0 &&
+                                     heap_.has_object(cv->object_id)) {
+                                auto iv = heap_.get_object_field(
+                                    cv->object_id, "value");
+                                if (iv.has_value() &&
+                                    iv->type == DalvikType::INT32)
+                                    cnt = iv->int_val;
+                            }
+                        }
+                    }
+                    if (sargs.type == DalvikType::OBJECT_REF &&
+                        sargs.object_id != 0 &&
+                        heap_.has_object(sargs.object_id)) {
+                        heap_.set_object_field(
+                            sargs.object_id,
+                            "array[" + std::to_string(argi) + "]",
+                            DalvikValue::make_string(std::to_string(cnt),
+                                                     0));
+                        miniandroid::diagnostics::FileIoTrace::instance()
+                            .record("PROVIDER-BATCH-REF",
+                                    "selarg[" + std::to_string(argi) + "]",
+                                    true,
+                                    "selection back-reference from result " +
+                                        std::to_string(from) + " → " +
+                                        std::to_string(cnt),
+                                    current_class_ + "." + current_method_);
+                    }
+                }
+                DalvikValue pret;
+                std::string perr;
+                uint32_t resobj = 0;
+                if (t == 1) {  // insert → ContentProviderResult(Uri)
+                    if (invoke_provider_method(
+                            bprov, bcls, "insert", {opuri, vals}, pret,
+                            perr)) {
+                        resobj = heap_.allocate(
+                            "Landroid/content/ContentProviderResult;", pc_,
+                            0);
+                        heap_.set_object_field(resobj, "uri",
+                                               pret);
+                        heap_.set_object_field(resobj, "__c7_result_uri__",
+                                               pret);
+                        heap_.set_object_field(resobj, "count",
+                                               c7_box_count(0));
+                    }
+                } else if (t == 2 || t == 3) {  // update/delete → count
+                    std::vector<DalvikValue> pa =
+                        (t == 2)
+                            ? std::vector<DalvikValue>{opuri, vals, sel,
+                                                       sargs}
+                            : std::vector<DalvikValue>{opuri, sel, sargs};
+                    if (invoke_provider_method(
+                            bprov, bcls, t == 2 ? "update" : "delete", pa,
+                            pret, perr)) {
+                        resobj = heap_.allocate(
+                            "Landroid/content/ContentProviderResult;", pc_,
+                            0);
+                        heap_.set_object_field(
+                            resobj, "count",
+                            c7_box_count(dalvik_int_value(pret)));
+                    }
+                } else if (t == 4) {  // assert → row-count law
+                    DalvikValue cur;
+                    if (invoke_provider_method(
+                            bprov, bcls, "query",
+                            {opuri, DalvikValue::make_null(), sel, sargs,
+                             DalvikValue::make_null()},
+                            cur, perr) &&
+                        cur.type == DalvikType::OBJECT_REF &&
+                        cur.object_id != 0) {
+                        auto sit = matrix_cursors_.find(cur.object_id);
+                        int rows = sit != matrix_cursors_.end()
+                                       ? (int)sit->second.rows.size()
+                                       : 0;
+                        if (expected >= 0 && rows != expected) {
+                            throw_deferred(
+                                "Landroid/content/OperationApplicationException;",
+                                "Assert failed: expected " +
+                                    std::to_string(expected) +
+                                    " rows but got " + std::to_string(rows) +
+                                    " (op " + std::to_string(k) + ")",
+                                "PROV-BATCH-ASSERT");
+                            c7_rec("PROVIDER-BATCH-ASSERT", false,
+                                   op_uri_raw + " expected " +
+                                       std::to_string(expected) + " got " +
+                                       std::to_string(rows));
+                            result = DalvikValue::make_null();
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                        resobj = heap_.allocate(
+                            "Landroid/content/ContentProviderResult;", pc_,
+                            0);
+                        heap_.set_object_field(resobj, "count",
+                                               c7_box_count(rows));
+                    }
+                }
+                if (resobj) {
+                    heap_.set_object_field(
+                        res_arr, "array[" + std::to_string(k) + "]",
+                        DalvikValue::make_object(
+                            resobj, "Landroid/content/ContentProviderResult;"));
+                    done++;
+                }
+            }
+            c7_rec("PROVIDER-APPLYBATCH", true,
+                   std::to_string(done) + "/" + std::to_string(nops) +
+                       " ops applied (AOSP batch law)");
+            result = DalvikValue::make_object(
+                res_arr, "[Landroid/content/ContentProviderResult;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── CODER7 WAVE-10: getStreamTypes — AOSP base ContentProvider
+        // answers null unless the provider overrides it; an override is
+        // dispatched with (uri, mimeFilter) verbatim.
+        if (method == "getStreamTypes") {
+            std::string scls;
+            uint32_t sprov = uauth.empty()
+                                 ? 0
+                                 : resolve_provider_for_authority(uauth,
+                                                                  scls);
+            DalvikValue sret;
+            std::string serr;
+            if (sprov != 0 &&
+                invoke_provider_method(
+                    sprov, scls, "getStreamTypes",
+                    {uarg, args.size() > 2 ? args[2]
+                                           : DalvikValue::make_null()},
+                    sret, serr)) {
+                rec("PROVIDER-STREAMTYPES", true,
+                    "provider dispatched (mimeFilter verbatim)");
+                result = sret;
+            } else {
+                rec("PROVIDER-STREAMTYPES", true,
+                    "no-override → null (AOSP base)");
+                result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
+        // ── CODER7 WAVE-9: the ContentObserver registry laws (AOSP
+        // ContentResolver.registerContentObserver(Uri, boolean, observer)
+        // → ContentService.register + notifyChange(Uri, observer) →
+        // ContentService.notifyChange). The W8 tree's registerContent-
+        // Observer was a NO-OP stub and notifyChange did not exist:
+        // nothing registered, nothing ever dispatched.
+        //   * register: (Uri, notifyForDescendents, observer) records.
+        //   * unregister: observer removed (AOSP: unregistering an
+        //     unknown observer is a no-op, never a throw).
+        //   * notifyChange: every observer whose AUTHORITY matches and
+        //     whose uri filter accepts the notified uri receives
+        //     onChange(selfChange=false) — exact uri equality when
+        //     notifyForDescendents=false, authority+path-prefix when
+        //     true. The ORIGINATOR (the observer passed to notifyChange,
+        //     null-safe) is EXCLUDED — the AOSP selfChange law.
+        // ────────────────────────────────────────────────────────────────
+        if (method == "registerContentObserver" && args.size() >= 4) {
+            C7ContentObserver co;
+            co.oid = args[3].type == DalvikType::OBJECT_REF
+                         ? args[3].object_id
+                         : 0;
+            co.uri_raw = uri_raw;
+            co.authority = uauth;
+            co.notify_descendants =
+                args[2].type == DalvikType::INT32
+                    ? args[2].int_val != 0
+                    : false;
+            // Re-registering the same observer replaces the filter
+            // (AOSP ContentService.register: one record per observer).
+            for (auto& e : c7_content_observers_)
+                if (e.oid == co.oid) { e = co; co.oid = 0; break; }
+            if (co.oid != 0) c7_content_observers_.push_back(co);
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "C7-OBSERVER", uri_raw, true,
+                "registered (notifyForDescendents=" +
+                    std::string(co.notify_descendants ? "1" : "0") + ")",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "unregisterContentObserver" && args.size() >= 2) {
+            uint32_t want = args[1].type == DalvikType::OBJECT_REF
+                                ? args[1].object_id
+                                : 0;
+            bool removed = false;
+            for (auto it = c7_content_observers_.begin();
+                 it != c7_content_observers_.end(); ++it) {
+                if (it->oid == want) {
+                    c7_content_observers_.erase(it);
+                    removed = true;
+                    break;
+                }
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "C7-OBSERVER", want ? "#" + std::to_string(want) : "<null>",
+                true, removed ? "unregistered" : "not registered (no-op)",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "notifyChange") {
+            if (uri_raw.empty()) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "uri null or unresolvable (notifyChange)",
+                               "C7-NOTIFY");
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // AOSP notifyChange(Uri, ContentObserver): the second arg is
+            // the ORIGINATING observer (excluded from dispatch; null
+            // delivers to everyone). The 3-arg form carries a synthetic
+            // flag in its place — same exclusion law.
+            uint32_t originator = 0;
+            for (size_t i = 1; i < args.size() && i < 3; ++i)
+                if (args[i].type == DalvikType::OBJECT_REF &&
+                    args[i].object_id != 0 &&
+                    heap_.has_object(args[i].object_id) &&
+                    heap_.get(args[i].object_id)->class_descriptor ==
+                        "Landroid/database/ContentObserver;") {
+                    // A 3-arg overload passes (uri, observer, sync) — the
+                    // 2-arg passes (uri, observer). Both land here.
+                    originator = args[i].object_id;
+                    break;
+                }
+            int delivered = 0;
+            for (const auto& co : c7_content_observers_) {
+                if (co.oid == originator || co.oid == 0 ||
+                    !heap_.has_object(co.oid))
+                    continue;
+                if (co.authority != uauth) continue;
+                bool accept = co.uri_raw == uri_raw;
+                if (!accept && co.notify_descendants &&
+                    !upath.empty()) {
+                    std::string rpath;
+                    std::string scheme2, auth2, query2;
+                    if (parse_content_uri(co.uri_raw, scheme2, auth2,
+                                          rpath, query2) &&
+                        auth2 == uauth &&
+                        rpath.compare(0, rpath.size(), upath, 0,
+                                      rpath.size()) == 0)
+                        accept = true;
+                }
+                if (!accept) continue;
+                std::string ocls =
+                    heap_.get(co.oid)->class_descriptor;
+                DalvikValue oret;
+                DalvikExecutionResult otmp;
+                bool ran = try_recursive_invoke(
+                    ocls, "onChange",
+                    {DalvikValue::make_object(
+                         co.oid, ocls),
+                     DalvikValue::make_bool(false)},
+                    oret, otmp, "");
+                if (ran) delivered++;
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "C7-NOTIFY", uri_raw, true,
+                "dispatched to " + std::to_string(delivered) +
+                    " registered observer(s) (originator excluded)",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+
         // Method-not-dispatched pairs: openInputStream/openOutputStream on
         // file:// fall through to the dedicated handlers below; the
         // provider-client acquisitions dispatch identically to query.
         const bool client_call =
             method == "query" || method == "insert" || method == "update" ||
             method == "delete" || method == "getType" || method == "call" ||
+            method == "bulkInsert" ||
+            // CODER7 WAVE-11: the Uri-identity pair rides the SAME
+            // provider dispatch (resolve → invoke → base-law tail) —
+            // without this the verbs fell past client_call to the
+            // fail-soft stub tail (N13d evidence: silent null).
+            method == "canonicalize" || method == "uncanonicalize" ||
             method == "openFileDescriptor" ||
             method == "openAssetFileDescriptor" ||
             method == "openTypedAssetFileDescriptor" ||
@@ -42642,6 +44125,53 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return true;
             }
 
+            // ── CODER7 WAVE-8 L1: the per-op provider permission gate
+            // (AOSP checkContentProviderAccess law): read ops (query /
+            // getType / openFile* / acquire*) vs the provider's
+            // readPermission; write ops (insert / update / delete) vs
+            // writePermission. Same-package callers are exempt; the
+            // running package's manifest-declared permissions satisfy the
+            // check (deterministic install-grant law). A denial is a REAL
+            // SecurityException in the caller's frame — never a silent
+            // null and never a fabricated cursor.
+            {
+                const bool c7_write_op =
+                    (method == "insert" || method == "update" ||
+                     method == "delete" || method == "bulkInsert");
+                std::string c7_needed =
+                    c7_check_provider_access(prov_oid, c7_write_op);
+                std::string c7_enforced = c7_provider_enforced_perm(
+                    prov_oid, c7_write_op);
+                if (!c7_needed.empty()) {
+                    const char* c7_verb = c7_write_op ? "writing" : "reading";
+                    throw_deferred("Ljava/lang/SecurityException;",
+                                   std::string("Permission Denial: ") +
+                                       c7_verb + " " + uauth + " requires " +
+                                       c7_needed,
+                                   "PROV-PERM");
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "PROV-PERM-DENY", uauth, false,
+                        "requires " + c7_needed + " (" +
+                            std::string(c7_write_op ? "write" : "read") +
+                            " op; AOSP checkContentProviderAccess)",
+                        current_class_ + "." + current_method_);
+                    std::cerr << "[C7-PROV-PERM] DENIED " << c7_verb << " "
+                              << uauth << " requires " << c7_needed
+                              << std::endl;
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (!c7_enforced.empty()) {
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "PROV-PERM-OK", uauth, true,
+                        c7_enforced + " declared by caller — granted (" +
+                            std::string(c7_write_op ? "write" : "read") +
+                            " op)",
+                        current_class_ + "." + current_method_);
+                }
+            }
+
             // ── known authority: dispatch into the provider instance ──
             DalvikValue uri_arg = uarg;
             std::vector<DalvikValue> pargs;  // AFTER the receiver slot
@@ -42663,6 +44193,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 DalvikValue vals = args.size() > 2 ? args[2]
                                                    : DalvikValue::make_null();
                 pargs = {uri_arg, vals};
+            } else if (method == "bulkInsert") {
+                // ── CODER7 WAVE-9: AOSP ContentResolver.bulkInsert(Uri,
+                // ContentValues[]) — the values ARRAY reaches the
+                // provider's bulkInsert verbatim.
+                DalvikValue vals = args.size() > 2 ? args[2]
+                                                   : DalvikValue::make_null();
+                pargs = {uri_arg, vals};
             } else if (method == "update") {
                 DalvikValue vals = args.size() > 2 ? args[2]
                                                    : DalvikValue::make_null();
@@ -42678,6 +44215,9 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                                    : DalvikValue::make_null();
                 pargs = {uri_arg, sel, sargs};
             } else if (method == "getType") {
+                pargs = {uri_arg};
+            } else if (method == "canonicalize" ||
+                       method == "uncanonicalize") {
                 pargs = {uri_arg};
             } else if (method == "call") {
                 DalvikValue m1 = args.size() > 2 ? args[2]
@@ -42731,8 +44271,53 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 : (method == "openAssetFileDescriptor") ? "openFile"
                 : (method == "openTypedAssetFileDescriptor") ? "openFile"
                 : method;
+            // ── CODER7 WAVE-9: the getCallingPackage law (AOSP
+            // ContentProvider.getCallingPackage: "return the name of the
+            // package that invoked the CURRENT operation"). Set around
+            // every provider invocation; the ContentProvider method
+            // gate answers it; cleared on the way out (null outside an
+            // op).
+            c7_provider_calling_pkg_ = package_name_;
             bool invoked = invoke_provider_method(prov_oid, prov_cls,
                                                   prov_method, pargs, ret, err);
+            if (!invoked && prov_method == "bulkInsert") {
+                // ── CODER7 WAVE-9: the AOSP ContentProvider.bulkInsert
+                // BASE law (frameworks/base ContentProvider.java):
+                // "the default implementation processes calls to
+                // bulkInsert by calling insert once for each row". A
+                // provider that only overrode insert keeps working.
+                DalvikValue arr = pargs.size() > 1
+                                      ? pargs[1]
+                                      : DalvikValue::make_null();
+                int c7_rows = 0;
+                if (arr.type == DalvikType::OBJECT_REF &&
+                    arr.object_id != 0 && heap_.has_object(arr.object_id)) {
+                    auto lenf = heap_.get_object_field(
+                        arr.object_id, "__array_length__");
+                    int n = lenf.has_value() ? lenf->int_val : 0;
+                    for (int k = 0; k < n; ++k) {
+                        auto el = heap_.get_object_field(
+                            arr.object_id,
+                            "array[" + std::to_string(k) + "]");
+                        if (!el.has_value()) continue;
+                        DalvikValue ins_ret;
+                        DalvikValue ins_uri;
+                        std::string ins_err;
+                        if (invoke_provider_method(
+                                prov_oid, prov_cls, "insert",
+                                {pargs[0], *el}, ins_ret, ins_err))
+                            c7_rows++;
+                    }
+                    ret = DalvikValue::make_int(c7_rows);
+                    invoked = true;
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "PROVIDER-BULKINSERT", uri_raw, true,
+                        "base-law fallback: insert() per row → " +
+                            std::to_string(c7_rows),
+                        current_class_ + "." + current_method_);
+                }
+            }
+            c7_provider_calling_pkg_.clear();
             if (!invoked) {
                 // AOSP: the framework ContentProvider base answers — openFile
                 // throws FileNotFoundException("No files supported..."),
@@ -42752,6 +44337,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 if (prov_method == "call") {
                     rec("PROVIDER-CALL", true, "no-override → null (AOSP)");
                     result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (prov_method == "uncanonicalize") {
+                    // ── CODER7 WAVE-11 (AOSP ContentProvider.
+                    // uncanonicalize base law: "by default, this method
+                    // returns the url argument back unchanged"). The
+                    // SAME Uri object the caller passed answers — never a
+                    // fabricated new identity.
+                    rec("PROVIDER-UNCANON", true,
+                        "no-override → arg verbatim (AOSP base)");
+                    result = uri_arg;
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     return true;
                 }
@@ -43285,6 +44882,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::string k = args.size() > 1 && args[1].type == DalvikType::STRING_REF
                                 ? std::string(args[1].string_val)
                                 : std::string();
+            // ── CODER7 WAVE-9: the ABSENT-KEY law (AOSP ContentValues:
+            // every getX on a key never put() answers null — the map
+            // lookup misses, NO conversion runs). The W8 tree fell into
+            // the conversion branches for the engine's null sentinel and
+            // answered "0"-style garbage: getAsString(absent) → "0",
+            // getAsInteger(absent) → Integer(0) — silent-wrong shapes
+            // that broke every provider consumer gating on null.
+            bool c7_present = false;
+            for (auto& [ck, cvx] : content_values_[args[0].object_id])
+                if (ck == k) { c7_present = true; break; }
+            if (!c7_present) {
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             DalvikValue v = find_key(args[0].object_id, k);
             // Unwrap a BOXED value first (AOSP: put(String, Integer) stores
             // the box; getAsInteger returns THAT box — dalvik_int_value of an
@@ -43304,6 +44916,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     result = DalvikValue::make_string(v.string_val, 0);
                 else if (v.type == DalvikType::OBJECT_REF && v.object_id == 0)
                     result = DalvikValue::make_null();
+                else if (v.type == DalvikType::BOOLEAN)
+                    // AOSP getAsString → value.toString(): Boolean.toString
+                    // answers "true"/"false", never "1"/"0".
+                    result = DalvikValue::make_string(
+                        dalvik_int_value(v) != 0 ? "true" : "false", 0);
                 else
                     result = DalvikValue::make_string(
                         std::to_string(dalvik_int_value(v)), 0);
@@ -43896,6 +45513,58 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                             c7_pi->action);
                         if (!c7_res.empty())
                             c7_pi->component_class = c7_res;
+                        // CODER7 WAVE-7: cross-package implicit RESOLUTION
+                        // fallback (AOSP resolveIntent over ALL installed
+                        // packages) — own-manifest miss ⇒ store index.
+                        if (c7_pi->component_class.empty()) {
+                            std::string c7_x =
+                                c7_resolve_activity_xpkg(
+                                    c7_pi->action, c7_pi->categories,
+                                    c7_pi->type, c7_pi->data_scheme,
+                                    c7_pi->data_host, c7_pi->data_path,
+                                    /*default_only=*/true);
+                            if (!c7_x.empty()) {
+                                c7_pi->component_class = c7_x;
+                                miniandroid::diagnostics::FileIoTrace::
+                                    instance()
+                                        .record(
+                                            "ACT-XPKG-RESOLVE", c7_x, true,
+                                            "startActivities implicit "
+                                            "resolution via store index "
+                                            "(action=" + c7_pi->action + ")",
+                                            current_class_ + "." +
+                                                current_method_);
+                            }
+                        }
+                    }
+                    // CODER7 WAVE-7: the SYNCHRONOUS launch gate (AOSP
+                    // Instrumentation.checkStartActivityResult — a disabled
+                    // or cross-package non-exported target throws in the
+                    // caller's frame, before any queueing).
+                    if (!c7_pi->component_class.empty()) {
+                        std::string c7_err = c7_activity_launch_gate(
+                            c7_pi->component_class);
+                        if (!c7_err.empty()) {
+                            if (c7_err.rfind("SECURITY_EXCEPTION:", 0) == 0)
+                                throw_deferred(
+                                    "Ljava/lang/SecurityException;",
+                                    c7_err.substr(18), "ACT-START");
+                            else
+                                throw_deferred(
+                                    "Landroid/content/"
+                                    "ActivityNotFoundException;",
+                                    c7_err.substr(
+                                        c7_err.find(':') + 1),
+                                    "ACT-START");
+                            miniandroid::diagnostics::FileIoTrace::instance()
+                                .record("ACT-START", c7_pi->component_class,
+                                        false, c7_err,
+                                        current_class_ + "." +
+                                            current_method_);
+                            result = DalvikValue::make_void();
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
                     }
                     c7_ish->enqueue_pending(c7_pi);
                 }
@@ -43918,6 +45587,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 std::string c7_res =
                     c7_ish->resolve_action_target(c7_first->action);
                 if (!c7_res.empty()) c7_first->component_class = c7_res;
+                // CODER7 WAVE-7: cross-package implicit RESOLUTION fallback
+                // (AOSP resolveIntent over ALL installed packages) — the
+                // own-manifest miss is NOT the end of resolution.
+                if (c7_first->component_class.empty()) {
+                    std::string c7_x = c7_resolve_activity_xpkg(
+                        c7_first->action, c7_first->categories, c7_first->type,
+                        c7_first->data_scheme, c7_first->data_host,
+                        c7_first->data_path, /*default_only=*/true);
+                    if (!c7_x.empty()) {
+                        c7_first->component_class = c7_x;
+                        miniandroid::diagnostics::FileIoTrace::instance()
+                            .record("ACT-XPKG-RESOLVE", c7_x, true,
+                                    "startActivity implicit resolution via "
+                                    "store index (action=" +
+                                        c7_first->action + ")",
+                                    current_class_ + "." + current_method_);
+                    }
+                }
+            }
+            // CODER7 WAVE-7: the SYNCHRONOUS launch gate (AOSP
+            // Instrumentation.checkStartActivityResult) — disabled and
+            // cross-package non-exported targets throw HERE, in the
+            // caller's frame, before any queueing.
+            if (!c7_first->component_class.empty()) {
+                std::string c7_err =
+                    c7_activity_launch_gate(c7_first->component_class);
+                if (!c7_err.empty()) {
+                    if (c7_err.rfind("SECURITY_EXCEPTION:", 0) == 0)
+                        throw_deferred("Ljava/lang/SecurityException;",
+                                       c7_err.substr(18), "ACT-START");
+                    else
+                        throw_deferred(
+                            "Landroid/content/ActivityNotFoundException;",
+                            c7_err.substr(c7_err.find(':') + 1), "ACT-START");
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "ACT-START", c7_first->component_class, false, c7_err,
+                        current_class_ + "." + current_method_);
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
             }
             c7_ish->set_pending(c7_first);
         }
@@ -44177,6 +45887,119 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return true;
             }
         }
+        // ── CODER7 WAVE-9: the DISABLED-APP start law (AOSP
+        // ApplicationInfo.isEnabled=false hides EVERY component from
+        // ActiveServices.retrieveServiceLocked — the W6 foreign-code
+        // ingestion made disabled-app classes loadable, but the
+        // enablement law still gates the bring-up: the AOSP
+        // not-installed shape (startService → null / bindService →
+        // false) applies, exactly like the W3 disabled-component law
+        // above).
+        if (c7_pkg_index_ && !target_cls.empty() &&
+            (method == "startService" ||
+             method == "startForegroundService" ||
+             method == "bindService")) {
+            std::string w9_tpkg = target_cls;  // dotted target form
+            size_t w9_dot = w9_tpkg.rfind('.');
+            std::string w9_tpkg_only =
+                w9_dot == std::string::npos ? std::string()
+                                            : w9_tpkg.substr(0, w9_dot);
+            if (!w9_tpkg_only.empty() && w9_tpkg_only != package_name_) {
+                if (const C7IdxPackage* w9_tfp =
+                        c7_pkg_index_->find_package(w9_tpkg_only)) {
+                    bool w9_tblocked = !w9_tfp->app_enabled;
+                    std::string w9_twhy =
+                        "application disabled (AOSP app-level enable)";
+                    if (!w9_tblocked) {
+                        for (const auto& w9_ts : w9_tfp->services) {
+                            if (w9_ts.cls == target_cls) {
+                                if (!w9_ts.enabled) {
+                                    w9_tblocked = true;
+                                    w9_twhy = "component disabled";
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    if (w9_tblocked) {
+                        const bool c9_is_bind = (method == "bindService");
+                        miniandroid::diagnostics::FileIoTrace::instance()
+                            .record(
+                                c9_is_bind ? "SVC-BIND" : "SVC-START",
+                                w9_tpkg_only + "/" + target_cls, false,
+                                "disabled target → " + w9_twhy +
+                                    " → AOSP: " +
+                                    std::string(c9_is_bind
+                                                    ? "bindService=false"
+                                                    : "null ComponentName"),
+                                current_class_ + "." + current_method_);
+                        result = c9_is_bind
+                                     ? DalvikValue::make_bool(false)
+                                     : DalvikValue::make_null();
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                }
+            }
+        }
+        // ── CODER7 WAVE-6: foreign service exported/permission gate ────
+        // AOSP ActiveServices.retrieveServiceLocked → checkComponentPermission:
+        // a service in ANOTHER package must be exported (running package =
+        // foreign caller) and the caller must hold android:permission.
+        // Denied = loud trace + the AOSP not-started shape (null/false).
+        if (c7_pkg_index_ && !c7_pkg_index_->empty() && !target_cls.empty()) {
+            for (const auto& c7_pname : c7_pkg_index_->package_names()) {
+                const auto* c7_spkg = c7_pkg_index_->find_package(c7_pname);
+                if (!c7_spkg || c7_pname == package_name_) continue;
+                for (const auto& c7_s : c7_spkg->services) {
+                    if (c7_s.cls != target_cls) continue;
+                    if (!c7_s.exported) {
+                        miniandroid::diagnostics::FileIoTrace::instance().record(
+                            "SVC-XPKG-DENY", c7_pname + "/" + c7_s.cls, false,
+                            "foreign service not exported (AOSP "
+                            "checkComponentPermission)",
+                            current_class_ + "." + current_method_);
+                        result = (method == "bindService")
+                                     ? DalvikValue::make_bool(false)
+                                     : DalvikValue::make_null();
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                    if (!c7_s.permission.empty()) {
+                        // Same sender-holds law as the broadcast dispatch
+                        // lambda (the running package's uses-permissions;
+                        // no modeled foreign-sender env on this path — the
+                        // CALLER here IS the running package).
+                        const bool c7_perm_ok =
+                            std::find(manifest_requested_permissions_.begin(),
+                                      manifest_requested_permissions_.end(),
+                                      c7_s.permission) !=
+                            manifest_requested_permissions_.end();
+                        if (!c7_perm_ok) {
+                            miniandroid::diagnostics::FileIoTrace::instance()
+                                .record(
+                                    "SVC-XPKG-DENY", c7_pname + "/" + c7_s.cls,
+                                    false,
+                                    "foreign service permission " +
+                                        c7_s.permission +
+                                        " not held by sender " + package_name_,
+                                    current_class_ + "." + current_method_);
+                            result = (method == "bindService")
+                                         ? DalvikValue::make_bool(false)
+                                         : DalvikValue::make_null();
+                            status = ApiCallTrace::Status::IMPLEMENTED;
+                            return true;
+                        }
+                    }
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "SVC-XPKG", c7_pname + "/" + c7_s.cls, true,
+                        "foreign service gates passed (exported, "
+                        "permission ok) — REAL lifecycle will execute",
+                        current_class_ + "." + current_method_);
+                    break;
+                }
+            }
+        }
         ServiceInstance& svc = live_services_[svc_key];
         // ── CODER7 WAVE-3: the shared bind-delivery law (AOSP
         // ActivityThread.handleBindService + ActiveServices bringUp):
@@ -44289,6 +46112,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 }
             }
         if (method == "bindService") {
+            // ── CODER7 WAVE-9 RESURRECTION LAW (AOSP
+            // ActiveServices.bindServiceLocked → bringUpServiceLocked):
+            // a bind to a STOPPED (destroyed) service record brings the
+            // service BACK UP — the old record is reset and onCreate runs
+            // again. The W8 tree delivered onBind on the dead record
+            // without re-creating it, and the later unbind hit
+            // "Service not registered" (the unbind walk skips destroyed
+            // records) — a two-faced law violation.
+            if (svc.destroyed) {
+                svc.destroyed = false;
+                svc.created = false;
+                svc.started = false;
+                svc.bindings = 0;
+                svc.next_start_id = 0;
+                svc.last_start_id = 0;
+                svc.do_rebind = false;
+                svc.conn_bindings.clear();
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "SVC-BIND", svc.cls, true,
+                    "resurrection: stopped service record reset "
+                    "(AOSP bringUpServiceLocked)",
+                    current_class_ + "." + current_method_);
+            }
             // AOSP bindService law: ensure onCreate ran; the connection is
             // handed the binder returned by onBind (null → no callback).
             // ── CODER7 WAVE-3 BIND_AUTO_CREATE law (AOSP
@@ -44487,8 +46333,191 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }
+    // ── CODER7 WAVE-11: the URI-permission law (AOSP ContextImpl
+    // checkUriPermission / revokeUriPermission + ActivityManagerService
+    // grant table) ────────────────────────────────────────────────────
+    // Grants live in c7_uri_grants_ (recorded at delivery time from
+    // FLAG_GRANT_* intents, the grantUriPermissions target law).
+    // checkUriPermission consults the table; revokeUriPermission removes
+    // matching grants LOUDLY. Caller identity: the foreign-owner law
+    // (P-32) — inside a foreign component the caller IS that package.
+    if ((method == "checkUriPermission" || method == "revokeUriPermission") &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        auto c7_caller_pkg = [&]() -> std::string {
+            std::string fo = foreign_owner_package(current_class_);
+            return fo.empty() ? package_name_ : fo;
+        };
+        auto c7_uri_of = [&](size_t i) -> std::string {
+            if (i >= args.size() || args[i].type != DalvikType::OBJECT_REF ||
+                args[i].object_id == 0 ||
+                !heap_.has_object(args[i].object_id))
+                return {};
+            auto rv = heap_.get_object_field(args[i].object_id, "uri_raw");
+            if (!rv.has_value() || rv->type != DalvikType::STRING_REF)
+                rv = heap_.get_object_field(args[i].object_id, "uri");
+            if (rv.has_value() && rv->type == DalvikType::STRING_REF)
+                return rv->string_val;
+            return {};
+        };
+        auto c7_int_at = [&](size_t i) -> int {
+            return (i < args.size()) ? dalvik_int_value(args[i]) : 0;
+        };
+        if (method == "checkUriPermission") {
+            // AOSP overloads:
+            //   (Uri uri, int pid, int uid, int modeFlags)
+            //   (Uri uri, String readerPackage, String writerPackage,
+            //    int uid, int modeFlags, int pid) — the reader-package
+            //    shape answers for the NAMED reader.
+            std::string uri_raw = c7_uri_of(1);
+            int mode = 0;
+            std::string subject;
+            if (!uri_raw.empty() && args.size() >= 5 &&
+                args[2].type == DalvikType::STRING_REF) {
+                // 6-arg reader-package overload: mode at args[5].
+                mode = c7_int_at(5);
+                subject = args[2].string_val;
+            } else {
+                // pid/uid overload: the ENGINE caller identity answers
+                // (one runtime, per-package law P-32 — pid/uid ints are
+                // accepted but the honest subject is the calling
+                // package).
+                mode = c7_int_at(4);
+                subject = c7_caller_pkg();
+            }
+            int answer = -1;  // PERMISSION_DENIED
+            if (!uri_raw.empty()) {
+                for (const auto& g : c7_uri_grants_) {
+                    bool covered =
+                        g.uri_raw == uri_raw ||
+                        (g.uri_raw.size() > 1 &&
+                         uri_raw.rfind(g.uri_raw, 0) == 0);
+                    bool target_ok = g.to_package.empty() ||
+                                     g.to_package == subject;
+                    if (covered && target_ok &&
+                        (g.mode_flags & mode) == mode) {
+                        answer = 0;  // PERMISSION_GRANTED
+                        break;
+                    }
+                }
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "C7-URICHECK", uri_raw, answer == 0,
+                "subject=" + subject + " mode=0x" +
+                    ([](int f) {
+                        const char* d = "0123456789abcdef";
+                        std::string s;
+                        s += d[(f >> 4) & 0xF];
+                        s += d[f & 0xF];
+                        return s;
+                    })(mode) +
+                    " grants=" + std::to_string(c7_uri_grants_.size()),
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_int(answer);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // revokeUriPermission — AOSP overloads:
+        //   (Uri uri, int modeFlags): revoke THE CALLER'S grants on uri.
+        //   (String toPackage, Uri uri, int modeFlags): revoke the
+        //     grants made TO that package on uri.
+        std::string rev_uri;
+        std::string rev_to;
+        int rev_mode = 0;
+        if (args.size() >= 3 && args[1].type == DalvikType::STRING_REF) {
+            rev_to = args[1].string_val;
+            rev_uri = c7_uri_of(2);
+            rev_mode = c7_int_at(3);
+        } else {
+            rev_uri = c7_uri_of(1);
+            rev_mode = c7_int_at(2);
+            rev_to = c7_caller_pkg();
+        }
+        int revoked = 0;
+        if (!rev_uri.empty()) {
+            std::vector<C7UriGrant> kept;
+            kept.reserve(c7_uri_grants_.size());
+            for (auto& g : c7_uri_grants_) {
+                bool covered = g.uri_raw == rev_uri ||
+                               (g.uri_raw.size() > 1 &&
+                                rev_uri.rfind(g.uri_raw, 0) == 0);
+                bool target_ok = g.to_package == rev_to ||
+                                 g.to_package.empty();
+                if (covered && target_ok && (g.mode_flags & rev_mode))
+                    ++revoked;
+                else
+                    kept.push_back(g);
+            }
+            c7_uri_grants_ = std::move(kept);
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "C7-URIREVOKE", rev_uri, revoked > 0,
+            "to=" + rev_to + " revoked=" + std::to_string(revoked),
+            current_class_ + "." + current_method_);
+        result = DalvikValue::make_void();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+    // ── CODER7 WAVE-11: Context.peekService (AOSP Context.peekService —
+    // "return the IBinder of a RUNNING service's onBind; null when the
+    // service is not running"). The engine answers the service record's
+    // RETAINED binder (the first onBind result, the AOSP
+    // ActiveServices.peekServices law shape) — never a fabricated
+    // binder: a not-running service answers null.
+    if (method == "peekService" &&
+        (class_name.find("Context") != std::string::npos ||
+         class_name.find("Activity") != std::string::npos ||
+         class_name.find("Application") != std::string::npos ||
+         class_name.find("Service") != std::string::npos)) {
+        std::string want_cls;
+        for (size_t i = 1; i < args.size(); ++i) {
+            if (args[i].type == DalvikType::OBJECT_REF &&
+                args[i].object_id != 0 &&
+                heap_.has_object(args[i].object_id) &&
+                heap_.get(args[i].object_id)->class_descriptor ==
+                    "Landroid/content/Intent;") {
+                if (shadow_registry_ != nullptr) {
+                    auto* pish = shadow_registry_->find_as<
+                        framework::IntentShadow>();
+                    if (pish) {
+                        auto ppi = pish->get_or_create_intent(
+                            args[i].object_id);
+                        if (ppi) want_cls = ppi->component_class;
+                    }
+                }
+            }
+        }
+        DalvikValue binder = DalvikValue::make_null();
+        bool found_running = false;
+        for (auto& [cls, svc] : live_services_) {
+            bool match = !want_cls.empty() &&
+                         (svc.cls == want_cls ||
+                          svc.cls == "L" + want_cls + ";" ||
+                          svc.cls.rfind(want_cls) != std::string::npos);
+            if (!match) continue;
+            found_running = svc.created && !svc.destroyed;
+            if (found_running && svc.retained_binder_oid != 0)
+                binder = DalvikValue::make_object(
+                    svc.retained_binder_oid,
+                    svc.retained_binder_cls.empty()
+                        ? "Landroid/os/IBinder;"
+                        : svc.retained_binder_cls);
+            break;
+        }
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "SVC-PEEK", want_cls, found_running,
+            found_running ? "running service binder served"
+                          : "not running → null (AOSP peekService law)",
+            current_class_ + "." + current_method_);
+        result = binder;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if ((method == "registerReceiver" || method == "unregisterReceiver" ||
          method == "removeStickyBroadcast" ||
+         method == "replaceStickyBroadcast" ||
          method == "sendBroadcast" || method == "sendOrderedBroadcast" ||
          method == "sendStickyBroadcast" ||
          method == "sendStickyOrderedBroadcast") &&
@@ -44650,6 +46679,49 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+        if (method == "replaceStickyBroadcast") {
+            // ── CODER7 WAVE-11 (AOSP Context.replaceStickyBroadcast —
+            // ContextImpl: "variation of sendStickyBroadcast(Intent) that
+            // allows you to immediately replace the sticky broadcast
+            // WITHOUT broadcasting to any receivers"). The per-action
+            // sticky slot is overwritten; NO delivery runs.
+            uint32_t rip_oid = 0;
+            std::string rip_action;
+            for (size_t i = 1; i < args.size(); ++i) {
+                if (args[i].type == DalvikType::OBJECT_REF &&
+                    args[i].object_id != 0 &&
+                    heap_.has_object(args[i].object_id) &&
+                    heap_.get(args[i].object_id)->class_descriptor ==
+                        "Landroid/content/Intent;") {
+                    rip_oid = args[i].object_id;
+                    if (shadow_registry_ != nullptr) {
+                        auto* rish = shadow_registry_->find_as<
+                            framework::IntentShadow>();
+                        if (rish) {
+                            auto rpi = rish->get_or_create_intent(rip_oid);
+                            if (rpi) rip_action = rpi->action;
+                        }
+                    }
+                }
+            }
+            if (rip_action.empty()) {
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "replaceStickyBroadcast on a no-action intent",
+                               "BCAST-STICKY-REPLACE");
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            sticky_broadcasts_[rip_action] = rip_oid;
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "BCAST-STICKY-REPLACE", rip_action, true,
+                "sticky slot replaced, NO receiver delivery (AOSP "
+                "replaceStickyBroadcast law)",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if (method == "sendBroadcast" || method == "sendOrderedBroadcast" ||
             method == "sendStickyBroadcast" ||
             method == "sendStickyOrderedBroadcast") {
@@ -44786,6 +46858,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // IntentFilter.matchData(intent.getType(), scheme, data)).
             std::string c7_intent_type, c7_intent_scheme, c7_intent_host,
                 c7_intent_path;
+            // ── CODER7 WAVE-9: the intent's setPackage filter (AOSP
+            // Intent.setPackage: "only that package's components receive"
+            // — a setPackage broadcast reaches NO other package's
+            // receivers). The W8 tree ignored the filter: every foreign
+            // setPackage send delivered to the running app's receivers.
+            std::string c7_intent_pkg_filter;
+            // ── CODER7 WAVE-11: the intent's URI-GRANT payload (AOSP
+            // FLAG_GRANT_READ_URI_PERMISSION=0x1 / FLAG_GRANT_WRITE_
+            // URI_PERMISSION=0x2) + the data-uri raw string the grant
+            // covers. Recorded per delivered target below (the
+            // grantUriPermissions target law).
+            int c7_intent_grant_flags = 0;
+            std::string c7_intent_grant_uri;
             if (intent_oid != 0 && shadow_registry_ != nullptr) {
                 auto* ish =
                     shadow_registry_->find_as<framework::IntentShadow>();
@@ -44797,9 +46882,70 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         c7_intent_scheme = pi->data_scheme;
                         c7_intent_host = pi->data_host;
                         c7_intent_path = pi->data_path;
+                        c7_intent_pkg_filter = pi->package_name;
+                        c7_intent_grant_flags = pi->flags & 0x3;
+                        if (pi->data_uri_object != 0 &&
+                            heap_.has_object(pi->data_uri_object)) {
+                            auto grv = heap_.get_object_field(
+                                pi->data_uri_object, "uri_raw");
+                            if (!grv.has_value() ||
+                                grv->type != DalvikType::STRING_REF)
+                                grv = heap_.get_object_field(
+                                    pi->data_uri_object, "uri");
+                            if (grv.has_value() &&
+                                grv->type == DalvikType::STRING_REF)
+                                c7_intent_grant_uri = grv->string_val;
+                        }
                     }
                 }
             }
+            // ── CODER7 WAVE-9: the runtime component-enabled override
+            // lookup (AOSP PackageManager.setComponentEnabledSetting —
+            // a DISABLED override hides the component from delivery even
+            // when the manifest enabled it; an ENABLED override revives a
+            // manifest-disabled component).
+            auto c7_override_state = [&](const std::string& cls) -> int {
+                for (const auto& [key, state] :
+                     c7_component_enabled_overrides_) {
+                    size_t slash = key.rfind('/');
+                    std::string kcls =
+                        slash == std::string::npos ? key
+                                                   : key.substr(slash + 1);
+                    if (kcls == cls) return state;
+                }
+                return 0;  // COMPONENT_ENABLED_STATE_DEFAULT
+            };
+            // ── CODER7 WAVE-11: the URI-GRANT recording law (AOSP
+            // ActivityManagerService.grantUriPermissionFromIntent — an
+            // intent delivered with FLAG_GRANT_READ/WRITE_URI_PERMISSION
+            // grants the target package the covered modes on the intent's
+            // data Uri; grantUriPermissions="true" providers honor it
+            // through checkUriPermission). Deduped per (uri, target).
+            auto c7_grant_to = [&](const std::string& cls_desc) {
+                if (!c7_intent_grant_flags || c7_intent_grant_uri.empty())
+                    return;
+                std::string tpkg = foreign_owner_package(cls_desc);
+                if (tpkg.empty()) tpkg = package_name_;
+                if (tpkg.empty()) return;
+                for (const auto& g : c7_uri_grants_)
+                    if (g.uri_raw == c7_intent_grant_uri &&
+                        g.to_package == tpkg &&
+                        g.mode_flags == c7_intent_grant_flags)
+                        return;
+                c7_uri_grants_.push_back({c7_intent_grant_uri, tpkg,
+                                          c7_intent_grant_flags});
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "C7-URIGRANT", c7_intent_grant_uri, true,
+                    "to=" + tpkg + " flags=0x" +
+                        ([](int f) {
+                            const char* d = "0123456789abcdef";
+                            std::string s;
+                            s += d[(f >> 4) & 0xF];
+                            s += d[f & 0xF];
+                            return s;
+                        })(c7_intent_grant_flags),
+                    current_class_ + "." + current_method_);
+            };
             // ── CODER7 WAVE-3: the IntentFilter.matchData law ───────────
             // AOSP MimeUtils.mimeMatches: exact match; "type/*" wildcard
             // prefix; "*/*" matches everything.
@@ -44927,14 +47073,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
             // Candidate model: dynamic (registration order) then manifest
             // (parse order); stable priority-descending sort keeps that
-            // order inside an equal-priority band.
+            // order inside an equal-priority band. CODER7 WAVE-6: foreign
+            // store receivers join the SAME candidate model (xidx >= 0).
             struct C7Cand {
                 int prio;
                 bool dyn;
                 size_t idx;
                 bool match;
+                int xidx;  // WAVE-6: >= 0 ⇒ foreign store receiver (xrcv pool)
             };
             std::vector<C7Cand> c7_cands;
+            // WAVE-6: the foreign-receiver pool the xidx candidates index.
+            struct C7XRcv {
+                std::string cls;   // dotted class name
+                std::string desc;  // L-form descriptor for heap allocation
+                std::string pkg;   // owning package (ComponentInfo.packageName)
+            };
+            std::vector<C7XRcv> c7_xrcvs;
             for (size_t i = 0; i < dynamic_receivers_.size(); ++i) {
                 const auto& dr = dynamic_receivers_[i];
                 bool match = false;
@@ -44953,6 +47108,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 // MIME) for dynamic registrations (addDataScheme/
                 // addDataType / the filter's data dimensions).
                 if (match) match = c7_data_match(dr.datas);
+                // ── CODER7 WAVE-9: the setPackage filter law — a
+                // dynamic registration of the RUNNING app is owned by
+                // package_name_; a foreign setPackage filter excludes it.
+                if (match && !c7_intent_pkg_filter.empty() &&
+                    c7_intent_pkg_filter != package_name_) {
+                    match = false;
+                }
+                // ── CODER7 WAVE-9: the runtime ENABLED override.
+                if (match && c7_override_state(dr.cls) == 2) {
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "BCAST-SKIP", dr.cls, false,
+                        "receiver disabled by setComponentEnabledSetting",
+                        current_class_ + "." + current_method_);
+                    match = false;
+                }
                 // ── CODER7 WAVE-2 registration-permission law: a receiver
                 // registered with broadcastPermission requires the SENDER
                 // to hold it (AOSP BroadcastFilter.requiredPermission;
@@ -44966,7 +47136,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         current_class_ + "." + current_method_);
                     match = false;
                 }
-                c7_cands.push_back({dr.priority, true, i, match});
+                c7_cands.push_back({dr.priority, true, i, match, -1});
             }
             for (size_t i = 0; i < manifest_receivers_.size(); ++i) {
                 const auto& mr = manifest_receivers_[i];
@@ -44974,11 +47144,40 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 // receiver with android:enabled="false" is NOT a dispatch
                 // candidate (AOSP PackageParser/PackageManager disabled
                 // component resolution — loud trace, never silent).
-                if (!mr.enabled) {
-                    miniandroid::diagnostics::FileIoTrace::instance().record(
-                        "BCAST-SKIP", mr.cls, false,
-                        "receiver disabled (android:enabled=false)",
-                        current_class_ + "." + current_method_);
+                // ── CODER7 WAVE-9: the runtime override OVERRIDES the
+                // manifest face (ENABLED=1 revives, DISABLED=2 hides).
+                {
+                    int ov = c7_override_state(mr.cls);
+                    if (ov == 2) {
+                        miniandroid::diagnostics::FileIoTrace::instance()
+                            .record("BCAST-SKIP", mr.cls, false,
+                                    "receiver disabled by "
+                                    "setComponentEnabledSetting",
+                                    current_class_ + "." +
+                                        current_method_);
+                        continue;
+                    }
+                    if (ov == 1) {
+                        // revived below (mr.enabled only gates when default)
+                    } else if (!mr.enabled) {
+                        miniandroid::diagnostics::FileIoTrace::instance()
+                            .record("BCAST-SKIP", mr.cls, false,
+                                    "receiver disabled (android:enabled=false)",
+                                    current_class_ + "." +
+                                        current_method_);
+                        continue;
+                    }
+                }
+                // ── CODER7 WAVE-9: the setPackage filter law (AOSP
+                // Intent.setPackage) — a manifest receiver of the RUNNING
+                // package is owned by package_name_.
+                if (!c7_intent_pkg_filter.empty() &&
+                    c7_intent_pkg_filter != package_name_) {
+                    miniandroid::diagnostics::FileIoTrace::instance()
+                        .record("BCAST-SKIP", mr.cls, false,
+                                "setPackage(" + c7_intent_pkg_filter +
+                                    ") excludes this receiver",
+                                current_class_ + "." + current_method_);
                     continue;
                 }
                 // ── CODER7 WAVE-2 EXPORTED law (foreign-sender model):
@@ -45031,7 +47230,117 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     // CODER7 WAVE-3: the matchData half for manifest filters
                     // (the <data> mimeType/scheme/host/pathPrefix specs).
                     if (match) match = c7_data_match(c7f.datas);
-                    c7_cands.push_back({c7f.priority, false, i, match});
+                    c7_cands.push_back({c7f.priority, false, i, match, -1});
+                }
+            }
+            // ── CODER7 WAVE-6: foreign receiver RESOLUTION + EXECUTION from
+            // the package store ────────────────────────────────────────────
+            // AOSP BroadcastQueue resolves receivers across ALL installed
+            // packages. WAVE-5 resolved foreign receivers from the package
+            // index and honestly did not execute them ("foreign dex not
+            // loaded by this engine"). WAVE-6 (the S185 LOAD-FIRST law,
+            // issue #536) closes that: with the LoadedApk-lite injection
+            // (inject_foreign_apk_code) the foreign receiver's REAL class
+            // lives in the merged class index, so the dispatch DELIVERS to
+            // it exactly like a manifest receiver — real onReceive bytecode,
+            // same ordered-chain/sticky/permission laws, no fabricated
+            // callbacks (if the class did not load, the WAVE-5 honest
+            // "resolved, not executed" row is kept).
+            // Gates BEFORE execution (AOSP ActivityManagerService
+            // .checkComponentPermission + BroadcastFilter laws — the running
+            // package is a FOREIGN sender relative to the receiver's package):
+            //   1. exported gate: exported=false ⇒ BCAST-DENY, no delivery;
+            //   2. permission gate: ReceiverInfo.permission must be held by
+            //      the sender (c7_sender_holds) ⇒ BCAST-DENY on miss;
+            //   3. enabled gate: disabled receivers are invisible (the W5
+            //      index never publishes them — enforced at ingest).
+            if (c7_pkg_index_ && !c7_pkg_index_->empty()) {
+                auto c7_xrcv_list = c7_pkg_index_->query_receivers(
+                    action, c7_intent_cats, c7_intent_type, c7_intent_scheme,
+                    c7_intent_host, c7_intent_path, false);
+                for (const auto& c7_xr : c7_xrcv_list) {
+                    if (c7_xr.package_name == package_name_) continue;
+                    // Resolve the full index record (exported/permission law
+                    // needs the record, not just the C7IdxMatch projection).
+                    const auto* c7_xpkg =
+                        c7_pkg_index_->find_package(c7_xr.package_name);
+                    const C7IdxReceiver* c7_xrec = nullptr;
+                    if (c7_xpkg) {
+                        for (const auto& c7_r : c7_xpkg->receivers) {
+                            if (c7_r.cls == c7_xr.cls) { c7_xrec = &c7_r; break; }
+                        }
+                    }
+                    const bool c7_xexported = c7_xrec ? c7_xrec->exported
+                                                      : c7_xr.exported;
+                    const std::string c7_xperm =
+                        c7_xrec ? c7_xrec->permission : std::string();
+                    if (!c7_xexported) {
+                        miniandroid::diagnostics::FileIoTrace::instance().record(
+                            "BCAST-DENY",
+                            c7_xr.package_name + "/" + c7_xr.cls, false,
+                            "foreign receiver not exported (AOSP "
+                            "checkComponentPermission: foreign sender)",
+                            current_class_ + "." + current_method_);
+                        continue;
+                    }
+                    if (!c7_xperm.empty() && !c7_sender_holds(c7_xperm)) {
+                        miniandroid::diagnostics::FileIoTrace::instance().record(
+                            "BCAST-DENY",
+                            c7_xr.package_name + "/" + c7_xr.cls, false,
+                            "foreign receiver permission " + c7_xperm +
+                                " not held by sender " + package_name_,
+                            current_class_ + "." + current_method_);
+                        continue;
+                    }
+                    // ── CODER7 WAVE-9: the setPackage filter law (AOSP
+                    // Intent.setPackage) — a foreign receiver is owned by
+                    // c7_xr.package_name; a filter for another package
+                    // excludes it.
+                    if (!c7_intent_pkg_filter.empty() &&
+                        c7_intent_pkg_filter != c7_xr.package_name) {
+                        miniandroid::diagnostics::FileIoTrace::instance()
+                            .record("BCAST-SKIP",
+                                    c7_xr.package_name + "/" + c7_xr.cls,
+                                    false,
+                                    "setPackage(" + c7_intent_pkg_filter +
+                                        ") excludes this foreign receiver",
+                                    current_class_ + "." + current_method_);
+                        continue;
+                    }
+                    // ── WAVE-6 EXECUTION gate: is the foreign class LOADED?
+                    // (LoadedApk-lite: inject_foreign_apk_code ingested the
+                    // store dexes at boot; a class that failed to ingest
+                    // falls back to the WAVE-5 honest row.)
+                    std::string c7_xdesc = c7_xr.cls;
+                    if (!c7_xdesc.empty() && c7_xdesc[0] != 'L') {
+                        std::replace(c7_xdesc.begin(), c7_xdesc.end(), '.',
+                                     '/');
+                        c7_xdesc = "L" + c7_xdesc + ";";
+                    }
+                    const bool c7_xloaded =
+                        !c7_xdesc.empty() &&
+                        class_to_superclass_.find(c7_xdesc) !=
+                            class_to_superclass_.end();
+                    if (!c7_xloaded) {
+                        miniandroid::diagnostics::FileIoTrace::instance().record(
+                            "BCAST-XPKG", c7_xr.package_name + "/" + c7_xr.cls,
+                            true,
+                            "foreign receiver RESOLVED from store (action=" +
+                                action + ") — not executed: foreign dex not "
+                                "loaded by this engine",
+                            current_class_ + "." + current_method_);
+                        continue;
+                    }
+                    c7_xrcvs.push_back({c7_xr.cls, c7_xdesc,
+                                        c7_xr.package_name});
+                    c7_cands.push_back({c7_xr.priority, false, 0, true,
+                                        (int)c7_xrcvs.size() - 1});
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "BCAST-XPKG-EXEC", c7_xr.package_name + "/" + c7_xr.cls,
+                        true,
+                        "foreign receiver candidate — REAL onReceive will "
+                        "execute (action=" + action + ")",
+                        current_class_ + "." + current_method_);
                 }
             }
             std::stable_sort(c7_cands.begin(), c7_cands.end(),
@@ -45089,6 +47398,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     }
                     if (!c7_order_seq.empty()) c7_order_seq += ",";
                     c7_order_seq += dr.cls + "@" + std::to_string(cd.prio);
+                    c7_grant_to(dr.cls);
                     if (try_recursive_invoke(dr.cls, "onReceive", on_args, ret,
                                              tmp, ""))
                         ++delivered;
@@ -45098,6 +47408,49 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     // pending result).
                     if (c7_ordered && ordered_broadcast_.pending_go_async_oid
                             == dr.oid)
+                        ordered_broadcast_.pending_go_async_oid = 0;
+                } else if (cd.xidx >= 0) {
+                    // ── CODER7 WAVE-6: FOREIGN store receiver delivery ──
+                    // The REAL foreign class (LoadedApk-lite injection) runs
+                    // the SAME delivery shape as a manifest receiver (AOSP
+                    // ActivityThread.handleReceiver: allocate → <init> →
+                    // onReceive(context, intent) per delivery). The
+                    // exported/permission gates already filtered the
+                    // candidate pool above.
+                    const auto& c7_xr = c7_xrcvs[(size_t)cd.xidx];
+                    const std::string& desc = c7_xr.desc;
+                    uint32_t c7_xrid = heap_.allocate(desc, pc_, 0);
+                    DalvikValue c7_xrobj =
+                        DalvikValue::make_object(c7_xrid, desc);
+                    DalvikValue c7_xign;
+                    DalvikExecutionResult c7_xctor;
+                    std::vector<DalvikValue> c7_xctor_args{c7_xrobj};
+                    try_recursive_invoke(desc, "<init>", c7_xctor_args,
+                                         c7_xign, c7_xctor, "");
+                    DalvikExecutionResult c7_xtmp;
+                    DalvikValue c7_xret;
+                    std::vector<DalvikValue> c7_xargs{c7_xrobj, ctx_obj,
+                                                      intent_val};
+                    if (c7_ordered) {
+                        ordered_broadcast_.pending_receiver_oid = c7_xrid;
+                        ordered_broadcast_.pending_is_final = false;
+                    }
+                    if (!c7_order_seq.empty()) c7_order_seq += ",";
+                    c7_order_seq += c7_xr.cls + "@" + std::to_string(cd.prio);
+                    c7_grant_to(desc);
+                    bool c7_xok = try_recursive_invoke(desc, "onReceive",
+                                                       c7_xargs, c7_xret,
+                                                       c7_xtmp, "");
+                    if (c7_xok) ++delivered;
+                    else
+                        miniandroid::diagnostics::FileIoTrace::instance()
+                            .record("BCAST-XPKG-EXEC",
+                                    c7_xr.pkg + "/" + c7_xr.cls, false,
+                                    "foreign onReceive unresolved after "
+                                    "ingest (honest, no fabrication)",
+                                    current_class_ + "." + current_method_);
+                    if (c7_ordered &&
+                        ordered_broadcast_.pending_go_async_oid == c7_xrid)
                         ordered_broadcast_.pending_go_async_oid = 0;
                 } else {
                     const auto& mr = manifest_receivers_[cd.idx];
@@ -45125,6 +47478,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     }
                     if (!c7_order_seq.empty()) c7_order_seq += ",";
                     c7_order_seq += mr.cls + "@" + std::to_string(cd.prio);
+                    c7_grant_to(desc);
                     if (try_recursive_invoke(desc, "onReceive", on_args, ret,
                                              tmp, ""))
                         ++delivered;
@@ -55921,10 +58275,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // The old tree answered an ALWAYS-EMPTY list / hard null —
         // fabricated negatives that dead-ended every custom-tab/chooser
         // family (forkgram x8 evidence).
+        // CODER7 rebase (W5->W11 onto main): queryIntentContentProviders
+        // and queryContentProviders are NOT in this family gate — they are
+        // served further down this dispatcher by the C7 WAVE-5/WAVE-11
+        // PackageManager blocks (the REAL published-provider table +
+        // provider intent-filter matching over the C7 package index). Each
+        // of those blocks falls back to the never-null empty List when no
+        // store/index is configured, so the F-C4-599/F-C4-600 law (a
+        // PackageManager query NEVER answers a bare null) holds on both
+        // paths. The early-return placeholder below would have shadowed
+        // the real implementations (rebaser X11 finding: the published
+        // table regressed to an empty answer).
         if (method == "queryIntentActivities" ||
             method == "queryIntentServices" ||
-            method == "queryIntentContentProviders" ||
-            method == "queryContentProviders" ||
             method == "queryBroadcastReceivers" ||
             method == "resolveActivity" || method == "resolveService" ||
             method == "resolveActivityInfo") {
@@ -55943,25 +58306,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // matching lands with the first corpus app that needs it.
             // queryContentProviders(processName, uid, flags) — same
             // never-null List contract.
-            if (method == "queryIntentContentProviders" ||
-                method == "queryContentProviders") {
-                uint32_t f599_list =
-                    heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
-                {
-                    static thread_local uint64_t f599_diag = 0;
-                    if (f599_diag < 6) {
-                        ++f599_diag;
-                        std::cerr << "[F-C4-599] " << method
-                                  << " -> empty List o" << f599_list
-                                  << " (never-null law)"
-                                  << std::endl;
-                    }
-                }
-                result = DalvikValue::make_object(
-                    f599_list, "Ljava/util/ArrayList;");
-                status = ApiCallTrace::Status::IMPLEMENTED;
-                return true;
-            }
             // --- intent extraction (receiver slot aware) ---
             std::string c7_action, c7_type, c7_scheme, c7_host, c7_path;
             std::vector<std::string> c7_cats;
@@ -56070,9 +58414,44 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 std::string cls;
                 bool exported;
                 int launch_mode;
+                // CODER7 WAVE-5: the OWNING package (AOSP ResolveInfo /
+                // ComponentInfo.packageName law) — empty in the
+                // single-package path (⇒ the running package), filled from
+                // the index in the cross-package path.
+                std::string pkg;
             };
             std::vector<C7Match> c7_matches;
-            if (method == "queryIntentActivities" ||
+            // ── CODER7 WAVE-5: PMS-lite — cross-package candidates ────────
+            // AOSP PackageManagerService resolves across ALL installed
+            // packages; the pre-W5 tree saw only the running package's own
+            // manifest (browser pickers / choosers / share flows resolved
+            // to an empty world). With a store configured the index IS the
+            // installed world (SAME WAVE-3 match law via
+            // C7PackageIndex::filter_matches); without one, the original
+            // single-package loops below run exactly as before.
+            const bool c7_w5_indexed =
+                c7_pkg_index_ && !c7_pkg_index_->empty();
+            if (c7_w5_indexed) {
+                std::vector<C7IdxMatch> c7_xm;
+                if (method == "queryIntentActivities" ||
+                    method == "resolveActivity" ||
+                    method == "resolveActivityInfo")
+                    c7_xm = c7_pkg_index_->query_activities(
+                        c7_action, c7_cats, c7_type, c7_scheme, c7_host,
+                        c7_path, c7_default_only);
+                else if (method == "queryIntentServices" ||
+                         method == "resolveService")
+                    c7_xm = c7_pkg_index_->query_services(
+                        c7_action, c7_cats, c7_type, c7_scheme, c7_host,
+                        c7_path, c7_default_only);
+                else
+                    c7_xm = c7_pkg_index_->query_receivers(
+                        c7_action, c7_cats, c7_type, c7_scheme, c7_host,
+                        c7_path, c7_default_only);
+                for (const auto& m : c7_xm)
+                    c7_matches.push_back(
+                        {m.cls, m.exported, m.launch_mode, m.package_name});
+            } else if (method == "queryIntentActivities" ||
                 method == "resolveActivity" ||
                 method == "resolveActivityInfo") {
                 for (const auto& a : manifest_activity_filters_) {
@@ -56139,11 +58518,26 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         info_id, "name",
                         DalvikValue::make_string(
                             c7_dot(c7_matches[0].cls), 0));
+                    // CODER7 WAVE-5: ComponentInfo.packageName (AOSP law —
+                    // every picker/chooser/resolve consumer reads it).
+                    heap_.set_object_field(
+                        info_id, "packageName",
+                        DalvikValue::make_string(
+                            c7_matches[0].pkg.empty() ? package_name_
+                                                      : c7_matches[0].pkg,
+                            0));
                     heap_.set_object_field(
                         info_id, "exported",
                         DalvikValue::make_bool(c7_matches[0].exported));
                     uint32_t ri_id = heap_.allocate(
                         "Landroid/content/pm/ResolveInfo;", pc_, 0);
+                    // CODER7 WAVE-5: ResolveInfo.packageName (AOSP field).
+                    heap_.set_object_field(
+                        ri_id, "packageName",
+                        DalvikValue::make_string(
+                            c7_matches[0].pkg.empty() ? package_name_
+                                                      : c7_matches[0].pkg,
+                            0));
                     DalvikValue info_val;
                     info_val.type = DalvikType::OBJECT_REF;
                     info_val.object_id = info_id;
@@ -56169,6 +58563,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         ai_id, "name",
                         DalvikValue::make_string(
                             c7_dot(c7_matches[0].cls), 0));
+                    // CODER7 WAVE-5: ComponentInfo.packageName (AOSP law).
+                    heap_.set_object_field(
+                        ai_id, "packageName",
+                        DalvikValue::make_string(
+                            c7_matches[0].pkg.empty() ? package_name_
+                                                      : c7_matches[0].pkg,
+                            0));
                     heap_.set_object_field(
                         ai_id, "exported",
                         DalvikValue::make_bool(c7_matches[0].exported));
@@ -56198,10 +58599,20 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 heap_.set_object_field(
                     info_id, "name",
                     DalvikValue::make_string(c7_dot(m.cls), 0));
+                // CODER7 WAVE-5: ComponentInfo.packageName (AOSP law).
+                heap_.set_object_field(
+                    info_id, "packageName",
+                    DalvikValue::make_string(
+                        m.pkg.empty() ? package_name_ : m.pkg, 0));
                 heap_.set_object_field(
                     info_id, "exported", DalvikValue::make_bool(m.exported));
                 uint32_t ri_id =
                     heap_.allocate("Landroid/content/pm/ResolveInfo;", pc_, 0);
+                // CODER7 WAVE-5: ResolveInfo.packageName (AOSP field).
+                heap_.set_object_field(
+                    ri_id, "packageName",
+                    DalvikValue::make_string(
+                        m.pkg.empty() ? package_name_ : m.pkg, 0));
                 DalvikValue info_val;
                 info_val.type = DalvikType::OBJECT_REF;
                 info_val.object_id = info_id;
@@ -56230,6 +58641,409 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 current_class_ + "." + current_method_);
             result =
                 DalvikValue::make_object(list_id, "Ljava/util/ArrayList;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── CODER7 WAVE-5: PMS-lite — the REAL installed-packages and
+        // provider-table answers ─────────────────────────────────────────
+        // AOSP PackageManagerService: getInstalledPackages /
+        // getInstalledApplications answer EVERY installed package;
+        // queryContentProviders answers the published provider table
+        // (every ENABLED provider of every package). The pre-W5 tree
+        // answered a FABRICATED always-empty list — a negative no device
+        // ever produces. With a store configured the index IS the
+        // installed set; without one the fabricated-empty below is
+        // untouched (no silent drift).
+        const bool c7_w5_pm_indexed =
+            c7_pkg_index_ && !c7_pkg_index_->empty();
+        if (c7_w5_pm_indexed &&
+            (method == "getInstalledPackages" ||
+             method == "getInstalledApplications")) {
+            uint32_t lid = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+            framework::CollectionShadow* c7_cs5i =
+                shadow_registry_
+                    ? shadow_registry_->find_as<framework::CollectionShadow>()
+                    : nullptr;
+            framework::CollectionShadow::CollectionState* c7_state5i =
+                c7_cs5i ? c7_cs5i->get_or_create(lid) : nullptr;
+            const char* c7_obj_cls5 =
+                (method == "getInstalledPackages")
+                    ? "Landroid/content/pm/PackageInfo;"
+                    : "Landroid/content/pm/ApplicationInfo;";
+            int c7_n5i = 0;
+            for (const auto& c7_pname : c7_pkg_index_->package_names()) {
+                uint32_t oi = heap_.allocate(c7_obj_cls5, pc_, 0);
+                heap_.set_object_field(
+                    oi, "packageName", DalvikValue::make_string(c7_pname, 0));
+                heap_.set_object_field(
+                    oi, "name", DalvikValue::make_string(c7_pname, 0));
+                DalvikValue ov;
+                ov.type = DalvikType::OBJECT_REF;
+                ov.object_id = oi;
+                ov.class_desc = c7_obj_cls5;
+                if (c7_state5i) {
+                    c7_state5i->elements.push_back(oi);
+                    c7_state5i->elem_kinds.push_back(1);
+                    c7_state5i->elem_strings.push_back("");
+                    c7_state5i->elem_ints.push_back(0);
+                }
+                ++c7_n5i;
+            }
+            heap_.set_object_field(
+                lid, "__array_length__", DalvikValue::make_int(c7_n5i));
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "PM-INSTALLED", method, true,
+                "packages=" + std::to_string(c7_n5i),
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_object(lid, "Ljava/util/ArrayList;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (c7_w5_pm_indexed && method == "queryContentProviders") {
+            // AOSP PackageManagerService.queryContentProviders: the
+            // published provider table — every ENABLED provider of every
+            // installed package (ProcessRecord identity fields the engine
+            // does not model are left unset; name/packageName/authorities/
+            // exported are the fields consumers read).
+            uint32_t lid = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+            framework::CollectionShadow* c7_cs5p =
+                shadow_registry_
+                    ? shadow_registry_->find_as<framework::CollectionShadow>()
+                    : nullptr;
+            framework::CollectionShadow::CollectionState* c7_state5p =
+                c7_cs5p ? c7_cs5p->get_or_create(lid) : nullptr;
+            int c7_n5p = 0;
+            for (const auto& c7_pname : c7_pkg_index_->package_names()) {
+                const auto* c7_pkg = c7_pkg_index_->find_package(c7_pname);
+                if (!c7_pkg) continue;
+                for (const auto& c7_pr : c7_pkg->providers) {
+                    if (!c7_pr.enabled) continue;  // disabled ⇒ not published
+                    uint32_t pi5 = heap_.allocate(
+                        "Landroid/content/pm/ProviderInfo;", pc_, 0);
+                    heap_.set_object_field(
+                        pi5, "name", DalvikValue::make_string(c7_pr.cls, 0));
+                    heap_.set_object_field(
+                        pi5, "packageName",
+                        DalvikValue::make_string(c7_pname, 0));
+                    heap_.set_object_field(
+                        pi5, "authority",
+                        DalvikValue::make_string(c7_pr.authorities, 0));
+                    heap_.set_object_field(
+                        pi5, "authorities",
+                        DalvikValue::make_string(c7_pr.authorities, 0));
+                    heap_.set_object_field(
+                        pi5, "exported",
+                        DalvikValue::make_bool(c7_pr.exported));
+                    DalvikValue pv;
+                    pv.type = DalvikType::OBJECT_REF;
+                    pv.object_id = pi5;
+                    pv.class_desc = "Landroid/content/pm/ProviderInfo;";
+                    if (c7_state5p) {
+                        c7_state5p->elements.push_back(pi5);
+                        c7_state5p->elem_kinds.push_back(1);
+                        c7_state5p->elem_strings.push_back("");
+                        c7_state5p->elem_ints.push_back(0);
+                    }
+                    ++c7_n5p;
+                }
+            }
+            heap_.set_object_field(
+                lid, "__array_length__", DalvikValue::make_int(c7_n5p));
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "PM-PROVIDERS", method, true,
+                "providers=" + std::to_string(c7_n5p),
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_object(lid, "Ljava/util/ArrayList;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── CODER7 WAVE-11: PackageManager.hasSystemFeature(String[, int])
+        // (AOSP PackageManagerService.hasSystemFeature + SystemConfig —
+        // the feature table the build publishes; the version overload
+        // additionally requires the feature's version ≥ the requested
+        // one). The engine publishes the android-34 feature table
+        // (a fixed, honest set — the same answer on every boot; unknown
+        // features answer FALSE, never a fabricated true).
+        if (method == "hasSystemFeature") {
+            std::string feat;
+            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF)
+                feat = args[1].string_val;
+            int want_ver = (args.size() >= 3) ? dalvik_int_value(args[2])
+                                              : 0;
+            static const std::vector<std::string> c7_features34 = {
+                "android.hardware.camera", "android.hardware.camera.any",
+                "android.hardware.camera.autofocus",
+                "android.hardware.camera.flash",
+                "android.hardware.camera.front",
+                "android.hardware.bluetooth", "android.hardware.location",
+                "android.hardware.location.gps",
+                "android.hardware.location.network",
+                "android.hardware.microphone",
+                "android.hardware.sensor.accelerometer",
+                "android.hardware.sensor.barometer",
+                "android.hardware.sensor.compass",
+                "android.hardware.sensor.gyroscope",
+                "android.hardware.sensor.light",
+                "android.hardware.sensor.proximity",
+                "android.hardware.sensor.stepcounter",
+                "android.hardware.touchscreen",
+                "android.hardware.touchscreen.multitouch",
+                "android.hardware.touchscreen.multitouch.jazzhand",
+                "android.hardware.faketouch", "android.hardware.wifi",
+                "android.hardware.wifi.direct",
+                "android.hardware.telephony",
+                "android.hardware.telephony.gsm",
+                "android.hardware.telephony.cdma",
+                "android.hardware.usb.host", "android.hardware.usb.accessory",
+                "android.hardware.nfc", "android.hardware.sip.voip",
+                "android.hardware.audio.low_latency",
+                "android.software.live_wallpaper",
+                "android.software.app_widgets", "android.software.home_screen",
+                "android.software.input_methods",
+                "android.software.device_admin",
+                "android.software.webview", "android.software.sip",
+                "android.software.print", "android.software.voice_recognizers",
+                "android.hardware.type.phone",
+                "android.hardware.type.television",
+                "android.hardware.ramping.vibrator",
+                "android.hardware.vulkan.version",
+                "android.hardware.vr.high_performance"};
+            static const std::map<std::string, int> c7_feature_versions = {
+                {"android.hardware.vulkan.version", 0x00403000},
+                {"android.hardware.ramping.vibrator", 1}};
+            bool have = false;
+            for (const auto& f : c7_features34)
+                if (f == feat) {
+                    have = true;
+                    break;
+                }
+            bool ver_ok = true;
+            if (have && want_ver > 0) {
+                auto vit = c7_feature_versions.find(feat);
+                int fv = (vit != c7_feature_versions.end()) ? vit->second
+                                                            : 0;
+                ver_ok = fv >= want_ver;
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "PM-FEATURE", feat, have && ver_ok,
+                "has=" + std::string(have ? "1" : "0") +
+                    " want_ver=" + std::to_string(want_ver) +
+                    " (android-34 table)",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_bool(have && ver_ok);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── CODER7 WAVE-11: PackageManager.checkSignatures(String, String)
+        // (AOSP PackageManagerService.checkSignatures → compareSignatures:
+        // both packages' signature sets compared — null==null answers
+        // SIGNATURE_MATCH (the PMS helper's own law), one null answers
+        // SIGNATURE_NO_MATCH; an UNKNOWN package answers
+        // SIGNATURE_UNKNOWN_PACKAGE). The engine's packages are
+        // unsigned-by-parser (no v1 JAR signature bytes are modeled):
+        // the honest table walk is both-null → MATCH per the helper law,
+        // never a fabricated cert comparison.
+        if (method == "checkSignatures" &&
+            args.size() >= 3 && args[1].type == DalvikType::STRING_REF &&
+            args[2].type == DalvikType::STRING_REF) {
+            auto c7_pkg_known = [&](const std::string& p) -> bool {
+                if (p.empty()) return false;
+                if (p == package_name_) return true;
+                return c7_pkg_index_ && c7_pkg_index_->find_package(p);
+            };
+            const std::string& p1 = args[1].string_val;
+            const std::string& p2 = args[2].string_val;
+            int sig;
+            if (!c7_pkg_known(p1) || !c7_pkg_known(p2))
+                sig = -4;  // SIGNATURE_UNKNOWN_PACKAGE
+            else
+                sig = 0;   // SIGNATURE_MATCH (compareSignatures(null, null))
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "PM-SIGNATURES", p1 + " vs " + p2, sig == 0,
+                "verdict=" + std::to_string(sig) +
+                    " (0=MATCH -3=NO_MATCH -4=UNKNOWN; PMS "
+                    "compareSignatures law over parser-empty sets)",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_int(sig);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── CODER7 WAVE-11: PackageManager.queryIntentContentProviders(
+        // Intent, flags) (AOSP PackageManagerService.
+        // queryIntentContentProvidersInternal → ProviderIntentResolver:
+        // the provider's OWN intent-filters are the match key — the W3
+        // match law over C7IdxProvider.filters; providers without
+        // filters never match; disabled apps/providers excluded).
+        if (method == "queryIntentContentProviders") {
+            struct C7ProvCand {
+                std::string cls;
+                std::string pkg;
+                int prio;
+            };
+            std::vector<C7ProvCand> c7_pcands;
+            std::string c7_pi_action, c7_pi_type, c7_pi_scheme,
+                c7_pi_host, c7_pi_path;
+            std::vector<std::string> c7_pi_cats;
+            bool c7_pi_has_data = false;
+            for (size_t i = 1; i < args.size(); ++i) {
+                if (args[i].type == DalvikType::OBJECT_REF &&
+                    args[i].object_id != 0 &&
+                    heap_.has_object(args[i].object_id) &&
+                    heap_.get(args[i].object_id)->class_descriptor ==
+                        "Landroid/content/Intent;") {
+                    if (shadow_registry_ != nullptr) {
+                        auto* qish = shadow_registry_->find_as<
+                            framework::IntentShadow>();
+                        if (qish) {
+                            auto qpi = qish->get_or_create_intent(
+                                args[i].object_id);
+                            if (qpi) {
+                                c7_pi_action = qpi->action;
+                                c7_pi_type = qpi->type;
+                                c7_pi_scheme = qpi->data_scheme;
+                                c7_pi_host = qpi->data_host;
+                                c7_pi_path = qpi->data_path;
+                                c7_pi_cats = qpi->categories;
+                                c7_pi_has_data =
+                                    qpi->data_uri_object != 0;
+                            }
+                        }
+                    }
+                }
+            }
+            if (c7_pkg_index_) {
+                auto c7_mime_ok = [](const std::string& spec,
+                                     const std::string& type) {
+                    if (spec.empty() || type.empty()) return false;
+                    if (spec == type || spec == "*/*") return true;
+                    if (spec.size() > 1 && spec.back() == '*')
+                        return type.rfind(
+                                   spec.substr(0, spec.size() - 1), 0) == 0;
+                    if (type.size() > 1 && type.back() == '*')
+                        return spec.rfind(
+                                   type.substr(0, type.size() - 1), 0) == 0;
+                    return false;
+                };
+                for (const auto& c7_pname :
+                     c7_pkg_index_->package_names()) {
+                    const auto* c7_pkg =
+                        c7_pkg_index_->find_package(c7_pname);
+                    if (!c7_pkg || !c7_pkg->app_enabled) continue;
+                    for (const auto& c7_pr : c7_pkg->providers) {
+                        if (!c7_pr.enabled) continue;
+                        for (const auto& c7_f : c7_pr.filters) {
+                            bool act_ok = c7_f.actions.empty()
+                                              ? c7_pi_action.empty()
+                                              : false;
+                            for (const auto& a : c7_f.actions)
+                                if (a == c7_pi_action) {
+                                    act_ok = true;
+                                    break;
+                                }
+                            if (!act_ok || c7_pi_action.empty()) continue;
+                            bool cats_ok = true;
+                            for (const auto& ic : c7_pi_cats) {
+                                bool decl = false;
+                                for (const auto& fc : c7_f.categories)
+                                    if (fc == ic) {
+                                        decl = true;
+                                        break;
+                                    }
+                                if (!decl) {
+                                    cats_ok = false;
+                                    break;
+                                }
+                            }
+                            if (!cats_ok) continue;
+                            bool data_ok;
+                            if (c7_f.datas.empty()) {
+                                // AOSP: a filter with NO data specs does
+                                // not match an intent carrying data.
+                                data_ok = !c7_pi_has_data;
+                            } else {
+                                data_ok = false;
+                                for (const auto& ds : c7_f.datas) {
+                                    bool scheme_ok =
+                                        ds.scheme.empty()
+                                            ? !c7_pi_has_data
+                                            : ds.scheme == c7_pi_scheme;
+                                    bool mime_ok =
+                                        ds.mime_type.empty()
+                                            ? c7_pi_type.empty()
+                                            : c7_mime_ok(ds.mime_type,
+                                                         c7_pi_type);
+                                    bool auth_ok =
+                                        ds.host.empty() ||
+                                        (!c7_pi_host.empty() &&
+                                         ds.host == c7_pi_host &&
+                                         (ds.path_prefix.empty() ||
+                                          c7_pi_path.rfind(
+                                              ds.path_prefix, 0) == 0));
+                                    if (scheme_ok && mime_ok && auth_ok) {
+                                        data_ok = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (data_ok)
+                                c7_pcands.push_back(
+                                    {c7_pr.cls, c7_pname, c7_f.priority});
+                        }
+                    }
+                }
+            }
+            uint32_t qlid = heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+            framework::CollectionShadow* qcs =
+                shadow_registry_
+                    ? shadow_registry_->find_as<
+                          framework::CollectionShadow>()
+                    : nullptr;
+            framework::CollectionShadow::CollectionState* qstate =
+                qcs ? qcs->get_or_create(qlid) : nullptr;
+            int qn = 0;
+            for (const auto& c : c7_pcands) {
+                // ResolveInfo shape: ProviderInfo + packageName fields
+                // (the picker fields the W5 PM-lite law serves).
+                uint32_t ri = heap_.allocate(
+                    "Landroid/content/pm/ResolveInfo;", pc_, 0);
+                uint32_t pi = heap_.allocate(
+                    "Landroid/content/pm/ProviderInfo;", pc_, 0);
+                heap_.set_object_field(
+                    pi, "name", DalvikValue::make_string(c.cls, 0));
+                heap_.set_object_field(
+                    pi, "packageName", DalvikValue::make_string(c.pkg, 0));
+                heap_.set_object_field(
+                    pi, "packageInfo",
+                    DalvikValue::make_string(c.pkg, 0));
+                heap_.set_object_field(
+                    ri, "packageName", DalvikValue::make_string(c.pkg, 0));
+                heap_.set_object_field(
+                    ri, "providerInfo",
+                    DalvikValue::make_object(
+                        pi, "Landroid/content/pm/ProviderInfo;"));
+                DalvikValue rv;
+                rv.type = DalvikType::OBJECT_REF;
+                rv.object_id = ri;
+                rv.class_desc = "Landroid/content/pm/ResolveInfo;";
+                if (qstate) {
+                    qstate->elements.push_back(ri);
+                    qstate->elem_kinds.push_back(1);
+                    qstate->elem_strings.push_back("");
+                    qstate->elem_ints.push_back(0);
+                }
+                ++qn;
+            }
+            heap_.set_object_field(qlid, "__array_length__",
+                                   DalvikValue::make_int(qn));
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "PM-QICP", c7_pi_action.empty() ? "<no-action>"
+                                                : c7_pi_action,
+                true,
+                "providers=" + std::to_string(qn) +
+                    " (ProviderIntentResolver law, W3 match over "
+                    "C7IdxProvider.filters)",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_object(qlid, "Ljava/util/ArrayList;");
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
@@ -56292,6 +59106,50 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     if (cls_it != provider_class_by_oid_.end() &&
                         c7_provider_enabled(cls_it->second))
                         owner_class = cls_it->second;
+                }
+            }
+            // ── CODER7 WAVE-5: cross-package authority resolution ────────
+            // The walk above only sees the RUNNING package's manifest. AOSP
+            // PackageManagerService maps authorities across ALL installed
+            // packages; with a store configured the index IS that map
+            // (first published provider wins — deterministic ingest order).
+            if (owner_class.empty() && !want_auth.empty() && c7_pkg_index_ &&
+                !c7_pkg_index_->empty()) {
+                auto c7_xprovs =
+                    c7_pkg_index_->providers_for_authority(want_auth);
+                if (!c7_xprovs.empty()) {
+                    const auto& c7_pr = c7_xprovs[0];
+                    uint32_t pi_id = heap_.allocate(
+                        "Landroid/content/pm/ProviderInfo;", pc_, 0);
+                    heap_.set_object_field(
+                        pi_id, "name",
+                        DalvikValue::make_string(c7_pr.cls, 1));
+                    heap_.set_object_field(
+                        pi_id, "packageName",
+                        DalvikValue::make_string(c7_pr.package_name, 1));
+                    heap_.set_object_field(
+                        pi_id, "authority",
+                        DalvikValue::make_string(want_auth, 1));
+                    heap_.set_object_field(
+                        pi_id, "authorities",
+                        DalvikValue::make_string(c7_pr.authorities, 1));
+                    heap_.set_object_field(
+                        pi_id, "exported",
+                        DalvikValue::make_bool(c7_pr.exported));
+                    heap_.set_object_field(
+                        pi_id, "grantUriPermissions",
+                        DalvikValue::make_bool(c7_pr.grant_uri_permissions));
+                    miniandroid::diagnostics::FileIoTrace::instance().record(
+                        "PM-RCP-XPKG", want_auth, true,
+                        "pkg=" + c7_pr.package_name + " cls=" + c7_pr.cls,
+                        current_class_ + "." + current_method_);
+                    std::cerr << "[C7-W5] resolveContentProvider " << want_auth
+                              << " -> " << c7_pr.package_name << "/"
+                              << c7_pr.cls << std::endl;
+                    result = DalvikValue::make_object(
+                        pi_id, "Landroid/content/pm/ProviderInfo;");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
                 }
             }
             if (want_auth.empty() || owner_class.empty()) {
@@ -63451,10 +66309,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // serves per R341-APPCTX), keyed by the REAL superclass chain (any
     // ContentProvider subclass, not a name-suffix guess).
     // ────────────────────────────────────────────────────────────────────────
-    if (method == "getContext" &&
+    if ((method == "getContext" || method == "getCallingPackage") &&
         is_subclass_of(class_name, "Landroid/content/ContentProvider;")) {
         static thread_local uint64_t ctx_law_n = 0;
         bool log_law = ctx_law_n++ < 16;
+        // ── CODER7 WAVE-9: the getCallingPackage law (AOSP
+        // ContentProvider.getCallingPackage: the caller of the CURRENT
+        // operation — available inside query/insert/update/delete/
+        // openFile/bulkInsert, null otherwise). The W8 tree never set
+        // it: every provider saw a fabricated null.
+        if (method == "getCallingPackage") {
+            if (c7_provider_calling_pkg_.empty())
+                result = DalvikValue::make_null();
+            else
+                result = DalvikValue::make_string(
+                    c7_provider_calling_pkg_, 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         // GATE A: prefer the provider's OWN bound context (attachInfo law,
         // install_content_providers) before the process-wide app context.
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
@@ -65219,6 +68091,59 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 break;
             }
         }
+        if (!found && c7_pkg_index_ && !c7_pkg_index_->empty()) {
+            // ── CODER7 WAVE-5: foreign-package provider identity ─────────
+            // AOSP PackageManagerService.getProviderInfo answers providers
+            // of ANY installed package. The own-manifest walk above sees
+            // only the running package; the index extends the identity
+            // table across the store (class match, deterministic order).
+            bool c7_xfound = false;
+            for (const auto& c7_pname : c7_pkg_index_->package_names()) {
+                const auto* c7_pkg = c7_pkg_index_->find_package(c7_pname);
+                if (!c7_pkg) continue;
+                for (const auto& c7_pr : c7_pkg->providers) {
+                    if (!c7_pr.enabled) continue;
+                    if (c7_pr.cls == norm || c7_pr.cls == bare) {
+                        uint32_t pi_id = heap_.allocate(
+                            "Landroid/content/pm/ProviderInfo;", pc_,
+                            call_stack_.empty()
+                                ? 0
+                                : call_stack_.top().frame_id);
+                        heap_.set_object_field(
+                            pi_id, "name",
+                            DalvikValue::make_string(c7_pr.cls, 1));
+                        heap_.set_object_field(
+                            pi_id, "packageName",
+                            DalvikValue::make_string(c7_pname, 1));
+                        heap_.set_object_field(
+                            pi_id, "authority",
+                            DalvikValue::make_string(c7_pr.authorities, 1));
+                        heap_.set_object_field(
+                            pi_id, "authorities",
+                            DalvikValue::make_string(c7_pr.authorities, 1));
+                        heap_.set_object_field(
+                            pi_id, "exported",
+                            DalvikValue::make_bool(c7_pr.exported));
+                        heap_.set_object_field(
+                            pi_id, "grantUriPermissions",
+                            DalvikValue::make_bool(
+                                c7_pr.grant_uri_permissions));
+                        miniandroid::diagnostics::FileIoTrace::instance()
+                            .record("PM-PROVINFO-XPKG", c7_pr.cls, true,
+                                    "pkg=" + c7_pname +
+                                        " auth=" + c7_pr.authorities,
+                                    current_class_ + "." + current_method_);
+                        result = DalvikValue::make_object(
+                            pi_id, "Landroid/content/pm/ProviderInfo;");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        c7_xfound = true;
+                        break;
+                    }
+                }
+                if (c7_xfound) break;
+            }
+            if (c7_xfound) return true;
+        }
         if (!found) {
             // AOSP contract: absent component → NameNotFoundException, never
             // a null ProviderInfo.
@@ -65392,6 +68317,65 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         if (!found) {
+            // ── CODER7 WAVE-9: the FOREIGN-INSTALLED fallback (AOSP
+            // PackageManagerService.getServiceInfo serves ANY installed
+            // package's component — the W5 store index is the installed
+            // set). enabled = component.enabled && application.enabled
+            // (the effective-enabled law: an application-level disable
+            // marks every component enabled=false; AOSP
+            // ApplicationInfo.isEnabled propagation).
+            std::string w9_pkg, w9_cls;
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 &&
+                heap_.has_object(args[1].object_id)) {
+                auto pf = heap_.get_object_field(args[1].object_id,
+                                                 "mPackage");
+                auto cf = heap_.get_object_field(args[1].object_id,
+                                                 "mClass");
+                if (pf.has_value() && pf->type == DalvikType::STRING_REF)
+                    w9_pkg = pf->string_val;
+                if (cf.has_value() && cf->type == DalvikType::STRING_REF)
+                    w9_cls = cf->string_val;
+            }
+            const C7IdxPackage* w9_fp =
+                (c7_pkg_index_ && !w9_pkg.empty() &&
+                 w9_pkg != package_name_)
+                    ? c7_pkg_index_->find_package(w9_pkg)
+                    : nullptr;
+            if (w9_fp != nullptr) {
+                for (const auto& w9_s : w9_fp->services) {
+                    if (w9_s.cls == w9_cls ||
+                        w9_s.cls == bare) {
+                        uint32_t sid = heap_.allocate(
+                            "Landroid/content/pm/ServiceInfo;", pc_, 0);
+                        heap_.set_object_field(
+                            sid, "packageName",
+                            DalvikValue::make_string(
+                                w9_fp->package_name, 0));
+                        heap_.set_object_field(
+                            sid, "name",
+                            DalvikValue::make_string(w9_s.cls, 0));
+                        heap_.set_object_field(
+                            sid, "enabled",
+                            DalvikValue::make_bool(w9_s.enabled &&
+                                                   w9_fp->app_enabled));
+                        heap_.set_object_field(
+                            sid, "exported",
+                            DalvikValue::make_bool(w9_s.exported));
+                        std::cerr << "[C7-SVCINFO] foreign "
+                                  << w9_fp->package_name << "/"
+                                  << w9_s.cls << " enabled="
+                                  << (w9_s.enabled && w9_fp->app_enabled
+                                          ? "true"
+                                          : "false")
+                                  << std::endl;
+                        result = DalvikValue::make_object(
+                            sid, "Landroid/content/pm/ServiceInfo;");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                }
+            }
             // AOSP contract: absent component → NameNotFoundException, never
             // a null ServiceInfo.
             std::cerr << "[F275-SVCINFO] MISS " << bare
@@ -65571,6 +68555,172 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getPackageInfo" &&
         class_name.find("PackageManager") != std::string::npos) {
+        // ── CODER7 WAVE-5: FOREIGN-package getPackageInfo from the index ──
+        // AOSP PackageManagerService.getPackageInfo(pkg, flags) serves ANY
+        // installed package's identity (components only when the matching
+        // GET_* flag is set). The pre-W5 handler below serves the RUNNING
+        // package only. With a store configured, a request for another
+        // installed package is served from the index; the running package
+        // and unknown names fall through to the original handler unchanged.
+        if (c7_pkg_index_ && !c7_pkg_index_->empty()) {
+            std::string c7_want_pkg;
+            for (size_t i = 0; i < args.size(); ++i) {
+                if (args[i].type == DalvikType::STRING_REF) {
+                    c7_want_pkg = args[i].string_val;
+                    break;
+                }
+            }
+            const auto* c7_fp =
+                c7_want_pkg.empty()
+                    ? nullptr
+                    : (c7_want_pkg == package_name_
+                           ? nullptr
+                           : c7_pkg_index_->find_package(c7_want_pkg));
+            if (c7_fp) {
+                int64_t c7_gp_flags = 0;
+                for (size_t i = 1; i < args.size(); ++i) {
+                    if (args[i].type == DalvikType::INT32) {
+                        c7_gp_flags = args[i].int_val;
+                        break;
+                    }
+                }
+                uint32_t fobj = heap_.allocate(
+                    "Landroid/content/pm/PackageInfo;", pc_,
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+                heap_.set_object_field(
+                    fobj, "packageName",
+                    DalvikValue::make_string(c7_want_pkg, 0));
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "PM-PKGINFO-XPKG", c7_want_pkg, true,
+                    "foreign package identity from store (flags=" +
+                        std::to_string(c7_gp_flags) + ")",
+                    current_class_ + "." + current_method_);
+                // GET_PROVIDERS (0x8) — the index provider table.
+                if ((c7_gp_flags & 0x8) != 0 && !c7_fp->providers.empty()) {
+                    uint32_t arr_id = heap_.allocate(
+                        "[Landroid/content/pm/ProviderInfo;", pc_, 0);
+                    heap_.set_object_field(
+                        arr_id, "__array_length__",
+                        DalvikValue::make_int(
+                            (int)c7_fp->providers.size()));
+                    for (size_t i = 0; i < c7_fp->providers.size(); ++i) {
+                        uint32_t pid = heap_.allocate(
+                            "Landroid/content/pm/ProviderInfo;", pc_, 0);
+                        heap_.set_object_field(
+                            pid, "name",
+                            DalvikValue::make_string(
+                                c7_fp->providers[i].cls, 1));
+                        heap_.set_object_field(
+                            pid, "packageName",
+                            DalvikValue::make_string(c7_want_pkg, 1));
+                        heap_.set_object_field(
+                            pid, "authority",
+                            DalvikValue::make_string(
+                                c7_fp->providers[i].authorities, 1));
+                        heap_.set_object_field(
+                            pid, "authorities",
+                            DalvikValue::make_string(
+                                c7_fp->providers[i].authorities, 1));
+                        heap_.set_object_field(
+                            pid, "exported",
+                            DalvikValue::make_bool(
+                                c7_fp->providers[i].exported));
+                        DalvikValue piv;
+                        piv.type = DalvikType::OBJECT_REF;
+                        piv.object_id = pid;
+                        piv.class_desc =
+                            "Landroid/content/pm/ProviderInfo;";
+                        heap_.set_object_field(
+                            arr_id,
+                            "array[" + std::to_string(i) + "]", piv);
+                    }
+                    DalvikValue pav;
+                    pav.type = DalvikType::OBJECT_REF;
+                    pav.object_id = arr_id;
+                    pav.class_desc = "[Landroid/content/pm/ProviderInfo;";
+                    pav.int_val = (int64_t)c7_fp->providers.size();
+                    heap_.set_object_field(fobj, "providers", pav);
+                }
+                // GET_SERVICES (0x4).
+                if ((c7_gp_flags & 0x4) != 0 && !c7_fp->services.empty()) {
+                    uint32_t sarr_id = heap_.allocate(
+                        "[Landroid/content/pm/ServiceInfo;", pc_, 0);
+                    heap_.set_object_field(
+                        sarr_id, "__array_length__",
+                        DalvikValue::make_int(
+                            (int)c7_fp->services.size()));
+                    for (size_t i = 0; i < c7_fp->services.size(); ++i) {
+                        uint32_t sid = heap_.allocate(
+                            "Landroid/content/pm/ServiceInfo;", pc_, 0);
+                        heap_.set_object_field(
+                            sid, "name",
+                            DalvikValue::make_string(
+                                c7_fp->services[i].cls, 1));
+                        heap_.set_object_field(
+                            sid, "packageName",
+                            DalvikValue::make_string(c7_want_pkg, 1));
+                        DalvikValue siv;
+                        siv.type = DalvikType::OBJECT_REF;
+                        siv.object_id = sid;
+                        siv.class_desc = "Landroid/content/pm/ServiceInfo;";
+                        heap_.set_object_field(
+                            sarr_id,
+                            "array[" + std::to_string(i) + "]", siv);
+                    }
+                    DalvikValue sav;
+                    sav.type = DalvikType::OBJECT_REF;
+                    sav.object_id = sarr_id;
+                    sav.class_desc = "[Landroid/content/pm/ServiceInfo;";
+                    sav.int_val = (int64_t)c7_fp->services.size();
+                    heap_.set_object_field(fobj, "services", sav);
+                }
+                // GET_ACTIVITIES (0x1).
+                if ((c7_gp_flags & 0x1) != 0 && !c7_fp->activities.empty()) {
+                    uint32_t aarr_id = heap_.allocate(
+                        "[Landroid/content/pm/ActivityInfo;", pc_, 0);
+                    heap_.set_object_field(
+                        aarr_id, "__array_length__",
+                        DalvikValue::make_int(
+                            (int)c7_fp->activities.size()));
+                    for (size_t i = 0; i < c7_fp->activities.size(); ++i) {
+                        uint32_t aid = heap_.allocate(
+                            "Landroid/content/pm/ActivityInfo;", pc_, 0);
+                        heap_.set_object_field(
+                            aid, "name",
+                            DalvikValue::make_string(
+                                c7_fp->activities[i].cls, 1));
+                        heap_.set_object_field(
+                            aid, "packageName",
+                            DalvikValue::make_string(c7_want_pkg, 1));
+                        heap_.set_object_field(
+                            aid, "exported",
+                            DalvikValue::make_bool(
+                                c7_fp->activities[i].exported));
+                        heap_.set_object_field(
+                            aid, "launchMode",
+                            DalvikValue::make_int(
+                                c7_fp->activities[i].launch_mode));
+                        DalvikValue aiv;
+                        aiv.type = DalvikType::OBJECT_REF;
+                        aiv.object_id = aid;
+                        aiv.class_desc = "Landroid/content/pm/ActivityInfo;";
+                        heap_.set_object_field(
+                            aarr_id,
+                            "array[" + std::to_string(i) + "]", aiv);
+                    }
+                    DalvikValue aav;
+                    aav.type = DalvikType::OBJECT_REF;
+                    aav.object_id = aarr_id;
+                    aav.class_desc = "[Landroid/content/pm/ActivityInfo;";
+                    aav.int_val = (int64_t)c7_fp->activities.size();
+                    heap_.set_object_field(fobj, "activities", aav);
+                }
+                result = DalvikValue::make_object(
+                    fobj, "Landroid/content/pm/PackageInfo;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
         uint32_t obj_id = heap_.allocate("Landroid/content/pm/PackageInfo;",
                                          pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
         result = DalvikValue::make_object(obj_id,
@@ -66211,10 +69361,29 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     // P0.8 — Context.getPackageName → String
     // EXP-093/F011: Use manifest-derived package name
+    // CODER7 WAVE-6: the foreign-owner law (AOSP ContextImpl: every
+    // component receives a base Context bound to ITS OWN package — a
+    // foreign receiver/service/provider executing inside this process
+    // still answers getPackageName with ITS package, ComponentInfo
+    // .packageName semantics; the LoadedApk-lite ownership map provides
+    // the identity). Own classes are absent from the map ⇒ "" ⇒ the
+    // running package (unchanged behavior).
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getPackageName" &&
         (class_name.find("Context") != std::string::npos ||
          class_name.find("Activity") != std::string::npos)) {
+        const std::string& c7_fowner =
+            foreign_owner_package(current_class_);
+        if (!c7_fowner.empty() && c7_fowner != package_name_) {
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "CTX-XPKG-PKGNAME", current_class_ + " → " + c7_fowner, true,
+                "foreign component context identity (AOSP ContextImpl "
+                "per-package base context)",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_string(c7_fowner, 1);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         result = DalvikValue::make_string(
             package_name_.empty() ? "unknown.package" : package_name_, 1);
         status = ApiCallTrace::Status::IMPLEMENTED;
@@ -71438,6 +74607,45 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         std::string want_pkg;
         if (args[1].type == DalvikType::STRING_REF) want_pkg = args[1].string_val;
         const bool own = want_pkg.empty() || want_pkg == package_name_;
+        // ── CODER7 WAVE-9: consult the W5 store index BEFORE declaring
+        // "not installed" — an INSTALLED foreign package answers a REAL
+        // ApplicationInfo (AOSP getApplicationInfo serves any installed
+        // package; NameNotFoundException only for names nothing
+        // installed). enabled carries the index's application-level
+        // disable (the c7laws_off L27 law).
+        const C7IdxPackage* w9_fp =
+            (!own && c7_pkg_index_ && !want_pkg.empty())
+                ? c7_pkg_index_->find_package(want_pkg)
+                : nullptr;
+        if (w9_fp != nullptr) {
+            result = get_or_create_singleton(
+                "Landroid/content/pm/ApplicationInfo;");
+            if (result.type == DalvikType::OBJECT_REF &&
+                heap_.has_object(result.object_id)) {
+                heap_.set_object_field(
+                    result.object_id, "packageName",
+                    DalvikValue::make_string(w9_fp->package_name, 0));
+                heap_.set_object_field(
+                    result.object_id, "sourceDir",
+                    DalvikValue::make_string(w9_fp->apk_path, 0));
+                heap_.set_object_field(
+                    result.object_id, "publicSourceDir",
+                    DalvikValue::make_string(w9_fp->apk_path, 0));
+                heap_.set_object_field(
+                    result.object_id, "dataDir",
+                    DalvikValue::make_string(
+                        "/data/data/" + w9_fp->package_name, 0));
+                heap_.set_object_field(
+                    result.object_id, "enabled",
+                    DalvikValue::make_bool(w9_fp->app_enabled));
+                std::cerr << "[C7-APPINFO] foreign "
+                          << w9_fp->package_name << " enabled="
+                          << (w9_fp->app_enabled ? "true" : "false")
+                          << std::endl;
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if (!own) {
             // AOSP: throws NameNotFoundException for an uninstalled package.
             raise_synthetic_exception(
@@ -71526,6 +74734,64 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 }
             }
         }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+
+    // ── CODER7 WAVE-9: the runtime component-enabled override pair
+    // (AOSP PackageManager.setComponentEnabledSetting(ComponentName,
+    // newState, flags) / getComponentEnabledSetting(ComponentName): PMS
+    // keeps per-component settings that OVERRIDE the manifest; a
+    // DISABLED component stops resolving AND stops delivering
+    // immediately). The W8 tree had NO implementation — the override
+    // map (c7_component_enabled_overrides_) feeds the broadcast
+    // dispatch, the resolution laws, and the service/activity gates.
+    if (class_name.find("PackageManager") != std::string::npos &&
+        (method == "setComponentEnabledSetting" ||
+         method == "getComponentEnabledSetting") &&
+        args.size() >= 2) {
+        std::string flat;
+        if (args[1].type == DalvikType::OBJECT_REF &&
+            args[1].object_id != 0 &&
+            heap_.has_object(args[1].object_id)) {
+            std::string cpkg, ccls;
+            const auto* cn = heap_.get(args[1].object_id);
+            for (const auto& [fn, fv] : cn->fields) {
+                if (fv.type == DalvikType::STRING_REF) {
+                    // The engine's ComponentName convention (the
+                    // startActivity bridge allocates mPackage/mClass); the
+                    // dotted aliases keep other constructors covered.
+                    if (fn == "mPackage" || fn == "package" ||
+                        fn == "pkg" || fn == "packageName")
+                        cpkg = fv.string_val;
+                    if (fn == "mClass" || fn == "class" ||
+                        fn == "cls" || fn == "className")
+                        ccls = fv.string_val;
+                }
+            }
+            if (ccls.empty() && !cpkg.empty()) flat = cpkg;
+            else if (!cpkg.empty()) flat = cpkg + "/" + ccls;
+            else flat = ccls;
+        }
+        if (method == "setComponentEnabledSetting" && args.size() >= 3 &&
+            args[2].type == DalvikType::INT32) {
+            c7_component_enabled_overrides_[flat] = args[2].int_val;
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "C7-COMPONENT-ENABLED", flat, true,
+                "setComponentEnabledSetting newState=" +
+                    std::to_string(args[2].int_val) +
+                    " (0=default 1=enabled 2=disabled)",
+                current_class_ + "." + current_method_);
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // getComponentEnabledSetting: the stored override, else DEFAULT(0)
+        // (AOSP: the query answers the SETTING, not the effective state).
+        auto oit = c7_component_enabled_overrides_.find(flat);
+        result = DalvikValue::make_int(
+            oit != c7_component_enabled_overrides_.end() ? oit->second : 0);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
     }

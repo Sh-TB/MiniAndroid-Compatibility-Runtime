@@ -75,6 +75,11 @@ struct ManifestInfo {
     std::string package_name;
     std::string version_name;
     int version_code = 0;
+    // CODER7 WAVE-9 (AOSP PackageParser.ApplicationInfo.isEnabled —
+    // android:enabled on <application>): false disables EVERY component
+    // in the application (invisible to resolution, delivery, and foreign
+    // start; AOSP ApplicationInfo.enabled=false). Absent ⇒ true.
+    bool application_enabled = true;
     
     // SDK versions
     std::string min_sdk_version;
@@ -128,6 +133,10 @@ struct ManifestInfo {
         struct FilterInfo {
             std::vector<std::string> actions;
             std::vector<std::string> categories;
+            // CODER7 WAVE-8 L4: android:priority on the filter (AOSP
+            // IntentFilter.getPriority) — the resolution ordering refines
+            // by it (higher priority wins; same priority ⇒ ingest order).
+            int priority = 0;
             std::vector<DataSpec> datas;
         };
         std::vector<FilterInfo> filters;
@@ -232,6 +241,22 @@ struct ManifestInfo {
         // published (resolveContentProvider answers null).
         bool enabled = true;
         bool enabled_declared = false;
+        // CODER7 WAVE-8 L1: android:readPermission / android:writePermission
+        // (AOSP PackageParser.Provider → ProviderInfo; the ContentProvider
+        // transport gates each CRUD op on them — checkContentProviderAccess).
+        std::string read_permission;
+        std::string write_permission;
+        // CODER7 WAVE-11 (AOSP PackageParser.Provider parses the
+        // provider's <intent-filter> children into ProviderIntentResolver
+        // — PackageManager.queryIntentContentProviders matches against
+        // THEM). Additive per-filter capture (actions/categories/datas),
+        // same shape the service/receiver filters already use.
+        struct FilterInfo {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            std::vector<DataSpec> datas;
+        };
+        std::vector<FilterInfo> filters;
     };
     std::vector<ProviderInfo> providers;
 

@@ -829,6 +829,10 @@ public:
         std::string data_scheme;
         std::string data_host;
         std::string data_path;
+        // CODER7 WAVE-11 (AOSP Intent.setIdentifier/getIdentifier, API 29):
+        // the opaque identity string — filterEquals INCLUDES it (the W9
+        // filterEquals law named it; the setter/getter were absent).
+        std::string identifier;
     };
 
     std::string name() const override { return "Intent"; }
@@ -846,7 +850,15 @@ public:
                 "putExtra", "getStringExtra", "getIntExtra",
                 "getBooleanExtra", "setFlags", "addFlags",
                 "getFlags", "setPackage", "setType", "setData",
-                "setDataAndType", "getType"};
+                "setDataAndType", "getType", "getDataString",
+                "filterEquals", "fillIn", "normalizeMimeType",
+                // CODER7 WAVE-11: the normalize family (AOSP
+                // setDataAndNormalize/setTypeAndNormalize/
+                // setDataAndTypeAndNormalize — setData/... then
+                // normalizeMimeType) + the API-29 identifier pair.
+                "setDataAndNormalize", "setTypeAndNormalize",
+                "setDataAndTypeAndNormalize", "setIdentifier",
+                "getIdentifier"};
     }
     std::vector<std::string> stubbed_methods() const override {
         return {"createChooser", "parseUri", "toUri"};
@@ -883,6 +895,35 @@ public:
     }
     bool has_pending() const {
         return pending_ != nullptr || !pending_queue_.empty();
+    }
+
+    // ── CODER7 WAVE-7: cross-package ACTIVITY LAUNCH consults ───────────
+    // The ENGINE owns the WAVE-5 store index (C7PackageIndex); the shadow
+    // layer has no engine access, so startActivity consults it through
+    // these callbacks — ONE component table, zero duplication (S185
+    // VEND/DON'T-REWRITE). Both are set at engine wiring when a package
+    // store is configured; UNSET (null) ⇒ byte-identical pre-W7 shadow
+    // behavior (own-manifest resolution only, no launch gate).
+    //
+    // resolver: AOSP PackageManager.resolveIntent across ALL installed
+    // packages (the W3 match law) — "" = no cross-package candidate.
+    // gate: AOSP ActivityManagerService.checkComponentPermission +
+    // Instrumentation.checkStartActivityResult — "" = allowed; else the
+    // error contract "ACTIVITY_NOT_FOUND:..." or "SECURITY_EXCEPTION:..."
+    // (the shadow maps the prefix to the synchronous exception).
+    std::function<std::string(
+        const std::string& action, const std::vector<std::string>& cats,
+        const std::string& mime, const std::string& scheme,
+        const std::string& host, const std::string& path, bool default_only)>
+        c7_xpkg_activity_resolver_;
+    std::function<std::string(const std::string& dotted_cls)>
+        c7_activity_gate_;
+    void set_c7_xpkg_activity_resolver(
+        decltype(c7_xpkg_activity_resolver_) f) {
+        c7_xpkg_activity_resolver_ = std::move(f);
+    }
+    void set_c7_activity_gate(decltype(c7_activity_gate_) f) {
+        c7_activity_gate_ = std::move(f);
     }
 
     // S123 ACTION-RESOLVE law: manifest intent-filter action → activity
@@ -1027,7 +1068,11 @@ public:
                 "getResources", "getPackageManager", "getPackageName",
                 "getClassLoader", "getFilesDir", "getCacheDir",
                 "getSharedPreferences", "startActivity", "startActivityForResult",
-                "getCallingActivity", "getCallingPackage"};
+                "getCallingActivity", "getCallingPackage",
+                // CODER7 WAVE-11: AOSP Activity.moveTaskToBack(boolean) —
+                // the containing task moves to the BACK of the activity
+                // stack (never finishes the activity).
+                "moveTaskToBack"};
     }
     std::vector<std::string> stubbed_methods() const override {
         return {"runOnUiThread", "overridePendingTransition",
@@ -1249,6 +1294,38 @@ public:
         pending_finish_obj_id_ = oid;
         pending_finish_cls_ = cls;
         finished_by_oid_[oid] = true;  // CODER7 WAVE-3: mFinished persists
+    }
+    // ── CODER7 WAVE-9: the finishAffinity law (AOSP Activity.finishAffinity:
+    // "Finish this activity as well as all activities immediately below it
+    // in the current task that have the same affinity"). The engine's
+    // affinity proxy is the OWNING PACKAGE (AOSP: an activity's affinity
+    // defaults to its manifest package). Every same-package record in the
+    // stack is marked finished (mFinished persists per record); the
+    // teardown cascade reuses the pending-finish path. Returns the count.
+    int request_finish_affinity(uint32_t oid, const std::string& cls) {
+        // Canonical form: descriptor "Lc7/laws/Main;" and dotted
+        // "c7.laws.Main" both reduce to the owning package "c7.laws"
+        // (AOSP: the affinity default = the manifest package).
+        auto c7_pkg_of = [](const std::string& desc) -> std::string {
+            std::string s = desc;
+            if (!s.empty() && s[0] == 'L') s = s.substr(1);
+            if (!s.empty() && s.back() == ';') s.pop_back();
+            for (auto& c : s)
+                if (c == '/') c = '.';
+            size_t dot = s.rfind('.');
+            if (dot != std::string::npos) return s.substr(0, dot);
+            return s;
+        };
+        const std::string want = c7_pkg_of(cls);
+        int marked = 0;
+        for (auto& r : stack_) {
+            if (c7_pkg_of(r.cls) == want) {
+                finished_by_oid_[r.obj_id] = true;
+                marked++;
+            }
+        }
+        request_finish(oid, cls);  // cascade starts at the finisher
+        return marked;
     }
     bool pending_finish() const { return pending_finish_; }
     bool take_pending_finish() {

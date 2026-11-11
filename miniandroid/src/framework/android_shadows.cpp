@@ -15,6 +15,9 @@
 // S133 WEB-001: the S100 NET-001 HTTPS client is the runtime's existing
 // fetch substrate — REUSED for network document loads (no new network code).
 #include "../api/http_client.h"
+// CODER7 WAVE-7: the ACT-XPKG-RESOLVE / ACT-START launch-gate evidence rows
+// (the same FileIoTrace channel the engine dispatch sites record through).
+#include "../diagnostics/file_io_trace.h"
 
 #include <atomic>
 #include <algorithm>
@@ -5350,13 +5353,20 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
             if (c.kind == CallContext::Arg::Kind::OBJECT &&
                 c.object_class.size() > 1 && c.object_class.front() == 'L' &&
                 c.object_class.back() == ';') {
-                if (c.object_class == "Ljava/lang/Class;" ||
-                    c.object_class.rfind("Landroid/", 0) == 0 ||
-                    c.object_class.rfind("Ljava/", 0) == 0) {
-                    // Framework type (Class token, Uri data, ...) — never an
-                    // activity component (PackageParser rejects android.*
-                    // components; a Class token carries its referent only in
-                    // the engine's own field, not in object_class).
+                // CODER7 WAVE-8 FIX (probe-discovered dead branch): the old
+                // shape was
+                //   if (Class || Landroid/* || Ljava/*) { Class-token law }
+                //   else if (Uri) { data law }        ← UNREACHABLE
+                //   else if (not framework) { component }
+                // "Landroid/net/Uri;" matches the Landroid/* catch-all, so
+                // the ctor's data-URI law was DEAD CODE (the W3 matchData
+                // half never ran on the ctor path; only setData() filled
+                // the dims). Live evidence: the priority-10 singleTask
+                // fixture resolved for EVERY example.org URL because
+                // host/path never reached the index law. The chain below
+                // expresses the three arms directly — no catch-all can
+                // swallow the Uri arm anymore.
+                if (c.object_class == "Ljava/lang/Class;" && heap_) {
                     // S123 CLASS-TOKEN-COMPONENT law: AOSP
                     // Intent(Context, Class) = setClass(ctx, cls) — the
                     // component IS the Class token's referent. The engine's
@@ -5369,20 +5379,19 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
                     // component empty → "[INTENT] startActivity called (no
                     // component set)" → the Game activity never launched
                     // and the game could not be started by tap input.
-                    if (c.object_class == "Ljava/lang/Class;" && heap_) {
-                        std::string referent;
-                        if (heap_->get_object_string_field(
-                                c.object_id, "__referent_desc", referent) &&
-                            referent.size() > 1 && referent.front() == 'L' &&
-                            referent.back() == ';' &&
-                            referent.rfind("Landroid/", 0) != 0 &&
-                            referent.rfind("Ljava/", 0) != 0 &&
-                            referent.rfind("Landroidx/", 0) != 0) {
-                            pi->component_class = referent;
-                        }
+                    std::string referent;
+                    if (heap_->get_object_string_field(
+                            c.object_id, "__referent_desc", referent) &&
+                        referent.size() > 1 && referent.front() == 'L' &&
+                        referent.back() == ';' &&
+                        referent.rfind("Landroid/", 0) != 0 &&
+                        referent.rfind("Ljava/", 0) != 0 &&
+                        referent.rfind("Landroidx/", 0) != 0) {
+                        pi->component_class = referent;
                     }
                 } else if (c.object_class == "Landroid/net/Uri;") {
-                    // Intent(String, Uri) / setData data law.
+                    // Intent(String, Uri) — the DATA law (S107 ROOT-015:
+                    // the Uri is intent data, never the component).
                     pi->data_uri_object = c.object_id;
                     pi->data_uri_class = c.object_class;
                     // CODER7 WAVE-3: parse the data URI's match dimensions
@@ -5430,6 +5439,8 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
                 } else if (c.object_class.rfind("Landroid/", 0) != 0 &&
                            c.object_class.rfind("Ljava/", 0) != 0 &&
                            c.object_class.rfind("Landroidx/", 0) != 0) {
+                    // MASTER-2: other app-shaped classes claim the component
+                    // (framework classes never become components).
                     pi->component_class = c.object_class;
                 }
             }
@@ -5527,8 +5538,21 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
             }
         };
         if (m == "setType") {
+            // ── CODER7 WAVE-9 (AOSP Intent.setType, frameworks/base
+            // Intent.java: "This method automatically clears any data
+            // that was previously set"): mType = type; mData = null.
+            // The W8 tree kept BOTH — every mixed-data consumer saw a
+            // filter shape AOSP never produces.
             pi->type = ctx.arg_as_string(0);
+            pi->data_uri_object = 0;
+            pi->data_scheme.clear();
+            pi->data_host.clear();
+            pi->data_path.clear();
         } else if (m == "setData") {
+            // ── CODER7 WAVE-9 (AOSP Intent.setData: "automatically
+            // clears any type that was previously set"): mData = data;
+            // mType = null.
+            pi->type.clear();
             if (!ctx.args.empty() &&
                 ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
                 ctx.args[0].object_id != 0) {
@@ -5539,7 +5563,7 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
                         : ctx.args[0].object_class;
                 c7_parse_dims(c7_uri_string_of(ctx.args[0].object_id));
             }
-        } else {  // setDataAndType
+        } else {  // setDataAndType — the ONLY setter that records BOTH
             if (!ctx.args.empty() &&
                 ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
                 ctx.args[0].object_id != 0) {
@@ -5560,6 +5584,241 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         // AOSP Intent.getType: null when no explicit MIME was set.
         if (pi->type.empty()) return CallResult::handled_null();
         return CallResult::handled_string(pi->type);
+    }
+    if (m == "setDataAndNormalize" || m == "setTypeAndNormalize" ||
+        m == "setDataAndTypeAndNormalize") {
+        // ── CODER7 WAVE-11 (AOSP Intent.java, android-14): the
+        // normalize family DELEGATES to the base setters with the
+        // normalizeMimeType law applied:
+        //   setTypeAndNormalize(t)    = setType(normalizeMimeType(t))
+        //     (setData law intact: the data is CLEARED)
+        //   setDataAndNormalize(d)    = setData(d).setTypeAndNormalize(
+        //                                 d.getType())
+        //   setDataAndTypeAndNormalize(d, t) =
+        //     setDataAndType(d, normalizeMimeType(t)) (BOTH kept)
+        // The W10 tree had NO normalize setters: apps using them saw a
+        // filter shape AOSP never produces (raw case, ";parameter"
+        // residue). The Uri's own MIME (d.getType()) is read from the
+        // engine Uri's "mime"/"type" string field when present.
+        static auto c7_normalize = [](const std::string& raw) {
+            static auto isspace = [](char c) {
+                return c == ' ' || c == '\t' || c == '\n' || c == '\r' ||
+                       c == '\f' || c == '\v';
+            };
+            std::string t = raw;
+            size_t b = 0, e = t.size();
+            while (b < e && isspace(t[b])) b++;
+            while (e > b && isspace(t[e - 1])) e--;
+            t = t.substr(b, e - b);
+            size_t semi = t.find(';');
+            if (semi != std::string::npos) t = t.substr(0, semi);
+            for (auto& c : t)
+                if (c >= 'A' && c <= 'Z') c = char(c - 'A' + 'a');
+            return t;
+        };
+        auto c7_uri_mime = [&](uint32_t uid) -> std::string {
+            if (uid == 0 || !heap_ || !heap_->has_object(uid)) return {};
+            std::string mt;
+            if (heap_->get_object_string_field(uid, "mime", mt)) return mt;
+            if (heap_->get_object_string_field(uid, "type", mt)) return mt;
+            return {};
+        };
+        auto c7_uri_obj = [&]() -> uint32_t {
+            return (!ctx.args.empty() &&
+                    ctx.args[0].kind == CallContext::Arg::Kind::OBJECT)
+                       ? ctx.args[0].object_id
+                       : 0;
+        };
+        if (m == "setTypeAndNormalize") {
+            // setType(normalizeMimeType(t)) — clears the data (the
+            // setType law the AOSP delegation rides).
+            pi->type = c7_normalize(ctx.arg_as_string(0));
+            pi->data_uri_object = 0;
+            pi->data_scheme.clear();
+            pi->data_host.clear();
+            pi->data_path.clear();
+        } else if (m == "setDataAndNormalize") {
+            uint32_t uid = c7_uri_obj();
+            pi->type.clear();
+            pi->data_uri_object = uid;
+            if (uid != 0) {
+                pi->data_uri_class =
+                    ctx.args[0].object_class.empty()
+                        ? std::string("Landroid/net/Uri;")
+                        : ctx.args[0].object_class;
+            }
+            pi->type = c7_normalize(c7_uri_mime(uid));
+        } else {  // setDataAndTypeAndNormalize
+            uint32_t uid = c7_uri_obj();
+            pi->data_uri_object = uid;
+            if (uid != 0) {
+                pi->data_uri_class =
+                    ctx.args[0].object_class.empty()
+                        ? std::string("Landroid/net/Uri;")
+                        : ctx.args[0].object_class;
+            }
+            if (ctx.args.size() >= 2)
+                pi->type = c7_normalize(ctx.arg_as_string(1));
+        }
+        return CallResult::handled_object(ctx.receiver_id,
+                                          "Landroid/content/Intent;");
+    }
+    if (m == "setIdentifier" || m == "getIdentifier") {
+        // ── CODER7 WAVE-11 (AOSP Intent.setIdentifier/getIdentifier,
+        // API 29): the opaque identity string; filterEquals INCLUDES it.
+        if (m == "setIdentifier") {
+            pi->identifier = ctx.arg_as_string(0);
+            return CallResult::handled_object(ctx.receiver_id,
+                                              "Landroid/content/Intent;");
+        }
+        if (pi->identifier.empty()) return CallResult::handled_null();
+        return CallResult::handled_string(pi->identifier);
+    }
+    if (m == "getDataString") {
+        // ── CODER7 WAVE-9: AOSP Intent.getDataString — the raw form of
+        // the data Uri (null when no data). The W8 tree had NO
+        // implementation: every consumer (chooser deep-links, view
+        // actions, the filter matchers' debug paths) saw a fabricated
+        // null.
+        if (pi->data_uri_object == 0 || heap_ == nullptr ||
+            !heap_->has_object(pi->data_uri_object))
+            return CallResult::handled_null();
+        std::string raw;
+        if (heap_->get_object_string_field(pi->data_uri_object,
+                                           "uri_raw", raw) &&
+            !raw.empty())
+            return CallResult::handled_string(raw);
+        if (heap_->get_object_string_field(pi->data_uri_object,
+                                           "uri", raw) &&
+            !raw.empty())
+            return CallResult::handled_string(raw);
+        return CallResult::handled_null();
+    }
+    if (m == "filterEquals") {
+        // ── CODER7 WAVE-9 (AOSP Intent.filterEquals — read from the
+        // android-14/main source): equality over action, data, type,
+        // identifier, package, component, categories. EXTRAS and flags
+        // are deliberately EXCLUDED. The W8 tree had NO implementation:
+        // every filter-equality consumer saw "false".
+        uint32_t other_id = 0;
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT)
+            other_id = ctx.args[0].object_id;
+        if (other_id == 0) return CallResult::handled_bool(false);
+        auto po = get_or_create_intent(other_id);
+        if (po == nullptr) return CallResult::handled_bool(false);
+        bool same_action = pi->action == po->action;
+        bool same_data = (pi->data_uri_object == 0) ==
+                         (po->data_uri_object == 0);
+        if (same_data && pi->data_uri_object != 0 && heap_ != nullptr) {
+            std::string a, b;
+            heap_->get_object_string_field(pi->data_uri_object,
+                                           "uri_raw", a);
+            heap_->get_object_string_field(po->data_uri_object,
+                                           "uri_raw", b);
+            same_data = a == b;
+        }
+        bool same_type = pi->type == po->type;
+        bool same_pkg = pi->package_name == po->package_name;
+        bool same_comp = pi->component_class == po->component_class &&
+                         pi->component_package == po->component_package;
+        bool same_cats = pi->categories.size() == po->categories.size();
+        if (same_cats) {
+            for (const auto& c : pi->categories) {
+                bool found = false;
+                for (const auto& d : po->categories)
+                    if (d == c) { found = true; break; }
+                if (!found) { same_cats = false; break; }
+            }
+        }
+        // CODER7 WAVE-11: the identifier conjunct (AOSP filterEquals —
+        // "the identity of the intent"; the W9 law named it, the field
+        // now exists and MUST take part in the equality).
+        bool same_ident = pi->identifier == po->identifier;
+        return CallResult::handled_bool(same_action && same_data &&
+                                        same_type && same_pkg &&
+                                        same_comp && same_cats &&
+                                        same_ident);
+    }
+    if (m == "fillIn") {
+        // ── CODER7 WAVE-9 (AOSP Intent.fillIn, android-14/main — the
+        // return bitset marks fields that were CHANGED; data+type copy
+        // as a UNIT when the destination has NEITHER; the component is
+        // special: copied ONLY when FILL_IN_COMPONENT is explicit).
+        // FILL_IN_ACTION=1 FILL_IN_DATA=2 FILL_IN_TYPES=4
+        // FILL_IN_COMPONENT=8 FILL_IN_PACKAGE=16 FILL_IN_CATEGORIES=32.
+        uint32_t other_id = 0;
+        int flags = 0;
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT)
+            other_id = ctx.args[0].object_id;
+        if (ctx.args.size() >= 2 &&
+            ctx.args[1].kind == CallContext::Arg::Kind::INT)
+            flags = ctx.args[1].int_val;
+        if (other_id == 0)
+            return CallResult::handled_int(0);
+        auto po = get_or_create_intent(other_id);
+        if (po == nullptr) return CallResult::handled_int(0);
+        int changes = 0;
+        if (!po->action.empty() &&
+            (pi->action.empty() || (flags & 1) != 0)) {
+            pi->action = po->action;
+            changes |= 1;
+        }
+        bool other_has_data = po->data_uri_object != 0 ||
+                              !po->type.empty();
+        bool dest_has_either =
+            pi->data_uri_object != 0 || !pi->type.empty();
+        if (other_has_data && (!dest_has_either || (flags & 2) != 0)) {
+            pi->data_uri_object = po->data_uri_object;
+            pi->data_uri_class = po->data_uri_class;
+            pi->data_scheme = po->data_scheme;
+            pi->data_host = po->data_host;
+            pi->data_path = po->data_path;
+            pi->type = po->type;
+            changes |= 2;
+        }
+        if (!po->package_name.empty() &&
+            (pi->package_name.empty() || (flags & 16) != 0)) {
+            pi->package_name = po->package_name;
+            changes |= 16;
+        }
+        if (!po->component_class.empty() && (flags & 8) != 0) {
+            pi->component_class = po->component_class;
+            pi->component_package = po->component_package;
+            changes |= 8;
+        }
+        if (!po->categories.empty() &&
+            (pi->categories.empty() || (flags & 32) != 0)) {
+            pi->categories = po->categories;
+            changes |= 32;
+        }
+        pi->flags |= po->flags;
+        return CallResult::handled_int(changes);
+    }
+    if (m == "normalizeMimeType") {
+        // ── CODER7 WAVE-9 (AOSP Intent.normalizeMimeType — read from
+        // the android-14/main source): null passthrough; trim + toLowerCase
+        // (ROOT); strip the ";parameter" suffix. Static method — the
+        // receiver slot is the class.
+        std::string t = ctx.arg_as_string(0);
+        if (t.empty() &&
+            (ctx.args.empty() ||
+             ctx.args[0].kind != CallContext::Arg::Kind::STRING))
+            return CallResult::handled_null();
+        static auto c7_isspace = [](char c) {
+            return c == ' ' || c == '\t' || c == '\n' || c == '\r' ||
+                   c == '\f' || c == '\v';
+        };
+        size_t b = 0, e = t.size();
+        while (b < e && c7_isspace(t[b])) b++;
+        while (e > b && c7_isspace(t[e - 1])) e--;
+        t = t.substr(b, e - b);
+        size_t semi = t.find(';');
+        if (semi != std::string::npos) t = t.substr(0, semi);
+        for (auto& c : t)
+            if (c >= 'A' && c <= 'Z') c = char(c - 'A' + 'a');
+        return CallResult::handled_string(t);
     }
     if (m == "setClass" || m == "setClassName" || m == "setComponent") {
         // setClass(Context, Class), setClassName(Context, String),
@@ -6111,6 +6370,29 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_void();
     }
+    if (m == "moveTaskToBack") {
+        // ── CODER7 WAVE-11 (AOSP Activity.moveTaskToBack(boolean) —
+        // Activity.java + ActivityTaskManager.moveTaskToBack): move the
+        // task CONTAINING this activity to the back of the activity
+        // stack; the activity does NOT finish (isFinishing stays false
+        // through the move). Returns whether the task was moved (or is
+        // about to move) — false only when the activity is not in a
+        // movable (current) task. Honest engine scope: the headless
+        // runtime has no home task to restore behind, so the REORDER
+        // itself is unobservable; the LAW is the boolean contract (the
+        // receiver is in the live task ⇒ true) + the marker row. The
+        // activity's lifecycle state is NOT fabricated to PAUSED.
+        bool c7_in_task = ctx.receiver_id != 0;
+        std::cerr << "[ACT-MOVETASKBACK] receiver=" << ctx.receiver_class
+                  << " moved=" << (c7_in_task ? "1" : "0")
+                  << " (AOSP: task to back, activity keeps its state)"
+                  << std::endl;
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "ACT-MOVETASKBACK", ctx.receiver_class, c7_in_task,
+            "moveTaskToBack answered the AOSP boolean",
+            "ActivityShadow::moveTaskToBack");
+        return CallResult::handled_bool(c7_in_task);
+    }
     if (m == "finish") {
         // G07 law (Activity.java finish() + ActivityThread
         // handleDestroyActivity): finish() requests destruction; the
@@ -6122,6 +6404,20 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         // FINISHER, not blindly the current top (SplashActivity.finish()
         // after startActivity() must not kill the freshly-resumed Main).
         request_finish(ctx.receiver_id, ctx.receiver_class);
+        return CallResult::handled_void();
+    }
+    if (m == "finishAffinity") {
+        // ── CODER7 WAVE-9 (AOSP Activity.finishAffinity — frameworks/base
+        // Activity.java: "Finish this activity as well as all activities
+        // immediately below it in the current task that have the same
+        // affinity"). The W8 tree had NO implementation: the generic
+        // dispatch answered THIS and the stack kept its records.
+        int c7_marked = request_finish_affinity(ctx.receiver_id,
+                                                ctx.receiver_class);
+        std::cerr << "[ACT-FINAFFINITY] receiver=" << ctx.receiver_class
+                  << " finished=" << c7_marked
+                  << " (affinity = owning package; AOSP cascade at the "
+                     "next frame boundary)" << std::endl;
         return CallResult::handled_void();
     }
     if (m == "isFinishing") {
@@ -6616,7 +6912,12 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 if (intent_id != 0) {
                     auto pi = intent_shadow->get_or_create_intent(intent_id);
                     pi->intent_object_id = intent_id;   // G08: keep the object
-                    intent_shadow->set_pending(pi);
+                    // CODER7 WAVE-7 (AOSP ordering law): set_pending moves
+                    // BELOW the resolution+gate — a THROWN launch
+                    // (SecurityException / ActivityNotFoundException) must
+                    // NOT queue (Instrumentation.checkStartActivityResult
+                    // throws before ActivityStarter records anything); the
+                    // previously-queued valid pending stays untouched.
                     {
                         // S123 DIAG (bounded): launch-time intent state.
                         static thread_local uint64_t sa_n = 0;
@@ -6656,7 +6957,70 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                                       << pi->action << "\" -> " << resolved
                                       << std::endl;
                         }
+                        // CODER7 WAVE-7: cross-package implicit RESOLUTION
+                        // fallback (AOSP ContextImpl.startActivity →
+                        // PackageManager.resolveIntent resolves across ALL
+                        // installed packages). Own-manifest miss ⇒ the
+                        // store index (W5 component table); the resolved
+                        // class is recorded loudly (ACT-XPKG-RESOLVE).
+                        if (pi->component_class.empty() &&
+                            intent_shadow->c7_xpkg_activity_resolver_) {
+                            std::string c7_x =
+                                intent_shadow->c7_xpkg_activity_resolver_(
+                                    pi->action, pi->categories, pi->type,
+                                    pi->data_scheme, pi->data_host,
+                                    pi->data_path, /*default_only=*/true);
+                            if (!c7_x.empty()) {
+                                pi->component_class = c7_x;
+                                miniandroid::diagnostics::FileIoTrace::
+                                    instance()
+                                        .record(
+                                            "ACT-XPKG-RESOLVE", c7_x, true,
+                                            "startActivity implicit "
+                                            "resolution via store index "
+                                            "(action=" + pi->action + ")",
+                                            ctx.caller);
+                                std::cerr << "[C7-ACT-XPKG] implicit "
+                                             "resolution action=\""
+                                          << pi->action << "\" -> " << c7_x
+                                          << std::endl;
+                            }
+                        }
                     }
+                    // CODER7 WAVE-7: the SYNCHRONOUS launch gate (AOSP
+                    // Instrumentation.checkStartActivityResult via
+                    // ActivityManagerService.checkComponentPermission): a
+                    // DISABLED target throws ActivityNotFoundException and a
+                    // cross-package NON-EXPORTED target throws
+                    // SecurityException — both HERE, in the caller's frame,
+                    // before any queueing (the pre-W7 behavior queued first
+                    // and silently no-op'd at the drain).
+                    if (!pi->component_class.empty() &&
+                        intent_shadow->c7_activity_gate_) {
+                        std::string c7_err =
+                            intent_shadow->c7_activity_gate_(
+                                pi->component_class);
+                        if (!c7_err.empty()) {
+                            miniandroid::diagnostics::FileIoTrace::instance()
+                                .record("ACT-START", pi->component_class,
+                                        false, c7_err, ctx.caller);
+                            std::cerr << "[C7-ACT-GATE] DENIED "
+                                      << pi->component_class << ": "
+                                      << c7_err << std::endl;
+                            if (c7_err.rfind("SECURITY_EXCEPTION:", 0) == 0)
+                                return CallResult::handled_exception(
+                                    "Ljava/lang/SecurityException;",
+                                    c7_err.substr(18));
+                            return CallResult::handled_exception(
+                                "Landroid/content/"
+                                "ActivityNotFoundException;",
+                                c7_err.substr(c7_err.find(':') + 1));
+                        }
+                    }
+                    // CODER7 WAVE-7: the gate PASSED — only NOW does the
+                    // launch record queue (AOSP ActivityStarter order:
+                    // checkComponentPermission BEFORE the task insert).
+                    intent_shadow->set_pending(pi);
                     // G08: startActivityForResult(Intent, int) — capture the
                     // request code for onActivityResult delivery on pop.
                     if (m == "startActivityForResult" && ctx.args.size() >= 2 &&

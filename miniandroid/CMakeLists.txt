@@ -78,6 +78,7 @@ add_library(miniandroid_core STATIC
     src/dex/dex_parser.cpp
     src/dex/class_resolver.cpp
     src/dex/dex_interpreter_batch.cpp
+    src/dex/c7_package_index.cpp  # CODER7 WAVE-5: PMS-lite
     
     # Runtime
     src/runtime/execution_engine.cpp

@@ -59,7 +59,9 @@
 #define MINIANDROID_FRAMEWORK_PENDING_INTENT_SHADOW_H
 
 #include "shadow_registry.h"
+#include "android_shadows.h"  // CODER7 W8-L2: IntentShadow (the fill-in merge)
 
+#include <functional>
 #include <map>
 #include <string>
 
@@ -88,6 +90,21 @@ public:
         return manifest_exact_alarm_capable_;
     }
 
+    // ── CODER7 WAVE-8 L2: the real send() dispatch channel ──────────────
+    // AOSP PendingIntent.send → ActivityManagerService (the SAME
+    // broadcastIntentLocked / startService / startActivityAsUser pipeline
+    // the app-context calls reach). The engine wires ONE dispatcher (the
+    // DalvikExecutionEngine law path); the shadow owns the RECORD laws
+    // (ONE_SHOT cancel, IMMUTABLE fill-in refusal, CanceledException).
+    // kind: "BROADCAST" | "SERVICE" | "ACTIVITY"; returns dispatch ok.
+    using SendDispatcher = std::function<
+        bool(const std::string& kind, uint32_t frozen_intent_oid,
+             std::string& err)>;
+    void set_send_dispatcher(SendDispatcher fn) {
+        send_dispatcher_ = std::move(fn);
+    }
+    size_t sends_executed() const { return sends_executed_; }
+
     // ── accessors for evidence / diagnostics ────────────────────────────
     struct Record {
         std::string kind;        // BROADCAST / ACTIVITY / SERVICE
@@ -95,6 +112,10 @@ public:
         uint32_t intent_oid = 0;
         int32_t flags = 0;
         uint32_t object_id = 0;  // heap identity of the PendingIntent
+        // CODER7 WAVE-8 L2: FLAG_ONE_SHOT cancel state — after the first
+        // successful send the record is canceled and every further send()
+        // throws PendingIntent.CanceledException (AOSP sendInner law).
+        bool one_shot_canceled = false;
     };
     size_t live_records() const { return records_.size(); }
     const Record* record_by_oid(uint32_t oid) const {
@@ -108,9 +129,12 @@ private:
     // heap object id → record (identity lookups from cancel()).
     std::map<uint32_t, Record*> oid_index_;
     bool manifest_exact_alarm_capable_ = false;
+    SendDispatcher send_dispatcher_;
+    size_t sends_executed_ = 0;
 
     CallResult factory(const CallContext& ctx, const std::string& kind);
     CallResult record_for(Record rec);
+    CallResult send_pending(const CallContext& ctx);
 };
 
 }} // namespace miniandroid::framework

@@ -16,6 +16,7 @@
 #include "dex_parser.h"
 #include "class_resolver.h"
 #include "../apk/manifest_reader.h"  // 371-CLOSEOUT: component meta-data law
+#include "c7_package_index.h"        // CODER7 WAVE-5: PMS-lite (cross-package index)
 #include "../runtime/runtime_metadata.h"
 #include "../runtime/vtable_dispatch.h"
 #include "../api/android_stubs.h"
@@ -34,6 +35,7 @@ class HeapAllocator;
 }}
 #include <string>
 #include <vector>
+#include <algorithm>  // CODER7 W8-L1: std::find in c7_check_provider_access
 #include <filesystem>
 #include <map>
 #include <unordered_map>
@@ -1775,6 +1777,52 @@ public:
             if (pname == cls) return pen;
         return true;
     }
+    // CODER7 WAVE-8 L1: per-provider android:readPermission /
+    // android:writePermission plumbing (AOSP PackageParser.Provider).
+    void set_manifest_provider_perms(
+        std::vector<std::tuple<std::string, std::string, std::string>>
+            name_perms) {
+        manifest_provider_perms_ = std::move(name_perms);
+    }
+    // Register a provider INSTANCE's permission identity (own install +
+    // foreign store install; the CRUD gate consults it per op).
+    void c7_set_provider_perms(uint32_t oid, const std::string& read_perm,
+                               const std::string& write_perm,
+                               const std::string& owner_pkg) {
+        c7_provider_perms_[oid] = {read_perm, write_perm, owner_pkg};
+    }
+    // AOSP checkContentProviderAccess law (ActivityManagerService +
+    // ContentProvider_transport): a provider op is granted when
+    //   * the caller's package OWNS the provider (same-app access never
+    //     needs a permission), or
+    //   * the op's permission is empty, or
+    //   * the running package declared it (uses-permission; the
+    //     deterministic install-grant law).
+    // Returns "" when allowed, otherwise the required permission name.
+    std::string c7_check_provider_access(uint32_t prov_oid,
+                                         bool write_op) const {
+        auto it = c7_provider_perms_.find(prov_oid);
+        if (it == c7_provider_perms_.end()) return "";  // unregistered: pre-W8 shape
+        const auto& pp = it->second;
+        if (pp.owner_pkg == package_name_) return "";
+        const std::string& perm = write_op ? pp.write_perm : pp.read_perm;
+        if (perm.empty()) return "";
+        if (std::find(manifest_requested_permissions_.begin(),
+                      manifest_requested_permissions_.end(),
+                      perm) != manifest_requested_permissions_.end())
+            return "";
+        return perm;
+    }
+    // The permission the gate actually enforces for this op ("" = none) —
+    // evidence-side twin of c7_check_provider_access (PROV-PERM-OK rows).
+    std::string c7_provider_enforced_perm(uint32_t prov_oid,
+                                          bool write_op) const {
+        auto it = c7_provider_perms_.find(prov_oid);
+        if (it == c7_provider_perms_.end()) return "";
+        const auto& pp = it->second;
+        if (pp.owner_pkg == package_name_) return "";
+        return write_op ? pp.write_perm : pp.read_perm;
+    }
     // 371-CLOSEOUT: component meta-data with resource references — the
     // ProviderInfo.metaData / resolveContentProvider / loadXmlMetaData law
     // set (androidx FileProvider contract; generic across all components).
@@ -1878,6 +1926,16 @@ public:
     void set_manifest_service_filters(std::vector<ManifestFilterTransfer> svcs) {
         manifest_service_filters_ = std::move(svcs);
     }
+    // ── CODER7 WAVE-5: PMS-lite — the cross-package component index ──────
+    // Non-null AND non-empty ⇒ the PackageManager query/resolve APIs, the
+    // installed-packages/provider identity APIs and the broadcast dispatch
+    // RESOLUTION consult it (AOSP PackageManagerService resolves across ALL
+    // installed packages). Null ⇒ byte-identical pre-WAVE-5 behavior (no
+    // silent drift when no store is configured).
+    void set_package_index(std::shared_ptr<C7PackageIndex> idx) {
+        c7_pkg_index_ = std::move(idx);
+    }
+    const C7PackageIndex* package_index() const { return c7_pkg_index_.get(); }
     // CODER7 WAVE-3: manifest activity lookups for the task laws — the
     // launch drain reads launchMode (singleTop) and enabled per target
     // class (AOSP ActivityInfo.launchMode / PackageItemInfo.isEnabled).
@@ -1890,6 +1948,15 @@ public:
         }
         for (const auto& a : manifest_activity_filters_)
             if (a.cls == dotted) return a.launch_mode;
+        // CODER7 WAVE-8 L4: the launch drain reads the SAME law for
+        // foreign (store) activities — the W5 index already carries
+        // launch_mode per C7IdxActivity (AOSP ActivityInfo.launchMode
+        // regardless of owning package; standard = 0).
+        if (c7_pkg_index_) {
+            for (const auto& p : c7_pkg_index_->packages())
+                for (const auto& a : p.activities)
+                    if (a.cls == dotted) return a.launch_mode;
+        }
         return 0;
     }
     bool c7_activity_enabled(const std::string& cls_desc) const {
@@ -1977,7 +2044,91 @@ public:
     //
     // Returns the number of newly-injected classes.
     size_t inject_secondary_dex_classes();
-    
+
+    // ── CODER7 WAVE-6 (S185 SQLITE RULE applied to cross-package code):
+    // LoadedApk-lite — FOREIGN APK CODE INGESTION ──────────────────────────────
+    // AOSP law (LoadedApk.java + ActivityThread.handleReceiver): every
+    // installed package owns a LoadedApk with its OWN ClassLoader; the system
+    // delivers components cross-package by LOADING the target package's code
+    // and running the REAL component class. WAVE-5 resolved foreign components
+    // from the package index and honestly did not execute them ("foreign dex
+    // not loaded by this engine" — issue #520 W5.7 limitation #1). WAVE-6
+    // closes that gap with the S185 LOAD-FIRST law (#536): every store APK's
+    // classes.dex/classes2..N are parsed at boot, their classes injected into
+    // the SAME merged class index the running app uses (the EXP-088+ multi-DEX
+    // injection mechanics, generalized from per-APK to per-STORE), and the
+    // dispatch sites (broadcast delivery, service bring-up, provider
+    // acquisition) then run the foreign component's REAL bytecode through the
+    // unmodified try_recursive_invoke machinery. No synthetic components, no
+    // fabricated callbacks: a foreign class that fails to parse/load falls
+    // back to the WAVE-5 honest "resolved, not executed" rows.
+    //
+    // apk_package_pairs: (apk_path, owning_package_name) — the owning package
+    // identity comes from the WAVE-5 C7PackageIndex (ComponentInfo.packageName).
+    // Returns the number of newly-injected foreign classes.
+    size_t inject_foreign_apk_code(
+        const std::vector<std::pair<std::string, std::string>>&
+            apk_package_pairs);
+
+    // The class → owning-package map for foreign classes (AOSP LoadedApk:
+    // the package every injected class belongs to). Own (running-package)
+    // classes are intentionally absent — the lookup answers "" for them,
+    // which every caller must treat as "owned by the running package".
+    void set_foreign_class_owner(const std::string& class_desc,
+                                 const std::string& package_name);
+    // "" ⇒ not a foreign class (the running package owns it).
+    const std::string& foreign_owner_package(const std::string& class_desc)
+        const;
+
+    // ── CODER7 WAVE-7: CROSS-PACKAGE ACTIVITY LAUNCH (AOSP ActivityStarter
+    // + ActivityManagerService.checkComponentPermission) ───────────────────
+    // AOSP law: startActivity resolves implicit intents across ALL installed
+    // packages (PackageManagerService → IntentResolver), then gates the
+    // launch SYNCHRONOUSLY in the caller's frame (Instrumentation.
+    // checkStartActivityResult): a DISABLED target throws
+    // android.content.ActivityNotFoundException ("component disabled"),
+    // a NON-EXPORTED target owned by ANOTHER uid throws
+    // java.lang.SecurityException ("Permission Denial ... not exported").
+    // Same-uid (own-package) starts of non-exported activities are ALLOWED
+    // (checkComponentPermission: caller uid == owner uid ⇒ grant).
+    //
+    // Both answers consult the WAVE-5 store index (register_own_package
+    // ingests the running package too, so one lookup serves own and foreign
+    // targets alike). No store configured (c7_pkg_index_ null) ⇒ the gate
+    // answers "" (allowed) and the resolver answers "" (no cross-package
+    // candidate) — byte-identical pre-W7 behavior for non-store runs.
+    //
+    // c7_activity_launch_gate: "" = allowed; non-empty = the synchronous
+    // error contract, prefixed "ACTIVITY_NOT_FOUND:" or
+    // "SECURITY_EXCEPTION:" (the caller maps the prefix to the exception
+    // class and throws the remainder as the message).
+    std::string c7_activity_launch_gate(const std::string& dotted_cls) const;
+
+    // Implicit cross-package ACTIVITY resolution (AOSP
+    // ContextImpl.startActivity → PackageManager.resolveIntent): the
+    // WAVE-3 match law (action + categories + matchData + CATEGORY_DEFAULT
+    // for startActivity) evaluated over EVERY installed package. The first
+    // candidate follows the index's priority-then-ingest ordering (the W5
+    // best-match law). "" = no candidate.
+    std::string c7_resolve_activity_xpkg(
+        const std::string& action, const std::vector<std::string>& cats,
+        const std::string& mime, const std::string& scheme,
+        const std::string& host, const std::string& path,
+        bool default_only) const;
+
+    // ── CODER7 WAVE-8 L2: the PendingIntent.send dispatch law ───────────
+    // AOSP PendingIntentRecord.sendInner routes the FROZEN intent through
+    // the SAME component pipeline the app-context calls reach:
+    //   BROADCAST → ContextImpl.sendBroadcast (broadcastIntentLocked),
+    //   SERVICE   → ContextImpl.startService,
+    //   ACTIVITY  → AMS startActivityAsUser (the ContextImpl NEW_TASK gate
+    //               does NOT apply; the resolve + synchronous gate + queue
+    //               law of WAVE-7 does).
+    // Wired into PendingIntentShadow via set_send_dispatcher (one engine
+    // law, zero duplicated dispatch). Returns false + err on refusal.
+    bool c7_send_pending_intent(const std::string& kind,
+                                uint32_t intent_oid, std::string& err);
+
     /**
      * Execute APK through real DEX bytecode interpretation
      */
@@ -3739,6 +3890,21 @@ public:
     std::vector<std::pair<std::string, bool>> manifest_provider_exported_;
     // CODER7 WAVE-3: per-provider android:enabled (disabled-components law).
     std::vector<std::pair<std::string, bool>> manifest_provider_enabled_;
+    // CODER7 WAVE-8 L1: per-provider android:readPermission /
+    // android:writePermission (AOSP PackageParser.Provider law — the
+    // CRUD transport checks them per op; empty = no permission required).
+    std::vector<std::tuple<std::string, std::string, std::string>>
+        manifest_provider_perms_;
+    // CODER7 WAVE-8 L1: provider instance oid → (read_perm, write_perm,
+    // owning_package). Own providers register at install_content_providers,
+    // foreign providers at the W6 store install; the CRUD transport gate
+    // consults it per op (checkContentProviderAccess law).
+    struct C7ProviderPerms {
+        std::string read_perm;
+        std::string write_perm;
+        std::string owner_pkg;
+    };
+    std::map<uint32_t, C7ProviderPerms> c7_provider_perms_;
     // GATE A: provider object → bound context object (attachInfo law).
     std::map<uint32_t, uint32_t> provider_context_;
     // ── #371 PHASE B1: ContentResolver authority→provider dispatch map ──
@@ -3900,6 +4066,55 @@ public:
     // CODER7 WAVE-3: activity/service resolution models (set_manifest_*_filters).
     std::vector<ManifestFilterTransfer> manifest_activity_filters_;
     std::vector<ManifestFilterTransfer> manifest_service_filters_;
+    // CODER7 WAVE-5: PMS-lite — the cross-package component index (see the
+    // set_package_index law above).
+    std::shared_ptr<C7PackageIndex> c7_pkg_index_;
+    // CODER7 WAVE-9: in-process ContentObserver registry (AOSP
+    // ContentResolver.registerContentObserver → ContentService.register:
+    // (uri, notifyForDescendents, observer) records; notifyChange(uri)
+    // dispatches onChange(selfChange=false) to every observer whose
+    // authority matches and whose uri filter accepts the notified uri —
+    // exact equality when notifyForDescendents=false, authority+path-
+    // prefix when true. The ORIGINATING observer (the one passed to
+    // notifyChange) is excluded — the AOSP selfChange law).
+    struct C7ContentObserver {
+        uint32_t oid = 0;
+        std::string uri_raw;
+        std::string authority;
+        bool notify_descendants = false;
+    };
+    std::vector<C7ContentObserver> c7_content_observers_;
+    // CODER7 WAVE-9: the caller package of the CURRENT provider op (the
+    // ContentProvider.getCallingPackage law — AOSP: "return the name of
+    // the package that invoked this... available while in
+    // query/insert/update/delete/openFile; null otherwise"). Set by the
+    // ContentResolver dispatch around each provider invocation.
+    std::string c7_provider_calling_pkg_;
+    // CODER7 WAVE-9: runtime component-enabled overrides (the
+    // PackageManager.setComponentEnabledSetting law — AOSP PMS keeps
+    // per-component enabled-state settings that override the manifest;
+    // key = "pkg/cls" flattened form, value = COMPONENT_ENABLED_STATE_*).
+    std::map<std::string, int> c7_component_enabled_overrides_;
+    // CODER7 WAVE-6: foreign class → owning package (LoadedApk-lite; see
+    // inject_foreign_apk_code). Own classes are absent ⇒ "" = running pkg.
+    std::map<std::string, std::string> c7_foreign_class_owner_;
+    // CODER7 WAVE-6: whether the foreign code pass already ran for this
+    // execution (idempotence guard — injection is once-per-boot, the AOSP
+    // LoadedApk model).
+    bool c7_foreign_code_injected_ = false;
+    // CODER7 WAVE-11 (AOSP ActivityManagerService URI-grant law): the
+    // URI permission grants — recorded when an intent carrying
+    // FLAG_GRANT_READ_URI_PERMISSION (0x1) / FLAG_GRANT_WRITE_URI_PERMISSION
+    // (0x2) is delivered to a component (grantUriPermissions target law),
+    // consulted by Context.checkUriPermission, revoked by
+    // Context.revokeUriPermission. Key: the granted data-uri RAW string;
+    // value: {to-package → mode flags} ("*" = unrestricted target).
+    struct C7UriGrant {
+        std::string uri_raw;
+        std::string to_package;  // "" = any target
+        int mode_flags = 0;
+    };
+    std::vector<C7UriGrant> c7_uri_grants_;
     // CODER7 WAVE-3: acquired ContentProviderClient objects (AOSP
     // ContentResolver.acquireContentProviderClient) — heap object id → the
     // authority the client is bound to; every client call routes through
@@ -3993,6 +4208,14 @@ public:
                                  const std::string& method,
                                  std::vector<DalvikValue> args,
                                  DalvikValue& ret);
+    // ── CODER7 WAVE-9: the system-signal dispatch laws (AOSP
+    // ActivityThread.handleTrimMemory / handleConfigurationChanged):
+    // Application-level callbacks run BEFORE the component-level ones;
+    // TRIM_MEMORY_COMPLETE(15) additionally fires Application.onLowMemory()
+    // (the legacy ComponentCallbacks alias). The config-change law builds
+    // a REAL android.content.res.Configuration heap object (orientation
+    // carried). Honest no-ops when the app/activity overrides are absent.
+    void dispatch_memory_and_config_signals(int trim_level, bool rotate);
     // ── F-NEW-304 (CONT-42): platform Fragment lifecycle drain ──────────
     // AOSP FragmentController/FragmentManagerImpl stage laws, driven from
     // the HOST lifecycle boundaries (ExecutionEngine dispatch sites):
@@ -4035,6 +4258,11 @@ public:
     // extracted once per path and cached, so InputStream.read()/available()
     // (and readLine) read REAL bytes without re-running `unzip -p` per call.
     std::map<std::string, std::string> asset_bytes_cache_;
+    // CODER7 WAVE-6: (size, mtime) stamp per "file:" cached stream — the
+    // live-observability law (a file: stream re-reads when the backing
+    // file changed; APK/asset entries stay insert-once immutable).
+    std::map<std::string, std::pair<long long, long long>>
+        asset_file_stamp_;
     // Pass-3 (K-35): one parser state per parser object (heap id keyed).
     std::map<uint32_t, XmlPullState> xml_parsers_;
 

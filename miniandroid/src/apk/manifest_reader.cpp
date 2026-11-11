@@ -476,6 +476,23 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
     // Handle application element
     if (name == "application") {
         result_.application_label = get_attribute_value(attrs, "label");
+        // ── CODER7 WAVE-9 (AOSP android:enabled on <application>):
+        // false disables EVERY component in the application. Same attr
+        // shape law as the component-level enabled (INT_BOOLEAN 0x12 or
+        // string "true"/"false"); absent ⇒ AOSP default true.
+        for (const auto& a : attrs) {
+            if (get_string(a.name_index) == "enabled") {
+                if ((a.value_data_type & 0xFF) == 0x12)
+                    result_.application_enabled = a.value_data != 0;
+                else {
+                    const std::string es =
+                        get_attribute_value(attrs, "enabled");
+                    if (es == "true" || es == "false")
+                        result_.application_enabled = (es == "true");
+                }
+                break;
+            }
+        }
         // EXP-093/F005: Extract custom Application class name.
         // S62+ (AOSP PackageParser.buildClassName law): a leading '.' joins
         // the manifest package; a name with NO dot at all also joins the
@@ -569,6 +586,15 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
             else if (aname == "exported" &&
                      (a.value_data_type & 0xFF) == 0x12)
                 prov.exported = a.value_data != 0;
+            // CODER7 WAVE-8 L1: android:readPermission /
+            // android:writePermission (AOSP PackageParser.Provider law —
+            // ProviderInfo.readPermission / writePermission; the
+            // ContentProvider transport checks them per CRUD op at
+            // checkContentProviderAccess). String attributes.
+            else if (aname == "readPermission")
+                prov.read_permission = get_attribute_value(attrs, "readPermission");
+            else if (aname == "writePermission")
+                prov.write_permission = get_attribute_value(attrs, "writePermission");
             // CODER7 WAVE-3: android:enabled (AOSP disabled-components law).
             else if (aname == "enabled") {
                 if ((a.value_data_type & 0xFF) == 0x12) {
@@ -794,44 +820,128 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         result_.services.back().filters.push_back(
             ManifestInfo::ServiceInfo::FilterInfo{});
     }
+    // CODER7 WAVE-11: intent-filter opens a per-filter record on the
+    // enclosing PROVIDER (AOSP PackageParser.Provider — the matchable
+    // unit queryIntentContentProviders resolves against).
+    if (name == "intent-filter" && in_provider_ &&
+        !result_.providers.empty()) {
+        result_.providers.back().filters.push_back(
+            ManifestInfo::ProviderInfo::FilterInfo{});
+    }
     // CODER7 WAVE-3: intent-filter opens a per-filter record on the
     // enclosing ACTIVITY (MATCH_DEFAULT_ONLY resolution needs the MATCHING
     // filter's own category set).
     if (name == "intent-filter" && in_activity_ && !result_.activities.empty()) {
         result_.activities.back().filters.push_back(
             ManifestInfo::ActivityInfo::FilterInfo{});
+        // CODER7 WAVE-8 L4: android:priority on the ACTIVITY filter —
+        // the AOSP IntentResolver priority refinement (higher filter
+        // priority wins implicit resolution). The receiver block parses
+        // the same attribute for the dispatch order; resolution needs it
+        // too (probe evidence: a priority-10 filter must beat the
+        // priority-0 VIEW filter for the same scheme/host).
+        for (const auto& a : attrs) {
+            if (get_string(a.name_index) == "priority") {
+                if ((a.value_data_type & 0xFF) == 0x10)
+                    result_.activities.back().filters.back().priority =
+                        (int)a.value_data;
+                else {
+                    const std::string ps =
+                        get_attribute_value(attrs, "priority");
+                    if (!ps.empty()) {
+                        char* end = nullptr;
+                        long pv = ::strtol(ps.c_str(), &end, 10);
+                        if (end && *end == '\0')
+                            result_.activities.back().filters.back()
+                                .priority = (int)pv;
+                    }
+                }
+            }
+        }
     }
 
     // CODER7 WAVE-3: <data> capture — the IntentFilter.matchData match
     // dimensions (mimeType / scheme / host / pathPrefix) on whichever
     // component's filter is open.
+    // CODER7 WAVE-8 FIX (probe-discovered): AOSP PackageParser feeds EVERY
+    // attribute of EVERY <data> element into IntentFilter's dimension SETS
+    // (addDataScheme / addDataAuthority / addDataPath) — a sibling
+    //   <data android:scheme="http"/> <data android:host="example.org"/>
+    // means "authority example.org for the http scheme". The old capture
+    // (1) DROPPED elements with neither mimeType nor scheme (the host-only
+    // element above vanished — the W5 index saw schemes with NO authority)
+    // and (2) could not associate a sibling authority with its schemes.
+    // Live evidence: BrowserActivity (three sibling <data> elements) lost
+    // its host in the index → every example.org URL matched it purely by
+    // scheme, and the priority-10 singleTask fixture won resolution for
+    // ALL paths. The merge below stamps authority/path-only elements onto
+    // every scheme-carrying spec that lacks a host (the IntentFilter law).
     if (name == "data") {
         ManifestInfo::DataSpec ds;
         ds.mime_type = get_attribute_value(attrs, "mimeType");
         ds.scheme = get_attribute_value(attrs, "scheme");
         ds.host = get_attribute_value(attrs, "host");
         ds.path_prefix = get_attribute_value(attrs, "pathPrefix");
-        if (!ds.mime_type.empty() || !ds.scheme.empty()) {
+        if (!ds.mime_type.empty() || !ds.scheme.empty() ||
+            !ds.host.empty() || !ds.path_prefix.empty()) {
+            auto c7_merge = [](std::vector<ManifestInfo::DataSpec>& dst,
+                               const ManifestInfo::DataSpec& nd) {
+                if (!nd.mime_type.empty() || !nd.scheme.empty()) {
+                    dst.push_back(nd);  // scheme/mime element: its own spec
+                    return;
+                }
+                // Authority/path-only element: the dimension applies to
+                // EVERY scheme already declared (AOSP IntentFilter law).
+                bool stamped = false;
+                for (auto& ex : dst) {
+                    if (!ex.scheme.empty() && ex.host.empty()) {
+                        ex.host = nd.host;
+                        if (ex.path_prefix.empty())
+                            ex.path_prefix = nd.path_prefix;
+                        stamped = true;
+                    }
+                }
+                if (!stamped) dst.push_back(nd);
+            };
             if (in_receiver_ && !result_.receivers.empty()) {
                 ManifestInfo::ReceiverInfo& rcvD = result_.receivers.back();
                 if (rcvD.filters.empty())
                     rcvD.filters.push_back(
                         ManifestInfo::ReceiverInfo::FilterInfo{});
-                rcvD.filters.back().datas.push_back(ds);
+                c7_merge(rcvD.filters.back().datas, ds);
             }
             if (in_activity_ && !result_.activities.empty()) {
                 ManifestInfo::ActivityInfo& actD = result_.activities.back();
                 if (actD.filters.empty())
                     actD.filters.push_back(
                         ManifestInfo::ActivityInfo::FilterInfo{});
-                actD.filters.back().datas.push_back(ds);
+                c7_merge(actD.filters.back().datas, ds);
             }
             if (in_service_ && !result_.services.empty()) {
                 ManifestInfo::ServiceInfo& svcD = result_.services.back();
                 if (svcD.filters.empty())
                     svcD.filters.push_back(
                         ManifestInfo::ServiceInfo::FilterInfo{});
-                svcD.filters.back().datas.push_back(ds);
+                c7_merge(svcD.filters.back().datas, ds);
+            }
+            // CODER7 WAVE-11: provider filter <data> capture (same law as
+            // the service/receiver merges — the matchable unit's dims).
+            if (in_provider_ && !result_.providers.empty()) {
+                ManifestInfo::ProviderInfo& prD = result_.providers.back();
+                if (prD.filters.empty())
+                    prD.filters.push_back(
+                        ManifestInfo::ProviderInfo::FilterInfo{});
+                ManifestInfo::ProviderInfo::FilterInfo& pfD =
+                    prD.filters.back();
+                // The provider FilterInfo shares the DataSpec shape.
+                for (const auto& ex : pfD.datas) {
+                    if (ex.mime_type == ds.mime_type &&
+                        ex.scheme == ds.scheme && ex.host == ds.host &&
+                        ex.path_prefix == ds.path_prefix)
+                        goto c7_prd_done;
+                }
+                pfD.datas.push_back(ds);
+            c7_prd_done:;
             }
         }
     }
@@ -882,6 +992,33 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         }
     }
 
+    // CODER7 WAVE-11: provider filter <action>/<category> capture — AOSP
+    // PackageParser.Provider parses the provider's intent-filter children
+    // (ProviderIntentResolver's match key for
+    // queryIntentContentProviders). TOP-LEVEL gates: the provider arms
+    // were first nested inside the service/receiver outer condition and
+    // never ran (N06 evidence: providers=0 — the same nesting bug the
+    // client_call gate had).
+    if (name == "action" && in_provider_ && !result_.providers.empty()) {
+        std::string action_name = get_attribute_value(attrs, "name");
+        if (!action_name.empty()) {
+            ManifestInfo::ProviderInfo& prA = result_.providers.back();
+            if (prA.filters.empty())
+                prA.filters.push_back(
+                    ManifestInfo::ProviderInfo::FilterInfo{});
+            prA.filters.back().actions.push_back(action_name);
+        }
+    }
+    if (name == "category" && in_provider_ && !result_.providers.empty()) {
+        std::string category_name = get_attribute_value(attrs, "name");
+        if (!category_name.empty()) {
+            ManifestInfo::ProviderInfo& prC = result_.providers.back();
+            if (prC.filters.empty())
+                prC.filters.push_back(
+                    ManifestInfo::ProviderInfo::FilterInfo{});
+            prC.filters.back().categories.push_back(category_name);
+        }
+    }
     // GATE A: intent-filter <action> routing for service/receiver components.
     if (in_service_ || in_receiver_) {
         if (name == "action") {
@@ -1263,6 +1400,13 @@ ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
         } else if (tag_name == "application") {
             state_stack.push_back(XmlState::APPLICATION);
             result_.application_label = extract_attr("android:label");
+            // ── CODER7 WAVE-9: the plain-XML twin of the application
+            // android:enabled law (binary path above).
+            {
+                const std::string es = extract_attr("android:enabled");
+                if (es == "true" || es == "false")
+                    result_.application_enabled = (es == "true");
+            }
             // EXP-093/F005: Extract the custom Application class name.
             // Per AOSP: <application android:name="..."> specifies the
             // Application subclass to instantiate. If absent, the default

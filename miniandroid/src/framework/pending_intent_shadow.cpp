@@ -3,6 +3,8 @@
 // evidence chain.
 #include "pending_intent_shadow.h"
 
+#include "../diagnostics/file_io_trace.h"
+
 #include <iostream>
 
 namespace miniandroid { namespace framework {
@@ -69,6 +71,121 @@ CallResult PendingIntentShadow::factory(const CallContext& ctx,
     return record_for(rec);
 }
 
+CallResult PendingIntentShadow::send_pending(const CallContext& ctx) {
+    // AOSP PendingIntent.send(Context, int, Intent[, ...]) — the record
+    // identity is the RECEIVER (this); the fill-in Intent (arg 2 in the
+    // 3-arg overload, absent in the 1-arg) is merged per the IMMUTABLE
+    // law. Every branch is loud; a denial is a REAL CanceledException.
+    auto it = oid_index_.find(ctx.receiver_id);
+    if (it == oid_index_.end()) {
+        // Unknown/unregistered sender — AOSP sendInner on a dead record:
+        // CanceledException, never a silent void.
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "PI-SEND", "unknown", false,
+            "no live IntentSenderRecord — CanceledException",
+            ctx.caller);
+        return CallResult::handled_exception(
+            "Landroid/app/PendingIntent$CanceledException;", "canceled");
+    }
+    Record* rec = it->second;
+    if (rec->one_shot_canceled) {
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "PI-SEND-CANCELED", rec->kind, false,
+            "FLAG_ONE_SHOT record already sent — CanceledException "
+            "(AOSP PendingIntentRecord.sendInner)",
+            ctx.caller);
+        std::cerr << "[PENDING-INTENT] send() on canceled ONE_SHOT record "
+                  << rec->kind << " rc=" << rec->request_code
+                  << " -> CanceledException" << std::endl;
+        return CallResult::handled_exception(
+            "Landroid/app/PendingIntent$CanceledException;", "canceled");
+    }
+    static const int32_t kFlagOneShot = 0x40000000;    // 1<<30 (AOSP)
+    static const int32_t kFlagImmutable = 0x04000000;  // 1<<26 (AOSP)
+    // fill-in Intent: send(Context, code, Intent) — arg 2 (may be null).
+    uint32_t fillin_oid = ctx.arg_as_object(2, 0);
+    if (fillin_oid != 0 && heap_) {
+        if (rec->flags & kFlagImmutable) {
+            // AOSP: "Flag indicating that the created PendingIntent should
+            // be immutable... the fill-in Intent supplied to send() is
+            // IGNORED." Loud evidence row, frozen intent untouched.
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "PI-SEND-FILLIN", rec->kind, true,
+                "FLAG_IMMUTABLE — fill-in intent IGNORED (AOSP law)",
+                ctx.caller);
+            std::cerr << "[PENDING-INTENT] IMMUTABLE record ignores the "
+                      << "fill-in intent (AOSP law)" << std::endl;
+        } else {
+            // Mutable record: the fill-in EXTRAS overwrite/insert onto the
+            // frozen intent (AOSP PendingIntentRecord.sendInner merge);
+            // loud row.
+            auto* ish = registry_ ? registry_->find_as<IntentShadow>()
+                                  : nullptr;
+            auto frozen = ish ? ish->get_or_create_intent(rec->intent_oid)
+                              : nullptr;
+            auto fill = ish ? ish->get_or_create_intent(fillin_oid)
+                            : nullptr;
+            if (frozen && fill) {
+                size_t c7_merged = 0;
+                for (const auto& [k, v] : fill->extras_string) {
+                    frozen->extras_string[k] = v; ++c7_merged;
+                }
+                for (const auto& [k, v] : fill->extras_int) {
+                    frozen->extras_int[k] = v; ++c7_merged;
+                }
+                for (const auto& [k, v] : fill->extras_bool) {
+                    frozen->extras_bool[k] = v; ++c7_merged;
+                }
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "PI-SEND-FILLIN", rec->kind, true,
+                    "mutable record — " + std::to_string(c7_merged) +
+                        " fill-in extra(s) merged (AOSP sendInner law)",
+                    ctx.caller);
+            }
+        }
+    }
+    if (!send_dispatcher_) {
+        // No dispatcher wired (no-store / pre-wiring shapes): the LOUD
+        // documented boundary — never a silent null, never a fabricated
+        // delivery.
+        std::cerr << "[PENDING-INTENT][BOUNDARY] send() recorded; no "
+                  << "dispatch channel wired (documented boundary)"
+                  << std::endl;
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "PI-SEND", rec->kind, false,
+            "no send dispatcher wired (documented boundary)", ctx.caller);
+        return CallResult::handled_void();
+    }
+    std::string c7_err;
+    const bool c7_ok =
+        send_dispatcher_(rec->kind, rec->intent_oid, c7_err);
+    if (!c7_ok) {
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "PI-SEND", rec->kind, false,
+            "dispatch refused: " + c7_err, ctx.caller);
+        std::cerr << "[PENDING-INTENT] send() dispatch refused: " << c7_err
+                  << std::endl;
+        return CallResult::handled_void();
+    }
+    ++sends_executed_;
+    miniandroid::diagnostics::FileIoTrace::instance().record(
+        "PI-SEND", rec->kind, true,
+        "dispatched through the component pipeline (kind=" + rec->kind +
+            ")",
+        ctx.caller);
+    std::cerr << "[PENDING-INTENT] send() dispatched: " << rec->kind
+              << " rc=" << rec->request_code
+              << " intent=" << rec->intent_oid << std::endl;
+    // AOSP FLAG_ONE_SHOT: after ONE successful send the record is
+    // canceled — the NEXT send() throws CanceledException.
+    if (rec->flags & kFlagOneShot) {
+        rec->one_shot_canceled = true;
+        std::cerr << "[PENDING-INTENT] ONE_SHOT record canceled after "
+                  << "first send (AOSP law)" << std::endl;
+    }
+    return CallResult::handled_void();
+}
+
 CallResult PendingIntentShadow::dispatch(const CallContext& ctx) {
     const std::string& cls = ctx.class_name;
     const std::string& m = ctx.method;
@@ -85,11 +202,30 @@ CallResult PendingIntentShadow::dispatch(const CallContext& ctx) {
         if (m == "getActivities")
             return factory(ctx, "ACTIVITY");
         if (m == "send") {
-            // DOCUMENTED BOUNDARY: in-run broadcast dispatch is not
-            // demanded by the corpus; the stub is LOUD, never silent.
-            std::cerr << "[PENDING-INTENT][BOUNDARY] send() recorded; "
-                      << "in-run receiver dispatch not supported "
-                      << "(documented boundary, never silent)" << std::endl;
+            // CODER7 WAVE-8 L2: the REAL send() law — the record pipeline
+            // (ONE_SHOT / IMMUTABLE / CanceledException) + the wired
+            // dispatcher that routes the frozen intent through the SAME
+            // gated broadcast/service/activity pipeline the app-context
+            // calls use. Unwired channel stays a LOUD documented boundary.
+            return send_pending(ctx);
+        }
+        if (m == "cancel") {
+            // AOSP PendingIntent.cancel(): the record is removed — a
+            // subsequent send() throws CanceledException (dead record).
+            if (heap_) {
+                auto it = oid_index_.find(ctx.receiver_id);
+                if (it != oid_index_.end()) {
+                    records_.erase(it->second->kind + "|" +
+                                   std::to_string(it->second->request_code) +
+                                   "|" +
+                                   std::to_string(it->second->intent_oid) +
+                                   "|" +
+                                   std::to_string(it->second->flags));
+                    oid_index_.erase(it);
+                }
+            }
+            std::cerr << "[PENDING-INTENT] cancel() record removed "
+                      << "(AOSP law)" << std::endl;
             return CallResult::handled_void();
         }
         return CallResult::not_handled();
