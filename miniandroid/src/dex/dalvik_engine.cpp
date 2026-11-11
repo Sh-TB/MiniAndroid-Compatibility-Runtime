@@ -6747,6 +6747,48 @@ bool DalvikExecutionEngine::ensure_class_initialized(const std::string& class_de
         phase_clock().ci_warm.fetch_add(1, std::memory_order_relaxed);
         return true;
     }
+    // ── R14 (A-R3 #580) SUPERCLASS-FIRST CLASS-INIT LAW (A-R3, S216) ──
+    // JVMS 5.5 / AOSP ClassLinker::EnsureInitialized: initializing class C
+    // requires C's DIRECT SUPERCLASS to be initialized FIRST (recursively).
+    // The engine already builds class_to_superclass_ (EXP-068) and walks it
+    // for semantic ancestry — but no init site ever walked it UPWARD (11
+    // insert sites, 0 super-init calls at the R14 audit). Observable
+    // divergence: a superclass whose <clinit> publishes state (registration
+    // singletons, static tables consumed reflectively, counters) never ran
+    // until the subclass actively referenced a superclass member — on ART
+    // it runs at subclass-init time. One walk here covers all call sites.
+    // Re-entrancy safe: the initialized_classes_ guard above (checked again
+    // inside the recursive call) breaks cycles A→B→A before any <clinit>
+    // re-runs, and the framework-namespace skip below is re-applied for the
+    // superclass by the recursive call itself.
+    if (!initialized_classes_.count(normalized)) {
+        // A/B gate: MINIANDROID_R14_SUPER_INIT=0 disables (default ON —
+        // the AOSP-faithful order; the 6-pin gate decides the final ship).
+        static const bool r14_off =
+            [] { const char* e = std::getenv("MINIANDROID_R14_SUPER_INIT");
+                 return e && std::string(e) == "0"; }();
+        auto sup_it = class_to_superclass_.find(normalized);
+        if (sup_it == class_to_superclass_.end() || sup_it->second.empty())
+            sup_it = class_to_superclass_.find(class_descriptor);
+        if (!r14_off && sup_it != class_to_superclass_.end() &&
+            !sup_it->second.empty()) {
+            const std::string super_desc = sup_it->second;
+            // App-DEX superclasses only: framework namespaces keep the
+            // platform-skip (their statics ride the shadow/bridge layer).
+            static const char* f_skip[] = {"Landroid/", "Ljava/", "Ljavax/"};
+            bool fns = false;
+            for (const char* p : f_skip)
+                if (super_desc.compare(0, strlen(p), p) == 0) { fns = true; break; }
+            if (!fns) {
+                static thread_local int r14_depth = 0;
+                if (r14_depth < 24) {  // bounded: never deeper than a real chain
+                    r14_depth++;
+                    ensure_class_initialized(super_desc);
+                    r14_depth--;
+                }
+            }
+        }
+    }
     // Framework classes — skip <clinit> (they're stubbed).
     // The shadow registry / bridge_to_api handles their static fields.
     //
@@ -17475,6 +17517,10 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
         ops = ok ? (int)canvas_shadow->ops().size() : 0;
     }
     draw_window_active_ = false;
+    // CONT-130b: the soft-stop flag clears at the draw-window boundary —
+    // the unwind chain has fully exited by return by this point; anything
+    // still set would leak into the next dispatch (per-tap state law).
+    awaitup_soft_stop_ = false;
     std::cerr << "[C013-ONDRAW] view=" << view_object_id << " class=" << cls
               << " dispatched=" << (ok ? "YES" : "NO") << " ops=" << ops << std::endl;
     // ── S152 TRAIN-70e v1 (T70-ATTACH) RETIRED: the D7-PLACECHECK
@@ -21011,6 +21057,36 @@ inline float bits_i2f(int32_t i) {
 void DalvikExecutionEngine::awaitup_gate_check() {
     if (!awaitup_deadline_active_ || awaitup_deadline_hit_) return;
     if (std::chrono::steady_clock::now() < awaitup_deadline_) return;
+    // ── CONT-130b SOFT DRAW-WINDOW STOP (the coder-lane law, landed) ──
+    // Inside a draw window the gate no longer synthesizes the deferred
+    // VirtualMachineError: that unwind fired mid-draw, left the compose
+    // draw state half-mutated (MultiParagraphLayoutCache density=0.0,
+    // textLayoutResult=null — 0.0 is never a valid density) and 4,685
+    // "could not provide TextLayoutResult" throws poisoned EVERY later
+    // draw pass (the "New game" FAB text op drew 23,109 times in the
+    // retry loop) — the tap gesture chain died inside the unwind storm
+    // and the interactive-clock law armed 0x (no board, ever).
+    // The soft channel: draw_window_budget_halted_ arms (frame honesty —
+    // an unfinished frame is never presented), awaitup_soft_stop_ breaks
+    // every enclosing fetch loop at method boundaries (the R-NEW-345
+    // park-yield channel — exits by RETURN, no exception), and the HARD
+    // F084 channel stays armed as a 15 s backstop for a body that never
+    // returns. No-tap runs are byte-inert (the gate arms per-tap only).
+    if (draw_window_active_) {
+        awaitup_soft_stop_ = true;
+        draw_window_budget_halted_ = true;
+        // hard backstop: re-arm the deadline 15 s out for the same window
+        awaitup_deadline_ = std::chrono::steady_clock::now() +
+                            std::chrono::milliseconds(15000);
+        log("HALT(soft): AWAIT-UP-GATE draw-window soft stop "
+            "(method-boundary unwind, no exception; hard backstop +15s)");
+        std::cerr << "[AWAIT-UP-GATE] SOFT draw-window stop in "
+                  << current_class_ << "." << current_method_
+                  << " — draw state survives (CONT-130b law); hard "
+                     "backstop armed +15s"
+                  << std::endl;
+        return;
+    }
     awaitup_deadline_hit_ = true;
     if (draw_window_active_) draw_window_budget_halted_ = true;
     halted_ = true;
@@ -21037,6 +21113,10 @@ void DalvikExecutionEngine::awaitup_gate_check() {
 void DalvikExecutionEngine::awaitup_gate_abort_reset() {
     halted_ = false;
     halted_on_return_ = false;
+    // CONT-130b: per-tap state — the soft channel leaves no exception
+    // artifact, but a stale flag would break the NEXT dispatch's first
+    // frame (the flag must never outlive its window).
+    awaitup_soft_stop_ = false;
     halt_reason_.clear();
     pending_exception_ = DalvikValue::make_null();
     deferred_exception_ = DalvikValue::make_null();
@@ -26345,6 +26425,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             awaitup_gate_check();
             if (awaitup_deadline_hit_) break;  // same graceful channel as the wall
         }
+        // CONT-130b soft draw-window stop: every pass, so a frame whose
+        // gate fired mid-chain unwinds at the NEXT method boundary (the
+        // R-NEW-345 park-yield channel — exits by RETURN, no exception).
+        if (awaitup_soft_stop_) break;
 
         // Check for return
         if (halted_on_return_) {

@@ -2574,6 +2574,20 @@ public:
     }
     void awaitup_gate_end() { awaitup_deadline_active_ = false; }
     bool awaitup_gate_hit() const { return awaitup_deadline_hit_; }
+    // CONT-130b SOFT DRAW-WINDOW STOP (the coder-lane law, landed on main):
+    // when the scoped gate fires INSIDE a draw window the unwind takes the
+    // R-NEW-345 park-yield channel — the fetch loop breaks on
+    // awaitup_soft_stop_, every enclosing DEX frame exits BY RETURN, no
+    // exception is synthesized, and the compose draw state survives
+    // (measured: the hard channel's deferred VirtualMachineError unwound
+    // mid-draw, half-mutated MultiParagraphLayoutCache (density=0.0), and
+    // 4,685 "could not provide TextLayoutResult" throws poisoned every
+    // later draw pass). The hard F084 channel remains as a DELAYED BACKSTOP
+    // (15 s grace) for a body that never returns. Frame honesty unchanged:
+    // draw_window_budget_halted_ arms in both channels — an unfinished
+    // frame is never presented. Flags clear at the draw-window boundary
+    // (render_draw_window close) + awaitup_gate_abort_reset (per-tap).
+    bool awaitup_soft_stop_ = false;
     // Post-gate cleanup: the scoped halt unwound through the draw window as
     // a deferred VirtualMachineError (the same channel as a wall halt).
     // That error is OUR budget artifact — clear it so the UP dispatch (the

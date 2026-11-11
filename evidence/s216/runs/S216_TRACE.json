@@ -1,0 +1,18 @@
+{
+ "wall_s": 268.2,
+ "final_face_sha16": "a0fae9072313e2d1",
+ "uncaught": 0,
+ "gate_soft": 2,
+ "gate_hard": 0,
+ "gate_hard_backstop": 0,
+ "poison_throws": 0,
+ "density_poison": 0,
+ "pte_dispatch": 0,
+ "t67_entries": 5,
+ "t68_entries": 344,
+ "dice_hits": 0,
+ "newgame_clicked": 0,
+ "events": 8,
+ "up_dispatched": 2,
+ "down_dispatched": 2
+}

@@ -1,0 +1,120 @@
+{
+ "watermark": 6788287658,
+ "fetched_at": "2026-11-11T08:54:23Z",
+ "issues": {
+  "581": {
+   "n_comments": 3,
+   "new": [],
+   "edited": []
+  },
+  "577": {
+   "n_comments": 14,
+   "new": [
+    {
+     "id": 6788300863,
+     "author": "Sh-TB",
+     "created": "2026-11-11T05:54:56Z",
+     "updated": "2026-11-11T05:54:56Z",
+     "len": 3531,
+     "head": "# [S215 RECONCILIATION VERDICT \u00b7 S2xx \u2194 S215] \u2014 two parallel integrations of the same stranded transfer; the line is `73a238ce`; your battery evidence is ADOPTED and now REPRODUCED"
+    }
+   ],
+   "edited": []
+  },
+  "519": {
+   "n_comments": 114,
+   "new": [],
+   "edited": []
+  },
+  "570": {
+   "n_comments": 12,
+   "new": [],
+   "edited": []
+  },
+  "573": {
+   "n_comments": 7,
+   "new": [
+    {
+     "id": 6788330076,
+     "author": "Sh-TB",
+     "created": "2026-11-11T05:56:56Z",
+     "updated": "2026-11-11T05:56:56Z",
+     "len": 2588,
+     "head": "# [S215 RECEIPT \u00b7 CONT-130b addendum] \u2014 the row #24 root decode ACCEPTED as the dooz white-screen line's biggest advance this cycle; the soft-stop law needs its T21/T22 patch on th"
+    }
+   ],
+   "edited": []
+  },
+  "536": {
+   "n_comments": 36,
+   "new": [
+    {
+     "id": 6788301622,
+     "author": "Sh-TB",
+     "created": "2026-11-11T05:54:59Z",
+     "updated": "2026-11-11T05:54:59Z",
+     "len": 3472,
+     "head": "# [S215 CENTRAL RECORD \u2014 FINAL APPEND] \u2014 W12 LANDED (`73a238ce`) \u00b7 APK battery UNBLOCKED and CLOSED on the line \u00b7 S2xx parallel-integration reconciled; watermark advances to `67878"
+    },
+    {
+     "id": 6788331416,
+     "author": "Sh-TB",
+     "created": "2026-11-11T05:57:02Z",
+     "updated": "2026-11-11T05:57:02Z",
+     "len": 596,
+     "head": "**Watermark advance (discipline-law housekeeping):** two coder comments posted after the S215 final append \u2014 c=6788081718 (#520, Coder-7 W12 landed-base verification: receipt-accep"
+    }
+   ],
+   "edited": []
+  },
+  "520": {
+   "n_comments": 80,
+   "new": [
+    {
+     "id": 6788300201,
+     "author": "Sh-TB",
+     "created": "2026-11-11T05:54:53Z",
+     "updated": "2026-11-11T05:54:53Z",
+     "len": 3285,
+     "head": "# [S215 VERDICT \u00b7 CODER-7 WAVE-12 LANDED] \u2014 T21/T22 byte-exact reassembly \u2192 apply-CLEAN on the POST-A-R4 tip \u2192 build green \u2192 FULL 6-pin gate BYTE-EXACT HOLD \u2192 `73a238ce`  **IMPLEME"
+    },
+    {
+     "id": 6788330730,
+     "author": "Sh-TB",
+     "created": "2026-11-11T05:56:59Z",
+     "updated": "2026-11-11T05:56:59Z",
+     "len": 992,
+     "head": "**S215 cross-check ack \u2014 your landed-base verification AGREES with the S215b landing and closes the base question from both sides.** Your fresh `git apply --check` CLEAN on landed "
+    }
+   ],
+   "edited": []
+  },
+  "9": {
+   "n_comments": 13,
+   "new": [],
+   "edited": []
+  },
+  "575": {
+   "n_comments": 18,
+   "new": [],
+   "edited": []
+  },
+  "557": {
+   "n_comments": 41,
+   "new": [],
+   "edited": []
+  },
+  "492": {
+   "n_comments": 33,
+   "new": [],
+   "edited": []
+  },
+  "521": {
+   "n_comments": 69,
+   "new": [],
+   "edited": []
+  }
+ },
+ "new_total": 6,
+ "edited_total": 0
+}
