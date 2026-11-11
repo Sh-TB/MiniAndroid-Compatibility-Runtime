@@ -8983,3 +8983,48 @@ Work Log:
 - Verdicts: #573 6800130309 + #536 6800140357 (watermark 6797337480) + #575
   6797337480 (W21 part-17 request; SIM-L3 verified rc=0 QUEUED). Sweep
   pass-2: 11 new / 0 EDITED (full snapshot baseline stored). Commit 11fe8d65.
+
+## 2026-11-12 — S217/GP-582: issue #582 master-audit wave-1 EXECUTED (read-all → verify → fix → per-item verdict)
+
+- Issue #582 (GP living master audit) fully ingested: body (72 intake IDs across
+  DEX/INT/MEM/EXC/APK/CMP/PERF) + 28 comments (incl. the 2026-11-11 archive pass
+  and its 27 new findings). Every item re-derived on current main (d5c958e3) —
+  none taken from the archive on faith.
+- P0 REPRODUCED pre-fix with ASan probes: GP-DEX-012 (SEGV dex_parser:461,
+  interfaces_off=0xFFFFFFFC uint32-wrap), GP-RES-001 (SEGV string_pool:101,
+  strings_start+off wrap) + its OOM face (1G-entry resize), GP-RES-002
+  (heap-overflow arsc_parser:162, rd32(p+20) past 20-byte guard), GP-RES-003
+  (heap-overflow config_to_string ignoring cfg_size). Engine: GP-INT-012
+  pre-fix SIGFPE process-death at INT_MIN/-1 (rc=136 captured).
+- 17 findings FIXED across 14 files: parser 64-bit offset law (DEX-012),
+  string-pool validate-before-resize + strings_start law (RES-001), ARSC 24-byte
+  guard + cfg_size-honoring decode (RES-002/003), wrap-defined signed arithmetic
+  + MIN/-1 Java law in 4 macros (INT-012), IEEE FP div/rem-double law incl.
+  INT64-backed operand bits_l2d (INT-013), strcmp dispatch (INT-015), THROW
+  out-of-bounds handler structured unwind (INT-014), invoke-static wide-merge
+  regs[5] guard (INT-001), 256-entry opcode width table + undefined-opcode
+  structured halt (INT-002), JNI_COMMIT retain (JNI-001), push_double memcpy
+  (JNI-002), thread-local guard context (JNI-003), direct-buffer one-identity
+  race close (JNI-005), waitpid EINTR/REFUSED (APK-010), zip-bomb cap (APK-008),
+  HTTP cap-during-receive + header budget (NET-001/002), checked numeric parses
+  (EXC-002/003), getPixels bounds (GFX-001), gravity exact-token (LAYOUT-001),
+  addView loud diagnostic (LAYOUT-003), budget mutex (DIAG-001), sndfile decoded
+  duration (AUDIO-001), ViewTree owner family at F-105 + Dialog + R-005
+  (COMPOSE-001/002/003).
+- FALSE_POSITIVE verdicts with source proof: GP-DEX-001/002 (64-bit table math +
+  hardened mutf8 reader), GP-INT-006 (32-bit array-index premise), GP-INT-007
+  (non-const underlying object + index-based registry), GP-APK-005 (parenthesized
+  pattern). SUPERSEDED: #577 trio (A-R4 landed), GP-APK-002 (popen removed),
+  GP-MEM-001/002/003 (one-identity restructure). PARTIAL/PENDING honestly marked
+  (DEX-003 map coherence, INT-008/009/010/011, EXC-005..009, MEM-005/006/007,
+  APK-001/003/004/006, CMP-013/014 residue, all PERF hypotheses untouched by law).
+- Regression: make test 4/4; gp582 engine probe 12/12 PASS post-fix (pre-fix
+  SIGFPE); FULL 6-PIN GATE ALL HOLD on post-fix binary e0ea2d7da9ea78db —
+  bouncy 8a6c24ac / unote 3b8dcb0a / dooz a0fae907 (Compose full boot 289s) /
+  gmdice 3891679d x2 identical / microtimer b39665f6 / ttt 7354c1b2 x3, 0
+  uncaught everywhere → pin-neutral wave, intended changes only on UB/garbage
+  inputs.
+- Evidence: evidence/gp582/ (pre-fix SEGV/OOM/SIGFPE captures + post-fix PASS +
+  wave diff fec4f15a3cf7ab56); probes scripts/gp582_probe_res.cpp,
+  scripts/gp582_probe_dex012.cpp, tests/gp582_engine_probe_test.cpp.
+- Per-item verdict table posted on #582 (comment 6803177793). Commit b0bcf54b.
