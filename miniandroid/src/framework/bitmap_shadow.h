@@ -180,6 +180,28 @@ struct BitmapFactoryDensityResult {
 BitmapFactoryDensityResult bitmap_factory_density_law(
     const BitmapFactoryDensityInput& in);
 
+// ── GP583-IMG-004 V2 (GP correction, 2026-11-12) — inJustDecodeBounds
+// bounds-only header law (pure, testable) ────────────────────────────────
+// AOSP BitmapFactory (Options.inJustDecodeBounds=true): the decoder answers
+// NULL and fills outWidth/outHeight/outMimeType WITHOUT allocating pixel
+// memory — for ALL four entry paths (decodeStream / decodeFile /
+// decodeResource / decodeByteArray; the pre-fix engine full-decoded the
+// pixels first and only THEN answered the bounds pass). The official
+// "Loading Large Bitmaps Efficiently" flow is decodeResource with this flag.
+// The law runs ONLY the header parser: a valid header yields the RAW
+// encoded dims + signature mime; a truncated/corrupt header yields valid=
+// false with 0x0 error dims (fresh-Options default — AOSP native leaves
+// the out fields untouched when codec creation fails; the caller's own
+// `outWidth <= 0` check then takes the documented failure path). Either
+// way ZERO pixel decoding happens — probe_image_size parses headers only.
+struct BitmapBoundsProbeResult {
+    int32_t width = 0;             // RAW encoded dims (bounds pass never scales)
+    int32_t height = 0;
+    std::string mime;              // signature mime or "" when unknown
+    bool valid = false;            // true = header dims known (NOT payload-valid)
+};
+BitmapBoundsProbeResult bitmap_bounds_only_law(const std::vector<uint8_t>& bytes);
+
 // ── C9-4 (CODER 9) — inPreferredConfig conversion law (pure, testable) ────
 // AOSP BitmapFactory native: the decode output pixel format follows
 // Options.inPreferredConfig. The store is RGBA; the law converts the buffer

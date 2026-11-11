@@ -1,12 +1,12 @@
 {
- "binary_sha16": "a76c8661dc96e195",
+ "binary_sha16": "9adf7d627bcbdac6",
  "goldens": {
   "bouncy": {
    "wall_s": 2.2,
    "face_sha16": "8a6c24ac8a7d718e",
    "uncaught": 0,
    "pin": "8a6c24ac",
-   "binary": "a76c8661dc96e195",
+   "binary": "9adf7d627bcbdac6",
    "hold": true
   },
   "unote": {
@@ -14,15 +14,15 @@
    "face_sha16": "3b8dcb0adbbc17a9",
    "uncaught": 0,
    "pin": "3b8dcb0a",
-   "binary": "a76c8661dc96e195",
+   "binary": "9adf7d627bcbdac6",
    "hold": true
   },
   "dooz": {
-   "wall_s": 281.5,
+   "wall_s": 297.7,
    "face_sha16": "a0fae9072313e2d1",
    "uncaught": 0,
    "pin": "a0fae907",
-   "binary": "a76c8661dc96e195",
+   "binary": "9adf7d627bcbdac6",
    "hold": true
   }
  },

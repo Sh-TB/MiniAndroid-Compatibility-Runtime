@@ -1183,6 +1183,661 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             }
             return CallResult::handled_void();
         }
+
+        // ── A-R5 (S218, R23 delivery): the Collections ALGORITHMIC static face ──
+        // Finding R23 (issue #576, A-R1): the engine's only two
+        // Ljava/util/Collections; blocks were the synchronized*/factories
+        // family (dalvik_engine.cpp) and the singleton/empty family
+        // (this block); CollectionShadow::handles_class claimed the class but
+        // its dispatch contained NO algorithmic arm. Every void-returning
+        // algorithmic entry (reverse/shuffle/swap/rotate/fill/copy) fell to
+        // the typed-void tail — THE LIST STAYED UNTRANSFORMED while every
+        // caller believed it mutated (the exact silent-wrong shape W12 closed
+        // for sort; okio Options was its live face). Value-returning entries
+        // (min/max/binarySearch/frequency/…) answered typed defaults.
+        //
+        // Law (Tier 1, OpenJDK java.util.Collections): reverse/shuffle/swap/
+        // rotate/fill/copy mutate the list per the specified contract;
+        // nCopies/addAll produce; min/max/binarySearch are comparator/
+        // Comparable-driven queries with NoSuchElementException (empty) and
+        // ClassCastException (incomparable) contracts; frequency/disjoint/
+        // replaceAll/indexOfSubList/lastIndexOfSubList classify by
+        // Objects.equals (the F-NEW-238/236d equality machinery below).
+        // Machinery reuse: the F-606 static-sort face already proved the
+        // whole shape — arg_as_object takes the list from args[0] on static
+        // calls, the four parallel stores carry elements (kinds 1/2/3/4),
+        // the K14 dex_invoke_slot drives app comparators/compareTo, and the
+        // heap array[i] re-sync keeps dual-store lists coherent.
+        //
+        // Determinism note (the runtime's global determinism law — corpus
+        // goldens are byte-exact): shuffle uses a FIXED-seed splitmix64
+        // stream. OpenJDK seeds shuffle's internal Random from nanoTime —
+        // a nondeterminism this runtime intentionally does NOT reproduce.
+        // Successive shuffles in one process advance the same stream (like
+        // the shared unseeded-Random lane F-C8-170), and the stream resets
+        // per process, so runs stay byte-reproducible.
+        {
+            const auto& r23_dex = CollectionShadow::dex_invoke_slot();
+            const auto& r23_app_eq = CollectionShadow::app_equals_slot();
+
+            // Element count across both store shapes (dense + view).
+            auto r23_n = [](const CollectionShadow::CollectionState* st)
+                -> int32_t {
+                return static_cast<int32_t>(st->elements.size() +
+                                            st->view_elements.size());
+            };
+
+            // Read slot i as a CallContext::Arg (same normalization the
+            // F-606 sort face uses; kind 4 = typed null per F-NEW-271).
+            auto r23_elem = [&](const CollectionShadow::CollectionState* st,
+                                int32_t i) -> CallContext::Arg {
+                CallContext::Arg a;
+                if (!st->view_elements.empty()) {
+                    const auto& ve = st->view_elements[i];
+                    if (ve.kind == 4) a.kind = CallContext::Arg::Kind::NULL_REF;
+                    else if (ve.kind == 3) { a.kind = CallContext::Arg::Kind::INT; a.int_val = ve.int_val; }
+                    else if (ve.kind == 2) { a.kind = CallContext::Arg::Kind::STRING; a.string_val = ve.string_val; }
+                    else { a.kind = CallContext::Arg::Kind::OBJECT; a.object_id = ve.object_id; }
+                    return a;
+                }
+                uint32_t oid = i < (int32_t)st->elements.size() ? st->elements[i] : 0;
+                uint8_t k = i < (int32_t)st->elem_kinds.size()
+                                ? st->elem_kinds[i] : (oid ? 1 : 2);
+                if (k == 4) a.kind = CallContext::Arg::Kind::NULL_REF;
+                else if (k == 3 && i < (int32_t)st->elem_ints.size()) { a.kind = CallContext::Arg::Kind::INT; a.int_val = st->elem_ints[i]; }
+                else if (k == 2 && i < (int32_t)st->elem_strings.size()) { a.kind = CallContext::Arg::Kind::STRING; a.string_val = st->elem_strings[i]; }
+                else { a.kind = CallContext::Arg::Kind::OBJECT; a.object_id = oid; }
+                return a;
+            };
+
+            // Classify an Arg into the (item, kind, ival, sval) store tuple
+            // (same law as lawb_classify_arg: int-family → 3, string → 2,
+            // object → 1, null/zero-ref → 4).
+            auto r23_classify = [](const CallContext::Arg& a, uint32_t& item,
+                                   uint8_t& kind, int32_t& ival,
+                                   std::string& sval) {
+                item = 0; kind = 2; ival = 0; sval.clear();
+                if (a.kind == CallContext::Arg::Kind::INT ||
+                    a.kind == CallContext::Arg::Kind::BOOL ||
+                    a.kind == CallContext::Arg::Kind::LONG) {
+                    kind = 3;
+                    ival = a.kind == CallContext::Arg::Kind::INT
+                               ? a.int_val
+                               : (a.kind == CallContext::Arg::Kind::BOOL
+                                      ? (a.bool_val ? 1 : 0)
+                                      : static_cast<int32_t>(a.long_val));
+                } else if (a.kind == CallContext::Arg::Kind::STRING) {
+                    sval = a.string_val;
+                } else if (a.kind == CallContext::Arg::Kind::OBJECT &&
+                           a.object_id != 0) {
+                    item = a.object_id;
+                    kind = 1;
+                } else {
+                    kind = 4;  // F-NEW-271 typed null
+                }
+            };
+
+            // Write slot i from an Arg across the right store shape
+            // (view-backed lists write ViewElem; dense lists keep all four
+            // parallel stores index-aligned).
+            auto r23_write = [&](CollectionShadow::CollectionState* st,
+                                 int32_t i, const CallContext::Arg& a) {
+                uint32_t item = 0; uint8_t kind = 2;
+                int32_t ival = 0; std::string sval;
+                r23_classify(a, item, kind, ival, sval);
+                if (!st->view_elements.empty()) {
+                    if (i < 0 || i >= (int32_t)st->view_elements.size()) return;
+                    auto& ve = st->view_elements[i];
+                    ve.kind = kind; ve.object_id = item;
+                    ve.string_val = sval; ve.int_val = ival;
+                    return;
+                }
+                size_t need = static_cast<size_t>(i) + 1;
+                if (st->elem_kinds.size() < need) {
+                    st->elements.resize(need, 0);
+                    st->elem_kinds.resize(need, 2);
+                    st->elem_strings.resize(need, std::string());
+                    st->elem_ints.resize(need, 0);
+                }
+                st->elements[i] = item;
+                st->elem_kinds[i] = kind;
+                st->elem_strings[i] = sval;
+                st->elem_ints[i] = ival;
+            };
+
+            // Swap two slots across ALL stores (the F-606 swap law).
+            auto r23_swap = [&](CollectionShadow::CollectionState* st,
+                                int32_t i, int32_t j) {
+                if (!st->view_elements.empty()) {
+                    std::swap(st->view_elements[i], st->view_elements[j]);
+                    return;
+                }
+                std::swap(st->elements[i], st->elements[j]);
+                if ((size_t)i < st->elem_kinds.size() &&
+                    (size_t)j < st->elem_kinds.size())
+                    std::swap(st->elem_kinds[i], st->elem_kinds[j]);
+                if ((size_t)i < st->elem_strings.size() &&
+                    (size_t)j < st->elem_strings.size())
+                    std::swap(st->elem_strings[i], st->elem_strings[j]);
+                if ((size_t)i < st->elem_ints.size() &&
+                    (size_t)j < st->elem_ints.size())
+                    std::swap(st->elem_ints[i], st->elem_ints[j]);
+            };
+
+            // Dual-store coherence: refresh heap array[i] fields when the
+            // list also carries the engine-array shape (same as the sort
+            // face's re-sync).
+            auto r23_sync = [&](uint32_t lid,
+                                const CollectionShadow::CollectionState* st,
+                                int32_t n) {
+                if (!heap_) return;
+                int32_t alen = -1;
+                if (!heap_->get_object_array_length(lid, alen) || alen != n)
+                    return;
+                for (int32_t i = 0; i < n; ++i) {
+                    CallContext::Arg a = r23_elem(st, i);
+                    const std::string fname =
+                        "array[" + std::to_string(i) + "]";
+                    if (a.kind == CallContext::Arg::Kind::STRING)
+                        heap_->set_object_string_field(lid, fname,
+                                                       a.string_val);
+                    else if (a.kind == CallContext::Arg::Kind::INT)
+                        heap_->set_object_int_field(lid, fname, a.int_val);
+                    else if (a.kind == CallContext::Arg::Kind::OBJECT &&
+                             a.object_id != 0)
+                        heap_->set_object_ref_field(
+                            lid, fname, a.object_id, "Ljava/lang/Object;",
+                            "", false);
+                }
+            };
+
+            // Bounded diagnostic (same shape as the F-606 diag).
+            auto r23_diag = [](const char* what, int32_t n) {
+                static thread_local uint64_t r23_diag_n = 0;
+                if (r23_diag_n++ < 12)
+                    std::cerr << "[R23-COL] Collections." << what
+                              << " n=" << n << std::endl;
+            };
+
+            // OpenJDK Objects.equals law (the F-NEW-238/236d machinery):
+            // null×null true; string content; int value; object pairs via
+            // the app-defined equals resolver (identity fallback).
+            auto r23_equal = [&](const CallContext::Arg& x,
+                                 const CallContext::Arg& y) -> bool {
+                bool xn = x.kind == CallContext::Arg::Kind::NULL_REF ||
+                          (x.kind == CallContext::Arg::Kind::OBJECT &&
+                           x.object_id == 0);
+                bool yn = y.kind == CallContext::Arg::Kind::NULL_REF ||
+                          (y.kind == CallContext::Arg::Kind::OBJECT &&
+                           y.object_id == 0);
+                if (xn || yn) return xn && yn;
+                if (x.kind == CallContext::Arg::Kind::STRING &&
+                    y.kind == CallContext::Arg::Kind::STRING)
+                    return x.string_val == y.string_val;
+                auto intv = [](const CallContext::Arg& a) -> int32_t {
+                    if (a.kind == CallContext::Arg::Kind::INT) return a.int_val;
+                    if (a.kind == CallContext::Arg::Kind::BOOL) return a.bool_val ? 1 : 0;
+                    return static_cast<int32_t>(a.long_val);
+                };
+                auto is_int = [](const CallContext::Arg& a) {
+                    return a.kind == CallContext::Arg::Kind::INT ||
+                           a.kind == CallContext::Arg::Kind::BOOL ||
+                           a.kind == CallContext::Arg::Kind::LONG;
+                };
+                if (is_int(x) && is_int(y)) return intv(x) == intv(y);
+                // String content law across materializations: a STRING arg
+                // equals a String heap-object element by CONTENT (F-NEW-248).
+                auto str_heap = [&](const CallContext::Arg& a,
+                                    std::string& out) -> bool {
+                    if (a.kind != CallContext::Arg::Kind::OBJECT ||
+                        a.object_id == 0 || !heap_)
+                        return false;
+                    return heap_->get_object_string_field(
+                        a.object_id, "__string_value__", out);
+                };
+                std::string xs, ys;
+                bool xh = str_heap(x, xs), yh = str_heap(y, ys);
+                if (xh || yh) {
+                    std::string xcs = x.kind == CallContext::Arg::Kind::STRING
+                                          ? x.string_val : xs;
+                    std::string ycs = y.kind == CallContext::Arg::Kind::STRING
+                                          ? y.string_val : ys;
+                    if (xh || x.kind == CallContext::Arg::Kind::STRING) {
+                        if (yh || y.kind == CallContext::Arg::Kind::STRING)
+                            return xcs == ycs;
+                        return false;
+                    }
+                    return false;
+                }
+                if (x.kind == CallContext::Arg::Kind::OBJECT &&
+                    y.kind == CallContext::Arg::Kind::OBJECT &&
+                    x.object_id != 0 && y.object_id != 0) {
+                    if (x.object_id == y.object_id) return true;
+                    if (r23_app_eq) return r23_app_eq(x.object_id, y.object_id);
+                    return false;
+                }
+                return false;
+            };
+
+            // Comparator/Comparable query law (same shape as F-606's
+            // f606_cmp: comparator dex compare, natural string/int/
+            // app compareTo; INT_MIN = incomparable → loud decline).
+            auto r23_cmp = [&](const CallContext::Arg& x,
+                               const CallContext::Arg& y,
+                               uint32_t cmp_oid) -> int {
+                if (cmp_oid != 0) {
+                    auto o = r23_dex(cmp_oid, "compare", {x, y});
+                    if (!o.ok || o.kind != 1) return INT_MIN;
+                    return o.int_val;
+                }
+                if (x.kind == CallContext::Arg::Kind::STRING &&
+                    y.kind == CallContext::Arg::Kind::STRING)
+                    return x.string_val.compare(y.string_val);
+                auto intv = [](const CallContext::Arg& a) -> int32_t {
+                    if (a.kind == CallContext::Arg::Kind::INT) return a.int_val;
+                    if (a.kind == CallContext::Arg::Kind::BOOL) return a.bool_val ? 1 : 0;
+                    return static_cast<int32_t>(a.long_val);
+                };
+                auto is_int = [](const CallContext::Arg& a) {
+                    return a.kind == CallContext::Arg::Kind::INT ||
+                           a.kind == CallContext::Arg::Kind::BOOL ||
+                           a.kind == CallContext::Arg::Kind::LONG;
+                };
+                if (is_int(x) && is_int(y))
+                    return intv(x) < intv(y) ? -1 : (intv(x) > intv(y) ? 1 : 0);
+                if (x.kind == CallContext::Arg::Kind::OBJECT &&
+                    x.object_id != 0 && y.kind == CallContext::Arg::Kind::OBJECT &&
+                    y.object_id != 0) {
+                    auto o = r23_dex(x.object_id, "compareTo", {y});
+                    if (!o.ok || o.kind != 1) return INT_MIN;
+                    return o.int_val;
+                }
+                return INT_MIN;
+            };
+
+            // Resolve the list argument; decline maps/unknown receivers.
+            auto r23_list = [&](uint32_t oid)
+                -> CollectionShadow::CollectionState* {
+                if (oid == 0) return nullptr;
+                auto* st = get_or_create(oid, /*is_map=*/false);
+                if (!st || st->is_map) return nullptr;
+                return st;
+            };
+
+            // Serve an element Arg as the call's return value.
+            auto r23_serve = [&](const CallContext::Arg& a) -> CallResult {
+                if (a.kind == CallContext::Arg::Kind::STRING)
+                    return CallResult::handled_string(a.string_val);
+                if (a.kind == CallContext::Arg::Kind::INT)
+                    return CallResult::handled_int(a.int_val);
+                if (a.kind == CallContext::Arg::Kind::NULL_REF)
+                    return CallResult::handled_null();
+                std::string cls;
+                if (heap_ && a.object_id != 0 &&
+                    heap_->get_object_class(a.object_id, cls))
+                    return CallResult::handled_object(a.object_id, cls);
+                return CallResult::handled_object(a.object_id,
+                                                  "Ljava/lang/Object;");
+            };
+
+            // ── reverse(List) — OpenJDK reverse law ──
+            if (m == "reverse") {
+                auto* st = r23_list(ctx.arg_as_object(0, 0));
+                if (!st) return CallResult::not_handled();
+                int32_t n = r23_n(st);
+                if (n > 4096) return CallResult::not_handled();
+                for (int32_t i = 0, j = n - 1; i < j; ++i, --j)
+                    r23_swap(st, i, j);
+                r23_sync(ctx.arg_as_object(0, 0), st, n);
+                r23_diag("reverse", n);
+                return CallResult::handled_void();
+            }
+
+            // ── shuffle(List) — deterministic Fisher-Yates (fixed-seed
+            // splitmix64; see the determinism note above) ──
+            if (m == "shuffle") {
+                uint32_t lid = ctx.arg_as_object(0, 0);
+                auto* st = r23_list(lid);
+                if (!st) return CallResult::not_handled();
+                int32_t n = r23_n(st);
+                if (n > 4096) return CallResult::not_handled();
+                static thread_local uint64_t r23_shuf_state =
+                    0x4D494E49414E4452ULL;  // "MINIANDR" — fixed seed
+                auto r23_next = [](uint64_t& s) -> uint64_t {
+                    s += 0x9E3779B97F4A7C15ULL;
+                    uint64_t z = s;
+                    z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
+                    z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
+                    return z ^ (z >> 31);
+                };
+                for (int32_t i = n - 1; i > 0; --i) {
+                    uint64_t d = r23_next(r23_shuf_state);
+                    int32_t j = static_cast<int32_t>(d % static_cast<uint64_t>(i + 1));
+                    r23_swap(st, i, j);
+                }
+                r23_sync(lid, st, n);
+                r23_diag("shuffle", n);
+                return CallResult::handled_void();
+            }
+
+            // ── swap(List, int, int) — AIOOBE law on bad indices ──
+            if (m == "swap") {
+                uint32_t lid = ctx.arg_as_object(0, 0);
+                auto* st = r23_list(lid);
+                if (!st) return CallResult::not_handled();
+                int32_t n = r23_n(st);
+                if (ctx.args.size() < 3) return CallResult::not_handled();
+                auto intv = [](const CallContext::Arg& a) -> int32_t {
+                    if (a.kind == CallContext::Arg::Kind::INT) return a.int_val;
+                    if (a.kind == CallContext::Arg::Kind::BOOL) return a.bool_val ? 1 : 0;
+                    return static_cast<int32_t>(a.long_val);
+                };
+                int32_t i = intv(ctx.args[1]), j = intv(ctx.args[2]);
+                if (i < 0 || i >= n || j < 0 || j >= n)
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "Index " + std::to_string(i < 0 || i >= n ? i : j) +
+                        " out of bounds for length " + std::to_string(n));
+                r23_swap(st, i, j);
+                r23_sync(lid, st, n);
+                return CallResult::handled_void();
+            }
+
+            // ── rotate(List, int) — (i + d) mod n law ──
+            if (m == "rotate") {
+                uint32_t lid = ctx.arg_as_object(0, 0);
+                auto* st = r23_list(lid);
+                if (!st) return CallResult::not_handled();
+                int32_t n = r23_n(st);
+                if (n > 4096) return CallResult::not_handled();
+                if (ctx.args.size() < 2) return CallResult::not_handled();
+                auto intv = [](const CallContext::Arg& a) -> int32_t {
+                    if (a.kind == CallContext::Arg::Kind::INT) return a.int_val;
+                    if (a.kind == CallContext::Arg::Kind::BOOL) return a.bool_val ? 1 : 0;
+                    return static_cast<int32_t>(a.long_val);
+                };
+                int32_t d = intv(ctx.args[1]);
+                if (n == 0 || d % n == 0) return CallResult::handled_void();
+                int32_t dist = ((d % n) + n) % n;
+                std::vector<CallContext::Arg> tmp;
+                for (int32_t i = 0; i < n; ++i) tmp.push_back(r23_elem(st, i));
+                for (int32_t i = 0; i < n; ++i)
+                    r23_write(st, (i + dist) % n, tmp[i]);
+                r23_sync(lid, st, n);
+                r23_diag("rotate", n);
+                return CallResult::handled_void();
+            }
+
+            // ── fill(List, T) / fill(T[], T) — both OpenJDK overloads ──
+            if (m == "fill") {
+                if (ctx.args.size() < 2) return CallResult::not_handled();
+                uint32_t lid = ctx.arg_as_object(0, 0);
+                int32_t alen = -1;
+                if (lid != 0 && heap_ &&
+                    heap_->get_object_array_length(lid, alen) && alen >= 0) {
+                    if (alen > 4096) return CallResult::not_handled();
+                    const CallContext::Arg& v = ctx.args[1];
+                    for (int32_t i = 0; i < alen; ++i) {
+                        const std::string fname =
+                            "array[" + std::to_string(i) + "]";
+                        if (v.kind == CallContext::Arg::Kind::STRING)
+                            heap_->set_object_string_field(lid, fname,
+                                                           v.string_val);
+                        else if (v.kind == CallContext::Arg::Kind::INT ||
+                                 v.kind == CallContext::Arg::Kind::BOOL ||
+                                 v.kind == CallContext::Arg::Kind::LONG)
+                            heap_->set_object_int_field(lid, fname,
+                                                        v.kind ==
+                                                                CallContext::Arg::Kind::INT
+                                                            ? v.int_val
+                                                            : 0);
+                        else if (v.kind == CallContext::Arg::Kind::OBJECT &&
+                                 v.object_id != 0)
+                            heap_->set_object_ref_field(
+                                lid, fname, v.object_id, "Ljava/lang/Object;",
+                                "", false);
+                    }
+                    r23_diag("fill[]", alen);
+                    return CallResult::handled_void();
+                }
+                auto* st = r23_list(lid);
+                if (!st) return CallResult::not_handled();
+                int32_t n = r23_n(st);
+                if (n > 4096) return CallResult::not_handled();
+                for (int32_t i = 0; i < n; ++i)
+                    r23_write(st, i, ctx.args[1]);
+                r23_sync(lid, st, n);
+                r23_diag("fill", n);
+                return CallResult::handled_void();
+            }
+
+            // ── copy(List dest, List src) — IOOBE when src does not fit ──
+            if (m == "copy") {
+                uint32_t did = ctx.arg_as_object(0, 0);
+                uint32_t sid = ctx.arg_as_object(1, 0);
+                auto* dst = r23_list(did);
+                auto* src = r23_list(sid);
+                if (!dst || !src) return CallResult::not_handled();
+                int32_t dn = r23_n(dst), sn = r23_n(src);
+                if (sn > dn)
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "Source does not fit in dest");
+                for (int32_t i = 0; i < sn; ++i)
+                    r23_write(dst, i, r23_elem(src, i));
+                r23_sync(did, dst, dn);
+                r23_diag("copy", sn);
+                return CallResult::handled_void();
+            }
+
+            // ── nCopies(int, T) — IAE on n<0; fresh list of n copies ──
+            if (m == "nCopies") {
+                if (ctx.args.empty()) return CallResult::not_handled();
+                auto intv = [](const CallContext::Arg& a) -> int32_t {
+                    if (a.kind == CallContext::Arg::Kind::INT) return a.int_val;
+                    if (a.kind == CallContext::Arg::Kind::BOOL) return a.bool_val ? 1 : 0;
+                    return static_cast<int32_t>(a.long_val);
+                };
+                int32_t nc = intv(ctx.args[0]);
+                if (nc < 0)
+                    return CallResult::handled_exception(
+                        "Ljava/lang/IllegalArgumentException;",
+                        "List length = " + std::to_string(nc));
+                if (nc > 4096) return CallResult::not_handled();
+                uint32_t list_id = heap_
+                                       ? heap_->allocate("Ljava/util/ArrayList;")
+                                       : 0;
+                if (list_id == 0) return CallResult::not_handled();
+                auto* st = get_or_create(list_id, /*is_map=*/false);
+                CallContext::Arg e = ctx.args.size() >= 2
+                                         ? ctx.args[1]
+                                         : CallContext::Arg{};
+                for (int32_t i = 0; i < nc; ++i) {
+                    st->elements.push_back(0);
+                    st->elem_kinds.push_back(2);
+                    st->elem_strings.push_back(std::string());
+                    st->elem_ints.push_back(0);
+                    r23_write(st, i, e);
+                }
+                r23_diag("nCopies", nc);
+                return CallResult::handled_object(list_id,
+                                                  "Ljava/util/List;");
+            }
+
+            // ── addAll(Collection, T...) — varargs array append law ──
+            if (m == "addAll") {
+                if (ctx.args.size() < 2) return CallResult::not_handled();
+                uint32_t cid = ctx.arg_as_object(0, 0);
+                auto* st = r23_list(cid);
+                if (!st) return CallResult::not_handled();
+                uint32_t arr = ctx.arg_as_object(1, 0);
+                int32_t alen = -1;
+                if (arr == 0 || !heap_ ||
+                    !heap_->get_object_array_length(arr, alen) || alen < 0)
+                    return CallResult::not_handled();
+                if (alen > 4096) return CallResult::not_handled();
+                for (int32_t i = 0; i < alen; ++i) {
+                    CallContext::Arg a;
+                    uint32_t ref = 0;
+                    std::string sv;
+                    if (heap_->get_object_array_ref_element(arr, (size_t)i, ref) &&
+                        ref != 0) {
+                        std::string content;
+                        if (heap_->get_object_string_field(ref, "__string_value__", content))
+                            a.kind = CallContext::Arg::Kind::STRING,
+                            a.string_val = content;
+                        else {
+                            a.kind = CallContext::Arg::Kind::OBJECT;
+                            a.object_id = ref;
+                        }
+                    } else if (heap_->get_object_array_string_element(arr, (size_t)i, sv)) {
+                        a.kind = CallContext::Arg::Kind::STRING;
+                        a.string_val = sv;
+                    } else {
+                        a.kind = CallContext::Arg::Kind::NULL_REF;
+                    }
+                    int32_t before = r23_n(st);
+                    st->elements.push_back(0);
+                    st->elem_kinds.push_back(2);
+                    st->elem_strings.push_back(std::string());
+                    st->elem_ints.push_back(0);
+                    r23_write(st, before, a);
+                }
+                r23_sync(cid, st, r23_n(st));
+                r23_diag("addAll", alen);
+                return CallResult::handled_bool(true);
+            }
+
+            // ── min/max(Collection[, Comparator]) — NoSuchElementException
+            // on empty; ClassCastException (loud, via decline) when
+            // incomparable per the OpenJDK contracts ──
+            if (m == "min" || m == "max") {
+                auto* st = r23_list(ctx.arg_as_object(0, 0));
+                if (!st) return CallResult::not_handled();
+                int32_t n = r23_n(st);
+                if (n == 0)
+                    return CallResult::handled_exception(
+                        "Ljava/util/NoSuchElementException;",
+                        "Collection is empty");
+                if (n > 4096) return CallResult::not_handled();
+                uint32_t cmp = ctx.args.size() >= 2
+                                   ? ctx.arg_as_object(1, 0) : 0;
+                CallContext::Arg best = r23_elem(st, 0);
+                for (int32_t i = 1; i < n; ++i) {
+                    CallContext::Arg e = r23_elem(st, i);
+                    int c = r23_cmp(e, best, cmp);
+                    if (c == INT_MIN)
+                        return CallResult::handled_exception(
+                            "Ljava/lang/ClassCastException;",
+                            "incomparable elements in " + m);
+                    bool better = (m == "min") ? (c < 0) : (c > 0);
+                    if (better) best = e;
+                }
+                r23_diag(m.c_str(), n);
+                return r23_serve(best);
+            }
+
+            // ── binarySearch(List, key[, Comparator]) — the sorted-list
+            // contract; ClassCastException on incomparable ──
+            if (m == "binarySearch") {
+                auto* st = r23_list(ctx.arg_as_object(0, 0));
+                if (!st) return CallResult::not_handled();
+                int32_t n = r23_n(st);
+                if (n > 4096) return CallResult::not_handled();
+                if (ctx.args.size() < 2) return CallResult::not_handled();
+                uint32_t cmp = ctx.args.size() >= 3
+                                   ? ctx.arg_as_object(2, 0) : 0;
+                CallContext::Arg key = ctx.args[1];
+                int32_t lo = 0, hi = n - 1;
+                while (lo <= hi) {
+                    int32_t mid = (lo + hi) / 2;
+                    int c = r23_cmp(r23_elem(st, mid), key, cmp);
+                    if (c == INT_MIN)
+                        return CallResult::handled_exception(
+                            "Ljava/lang/ClassCastException;",
+                            "incomparable key in binarySearch");
+                    if (c < 0) lo = mid + 1;
+                    else if (c > 0) hi = mid - 1;
+                    else return CallResult::handled_int(mid);
+                }
+                return CallResult::handled_int(-(lo + 1));
+            }
+
+            // ── frequency(Collection, Object) — Objects.equals count ──
+            if (m == "frequency") {
+                auto* st = r23_list(ctx.arg_as_object(0, 0));
+                if (!st) return CallResult::not_handled();
+                int32_t n = r23_n(st);
+                if (n > 4096) return CallResult::not_handled();
+                if (ctx.args.size() < 2) return CallResult::not_handled();
+                int32_t hits = 0;
+                for (int32_t i = 0; i < n; ++i)
+                    if (r23_equal(r23_elem(st, i), ctx.args[1])) ++hits;
+                return CallResult::handled_int(hits);
+            }
+
+            // ── disjoint(c1, c2) — no common element under Objects.equals ──
+            if (m == "disjoint") {
+                auto* a = r23_list(ctx.arg_as_object(0, 0));
+                auto* b = r23_list(ctx.arg_as_object(1, 0));
+                if (!a || !b) return CallResult::not_handled();
+                int32_t na = r23_n(a), nb = r23_n(b);
+                if ((int64_t)na * nb > 1000000LL)
+                    return CallResult::not_handled();
+                for (int32_t i = 0; i < na; ++i)
+                    for (int32_t j = 0; j < nb; ++j)
+                        if (r23_equal(r23_elem(a, i), r23_elem(b, j)))
+                            return CallResult::handled_bool(false);
+                return CallResult::handled_bool(true);
+            }
+
+            // ── replaceAll(List, old, new) — true when any replaced ──
+            if (m == "replaceAll") {
+                uint32_t lid = ctx.arg_as_object(0, 0);
+                auto* st = r23_list(lid);
+                if (!st) return CallResult::not_handled();
+                int32_t n = r23_n(st);
+                if (n > 4096) return CallResult::not_handled();
+                if (ctx.args.size() < 3) return CallResult::not_handled();
+                bool any = false;
+                for (int32_t i = 0; i < n; ++i) {
+                    if (r23_equal(r23_elem(st, i), ctx.args[1])) {
+                        r23_write(st, i, ctx.args[2]);
+                        any = true;
+                    }
+                }
+                if (any) r23_sync(lid, st, n);
+                return CallResult::handled_bool(any);
+            }
+
+            // ── indexOfSubList / lastIndexOfSubList — window scan ──
+            if (m == "indexOfSubList" || m == "lastIndexOfSubList") {
+                auto* src = r23_list(ctx.arg_as_object(0, 0));
+                auto* tgt = r23_list(ctx.arg_as_object(1, 0));
+                if (!src || !tgt) return CallResult::not_handled();
+                int32_t sn = r23_n(src), tn = r23_n(tgt);
+                if (sn > 4096 || tn > 4096) return CallResult::not_handled();
+                if (tn > sn) return CallResult::handled_int(-1);
+                if (tn == 0)
+                    return CallResult::handled_int(
+                        m == "indexOfSubList" ? 0 : sn);
+                int32_t found = -1;
+                for (int32_t i = 0; i + tn <= sn; ++i) {
+                    bool ok = true;
+                    for (int32_t j = 0; j < tn; ++j)
+                        if (!r23_equal(r23_elem(src, i + j),
+                                       r23_elem(tgt, j))) {
+                            ok = false;
+                            break;
+                        }
+                    if (ok) {
+                        found = i;
+                        if (m == "indexOfSubList") break;
+                    }
+                }
+                return CallResult::handled_int(found);
+            }
+        }
     }
 
     // EXP-056: Do not handle calls on null objects (object_id=0).
@@ -6501,13 +7156,39 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                      "next frame boundary)" << std::endl;
         return CallResult::handled_void();
     }
-    if (m == "isFinishing") {
-        // CODER7 WAVE-3 (AOSP Activity.mFinished): once finish() was
-        // requested on THIS activity the flag stays true through its whole
-        // teardown — onDestroy still observes isFinishing()==true. The old
-        // pending_finish_ reset answered false there.
-        return CallResult::handled_bool(pending_finish_ ||
-                                        is_finished(ctx.receiver_id));
+
+    if (m == "isTaskRoot") {
+        // GP-582 WAVE (S220, finding TheXTech): AOSP Activity.isTaskRoot —
+        // "Returns true if this activity is the root of its task". The
+        // ActivityShadow already owns the G08 task model: stack_ holds the
+        // records of activities BENEATH the current one, and the CURRENT
+        // activity sits above all of them. Law (ActivityRecord semantics):
+        //   receiver == current activity  → root iff stack_ is empty
+        //                                    (nothing was launched before it
+        //                                    in this task);
+        //   receiver in stack_ at idx 0   → root (the bottom record IS the
+        //                                    first-launched activity);
+        //   receiver deeper / unknown     → not the root.
+        // FLAG_ACTIVITY_CLEAR_TASK empties stack_ before the new launch
+        // (IntentShadow NEW_TASK|CLEAR_TASK law), so the cleared-task
+        // newcomer naturally answers true here. TheXTech Launcher.onCreate
+        // calls this BEFORE super.onCreate and finish()es when false —
+        // the old silent-stub default (false) destroyed the app before
+        // setContentView, leaving WINDOW_ROOT as the first-missing stage
+        // with zero nodes and zero draw ops (S188-W16 evidence).
+        if (ctx.receiver_id == current_activity_id_) {
+            return CallResult::handled_bool(stack_.empty());
+        }
+        for (size_t i = 0; i < stack_.size(); ++i) {
+            if (stack_[i].obj_id == ctx.receiver_id)
+                return CallResult::handled_bool(i == 0);
+        }
+        // Receiver is neither current nor recorded: a torn-down or
+        // never-registered instance. AOSP has no such live activity; the
+        // honest answer for the single-task runtime is the empty-stack
+        // face (nothing else was launched in the task).
+        return CallResult::handled_bool(stack_.empty() &&
+                                        current_activity_id_ == 0);
     }
     if (m == "getApplicationContext") {
         // [R341-APPCTX] AOSP identity law — serve the bound manifest

@@ -534,6 +534,13 @@ using VectorRefResolver = std::function<bool(uint32_t resid, VectorImageRef* out
 // on hostile input beyond the header window (bounds-checked, no allocation).
 struct ImageSizeProbe {
     int width = 0, height = 0;
+    // GP583-IMG-004 V2: probe_image_size returning true means the HEADER
+    // dimensions are known — it does NOT validate the payload (a truncated
+    // body after a valid header still probes true; full validation is
+    // decode_image_bytes' contract). Consumers needing "fully decodable"
+    // must run the real decoder; consumers wanting a zero-allocation
+    // bounds pass use exactly this header contract.
+    bool header_dims_known = false;
 };
 bool probe_image_size(const std::vector<uint8_t>& bytes, ImageSizeProbe* out);
 

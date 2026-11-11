@@ -159,6 +159,29 @@ $(LAWS130_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(LAWS130_SOURCE)
 	@mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $(LAWS130_SOURCE) $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(LIBS) $(FONTS_LIBS)
 
+# A-R5 (S220): the R25 declared!=runtime receiver dispatch matrix probe
+# (roadmap section 5 C3's demanded deliverable) + the A-R4 mwr opcode probe —
+# both linked per the LAWS130 pattern (+ THUNK_OBJECT, the S215 receipt's
+# link correction: miniandroid_native_thunk lives in the thunk object).
+# r25_dispatch_matrix_test ALSO joins the required-law battery below.
+MWR_PROBE_SOURCE = $(TESTDIR)/mwr_opcode_probe_test.cpp
+MWR_PROBE_EXECUTABLE = $(BUILDDIR)/mwr_opcode_probe
+mwr_opcode_probe: $(MWR_PROBE_EXECUTABLE)
+	./$(MWR_PROBE_EXECUTABLE)
+
+$(MWR_PROBE_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(MWR_PROBE_SOURCE)
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $(MWR_PROBE_SOURCE) $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(LIBS) $(FONTS_LIBS)
+
+R25_SOURCE = $(TESTDIR)/r25_dispatch_matrix_test.cpp
+R25_EXECUTABLE = $(BUILDDIR)/r25_dispatch_matrix
+r25_matrix: $(R25_EXECUTABLE)
+	./$(R25_EXECUTABLE)
+
+$(R25_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(R25_SOURCE)
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $(R25_SOURCE) $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(LIBS) $(FONTS_LIBS)
+
 # GP583-TEST-001: the default `test` target ran ONLY simple_test while the
 # tests/ directory carries the real regression battery (law tests, hostile-
 # resource suites, the GP-582 engine boundary probe, opcode probes). A green
@@ -174,7 +197,9 @@ $(LAWS130_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(LAWS130_SOURCE)
 #                          g11_ctor, m3_arsc_style, mutf8_string_pool,
 #                          resource_core, resource_config_selection, s98_prefs,
 #                          s98_scroll_transform, s98_text, s106_* (6),
-#                          c013_arsc_probe, encoded_value_law, gp583_gles_law
+#                          c013_arsc_probe, encoded_value_law, gp583_gles_law,
+#                          r25_dispatch_matrix (A-R5 ART dispatch law),
+#                          gp583_img004_bounds (inJustDecodeBounds law)
 #   manual diagnostic    : dbg_test, exp088_*, exp092, font_pipeline_probe,
 #                          probe_arsc_layout, mwr_opcode_probe (run by hand /
 #                          dedicated waves; not in test-all)
@@ -191,7 +216,8 @@ TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
 	s98_prefs_law_test s98_scroll_transform_law_test s98_text_law_test \
 	s106_cia_law_test s106_gif_law_test \
 	s106_layout_net_law_test s106_text2_law_test \
-	encoded_value_law_test gp583_gles_law_test c9_bitmap_density_law_test
+	encoded_value_law_test gp583_gles_law_test c9_bitmap_density_law_test \
+	r25_dispatch_matrix_test gp583_img004_bounds_law_test
 TEST_BATTERY = $(TEST_CORE) $(TEST_HOSTILE) $(TEST_LAW)
 TEST_TIMEOUT = 300
 

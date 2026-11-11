@@ -2897,13 +2897,53 @@ std::string DalvikExecutionEngine::resolve_method_proto_uncached(
 fallback:
     // Fallback: try the merged DexReport's method_ids + protos tables.
     if (dex_report_ && method_idx < dex_report_->method_ids.size()) {
-        uint16_t proto_idx = dex_report_->method_ids[method_idx].proto_idx;
-        (void)proto_idx;
-        // We can't reliably resolve proto_idx via the merged protos vector
-        // because multi-DEX merging shifts indices. Return an empty
-        // descriptor so the caller (execute_invoke_static) treats this as
-        // a no-arg method (which is the safe default for $r8$lambda methods
-        // where the proto is used only for wide-register merging decisions).
+        // ── A-R5 (S218, V2 fix — R25 matrix wave): CLASS-INFO PROTO
+        // FALLBACK LAW. The old fallback returned the CONSTANT "()V" —
+        // even though the method's TRUE descriptor is sitting in the
+        // merged class-info tables (method_ids[method_idx] →
+        // (class_idx, name_idx) → class_info_index_ → the class's
+        // direct/virtual method entry). The constant leaked into every
+        // descriptor-sensitive decision: the F-280 exact-(name, proto)
+        // match (dalvik_engine.cpp, the F-280 block inside
+        // try_recursive_invoke) compared "()V" against the real "()I"
+        // and declared NO local match → its super-walk let an ANCESTOR's
+        // lenient-selected same-name body outrank the receiver's own
+        // declaration (the R25 dispatch-matrix probe's v_declared_super
+        // row: new LSub; + invoke-virtual LBase.m answered 1, the base
+        // body, instead of the override's 2 — the exact ART-law
+        // violation §5 C3 demanded the matrix surface). First
+        // observable: tests/r25_dispatch_matrix_test.cpp rows at
+        // 14c4bf4e + /tmp dbg minimal repro (new-instance LSub; +
+        // invoke-virtual (LSub.m) → LBase.m body ran).
+        // Fix: consult the class-info method tables BEFORE the constant
+        // default; first same-name non-empty descriptor wins (overload
+        // ambiguity documented — best-available, strictly more accurate
+        // than the constant; the raw-DEX path above is untouched so
+        // real-APK proto_ids resolution is byte-identical).
+        uint16_t class_idx = dex_report_->method_ids[method_idx].class_idx;
+        uint32_t name_idx = dex_report_->method_ids[method_idx].name_idx;
+        if (class_idx < dex_report_->types.size() &&
+            name_idx < dex_report_->strings.size()) {
+            const std::string& cname = dex_report_->types[class_idx];
+            const std::string& mname = dex_report_->strings[name_idx];
+            auto cit = class_info_index_.find(cname);
+            if (!cname.empty() && !mname.empty() &&
+                cit != class_info_index_.end()) {
+                const dex::ClassInfo& ci =
+                    dex_report_->classes[cit->second];
+                for (const auto& mm : ci.direct_methods)
+                    if (mm.name == mname && !mm.descriptor.empty())
+                        return mm.descriptor;
+                for (const auto& mm : ci.virtual_methods)
+                    if (mm.name == mname && !mm.descriptor.empty())
+                        return mm.descriptor;
+            }
+        }
+        // (The raw proto_idx route stays the raw-DEX path above; the merged
+        // protos vector cannot be used because multi-DEX merging shifts indices.)
+        // because multi-DEX merging shifts indices. After the class-info
+        // consult above, the "()V" constant remains only for methods that
+        // exist in NO class-info table (merged-away classes).
     }
     return "()V";
 }
@@ -51426,6 +51466,205 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_bool(cur.empty());
             return true;
+        }
+        // ── A-R5 (S218, R24 delivery): the AbstractStringBuilder MUTATION
+        // family. Finding R24 (issue #581, A-R4): the SB block handled only
+        // append/toString/length/charAt/isEmpty and its own boundary comment
+        // deferred the rest. The deferred half is NOT inert: setLength(0) —
+        // the universal HUD/score-text reset idiom that game loops run per
+        // frame — fell to the typed-void tail, so the buffer kept its old
+        // content and every append ACCUMULATED (frame N's text = the
+        // concatenation of frames 1..N): the silent-wrong class
+        // CONSTITUTION_V2 §17 forbids, reached through one of the most
+        // common idioms in game UI code.
+        //
+        // Law (Tier 1, OpenJDK AbstractStringBuilder):
+        //   insert(int, X)       — shifts the tail; StringIndexOutOfBounds
+        //                          when offset < 0 or > length;
+        //   setLength(int)       — truncates (newLength < length) or
+        //                          zero-fills (NUL chars); negative is
+        //                          StringIndexOutOfBoundsException;
+        //   setCharAt(int, char) — bounds law identical to charAt;
+        //   delete(int, int)     — clamps end to length; start > end or
+        //                          start > length is StringIndexOutOfBounds;
+        //   deleteCharAt(int)    — StringIndexOutOfBounds outside
+        //                          [0, length);
+        //   reverse()            — reverses in place (UTF-16 units — this
+        //                          runtime stores UTF-8 bytes in sb_value;
+        //                          the byte reversal is the documented
+        //                          approximation, surrogate-pair exactness
+        //                          is the follow-up lever);
+        //   replace(int,int,Str) — start/end bounds per delete law;
+        //   substring(int[,int]) — bounds law; returns the slice;
+        //   capacity()/ensureCapacity/trimToSize — implementation-defined;
+        //   capacity() answers max(16, length+16) (the informational
+        //   minimum-capacity law face, no new state).
+        //   The mutating faces return `this` (chaining law, same shape as
+        //   the append arm); the bounds laws throw_deferred
+        //   StringIndexOutOfBoundsException with the exact OpenJDK message
+        //   shapes.
+        {
+            auto r24_writeback = [&](const std::string& v) {
+                if (sb_id != 0 && heap_.has_object(sb_id))
+                    heap_.set_object_field(sb_id, "sb_value",
+                                           DalvikValue::make_string(v, 0));
+            };
+            auto r24_int_arg = [&](size_t i) -> int32_t {
+                return dalvik_int_value(args[i]);
+            };
+            auto r24_this = [&]() {
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                DalvikValue r;
+                r.type = DalvikType::OBJECT_REF;
+                r.object_id = sb_id;
+                r.class_desc = class_name.c_str();
+                result = r;
+                return true;
+            };
+            auto r24_sioobe = [&](const std::string& msg) {
+                throw_deferred("Ljava/lang/StringIndexOutOfBoundsException;",
+                               msg, "R24-SB");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            };
+
+            if (method == "setLength" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                int32_t nl = r24_int_arg(1);
+                if (nl < 0)
+                    return r24_sioobe("length " + std::to_string(nl) +
+                                      " < 0");
+                if (static_cast<size_t>(nl) <= cur.size())
+                    cur.resize(static_cast<size_t>(nl));
+                else
+                    cur.append(static_cast<size_t>(nl) - cur.size(), '\0');
+                r24_writeback(cur);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "setCharAt" && args.size() >= 3 &&
+                args[1].type == DalvikType::INT32) {
+                int32_t idx = r24_int_arg(1);
+                if (idx < 0 || static_cast<size_t>(idx) >= cur.size())
+                    return r24_sioobe("index " + std::to_string(idx) +
+                                      ", length " +
+                                      std::to_string(cur.size()));
+                char c = 0;
+                if (args[2].type == DalvikType::CHAR ||
+                    args[2].type == DalvikType::INT32)
+                    c = static_cast<char>(args[2].int_val);
+                cur[static_cast<size_t>(idx)] = c;
+                r24_writeback(cur);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+            if (method == "insert" && args.size() >= 3 &&
+                args[1].type == DalvikType::INT32) {
+                int32_t idx = r24_int_arg(1);
+                if (idx < 0 || static_cast<size_t>(idx) > cur.size())
+                    return r24_sioobe("offset " + std::to_string(idx) +
+                                      ", length " +
+                                      std::to_string(cur.size()));
+                cur.insert(static_cast<size_t>(idx),
+                           stringify_arg(args[2]));
+                r24_writeback(cur);
+                return r24_this();
+            }
+            if (method == "deleteCharAt" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                int32_t idx = r24_int_arg(1);
+                if (idx < 0 || static_cast<size_t>(idx) >= cur.size())
+                    return r24_sioobe("index " + std::to_string(idx) +
+                                      ", length " +
+                                      std::to_string(cur.size()));
+                cur.erase(static_cast<size_t>(idx), 1);
+                r24_writeback(cur);
+                return r24_this();
+            }
+            if (method == "delete" && args.size() >= 3 &&
+                args[1].type == DalvikType::INT32 &&
+                args[2].type == DalvikType::INT32) {
+                int32_t start = r24_int_arg(1), end = r24_int_arg(2);
+                if (end > static_cast<int32_t>(cur.size()))
+                    end = static_cast<int32_t>(cur.size());
+                if (start < 0 || start > end ||
+                    start > static_cast<int32_t>(cur.size()))
+                    return r24_sioobe("start " + std::to_string(start) +
+                                      ", end " + std::to_string(end) +
+                                      ", length " +
+                                      std::to_string(cur.size()));
+                cur.erase(static_cast<size_t>(start),
+                          static_cast<size_t>(end - start));
+                r24_writeback(cur);
+                return r24_this();
+            }
+            if (method == "reverse") {
+                std::reverse(cur.begin(), cur.end());
+                r24_writeback(cur);
+                return r24_this();
+            }
+            if (method == "replace" && args.size() >= 4 &&
+                args[1].type == DalvikType::INT32 &&
+                args[2].type == DalvikType::INT32) {
+                int32_t start = r24_int_arg(1), end = r24_int_arg(2);
+                if (end > static_cast<int32_t>(cur.size()))
+                    end = static_cast<int32_t>(cur.size());
+                if (start < 0 || start > end ||
+                    start > static_cast<int32_t>(cur.size()))
+                    return r24_sioobe("start " + std::to_string(start) +
+                                      ", end " + std::to_string(end) +
+                                      ", length " +
+                                      std::to_string(cur.size()));
+                cur.replace(static_cast<size_t>(start),
+                            static_cast<size_t>(end - start),
+                            stringify_arg(args[3]));
+                r24_writeback(cur);
+                return r24_this();
+            }
+            if (method == "substring" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                int32_t start = r24_int_arg(1);
+                int32_t end = (args.size() >= 3 &&
+                               args[2].type == DalvikType::INT32)
+                                  ? r24_int_arg(2)
+                                  : static_cast<int32_t>(cur.size());
+                if (start < 0 || end > static_cast<int32_t>(cur.size()) ||
+                    start > end)
+                    return r24_sioobe("begin " + std::to_string(start) +
+                                      ", end " + std::to_string(end) +
+                                      ", length " +
+                                      std::to_string(cur.size()));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_string(
+                    cur.substr(static_cast<size_t>(start),
+                               static_cast<size_t>(end - start)),
+                    0);
+                return true;
+            }
+            if (method == "capacity") {
+                // Informational minimum-capacity law face: OpenJDK capacity
+                // is implementation-defined (min 16, grows 2n+2); this
+                // runtime keeps content only, so the answer mirrors the
+                // minimum guaranteed capacity for the current length.
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(
+                    static_cast<int32_t>(cur.size() + 16 > 16
+                                             ? cur.size() + 16
+                                             : 16));
+                return true;
+            }
+            if (method == "ensureCapacity" ||
+                method == "trimToSize") {
+                // Capacity hints are no-ops here (no separate capacity
+                // state exists); the content is untouched — OpenJDK law:
+                // both may change capacity, never content.
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
         }
         // insert(int, X), reverse(), deleteCharAt, setLength etc. can be
         // added when evidence shows they're on a hot path.

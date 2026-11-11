@@ -334,7 +334,8 @@ bool probe_image_size(const std::vector<uint8_t>& bytes, ImageSizeProbe* out) {
         // truncated simply fails the probe — bounds-checked, no allocation.)
         out->width  = (int)rd_be32(&bytes[16]);
         out->height = (int)rd_be32(&bytes[20]);
-        return out->width > 0 && out->height > 0;
+        out->header_dims_known = out->width > 0 && out->height > 0;
+        return out->header_dims_known;
     }
     if (n >= 30 && bytes[0] == 'R' && bytes[1] == 'I' && bytes[2] == 'F' &&
         bytes[3] == 'F' && bytes[8] == 'W' && bytes[9] == 'E' &&
@@ -347,7 +348,8 @@ bool probe_image_size(const std::vector<uint8_t>& bytes, ImageSizeProbe* out) {
             uint32_t h = 1 + (uint32_t(bytes[27]) | (uint32_t(bytes[28]) << 8) |
                               (uint32_t(bytes[29]) << 16));
             out->width = (int)w; out->height = (int)h;
-            return out->width > 0 && out->height > 0;
+            out->header_dims_known = out->width > 0 && out->height > 0;
+            return out->header_dims_known;
         }
         if (std::memcmp(f, "VP8 ", 4) == 0 && n >= 30) {
             // lossy VP8: frame tag 3 bytes at 20, then sync 0x9D012A at 23,
@@ -355,7 +357,8 @@ bool probe_image_size(const std::vector<uint8_t>& bytes, ImageSizeProbe* out) {
             if (bytes[23] == 0x9D && bytes[24] == 0x01 && bytes[25] == 0x2A) {
                 out->width  = int(bytes[26] | (bytes[27] << 8)) & 0x3FFF;
                 out->height = int(bytes[28] | (bytes[29] << 8)) & 0x3FFF;
-                return out->width > 0 && out->height > 0;
+                out->header_dims_known = out->width > 0 && out->height > 0;
+                return out->header_dims_known;
             }
         }
         if (std::memcmp(f, "VP8L", 4) == 0 && n >= 25) {
@@ -365,7 +368,8 @@ bool probe_image_size(const std::vector<uint8_t>& bytes, ImageSizeProbe* out) {
                              (uint32_t(bytes[23]) << 16) | (uint32_t(bytes[24]) << 24);
                 out->width  = int((b & 0x3FFF) + 1);
                 out->height = int(((b >> 14) & 0x3FFF) + 1);
-                return out->width > 0 && out->height > 0;
+                out->header_dims_known = out->width > 0 && out->height > 0;
+                return out->header_dims_known;
             }
         }
         return false;
@@ -388,7 +392,8 @@ bool probe_image_size(const std::vector<uint8_t>& bytes, ImageSizeProbe* out) {
                 if (i + 9 <= n) {
                     out->height = int((bytes[i + 5] << 8) | bytes[i + 6]);
                     out->width  = int((bytes[i + 7] << 8) | bytes[i + 8]);
-                    return out->width > 0 && out->height > 0;
+                    out->header_dims_known = out->width > 0 && out->height > 0;
+                    return out->header_dims_known;
                 }
                 break;
             }

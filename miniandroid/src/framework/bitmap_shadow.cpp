@@ -147,6 +147,22 @@ static std::string f240_mime_of(const std::vector<uint8_t>& b) {
     return "";
 }
 
+// ── GP583-IMG-004 V2 — the pure bounds-only header law ──────────────────
+// Header parsing ONLY (probe_image_size): no codec, no pixel allocation.
+// mime comes from the signature table; unknown signatures answer "".
+BitmapBoundsProbeResult bitmap_bounds_only_law(const std::vector<uint8_t>& bytes) {
+    BitmapBoundsProbeResult r;
+    renderer::ImageSizeProbe probe;
+    if (renderer::probe_image_size(bytes, &probe) && probe.width > 0 &&
+        probe.height > 0) {
+        r.width = probe.width;
+        r.height = probe.height;
+        r.mime = f240_mime_of(bytes);
+        r.valid = true;
+    }
+    return r;
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 // C9-1 (CODER 9) — AOSP BitmapFactory.Options density law (pure, unit-
 // tested; see bitmap_shadow.h for the source-backed law chain).
@@ -228,6 +244,45 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
                                          HeapAllocator* heap, uint32_t opts_id,
                                          int32_t resource_density = -1) {
     if (!heap) return 0;
+    // ── GP583-IMG-004 V2 (the 2026-11-12 GP correction) — inJustDecodeBounds
+    // moves ABOVE the full decode. The pre-fix order ran decode_image_bytes
+    // FIRST (full pixel allocation + decompression) and only then answered
+    // the bounds pass — violating the AOSP no-allocation contract for every
+    // caller. The flag is valid for ALL four entry paths (decodeStream /
+    // decodeFile / decodeResource / decodeByteArray — the earlier wave-5
+    // wording that exempted decodeResource/decodeFile was WRONG; that note
+    // belongs to the deprecated inInputShareable). The bounds pass uses the
+    // HEADER-ONLY probe (zero codec invocations, zero pixel bytes) via the
+    // pure bitmap_bounds_only_law; the header-vs-payload distinction is
+    // recorded in ImageSizeProbe.header_dims_known.
+    if (opts_id != 0) {
+        int32_t bounds_only = 0;
+        if (heap->get_object_int_field(opts_id, "inJustDecodeBounds",
+                                       bounds_only) && bounds_only) {
+            const BitmapBoundsProbeResult b = bitmap_bounds_only_law(bytes);
+            if (b.valid) {
+                heap->set_object_int_field(opts_id, "outWidth", b.width);
+                heap->set_object_int_field(opts_id, "outHeight", b.height);
+                if (!b.mime.empty())
+                    heap->set_object_string_field(opts_id, "outMimeType", b.mime);
+                std::cerr << "[BITMAP-FACTORY] bounds-only " << desc << " -> "
+                          << b.width << "x" << b.height
+                          << " (header-only, zero pixel decode; null per "
+                             "AOSP inJustDecodeBounds)" << std::endl;
+            } else {
+                // Invalid/truncated header: fresh-Options error dims (0x0) —
+                // AOSP native leaves the out fields untouched when codec
+                // creation fails; the caller's `outWidth <= 0` check takes
+                // its documented failure path. Still ZERO codec runs.
+                heap->set_object_int_field(opts_id, "outWidth", 0);
+                heap->set_object_int_field(opts_id, "outHeight", 0);
+                std::cerr << "[BITMAP-FACTORY] bounds-only " << desc << " -> "
+                          << "INVALID HEADER 0x0 (null; no codec run)"
+                          << std::endl;
+            }
+            return 0;  // null result — never allocate in the bounds pass
+        }
+    }
     renderer::DecodedImage decoded;
     if (!renderer::decode_image_bytes(bytes, &decoded,
                                       resources::device_config().density) ||
@@ -239,22 +294,8 @@ static uint32_t f240_decode_with_options(const std::vector<uint8_t>& bytes,
         return 0;
     }
     const std::string mime = f240_mime_of(bytes);
-    if (opts_id != 0) {
-        // Bounds-only pass: header consumed, NO bitmap allocation (AOSP law —
-        // decodeStream with inJustDecodeBounds answers null). out* = the
-        // RAW encoded dims (AOSP bounds pass never scales).
-        int32_t bounds_only = 0;
-        heap->get_object_int_field(opts_id, "inJustDecodeBounds", bounds_only);
-        if (bounds_only) {
-            heap->set_object_int_field(opts_id, "outWidth", decoded.width);
-            heap->set_object_int_field(opts_id, "outHeight", decoded.height);
-            if (!mime.empty()) heap->set_object_string_field(opts_id, "outMimeType", mime);
-            std::cerr << "[BITMAP-FACTORY] bounds-only " << desc << " -> "
-                      << decoded.width << "x" << decoded.height
-                      << " (null per AOSP inJustDecodeBounds)" << std::endl;
-            return 0;
-        }
-    }
+    // (The inJustDecodeBounds pass now lives ABOVE the decode — GP583-IMG-004
+    // V2: the bounds request never reaches this line, zero pixels allocated.)
 
     // ── AOSP decodeResourceStream seeding (decodeResource path only) ────
     int32_t in_density = 0, in_target_density = 0, in_sample = 1;
