@@ -23,6 +23,7 @@
 #include "atomic_shadow.h"
 #include "executor_shadow.h"
 #include "pending_intent_shadow.h"
+#include "task_stack_builder_shadow.h"
 #include "choreographer_shadow.h"
 #include "../storage/sqlite_shadow.h"
 
@@ -302,6 +303,10 @@ void register_platform_shadows(ShadowRegistry& reg) {
     // unresolved static call silently returned null, and the Kotlin
     // Intrinsics null-check threw NPE at MainActivity.onCreate.
     reg.register_shadow<PendingIntentShadow>();
+    // CODER7 WAVE-12: the TaskStackBuilder family (the synthetic
+    // task-stack laws: addParentStack walk, getIntents flag copy,
+    // getPendingIntent record delegation, startActivities bridge).
+    reg.register_shadow<TaskStackBuilderShadow>();
     // F-050 ROOT FIX: android.view.Choreographer family (frame-pump law).
     // Compose's AndroidUiDispatcher/AndroidUiFrameClock park the first
     // composition at withFrameNanos behind a posted FrameCallback; without

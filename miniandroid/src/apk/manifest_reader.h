@@ -121,6 +121,13 @@ struct ManifestInfo {
         bool exported = false;
         bool exported_declared = false;
         int launch_mode = 0;  // 0 standard, 1 singleTop, 2 singleTask, 3 singleInstance
+        // CODER7 WAVE-12 (AOSP PackageParser.ActivityInfo →
+        // ActivityInfo.parentActivityName, R.attr#parentActivityName):
+        // the parent activity class as written in the manifest (relative
+        // ".Foo" forms resolved by the engine transfer law). The
+        // TaskStackBuilder.addParentStack walk consumes it (AOSP: each
+        // step new ComponentName(info.packageName, parentActivity)).
+        std::string parent_activity_name;
         // S123 ACTION-RESOLVE law: every <action android:name> declared by
         // this activity's <intent-filter> elements (AOSP PackageParser
         // keeps the full filter set per activity; the runtime needs the
@@ -278,6 +285,14 @@ struct ManifestInfo {
         // per-filter matchable records for resolveService/queryIntentServices.
         bool enabled = true;
         bool enabled_declared = false;
+        // CODER7 WAVE-12 (AOSP PackageParser.Service →
+        // ServiceInfo.foregroundServiceType, R.attr#foregroundServiceType):
+        // the manifest-declared FGS type bitmask. aapt2 compiles the flag
+        // attribute to an INT (the OR of the named types, e.g.
+        // "dataSync|location" → 1|8 = 9); the reader accepts the compiled
+        // INT form verbatim and the string form by name. 0 = no type
+        // declared (AOSP ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE).
+        int foreground_service_type = 0;
         struct FilterInfo {
             std::vector<std::string> actions;
             std::vector<std::string> categories;

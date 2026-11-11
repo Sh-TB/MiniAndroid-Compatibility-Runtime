@@ -27,6 +27,41 @@ constexpr uint32_t AXML_MAGIC = 0x00080003;
 // String pool flags
 constexpr uint32_t STRING_POOL_UTF8_FLAG = 0x00000100;
 
+// CODER7 WAVE-12: the android:foregroundServiceType NAME → BITMASK map
+// (AOSP ServiceInfo.java constants, android-14: dataSync 1, mediaPlayback 2,
+// phoneCall 4, location 8, connectedDevice 16, mediaProjection 32, camera 64,
+// microphone 128, health 256, remoteMessaging 512, systemExempted 1024,
+// shortService 2048, specialUse 1<<30). Used only for the uncompiled
+// string form; aapt2 output arrives pre-ORed as an INT attribute.
+static int parse_fgs_type_names(const std::string& spec) {
+    int bits = 0;
+    size_t pos = 0;
+    while (pos < spec.size()) {
+        size_t bar = spec.find('|', pos);
+        std::string one = (bar == std::string::npos)
+                              ? spec.substr(pos)
+                              : spec.substr(pos, bar - pos);
+        if (one == "dataSync") bits |= 1;
+        else if (one == "mediaPlayback") bits |= 2;
+        else if (one == "phoneCall") bits |= 4;
+        else if (one == "location") bits |= 8;
+        else if (one == "connectedDevice") bits |= 16;
+        else if (one == "mediaProjection") bits |= 32;
+        else if (one == "camera") bits |= 64;
+        else if (one == "microphone") bits |= 128;
+        else if (one == "health") bits |= 256;
+        else if (one == "remoteMessaging") bits |= 512;
+        else if (one == "systemExempted") bits |= 1024;
+        else if (one == "shortService") bits |= 2048;
+        else if (one == "specialUse") bits |= (1 << 30);
+        // unknown names contribute nothing (the AOSP AttrUtils law —
+        // an unresolvable name is skipped, never fatal).
+        if (bar == std::string::npos) break;
+        pos = bar + 1;
+    }
+    return bits;
+}
+
 ManifestReader::ManifestReader() : verbose_(false), depth_(0) {
 }
 
@@ -698,6 +733,12 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         }
         // CONT-68 (F-NEW-366): every activity carries its own theme record
         // (the main-activity slot keeps the S68 W2 semantics downstream).
+        // CODER7 WAVE-12 (AOSP PackageParser.parseActivity →
+        // ActivityInfo.parentActivityName): the declared parent chain
+        // link — relative ".Foo" names are kept verbatim here; the
+        // engine transfer normalizes them to the dotted absolute form.
+        act_info.parent_activity_name = get_attribute_value(
+            attrs, "parentActivityName");
         act_info.theme_resid = activity_theme_resid_pending_;
         act_info.theme_ref = activity_theme_ref_pending_;
         result_.activities.push_back(act_info);
@@ -738,6 +779,28 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
                         svc.enabled = (es == "true");
                         svc.enabled_declared = true;
                     }
+                }
+            } else if (aname == "foregroundServiceType") {
+                // CODER7 WAVE-12 (AOSP PackageParser.parseService →
+                // ServiceInfo.foregroundServiceType): aapt2 compiles the
+                // R.attr#foregroundServiceType flag attribute to an INT
+                // (0x10) whose value is the OR of the named types (AOSP
+                // ServiceInfo: dataSync 1, mediaPlayback 2, phoneCall 4,
+                // location 8, connectedDevice 16, mediaProjection 32,
+                // camera 64, microphone 128, health 256, remoteMessaging
+                // 512, systemExempted 1024, shortService 2048,
+                // specialUse 1<<30). The INT form is served verbatim; the
+                // string form (uncompiled manifests) maps by name.
+                // aapt2 compiles FLAG-typed attributes to the HEX form
+                // (0x11) — plain INT (0x10) attrs (e.g. android:priority)
+                // use the same value payload; accept both byte-identically.
+                {
+                    uint8_t c7_t = a.value_data_type & 0xFF;
+                    if (c7_t == 0x10 || c7_t == 0x11)
+                        svc.foreground_service_type = (int)a.value_data;
+                    else
+                        svc.foreground_service_type = parse_fgs_type_names(
+                            get_attribute_value(attrs, "foregroundServiceType"));
                 }
             }
         }

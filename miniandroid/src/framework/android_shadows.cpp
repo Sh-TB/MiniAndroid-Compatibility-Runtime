@@ -5287,6 +5287,49 @@ std::shared_ptr<IntentShadow::PendingIntent> IntentShadow::get_or_create_intent(
 
 CallResult IntentShadow::dispatch(const CallContext& ctx) {
     const auto& m = ctx.method;
+    // ── CODER7 WAVE-12: the Intent factory statics (AOSP Intent.java,
+    // android-14 source-verified) ────────────────────────────────────────
+    // makeMainActivity(ComponentName): new Intent(ACTION_MAIN) +
+    // setComponent(mainActivity) + addCategory(CATEGORY_LAUNCHER).
+    // makeRestartActivityTask(ComponentName): makeMainActivity +
+    // FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK — "Make an Intent
+    // that can be used to relaunch the activity's task in its root
+    // state" (the launcher/notifications restart law). Both are STATIC:
+    // no receiver — a fresh Intent heap object + the IntentShadow
+    // record, exactly the state every instance-side Intent law reads.
+    if (m == "makeMainActivity" || m == "makeRestartActivityTask") {
+        if (!heap_) return CallResult::not_handled();
+        uint32_t c7_ni = heap_->get_or_create("Landroid/content/Intent;");
+        auto c7_pi = get_or_create_intent(c7_ni);
+        c7_pi->action = "android.intent.action.MAIN";  // AOSP ACTION_MAIN
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
+            ctx.args[0].object_id != 0) {
+            // Arg 0: the ComponentName heap object (mPackage/mClass, the
+            // F-116 field convention the engine's PM laws also read).
+            std::string c7_pk, c7_cl;
+            heap_->get_object_string_field(ctx.args[0].object_id,
+                                           "mPackage", c7_pk);
+            heap_->get_object_string_field(ctx.args[0].object_id,
+                                           "mClass", c7_cl);
+            if (!c7_pk.empty()) c7_pi->component_package = c7_pk;
+            if (!c7_cl.empty()) c7_pi->component_class = c7_cl;
+        }
+        c7_pi->categories.push_back(
+            "android.intent.category.LAUNCHER");  // AOSP CATEGORY_LAUNCHER
+        if (m == "makeRestartActivityTask") {
+            // AOSP Intent.java: FLAG_ACTIVITY_NEW_TASK = 0x10000000,
+            // FLAG_ACTIVITY_CLEAR_TASK = 0x00008000 (source-verified).
+            static const int32_t kNewTask = 0x10000000;
+            static const int32_t kClearTask = 0x00008000;
+            c7_pi->flags |= (kNewTask | kClearTask);
+        }
+        std::cerr << "[C7-INTENT-FACTORY] " << m
+                  << " comp=" << c7_pi->component_package << "/"
+                  << c7_pi->component_class << " flags=0x" << std::hex
+                  << c7_pi->flags << std::dec << std::endl;
+        return CallResult::handled_object(c7_ni, "Landroid/content/Intent;");
+    }
     // The Intent object_id is the receiver for instance methods.
     if (m == "<init>") {
         // Intent(), Intent(String action), Intent(Context, Class),
@@ -5867,7 +5910,12 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         // Return a ComponentName heap object carrying BOTH halves
         // (R-NEW-283 identity law; F-116 mPackage/mClass convention).
         if (heap_) {
-            uint32_t cn = heap_->get_or_create("Landroid/content/ComponentName;");
+            // CODER7 WAVE-12 (AOSP ComponentName identity): getComponent
+            // returns a NEW ComponentName per call — the get_or_create
+            // singleton law aliased every caller's CN onto ONE object
+            // (W12 evidence: three stacked getComponent reads answered
+            // the LAST materialized class). allocate() = the AOSP law.
+            uint32_t cn = heap_->allocate("Landroid/content/ComponentName;");
             std::string pk = pi->component_package;
             if (pk.empty()) {
                 // AOSP Intent.getComponent after setClassName(pkg,cls) answers
@@ -5876,7 +5924,20 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
                 pk = pi->package_name;
             }
             if (!pk.empty()) heap_->set_string_field(cn, "mPackage", pk);
-            heap_->set_string_field(cn, "mClass", pi->component_class);
+            // CODER7 WAVE-12 (AOSP ComponentName.getClassName contract):
+            // the class half is the DOTTED BINARY name — the record may
+            // hold the descriptor form ("Lc7/w12/RootAct;" from the
+            // Intent(Context, Class) ctor storage); descriptor → dotted
+            // here (trim the L...; wrapper, slashes → dots). The
+            // engine-side info laws normalize CN reads either way, so
+            // this change is downstream-safe.
+            std::string c7_cls = pi->component_class;
+            if (c7_cls.size() >= 2 && c7_cls.front() == 'L' &&
+                c7_cls.back() == ';')
+                c7_cls = c7_cls.substr(1, c7_cls.size() - 2);
+            for (auto& ch : c7_cls)
+                if (ch == '/') ch = '.';
+            heap_->set_string_field(cn, "mClass", c7_cls);
             return CallResult::handled_object(cn, "Landroid/content/ComponentName;");
         }
         return CallResult::handled_null();

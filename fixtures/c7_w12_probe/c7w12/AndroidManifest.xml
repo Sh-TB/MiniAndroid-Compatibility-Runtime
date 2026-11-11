@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="c7.w12"
+    android:versionCode="1"
+    android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34" />
+    <!-- CODER7 WAVE-12: the PM permission tables the
+         getPackagesHoldingPermissions laws read (the running package
+         holds INTERNET + ACCESS_NETWORK_STATE; the store packages hold
+         c7.laws.OPEN / nothing — the ANY-law hit set is {c7.w12,
+         c7laws}). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- API-34 FGS hygiene: the dataSync type permission pair (the
+         engine does not gate on them; the manifest stays honest to the
+         android-14 contract). -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <application android:label="C7W12">
+        <activity android:name=".Main" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- The parent chain the addParentStack walk follows:
+             ChildAct → MidAct → RootAct (AOSP parentActivityName). -->
+        <activity android:name=".RootAct" android:exported="false" />
+        <activity android:name=".MidAct" android:exported="false"
+            android:parentActivityName=".RootAct" />
+        <activity android:name=".ChildAct" android:exported="false"
+            android:parentActivityName=".MidAct" />
+        <!-- The TYPED foreground service: dataSync|location → the
+             compiled bitmask 1|8 = 9 (the W01/W02/W03/W04 laws). -->
+        <service android:name=".W12Service" android:exported="false"
+            android:foregroundServiceType="dataSync|location" />
+        <!-- The type-less service: the 3-arg MANIFEST-sentinel law (W06)
+             throws MissingForegroundServiceTypeException on it (API-34). -->
+        <service android:name=".PlainService" android:exported="false" />
+    </application>
+</manifest>

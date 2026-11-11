@@ -8923,3 +8923,20 @@ Work Log:
   attempt failed). Fixtures + scripts/s211_build_probes.sh ship in the landed
   patch; battery runs when a bootstrap toolchain container exists.
 - Evidence: evidence/s215/A_R4_INTEGRATION_RECORD.md + evidence/s215/A_R4_GATE.json.
+
+## S215b — CODER-7 WAVE-12 LANDED on top of A-R4 (#520, T21/T22 byte-exact)
+- W12 (`c7_w12_on_rebased.patch`, 3 parts, T21/T22 reassembled 103,296 B sha256
+  1a9d988b2a791bd9... EXACT) applied on the A-R4 tip `b24e1765`: apply-check CLEAN
+  (no collision with S214 diagnostics or A-R4 despite the coder's declared base
+  a58f4589 lacking both), build green -j1 (binary 60265b6180cc849a), make test 4/4,
+  FULL 6-pin gate BYTE-EXACT HOLD (same six pins; the getComponent
+  fresh-object fix is pin-neutral as claimed). Evidence: evidence/s215/W12_GATE.json.
+- Content: foregroundServiceType family (INT_HEX 0x11 parse, 3-arg subset/sentinel
+  laws, SVC-FG-TYPE engine row), TaskStackBuilder (root-first stack, alias edit,
+  IOOBE, getIntents flag copy, getPendingIntent record, startActivities bridge),
+  Intent.makeMainActivity/makeRestartActivityTask, PM.getPackagesHoldingPermissions
+  ANY-law, + the engine defect their battery CAUGHT: Intent.getComponent served ONE
+  shared ComponentName (get_or_create singleton) — now a fresh object per call.
+- The coder's 13/13 battery (c7.w12 fixture) + W13 frontier (getNameForUid →
+  setSelector/getSelector → checkSignatures(int,int)) queued; battery rides a
+  toolchain container (see the S2xx recipe reconciliation on #577).

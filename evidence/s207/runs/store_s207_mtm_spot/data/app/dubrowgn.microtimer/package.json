@@ -19,6 +19,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_mtm_spot/data/app/dubrowgn.microtimer/base.apk",
   "apkSha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
   "apkSize": 208895,
-  "installedAt": "2026-11-11T05:25:13Z",
+  "installedAt": "2026-11-11T05:47:53Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

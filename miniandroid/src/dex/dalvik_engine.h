@@ -1918,6 +1918,10 @@ public:
         bool enabled = true;
         bool exported = false;
         int launch_mode = 0;         // activities only (0..3)
+        // CODER7 WAVE-12: services only — the manifest
+        // android:foregroundServiceType bitmask (0 = none declared;
+        // AOSP ServiceInfo.foregroundServiceType).
+        int fgs_type = 0;
         struct Filter {
             std::vector<std::string> actions;
             std::vector<std::string> categories;
@@ -1931,6 +1935,27 @@ public:
     void set_manifest_service_filters(std::vector<ManifestFilterTransfer> svcs) {
         manifest_service_filters_ = std::move(svcs);
     }
+    // ── CODER7 WAVE-12: the parent-chain law ────────────────────────────
+    // AOSP TaskStackBuilder.addParentStack(ComponentName) walks
+    // ActivityInfo.parentActivityName via PackageManager.getActivityInfo.
+    // The engine-side resolver answers the parent class (dotted
+    // absolute, "" = no parent) for the RUNNING package from the
+    // manifest transfer (manifest_activity_parent_) and for store
+    // packages from the C7 package index — one law, both sources.
+    void set_manifest_activity_parents(
+        std::map<std::string, std::string> parents) {
+        manifest_activity_parent_ = std::move(parents);
+    }
+    // CODER7 WAVE-12: the manifest FGS type of a RUNNING-package
+    // <service> ("" when absent) — the getServiceInfo /
+    // getPackageInfo(GET_SERVICES) / startForeground subset laws read
+    // it. Served from manifest_service_filters_ (the transfer already
+    // carries every service row).
+    int manifest_service_fgs_type(const std::string& dotted_cls) const;
+    // The parent resolver used by the TaskStackBuilder walk (declared
+    // here, implemented beside the other PM laws).
+    std::string c7_activity_parent_of(const std::string& pkg,
+                                      const std::string& cls) const;
     // ── CODER7 WAVE-5: PMS-lite — the cross-package component index ──────
     // Non-null AND non-empty ⇒ the PackageManager query/resolve APIs, the
     // installed-packages/provider identity APIs and the broadcast dispatch
@@ -2131,6 +2156,13 @@ public:
     //               law of WAVE-7 does).
     // Wired into PendingIntentShadow via set_send_dispatcher (one engine
     // law, zero duplicated dispatch). Returns false + err on refusal.
+    // CODER7 WAVE-12: the TaskStackBuilder.startActivities dispatch —
+    // AOSP Context.startActivities(mIntents): the RAW intent stack is
+    // bridged through the SAME W3 startActivities law (resolution +
+    // synchronous gate + FIFO queue) with the application context as
+    // receiver. `oids` = the stack verbatim (ROOT-FIRST, no flag copies).
+    bool c7_tsb_start_dispatch(const std::vector<uint32_t>& oids,
+                               std::string& err);
     bool c7_send_pending_intent(const std::string& kind,
                                 uint32_t intent_oid, std::string& err);
 
@@ -4085,6 +4117,9 @@ public:
     // CODER7 WAVE-3: activity/service resolution models (set_manifest_*_filters).
     std::vector<ManifestFilterTransfer> manifest_activity_filters_;
     std::vector<ManifestFilterTransfer> manifest_service_filters_;
+    // CODER7 WAVE-12: own-package activity parent chain (dotted class →
+    // dotted parent class; the addParentStack walk).
+    std::map<std::string, std::string> manifest_activity_parent_;
     // CODER7 WAVE-5: PMS-lite — the cross-package component index (see the
     // set_package_index law above).
     std::shared_ptr<C7PackageIndex> c7_pkg_index_;

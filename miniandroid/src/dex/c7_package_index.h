@@ -62,6 +62,9 @@ struct C7IdxActivity {
     bool enabled = true;
     bool exported = false;
     int launch_mode = 0;           // 0 standard .. 3 singleInstance
+    // CODER7 WAVE-12 (AOSP ActivityInfo.parentActivityName): the parent
+    // chain link the TaskStackBuilder.addParentStack walk follows.
+    std::string parent_activity_name;
     std::vector<C7IdxFilter> filters;
 };
 
@@ -70,6 +73,9 @@ struct C7IdxService {
     bool enabled = true;
     bool exported = false;
     std::string permission;
+    // CODER7 WAVE-12 (AOSP ServiceInfo.foregroundServiceType): the
+    // manifest-declared FGS type bitmask (0 = none declared).
+    int foreground_service_type = 0;
     std::vector<C7IdxFilter> filters;
 };
 

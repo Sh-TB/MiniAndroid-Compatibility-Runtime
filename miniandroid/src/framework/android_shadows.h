@@ -858,7 +858,11 @@ public:
                 // normalizeMimeType) + the API-29 identifier pair.
                 "setDataAndNormalize", "setTypeAndNormalize",
                 "setDataAndTypeAndNormalize", "setIdentifier",
-                "getIdentifier"};
+                "getIdentifier",
+                // CODER7 WAVE-12: the task-restart factory statics (AOSP
+                // Intent.makeMainActivity / makeRestartActivityTask —
+                // the launcher/notifications frontier).
+                "makeMainActivity", "makeRestartActivityTask"};
     }
     std::vector<std::string> stubbed_methods() const override {
         return {"createChooser", "parseUri", "toUri"};

@@ -128,6 +128,9 @@ json package_to_json(const C7IdxPackage& p) {
         ja["en"] = a.enabled;
         ja["ex"] = a.exported;
         ja["lm"] = a.launch_mode;
+        // CODER7 WAVE-12: the parent-chain link (empty = none — the
+        // cache payload stays byte-stable for type-less components).
+        ja["pan"] = a.parent_activity_name;
         json fs = json::array();
         for (const auto& f : a.filters) fs.push_back(filter_json(f));
         ja["f"] = fs;
@@ -140,6 +143,9 @@ json package_to_json(const C7IdxPackage& p) {
         js["cls"] = s.cls;
         js["en"] = s.enabled;
         js["ex"] = s.exported;
+        // CODER7 WAVE-12: the manifest FGS type bitmask (0 when the
+        // component declares none — WARM payloads stay compatible).
+        js["fst"] = s.foreground_service_type;
         js["perm"] = s.permission;
         json fs = json::array();
         for (const auto& f : s.filters) fs.push_back(filter_json(f));
@@ -203,6 +209,9 @@ C7IdxPackage package_from_json(const json& j) {
             a.enabled = x.value("en", true);
             a.exported = x.value("ex", false);
             a.launch_mode = x.value("lm", 0);
+            // CODER7 WAVE-12: the parent-chain link (pre-W11 payloads
+            // have no "pan" key — default empty, WARM-cache compatible).
+            a.parent_activity_name = x.value("pan", "");
             if (x.contains("f") && x["f"].is_array())
                 for (const auto& f : x["f"]) a.filters.push_back(filter_from(f));
             p.activities.push_back(std::move(a));
@@ -214,6 +223,9 @@ C7IdxPackage package_from_json(const json& j) {
             s.enabled = x.value("en", true);
             s.exported = x.value("ex", false);
             s.permission = x.value("perm", "");
+            // CODER7 WAVE-12: the manifest FGS type bitmask (pre-W11
+            // payloads have no "fst" key — default 0, WARM-compatible).
+            s.foreground_service_type = x.value("fst", 0);
             if (x.contains("f") && x["f"].is_array())
                 for (const auto& f : x["f"]) s.filters.push_back(filter_from(f));
             p.services.push_back(std::move(s));
@@ -267,6 +279,11 @@ void fill_package_from_manifest(const apk::ManifestInfo& mi,
         ia.enabled = a.enabled;
         ia.exported = a.exported;
         ia.launch_mode = a.launch_mode;
+        // CODER7 WAVE-12: the parent-chain link, normalized to the
+        // dotted absolute form (".Foo" → pkg.Foo) — the same
+        // norm_component_class law every other component name rides.
+        ia.parent_activity_name =
+            norm_component_class(mi.package_name, a.parent_activity_name);
         for (const auto& f : a.filters) {
             C7IdxFilter ef;
             ef.actions = f.actions;
@@ -292,6 +309,8 @@ void fill_package_from_manifest(const apk::ManifestInfo& mi,
         is.enabled = s.enabled;
         is.exported = s.exported;
         is.permission = s.permission;
+        // CODER7 WAVE-12: the manifest FGS type bitmask rides the index.
+        is.foreground_service_type = s.foreground_service_type;
         for (const auto& f : s.filters) {
             C7IdxFilter ef;
             ef.actions = f.actions;

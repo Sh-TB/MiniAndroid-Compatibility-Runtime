@@ -104,6 +104,19 @@ public:
         send_dispatcher_ = std::move(fn);
     }
     size_t sends_executed() const { return sends_executed_; }
+    // CODER7 WAVE-12: the public record law — the TaskStackBuilder
+    // .getPendingIntent delegation builds its PendingIntent through the
+    // SAME AMS IntentSenderRecord identity/caching law the getActivity
+    // family uses (one record law, no duplicated identity cache).
+    CallResult record_from(const std::string& kind, int32_t request_code,
+                           uint32_t intent_oid, int32_t flags) {
+        Record rec;
+        rec.kind = kind;
+        rec.request_code = request_code;
+        rec.intent_oid = intent_oid;
+        rec.flags = flags;
+        return record_for(rec);
+    }
 
     // ── accessors for evidence / diagnostics ────────────────────────────
     struct Record {

@@ -2393,6 +2393,13 @@ bool DalvikExecutionEngine::is_exception_subtype(const std::string& exc_desc,
     // The row (as Exception) lets app catch(Exception)/typed handlers
     // receive the ONE_SHOT re-send denial.
     {"Landroid/app/PendingIntent$CanceledException;", "Ljava/lang/Exception;"},
+    // CODER7 WAVE-12: android.app.MissingForegroundServiceTypeException
+    // extends java.lang.RuntimeException (AOSP API-34; the 3-arg
+    // startForeground MANIFEST-sentinel law throws it when the manifest
+    // declares no foregroundServiceType). The row lets app
+    // catch(RuntimeException)/typed handlers receive it.
+    {"Landroid/app/MissingForegroundServiceTypeException;",
+     "Ljava/lang/RuntimeException;"},
     // FIX-D12-ADJACENT / unified0113 (CONT-120): the five reflective
     // NoSuch*/Illegal* families are OpenJDK java.lang facts of the SAME
     // kind as the ClassNotFoundException row above (java.lang §7 parent
@@ -8178,6 +8185,110 @@ bool DalvikExecutionEngine::c7_send_pending_intent(const std::string& kind,
     }
     err = "unknown PendingIntent kind " + kind;
     return false;
+}
+
+// ── CODER7 WAVE-12: the manifest FGS-type lookup ─────────────────────────
+// AOSP PackageManagerService.generatePackageInfo: ServiceInfo
+// .foregroundServiceType is served from the parsed manifest
+// android:foregroundServiceType bitmask on EVERY ServiceInfo the PM
+// generates (getServiceInfo, getPackageInfo GET_SERVICES). The running
+// package's table is manifest_service_filters_ (the stage-load transfer
+// carries fgs_type per service row).
+int DalvikExecutionEngine::manifest_service_fgs_type(
+    const std::string& dotted_cls) const {
+    // Name-form normalization: callers pass the dotted absolute name OR
+    // the descriptor form ("Lc7/w12/W12Service;" — the ServiceInstance
+    // cls and the engine dispatch class_name are descriptors); the
+    // transfer table stores the dotted absolute name. Descriptor →
+    // dotted: trim the L...; wrapper, slashes → dots (the F116 law).
+    std::string key = dotted_cls;
+    if (key.size() >= 2 && key.front() == 'L' && key.back() == ';')
+        key = key.substr(1, key.size() - 2);
+    for (auto& ch : key)
+        if (ch == '/') ch = '.';
+    for (const auto& st : manifest_service_filters_) {
+        if (st.cls == key) return st.fgs_type;
+    }
+    return 0;
+}
+
+// ── CODER7 WAVE-12: the parent-chain resolver ────────────────────────────
+// AOSP TaskStackBuilder.addParentStack(ComponentName) walks
+// ActivityInfo.parentActivityName through PackageManager.getActivityInfo.
+// One law, two sources: the RUNNING package answers from the manifest
+// transfer (manifest_activity_parent_); store packages answer from the
+// C7 package index (C7IdxActivity.parent_activity_name — the SQLite
+// cache payload carries it). "" = no parent (the walk terminates).
+std::string DalvikExecutionEngine::c7_activity_parent_of(
+    const std::string& pkg, const std::string& cls) const {
+    if (pkg == package_name_ || pkg.empty()) {
+        auto it = manifest_activity_parent_.find(cls);
+        if (it != manifest_activity_parent_.end()) return it->second;
+        return "";
+    }
+    if (c7_pkg_index_) {
+        if (const C7IdxPackage* fp = c7_pkg_index_->find_package(pkg)) {
+            for (const auto& a : fp->activities) {
+                if (a.cls == cls) return a.parent_activity_name;
+            }
+        }
+    }
+    return "";
+}
+
+// ── CODER7 WAVE-12: the TaskStackBuilder.startActivities dispatch ────────
+// AOSP TaskStackBuilder.startActivities() delegates to
+// Context.startActivities(mIntents): the RAW intents (NO flag copies —
+// the flag-carrying copies are the getIntents() law), drained in order.
+// The bridge re-enters the ONE W3 startActivities law (implicit
+// resolution + the synchronous launch gate + the FIFO pending queue) —
+// the S185 VEND/DON'T-REWRITE rule (one pipeline, no duplicated
+// launch path). The receiver is the application context (the same
+// identity law c7_send_pending_intent uses).
+bool DalvikExecutionEngine::c7_tsb_start_dispatch(
+    const std::vector<uint32_t>& oids, std::string& err) {
+    if (oids.empty()) {
+        err = "startActivities on an empty TaskStackBuilder";
+        return false;
+    }
+    uint32_t c7_arr =
+        heap_.allocate("[Landroid/content/Intent;", pc_, 0);
+    heap_.set_object_field(c7_arr, "__array_length__",
+                           DalvikValue::make_int((int)oids.size()));
+    for (size_t i = 0; i < oids.size(); ++i) {
+        if (!heap_.has_object(oids[i])) {
+            err = "stack intent missing from heap (oid " +
+                  std::to_string(oids[i]) + ")";
+            return false;
+        }
+        DalvikValue ev;
+        ev.type = DalvikType::OBJECT_REF;
+        ev.object_id = oids[i];
+        ev.class_desc = "Landroid/content/Intent;";
+        ev.int_val = (int64_t)oids.size();
+        heap_.set_object_field(c7_arr,
+                               "array[" + std::to_string(i) + "]", ev);
+    }
+    DalvikValue c7_ctx =
+        (application_object_id_ != 0 &&
+         heap_.has_object(application_object_id_))
+            ? DalvikValue::make_object(
+                  application_object_id_,
+                  application_class_desc_.empty()
+                      ? "Landroid/app/Application;"
+                      : application_class_desc_)
+            : get_or_create_singleton("Landroid/content/Context;");
+    DalvikValue c7_av;
+    c7_av.type = DalvikType::OBJECT_REF;
+    c7_av.object_id = c7_arr;
+    c7_av.class_desc = "[Landroid/content/Intent;";
+    c7_av.int_val = (int64_t)oids.size();
+    DalvikValue c7_ret;
+    ApiCallTrace::Status c7_st;
+    std::vector<DalvikValue> c7_args{c7_ctx, c7_av};
+    bridge_to_api("Landroid/content/ContextWrapper;", "startActivities",
+                  c7_args, c7_ret, c7_st, 0);
+    return true;
 }
 
 uint32_t DalvikExecutionEngine::resolve_provider_for_authority(
@@ -46409,6 +46520,95 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // startForegroundService contract — clear the tracked flag and
         // record it (the service went foreground; AOSP
         // ForegroundServiceDidNotStartInTimeException is thereby averted).
+        // ── CODER7 WAVE-12: the 3-arg startForeground overload (AOSP
+        // Service.startForeground(int, Notification, int)) ──────────────
+        // Laws (AOSP Service.java + ServiceInfo.java, android-14):
+        //  * args = (this, id, Notification, type); the 2-arg overload
+        //    delegates with FOREGROUND_SERVICE_TYPE_MANIFEST (-1) — the
+        //    sentinel resolves to the manifest bitmask;
+        //  * manifest type NOT declared + type == MANIFEST →
+        //    MissingForegroundServiceTypeException (the API-34 javadoc
+        //    law on the 3-arg overload);
+        //  * the requested bitmask must be a SUBSET of the manifest
+        //    bitmask — else IllegalArgumentException (the documented
+        //    subset law);
+        //  * a valid call records the running type, clears the
+        //    startForegroundService obligation and emits the SVC-FG-TYPE
+        //    evidence row (requested/manifest/resolved bits verbatim).
+        // The 2-arg arm below stays byte-identical (the W8/W9 receipts
+        // contract: only the 3-arg shape takes this arm).
+        if (method == "startForeground" && args.size() >= 4 &&
+            args[3].type == DalvikType::INT32) {
+            static const int32_t c7_fgs_manifest = -1;  // ServiceInfo
+            static const int32_t c7_fgs_none = 0;       // TYPE_NONE
+            int32_t c7_requested = args[3].int_val;
+            ServiceInstance* c7_tsvc = nullptr;
+            for (auto& [cls, svc] : live_services_) {
+                if (!args.empty() &&
+                    svc.oid == (args[0].type == DalvikType::OBJECT_REF
+                                    ? args[0].object_id
+                                    : 0)) {
+                    c7_tsvc = &svc;
+                    break;
+                }
+            }
+            std::string c7_tsvc_cls =
+                c7_tsvc ? c7_tsvc->cls : class_name;
+            int32_t c7_manifest_bits = manifest_service_fgs_type(
+                c7_tsvc_cls.empty() ? "unknown" : c7_tsvc_cls);
+            int32_t c7_resolved = c7_requested;
+            if (c7_requested == c7_fgs_manifest) {
+                if (c7_manifest_bits == c7_fgs_none) {
+                    std::cerr << "[C7-SVC-FG-TYPE] " << c7_tsvc_cls
+                              << " MANIFEST sentinel + no manifest type → "
+                              << "MissingForegroundServiceTypeException "
+                              << "(AOSP API-34 law)" << std::endl;
+                    throw_deferred(
+                        "Landroid/app/MissingForegroundServiceTypeException;",
+                        "startForeground: no foregroundServiceType declared "
+                        "in the manifest",
+                        "C7-SVC-FG-TYPE");
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                c7_resolved = c7_manifest_bits;
+            } else if ((c7_requested & ~c7_manifest_bits) != 0) {
+                std::cerr << "[C7-SVC-FG-TYPE] " << c7_tsvc_cls
+                          << " requested=" << c7_requested
+                          << " manifest=" << c7_manifest_bits
+                          << " → IllegalArgumentException (AOSP subset law)"
+                          << std::endl;
+                throw_deferred(
+                    "Ljava/lang/IllegalArgumentException;",
+                    "startForeground: foregroundServiceType " +
+                        std::to_string(c7_requested) +
+                        " is not a subset of the manifest-declared type " +
+                        std::to_string(c7_manifest_bits),
+                    "C7-SVC-FG-TYPE");
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (c7_tsvc) {
+                c7_tsvc->fgs_needs_foreground = false;
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "SVC-FG-TYPE", c7_tsvc_cls, true,
+                "startForeground type: requested=" +
+                    std::to_string(c7_requested) + ";manifest=" +
+                    std::to_string(c7_manifest_bits) + ";resolved=" +
+                    std::to_string(c7_resolved),
+                current_class_ + "." + current_method_);
+            std::cerr << "[C7-SVC-FG-TYPE] " << c7_tsvc_cls
+                      << " resolved=" << c7_resolved
+                      << " (requested=" << c7_requested
+                      << ", manifest=" << c7_manifest_bits
+                      << "; FGS contract satisfied)" << std::endl;
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if (method == "startForeground") {
             for (auto& [cls, svc] : live_services_) {
                 if (svc.fgs_needs_foreground) {
@@ -58753,6 +58953,124 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         // untouched (no silent drift).
         const bool c7_w5_pm_indexed =
             c7_pkg_index_ && !c7_pkg_index_->empty();
+        // ── CODER7 WAVE-12: PackageManager.getPackagesHoldingPermissions ──
+        // AOSP PackageManager.getPackagesHoldingPermissions(List, flags):
+        // "Return a List of all installed packages that are currently
+        // holding ANY of the given permissions" — the ANY law over the
+        // installed set (the W5 index). Each hit PackageInfo carries
+        // packageName; with GET_PERMISSIONS (0x1000) the package's
+        // requestedPermissions are the manifest uses-permission list
+        // verbatim (the W5 no-invention law). args = (this, List<String>,
+        // flags). Without an indexed store the arm stays untouched (the
+        // honest negative — no silent fabrication).
+        if (c7_w5_pm_indexed && method == "getPackagesHoldingPermissions") {
+            std::vector<std::string> c7_php_query;
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 &&
+                heap_.has_object(args[1].object_id)) {
+                // The android-34 API form: getPackagesHoldingPermissions(
+                // String[], int) — arg 1 is a heap String[] array (the
+                // __array_length__ + array[i] fields the F-104
+                // requestPermissions reader law walks).
+                const auto* c7_php_arr = heap_.get(args[1].object_id);
+                if (c7_php_arr) {
+                    auto c7_len = c7_php_arr->get_field("__array_length__");
+                    int32_t c7_n = (c7_len.type == DalvikType::INT32)
+                                       ? c7_len.int_val
+                                       : 0;
+                    for (int32_t c7_k = 0; c7_k < c7_n; ++c7_k) {
+                        auto c7_ev = c7_php_arr->get_field(
+                            "array[" + std::to_string(c7_k) + "]");
+                        if (c7_ev.type == DalvikType::STRING_REF)
+                            c7_php_query.push_back(c7_ev.string_val);
+                    }
+                }
+            }
+            int64_t c7_php_flags = 0;
+            for (size_t c7_k = 2; c7_k < args.size(); c7_k++) {
+                if (args[c7_k].type == DalvikType::INT32) {
+                    c7_php_flags = args[c7_k].int_val;
+                    break;
+                }
+            }
+            uint32_t c7_php_lid =
+                heap_.allocate("Ljava/util/ArrayList;", pc_, 0);
+            framework::CollectionShadow* c7_php_cs_fill =
+                shadow_registry_
+                    ? shadow_registry_->find_as<framework::CollectionShadow>()
+                    : nullptr;
+            framework::CollectionShadow::CollectionState* c7_php_state =
+                c7_php_cs_fill ? c7_php_cs_fill->get_or_create(c7_php_lid)
+                               : nullptr;
+            int c7_php_n = 0;
+            for (const auto& c7_php_pkg : c7_pkg_index_->packages()) {
+                bool c7_php_hold = false;
+                for (const auto& c7_php_perm : c7_php_query) {
+                    if (std::find(c7_php_pkg.permissions.begin(),
+                                  c7_php_pkg.permissions.end(),
+                                  c7_php_perm) !=
+                        c7_php_pkg.permissions.end()) {
+                        c7_php_hold = true;
+                        break;
+                    }
+                }
+                if (!c7_php_hold) continue;
+                uint32_t c7_php_oid = heap_.allocate(
+                    "Landroid/content/pm/PackageInfo;", pc_, 0);
+                heap_.set_object_field(
+                    c7_php_oid, "packageName",
+                    DalvikValue::make_string(c7_php_pkg.package_name, 0));
+                if ((c7_php_flags & 0x1000) != 0 &&
+                    !c7_php_pkg.permissions.empty()) {
+                    uint32_t c7_php_arr = heap_.allocate(
+                        "[Ljava/lang/String;", pc_, 0);
+                    heap_.set_object_field(
+                        c7_php_arr, "__array_length__",
+                        DalvikValue::make_int(
+                            (int)c7_php_pkg.permissions.size()));
+                    for (size_t c7_k = 0; c7_k < c7_php_pkg.permissions.size();
+                         c7_k++) {
+                        heap_.set_object_field(
+                            c7_php_arr,
+                            "array[" + std::to_string(c7_k) + "]",
+                            DalvikValue::make_string(
+                                c7_php_pkg.permissions[c7_k], 0));
+                    }
+                    DalvikValue c7_php_av;
+                    c7_php_av.type = DalvikType::OBJECT_REF;
+                    c7_php_av.object_id = c7_php_arr;
+                    c7_php_av.class_desc = "[Ljava/lang/String;";
+                    c7_php_av.int_val = (int64_t)c7_php_pkg.permissions.size();
+                    heap_.set_object_field(c7_php_oid, "requestedPermissions",
+                                           c7_php_av);
+                }
+                DalvikValue c7_php_el;
+                c7_php_el.type = DalvikType::OBJECT_REF;
+                c7_php_el.object_id = c7_php_oid;
+                c7_php_el.class_desc = "Landroid/content/pm/PackageInfo;";
+                if (c7_php_state) {
+                    c7_php_state->elements.push_back(c7_php_oid);
+                    c7_php_state->elem_kinds.push_back(1);
+                    c7_php_state->elem_strings.push_back("");
+                    c7_php_state->elem_ints.push_back(0);
+                }
+                c7_php_n++;
+            }
+            heap_.set_object_field(c7_php_lid, "__array_length__",
+                                   DalvikValue::make_int(c7_php_n));
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "PM-HOLDING-PERMS", "", true,
+                "query=" + std::to_string(c7_php_query.size()) +
+                    " perms; hits=" + std::to_string(c7_php_n),
+                current_class_ + "." + current_method_);
+            std::cerr << "[C7-PHP] query=" << c7_php_query.size()
+                      << " perms, hits=" << c7_php_n << " (AOSP ANY law)"
+                      << std::endl;
+            result = DalvikValue::make_object(c7_php_lid,
+                                              "Ljava/util/ArrayList;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         if (c7_w5_pm_indexed &&
             (method == "getInstalledPackages" ||
              method == "getInstalledApplications")) {
@@ -68000,6 +68318,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 break;
             }
         }
+        // CODER7 WAVE-12 (AOSP ActivityInfo.parentActivityName): the
+        // manifest parent-chain link, served verbatim (dotted absolute
+        // — the transfer normalized ".Foo"); "" when absent.
+        {
+            std::string c7_parent;
+            auto c7_pit = manifest_activity_parent_.find(bare);
+            if (c7_pit == manifest_activity_parent_.end())
+                c7_pit = manifest_activity_parent_.find(norm);
+            if (c7_pit != manifest_activity_parent_.end())
+                c7_parent = c7_pit->second;
+            heap_.set_object_field(ai_id, "parentActivityName",
+                                   DalvikValue::make_string(c7_parent, 0));
+        }
         result = DalvikValue::make_object(ai_id, "Landroid/content/pm/ActivityInfo;");
         std::cerr << "[F116-ACTINFO] " << bare << " metaData="
                   << (md ? std::to_string(md->size()) : std::string("0 (no manifest entries)"))
@@ -68550,6 +68881,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         heap_.set_object_field(
                             sid, "exported",
                             DalvikValue::make_bool(w9_s.exported));
+                        // CODER7 WAVE-12 (AOSP ServiceInfo
+                        // .foregroundServiceType): the manifest bitmask
+                        // rides EVERY generated ServiceInfo.
+                        heap_.set_object_field(
+                            sid, "foregroundServiceType",
+                            DalvikValue::make_int(
+                                w9_s.foreground_service_type));
                         std::cerr << "[C7-SVCINFO] foreign "
                                   << w9_fp->package_name << "/"
                                   << w9_s.cls << " enabled="
@@ -68650,6 +68988,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                           << std::endl;
             }
         }
+        // CODER7 WAVE-12 (AOSP ServiceInfo.foregroundServiceType):
+        // the running package's manifest bitmask, served verbatim
+        // (manifest_service_fgs_type — the transfer table).
+        heap_.set_object_field(
+            sid, "foregroundServiceType",
+            DalvikValue::make_int(manifest_service_fgs_type(bare)));
         result = DalvikValue::make_object(sid, "Landroid/content/pm/ServiceInfo;");
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
@@ -69007,6 +69351,13 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     sid2, "packageName",
                     DalvikValue::make_string(
                         package_name_.empty() ? "unknown.package" : package_name_, 1));
+                // CODER7 WAVE-12 (AOSP ServiceInfo.foregroundServiceType):
+                // the PackageInfo.services array serves the manifest
+                // bitmask per element (the same law getServiceInfo runs).
+                heap_.set_object_field(
+                    sid2, "foregroundServiceType",
+                    DalvikValue::make_int(manifest_service_fgs_type(
+                        manifest_service_classes_[i].first)));
                 DalvikValue siv;
                 siv.type = DalvikType::OBJECT_REF;
                 siv.object_id = sid2;

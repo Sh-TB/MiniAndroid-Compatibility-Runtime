@@ -31,6 +31,7 @@
 #include "../framework/gl_surface_shadow.h"
 #include "../gles/pgl_backend.h"
 #include "../framework/pending_intent_shadow.h"
+#include "../framework/task_stack_builder_shadow.h"  // CODER7 WAVE-12
 #include "../framework/choreographer_shadow.h"
 #include "../framework/canvas_shadow.h"
 #include "../framework/bitmap_shadow.h"
@@ -1619,6 +1620,11 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         st.cls = cls;
                         st.enabled = sv.enabled;
                         st.exported = sv.exported;
+                        // CODER7 WAVE-12: the manifest
+                        // android:foregroundServiceType bitmask rides the
+                        // transfer (the ServiceInfo/startForeground laws
+                        // read it engine-side).
+                        st.fgs_type = sv.foreground_service_type;
                         for (const auto& f : sv.filters) {
                             miniandroid::dalvik::DalvikExecutionEngine::
                                 ManifestFilterTransfer::Filter sf;
@@ -1641,6 +1647,23 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                         std::move(c7_act_filters));
                     dalvik_engine_.set_manifest_service_filters(
                         std::move(c7_svc_filters));
+                    // CODER7 WAVE-12: the parent-chain table (AOSP
+                    // ActivityInfo.parentActivityName, normalized to the
+                    // dotted absolute form) — the TaskStackBuilder
+                    // addParentStack walk and the getActivityInfo
+                    // parentActivityName law read it.
+                    {
+                        std::map<std::string, std::string> c7_parents;
+                        for (const auto& a : mi5.activities) {
+                            std::string c7_cls = norm_cls(a.name);
+                            std::string c7_par =
+                                norm_cls(a.parent_activity_name);
+                            if (c7_cls.empty() || c7_par.empty()) continue;
+                            c7_parents[c7_cls] = c7_par;
+                        }
+                        dalvik_engine_.set_manifest_activity_parents(
+                            std::move(c7_parents));
+                    }
                 }
             }
             dalvik_engine_.set_manifest_services(svc_classes);
@@ -1755,6 +1778,30 @@ bool ExecutionEngine::stage_execute_application_real_dalvik(ExecutionResult& res
                                     return dalvik_engine_
                                         .c7_send_pending_intent(
                                             c7_kind, c7_oid, c7_err);
+                                });
+                        }
+                        // CODER7 WAVE-12: the TaskStackBuilder callbacks —
+                        // the addParentStack walk consults the engine's
+                        // parent-chain law (manifest transfer + store
+                        // index); startActivities re-enters the ONE W3
+                        // pipeline via the dispatcher bridge.
+                        if (auto* c7_tsb_w12 =
+                                shadow_registry_->find_as<
+                                    framework::TaskStackBuilderShadow>()) {
+                            c7_tsb_w12->set_parent_resolver(
+                                [this](const std::string& c7_pkg,
+                                       const std::string& c7_cls) {
+                                    return dalvik_engine_
+                                        .c7_activity_parent_of(c7_pkg,
+                                                               c7_cls);
+                                });
+                            c7_tsb_w12->set_start_dispatcher(
+                                [this](
+                                    const std::vector<uint32_t>& c7_oids,
+                                    std::string& c7_err) {
+                                    return dalvik_engine_
+                                        .c7_tsb_start_dispatch(c7_oids,
+                                                               c7_err);
                                 });
                         }
                     }
