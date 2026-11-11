@@ -3375,6 +3375,8 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
     // F-NEW-298 (CONT-37) FRAME-HONESTY: re-arm the in-draw budget-halt
     // signal for THIS frame's render pass (P1-6 extension, CONT-36 §6).
     dalvik_engine_.frame_honesty_begin();
+    // S214 F-NEW-632 SF-ORDER probe: the compositor-pass entry marker.
+    dalvik_engine_.sf_order_log("PASS-BEGIN", "render stage entry");
     // F-NEW-384 (CONT-82): the AOSP performTraversals insets pass runs
     // BEFORE measure — one root WindowInsets dispatch per discovered
     // window root, through the app's real onApplyWindowInsets chain.
@@ -4666,6 +4668,11 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                                 if (sv_ops > 0) {
                                                     drew_real = true;
                                                     frame_census_.app_draw_ops += sv_ops;
+                                                    dalvik_engine_.sf_order_log(
+                                                        "BUFFER-QUEUED",
+                                                        "view=" +
+                                                        std::to_string(task.view_id) +
+                                                        " ops=" + std::to_string(sv_ops));
                                                     std::cerr
                                                         << "[F-NEW-164] surface replayed "
                                                         << sv_ops << " ops for "
@@ -6008,6 +6015,8 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                       << " this frame — presentation SKIPPED,"
                                       << " keeping the last complete frame"
                                       << " (P1-6 extension)" << std::endl;
+                            dalvik_engine_.sf_order_log(
+                                "PRESENT", "keep_prev=1 (frame honesty)");
                             fb_non_white = -1;   // honest signal: not presented
                             fb_pixels_total = framebuffer_.size() / 4;
                             // F-NEW-307: kept-frame attribution — the PNG the
@@ -6092,6 +6101,10 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                         // F-NEW-307: this frame was PRESENTED — remember its
                         // app-op ledger for the kept-frame attribution.
                         last_presented_app_draw_ops_ = frame_census_.app_draw_ops;
+                        dalvik_engine_.sf_order_log(
+                            "PRESENT",
+                            "keep_prev=0 app_ops=" +
+                            std::to_string(frame_census_.app_draw_ops));
                         // S82-GFX §6: SURFACE evidence — composed-frame census.
                         if (diagnostics::GfxProvenance::instance().enabled()) {
                             std::map<uint32_t, size_t> color_hist;
@@ -6381,8 +6394,36 @@ bool ExecutionEngine::stage_capture_output( ExecutionResult& result, const Execu
         }
         png_ok = renderer::PNGWriter::write_png(screenshot_path, fb);
         if (png_ok) {
+            // S214 CAPTURE-SIZE law: the recorded size is the PNG FILE's own
+            // byte count (stat after write), not the raw framebuffer size —
+            // the old framebuffer_.size() value printed as "7.91 MB" for a
+            // 1080x1920x4 buffer regardless of the actual PNG (34 KB),
+            // which masked the noise diagnosis for a full campaign cycle.
+            uintmax_t png_bytes = 0;
+            try { png_bytes = fs::file_size(screenshot_path); } catch (...) {}
             trace_engine_.log_screenshot(screenshot_path, config.screen_width, config.screen_height,
-                                         framebuffer_.size());
+                                         (size_t)png_bytes);
+            // S214 NOISE-FENCE (log-only, honest evidence preserved):
+            // deterministic uninitialized-memory noise shows up as an
+            // incompressible PNG (Waydroid-style colored-noise face). A
+            // capture with NO app-owned draw ops this frame that still
+            // produces a big PNG is noise with high confidence — the gate
+            // treats >800KB faces as suspect (s214 gate heuristic); this
+            // log line is the engine-side tripwire. The PNG itself is kept
+            // byte-for-byte (the noise face IS the bug's evidence — S202
+            // law); only the report/gate now FLAGS it.
+            const double kb = 1024.0;
+            if (png_bytes > 800 * 1024) {
+                std::cerr << "[NOISE-FENCE] screenshot.png " << png_bytes
+                          << " bytes (" << png_bytes / kb << " KB)"
+                          << " app_draw_ops="
+                          << frame_census_.app_draw_ops
+                          << (frame_census_.app_draw_ops == 0
+                                  ? " — NOISE-SUSPECT: no app ops + incompressible"
+                                    " face (uninit-memory signature)"
+                                  : " — large but app-owned (legit rich content)")
+                          << std::endl;
+            }
             trace_engine_.info("ExecutionEngine", "stage_capture_output",
                               "PNG screenshot saved to: " + screenshot_path);
         }

@@ -18925,6 +18925,9 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
         heap_.set_object_field(view_object_id, "glSurfaceCreated",
                                DalvikValue::make_int(1));
         *first_frame_out = true;
+        sf_order_log("GL-SURFACE-CREATED",
+                     "view=" + std::to_string(view_object_id) +
+                     " cb=" + rcls);
     }
     // onSurfaceChanged(GL10, w, h) on size change
     int64_t lw = -1, lh = -1;
@@ -18948,6 +18951,20 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
     gfx::GfxTrace::instance().frame_stage("draw-frame", w, h, view_object_id);
     invoke("onDrawFrame", std::move(a));
     return true;
+}
+
+// ── S214 F-NEW-632: SF-ORDER probe implementation ─────────────────────────
+// One monotonic step counter across the whole process; the t= sequence in
+// the log IS the ordering evidence (see the header comment). Env read once.
+void DalvikExecutionEngine::sf_order_log(const char* event,
+                                         const std::string& detail) {
+    if (sf_order_enabled_ < 0) {
+        const char* e = getenv("MINIANDROID_SF_ORDER_LOG");
+        sf_order_enabled_ = (e && e[0] == '1') ? 1 : 0;
+    }
+    if (!sf_order_enabled_) return;
+    std::cerr << "[SF-ORDER t=" << sf_order_step_++ << "] " << event
+              << (detail.empty() ? "" : (" " + detail)) << std::endl;
 }
 
 // ── S86 §F-NEW-164: SurfaceView surface lifecycle ────────────────────────
@@ -19025,6 +19042,9 @@ bool DalvikExecutionEngine::dispatch_surface_view_lifecycle(
         heap_.set_object_field(view_object_id, "svSurfaceCreated",
                                DalvikValue::make_int(1));
         *created_out = true;
+        sf_order_log("SURFACE-CREATED",
+                     "view=" + std::to_string(view_object_id) +
+                     " cb=" + ccls);
         std::cerr << "[F-NEW-164] surfaceCreated dispatched view="
                   << view_object_id << " callback=" << ccls << std::endl;
     }
@@ -19042,6 +19062,9 @@ bool DalvikExecutionEngine::dispatch_surface_view_lifecycle(
                                DalvikValue::make_int(w));
         heap_.set_object_field(view_object_id, "svLastH",
                                DalvikValue::make_int(h));
+        sf_order_log("SURFACE-CHANGED",
+                     "view=" + std::to_string(view_object_id) + " " +
+                     std::to_string(w) + "x" + std::to_string(h));
     }
     return dispatched;
 }

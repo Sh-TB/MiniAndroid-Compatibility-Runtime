@@ -13,7 +13,7 @@ RUNS = BASE / 'evidence/s214/runs'
 RUNS.mkdir(parents=True, exist_ok=True)
 BIN_SHA = hashlib.sha256(BIN.read_bytes()).hexdigest()[:16]
 OUT = {'binary_sha16': BIN_SHA,
-       'base_commit': '34927880 + c7_w5_w11_rebased (sha256 9201c5c5...87fd)'}
+       'base_commit': '4bf69d81 (C7 landed) + S214 diagnostics: F-NEW-632 SF-ORDER probe + NOISE-FENCE + CAPTURE-SIZE law, all env-gated/log-only default-neutral'}
 GATE = RUNS / 'S214_GATE.json'
 
 
@@ -55,6 +55,13 @@ def run_app(apk, tag, taps=None, frames=8, delay=250):
         shot = cands[-1] if cands else None
     rec = {'wall_s': wall, 'face_sha16': sha16(shot) if shot else None,
            'uncaught': len(re.findall(r'uncaught exception|FATAL', log))}
+    # S214 noise heuristic (the >800KB gate law): a face PNG that big is
+    # either legit rich content (app_draw_ops>0) or uninit-memory noise.
+    if shot:
+        nb = shot.stat().st_size
+        rec['png_bytes'] = nb
+        rec['noise_suspect'] = bool(nb > 800 * 1024)
+        rec['noise_fence_fired'] = 'NOISE-FENCE' in log
     return rec
 
 

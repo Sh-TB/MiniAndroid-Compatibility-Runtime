@@ -2273,6 +2273,20 @@ public:
         return draw_window_budget_halted_;
     }
 
+    // ────────────────────────────────────────────────────────────────────
+    // S214 F-NEW-632 SF-ORDER probe (env-gated MINIANDROID_SF_ORDER_LOG=1,
+    // read-only): the Waydroid-#1148-analog ordering evidence — logs the
+    // ORDERED surface lifecycle vs the frame pipeline with one monotonic
+    // step counter: PASS-BEGIN → SURFACE-CREATED → SURFACE-CHANGED →
+    // BUFFER-QUEUED / GL-FIRST-FRAME → PRESENT. The engine has no
+    // compositor thread (one deterministic render stage), so an inversion
+    // ("app buffer queued before surfaceCreated") would show as an
+    // out-of-order t= sequence in the log. Default OFF = behavior-neutral.
+    // ────────────────────────────────────────────────────────────────────
+    void sf_order_log(const char* event, const std::string& detail);
+    uint64_t sf_order_step_ = 0;
+    int sf_order_enabled_ = -1;  // tri-state: -1 unchecked, else env verdict
+
     // S33 diagnostic (env-gated, read-only): TRUE while the F-096 real-DEX
     // onMeasure/onLayout lifecycle dispatch window is open. Method-entry
     // and ()Z-return probes attribute entries to the measure/layout phase —
