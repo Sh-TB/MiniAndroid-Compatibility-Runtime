@@ -9200,3 +9200,35 @@ Work Log:
   ttt 7354c1b2 x3 deterministic); `make test-all` 27/27.
 - Evidence: evidence/s220/S220_DOOZ_S221_DOOZ_*.json (tht/dens/writ/b6),
   console logs in evidence/s220/runs/, scripts/s221_dump_method.py.
+
+---
+Task ID: S221-CORRECTION
+Agent: Super Z (main)
+Task: post-receipt static re-decode of the S221b writer chain — class
+attribution correction (the GP phantom-assertion protocol applies to our
+own receipts too).
+
+Work Log:
+- CORRECTION: `Ltl;.l` has signature `(JJ)Lmb1;` and `Lmb1;` carries FOUR
+  float fields (a,b,c,d — S221-ZERODENS read all four at `Ldi;.k`). An
+  InlineDensity is a TWO-float value class (packed ONE long). A 4-float
+  class + a (long,long) factory = a corner-radii family shape
+  (RoundedCornerShape-equivalent: 4 corner radii, 2 packed-long args),
+  NOT the InlineDensity. The S221b-ZEROW "writer chain"
+  (Ltl;.l <- Lne0;.a <- Lk4;.a <- Lto1;.d) is therefore a **corner-shape
+  construction red herring** — legitimate app code building 0.0-radius
+  shapes — NOT the density-flip delivery site.
+- What STANDS (independent evidence): the ISE message's OWN
+  InlineDensity(0.000000, 0.000000) / InlineDensity(2.625000, 1.000000)
+  strings printed by the app's toString (the cache's lastDensity field
+  REALLY holds Unspecified at draw); the history-flag decode
+  (0x5555... = 32x markDirtyDensity); the storm counts; the bridge A/B
+  (lookahead boolean); the gate/test-all battery.
+- The real open question is unchanged: the cache density setter's input
+  at the flip — null (elvis -> Unspecified) vs a real (0,0) Density
+  object. The correct next instrument: an env-gated tracer on the CACHE
+  class's density-field writes (the class whose toString prints the ISE
+  message — identifiable by the checkNotNull thrower Lv;.n call sites),
+  NOT on Lmb1;.
+- The #582 S221 receipt cited the S221b chain as "the map for the next
+  single root" — a correction comment is posted with this re-decode.
