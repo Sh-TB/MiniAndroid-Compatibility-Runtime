@@ -1,0 +1,26 @@
+{
+ "stopwatch": {
+  "wall_s": 1.7,
+  "face_sha16": "31ddd4d5b8e6d18e",
+  "frame_truth": {
+   "distinct": 1,
+   "top_rgb": [
+    255,
+    255,
+    255
+   ],
+   "top_share": 1.0,
+   "top2": null
+  },
+  "status": "PARTIAL SUCCESS",
+  "marks": {
+   "app_boundary": 0,
+   "uncaught": 0,
+   "missing_api": 2,
+   "first_exception": 0,
+   "lifecycle": 7,
+   "draw_ops": 0
+  },
+  "first_exception": null
+ }
+}

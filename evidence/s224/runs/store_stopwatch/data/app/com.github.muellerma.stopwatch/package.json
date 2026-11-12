@@ -1,0 +1,21 @@
+{
+  "package": "com.github.muellerma.stopwatch",
+  "versionName": "1.5",
+  "versionCode": 6,
+  "mainActivity": "",
+  "minSdk": "24",
+  "targetSdk": "33",
+  "requestedPermissions": [
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+    "android.permission.WAKE_LOCK",
+    "com.github.muellerma.stopwatch.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.github.muellerma.stopwatch/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s224/runs/store_stopwatch/data/app/com.github.muellerma.stopwatch/base.apk",
+  "apkSha256": "3b6a10c8dc8ddc727de02cb543072efc43c2589c8ed9f6cf7d147ba0a2580355",
+  "apkSize": 738101,
+  "installedAt": "2026-11-12T08:18:53Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

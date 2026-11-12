@@ -1,0 +1,78 @@
+{
+ "fishrings": {
+  "wall_s": 2.0,
+  "face_sha16": "b5a7a35d5fe0564b",
+  "frame_truth": {
+   "distinct": 1,
+   "top_rgb": [
+    48,
+    48,
+    48
+   ],
+   "top_share": 1.0,
+   "top2": null
+  },
+  "status": "PARTIAL SUCCESS",
+  "marks": {
+   "app_boundary": 0,
+   "uncaught": 0,
+   "missing_api": 2,
+   "first_exception": 0,
+   "lifecycle": 50,
+   "draw_ops": 0
+  },
+  "first_exception": null
+ },
+ "tripeaks": {
+  "wall_s": 2.0,
+  "face_sha16": "b5a7a35d5fe0564b",
+  "frame_truth": {
+   "distinct": 1,
+   "top_rgb": [
+    48,
+    48,
+    48
+   ],
+   "top_share": 1.0,
+   "top2": null
+  },
+  "status": "PARTIAL SUCCESS",
+  "marks": {
+   "app_boundary": 0,
+   "uncaught": 0,
+   "missing_api": 2,
+   "first_exception": 0,
+   "lifecycle": 50,
+   "draw_ops": 0
+  },
+  "first_exception": null
+ },
+ "opmt": {
+  "wall_s": 2.6,
+  "face_sha16": "8eea9a6a5a9346e4",
+  "frame_truth": {
+   "distinct": 1609,
+   "top_rgb": [
+    0,
+    0,
+    0
+   ],
+   "top_share": 0.3909,
+   "top2": [
+    55,
+    115,
+    242
+   ]
+  },
+  "status": "SUCCESS",
+  "marks": {
+   "app_boundary": 0,
+   "uncaught": 0,
+   "missing_api": 0,
+   "first_exception": 0,
+   "lifecycle": 34,
+   "draw_ops": 0
+  },
+  "first_exception": null
+ }
+}

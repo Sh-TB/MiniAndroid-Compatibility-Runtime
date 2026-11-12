@@ -9352,3 +9352,47 @@ Work Log:
   #584 comment 6817154057 (A-R5 chain verified landed, issue closed-loop),
   #585 comment 6817154395 (deliverables + distribution + clusters +
   immediate-batch status).
+
+---
+Task ID: S224-MAIN
+Agent: Super Z (main)
+Task: "ادامه" — the dooz tap frontier root-cause + fix (UP consumption),
+#585 immediate batch items 1+2 (EXEC cohort reproductions), receipts.
+
+Work Log:
+- DOOZ UP-CONSUMPTION ROOT (s224_dooz_default UP-window forensics):
+  DOWN dispatched consumed=true (2,100+ lines); UP consumed=false in 10
+  lines — EMPTY pointer/hit list + getClass-on-NULL NPE -> catch-all at
+  Lt4;.m pc=378 -> UNCAUGHT at MainActivity.onCreate (APP BOUNDARY) ->
+  consumed=false -> no PerformClick -> no NewGame. Producer: the
+  pressed-state render's recomposition INSERTS a LayoutNode child
+  (Lt4; children 1->2 same run) with no measure/modifier init (the T21
+  P=NULL family). The 23K "New game" console marks were the BUTTON
+  LABEL text ops (S222 receipt correction: my "NewGame marks=0" was a
+  regex artifact — space-separated string).
+- FIX (S224-TAPDRAIN law): drain_pending_compose_measure() BETWEEN the
+  pressed render and the UP dispatch: S221 owner marks (Lt4;.z (T,T,F))
+  + S155 modifier rebuild (Lel0;.N) + delegate drain (Lzs0;.m), all
+  contained. RESULT (s224_dooz_tapdrain2): UP consumed=TRUE (FIRST
+  time), PerformClick posted (View.post id=67557 class=Lp;) AND
+  invoked, final frame 5 colors incl. (216,226,255) menu bottom-UI
+  57,487 px (baseline PASS face had 15,960) + navy (0,26,65). Honest
+  residual: post-click text-cache ISE storm (contained; menu stays) —
+  density-flip instrument = named next root.
+- REGRESSION: test-all 27/27; gate ALL HOLD byte-exact on
+  0cd86a5b5fc09c87 (TAPDRAIN byte-inert: no compose delegate in
+  View-based heaps). Commit b90d4ef9 pushed.
+- #585 IMMEDIATE BATCH items 1+2 (evidence/s224/runs/
+  s224_exec_batch.json): #11 TicTacToe closure-ready (gate pin
+  7354c1b2 x3 cold, 0 uncaught, same-day); #12 BLOCKED/
+  APK_NOT_MATERIALIZED (no APK in corpus); #19 FishRings fresh run
+  (13 frames, 0 errors, flat dark face persists); #20 TriPeaks fresh
+  (flat dark face persists — layout/anchor frontier CONFIRMED CURRENT);
+  #21 Bouncy gate evidence fresh; #22 Stopwatch fresh (white face —
+  Service-launch family persists verbatim); #23 OPMT SUCCESS with
+  1,609 distinct colors (menu renders richly — real advance; game
+  logic needs the tap probe); #14 dooz behavioral advance; #16 Telegram
+  APK_NOT_MATERIALIZED.
+- Receipts: #582 comment 6818436691 (the UP-consumption root + fix +
+  first consumed=true), #585 comment 6818498915 (the batch table +
+  ledger deltas + closure/blocking states).

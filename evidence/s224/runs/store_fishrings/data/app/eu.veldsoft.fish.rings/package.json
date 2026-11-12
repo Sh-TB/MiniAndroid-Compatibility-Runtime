@@ -1,0 +1,18 @@
+{
+  "package": "eu.veldsoft.fish.rings",
+  "versionName": "1.23",
+  "versionCode": 6,
+  "mainActivity": "eu.veldsoft.fish.rings.SplashActivity",
+  "minSdk": "24",
+  "targetSdk": "",
+  "requestedPermissions": [
+    "android.permission.INTERNET"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/eu.veldsoft.fish.rings/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s224/runs/store_fishrings/data/app/eu.veldsoft.fish.rings/base.apk",
+  "apkSha256": "14d7dd80f7563c6a17c8d4b0fc2a5ca0ef468711fbdb1803306b090bd7c641ed",
+  "apkSize": 398995,
+  "installedAt": "2026-11-12T08:17:39Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

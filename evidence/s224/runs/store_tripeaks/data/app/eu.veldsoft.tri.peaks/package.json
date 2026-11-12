@@ -1,0 +1,18 @@
+{
+  "package": "eu.veldsoft.tri.peaks",
+  "versionName": "1.2.1",
+  "versionCode": 4,
+  "mainActivity": "eu.veldsoft.tri.peaks.SplashActivity",
+  "minSdk": "24",
+  "targetSdk": "",
+  "requestedPermissions": [
+    "android.permission.INTERNET"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/eu.veldsoft.tri.peaks/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s224/runs/store_tripeaks/data/app/eu.veldsoft.tri.peaks/base.apk",
+  "apkSha256": "52272ae619c0fec88dfd9b4a22be0c411edda8564edd7a11af107398799f894c",
+  "apkSize": 417854,
+  "installedAt": "2026-11-12T08:17:41Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

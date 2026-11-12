@@ -1,0 +1,16 @@
+{
+  "package": "one.scarecrow.games.OPMT",
+  "versionName": "0.1.2",
+  "versionCode": 1,
+  "mainActivity": "one.scarecrow.games.OPMT.MainMenu",
+  "minSdk": "24",
+  "targetSdk": "",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/one.scarecrow.games.OPMT/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s224/runs/store_opmt/data/app/one.scarecrow.games.OPMT/base.apk",
+  "apkSha256": "4f91e3801780684a7bfdf33de97646cf0e9a1b4913c3ea0699efddeae5368366",
+  "apkSize": 100730,
+  "installedAt": "2026-11-12T08:17:43Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}
