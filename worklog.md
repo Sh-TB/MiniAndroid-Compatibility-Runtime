@@ -9232,3 +9232,52 @@ Work Log:
   NOT on Lmb1;.
 - The #582 S221 receipt cited the S221b chain as "the map for the next
   single root" — a correction comment is posted with this re-decode.
+
+---
+Task ID: S222-MAIN
+Agent: Super Z (main)
+Task: the four new GP comments (#582 ids 6812887007 + 6812985391, #583 ids
+6812887432 + 6812986803) processed line-by-line: the 50-row disposition
+table, the S222-A exception-honesty/density wave, the dooz text-cache DEX
+decode, receipts posted.
+
+Work Log:
+- Comment pull: all 70 comments of #582/#583/#584 (per_page=100 pagination)
+  into evidence/s222/*.json; the NEW items since S221 = the four ids above.
+- ANTI-PHANTOM VERIFICATION: every one of the 50 findings re-grepped against
+  current main (scripts/s222_verify_50.py). 46 CONFIRMED, route-limited/
+  partial faces recorded for the staged-route rows; GL rows located in
+  src/framework/gl_surface_shadow.cpp (not src/gles/). Full 50-row table
+  posted on #582 (comment 6815552421).
+- BASELINE RERUN (dooz, s222_baseline): ISE 5,860; APP-BOUNDARY 54 — of
+  which 47 = the S221 bridge's own Lt4;.z calls throwing
+  "requestLookaheadRemeasure cannot be called on a node outside
+  LookaheadScope" at depth=2 caller_pc=0 (top-level nested invoke, zero app
+  frames harmed). T61 violation fixed by the CONTAINED NESTED INVOKE law
+  (contained_invoke_): APP-BOUNDARY 54 -> 7 (waveA) -> 0 (waveC/C2).
+- DEX DECODE (the #582 VIS-comment demanded instrumentation, done statically
+  + live): ISE throwers Lnt1;.Q @0xEE / Lnt1;.e; the REAL cache = Lv31;
+  (l:J packed density, s:J history register); Ltw1; = the TextLayoutResult
+  holder (ctor ONLY from the paragraph-layout completion); packing law
+  Lsg0;.b(J): HIGH32=density LOW32=fontScale — InlineDensity(0,0) = packed 0L
+  = virgin cache, NOT a corrupted density. Live probes: [S222-TW1] exactly 2
+  layout-result materializations per run (caller Lyu0;.f pc=16) vs thousands
+  of draws demanding one -> the storm is MEASURE-BEFORE-DRAW starvation.
+- F-023b: new-instance materialization of Configuration/DisplayMetrics now
+  seeds the AOSP defaults (fontScale=1.0/densityDpi=420/orientation/
+  screenLayout; density 2.625/scaledDensity/dims) — the InlineDensity
+  (2.625, 0.000000) producer face closed; the dominant message face is now
+  InlineDensity(2.625, 1.000000) (correct values).
+- CADENCE A/B (the decisive matrix): once-per-node bridge = ISE 5.8k-12.5k;
+  drain-every-window w/o re-marks (waveF) = 12,514 (pending set lacks the
+  text nodes); PER-FRAME mark+drain (MINIANDROID_S222_FRAME_BRIDGE=1, the
+  complete-render config) = ISE 0 + APP-BOUNDARY 0 + full draw chain
+  (first draw 2,922 ops) — cost ~95 s/frame (interpreter wall, recorded as
+  the GP-PERF frontier), default cadence stays S221.
+- REGRESSION: FULL 6-PIN GATE ALL HOLD byte-exact on cc97e334981a4bb1
+  (bouncy 8a6c24ac / unote 3b8dcb0a / dooz a0fae907 / gmdice 3891679d x2
+  identical / microtimer b39665f6 / ttt 7354c1b2 x3); make test-all 27/27.
+- Receipts posted: #582 comment 6815552421 (50-row table + laws + decode +
+  VIS-001..006 dispositions), #583 comment 6815552737 (integration framing
+  + app matrix + proof gates).
+- Commit eff78882 pushed (5213dd7c..eff78882).
