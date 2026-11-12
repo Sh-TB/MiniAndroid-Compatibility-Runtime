@@ -142,6 +142,15 @@ int gl_view_mirror_write(HeapAllocator* heap, uint32_t holder, int32_t elem_idx,
                  hcls.find("DoubleBuffer;") != std::string::npos) esz = 8;
         else if (hcls.find("ByteBuffer;") != std::string::npos) esz = 1;
     }
+    // GP S225 NATIVE-001 (issue #582): the out-param write-back is a GUEST-
+    // CONTROLLED write into real native memory. AOSP NIO law: a write at
+    // element index i of a buffer with capacity C is in range iff
+    // 0 <= i and (i+1)*esz <= C — one byte past the capacity, a negative
+    // index, or an overflowing base offset must NEVER write. The old form
+    // rejected none of these (negative elem_idx, int32 base overflow, and
+    // dcap==0 treated as write permission).
+    if (elem_idx < 0) return 0;              // negative index: no write
+    int64_t base64 = (int64_t)elem_idx * (int64_t)esz;  // no int32 overflow
     uint32_t par = 0;
     if (!heap->get_object_ref_field(holder, "__bb_parent__", par) || par == 0)
         return esz;
@@ -150,11 +159,15 @@ int gl_view_mirror_write(HeapAllocator* heap, uint32_t holder, int32_t elem_idx,
         return esz;
     int32_t dcap = 0;
     heap->get_object_int_field(par, "__bb_direct_cap__", dcap);
+    // Unknown/zero capacity: the backing allocation identity is unproven —
+    // do not write (was: dcap==0 fell through as permission).
+    if (dcap <= 0) return esz;
+    if (base64 < 0 || base64 + esz > (int64_t)dcap) return esz;  // tail check
     unsigned char* mem = reinterpret_cast<unsigned char*>((uintptr_t)addr);
-    int32_t base = elem_idx * esz;
+    int32_t base = (int32_t)base64;
     for (int b = 0; b < esz; ++b) {
         int32_t o = base + b;
-        if (dcap == 0 || o < dcap)
+        if (o >= 0 && o < dcap)
             mem[o] = (unsigned char)(((uint32_t)val >> (8 * b)) & 0xFF);
     }
     return esz;

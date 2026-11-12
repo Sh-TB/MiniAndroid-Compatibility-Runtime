@@ -18,6 +18,7 @@
 #include <iomanip>
 #include <memory>
 #include <cstdint>
+#include <thread>   // GP S223 LOG-007: honest per-event thread identity
 
 // Include JSON library (nlohmann/json)
 #include <nlohmann/json.hpp>

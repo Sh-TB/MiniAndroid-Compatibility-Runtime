@@ -19324,13 +19324,24 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
             DalvikValue::make_object(cfg_obj, "Ljavax/microedition/khronos/egl/EGLConfig;")};
         gfx::GfxTrace::instance().frame_stage("surface-created", w, h,
                                               view_object_id);
-        invoke("onSurfaceCreated", std::move(a));
-        heap_.set_object_field(view_object_id, "glSurfaceCreated",
-                               DalvikValue::make_int(1));
-        *first_frame_out = true;
-        sf_order_log("GL-SURFACE-CREATED",
-                     "view=" + std::to_string(view_object_id) +
-                     " cb=" + rcls);
+        // GP S223 LOG-005 (issue #582): callback results are no longer
+        // ignored — state commits ONLY after a SUCCESSFUL callback. The old
+        // form committed glSurfaceCreated=1 even when onSurfaceCreated
+        // threw/failed, so the surface looked live with a half-initialized
+        // renderer and the failure was invisible to the provenance chain.
+        const bool created_ok = invoke("onSurfaceCreated", std::move(a));
+        if (created_ok) {
+            heap_.set_object_field(view_object_id, "glSurfaceCreated",
+                                   DalvikValue::make_int(1));
+            *first_frame_out = true;
+            sf_order_log("GL-SURFACE-CREATED",
+                         "view=" + std::to_string(view_object_id) +
+                         " cb=" + rcls);
+        } else {
+            sf_order_log("GL-SURFACE-CREATED-FAIL",
+                         "view=" + std::to_string(view_object_id) +
+                         " cb=" + rcls + " (callback failed; state NOT committed)");
+        }
     }
     // onSurfaceChanged(GL10, w, h) on size change
     int64_t lw = -1, lh = -1;
@@ -19344,16 +19355,22 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
             DalvikValue::make_int(w), DalvikValue::make_int(h)};
         gfx::GfxTrace::instance().frame_stage("surface-changed", w, h,
                                               view_object_id);
-        invoke("onSurfaceChanged", std::move(a));
-        heap_.set_object_field(view_object_id, "glLastW", DalvikValue::make_int(w));
-        heap_.set_object_field(view_object_id, "glLastH", DalvikValue::make_int(h));
+        // LOG-005: size-commit only on success — a failed onSurfaceChanged
+        // leaves (glLastW, glLastH) at the old values so the dispatch
+        // retries next frame (AOSP: the surface never became live).
+        if (invoke("onSurfaceChanged", std::move(a))) {
+            heap_.set_object_field(view_object_id, "glLastW", DalvikValue::make_int(w));
+            heap_.set_object_field(view_object_id, "glLastH", DalvikValue::make_int(h));
+        }
     }
     // every frame: onDrawFrame(GL10)
     std::vector<DalvikValue> a{self,
         DalvikValue::make_object(gl_obj, "Ljavax/microedition/khronos/opengles/GL10;")};
     gfx::GfxTrace::instance().frame_stage("draw-frame", w, h, view_object_id);
-    invoke("onDrawFrame", std::move(a));
-    return true;
+    // LOG-005: the frame is drawn ONLY when onDrawFrame succeeded — the
+    // return value now flows to the caller (stage_gl_surfaces honors it:
+    // !drew → no blit, no presented record, no FRAME_SUBMIT of this frame).
+    return invoke("onDrawFrame", std::move(a));
 }
 
 // ── S214 F-NEW-632: SF-ORDER probe implementation ─────────────────────────
@@ -23562,12 +23579,26 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
 
                 // Record API trace
+                // GP S223 CALL-001/002/003 (issue #582): the 3rc trace
+                // previously dropped the descriptor, arguments, return value
+                // and frame identity — overloaded range calls were ambiguous
+                // and first-divergence diagnosis had no typed data. Mirror
+                // the 35c fill: exact descriptor (range_proto, already
+                // resolved for the F-102 exact-match law), bounded typed
+                // argument summaries (≤8), return value, and the current
+                // frame id.
                 ApiCallTrace api_trace;
                 api_trace.sequence = api_call_sequence_++;
                 api_trace.api_class = class_name;
                 api_trace.method = method_name;
+                api_trace.descriptor = range_proto;             // CALL-001
+                for (size_t ai = 0; ai < args.size() && ai < 8; ++ai)
+                    api_trace.arguments.push_back(args[ai].to_string());
+                api_trace.return_value = return_val.to_string(); // CALL-002
                 api_trace.status = status;
                 api_trace.pc = pc_;
+                api_trace.frame_id =
+                    call_stack_.empty() ? 0 : call_stack_.top().frame_id; // CALL-003
                 note_api_status(api_trace);  // F-NEW-200 census
                 batched_cap_push(result.api_call_traces,
                                   result.api_call_ring_cursor,
@@ -31990,10 +32021,15 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     }
     
     // Create API call trace with VTable information
+    // GP S223 CALL-004 (issue #582): the 35c trace now carries the EXACT
+    // descriptor (already resolved above for the F-023 overload law —
+    // invoke_descriptor_35c) and the call's execution time; caller method
+    // and PC were already present.
     ApiCallTrace api_trace;
     api_trace.sequence = api_call_sequence_++;
     api_trace.api_class = runtime_type;  // Use runtime type for accuracy
     api_trace.method = method_name_from_dex;
+    api_trace.descriptor = invoke_descriptor_35c;   // CALL-004
     api_trace.arguments = arg_names;
     api_trace.return_value = return_val.to_string();
     api_trace.status = api_status;

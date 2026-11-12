@@ -34,6 +34,7 @@
 #include <cstdint>
 #include <functional>
 #include <map>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -74,18 +75,49 @@ class BitmapStore {
 public:
     static BitmapStore& instance();
 
-    // Register a fresh bitmap object (pixels optional). Overwrites nothing
-    // if the id already holds a live bitmap (heap ids are unique).
+    // GP S225 BITMAP-001 (issue #582): SYNCHRONIZATION + OWNERSHIP LAW.
+    // The store is a process-wide map; the engine ALSO runs native/GL
+    // worker threads (anchor .so callbacks reach __ma_bitmap_query). The
+    // map STRUCTURE is now guarded by mu_ on every accessor — concurrent
+    // create/store/erase can no longer corrupt iteration or invalidate a
+    // lookup mid-flight.
+    //
+    // Pointer-ownership contract (NAMED, not hidden): get()/get_mut()
+    // return a pointer owned by the store, valid until the NEXT erase()
+    // of that id. The single-storey law (S68 §12) intentionally keeps
+    // __ma_bitmap_query's pixel pointer NO-COPY — native lock/unlock and
+    // the engine render share the SAME storage. Cross-thread holders must
+    // therefore never hold the pointer across an erase/recycle of the
+    // same id; a snapshot copy (get_pixels_copy) is provided for callers
+    // that need a stable private view. The residual risk — a native
+    // thread writing pixels while the engine draws the same id — is the
+    // documented AOSP-freeing-during-draw hazard; it is the app's
+    // contract not to recycle mid-draw (same as AOSP).
     void create(uint32_t obj_id, int w, int h, const std::string& desc);
     void store(uint32_t obj_id, int w, int h, std::vector<uint8_t> rgba,
                const std::string& desc);
     const StoredBitmap* get(uint32_t obj_id) const;
     StoredBitmap* get_mut(uint32_t obj_id);
     void erase(uint32_t obj_id);
-    size_t size() const { return store_.size(); }
+    // Mutex-held callback: the ONLY safe shape for cross-thread readers
+    // that need more than an int — the reference is valid ONLY inside the
+    // lambda, under the lock.
+    template <typename F> auto with_bitmap(uint32_t obj_id, F&& f) {
+        std::lock_guard<std::mutex> lk(mu_);
+        auto it = store_.find(obj_id);
+        return it != store_.end() ? f(it->second) : f(empty());
+    }
+    // Snapshot copy for callers needing a stable private view (no alias).
+    bool get_pixels_copy(uint32_t obj_id, StoredBitmap& out) const;
+    size_t size() const {
+        std::lock_guard<std::mutex> lk(mu_);
+        return store_.size();
+    }
 
 private:
     BitmapStore() = default;
+    static const StoredBitmap& empty();
+    mutable std::mutex mu_;               // GP S225 BITMAP-001
     std::map<uint32_t, StoredBitmap> store_;
 };
 

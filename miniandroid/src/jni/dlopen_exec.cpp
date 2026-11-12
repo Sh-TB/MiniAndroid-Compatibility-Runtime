@@ -111,6 +111,31 @@ struct GuardedSignal {
 GuardedSignal g_guard_saved[4];
 size_t g_guard_saved_n = 0;
 
+// GP S225 JNI-002 (issue #582): ASYNC-SIGNAL-SAFETY law. The guard handler
+// is entered while the faulting thread may hold libc/allocator locks; the
+// ONLY safe work inside a signal handler is sig_atomic_t POD capture +
+// siglongjmp. Everything else (getenv, stdio, /proc/self/maps parsing,
+// stack memory walks) previously ran INSIDE the handler — a deadlock risk
+// if the fault interrupted malloc/stdio. Now: the handler writes this
+// preallocated POD record and longjmps; the W10 fault trace (maps
+// resolution + stack walk) is emitted AFTER the longjmp lands, in normal
+// context, from run_native_guarded. The trace env flag is resolved ONCE at
+// install time — never getenv inside the handler.
+struct NativeFaultRecord {
+    volatile sig_atomic_t armed;
+    volatile sig_atomic_t sig;
+    volatile sig_atomic_t rip_lo, rip_hi;  // uintptr_t split: sig_atomic_t
+    volatile sig_atomic_t addr_lo, addr_hi; // is not guaranteed pointer-wide
+    volatile sig_atomic_t rsp_lo, rsp_hi;
+};
+static NativeFaultRecord g_fault_rec;
+static volatile sig_atomic_t g_w10_trace_enabled = 0;
+
+static inline uintptr_t rec_get(volatile sig_atomic_t lo,
+                                volatile sig_atomic_t hi) {
+    return ((uintptr_t)(uint32_t)hi << 32) | (uint32_t)lo;
+}
+
 // Installs the guard handlers for SIGSEGV/SIGBUS/SIGABRT/SIGILL (saves the
 // previous actions so the engine-wide crash-forensics path survives the
 // guard).
@@ -132,78 +157,30 @@ void install_native_guard() {
     memset(&sa, 0, sizeof sa);
     sa.sa_flags = SA_NODEFER | SA_SIGINFO;  // allow return; W10: fault RIP
     sigemptyset(&sa.sa_mask);
+    // W10 trace flag resolved ONCE here (normal context) — the handler
+    // never calls getenv (JNI-002 async-signal-safety law).
+    g_w10_trace_enabled =
+        std::getenv("MINIANDROID_W10_JNI_TRACE") != nullptr ? 1 : 0;
     sa.sa_sigaction = [](int sig, siginfo_t* info, void* uctx_v) {
         if (g_guard_active) {
-            // W10 (Coder-4) FAULT TRACE — the faulting instruction pointer
-            // and fault address (diagnoses WHICH native instruction killed
-            // the call; RIP<->library mapping via /proc/self/maps).
-            {
-                ucontext_t* uc = static_cast<ucontext_t*>(uctx_v);
-                uintptr_t rip = uc->uc_mcontext.gregs[REG_RIP];
-                uintptr_t addr =
-                    info && info->si_code != SI_USER
-                        ? reinterpret_cast<uintptr_t>(info->si_addr)
-                        : 0;
-                static bool w10_ft =
-                    std::getenv("MINIANDROID_W10_JNI_TRACE") != nullptr;
-                if (w10_ft) {
-                    fprintf(stderr,
-                            "[W10-FAULT] sig=%d rip=%p fault_addr=%p\n",
-                            sig, (void*)rip, (void*)addr);
-                    // Map RIP to its library + offset (self-maps lookup).
-                    FILE* maps = fopen("/proc/self/maps", "r");
-                    if (maps) {
-                        char line[512];
-                        while (fgets(line, sizeof line, maps)) {
-                            unsigned long lo, hi;
-                            char perms[8], path[400] = "";
-                            if (sscanf(line, "%lx-%lx %7s %*x %*x:%*x %*u %399s",
-                                       &lo, &hi, perms, path) >= 3) {
-                                if (rip >= lo && rip < hi && path[0] == '/') {
-                                    fprintf(stderr,
-                                            "[W10-FAULT] rip in %s +0x%lx "
-                                            "(%s)\n",
-                                            path, rip - lo, perms);
-                                    break;
-                                }
-                            }
-                        }
-                        // W10: crude stack walk — print mapped return
-                        // address candidates (RSP..RSP+512) so the native
-                        // call chain at the fault is visible.
-                        rewind(maps);
-                        uintptr_t rsp =
-                            uc->uc_mcontext.gregs[REG_RSP];
-                        for (int wi = 0; wi < 64; ++wi) {
-                            uintptr_t v;
-                            memcpy(&v, (void*)(rsp + wi * 8), 8);
-                            if (v < 0x1000) continue;
-                            char mline[512];
-                            bool printed = false;
-                            rewind(maps);
-                            while (fgets(mline, sizeof mline, maps)) {
-                                unsigned long lo, hi;
-                                char perms[8], path[400] = "";
-                                if (sscanf(mline,
-                                           "%lx-%lx %7s %*x %*x:%*x %*u %399s",
-                                           &lo, &hi, perms, path) >= 3) {
-                                    if (v >= lo && v < hi && path[0] == '/') {
-                                        fprintf(stderr,
-                                                "[W10-FAULT] stack[%d]=%s "
-                                                "+0x%lx\n",
-                                                wi, path, v - lo);
-                                        printed = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            (void)printed;
-                        }
-                        fclose(maps);
-                    }
-                    fflush(stderr);
-                }
-            }
+            // GP S225 JNI-002: POD capture ONLY inside the handler.
+            ucontext_t* uc = static_cast<ucontext_t*>(uctx_v);
+            uintptr_t rip =
+                uc ? (uintptr_t)uc->uc_mcontext.gregs[REG_RIP] : 0;
+            uintptr_t addr =
+                info && info->si_code != SI_USER
+                    ? reinterpret_cast<uintptr_t>(info->si_addr)
+                    : 0;
+            uintptr_t rsp =
+                uc ? (uintptr_t)uc->uc_mcontext.gregs[REG_RSP] : 0;
+            g_fault_rec.sig = sig;
+            g_fault_rec.rip_lo = (sig_atomic_t)(rip & 0xffffffffu);
+            g_fault_rec.rip_hi = (sig_atomic_t)((rip >> 32) & 0xffffffffu);
+            g_fault_rec.addr_lo = (sig_atomic_t)(addr & 0xffffffffu);
+            g_fault_rec.addr_hi = (sig_atomic_t)((addr >> 32) & 0xffffffffu);
+            g_fault_rec.rsp_lo = (sig_atomic_t)(rsp & 0xffffffffu);
+            g_fault_rec.rsp_hi = (sig_atomic_t)((rsp >> 32) & 0xffffffffu);
+            g_fault_rec.armed = 1;
             g_guard_active = 0;
             siglongjmp(guard_jb(), 1);
         }
@@ -271,6 +248,65 @@ bool run_native_guarded(F&& fn) {
         if (!faulted) g_guard_active = 0;
     } else {
         faulted = true;  // longjmp landed: g_guard_active already cleared
+        // GP S225 JNI-002: the W10 fault trace now runs HERE (normal
+        // context, libc locks safe to use) from the handler's POD record —
+        // not inside the signal handler.
+        if (g_fault_rec.armed) {
+            int fsig = (int)g_fault_rec.sig;
+            uintptr_t rip = rec_get(g_fault_rec.rip_lo, g_fault_rec.rip_hi);
+            uintptr_t faddr =
+                rec_get(g_fault_rec.addr_lo, g_fault_rec.addr_hi);
+            uintptr_t rsp = rec_get(g_fault_rec.rsp_lo, g_fault_rec.rsp_hi);
+            g_fault_rec.armed = 0;
+            if (g_w10_trace_enabled) {
+                fprintf(stderr, "[W10-FAULT] sig=%d rip=%p fault_addr=%p\n",
+                        fsig, (void*)rip, (void*)faddr);
+                // Map RIP to its library + offset (self-maps lookup).
+                FILE* maps = fopen("/proc/self/maps", "r");
+                if (maps) {
+                    char line[512];
+                    while (fgets(line, sizeof line, maps)) {
+                        unsigned long lo, hi;
+                        char perms[8], path[400] = "";
+                        if (sscanf(line, "%lx-%lx %7s %*x %*x:%*x %*u %399s",
+                                   &lo, &hi, perms, path) >= 3) {
+                            if (rip >= lo && rip < hi && path[0] == '/') {
+                                fprintf(stderr,
+                                        "[W10-FAULT] rip in %s +0x%lx (%s)\n",
+                                        path, rip - lo, perms);
+                                break;
+                            }
+                        }
+                    }
+                    // W10: crude stack walk — mapped return-address
+                    // candidates (RSP..RSP+512) at the fault.
+                    rewind(maps);
+                    for (int wi = 0; wi < 64; ++wi) {
+                        uintptr_t v;
+                        memcpy(&v, (void*)(rsp + wi * 8), 8);
+                        if (v < 0x1000) continue;
+                        char mline[512];
+                        rewind(maps);
+                        while (fgets(mline, sizeof mline, maps)) {
+                            unsigned long lo, hi;
+                            char perms[8], path[400] = "";
+                            if (sscanf(mline,
+                                       "%lx-%lx %7s %*x %*x:%*x %*u %399s",
+                                       &lo, &hi, perms, path) >= 3) {
+                                if (v >= lo && v < hi && path[0] == '/') {
+                                    fprintf(stderr,
+                                            "[W10-FAULT] stack[%d]=%s +0x%lx\n",
+                                            wi, path, v - lo);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    fclose(maps);
+                }
+                fflush(stderr);
+            }
+        }
     }
     restore_native_guard();
     return !faulted;
@@ -456,6 +492,26 @@ struct JNIEnvStub {
     void* functions;
 };
 JNIEnvStub g_env = {g_jni_table};
+// GP S225 JNI-001 (issue #582): JNI spec law — JNIEnv is THREAD-SPECIFIC.
+// The bridge previously handed ONE process-global stub (&g_env) to both
+// AttachCurrentThread and GetEnv, so concurrent native workers shared one
+// env identity (local-ref/exception state cross-talk). The law now:
+//   - the bridge MAIN thread (every init_tables caller = the engine thread
+//     that runs DEX + native calls) keeps the identity &g_env, so every
+//     existing main-thread site (JNI_OnLoad, native-call slot 0) is
+//     byte-identical — the 6-pin HOLD set does not move;
+//   - jni_AttachCurrentThread mints a PER-THREAD JNIEnvStub (distinct
+//     identity per attached thread) and marks that thread attached;
+//   - jni_DetachCurrentThread marks it detached (reattach = fresh stub);
+//   - vm_GetEnv answers JNI_OK only for the main thread or an explicitly
+//     attached thread; an unknown thread gets JNI_EDETACHED (-2) — the
+//     JVM does not silently attach unknown threads.
+// Remaining named gap (recorded, not silently fixed): the pending-exception
+// channel and local-ref arena stay process-global by the documented one-
+// channel law above; per-thread exception state is the follow-up wave.
+static thread_local bool t_jni_attached = false;
+static thread_local JNIEnvStub t_jni_env = {g_jni_table};
+static thread_local bool t_jni_main = false;
 
 constexpr int kVmSlots = 8;
 void* g_vm_table[kVmSlots];
@@ -775,10 +831,20 @@ int jni_GetJavaVM(void*, void** vm) {
     return 0;
 }
 int jni_AttachCurrentThread(void*, void** env, void*) {
-    if (env) *env = &g_env;
+    // GP S225 JNI-001: per-thread env identity. A fresh TLS stub per
+    // attach gives every attached thread a DISTINCT JNIEnv* — two pthreads
+    // attaching must never observe the same env pointer.
+    t_jni_attached = true;
+    t_jni_env.functions = g_jni_table;  // re-bind (reattach = fresh frame)
+    if (env) *env = &t_jni_env;
     return 0;
 }
-int jni_DetachCurrentThread(void*) { return 0; }
+int jni_DetachCurrentThread(void*) {
+    // GP S225 JNI-001: detach ends the thread's JNI membership; a later
+    // GetEnv on this thread must answer JNI_EDETACHED, not the env.
+    t_jni_attached = false;
+    return 0;
+}
 int jni_DestroyJavaVM(void*) { return 0; }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -1424,6 +1490,11 @@ namespace {
 
 void init_tables() {
     static bool done = false;
+    // GP S225 JNI-001: the thread running init_tables is the bridge MAIN
+    // thread (DEX execution + native dispatch all run here) — its GetEnv
+    // keeps the historical &g_env identity so JNI_OnLoad and every
+    // existing native-call site stay byte-identical.
+    t_jni_main = true;
     if (done) return;
     done = true;
     // ─────────────────────────────────────────────────────────────────
@@ -1543,8 +1614,19 @@ void init_tables() {
 int vm_GetEnv(void* vm, void** env, int version) {
     (void)vm;
     (void)version;
-    if (env) *env = &g_env;
-    return 0;  // JNI_OK
+    // GP S225 JNI-001: main thread (bridge owner) keeps &g_env; an
+    // explicitly attached thread gets its own TLS identity; an unknown
+    // thread is NOT silently attached — JNI_EDETACHED per spec.
+    if (t_jni_main) {
+        if (env) *env = &g_env;
+        return 0;  // JNI_OK
+    }
+    if (t_jni_attached) {
+        if (env) *env = &t_jni_env;
+        return 0;  // JNI_OK
+    }
+    if (env) *env = nullptr;
+    return -2;  // JNI_EDETACHED
 }
 
 // ── JNI symbol mangling (AOSP art::JniIdType semantics) ────────────────

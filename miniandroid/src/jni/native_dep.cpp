@@ -54,6 +54,7 @@ struct Vernaux {
 
 constexpr uint16_t ET_DYN = 3;
 constexpr uint16_t EM_X86_64 = 62;
+constexpr uint16_t EM_386 = 3;  // GP S225 ELF-001 (issue #582)
 constexpr uint32_t PT_DYNAMIC = 2;
 constexpr uint32_t PT_LOAD = 1;
 constexpr int64_t DT_NULL = 0, DT_NEEDED = 1, DT_STRTAB = 5, DT_STRSZ = 10;
@@ -120,6 +121,19 @@ bool is_real_elf64_dyn(const std::string& path, std::string& why) {
         // GNU ld scripts (text "GROUP ( ... )") and archives ("!<arch>")
         // masquerading as Android sonames — the exact trap this law rejects.
         why = "not an ELF object (ld-script/archive?)";
+        return false;
+    }
+    if (e.e_ident[4] == 1) {
+        // GP S225 ELF-001 (issue #582): a 32-bit object is NEVER
+        // reinterpreted as ELF64. The parser here is ELF64-only, so an
+        // ELF32 Android library gets a PRECISE ABI-UNSUPPORTED row (with
+        // its own machine number) — the same honest-block shape as a
+        // missing dependency — instead of the misleading generic
+        // "not ELF64" text. The object is rejected BEFORE any dlopen.
+        why = e.e_machine == EM_386
+                  ? "ELF32 EM_386 (ABI x86) — ABI_UNSUPPORTED by this "
+                    "runtime (ELF64 x86-64 anchors only)"
+                  : "ELF32 (EI_CLASS=1) — ABI_UNSUPPORTED";
         return false;
     }
     if (e.e_ident[4] != 2) { why = "not ELF64 (EI_CLASS!=2)"; return false; }

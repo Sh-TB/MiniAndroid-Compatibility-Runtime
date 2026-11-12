@@ -6233,6 +6233,39 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 " app_ops=" + std::to_string(frame_census_.app_draw_ops) +
                                 " diag_regions=" + std::to_string(frame_census_.diag_regions.size()),
                                 app_content_drew ? "OK" : "NO_APP_OPS"));
+                            // GP S223 LOG-003 (issue #582): RENDER_OK is NOT
+                            // per-stage proof — the completion evidence is now
+                            // SPLIT per stage, driven by the frame census's
+                            // own P0-6 counters (measure_ran / layout_ran /
+                            // draw_walk_ran), never implied by a later stage.
+                            // These are the explicit MEASURE/LAYOUT/DRAW
+                            // completion events LOG-002's missing emitters
+                            // stand in for (the walk interleaves the three
+                            // phases per node; the census is the per-frame
+                            // phase authority).
+                            const auto per_stage_event = [this](
+                                const char* ev_name, const char* st,
+                                bool ran, const std::string& extra) {
+                                return trace_engine_.make_event(
+                                    ev_name,
+                                    ran ? diagnostics::EventSev::CONFIRMED
+                                        : diagnostics::EventSev::PENDING,
+                                    st, extra, ran ? "OK" : "NOT_RUN");
+                            };
+                            trace_engine_.runtime_event(per_stage_event(
+                                diagnostics::ev::MEASURE_END, "MEASURE",
+                                frame_census_.measure_ran,
+                                "visited=" +
+                                    std::to_string(frame_census_.nodes_visited)));
+                            trace_engine_.runtime_event(per_stage_event(
+                                diagnostics::ev::LAYOUT_END, "LAYOUT",
+                                frame_census_.layout_ran,
+                                "layout_src=" + frame_census_.layout_source));
+                            trace_engine_.runtime_event(per_stage_event(
+                                diagnostics::ev::DRAW_END, "DRAW",
+                                frame_census_.draw_walk_ran && app_content_drew,
+                                "app_ops=" +
+                                    std::to_string(frame_census_.app_draw_ops)));
                         }
                         // F-NEW-307: this frame was PRESENTED — remember its
                         // app-op ledger for the kept-frame attribution.
@@ -6474,6 +6507,10 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
         y0 = std::max(y0, 0);
         x1 = std::min(x1, config.screen_width);
         y1 = std::min(y1, config.screen_height);
+        // GP S223 LOG-004: the blit's REAL pixel count — an empty clip
+        // intersection copies zero pixels and must NOT report a presented
+        // GL frame downstream (provenance derives every bit from this).
+        size_t blitted_px = 0;
         for (int y = y0; y < y1; ++y) {
             for (int x = x0; x < x1; ++x) {
                 const int sx = x - gx;
@@ -6483,6 +6520,7 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
                 const size_t idx =
                     ((size_t)y * config.screen_width + x) * 4;
                 if (idx + 3 >= framebuffer_.size()) continue;
+                ++blitted_px;
                 // PGL pix_t = RGBA8888 (R lowest byte, little-endian order)
                 framebuffer_[idx + 0] = (uint8_t)(px & 0xFF);
                 framebuffer_[idx + 1] = (uint8_t)((px >> 8) & 0xFF);
@@ -6514,7 +6552,7 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
         }
         if (diagnostics::GfxProvenance::instance().enabled()) {
             diagnostics::GfxProvenance::instance().record_gl_presented(
-                vid, gw, gh, first);
+                vid, gw, gh, first, /*draw_called=*/drew, blitted_px);
         }
         // CONT-83 WS-B: present row at the real blit site (PGL backbuf →
         // window framebuffer) — the frame-correlation tail event.

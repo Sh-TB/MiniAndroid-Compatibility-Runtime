@@ -1591,6 +1591,11 @@ public:
         // during ensureCompositionCreated; without this state the composition
         // bails out and ComposeView keeps children=0 forever.
         bool attached_to_window = false;
+        // GP S224 (#583): TRUE when the class EXISTS in the app DEX but its
+        // constructor failed/was missing — the node must never be reported
+        // as a successfully constructed app view (AOSP InflateException
+        // semantics; the XML subtree under it was aborted at inflation).
+        bool construction_failed = false;
         // MASTER CAMPAIGN FIX (F8 default-onMeasure law, View.java):
         // TRUE when this node's class chain does NOT override onMeasure up
         // to a framework content class — the AOSP DEFAULT View.onMeasure

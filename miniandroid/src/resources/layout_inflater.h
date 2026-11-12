@@ -55,6 +55,7 @@ struct InflateStats {
     int unresolved_refs = 0;
     int theme_attrs_resolved = 0;      // S68 W2: ?attr resolved via theme
     int unresolved_theme_attrs = 0;    // S68 W2: unresolvable ?attr (reported)
+    int ctor_failures = 0;             // GP S224 (#583): DEX-present ctor failures
     int def_style_applied = 0;         // S124: defStyleAttr tier bags applied
     int theme_overlays_pushed = 0;     // S124: android:theme subtree overlays
     std::vector<std::string> warnings;

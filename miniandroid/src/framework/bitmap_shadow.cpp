@@ -22,6 +22,7 @@ BitmapStore& BitmapStore::instance() {
 }
 
 void BitmapStore::create(uint32_t obj_id, int w, int h, const std::string& desc) {
+    std::lock_guard<std::mutex> lk(mu_);  // GP S225 BITMAP-001
     StoredBitmap& b = store_[obj_id];
     b.width = w; b.height = h;
     b.rgba.assign((size_t)std::max(0, w) * std::max(0, h) * 4, 0);
@@ -31,6 +32,7 @@ void BitmapStore::create(uint32_t obj_id, int w, int h, const std::string& desc)
 
 void BitmapStore::store(uint32_t obj_id, int w, int h, std::vector<uint8_t> rgba,
                         const std::string& desc) {
+    std::lock_guard<std::mutex> lk(mu_);  // GP S225 BITMAP-001
     StoredBitmap& b = store_[obj_id];
     b.width = w; b.height = h;
     b.rgba = std::move(rgba);
@@ -39,16 +41,34 @@ void BitmapStore::store(uint32_t obj_id, int w, int h, std::vector<uint8_t> rgba
 }
 
 const StoredBitmap* BitmapStore::get(uint32_t obj_id) const {
+    std::lock_guard<std::mutex> lk(mu_);  // GP S225 BITMAP-001
     auto it = store_.find(obj_id);
     return it != store_.end() ? &it->second : nullptr;
 }
 
 StoredBitmap* BitmapStore::get_mut(uint32_t obj_id) {
+    std::lock_guard<std::mutex> lk(mu_);  // GP S225 BITMAP-001
     auto it = store_.find(obj_id);
     return it != store_.end() ? &it->second : nullptr;
 }
 
-void BitmapStore::erase(uint32_t obj_id) { store_.erase(obj_id); }
+bool BitmapStore::get_pixels_copy(uint32_t obj_id, StoredBitmap& out) const {
+    std::lock_guard<std::mutex> lk(mu_);  // GP S225 BITMAP-001
+    auto it = store_.find(obj_id);
+    if (it == store_.end()) return false;
+    out = it->second;  // full snapshot — stable private view, no aliasing
+    return true;
+}
+
+const StoredBitmap& BitmapStore::empty() {
+    static const StoredBitmap kEmpty{};
+    return kEmpty;
+}
+
+void BitmapStore::erase(uint32_t obj_id) {
+    std::lock_guard<std::mutex> lk(mu_);  // GP S225 BITMAP-001
+    store_.erase(obj_id);
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // Resolver hook

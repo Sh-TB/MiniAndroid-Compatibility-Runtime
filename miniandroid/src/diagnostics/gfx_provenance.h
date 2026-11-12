@@ -111,6 +111,7 @@ public:
             r["byte_source"] = classify_byte_source(path);
         }
         events_.push_back(std::move(r));
+        cap_bounded(events_, kMaxEvents, event_drops_);
     }
 
     // drawBitmap replay: bitmap resolved from store + replayed flag.
@@ -129,26 +130,39 @@ public:
             // pixel provenance state (no APK path required by law).
             {"provenance_state", "IMAGE_DIRECT_PIXELS"},
         });
+        cap_bounded(events_, kMaxEvents, event_drops_);
     }
 
     // ── S83-GFX-BASE §33: GL chain bits ─────────────────────────────────
     // One record per GLSurfaceView frame: the GL provenance chain is
     //   RENDERER_BOUND → (SURFACE_CREATED) → DRAW_SUBMITTED →
     //   FRAMEBUFFER_UPDATED → SURFACE_PRESENTED
-    void record_gl_presented(uint32_t view_id, int w, int h, bool first) {
+    // GP S223 LOG-004 (issue #582): every bit is now DERIVED from real
+    // evidence, never manufactured. The old form set DRAW_SUBMITTED /
+    // FRAMEBUFFER_UPDATED / SURFACE_WRITTEN / BUFFER_PRESENTED /
+    // DRAW_CALLED true unconditionally — even a frame whose callbacks
+    // failed or whose clip intersection copied ZERO pixels reported a
+    // full success chain. Now: DRAW_CALLED/DRAW_SUBMITTED = the surface
+    // frame dispatch returned true (onDrawFrame really executed);
+    // FRAMEBUFFER_UPDATED/SURFACE_WRITTEN/BUFFER_PRESENTED = the blit
+    // actually copied ≥1 pixel into the window framebuffer.
+    void record_gl_presented(uint32_t view_id, int w, int h, bool first,
+                             bool draw_called, size_t blitted_px) {
         if (!enabled_) return;
         events_.push_back({
             {"origin", "glsurfaceview-frame"},
             {"view_id", view_id},
             {"RENDERER_BOUND", true},
             {"SURFACE_CREATED", first},
-            {"DRAW_SUBMITTED", true},
-            {"FRAMEBUFFER_UPDATED", true},
-            {"SURFACE_WRITTEN", true},
-            {"BUFFER_PRESENTED", true},
-            {"DRAW_CALLED", true},
+            {"DRAW_CALLED", draw_called},
+            {"DRAW_SUBMITTED", draw_called},
+            {"FRAMEBUFFER_UPDATED", blitted_px > 0},
+            {"SURFACE_WRITTEN", blitted_px > 0},
+            {"BUFFER_PRESENTED", blitted_px > 0},
+            {"blitted_px", blitted_px},
             {"width", w}, {"height", h},
         });
+        cap_bounded(events_, kMaxEvents, event_drops_);
     }
 
     // Per-frame census of the composed framebuffer (surface evidence).
@@ -166,6 +180,7 @@ public:
         for (uint32_t c : top_colors) tc.push_back(c);
         j["top_colors_rgb"] = std::move(tc);
         frames_.push_back(std::move(j));
+        cap_bounded(frames_, kMaxFrames, frame_drops_);
     }
 
     // ── S83-GFX-BASE §34: FIRST_DIVERGENCE auto-derivation ───────────────
@@ -230,6 +245,9 @@ public:
             {"instrument", "MINIANDROID_GFX_PROVENANCE"},
             {"chain_law", "C7: FIRST_DIVERGENCE = first applicable bit=0 "
                           "while all earlier applicable bits=1"},
+            // GP S223 LOG-012: truncation is VISIBLE — the ring's drop
+            // counters land in the manifest (never a silent cap).
+            {"drops", {{"events", event_drops_}, {"frames", frame_drops_}}},
             {"events", events_},
             {"frame_census", frames_},
             {"screenshot", shot},
@@ -247,8 +265,27 @@ public:
 
 private:
     GfxProvenance() = default;
+    // GP S223 LOG-012 (issue #582): the event/frame arrays were UNBOUNDED —
+    // a long GL/image run pushed every record into memory until finalize.
+    // Bounded ring now: FIRST rows survive (first-failure retention law) and
+    // LAST rows survive; the drop counters land in the finalize manifest so
+    // truncation is VISIBLE, never silent.
+    static constexpr size_t kMaxEvents = 4096;
+    static constexpr size_t kMaxFrames = 512;
+    static void cap_bounded(nlohmann::json& arr, size_t cap, uint64_t& drops) {
+        if (!arr.is_array() || arr.size() <= cap) return;
+        drops += arr.size() - cap;
+        nlohmann::json kept = nlohmann::json::array();
+        const size_t head = cap / 2;
+        for (size_t i = 0; i < head; ++i) kept.push_back(arr[i]);
+        for (size_t i = arr.size() - (cap - head); i < arr.size(); ++i)
+            kept.push_back(arr[i]);
+        arr = std::move(kept);
+    }
     bool enabled_ = false;
     std::string out_path_;
+    uint64_t event_drops_ = 0;
+    uint64_t frame_drops_ = 0;
     nlohmann::json events_ = nlohmann::json::array();
     nlohmann::json frames_ = nlohmann::json::array();
 };

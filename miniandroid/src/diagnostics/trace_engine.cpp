@@ -561,7 +561,16 @@ void TraceEngine::runtime_event(RuntimeEvent ev_in) {
     if (ev_in.activity.empty()) ev_in.activity = activity_label_;
     if (ev_in.renderer_family.empty())
         ev_in.renderer_family = renderer_family_;
-    if (ev_in.thread.empty())   ev_in.thread = "main";
+    // GP S223 LOG-007 (issue #582): a missing thread is NEVER defaulted to
+    // "main" — GL/worker/callback/executor events were misattributed to the
+    // main thread and thread-conflict diagnosis read wrong. The honest
+    // default is the CALLING thread's identity (std::this_thread::get_id);
+    // an explicit "main" tag still comes from the main-path emitters.
+    if (ev_in.thread.empty()) {
+        std::ostringstream tid;
+        tid << "tid:" << std::this_thread::get_id();
+        ev_in.thread = tid.str();
+    }
 
     // 2) ring buffer sink (exception-safe tail — S135 §11)
     rt_events_.push_back(ev_in);
@@ -653,10 +662,22 @@ void TraceEngine::mark_stage(const std::string& stage, EventSev sev,
     // confirmation event just never fired — e.g. BOOT's RUN_START, or the
     // measure/layout legs of one render pass). NOT_REACHED earlier stages
     // are NOT promoted: an unstarted lifecycle is real evidence.
-    if (sev == EventSev::CONFIRMED) {
+    //
+    // GP S223 LOG-001 (issue #582): the render SUB-STAGES — MEASURE, LAYOUT
+    // and DRAW — are EXEMPT from the walk-through promotion. FRAME_SUBMIT's
+    // confirmation was promoting all three even though NO real completion
+    // events existed (a submitted frame says nothing about whether the
+    // measure/layout legs honestly ran); a PENDING render sub-stage must
+    // stay PENDING until ITS OWN explicit completion event confirms it
+    // (the census-backed per-stage emitters at the RENDER_OK site, LOG-003).
+    if (sev == EventSev::CONFIRMED && stage != stage::MEASURE &&
+        stage != stage::LAYOUT && stage != stage::DRAW) {
         bool seen = false;
         for (const auto& sname : stage::canonical_order()) {
             if (sname == stage) { seen = true; break; }
+            if (sname == stage::MEASURE || sname == stage::LAYOUT ||
+                sname == stage::DRAW)
+                continue;  // render sub-stages need their OWN completion event
             auto pit = stage_states_.find(sname);
             if (pit != stage_states_.end() && pit->second == EventSev::PENDING)
                 pit->second = EventSev::CONFIRMED;

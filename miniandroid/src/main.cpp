@@ -1293,6 +1293,27 @@ int main(int argc, char* argv[]) {
             // S135 machine-readable trace only (trace.jsonl + summary, no UI).
             setenv("MINIANDROID_BOOT_TRACE", "1", 0);
             std::cout << "[*] BOOT-TRACE enabled (S135 runtime event backbone)\n";
+        } else if (arg.rfind("--trace-live", 0) == 0) {
+            // GP S223 LOG-020 (issue #582): ONE switch enables the EXISTING
+            // instrumentation backbones with safe bounded defaults — boot/
+            // dispatch events, graphics trace, provenance, file-I/O, frame
+            // truth. No new logger: this wires the env switches the systems
+            // already read, so one run manifest has every tracer. Optional
+            // value: --trace-live=verbose additionally enables per-call
+            // typed arguments (CALL-014 typed schema).
+            const std::string lvl =
+                arg.size() > 12 && arg[12] == '=' ? arg.substr(13) : "1";
+            setenv("MINIANDROID_BOOT_TRACE", "1", 0);
+            setenv("MINIANDROID_GFX_TRACE", "1", 0);
+            setenv("MINIANDROID_GFX_PROVENANCE", "1", 0);
+            setenv("MINIANDROID_FILE_IO", "1", 0);  // the switch file_io_trace.h actually reads
+            if (lvl == "verbose") {
+                setenv("MINIANDROID_GFX_TRACE_VERBOSE", "1", 0);
+                std::cout << "[*] TRACE-LIVE verbose (typed per-call args on)\n";
+            } else {
+                std::cout << "[*] TRACE-LIVE enabled (bounded default preset: "
+                             "boot+gfx+provenance+file-io, failure-first)\n";
+            }
         } else if (arg == "--dump-api-trace") {
             // S69 SOURCE-LINKED CAMPAIGN: dump the engine's ApiCallTrace
             // ring to <output>/api_calls.json (live dispatch surface:

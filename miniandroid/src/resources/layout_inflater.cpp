@@ -1413,14 +1413,17 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
     // (probe result cached per descriptor — classes cannot disappear).
     bool f283_in_dex = false;
     if (dex_class_exists_hook_) {
-        static thread_local std::unordered_map<std::string, bool> f283_cache;
-        auto f283_it = f283_cache.find(node->class_desc);
-        if (f283_it != f283_cache.end()) {
-            f283_in_dex = f283_it->second;
-        } else {
-            f283_in_dex = dex_class_exists_hook_(node->class_desc);
-            f283_cache.emplace(node->class_desc, f283_in_dex);
-        }
+        // GP S224 (issue #583): the per-descriptor thread_local f283 cache
+        // is REMOVED. Evidence: the cache keyed ONLY on the class descriptor
+        // — no APK identity, no DEX generation, no invalidation hook. Same
+        // process + thread: APK A (no Landroid/support/v7/widget/Toolbar;)
+        // cached false; Simple Calculator vc8 (Toolbar IS in its DEX) then
+        // read the stale false → the ctor hook skipped → uninitialized
+        // measure-scratch fields → onMeasure pc=152 aput-null NPE → white
+        // screen REPRODUCED from cache state alone. The probe behind the
+        // hook is the O(1) class index (their own profiling note) — the
+        // cache bought nothing and poisoned cross-APK sequencing.
+        f283_in_dex = dex_class_exists_hook_(node->class_desc);
     }
     if (custom_view_ctor_hook_ &&
         (is_app_class_descriptor(node->class_desc) || f283_in_dex)) {
@@ -1432,14 +1435,35 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
         const bool constructed =
             custom_view_ctor_hook_(view_id, node->class_desc, el.attributes);
         if (!constructed) {
-            stats.warnings.push_back(
-                "custom-view constructor not executed: " + node->class_desc);
+            // GP S224 (issue #583): AOSP LayoutInflater law — a class that
+            // EXISTS in the app DEX but whose constructor is missing/failing
+            // is an INFLATION FAILURE, not a usable View. AOSP createView
+            // surfaces the failure (InflateException); it never returns a
+            // half-constructed view to keep inflating onto. Three states
+            // distinguished: DEX class absent → honest non-app tag path
+            // (continue, framework shadow owns it); DEX class present +
+            // ctor failed → construction_failed on the node + first-failure
+            // warning + XML subtree ABORTED (children of a poisoned node
+            // are not inflated — a ctor may already have partially built
+            // them); DEX class present + ctor OK → unchanged.
+            node->construction_failed = true;
+            stats.ctor_failures++;
+            if (stats.warnings.size() < 64)
+                stats.warnings.push_back(
+                    "custom-view constructor FAILED (DEX class present, "
+                    "inflation transaction aborted at this node): " +
+                    node->class_desc);
+            // ── subtree abort: skip the XML children (see above). ──
         }
     }
 
     // children
+    // GP S224: a construction-FAILED node does not take XML children —
+    // the inflation transaction aborts at this node (AOSP InflateException
+    // semantics; the constructor-failed state stays visible on the node).
     uint32_t last_child = 0;
     for (const auto& child : el.children) {
+        if (node->construction_failed) break;
         uint32_t cid = inflate_element(views, child, view_id, stats);
         if (cid) last_child = cid;
     }
