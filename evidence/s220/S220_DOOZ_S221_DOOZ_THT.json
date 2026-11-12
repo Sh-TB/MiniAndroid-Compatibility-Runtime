@@ -1,0 +1,49 @@
+{
+ "wall_s": 261.3,
+ "face_sha16": "6a2e3d9cd101af18",
+ "marks": {
+  "tap_receipt": 2,
+  "phase_b_click": 0,
+  "newgame_action": 23121,
+  "coroutine_dispatch": 0,
+  "delay_seen": 40,
+  "datastore": 0,
+  "stateflow": 0,
+  "compose_recompose": 0,
+  "animated_visibility": 0,
+  "lazygrid": 0,
+  "gameboard": 0,
+  "s36_aoob": 0,
+  "bw0_d": 146,
+  "abort_flow": 0,
+  "uncaught": 3,
+  "exc_unwind": 0
+ },
+ "frame_changes": {
+  "frame_000.png": "CHANGED",
+  "frame_006.png": "CHANGED",
+  "frame_007.png": "CHANGED",
+  "frame_008.png": "CHANGED",
+  "frame_010.png": "CHANGED",
+  "frame_012.png": "CHANGED",
+  "frame_013.png": "CHANGED",
+  "frame_014.png": "CHANGED"
+ },
+ "n_frame_changes": 8,
+ "frame_truth": {
+  "verdict": "PASS_UI_EVIDENCED",
+  "reasons": [
+   "content pixels + 16 draw/frame event hits"
+  ],
+  "metrics": {
+   "png_bytes": 10768,
+   "face_sha16": "6a2e3d9cd101af18",
+   "draw_event_hits": 16,
+   "identical_peers": 0,
+   "unique_colors": 5,
+   "sampled": 129600,
+   "nonwhite": 129600,
+   "top_color_share": 0.9821296296296296
+  }
+ }
+}

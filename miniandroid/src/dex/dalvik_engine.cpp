@@ -4421,6 +4421,8 @@ void DalvikExecutionEngine::dump_cont4_solver_diag(uint32_t at_pc) {
 namespace {
 std::map<std::string, uint64_t> g_d7_read_census;
 std::set<uint32_t> g_d7_node_ids;
+// S221: nodes the measure-bridge already serviced (once-per-node).
+std::set<uint32_t> g_s221_bridged;
 uint64_t g_d7_draws = 0;
 constexpr size_t D7_NODE_CAP = 512;
 }  // namespace
@@ -17565,6 +17567,105 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
         cls = norm;
     }
     uint32_t canvas_obj = heap_.allocate("Landroid/graphics/Canvas;", pc_, call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+    // ── S221 MEASURE-BRIDGE LAW (the dooz post-NewGame text-cache ISE
+    // storm root, S220→S221 decode): recomposition-materialized compose
+    // LayoutNodes (second-wave insertAt births) never receive a measure
+    // dispatch — the S152 decode proved V's body guard silently fails on
+    // late nodes, so their Modifier chain never builds, their TextImpl
+    // caches never get a density, and the app-side
+    // MultiParagraphLayoutCache flips to InlineDensity.Unspecified
+    // (S221b-ZEROW: Ltl;.l constructs Unspecified from the null path;
+    // S221-ZERODENS: the draw reads the 0.0/0.0 instance) — every draw
+    // then throws the upstream checkNotNull ISE ("could not provide
+    // TextLayoutResult during the draw phase") and one escapes
+    // MainActivity.onCreate (ART process-death; the AnimatedVisibility
+    // transition freezes half-slid — the named S220 blocker).
+    // Upstream law (Compose 1.6.7/1.7 TextStringSimpleNode.kt header +
+    // MeasureAndLayoutDelegate): "the density should not change between
+    // layout and draw phases" — measure runs BEFORE draw on EVERY
+    // traversal (ViewRootImpl.performTraversals order). The runtime's
+    // once-per-node F-096 dispatch plus the broken V-guard leave the
+    // second wave unmeasured; this bridge restores the traversal order:
+    // for every census-recorded (insertAt) node not yet bridged, fire the
+    // PROVEN S152 b1 owner-side request mark (Lt4;.z(owner,node,T,T,T) —
+    // requestMeasure/requestLayout marks, idempotent) and the b2 delegate
+    // drain (Lzs0;.m() = measureAndLayout over the real tree) BEFORE the
+    // draw dispatch. Bounds: 8 nodes per window, 256 per run, once per
+    // node (bridged set); MINIANDROID_S221_BRIDGE=0 is the kill-switch.
+    {
+        static const bool s221_bridge_off =
+            []() {
+                const char* e = std::getenv("MINIANDROID_S221_BRIDGE");
+                return e && e[0] == '0' && e[1] == '\0';
+            }();
+        static thread_local uint64_t s221_bridge_total = 0;
+        if (!s221_bridge_off && !g_d7_node_ids.empty() &&
+            compose_owner_last_ != 0 && s221_bridge_total < 256) {
+            // The single measureAndLayout delegate (Lzs0; — D9-MGUARD: one
+            // per window); cached, re-found if the heap rebuilt.
+            static uint32_t s221_delegate = 0;
+            if (s221_delegate == 0 || !heap_.has_object(s221_delegate)) {
+                for (uint32_t oid : heap_.get_all_ids()) {
+                    const auto* obj = heap_.get(oid);
+                    if (obj && obj->class_descriptor == "Lzs0;") {
+                        s221_delegate = oid;
+                        break;
+                    }
+                }
+            }
+            std::string s221_own_cls = "Ljava/lang/Object;";
+            if (const auto* s221_oo = heap_.get(compose_owner_last_))
+                s221_own_cls = s221_oo->class_descriptor;
+            uint32_t s221_marked = 0;
+            for (uint32_t nid : g_d7_node_ids) {
+                if (s221_marked >= 8 || s221_bridge_total >= 256) break;
+                if (g_s221_bridged.count(nid)) continue;  // once per node
+                if (heap_.has_object(nid))
+                    g_s221_bridged.insert(nid);
+                else
+                    continue;  // node left the heap (dropped subtree)
+                ++s221_bridge_total;
+                ++s221_marked;
+                DalvikValue s221_zret = DalvikValue::make_void();
+                DalvikExecutionResult s221_zres;
+                // (T,T,F): replace+measure request, lookahead FALSE — the
+                // lookahead path throws "requestLookaheadRemeasure cannot
+                // be called on a node outside LookaheadScope" on the dooz
+                // root (S221 A/B: (T,T,T) unwound to APP BOUNDARY ×8).
+                bool s221_zok = try_recursive_invoke(
+                    "Lt4;", "z",
+                    {DalvikValue::make_object(compose_owner_last_, s221_own_cls),
+                     DalvikValue::make_object(nid, "Lel0;"),
+                     DalvikValue::make_bool(true),
+                     DalvikValue::make_bool(true),
+                     DalvikValue::make_bool(false)},
+                    s221_zret, s221_zres, "(Lel0;ZZZ)V");
+                static thread_local uint64_t s221_log = 0;
+                if (s221_log < 24) {
+                    ++s221_log;
+                    std::cerr << "[S221-BRIDGE] mark node#" << nid
+                              << " owner#" << compose_owner_last_
+                              << " dispatched=" << (s221_zok ? "YES" : "NO")
+                              << (s221_zres.uncaught_in_flight_count ? " EXC"
+                                                                     : "")
+                              << std::endl;
+                }
+            }
+            if (s221_marked > 0 && s221_delegate != 0) {
+                DalvikValue s221_mret = DalvikValue::make_void();
+                DalvikExecutionResult s221_mres;
+                bool s221_mok = try_recursive_invoke(
+                    "Lzs0;", "m",
+                    {DalvikValue::make_object(s221_delegate, "Lzs0;")},
+                    s221_mret, s221_mres, "()V");
+                std::cerr << "[S221-BRIDGE] drain delegate=o" << s221_delegate
+                          << " marked=" << s221_marked
+                          << " dispatched=" << (s221_mok ? "YES" : "NO")
+                          << (s221_mres.uncaught_in_flight_count ? " EXC" : "")
+                          << std::endl;
+            }
+        }
+    }
     canvas_shadow->begin_frame();
     // S26 diagnostic window (R-NEW-328): attribute method entries to the draw.
     draw_window_active_ = true;
@@ -28125,6 +28226,40 @@ bool DalvikExecutionEngine::execute_iget(uint32_t pc, InstructionTrace& trace) {
                     }
                 }
             }
+            // ── S221 (DIAG-ONLY, env-gated MINIANDROID_S221_DENSTRACE):
+            // dooz post-NewGame text-cache ISE storm probe. The app-side
+            // MultiParagraphLayoutCache flips density (2.625 real <-> 0.0
+            // Unspecified) between layout and draw — each flip markDirty()s
+            // the cache so EVERY draw throws the "could not provide
+            // TextLayoutResult" ISE and one escapes MainActivity.onCreate
+            // (ART process-death; the transition freezes half-slid).
+            // Upstream law (TextStringSimpleNode.kt header): "the density
+            // should not change between layout and draw phases". Every
+            // float iget answering 0.0 INSIDE a draw window logs (field,
+            // receiver, caller chain top 6) — the 0.0 delivery site becomes
+            // evidence instead of a guess.
+            {
+                static const bool s221_on = diag_env("MINIANDROID_S221_DENSTRACE");
+                if (s221_on && draw_window_active_ && field_val.has_value() &&
+                    field_val->type == DalvikType::FLOAT32 &&
+                    field_val->float_val == 0.0f) {
+                    static thread_local uint64_t s221_n = 0;
+                    if (s221_n++ < 40) {
+                        std::cerr << "[S221-ZERODENS] "
+                                  << field_res.class_descriptor << "."
+                                  << field_res.field_name
+                                  << " obj#" << obj_ref.object_id
+                                  << " caller=" << current_class_ << "."
+                                  << current_method_ << " pc=" << pc;
+                        auto s221_frames = call_stack_.snapshot_top_first();
+                        for (size_t fi = 0;
+                             fi < s221_frames.size() && fi < 6; ++fi)
+                            std::cerr << " <" << s221_frames[fi].first << "."
+                                      << s221_frames[fi].second << ">";
+                        std::cerr << std::endl;
+                    }
+                }
+            }
             // ── TRAIN-68 (T68-JOBGET): the pointerInputJob null-check reads.
             // Lor1;.v:Lkp1; = the lazy coroutine job — every node reads it on
             // the first event (if-null-launch). Log the READ + the value with
@@ -29414,6 +29549,38 @@ bool DalvikExecutionEngine::execute_iput(uint32_t pc, InstructionTrace& trace) {
                           << " val=" << dalvik_value_to_string(src_val)
                           << " caller=" << current_class_ << "."
                           << current_method_ << " pc=" << pc << std::endl;
+            }
+        }
+    }
+
+    // ── S221b (DIAG-ONLY, env-gated MINIANDROID_S221_DENSTRACE): the WRITE
+    // twin of S221-ZERODENS — every iput of 0.0f into Lmb1; fields (the
+    // InlineDensity value class: a=density b=fontScale) logs the WRITER
+    // chain. Upstream constructs Unspecified ONLY from the cache density
+    // setter's null path (`value?.let{...} ?: InlineDensity.Unspecified`);
+    // the writer identity decides the fix surface (runtime delivery vs
+    // app-side substitution-null propagation).
+    {
+        static const bool s221w_on = diag_env("MINIANDROID_S221_DENSTRACE");
+        if (s221w_on && field_res.resolved &&
+            field_res.class_descriptor == "Lmb1;" &&
+            src_val.type == DalvikType::FLOAT32 &&
+            src_val.float_val == 0.0f) {
+            static thread_local uint64_t s221w_n = 0;
+            if (s221w_n++ < 40) {
+                uint32_t s221w_recv =
+                    (obj_ref.type == DalvikType::OBJECT_REF)
+                        ? obj_ref.object_id : 0;
+                std::cerr << "[S221b-ZEROW] Lmb1;." << field_res.field_name
+                          << " obj#" << s221w_recv
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << " pc=" << pc;
+                auto s221w_frames = call_stack_.snapshot_top_first();
+                for (size_t fi = 0;
+                     fi < s221w_frames.size() && fi < 6; ++fi)
+                    std::cerr << " <" << s221w_frames[fi].first << "."
+                              << s221w_frames[fi].second << ">";
+                std::cerr << std::endl;
             }
         }
     }

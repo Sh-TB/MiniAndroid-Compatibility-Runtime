@@ -9136,3 +9136,67 @@ Work Log:
   identical / microtimer b39665f6 / ttt 7354c1b2 x3).
 - Commits: 39b7ab69 (A-R5 + IMG-004 + isTaskRoot + frame-truth), then the
   fuzz-battery commit. Receipts posted on #584 (landing) / #582 / #583.
+
+---
+Task ID: S221-MAIN
+Agent: Super Z (main)
+Task: dooz post-NewGame full-execution root decode + S221 measure-bridge law
+(the #582 §4 named blocker — the "one deterministic model" demand, now
+evidence-corrected and first lever landed).
+
+Work Log:
+- ROOT CORRECTION (evidence-backed, supersedes the S220 named-blocker
+  hypothesis): the post-NewGame transition freeze is NOT a stalled
+  delay/virtual-time chain — it is the app-side TEXT-CACHE ISE STORM:
+  24,039 `IllegalStateException: MultiParagraphLayoutCache could not
+  provide TextLayoutResult during the draw phase` throws (dooz console,
+  S220 run), one escaping through Lt4;.dispatchDraw to
+  MainActivity.onCreate = APP BOUNDARY (ART process-death) -> the
+  AnimatedVisibility transition freezes half-slid (frame_truth
+  FLAT_TWO_TONE_OR_BLANK, top_color_share 0.9946).
+- Upstream decode (androidx MultiParagraphLayoutCache + InlineDensity,
+  real 1.6.7-era sources + APK DEX): `history` is the 64-bit 2-bit/op
+  shift register (markStyleDirty=00 / markDirtyDensity=01 /
+  markDirtyNodeUpdate=10 / layoutWithConstraints=11). The observed
+  end-of-run values decode as markDirtyDensity runs WITHOUT any layout
+  (0x5555555555555555 = 32 consecutive density-dirties): the cache's
+  `density` setter fires with InlineDensity.Unspecified AFTER the last
+  layout -> markDirty() -> layoutCache=null -> EVERY draw throws the
+  upstream checkNotNull ISE. Upstream law (TextStringSimpleNode.kt
+  header, in-source): "the density should not change between layout and
+  draw phases" — measure must run before draw on EVERY traversal.
+- S221 tracers (DIAG-ONLY, env-gated MINIANDROID_S221_DENSTRACE):
+  S221-ZERODENS (every float iget answering 0.0 inside a draw window,
+  caller chain top-6) + S221b-ZEROW (every 0.0f iput into Lmb1; = the
+  InlineDensity value class, a=density b=fontScale). Evidence: the 0.0
+  instances are READ in draw windows (Ldi;.k on obj#15270+ chain
+  Lnt1;.Q->Lgl0;.c->Lpz0;.M0 — the same frames as the ISE stack) and
+  WRITTEN by Lmb1;.<init> from Ltl;.l <- Lne0;.a <- Lk4;.a <- Lto1;.d —
+  the null/zero-density path re-fires per update.
+- S221 MEASURE-BRIDGE LAW (landed, default-ON, MINIANDROID_S221_BRIDGE=0
+  kill-switch): in dispatch_custom_view_draw, BEFORE the draw dispatch,
+  every census-recorded (insertAt, Lel0;.B — g_d7_node_ids) compose node
+  not yet serviced gets the S152-PROVEN b1 owner-side request mark
+  (Lt4;.z(owner,node,T,T,F) — the THIRD boolean is the LOOKAHEAD path:
+  (T,T,T) throws "requestLookaheadRemeasure cannot be called on a node
+  outside LookaheadScope" and unwound to APP BOUNDARY x8 — A/B evidence;
+  (T,T,F) marks clean) + the b2 delegate drain (Lzs0;.m() =
+  measureAndLayout over the real tree). Bounds: 8 nodes/window, 256/run,
+  once per node (g_s221_bridged).
+- RESULT (s221_dooz_b6, 12 frames, NewGame tap @6): bridge 24 marks
+  dispatched=YES, 0 bridge exceptions, 6 drains; ISE storm 24,039 ->
+  9,330 (-61%); the post-tap face MOVED for the first time since S208
+  (face_sha16 eccabf41.. -> 8c7e2a54..; frame_changes 6; top_color_share
+  0.9946 -> 0.9521). The freeze is NOT fully closed: the null-density
+  path re-fires per update (once-per-node bridging cannot win against a
+  per-frame flip) and 50 APP BOUNDARY unwinds remain. NEXT single root:
+  the Ltl;.l null/zero-density delivery site (null-propagation vs a
+  (0,0) Density object from a runtime path — the S221b writer chain is
+  the map).
+- Gate battery on the new binary af0376a3e32d16e4: FULL 6-PIN GATE ALL
+  HOLD byte-exact (bouncy 8a6c24ac / unote 3b8dcb0a / dooz a0fae907
+  launch face unchanged by the bridge — byte-inert where the law should
+  be / gmdice 3891679d x2 identical / microtimer b39665f6 0-uncaught /
+  ttt 7354c1b2 x3 deterministic); `make test-all` 27/27.
+- Evidence: evidence/s220/S220_DOOZ_S221_DOOZ_*.json (tht/dens/writ/b6),
+  console logs in evidence/s220/runs/, scripts/s221_dump_method.py.

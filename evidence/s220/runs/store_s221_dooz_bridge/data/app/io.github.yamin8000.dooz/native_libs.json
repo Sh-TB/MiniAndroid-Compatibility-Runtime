@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/io.github.yamin8000.dooz/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libandroidx.graphics.path.so", "size": 10760},
+    {"entry": "lib/x86_64/libdatastore_shared_counter.so", "size": 7336}
+  ],
+  "count": 2
+}
