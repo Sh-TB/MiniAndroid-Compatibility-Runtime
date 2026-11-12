@@ -17426,6 +17426,29 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                 }
                 // APP BOUNDARY: no DEX frame remains to search — THIS is
                 // where ART kills the process. Counted + logged + statused.
+                // ── S222-A CONTAINED NESTED INVOKE: when the unwind bottom
+                // belongs to a RUNTIME-injected nested dispatch (the S221
+                // measure bridge z/m calls etc.), the boundary is the
+                // NESTED call's own frame, not the app's — the ART
+                // process-death accounting must not consume it. Contain:
+                // record, clear the in-flight state, break the nested
+                // fetch loop; app frames below are untouched (they were
+                // never on the nested stack — live evidence: the escape
+                // threw at depth=2 with caller_pc=0, a top-level entry).
+                if (contained_invoke_) {
+                    ++contained_exc_count_;
+                    std::cerr << "[S222-CONTAINED-EXC] " << unwind_desc
+                              << " contained at nested-invoke bottom"
+                              << " (runtime-injected dispatch; base context "
+                              << current_class_ << "." << current_method_
+                              << ")" << std::endl;
+                    frame_unwind_exception_valid_ = false;
+                    frame_unwind_exception_ = DalvikValue::make_null();
+                    pending_exception_ = DalvikValue::make_null();
+                    halted_on_return_ = true;
+                    recursion_depth_--;
+                    return true;
+                }
                 ++uncaught_in_flight_count_;
                 if (uncaught_in_flight_log_.size() < 32) {
                     std::ostringstream el;
@@ -17600,7 +17623,7 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
             }();
         static thread_local uint64_t s221_bridge_total = 0;
         if (!s221_bridge_off && !g_d7_node_ids.empty() &&
-            compose_owner_last_ != 0 && s221_bridge_total < 256) {
+            compose_owner_last_ != 0 && s221_bridge_total < 4096) {
             // The single measureAndLayout delegate (Lzs0; — D9-MGUARD: one
             // per window); cached, re-found if the heap rebuilt.
             static uint32_t s221_delegate = 0;
@@ -17628,6 +17651,10 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
                 ++s221_marked;
                 DalvikValue s221_zret = DalvikValue::make_void();
                 DalvikExecutionResult s221_zres;
+                // S222-A: the bridge is a RUNTIME-injected dispatch — its
+                // failures are contained (never counted as APP BOUNDARY).
+                bool s221_prev_contained = contained_invoke_;
+                contained_invoke_ = true;
                 // (T,T,F): replace+measure request, lookahead FALSE — the
                 // lookahead path throws "requestLookaheadRemeasure cannot
                 // be called on a node outside LookaheadScope" on the dooz
@@ -17640,6 +17667,7 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
                      DalvikValue::make_bool(true),
                      DalvikValue::make_bool(false)},
                     s221_zret, s221_zres, "(Lel0;ZZZ)V");
+                contained_invoke_ = s221_prev_contained;
                 static thread_local uint64_t s221_log = 0;
                 if (s221_log < 24) {
                     ++s221_log;
@@ -17651,13 +17679,23 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
                               << std::endl;
                 }
             }
-            if (s221_marked > 0 && s221_delegate != 0) {
+            // S222-A3 DRAIN-EVERY-WINDOW (the A/B middle path): the marks
+            // stay once-per-node (no clean-node re-queue — the waveD 95
+            // s/frame face), but the delegate drain runs EVERY window so
+            // the app's OWN pending measure requests (the recomposition-
+            // born ones the once-per-node bridge cannot cover) are
+            // measureAndLayout-ed BEFORE the draw — the AOSP traversal
+            // order law. Cost tracks the pending set, not the tree.
+            if (s221_delegate != 0) {
                 DalvikValue s221_mret = DalvikValue::make_void();
                 DalvikExecutionResult s221_mres;
+                bool s221_prev_contained2 = contained_invoke_;
+                contained_invoke_ = true;  // S222-A: contained nested dispatch
                 bool s221_mok = try_recursive_invoke(
                     "Lzs0;", "m",
                     {DalvikValue::make_object(s221_delegate, "Lzs0;")},
                     s221_mret, s221_mres, "()V");
+                contained_invoke_ = s221_prev_contained2;
                 std::cerr << "[S221-BRIDGE] drain delegate=o" << s221_delegate
                           << " marked=" << s221_marked
                           << " dispatched=" << (s221_mok ? "YES" : "NO")
@@ -17779,6 +17817,8 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
             if (compose_owner_last_ == 0) continue;
             DalvikValue t70_zret = DalvikValue::make_void();
             DalvikExecutionResult t70_zres;
+            bool t70_prev_contained = contained_invoke_;
+            contained_invoke_ = true;  // S222-A: contained nested dispatch
             bool t70_zok_call = try_recursive_invoke(
                 "Lt4;", "z",
                 {DalvikValue::make_object(compose_owner_last_, "Lt4;"),
@@ -17787,6 +17827,7 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
                  DalvikValue::make_bool(true),
                  DalvikValue::make_bool(true)},
                 t70_zret, t70_zres, "(Lel0;ZZZ)V");
+            contained_invoke_ = t70_prev_contained;
             if (t70_zok_call) ++t70_zok;
             std::cerr << "[T70-VREFIRE-Z] node#" << t70_nid
                       << " dispatched=" << (t70_zok_call ? "YES" : "NO")
@@ -21312,6 +21353,18 @@ void DalvikExecutionEngine::awaitup_gate_abort_reset() {
     awaitup_soft_stop_active_ = false;
     std::cerr << "[AWAIT-UP-GATE] artifact state reset — UP dispatch clean"
               << std::endl;
+}
+
+// ── S222-A: per-frame S221 measure-bridge service reset ─────────────────
+// The auditor's #582 id 6812985391 / #583 id 6812986803 demand: move the
+// remeasure into the correct traversal phase — the once-per-node-EVER
+// bridge set could not win against the per-frame density flip (each
+// recomposition re-births/flip-flops the cache, so the node needs its
+// mark+drain EVERY frame before its draw). The render pass calls this at
+// frame entry; within one frame each node is still serviced at most once
+// (bounded), across frames the drain now re-runs with the real tree.
+void DalvikExecutionEngine::reset_s221_bridge_frame() {
+    g_s221_bridged.clear();
 }
 
 // ── CONT-130 F-NEW-277 slice-2: VSYNC-CONTINUITY KEEP-ALIVE (row #21) ───
@@ -27451,6 +27504,59 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
     uint32_t frame_id = call_stack_.empty() ? 0 : call_stack_.top().frame_id;
     uint32_t obj_id = heap_.allocate(class_desc, pc, frame_id);
 
+    // ── S222-A F-023b (AOSP Configuration.setToDefaults + the F-149
+    // device-density law): framework objects materialized via new-instance
+    // start ZERO-FILLED on the heap. ART runs the framework class's own
+    // field initializers (Configuration.<init> → setToDefaults:
+    // fontScale=1.0, densityDpi from the device, locale non-null;
+    // DisplayMetrics: density/densityDpi/scaledDensity/widthPixels/
+    // heightPixels). Live face (dooz s222_baseline): the Compose
+    // LocalDensity chain answered InlineDensity(density=2.625, fontScale=
+    // 0.000000) — the Density wrapper read OUR heap Configuration whose
+    // fontScale was still the raw 0.0 because that Configuration instance
+    // was new-instance-materialized, never routed through the
+    // get_or_create_singleton pre-populate (F-023 v1). The ONE device
+    // identity law: every materialization path answers the same values.
+    if (class_desc == "Landroid/content/res/Configuration;") {
+        DalvikValue s222_fs;
+        s222_fs.type = DalvikType::FLOAT32;
+        s222_fs.float_val = 1.0f;  // AOSP Configuration.setToDefaults()
+        heap_.set_object_field(obj_id, "fontScale", s222_fs);
+        DalvikValue s222_dd;
+        s222_dd.type = DalvikType::INT32;
+        s222_dd.int_val = 420;  // the ONE device density (F-149/C9-22)
+        heap_.set_object_field(obj_id, "densityDpi", s222_dd);
+        DalvikValue s222_or;
+        s222_or.type = DalvikType::INT32;
+        s222_or.int_val = 1;  // ORIENTATION_PORTRAIT
+        heap_.set_object_field(obj_id, "orientation", s222_or);
+        DalvikValue s222_sl;
+        s222_sl.type = DalvikType::INT32;
+        s222_sl.int_val = 0x40;  // SCREENLAYOUT_SIZE_NORMAL
+        heap_.set_object_field(obj_id, "screenLayout", s222_sl);
+    } else if (class_desc == "Landroid/util/DisplayMetrics;") {
+        DalvikValue s222_dm;
+        s222_dm.type = DalvikType::FLOAT32;
+        s222_dm.float_val = 2.625f;  // THE device-density law (F-149)
+        heap_.set_object_field(obj_id, "density", s222_dm);
+        DalvikValue s222_sd;
+        s222_sd.type = DalvikType::FLOAT32;
+        s222_sd.float_val = 2.625f;  // scaledDensity = density × fontScale 1.0
+        heap_.set_object_field(obj_id, "scaledDensity", s222_sd);
+        DalvikValue s222_ddm;
+        s222_ddm.type = DalvikType::INT32;
+        s222_ddm.int_val = 420;
+        heap_.set_object_field(obj_id, "densityDpi", s222_ddm);
+        DalvikValue s222_wp;
+        s222_wp.type = DalvikType::INT32;
+        s222_wp.int_val = 1080;
+        heap_.set_object_field(obj_id, "widthPixels", s222_wp);
+        DalvikValue s222_hp;
+        s222_hp.type = DalvikType::INT32;
+        s222_hp.int_val = 1920;
+        heap_.set_object_field(obj_id, "heightPixels", s222_hp);
+    }
+
     // CONT-38 (F-C4-545 evidence, DIAG-ONLY, env-gated): MINIANDROID_NEW_WATCH
     // = class-desc substring. Prints every new-instance of a watched class
     // with the allocating caller — answers "was the draw-block lambda EVER
@@ -27466,6 +27572,26 @@ bool DalvikExecutionEngine::execute_new_instance(uint32_t pc, InstructionTrace& 
                       << " caller=" << current_class_ << "." << current_method_
                       << " pc=" << pc << std::endl;
     }
+    // ── S222-A (DIAG-ONLY, env-gated MINIANDROID_S222_CACHE): the dooz
+    // text-cache layout-result materialization probe. Ltw1; = the
+    // TextLayoutResult holder (fields a=Lsw1; b=Lwu0; c:J=packed density;
+    // the ONLY DEX constructor caller is Lex1;.q — the paragraph-layout
+    // completion). If Ltw1; NEVER materializes, the MultiParagraphLayoutCache
+    // textLayoutResult stays null and EVERY draw throws the upstream ISE
+    // ("could not provide TextLayoutResult during the draw phase") — the
+    // storm the S221 bridge could not close. This answers whether the
+    // layout completion chain is EVER reached.
+    if (class_desc == "Ltw1;") {
+        static thread_local const bool s222_tw_on =
+            diag_env("MINIANDROID_S222_CACHE");
+        static thread_local uint32_t s222_tw_n = 0;
+        if (s222_tw_on && s222_tw_n < 64)
+            std::cerr << "[S222-TW1] Ltw1; obj#" << obj_id
+                      << " caller=" << current_class_ << "." << current_method_
+                      << " pc=" << pc << std::endl;
+        ++s222_tw_n;
+    }
+
 
     // DEMO-CLINIT (2026-09-04): per AOSP jvm.cc ClassLinker semantics,
     // new-instance is an ACTIVE USE of the class and must trigger
@@ -32544,6 +32670,33 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     //   code[pc+2] = FEDC (register list)
     uint16_t method_idx = bytecode_[pc + 1];  // was pc+2
     uint16_t regs_word = bytecode_[pc + 2];    // was pc+1
+    // ── S222-A (DIAG-ONLY, env-gated MINIANDROID_S222_CACHE): the dooz
+    // text-cache density PACKER probe (invoke-static face). Lsg0;.a(FF)J
+    // packs (density, fontScale) into the InlineDensity long the
+    // MultiParagraphLayoutCache stores. Logging the caller names the
+    // producer of the (2.625, 0.0) fontScale-zero face — the flip driver
+    // the S221 decode left open ("null vs a real (0,0) Density object").
+    {
+        static thread_local const bool s222_pack_on =
+            diag_env("MINIANDROID_S222_CACHE");
+        if (s222_pack_on) {
+            std::string s222_pmn =
+                resolve_method_name_for_dex(method_idx, current_dex_index_);
+            if (s222_pmn == "a" && dex_report_) {
+                std::string s222_pcls =
+                    dex_report_->get_method_class(method_idx);
+                if (s222_pcls == "Lsg0;") {
+                    static thread_local uint64_t s222_pn = 0;
+                    if (s222_pn < 48) {
+                        ++s222_pn;
+                        std::cerr << "[S222-PACK-S] Lsg0;.a(FF)J caller="
+                                  << current_class_ << "." << current_method_
+                                  << " pc=" << pc << std::endl;
+                    }
+                }
+            }
+        }
+    }
     // ────────────────────────────────────────────────────────────────────
     // R-NEW-350 probe (S43, env-gated read-only): the 3-arg
     // Class.forName(String,boolean,ClassLoader) from protobuf's

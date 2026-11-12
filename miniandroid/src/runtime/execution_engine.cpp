@@ -3431,6 +3431,23 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
     // F-NEW-298 (CONT-37) FRAME-HONESTY: re-arm the in-draw budget-halt
     // signal for THIS frame's render pass (P1-6 extension, CONT-36 §6).
     dalvik_engine_.frame_honesty_begin();
+    // S222-A: per-frame measure-bridge service reset — every frame's
+    // compose nodes get their b1 mark + b2 measureAndLayout drain BEFORE
+    // their draw dispatch (the AOSP traversal order law the S221 decode
+    // pinned: measure must precede draw on EVERY traversal).
+    // S222-A2 CADENCE LAW (live A/B, dooz s222_waveC/C2/D): the per-frame
+    // re-mark re-queues CLEAN nodes through requestMeasure(
+    // replaceExisting=true) every frame — a full tree re-measure per frame
+    // (~95 s/frame wall vs ~20 s without) for zero render gain, because
+    // with F-023b live the density flip that motivated the per-frame
+    // service NO LONGER RE-FIRES (the waveC/C2 runs answer ISE=0 with the
+    // bridge at its S221 once-per-node cadence). Default = the S221
+    // once-per-node cadence; MINIANDROID_S222_FRAME_BRIDGE=1 re-enables
+    // the per-frame service for future runs that need it.
+    if (const char* fb_env = std::getenv("MINIANDROID_S222_FRAME_BRIDGE")) {
+        if (fb_env[0] == '1' && fb_env[1] == '\0')
+            dalvik_engine_.reset_s221_bridge_frame();
+    }
     // S214 F-NEW-632 SF-ORDER probe: the compositor-pass entry marker.
     dalvik_engine_.sf_order_log("PASS-BEGIN", "render stage entry");
     // F-NEW-384 (CONT-82): the AOSP performTraversals insets pass runs

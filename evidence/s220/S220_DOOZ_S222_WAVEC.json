@@ -1,0 +1,42 @@
+{
+ "wall_s": 10.5,
+ "face_sha16": "d602648e8e401895",
+ "marks": {
+  "tap_receipt": 2,
+  "phase_b_click": 0,
+  "newgame_action": 0,
+  "coroutine_dispatch": 0,
+  "delay_seen": 25,
+  "datastore": 0,
+  "stateflow": 0,
+  "compose_recompose": 0,
+  "animated_visibility": 0,
+  "lazygrid": 0,
+  "gameboard": 0,
+  "s36_aoob": 0,
+  "bw0_d": 0,
+  "abort_flow": 0,
+  "uncaught": 0,
+  "exc_unwind": 0
+ },
+ "frame_changes": {
+  "frame_000.png": "CHANGED"
+ },
+ "n_frame_changes": 1,
+ "frame_truth": {
+  "verdict": "DEFAULT_BACKGROUND_ONLY",
+  "reasons": [
+   "flat frame: top color 100.0% of sampled pixels, 1 unique colors"
+  ],
+  "metrics": {
+   "png_bytes": 10352,
+   "face_sha16": "d602648e8e401895",
+   "draw_event_hits": 1,
+   "identical_peers": 0,
+   "unique_colors": 1,
+   "sampled": 129600,
+   "nonwhite": 129600,
+   "top_color_share": 1.0
+  }
+ }
+}

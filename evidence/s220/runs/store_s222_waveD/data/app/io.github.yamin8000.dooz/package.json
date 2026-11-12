@@ -1,0 +1,19 @@
+{
+  "package": "io.github.yamin8000.dooz",
+  "versionName": "1.0.23",
+  "versionCode": 23,
+  "mainActivity": "io.github.yamin8000.dooz.ui.MainActivity",
+  "minSdk": "24",
+  "targetSdk": "37",
+  "requestedPermissions": [
+    "android.permission.VIBRATE",
+    "io.github.yamin8000.dooz.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/io.github.yamin8000.dooz/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s220/runs/store_s222_waveD/data/app/io.github.yamin8000.dooz/base.apk",
+  "apkSha256": "299eab21ac8b3c6192edbd887966554fef84ad026d269b9067310215201b362b",
+  "apkSize": 1840400,
+  "installedAt": "2026-11-12T04:51:48Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

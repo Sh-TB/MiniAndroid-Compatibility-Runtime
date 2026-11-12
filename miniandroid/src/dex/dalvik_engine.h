@@ -2586,6 +2586,12 @@ public:
     // exceptions: the pending slot is only reset when it still holds the
     // gate's own error signature.
     void awaitup_gate_abort_reset();
+    // S222-A: the S221 measure bridge services each census node once per
+    // FRAME now (the per-run once-per-node set could not win against the
+    // per-frame density flip — the auditor's #583 id 6812986803 demand:
+    // "move remeasure into the correct traversal/recomposition phase").
+    // The render pass calls this at frame entry.
+    void reset_s221_bridge_frame();
     // Consulted by the interpreter loop next to the S60 wall check.
     void awaitup_gate_check();
 
@@ -3778,6 +3784,23 @@ public:
     bool strict_uncaught_crash_ = false;
     std::string strict_crash_reason_;
     std::string last_error_;
+    // ── S222-A (GP-582 id 6812887007 wave): CONTAINED NESTED INVOKE.
+    // The S221 measure bridge (and every future runtime-injected
+    // diagnostic dispatch) calls DEX methods from engine C++ code. When
+    // such a call throws and no handler exists, the unwind reached the
+    // "APP BOUNDARY" branch and was counted as ART process death of the
+    // APP — live evidence (dooz s222_baseline run): 47/54 APP-BOUNDARY
+    // records were the bridge's own Lt4;.z calls throwing
+    // "requestLookaheadRemeasure cannot be called on a node outside
+    // LookaheadScope" (depth=2, caller_pc=0 — a top-level nested invoke,
+    // zero app frames harmed). T61 law: a runtime artifact must never
+    // masquerade as app behavior. contained_invoke_ (set ONLY around
+    // runtime-injected nested dispatches) converts that bottom into a
+    // CONTAINED-EXC: recorded in contained_exc_count_, in-flight state
+    // cleared, nested loop broken, app frames below untouched, and the
+    // APP-BOUNDARY honesty metric untouched.
+    bool contained_invoke_ = false;
+    uint64_t contained_exc_count_ = 0;
     // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal().
     // CONT-96 W3-A: flat per-pc arrays (was std::map) — the map touched a
     // red-black node per instruction (visit count) and per conditional
