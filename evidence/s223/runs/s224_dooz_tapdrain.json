@@ -1,0 +1,21 @@
+{
+ "tag": "s224_dooz_tapdrain",
+ "wall_s": 290.7,
+ "face_sha16": "29a4f37ca45a4277",
+ "png_bytes": 10372,
+ "frame_truth": {
+  "verdict": "VERIFY_ERROR",
+  "metrics": {
+   "png_bytes": 10372
+  }
+ },
+ "marks": {
+  "tap_receipt": 0,
+  "newgame_action": 0,
+  "compose_recompose": 0,
+  "gameboard": 0,
+  "ise_storm": 124560,
+  "app_boundary": 17,
+  "bridge": 0
+ }
+}

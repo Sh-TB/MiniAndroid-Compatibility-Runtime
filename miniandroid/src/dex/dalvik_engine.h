@@ -13,6 +13,23 @@
 #ifndef MINIANDROID_REAL_DALVIK_ENGINE_H
 #define MINIANDROID_REAL_DALVIK_ENGINE_H
 
+#include <iostream>  // S224-TAPDRAIN probe line (header inline method)
+#include <cstdint>
+#include <set>
+#include <map>
+#include <string>
+
+// S224-TAPDRAIN: the insertAt census sets are shared between the engine
+// body (.cpp definitions) and the tap-path drain (header inline method).
+namespace miniandroid::dalvik {
+extern std::set<uint32_t> g_d7_node_ids;
+extern std::set<uint32_t> g_s221_bridged;
+}
+
+// The .cpp defines these inside `namespace miniandroid::dalvik { namespace
+// { ... } }` — move them OUT of the anonymous namespace so the header's
+// externs bind. (sed applied below in the .cpp edit.)
+
 #include "dex_parser.h"
 #include "class_resolver.h"
 #include "../apk/manifest_reader.h"  // 371-CLOSEOUT: component meta-data law
@@ -2541,6 +2558,118 @@ public:
     // session (elapsed - rebate). Generic: no app knowledge; only the tap
     // path calls it; no-tap runs are bit-identical.
     void rebate_wall_ms(int64_t ms) { wall_rebate_ms_ += ms; }
+
+    // ── S224-TAPDRAIN (the dooz UP-NPE law) ─────────────────────────────
+    // EVIDENCE (s224_dooz_default, UP window): the pressed-state render's
+    // recomposition INSERTS a LayoutNode child (Lt4; children 1→2 in the
+    // same run) whose measure/layout never ran; the UP dispatch then
+    // walks the half-built tree in the app's REAL DEX
+    // (Lt4;.dispatchTouchEvent → .m): an EMPTY pointer/hit list
+    // (obj List.size()=0), then `getClass()` on a NULL receiver → NPE →
+    // catch-all at Lt4;.m pc=378 → UNCAUGHT at MainActivity.onCreate
+    // (APP BOUNDARY) → consumed=false → no PerformClick → no onClick →
+    // GameAction.NewGame never fires. The DOWN worked because the tree
+    // was complete at its dispatch.
+    // LAW (AOSP ViewRootImpl traversal order): a measure/layout pass must
+    // complete BEFORE the next input dispatch touches the tree. The tap
+    // path calls this AFTER the pressed-state render and BEFORE the UP
+    // dispatch: run the app's OWN pending measureAndLayout delegate
+    // (Lzs0;.m, contained) so recomposition-born nodes are laid out
+    // before the hit test. Contained: the drain is a runtime-injected
+    // dispatch — its failures are never APP BOUNDARY.
+    // ────────────────────────────────────────────────────────────────────
+    bool drain_pending_compose_measure() {
+        if (!dex_report_) return false;   // same gate the draw dispatch uses
+        // The Lpz0; modifier-rebuild scope (freshest, per the S155 law).
+        uint32_t scope = 0;
+        for (uint32_t oid : heap_.get_all_ids()) {
+            const auto* obj = heap_.get(oid);
+            if (obj && obj->class_descriptor == "Lpz0;") scope = oid;
+        }
+        uint32_t marked = 0;
+        // 1) owner-side measure request marks for census-recorded
+        //    insertAt nodes not yet serviced (the S221 mark law —
+        //    (T,T,F): replace+measure, lookahead FALSE).
+        if (compose_owner_last_ != 0) {
+            std::string own_cls = "Ljava/lang/Object;";
+            if (const auto* oo = heap_.get(compose_owner_last_))
+                own_cls = oo->class_descriptor;
+            for (uint32_t nid : g_d7_node_ids) {
+                if (marked >= 16) break;
+                if (g_s221_bridged.count(nid)) continue;
+                if (!heap_.has_object(nid)) continue;
+                g_s221_bridged.insert(nid);
+                ++marked;
+                DalvikValue zret = DalvikValue::make_void();
+                DalvikExecutionResult zres;
+                bool prev_contained = contained_invoke_;
+                contained_invoke_ = true;
+                try {
+                    try_recursive_invoke(
+                        "Lt4;", "z",
+                        {DalvikValue::make_object(compose_owner_last_, own_cls),
+                         DalvikValue::make_object(nid, "Lel0;"),
+                         DalvikValue::make_bool(true),
+                         DalvikValue::make_bool(true),
+                         DalvikValue::make_bool(false)},
+                        zret, zres, "(Lel0;ZZZ)V");
+                } catch (...) {
+                }
+                contained_invoke_ = prev_contained;
+            }
+        }
+        // 2) modifier-chain rebuild for inserted nodes (the S155 law,
+        //    "a node insert must schedule a modifier-chain rebuild +
+        //    measure" — the T21 census: late-inserted nodes keep P=NULL).
+        if (scope != 0) {
+            for (uint32_t nid : g_d7_node_ids) {
+                if (!heap_.has_object(nid)) continue;
+                DalvikValue nret = DalvikValue::make_void();
+                DalvikExecutionResult nres;
+                bool prev_contained = contained_invoke_;
+                contained_invoke_ = true;
+                try {
+                    try_recursive_invoke(
+                        "Lel0;", "N",
+                        {DalvikValue::make_object(nid, "Lel0;"),
+                         DalvikValue::make_object(scope, "Lpz0;")},
+                        nret, nres, "(Lpz0;)V");
+                } catch (...) {
+                }
+                contained_invoke_ = prev_contained;
+            }
+        }
+        // 3) the delegate measureAndLayout drain (the app's own pending
+        //    measure requests now include the marks above).
+        uint32_t delegate = 0;
+        for (uint32_t oid : heap_.get_all_ids()) {
+            const auto* obj = heap_.get(oid);
+            if (obj && obj->class_descriptor == "Lzs0;") {
+                delegate = oid;
+                break;
+            }
+        }
+        bool ok = false;
+        if (delegate != 0) {
+            DalvikValue mret = DalvikValue::make_void();
+            DalvikExecutionResult mres;
+            bool prev_contained = contained_invoke_;
+            contained_invoke_ = true;  // S222-A: contained nested dispatch
+            try {
+                ok = try_recursive_invoke(
+                    "Lzs0;", "m", {DalvikValue::make_object(delegate, "Lzs0;")},
+                    mret, mres, "()V");
+            } catch (...) {
+                ok = false;
+            }
+            contained_invoke_ = prev_contained;
+        }
+        std::cerr << "[S224-TAPDRAIN] marks=" << marked << " scope=o" << scope
+                  << " delegate=o" << delegate
+                  << " drain=" << (ok ? "YES" : "NO") << std::endl;
+        return ok;
+    }
+
     int64_t wall_rebate_ms() const { return wall_rebate_ms_; }
 
     // ────────────────────────────────────────────────────────────────────

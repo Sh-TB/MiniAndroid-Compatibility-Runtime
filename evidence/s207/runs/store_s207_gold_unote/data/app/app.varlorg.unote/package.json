@@ -19,6 +19,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gold_unote/data/app/app.varlorg.unote/base.apk",
   "apkSha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
   "apkSize": 163498,
-  "installedAt": "2026-11-12T06:39:03Z",
+  "installedAt": "2026-11-12T08:09:02Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

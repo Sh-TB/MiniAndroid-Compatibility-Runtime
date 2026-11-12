@@ -30,7 +30,7 @@ rundir = RUNS / TAG
 shutil.rmtree(rundir, ignore_errors=True)
 console = RUNS / f'{TAG}.console.log'
 env = dict(**__import__('os').environ)
-env['MINIANDROID_S222_FRAME_BRIDGE'] = '1'   # the complete-render cadence (S222 law)
+env.pop('MINIANDROID_S222_FRAME_BRIDGE', None)  # S224 re-check: DEFAULT cadence (S222-A2 law: once-per-node is the correct default)
 cmd = [str(BIN), 'run', '--execution-mode', 'real-dalvik',
        '--data-root', str(store), '-o', str(rundir),
        '--package', dpkg, '--frames', frames, '--frame-delay', '250']

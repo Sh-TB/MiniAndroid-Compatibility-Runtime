@@ -4420,12 +4420,15 @@ void DalvikExecutionEngine::dump_cont4_solver_diag(uint32_t at_pc) {
 // may exist but sit unplaced behind the F-NEW-265 isPlaced draw gate.
 namespace {
 std::map<std::string, uint64_t> g_d7_read_census;
-std::set<uint32_t> g_d7_node_ids;
-// S221: nodes the measure-bridge already serviced (once-per-node).
-std::set<uint32_t> g_s221_bridged;
 uint64_t g_d7_draws = 0;
 constexpr size_t D7_NODE_CAP = 512;
 }  // namespace
+
+// S224-TAPDRAIN: named (not anonymous) so the header externs bind — the
+// tap-path drain reads the insertAt census + the once-per-node set.
+std::set<uint32_t> g_d7_node_ids;
+// S221: nodes the measure-bridge already serviced (once-per-node).
+std::set<uint32_t> g_s221_bridged;
 
 bool DalvikExecutionEngine::execute_method_internal(
     const std::string& class_name,

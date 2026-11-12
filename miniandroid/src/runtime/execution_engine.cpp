@@ -8219,6 +8219,16 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
                     }
                 }
                 hs->advance_virtual(30);   // t0+50ms UP → PerformClick queue
+                // S224-TAPDRAIN (the dooz UP-NPE law): the pressed-state
+                // render's recomposition may INSERT LayoutNode children that
+                // have no measure/layout yet; the UP's real-DEX hit test
+                // walks the half-built tree, hits a NULL modifier state
+                // (getClass on null) and unwinds to APP BOUNDARY — the UP
+                // lands unconsumed and the click (dooz NewGame) never fires.
+                // AOSP traversal order: measure/layout completes BEFORE the
+                // next input dispatch. Drain the app's OWN pending
+                // measureAndLayout (contained) first.
+                dalvik_engine_.drain_pending_compose_measure();
                 touch_dispatcher_->dispatch(
                     tap_root, {framework::TouchAction::UP, tpx, tpy});
             }

@@ -1,0 +1,21 @@
+{
+ "tag": "s224_dooz_default",
+ "wall_s": 276.7,
+ "face_sha16": "37d26cdc5ad96191",
+ "png_bytes": 10480,
+ "frame_truth": {
+  "verdict": "VERIFY_ERROR",
+  "metrics": {
+   "png_bytes": 10480
+  }
+ },
+ "marks": {
+  "tap_receipt": 0,
+  "newgame_action": 0,
+  "compose_recompose": 0,
+  "gameboard": 0,
+  "ise_storm": 167009,
+  "app_boundary": 19,
+  "bridge": 0
+ }
+}
