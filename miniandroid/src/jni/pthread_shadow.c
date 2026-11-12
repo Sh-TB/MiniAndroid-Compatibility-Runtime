@@ -63,32 +63,39 @@ static struct ShadowSlot g_slots[SHADOW_CAP];
 static int g_slots_n = 0;
 static pthread_mutex_t g_slots_mu = PTHREAD_MUTEX_INITIALIZER;
 
-static struct ShadowSlot* shadow_open(void* key, int kind) {
-    pthread_mutex_lock(&g_slots_mu);
+/* GP S225-M §6 (#585 findings 6+7): LOCKED-SECTION LAW.
+ *
+ * The old helpers released g_slots_mu and returned a live ShadowSlot*;
+ * a concurrent shadow_close() swap-removed that slot, so every caller
+ * that touched fields after unlock could hit ANOTHER key's slot or a
+ * freed heap attr (the close-vs-use window). Every registry operation
+ * is now atomic under g_slots_mu: lookup + state write + real-attr call
+ * run inside ONE critical section, and the passthrough consumers
+ * (mutex/cond/thread init, attr_getstack) hold the lock while they
+ * borrow s->real. Nothing inside a critical section re-enters this
+ * module (the real glibc attr functions never take g_slots_mu), so the
+ * lock is deadlock-free; the only cost is that pthread_create holds the
+ * registry lock for its spawn window — bounded by the real call.
+ */
+static struct ShadowSlot* find_locked(void* key, int kind) {
+    /* caller holds g_slots_mu */
     for (int i = 0; i < g_slots_n; ++i)
-        if (g_slots[i].key == key && g_slots[i].kind == kind) {
-            pthread_mutex_unlock(&g_slots_mu);
+        if (g_slots[i].key == key && g_slots[i].kind == kind)
             return &g_slots[i];
-        }
-    if (g_slots_n >= SHADOW_CAP) { pthread_mutex_unlock(&g_slots_mu); return NULL; }
-    struct ShadowSlot* s = &g_slots[g_slots_n++];
-    memset(s, 0, sizeof(*s));
-    s->key = key; s->kind = kind; s->clock = -1; s->type = -1;
-    pthread_mutex_unlock(&g_slots_mu);
-    return s;
-}
-static struct ShadowSlot* shadow_find(void* key, int kind) {
-    pthread_mutex_lock(&g_slots_mu);
-    for (int i = 0; i < g_slots_n; ++i)
-        if (g_slots[i].key == key && g_slots[i].kind == kind) {
-            pthread_mutex_unlock(&g_slots_mu);
-            return &g_slots[i];
-        }
-    pthread_mutex_unlock(&g_slots_mu);
     return NULL;
 }
-static void shadow_close(void* key, int kind) {
-    pthread_mutex_lock(&g_slots_mu);
+static struct ShadowSlot* open_locked(void* key, int kind) {
+    /* caller holds g_slots_mu */
+    struct ShadowSlot* s = find_locked(key, kind);
+    if (s) return s;
+    if (g_slots_n >= SHADOW_CAP) return NULL;
+    struct ShadowSlot* s2 = &g_slots[g_slots_n++];
+    memset(s2, 0, sizeof(*s2));
+    s2->key = key; s2->kind = kind; s2->clock = -1; s2->type = -1;
+    return s2;
+}
+static void close_locked(void* key, int kind) {
+    /* caller holds g_slots_mu */
     for (int i = 0; i < g_slots_n; ++i)
         if (g_slots[i].key == key && g_slots[i].kind == kind) {
             free(g_slots[i].real);
@@ -96,7 +103,6 @@ static void shadow_close(void* key, int kind) {
             --g_slots_n;
             break;
         }
-    pthread_mutex_unlock(&g_slots_mu);
 }
 static void shadow_free_obj(struct ShadowSlot* s, int kind) {
     if (!s || !s->real) return;
@@ -115,56 +121,88 @@ static void shadow_free_obj(struct ShadowSlot* s, int kind) {
 }
 
 /* ── mutexattr family ────────────────────────────────────────────────── */
+/* GP S225-M §6 finding 7: POSIX error semantics. init returns ENOMEM when
+ * the registry is exhausted or the heap attr cannot be minted (it used to
+ * report success while silently skipping the real init — every setter then
+ * degraded to a no-op with wrong synchronization semantics). Setters/getters
+ * on an UNKNOWN key answer EINVAL (the only legal ways to see one are
+ * use-before-init, use-after-destroy, or a failed init). */
 int pthread_mutexattr_init(pthread_mutexattr_t* key) {
     DEF_REAL(pthread_mutexattr_init);
-    struct ShadowSlot* s = shadow_open(key, 0);
-    if (s && !s->real) {
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = open_locked(key, 0);
+    if (!s) { pthread_mutex_unlock(&g_slots_mu); return ENOMEM; }
+    if (!s->real) {
         s->real = malloc(sizeof(pthread_mutexattr_t));
-        if (s->real) r_pthread_mutexattr_init((pthread_mutexattr_t*)s->real);
+        if (!s->real) { pthread_mutex_unlock(&g_slots_mu); return ENOMEM; }
+        if (r_pthread_mutexattr_init((pthread_mutexattr_t*)s->real) != 0) {
+            free(s->real); s->real = NULL;
+            pthread_mutex_unlock(&g_slots_mu);
+            return ENOMEM;
+        }
     }
+    pthread_mutex_unlock(&g_slots_mu);
     return 0;
 }
 int pthread_mutexattr_destroy(pthread_mutexattr_t* key) {
-    struct ShadowSlot* s = shadow_find(key, 0);
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked(key, 0);
     if (s) shadow_free_obj(s, 0);
-    shadow_close(key, 0);
+    close_locked(key, 0);
+    pthread_mutex_unlock(&g_slots_mu);
     return 0;
 }
 int pthread_mutexattr_settype(pthread_mutexattr_t* key, int type) {
-    struct ShadowSlot* s = shadow_find(key, 0);
-    if (!s) return 0;  /* never crash the library for an attr we missed */
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked(key, 0);
+    if (!s) { pthread_mutex_unlock(&g_slots_mu); return EINVAL; }
     s->type = type;
+    int rc = 0;
     if (s->real) {
         DEF_REAL(pthread_mutexattr_settype);
-        return r_pthread_mutexattr_settype((pthread_mutexattr_t*)s->real, type);
+        rc = r_pthread_mutexattr_settype((pthread_mutexattr_t*)s->real, type);
     }
-    return 0;
+    pthread_mutex_unlock(&g_slots_mu);
+    return rc;
 }
 int pthread_mutexattr_gettype(const pthread_mutexattr_t* key, int* type) {
-    struct ShadowSlot* s = shadow_find((void*)key, 0);
-    if (!s || type == NULL) return 0;
+    if (type == NULL) return EINVAL;
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked((void*)key, 0);
+    if (!s) { pthread_mutex_unlock(&g_slots_mu); return EINVAL; }
     *type = (s->type < 0) ? PTHREAD_MUTEX_DEFAULT : s->type;
+    pthread_mutex_unlock(&g_slots_mu);
     return 0;
 }
 int pthread_mutexattr_setpshared(pthread_mutexattr_t* key, int pshared) {
-    struct ShadowSlot* s = shadow_find(key, 0);
-    if (!s) return 0;
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked(key, 0);
+    if (!s) { pthread_mutex_unlock(&g_slots_mu); return EINVAL; }
     s->pshared = pshared;
+    int rc = 0;
     if (s->real) {
         DEF_REAL(pthread_mutexattr_setpshared);
-        return r_pthread_mutexattr_setpshared((pthread_mutexattr_t*)s->real, pshared);
+        rc = r_pthread_mutexattr_setpshared((pthread_mutexattr_t*)s->real, pshared);
     }
-    return 0;
+    pthread_mutex_unlock(&g_slots_mu);
+    return rc;
 }
 
 /* ── mutex objects (layout-compatible x86_64: 40 bytes both ABIs) ────── */
 int pthread_mutex_init(pthread_mutex_t* m, const pthread_mutexattr_t* key) {
     DEF_REAL(pthread_mutex_init);
-    struct ShadowSlot* s = key ? shadow_find((void*)key, 0) : NULL;
+    if (!key) return r_pthread_mutex_init(m, NULL);
+    /* GP S225-M §6: borrow the real attr UNDER the lock — a concurrent
+     * attr destroy can no longer free it between find and use. */
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked((void*)key, 0);
+    const pthread_mutexattr_t* use =
+        (s && s->real) ? (const pthread_mutexattr_t*)s->real : key;
     /* the shadow's REAL attr carries the exact caller state (type etc.);
        a caller that never called attr_init gets the glibc default */
-    return r_pthread_mutex_init(
-        m, (const pthread_mutexattr_t*)(s && s->real ? s->real : key));
+    int rc = r_pthread_mutex_init(m, use);
+    pthread_mutex_unlock(&g_slots_mu);
+    return rc;
 }
 int pthread_mutex_destroy(pthread_mutex_t* m) {
     DEF_REAL(pthread_mutex_destroy); return r_pthread_mutex_destroy(m);
@@ -182,36 +220,55 @@ int pthread_mutex_trylock(pthread_mutex_t* m) {
 /* ── condattr family ─────────────────────────────────────────────────── */
 int pthread_condattr_init(pthread_condattr_t* key) {
     DEF_REAL(pthread_condattr_init);
-    struct ShadowSlot* s = shadow_open(key, 1);
-    if (s && !s->real) {
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = open_locked(key, 1);
+    if (!s) { pthread_mutex_unlock(&g_slots_mu); return ENOMEM; }
+    if (!s->real) {
         s->real = malloc(sizeof(pthread_condattr_t));
-        if (s->real) r_pthread_condattr_init((pthread_condattr_t*)s->real);
+        if (!s->real) { pthread_mutex_unlock(&g_slots_mu); return ENOMEM; }
+        if (r_pthread_condattr_init((pthread_condattr_t*)s->real) != 0) {
+            free(s->real); s->real = NULL;
+            pthread_mutex_unlock(&g_slots_mu);
+            return ENOMEM;
+        }
     }
+    pthread_mutex_unlock(&g_slots_mu);
     return 0;
 }
 int pthread_condattr_destroy(pthread_condattr_t* key) {
-    struct ShadowSlot* s = shadow_find(key, 1);
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked(key, 1);
     if (s) shadow_free_obj(s, 1);
-    shadow_close(key, 1);
+    close_locked(key, 1);
+    pthread_mutex_unlock(&g_slots_mu);
     return 0;
 }
 int pthread_condattr_setclock(pthread_condattr_t* key, clockid_t clock) {
-    struct ShadowSlot* s = shadow_find(key, 1);
-    if (!s) return 0;
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked(key, 1);
+    if (!s) { pthread_mutex_unlock(&g_slots_mu); return EINVAL; }
     s->clock = (long)clock;
+    int rc = 0;
     if (s->real) {
         DEF_REAL(pthread_condattr_setclock);
-        return r_pthread_condattr_setclock((pthread_condattr_t*)s->real, clock);
+        rc = r_pthread_condattr_setclock((pthread_condattr_t*)s->real, clock);
     }
-    return 0;
+    pthread_mutex_unlock(&g_slots_mu);
+    return rc;
 }
 
 /* ── cond objects (layout-compatible x86_64: 48 bytes both ABIs) ─────── */
 int pthread_cond_init(pthread_cond_t* c, const pthread_condattr_t* key) {
     DEF_REAL(pthread_cond_init);
-    struct ShadowSlot* s = key ? shadow_find((void*)key, 1) : NULL;
-    return r_pthread_cond_init(
-        c, (const pthread_condattr_t*)(s && s->real ? s->real : key));
+    if (!key) return r_pthread_cond_init(c, NULL);
+    /* GP S225-M §6: borrow the real attr under the lock (see mutex_init). */
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked((void*)key, 1);
+    const pthread_condattr_t* use =
+        (s && s->real) ? (const pthread_condattr_t*)s->real : key;
+    int rc = r_pthread_cond_init(c, use);
+    pthread_mutex_unlock(&g_slots_mu);
+    return rc;
 }
 int pthread_cond_destroy(pthread_cond_t* c) {
     DEF_REAL(pthread_cond_destroy); return r_pthread_cond_destroy(c);
@@ -233,54 +290,85 @@ int pthread_cond_timedwait(pthread_cond_t* c, pthread_mutex_t* m,
 /* ── threadattr family + create ──────────────────────────────────────── */
 int pthread_attr_init(pthread_attr_t* key) {
     DEF_REAL(pthread_attr_init);
-    struct ShadowSlot* s = shadow_open(key, 2);
-    if (s && !s->real) {
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = open_locked(key, 2);
+    if (!s) { pthread_mutex_unlock(&g_slots_mu); return ENOMEM; }
+    if (!s->real) {
         s->real = malloc(sizeof(pthread_attr_t));
-        if (s->real) r_pthread_attr_init((pthread_attr_t*)s->real);
+        if (!s->real) { pthread_mutex_unlock(&g_slots_mu); return ENOMEM; }
+        if (r_pthread_attr_init((pthread_attr_t*)s->real) != 0) {
+            free(s->real); s->real = NULL;
+            pthread_mutex_unlock(&g_slots_mu);
+            return ENOMEM;
+        }
     }
+    pthread_mutex_unlock(&g_slots_mu);
     return 0;
 }
 int pthread_attr_destroy(pthread_attr_t* key) {
-    struct ShadowSlot* s = shadow_find(key, 2);
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked(key, 2);
     if (s) shadow_free_obj(s, 2);
-    shadow_close(key, 2);
+    close_locked(key, 2);
+    pthread_mutex_unlock(&g_slots_mu);
     return 0;
 }
 int pthread_attr_setstacksize(pthread_attr_t* key, size_t stacksize) {
-    struct ShadowSlot* s = shadow_find(key, 2);
-    if (!s) return 0;
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked(key, 2);
+    if (!s) { pthread_mutex_unlock(&g_slots_mu); return EINVAL; }
     s->stacksize = (unsigned long)stacksize;
+    int rc = 0;
     if (s->real) {
         DEF_REAL(pthread_attr_setstacksize);
-        return r_pthread_attr_setstacksize((pthread_attr_t*)s->real, stacksize);
+        rc = r_pthread_attr_setstacksize((pthread_attr_t*)s->real, stacksize);
     }
-    return 0;
+    pthread_mutex_unlock(&g_slots_mu);
+    return rc;
 }
 int pthread_attr_setdetachstate(pthread_attr_t* key, int detachstate) {
-    struct ShadowSlot* s = shadow_find(key, 2);
-    if (!s) return 0;
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked(key, 2);
+    if (!s) { pthread_mutex_unlock(&g_slots_mu); return EINVAL; }
     s->detachstate = detachstate;
+    int rc = 0;
     if (s->real) {
         DEF_REAL(pthread_attr_setdetachstate);
-        return r_pthread_attr_setdetachstate((pthread_attr_t*)s->real, detachstate);
+        rc = r_pthread_attr_setdetachstate((pthread_attr_t*)s->real, detachstate);
     }
-    return 0;
+    pthread_mutex_unlock(&g_slots_mu);
+    return rc;
 }
 int pthread_attr_getstack(const pthread_attr_t* key, void** stackaddr,
                           size_t* stacksize) {
     DEF_REAL(pthread_attr_getstack);
     /* registered attrs carry our default-real object (honest defaults);
-       unregistered pointers are genuine glibc attrs — pass through */
-    struct ShadowSlot* s = shadow_find((void*)key, 2);
-    if (!s || !s->real) return r_pthread_attr_getstack(key, stackaddr, stacksize);
-    return r_pthread_attr_getstack((pthread_attr_t*)s->real, stackaddr, stacksize);
+       unregistered pointers are genuine glibc attrs — pass through (with
+       the borrow held under the lock, same as the init consumers). */
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked((void*)key, 2);
+    int rc;
+    if (!s || !s->real)
+        rc = r_pthread_attr_getstack(key, stackaddr, stacksize);
+    else
+        rc = r_pthread_attr_getstack((pthread_attr_t*)s->real, stackaddr,
+                                     stacksize);
+    pthread_mutex_unlock(&g_slots_mu);
+    return rc;
 }
 int pthread_create(pthread_t* t, const pthread_attr_t* key,
                    void* (*fn)(void*), void* arg) {
     DEF_REAL(pthread_create);
-    struct ShadowSlot* s = key ? shadow_find((void*)key, 2) : NULL;
-    return r_pthread_create(
-        t, (const pthread_attr_t*)(s && s->real ? s->real : key), fn, arg);
+    if (!key) return r_pthread_create(t, NULL, fn, arg);
+    /* GP S225-M §6: the real attr borrow is under the lock; the spawn
+     * window holds g_slots_mu — bounded by the real pthread_create. */
+    pthread_mutex_lock(&g_slots_mu);
+    struct ShadowSlot* s = find_locked((void*)key, 2);
+    const pthread_attr_t* use =
+        (s && s->real) ? (const pthread_attr_t*)s->real : key;
+    int rc = r_pthread_create(t, use, fn, arg);
+    pthread_mutex_unlock(&g_slots_mu);
+    return rc;
 }
 
 /* ── TLS keys (pthread_key_t: unsigned on both ABIs) — pass through ──── */

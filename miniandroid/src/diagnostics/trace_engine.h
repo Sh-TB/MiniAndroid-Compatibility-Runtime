@@ -19,6 +19,8 @@
 #include <memory>
 #include <cstdint>
 #include <thread>   // GP S223 LOG-007: honest per-event thread identity
+#include <mutex>    // GP S225-M §2: synchronized ingestion (worker/GL/native emitters)
+#include <atomic>
 
 // Include JSON library (nlohmann/json)
 #include <nlohmann/json.hpp>
@@ -155,7 +157,16 @@ class TraceEngine {
 public:
     TraceEngine();
     ~TraceEngine();
-    
+
+    /**
+     * GP S225-M §2 (#585): process-wide run-id join law. start_session()
+     * publishes the session's run_id here; the graphics trace rows read it
+     * so a blank frame row can be joined to the exact boot/resource/JNI
+     * transition that produced it (the finding-10 stream-join law).
+     * Safe from any thread; empty string before the first session.
+     */
+    static std::string process_run_id();
+
     /**
      * Start a new tracing session
      */
@@ -378,6 +389,16 @@ private:
     uint64_t rt_seq_ = 0;
     uint64_t rt_total_ = 0;                // total events emitted (may exceed cap)
     std::ofstream rt_jsonl_;               // streaming JSONL sink
+    // GP S225-M §2 (#585): ingestion synchronization. runtime_event() can be
+    // called from the main path AND from GL/native/executor workers (the
+    // per-thread JNIEnv law means worker emitters are real). ONE mutex
+    // guards the identity counters, the ring buffer and the JSONL stream —
+    // the terminal std::cerr sink runs OUTSIDE the lock (the documented
+    // ownership rule: no global lock is held while writing user-visible
+    // output, so a slow terminal can never stall the ring's lock holder).
+    mutable std::mutex rt_mu_;
+    static std::mutex s_run_id_mu_;        // guards the process-run-id join law
+    static std::string s_process_run_id_;
     std::map<std::string, EventSev> stage_states_;    // canonical stage machine
     std::map<std::string, std::string> stage_details_; // evidence per stage
     nlohmann::json first_divergence_;      // null until derived/observed

@@ -218,8 +218,19 @@ TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
 	s106_layout_net_law_test s106_text2_law_test \
 	encoded_value_law_test gp583_gles_law_test c9_bitmap_density_law_test \
 	r25_dispatch_matrix_test gp583_img004_bounds_law_test \
-	gp_dex003_fuzz_law_test
+	gp_dex003_fuzz_law_test \
+	s225m_wave_law_test
 TEST_BATTERY = $(TEST_CORE) $(TEST_HOSTILE) $(TEST_LAW)
+
+# S225-M wave law test links pthread_shadow.o (the interposition object the
+# real binary links) so the POSIX-error-semantics laws (findings 6+7) run
+# against the SHADOW registry, not raw glibc.
+$(BUILDDIR)/tests/s225m_wave_law_test: $(TESTDIR)/s225m_wave_law_test.cpp \
+		$(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) \
+		$(BUILDDIR)/jni/pthread_shadow.o
+	@mkdir -p $(BUILDDIR)/tests
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $< \
+		$(filter-out $<,$^) $(LIBS) $(FONTS_LIBS)
 TEST_TIMEOUT = 300
 
 $(BUILDDIR)/tests/%: $(TESTDIR)/%.cpp $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT)

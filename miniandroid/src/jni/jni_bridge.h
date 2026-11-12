@@ -62,9 +62,51 @@ struct NativeCallContext {
     };
     std::vector<Arg> pos;
 
+    // ── GP S225-M §3 (#585 finding 24): missing-argument honesty law ────
+    // arg() used to answer a missing positional index with a silent
+    // synthetic INT(0) — for pointer/long/object parameters that zero was
+    // indistinguishable from a REAL zero argument and could mask a broken
+    // marshalling site. The synthetic value is still returned (every
+    // existing handler keeps its ABI), but the miss is now RECORDED in
+    // marshal_errors_ and countable; try_arg() gives new handlers the
+    // explicit nullptr face, and validate_arity() is the one-call gate.
+    std::vector<std::string> marshal_errors;
+
+    bool has_marshal_error() const { return !marshal_errors.empty(); }
+
+    const Arg* try_arg(size_t i) const {
+        return i < pos.size() ? &pos[i] : nullptr;
+    }
+
+    // Arity gate: records a structured marshal error and returns false when
+    // the context carries fewer positional args than `need` (or more when
+    // `exact`). Never mutates pos — handlers keep full control of fallbacks.
+    bool validate_arity(size_t need, bool exact = false) const {
+        if (pos.size() < need || (exact && pos.size() != need)) {
+            // const method by contract: the error channel is observable
+            // state, not part of the marshalled payload.
+            const_cast<NativeCallContext*>(this)->marshal_errors.push_back(
+                "arity: " + method_name + " " + signature + " expected " +
+                (exact ? "exactly " : "at least ") + std::to_string(need) +
+                " positional args, got " + std::to_string(pos.size()));
+            return false;
+        }
+        return true;
+    }
+
     const Arg& arg(size_t i) const {
         static const Arg k_default = Arg::of_int(0);
-        return i < pos.size() ? pos[i] : k_default;
+        if (i >= pos.size()) {
+            // GP S225-M §3: DETECTABLE synthetic zero — record, then answer
+            // the legacy default (see marshal_errors above).
+            const_cast<NativeCallContext*>(this)->marshal_errors.push_back(
+                "arg(" + std::to_string(i) + ") missing — synthetic INT(0) "
+                "returned by the legacy face; " + method_name + " " +
+                signature + " has " + std::to_string(pos.size()) +
+                " positional args");
+            return k_default;
+        }
+        return pos[i];
     }
 };
 
@@ -115,6 +157,14 @@ public:
         return inst;
     }
 
+    // ── GP S225-M §3 (#585 finding 23): dispatch-precedence law ─────────
+    // A later HOST_COMPATIBILITY_STUB registration must NEVER shadow an
+    // existing REAL_NATIVE_LIBRARY entry for the same (class, method): the
+    // stub would answer "success" for a required initialization that did
+    // not occur. REAL registrations keep precedence (recorded in
+    // precedence_violations); a REAL for the same key replaces a STUB in
+    // the upgrade direction. Non-stub overwrites (REAL→REAL,
+    // UNSUPPORTED→X) stay last-writer-wins with a recorded trace.
     void register_native(
         const std::string& class_desc,
         const std::string& method_name,
@@ -124,8 +174,44 @@ public:
         const std::string& description = ""
     ) {
         std::string key = make_key(class_desc, method_name);
+        auto it = methods_.find(key);
+        if (it != methods_.end()) {
+            const bool stub_shadows_real =
+                it->second.impl_type == NativeImplType::REAL_NATIVE_LIBRARY &&
+                impl_type == NativeImplType::HOST_COMPATIBILITY_STUB;
+            if (stub_shadows_real) {
+                precedence_violations_.push_back(
+                    "stub-shadows-real blocked: " + class_desc + method_name +
+                    " (existing " + it->second.signature + ", refused " +
+                    signature + ")");
+                std::cerr << "[GP585-PRECEDENCE] stub registration REFUSED —"
+                             " a REAL native owns " << class_desc
+                          << method_name << std::endl;
+                return;
+            }
+        }
         methods_[key] = {class_desc, method_name, signature, handler, impl_type, description};
+        if (it != methods_.end()) {
+            reregistrations_.push_back(class_desc + method_name + " " +
+                                       signature);
+        }
     }
+
+    // Introspection for the precedence law tests (finding 23).
+    NativeImplType impl_type_of(const std::string& class_desc,
+                                const std::string& method_name) const {
+        auto it = methods_.find(make_key(class_desc, method_name));
+        if (it == methods_.end()) return NativeImplType::UNSUPPORTED_NATIVE;
+        return it->second.impl_type;
+    }
+
+    const std::vector<std::string>& precedence_violations() const {
+        return precedence_violations_;
+    }
+    const std::vector<std::string>& reregistrations() const {
+        return reregistrations_;
+    }
+    // registered_count() is declared further below (pre-existing introspection).
 
     bool has_handler(const std::string& class_desc, const std::string& method_name) const {
         return methods_.find(make_key(class_desc, method_name)) != methods_.end();
@@ -621,6 +707,9 @@ public:
 private:
     std::map<std::string, NativeMethodEntry> methods_;
     size_t unsupported_count_ = 0;
+    // GP S225-M §3: precedence-law evidence channels.
+    std::vector<std::string> precedence_violations_;
+    std::vector<std::string> reregistrations_;
 
     static std::string make_key(const std::string& cls, const std::string& mth) {
         return cls + "." + mth;

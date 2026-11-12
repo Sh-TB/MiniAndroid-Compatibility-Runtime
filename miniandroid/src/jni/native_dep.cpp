@@ -176,15 +176,38 @@ bool list_dt_needed(const std::string& path,
         break;
     }
     if (!dyn) { why = "no PT_DYNAMIC"; return false; }
-    uint64_t strtab_off = 0, strsz = 0;
+    // GP S225-M §4 (#585 finding 20): DT_STRTAB's d_val is a VIRTUAL
+    // ADDRESS. The old code assumed VA == file offset (true only for the
+    // first LOAD segment of typical pre-linked .so files). The general
+    // contract: map the VA through the PT_LOAD table (p_vaddr → p_offset);
+    // only if no segment maps it, fall back to the raw value as a file
+    // offset — still fully bounded by the buffer + DT_STRSZ on every read.
+    std::vector<Elf64Phdr> loads;
+    for (uint32_t i = 0; i < e.e_phnum; ++i) {
+        Elf64Phdr p;
+        std::memcpy(&p, buf.data() + e.e_phoff + (size_t)i * e.e_phentsize,
+                    sizeof p);
+        if (p.p_type == PT_LOAD) loads.push_back(p);
+    }
+    auto va_to_off = [&loads](uint64_t va, uint64_t& off) -> bool {
+        for (const auto& p : loads) {
+            if (va >= p.p_vaddr && va < p.p_vaddr + p.p_filesz) {
+                off = va - p.p_vaddr + p.p_offset;
+                return true;
+            }
+        }
+        return false;
+    };
+    uint64_t strtab_va = 0, strsz = 0;
     for (size_t i = 0; i < dyn_n && dyn[i].d_tag != DT_NULL; ++i) {
-        if (dyn[i].d_tag == DT_STRTAB) strtab_off = dyn[i].d_val;
+        if (dyn[i].d_tag == DT_STRTAB) strtab_va = dyn[i].d_val;
         if (dyn[i].d_tag == DT_STRSZ) strsz = dyn[i].d_val;
     }
-    // The file view of .dynstr: for the first LOAD segment of typical
-    // pre-linked .so files vaddr == file offset, so DT_STRTAB's d_val is
-    // used directly as the .dynstr FILE offset; every access is bounded
-    // to the buffer + DT_STRSZ regardless.
+    uint64_t strtab_off = strtab_va;   // fallback face (bounded reads below)
+    uint64_t mapped = 0;
+    if (strtab_va && va_to_off(strtab_va, mapped)) strtab_off = mapped;
+    // The file view of .dynstr: every access is bounded to the buffer +
+    // DT_STRSZ regardless of which face produced strtab_off.
     auto cstr_at = [&](uint64_t str_off) -> const char* {
         if (strtab_off == 0 || strsz == 0) return nullptr;
         const uint64_t rel = str_off;   // offset INSIDE .dynstr

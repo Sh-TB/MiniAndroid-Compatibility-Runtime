@@ -28,10 +28,16 @@
 #include <fstream>
 #include <map>
 #include <mutex>
+#include <sstream>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <nlohmann/json.hpp>
+
+// GP S225-M §2: stream-join law — gfx rows read the boot trace's run_id.
+// (No circular include: trace_engine.h does NOT include this header.)
+#include "trace_engine.h"
 
 namespace miniandroid {
 namespace gfx {
@@ -200,12 +206,27 @@ private:
         const auto ns =
             std::chrono::duration_cast<std::chrono::nanoseconds>(
                 now.time_since_epoch()).count() - t0_epoch_;
+        // GP S225-M §2 (#585): stream-join law. Every graphics row carries
+        // the SAME run_id the boot trace (trace.jsonl) publishes via
+        // TraceEngine::process_run_id(), plus the calling OS thread — a
+        // blank/garbled frame row is now joinable to the exact
+        // resource/native/GL transition and thread that produced it.
+        // Fields are added BEFORE commit() takes mu_ (no nested lock).
         nlohmann::json r = {
             {"v", 1},
             {"type", type},
             {"t_ns", ns},
             {"frame", frame_no_.load()},
         };
+        {
+            const std::string rid = miniandroid::diagnostics::TraceEngine::process_run_id();
+            if (!rid.empty()) r["run_id"] = rid;
+        }
+        {
+            std::ostringstream t;
+            t << "tid:" << std::this_thread::get_id();
+            r["thread"] = t.str();
+        }
         return r;
     }
 

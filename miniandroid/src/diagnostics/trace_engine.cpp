@@ -485,6 +485,15 @@ EventSev sev_for_stage_event(const std::string& e, EventSev in) {
 
 } // anonymous namespace
 
+// GP S225-M §2 (#585): process-run-id join law — one shared identity for the
+// boot trace (trace.jsonl) and the graphics trace (gfx JSONL rows).
+std::mutex TraceEngine::s_run_id_mu_;
+std::string TraceEngine::s_process_run_id_;
+std::string TraceEngine::process_run_id() {
+    std::lock_guard<std::mutex> lk(s_run_id_mu_);
+    return s_process_run_id_;
+}
+
 void TraceEngine::boot_trace_begin(const std::string& output_dir,
                                    const std::string& apk_path) {
     // Env contract (S135 §22/§26):
@@ -510,6 +519,12 @@ void TraceEngine::boot_trace_begin(const std::string& output_dir,
     ++s_run_counter;
     run_id_ = std::to_string(static_cast<long long>(get_timestamp_ms())) +
               "-" + std::to_string(s_run_counter);
+    {
+        // GP S225-M §2: publish the join identity (guarded — readers are on
+        // any thread via process_run_id()).
+        std::lock_guard<std::mutex> lk(s_run_id_mu_);
+        s_process_run_id_ = run_id_;
+    }
     rt_t0_ms_ = get_timestamp_ms();
 
     if (boot_trace_enabled_ && !output_dir.empty()) {
@@ -552,89 +567,108 @@ RuntimeEvent TraceEngine::make_event(const char* event_name, EventSev sev,
 }
 
 void TraceEngine::runtime_event(RuntimeEvent ev_in) {
-    // 1) identity sinks
-    ev_in.seq = ++rt_seq_;
-    ev_in.timestamp_ms = get_timestamp_ms();
-    ++rt_total_;
-    if (ev_in.run_id.empty())   ev_in.run_id = run_id_;
-    if (ev_in.package.empty())  ev_in.package = package_label_;
-    if (ev_in.activity.empty()) ev_in.activity = activity_label_;
-    if (ev_in.renderer_family.empty())
-        ev_in.renderer_family = renderer_family_;
-    // GP S223 LOG-007 (issue #582): a missing thread is NEVER defaulted to
-    // "main" — GL/worker/callback/executor events were misattributed to the
-    // main thread and thread-conflict diagnosis read wrong. The honest
-    // default is the CALLING thread's identity (std::this_thread::get_id);
-    // an explicit "main" tag still comes from the main-path emitters.
-    if (ev_in.thread.empty()) {
-        std::ostringstream tid;
-        tid << "tid:" << std::this_thread::get_id();
-        ev_in.thread = tid.str();
+    // GP S225-M §2 (#585): synchronized ingestion. Emitters are not confined
+    // to the main thread (GL/native/executor workers emit through the same
+    // backbone). The lock covers identity assignment, the ring buffer and
+    // the JSONL stream atomically — an interleaved write can no longer tear
+    // a JSONL line or race seq/rt_total_. The terminal sink below runs with
+    // the lock RELEASED (documented ownership rule: no global lock held
+    // while writing user-visible output).
+    RuntimeEvent ev = std::move(ev_in);
+    bool noteworthy = false;
+    {
+        std::lock_guard<std::mutex> lk(rt_mu_);
+        // 1) identity sinks
+        ev.seq = ++rt_seq_;
+        ev.timestamp_ms = get_timestamp_ms();
+        ++rt_total_;
+        if (ev.run_id.empty())   ev.run_id = run_id_;
+        if (ev.package.empty())  ev.package = package_label_;
+        if (ev.activity.empty()) ev.activity = activity_label_;
+        if (ev.renderer_family.empty())
+            ev.renderer_family = renderer_family_;
+        // GP S223 LOG-007 (issue #582): a missing thread is NEVER defaulted to
+        // "main" — GL/worker/callback/executor events were misattributed to the
+        // main thread and thread-conflict diagnosis read wrong. The honest
+        // default is the CALLING thread's identity (std::this_thread::get_id);
+        // an explicit "main" tag still comes from the main-path emitters.
+        if (ev.thread.empty()) {
+            std::ostringstream tid;
+            tid << "tid:" << std::this_thread::get_id();
+            ev.thread = tid.str();
+        }
+
+        // 2) ring buffer sink (exception-safe tail — S135 §11)
+        rt_events_.push_back(ev);
+        while (rt_events_.size() > rt_cap_) rt_events_.pop_front();
+
+        // 3) JSONL streaming sink
+        if (rt_jsonl_.is_open()) {
+            rt_jsonl_ << ev.to_json().dump() << "\n";
+            rt_jsonl_.flush();
+        }
+
+        // 5) stage machine sink — auto-advance the canonical boot contract
+        //    (same critical section: stage_states_/details and the divergence
+        //    candidate are shared state written from the same emitters).
+        const char* st = stage_for_event(ev.event);
+        if (st && *st) {
+            const EventSev s2 = sev_for_stage_event(ev.event, ev.sev);
+            std::string detail = ev.state;
+            if (!ev.method.empty())
+                detail += (detail.empty() ? "" : " | ") + ev.cls + "." +
+                          ev.method;
+            mark_stage(st, s2, detail);
+        }
+        // RENDER_START formally opens the three render sub-stages (S135 §3):
+        // measure → layout → draw are PENDING until the composed frame confirms.
+        // (No detail here — the confirming event's state becomes the detail.)
+        if (ev.event == ev::RENDER_START) {
+            mark_stage(stage::MEASURE, EventSev::PENDING, "");
+            mark_stage(stage::LAYOUT, EventSev::PENDING, "");
+            mark_stage(stage::DRAW, EventSev::PENDING, "");
+        }
+
+        // 6) FAILURE events attach as divergence evidence immediately (§12:
+        //    recorded as evidence — the FINAL first-divergence verdict is
+        //    derived from stage states at finalize; exceptions never masquerade
+        //    as the divergence by themselves).
+        if (ev.sev == EventSev::FAILURE && first_divergence_.is_null()) {
+            // provisional divergence evidence (final verdict computed at
+            // finalize from the stage machine; this is the earliest signal)
+            first_divergence_candidate_ = {
+                {"stage", st && *st ? nlohmann::json(st) : nlohmann::json(nullptr)},
+                {"event", ev.event},
+                {"seq", ev.seq},
+                {"exception", ev.exception},
+                {"state", ev.state},
+                {"cls", ev.cls},
+                {"method", ev.method},
+            };
+        }
+
+        noteworthy =
+            ev.sev == EventSev::FAILURE || ev.sev == EventSev::PENDING;
     }
 
-    // 2) ring buffer sink (exception-safe tail — S135 §11)
-    rt_events_.push_back(ev_in);
-    while (rt_events_.size() > rt_cap_) rt_events_.pop_front();
-
-    // 3) JSONL streaming sink
-    if (rt_jsonl_.is_open()) {
-        rt_jsonl_ << ev_in.to_json().dump() << "\n";
-        rt_jsonl_.flush();
-    }
-
-    // 4) terminal sink (default INFO/WARN/ERROR/FRONTIER; verbose = all)
-    //    Compact, grep-able, no duplication of the existing [TAG] prints.
-    const bool noteworthy =
-        ev_in.sev == EventSev::FAILURE || ev_in.sev == EventSev::PENDING;
-    if (boot_trace_enabled_ && (trace_verbose_ || noteworthy ||
-                                ev_in.event == ev::FRAME_ANALYSIS)) {
+    // 4) terminal sink (default INFO/WARN/ERROR/FRONTIER; verbose = all) —
+    //    LOCK RELEASED (see above). Compact, grep-able, no duplication of
+    //    the existing [TAG] prints.
+    const bool emit_terminal =
+        boot_trace_enabled_ && (trace_verbose_ || noteworthy ||
+                                ev.event == ev::FRAME_ANALYSIS);
+    if (emit_terminal) {
         std::ostringstream oss;
-        oss << "[TRACE] " << ev_in.seq << " " << ev_in.event;
-        if (!ev_in.state.empty())    oss << " state=" << ev_in.state;
-        if (!ev_in.result.empty())   oss << " result=" << ev_in.result;
-        if (!ev_in.exception.empty()) oss << " exc=" << ev_in.exception;
-        if (!ev_in.cls.empty())      oss << " cls=" << ev_in.cls;
-        if (!ev_in.method.empty())   oss << " m=" << ev_in.method;
-        if (!ev_in.renderer_family.empty())
-            oss << " rf=" << ev_in.renderer_family;
-        if (ev_in.sev == EventSev::FAILURE) oss << " [FRONTIER]";
+        oss << "[TRACE] " << ev.seq << " " << ev.event;
+        if (!ev.state.empty())    oss << " state=" << ev.state;
+        if (!ev.result.empty())   oss << " result=" << ev.result;
+        if (!ev.exception.empty()) oss << " exc=" << ev.exception;
+        if (!ev.cls.empty())      oss << " cls=" << ev.cls;
+        if (!ev.method.empty())   oss << " m=" << ev.method;
+        if (!ev.renderer_family.empty())
+            oss << " rf=" << ev.renderer_family;
+        if (ev.sev == EventSev::FAILURE) oss << " [FRONTIER]";
         std::cerr << oss.str() << std::endl;
-    }
-
-    // 5) stage machine sink — auto-advance the canonical boot contract
-    const char* st = stage_for_event(ev_in.event);
-    if (st && *st) {
-        const EventSev s2 = sev_for_stage_event(ev_in.event, ev_in.sev);
-        std::string detail = ev_in.state;
-        if (!ev_in.method.empty())
-            detail += (detail.empty() ? "" : " | ") + ev_in.cls + "." + ev_in.method;
-        mark_stage(st, s2, detail);
-    }
-    // RENDER_START formally opens the three render sub-stages (S135 §3):
-    // measure → layout → draw are PENDING until the composed frame confirms.
-    // (No detail here — the confirming event's state becomes the detail.)
-    if (ev_in.event == ev::RENDER_START) {
-        mark_stage(stage::MEASURE, EventSev::PENDING, "");
-        mark_stage(stage::LAYOUT, EventSev::PENDING, "");
-        mark_stage(stage::DRAW, EventSev::PENDING, "");
-    }
-
-    // 6) FAILURE events attach as divergence evidence immediately (§12:
-    //    recorded as evidence — the FINAL first-divergence verdict is
-    //    derived from stage states at finalize; exceptions never masquerade
-    //    as the divergence by themselves).
-    if (ev_in.sev == EventSev::FAILURE && first_divergence_.is_null()) {
-        // provisional divergence evidence (final verdict computed at
-        // finalize from the stage machine; this is the earliest signal)
-        first_divergence_candidate_ = {
-            {"stage", st && *st ? nlohmann::json(st) : nlohmann::json(nullptr)},
-            {"event", ev_in.event},
-            {"seq", ev_in.seq},
-            {"exception", ev_in.exception},
-            {"state", ev_in.state},
-            {"cls", ev_in.cls},
-            {"method", ev_in.method},
-        };
     }
 }
 
