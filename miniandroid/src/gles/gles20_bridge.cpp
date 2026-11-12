@@ -154,8 +154,8 @@ void glsl_analyze(const std::string& raw_src, GlslFace& f) {
 // introspection answer).
 struct FamilySig {
     GLES20Bridge::ShaderFamily family;
-    const char* attribs[4];
-    uint32_t types[4];
+    const char* attribs[8];   // F-BGLSL-1: widened — bouncy circle carries 5
+    uint32_t types[8];
     int n_attribs;
     bool fragment_sampler;
 };
@@ -166,6 +166,18 @@ const FamilySig kFamilySigs[] = {
     {GLES20Bridge::ShaderFamily::SHAPERENDERER,
      {"a_position", "a_color"},
      {0x8B52u, 0x8B52u}, 2, false},
+    // ── F-BGLSL-1 (S226; #508 Vector-Pinball): the two GL20Renderer
+    // families (upstream app assets shaders/line.* + shaders/circle.*).
+    // Structural contract only — declared attrib names + the single mat4
+    // uMVPMatrix, no samplers.
+    {GLES20Bridge::ShaderFamily::BOUNCY_LINE,
+     {"position", "inColor"},
+     {0x8B52u, 0x8B52u}, 2, false},
+    {GLES20Bridge::ShaderFamily::BOUNCY_CIRCLE,
+     // declaration order in the app asset (the matcher is positional)
+     {"position", "inColor", "inRadiusSquared", "inInnerRadiusSquared",
+      "inCenter"},
+     {0x8B52u, 0x8B52u, 0x8B50u, 0x8B50u, 0x8B52u}, 5, false},
 };
 
 // Is this VERTEX source a member of the family? Structural checks only —
@@ -316,6 +328,10 @@ bool GLES20Bridge::dispatch(const std::string& method,
     // ("spec") form translates the slot; raw I(k) stays for handles/ints.
     auto S = [&](int k) -> GLenum { return pgl_from_spec(I(k)); };
     auto P = [&](int k) -> const void* { return k < np ? pargs[k] : nullptr; };
+    auto bun_diag_on = []() -> bool {
+        static const bool on = std::getenv("MINIANDROID_GL_DISPATCH_TRACE") != nullptr;
+        return on;
+    };
 
     if (method == "glGetError") {
         // F-NEW-607: PGL error codes are internal (1,2,3,5) — apps compare
@@ -488,6 +504,19 @@ bool GLES20Bridge::dispatch(const std::string& method,
                 }
                 if (!git->second.compiled) all_compiled = false;
             }
+            // ── F-BGLSL-1 pair reconciliation ───────────────────────
+            // The no-sampler color-passthrough FRAGMENT shape is shared by
+            // ShapeRenderer and the two bouncy families (one `varying vec4
+            // color` piped to gl_FragColor) — the fragment classifier
+            // answers the FIRST matching sig (SHAPERENDERER) for all of
+            // them. The family identity rides the VERTEX (the attrib
+            // contract is what the C pair reads); a passthrough frag that
+            // matched SHAPERENDERER is COMPATIBLE with a BOUNCY_* vertex.
+            if (fvert != ffrag && fvert != ShaderFamily::UNKNOWN &&
+                (fvert == ShaderFamily::BOUNCY_LINE ||
+                 fvert == ShaderFamily::BOUNCY_CIRCLE) &&
+                ffrag == ShaderFamily::SHAPERENDERER)
+                ffrag = fvert;
             pit->second.family = fvert;
             pit->second.supported =
                 all_compiled && nv == 1 && nf == 1 &&
@@ -560,9 +589,17 @@ bool GLES20Bridge::dispatch(const std::string& method,
             // F-NEW-609b: PER-ENGINE-PROGRAM PGL program + uniform block
             // (SpriteBatch's u_projTrans and ShapeRenderer's u_projModelView
             // must not share one matrix).
-            uint32_t sb = pgl_spritebatch_program_for(prog);
-            cur_engine_prog_ = sb ? prog : 0;
-            if (sb) glUseProgram(sb);
+            // F-BGLSL-1: the bouncy line/circle families route to their own
+            // C pairs (the same per-engine-id, context-generation slot law).
+            uint32_t mapped = 0;
+            if (pit->second.family == ShaderFamily::BOUNCY_LINE)
+                mapped = pgl_bouncy_line_program_for(prog);
+            else if (pit->second.family == ShaderFamily::BOUNCY_CIRCLE)
+                mapped = pgl_bouncy_circle_program_for(prog);
+            else
+                mapped = pgl_spritebatch_program_for(prog);
+            cur_engine_prog_ = mapped ? prog : 0;
+            if (mapped) glUseProgram(mapped);
         } else {
             cur_engine_prog_ = 0;
             glUseProgram(prog);
@@ -777,6 +814,23 @@ bool GLES20Bridge::dispatch(const std::string& method,
                            *nm == "u_projModelView"))
                     pgl_sb_set_proj_view_for(cur_engine_prog_,
                                              (const GLfloat*)P(0), I(2) != 0);
+                // F-BGLSL-1: the bouncy families' single mat4 uniform.
+                if (nm && *nm == "uMVPMatrix") {
+                    pgl_bouncy_set_mvp_for(cur_engine_prog_,
+                                           (const GLfloat*)P(0), I(2) != 0);
+                    static int bun = 0;
+                    if (bun++ < 6)
+                        std::fprintf(stderr,
+                            "[BGL-U] mvp -> engine=%u m00=%g m30=%g\n",
+                            cur_engine_prog_, ((const GLfloat*)P(0))[0],
+                            ((const GLfloat*)P(0))[12]);
+                } else if (nm && bun_diag_on()) {
+                    static int bun2 = 0;
+                    if (bun2++ < 6)
+                        std::fprintf(stderr,
+                            "[BGL-U] SKIP loc=%d name=%s engine=%u\n",
+                            (int)I(0), nm->c_str(), cur_engine_prog_);
+                }
                 // other matrix uniforms: the SB default shader has none —
                 // handled no-op (honest: no invented storage)
             } else {
@@ -903,8 +957,28 @@ bool GLES20Bridge::dispatch(const std::string& method,
         return true;
     }
     if (method == "glDrawElements") {
+        // ── F-DELE-OFFSET (S226; #508 Vector-Pinball draw chain):
+        // compute the indices face FIRST — the VBO OFFSET form (a bound
+        // ELEMENT_ARRAY_BUFFER + the int-encoded byte offset, argc>=4)
+        // carries the indices in I(3) with P(0)==null; the old outer null
+        // guard skipped EVERY bound-EBO draw before any arm could see it
+        // (the GL-DISPATCH rows show the calls arriving — mode=4
+        // count=7794 type=5125 offset=0 — while no vertex shader ever
+        // ran). Khronos glDrawElements: with a bound EBO the indices
+        // argument IS a byte offset (the same law F-NEW-623 pinned for
+        // glVertexAttribPointer). A null pointer with NO bound EBO stays
+        // the honest skip.
+        // The offset FORM is a shape, not a pointer value: offset 0 (the
+        // first index) marshals as the null pointer exactly like the
+        // absent-pointer face — the same trap F-NEW-623 documented at the
+        // glVertexAttribPointer boundary. Decide by FORM (bound EBO + the
+        // int-encoded arg count), then serve the offset AS the pointer.
+        const bool dele_offset_form =
+            P(0) == nullptr && pgl_element_buffer_bound() && ni >= 4;
+        const void* dele_indices =
+            dele_offset_form ? (const void*)(uintptr_t)I(3) : P(0);
         // F-NEW-503: pointer-array indexing + null guard.
-        if (P(0) != nullptr) {
+        if (dele_indices != nullptr || dele_offset_form) {
             // GP583-GLES-001 fix (with the offset-clarification follow-up):
             // the old S203 probe was NOT environment-gated, ALWAYS read six
             // indices regardless of the requested count, ALWAYS interpreted
@@ -924,7 +998,7 @@ bool GLES20Bridge::dispatch(const std::string& method,
                 static int eshown = 0;
                 const GLsizei count = (GLsizei)I(1);
                 const GLenum type = S(2);
-                if (gldbg && eshown < 8 && count > 0) {
+                if (gldbg && eshown < 8 && count > 0 && P(0) != nullptr) {
                     ++eshown;
                     // GP583-GLES-001 offset clarification: with a bound
                     // element-array buffer the indices argument is a byte
@@ -964,7 +1038,8 @@ bool GLES20Bridge::dispatch(const std::string& method,
                     }
                 }
             }
-            glDrawElements(pgl_mode_from_spec(I(0)), (GLsizei)I(1), S(2), P(0));  // F-NEW-607: mode+type
+            glDrawElements(pgl_mode_from_spec(I(0)), (GLsizei)I(1), S(2),
+                           dele_indices);  // F-NEW-607: mode+type
         } else {
             trace = "glDrawElements: null index pointer (skipped)";
         }

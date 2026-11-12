@@ -22,7 +22,7 @@
 | Class | Calls |
 |-------|-------|
 | `DalvikEngine` | 3 |
-| `ExecutionEngine` | 3105 |
+| `ExecutionEngine` | 3106 |
 | `TraceEngine` | 3 |
 | `Unknown` | 6 |
 
@@ -36,12 +36,12 @@
 | `ExecutionEngine.stage_capture_output` | 6 |
 | `ExecutionEngine.trace_files` | 5 |
 | `DalvikEngine.execute_apk` | 3 |
+| `ExecutionEngine.stage_initialize_runtime` | 3 |
 | `TraceEngine.log_screenshot` | 2 |
 | `ExecutionEngine.trace_export` | 2 |
 | `ExecutionEngine.stage_parse_dex` | 2 |
 | `ExecutionEngine.stage_load_apk` | 2 |
 | `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
-| `ExecutionEngine.stage_initialize_runtime` | 2 |
 | `ExecutionEngine.stage_frame_sequence` | 1 |
 | `TraceEngine.start_session` | 1 |
 | `ExecutionEngine.validation` | 1 |
@@ -109,5 +109,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261112-080904-0140`
-- **Generated:** 2026-11-12 08:13:42 UTC
+- **Session ID:** `EXP-001-20261112-170029-5335`
+- **Generated:** 2026-11-12 17:05:36 UTC

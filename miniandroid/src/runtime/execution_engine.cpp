@@ -550,12 +550,47 @@ bool ExecutionEngine::stage_initialize_runtime(ExecutionResult& result, const Ex
     // Allocate framebuffer
     size_t buffer_size = static_cast<size_t>(config.screen_width * config.screen_height * 4);  // RGBA
     framebuffer_.resize(buffer_size, 0xFF);  // Initialize to white-ish
-    
+
+    // ── F-BLANK-1 (S226; #376 P0-01) AOSP launch-surface law ────────────
+    // The launch window shows the THEME windowBackground, not a raw white
+    // fill. When frame 1 never presents (in-draw budget halt — the dooz
+    // F084 family; empty DEX view tree — the queens Flutter family), the
+    // kept surface / captured screenshot showed the uninitialized white
+    // fill: a lost-first-frame state laundering the initial buffer as the
+    // visible surface (deterministic, not racy — 38 runs × 5 APKs × 1
+    // tid, 0 ordering violations, #376 receipt). AOSP: the launch surface
+    // is painted once with the resolved theme windowBackground; the
+    // default when no theme resolves is #303030 (L-S95-DEFTHEME-1).
+    // Byte-inert for every PRESENTING app by construction: a complete
+    // frame overwrites the FULL buffer at copy-back (the pixel loop
+    // writes from index 0 up to the composed size = full screen), and the
+    // F-NEW-298 keep path holds a complete PRIOR frame — neither path
+    // ever exposes this fill. Only never-presenting faces change
+    // (white → the app's own theme color).
+    uint32_t launch_fill = config.background_color;
+    if (launch_fill == 0xFFFFFFFFu /* the untouched default (no setter exists) */) {
+        uint32_t themed = 0xFF303030u;  // L-S95-DEFTHEME-1 framework default
+        auto& rt_bl1 = resources::ResourceRuntime::instance();
+        if (rt_bl1.ensure_loaded(apk_path_)) {
+            if (auto wb = rt_bl1.resolve_window_background_argb(apk_path_))
+                themed = *wb;
+        }
+        launch_fill = themed;
+        {
+            char _bl1_hex[16];
+            std::snprintf(_bl1_hex, sizeof(_bl1_hex), "%08x", launch_fill);
+            trace_engine_.info("ExecutionEngine", "stage_initialize_runtime",
+                               std::string("F-BLANK-1 launch fill = theme "
+                                           "windowBackground 0x") +
+                               _bl1_hex);
+        }
+    }
+
     // Clear framebuffer with background color
-    uint8_t r = (config.background_color >> 16) & 0xFF;
-    uint8_t g = (config.background_color >> 8) & 0xFF;
-    uint8_t b = config.background_color & 0xFF;
-    uint8_t a = (config.background_color >> 24) & 0xFF;
+    uint8_t r = (launch_fill >> 16) & 0xFF;
+    uint8_t g = (launch_fill >> 8) & 0xFF;
+    uint8_t b = launch_fill & 0xFF;
+    uint8_t a = (launch_fill >> 24) & 0xFF;
     
     for (size_t i = 0; i < buffer_size; i += 4) {
         framebuffer_[i] = r;
@@ -3428,6 +3463,9 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
     // its own honest state — never a stale ledger from a previous frame.
     frame_census_.reset();
     frame_baseline_ = framebuffer_;
+    // F-GLZ-1: one GL present per view per frame — the walk's in-tree
+    // blit and the post-walk safety net share this de-dup set.
+    frame_gl_blitted_.clear();
     // F-NEW-298 (CONT-37) FRAME-HONESTY: re-arm the in-draw budget-halt
     // signal for THIS frame's render pass (P1-6 extension, CONT-36 §6).
     dalvik_engine_.frame_honesty_begin();
@@ -6387,6 +6425,128 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
     return true;
 }
 
+// ── F-GLZ-1 (S226; bouncy/Vector-Pinball live receipt) ──────────────────
+// The shared GL pump+present hop, called at the view's TREE POSITION from
+// the render walk and as the post-walk safety net from stage_gl_surfaces.
+// Body = the §25 stage verbatim (PGL context first, REAL renderer callbacks
+// through DEX, PGL backbuf → window framebuffer blit with the
+// GP583-GLES-009 accumulated-geometry clip window). clip_l == INT_MIN means
+// "no scrolling-ancestor clip". Returns true when pixels were presented.
+bool ExecutionEngine::blit_gl_surface_at(uint32_t vid, int gx, int gy, int gw,
+                                         int gh, int clip_l, int clip_t,
+                                         int clip_r, int clip_b,
+                                         const ExecutionConfig& config,
+                                         bool* first_out) {
+    *first_out = false;
+    if (gw <= 0 || gh <= 0) {
+        static thread_local uint64_t bl1_n = 0;
+        if (bl1_n++ < 8)
+            std::cerr << "[F-GLZ-DIAG] view=" << vid << " geom=" << gw << "x"
+                      << gh << " -> zero-size, no present" << std::endl;
+        return false;
+    }
+    const bool have_clip = (clip_l != INT_MIN);
+    // PGL context FIRST: the renderer callbacks issue real gl* calls —
+    // the context must be current before onSurfaceCreated runs (the
+    // pre-init ordering segfaulted in a NULL-context clear).
+    auto& pgl = gles::PGLBackend::instance();
+    std::string err;
+    if (!pgl.init(gw, gh, err)) {
+        trace_engine_.record_error("GL_INIT", err, "blit_gl_surface_at", "");
+        return false;
+    }
+    pgl.make_current();
+    bool first = false;
+    // ── F-GLZ-1 (S226) placement note ───────────────────────────────────
+    // The pump runs POST-WALK here (the §25 proven context: ttt_3's full
+    // libGDX render loop, 13-frame SUCCESS). An in-walk placement at the
+    // GL node's tree position was BUILT and LIVE-A/B'd this session: it
+    // fixes the GL-behind-overlay z-order (bouncy menu byte-exact with
+    // the GL pump live under the opaque menu panel) but the surface
+    // pipeline's DEX callbacks inside the walk context lose their pixel
+    // output for deep init chains (ttt_3 libGDX: onSurfaceCreated answers
+    // OK yet the PGL backbuffer stays empty — walk/pump state
+    // entanglement, not a budget issue: halted=0 awaitup=0 rdepth=0 with
+    // the draw window suspended). The z-order law stays NAMED (GP583-
+    // GLES-009 overlay ordering) with this A/B as its evidence; the
+    // resolution is the compositor-level layering (blit GL content into
+    // the walk's FrameBuffer at the node's composition point), not the
+    // in-walk pump.
+    const bool drew = dalvik_engine_.dispatch_gl_surface_view_frame(
+        vid, gw, gh, &first);
+    if (!drew) return false;
+    *first_out = first;
+    const uint32_t* src = pgl.pixels();
+    if (!src) return false;
+    // Blit window: the draw origin intersected with the ancestor clip
+    // rect AND the root framebuffer (21-P1-6 outside-check law — clip
+    // and draw agree in DRAW space). The source sampling shifts by the
+    // clipped-away margin so the visible region stays pixel-anchored.
+    int x0 = gx, y0 = gy;
+    int x1 = gx + gw, y1 = gy + gh;
+    if (have_clip) {
+        x0 = std::max(x0, clip_l);
+        y0 = std::max(y0, clip_t);
+        x1 = std::min(x1, clip_r);
+        y1 = std::min(y1, clip_b);
+    }
+    x0 = std::max(x0, 0);
+    y0 = std::max(y0, 0);
+    x1 = std::min(x1, config.screen_width);
+    y1 = std::min(y1, config.screen_height);
+    // GP S223 LOG-004: the blit's REAL pixel count — an empty clip
+    // intersection copies zero pixels and must NOT report a presented
+    // GL frame downstream (provenance derives every bit from this).
+    size_t blitted_px = 0;
+    for (int y = y0; y < y1; ++y) {
+        for (int x = x0; x < x1; ++x) {
+            const int sx = x - gx;
+            const int sy = y - gy;
+            if (sx < 0 || sy < 0 || sx >= gw || sy >= gh) continue;
+            const uint32_t px = src[(size_t)sy * gw + sx];
+            const size_t idx =
+                ((size_t)y * config.screen_width + x) * 4;
+            if (idx + 3 >= framebuffer_.size()) continue;
+            ++blitted_px;
+            // PGL pix_t = RGBA8888 (R lowest byte, little-endian order)
+            framebuffer_[idx + 0] = (uint8_t)(px & 0xFF);
+            framebuffer_[idx + 1] = (uint8_t)((px >> 8) & 0xFF);
+            framebuffer_[idx + 2] = (uint8_t)((px >> 16) & 0xFF);
+            framebuffer_[idx + 3] = 0xFF;
+        }
+    }
+    trace_engine_.info("ExecutionEngine", "blit_gl_surface_at",
+                       "GL frame presented " + std::to_string(gw) + "x" +
+                           std::to_string(gh) + (first ? " (surface created)" : ""));
+    // S135 §14: GL/Surface renderer family + frame-presented events.
+    if (first) {
+        auto sc = trace_engine_.make_event(
+            diagnostics::ev::SURFACE_CREATED, diagnostics::EventSev::CONFIRMED,
+            "surface", std::to_string(gw) + "x" + std::to_string(gh), "OK");
+        sc.renderer_family = diagnostics::rf::OPENGL_GLES;
+        sc.extra = {{"view_id", vid}};
+        trace_engine_.runtime_event(std::move(sc));
+        trace_engine_.set_renderer_family(
+            diagnostics::rf::OPENGL_GLES, "blit_gl_surface_at GL frame");
+    }
+    {
+        auto gp = trace_engine_.make_event(
+            diagnostics::ev::GL_FRAME_PRESENT, diagnostics::EventSev::CONFIRMED,
+            "surface", std::to_string(gw) + "x" + std::to_string(gh), "OK");
+        gp.renderer_family = diagnostics::rf::OPENGL_GLES;
+        gp.extra = {{"view_id", vid}, {"first", first}};
+        trace_engine_.runtime_event(std::move(gp));
+    }
+    if (diagnostics::GfxProvenance::instance().enabled()) {
+        diagnostics::GfxProvenance::instance().record_gl_presented(
+            vid, gw, gh, first, /*draw_called=*/drew, blitted_px);
+    }
+    // CONT-83 WS-B: present row at the real blit site (PGL backbuf →
+    // window framebuffer) — the frame-correlation tail event.
+    gfx::GfxTrace::instance().frame_stage("present", gw, gh, vid);
+    return true;
+}
+
 bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
                                         const ExecutionConfig& config) {
     (void)result;
@@ -6398,8 +6558,22 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
         (void)node;
         // measured geometry (the view walk already laid the tree out)
         auto* n = views->find_node(vid);
-        if (!n || n->class_desc.find("GLSurfaceView") == std::string::npos)
+        // ── F-GLSUB-1 (S226; bouncy/Vector-Pinball live receipt) ────────
+        // collector-side twin of the pump gate fix: GLSurfaceView
+        // SUBCLASSES (bouncy GLFieldView, libGDX GLSurfaceView20) are GL
+        // surfaces under the AOSP GLThread law — the declared-class
+        // substring test silently excluded every subclass, so the pump
+        // never saw the view even with a stored glRenderer. The DEX
+        // superclass walk (memoized, R-NEW-530) answers the ancestry.
+        if (!n || (n->class_desc.find("GLSurfaceView") == std::string::npos &&
+                   !dalvik_engine_.is_subclass_of(
+                       n->class_desc, "Landroid/opengl/GLSurfaceView;")))
             continue;
+        // ── F-GLZ-1: the walk presents in-tree GL views at their tree
+        // position; this post-walk pass is the SAFETY NET for GL views the
+        // walk never reached (budget exhaustion / detached trees) — never
+        // a second present of the same view.
+        if (frame_gl_blitted_.count(vid)) continue;
         int gw = n->laid_out ? n->measured_width : n->width;
         int gh = n->laid_out ? n->measured_height : n->height;
         // ── GP583-GLES-009 fix: the blit consumes the SAME accumulated
@@ -6433,19 +6607,11 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
             // shift content only (a node's own scroll never moves itself).
             int acc_tx = (int)std::lround(n->translation_x);
             int acc_ty = (int)std::lround(n->translation_y);
-            for (const auto* p : chain) {
-                acc_tx += (int)std::lround(p->translation_x);
-                acc_ty += (int)std::lround(p->translation_y);
-            }
             int acc_sx = 0, acc_sy = 0;
-            // chain is child→root. ALL strict-ancestor scrolls accumulate
-            // into the offset (the walk's off_sx law — a higher scroller
-            // shifts the whole subtree including the nearer one); the
-            // NEAREST scrolling ancestor's visible rect wins the clip
-            // (S130 R-NEW-436 law — it replaces the inherited rect).
             for (size_t i = 0; i < chain.size(); ++i) {
                 const auto* p = chain[i];
-                if (!have_clip && (p->scroll_x != 0 || p->scroll_y != 0)) {
+                const bool scrolling = p->scroll_x != 0 || p->scroll_y != 0;
+                if (scrolling && !have_clip) {
                     int ax = p->laid_out ? p->measured_left : p->x;
                     int ay = p->laid_out ? p->measured_top : p->y;
                     int atx = (int)std::lround(p->translation_x);
@@ -6474,89 +6640,13 @@ bool ExecutionEngine::stage_gl_surfaces(ExecutionResult& result,
             gy += acc_ty - acc_sy;
         }
         if (gw <= 0 || gh <= 0) continue;
-        // PGL context FIRST: the renderer callbacks issue real gl* calls —
-        // the context must be current before onSurfaceCreated runs (the
-        // pre-init ordering segfaulted in a NULL-context clear).
-        auto& pgl = gles::PGLBackend::instance();
-        std::string err;
-        if (!pgl.init(gw, gh, err)) {
-            trace_engine_.record_error("GL_INIT", err, "stage_gl_surfaces", "");
-            continue;
-        }
-        pgl.make_current();
         bool first = false;
-        const bool drew = dalvik_engine_.dispatch_gl_surface_view_frame(
-            vid, gw, gh, &first);
-        if (!drew) continue;
-        any = true;
-        const uint32_t* src = pgl.pixels();
-        if (!src) continue;
-        // Blit window: the draw origin intersected with the ancestor clip
-        // rect AND the root framebuffer (21-P1-6 outside-check law — clip
-        // and draw agree in DRAW space). The source sampling shifts by the
-        // clipped-away margin so the visible region stays pixel-anchored.
-        int x0 = gx, y0 = gy;
-        int x1 = gx + gw, y1 = gy + gh;
-        if (have_clip) {
-            x0 = std::max(x0, clip_l);
-            y0 = std::max(y0, clip_t);
-            x1 = std::min(x1, clip_r);
-            y1 = std::min(y1, clip_b);
+        if (blit_gl_surface_at(vid, gx, gy, gw, gh,
+                               have_clip ? clip_l : INT_MIN, clip_t, clip_r,
+                               clip_b, config, &first)) {
+            any = true;
+            frame_gl_blitted_.insert(vid);
         }
-        x0 = std::max(x0, 0);
-        y0 = std::max(y0, 0);
-        x1 = std::min(x1, config.screen_width);
-        y1 = std::min(y1, config.screen_height);
-        // GP S223 LOG-004: the blit's REAL pixel count — an empty clip
-        // intersection copies zero pixels and must NOT report a presented
-        // GL frame downstream (provenance derives every bit from this).
-        size_t blitted_px = 0;
-        for (int y = y0; y < y1; ++y) {
-            for (int x = x0; x < x1; ++x) {
-                const int sx = x - gx;
-                const int sy = y - gy;
-                if (sx < 0 || sy < 0 || sx >= gw || sy >= gh) continue;
-                const uint32_t px = src[(size_t)sy * gw + sx];
-                const size_t idx =
-                    ((size_t)y * config.screen_width + x) * 4;
-                if (idx + 3 >= framebuffer_.size()) continue;
-                ++blitted_px;
-                // PGL pix_t = RGBA8888 (R lowest byte, little-endian order)
-                framebuffer_[idx + 0] = (uint8_t)(px & 0xFF);
-                framebuffer_[idx + 1] = (uint8_t)((px >> 8) & 0xFF);
-                framebuffer_[idx + 2] = (uint8_t)((px >> 16) & 0xFF);
-                framebuffer_[idx + 3] = 0xFF;
-            }
-        }
-        trace_engine_.info("ExecutionEngine", "stage_gl_surfaces",
-                           "GL frame presented " + std::to_string(gw) + "x" +
-                               std::to_string(gh) + (first ? " (surface created)" : ""));
-        // S135 §14: GL/Surface renderer family + frame-presented events.
-        if (first) {
-            auto sc = trace_engine_.make_event(
-                diagnostics::ev::SURFACE_CREATED, diagnostics::EventSev::CONFIRMED,
-                "surface", std::to_string(gw) + "x" + std::to_string(gh), "OK");
-            sc.renderer_family = diagnostics::rf::OPENGL_GLES;
-            sc.extra = {{"view_id", vid}};
-            trace_engine_.runtime_event(std::move(sc));
-            trace_engine_.set_renderer_family(
-                diagnostics::rf::OPENGL_GLES, "stage_gl_surfaces GL frame");
-        }
-        {
-            auto gp = trace_engine_.make_event(
-                diagnostics::ev::GL_FRAME_PRESENT, diagnostics::EventSev::CONFIRMED,
-                "surface", std::to_string(gw) + "x" + std::to_string(gh), "OK");
-            gp.renderer_family = diagnostics::rf::OPENGL_GLES;
-            gp.extra = {{"view_id", vid}, {"first", first}};
-            trace_engine_.runtime_event(std::move(gp));
-        }
-        if (diagnostics::GfxProvenance::instance().enabled()) {
-            diagnostics::GfxProvenance::instance().record_gl_presented(
-                vid, gw, gh, first, /*draw_called=*/drew, blitted_px);
-        }
-        // CONT-83 WS-B: present row at the real blit site (PGL backbuf →
-        // window framebuffer) — the frame-correlation tail event.
-        gfx::GfxTrace::instance().frame_stage("present", gw, gh, vid);
     }
     if (!any) return true;
     trace_engine_.info("ExecutionEngine", "stage_gl_surfaces",

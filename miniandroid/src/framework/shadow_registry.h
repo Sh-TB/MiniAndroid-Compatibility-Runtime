@@ -252,6 +252,13 @@ public:
     // fill-array-data [F) or as INT32 raw bits (const + aput). Scalar
     // get_object_float_field converts INT32 by VALUE (the scalar-field
     // convention); array elements must reinterpret INT32 as float BITS.
+    // F-MATRIX-LAW (S226): float array-element writes for shadows — the
+    // android.opengl.Matrix family (frustumM/setLookAtM/multiplyMM…)
+    // writes its results into the caller's float[] slots.
+    virtual bool set_object_array_float_element(uint32_t array_id, size_t index,
+                                                float value) {
+        (void)array_id; (void)index; (void)value; return false;
+    }
     virtual bool get_object_array_float_element(uint32_t array_id, size_t index,
                                                 float& out) {
         (void)array_id; (void)index; (void)out; return false;
@@ -261,6 +268,14 @@ public:
     virtual bool set_object_float_field(uint32_t object_id,
                                         const std::string& field_name,
                                         float value) {
+        (void)object_id; (void)field_name; (void)value; return false;
+    }
+    // F-LIST-FP (S226): double field writes for shadows — the Float/Double
+    // box twins of set_object_float_field (the list element-fidelity law
+    // mints Number boxes whose "value" is a real FLOAT64 slot).
+    virtual bool set_object_double_field(uint32_t object_id,
+                                         const std::string& field_name,
+                                         double value) {
         (void)object_id; (void)field_name; (void)value; return false;
     }
     // M4 F-028d — ATOMIC FIELD UPDATER LAW: typed heap field access for

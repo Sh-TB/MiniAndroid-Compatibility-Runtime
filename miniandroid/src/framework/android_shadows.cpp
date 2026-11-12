@@ -589,6 +589,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                 } else {
                     kind = 4;  // typed null element
                 }
+                if (obj_id == 268) std::cerr << "[W268] push at line 592 kind_avil" << std::endl;
                 pq->elements.push_back(item);
                 pq->elem_kinds.push_back(kind);
                 pq->elem_strings.push_back(sval);
@@ -985,6 +986,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         if (m == "singletonList") {
             uint32_t list_id = heap_->allocate("Ljava/util/Collections$SingletonList;");
             auto* st = get_or_create(list_id, /*is_map=*/false);
+            if (obj_id == 268) std::cerr << "[W268] push at line 988 kind_avil" << std::endl;
             st->elements.push_back(ctx.arg_as_object(0, 0));
             return CallResult::handled_object(list_id,
                                               "Ljava/util/Collections$SingletonList;");
@@ -1009,6 +1011,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         if (m == "singleton") {
             uint32_t set_id = heap_->allocate("Ljava/util/Collections$SingletonList;");
             auto* st = get_or_create(set_id, /*is_map=*/false);
+            if (obj_id == 268) std::cerr << "[W268] push at line 1012 kind_avil" << std::endl;
             st->elements.push_back(ctx.arg_as_object(0, 0));
             return CallResult::handled_object(set_id, "Ljava/util/Set;");
         }
@@ -1653,6 +1656,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                                          ? ctx.args[1]
                                          : CallContext::Arg{};
                 for (int32_t i = 0; i < nc; ++i) {
+                    if (obj_id == 268) std::cerr << "[W268] push at line 1656 kind_avil" << std::endl;
                     st->elements.push_back(0);
                     st->elem_kinds.push_back(2);
                     st->elem_strings.push_back(std::string());
@@ -1697,6 +1701,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                         a.kind = CallContext::Arg::Kind::NULL_REF;
                     }
                     int32_t before = r23_n(st);
+                    if (obj_id == 268) std::cerr << "[W268] push at line 1700 kind_avil" << std::endl;
                     st->elements.push_back(0);
                     st->elem_kinds.push_back(2);
                     st->elem_strings.push_back(std::string());
@@ -1981,6 +1986,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                                 complete = false;
                                 break;
                             }
+                            if (obj_id == 268) std::cerr << "[W268] push at line 1984 kind_avil" << std::endl;
                             st->elements.push_back(elem);
                         }
                         if (complete && alen > 0) {
@@ -2007,6 +2013,18 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         if (ctx.args.size() >= 2) {
             // add(index, item)
             int32_t idx = ctx.arg_as_int(0);
+            {
+                static const bool lat2_on =
+                    std::getenv("MINIANDROID_LISTADD_TRACE") != nullptr;
+                static thread_local uint64_t lat2_n = 0;
+                if (lat2_on && lat2_n < 200) {
+                    ++lat2_n;
+                    std::cerr << "[LISTADD2] map=" << obj_id
+                              << " idx=" << idx
+                              << " kind=" << (int)ctx.args[1].kind
+                              << " caller=" << ctx.caller << std::endl;
+                }
+            }
             // F-NEW-238: kind-aware insert keeps all four parallel stores
             // index-aligned (elements/kinds/strings/ints).
             const auto& a1 = ctx.args[1];
@@ -2025,6 +2043,25 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                            : (a1.kind == CallContext::Arg::Kind::BOOL
                                   ? (a1.bool_val ? 1 : 0)
                                   : static_cast<int32_t>(a1.long_val));
+            } else if (a1.kind == CallContext::Arg::Kind::FLOAT ||
+                       a1.kind == CallContext::Arg::Kind::DOUBLE) {
+                // F-LIST-FP (S226): add(index, item) twin of the add(item)
+                // law — box the raw float slot (valueOf shape), kind-1
+                // object element; the Number-unbox law answers the reads.
+                const char* ffp_cls =
+                    a1.kind == CallContext::Arg::Kind::FLOAT
+                        ? "Ljava/lang/Float;" : "Ljava/lang/Double;";
+                if (heap_) {
+                    uint32_t ffp_box = heap_->allocate(ffp_cls);
+                    if (a1.kind == CallContext::Arg::Kind::FLOAT)
+                        heap_->set_object_float_field(ffp_box, "value",
+                                                      a1.float_val);
+                    else
+                        heap_->set_object_double_field(ffp_box, "value",
+                                                       a1.double_val);
+                    item = ffp_box;
+                }
+                kind = item != 0 ? 1 : 4;
             } else if (item != 0) {
                 kind = 1;
             } else if (a1.kind == CallContext::Arg::Kind::STRING) {
@@ -2130,16 +2167,67 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             if (a0.kind == CallContext::Arg::Kind::STRING ||
                 (a0.kind == CallContext::Arg::Kind::OBJECT &&
                  a0.object_id == 0 && !a0.string_val.empty())) {
+                if (obj_id == 268) std::cerr << "[W268] push at line 2164 kind_avil" << std::endl;
                 state->elements.push_back(0);
                 state->elem_kinds.push_back(2);
                 state->elem_strings.push_back(ctx.arg_as_string(0));
                 state->elem_ints.push_back(0);
             } else if (a0_is_int) {
                 // F-NEW-238: kind-3 slot — the value survives in elem_ints.
+                if (obj_id == 268) std::cerr << "[W268] push at line 2170 kind_avil" << std::endl;
                 state->elements.push_back(0);
                 state->elem_kinds.push_back(3);
                 state->elem_strings.push_back(std::string());
                 state->elem_ints.push_back(a0_int_value());
+            {
+                static const bool lat_on =
+                    std::getenv("MINIANDROID_LISTADD_TRACE") != nullptr;
+                static thread_local uint64_t lat_n = 0;
+                if (lat_on && lat_n < 20000) {
+                    ++lat_n;
+                    std::cerr << "[LISTADD] map=" << obj_id
+                              << " kind=" << (int)a0.kind
+                              << " caller=" << ctx.caller << std::endl;
+                }
+            }
+            } else if (a0.kind == CallContext::Arg::Kind::FLOAT ||
+                       a0.kind == CallContext::Arg::Kind::DOUBLE) {
+                // ── F-LIST-FP (S226; #508 Vector-Pinball Color.fromList chain):
+                // FLOAT/DOUBLE ELEMENT FIDELITY. OpenJDK ArrayList<Double>.add
+                // autoboxes the raw float slot through Double.valueOf. The
+                // pre-law arm classified every float arg as
+                // arg_as_object(0)=0 → the kind-4 TYPED-NULL encoding →
+                // bouncy's Color.fromList(List<Double>) read
+                // (Number)list.get(i) → null → NPE at pc=16 (the ballcolor/
+                // launchPosition table lists — the SECOND APP-BOUNDARY death
+                // after the F-JSON-NULL sentinel fix, same live run). Law:
+                // box the raw value through the valueOf shape (a heap box
+                // with the "value" field — the same convention the engine's
+                // Double.valueOf law mints) and store a kind-1 object
+                // element; the Number-unbox law answers the reads.
+                const char* ffp_cls =
+                    a0.kind == CallContext::Arg::Kind::FLOAT
+                        ? "Ljava/lang/Float;" : "Ljava/lang/Double;";
+                if (heap_) {
+                    uint32_t ffp_box = heap_->allocate(ffp_cls);
+                    if (a0.kind == CallContext::Arg::Kind::FLOAT)
+                        heap_->set_object_float_field(ffp_box, "value",
+                                                      a0.float_val);
+                    else
+                        heap_->set_object_double_field(ffp_box, "value",
+                                                       a0.double_val);
+                    if (obj_id == 268) std::cerr << "[W268] push at line 2211 kind_avil" << std::endl;
+                    state->elements.push_back(ffp_box);
+                    state->elem_kinds.push_back(1);
+                    state->elem_strings.push_back(std::string());
+                    state->elem_ints.push_back(0);
+                } else {
+                    if (obj_id == 268) std::cerr << "[W268] push at line 2216 kind_avil" << std::endl;
+                    state->elements.push_back(0);
+                    state->elem_kinds.push_back(4);
+                    state->elem_strings.push_back(std::string());
+                    state->elem_ints.push_back(0);
+                }
             } else {
                 uint32_t item = ctx.arg_as_object(0, 0);
                 // [R342-COWSET] Set semantics: CopyOnWriteArraySet.add is a
@@ -2151,6 +2239,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                         if (e == item) return CallResult::handled_bool(false);
                     }
                 }
+                if (obj_id == 268) std::cerr << "[W268] push at line 2232 kind_avil" << std::endl;
                 state->elements.push_back(item);
                 // F-NEW-271: this branch is reached only for non-string,
                 // non-int args, so item == 0 here IS a null element
@@ -2756,6 +2845,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                     // + "" encoding.
                     kind = 4;
                 }
+                if (obj_id == 268) std::cerr << "[W268] push at line 2837 kind_avil" << std::endl;
                 st2->elements.push_back(item);
                 st2->elem_kinds.push_back(kind);
                 st2->elem_strings.push_back(sval);
@@ -2829,6 +2919,31 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
 
     if (m == "get") {
         auto* state = get_or_create(obj_id);
+        // ── F-GLZ-DIAG (S226; bouncy FieldElement.createFromParameters
+        // chain): bounded map-get truth probe. The live run answered NULL
+        // for params.get("class") after map_string_entries recorded the
+        // pair — surface the RESOLVED key + entry counts + arg kinds so
+        // the miss is attributable (put/get convention vs state identity).
+        if (std::getenv("MINIANDROID_MAPGET_TRACE") != nullptr) {
+            static thread_local uint64_t mgt_n = 0;
+            std::string mgt_key =
+                state->is_map ? map_key_value_law(ctx, 0, heap_) : "<list>";
+            bool mgt_hit_str = state->map_string_entries.count(mgt_key) > 0;
+            if ((mgt_key == "class" ||
+                 ctx.caller.find("createFromParameters") != std::string::npos) &&
+                mgt_n < 40) {
+                ++mgt_n;
+                std::cerr << "[MAPGET] map=" << obj_id << " is_map="
+                          << (state->is_map ? 1 : 0) << " argc="
+                          << ctx.args.size()
+                          << " key=\"" << mgt_key << "\""
+                          << " hit=" << (mgt_hit_str ? 1 : 0)
+                          << " str_entries=" << state->map_string_entries.size()
+                          << " obj_entries=" << state->map_entries.size()
+                          << " caller=" << ctx.caller
+                          << std::endl;
+            }
+        }
         // EXP-071 Phase 7: For Map collections (HashMap, ConcurrentHashMap),
         // get(key) uses the key string to look up map_entries or
         // map_string_entries. For List collections (ArrayList, LinkedList),
@@ -2950,11 +3065,37 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             }
         }
         if (idx >= 0 && (size_t)idx < state->elements.size()) {
+        if (std::getenv("MINIANDROID_LISTADD_TRACE") != nullptr) {
+            static thread_local uint64_t lgt_n = 0;
+            if (lgt_n < 40) {
+                ++lgt_n;
+                std::cerr << "[LISTGET] map=" << obj_id << " idx=" << idx
+                          << " kind="
+                          << (idx < (int32_t)state->elem_kinds.size()
+                                  ? (int)state->elem_kinds[idx] : -1)
+                          << " caller=" << ctx.caller << std::endl;
+            }
+        }
             if (idx < (int32_t)state->elem_kinds.size() &&
                 state->elem_kinds[idx] == 3) {
                 // F-NEW-238: kind-3 int element — the value survives.
+                // F-BOX-SERVE (S226): the ART face of List.get on an
+                // Integer element is a BOXED object (ArrayList.get returns
+                // Object = Integer.valueOf(...)). Serving the RAW int put
+                // an INT32 DalvikValue into the caller's OBJECT register —
+                // the following invoke-virtual (check-cast Number →
+                // intValue, bouncy Color.fromList pc=16) saw a non-object
+                // receiver and NPE'd (f141-null-recv). Law: mint the
+                // Integer.valueOf shape (a heap box with "value") — the
+                // Number-unbox law answers the reads.
                 int32_t iv = idx < (int32_t)state->elem_ints.size()
                                  ? state->elem_ints[idx] : 0;
+                if (heap_) {
+                    uint32_t ibox = heap_->allocate("Ljava/lang/Integer;");
+                    heap_->set_object_int_field(ibox, "value", iv);
+                    return CallResult::handled_object(
+                        ibox, "Ljava/lang/Integer;");
+                }
                 return CallResult::handled_int(iv);
             }
             if (idx < (int32_t)state->elem_kinds.size() &&
@@ -3299,6 +3440,7 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
         std::string sval;
         if (!ctx.args.empty())
             lawb_classify_arg(ctx.args[0], item, kind, ival, sval);
+        if (obj_id == 268) std::cerr << "[W268] push at line 3431 kind_avil" << std::endl;
         state->elements.push_back(item);
         state->elem_kinds.push_back(kind);
         state->elem_strings.push_back(sval);
@@ -4251,15 +4393,24 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             // navigation registration chain (dooz "composable" frontier).
             {
                 static thread_local uint64_t f089_put = 0;
-                if (f089_put < 40) {
+                static const bool mput_on =
+                    std::getenv("MINIANDROID_MAPGET_TRACE") != nullptr;
+                if (mput_on &&
+                    (key == "class" ||
+                     ctx.caller.find("mapFromJSONObject") != std::string::npos) &&
+                    f089_put < 40) {
                     ++f089_put;
-                    std::cerr << "[F089] shadow put map=" << obj_id
+                    std::cerr << "[MAPPUT] map=" << obj_id
                               << " key=\"" << key << "\""
                               << " arg0_kind=" << (int)ctx.args[0].kind
                               << " arg0_str=\"" << ctx.args[0].string_val << "\""
                               << " arg0_obj=" << ctx.args[0].object_id
-                              << " arg0_cls=" << ctx.args[0].object_class << " nargs=" << ctx.args.size()
-                              << " recv=" << ctx.class_name << std::endl;
+                              << " arg0_cls=" << ctx.args[0].object_class
+                              << " val_kind="
+                              << (ctx.args.size() >= 2
+                                      ? (int)ctx.args[1].kind : -1)
+                              << " nargs=" << ctx.args.size()
+                              << " caller=" << ctx.caller << std::endl;
                 }
             }
             // EXP-071 Phase 7: Check if the value is a STRING or OBJECT.
@@ -4684,6 +4835,25 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
                            : (a1.kind == CallContext::Arg::Kind::BOOL
                                   ? (a1.bool_val ? 1 : 0)
                                   : static_cast<int32_t>(a1.long_val));
+            } else if (a1.kind == CallContext::Arg::Kind::FLOAT ||
+                       a1.kind == CallContext::Arg::Kind::DOUBLE) {
+                // F-LIST-FP (S226): add(index, item) twin of the add(item)
+                // law — box the raw float slot (valueOf shape), kind-1
+                // object element; the Number-unbox law answers the reads.
+                const char* ffp_cls =
+                    a1.kind == CallContext::Arg::Kind::FLOAT
+                        ? "Ljava/lang/Float;" : "Ljava/lang/Double;";
+                if (heap_) {
+                    uint32_t ffp_box = heap_->allocate(ffp_cls);
+                    if (a1.kind == CallContext::Arg::Kind::FLOAT)
+                        heap_->set_object_float_field(ffp_box, "value",
+                                                      a1.float_val);
+                    else
+                        heap_->set_object_double_field(ffp_box, "value",
+                                                       a1.double_val);
+                    item = ffp_box;
+                }
+                kind = item != 0 ? 1 : 4;
             } else if (item != 0) {
                 kind = 1;
             } else if (a1.kind == CallContext::Arg::Kind::STRING) {
@@ -7389,11 +7559,25 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 if (a.kind != CallContext::Arg::Kind::OBJECT ||
                     a.object_id == 0)
                     continue;
+                // ── F-CSW-3 (S226; #376): Xml.asAttributeSet — the parser
+                // IS the AttributeSet. androidx passes the Resources.getXml
+                // parser object itself (Lorg/xmlpull/v1/XmlPullParser;) as
+                // the AttributeSet argument; the 371 hop + xml_pull_advance
+                // publish the current tag's typed records under that object
+                // id, so the lookup resolves the XML stage of the AOSP
+                // precedence law. AttributeSet-class markers keep the
+                // original first-hit scan semantics.
                 if (a.object_class == "Landroid/util/AttributeSet;") {
                     xml_recs =
                         resources::AttributeSetStore::instance().lookup(
                             a.object_id);
                     break;
+                }
+                if (a.object_class == "Lorg/xmlpull/v1/XmlPullParser;") {
+                    xml_recs =
+                        resources::AttributeSetStore::instance().lookup(
+                            a.object_id);
+                    if (xml_recs) break;
                 }
             }
             for (size_t ai = 0; ai < ctx.args.size(); ++ai) {

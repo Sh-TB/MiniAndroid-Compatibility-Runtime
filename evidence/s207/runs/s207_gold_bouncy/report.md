@@ -22,7 +22,7 @@
 | Class | Calls |
 |-------|-------|
 | `DalvikEngine` | 3 |
-| `ExecutionEngine` | 1418 |
+| `ExecutionEngine` | 1437 |
 | `TraceEngine` | 3 |
 
 ## Top Method Calls
@@ -31,24 +31,24 @@
 |--------|-------|
 | `ExecutionEngine.stage_load_classes` | 1348 |
 | `ExecutionEngine.stage_render_frame` | 37 |
+| `ExecutionEngine.blit_gl_surface_at` | 9 |
+| `ExecutionEngine.stage_gl_surfaces` | 9 |
 | `ExecutionEngine.stage_capture_output` | 6 |
 | `ExecutionEngine.trace_files` | 5 |
 | `DalvikEngine.execute_apk` | 3 |
+| `ExecutionEngine.stage_initialize_runtime` | 3 |
 | `TraceEngine.log_screenshot` | 2 |
 | `ExecutionEngine.trace_export` | 2 |
 | `ExecutionEngine.stage_parse_dex` | 2 |
 | `ExecutionEngine.stage_load_apk` | 2 |
 | `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
-| `ExecutionEngine.stage_initialize_runtime` | 2 |
-| `ExecutionEngine.stage_frame_sequence` | 1 |
 | `TraceEngine.start_session` | 1 |
 | `ExecutionEngine.validation` | 1 |
 | `ExecutionEngine.stage_generate_reports` | 1 |
+| `ExecutionEngine.stage_frame_sequence` | 1 |
 | `ExecutionEngine.stage_execute_application` | 1 |
 | `ExecutionEngine.phase_b_click` | 1 |
 | `ExecutionEngine.lifecycle_verified` | 1 |
-| `ExecutionEngine.lifecycle_source` | 1 |
-| `ExecutionEngine.execution_source` | 1 |
 
 ## Screenshots
 
@@ -56,7 +56,7 @@
 
 - **File:** `/home/z/my-project/evidence/s207/runs/s207_gold_bouncy/screenshot.png`
 - **Resolution:** 1080x1920
-- **Size:** 36.62 KB
+- **Size:** 8.60 KB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gold_bouncy/screenshot.png)
 
@@ -64,11 +64,11 @@
 
 - **File:** `/home/z/my-project/evidence/s207/runs/s207_gold_bouncy/screenshot.png`
 - **Resolution:** 1080x1920
-- **Size:** 36.62 KB
+- **Size:** 8.60 KB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gold_bouncy/screenshot.png)
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261112-080900-6672`
-- **Generated:** 2026-11-12 08:09:02 UTC
+- **Session ID:** `EXP-001-20261112-173058-5459`
+- **Generated:** 2026-11-12 17:31:00 UTC

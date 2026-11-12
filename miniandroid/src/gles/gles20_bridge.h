@@ -46,6 +46,16 @@ public:
         UNKNOWN = 0,       // arbitrary/unverifiable GLSL — NOT executable
         SPRITEBATCH = 1,   // libGDX SpriteBatch default shader family
         SHAPERENDERER = 2, // libGDX ShapeRenderer default shader family
+        // ── F-BGLSL-1 (S226; #508 Vector-Pinball render chain): the two
+        // Vector-Pinball GL20Renderer shader families (app assets
+        // shaders/line.vert|frag + shaders/circle.vert|frag — upstream
+        // dozingcat/Vector-Pinball). Line = flat-color geometry (the table
+        // walls, 7794-index draw). Circle = per-fragment radial alpha
+        // falloff against gl_FragCoord (ball/bumpers/flippers, 48-index
+        // draw). Both classify structurally (attrib names + one mat4
+        // uniform, no samplers) and execute as the registered C pairs.
+        BOUNCY_LINE = 3,
+        BOUNCY_CIRCLE = 4,
     };
 
     // ── GP583-GLES-008: PER-PROGRAM introspection (was canned/global) ──

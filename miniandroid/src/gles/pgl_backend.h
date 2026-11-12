@@ -75,6 +75,12 @@ uint32_t pgl_to_spec(uint32_t pgl_val);      // reverse: returns/errors
 // program maps onto this PGL program (see gles20_bridge.cpp).
 uint32_t pgl_spritebatch_program();                 // legacy first-slot face
 uint32_t pgl_spritebatch_program_for(uint32_t engine_id);  // F-NEW-609b
+// F-BGLSL-1 (S226): the Vector-Pinball line/circle C-pair programs (per
+// engine id, context-generation law identical to the SpriteBatch slots).
+uint32_t pgl_bouncy_line_program_for(uint32_t engine_id);
+uint32_t pgl_bouncy_circle_program_for(uint32_t engine_id);
+void pgl_bouncy_set_mvp_for(uint32_t engine_id, const float* m16,
+                            bool transpose);
 void pgl_sb_set_proj_view(const float* m16, bool transpose);   // legacy
 void pgl_sb_set_proj_view_for(uint32_t engine_id, const float* m16,
                               bool transpose);      // F-NEW-609b

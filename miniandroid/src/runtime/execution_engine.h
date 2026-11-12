@@ -13,6 +13,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <set>
 #include <functional>
 
 #include "apk/apk_parser.h"
@@ -299,6 +300,22 @@ private:
     // the PortableGL software context, and the PGL frame is presented
     // (blitted) into the window framebuffer region of that view.
     bool stage_gl_surfaces(ExecutionResult& result, const ExecutionConfig& config);
+    // ── F-GLZ-1 (S226; bouncy/Vector-Pinball live receipt) ───────────────
+    // AOSP View.java draw order: every view — a GLSurfaceView included —
+    // draws AT ITS TREE POSITION; siblings AFTER it (the menu overlay,
+    // score HUD, buttons) paint OVER the GL content. The §25 pass ran
+    // strictly AFTER the walk and pasted GL pixels over everything, so a
+    // full-screen GLFieldView erased its own overlay siblings (bouncy menu
+    // buttons vanished under the GL table). The blit body below is the
+    // shared pump+present hop: the WALK calls it at the GL node's visit
+    // point (in-tree z-order), and stage_gl_surfaces keeps it as the
+    // post-walk SAFETY NET for GL views the walk never reached (budget
+    // exhaustion, detached trees). frame_gl_blitted_ de-duplicates the two
+    // sites within one frame.
+    bool blit_gl_surface_at(uint32_t vid, int gx, int gy, int gw, int gh,
+                            int clip_l, int clip_t, int clip_r, int clip_b,
+                            const ExecutionConfig& config, bool* first_out);
+    std::set<uint32_t> frame_gl_blitted_;
     // S83-GFX-BASE: original render body (stage_render_frame wraps it with
     // the GL surface pass so every frame path composites GL surfaces).
     bool stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config);

@@ -206,6 +206,169 @@ void pgl_sb_cache_reset() {
     g_sb_program = 0;
 }
 
+// ── F-BGLSL-1 (S226; #508 Vector-Pinball render chain) ──────────────────
+// The two GL20Renderer shader families as PGL C-function pairs. Sources =
+// the app assets (upstream dozingcat/Vector-Pinball shaders/*.vert|frag):
+//   line.vert   : gl_Position = uMVPMatrix * position; color = inColor
+//   line.frag   : gl_FragColor = color
+//   circle.vert : same transform + varyings color/inRadiusSquared/
+//                 inInnerRadiusSquared/inCenter
+//   circle.frag : alpha falloff — outside the outer radius transparent,
+//                 inside the inner radius opaque, linear between (the
+//                 anti-aliased bumper/ball edge, read against gl_FragCoord).
+// Attrib slots = the ENGINE-MINTED locations (glGetAttribLocation mints
+// sequentially per program: uMVPMatrix→0 then the app's query order
+// position=1, inColor=2, inCenter=3, inRadiusSquared=4,
+// inInnerRadiusSquared=5 — the live GL-DISPATCH trace binds exactly these).
+
+struct BouncyUniforms {
+    float mvp[16];
+    bool transpose;
+};
+
+static void bouncy_mvp_copy(BouncyUniforms* u, const float* m16,
+                            bool transpose) {
+    u->transpose = transpose;
+    if (!transpose) {
+        for (int i = 0; i < 16; ++i) u->mvp[i] = m16[i];
+    } else {
+        for (int r = 0; r < 4; ++r)
+            for (int c2 = 0; c2 < 4; ++c2)
+                u->mvp[r * 4 + c2] = m16[c2 * 4 + r];
+    }
+}
+
+void bline_vert(float* vs_output, vec4* vertex_attribs,
+                Shader_Builtins* builtins, void* uniforms) {
+    BouncyUniforms* u = (BouncyUniforms*)uniforms;
+    {
+        static long bn = 0;
+        if (bn++ < 6)
+            std::fprintf(stderr,
+                "[BGL-V] #%ld pos=%.1f,%.1f,%.1f col=%u,%u,%u,%u "
+                "mvp00=%g mvp30=%g\n",
+                bn, vertex_attribs[1].x, vertex_attribs[1].y,
+                vertex_attribs[1].z, (unsigned)vertex_attribs[2].x,
+                (unsigned)vertex_attribs[2].y, (unsigned)vertex_attribs[2].z,
+                (unsigned)vertex_attribs[2].w, u->mvp[0], u->mvp[12]);
+    }
+    ((vec4*)vs_output)[0] = vertex_attribs[2];  // inColor (slot 2)
+    builtins->gl_Position =
+        mult_m4_v4(u->mvp, vertex_attribs[1]);  // position (slot 1)
+}
+
+void bline_frag(float* fs_input, Shader_Builtins* builtins, void* uniforms) {
+    (void)uniforms;
+    builtins->gl_FragColor = ((vec4*)fs_input)[0];
+}
+
+void bcircle_vert(float* vs_output, vec4* vertex_attribs,
+                  Shader_Builtins* builtins, void* uniforms) {
+    BouncyUniforms* u = (BouncyUniforms*)uniforms;
+    ((vec4*)vs_output)[0] = vertex_attribs[2];               // inColor (2)
+    ((float*)vs_output)[4] = vertex_attribs[4].x;            // inRadiusSquared (4)
+    ((float*)vs_output)[5] = vertex_attribs[5].x;            // inInnerRadiusSquared (5)
+    ((vec2*)vs_output)[3] =
+        vec2{vertex_attribs[3].x, vertex_attribs[3].y};      // inCenter (3)
+    builtins->gl_Position = mult_m4_v4(u->mvp, vertex_attribs[1]);
+}
+
+void bcircle_frag(float* fs_input, Shader_Builtins* builtins, void* uniforms) {
+    (void)uniforms;
+    {
+        static long bn = 0;
+        if (bn++ < 6)
+            std::fprintf(stderr,
+                "[BGL-CF] #%ld center=%.1f,%.1f rsq=%.1f irsq=%.1f "
+                "fc=%.1f,%.1f col=%u,%u,%u,%u\n",
+                bn, ((vec2*)fs_input)[3].x, ((vec2*)fs_input)[3].y,
+                ((float*)fs_input)[4], ((float*)fs_input)[5],
+                builtins->gl_FragCoord.x, builtins->gl_FragCoord.y,
+                (unsigned)(((vec4*)fs_input)[0].x * 255.f),
+                (unsigned)(((vec4*)fs_input)[0].y * 255.f),
+                (unsigned)(((vec4*)fs_input)[0].z * 255.f),
+                (unsigned)(((vec4*)fs_input)[0].w * 255.f));
+    }
+    vec4 color = ((vec4*)fs_input)[0];
+    float rsq = ((float*)fs_input)[4];
+    float irsq = ((float*)fs_input)[5];
+    vec2 center = ((vec2*)fs_input)[3];
+    vec2 fc = {builtins->gl_FragCoord.x, builtins->gl_FragCoord.y};
+    vec2 diff = {center.x - fc.x, center.y - fc.y};
+    float dsq = diff.x * diff.x + diff.y * diff.y;
+    if (dsq > rsq) {
+        color.w = 0.f;
+    } else if (dsq > irsq) {
+        float denom = rsq - irsq;
+        float af = denom > 0.f ? 1.f - (dsq - irsq) / denom : 1.f;
+        color.w *= af;
+    }
+    builtins->gl_FragColor = color;
+}
+
+struct BouncySlot {
+    uint32_t pgl_id = 0;
+    uint64_t context_gen = 0;
+    BouncyUniforms uniforms;
+};
+static std::map<uint32_t, BouncySlot> g_bline_map;
+static std::map<uint32_t, BouncySlot> g_bcircle_map;
+
+static BouncySlot* bouncy_slot_for(std::map<uint32_t, BouncySlot>& m,
+                                   uint32_t engine_id, bool circle) {
+    auto it = m.find(engine_id);
+    if (it != m.end()) {
+        if (it->second.pgl_id != 0 &&
+            it->second.context_gen == g_pgl_context_gen)
+            return &it->second;
+        it->second.pgl_id = 0;
+    }
+    BouncySlot& s = m[engine_id];
+    if (circle) {
+        GLenum interp[8] = {PGL_SMOOTH4, PGL_SMOOTH, PGL_SMOOTH,
+                            PGL_SMOOTH2};
+        s.pgl_id = pglCreateProgram(bcircle_vert, bcircle_frag, 8, interp,
+                                    GL_FALSE);
+    } else {
+        GLenum interp[4] = {PGL_SMOOTH4};
+        s.pgl_id = pglCreateProgram(bline_vert, bline_frag, 4, interp,
+                                    GL_FALSE);
+    }
+    s.context_gen = g_pgl_context_gen;
+    if (s.pgl_id) pglSetProgramUniform(s.pgl_id, &s.uniforms);
+    return s.pgl_id ? &s : nullptr;
+}
+
+uint32_t pgl_bouncy_line_program_for(uint32_t engine_id) {
+    BouncySlot* s = bouncy_slot_for(g_bline_map, engine_id, /*circle=*/false);
+    {
+        static int dn = 0;
+        if (dn++ < 8)
+            std::fprintf(stderr, "[BGL-SLOT] line engine=%u -> pgl=%u\n",
+                         engine_id, s ? s->pgl_id : 0u);
+    }
+    return s ? s->pgl_id : 0;
+}
+
+uint32_t pgl_bouncy_circle_program_for(uint32_t engine_id) {
+    BouncySlot* s =
+        bouncy_slot_for(g_bcircle_map, engine_id, /*circle=*/true);
+    return s ? s->pgl_id : 0;
+}
+
+void pgl_bouncy_set_mvp_for(uint32_t engine_id, const float* m16,
+                            bool transpose) {
+    // The MVP rides BOTH maps' uniform blocks — the glUseProgram routing
+    // keeps exactly one bouncy family current at a time, and each block
+    // carries its own matrix (the F-NEW-609b per-program law).
+    auto lit = g_bline_map.find(engine_id);
+    if (lit != g_bline_map.end())
+        bouncy_mvp_copy(&lit->second.uniforms, m16, transpose);
+    auto cit = g_bcircle_map.find(engine_id);
+    if (cit != g_bcircle_map.end())
+        bouncy_mvp_copy(&cit->second.uniforms, m16, transpose);
+}
+
 // GP583-GLES-001 (offset clarification): is an ELEMENT_ARRAY_BUFFER bound?
 // When it is, the glDrawElements `indices` argument is a BYTE OFFSET into
 // that buffer — never a host pointer. The bridge's (env-gated) diagnostic

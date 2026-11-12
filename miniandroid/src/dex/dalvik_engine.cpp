@@ -7602,6 +7602,18 @@ void DalvikExecutionEngine::xml_pull_advance(XmlPullState& st) {
                 st.attrs.emplace_back(aname, xml_unescape_pass3(aval));
             }
             st.event = 2;  // START_TAG
+            // ── F-CSW-3 (S226; #376) Xml.asAttributeSet install hop ──────
+            // Each START_TAG publishes the tag's TYPED attribute records
+            // under the parser object id (document-order match: the text
+            // events and the typed sequence derive from the same AXML
+            // tree). Self-closing tags publish once here and queue their
+            // END_TAG — identical consumption to KXml.
+            if (st.owner_obj != 0 &&
+                st.tag_attrs_pos < st.tag_attrs_seq.size()) {
+                resources::AttributeSetStore::instance().install(
+                    st.owner_obj, st.tag_attrs_seq[st.tag_attrs_pos]);
+                ++st.tag_attrs_pos;
+            }
             st.cur_text.clear();
             if (self_close) {
                 st.pending_end = true;
@@ -7660,6 +7672,47 @@ bool DalvikExecutionEngine::xml_parser_for_resid(uint32_t resid,
     xml_parsers_[obj_id] = XmlPullState{};
     xml_parsers_[obj_id].content = text;
     xml_parsers_[obj_id].event = 0;  // START_DOCUMENT
+    // ── F-CSW-3 (S226; #376) Xml.asAttributeSet — typed attr records ────
+    // Decode the binary AXML ONCE here and keep every element's TYPED
+    // attribute records in document order. The text serialization above
+    // (axml_bytes_to_text_371) feeds the K-35 event machine but destroys
+    // the TypedValue types (everything becomes a decimal string) — the
+    // androidx vector parser's TypedArray reads need the RAW types. At
+    // every START_TAG xml_pull_advance installs the matching record set
+    // into the AttributeSetStore under the parser object id (the AOSP
+    // law: the parser IS the AttributeSet — Xml.asAttributeSet), so
+    // obtainStyledAttributes(parser, styleable[]) resolves the XML stage
+    // exactly as the view-ctor path does.
+    {
+        resources::AxmlParser ax;
+        if (ax.parse(bytes) && ax.valid()) {
+            std::function<void(const resources::AxmlElement&,
+                               std::vector<std::vector<resources::XmlAttrRecord>>&)>
+                collect = [&](const resources::AxmlElement& el,
+                              std::vector<std::vector<resources::XmlAttrRecord>>&
+                                  seq) {
+                    std::vector<resources::XmlAttrRecord> recs;
+                    recs.reserve(el.attributes.size());
+                    for (const auto& a : el.attributes) {
+                        resources::XmlAttrRecord r;
+                        r.resid = a.attr_resid;
+                        r.type = a.value.type;
+                        r.data = (int32_t)a.value.data;
+                        r.ref_id = a.value.ref_id;
+                        r.str = a.value.is_string() ? a.value.string_value
+                                                    : a.raw_value;
+                        recs.push_back(std::move(r));
+                    }
+                    seq.push_back(std::move(recs));
+                    for (const auto& c : el.children) collect(c, seq);
+                };
+            collect(ax.root(), xml_parsers_[obj_id].tag_attrs_seq);
+            xml_parsers_[obj_id].owner_obj = obj_id;
+            std::cerr << "[F-CSW-3] getXml typed attr seq: "
+                      << xml_parsers_[obj_id].tag_attrs_seq.size()
+                      << " tags, obj#" << obj_id << std::endl;
+        }
+    }
     miniandroid::diagnostics::FileIoTrace::instance().record(
         "OPEN", "apk-entry:" + entry, true, "getXml/loadXmlMetaData",
         current_class_ + "." + current_method_);
@@ -19270,19 +19323,66 @@ bool DalvikExecutionEngine::dispatch_gl_surface_view_frame(uint32_t view_object_
     auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
     if (!view_shadow) return false;
     const auto* node = view_shadow->find_node(view_object_id);
-    if (!node) return false;
-    if (node->class_desc.find("GLSurfaceView") == std::string::npos) return false;
+    if (!node) {
+        static thread_local uint64_t pmp_n = 0;
+        if (pmp_n++ < 8)
+            std::cerr << "[GLPUMP-DIAG] view=" << view_object_id
+                      << " w=" << w << " h=" << h
+                      << " -> no ViewShadow node" << std::endl;
+        return false;
+    }
+    // ── F-GLSUB-1 (S226; bouncy/Vector-Pinball live run receipt) ────────
+    // AOSP GLSurfaceView's GLThread pumps the renderer for ANY
+    // GLSurfaceView SUBCLASS — apps subclass GLSurfaceView exactly the way
+    // bouncy does (GLFieldView extends GLSurfaceView) and libGDX does
+    // (GLSurfaceView20). The pump gated on a SUBSTRING test of the node's
+    // declared class, so every subclass was excluded: the app's own
+    // Start Game handler constructed GLFieldView, setRenderer stored
+    // glRenderer through the C013 superclass-chain dispatch (live log
+    // [C013-HIER] receiver=GLFieldView), and the GL machinery still never
+    // fired — the tap died at the pump gate. Law: subclass-of-GLSurfaceView
+    // dispatches (DEX chain walk; the substring fast path stays first).
+    if (node->class_desc.find("GLSurfaceView") == std::string::npos &&
+        !is_subclass_of(node->class_desc,
+                        "Landroid/opengl/GLSurfaceView;"))
+        return false;
     if (w <= 0 || h <= 0) return false;
     // renderer object stored by GLSurfaceViewShadow::setRenderer
     auto rend = heap_.get_object_field(view_object_id, "glRenderer");
     if (!rend.has_value() || rend->type != DalvikType::OBJECT_REF ||
         rend->object_id == 0 || !heap_.has_object(rend->object_id)) {
+        // F-GLSUB-1 diag: WHERE did the renderer field go? The C013
+        // superclass-chain dispatch may have stored it on a
+        // FRAMEWORK-SUPERCLASS-MINT object (F-NEW-219) rather than the
+        // node's own object — surface the truth instead of a silent
+        // no-draw (ttt tictactoe_3 regression hunt, S226).
+        static thread_local uint64_t grs_diag_n = 0;
+        if (grs_diag_n++ < 8)
+            std::cerr << "[F-GLSUB-DIAG] view=" << view_object_id
+                      << " (" << node->class_desc
+                      << ") has NO glRenderer field on the node object"
+                      << std::endl;
         return false;   // no renderer installed → nothing to draw (honest)
     }
     const uint32_t renderer = rend->object_id;
     std::string rcls;
     if (const auto* robj = heap_.get(renderer)) rcls = robj->class_descriptor;
-    if (rcls.empty()) return false;
+    if (rcls.empty()) {
+        static thread_local uint64_t pmp_r_n = 0;
+        if (pmp_r_n++ < 8)
+            std::cerr << "[GLPUMP-DIAG] view=" << view_object_id
+                      << " renderer=" << renderer
+                      << " -> renderer object class empty" << std::endl;
+        return false;
+    }
+    {
+        static thread_local uint64_t pmp_e_n = 0;
+        if (pmp_e_n++ < 8)
+            std::cerr << "[GLPUMP-DIAG] view=" << view_object_id
+                      << " renderer=" << renderer << " rcls=" << rcls
+                      << " w=" << w << " h=" << h << " -> pumping"
+                      << std::endl;
+    }
     if (rcls[0] == 'L' && rcls.find('.') != std::string::npos) {
         std::string norm = "L";
         for (size_t i = 1; i < rcls.size(); ++i)
@@ -31133,6 +31233,53 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                     result_value = DalvikValue::make_class(
                         prim->second, instruction_sequence_);
                     static_field_storage_[static_key] = result_value;
+                } else if (field_res.class_descriptor ==
+                           "Lorg/json/JSONObject;") {
+                // ── F-JSON-NULL (S226; #508 Vector-Pinball chain): the AOSP
+                // JSONObject.NULL SENTINEL ────────────────────────────────
+                // OpenJDK/Android org.json JSONObject: `public static final
+                // Object NULL = new Object()` — the sentinel is a REAL
+                // identity object (the docs' "a value equal to Java null"),
+                // never Java null itself. The engine ran no framework
+                // <clinit> for org.json, so the sget answered typed-zero
+                // NULL — and bouncy v43's JSONUtils.objectFromJSONItem
+                // (REAL bytecode, disassembled):
+                //   0x0000 sget-object v0, Lorg/json/JSONObject;->NULL
+                //   0x0004 if-ne v1, v0, +004h        ← != sentinel?
+                //   0x0008 const/4 v1, 0             ← null the value
+                //   0x000a return-object v1
+                // compared every STRING_REF leaf against the null token —
+                // the mixed compare saw "no object == no object" and nulled
+                // EVERY leaf value before Map.put (MAPPUT val_kind=7 rows,
+                // live run) → params.get("class") NPE at
+                // FieldElement.createFromParameters pc=16 → onCreate APP
+                // BOUNDARY unwind → no table render. Law: the sentinel is
+                // minted ONCE (a heap Lorg/json/JSONObject; with
+                // json_value="null" — the AOSP identity face) and cached;
+                // identity comparisons against it now behave per ART.
+                if (field_res.field_name == "NULL") {
+                    auto nullit = static_field_storage_.find(static_key);
+                    if (nullit == static_field_storage_.end() ||
+                        nullit->second.type != DalvikType::OBJECT_REF ||
+                        nullit->second.object_id == 0) {
+                        uint32_t sid =
+                            heap_.allocate("Lorg/json/JSONObject;", pc_, 0);
+                        heap_.set_object_field(
+                            sid, "json_value",
+                            DalvikValue::make_string("null", 0));
+                        result_value =
+                            DalvikValue::make_object(sid,
+                                                     "Lorg/json/JSONObject;");
+                        static_field_storage_[static_key] = result_value;
+                        static thread_local uint64_t fjsonnull_n = 0;
+                        if (fjsonnull_n++ < 4)
+                            std::cerr << "[F-JSON-NULL] JSONObject.NULL "
+                                         "sentinel minted o"
+                                      << sid
+                                      << " (AOSP identity object law)"
+                                      << std::endl;
+                    }
+                }
                 } else if (field_res.class_descriptor ==
                            "Ljava/nio/charset/StandardCharsets;") {
                 // FINAL-CAMPAIGN PHASE 3 (F-NEW-169 face-1):
@@ -50593,9 +50740,47 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     if (class_name == "Lorg/json/JSONObject;" ||
         class_name == "Lorg/json/JSONArray;") {
         bool f243_is_obj = (class_name == "Lorg/json/JSONObject;");
+        // ── F-243a (S226; #508 Coder-3 law 1): LAW-WIDE HEAP-STRING
+        // IDENTITY ─────────────────────────────────────────────────────
+        // JSONObject(String)/JSONArray(String) arguments ride HEAP String
+        // OBJECTS (OBJECT_REF), not STRING_REF immediates — bouncy's table
+        // loader calls new JSONObject(tableString) with the heap String the
+        // asset reader produced. The STRING_REF-only <init> gate missed
+        // them → f243_write defaulted to "{}" → all 9 tables empty →
+        // launchPosition EMPTY_LIST → Field.zoomCenterPoint
+        // IndexOutOfBounds EVERY tick (GL20Renderer.onDrawFrame died at its
+        // catch-all BEFORE the first GLES20 call — zero GL rows in the live
+        // S226 run evidence/s226/runs/bouncy_final_ingame). AOSP/ART law: a
+        // String object IS its chars. Unwrap EVERY heap-String arg to its
+        // __string_value__ STRING_REF once at the law boundary (the
+        // F-NEW-622 identity fields — the same law the GLES marshal runs).
+        auto f243_strarg = [&](size_t k) -> DalvikValue {
+            if (k >= args.size()) return DalvikValue();
+            const DalvikValue& a = args[k];
+            if (a.type == DalvikType::OBJECT_REF && a.object_id != 0) {
+                std::string c243;
+                if (heap_.get_object_class(a.object_id, c243) &&
+                    c243 == "Ljava/lang/String;") {
+                    auto sv243 = heap_.get_object_field(a.object_id,
+                                                        "__string_value__");
+                    if (!sv243.has_value())
+                        sv243 = heap_.get_object_field(a.object_id, "value");
+                    if (sv243.has_value() &&
+                        sv243->type == DalvikType::STRING_REF)
+                        return DalvikValue::make_string(sv243->string_val, 0);
+                    return DalvikValue::make_string(std::string(), 0);
+                }
+            }
+            return a;
+        };
         uint32_t f243_id = (!args.empty() &&
                             args[0].type == DalvikType::OBJECT_REF)
                                ? args[0].object_id : 0;
+        // F-243a: the name/source arg rides a heap String object exactly
+        // like the <init> source — unwrap once, shared by put/get/has/
+        // remove and <init>.
+        DalvikValue f243_keyv =
+            args.size() >= 2 ? f243_strarg(1) : DalvikValue();
         auto f243_read = [&](nlohmann::ordered_json& out) -> bool {
             if (f243_id == 0 || !heap_.has_object(f243_id)) return false;
             auto fv = heap_.get_object_field(f243_id, "json_value");
@@ -50651,6 +50836,21 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     // settings carry Integer refs: [F243-DIAG] proved the
                     // positions/faces members are Ljava/lang/Integer; heap
                     // boxes stored under the engine-wide "value" field).
+                    // F-243a companion: a HEAP String OBJECT element (the
+                    // JSONArray(Collection) element face — bouncy's table
+                    // features lists) serializes as its chars.
+                    if (ocls == "Ljava/lang/String;") {
+                        auto sv243e = heap_.get_object_field(
+                            a.object_id, "__string_value__");
+                        if (!sv243e.has_value())
+                            sv243e = heap_.get_object_field(a.object_id,
+                                                            "value");
+                        out = (sv243e.has_value() &&
+                               sv243e->type == DalvikType::STRING_REF)
+                                  ? std::string(sv243e->string_val)
+                                  : std::string();
+                        return true;
+                    }
                     if (ocls == "Ljava/lang/Integer;" ||
                         ocls == "Ljava/lang/Long;" ||
                         ocls == "Ljava/lang/Short;" ||
@@ -50763,11 +50963,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (j.is_boolean()) return DalvikValue::make_int(
                 j.get<bool>() ? 1 : 0);
             if (j.is_number_integer()) {
-                int64_t v = j.get<int64_t>();
-                return DalvikValue::make_int((int32_t)v);
+                // ── F-BOX-SERVE-JSON (S226; #508 Vector-Pinball Color chain):
+                // ART JSONArray.get(int)/JSONObject.get(String) return
+                // Object — a JSON integer surfaces as a BOXED Integer. The
+                // raw-INT32 face collided with the F-030 zero-is-null law:
+                // table1's wall color [0,0,0] turned every 0 element NULL
+                // at reference use → JSONUtils.objectFromJSONItem's
+                // JSONObject.NULL guard (if-ne vs the sentinel) answered
+                // null → List.add(null) → Color.fromList's
+                // (Number)list.get(i) NPE (MAPPUT-era [W268] rows). Mint
+                // the Integer.valueOf shape (a heap box with "value") —
+                // the Number-unbox law answers the reads.
+                int32_t bv = (int32_t)j.get<int64_t>();
+                if (bv >= -128 && bv <= 127) {
+                    auto iit = int_box_cache_.find(bv);
+                    if (iit != int_box_cache_.end() &&
+                        heap_.has_object(iit->second))
+                        return DalvikValue::make_object(
+                            iit->second, "Ljava/lang/Integer;");
+                }
+                uint32_t bid = heap_.allocate("Ljava/lang/Integer;", pc_, 0);
+                heap_.set_object_field(bid, "value",
+                                       DalvikValue::make_int(bv));
+                if (bv >= -128 && bv <= 127) int_box_cache_[bv] = bid;
+                return DalvikValue::make_object(bid, "Ljava/lang/Integer;");
             }
-            if (j.is_number()) return DalvikValue::make_double(
-                j.get<double>());
+            if (j.is_number()) {
+                double dv = j.get<double>();
+                uint32_t bid = heap_.allocate("Ljava/lang/Double;", pc_, 0);
+                heap_.set_object_field(bid, "value",
+                                       DalvikValue::make_double(dv));
+                return DalvikValue::make_object(bid, "Ljava/lang/Double;");
+            }
             if (j.is_null()) return DalvikValue::make_null();
             if (j.is_object()) {
                 uint32_t nid = heap_.allocate("Lorg/json/JSONObject;", pc_, 0);
@@ -50802,8 +51029,10 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }
-            if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
-                const std::string& src = args[1].string_val;
+            DalvikValue f243_s1 =
+                args.size() >= 2 ? f243_strarg(1) : DalvikValue();
+            if (f243_s1.type == DalvikType::STRING_REF) {
+                const std::string src = f243_s1.string_val;
                 try {
                     nlohmann::ordered_json parsed =
                         nlohmann::ordered_json::parse(src);
@@ -50888,8 +51117,8 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         if (f243_is_obj && method == "put" && args.size() >= 2 &&
-            args[1].type == DalvikType::STRING_REF) {
-            const std::string& key = args[1].string_val;
+            f243_keyv.type == DalvikType::STRING_REF) {
+            const std::string& key = f243_keyv.string_val;
             nlohmann::ordered_json j;
             f243_read(j);
             if (args.size() == 2) {
@@ -50942,12 +51171,31 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
         }
+        // F-243a: the key args above were unwrapped once at the law
+        // boundary (f243_keyv) — the STRING_REF gates read that.
         if (f243_is_obj && args.size() >= 2 &&
-            args[1].type == DalvikType::STRING_REF) {
-            const std::string& key = args[1].string_val;
+            f243_keyv.type == DalvikType::STRING_REF) {
+            const std::string& key = f243_keyv.string_val;
             nlohmann::ordered_json j;
             f243_read(j);
             bool has = j.contains(key) && !j[key].is_null();
+            // ── F-243-GETPROBE (S226; bouncy JSONUtils chain): bounded truth
+            // probe — did the get-family fire, with what key/value face?
+            if ((key == "class" || key == "delegate") &&
+                current_class_.find("JSONUtils") != std::string::npos) {
+                static thread_local uint64_t f243gp = 0;
+                if (f243gp < 24) {
+                    ++f243gp;
+                    std::cerr << "[F243-GET] method=" << method << " key=\""
+                              << key << "\" has=" << (has ? 1 : 0)
+                              << " v_type="
+                              << (has ? (int)j[key].type() : -1)
+                              << " obj_id=" << f243_id
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << " pc=" << pc_
+                              << std::endl;
+                }
+            }
             if (method == "has") {
                 result = DalvikValue::make_int(has ? 1 : 0);
                 status = ApiCallTrace::Status::IMPLEMENTED;
@@ -51107,12 +51355,166 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 return true;
             }
         }
-        if (f243_is_obj && (method == "length" || method == "names")) {
+        // ── F-243b (S226; #508 Coder-3 law 2): JSONArray.length() no-arg arm
+        // AOSP org.json JSONArray.length(): the element count. The pre-b
+        // law sat inside the `f243_is_obj &&` gate — JSONArray.length()
+        // never fired → every JSONArray→List conversion saw length 0 →
+        // Color.fromList IllegalArgumentException "Invalid color size: 0"
+        // at APP BOUNDARY (bouncy onCreate death face, #508 §1 law 2).
+        if (method == "length") {
             nlohmann::ordered_json j;
             f243_read(j);
             result = DalvikValue::make_int((int32_t)j.size());
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
+        }
+        if (f243_is_obj && method == "names") {
+            nlohmann::ordered_json j;
+            f243_read(j);
+            result = DalvikValue::make_int((int32_t)j.size());
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // ── F-243c (S226): JSONArray INDEXED getters — get/opt(int index)
+        // AOSP org.json JSONArray: get*(int index) with bounds semantics
+        // (get → JSONException outside [0,size); opt → fallback). The
+        // bouncy JSONUtils.toList loop is length() + getDouble(i)/getInt(i)
+        // — with no indexed arm every element read REC-MISS'd even after
+        // F-243b fixed the count (the Color.fromList size face would have
+        // moved to an element-read death). Null elements answer null
+        // (JSONArray.getJSONObject(i) → JSONObject.NULL maps to a null
+        // object face here — the engine's null is the documented mapping).
+        if (!f243_is_obj && args.size() >= 2 &&
+            args[1].type == DalvikType::INT32) {
+            const int32_t idx243 = args[1].int_val;
+            nlohmann::ordered_json j;
+            f243_read(j);
+            const bool in243 = idx243 >= 0 && idx243 < (int32_t)j.size();
+            if (!in243) {
+                if (method.rfind("opt", 0) == 0) {
+                    result = args.size() >= 3 ? args[2]
+                                              : DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                throw_deferred("Lorg/json/JSONException;",
+                               "Index " + std::to_string(idx243) +
+                                   " out of range for array of length " +
+                                   std::to_string(j.size()),
+                               "F-243c-OOB");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            const nlohmann::ordered_json& v = j[(size_t)idx243];
+            if (method == "get" || method == "opt") {
+                result = f243_get_value(v);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getString" || method == "optString") {
+                if (v.is_string()) {
+                    result = DalvikValue::make_string(v.get<std::string>(), 0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "optString") {
+                    result = args.size() >= 3
+                                 ? args[2]
+                                 : DalvikValue::make_string("", 0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                return f243_typed_error("string");
+            }
+            if (method == "getBoolean" || method == "optBoolean") {
+                if (v.is_boolean()) {
+                    result = DalvikValue::make_int(v.get<bool>() ? 1 : 0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "optBoolean") {
+                    result = args.size() >= 3 ? args[2]
+                                              : DalvikValue::make_int(0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                return f243_typed_error("boolean");
+            }
+            if (method == "getInt" || method == "optInt" ||
+                method == "getLong" || method == "optLong" ||
+                method == "getDouble" || method == "optDouble") {
+                // AOSP coercion: numbers pass through; strings parse
+                // (JSONObject.checkDouble law); booleans → 1/0.
+                double d243 = 0;
+                bool ok243 = true;
+                if (v.is_number()) d243 = v.get<double>();
+                else if (v.is_boolean())
+                    d243 = v.get<bool>() ? 1.0 : 0.0;
+                else if (v.is_string()) {
+                    try {
+                        size_t p243 = 0;
+                        d243 = std::stod(v.get<std::string>(), &p243);
+                        ok243 = p243 == v.get<std::string>().size();
+                    } catch (...) { ok243 = false; }
+                } else ok243 = false;
+                if (!ok243) {
+                    if (method.rfind("opt", 0) == 0) {
+                        result = args.size() >= 3
+                                     ? args[2]
+                                     : DalvikValue::make_double(0.0);
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                    return f243_typed_error("number");
+                }
+                if (method == "getInt" || method == "optInt")
+                    result = DalvikValue::make_int((int32_t)d243);
+                else if (method == "getLong" || method == "optLong")
+                    result = DalvikValue::make_long((int64_t)d243);
+                else
+                    result = DalvikValue::make_double(d243);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getJSONArray" || method == "optJSONArray") {
+                if (v.is_array()) {
+                    uint32_t nid = heap_.allocate("Lorg/json/JSONArray;",
+                                                  pc_, 0);
+                    heap_.set_object_field(
+                        nid, "json_value",
+                        DalvikValue::make_string(v.dump(), 0));
+                    result = DalvikValue::make_object(nid,
+                                                      "Lorg/json/JSONArray;");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "optJSONArray") {
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                return f243_typed_error("org.json.JSONArray");
+            }
+            if (method == "getJSONObject" || method == "optJSONObject") {
+                if (v.is_object()) {
+                    uint32_t nid = heap_.allocate("Lorg/json/JSONObject;",
+                                                  pc_, 0);
+                    heap_.set_object_field(
+                        nid, "json_value",
+                        DalvikValue::make_string(v.dump(), 0));
+                    result = DalvikValue::make_object(nid,
+                                                      "Lorg/json/JSONObject;");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "optJSONObject") {
+                    result = DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                return f243_typed_error("org.json.JSONObject");
+            }
         }
         // cont70 ANT-3 (bouncy JSONUtils.mapFromJSONObject face): AOSP
         // org.json JSONObject.keys() — java.util.Iterator<String> over the
@@ -64388,6 +64790,68 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 call_stack_.empty() ? 0 : call_stack_.top().frame_id);
             result = DalvikValue::make_object(
                 f383_id, "Landroid/content/res/ColorStateList;");
+            return true;
+        }
+        if (method == "getValue" && args.size() >= 3 &&
+            args[1].type == DalvikType::INT32 &&
+            args[2].type == DalvikType::OBJECT_REF && args[2].object_id != 0) {
+            // ── F-CSW-4 (S226; #376) TypedArray.getValue(int, TypedValue) ──
+            // AOSP TypedArray.getValue: copies the slot's RAW TypedValue
+            // into outValue and answers true when the slot carries a
+            // value, false when absent (the caller keeps its default).
+            // androidx's VectorDrawable parser calls getValue FIRST for
+            // every attribute (tint et al.) before the positional readers
+            // — with no engine law the raw-slot read answered nothing and
+            // the parse threw before any vector pixel existed
+            // (composeStopwatch res/n5.xml chain, #376 receipt). The slot
+            // materialization (F-093/F-NEW-450) stores the raw data word
+            // ("array[N]") AND the TypedValue type ("array_type[N]") AND
+            // the presence bit ("array_present[N]") — mirror the
+            // F-NEW-513 Resources.getValue TypedValue field map: type,
+            // data, assetCookie=0, resourceId=0 (slot reads carry no id),
+            // string for STRING entries (int-family store — none today).
+            const int32_t gv4_idx = args[1].int_val;
+            auto gv4_present = heap_.get_object_field(
+                args[0].object_id,
+                "array_present[" + std::to_string(gv4_idx) + "]");
+            auto gv4_data = heap_.get_object_field(
+                args[0].object_id, "array[" + std::to_string(gv4_idx) + "]");
+            auto gv4_type = heap_.get_object_field(
+                args[0].object_id,
+                "array_type[" + std::to_string(gv4_idx) + "]");
+            const bool gv4_has =
+                gv4_present && gv4_present->type == DalvikType::INT32
+                    ? gv4_present->int_val != 0
+                    : (gv4_data && gv4_data->type == DalvikType::INT32 &&
+                       gv4_data->int_val != 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            if (!gv4_has || !gv4_data ||
+                gv4_data->type != DalvikType::INT32) {
+                // AOSP: absent slot → false, outValue untouched.
+                result = DalvikValue::make_bool(false);
+                return true;
+            }
+            // Slot type: the recorded TypedValue type when present;
+            // TYPE_INT_DEC (0x10) otherwise — the same semantic the
+            // getInt reader answers (data read as a plain int).
+            int32_t gv4_t = (gv4_type && gv4_type->type == DalvikType::INT32 &&
+                             gv4_type->int_val != 0)
+                                ? gv4_type->int_val
+                                : 0x10;
+            heap_.set_object_field(args[2].object_id, "type",
+                                   DalvikValue::make_int(gv4_t));
+            heap_.set_object_field(args[2].object_id, "data",
+                                   DalvikValue::make_int(gv4_data->int_val));
+            heap_.set_object_field(args[2].object_id, "assetCookie",
+                                   DalvikValue::make_int(0));
+            heap_.set_object_field(args[2].object_id, "resourceId",
+                                   DalvikValue::make_int(0));
+            static thread_local uint64_t gv4_n = 0;
+            if (gv4_n++ < 16)
+                std::cerr << "[F-CSW-4] TypedArray.getValue[" << gv4_idx
+                          << "] type=0x" << std::hex << gv4_t << " data=0x"
+                          << gv4_data->int_val << std::dec << std::endl;
+            result = DalvikValue::make_bool(true);
             return true;
         }
         if ((method == "getBoolean" || method == "getInt" ||
@@ -87531,6 +87995,48 @@ measure_cm_done:;
             }
             return true;
         }
+        if (method == "require") {
+            // ── F-CSW-1 (S226; #376) org.xmlpull.v1.XmlPullParser.require ──
+            // AOSP/KXmlParser contract: require(int type, String namespace,
+            // String name) answers void when the CURRENT event matches
+            // type (and name, when non-null); otherwise throws
+            // XmlPullParserException ("expected: <name>…"). androidx's
+            // vector parser calls require(START_TAG, null, "vector")
+            // immediately after next(); with no engine law the call fell
+            // through to the APK's bundled empty-state kxml2 DEX body and
+            // the composition died at XmlPullParserException before any
+            // vector pixel existed (composeStopwatch
+            // res/n5.xml icon-inflation chain, #376 receipt). Namespace is
+            // ignored for no-namespace documents — the same convention the
+            // getAttributeValue handler above records.
+            int32_t rq_type = (args.size() >= 2 && args[1].type == DalvikType::INT32)
+                                  ? args[1].int_val
+                                  : -1;
+            const std::string rq_name =
+                (args.size() >= 4 && args[3].type == DalvikType::STRING_REF)
+                    ? std::string(args[3].string_val)
+                    : std::string();
+            const bool rq_ok = (st.event == rq_type) &&
+                               (rq_name.empty() || st.cur_name == rq_name);
+            if (!rq_ok) {
+                static const char* RQ_EV_NAMES[] = {
+                    "START_DOCUMENT", "END_DOCUMENT", "START_TAG",
+                    "END_TAG", "TEXT"};
+                const std::string rq_ev =
+                    (st.event >= 0 && st.event <= 4)
+                        ? RQ_EV_NAMES[st.event]
+                        : ("event#" + std::to_string(st.event));
+                throw_deferred(
+                    "Lorg/xmlpull/v1/XmlPullParserException;",
+                    "expected: " + (rq_name.empty() ? std::string("any name")
+                                                    : rq_name) +
+                        " position: " + rq_ev,
+                    "XML-PULL-REQUIRE");
+                return true;
+            }
+            result = DalvikValue::make_void();
+            return true;
+        }
     }
 
     // EXP-093: String.replace(CharSequence, CharSequence) → String
@@ -87917,10 +88423,23 @@ measure_cm_done:;
             if (v.type != DalvikType::UNINITIALIZED &&
                 v.type != DalvikType::REGISTER_UNSET) {
                 // Java widening/narrowing between boxed flavors.
+                // F-LIST-FP unbox twin (S226): a FLOAT64/FLOAT32 box (the
+                // Double.valueOf shape the list-add fidelity law mints)
+                // must unbox through the FLOAT value — intValue on a
+                // Double box answered the raw int_val word (0) before.
+                const bool ffp_is_f64 = v.type == DalvikType::FLOAT64;
+                const bool ffp_is_f32 = v.type == DalvikType::FLOAT32;
+                const double ffp_d = ffp_is_f64 ? v.double_val
+                                    : ffp_is_f32 ? (double)v.float_val
+                                                 : (double)v.int_val;
                 if (method == "intValue" || method == "shortValue" || method == "byteValue")
-                    result = DalvikValue::make_int(v.int_val);
+                    result = DalvikValue::make_int(
+                        (ffp_is_f64 || ffp_is_f32) ? (int32_t)ffp_d
+                                                   : v.int_val);
                 else if (method == "longValue")
-                    result = DalvikValue::make_long(v.long_val);
+                    result = DalvikValue::make_long(
+                        (ffp_is_f64 || ffp_is_f32) ? (int64_t)ffp_d
+                                                   : v.long_val);
                 else if (method == "booleanValue")
                     result = DalvikValue::make_bool(v.bool_val);
                 else if (method == "charValue") {
@@ -87928,10 +88447,14 @@ measure_cm_done:;
                     result = c;
                 } else if (method == "floatValue")
                     result = DalvikValue::make_float(
-                        v.type == DalvikType::FLOAT32 ? v.float_val : (float)v.int_val);
+                        v.type == DalvikType::FLOAT32 ? v.float_val
+                        : ffp_is_f64 ? (float)v.double_val
+                                     : (float)v.int_val);
                 else
                     result = DalvikValue::make_double(
-                        v.type == DalvikType::FLOAT64 ? v.double_val : (double)v.int_val);
+                        v.type == DalvikType::FLOAT64 ? v.double_val
+                        : ffp_is_f32 ? (double)v.float_val
+                                     : (double)v.int_val);
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }

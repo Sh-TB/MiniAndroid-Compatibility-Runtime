@@ -2326,6 +2326,17 @@ public:
     bool frame_honesty_keep_prev() const {
         return draw_window_budget_halted_;
     }
+    // ── F-GLZ-1 (S226): scoped draw-window suspension for the GL surface
+    // pipeline. The §25 pump ran POST-WALK — its DEX callbacks
+    // (onSurfaceCreated/onSurfaceChanged/onDrawFrame) were never subject
+    // to the in-draw budget. The F-GLZ-1 in-walk placement (tree-position
+    // GL z-order) must preserve that context: the budget exists to bound
+    // APP draw code, and the surface pipeline is not app draw code (the
+    // pre-GLZ placement is the proof — ttt_3 13-frame SUCCESS with the
+    // full libGDX render loop). The GL blit suspends the window around
+    // dispatch_gl_surface_view_frame and restores it after.
+    bool draw_window_active() const { return draw_window_active_; }
+    void set_draw_window_active(bool v) { draw_window_active_ = v; }
 
     // ────────────────────────────────────────────────────────────────────
     // S214 F-NEW-632 SF-ORDER probe (env-gated MINIANDROID_SF_ORDER_LOG=1,
@@ -3356,6 +3367,20 @@ public:
         bool ended = false;    // saw END_DOCUMENT
         bool pending_end = false;          // self-closing tag → END_TAG queued
         std::string pending_end_name;
+        // ── F-CSW-3 (S226; #376) Xml.asAttributeSet — the parser IS the
+        // AttributeSet ─────────────────────────────────────────────────────
+        // Typed attribute records per START_TAG, in document order, built
+        // ONCE at the 371 getXml hop from the binary AXML decode (the text
+        // serialization loses the TypedValue types — these records keep
+        // them). xml_pull_advance installs the current tag's record set
+        // into the AttributeSetStore under owner_obj at every START_TAG,
+        // so Context.obtainStyledAttributes(parser-as-AttributeSet)
+        // resolves the XML stage of the AOSP precedence law exactly as the
+        // view-ctor path does. Text setInput() parsers carry an empty
+        // sequence → no install → producer behavior unchanged.
+        uint32_t owner_obj = 0;
+        std::vector<std::vector<resources::XmlAttrRecord>> tag_attrs_seq;
+        size_t tag_attrs_pos = 0;
     };
 
     // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): resolve an open

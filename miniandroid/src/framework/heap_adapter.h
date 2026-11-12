@@ -197,8 +197,30 @@ public:
         return true;
     }
 
+    // F-LIST-FP (S226): double field writes — the Number-box twin.
+    bool set_object_double_field(uint32_t object_id, const std::string& field_name,
+                                 double value) override {
+        if (!heap_) return false;
+        dalvik::DalvikValue v;
+        v.type = dalvik::DalvikType::FLOAT64;
+        v.double_val = value;
+        heap_->set_object_field(object_id, field_name, v);
+        return true;
+    }
+
     // S83-GFX-BASE (Contract C3): float array ELEMENT read — see base-class
     // note. FLOAT32 → float_val; INT32 → raw-bits reinterpret (F-028 law).
+    bool set_object_array_float_element(uint32_t array_id, size_t index,
+                                        float value) override {
+        if (!heap_) return false;
+        dalvik::DalvikValue v;
+        v.type = dalvik::DalvikType::FLOAT32;
+        v.float_val = value;
+        heap_->set_object_field(
+            array_id, "array[" + std::to_string(index) + "]", v);
+        return true;
+    }
+
     bool get_object_array_float_element(uint32_t array_id, size_t index,
                                         float& out) override {
         if (!heap_) return false;
