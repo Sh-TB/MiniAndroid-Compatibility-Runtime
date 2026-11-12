@@ -1,0 +1,100 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "com.traffar.gomoku_4",
+ "apk": "../upload/canonical_apks/com.traffar.gomoku_4.apk",
+ "apk_sha256_16": "d5dd197010476582",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "SDL",
+   "evidence": [
+    "dex:Lorg/libsdl/app/SDLActivity;"
+   ],
+   "primary": true
+  },
+  {
+   "route": "VIEW",
+   "evidence": [
+    "res/layouts=1"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "SDL",
+ "routes_forbidden": [
+  {
+   "route": "WEBVIEW_HTML5_PACKAGED",
+   "reason": "no WebView classes and no HTML assets in APK \u2014 a Java application must NOT pass through the HTML5 alley"
+  },
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "SDL_NATIVE",
+   "evidence": [
+    "SDLActivity in DEX"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/armeabi-v7a/libSDL2.so",
+   "lib/armeabi-v7a/libSDL2_image.so",
+   "lib/armeabi-v7a/libSDL2_mixer.so",
+   "lib/armeabi-v7a/libmain.so",
+   "lib/armeabi/libSDL2.so",
+   "lib/armeabi/libSDL2_image.so",
+   "lib/armeabi/libSDL2_mixer.so",
+   "lib/armeabi/libmain.so",
+   "lib/x86/libSDL2.so",
+   "lib/x86/libSDL2_image.so",
+   "lib/x86/libSDL2_mixer.so",
+   "lib/x86/libmain.so"
+  ],
+  "asset_count": 8,
+  "media_assets": [
+   {
+    "path": "assets/applouse.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/beep1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/beep2.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/music_track_1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/music_track_2.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/music_track_3.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/music_track_4.ogg",
+    "container": "OGG"
+   }
+  ],
+  "html_assets": [],
+  "layouts": 1,
+  "values_strings_xml": 0
+ }
+}

@@ -1,0 +1,10 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/de.saschahlusiak.freebloks/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libandroidx.graphics.path.so", "size": 10760},
+    {"entry": "lib/x86_64/libktx.so", "size": 37160},
+    {"entry": "lib/x86_64/libserver.so", "size": 314240}
+  ],
+  "count": 3
+}

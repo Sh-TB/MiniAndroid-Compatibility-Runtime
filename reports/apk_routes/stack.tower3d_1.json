@@ -1,0 +1,135 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "stack.tower3d_1",
+ "apk": "../upload/canonical_apks/stack.tower3d_1.apk",
+ "apk_sha256_16": "ba5b0a48d74e3348",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "LIBGDX",
+   "evidence": [
+    "dex:Lcom/badlogic/gdx/",
+    "lib:libgdx.so"
+   ],
+   "primary": true
+  },
+  {
+   "route": "WEBVIEW_NODE",
+   "evidence": [
+    "dex:Landroid/webkit/WebView;"
+   ],
+   "primary": false
+  },
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroidx/fragment/",
+    "dex:Landroid/opengl/GLSurfaceView;"
+   ],
+   "primary": false
+  },
+  {
+   "route": "MEDIA",
+   "evidence": [
+    "dex:Landroid/media/MediaPlayer|MediaCodec",
+    "ships playable content: assets/sfx/click.wav"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "LIBGDX",
+ "routes_forbidden": [
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "NATIVE_LIB_LOAD",
+   "evidence": [
+    "dex:Lcom/badlogic/gdx/",
+    "lib:libgdx.so"
+   ]
+  },
+  {
+   "cap": "JNI",
+   "evidence": [
+    "dex:Lcom/badlogic/gdx/",
+    "lib:libgdx.so"
+   ]
+  },
+  {
+   "cap": "EGL_GLES",
+   "evidence": [
+    "libGDX renders via GL"
+   ]
+  },
+  {
+   "cap": "ASSET_MANAGER",
+   "evidence": [
+    "libGDX FileHandle"
+   ]
+  },
+  {
+   "cap": "WEBVIEW_ENGINE",
+   "evidence": [
+    "WebView component in DEX"
+   ]
+  },
+  {
+   "cap": "SQLITE_VEND",
+   "evidence": [
+    "dex:sqlite"
+   ]
+  },
+  {
+   "cap": "MEDIA_DEMUX_PER_ASSET",
+   "evidence": [
+    "media classes present; container set must match actual assets, never substituted"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libgdx-freetype.so",
+   "lib/arm64-v8a/libgdx.so",
+   "lib/armeabi-v7a/libgdx-freetype.so",
+   "lib/armeabi-v7a/libgdx.so",
+   "lib/x86/libgdx-freetype.so",
+   "lib/x86/libgdx.so",
+   "lib/x86_64/libgdx-freetype.so",
+   "lib/x86_64/libgdx.so"
+  ],
+  "asset_count": 6,
+  "media_assets": [
+   {
+    "path": "assets/sfx/click.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/sfx/gameover.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/sfx/perfect.wav",
+    "container": "WAV"
+   },
+   {
+    "path": "assets/sfx/place.wav",
+    "container": "WAV"
+   }
+  ],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

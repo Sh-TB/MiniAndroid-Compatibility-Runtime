@@ -1,0 +1,93 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "org.kirkezz.rttt_3",
+ "apk": "../upload/canonical_apks/org.kirkezz.rttt_3.apk",
+ "apk_sha256_16": "704fa51869ad7ff4",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "SDL",
+   "evidence": [
+    "dex:Lorg/libsdl/app/SDLActivity;"
+   ],
+   "primary": true
+  }
+ ],
+ "primary_route": "SDL",
+ "routes_forbidden": [
+  {
+   "route": "WEBVIEW_HTML5_PACKAGED",
+   "reason": "no WebView classes and no HTML assets in APK \u2014 a Java application must NOT pass through the HTML5 alley"
+  },
+  {
+   "route": "LIBGDX",
+   "reason": "no libGDX classes in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "SDL_NATIVE",
+   "evidence": [
+    "SDLActivity in DEX"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libSDL3.so",
+   "lib/arm64-v8a/libSDL3_image.so",
+   "lib/arm64-v8a/libSDL3_mixer.so",
+   "lib/arm64-v8a/libSDL3_ttf.so",
+   "lib/arm64-v8a/libmain.so",
+   "lib/arm64-v8a/librmlui.so",
+   "lib/arm64-v8a/librmlui_debugger.so",
+   "lib/arm64-v8a/libtiff.so",
+   "lib/arm64-v8a/libtiffxx.so",
+   "lib/armeabi-v7a/libSDL3.so",
+   "lib/armeabi-v7a/libSDL3_image.so",
+   "lib/armeabi-v7a/libSDL3_mixer.so",
+   "lib/armeabi-v7a/libSDL3_ttf.so",
+   "lib/armeabi-v7a/libmain.so",
+   "lib/armeabi-v7a/librmlui.so",
+   "lib/armeabi-v7a/librmlui_debugger.so",
+   "lib/armeabi-v7a/libtiff.so",
+   "lib/armeabi-v7a/libtiffxx.so",
+   "lib/x86/libSDL3.so",
+   "lib/x86/libSDL3_image.so",
+   "lib/x86/libSDL3_mixer.so",
+   "lib/x86/libSDL3_ttf.so",
+   "lib/x86/libmain.so",
+   "lib/x86/librmlui.so",
+   "lib/x86/librmlui_debugger.so",
+   "lib/x86/libtiff.so",
+   "lib/x86/libtiffxx.so",
+   "lib/x86_64/libSDL3.so",
+   "lib/x86_64/libSDL3_image.so",
+   "lib/x86_64/libSDL3_mixer.so",
+   "lib/x86_64/libSDL3_ttf.so",
+   "lib/x86_64/libmain.so",
+   "lib/x86_64/librmlui.so",
+   "lib/x86_64/librmlui_debugger.so",
+   "lib/x86_64/libtiff.so",
+   "lib/x86_64/libtiffxx.so"
+  ],
+  "asset_count": 29,
+  "media_assets": [
+   {
+    "path": "assets/the_entertainer.ogg",
+    "container": "OGG"
+   }
+  ],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

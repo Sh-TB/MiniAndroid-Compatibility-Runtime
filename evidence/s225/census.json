@@ -1,0 +1,336 @@
+{
+ "binary_sha16": "e60821d52375ecf7",
+ "protocol": "real-dalvik, 12 frames, frame-delay 250, cold install per run, fresh store per run",
+ "runs": {
+  "gomoku": {
+   "apk": "com.traffar.gomoku_4.apk",
+   "apk_sha16": "d5dd197010476582",
+   "identical": true,
+   "runs": [
+    {
+     "rc": 0,
+     "wall_s": 2.1,
+     "pkg": "com.traffar.gomoku",
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ELF": "ELF class: ELFCLASS32",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.traffar.gomoku \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     },
+     "apk_sha16": "d5dd197010476582"
+    },
+    {
+     "rc": 0,
+     "wall_s": 2.0,
+     "pkg": "com.traffar.gomoku",
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ELF": "ELF class: ELFCLASS32",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.traffar.gomoku \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     },
+     "apk_sha16": "d5dd197010476582"
+    },
+    {
+     "rc": 0,
+     "wall_s": 2.1,
+     "pkg": "com.traffar.gomoku",
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ELF": "ELF class: ELFCLASS32",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.traffar.gomoku \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     },
+     "apk_sha16": "d5dd197010476582"
+    }
+   ]
+  },
+  "rttt": {
+   "apk": "org.kirkezz.rttt_3.apk",
+   "apk_sha16": "704fa51869ad7ff4",
+   "identical": true,
+   "runs": [
+    {
+     "rc": 0,
+     "wall_s": 2.2,
+     "pkg": "org.kirkezz.rttt",
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=org.kirkezz.rttt \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     },
+     "apk_sha16": "704fa51869ad7ff4"
+    },
+    {
+     "rc": 0,
+     "wall_s": 2.2,
+     "pkg": "org.kirkezz.rttt",
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=org.kirkezz.rttt \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     },
+     "apk_sha16": "704fa51869ad7ff4"
+    },
+    {
+     "rc": 0,
+     "wall_s": 2.2,
+     "pkg": "org.kirkezz.rttt",
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=org.kirkezz.rttt \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     },
+     "apk_sha16": "704fa51869ad7ff4"
+    }
+   ]
+  },
+  "freebloks": {
+   "apk": "de.saschahlusiak.freebloks_184.apk",
+   "apk_sha16": "11908519d6b8edde",
+   "identical": true,
+   "runs": [
+    {
+     "rc": 0,
+     "wall_s": 4.0,
+     "pkg": "de.saschahlusiak.freebloks",
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ELF": "elFactory; method=<clinit> bytecode_size=10",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=de.saschahlusiak.freebloks \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     },
+     "apk_sha16": "11908519d6b8edde"
+    },
+    {
+     "rc": 0,
+     "wall_s": 4.0,
+     "pkg": "de.saschahlusiak.freebloks",
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ELF": "elFactory; method=<clinit> bytecode_size=10",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=de.saschahlusiak.freebloks \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     },
+     "apk_sha16": "11908519d6b8edde"
+    },
+    {
+     "rc": 0,
+     "wall_s": 4.0,
+     "pkg": "de.saschahlusiak.freebloks",
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ELF": "elFactory; method=<clinit> bytecode_size=10",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=de.saschahlusiak.freebloks \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     },
+     "apk_sha16": "11908519d6b8edde"
+    }
+   ]
+  },
+  "tower3d": {
+   "apk": "stack.tower3d_1.apk",
+   "apk_sha16": "ba5b0a48d74e3348",
+   "identical": true,
+   "runs": [
+    {
+     "rc": 0,
+     "wall_s": 2.8,
+     "pkg": "stack.tower3d",
+     "face_sha16": "6a4e81a849ed79e5",
+     "png_bytes": 6133,
+     "uncaught": 0,
+     "app_boundary": 1,
+     "in_flight": 1,
+     "frontier_firsts": {
+      "APP": "APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+      "UNCAUGHT": "uncaught (frame unwind + propagate)",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=stack.tower3d \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "NativeLoader": "nativeLoader maxNetThreads Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->maxNetThreads useImmersiveMode Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->useI",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_DEFAULT_DISPLAY storage_size=153 same_class_keys=0 engine=0x7fff9420e098"
+     },
+     "apk_sha16": "ba5b0a48d74e3348"
+    },
+    {
+     "rc": 0,
+     "wall_s": 2.8,
+     "pkg": "stack.tower3d",
+     "face_sha16": "6a4e81a849ed79e5",
+     "png_bytes": 6133,
+     "uncaught": 0,
+     "app_boundary": 1,
+     "in_flight": 1,
+     "frontier_firsts": {
+      "APP": "APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+      "UNCAUGHT": "uncaught (frame unwind + propagate)",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=stack.tower3d \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "NativeLoader": "nativeLoader maxNetThreads Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->maxNetThreads useImmersiveMode Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->useI",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_DEFAULT_DISPLAY storage_size=153 same_class_keys=0 engine=0x7ffd9d89bad8"
+     },
+     "apk_sha16": "ba5b0a48d74e3348"
+    },
+    {
+     "rc": 0,
+     "wall_s": 2.8,
+     "pkg": "stack.tower3d",
+     "face_sha16": "6a4e81a849ed79e5",
+     "png_bytes": 6133,
+     "uncaught": 0,
+     "app_boundary": 1,
+     "in_flight": 1,
+     "frontier_firsts": {
+      "APP": "APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+      "UNCAUGHT": "uncaught (frame unwind + propagate)",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=stack.tower3d \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "NativeLoader": "nativeLoader maxNetThreads Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->maxNetThreads useImmersiveMode Lcom/badlogic/gdx/backends/android/AndroidApplicationConfiguration;->useI",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_DEFAULT_DISPLAY storage_size=153 same_class_keys=0 engine=0x7ffd24b8afd8"
+     },
+     "apk_sha16": "ba5b0a48d74e3348"
+    }
+   ]
+  },
+  "bouncy": {
+   "apk": "com.dozingcatsoftware.bouncy_43.apk",
+   "apk_sha16": "ffda0d9cb0b1b2aa",
+   "identical": true,
+   "runs": [
+    {
+     "rc": 0,
+     "wall_s": 2.7,
+     "pkg": "com.dozingcatsoftware.bouncy",
+     "face_sha16": "8a6c24ac8a7d718e",
+     "png_bytes": 37496,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ABI": "abilty but it's not the case here: java.vm.version=\"null\"",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.dozingcatsoftware.bouncy \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "JNI_OnLoad": "JNI_OnLoad)"
+     },
+     "apk_sha16": "ffda0d9cb0b1b2aa"
+    },
+    {
+     "rc": 0,
+     "wall_s": 2.8,
+     "pkg": "com.dozingcatsoftware.bouncy",
+     "face_sha16": "8a6c24ac8a7d718e",
+     "png_bytes": 37496,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ABI": "abilty but it's not the case here: java.vm.version=\"null\"",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.dozingcatsoftware.bouncy \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "JNI_OnLoad": "JNI_OnLoad)"
+     },
+     "apk_sha16": "ffda0d9cb0b1b2aa"
+    },
+    {
+     "rc": 0,
+     "wall_s": 2.8,
+     "pkg": "com.dozingcatsoftware.bouncy",
+     "face_sha16": "8a6c24ac8a7d718e",
+     "png_bytes": 37496,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "ABI": "abilty but it's not the case here: java.vm.version=\"null\"",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.dozingcatsoftware.bouncy \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "JNI_OnLoad": "JNI_OnLoad)"
+     },
+     "apk_sha16": "ffda0d9cb0b1b2aa"
+    }
+   ]
+  },
+  "ttt": {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "apk_sha16": "760fe5acf7b39435",
+   "identical": true,
+   "runs": [
+    {
+     "rc": 0,
+     "wall_s": 11.1,
+     "pkg": "com.emmanuelmess.tictactoe",
+     "face_sha16": "7354c1b231cd581d",
+     "png_bytes": 11386,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "UNCAUGHT": "uncaught (deferred frame unwind + propagate)",
+      "ROUTE": "ROUTE] DECISION pkg=com.emmanuelmess.tictactoe primary=LIBGDX routes=LIBGDX+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+SDL+FLUTTER profile=./reports/apk_routes/com.emmanuelmess.tictactoe.json",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_GLES,ASSET_MANAGER,MEDIA_DEMUX_PER_ASSET"
+     },
+     "apk_sha16": "760fe5acf7b39435"
+    },
+    {
+     "rc": 0,
+     "wall_s": 11.3,
+     "pkg": "com.emmanuelmess.tictactoe",
+     "face_sha16": "7354c1b231cd581d",
+     "png_bytes": 11386,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "UNCAUGHT": "uncaught (deferred frame unwind + propagate)",
+      "ROUTE": "ROUTE] DECISION pkg=com.emmanuelmess.tictactoe primary=LIBGDX routes=LIBGDX+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+SDL+FLUTTER profile=./reports/apk_routes/com.emmanuelmess.tictactoe.json",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_GLES,ASSET_MANAGER,MEDIA_DEMUX_PER_ASSET"
+     },
+     "apk_sha16": "760fe5acf7b39435"
+    },
+    {
+     "rc": 0,
+     "wall_s": 11.1,
+     "pkg": "com.emmanuelmess.tictactoe",
+     "face_sha16": "7354c1b231cd581d",
+     "png_bytes": 11386,
+     "uncaught": 0,
+     "app_boundary": 0,
+     "in_flight": 0,
+     "frontier_firsts": {
+      "UNCAUGHT": "uncaught (deferred frame unwind + propagate)",
+      "ROUTE": "ROUTE] DECISION pkg=com.emmanuelmess.tictactoe primary=LIBGDX routes=LIBGDX+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+SDL+FLUTTER profile=./reports/apk_routes/com.emmanuelmess.tictactoe.json",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_GLES,ASSET_MANAGER,MEDIA_DEMUX_PER_ASSET"
+     },
+     "apk_sha16": "760fe5acf7b39435"
+    }
+   ]
+  }
+ }
+}

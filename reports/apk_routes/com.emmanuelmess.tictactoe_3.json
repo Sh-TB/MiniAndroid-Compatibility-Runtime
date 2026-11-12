@@ -1,7 +1,7 @@
 {
  "schema": "S188_APK_ROUTE_PROFILE_V1",
  "pkg": "com.emmanuelmess.tictactoe_3",
- "apk": "upload/canonical_apks/com.emmanuelmess.tictactoe_3.apk",
+ "apk": "../upload/canonical_apks/com.emmanuelmess.tictactoe_3.apk",
  "apk_sha256_16": "760fe5acf7b39435",
  "static_analysis": {
   "honest": true,

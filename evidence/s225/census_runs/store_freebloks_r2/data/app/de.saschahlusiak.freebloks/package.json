@@ -1,0 +1,27 @@
+{
+  "package": "de.saschahlusiak.freebloks",
+  "versionName": "1.8.4",
+  "versionCode": 184,
+  "mainActivity": "de.saschahlusiak.freebloks.game.FreebloksActivity",
+  "minSdk": "24",
+  "targetSdk": "37",
+  "requestedPermissions": [
+    "android.permission.VIBRATE",
+    "android.permission.INTERNET",
+    "android.permission.WAKE_LOCK",
+    "android.permission.BLUETOOTH_CONNECT",
+    "android.permission.BLUETOOTH",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING",
+    "android.permission.BLUETOOTH_ADMIN",
+    "de.saschahlusiak.freebloks.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/de.saschahlusiak.freebloks/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s225/census_runs/store_freebloks_r2/data/app/de.saschahlusiak.freebloks/base.apk",
+  "apkSha256": "11908519d6b8eddea3183d3807d8e85f5efed0d0e3ae97d316d4be9674a2707e",
+  "apkSize": 5999178,
+  "installedAt": "2026-11-12T11:15:27Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

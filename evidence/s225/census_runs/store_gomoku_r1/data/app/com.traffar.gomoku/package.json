@@ -1,0 +1,18 @@
+{
+  "package": "com.traffar.gomoku",
+  "versionName": "0.4",
+  "versionCode": 4,
+  "mainActivity": "com.traffar.gomoku.gomokuActivity",
+  "minSdk": "10",
+  "targetSdk": "12",
+  "requestedPermissions": [
+    "android.permission.WRITE_EXTERNAL_STORAGE"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/com.traffar.gomoku/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s225/census_runs/store_gomoku_r1/data/app/com.traffar.gomoku/base.apk",
+  "apkSha256": "d5dd197010476582e7865adc0d54bef5225cc3cd109af6f2e6f6d2def82b9159",
+  "apkSize": 4398072,
+  "installedAt": "2026-11-12T11:15:07Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

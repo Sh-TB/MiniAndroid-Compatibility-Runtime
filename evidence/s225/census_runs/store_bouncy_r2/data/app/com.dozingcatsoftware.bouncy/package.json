@@ -1,0 +1,16 @@
+{
+  "package": "com.dozingcatsoftware.bouncy",
+  "versionName": "1.16.0",
+  "versionCode": 43,
+  "mainActivity": "com.dozingcatsoftware.bouncy.BouncyActivity",
+  "minSdk": "4",
+  "targetSdk": "37",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/com.dozingcatsoftware.bouncy/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s225/census_runs/store_bouncy_r2/data/app/com.dozingcatsoftware.bouncy/base.apk",
+  "apkSha256": "ffda0d9cb0b1b2aa58be9559dda891c4fa24391bc481d297a8e3d96c31f62721",
+  "apkSize": 3233743,
+  "installedAt": "2026-11-12T11:15:45Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

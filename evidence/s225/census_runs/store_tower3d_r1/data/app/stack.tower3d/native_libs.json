@@ -1,0 +1,9 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/stack.tower3d/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libgdx-freetype.so", "size": 888928},
+    {"entry": "lib/x86_64/libgdx.so", "size": 193008}
+  ],
+  "count": 2
+}

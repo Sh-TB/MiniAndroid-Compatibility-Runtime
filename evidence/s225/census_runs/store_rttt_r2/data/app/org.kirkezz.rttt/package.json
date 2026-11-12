@@ -1,0 +1,16 @@
+{
+  "package": "org.kirkezz.rttt",
+  "versionName": "1.3",
+  "versionCode": 3,
+  "mainActivity": "org.libsdl.app.SDLActivity",
+  "minSdk": "21",
+  "targetSdk": "34",
+  "requestedPermissions": [],
+  "origin": "sideload",
+  "codePath": "/data/app/org.kirkezz.rttt/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s225/census_runs/store_rttt_r2/data/app/org.kirkezz.rttt/base.apk",
+  "apkSha256": "704fa51869ad7ff441edb8831fad7044141d62c4ccce610cfe5117476770a8af",
+  "apkSize": 23386246,
+  "installedAt": "2026-11-12T11:15:16Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

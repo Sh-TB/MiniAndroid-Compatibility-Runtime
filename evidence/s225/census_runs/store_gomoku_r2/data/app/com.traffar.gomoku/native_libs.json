@@ -1,0 +1,11 @@
+{
+  "primaryAbi": "x86",
+  "nativeLibraryDir": "/data/app/com.traffar.gomoku/lib/x86",
+  "extracted": [
+    {"entry": "lib/x86/libSDL2_image.so", "size": 402588},
+    {"entry": "lib/x86/libSDL2_mixer.so", "size": 193748},
+    {"entry": "lib/x86/libSDL2.so", "size": 1074328},
+    {"entry": "lib/x86/libmain.so", "size": 393128}
+  ],
+  "count": 4
+}

@@ -1,0 +1,16 @@
+{
+  "primaryAbi": "x86_64",
+  "nativeLibraryDir": "/data/app/org.kirkezz.rttt/lib/x86_64",
+  "extracted": [
+    {"entry": "lib/x86_64/libSDL3.so", "size": 2127280},
+    {"entry": "lib/x86_64/libSDL3_image.so", "size": 205448},
+    {"entry": "lib/x86_64/libSDL3_mixer.so", "size": 326968},
+    {"entry": "lib/x86_64/libSDL3_ttf.so", "size": 1910720},
+    {"entry": "lib/x86_64/libmain.so", "size": 109808},
+    {"entry": "lib/x86_64/librmlui.so", "size": 4684896},
+    {"entry": "lib/x86_64/librmlui_debugger.so", "size": 315440},
+    {"entry": "lib/x86_64/libtiff.so", "size": 462840},
+    {"entry": "lib/x86_64/libtiffxx.so", "size": 882744}
+  ],
+  "count": 9
+}

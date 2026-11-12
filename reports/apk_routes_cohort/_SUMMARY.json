@@ -1,0 +1,18 @@
+[
+ {
+  "pkg": "com.emmanuelmess.tictactoe_3",
+  "primary": "LIBGDX",
+  "routes": [
+   "LIBGDX",
+   "VIEW",
+   "MEDIA"
+  ],
+  "caps": [
+   "NATIVE_LIB_LOAD",
+   "JNI",
+   "EGL_GLES",
+   "ASSET_MANAGER",
+   "MEDIA_DEMUX_PER_ASSET"
+  ]
+ }
+]

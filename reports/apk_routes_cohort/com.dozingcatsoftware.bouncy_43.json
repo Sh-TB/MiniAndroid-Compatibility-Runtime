@@ -1,0 +1,147 @@
+{
+ "schema": "S188_APK_ROUTE_PROFILE_V1",
+ "pkg": "com.dozingcatsoftware.bouncy_43",
+ "apk": "../upload/canonical_apks/com.dozingcatsoftware.bouncy_43.apk",
+ "apk_sha256_16": "ffda0d9cb0b1b2aa",
+ "static_analysis": {
+  "honest": true,
+  "note": "static detection only \u2014 runtime observation required before ANY impact credit (UNOBSERVED != PASS, S188 \u00a713)"
+ },
+ "routes_detected": [
+  {
+   "route": "LIBGDX",
+   "evidence": [
+    "dex:Lcom/badlogic/gdx/",
+    "lib:libgdx.so"
+   ],
+   "primary": true
+  },
+  {
+   "route": "VIEW",
+   "evidence": [
+    "dex:Landroid/opengl/GLSurfaceView;"
+   ],
+   "primary": false
+  },
+  {
+   "route": "MEDIA",
+   "evidence": [
+    "dex:Landroid/media/MediaPlayer|MediaCodec",
+    "ships playable content: assets/audio/bumper/dinga1.ogg"
+   ],
+   "primary": false
+  }
+ ],
+ "primary_route": "LIBGDX",
+ "routes_forbidden": [
+  {
+   "route": "WEBVIEW_HTML5_PACKAGED",
+   "reason": "no WebView classes and no HTML assets in APK \u2014 a Java application must NOT pass through the HTML5 alley"
+  },
+  {
+   "route": "SDL",
+   "reason": "no SDLActivity in DEX"
+  },
+  {
+   "route": "FLUTTER",
+   "reason": "no Flutter embedding classes in DEX"
+  }
+ ],
+ "substitutions_forbidden": [],
+ "required_capabilities": [
+  {
+   "cap": "NATIVE_LIB_LOAD",
+   "evidence": [
+    "dex:Lcom/badlogic/gdx/",
+    "lib:libgdx.so"
+   ]
+  },
+  {
+   "cap": "JNI",
+   "evidence": [
+    "dex:Lcom/badlogic/gdx/",
+    "lib:libgdx.so"
+   ]
+  },
+  {
+   "cap": "EGL_GLES",
+   "evidence": [
+    "libGDX renders via GL"
+   ]
+  },
+  {
+   "cap": "ASSET_MANAGER",
+   "evidence": [
+    "libGDX FileHandle"
+   ]
+  },
+  {
+   "cap": "MEDIA_DEMUX_PER_ASSET",
+   "evidence": [
+    "media classes present; container set must match actual assets, never substituted"
+   ]
+  }
+ ],
+ "inventory": {
+  "native_libs": [
+   "lib/arm64-v8a/libgdx-box2d.so",
+   "lib/armeabi-v7a/libgdx-box2d.so",
+   "lib/x86/libgdx-box2d.so",
+   "lib/x86_64/libgdx-box2d.so"
+  ],
+  "asset_count": 25,
+  "media_assets": [
+   {
+    "path": "assets/audio/bumper/dinga1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/bumper/dingc1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/bumper/dingc2.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/bumper/dingd1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/bumper/dinge1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/bumper/dingg1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/misc/andBounce2.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/misc/ball1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/misc/flipper1.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/misc/message2.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/misc/rolloverE.ogg",
+    "container": "OGG"
+   },
+   {
+    "path": "assets/audio/misc/startup1.ogg",
+    "container": "OGG"
+   }
+  ],
+  "html_assets": [],
+  "layouts": 0,
+  "values_strings_xml": 0
+ }
+}

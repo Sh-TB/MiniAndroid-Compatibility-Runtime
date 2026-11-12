@@ -1,0 +1,19 @@
+{
+  "package": "stack.tower3d",
+  "versionName": "1.0.0",
+  "versionCode": 1,
+  "mainActivity": "stack.tower3d.android.AndroidLauncher",
+  "minSdk": "21",
+  "targetSdk": "35",
+  "requestedPermissions": [
+    "android.permission.VIBRATE",
+    "stack.tower3d.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/stack.tower3d/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s225/census_runs/store_tower3d_r2/data/app/stack.tower3d/base.apk",
+  "apkSha256": "ba5b0a48d74e33483d9dcb04e2e22ec745ee8e9266188bf9c59f2d2b2883c233",
+  "apkSize": 4461839,
+  "installedAt": "2026-11-12T11:15:37Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}
