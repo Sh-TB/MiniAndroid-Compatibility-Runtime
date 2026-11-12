@@ -9396,3 +9396,24 @@ Work Log:
 - Receipts: #582 comment 6818436691 (the UP-consumption root + fix +
   first consumed=true), #585 comment 6818498915 (the batch table +
   ledger deltas + closure/blocking states).
+
+---
+Task ID: S224-OPMT-PROBE
+Agent: Super Z (main)
+Task: #585 batch follow-through — the OPMT (#23) interaction probe.
+
+Work Log:
+- Menu face 8eea9a6a5a9346e4 (1,609 colors) — the recorded frontier
+  face CONFIRMED CURRENT.
+- Button geometry decoded from the render walk: "Play with Friend"
+  node 19 at (277,1379) size 525x131 -> tap center (539,1444). The
+  first probe tap (540,1700) landed in the 37px gap between buttons
+  (target=0).
+- TAP RESULT: MainMenu.setContentView (real DEX) -> the app's own nav
+  code built the GameActivity Intent (S123-ICTOR2) -> GameActivity
+  LAUNCHED -> the game screen composed: 3x3 board Buttons (210x210
+  tiles) + the turn-state TextView "It is currently black's turn." —
+  the GAME LOGIC RAN. NO nextInt(0) exception: the recorded
+  game-logic failure does NOT reproduce on current HEAD (face
+  71a4ef0f84c6ac88). Evidence: evidence/s224/runs/opmt_game_state.json
+  + opmt_tap2 console/screenshot.

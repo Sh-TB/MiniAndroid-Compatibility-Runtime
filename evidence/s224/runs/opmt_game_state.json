@@ -1,0 +1,15 @@
+{
+ "app": "one.scarecrow.games.OPMT",
+ "issue": 23,
+ "tap": "539,1444@8 (Play with Friend button center \u2014 node 19 pos (277,1379) size 525x131)",
+ "menu_face": "8eea9a6a5a9346e4 (1609 colors)",
+ "game_face": "71a4ef0f84c6ac88 (44 colors)",
+ "chain": [
+  "tap -> MainMenu.setContentView (TRY-ENTRY dex_report=YES)",
+  "Intent.<init> a1=Lone/scarecrow/games/OPMT/GameActivity; (the app's own nav code)",
+  "GameActivity launched -> game screen composed",
+  "3x3 board Buttons 210x210 + TextView 'It is currently black's turn.' (game state initialized)",
+  "NO nextInt(0) exception \u2014 the recorded game-logic failure does NOT reproduce on current HEAD"
+ ],
+ "binary": "0cd86a5b5fc09c87"
+}
