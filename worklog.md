@@ -9281,3 +9281,74 @@ Work Log:
   VIS-001..006 dispositions), #583 comment 6815552737 (integration framing
   + app matrix + proof gates).
 - Commit eff78882 pushed (5213dd7c..eff78882).
+
+---
+Task ID: S223-MAIN
+Agent: Super Z (main)
+Task: the unprocessed S223/S224/S225 GP waves (#582 ids 6814550033 + #583 ids
+6814550480/6814630498/6814633387/6814636993/6814698581) processed line-by-line
++ the NEW #585 recovery-plan issue deliverables; receipts posted on all four
+issues.
+
+Work Log:
+- Fetch: #582 (46c) / #583 (27c) / #584 (5c) / #585 (0c) full bodies+comments
+  into evidence/s223/*.json (scripts/s223_fetch_issues.py + s223_digest.py);
+  edit-detection: only 6807187620 EDITED (already processed); NEW waves
+  S223/S224/S225 + #585 identified as unprocessed.
+- ANTI-PHANTOM VERIFICATION before every patch: NATIVE-001 CONFIRMED
+  (negative elem_idx unchecked, int32 base overflow, dcap==0 = permission);
+  JNI-001 CONFIRMED (&g_env global); JNI-002 CONFIRMED (stdio/fopen/getenv in
+  signal handler); BITMAP-001 CONFIRMED (unsynchronized map); ELF-001
+  CONFIRMED (generic not-ELF64 text); f283_cache CONFIRMED (descriptor-only
+  key); LOG-001/004/007 CONFIRMED; LOG-006/010/011 ALREADY-FIXED on main
+  (dispositioned verified-no-change).
+- FIXES LANDED (binary 72628d05dbc8f8db):
+  * NATIVE-001: gl_view_mirror_write — negative idx no-write, int64 base,
+    dcap<=0 no-write, tail o+esz<=dcap.
+  * JNI-001: thread-local env identity — attach mints per-thread stub,
+    detach -> GetEnv JNI_EDETACHED (-2), main thread keeps &g_env (pins
+    byte-inert); named residual: global exception channel (next wave).
+  * JNI-002: handler = POD capture (sig_atomic_t halves) + siglongjmp only;
+    W10 maps/stack-walk post-longjmp; env flag resolved once at install.
+  * BITMAP-001: mutex on every accessor + get_pixels_copy/with_bitmap +
+    ownership law in header (single-storey no-copy kept, residual named).
+  * ELF-001: precise ELF32 EM_386 ABI_UNSUPPORTED row before dlopen.
+  * S224: f283_cache REMOVED (the coder's recommended option; cross-APK
+    Toolbar false-negative structurally impossible) + ctor-failure
+    propagation (construction_failed ViewNode flag + ctor_failures stat +
+    XML subtree abort; AOSP InflateException semantics; engine-side
+    transactional rollback named as follow-up).
+  * S223: LOG-001 render sub-stages exempt from walk-through promotion;
+    LOG-003 census-backed MEASURE_END/LAYOUT_END/DRAW_END events;
+    LOG-004 record_gl_presented derived bits (draw_called + blitted_px —
+    zero-pixel blit no longer 'presented'); LOG-005 GL callback results
+    honored (surface-created/changed commit on success only; onDrawFrame
+    return flows to blit gate); LOG-007 tid:<id> honest thread default;
+    LOG-012 bounded provenance rings + visible drop counters in finalize;
+    LOG-020 --trace-live(+=verbose) one-switch preset (correct env names:
+    MINIANDROID_GFX_TRACE/GFX_PROVENANCE/FILE_IO); CALL-001..004 3rc+35c
+    trace enrichment (exact descriptor, bounded typed args, return,
+    frame_id).
+- #585 DELIVERABLES: docs/compatibility/legacy_100_audit.{md,csv,json} —
+  the 100 oldest open issues (#9-#115) fetched via API
+  (scripts/s223_legacy100_fetch.py), classified into the Stage-E ladder +
+  ranked shared-blocker clusters (scripts/s223_legacy100_ledger.py):
+  64 NOT-LOADED untriaged / 23 NONBLANK (19 = F-NEW-156 family) /
+  4 EXEC / 2 stale-closure candidates (#11/#12) / 2 BLOCKED / dooz ACTIVE /
+  #76 RENDERED-unproven / #28 GRAPHICALLY-NONTRIVIAL.
+- DOOZ COMPLETE-RENDER ATTEMPT (honest negative):
+  evidence/s223/runs/s223_dooz_render.json (319s, MINIANDROID_S222_FRAME_
+  BRIDGE=1): final frame 2-color default face, NewGame marks=0,
+  APP-BOUNDARY=0 (S222-A laws hold), pin a0fae907 HOLD — the per-frame
+  bridge does NOT advance the render; frontier = NewGame->GameBoard
+  dispatch, not the measure bridge.
+- REGRESSION: make test-all 27/27; 6-pin gate ALL HOLD byte-exact
+  (bouncy 8a6c24ac / unote 3b8dcb0a / dooz a0fae907 / gmdice 3891679d x2 /
+  microtimer b39665f6 / ttt 7354c1b2 x3).
+- Receipts posted: #582 comment 6817153230 (LOG-001..020 + CALL-001..020
+  disposition tables + 3 ALREADY-FIXED verifications + dooz negative),
+  #583 comment 6817153661 (S225 five fixes + S224 two fixes + corpus row
+  BLOCKED/APK_NOT_MATERIALIZED + 16-app matrix NOT RUN honest),
+  #584 comment 6817154057 (A-R5 chain verified landed, issue closed-loop),
+  #585 comment 6817154395 (deliverables + distribution + clusters +
+  immediate-batch status).
