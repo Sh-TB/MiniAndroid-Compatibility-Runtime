@@ -27016,7 +27016,46 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                                     std::memory_order_relaxed);
         }
     }
-    
+
+    // W23 EXIT-REASON census (F-C4-723 follow-up; env-gated
+    // MINIANDROID_W23_EXIT0=1; stderr-only, behavior-neutral per the
+    // S211/S214 probe precedent). A (0,0) completion = the fetch loop
+    // exited with halted_=0, halted_on_return_=0 and
+    // soft_stopped_no_return_=0: the frame never executed a return opcode
+    // and no graceful/hard stop fired — the run-off-the-end channel the
+    // F-C4-723 law answers with VOID at the invoke-exit discriminator.
+    // The census classifies WHY the frame left the loop: pc vs bytecode
+    // size separates a branch-past-the-end from a mid-frame silent break,
+    // the would-be-next opcode at pc names the instruction the loop
+    // refused/failed to fetch, and the pending-exception + unwind state
+    // separates the exception-leak faces. instruction_sequence_ correlates
+    // the census row with the [F723-NORET] line the same exit later
+    // produces at the discriminator.
+    {
+        static thread_local const bool w23_exit0_on =
+            std::getenv("MINIANDROID_W23_EXIT0") != nullptr;
+        if (w23_exit0_on && !halted_ && !halted_on_return_ &&
+            !soft_stopped_no_return_) {
+            static thread_local uint64_t w23_n = 0;
+            if (w23_n < 400) {
+                ++w23_n;
+                const uint16_t w23_op =
+                    (pc_ < bytecode_.size())
+                        ? static_cast<uint16_t>(bytecode_[pc_] & 0xFF)
+                        : 0xFFFF;
+                std::cerr << "[W23-EXIT0] " << current_class_ << "."
+                          << current_method_ << " pc=0x" << to_hex(pc_)
+                          << " of 0x"
+                          << to_hex(static_cast<uint32_t>(bytecode_.size()))
+                          << " next_op=0x" << to_hex16(w23_op) << " instr="
+                          << instruction_sequence_ << " pexc_type="
+                          << static_cast<int>(pending_exception_.type)
+                          << " unwind="
+                          << (frame_unwind_exception_valid_ ? 1 : 0)
+                          << std::endl;
+            }
+        }
+    }
     return !halted_ || halted_on_return_;
 }
 

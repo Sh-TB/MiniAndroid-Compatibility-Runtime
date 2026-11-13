@@ -1,0 +1,20 @@
+{
+ "binary_sha16": "0672ecac127664fa",
+ "apk_sha16": "299eab21ac8b3c61",
+ "wall_s": 7.4,
+ "final_face_sha16": "d602648e8e401895",
+ "uncaught_escapes": 0,
+ "census_rows": 0,
+ "off_end_rows": 0,
+ "rows_with_pending_exception": 0,
+ "rows_with_unwind": 0,
+ "signature_clusters": [],
+ "coder4_line_reference": {
+  "tree": "528efe5a",
+  "rows": 70,
+  "signature": "Lsr;.run pc 0xfe",
+  "shape": "mid-frame catch-handler breaks, no pending exception, 0/70 off-end"
+ },
+ "probe": "w23_probe_only.diff sha256 f35901eba4c247cb1a027fff4b94ae13db956110bbbf692b444ea3a8b1031668 (verbatim, #591 comment 6859402179)",
+ "gate": "evidence/s207/runs/S207_GATE.json binary 0672ecac127664fa six-pin ALL HOLD"
+}

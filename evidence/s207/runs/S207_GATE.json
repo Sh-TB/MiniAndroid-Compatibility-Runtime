@@ -1,14 +1,14 @@
 {
- "binary_sha16": "2f2af2694984933f",
+ "binary_sha16": "0672ecac127664fa",
  "goldens": {
   "bouncy": {
-   "wall_s": 23.9,
+   "wall_s": 24.1,
    "face_sha16": "98abca389fb01380",
    "uncaught": 0,
    "screenshot_bytes": 36434,
    "screenshot_verdict": "OK",
    "pin": "98abca38",
-   "binary": "2f2af2694984933f",
+   "binary": "0672ecac127664fa",
    "hold": true
   },
   "unote": {
@@ -18,17 +18,17 @@
    "screenshot_bytes": 17205,
    "screenshot_verdict": "OK",
    "pin": "3b8dcb0a",
-   "binary": "2f2af2694984933f",
+   "binary": "0672ecac127664fa",
    "hold": true
   },
   "dooz": {
-   "wall_s": 289.3,
+   "wall_s": 303.7,
    "face_sha16": "a0fae9072313e2d1",
    "uncaught": 0,
    "screenshot_bytes": 16160,
    "screenshot_verdict": "OK",
    "pin": "a0fae907",
-   "binary": "2f2af2694984933f",
+   "binary": "0672ecac127664fa",
    "hold": true
   }
  },
@@ -36,36 +36,48 @@
   "r1": {
    "wall_s": 2.6,
    "face_sha16": "3891679dff449331",
-   "uncaught": 0
+   "uncaught": 0,
+   "screenshot_bytes": 34865,
+   "screenshot_verdict": "OK"
   },
   "r2": {
    "wall_s": 2.6,
    "face_sha16": "3891679dff449331",
-   "uncaught": 0
+   "uncaught": 0,
+   "screenshot_bytes": 34865,
+   "screenshot_verdict": "OK"
   },
   "rerun_identical": true
  },
  "microtimer": {
-  "wall_s": 2.6,
+  "wall_s": 2.5,
   "face_sha16": "b39665f68f3938e6",
-  "uncaught": 0
+  "uncaught": 0,
+  "screenshot_bytes": 32322,
+  "screenshot_verdict": "OK"
  },
  "tictactoe": {
   "runs": [
    {
-    "wall_s": 20.2,
+    "wall_s": 20.1,
     "face_sha16": "7354c1b231cd581d",
-    "uncaught": 0
+    "uncaught": 0,
+    "screenshot_bytes": 11386,
+    "screenshot_verdict": "OK"
    },
    {
-    "wall_s": 20.2,
+    "wall_s": 20.8,
     "face_sha16": "7354c1b231cd581d",
-    "uncaught": 0
+    "uncaught": 0,
+    "screenshot_bytes": 11386,
+    "screenshot_verdict": "OK"
    },
    {
-    "wall_s": 19.6,
+    "wall_s": 20.9,
     "face_sha16": "7354c1b231cd581d",
-    "uncaught": 0
+    "uncaught": 0,
+    "screenshot_bytes": 11386,
+    "screenshot_verdict": "OK"
    }
   ],
   "deterministic_x3": true

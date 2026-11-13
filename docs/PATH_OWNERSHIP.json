@@ -934,5 +934,12 @@
   "approved_in": "#587 closeout comment (S229 wave)",
   "expected_classes": "md, json, tsv, csv",
   "note": "registered BEFORE creation \u2014 the S214 approval process demonstrated on this wave's own evidence"
+ },
+ "wave_evidence_registered_s232": {
+  "path": "evidence/s232",
+  "owner": "S232 W23-census-probe integration wave (#591 reconciliation)",
+  "approved_in": "#591 W23 body Phase 4: 'adoptable on the main line independently of my W-laws' \u2014 operator integration per the master directive \u00a75",
+  "expected_classes": "json, md",
+  "note": "registered at wave start (S214 default-deny law); probe-only hunk applied verbatim (sha256 f35901eba4c247cb...), six-pin gate ALL HOLD on 0672ecac127664fa recorded in evidence/s207/runs/S207_GATE.json"
  }
 }
