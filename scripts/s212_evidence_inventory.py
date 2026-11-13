@@ -11,7 +11,7 @@ import subprocess
 from pathlib import Path
 from PIL import Image
 
-BASE = Path("/home/z/my-project")
+BASE = Path(__file__).resolve().parents[1]
 OUT = BASE / "evidence"
 OUT.mkdir(exist_ok=True)
 

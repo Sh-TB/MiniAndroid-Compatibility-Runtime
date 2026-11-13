@@ -70,7 +70,7 @@ Repository policy: machine paths, run stores, raw logs and oversized non-canonic
 | | |
 |---|---|
 | Architecture & structure | [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md) · [Constitution](CONSTITUTION_V2.md) |
-| Contributing & evidence standards | [`docs/REPOSITORY_HYGIENE.md`](docs/REPOSITORY_HYGIENE.md) · [CONTRIBUTING](docs/CONTRIBUTING.md) |
+| Contributing & evidence standards | [`docs/REPOSITORY_HYGIENE.md`](docs/REPOSITORY_HYGIENE.md) · [CONTRIBUTING](docs/MINIANDROID_CONTRIBUTING.md) |
 | Status & roadmap | [`docs/METRICS.json`](docs/METRICS.json) · [canonical registry](docs/evidence/canonical/registry.json) |
 | Release | [`docs/releases/RELEASE_v0.0.6.2.md`](docs/releases/RELEASE_v0.0.6.2.md) · [changelog](miniandroid/CHANGELOG.md) |
 | Evidence tiers & retention | [`evidence/evidence_retention_manifest.json`](evidence/evidence_retention_manifest.json) |

@@ -3,8 +3,10 @@
 
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -g -O2 -MMD -MP
+# Repo-root discovery (R11/R23: builds must work outside one developer's VM).
+REPO_ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 # EXP-097 §7: rlottie headers + rlottie static lib for Lottie rendering.
-RLOTTIE_DIR ?= /home/z/my-project/tools/rlottie
+RLOTTIE_DIR ?= $(REPO_ROOT)/tools/rlottie
 # Optional codecs (AOSP-style codec availability): WebP/Lottie are compile-time
 # optional so the runtime also builds where those libs are not ported yet.
 MINIANDROID_HAVE_WEBP ?= 1

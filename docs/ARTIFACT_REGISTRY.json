@@ -1,66 +1,67 @@
 {
  "classes": {
-  "ARCHIVE_BINARY": {
-   "bytes": 16628796,
-   "count": 1,
-   "sample_paths": [
-    "tools/r8/r8.jar"
-   ]
-  },
   "CANONICAL_DOC": {
-   "bytes": 10101685,
-   "count": 1543,
+   "bytes": 10065156,
+   "count": 410,
    "sample_paths": [
+    ".agent/CODER_REQUEST_PROTOCOL.md",
     ".agent/backlog.md",
     ".agent/decisions.md",
     ".agent/experiments.md",
     ".agent/hypotheses.md",
     ".agent/master_campaign_state.md",
     ".agent/mission.md",
+    ".agent/requests/001-upstream-reuse-and-completion-gate.md",
     ".agent/state.md",
     ".github/ISSUE_TEMPLATE/title-compatibility.yml",
     "audit/s128_state_dump.json",
+    "campaigns/trains_50.jsonl",
     "canonical/app_registry.json",
     "canonical/capability_registry.json",
     "canonical/compatibility_matrix.json",
     "canonical/evidence_registry.json",
+    "canonical/final_campaign_mandate_v2.md",
     "canonical/game_registry.json",
     "canonical/m16_webview_decision.json",
     "canonical/master_worklist.json",
     "canonical/reuse_registry.json",
     "canonical/root_cause_registry.json",
+    "canonical/v10_results_latest.json",
     "docs/ACHIEVEMENTS.md",
     "docs/API_NEED_LEDGER.json",
     "docs/API_NEED_LEDGER.md",
     "docs/ARTIFACT_LIFECYCLE.md",
     "docs/ARTIFACT_REGISTRY.json",
+    "docs/AUDIT_REQUIREMENT_COVERAGE.jsonl",
+    "docs/BASE_COMPLETION_RECONCILIATION.jsonl",
+    "docs/BASE_COMPLETION_RECONCILIATION.md",
+    "docs/BIGFILE_PURGE_MANIFEST.md",
     "docs/BOOT_TRACE_LOGGER.md",
     "docs/CAMPAIGN_FINAL_REPORT.md",
     "docs/CAMPAIGN_FINAL_REPORT_REUSE_FIRST_PROGRESS.md",
     "docs/CAPABILITY_MATRIX.md",
     "docs/CAPABILITY_REGISTRY.json",
-    "docs/CORE_MANIFEST.json",
-    "docs/EXECUTED_GIFS.md",
-    "docs/EXECUTION_ACHIEVEMENTS.md",
-    "docs/EXP071_CORE_EXECUTION_BASELINE.md",
-    "docs/EXP071_FINAL_REPORT.md",
-    "docs/EXP071_GIT_HISTORY.md",
-    "docs/EXP072_REPORT.md",
-    "docs/EXP073_REPORT.md",
-    "docs/EXP074_PHASE0_RECONCILIATION.md",
-    "docs/EXP074_REPORT.md",
-    "docs/EXP075_REPORT.md",
-    "docs/EXP077_REPORT.md"
+    "docs/CLOSED_BATCH_1_AUDIT.jsonl",
+    "docs/CLOSED_BATCH_1_AUDIT.md",
+    "docs/CLOSED_BATCH_1_CLAIMS_VS_EVIDENCE.md"
    ]
   },
   "CANONICAL_EVIDENCE": {
-   "bytes": 79092275,
-   "count": 3350,
+   "bytes": 175559292,
+   "count": 8231,
    "sample_paths": [
     "docs/achievements/APPS_EXECUTED.md",
     "docs/achievements/ASSET_MANIFEST.json",
     "docs/achievements/GAMES_WITH_GIFS.md",
     "docs/achievements/INDEX.md",
+    "docs/achievements/balltap_win.png",
+    "docs/achievements/chessclock_rendered.png",
+    "docs/achievements/connectfour_y_wins.png",
+    "docs/achievements/crossword_solved.png",
+    "docs/achievements/minesweep_win.png",
+    "docs/achievements/tictactoe_x_wins.png",
+    "docs/achievements/unote_rendered.png",
+    "docs/achievements/wordpredict_done.png",
     "docs/agent-index/API_COVERAGE.json",
     "docs/agent-index/BUILD_GRAPH.json",
     "docs/agent-index/HOTSPOTS.json",
@@ -88,20 +89,12 @@
     "docs/audit/input_inventory.md",
     "docs/audit/item75_closure.json",
     "docs/audit/master_audit.json",
-    "docs/audit/sandbox_errors.json",
-    "docs/corpus/SEARCH_LEDGER.md",
-    "docs/corpus/SPOTLIGHT_COVERAGE.md",
-    "docs/corpus/UPSTREAM_INVENTORY.md",
-    "docs/corpus/s81/corpus_index.json",
-    "docs/corpus/s81/corpus_summary.csv",
-    "docs/corpus/s82/COMPATIBILITY_INDEX.md",
-    "docs/corpus/s82/REGISTRY_FREEZE.md",
-    "docs/corpus/s82/compatibility_index.json"
+    "docs/audit/sandbox_errors.json"
    ]
   },
   "CANONICAL_FIXTURE": {
-   "bytes": 630973,
-   "count": 194,
+   "bytes": 6141695,
+   "count": 561,
    "sample_paths": [
     "docs/assets/DERIVED_IMAGE_PROVENANCE.json",
     "docs/assets/hello_color_readme_540.png",
@@ -115,45 +108,46 @@
     "docs/evidence/golden03/chain_c_style.txt",
     "docs/evidence/golden03/chain_pixel_checks.json",
     "docs/evidence/golden03/chains_summary.json",
+    "docs/evidence/golden03/golden03_screenshot.png",
     "docs/evidence/helloworld_golden/golden_helloworld.png",
     "docs/history/golden-exp004/expected_object_model.json",
     "docs/history/golden-exp004/expected_screenshot_info.json",
     "docs/history/golden-exp004/expected_view_tree.json",
-    "fixtures/maxext_probe/AndroidManifest.xml",
-    "fixtures/maxext_probe/src/com/maxext/probe/Host.java",
-    "fixtures/maxext_probe/src/com/maxext/probe/Host2.java",
-    "fixtures/maxext_probe/src/com/maxext/probe/MainActivity.java",
-    "fixtures/s105_park_probe/AndroidManifest.xml",
-    "fixtures/s105_park_probe/src/com/probe/s105park/ParkProbeActivity.java",
-    "fixtures/s133_webfix/assets/INDEX.html",
-    "fixtures/s133_webfix/assets/TEST-01.html",
-    "fixtures/s133_webfix/assets/TEST-02.html",
-    "fixtures/s133_webfix/assets/TEST-03.html",
-    "fixtures/s133_webfix/assets/TEST-04.html",
-    "fixtures/s133_webfix/assets/TEST-05.html",
-    "fixtures/s133_webfix/assets/TEST-06.html",
-    "fixtures/s133_webfix/assets/TEST-07.html",
-    "fixtures/s133_webfix/assets/TEST-08.html",
-    "fixtures/s133_webfix/assets/TEST-09.html",
-    "fixtures/s133_webfix/assets/TEST-10.html",
-    "fixtures/s133_webfix/assets/TEST-11.html",
-    "fixtures/s133_webfix/assets/TEST-12.html",
-    "fixtures/s133_webfix/assets/TEST-13.html",
-    "fixtures/s133_webfix/assets/TEST-14.html",
-    "fixtures/s133_webfix/assets/TEST-15.html",
-    "fixtures/s133_webfix/assets/TEST-16.html",
-    "fixtures/s133_webfix/assets/TEST-17.html"
+    "evidence/cont7/golden_abi_census.json",
+    "fixtures/arm_only_scope_probe/AndroidManifest.xml",
+    "fixtures/arm_only_scope_probe/make_arm_stubs.py",
+    "fixtures/arm_only_scope_probe/res/values/strings.xml",
+    "fixtures/arm_only_scope_probe/src/com/probe/armonly/MainActivity.java",
+    "fixtures/c114_f462_probe/AndroidManifest.xml",
+    "fixtures/c114_f462_probe/src/com/probe/f462/MainActivity.java",
+    "fixtures/c7_activity_probe/AndroidManifest.xml",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/B1.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/B2.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/CTBase.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/CTMid.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/DisAct.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/Main.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/NewTaskAct.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/Rec.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/ResAct.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/STTop.java",
+    "fixtures/c7_activity_probe/src/com/probe/c7act/SvcNT.java",
+    "fixtures/c7_bcast_service_probe/AndroidManifest.xml",
+    "fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/DisProvider.java",
+    "fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/DisRecv.java",
+    "fixtures/c7_bcast_service_probe/src/com/probe/c7runtime/DisSvc.java"
    ]
   },
   "CANONICAL_SOURCE": {
-   "bytes": 17942615,
-   "count": 1363,
+   "bytes": 29624473,
+   "count": 2969,
    "sample_paths": [
     ".gitignore",
     "CONSTITUTION_V2.md",
     "LICENSE",
     "README.md",
     "docs/README.md",
+    "docs/achievements/README.md",
     "docs/compatibility/README.md",
     "docs/decisions/README.md",
     "docs/evidence/s100_browser/README.md",
@@ -161,6 +155,11 @@
     "docs/evidence/s91_fish_reproof/README.md",
     "docs/evidence/s91_sandbox/README.md",
     "docs/evidence/s99_fish_gif/README.md",
+    "docs/evidence/solved/R-NEW-368/README.md",
+    "docs/evidence/solved/R-NEW-369/README.md",
+    "docs/evidence/solved/R-NEW-370/README.md",
+    "docs/evidence/solved/R-NEW-371/README.md",
+    "docs/evidence/solved/R-NEW-374/README.md",
     "docs/history/experiments/EXP-002/README.md",
     "docs/history/experiments/EXP-014/README.md",
     "docs/history/experiments/EXP-017/README.md",
@@ -181,68 +180,68 @@
     "docs/history/s78_quarantine_recovery/docs/evidence/solved/R-NEW-370/README.md",
     "docs/history/s78_quarantine_recovery/docs/evidence/solved/R-NEW-371/README.md",
     "docs/history/s78_quarantine_recovery/docs/evidence/solved/R-NEW-374/README.md",
-    "evidence/s110_tickets/README.md",
-    "examples/demo-app/AndroidManifest.xml",
-    "examples/demo-app/README.md",
-    "examples/demo-app/build_demo_apk.sh",
-    "examples/demo-app/src/com/miniandroid/demo/MainActivity.java",
-    "examples/demo-app/validate_demo_proof.sh",
-    "games/2048/AndroidManifest.xml",
-    "games/2048/java/com/miniandroid/g2048/Board2048View.java"
+    "evidence/head_smoke/README.md",
+    "evidence/s110_tickets/README.md"
    ]
   },
   "REFERENCE_SOURCE_PINNED": {
-   "bytes": 19355686,
-   "count": 1727,
+   "bytes": 28304863,
+   "count": 2454,
    "sample_paths": [
     "docs/upstream/INDEX.md",
     "docs/upstream/MessageSchema.java",
+    "docs/upstream/androidx/compose/1.6.7/MANIFEST.json",
+    "docs/upstream/androidx/compose/1.6.7/androidMain/androidx/compose/ui/input/pointer/MotionEventAdapter.android.kt",
+    "docs/upstream/androidx/compose/1.6.7/androidMain/androidx/compose/ui/input/pointer/PointerEvent.android.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/AnchoredDraggable.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/BringIntoViewRequestPriorityQueue.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/ContentInViewNode.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/DragGestureDetector.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/Draggable.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/Draggable2D.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/FlingBehavior.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/ForEachGesture.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/Orientation.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/ScrollExtensions.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/Scrollable.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/ScrollableState.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/TapGestureDetector.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/TransformGestureDetector.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/Transformable.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/TransformableState.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/UpdatableAnimationState.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/snapping/LazyGridSnapLayoutInfoProvider.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/snapping/LazyListSnapLayoutInfoProvider.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/snapping/SnapFlingBehavior.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/snapping/SnapLayoutInfoProvider.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/foundation/gestures/snapping/SnapPositionInLayout.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/ui/input/pointer/InternalPointerInput.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/ui/input/pointer/PointerIcon.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/ui/input/pointer/PointerInputEventProcessor.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/ui/input/pointer/PointerInputTestUtil.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/ui/input/pointer/util/PointerIdArray.kt",
+    "docs/upstream/androidx/compose/1.6.7/commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt",
     "docs/upstream/aosp/CONTEXT_STRING_LAW.md",
     "docs/upstream/aosp/FRAMEWORK_ATTR_PROVENANCE.md",
     "docs/upstream/aosp/bools.xml",
-    "docs/upstream/aosp/colors.xml",
-    "docs/upstream/aosp/colors_holo.xml",
-    "docs/upstream/aosp/colors_legacy.xml",
-    "docs/upstream/aosp/colors_material.xml",
-    "docs/upstream/aosp/dimens_material.xml",
-    "docs/upstream/aosp/input_laws/TouchDelegate.java",
-    "docs/upstream/aosp/input_laws/VelocityTracker.java",
-    "docs/upstream/aosp/input_laws/View.java",
-    "docs/upstream/aosp/input_laws/ViewGroup.java",
-    "docs/upstream/aosp/input_laws/native_VelocityTracker.cpp",
-    "docs/upstream/aosp/input_laws/native_VelocityTracker.h",
-    "docs/upstream/aosp/public.xml",
-    "docs/upstream/aosp/res_color/hint_foreground_material_dark.xml",
-    "docs/upstream/aosp/res_color/hint_foreground_material_light.xml",
-    "docs/upstream/aosp/res_color/primary_text_material_dark.xml",
-    "docs/upstream/aosp/res_color/primary_text_material_light.xml",
-    "docs/upstream/aosp/res_color/ripple_material_dark.xml",
-    "docs/upstream/aosp/res_color/ripple_material_light.xml",
-    "docs/upstream/aosp/res_color/secondary_text_material_dark.xml",
-    "docs/upstream/aosp/res_color/secondary_text_material_light.xml",
-    "docs/upstream/aosp/res_color/text_color_hint.xml",
-    "docs/upstream/aosp/res_color/text_color_hint_inverse.xml",
-    "docs/upstream/aosp/res_color/text_color_primary.xml",
-    "docs/upstream/aosp/res_color/text_color_primary_inverse.xml",
-    "docs/upstream/aosp/res_color/text_color_secondary.xml",
-    "docs/upstream/aosp/res_color/text_color_secondary_inverse.xml",
-    "docs/upstream/aosp/res_color/text_color_tertiary.xml",
-    "docs/upstream/aosp/res_color/text_color_tertiary_inverse.xml",
-    "docs/upstream/aosp/s130_laws/AccelerateDecelerateInterpolator.java",
-    "docs/upstream/aosp/s130_laws/AccelerateInterpolator.java",
-    "docs/upstream/aosp/s130_laws/DecelerateInterpolator.java",
-    "docs/upstream/aosp/s130_laws/EdgeEffect.java",
-    "docs/upstream/aosp/s130_laws/FocusFinder.java",
-    "docs/upstream/aosp/s130_laws/GestureDetector.java",
-    "docs/upstream/aosp/s130_laws/ObjectAnimator.java"
+    "docs/upstream/aosp/colors.xml"
    ]
   },
   "UNKNOWN": {
-   "bytes": 23198074,
-   "count": 162,
+   "bytes": 2390572,
+   "count": 131,
    "sample_paths": [
     "audit/s128_open_roots.tsv",
-    "miniandroid/framework_res/resources.arsc",
+    "miniandroid/core_sources.manifest",
+    "miniandroid/runtime/data/fonts/DroidSansMono.ttf",
+    "miniandroid/src/dex/dalvik_engine.cpp.rej",
+    "miniandroid/src/gles/pgl_const_map.inc",
+    "miniandroid/src/jni/dlopen_exec.cpp.rej",
+    "miniandroid/src/jni/dlopen_exec.h.rej",
+    "miniandroid/src/jni/native_thunk.S",
     "miniandroid/third_party/quickjs/VERSION",
     "miniandroid/tools/apk_corpus_miner.py",
     "miniandroid/tools/campaign010/uc010_a4_fixtures.py",
@@ -274,316 +273,43 @@
     "miniandroid/tools/exp027_real_execution_campaign.py",
     "miniandroid/tools/exp028_baseline_collector.py",
     "miniandroid/tools/exp028_dex_validator.py",
-    "miniandroid/tools/exp028_finalizer.py",
-    "miniandroid/tools/exp028_forensic_analysis.py",
-    "miniandroid/tools/exp029_state_machine.py",
-    "miniandroid/tools/exp030_real_dalvik_validator.py",
-    "miniandroid/tools/exp031_5_test_generator.py",
-    "miniandroid/tools/exp031_6_dex_pipeline_debugger.py",
-    "miniandroid/tools/exp031_6_valid_dex_generator.py"
+    "miniandroid/tools/exp028_finalizer.py"
    ]
   },
   "VISUAL_EVIDENCE_UNSCOPED": {
-   "bytes": 828290,
-   "count": 48,
+   "bytes": 254481,
+   "count": 7,
    "sample_paths": [
-    "tmp/ab_check/assets/skin/ico.png",
-    "tmp/bb_t10/screenshot.png",
-    "tmp/bb_t5/screenshot.png",
-    "tmp/bb_t6/screenshot.png",
-    "tmp/bb_t7/screenshot.png",
-    "tmp/bb_t8/screenshot.png",
-    "tmp/bb_t9/screenshot.png",
-    "tmp/bb_tap/frames/frame_000.png",
-    "tmp/bb_tap/frames/frame_001.png",
-    "tmp/bb_tap/frames/frame_002.png",
-    "tmp/bb_tap/screenshot.png",
-    "tmp/bb_tap2/frames/frame_000.png",
-    "tmp/bb_tap2/frames/frame_001.png",
-    "tmp/bb_tap2/frames/frame_002.png",
-    "tmp/bb_tap2/screenshot.png",
-    "tmp/bb_tap3/frames/frame_000.png",
-    "tmp/bb_tap3/frames/frame_001.png",
-    "tmp/bb_tap3/frames/frame_002.png",
-    "tmp/bb_tap3/screenshot.png",
-    "tmp/bb_tap4/frames/frame_000.png",
-    "tmp/bb_tap4/frames/frame_001.png",
-    "tmp/bb_tap4/frames/frame_002.png",
-    "tmp/bb_tap4/screenshot.png",
-    "tmp/bb_tap5/frames/frame_000.png",
-    "tmp/bb_tap5/frames/frame_001.png",
-    "tmp/bb_tap5/frames/frame_002.png",
-    "tmp/bb_tap5/frames/frame_003.png",
-    "tmp/bb_tap5/screenshot.png",
-    "tmp/bb_tg/frames/frame_000.png",
-    "tmp/bb_tg/frames/frame_001.png",
-    "tmp/bb_tg/frames/frame_002.png",
-    "tmp/bb_tg/frames/frame_003.png",
-    "tmp/bb_tg/screenshot.png",
-    "tmp/bb_tobj/frames/frame_000.png",
-    "tmp/bb_tobj/frames/frame_001.png",
-    "tmp/bb_tobj/frames/frame_002.png",
-    "tmp/bb_tobj/frames/frame_003.png",
-    "tmp/bb_tobj/screenshot.png",
-    "tmp/bb_trace/screenshot.png",
-    "tmp/bb_trace2/screenshot.png"
+    "hc_provenance/run1/screenshot.png",
+    "hc_provenance/run1_run.png",
+    "hc_provenance/run2/screenshot.png",
+    "hc_provenance/run2_run.png",
+    "hc_provenance/run3/screenshot.png",
+    "hc_provenance/run3_run.png",
+    "probe_store/data/data/com.probe.gatea/files/copy_gate.png"
    ]
   }
  },
  "duplicate_groups": [
   {
-   "copies": 219,
+   "copies": 2,
    "locations": [
-    "docs/evidence/external_hello_golden/baseline_g08_broken.png",
-    "docs/evidence/s91_sandbox/run2_screenshot.png",
-    "evidence/s107_games/app.fedilab.castlab_run1/screenshot.png",
-    "evidence/s107_games/app.fedilab.castlab_run2/screenshot.png",
-    "evidence/s107_games/com.adeeteya.digital_calculator_run1/screenshot.png",
-    "evidence/s107_games/com.adeeteya.digital_calculator_run2/screenshot.png",
-    "evidence/s107_games/com.adilhanney.ricochlime_run1/screenshot.png",
-    "evidence/s107_games/com.adilhanney.ricochlime_run2/screenshot.png",
-    "evidence/s107_games/com.artifex.mupdf.viewer.app_run1/screenshot.png",
-    "evidence/s107_games/com.artifex.mupdf.viewer.app_run2/screenshot.png",
-    "evidence/s107_games/com.axiel7.anihyou_run1/screenshot.png",
-    "evidence/s107_games/com.axiel7.anihyou_run2/screenshot.png",
-    "evidence/s107_games/com.barghest.mesh_run1/screenshot.png",
-    "evidence/s107_games/com.barghest.mesh_run2/screenshot.png",
-    "evidence/s107_games/com.chenyifaer.fafarunner_run1/screenshot.png",
-    "evidence/s107_games/com.chenyifaer.fafarunner_run2/screenshot.png",
-    "evidence/s107_games/com.co3_run1/screenshot.png",
-    "evidence/s107_games/com.co3_run2/screenshot.png",
-    "evidence/s107_games/com.divinelink.scenepeek_run1/screenshot.png",
-    "evidence/s107_games/com.divinelink.scenepeek_run2/screenshot.png",
-    "evidence/s107_games/com.dozingcatsoftware.mouse_pounce_run1/screenshot.png",
-    "evidence/s107_games/com.dozingcatsoftware.mouse_pounce_run2/screenshot.png",
-    "evidence/s107_games/com.eightsines.firestrike.opensource_run1/screenshot.png",
-    "evidence/s107_games/com.eightsines.firestrike.opensource_run2/screenshot.png",
-    "evidence/s107_games/com.fairytrick.fairymahjong_run1/screenshot.png",
-    "evidence/s107_games/com.fairytrick.fairymahjong_run2/screenshot.png",
-    "evidence/s107_games/com.firebirdberlin.nightdream.noGms_run1/screenshot.png",
-    "evidence/s107_games/com.firebirdberlin.nightdream.noGms_run2/screenshot.png",
-    "evidence/s107_games/com.fixupxer_run1/screenshot.png",
-    "evidence/s107_games/com.fixupxer_run2/screenshot.png",
-    "evidence/s107_games/com.forrestguice.suntimeswidget_run1/screenshot.png",
-    "evidence/s107_games/com.forrestguice.suntimeswidget_run2/screenshot.png",
-    "evidence/s107_games/com.foxdebug.acode_run1/screenshot.png",
-    "evidence/s107_games/com.foxdebug.acode_run2/screenshot.png",
-    "evidence/s107_games/com.fpf.smartscan_run1/screenshot.png",
-    "evidence/s107_games/com.fpf.smartscan_run2/screenshot.png",
-    "evidence/s107_games/com.fr.laboussole.track_run1/screenshot.png",
-    "evidence/s107_games/com.fr.laboussole.track_run2/screenshot.png",
-    "evidence/s107_games/com.galaxyrio.sudokusolver_run1/screenshot.png",
-    "evidence/s107_games/com.galaxyrio.sudokusolver_run2/screenshot.png",
-    "evidence/s107_games/com.game.asteroids_revenge_run1/screenshot.png",
-    "evidence/s107_games/com.game.asteroids_revenge_run2/screenshot.png",
-    "evidence/s107_games/com.github.vauvenal5.yaga_run1/screenshot.png",
-    "evidence/s107_games/com.github.vauvenal5.yaga_run2/screenshot.png",
-    "evidence/s107_games/com.google.android.stardroid_run1/screenshot.png",
-    "evidence/s107_games/com.google.android.stardroid_run2/screenshot.png",
-    "evidence/s107_games/com.hegocre.nextcloudpasswords_run1/screenshot.png",
-    "evidence/s107_games/com.hegocre.nextcloudpasswords_run2/screenshot.png",
-    "evidence/s107_games/com.itsfrz.tictactoe_run1/screenshot.png",
-    "evidence/s107_games/com.itsfrz.tictactoe_run2/screenshot.png",
-    "evidence/s107_games/com.kolakek.pimiwidget_run1/screenshot.png",
-    "evidence/s107_games/com.kolakek.pimiwidget_run2/screenshot.png",
-    "evidence/s107_games/com.kylecorry.trail_sense_run1/screenshot.png",
-    "evidence/s107_games/com.kylecorry.trail_sense_run2/screenshot.png",
-    "evidence/s107_games/com.luc4n3x.levyra_run1/screenshot.png",
-    "evidence/s107_games/com.luc4n3x.levyra_run2/screenshot.png",
-    "evidence/s107_games/com.mostafa.brickblast_run1/screenshot.png",
-    "evidence/s107_games/com.mostafa.brickblast_run2/screenshot.png",
-    "evidence/s107_games/com.sanskritbasics.memory_run1/screenshot.png",
-    "evidence/s107_games/com.sanskritbasics.memory_run2/screenshot.png",
-    "evidence/s107_games/com.sanskritbasics_run1/screenshot.png",
-    "evidence/s107_games/com.sanskritbasics_run2/screenshot.png",
-    "evidence/s107_games/com.serwylo.retrowars_run1/screenshot.png",
-    "evidence/s107_games/com.serwylo.retrowars_run2/screenshot.png",
-    "evidence/s107_games/com.sidhant.arrowescape_run1/screenshot.png",
-    "evidence/s107_games/com.sidhant.arrowescape_run2/screenshot.png",
-    "evidence/s107_games/com.sidhant.blockblast_run1/screenshot.png",
-    "evidence/s107_games/com.sidhant.blockblast_run2/screenshot.png",
-    "evidence/s107_games/com.sidhant.nonogram_run1/screenshot.png",
-    "evidence/s107_games/com.sidhant.nonogram_run2/screenshot.png",
-    "evidence/s107_games/com.sidhant.shikaku_run1/screenshot.png",
-    "evidence/s107_games/com.sidhant.shikaku_run2/screenshot.png",
-    "evidence/s107_games/com.sidhant.triplematch_run1/screenshot.png",
-    "evidence/s107_games/com.sidhant.triplematch_run2/screenshot.png",
-    "evidence/s107_games/com.tacticmaster_run1/screenshot.png",
-    "evidence/s107_games/com.tacticmaster_run2/screenshot.png",
-    "evidence/s107_games/com.towerillusion.abdal_run1/screenshot.png",
-    "evidence/s107_games/com.towerillusion.abdal_run2/screenshot.png",
-    "evidence/s107_games/com.tutpro.baresip.plus_run1/screenshot.png",
-    "evidence/s107_games/com.tutpro.baresip.plus_run2/screenshot.png",
-    "evidence/s107_games/com.vicolo.chrono_run1/screenshot.png",
-    "evidence/s107_games/com.vicolo.chrono_run2/screenshot.png",
-    "evidence/s107_games/com.yepgoryo.EggReturnsHome_run1/screenshot.png",
-    "evidence/s107_games/com.yepgoryo.EggReturnsHome_run2/screenshot.png",
-    "evidence/s107_games/de.kaffeemitkoffein.tinyweatherforecastgermany_run1/screenshot.png",
-    "evidence/s107_games/de.kaffeemitkoffein.tinyweatherforecastgermany_run2/screenshot.png",
-    "evidence/s107_games/dev.otaj.zelp_run1/screenshot.png",
-    "evidence/s107_games/dev.otaj.zelp_run2/screenshot.png",
-    "evidence/s107_games/dev.serwin.AnarchRE_run1/screenshot.png",
-    "evidence/s107_games/dev.serwin.AnarchRE_run2/screenshot.png",
-    "evidence/s107_games/duress.ultimate_run1/screenshot.png",
-    "evidence/s107_games/duress.ultimate_run2/screenshot.png",
-    "evidence/s107_games/foss.cnugteren.nlweer_run1/screenshot.png",
-    "evidence/s107_games/foss.cnugteren.nlweer_run2/screenshot.png",
-    "evidence/s107_games/fr.arnaudguyon.spacevertex_run1/screenshot.png",
-    "evidence/s107_games/fr.arnaudguyon.spacevertex_run2/screenshot.png",
-    "evidence/s107_games/fr.corenting.convertisseureurofranc_run1/screenshot.png",
-    "evidence/s107_games/fr.corenting.convertisseureurofranc_run2/screenshot.png",
-    "evidence/s107_games/garden.lina.oblique_strategies_run1/screenshot.png",
-    "evidence/s107_games/garden.lina.oblique_strategies_run2/screenshot.png",
-    "evidence/s107_games/io.paperterm.app_run1/screenshot.png",
-    "evidence/s107_games/io.paperterm.app_run2/screenshot.png",
-    "evidence/s107_games/it.rignanese.leo.slimfacebook_run1/screenshot.png",
-    "evidence/s107_games/it.rignanese.leo.slimfacebook_run2/screenshot.png",
-    "evidence/s107_games/jwtc.android.chess_run1/screenshot.png",
-    "evidence/s107_games/jwtc.android.chess_run2/screenshot.png",
-    "evidence/s107_games/net.aliasvault.app_run1/screenshot.png",
-    "evidence/s107_games/net.aliasvault.app_run2/screenshot.png",
-    "evidence/s107_games/net.bible.android.activity_run1/screenshot.png",
-    "evidence/s107_games/net.bible.android.activity_run2/screenshot.png",
-    "evidence/s107_games/nodomain.playmaker_run1/screenshot.png",
-    "evidence/s107_games/nodomain.playmaker_run2/screenshot.png",
-    "evidence/s107_games/org.fossify.clock_run1/screenshot.png",
-    "evidence/s107_games/org.fossify.clock_run2/screenshot.png",
-    "evidence/s107_games/org.fossify.gallery_run1/screenshot.png",
-    "evidence/s107_games/org.fossify.gallery_run2/screenshot.png",
-    "evidence/s107_games/org.fossify.math_run1/screenshot.png",
-    "evidence/s107_games/org.godotengine.editor.v4_run1/screenshot.png",
-    "evidence/s107_games/org.godotengine.editor.v4_run2/screenshot.png",
-    "evidence/s107_games/org.lufebe16.pysolfc_run1/screenshot.png",
-    "evidence/s107_games/org.lufebe16.pysolfc_run2/screenshot.png",
-    "evidence/s107_games/org.ojrandom.paiesque_run1/screenshot.png",
-    "evidence/s107_games/org.ojrandom.paiesque_run2/screenshot.png",
-    "evidence/s107_games/org.opensurge2d.surgeengine_run1/screenshot.png",
-    "evidence/s107_games/org.opensurge2d.surgeengine_run2/screenshot.png",
-    "evidence/s107_games/org.pgnapps.pk2_run1/screenshot.png",
-    "evidence/s107_games/org.pgnapps.pk2_run2/screenshot.png",
-    "evidence/s107_games/org.pipoypipagames.cowsrevenge_run1/screenshot.png",
-    "evidence/s107_games/org.pipoypipagames.cowsrevenge_run2/screenshot.png",
-    "evidence/s107_games/org.quentin_bettoum.librememorygame_run1/screenshot.png",
-    "evidence/s107_games/org.quentin_bettoum.librememorygame_run2/screenshot.png",
-    "evidence/s107_games/org.secuso.privacyfriendlydame_run1/screenshot.png",
-    "evidence/s107_games/org.secuso.privacyfriendlydame_run2/screenshot.png",
-    "evidence/s107_games/org.secuso.privacyfriendlymemory_run1/screenshot.png",
-    "evidence/s107_games/org.secuso.privacyfriendlymemory_run2/screenshot.png",
-    "evidence/s107_games/org.secuso.privacyfriendlysolitaire_run1/screenshot.png",
-    "evidence/s107_games/org.secuso.privacyfriendlysolitaire_run2/screenshot.png",
-    "evidence/s107_games/org.sherpr.app_run1/screenshot.png",
-    "evidence/s107_games/org.sherpr.app_run2/screenshot.png",
-    "evidence/s107_games/org.y20k.transistor_run1/screenshot.png",
-    "evidence/s107_games/org.y20k.transistor_run2/screenshot.png",
-    "evidence/s107_games/paper.loop_run1/screenshot.png",
-    "evidence/s107_games/paper.loop_run2/screenshot.png",
-    "evidence/s107_games/protectedwp.safespace_run1/screenshot.png",
-    "evidence/s107_games/protectedwp.safespace_run2/screenshot.png",
-    "evidence/s107_games/ru.hyst329.openfool_run1/screenshot.png",
-    "evidence/s107_games/ru.hyst329.openfool_run2/screenshot.png",
-    "evidence/s107_games/tibarj.tranquilstopwatch_run1/screenshot.png",
-    "evidence/s107_games/tibarj.tranquilstopwatch_run2/screenshot.png",
-    "evidence/s107_games/yetzio.yetcalc_run1/screenshot.png",
-    "evidence/s107_games/yetzio.yetcalc_run2/screenshot.png",
-    "evidence/s115_sweep/t100_dev.serwin.AnarchRE/screenshot.png",
-    "evidence/s115_sweep/t101_com.dozingcatsoftware.mouse_pounce/screenshot.png",
-    "evidence/s115_sweep/t102_com.sidhant.shikaku/screenshot.png",
-    "evidence/s115_sweep/t104_com.sanskritbasics/screenshot.png",
-    "evidence/s115_sweep/t106_com.mostafa.brickblast/screenshot.png",
-    "evidence/s115_sweep/t109_com.game.asteroids_revenge/screenshot.png",
-    "evidence/s115_sweep/t111_org.pgnapps.pk2/screenshot.png",
-    "evidence/s115_sweep/t112_org.secuso.privacyfriendlydame/screenshot.png",
-    "evidence/s115_sweep/t113_com.itsfrz.tictactoe/screenshot.png",
-    "evidence/s115_sweep/t114_nodomain.playmaker/screenshot.png",
-    "evidence/s115_sweep/t115_com.chenyifaer.fafarunner/screenshot.png",
-    "evidence/s115_sweep/t116_org.secuso.privacyfriendlysolitaire/screenshot.png",
-    "evidence/s115_sweep/t119_com.sidhant.nonogram/screenshot.png",
-    "evidence/s115_sweep/t122_com.sidhant.triplematch/screenshot.png",
-    "evidence/s115_sweep/t143_net.bible.android.activity/screenshot.png",
-    "evidence/s115_sweep/t145_com.tutpro.baresip.plus/screenshot.png",
-    "evidence/s115_sweep/t148_com.forrestguice.suntimeswidget/screenshot.png",
-    "evidence/s115_sweep/t150_com.luc4n3x.levyra/screenshot.png",
-    "evidence/s115_sweep/t151_com.firebirdberlin.nightdream.noGms/screenshot.png",
-    "evidence/s115_sweep/t153_com.hegocre.nextcloudpasswords/screenshot.png",
-    "evidence/s115_sweep/t155_protectedwp.safespace/screenshot.png",
-    "evidence/s115_sweep/t159_org.ojrandom.paiesque/screenshot.png",
-    "evidence/s115_sweep/t161_com.divinelink.scenepeek/screenshot.png",
-    "evidence/s115_sweep/t162_app.fedilab.castlab/screenshot.png",
-    "evidence/s115_sweep/t164_fr.corenting.convertisseureurofranc/screenshot.png",
-    "evidence/s115_sweep/t165_io.paperterm.app/screenshot.png",
-    "evidence/s115_sweep/t167_com.kolakek.pimiwidget/screenshot.png",
-    "evidence/s115_sweep/t170_tibarj.tranquilstopwatch/screenshot.png",
-    "evidence/s115_sweep/t177_com.co3/screenshot.png",
-    "evidence/s115_sweep/t183_com.adeeteya.digital_calculator/screenshot.png",
-    "evidence/s115_sweep/t186_foss.cnugteren.nlweer/screenshot.png",
-    "evidence/s115_sweep/t187_com.axiel7.anihyou/screenshot.png",
-    "evidence/s115_sweep/t189_net.aliasvault.app/screenshot.png",
-    "evidence/s115_sweep/t192_com.fixupxer/screenshot.png",
-    "evidence/s115_sweep/t193_com.github.vauvenal5.yaga/screenshot.png",
-    "evidence/s115_sweep/t195_com.kylecorry.trail_sense/screenshot.png",
-    "evidence/s115_sweep/t196_de.kaffeemitkoffein.tinyweatherforecastgermany/screenshot.png",
-    "evidence/s115_sweep/t198_it.rignanese.leo.slimfacebook/screenshot.png",
-    "evidence/s115_sweep/t199_org.fossify.gallery/screenshot.png",
-    "evidence/s115_sweep/t202_org.fossify.clock/screenshot.png",
-    "evidence/s115_sweep/t204_yetzio.yetcalc/screenshot.png",
-    "evidence/s115_sweep/t207_dev.otaj.zelp/screenshot.png",
-    "evidence/s115_sweep/t210_com.vicolo.chrono/screenshot.png",
-    "evidence/s115_sweep/t214_org.sherpr.app/screenshot.png",
-    "evidence/s115_sweep/t215_org.y20k.transistor/screenshot.png",
-    "evidence/s115_sweep/t218_com.fpf.smartscan/screenshot.png",
-    "evidence/s115_sweep/t222_com.google.android.stardroid/screenshot.png",
-    "evidence/s115_sweep/t223_duress.ultimate/screenshot.png",
-    "evidence/s115_sweep/t224_com.artifex.mupdf.viewer.app/screenshot.png",
-    "evidence/s115_sweep/t64_com.galaxyrio.sudokusolver/screenshot.png",
-    "evidence/s115_sweep/t65_org.lufebe16.pysolfc/screenshot.png",
-    "evidence/s115_sweep/t67_com.sanskritbasics.memory/screenshot.png",
-    "evidence/s115_sweep/t69_com.serwylo.retrowars/screenshot.png",
-    "evidence/s115_sweep/t70_org.opensurge2d.surgeengine/screenshot.png",
-    "evidence/s115_sweep/t71_com.eightsines.firestrike.opensource/screenshot.png",
-    "evidence/s115_sweep/t73_com.sidhant.arrowescape/screenshot.png",
-    "evidence/s115_sweep/t75_com.yepgoryo.EggReturnsHome/screenshot.png",
-    "evidence/s115_sweep/t79_jwtc.android.chess/screenshot.png",
-    "evidence/s115_sweep/t80_org.pipoypipagames.cowsrevenge/screenshot.png",
-    "evidence/s115_sweep/t83_ru.hyst329.openfool/screenshot.png",
-    "evidence/s115_sweep/t85_com.towerillusion.abdal/screenshot.png",
-    "evidence/s115_sweep/t86_com.sidhant.blockblast/screenshot.png",
-    "evidence/s115_sweep/t88_com.fairytrick.fairymahjong/screenshot.png",
-    "evidence/s115_sweep/t89_com.tacticmaster/screenshot.png",
-    "evidence/s115_sweep/t91_com.adilhanney.ricochlime/screenshot.png",
-    "evidence/s115_sweep/t96_fr.arnaudguyon.spacevertex/screenshot.png",
-    "evidence/s115_sweep/t98_org.secuso.privacyfriendlymemory/screenshot.png",
-    "evidence/s115_sweep/t99_paper.loop/screenshot.png"
+    "evidence/s195_audit/comments_raw.json",
+    "evidence/s195_audit/comments_raw.partial.json"
    ],
-   "reclaimable_bytes": 2258916,
-   "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
-   "size": 10362
+   "reclaimable_bytes": 7692786,
+   "sha256": "66ca3c0a722862337f5ef1a71fde11a4b532a0752c30f2c83405e63c2f47b7b6",
+   "size": 7692786
   },
   {
-   "copies": 19,
+   "copies": 2,
    "locations": [
-    "evidence/s113_fullgui/mykanji_final/screenshot.png",
-    "evidence/s113_fullgui/mykanji_tap/frames/frame_000.png",
-    "evidence/s113_fullgui/mykanji_tap/screenshot.png",
-    "evidence/s113_fullgui/mykanji_tap2/frames/frame_000.png",
-    "evidence/s113_fullgui/mykanji_tap2/frames/frame_001.png",
-    "evidence/s113_fullgui/mykanji_tap2/frames/frame_002.png",
-    "evidence/s113_fullgui/mykanji_tap2/screenshot.png",
-    "evidence/s113_fullgui/mykanji_tap3/frames/frame_000.png",
-    "evidence/s113_fullgui/mykanji_tap3/frames/frame_001.png",
-    "evidence/s113_fullgui/mykanji_tap3/frames/frame_002.png",
-    "evidence/s113_fullgui/mykanji_tap3/screenshot.png",
-    "evidence/s113_fullgui/mykanji_tap4/frames/frame_000.png",
-    "evidence/s113_fullgui/mykanji_tap4/frames/frame_001.png",
-    "evidence/s113_fullgui/mykanji_tap4/frames/frame_002.png",
-    "evidence/s113_fullgui/mykanji_tap4/screenshot.png",
-    "evidence/s113_fullgui/mykanji_tap5/frames/frame_000.png",
-    "evidence/s113_fullgui/mykanji_tap5/frames/frame_001.png",
-    "evidence/s113_fullgui/mykanji_tap5/frames/frame_002.png",
-    "evidence/s113_fullgui/mykanji_tap5/screenshot.png"
+    "canonical/root_cause_registry.json",
+    "root_registry.json"
    ],
-   "reclaimable_bytes": 1077480,
-   "sha256": "429ffe7c12c84e89809c56e6e5d68c417d179379bb782a9dde12a502e5cd0a97",
-   "size": 59860
+   "reclaimable_bytes": 998503,
+   "sha256": "926b7c18cbec406aac569d076753a1ddc467f7a8a31574443cc7b05b5b687334",
+   "size": 998503
   },
   {
    "copies": 2,
@@ -596,28 +322,6 @@
    "size": 979913
   },
   {
-   "copies": 14,
-   "locations": [
-    "evidence/s113_fullgui/mykanji_tap6/frames/frame_000.png",
-    "evidence/s113_fullgui/mykanji_tap6/frames/frame_001.png",
-    "evidence/s113_fullgui/mykanji_tap6/frames/frame_002.png",
-    "evidence/s113_fullgui/mykanji_tap6/screenshot.png",
-    "evidence/s113_fullgui/mykanji_tap7/frames/frame_000.png",
-    "evidence/s113_fullgui/mykanji_tap7/frames/frame_001.png",
-    "evidence/s113_fullgui/mykanji_tap7/frames/frame_002.png",
-    "evidence/s113_fullgui/mykanji_tap7/screenshot.png",
-    "evidence/s113_fullgui/mykanji_tap8/frames/frame_000.png",
-    "evidence/s113_fullgui/mykanji_tap8/frames/frame_001.png",
-    "evidence/s113_fullgui/mykanji_tap8/screenshot.png",
-    "evidence/s113_fullgui/mykanji_tap9/frames/frame_000.png",
-    "evidence/s113_fullgui/mykanji_tap9/frames/frame_001.png",
-    "evidence/s113_fullgui/mykanji_tap9/screenshot.png"
-   ],
-   "reclaimable_bytes": 794898,
-   "sha256": "79597e3fe9921bba4e760844fd7df6dbae1d4c43c5bb455dc1148b94bc8c513a",
-   "size": 61146
-  },
-  {
    "copies": 2,
    "locations": [
     "docs/evidence/canonical/com.miniandroid.tetris.gif",
@@ -628,99 +332,14 @@
    "size": 770771
   },
   {
-   "copies": 51,
+   "copies": 2,
    "locations": [
-    "evidence/s106_fresh/dooz_23_toplevel_run1/screenshot.png",
-    "evidence/s106_fresh/dooz_23_toplevel_run2/screenshot.png",
-    "evidence/s106_fresh/dooz_23_toplevel_run3/screenshot.png",
-    "evidence/s106_fresh/dooz_postfix1/screenshot.png",
-    "evidence/s106_fresh/dooz_postfix2/screenshot.png",
-    "evidence/s106_fresh/dooz_postfix3/screenshot.png",
-    "evidence/s106_fresh/io.github.yamin8000.dooz_23_run1/screenshot.png",
-    "evidence/s106_fresh/io.github.yamin8000.dooz_23_run2/screenshot.png",
-    "evidence/s106_fresh/io.github.yamin8000.dooz_23_run3/screenshot.png",
-    "evidence/s106_fresh/mentalmath_run1/screenshot.png",
-    "evidence/s106_fresh/mentalmath_run2/screenshot.png",
-    "evidence/s106_fresh/mentalmath_run3/screenshot.png",
-    "evidence/s106_fresh/solitaire_postfix1/screenshot.png",
-    "evidence/s106_fresh/solitaire_postfix2/screenshot.png",
-    "evidence/s106_fresh/solitaire_postfix3/screenshot.png",
-    "evidence/s106_fresh/solitaire_run1/screenshot.png",
-    "evidence/s106_fresh/solitaire_run2/screenshot.png",
-    "evidence/s106_fresh/solitaire_run3/screenshot.png",
-    "evidence/s107_fresh/dooz_run1/screenshot.png",
-    "evidence/s107_fresh/dooz_run2/screenshot.png",
-    "evidence/s107_fresh/dooz_run3/screenshot.png",
-    "evidence/s107_fresh/dooz_toplevel_run1/screenshot.png",
-    "evidence/s107_fresh/dooz_toplevel_run2/screenshot.png",
-    "evidence/s107_fresh/dooz_toplevel_run3/screenshot.png",
-    "evidence/s107_fresh/solitaire_run1/screenshot.png",
-    "evidence/s107_fresh/solitaire_run2/screenshot.png",
-    "evidence/s107_fresh/solitaire_run3/screenshot.png",
-    "evidence/s107_games/com.freetime.geoweather_run1/screenshot.png",
-    "evidence/s107_games/com.freetime.geoweather_run2/screenshot.png",
-    "evidence/s107_games/com.greenart7c3.nostrsigner_run1/screenshot.png",
-    "evidence/s107_games/com.greenart7c3.nostrsigner_run2/screenshot.png",
-    "evidence/s107_games/com.justdeax.composeStopwatch_run1/screenshot.png",
-    "evidence/s107_games/com.justdeax.composeStopwatch_run2/screenshot.png",
-    "evidence/s107_games/com.rocket9labs.boxcars_run1/screenshot.png",
-    "evidence/s107_games/com.rocket9labs.boxcars_run2/screenshot.png",
-    "evidence/s107_games/is.xyz.mpv_run1/screenshot.png",
-    "evidence/s107_games/is.xyz.mpv_run2/screenshot.png",
-    "evidence/s107_games/takagi.ru.monica.fdroid_run1/screenshot.png",
-    "evidence/s107_games/takagi.ru.monica.fdroid_run2/screenshot.png",
-    "evidence/s107_games/uk.org.boddie.android.weatherforecast_run1/screenshot.png",
-    "evidence/s107_games/uk.org.boddie.android.weatherforecast_run2/screenshot.png",
-    "evidence/s108_telegram/screenshot.png",
-    "evidence/s109_telegram/run1/screenshot.png",
-    "evidence/s109_telegram/run2/screenshot.png",
-    "evidence/s110_telegram/fix44_zero_errors/screenshot.png",
-    "evidence/s110_tickets/telegram/s108_themed_window_8nodes.png",
-    "evidence/s110_tickets/telegram/s109_current_themed_window.png",
-    "evidence/s115_sweep/t212_com.foxdebug.acode/screenshot.png",
-    "evidence/s115_telegram/run2/screenshot.png",
-    "evidence/s115_telegram/run3/screenshot.png",
-    "evidence/s115_telegram/run4/screenshot.png"
+    "evidence/s212/c7_w5_w11_rebased.patch",
+    "evidence/s214/c7_w5_w11_rebased_on_main.patch"
    ],
-   "reclaimable_bytes": 547150,
-   "sha256": "59fdbfcd60b86a23f24b6d678e2e80c48d349dbbb71028ca9ec0ee00993c298d",
-   "size": 10943
-  },
-  {
-   "copies": 28,
-   "locations": [
-    "evidence/s114_bigfix/blockbuster_game/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_game/frames/frame_001.png",
-    "evidence/s114_bigfix/blockbuster_game2/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_game2/frames/frame_001.png",
-    "evidence/s114_bigfix/blockbuster_game3/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_game3/frames/frame_001.png",
-    "evidence/s114_bigfix/blockbuster_game4/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_game4/frames/frame_001.png",
-    "evidence/s114_bigfix/blockbuster_game5/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_game5/frames/frame_001.png",
-    "evidence/s114_bigfix/blockbuster_game8/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_game8/frames/frame_001.png",
-    "evidence/s114_bigfix/blockbuster_game9/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_game9/frames/frame_001.png",
-    "tmp/bb_tap2/frames/frame_000.png",
-    "tmp/bb_tap2/frames/frame_001.png",
-    "tmp/bb_tap2/frames/frame_002.png",
-    "tmp/bb_tap2/screenshot.png",
-    "tmp/bb_tap3/frames/frame_000.png",
-    "tmp/bb_tap3/frames/frame_001.png",
-    "tmp/bb_tap3/frames/frame_002.png",
-    "tmp/bb_tap3/screenshot.png",
-    "tmp/bb_tap4/frames/frame_000.png",
-    "tmp/bb_tap4/frames/frame_001.png",
-    "tmp/bb_tap4/frames/frame_002.png",
-    "tmp/bb_tap4/screenshot.png",
-    "tmp/bb_tap5/frames/frame_000.png",
-    "tmp/bb_tap5/frames/frame_001.png"
-   ],
-   "reclaimable_bytes": 519912,
-   "sha256": "de4c4f195adfc7a1c6e89298c872f63e9961e692396a6329aabc316e03870e08",
-   "size": 19256
+   "reclaimable_bytes": 606850,
+   "sha256": "9201c5c5ea68eaa35a30b7cdcc41f28710d4f43cf9176a1cafe60e6bc73787fd",
+   "size": 606850
   },
   {
    "copies": 2,
@@ -733,177 +352,102 @@
    "size": 493247
   },
   {
-   "copies": 9,
+   "copies": 11,
    "locations": [
-    "evidence/s106_fresh/mykanji_postfix1/screenshot.png",
-    "evidence/s106_fresh/mykanji_postfix2/screenshot.png",
-    "evidence/s106_fresh/mykanji_postfix3/screenshot.png",
-    "evidence/s106_fresh/mykanji_run1/screenshot.png",
-    "evidence/s106_fresh/mykanji_run2/screenshot.png",
-    "evidence/s106_fresh/mykanji_run3/screenshot.png",
-    "evidence/s107_fresh/mykanji_run1/screenshot.png",
-    "evidence/s107_fresh/mykanji_run2/screenshot.png",
-    "evidence/s107_fresh/mykanji_run3/screenshot.png"
+    "docs/evidence/hello_color_golden/frame_1080x1920.png",
+    "docs/evidence/hello_color_golden/retest_run1_frame.png",
+    "docs/evidence/hello_color_golden/retest_run2_frame.png",
+    "docs/evidence/hello_color_golden/retest_run3_frame.png",
+    "hc_provenance/run1/screenshot.png",
+    "hc_provenance/run1_run.png",
+    "hc_provenance/run2/screenshot.png",
+    "hc_provenance/run2_run.png",
+    "hc_provenance/run3/screenshot.png",
+    "hc_provenance/run3_run.png",
+    "miniandroid/docs/evidence/apps_ledger/hellocolor.png"
    ],
-   "reclaimable_bytes": 343904,
-   "sha256": "fa179d60c4266c6200c74cb74d91e249603ce8c3d039f947a4c0a099f2baf546",
-   "size": 42988
+   "reclaimable_bytes": 424010,
+   "sha256": "11e0056320d8546dbb54030fc6d51cbc163e635d47bbbb54899ca1984829e4f8",
+   "size": 42401
   },
   {
-   "copies": 32,
+   "copies": 23,
    "locations": [
-    "evidence/s107_games/com.agatamessina.webinspector_run1/screenshot.png",
-    "evidence/s107_games/com.agatamessina.webinspector_run2/screenshot.png",
-    "evidence/s107_games/com.attenomy.janken_run1/screenshot.png",
-    "evidence/s107_games/com.attenomy.janken_run2/screenshot.png",
-    "evidence/s107_games/com.chmouel.liseur_run1/screenshot.png",
-    "evidence/s107_games/com.chmouel.liseur_run2/screenshot.png",
-    "evidence/s107_games/com.clavierhaus.gnubg_run1/screenshot.png",
-    "evidence/s107_games/com.clavierhaus.gnubg_run2/screenshot.png",
-    "evidence/s107_games/com.davidtakac.bura_run1/screenshot.png",
-    "evidence/s107_games/com.davidtakac.bura_run2/screenshot.png",
-    "evidence/s107_games/com.iris.gallery_run1/screenshot.png",
-    "evidence/s107_games/com.iris.gallery_run2/screenshot.png",
-    "evidence/s107_games/com.metromusic_run1/screenshot.png",
-    "evidence/s107_games/com.metromusic_run2/screenshot.png",
-    "evidence/s107_games/com.vagujhelyigergely.calculatorm3_run1/screenshot.png",
-    "evidence/s107_games/com.vagujhelyigergely.calculatorm3_run2/screenshot.png",
-    "evidence/s107_games/com.vayunmathur.clock_run1/screenshot.png",
-    "evidence/s107_games/com.vayunmathur.clock_run2/screenshot.png",
-    "evidence/s107_games/com.vayunmathur.games.alchemist_run1/screenshot.png",
-    "evidence/s107_games/com.vayunmathur.games.alchemist_run2/screenshot.png",
-    "evidence/s107_games/de.saschahlusiak.freebloks_run1/screenshot.png",
-    "evidence/s107_games/de.saschahlusiak.freebloks_run2/screenshot.png",
-    "evidence/s107_games/io.github.johnathan.minesweeper_run1/screenshot.png",
-    "evidence/s107_games/io.github.johnathan.minesweeper_run2/screenshot.png",
-    "evidence/s107_games/io.github.lordofpolls.shellwave_run1/screenshot.png",
-    "evidence/s107_games/io.github.lordofpolls.shellwave_run2/screenshot.png",
-    "evidence/s107_games/it.fast4x.riplay_run1/screenshot.png",
-    "evidence/s107_games/it.fast4x.riplay_run2/screenshot.png",
-    "evidence/s107_games/orinasa.njarasoa.maripanatokana_run1/screenshot.png",
-    "evidence/s107_games/orinasa.njarasoa.maripanatokana_run2/screenshot.png",
-    "evidence/s110_tickets/native_games/dooz/screenshot.png",
-    "evidence/s113_fullgui/gates/dooz/screenshot.png"
+    "docs/evidence/s83b/sweep_APP-BNYROCLK.jpg",
+    "docs/evidence/s83b/sweep_APP-FLASHLIGHT.jpg",
+    "docs/evidence/s83b/sweep_APP-FOEHNIX.jpg",
+    "docs/evidence/s83b/sweep_APP-KEYBOARD.jpg",
+    "docs/evidence/s83b/sweep_APP-STOPWATCH2.jpg",
+    "docs/evidence/s83b/sweep_APP-TRANQUIL.jpg",
+    "docs/evidence/s83b/sweep_GAME-AS2048.jpg",
+    "docs/evidence/s83b/sweep_GAME-BALL2BOX.jpg",
+    "docs/evidence/s83b/sweep_GAME-BATTLE.jpg",
+    "docs/evidence/s83b/sweep_GAME-BLACKJACK.jpg",
+    "docs/evidence/s83b/sweep_GAME-DICER.jpg",
+    "docs/evidence/s83b/sweep_GAME-EDGEROLL.jpg",
+    "docs/evidence/s83b/sweep_GAME-MINES1.jpg",
+    "docs/evidence/s83b/sweep_GAME-NOTHANKS.jpg",
+    "docs/evidence/s83b/sweep_GAME-PF2048.jpg",
+    "docs/evidence/s83b/sweep_GAME-QUEENS.jpg",
+    "docs/evidence/s83b/sweep_GAME-QUINB.jpg",
+    "docs/evidence/s83b/sweep_GAME-RTTT.jpg",
+    "docs/evidence/s83b/sweep_GAME-SUDOKU.jpg",
+    "docs/evidence/s83b/sweep_GAME-SUDOKU2.jpg",
+    "docs/evidence/s83b/sweep_GAME-TTT-FRZ.jpg",
+    "docs/evidence/s83b/sweep_MAND-P9.jpg",
+    "docs/evidence/s83b/sweep_MAND-TIMELIMIT.jpg"
    ],
-   "reclaimable_bytes": 336660,
-   "sha256": "a2ba4a494215292699120d9e9a5ac82441d2def9b3ae95c273951018c126b438",
-   "size": 10860
-  },
-  {
-   "copies": 27,
-   "locations": [
-    "evidence/s114_bigfix/blockbuster_game/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_game/frames/frame_003.png",
-    "evidence/s114_bigfix/blockbuster_game/screenshot.png",
-    "evidence/s114_bigfix/blockbuster_game2/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_game2/frames/frame_003.png",
-    "evidence/s114_bigfix/blockbuster_game2/screenshot.png",
-    "evidence/s114_bigfix/blockbuster_game3/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_game3/frames/frame_003.png",
-    "evidence/s114_bigfix/blockbuster_game3/screenshot.png",
-    "evidence/s114_bigfix/blockbuster_game4/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_game4/frames/frame_003.png",
-    "evidence/s114_bigfix/blockbuster_game4/screenshot.png",
-    "evidence/s114_bigfix/blockbuster_game5/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_game5/frames/frame_003.png",
-    "evidence/s114_bigfix/blockbuster_game5/screenshot.png",
-    "evidence/s114_bigfix/blockbuster_game6/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_game6/frames/frame_003.png",
-    "evidence/s114_bigfix/blockbuster_game6/screenshot.png",
-    "evidence/s114_bigfix/blockbuster_game7/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_game7/frames/frame_003.png",
-    "evidence/s114_bigfix/blockbuster_game7/screenshot.png",
-    "tmp/bb_tap5/frames/frame_002.png",
-    "tmp/bb_tap5/frames/frame_003.png",
-    "tmp/bb_tap5/screenshot.png",
-    "tmp/bb_tobj/frames/frame_002.png",
-    "tmp/bb_tobj/frames/frame_003.png",
-    "tmp/bb_tobj/screenshot.png"
-   ],
-   "reclaimable_bytes": 328796,
-   "sha256": "883aa751071a833a0582fd29363d67a1f4a37da796799866776b7236985a87cd",
-   "size": 12646
-  },
-  {
-   "copies": 5,
-   "locations": [
-    "evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run1/screenshot.png",
-    "evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run2/screenshot.png",
-    "evidence/audit_s107/three_run/com.smorgasbork.hotdeath_run3/screenshot.png",
-    "evidence/s107_games/com.smorgasbork.hotdeath_run1/screenshot.png",
-    "evidence/s107_games/com.smorgasbork.hotdeath_run2/screenshot.png"
-   ],
-   "reclaimable_bytes": 303308,
-   "sha256": "7c811bffb9a7c59097e0c66024251087dfaf313d362c8427db70290b1c381956",
-   "size": 75827
+   "reclaimable_bytes": 206866,
+   "sha256": "2eedb5044ecc1643f7bca7290c2fe02050b657ab3165f11ec830cf47d70b6682",
+   "size": 9403
   },
   {
    "copies": 4,
    "locations": [
-    "docs/evidence/s73_snake_autoplay/run_01/frames/manifest.json",
-    "docs/evidence/s73_snake_autoplay/run_02/frames/manifest.json",
-    "docs/evidence/s73_snake_autoplay/run_03/frames/manifest.json",
-    "docs/evidence/s75/snake_fidelity_probe/frames/manifest.json"
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/NodeCoordinator.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/NodeCoordinator.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/NodeCoordinator.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/NodeCoordinator.kt"
    ],
-   "reclaimable_bytes": 272835,
-   "sha256": "c390c977d1e89c462051ad5fc6bd1dfa1079c94d31605f940395b560416cf317",
-   "size": 90945
+   "reclaimable_bytes": 206817,
+   "sha256": "681d0ffed87676dc82d0eef4ab68f066c4856af1063dcfb98141c26f25a6f6dc",
+   "size": 68939
   },
   {
-   "copies": 8,
+   "copies": 4,
    "locations": [
-    "evidence/audit_s107/three_run/com.dozingcatsoftware.bouncy_run1/screenshot.png",
-    "evidence/audit_s107/three_run/com.dozingcatsoftware.bouncy_run2/screenshot.png",
-    "evidence/audit_s107/three_run/com.dozingcatsoftware.bouncy_run3/screenshot.png",
-    "evidence/s107_fresh/bouncy_run1/screenshot.png",
-    "evidence/s107_fresh/bouncy_run2/screenshot.png",
-    "evidence/s107_fresh/bouncy_run3/screenshot.png",
-    "evidence/s107_games/com.dozingcatsoftware.bouncy_run1/screenshot.png",
-    "evidence/s107_games/com.dozingcatsoftware.bouncy_run2/screenshot.png"
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/SubcomposeLayout.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/SubcomposeLayout.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/layout/SubcomposeLayout.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/layout/SubcomposeLayout.kt"
    ],
-   "reclaimable_bytes": 250628,
-   "sha256": "cf76282e5c2a6925d02c7c9a29190ab71bb6b315d69474414685d806a0e55423",
-   "size": 35804
+   "reclaimable_bytes": 206058,
+   "sha256": "194594e1d4a1e26d547e6c51fcb28abd70ebbf02992daa9ec241f2ffe2390b9e",
+   "size": 68686
   },
   {
-   "copies": 2,
+   "copies": 4,
    "locations": [
-    "evidence/s108_telegram/reference_forkgram.png",
-    "evidence/s110_tickets/telegram/reference_forkgram_login.png"
+    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsProperties.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsProperties.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/semantics/SemanticsProperties.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/semantics/SemanticsProperties.kt"
    ],
-   "reclaimable_bytes": 242151,
-   "sha256": "a96f6a138f7129ccbcdf093c0d249ad10de50c55d0ff89c96c3cfce8431c130d",
-   "size": 242151
+   "reclaimable_bytes": 199581,
+   "sha256": "cbbf5daf85022c7bdd276057ea21d82305311e139e8e2813e6bb2f8a7cac1d8f",
+   "size": 66527
   },
   {
-   "copies": 9,
+   "copies": 4,
    "locations": [
-    "evidence/s107_games/com.vovagorodok.blidraughts_run1/screenshot.png",
-    "evidence/s107_games/com.vovagorodok.blidraughts_run2/screenshot.png",
-    "evidence/s109_webview/blidraughts_engine_run1/screenshot.png",
-    "evidence/s109_webview/blidraughts_engine_run2/screenshot.png",
-    "evidence/s109_webview/blidraughts_run1/screenshot.png",
-    "evidence/s112_html5_generalization/blidraughts_run1/screenshot.png",
-    "evidence/s112_html5_generalization/blidraughts_run2/screenshot.png",
-    "evidence/s112_html5_generalization/blidraughts_run3/screenshot.png",
-    "evidence/s112_html5_generalization/blidraughts_run4/screenshot.png"
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutNode.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/LayoutNode.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/LayoutNode.kt"
    ],
-   "reclaimable_bytes": 234192,
-   "sha256": "74870cd951301294ba05488f0aa16307ca4aeb48b2d52bee705559325159353b",
-   "size": 29274
-  },
-  {
-   "copies": 5,
-   "locations": [
-    "evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run1/screenshot.png",
-    "evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run2/screenshot.png",
-    "evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run3/screenshot.png",
-    "evidence/s107_games/org.ucam.ssb22.pinyinfdroid_run1/screenshot.png",
-    "evidence/s107_games/org.ucam.ssb22.pinyinfdroid_run2/screenshot.png"
-   ],
-   "reclaimable_bytes": 232948,
-   "sha256": "e03921ecbff1246d05f6d7e1109b30dbb496614816cc1558bcebd763e76ea0d3",
-   "size": 58237
+   "reclaimable_bytes": 193722,
+   "sha256": "05ba5cadbae3dcb759a029e9fc6e5b6e14f2d3bee65d7bddd88a6da21fafb8d2",
+   "size": 64574
   },
   {
    "copies": 2,
@@ -916,209 +460,700 @@
    "size": 188187
   },
   {
-   "copies": 2,
+   "copies": 19,
    "locations": [
-    "tmp/ab_check/assets/Play-Regular.ttf",
-    "tmp/bb_x/assets/Play-Regular.ttf"
+    "docs/evidence/campaign014/microtimer/screenshot.png",
+    "docs/evidence/campaign014/simplekeyboard/click/click_frame_0.png",
+    "docs/evidence/campaign014/simplekeyboard/click/click_frame_1.png",
+    "docs/evidence/campaign014/simplekeyboard/screenshot.png",
+    "docs/evidence/campaign014/stopwatchmuellerma/click/screenshot.png",
+    "docs/evidence/campaign014/stopwatchmuellerma/screenshot.png",
+    "docs/evidence/external_hello_golden/baseline_g08_broken.png",
+    "docs/evidence/m3_campaign/phase0/screenshots/base/simplekeyboard.png",
+    "docs/evidence/master_campaign/phase0/screenshots/base/simplekeyboard.png",
+    "docs/evidence/s74_ops/dooz/01_launch.png",
+    "docs/evidence/s74_ops/dooz/03_final.png",
+    "docs/evidence/s74_ops/stopwatch/01_launch.png",
+    "docs/evidence/s74_ops/stopwatch/03_final.png",
+    "docs/evidence/s74_ops/telegram/01_launch_engine_default.png",
+    "docs/evidence/s75/dooz_f146_probe/screenshot.png",
+    "docs/evidence/s76/dooz_f146_upstream/screenshot.png",
+    "docs/runtime/evidence/u011_2/clicktest/gmdice_after.png",
+    "docs/runtime/evidence/u011_2/clicktest/ssw_onButtonStart_after.png",
+    "docs/runtime/evidence/u011_2/real_apps/whatsapp_default_screen.png"
    ],
-   "reclaimable_bytes": 183852,
-   "sha256": "d30ffb8f0a87e451c90fda4892faea9b5fc35c4e92813eea2b2c4020f4f89dae",
-   "size": 183852
+   "reclaimable_bytes": 186516,
+   "sha256": "eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3",
+   "size": 10362
   },
   {
-   "copies": 2,
-   "locations": [
-    "docs/evidence/s94/clones_harvest.json",
-    "run/s94/source_mining/clones_harvest.json"
-   ],
-   "reclaimable_bytes": 162986,
-   "sha256": "8687afcdce30e00fd5e35643c8b75468e4002b373450bbe518ad2f2b0482181a",
-   "size": 162986
-  },
-  {
-   "copies": 8,
-   "locations": [
-    "evidence/s114_bigfix/blockbuster_start/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_start/frames/frame_001.png",
-    "evidence/s114_bigfix/blockbuster_start/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_start/screenshot.png",
-    "tmp/bb_tap/frames/frame_000.png",
-    "tmp/bb_tap/frames/frame_001.png",
-    "tmp/bb_tap/frames/frame_002.png",
-    "tmp/bb_tap/screenshot.png"
-   ],
-   "reclaimable_bytes": 135324,
-   "sha256": "a82fe4c636e768a1350fc5645ec0d7681c2c0a72b96048ade5b8d28b3739fbdf",
-   "size": 19332
-  },
-  {
-   "copies": 5,
-   "locations": [
-    "evidence/audit_s107/three_run/org.bobstuff.bobball_run1/screenshot.png",
-    "evidence/audit_s107/three_run/org.bobstuff.bobball_run2/screenshot.png",
-    "evidence/audit_s107/three_run/org.bobstuff.bobball_run3/screenshot.png",
-    "evidence/s107_games/org.bobstuff.bobball_run1/screenshot.png",
-    "evidence/s107_games/org.bobstuff.bobball_run2/screenshot.png"
-   ],
-   "reclaimable_bytes": 130432,
-   "sha256": "efaced30f29f0d45aa7826af29563ffb8b1408bf9d5225e2815e387fd92d093d",
-   "size": 32608
-  },
-  {
-   "copies": 11,
-   "locations": [
-    "evidence/s106_fresh/ballbreak_postfix1/screenshot.png",
-    "evidence/s106_fresh/ballbreak_postfix2/screenshot.png",
-    "evidence/s106_fresh/ballbreak_postfix3/screenshot.png",
-    "evidence/s106_fresh/ballbreak_run1/screenshot.png",
-    "evidence/s106_fresh/ballbreak_run2/screenshot.png",
-    "evidence/s106_fresh/ballbreak_run3/screenshot.png",
-    "evidence/s107_fresh/ballbreak_run1/screenshot.png",
-    "evidence/s107_fresh/ballbreak_run2/screenshot.png",
-    "evidence/s107_fresh/ballbreak_run3/screenshot.png",
-    "evidence/s110_tickets/native_games/ballbreak/screenshot.png",
-    "evidence/s113_fullgui/gates/ballbreak/screenshot.png"
-   ],
-   "reclaimable_bytes": 106590,
-   "sha256": "fe797c19ba1920edc7d50073786c685f65b63f9929c8116305ffbb9e2220580d",
-   "size": 10659
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "docs/evidence/s94/repositories.json",
-    "run/s94/source_mining/repositories.json"
-   ],
-   "reclaimable_bytes": 105610,
-   "sha256": "83f62ef2e083f79155efb3e850cd6452324c6167f6a71ec7021f4aa3ee4556cc",
-   "size": 105610
-  },
-  {
-   "copies": 11,
-   "locations": [
-    "evidence/s107_games/com.vsmartcard.acardemulator_run1/screenshot.png",
-    "evidence/s107_games/com.vsmartcard.acardemulator_run2/screenshot.png",
-    "evidence/s107_games/eu.mokrzycki.learndigits_run1/screenshot.png",
-    "evidence/s107_games/eu.mokrzycki.learndigits_run2/screenshot.png",
-    "evidence/s107_games/io.github.x0b.rcx_run1/screenshot.png",
-    "evidence/s107_games/io.github.x0b.rcx_run2/screenshot.png",
-    "evidence/s107_games/org.stingle.photos_run1/screenshot.png",
-    "evidence/s107_games/org.stingle.photos_run2/screenshot.png",
-    "evidence/s112_html5_generalization/blidraughts_run5/screenshot.png",
-    "evidence/s112_html5_generalization/blidraughts_run6/screenshot.png",
-    "evidence/s112_html5_generalization/blidraughts_run7/screenshot.png"
-   ],
-   "reclaimable_bytes": 103520,
-   "sha256": "d602648e8e401895b7b440bc9c0becd4af8748b37808ce0870735b19502dab71",
-   "size": 10352
-  },
-  {
-   "copies": 10,
-   "locations": [
-    "evidence/s107_games/com.kompact_run1/screenshot.png",
-    "evidence/s107_games/com.kompact_run2/screenshot.png",
-    "evidence/s107_games/com.ma.tehro_run1/screenshot.png",
-    "evidence/s107_games/com.ma.tehro_run2/screenshot.png",
-    "evidence/s107_games/com.movietrivia.filmfacts_run1/screenshot.png",
-    "evidence/s107_games/com.movietrivia.filmfacts_run2/screenshot.png",
-    "evidence/s107_games/dev.cipher.notes_run1/screenshot.png",
-    "evidence/s107_games/dev.cipher.notes_run2/screenshot.png",
-    "evidence/s112_html5_generalization/gates/dooz/screenshot.png",
-    "evidence/s114_bigfix/g_dooz/screenshot.png"
-   ],
-   "reclaimable_bytes": 97740,
-   "sha256": "ba8a95eb2278594fbf6f28324316e7f980cffd3d47b30f05e8f8c7d0510d41cc",
-   "size": 10860
-  },
-  {
-   "copies": 2,
+   "copies": 3,
    "locations": [
     "docs/evidence/s74_ops/fishrings/02_mid_maxdiff.png",
-    "docs/evidence/s91_fish_reproof/frames/frame_039.png"
+    "docs/evidence/s74_ops/fishrings/03_final.png",
+    "evidence/cont8/fishrings_gamecontent_frame399.png"
    ],
-   "reclaimable_bytes": 90093,
+   "reclaimable_bytes": 180186,
    "sha256": "a341e3ad9092f6402cead56998c142d4511f170b81dcb8bb59de86094b75f6db",
    "size": 90093
   },
   {
-   "copies": 8,
+   "copies": 2,
    "locations": [
-    "evidence/s107_games/com.kaeruct.raumballer_run1/screenshot.png",
-    "evidence/s107_games/com.kaeruct.raumballer_run2/screenshot.png",
-    "evidence/s107_games/de.schliweb.makeacopy_run1/screenshot.png",
-    "evidence/s107_games/de.schliweb.makeacopy_run2/screenshot.png",
-    "evidence/s107_games/eu.veldsoft.tuty.fruty.slot_run1/screenshot.png",
-    "evidence/s107_games/eu.veldsoft.tuty.fruty.slot_run2/screenshot.png",
-    "evidence/s107_games/eu.veldsoft.vitosha.blackjack_run1/screenshot.png",
-    "evidence/s107_games/eu.veldsoft.vitosha.blackjack_run2/screenshot.png"
+    "upstream/s43/ui_android/androidMain/androidx/compose/ui/platform/AndroidComposeView.android.kt",
+    "upstream/s43/ui_android_src/androidMain/androidx/compose/ui/platform/AndroidComposeView.android.kt"
    ],
-   "reclaimable_bytes": 72464,
-   "sha256": "b5a7a35d5fe0564b08842f187f4e293bbb1d1b63099ba43978542449ae8c1f5b",
-   "size": 10352
+   "reclaimable_bytes": 176847,
+   "sha256": "2e033a6da3d5ec618dab3c041996d306666e09bc4f99d947739f31c8d6137881",
+   "size": 176847
+  },
+  {
+   "copies": 10,
+   "locations": [
+    "docs/evidence/s72_w4_snake/frame_000_launch.png",
+    "docs/evidence/s73_snake_autoplay/run_01/screenshot.png",
+    "docs/evidence/s73_snake_autoplay/run_02/screenshot.png",
+    "docs/evidence/s73_snake_autoplay/run_03/screenshot.png",
+    "docs/evidence/s74_ops/androidgamesnake/01_launch.png",
+    "docs/evidence/s74_ops/androidgamesnake/03_final.png",
+    "docs/evidence/s75/snake_fidelity_probe/screenshot.png",
+    "docs/evidence/s75/snake_restart_probe/screenshot.png",
+    "docs/evidence/s76/snake_dialog_restart/run_a_dialog/screenshot.png",
+    "docs/evidence/s76/snake_dialog_restart/run_b_restart/screenshot.png"
+   ],
+   "reclaimable_bytes": 170109,
+   "sha256": "6cc8087e690d97da3abdc4b437b6b8c82d7e95ab75ba44121b04e446a696496a",
+   "size": 18901
   },
   {
    "copies": 2,
    "locations": [
-    "docs/evidence/s94/rawfetch_results.json",
-    "run/s94/source_mining/rawfetch_results.json"
+    "upstream/s43/ui_android/androidMain/androidx/compose/ui/platform/AndroidComposeViewAccessibilityDelegateCompat.android.kt",
+    "upstream/s43/ui_android_src/androidMain/androidx/compose/ui/platform/AndroidComposeViewAccessibilityDelegateCompat.android.kt"
    ],
-   "reclaimable_bytes": 71721,
-   "sha256": "9a1971e977285264c1f33930470271b4b1bb7b45c9c54c5c9d6a98664a1a07b8",
-   "size": 71721
+   "reclaimable_bytes": 169176,
+   "sha256": "29616ea6501cf785d0de5c2ae325df09c58504683cc54b7576efb84b2a892e62",
+   "size": 169176
+  },
+  {
+   "copies": 16,
+   "locations": [
+    "docs/evidence/campaign014/dooz/click/screenshot.png",
+    "docs/evidence/campaign014/dooz/screenshot.png",
+    "docs/evidence/foundation/fixtures/f06_invisible/screenshot.png",
+    "docs/evidence/m3_campaign/phase0/screenshots/base/dooz.png",
+    "docs/evidence/s59_r379/post2_screenshot.png",
+    "docs/evidence/s60_r380/post_f106_screenshot.png",
+    "docs/evidence/s60_r380/v18_regression_screenshot.png",
+    "docs/evidence/s64_spotlight/fk_splash.png",
+    "docs/evidence/s74_ops/fishrings/01_launch.png",
+    "docs/evidence/s74_ops/tictactoe/01_launch.png",
+    "docs/evidence/s74_ops/tictactoe/03_final.png",
+    "docs/evidence/s74_ops/tripeaks/01_splash_black.png",
+    "docs/evidence/s75/rnew388_tripeaks/screenshot.png",
+    "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png",
+    "docs/evidence/visual_forensics/s65_reval/tripeaks/splash_full.png",
+    "evidence/s199/face_ttt_s199_int_r1.jpg"
+   ],
+   "reclaimable_bytes": 155265,
+   "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+   "size": 10351
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt"
+   ],
+   "reclaimable_bytes": 152775,
+   "sha256": "95efc0c788e2923c48b02d57083758cdc47576f3e6a9cfea6f8f67c25a8b144a",
+   "size": 50925
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "evidence/cont11/census_v2_after.json",
+    "evidence/cont11/census_v2_pre_rc.json"
+   ],
+   "reclaimable_bytes": 151370,
+   "sha256": "bd55219d74ab62a584c39677564992b2e1d722f197ab150d5c4a69f976655441",
+   "size": 151370
+  },
+  {
+   "copies": 44,
+   "locations": [
+    "docs/evidence/s82/APP-001.jpg",
+    "docs/evidence/s82/APP-002.jpg",
+    "docs/evidence/s82/APP-003.jpg",
+    "docs/evidence/s82/APP-004.jpg",
+    "docs/evidence/s82/APP-005.jpg",
+    "docs/evidence/s82/APP-006.jpg",
+    "docs/evidence/s82/APP-007.jpg",
+    "docs/evidence/s82/APP-008.jpg",
+    "docs/evidence/s82/APP-013.jpg",
+    "docs/evidence/s82/APP-014.jpg",
+    "docs/evidence/s82/APP-029.jpg",
+    "docs/evidence/s82/APP-046.jpg",
+    "docs/evidence/s82/APP-079.jpg",
+    "docs/evidence/s82/APP-089.jpg",
+    "docs/evidence/s82/GAME-001.jpg",
+    "docs/evidence/s82/GAME-002.jpg",
+    "docs/evidence/s82/GAME-003.jpg",
+    "docs/evidence/s82/GAME-005.jpg",
+    "docs/evidence/s82/GAME-006.jpg",
+    "docs/evidence/s82/GAME-007.jpg",
+    "docs/evidence/s82/GAME-008.jpg",
+    "docs/evidence/s82/GAME-009.jpg",
+    "docs/evidence/s82/GAME-012.jpg",
+    "docs/evidence/s82/GAME-014.jpg",
+    "docs/evidence/s82/GAME-016.jpg",
+    "docs/evidence/s82/GAME-017.jpg",
+    "docs/evidence/s82/GAME-018.jpg",
+    "docs/evidence/s82/GAME-019.jpg",
+    "docs/evidence/s82/GAME-020.jpg",
+    "docs/evidence/s82/GAME-023.jpg",
+    "docs/evidence/s82/GAME-025.jpg",
+    "docs/evidence/s82/GAME-034.jpg",
+    "docs/evidence/s82/GAME-046.jpg",
+    "docs/evidence/s82/GAME-047.jpg",
+    "docs/evidence/s82/GAME-048.jpg",
+    "docs/evidence/s82/GAME-050.jpg",
+    "docs/evidence/s82/INV-com.best.deskclock.jpg",
+    "docs/evidence/s82/INV-com.bnyro.clock.jpg",
+    "docs/evidence/s82/MAND-001.jpg",
+    "docs/evidence/s82/MAND-002.jpg",
+    "docs/evidence/s82/dialog_retest_mykanji.jpg",
+    "docs/evidence/s82/dialog_retest_solitaire.jpg",
+    "docs/evidence/s82/f156_solitaire.jpg",
+    "docs/evidence/s82/placeholder_retest_stopwatch.jpg"
+   ],
+   "reclaimable_bytes": 150672,
+   "sha256": "6533d0643120db91cc00c93a354b1d2572d845da90dce4fb374471532a88bc9b",
+   "size": 3504
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/RectList.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/RectList.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/spatial/RectList.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/spatial/RectList.kt"
+   ],
+   "reclaimable_bytes": 146460,
+   "sha256": "a4d43a04343ebe5e96b153f3ffc6ff3b87c3b13b7a3cb218ca4b1ec35b5f4f30",
+   "size": 48820
+  },
+  {
+   "copies": 8,
+   "locations": [
+    "docs/evidence/s74_ops/tictactoe_golden_fixture/03_x_wins.png",
+    "docs/evidence/visual_forensics/tictactoe/run1/final_full.png",
+    "docs/evidence/visual_forensics/tictactoe/run1/win_full.png",
+    "docs/evidence/visual_forensics/tictactoe/run2/final_full.png",
+    "docs/evidence/visual_forensics/tictactoe/run2/win_full.png",
+    "docs/evidence/visual_forensics/tictactoe/run3/final_full.png",
+    "docs/evidence/visual_forensics/tictactoe/run3/win_full.png",
+    "evidence/s183_audit1112/ttt_fixture_03_x_wins.png"
+   ],
+   "reclaimable_bytes": 134309,
+   "sha256": "2e80e8c0b8aab2349e059d7f5eb9b3679bbb31844d81d5ae9c88547ea40217ee",
+   "size": 19187
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/MeasurePassDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/MeasurePassDelegate.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/MeasurePassDelegate.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/MeasurePassDelegate.kt"
+   ],
+   "reclaimable_bytes": 121389,
+   "sha256": "52161b9794e50c194697f51de75f73fba85de090f82604027295753e4fc1e19a",
+   "size": 40463
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt"
+   ],
+   "reclaimable_bytes": 119970,
+   "sha256": "0c83320e1378c2be2323c102b073d7bef7f47c4bf0299d9d434ab3003606a7c3",
+   "size": 39990
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/MeasureAndLayoutDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/MeasureAndLayoutDelegate.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/MeasureAndLayoutDelegate.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/MeasureAndLayoutDelegate.kt"
+   ],
+   "reclaimable_bytes": 118647,
+   "sha256": "45aa166bca99d4b812074008e37cf29489076e6a7fe4da41a7d9198617f64198",
+   "size": 39549
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LookaheadPassDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LookaheadPassDelegate.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/LookaheadPassDelegate.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/LookaheadPassDelegate.kt"
+   ],
+   "reclaimable_bytes": 117168,
+   "sha256": "1f691d394c400db5b6fd293634a493374545af0f2079a24756aab709b32ecb6d",
+   "size": 39056
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/GraphicsLayerModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/GraphicsLayerModifier.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/graphics/GraphicsLayerModifier.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/graphics/GraphicsLayerModifier.kt"
+   ],
+   "reclaimable_bytes": 115473,
+   "sha256": "5391748efd3e73c2d2a2b14064d86d9011b086647366cb7624c549479174c9f2",
+   "size": 38491
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "fixtures/gate_a_probe/res/font/probe_font.ttf",
+    "miniandroid/runtime/data/fonts/DroidSansMono.ttf"
+   ],
+   "reclaimable_bytes": 108128,
+   "sha256": "db19a1fdaba41cc4a2fec0330e5c15e71c6dd68a3ef074f4f28268828b45c862",
+   "size": 108128
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/key/Key.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/key/Key.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/key/Key.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/input/key/Key.kt"
+   ],
+   "reclaimable_bytes": 101100,
+   "sha256": "3869ac4c88b7d8e207bff6c4cbff91225df681a07b7c4d8af63ca37bb4d74286",
+   "size": 33700
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s65_spotlight/fr_board_after_taps.png",
+    "docs/evidence/visual_forensics/s65_reval/fishrings/after_tap3_full.png"
+   ],
+   "reclaimable_bytes": 100727,
+   "sha256": "365602413a50ee8bd3a7deb1a8638475ca595008cd156d39b8d460c899cbb035",
+   "size": 100727
+  },
+  {
+   "copies": 9,
+   "locations": [
+    "evidence/s188_w15/runs/store_app.varlorg.unote/data/data/app.varlorg.unote/databases/notes.db",
+    "evidence/s195_audit/gates/runs/store_g_unote_r1/data/data/app.varlorg.unote/databases/notes.db",
+    "evidence/s195_audit/gates/runs/store_g_unote_r2/data/data/app.varlorg.unote/databases/notes.db",
+    "evidence/s195_audit/gates/runs/store_g_unote_r3/data/data/app.varlorg.unote/databases/notes.db",
+    "evidence/s204/runs/store_s204_gold_unote/data/data/app.varlorg.unote/databases/notes.db",
+    "evidence/s206/runs/store_s206_gold_unote/data/data/app.varlorg.unote/databases/notes.db",
+    "evidence/s212/verify/store_verify_unote_r1/data/data/app.varlorg.unote/databases/notes.db",
+    "evidence/s214/runs/store_s214_gold_unote/data/data/app.varlorg.unote/databases/notes.db",
+    "evidence/s216/gate_runs/store_s216_gold_unote/data/data/app.varlorg.unote/databases/notes.db"
+   ],
+   "reclaimable_bytes": 98304,
+   "sha256": "1e16d63f5299d7bf6271a936dfc441755c1f1c88e22665797cca77374e44248a",
+   "size": 12288
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s53_frames/headingcalculator_base.jpg",
+    "docs/evidence/s54_frames/headingcalculator_base.jpg"
+   ],
+   "reclaimable_bytes": 94547,
+   "sha256": "177801591acd3bd96246b2b2d2eaf6b578b1b9263c53f450d1ef65eccd10250d",
+   "size": 94547
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/NodeChain.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/NodeChain.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/NodeChain.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/NodeChain.kt"
+   ],
+   "reclaimable_bytes": 94437,
+   "sha256": "cdb684269f2b2d31be4dc89eb9c1c46644852bb13104fedd71245b6bda69026b",
+   "size": 31479
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s53_frames/headingcalculator_after.jpg",
+    "docs/evidence/s54_frames/headingcalculator_after.jpg"
+   ],
+   "reclaimable_bytes": 93258,
+   "sha256": "6625ce163173a0789e069378330efdf0344f64c5cdae2808337d610c8b285145",
+   "size": 93258
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/draw/Shadow.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draw/Shadow.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/draw/Shadow.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/draw/Shadow.kt"
+   ],
+   "reclaimable_bytes": 91965,
+   "sha256": "d692a1db1d599c65831d54f798856e6f549d91b430ad00a7d117d38897eef0dc",
+   "size": 30655
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "evidence/cont65/capaudit_face.png",
+    "evidence/cont67/capaudit_face.png"
+   ],
+   "reclaimable_bytes": 90756,
+   "sha256": "cb6373f68fabd702545f4c7e6f7c13fff82ca21230afecc3748bcef721ad344d",
+   "size": 90756
+  },
+  {
+   "copies": 3,
+   "locations": [
+    "evidence/s188_w13/face_se.tube42.p9.android.jpg",
+    "evidence/s188_w14/face_se.tube42.p9.android.jpg",
+    "evidence/s188_w15/face_se.tube42.p9.android.jpg"
+   ],
+   "reclaimable_bytes": 90514,
+   "sha256": "f810f1ab6a178b499c5d6375453cdbd0ca227c7f10f5be4608b2ac2dead5ff36",
+   "size": 45257
+  },
+  {
+   "copies": 23,
+   "locations": [
+    "evidence/s188_w13/runs/store_me.river.nightbell/data/data/me.river.nightbell/no_backup/androidx.work.workdb",
+    "evidence/s195_audit/cohort/runs/store_microtimer_s195_r1/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s195_audit/cohort/runs/store_microtimer_s195_r2/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s195_audit/cohort/runs/store_microtimer_s195_r3/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s199/battery/runs/store_microtimer_s199_r1/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_full_f621_r1/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_full_final/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_full_r1/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_full_rep1/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_full_rep2/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_full_rep3/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_persist/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_persist_f621/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_persist_final/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_probe_f621/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_probe_r1/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_mtm_probe_r2/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s200/runs/store_probe_mtm/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s204/runs/store_s204_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s206/runs/store_s206_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s207/runs/store_s207_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s214/runs/store_s214_mtm_spot/data/data/dubrowgn.microtimer/databases/app-data",
+    "evidence/s216/gate_runs/store_s216_mt/data/data/dubrowgn.microtimer/databases/app-data"
+   ],
+   "reclaimable_bytes": 90112,
+   "sha256": "352a9bb23c329c5a9bf235baf56917358b5b64b03f1a11d261fadae9c3cdb721",
+   "size": 4096
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s65_spotlight/fr_board.png",
+    "docs/evidence/visual_forensics/s65_reval/fishrings/board_full.png"
+   ],
+   "reclaimable_bytes": 90004,
+   "sha256": "bb09f55f4c710ee672f361efcbe482b7a554b5e2ca51c80485ba7363b0730667",
+   "size": 90004
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/RectManager.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/RectManager.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/spatial/RectManager.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/spatial/RectManager.kt"
+   ],
+   "reclaimable_bytes": 89754,
+   "sha256": "7c650c15f079e228660864250138dbea2463c79ce95152490f535c3309760251",
+   "size": 29918
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "docs/evidence/g09_corpus/visual/gmdice_ui.png",
+    "docs/evidence/g11g12_evidence/phase0/screenshots/base/gmdice.png",
+    "docs/evidence/g11g12_evidence/phase1_after/screenshots/after/gmdice.png",
+    "docs/evidence/master_campaign/phase0/screenshots/base/gmdice.png"
+   ],
+   "reclaimable_bytes": 88209,
+   "sha256": "db0f4c4b9dca867acf3946a886a179d2555862e1f17bc5828e525f65f5c1b9ff",
+   "size": 29403
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/Placeable.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/Placeable.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/layout/Placeable.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/layout/Placeable.kt"
+   ],
+   "reclaimable_bytes": 88182,
+   "sha256": "16ce931bc2db81aeabe5358ac8ebdba0c2eb9962a1c4031892c3a0672433863c",
+   "size": 29394
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s65_spotlight/tp_game_board.png",
+    "docs/evidence/visual_forensics/s65_reval/tripeaks/board_full.png"
+   ],
+   "reclaimable_bytes": 85892,
+   "sha256": "c3014c5cb6c2068730fb7d30b1cb533bbfc5d9d8769cca230031ee7d2cece149",
+   "size": 85892
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "docs/evidence/foundation/determinism/f05_persian_run1/screenshot.png",
+    "docs/evidence/foundation/determinism/f05_persian_run2/screenshot.png",
+    "docs/evidence/foundation/determinism/f05_persian_run3/screenshot.png",
+    "docs/evidence/foundation/fixtures/f05_persian/screenshot.png"
+   ],
+   "reclaimable_bytes": 85569,
+   "sha256": "5155e7ed5e078ccd25a2a393d2fddb8aae1426233a1c58ee1e2e0dc69df73deb",
+   "size": 28523
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt"
+   ],
+   "reclaimable_bytes": 83874,
+   "sha256": "7f892ab886ebd309298031d3a456f06b7a75908db04b85041a4c1ca014907c3d",
+   "size": 27958
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "docs/evidence/foundation/determinism/f27_nav_run1/click_frame_0.png",
+    "docs/evidence/foundation/determinism/f27_nav_run2/click_frame_0.png",
+    "docs/evidence/foundation/determinism/f27_nav_run3/click_frame_0.png",
+    "docs/evidence/foundation/fixtures/f27_nav/click_frame_0.png"
+   ],
+   "reclaimable_bytes": 82206,
+   "sha256": "595cff34f8911bb36b7104bf0f0d1c2501bdec6972d969bd8eb80da2eb34f4e7",
+   "size": 27402
+  },
+  {
+   "copies": 3,
+   "locations": [
+    "docs/evidence/external_hello_golden/interaction/frame_000.png",
+    "docs/evidence/external_hello_golden/miniandroid_typography.png",
+    "docs/evidence/golden03/golden03_screenshot.png"
+   ],
+   "reclaimable_bytes": 79702,
+   "sha256": "142238fd92b69e11d3407526de95cad29bf46e3f4191767d09a24379fbe0bbf2",
+   "size": 39851
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/vector/ImageVector.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/vector/ImageVector.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/graphics/vector/ImageVector.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/graphics/vector/ImageVector.kt"
+   ],
+   "reclaimable_bytes": 79287,
+   "sha256": "a4d0798b5aebe4743bbfb4d830cad7d76ad69528f6735259351f053ef71c295d",
+   "size": 26429
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt"
+   ],
+   "reclaimable_bytes": 78666,
+   "sha256": "e8db0497644380b35d595289f3fafcf15c531fb770023e6e8a100af4266ee846",
+   "size": 26222
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "docs/evidence/s74_ops/opmt/01_launch.png",
+    "docs/evidence/s74_ops/opmt/03_final.png",
+    "docs/evidence/s74_ops/opmt/04_frame_000.png",
+    "docs/evidence/visual_forensics/s65_reval/opmt/menu_full.png"
+   ],
+   "reclaimable_bytes": 78663,
+   "sha256": "62619caa3b31066e5b79577076785aac320ca504639fac6e230c5e2e07650e28",
+   "size": 26221
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusOwnerImpl.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusOwnerImpl.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/focus/FocusOwnerImpl.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/focus/FocusOwnerImpl.kt"
+   ],
+   "reclaimable_bytes": 77892,
+   "sha256": "09c919b8a5f7036160312512ee30f600b380ba14ce6e1f5deb46257eb5434907",
+   "size": 25964
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LookaheadDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LookaheadDelegate.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/LookaheadDelegate.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/LookaheadDelegate.kt"
+   ],
+   "reclaimable_bytes": 76086,
+   "sha256": "93f81924031822c2d52e2a6a4e2c759a6904ff4ccc10bcd51d57a6a139e80c61",
+   "size": 25362
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/DelegatableNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/DelegatableNode.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/DelegatableNode.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/DelegatableNode.kt"
+   ],
+   "reclaimable_bytes": 75162,
+   "sha256": "7d64baa9770e12d266a24d848247ca78bc7e846a6b96e065dd52a83878210ce5",
+   "size": 25054
+  },
+  {
+   "copies": 3,
+   "locations": [
+    "docs/evidence/s74_ops/bouncy/01_launch.png",
+    "docs/evidence/s74_ops/bouncy/03_final.png",
+    "docs/evidence/s74_ops/bouncy/04_frame_000.png"
+   ],
+   "reclaimable_bytes": 72566,
+   "sha256": "f1f268c3d005f4358fe66e0af2f9f7968865401e4919eca8002804364c4a47b2",
+   "size": 36283
   },
   {
    "copies": 6,
    "locations": [
-    "evidence/s114_bigfix/blockbuster_game8/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_game8/frames/frame_003.png",
-    "evidence/s114_bigfix/blockbuster_game8/screenshot.png",
-    "tmp/bb_tg/frames/frame_002.png",
-    "tmp/bb_tg/frames/frame_003.png",
-    "tmp/bb_tg/screenshot.png"
+    "docs/evidence/s46_agent/frame_000_launch.png",
+    "docs/evidence/s74_ops/tictactoe_golden_fixture/01_launch.png",
+    "docs/evidence/visual_forensics/tictactoe/run1/initial_full.png",
+    "docs/evidence/visual_forensics/tictactoe/run2/initial_full.png",
+    "docs/evidence/visual_forensics/tictactoe/run3/initial_full.png",
+    "evidence/s183_audit1112/ttt_fixture_01_launch.png"
    ],
-   "reclaimable_bytes": 69390,
-   "sha256": "df124d9f7c95473643f8869207ff94c0f2fba9a8a55a445b1a553c8607723a33",
-   "size": 13878
+   "reclaimable_bytes": 69840,
+   "sha256": "613cfccc0f27b5bf8c0eb88bcb34221305c25a5d4b77d675849575be5e36cb47",
+   "size": 13968
   },
   {
-   "copies": 2,
+   "copies": 3,
    "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/node/NodeCoordinator.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/NodeCoordinator.kt"
+    "docs/evidence/s74_ops/tripeaks/02_lobby.png",
+    "docs/evidence/s74_ops/tripeaks/03_final_lobby.png",
+    "docs/evidence/visual_forensics/s65_reval/tripeaks/lobby_full.png"
    ],
-   "reclaimable_bytes": 68939,
-   "sha256": "681d0ffed87676dc82d0eef4ab68f066c4856af1063dcfb98141c26f25a6f6dc",
-   "size": 68939
+   "reclaimable_bytes": 68892,
+   "sha256": "b513d78be598ace03d5d09717eb83398dd39adf111856f0998f075c8021b8436",
+   "size": 34446
   },
   {
-   "copies": 2,
+   "copies": 4,
    "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/SubcomposeLayout.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/SubcomposeLayout.kt"
+    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsNode.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/semantics/SemanticsNode.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/semantics/SemanticsNode.kt"
    ],
-   "reclaimable_bytes": 68686,
-   "sha256": "194594e1d4a1e26d547e6c51fcb28abd70ebbf02992daa9ec241f2ffe2390b9e",
-   "size": 68686
+   "reclaimable_bytes": 68145,
+   "sha256": "a67f468ba80afe0e6dc4c0c1b126f9445822b368e0be4d0088b7ee75c2ba9e6b",
+   "size": 22715
   },
   {
-   "copies": 2,
+   "copies": 4,
    "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsProperties.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsProperties.kt"
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutNodeLayoutDelegate.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutNodeLayoutDelegate.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/LayoutNodeLayoutDelegate.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/LayoutNodeLayoutDelegate.kt"
    ],
-   "reclaimable_bytes": 66527,
-   "sha256": "cbbf5daf85022c7bdd276057ea21d82305311e139e8e2813e6bb2f8a7cac1d8f",
-   "size": 66527
+   "reclaimable_bytes": 64776,
+   "sha256": "0eab00ee0dfe67814bdd06de0de9577b68904af071a41870c7090afa09655ae1",
+   "size": 21592
   },
   {
-   "copies": 2,
+   "copies": 8,
    "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutNode.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutNode.kt"
+    "evidence/s188_w10/face_cos.premy.mines.jpg",
+    "evidence/s188_w11/face_cos.premy.mines.jpg",
+    "evidence/s188_w12/face_cos.premy.mines.jpg",
+    "evidence/s188_w13/face_cos.premy.mines.jpg",
+    "evidence/s188_w17/floor_rerun/face_cos.premy.mines.jpg",
+    "evidence/s188_w18/floor_rerun/face_cos.premy.mines.jpg",
+    "evidence/s188_w2/face_cos.premy.mines.jpg",
+    "evidence/s188_w7/face_cos.premy.mines.jpg"
    ],
-   "reclaimable_bytes": 64574,
-   "sha256": "05ba5cadbae3dcb759a029e9fc6e5b6e14f2d3bee65d7bddd88a6da21fafb8d2",
-   "size": 64574
+   "reclaimable_bytes": 64694,
+   "sha256": "54319a5a3b5ec691f4974f7fd1ae0e05ef966d6a285fa30fd460f59b16fa8572",
+   "size": 9242
+  },
+  {
+   "copies": 3,
+   "locations": [
+    "docs/evidence/s74_ops/gmdice/01_launch.png",
+    "docs/evidence/s74_ops/gmdice/03_final.png",
+    "docs/evidence/s75/gmdice_roll/screenshot.png"
+   ],
+   "reclaimable_bytes": 64248,
+   "sha256": "5438f6e2bd5561e4659501378499084a2773aad2a2e91516294a78c252f4f733",
+   "size": 32124
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "docs/evidence/foundation/determinism/f04_text_run1/screenshot.png",
+    "docs/evidence/foundation/determinism/f04_text_run2/screenshot.png",
+    "docs/evidence/foundation/determinism/f04_text_run3/screenshot.png",
+    "docs/evidence/foundation/fixtures/f04_text/screenshot.png"
+   ],
+   "reclaimable_bytes": 63168,
+   "sha256": "e4c44e669fb553c77322944ef5234678ca37e05e5e56b80f48aed6d1c145450c",
+   "size": 21056
+  },
+  {
+   "copies": 7,
+   "locations": [
+    "upstream/s43/datastore/META-INF/androidx/datastore/datastore-core/LICENSE.txt",
+    "upstream/s43/datastore/prefs/META-INF/androidx/datastore/datastore-preferences-core/LICENSE.txt",
+    "upstream/s43/runtime/META-INF/androidx/compose/runtime/runtime/LICENSE.txt",
+    "upstream/s43/ui/META-INF/androidx/compose/ui/ui/LICENSE.txt",
+    "upstream/s43/ui_android/META-INF/androidx/compose/ui/ui/LICENSE.txt",
+    "upstream/s43/ui_android_src/META-INF/androidx/compose/ui/ui/LICENSE.txt",
+    "upstream/s43/ui_src/META-INF/androidx/compose/ui/ui/LICENSE.txt"
+   ],
+   "reclaimable_bytes": 61050,
+   "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+   "size": 10175
   },
   {
    "copies": 2,
@@ -1131,26 +1166,138 @@
    "size": 59969
   },
   {
-   "copies": 4,
+   "copies": 6,
    "locations": [
-    "tmp/bb_tg/frames/frame_000.png",
-    "tmp/bb_tg/frames/frame_001.png",
-    "tmp/bb_tobj/frames/frame_000.png",
-    "tmp/bb_tobj/frames/frame_001.png"
+    "docs/evidence/campaign014/bouncy/click/click_frame_2.png",
+    "docs/evidence/campaign014/bouncy/click/click_frame_3.png",
+    "docs/evidence/campaign014/bouncy/click/click_frame_4.png",
+    "docs/evidence/campaign014/bouncy/click/click_frame_5.png",
+    "docs/evidence/campaign014/bouncy/click/click_frame_6.png",
+    "docs/evidence/u013/screens/bouncy-click-frame.png"
    ],
-   "reclaimable_bytes": 59643,
-   "sha256": "61915c9a8eb6fe1172f8a6c13296c0274f35d9ec34d30ca60d53ae0675e78083",
-   "size": 19881
+   "reclaimable_bytes": 59920,
+   "sha256": "fbf961515f0eeb8d67e593317fc7578d7efb06e29846841f4b4100c40165363b",
+   "size": 11984
   },
   {
-   "copies": 2,
+   "copies": 4,
    "locations": [
-    "docs/evidence/s94/findings.jsonl",
-    "run/s94/source_mining/findings.jsonl"
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/vector/Vector.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/vector/Vector.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/graphics/vector/Vector.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/graphics/vector/Vector.kt"
    ],
-   "reclaimable_bytes": 58016,
-   "sha256": "fd99052bbf0b7a0bce2fed1464e8a9e71da4dc3d90562f555f88fae39f58f2ee",
-   "size": 58016
+   "reclaimable_bytes": 58935,
+   "sha256": "f5113bb15a61ea9b38195d90c56aaae9257d55668eb0dc030a6c0d6330dfba1f",
+   "size": 19645
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/draganddrop/DragAndDropNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draganddrop/DragAndDropNode.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/draganddrop/DragAndDropNode.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/draganddrop/DragAndDropNode.kt"
+   ],
+   "reclaimable_bytes": 58812,
+   "sha256": "effe3d15c5454c64a4882d55bb712242b762cd08689bb3747a279b8c83cad52b",
+   "size": 19604
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/Modifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/Modifier.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/Modifier.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/Modifier.kt"
+   ],
+   "reclaimable_bytes": 57780,
+   "sha256": "158b3152ad1e7a19e7b70d6a7f2edff4b0f5d709b72b0c596a1dea9aeabd57d5",
+   "size": 19260
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "docs/evidence/foundation/determinism/f21_button_run1/click_frame_0.png",
+    "docs/evidence/foundation/determinism/f21_button_run2/click_frame_0.png",
+    "docs/evidence/foundation/determinism/f21_button_run3/click_frame_0.png",
+    "docs/evidence/foundation/fixtures/f21_button/click_frame_0.png"
+   ],
+   "reclaimable_bytes": 57660,
+   "sha256": "447e16ef1643e1b09ba89d6d2403c8421bfd15cacf462a97091828e7b982b255",
+   "size": 19220
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/ThrottledCallbacks.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/ThrottledCallbacks.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/spatial/ThrottledCallbacks.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/spatial/ThrottledCallbacks.kt"
+   ],
+   "reclaimable_bytes": 57231,
+   "sha256": "c1f90343d36cd93c86837cdb5d39c712918dfc485c87d9258b4632622f6b5035",
+   "size": 19077
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollModifier.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollModifier.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollModifier.kt"
+   ],
+   "reclaimable_bytes": 56562,
+   "sha256": "c252e3cfacc8859b4ff72fa9c9b298a5d3c2ee6cba9ced5734ecd05d8ee0dec0",
+   "size": 18854
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/TwoDimensionalFocusSearch.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/TwoDimensionalFocusSearch.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/focus/TwoDimensionalFocusSearch.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/focus/TwoDimensionalFocusSearch.kt"
+   ],
+   "reclaimable_bytes": 56406,
+   "sha256": "797f5ef790531fe937fa799136cc35f5794bd55e5ed7bfc24cd1236d39601be2",
+   "size": 18802
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/vector/VectorPainter.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/vector/VectorPainter.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/graphics/vector/VectorPainter.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/graphics/vector/VectorPainter.kt"
+   ],
+   "reclaimable_bytes": 55671,
+   "sha256": "3b25a2978589f3a6f14cb3069f8ca50a314b7b2d5ea0e2fa6067e372287a6592",
+   "size": 18557
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "docs/history/experiments/exp_graphics_image_e2e/ssw_frame_after_full.png",
+    "docs/runtime/evidence/u011_2/clicktest/ssw_before.png",
+    "docs/runtime/evidence/u011_2/matrix/ssw_golden.png",
+    "docs/runtime/evidence/u011_3/clicktest/ssw_before.png"
+   ],
+   "reclaimable_bytes": 55419,
+   "sha256": "2a12587a0acf196cb9a52a521d6a7bc7d72e2d21dfa71eba41a694dbaa3d8c1b",
+   "size": 18473
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/GraphicsLayerScope.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/GraphicsLayerScope.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/graphics/GraphicsLayerScope.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/graphics/GraphicsLayerScope.kt"
+   ],
+   "reclaimable_bytes": 53964,
+   "sha256": "48ac38c00a6ea1070741950e668e08de1a128b5d0d4997ea3cf34c60413a6806",
+   "size": 17988
   },
   {
    "copies": 2,
@@ -1165,711 +1312,392 @@
   {
    "copies": 2,
    "locations": [
-    "docs/evidence/s94/source_to_law.json",
-    "run/s94/source_mining/source_to_law.json"
+    "docs/evidence/g11g12_evidence/phase1_after/screenshots/after/headingcalculator.png",
+    "docs/evidence/master_campaign/phase0/screenshots/base/headingcalculator.png"
    ],
-   "reclaimable_bytes": 52243,
-   "sha256": "81ab0bf610777020b2642d1664b4cee7813880133e246b684cdcc8751afdb7c5",
-   "size": 52243
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/PointerEvent.kt"
-   ],
-   "reclaimable_bytes": 50925,
-   "sha256": "95efc0c788e2923c48b02d57083758cdc47576f3e6a9cfea6f8f67c25a8b144a",
-   "size": 50925
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/RectList.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/RectList.kt"
-   ],
-   "reclaimable_bytes": 48820,
-   "sha256": "a4d43a04343ebe5e96b153f3ffc6ff3b87c3b13b7a3cb218ca4b1ec35b5f4f30",
-   "size": 48820
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "docs/evidence/s94/license_map.json",
-    "run/s94/source_mining/license_map.json"
-   ],
-   "reclaimable_bytes": 42061,
-   "sha256": "0b2f30e7a14026c842118e18117d433d1459103683c45400aa30e044a7cb9a5e",
-   "size": 42061
-  },
-  {
-   "copies": 3,
-   "locations": [
-    "evidence/s107_games/de.phasenrauscher.bicyweather_run1/screenshot.png",
-    "evidence/s107_games/de.phasenrauscher.bicyweather_run2/screenshot.png",
-    "evidence/s115_sweep/t191_de.phasenrauscher.bicyweather/screenshot.png"
-   ],
-   "reclaimable_bytes": 40928,
-   "sha256": "5e06f2271df948474b491e622faa86208707379d652eb852fb02ba4d8840a1ea",
-   "size": 20464
-  },
-  {
-   "copies": 5,
-   "locations": [
-    "upstream/s43/datastore/META-INF/androidx/datastore/datastore-core/LICENSE.txt",
-    "upstream/s43/datastore/prefs/META-INF/androidx/datastore/datastore-preferences-core/LICENSE.txt",
-    "upstream/s43/runtime/META-INF/androidx/compose/runtime/runtime/LICENSE.txt",
-    "upstream/s43/ui/META-INF/androidx/compose/ui/ui/LICENSE.txt",
-    "upstream/s43/ui_android/META-INF/androidx/compose/ui/ui/LICENSE.txt"
-   ],
-   "reclaimable_bytes": 40700,
-   "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
-   "size": 10175
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/node/MeasurePassDelegate.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/MeasurePassDelegate.kt"
-   ],
-   "reclaimable_bytes": 40463,
-   "sha256": "52161b9794e50c194697f51de75f73fba85de090f82604027295753e4fc1e19a",
-   "size": 40463
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/SuspendingPointerInputFilter.kt"
-   ],
-   "reclaimable_bytes": 39990,
-   "sha256": "0c83320e1378c2be2323c102b073d7bef7f47c4bf0299d9d434ab3003606a7c3",
-   "size": 39990
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/node/MeasureAndLayoutDelegate.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/MeasureAndLayoutDelegate.kt"
-   ],
-   "reclaimable_bytes": 39549,
-   "sha256": "45aa166bca99d4b812074008e37cf29489076e6a7fe4da41a7d9198617f64198",
-   "size": 39549
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "evidence/s107_games/org.codeberg.scovillo.bubble_run1/screenshot.png",
-    "evidence/s107_games/org.codeberg.scovillo.bubble_run2/screenshot.png"
-   ],
-   "reclaimable_bytes": 39513,
-   "sha256": "87fd4f1e0ccaf1a7fd1fe964531cb625cec6426e55853df01ad85a85350ee69a",
-   "size": 39513
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LookaheadPassDelegate.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LookaheadPassDelegate.kt"
-   ],
-   "reclaimable_bytes": 39056,
-   "sha256": "1f691d394c400db5b6fd293634a493374545af0f2079a24756aab709b32ecb6d",
-   "size": 39056
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "tmp/ab_check/assets/sound/bonus.mp3",
-    "tmp/bb_x/assets/sound/bonus.mp3"
-   ],
-   "reclaimable_bytes": 38954,
-   "sha256": "0a5816c9ed1766a62b2a9e7b46746587dbed1d4bce5df5cc5299d4c7260884be",
-   "size": 38954
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/GraphicsLayerModifier.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/GraphicsLayerModifier.kt"
-   ],
-   "reclaimable_bytes": 38491,
-   "sha256": "5391748efd3e73c2d2a2b14064d86d9011b086647366cb7624c549479174c9f2",
-   "size": 38491
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "tmp/ab_check/assets/Iceland-Regular.ttf",
-    "tmp/bb_x/assets/Iceland-Regular.ttf"
-   ],
-   "reclaimable_bytes": 35824,
-   "sha256": "1002d44078e055f06c77fc75f67e5e5fa6b8636b3a6847a3f0a4dc1f1ffda73d",
-   "size": 35824
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/LICENSE",
-    "upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/LICENSE"
-   ],
-   "reclaimable_bytes": 35149,
-   "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
-   "size": 35149
-  },
-  {
-   "copies": 3,
-   "locations": [
-    "evidence/s107_fresh/unote_run1/screenshot.png",
-    "evidence/s107_fresh/unote_run2/screenshot.png",
-    "evidence/s107_fresh/unote_run3/screenshot.png"
-   ],
-   "reclaimable_bytes": 34480,
-   "sha256": "64cf6eadefe07a7b5a6b89382d2f01f97a1e834b7c279f8a8557e0d480a97d30",
-   "size": 17240
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/input/key/Key.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/key/Key.kt"
-   ],
-   "reclaimable_bytes": 33700,
-   "sha256": "3869ac4c88b7d8e207bff6c4cbff91225df681a07b7c4d8af63ca37bb4d74286",
-   "size": 33700
+   "reclaimable_bytes": 53467,
+   "sha256": "0f933ff814f45bca08c851703bb3b1e643a64da332f9fd6febbab11efc950daa",
+   "size": 53467
   },
   {
    "copies": 4,
    "locations": [
-    "evidence/s109_webview/breakout_fix52_run1/screenshot.png",
-    "evidence/s109_webview/breakout_fix52_run2/screenshot.png",
-    "evidence/s109_webview/breakout_fix52_run3/screenshot.png",
-    "evidence/s112_html5_generalization/gates/breakout/screenshot.png"
+    "docs/evidence/foundation/determinism/f21_button_run1/screenshot.png",
+    "docs/evidence/foundation/determinism/f21_button_run2/screenshot.png",
+    "docs/evidence/foundation/determinism/f21_button_run3/screenshot.png",
+    "docs/evidence/foundation/fixtures/f21_button/screenshot.png"
    ],
-   "reclaimable_bytes": 33504,
-   "sha256": "568342fb901a75abd74744d1b2830362716587f9409a5fa0e66ce708101a2501",
-   "size": 11168
-  },
-  {
-   "copies": 3,
-   "locations": [
-    "evidence/s107_games/org.billthefarmer.buses_run1/screenshot.png",
-    "evidence/s107_games/org.billthefarmer.buses_run2/screenshot.png",
-    "evidence/s115_sweep/t219_org.billthefarmer.buses/screenshot.png"
-   ],
-   "reclaimable_bytes": 33428,
-   "sha256": "73d547e985b2896df95b2a6f2843214488152d8b47dbcdffad3849081ce550b6",
-   "size": 16714
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "evidence/s112_html5_generalization/mykanji_run1/screenshot.png",
-    "evidence/s112_html5_generalization/mykanji_run2/screenshot.png"
-   ],
-   "reclaimable_bytes": 32455,
-   "sha256": "de969df80e932fe29e241f0f85f13ca1bd4f28ad026734c4b8879daaedae4691",
-   "size": 32455
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/node/NodeChain.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/NodeChain.kt"
-   ],
-   "reclaimable_bytes": 31479,
-   "sha256": "cdb684269f2b2d31be4dc89eb9c1c46644852bb13104fedd71245b6bda69026b",
-   "size": 31479
+   "reclaimable_bytes": 53457,
+   "sha256": "393f7bcbdf2c95126b08f34131f2939846549868879d9b12f601192d00da1a18",
+   "size": 17819
   },
   {
    "copies": 4,
    "locations": [
-    "docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png",
-    "evidence/s107_games/deckers.thibault.aves.libre_run1/screenshot.png",
-    "evidence/s107_games/deckers.thibault.aves.libre_run2/screenshot.png",
-    "evidence/s113_fullgui/mykanji_run3/screenshot.png"
+    "docs/evidence/s74_ops/unote/01_launch.png",
+    "docs/evidence/s74_ops/unote/03_final.png",
+    "docs/evidence/s74_ops/unote/04_frame_000.png",
+    "docs/evidence/s74_ops/unote/05_frame_006.png"
    ],
-   "reclaimable_bytes": 31053,
-   "sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
-   "size": 10351
+   "reclaimable_bytes": 52587,
+   "sha256": "6269ba028ebef3e156c650c1a2257cd331c4e33e5a5c1d0e1ff7e2ecacd7d6de",
+   "size": 17529
+  },
+  {
+   "copies": 16,
+   "locations": [
+    "docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/apps__com.bnyro.clock_24__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/apps__se.tube42.p9.android_11__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__app.halma_15__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__com.astroloop.game_4__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__com.bupkis.tirailleur_13__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__com.eightsines.firestrike.opensource_2000__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__com.sidhant.queens_93__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__com.vayunmathur.games.solitaire_20260804__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__de.tobiasbielefeld.solitaire_71__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__dooz__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__org.secuso.privacyfriendlybattleship_101__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__page.codeberg.lanticy.guandan_7__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/games__si.palcka.tarok_203__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/high__com.newsblur_289__L2_GRAPHICALLY_INCOMPLETE.jpg",
+    "docs/evidence/s83/high__io.timelimit.android.aosp.direct_231__L2_GRAPHICALLY_INCOMPLETE.jpg"
+   ],
+   "reclaimable_bytes": 52575,
+   "sha256": "f817c24321f218a2652e181e7ace8a06ba9c2be363ad89051e67c913cf397628",
+   "size": 3505
   },
   {
    "copies": 2,
    "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/draw/Shadow.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draw/Shadow.kt"
+    "docs/evidence/solved/S51_AGENT_NEW_GAMES.json",
+    "docs/history/s78_quarantine_recovery/docs/evidence/solved/S51_AGENT_NEW_GAMES.json"
    ],
-   "reclaimable_bytes": 30655,
-   "sha256": "d692a1db1d599c65831d54f798856e6f549d91b430ad00a7d117d38897eef0dc",
-   "size": 30655
+   "reclaimable_bytes": 50666,
+   "sha256": "9bc0e2f1376e945e6cb71c60dcbd63d5b9e4b8ff218c6bdba3b2062197470cca",
+   "size": 50666
   },
   {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/RectManager.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/RectManager.kt"
-   ],
-   "reclaimable_bytes": 29918,
-   "sha256": "7c650c15f079e228660864250138dbea2463c79ce95152490f535c3309760251",
-   "size": 29918
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "docs/EXP071_FINAL_REPORT.md",
-    "docs/history/campaign-reports/EXP071_FINAL_REPORT.md"
-   ],
-   "reclaimable_bytes": 29678,
-   "sha256": "fe5c1d9db67e27380aa874c398469dd1f025501864afb17232aa504604899020",
-   "size": 29678
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/layout/Placeable.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/Placeable.kt"
-   ],
-   "reclaimable_bytes": 29394,
-   "sha256": "16ce931bc2db81aeabe5358ac8ebdba0c2eb9962a1c4031892c3a0672433863c",
-   "size": 29394
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "evidence/s107_games/trailence.org_run1/screenshot.png",
-    "evidence/s107_games/trailence.org_run2/screenshot.png"
-   ],
-   "reclaimable_bytes": 29147,
-   "sha256": "da6423b868dcc9ec533ba3f7442a5cea995e7fb2b727f8787162596955567bb0",
-   "size": 29147
-  },
-  {
-   "copies": 3,
-   "locations": [
-    "evidence/s109_webview/breakout_run1/screenshot.png",
-    "evidence/s109_webview/breakout_run2/screenshot.png",
-    "evidence/s109_webview/breakout_run3/screenshot.png"
-   ],
-   "reclaimable_bytes": 29058,
-   "sha256": "6a24e1e0eef6a2977002b861bac8dd0ee5877012e30fd822a2ad019f9834a381",
-   "size": 14529
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "tmp/ab_check/assets/main.js",
-    "tmp/bb_x/assets/main.js"
-   ],
-   "reclaimable_bytes": 28718,
-   "sha256": "2b19bd2ffb0dedbeb7b2a4e9af44d267baca7fd36279e3c2ec8821c938f9a054",
-   "size": 28718
-  },
-  {
-   "copies": 3,
-   "locations": [
-    "evidence/s114_bigfix/blockbuster_game9/frames/frame_002.png",
-    "evidence/s114_bigfix/blockbuster_game9/frames/frame_003.png",
-    "evidence/s114_bigfix/blockbuster_game9/screenshot.png"
-   ],
-   "reclaimable_bytes": 28362,
-   "sha256": "c778790f5926820ebe625fe2050a65856ac126839ad8428c46ee041be32837d2",
-   "size": 14181
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "evidence/s128_input_law/s128_calc1_before_taps.jpg",
-    "evidence/s128_input_law/s128_calc3_golden_reference.jpg"
-   ],
-   "reclaimable_bytes": 28050,
-   "sha256": "6d8f4cd96c4fdddb10d72b8663ed381dfe7d85e2ccffa668e94ab9c3d1a88445",
-   "size": 28050
-  },
-  {
-   "copies": 3,
-   "locations": [
-    "evidence/s114_bigfix/blockbuster_game7/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_game7/frames/frame_001.png",
-    "evidence/s114_bigfix/blockbuster_recheck/screenshot.png"
-   ],
-   "reclaimable_bytes": 28008,
-   "sha256": "625eb52c8643514a2729664a3eec64be2a3607bbc006cd5060880127687685d2",
-   "size": 14004
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/HitPathTracker.kt"
-   ],
-   "reclaimable_bytes": 27958,
-   "sha256": "7f892ab886ebd309298031d3a456f06b7a75908db04b85041a4c1ca014907c3d",
-   "size": 27958
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/vector/ImageVector.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/vector/ImageVector.kt"
-   ],
-   "reclaimable_bytes": 26429,
-   "sha256": "a4d0798b5aebe4743bbfb4d830cad7d76ad69528f6735259351f053ef71c295d",
-   "size": 26429
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/util/VelocityTracker.kt"
-   ],
-   "reclaimable_bytes": 26222,
-   "sha256": "e8db0497644380b35d595289f3fafcf15c531fb770023e6e8a100af4266ee846",
-   "size": 26222
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusOwnerImpl.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusOwnerImpl.kt"
-   ],
-   "reclaimable_bytes": 25964,
-   "sha256": "09c919b8a5f7036160312512ee30f600b380ba14ce6e1f5deb46257eb5434907",
-   "size": 25964
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "evidence/s107_games/net.sourceforge.solitaire_cg_run1/screenshot.png",
-    "evidence/s107_games/net.sourceforge.solitaire_cg_run2/screenshot.png"
-   ],
-   "reclaimable_bytes": 25398,
-   "sha256": "25cf22e7510f45e93547f76f2d47b0ab2cc590677cfb8c97a0a668627ae15f65",
-   "size": 25398
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LookaheadDelegate.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LookaheadDelegate.kt"
-   ],
-   "reclaimable_bytes": 25362,
-   "sha256": "93f81924031822c2d52e2a6a4e2c759a6904ff4ccc10bcd51d57a6a139e80c61",
-   "size": 25362
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "evidence/s107_games/com.bbzone.isitprime_run1/screenshot.png",
-    "evidence/s107_games/com.bbzone.isitprime_run2/screenshot.png"
-   ],
-   "reclaimable_bytes": 25361,
-   "sha256": "56b65542ad890f3806bad626f74eba4f26aa6e1047c2afeddea02d689a32bbe8",
-   "size": 25361
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/node/DelegatableNode.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/DelegatableNode.kt"
-   ],
-   "reclaimable_bytes": 25054,
-   "sha256": "7d64baa9770e12d266a24d848247ca78bc7e846a6b96e065dd52a83878210ce5",
-   "size": 25054
-  },
-  {
-   "copies": 7,
-   "locations": [
-    "docs/evidence/s73_snake_autoplay/run_01/view_tree.json",
-    "docs/evidence/s73_snake_autoplay/run_02/view_tree.json",
-    "docs/evidence/s73_snake_autoplay/run_03/view_tree.json",
-    "docs/evidence/s75/snake_fidelity_probe/view_tree.json",
-    "docs/evidence/s75/snake_restart_probe/view_tree.json",
-    "docs/evidence/s76/snake_dialog_restart/run_a_dialog/view_tree.json",
-    "docs/evidence/s76/snake_dialog_restart/run_b_restart/view_tree.json"
-   ],
-   "reclaimable_bytes": 23538,
-   "sha256": "5571e544aa4480bc56052ab7fe0089678c5a91d20ebfd2c3de715f1c43aa2c72",
-   "size": 3923
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsNode.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsNode.kt"
-   ],
-   "reclaimable_bytes": 22715,
-   "sha256": "a67f468ba80afe0e6dc4c0c1b126f9445822b368e0be4d0088b7ee75c2ba9e6b",
-   "size": 22715
-  },
-  {
-   "copies": 3,
-   "locations": [
-    "docs/evidence/visual_forensics/tictactoe/run1/engine/frames/manifest.json",
-    "docs/evidence/visual_forensics/tictactoe/run2/engine/frames/manifest.json",
-    "docs/evidence/visual_forensics/tictactoe/run3/engine/frames/manifest.json"
-   ],
-   "reclaimable_bytes": 21596,
-   "sha256": "a61e74f8a51b541eeac94b38f076687b2f263457e1ca02ddf7b97976ed5a0725",
-   "size": 10798
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutNodeLayoutDelegate.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutNodeLayoutDelegate.kt"
-   ],
-   "reclaimable_bytes": 21592,
-   "sha256": "0eab00ee0dfe67814bdd06de0de9577b68904af071a41870c7090afa09655ae1",
-   "size": 21592
-  },
-  {
-   "copies": 3,
-   "locations": [
-    "evidence/s113_fullgui/mykanji_run4/screenshot.png",
-    "evidence/s113_fullgui/mykanji_run5/screenshot.png",
-    "evidence/s113_fullgui/mykanji_run6/screenshot.png"
-   ],
-   "reclaimable_bytes": 20708,
-   "sha256": "aaf2efc83a9cd31f6e4b548b13700def58992847294a94872d9c83ff0e52c0e3",
-   "size": 10354
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/vector/Vector.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/vector/Vector.kt"
-   ],
-   "reclaimable_bytes": 19645,
-   "sha256": "f5113bb15a61ea9b38195d90c56aaae9257d55668eb0dc030a6c0d6330dfba1f",
-   "size": 19645
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/draganddrop/DragAndDropNode.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draganddrop/DragAndDropNode.kt"
-   ],
-   "reclaimable_bytes": 19604,
-   "sha256": "effe3d15c5454c64a4882d55bb712242b762cd08689bb3747a279b8c83cad52b",
-   "size": 19604
-  },
-  {
-   "copies": 6,
-   "locations": [
-    "evidence/s114_bigfix/blockbuster_game/frames/manifest.json",
-    "evidence/s114_bigfix/blockbuster_game2/frames/manifest.json",
-    "evidence/s114_bigfix/blockbuster_game3/frames/manifest.json",
-    "evidence/s114_bigfix/blockbuster_game4/frames/manifest.json",
-    "evidence/s114_bigfix/blockbuster_game5/frames/manifest.json",
-    "tmp/bb_tap5/frames/manifest.json"
-   ],
-   "reclaimable_bytes": 19445,
-   "sha256": "9debc9e760a654d572e9a333853a83edabb9898bd0ab19a9eb735e9d09c3c64b",
-   "size": 3889
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/Modifier.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/Modifier.kt"
-   ],
-   "reclaimable_bytes": 19260,
-   "sha256": "158b3152ad1e7a19e7b70d6a7f2edff4b0f5d709b72b0c596a1dea9aeabd57d5",
-   "size": 19260
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "evidence/s114_bigfix/blockbuster_game6/frames/frame_000.png",
-    "evidence/s114_bigfix/blockbuster_game6/frames/frame_001.png"
-   ],
-   "reclaimable_bytes": 19176,
-   "sha256": "53ca4c85e8931ed02f28a74e29085feaa9f734bf9eaf9ab33be94b3e4891dab2",
-   "size": 19176
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/spatial/ThrottledCallbacks.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/spatial/ThrottledCallbacks.kt"
-   ],
-   "reclaimable_bytes": 19077,
-   "sha256": "c1f90343d36cd93c86837cdb5d39c712918dfc485c87d9258b4632622f6b5035",
-   "size": 19077
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollModifier.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/nestedscroll/NestedScrollModifier.kt"
-   ],
-   "reclaimable_bytes": 18854,
-   "sha256": "c252e3cfacc8859b4ff72fa9c9b298a5d3c2ee6cba9ced5734ecd05d8ee0dec0",
-   "size": 18854
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "evidence/s112_html5_generalization/gates/ballbreak/screenshot.png",
-    "evidence/s114_bigfix/g_ballbreak/screenshot.png"
-   ],
-   "reclaimable_bytes": 18833,
-   "sha256": "8a951f5f975c47426bb2bb22fa5239ba6b5ec6ff42c6c0cfa628b41b23ae3eb4",
-   "size": 18833
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/TwoDimensionalFocusSearch.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/TwoDimensionalFocusSearch.kt"
-   ],
-   "reclaimable_bytes": 18802,
-   "sha256": "797f5ef790531fe937fa799136cc35f5794bd55e5ed7bfc24cd1236d39601be2",
-   "size": 18802
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/vector/VectorPainter.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/vector/VectorPainter.kt"
-   ],
-   "reclaimable_bytes": 18557,
-   "sha256": "3b25a2978589f3a6f14cb3069f8ca50a314b7b2d5ea0e2fa6067e372287a6592",
-   "size": 18557
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/graphics/GraphicsLayerScope.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/graphics/GraphicsLayerScope.kt"
-   ],
-   "reclaimable_bytes": 17988,
-   "sha256": "48ac38c00a6ea1070741950e668e08de1a128b5d0d4997ea3cf34c60413a6806",
-   "size": 17988
-  },
-  {
-   "copies": 2,
-   "locations": [
-    "docs/EXP072_REPORT.md",
-    "docs/history/campaign-reports/EXP072_REPORT.md"
-   ],
-   "reclaimable_bytes": 17113,
-   "sha256": "1cfc8625ddb3da9b85cbd6c1cbac39809fbf862ffcdab82090e8b6280bcbee17",
-   "size": 17113
-  },
-  {
-   "copies": 2,
+   "copies": 4,
    "locations": [
     "upstream/s43/ui/commonMain/androidx/compose/ui/node/Owner.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/Owner.kt"
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/Owner.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/Owner.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/Owner.kt"
    ],
-   "reclaimable_bytes": 16838,
+   "reclaimable_bytes": 50514,
    "sha256": "d2cf64345c5a56c18e820fb55973c865d87b882cef87bc70a1015d8b5b367428",
    "size": 16838
   },
   {
-   "copies": 2,
+   "copies": 4,
    "locations": [
     "upstream/s43/ui/commonMain/androidx/compose/ui/draw/DrawModifier.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draw/DrawModifier.kt"
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/draw/DrawModifier.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/draw/DrawModifier.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/draw/DrawModifier.kt"
    ],
-   "reclaimable_bytes": 16473,
+   "reclaimable_bytes": 49419,
    "sha256": "d6e50834bc1ac788a1c990217df732c1dcbb3ca46e75f284b2ededbb3b6a5a33",
    "size": 16473
   },
   {
    "copies": 2,
    "locations": [
-    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusTargetNode.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusTargetNode.kt"
+    "upstream/s43/ui_android/androidMain/androidx/compose/ui/window/AndroidPopup.android.kt",
+    "upstream/s43/ui_android_src/androidMain/androidx/compose/ui/window/AndroidPopup.android.kt"
    ],
-   "reclaimable_bytes": 16392,
+   "reclaimable_bytes": 49280,
+   "sha256": "78263560a873cddab9670fd0679e129515354584a57e38c98f5009bde2081f00",
+   "size": 49280
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/focus/FocusTargetNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/focus/FocusTargetNode.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/focus/FocusTargetNode.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/focus/FocusTargetNode.kt"
+   ],
+   "reclaimable_bytes": 49176,
    "sha256": "1fd398c20bfa9d8acbb5bb4f621a52f8895f22575d7247f6c41f6d451c797887",
    "size": 16392
   },
   {
-   "copies": 2,
+   "copies": 4,
    "locations": [
     "upstream/s43/ui/commonMain/androidx/compose/ui/node/BackwardsCompatNode.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/BackwardsCompatNode.kt"
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/BackwardsCompatNode.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/BackwardsCompatNode.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/BackwardsCompatNode.kt"
    ],
-   "reclaimable_bytes": 16388,
+   "reclaimable_bytes": 49164,
    "sha256": "b94c90741063aeeaace3b2153ade939771fba609ca7cd11f83c5bf14e8b73545",
    "size": 16388
   },
   {
-   "copies": 2,
+   "copies": 3,
+   "locations": [
+    "docs/achievements/unote_rendered.png",
+    "docs/evidence/m3_campaign/phase0/screenshots/base/unote.png",
+    "docs/evidence/master_campaign/phase0/screenshots/base/unote.png"
+   ],
+   "reclaimable_bytes": 49120,
+   "sha256": "7b30d52201bb22ac8467cc9c8257f23b60f169c8406f39cdfe0ad8fe48355971",
+   "size": 24560
+  },
+  {
+   "copies": 4,
    "locations": [
     "upstream/s43/ui/commonMain/androidx/compose/ui/layout/Layout.kt",
-    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/Layout.kt"
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/layout/Layout.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/layout/Layout.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/layout/Layout.kt"
    ],
-   "reclaimable_bytes": 16037,
+   "reclaimable_bytes": 48111,
    "sha256": "8885221063cab7a3a9af7e0b0c6b9cc8e4d71b644393c7665b0df8e297aa6b68",
    "size": 16037
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/input/pointer/PointerIcon.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/input/pointer/PointerIcon.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/input/pointer/PointerIcon.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/input/pointer/PointerIcon.kt"
+   ],
+   "reclaimable_bytes": 48027,
+   "sha256": "fd04456c1e201aa364ee7d7c2574b52ef7151d8236558906c62a69db1c3af0a4",
+   "size": 16009
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/LayoutModifierNode.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/LayoutModifierNode.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/LayoutModifierNode.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/LayoutModifierNode.kt"
+   ],
+   "reclaimable_bytes": 47997,
+   "sha256": "eb0765ee7d4bc6fbf57e342ca20ca0df7ae72fca575a9ddb40834bc44cafb123",
+   "size": 15999
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/NodeKind.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/NodeKind.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/NodeKind.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/NodeKind.kt"
+   ],
+   "reclaimable_bytes": 47877,
+   "sha256": "e2ec0ad9fd5a72dba4c363559340c5d7774546b2d79bcf385c214f395edde785",
+   "size": 15959
+  },
+  {
+   "copies": 3,
+   "locations": [
+    "docs/evidence/s74_ops/microtimer/01_launch.png",
+    "docs/evidence/s74_ops/microtimer/03_final.png",
+    "docs/evidence/s74_ops/microtimer/04_frame_000.png"
+   ],
+   "reclaimable_bytes": 47578,
+   "sha256": "ca87aa264e791f7ac72e7aee88968c9c883e5a90ade408303b26f3b2b199ece6",
+   "size": 23789
+  },
+  {
+   "copies": 7,
+   "locations": [
+    "evidence/s188_w10/face_eu.veldsoft.no.thanks.jpg",
+    "evidence/s188_w11/face_eu.veldsoft.no.thanks.jpg",
+    "evidence/s188_w12/face_eu.veldsoft.no.thanks.jpg",
+    "evidence/s188_w13/face_eu.veldsoft.no.thanks.jpg",
+    "evidence/s188_w17/floor_rerun/face_eu.veldsoft.no.thanks.jpg",
+    "evidence/s188_w18/floor_rerun/face_eu.veldsoft.no.thanks.jpg",
+    "evidence/s188_w2/face_eu.veldsoft.no.thanks.jpg"
+   ],
+   "reclaimable_bytes": 47250,
+   "sha256": "3cab9fc5764d4452453f6ed8c918043ce1d71f4a279e10e47ece8ea4d14277d5",
+   "size": 7875
+  },
+  {
+   "copies": 2,
+   "locations": [
+    "docs/evidence/s54_frames/helloworld_ext01_base.jpg",
+    "docs/evidence/s74_ops/helloworld/01_launch.jpg"
+   ],
+   "reclaimable_bytes": 47235,
+   "sha256": "bee88b1a9d322535e5e90743c95b13d03b089fc0a969f525402a68305086437b",
+   "size": 47235
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/semantics/SemanticsOwner.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/semantics/SemanticsOwner.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/semantics/SemanticsOwner.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/semantics/SemanticsOwner.kt"
+   ],
+   "reclaimable_bytes": 47055,
+   "sha256": "04ece4a92933540f54359540cff5d973de94d327ec9a745f655332d3c8ae6633",
+   "size": 15685
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "evidence/s163_runs/S163_telegram_content.png",
+    "evidence/s164_trains/S164_tg_baseline_screenshot.png",
+    "evidence/s164_trains/S164_tg_deep_screenshot.png",
+    "evidence/s164_trains/S164_tg_train_screenshot.png"
+   ],
+   "reclaimable_bytes": 47028,
+   "sha256": "bf5c9ef920aa32d76eb97d18747ab24a338cda56e26b2ed022f1ed38c932dceb",
+   "size": 15676
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/ComposedModifier.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/ComposedModifier.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/ComposedModifier.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/ComposedModifier.kt"
+   ],
+   "reclaimable_bytes": 45954,
+   "sha256": "ae7d804ab594992f8f05c38bb003494cb388874bec6b8fdeee3105cf7be28cc6",
+   "size": 15318
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "docs/evidence/foundation/determinism/f27_nav_run1/screenshot.png",
+    "docs/evidence/foundation/determinism/f27_nav_run2/screenshot.png",
+    "docs/evidence/foundation/determinism/f27_nav_run3/screenshot.png",
+    "docs/evidence/foundation/fixtures/f27_nav/screenshot.png"
+   ],
+   "reclaimable_bytes": 45933,
+   "sha256": "7980817663207a0b7024ae293523de9464038c074ee0def157900362213d7bb4",
+   "size": 15311
+  },
+  {
+   "copies": 4,
+   "locations": [
+    "upstream/s43/ui/commonMain/androidx/compose/ui/node/HitTestResult.kt",
+    "upstream/s43/ui_android/commonMain/androidx/compose/ui/node/HitTestResult.kt",
+    "upstream/s43/ui_android_src/commonMain/androidx/compose/ui/node/HitTestResult.kt",
+    "upstream/s43/ui_src/commonMain/androidx/compose/ui/node/HitTestResult.kt"
+   ],
+   "reclaimable_bytes": 45351,
+   "sha256": "8e1b8114f236654904c692b4905f2d5b68bce1964fec9857fff5b96284bc18f4",
+   "size": 15117
   }
  ],
- "duplicate_groups_total": 472,
- "duplicate_reclaimable_bytes": 15300552,
+ "duplicate_groups_total": 887,
+ "duplicate_reclaimable_bytes": 26481398,
  "generated_by": "tools/artifact_classifier.py",
  "oversize_files_gt_1mb": [
   {
-   "bytes": 19830716,
-   "path": "miniandroid/framework_res/resources.arsc"
+   "bytes": 7692786,
+   "path": "evidence/s195_audit/comments_raw.partial.json"
   },
   {
-   "bytes": 16628796,
-   "path": "tools/r8/r8.jar"
+   "bytes": 7692786,
+   "path": "evidence/s195_audit/comments_raw.json"
   },
   {
-   "bytes": 5618707,
-   "path": "docs/foundation/dex_census/bouncy.json.gz"
+   "bytes": 5331490,
+   "path": "evidence/s195_audit/issues_raw.json"
   },
   {
-   "bytes": 4293137,
-   "path": "docs/foundation/dex_census/com.emmanuelmess.tictactoe_3.json.gz"
+   "bytes": 5331438,
+   "path": "evidence/s195_audit/issues_raw.partial.json"
   },
   {
-   "bytes": 3865834,
-   "path": "docs/foundation/knowledge_graph.json.gz"
-  },
-  {
-   "bytes": 3417223,
-   "path": "docs/foundation/dex_census/io.github.yamin8000.dooz_23.json.gz"
-  },
-  {
-   "bytes": 3417212,
-   "path": "docs/foundation/dex_census/dooz_23_toplevel.json.gz"
-  },
-  {
-   "bytes": 2296340,
+   "bytes": 5145825,
    "path": "miniandroid/src/dex/dalvik_engine.cpp"
   },
   {
-   "bytes": 2154434,
-   "path": "evidence/s105_issues/open_issues.json"
+   "bytes": 4040423,
+   "path": "evidence/s200/harvest/issue_519_comments.json"
+  },
+  {
+   "bytes": 4007494,
+   "path": "miniandroid/database/source_first/gap_map.json"
+  },
+  {
+   "bytes": 3686360,
+   "path": "fixtures/font_probe/assets/fonts/FreeSerif.ttf"
+  },
+  {
+   "bytes": 3649362,
+   "path": "evidence/cont11/w8/fnew511_dalvik_engine_candidate.cpp"
+  },
+  {
+   "bytes": 3360833,
+   "path": "evidence/s195_audit/cohort/runs/tictactoe_s195fix_r1/screenshot.png"
+  },
+  {
+   "bytes": 3360830,
+   "path": "evidence/s200/runs/s202_625_forced/screenshot.png"
+  },
+  {
+   "bytes": 2865546,
+   "path": "evidence/s195_audit/gates/runs/spot_halma/screenshot.png"
+  },
+  {
+   "bytes": 2865519,
+   "path": "evidence/s188_w15/runs/app.halma/screenshot.png"
+  },
+  {
+   "bytes": 2865516,
+   "path": "evidence/s188_w14/runs/app.halma/screenshot.png"
+  },
+  {
+   "bytes": 2865494,
+   "path": "evidence/s188_w13/runs/app.halma/screenshot.png"
+  },
+  {
+   "bytes": 2863835,
+   "path": "evidence/s188_w18/runs/halma_w18_r1/screenshot.png"
   },
   {
    "bytes": 1812051,
    "path": "miniandroid/third_party/quickjs/quickjs.c"
   },
   {
-   "bytes": 1335052,
-   "path": "docs/upstream/aosp/input_laws/View.java"
+   "bytes": 1607246,
+   "path": "evidence/s182_mosaic/S182_MOSAIC.png"
   },
   {
-   "bytes": 1226425,
-   "path": "run/s88/corpus/profiles.json"
+   "bytes": 1335052,
+   "path": "docs/upstream/aosp/input_laws/View.java"
   },
   {
    "bytes": 1203315,
    "path": "evidence/s110_tickets/html5_breakout/reference_froid.png"
   },
   {
-   "bytes": 1119316,
-   "path": "docs/foundation/api_matrix.json.gz"
+   "bytes": 1115365,
+   "path": "evidence/s200/harvest/issue_520_comments.json"
+  },
+  {
+   "bytes": 1097796,
+   "path": "evidence/s188_w16/runs/store_com.clavierhaus.gnubg/data/data/com.clavierhaus.gnubg/files/gnubg.weights"
+  },
+  {
+   "bytes": 1079433,
+   "path": "miniandroid/database/source_first/tictactoe_3.inventory.json"
   },
   {
    "bytes": 1050687,
    "path": "upstream/s44/protobuf.jar"
+  },
+  {
+   "bytes": 1049832,
+   "path": "miniandroid/database/source_first/bouncy_39.inventory.json"
+  },
+  {
+   "bytes": 1031679,
+   "path": "docs/history/WORKLOG.md"
   },
   {
    "bytes": 1005330,
@@ -1878,6 +1706,6 @@
  ],
  "policy_violations": [],
  "schema": "miniandroid.artifact_registry.v1",
- "tracked_bytes": 167778394,
- "tracked_files": 8390
+ "tracked_bytes": 252340532,
+ "tracked_files": 14767
 }

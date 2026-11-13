@@ -15,6 +15,58 @@ Nothing yet. The standing 12-slot program queue and next wagons live in
 `docs/PROGRAM_QUEUE.json` (TRAIN-70 dooz clickable live census, microtimer
 alarm-list row render, sqlnotes DELETE re-proof, new GitHub-source programs).
 
+## [v0.0.6.2] - 2026-11-13
+
+The repository-become-a-release wave: **#587 RELEASE-0.0.6.2** turned the
+working tree into a clean, understandable, policy-enforced, evidence-honest
+project that a new developer can read in minutes, build without undocumented
+machine paths, and evaluate from a small set of reproducible demonstrations.
+
+**Runtime engine (user-visible):**
+- **F-GLZ-2 under-lay compositor law** — the GL surface now composites
+  BEHIND the window's real draw content per the AOSP SurfaceView z-order
+  contract; Vector Pinball's menu panel renders correctly above the GL
+  frame (menu/buttons pixel-identical to the reference face; only the
+  window-background fill changed `#303030 → #000000` with the app's real
+  Theme.Black resolved by **F-BLANK-1**). bouncy face re-pinned
+  `8a6c24ac → 98abca38` with a 936,460-px single-color-pair proof.
+- Diagnostics trustworthiness (S225-M): synchronized trace ingestion,
+  stream-joinable gfx rows, JNI dispatch-precedence law (a stub can no
+  longer shadow a real native library), ELF `DT_STRTAB` VA mapping,
+  pthread shadow locked-section + POSIX error semantics.
+
+**Evidence honesty:**
+- W18 Halma 11-run batch re-analyzed pixel-by-pixel: all runs are the same
+  first frame (single shade pair, 10,572 px); one canonical PNG retained,
+  per-run SHA rows preserved, reports corrected (fake 7.91 MB size,
+  duplicated sections, `SUCCESS` without F-016/stub caveats).
+- `NO_APP_OPS` + `REAL_APP_CONTENT` classifier contradiction recorded as a
+  blocker — a blank/default frame is never called a render.
+
+**Repository law + cleanup (R01–R35):**
+- Constitution §172: directory-ownership map, root-file law, new-file
+  contract, output routing — enforced by `tools/policy_validator.py`,
+  `tests/policy_validator_law_test.py` (positive + 8 negative classes) and
+  the `policy-guard` CI workflow.
+- Cleanup: 29 session-residue files, 1,199 byte-identical evidence paths
+  (14.6 MiB checkout), the vendored OSMesa bundle (94.4 MiB; six copies of
+  one 15.7 MB ELF; replaced by `tests/graphics/backends/osmesa/` + pinned
+  bit-reproducible bootstrap, proven `OSMESA REAL GL OK`), forensic raw API
+  dumps (10.9 MiB; canonical 390-row ledger + validate/fetch/rebuild modes),
+  `reference/` (→ `docs/upstream/androidx/compose/1.6.7/` with MANIFEST),
+  root campaign docs (→ `docs/history/`).
+- Portability: zero machine paths in maintained tools (repo-root discovery).
+- Public numbers reconciled: `docs/METRICS.json` is the single source
+  (152 titles / 24 VERIFIED / 797 roots); `tools/check_readme_metrics.py`
+  fails CI on stale public counts; README rebuilt as an 80-line landing
+  page with five demos re-verified on the release-candidate binary and
+  exactly two honest partials.
+
+**Regression gate:** 6-pin byte-exact HOLD on `06f98d2a9c21ea92`
+(bouncy `98abca38` / unote `3b8dcb0a` / dooz `a0fae907` / gmdice `3891679d`
+×2 identical / microtimer `b39665f6` / ttt `7354c1b2` ×3 identical);
+`make test-all` 28/28.
+
 ## [v0.0.6.1-Exchequer] - 2026-11-02
 
 Named after the **Exchequer Leghorn** — the mottled black-and-white color

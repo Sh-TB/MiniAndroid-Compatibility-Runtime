@@ -41,7 +41,7 @@ set -euo pipefail
 
 SRC_DIR="$1"
 OUT_APK="$2"
-TOOLS="${TOOLS:-/home/z/my-project/tools}"
+TOOLS="${TOOLS:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/tools}"
 
 ECJ_JAR="$TOOLS/ecj/ecj.jar"
 D8_JAR="$TOOLS/d8/r8.jar"

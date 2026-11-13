@@ -154,7 +154,12 @@ def main():
         elif ext in IMG_EXT and size > 524288 and f not in al_img:
             warnings.append(("IMAGE_OVER_500KB", f, f"{size} bytes — consider derivative/lossless-optimize"))
         # text scans + duplicates: read only when the check needs content
-        is_text_ext = f.endswith((".py", ".sh", ".md", ".json", ".jsonl", ".yml", ".yaml", ".js", ".c", ".h", ".cpp", ".tsv", ".txt"))
+        BUILD_FILES = ("Makefile", "CMakeLists.txt", "core_sources.manifest")
+        is_text_ext = (f.endswith((".py", ".sh", ".md", ".json", ".jsonl", ".yml", ".yaml",
+                                   ".js", ".c", ".h", ".cpp", ".tsv", ".txt", ".mk", ".cmake",
+                                   ".bat", ".ps1", ".cfg", ".ini", ".toml", ".xml"))
+                       or os.path.basename(f) in BUILD_FILES
+                       or "/Makefile" in f)
         need_text = is_text_ext and size <= 8 * 1048576
         need_hash = size > 102400 and size <= 32 * 1048576
         data = None
@@ -169,6 +174,8 @@ def main():
         if need_text:
             text = data.decode("utf-8", errors="ignore")
             if MACHINE_PATH.search(text):
+                if f in ("tools/policy_validator.py", "tests/policy_validator_law_test.py"):
+                    continue  # the enforcement tooling itself documents the pattern it detects (§172.5 self-reference)
                 if any(f.startswith(mp) for mp in MAINTAINED_PREFIXES) or "/" not in f:
                     if f in al_mp_rec:
                         continue  # narrow source-reviewed exception: recorded run-output data record

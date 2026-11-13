@@ -1843,6 +1843,12 @@
    "expiry": "externalization wave"
   },
   {
+   "path": "docs/research/source-forensics/evidence/A10_unique_blobs/52b1fca233d7_TEST-oracle.SmsLayoutOracleTest.xml",
+   "reason": "recorded literal of the generating session in a historical forensic source-snapshot record (test-oracle XML, not executable)",
+   "owner": "historical corpus",
+   "expiry": "externalization wave"
+  },
+  {
    "path": "docs/root-searchlight/FAILURE_LEDGER.md",
    "reason": "recorded literal of the generating session in a historical one-off script/report (not a runtime dependency)",
    "owner": "historical corpus",

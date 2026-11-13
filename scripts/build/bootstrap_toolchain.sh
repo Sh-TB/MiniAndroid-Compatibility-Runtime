@@ -14,7 +14,7 @@
 #
 # Usage: bash scripts/build/bootstrap_toolchain.sh
 set -euo pipefail
-TOOLS="${TOOLS:-/home/z/my-project/tools}"
+TOOLS="${TOOLS:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/tools}"
 ROOT="${ROOT:-/home/z/my-project}"
 mkdir -p "$TOOLS/aapt2" "$TOOLS/d8" "$TOOLS/ecj"
 
