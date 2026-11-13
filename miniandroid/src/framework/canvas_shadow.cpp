@@ -213,8 +213,10 @@ void CanvasShadow::push_op(DrawOp op) {
         if (op_trace_) {
             const char* kind_names[] = {"COLOR", "RECT", "ROUNDRECT",
                                         "CIRCLE", "LINE", "TEXT", "PAINT",
-                                        "PATH", "BITMAP"};
-            const char* kn = kind_names[static_cast<int>(op.kind)];
+                                        "PATH", "BITMAP", "POINTS", "LINES",
+                                        "POSTEXT", "SAVELAYER", "ENDLAYER"};
+            const int ki = static_cast<int>(op.kind);
+            const char* kn = (ki >= 0 && ki < 14) ? kind_names[ki] : "?";
             std::fprintf(op_trace_,
                          "%llu %s %.3f %.3f %.3f %.3f %.3f %08x %d %.3f "
                          "%.3f %d %d %d %d %d %.6f %.6f %.6f %.6f %.6f "
@@ -304,6 +306,18 @@ CanvasShadow::~CanvasShadow() = default;
 // pixel buffer. The sub-recorder starts with FRESH canvas state (AOSP: a new
 // Canvas has an identity matrix and a full-bitmap clip) sized to the bitmap.
 void CanvasShadow::bind_bitmap_canvas(uint32_t canvas_id, uint32_t bitmap_id) {
+    {
+        static const bool bb_on =
+            std::getenv("MINIANDROID_DRAWABLE_DRAW_TRACE") != nullptr;
+        static thread_local uint64_t bb_n = 0;
+        if (bb_on && bb_n++ < 600) {
+            const StoredBitmap* sbb = BitmapStore::instance().get(bitmap_id);
+            std::cerr << "[S232-BIND] canvas=" << canvas_id
+                      << " bitmap=" << bitmap_id
+                      << " wh=" << (sbb ? sbb->width : 0) << "x"
+                      << (sbb ? sbb->height : 0) << std::endl;
+        }
+    }
     StoredBitmap* sb = BitmapStore::instance().get_mut(bitmap_id);
     if (!sb || sb->width <= 0 || sb->height <= 0) {
         // Honest diagnostic: binding to an unknown/zero-sized bitmap cannot
@@ -384,6 +398,16 @@ void CanvasShadow::flush_bitmap_canvas(CanvasShadow& rec, uint32_t bitmap_id) {
         d[0] = out[i].r; d[1] = out[i].g; d[2] = out[i].b; d[3] = out[i].a;
     }
     sb->has_pixels = true;
+    {
+        static const char* dmp = std::getenv("MINIANDROID_BITMAP_DUMP_DIR");
+        if (dmp && *dmp) {
+            std::string p = std::string(dmp) + "/bitmap_" +
+                            std::to_string(bitmap_id) + "_" +
+                            std::to_string(bw) + "x" + std::to_string(bh) +
+                            ".png";
+            renderer::PNGWriter::write_png(p, fb);
+        }
+    }
 }
 
 // Route one op arriving on a bitmap-target canvas: delegate to the bound
@@ -400,6 +424,16 @@ CallResult CanvasShadow::dispatch_bitmap_op(const CallContext& ctx,
     sync_shared_state(rec);
     const size_t before = rec.ops_.size();
     const CallResult r = rec.dispatch(ctx);
+    {
+        static const bool dp_on =
+            std::getenv("MINIANDROID_DRAWABLE_DRAW_TRACE") != nullptr;
+        static thread_local uint64_t dp_n = 0;
+        if (dp_on && dp_n++ < 200) {
+            std::cerr << "[S232-BOP] canvas=" << canvas_id
+                      << " bmp=" << bitmap_id << " ops_before=" << before
+                      << " ops_after=" << rec.ops_.size() << std::endl;
+        }
+    }
     if (rec.ops_.size() != before)
         flush_bitmap_canvas(rec, bitmap_id);
     return r;
@@ -825,6 +859,33 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
                 // S68 §12: drawBitmap replay — pixels from BitmapStore,
                 // src/dst rect law, nearest sampling (FilterBitmap=false).
                 const StoredBitmap* sb = BitmapStore::instance().get(op.bitmap_id);
+                {
+                    static const bool dbt_on =
+                        std::getenv("MINIANDROID_DRAWABLE_DRAW_TRACE") != nullptr;
+                    static thread_local uint64_t dbt_n = 0;
+                    if (dbt_on && dbt_n++ < 3000) {
+                        uint64_t sum = 0, nz = 0;
+                        if (sb && !sb->rgba.empty()) {
+                            const size_t lim = sb->rgba.size();
+                            for (size_t i = 0; i + 3 < lim; i += 4 * 997) {
+                                sum += sb->rgba[i] + sb->rgba[i+1] +
+                                       sb->rgba[i+2] + sb->rgba[i+3];
+                                if (sb->rgba[i+3]) ++nz;
+                            }
+                        }
+                        std::cerr << "[S232-REPLAY-BMP] id=" << op.bitmap_id
+                                  << " have=" << (sb ? 1 : 0)
+                                  << " rgba=" << (sb ? sb->rgba.size() : 0)
+                                  << " wh=" << (sb ? sb->width : 0) << "x"
+                                  << (sb ? sb->height : 0)
+                                  << " sum=" << sum << " nz=" << nz
+                                  << " dst=" << op.has_dst
+                                  << " x=" << op.x << " y=" << op.y
+                                  << " w=" << op.w << " h=" << op.h
+                                  << " left=" << left << " top=" << top
+                                  << " clip=" << canvas.has_clip() << std::endl;
+                    }
+                }
                 if (!sb || sb->rgba.empty()) {
                     // S82-GFX §6: CANVAS chain bit — bitmap unresolved at replay.
                     if (diagnostics::GfxProvenance::instance().enabled())
@@ -2579,6 +2640,20 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_bool(true);
     }
     if (m == "drawBitmap") {
+        {
+            static const bool db_on =
+                std::getenv("MINIANDROID_DRAWABLE_DRAW_TRACE") != nullptr;
+            static thread_local uint64_t db_n = 0;
+            if (db_on && db_n++ < 5000) {
+                const uint32_t b0 = resolve_bitmap_arg(heap_, ctx.arg_as_object(0, 0));
+                const StoredBitmap* sbr = BitmapStore::instance().get(b0);
+                std::cerr << "[S232-DB] recv=" << ctx.receiver_id
+                          << " argc=" << ctx.args.size() << " id=" << b0
+                          << " have=" << (sbr ? 1 : 0) << " wh="
+                          << (sbr ? sbr->width : 0) << "x"
+                          << (sbr ? sbr->height : 0) << std::endl;
+            }
+        }
         // S68 §12 (was accepted_not_reproduced): drawBitmap family.
         //   (Bitmap, float l, float t, Paint)                     args: obj,f,f,obj
         //   (Bitmap, Rect src, RectF|Rect dst, Paint)             args: obj,obj,obj,obj
@@ -2708,6 +2783,20 @@ CallResult CanvasShadow::dispatch(const CallContext& ctx) {
         } else {
             // (Bitmap, float l, float t, Paint) — dst = natural size.
             op.bitmap_id = resolve_bitmap_arg(heap_, ctx.arg_as_object(0, 0));
+            {
+                static const bool dr_on =
+                    std::getenv("MINIANDROID_DRAWABLE_DRAW_TRACE") != nullptr;
+                static thread_local uint64_t dr_n = 0;
+                if (dr_on && dr_n++ < 60) {
+                    const StoredBitmap* sbr =
+                        BitmapStore::instance().get(op.bitmap_id);
+                    std::cerr << "[S232-REC-BMP] recv=" << ctx.receiver_id
+                              << " id=" << op.bitmap_id
+                              << " have=" << (sbr ? 1 : 0)
+                              << " wh=" << (sbr ? sbr->width : 0) << "x"
+                              << (sbr ? sbr->height : 0) << std::endl;
+                }
+            }
             float l = arg_as_float(ctx, 1), t = arg_as_float(ctx, 2);
             mat_.map(l, t, l, t);
             op.x = l; op.y = t;

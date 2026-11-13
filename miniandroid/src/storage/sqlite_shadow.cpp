@@ -41,7 +41,8 @@ bool DatabaseShadow::handles_class(const std::string& class_name) const {
            class_name == "Landroid/database/sqlite/SQLiteProgram;" ||
            class_name == "Landroid/database/sqlite/SQLiteCursor;" ||
            class_name == "Landroid/database/sqlite/SQLiteClosable;" ||
-           class_name == "Landroid/database/Cursor;";
+           class_name == "Landroid/database/Cursor;" ||
+           class_name == "Landroid/database/sqlite/SQLiteQueryBuilder;";
 }
 
 std::vector<std::string> DatabaseShadow::implemented_methods() const {
@@ -52,6 +53,8 @@ std::vector<std::string> DatabaseShadow::implemented_methods() const {
         "setTransactionSuccessful", "endTransaction", "inTransaction",
         "isOpen", "getPath", "getVersion", "setVersion", "compileStatement",
         "rawQueryWithFactory", "rawQuery", "setMaxSqlCacheSize",
+        "SQLiteQueryBuilder.setTables", "SQLiteQueryBuilder.appendWhere",
+        "SQLiteQueryBuilder.query",
         "bindLong", "bindString", "bindNull", "bindDouble",
         "executeInsert", "executeUpdateDelete", "execute",
         "getCount", "getColumnCount", "getColumnIndex", "getColumnNames",
@@ -315,6 +318,8 @@ framework::CallResult DatabaseShadow::open_standalone_database(
 }
 
 framework::CallResult DatabaseShadow::dispatch(const framework::CallContext& ctx) {
+    if (ctx.class_name == "Landroid/database/sqlite/SQLiteQueryBuilder;")
+        return query_builder_dispatch(ctx);
     if (ctx.class_name == "Landroid/database/sqlite/SQLiteOpenHelper;")
         return helper_dispatch(ctx);
     if (ctx.class_name == "Landroid/database/sqlite/SQLiteDatabase;")
@@ -906,6 +911,151 @@ framework::CallResult DatabaseShadow::stmt_dispatch(const framework::CallContext
         return framework::CallResult::handled_void();
     }
     return framework::CallResult::not_handled();
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// F-SQLQB (AOSP SQLiteQueryBuilder law). The builder accumulates tables
+// (setTables) and appended where clauses (appendWhere), then query()
+// composes the SELECT exactly like the AOSP sources:
+//   SELECT <projection|*> FROM <tables>
+//   [WHERE <outer selection> [AND (<appended where>)]]
+//   [GROUP BY ...][HAVING ...][ORDER BY ...][LIMIT ...]
+// and executes it through the ONE materialization path
+// (raw_query_common → a real SQLiteCursor). selectionArgs bind 1-based in
+// order. A builder with no tables answers null (AOSP logs and returns
+// null) — an honest null, not a fabricated empty cursor.
+// ─────────────────────────────────────────────────────────────────────────
+framework::CallResult DatabaseShadow::query_builder_dispatch(
+    const framework::CallContext& ctx) {
+    const std::string& m = ctx.method;
+    uint32_t b_oid = ctx.has_receiver ? ctx.receiver_id : 0;
+    if (b_oid == 0) return framework::CallResult::not_handled();
+    if (m == "<init>") {
+        builders_[b_oid] = BuilderState{};
+        return framework::CallResult::handled_void();
+    }
+    if (m == "setTables") {
+        BuilderState& b = builders_[b_oid];
+        b.tables = ctx.args.empty() ? "" : ctx.args[0].string_val;
+        return framework::CallResult::handled_void();
+    }
+    if (m == "appendWhere") {
+        BuilderState& b = builders_[b_oid];
+        std::string clause = ctx.args.empty() ? "" : ctx.args[0].string_val;
+        if (!clause.empty()) {
+            if (!b.where.empty()) b.where += " AND ";
+            b.where += clause;
+        }
+        return framework::CallResult::handled_void();
+    }
+    if (m == "query" || m == "queryWithFactory" || m == "buildQuery") {
+        BuilderState& b = builders_[b_oid];
+        // query(db, projection[], selection, selectionArgs[], groupBy,
+        //       having, sortOrder[, limit])  — db is args[0].
+        uint32_t db_oid = 0;
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == framework::CallContext::Arg::Kind::OBJECT)
+            db_oid = ctx.args[0].object_id;
+        sqlite3* raw = sqlite_of(db_oid);
+        if (!raw) {
+            std::cerr << "[SQLITE-QB] query: no database receiver (db=o"
+                      << db_oid << ") caller=" << ctx.caller << std::endl;
+            return framework::CallResult::handled_null();
+        }
+        if (b.tables.empty()) {
+            std::cerr << "[SQLITE-QB] query: no tables set (AOSP answers "
+                         "null) caller=" << ctx.caller << std::endl;
+            return framework::CallResult::handled_null();
+        }
+        auto str_arg = [&](size_t i) -> std::string {
+            return (ctx.args.size() > i &&
+                    ctx.args[i].kind == framework::CallContext::Arg::Kind::STRING)
+                       ? ctx.args[i].string_val : std::string();
+        };
+        // Projection: an array of column names, or "*".
+        std::string projection = "*";
+        if (ctx.args.size() >= 2 &&
+            ctx.args[1].kind == framework::CallContext::Arg::Kind::OBJECT &&
+            ctx.args[1].object_id != 0) {
+            uint32_t proj = ctx.args[1].object_id;
+            int32_t pn = 0;
+            heap_->get_object_array_length(proj, pn);
+            std::string cols;
+            for (int64_t i = 0; i < pn; i++) {
+                std::string cn;
+                if (heap_->get_object_array_string_element(proj, (size_t)i, cn)) {
+                    if (!cols.empty()) cols += ", ";
+                    cols += cn;
+                }
+            }
+            if (!cols.empty()) projection = cols;
+        }
+        std::string sql = "SELECT " + projection + " FROM " + b.tables;
+        std::string selection = str_arg(2);
+        if (!selection.empty() || !b.where.empty()) {
+            sql += " WHERE ";
+            if (!selection.empty()) {
+                sql += selection;
+                if (!b.where.empty()) sql += " AND (" + b.where + ")";
+            } else {
+                sql += b.where;
+            }
+        }
+        std::string group_by = str_arg(4);
+        if (!group_by.empty()) sql += " GROUP BY " + group_by;
+        std::string having = str_arg(5);
+        if (!having.empty()) sql += " HAVING " + having;
+        std::string order_by = str_arg(6);
+        if (!order_by.empty()) sql += " ORDER BY " + order_by;
+        std::string limit = str_arg(7);
+        if (!limit.empty()) sql += " LIMIT " + limit;
+        uint32_t bind_arr = 0;
+        if (ctx.args.size() >= 4 &&
+            ctx.args[3].kind == framework::CallContext::Arg::Kind::OBJECT)
+            bind_arr = ctx.args[3].object_id;
+        std::cerr << "[SQLITE-QB] query sql=\"" << sql << "\""
+                  << " caller=" << ctx.caller << std::endl;
+        return raw_query_common(raw, sql, bind_arr);
+    }
+    return framework::CallResult::not_handled();
+}
+
+bool DatabaseShadow::cursor_row_count(uint32_t cursor_oid, int32_t& out) const {
+    auto it = cursors_.find(cursor_oid);
+    if (it == cursors_.end()) return false;
+    out = (int32_t)it->second.rows.size();
+    return true;
+}
+
+bool DatabaseShadow::cursor_column_names(
+    uint32_t cursor_oid, std::vector<std::string>& out) const {
+    auto it = cursors_.find(cursor_oid);
+    if (it == cursors_.end()) return false;
+    out = it->second.columns;
+    return true;
+}
+
+bool DatabaseShadow::cursor_value_string(uint32_t cursor_oid, int32_t pos,
+                                         const std::string& column,
+                                         std::string& out) const {
+    auto it = cursors_.find(cursor_oid);
+    if (it == cursors_.end()) return false;
+    const CursorState& c = it->second;
+    if (pos < 0 || pos >= (int)c.rows.size()) return false;
+    for (size_t ci = 0; ci < c.columns.size(); ci++) {
+        if (c.columns[ci] != column) continue;
+        const CursorState::Cell& cell = c.rows[pos][ci];
+        switch (cell.kind) {
+            case CursorState::Cell::Kind::STRING: out = cell.string_val; break;
+            case CursorState::Cell::Kind::LONG:
+                out = std::to_string(cell.long_val); break;
+            case CursorState::Cell::Kind::DOUBLE:
+                out = std::to_string(cell.double_val); break;
+            default: out.clear(); break;
+        }
+        return true;
+    }
+    return false;
 }
 
 framework::CallResult DatabaseShadow::cursor_dispatch(const framework::CallContext& ctx) {

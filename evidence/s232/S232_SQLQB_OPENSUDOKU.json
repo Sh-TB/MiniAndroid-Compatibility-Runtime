@@ -1,0 +1,24 @@
+{
+ "binary_sha16": "03ddc59ce9258dd0",
+ "apk": "org.moire.opensudoku 4.11.3 (F-Droid 20261008)",
+ "apk_sha256": "ac4c6c8d0bc9058c1cc8d8f4570dc51977b3bc51577a82a12b94e6ec7714b9f0",
+ "wall_s": 3.4,
+ "final_face_sha16": "a7071553237e80a9",
+ "uncaught_escapes": 0,
+ "sqlite_qb_rows": [],
+ "rawquery_rows": [],
+ "cursoradapter_rows": [],
+ "adapter_rematerialize": [],
+ "render_walk_nodes": 121,
+ "render_walk_head": [
+  "[EXP092-RENDER] node=695 class=Landroidx/appcompat/widget/FitWindowsLinearLayout; text=\"\" children=2 depth=0 pos=(0,0) size=(1080x1920)",
+  "[EXP092-RENDER] node=699 class=Landroidx/appcompat/widget/ContentFrameLayout; text=\"\" children=1 depth=1 pos=(0,0) size=(1080x1920)",
+  "[EXP092-RENDER] node=717 class=Landroid/widget/LinearLayout; text=\"\" children=2 depth=2 pos=(0,0) size=(1080x1920)",
+  "[EXP092-RENDER] node=718 class=Lcom/google/android/material/appbar/AppBarLayout; text=\"\" children=1 depth=3 pos=(0,0) size=(1080x0)",
+  "[EXP092-RENDER] node=787 class=Lcom/google/android/material/appbar/MaterialToolbar; text=\"\" children=0 depth=4 pos=(0,0) size=(0x0)",
+  "[EXP092-RENDER] node=921 class=Landroid/widget/LinearLayout; text=\"\" children=2 depth=3 pos=(0,0) size=(1080x1920)",
+  "[EXP092-RENDER] node=922 class=Landroid/widget/ImageView; text=\"\" children=0 depth=4 pos=(0,0) size=(1080x1237)",
+  "[EXP092-RENDER] node=923 class=Landroid/widget/LinearLayout; text=\"\" children=5 depth=4 pos=(0,1290) size=(1080x630)"
+ ],
+ "distinct_colors": 11649
+}

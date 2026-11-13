@@ -94,6 +94,26 @@ public:
     size_t active_connections() const;
     size_t open_cursors() const;
 
+    // ── F-SQLQB (AOSP SQLiteQueryBuilder law) ───────────────────────────
+    // AOSP SQLiteQueryBuilder composes a SELECT from setTables/appendWhere
+    // plus the query(...) call's projection/selection/groupBy/having/
+    // orderBy, then runs it through SQLiteDatabase.rawQuery. Before this
+    // law the whole class was an S186I stub: setTables/appendWhere were
+    // silent no-ops and query(...) answered null — the app's Cursor was
+    // null, SimpleCursorAdapter.getCount() saw 0 rows and every list
+    // (OpenSudoku FolderListActivity folder list, and the many
+    // hand-rolled DAOs that use the builder) rendered EMPTY on a database
+    // that really held rows. State is per-builder; query() is the ONE
+    // materialization path (raw_query_common).
+    //
+    // Cursor row accessors for the engine's CursorAdapter laws
+    // (SimpleCursorAdapter.getView must read a cell by column name).
+    bool cursor_row_count(uint32_t cursor_oid, int32_t& out) const;
+    bool cursor_column_names(uint32_t cursor_oid,
+                             std::vector<std::string>& out) const;
+    bool cursor_value_string(uint32_t cursor_oid, int32_t pos,
+                             const std::string& column, std::string& out) const;
+
 private:
     struct HelperState {
         std::string db_name;
@@ -136,6 +156,7 @@ private:
     framework::CallResult db_dispatch(const framework::CallContext& ctx);
     framework::CallResult stmt_dispatch(const framework::CallContext& ctx);
     framework::CallResult cursor_dispatch(const framework::CallContext& ctx);
+    framework::CallResult query_builder_dispatch(const framework::CallContext& ctx);
 
     // Shared query materialization for rawQuery / rawQueryWithFactory
     // (F-026: bare rawQuery(String,String[]) previously had NO handler —
@@ -161,6 +182,12 @@ private:
     std::unordered_map<uint32_t, DbState> dbs_;
     std::unordered_map<uint32_t, StmtState> stmts_;
     std::unordered_map<uint32_t, CursorState> cursors_;
+    // F-SQLQB: per-builder composed SQL state (tables + appended where).
+    struct BuilderState {
+        std::string tables;
+        std::string where;
+    };
+    std::unordered_map<uint32_t, BuilderState> builders_;
 
     static std::string databases_dir_;
 };

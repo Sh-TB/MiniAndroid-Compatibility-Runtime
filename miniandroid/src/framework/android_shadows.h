@@ -1414,6 +1414,22 @@ private:
             config_overrides_[derived_id] = override_config_id;
     }
     uint32_t content_view_id_ = 0;
+    // F-LISTACTIVITY (AOSP ListActivity.getListView law): cached
+    // android.R.id.list view id (AOSP ListActivity mList handle) + the
+    // pending setListAdapter adapter identity drained by the engine.
+    // AOSP ListActivity resolves its managed ListView through
+    // findViewById(android.R.id.list) and caches it in mList; getListView()
+    // returns that handle. The inflated ListView node carries
+    // android_view_id == android.R.id.list (0x0102000A), so the shadow
+    // resolves it from the ViewShadow tree on first call.
+    uint32_t list_activity_list_id_ = 0;
+    uint32_t list_activity_pending_adapter_ = 0;
+    uint32_t list_activity_list_id() const { return list_activity_list_id_; }
+    uint32_t take_list_activity_adapter() {
+        uint32_t a = list_activity_pending_adapter_;
+        list_activity_pending_adapter_ = 0;
+        return a;
+    }
     // F-058 (R-NEW-279): Application.ActivityLifecycleCallbacks registry
     // (CopyOnWriteArrayList semantics — see public accessors above).
     std::vector<LifecycleCallbackEntry> lifecycle_callbacks_;

@@ -7181,6 +7181,67 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_void();
     }
+    // ── F-LISTACTIVITY (AOSP ListActivity.getListView / setListAdapter) ──
+    // AOSP ListActivity.java:
+    //   mList = (ListView) findViewById(android.R.id.list);
+    //   public ListView getListView() { return mList; }
+    //   public void setListAdapter(ListAdapter adapter) {
+    //       synchronized (this) { mAdapter = adapter;
+    //           if (mList != null) mList.setAdapter(adapter); }
+    //   }
+    // The old dispatch left getListView unimplemented → the typed-default
+    // stub answered null → the app's own
+    //   getListView().setOnCreateContextMenuListener(this)
+    // NPE'd at FolderListActivity.onCreate pc=24 (opensudoku), and the
+    // whole list never rendered. AOSP resolves the managed list through
+    // the SAME findViewById(android.R.id.list) contract the inflater
+    // already honors (layout_inflater.cpp: @android:id/list → well-known
+    // system id 0x0102000A). Resolve it here against the live ViewShadow
+    // tree; cache the handle (AOSP mList) so later calls answer O(1).
+    if (m == "getListView") {
+        if (list_activity_list_id_ == 0 && registry_) {
+            if (auto* vs = registry_->find_as<ViewShadow>()) {
+                uint32_t root = content_view_id_;
+                if (root != 0) {
+                    list_activity_list_id_ =
+                        vs->find_by_android_id(root, (int32_t)0x0102000A);
+                }
+            }
+        }
+        if (list_activity_list_id_ == 0) return CallResult::handled_null();
+        std::string cls = "Landroid/widget/ListView;";
+        if (registry_) {
+            if (auto* vs = registry_->find_as<ViewShadow>()) {
+                cls = real_view_class(vs, list_activity_list_id_, cls);
+            }
+        }
+        return CallResult::handled_object(list_activity_list_id_, cls);
+    }
+    if (m == "setListAdapter") {
+        // AOSP: forward the adapter to the managed ListView (same
+        // android.R.id.list handle). The engine's CONT-102 setAdapter law
+        // then materializes the rows from the adapter DEX. Re-dispatch the
+        // forward through the engine so the ListView's adapter identity +
+        // row materialization stay in ONE place.
+        if (list_activity_list_id_ == 0 && registry_) {
+            if (auto* vs = registry_->find_as<ViewShadow>()) {
+                if (content_view_id_ != 0) {
+                    list_activity_list_id_ =
+                        vs->find_by_android_id(content_view_id_,
+                                               (int32_t)0x0102000A);
+                }
+            }
+        }
+        uint32_t ad_id = 0;
+        if (!ctx.args.empty() &&
+            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT) {
+            ad_id = ctx.args[0].object_id;
+        }
+        if (list_activity_list_id_ != 0 && ad_id != 0) {
+            list_activity_pending_adapter_ = ad_id;
+        }
+        return CallResult::handled_void();
+    }
     if (m == "getContentView") {
         if (content_view_id_ == 0) return CallResult::handled_null();
         // ── ADDITIONAL-AUDIT P0-3 (real runtime class identity) ────────

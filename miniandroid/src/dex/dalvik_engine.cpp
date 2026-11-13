@@ -17789,6 +17789,18 @@ int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
     awaitup_soft_stop_clear();
     std::cerr << "[C013-ONDRAW] view=" << view_object_id << " class=" << cls
               << " dispatched=" << (ok ? "YES" : "NO") << " ops=" << ops << std::endl;
+    {
+        static const bool vm_on =
+            std::getenv("MINIANDROID_DRAWABLE_DRAW_TRACE") != nullptr;
+        static thread_local uint64_t vm_n = 0;
+        if (vm_on && vm_n++ < 20) {
+            int32_t vm = -999;
+            auto vmv = heap_.get_object_field(view_object_id, "mViewMode");
+            if (vmv && vmv->type == DalvikType::INT32) vm = vmv->int_val;
+            std::cerr << "[S232-VIEWMODE] view=" << view_object_id
+                      << " have=" << (vmv ? 1 : 0) << " mViewMode=" << vm << std::endl;
+        }
+    }
     // ── S152 TRAIN-70e v1 (T70-ATTACH) RETIRED: the D7-PLACECHECK
     // evidence showed every recorded second-wave node ALREADY carries
     // owner r#1547(Lt4;) with a linked parent chain — the attach-law
@@ -19858,6 +19870,23 @@ int DalvikExecutionEngine::materialize_adapter_rows_for(uint32_t adapter_id) {
             (cret.type == DalvikType::INT32 ||
              cret.type == DalvikType::BOOLEAN))
             count = (int)cret.int_val;
+        // F-SQLQB-CURSORADAPTER: a cursor-backed adapter's getCount is
+        // INHERITED from the framework CursorAdapter (never in the app DEX),
+        // so the DEX chain above misses. The authoritative count is the
+        // REAL DatabaseShadow cursor row count.
+        uint32_t ca_cursor = 0;
+        {
+            auto caf = heap_.get_object_field(adapter_id, "__ca_cursor__");
+            if (caf.has_value() && caf->type == DalvikType::OBJECT_REF)
+                ca_cursor = caf->object_id;
+        }
+        if (ca_cursor != 0) {
+            auto* dbs = shadow_registry_->find_as<storage::DatabaseShadow>();
+            if (dbs != nullptr) {
+                int32_t cn = 0;
+                if (dbs->cursor_row_count(ca_cursor, cn)) count = cn;
+            }
+        }
         // S191 backing-store fast path: an engine-backed adapter
         // (__ad_objects__) has an authoritative count even when the DEX
         // chain lookup misses the INHERITED getCount (the app subclass
@@ -19904,6 +19933,20 @@ int DalvikExecutionEngine::materialize_adapter_rows_for(uint32_t adapter_id) {
             // The default-row law synthesizes a FRESH row; a handed-back
             // scrap view would alias the rebind (the default law has no
             // bind step), so a convertView-bearing miss rebinds as cold.
+            if (row_oid == 0 && ca_cursor != 0) {
+                DalvikValue gv = DalvikValue::make_void();
+                ApiCallTrace::Status gv_status = ApiCallTrace::Status::MISSING;
+                std::vector<DalvikValue> gargs{
+                    DalvikValue::make_object(
+                        adapter_id, "Landroid/widget/SimpleCursorAdapter;"),
+                    DalvikValue::make_int(i),
+                    DalvikValue::make_null(),
+                    DalvikValue::make_object(lv_id, lv_cls)};
+                if (bridge_to_api("Landroid/widget/SimpleCursorAdapter;",
+                                  "getView", gargs, gv, gv_status, 0) &&
+                    gv.type == DalvikType::OBJECT_REF && gv.object_id != 0)
+                    row_oid = gv.object_id;
+            }
             if (row_oid == 0 && s191_backing != 0) {
                 DalvikValue gv = DalvikValue::make_void();
                 ApiCallTrace::Status gv_status = ApiCallTrace::Status::MISSING;
@@ -35536,11 +35579,31 @@ bool DalvikExecutionEngine::execute_##name(uint32_t pc, InstructionTrace& trace)
                the content order is the honest total order). */ \
             taken = (std::string(a.string_val) op std::string(b.string_val)); \
         } else { \
-            uint32_t a_obj = (a.type == DalvikType::OBJECT_REF) ? a.object_id \
-                            : (a.type == DalvikType::CLASS_REF) ? a.ref_id : 0; \
-            uint32_t b_obj = (b.type == DalvikType::OBJECT_REF) ? b.object_id \
-                            : (b.type == DalvikType::CLASS_REF) ? b.ref_id : 0; \
-            taken = (a_obj op b_obj); \
+            /* S231 (cODER-ohc) — STRING_REF vs a NON-STRING reference \
+               (NULL_REF, OBJECT_REF, CLASS_REF) is ALWAYS unequal: a \
+               materialized string value is never the null reference and \
+               never a heap object. The old oid tail collapsed STRING_REF \
+               to 0 (it is neither OBJECT_REF nor CLASS_REF), so \
+               `str != null` compiled to if-ne answered 0 != 0 = false \
+               (and if-eq answered true) — the exact opposite of AOSP \
+               acmp law. SolitaireCG evidence: \
+               SolitaireCG.onResume `GetRestoreState() != "STATS"` — \
+               mRestoreState was null on a cold launch (the app's \
+               getLastNonConfigurationInstance answered null, correctly), \
+               yet the collapsed compare took the taken==false path and \
+               called DisplayStats(), replacing the real game view with \
+               the stats screen on every launch. */ \
+            bool a_s = (a.type == DalvikType::STRING_REF); \
+            bool b_s = (b.type == DalvikType::STRING_REF); \
+            if (a_s != b_s) { \
+                taken = (0 op 1); \
+            } else { \
+                uint32_t a_obj = (a.type == DalvikType::OBJECT_REF) ? a.object_id \
+                                : (a.type == DalvikType::CLASS_REF) ? a.ref_id : 0; \
+                uint32_t b_obj = (b.type == DalvikType::OBJECT_REF) ? b.object_id \
+                                : (b.type == DalvikType::CLASS_REF) ? b.ref_id : 0; \
+                taken = (a_obj op b_obj); \
+            } \
         } \
     } else if (a_is_ref || b_is_ref) { \
         /* F-075 (S21): mixed reference-vs-const/4-zero compare. The zero \
@@ -58477,6 +58540,116 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+    // ────────────────────────────────────────────────────────────────────────
+    // S232 (cODER-ohc) — Drawable.draw(Canvas) AOSP LAW.
+    // AOSP Drawable.draw(Canvas) draws into the canvas within the bounds set
+    // by setBounds. For the BitmapDrawable family (Resources.getDrawable on a
+    // raster, or a <bitmap> XML wrapper) the draw paints the drawable's
+    // bitmap at its bounds through the canvas. Previously this method was
+    // unhandled → the generic typed-default void stub → every Drawable.draw
+    // silently vanished. SolitaireCG DrawMaster.DrawPortraitCards rasterizes
+    // the whole deck OFFSCREEN (new Canvas(Bitmap) + drawable.setBounds +
+    // drawable.draw) and later blits the result with Canvas.drawBitmap; the
+    // swallowed draw left every card bitmap transparent → the game board
+    // rendered as an empty background. LAW: resolve the receiver's
+    // __dr_bitmap__ (set by the S109 raster branch / the S231 <bitmap> XML
+    // branch), compose setBounds' rect with the canvas matrix, and route the
+    // pixels through the SAME drawBitmap path every other bitmap draw uses
+    // (op recorded by the canvas shadow — the bitmap-canvas sub-recorder or
+    // the view op stream). A drawable with no bitmap (bare shell / unresolved
+    // vector) stays an honest no-op (AOSP: nothing to draw yet).
+    if (method == "draw" &&
+        (class_name.find("Drawable;") != std::string::npos ||
+         is_subclass_of(class_name,
+                        "Landroid/graphics/drawable/Drawable;")) &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 &&
+        args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
+        args[1].object_id != 0) {
+        const uint32_t drecv = args[0].object_id;
+        const uint32_t canvas_oid = args[1].object_id;
+        auto bmv = heap_.get_object_field(drecv, "__dr_bitmap__");
+        {
+            static const bool dd_on =
+                diag_env("MINIANDROID_DRAWABLE_DRAW_TRACE");
+            static thread_local uint64_t dd_n = 0;
+            if (dd_on && dd_n++ < 80) {
+                auto rvv = heap_.get_object_field(drecv, "__dr_bounds__");
+                std::cerr << "[S232-DDRAW] drawable=obj#" << drecv
+                          << " canvas=obj#" << canvas_oid
+                          << " bmp="
+                          << (bmv.has_value() &&
+                                      bmv->type == DalvikType::OBJECT_REF
+                                  ? (int64_t)bmv->object_id
+                                  : -1)
+                          << " bounds="
+                          << (rvv.has_value() &&
+                                      rvv->type == DalvikType::OBJECT_REF
+                                  ? (int64_t)rvv->object_id
+                                  : -1)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+            }
+        }
+        if (bmv.has_value() && bmv->type == DalvikType::OBJECT_REF &&
+            bmv->object_id != 0) {
+            auto rv = heap_.get_object_field(drecv, "__dr_bounds__");
+            int32_t bl = 0, bt = 0, br = 0, bb = 0;
+            if (rv.has_value() && rv->type == DalvikType::OBJECT_REF &&
+                rv->object_id != 0) {
+                auto gi = [&](const char* f) -> int32_t {
+                    auto v = heap_.get_object_field(rv->object_id, f);
+                    return (v.has_value() && v->type == DalvikType::INT32)
+                               ? v->int_val : 0;
+                };
+                bl = gi("left"); bt = gi("top");
+                br = gi("right"); bb = gi("bottom");
+            }
+            // AOSP BitmapDrawable.draw: paints its bitmap into mBounds. A
+            // degenerate/never-set bounds (0,0,0,0) draws nothing — honest
+            // no-op, matching the framework.
+            if (br > bl && bb > bt) {
+                const uint32_t paint_oid =
+                    heap_.allocate("Landroid/graphics/Paint;", pc_, 0);
+                // try_shadow_dispatch takes args[0] as `this` for instance
+                // calls — the canvas is the receiver, the bitmap the first
+                // real argument (AOSP Canvas.drawBitmap overload order).
+                uint32_t src =
+                    heap_.allocate("Landroid/graphics/Rect;", pc_, 0);
+                heap_.set_object_field(src, "left", DalvikValue::make_int(0));
+                heap_.set_object_field(src, "top", DalvikValue::make_int(0));
+                heap_.set_object_field(src, "right",
+                                       DalvikValue::make_int(br - bl));
+                heap_.set_object_field(src, "bottom",
+                                       DalvikValue::make_int(bb - bt));
+                uint32_t dst =
+                    heap_.allocate("Landroid/graphics/Rect;", pc_, 0);
+                heap_.set_object_field(dst, "left", DalvikValue::make_int(bl));
+                heap_.set_object_field(dst, "top", DalvikValue::make_int(bt));
+                heap_.set_object_field(dst, "right", DalvikValue::make_int(br));
+                heap_.set_object_field(dst, "bottom",
+                                       DalvikValue::make_int(bb));
+                std::vector<DalvikValue> dargs;
+                dargs.push_back(DalvikValue::make_object(
+                    canvas_oid, "Landroid/graphics/Canvas;"));
+                dargs.push_back(DalvikValue::make_object(
+                    bmv->object_id, "Landroid/graphics/Bitmap;"));
+                dargs.push_back(DalvikValue::make_object(
+                    src, "Landroid/graphics/Rect;"));
+                dargs.push_back(DalvikValue::make_object(
+                    dst, "Landroid/graphics/Rect;"));
+                dargs.push_back(DalvikValue::make_object(
+                    paint_oid, "Landroid/graphics/Paint;"));
+                DalvikValue bres = DalvikValue::make_void();
+                ApiCallTrace::Status bst = status;
+                try_shadow_dispatch("Landroid/graphics/Canvas;",
+                                    "drawBitmap", dargs, bres, bst);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_void();
+                return true;
+            }
+        }
+    }
     if ((method == "width" || method == "height") &&
         (class_name == "Landroid/graphics/Rect;" ||
          class_name == "Landroid/graphics/RectF;")) {
@@ -67925,6 +68098,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     }
                 }
             }
+            // ── F-LISTACTIVITY: ListActivity.setListAdapter drain ─────────
+            // AOSP ListActivity.setListAdapter(ListAdapter) forwards the
+            // adapter to the managed ListView (android.R.id.list). The
+            // shadow resolved the list handle and recorded the adapter
+            // identity; the engine binds them here and materializes rows
+            // through the ONE CONT-102 adapter path (same law the plain
+            // ListView.setAdapter bridge uses).
+            if (method == "setListAdapter" && shadow_registry_ != nullptr) {
+                if (auto* act =
+                        shadow_registry_->find_as<framework::ActivityShadow>()) {
+                    uint32_t lv_id = act->list_activity_list_id();
+                    uint32_t ad_id = act->take_list_activity_adapter();
+                    if (lv_id != 0 && ad_id != 0) {
+                        std::string ad_cls;
+                        heap_.get_object_class(ad_id, ad_cls);
+                        if (auto* vs =
+                                shadow_registry_->find_as<framework::ViewShadow>()) {
+                            if (auto* n = vs->get_or_create_node(
+                                    lv_id, "Landroid/widget/ListView;")) {
+                                n->adapter_id = ad_id;
+                                n->adapter_class = ad_cls;
+                            }
+                        }
+                        const int rows = materialize_adapter_rows_for(ad_id);
+                        std::cerr << "[F-LISTACTIVITY] setListAdapter lv=o"
+                                  << lv_id << " adapter=o" << ad_id << " ("
+                                  << ad_cls << ") rows=" << rows << std::endl;
+                    }
+                }
+            }
             // ── ADDITIONAL-AUDIT P1-11: WebView.evaluateJavascript
             // ValueCallback drain. The shadow routed the script through the
             // REAL WebViewEngine and recorded (callback oid, JSON result);
@@ -71394,6 +71597,165 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (s191_getview_diag < 12) {
                 ++s191_getview_diag;
                 std::cerr << "[S191-ARRAYADAPTER] getView pos=" << pos
+                          << " row=o" << row_oid << " text=\"" << text
+                          << "\"" << std::endl;
+            }
+            result = DalvikValue::make_object(row_oid,
+                                              "Landroid/widget/TextView;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
+
+    // ────────────────────────────────────────────────────────────────────────
+    // F-SQLQB-CURSORADAPTER: android.widget.CursorAdapter family laws
+    // (AOSP SimpleCursorAdapter/CursorAdapter).
+    //   <init>(Context, int layout, Cursor c, String[] from, int[] to) —
+    //       binds the cursor (mCursor), the projection names (mFrom) and
+    //       the target view ids (mTo).
+    //   getCount() → mCursor.getCount()  (0 for a null/empty cursor)
+    //   getItemId(I) → the cursor's "_id" column at that position
+    //   getView(I, View, ViewGroup) → inflate mResource; for each i, read
+    //       mCursor.getString(getColumnIndex(mFrom[i])) and bind it to the
+    //       row TextView (the SimpleCursorAdapter simple_list_item_1 shape
+    //       — OpenSudoku's folder list). The cursor read goes through the
+    //       REAL DatabaseShadow materialization (rawQuery rows), so the
+    //       rows are the true SQL result, never invented.
+    // The whole class was an S186I stub: the app's ListActivity list bound
+    // a 0-row adapter on a database that really held rows → the screen
+    // rendered the empty-list face.
+    // ────────────────────────────────────────────────────────────────────────
+    if (class_name == "Landroid/widget/SimpleCursorAdapter;" ||
+        class_name == "Landroid/widget/CursorAdapter;" ||
+        is_subclass_of(class_name, "Landroid/widget/CursorAdapter;")) {
+        auto f_ca_dbs = [&]() -> storage::DatabaseShadow* {
+            return shadow_registry_
+                       ? shadow_registry_->find_as<storage::DatabaseShadow>()
+                       : nullptr;
+        };
+        auto f_ca_cursor = [&](uint32_t ad) -> uint32_t {
+            auto cf = heap_.get_object_field(ad, "__ca_cursor__");
+            return (cf.has_value() && cf->type == DalvikType::OBJECT_REF)
+                       ? cf->object_id : 0;
+        };
+        if (method == "<init>" && args.size() >= 5 &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t ad = args[0].object_id;
+            // args[0]=this(receiver); (Context, int layout, Cursor,
+            // String[] from, int[] to) → args[1..5].
+            heap_.set_object_field(ad, "__ca_cursor__", args[3]);
+            heap_.set_object_field(ad, "__ca_from__", args[4]);
+            heap_.set_object_field(ad, "__ca_to__", args[5]);
+            for (size_t ai = 1; ai < args.size(); ++ai) {
+                if (args[ai].type == DalvikType::INT32) {
+                    heap_.set_object_field(ad, "__ad_resource__",
+                                           DalvikValue::make_int(
+                                               args[ai].int_val));
+                    break;
+                }
+            }
+            std::cerr << "[F-SQLQB-CURSORADAPTER] init ad=o" << ad
+                      << " cursor=o"
+                      << (args[3].type == DalvikType::OBJECT_REF
+                              ? args[3].object_id : 0u)
+                      << " args=" << args.size() << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if ((method == "swapCursor" || method == "changeCursor") &&
+            args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t ad = args[0].object_id;
+            uint32_t old = f_ca_cursor(ad);
+            heap_.set_object_field(ad, "__ca_cursor__", args[1]);
+            int rows = materialize_adapter_rows_for(ad);
+            std::cerr << "[F-SQLQB-CURSORADAPTER] " << method << " ad=o" << ad
+                      << " rows=" << rows << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(old, "Landroid/database/Cursor;");
+            return true;
+        }
+        if (method == "getCount" && args.size() >= 1 &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            uint32_t ad = args[0].object_id;
+            uint32_t cur = f_ca_cursor(ad);
+            int32_t n = 0;
+            if (auto* dbs = f_ca_dbs()) dbs->cursor_row_count(cur, n);
+            result = DalvikValue::make_int(n);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getItemId" && args.size() >= 2 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[1].type == DalvikType::INT32) {
+            uint32_t ad = args[0].object_id;
+            uint32_t cur = f_ca_cursor(ad);
+            int64_t id = args[1].int_val;
+            std::string ids;
+            if (auto* dbs = f_ca_dbs()) {
+                if (dbs->cursor_value_string(cur, args[1].int_val, "_id", ids))
+                    id = strtoll(ids.c_str(), nullptr, 10);
+            }
+            result = DalvikValue::make_long(id);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "getView" && args.size() >= 4 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[1].type == DalvikType::INT32) {
+            uint32_t ad = args[0].object_id;
+            int32_t pos = args[1].int_val;
+            uint32_t cur = f_ca_cursor(ad);
+            std::vector<std::string> from;
+            auto ff = heap_.get_object_field(ad, "__ca_from__");
+            if (ff.has_value() && ff->type == DalvikType::OBJECT_REF &&
+                ff->object_id != 0) {
+                int32_t fn = 0;
+                auto fl = heap_.get_object_field(ff->object_id,
+                                                 "__array_length__");
+                if (fl.has_value() && fl->type == DalvikType::INT32)
+                    fn = fl->int_val;
+                for (int64_t i = 0; i < fn; i++) {
+                    auto ev = heap_.get_object_field(
+                        ff->object_id, "array[" + std::to_string(i) + "]");
+                    if (ev.has_value() &&
+                        ev->type == DalvikType::STRING_REF)
+                        from.push_back(ev->string_val);
+                }
+            }
+            std::string text;
+            if (auto* dbs = f_ca_dbs()) {
+                for (const auto& col : from) {
+                    std::string val;
+                    if (dbs->cursor_value_string(cur, pos, col, val)) {
+                        text = val;
+                        break;
+                    }
+                }
+            }
+            uint32_t row_oid = 0;
+            if (args[2].type == DalvikType::OBJECT_REF && args[2].object_id != 0)
+                row_oid = args[2].object_id;
+            if (auto* vs = shadow_registry_
+                               ? shadow_registry_->find_as<
+                                     framework::ViewShadow>()
+                               : nullptr) {
+                if (row_oid == 0)
+                    row_oid = vs->create_view("Landroid/widget/TextView;");
+                if (auto* rn = vs->get_or_create_node(
+                        row_oid, "Landroid/widget/TextView;")) {
+                    rn->text = text;
+                    rn->width = -1;
+                    rn->height = -2;
+                    rn->lp_width = -1;
+                    rn->lp_height = -2;
+                }
+            }
+            static int f_ca_getview_diag = 0;
+            if (f_ca_getview_diag < 12) {
+                ++f_ca_getview_diag;
+                std::cerr << "[F-SQLQB-CURSORADAPTER] getView pos=" << pos
                           << " row=o" << row_oid << " text=\"" << text
                           << "\"" << std::endl;
             }
@@ -75518,6 +75880,63 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     std::cerr << "[RES] C9-3 vector intrinsic " << wpx << "x"
                               << hpx << " (density " << dev_density
                               << ") for " << path << std::endl;
+                }
+                // ── S231 (cODER-ohc) — <bitmap> XML BitmapDrawable law ────
+                // AOSP BitmapDrawableInflater.inflate: a res/drawable/*.xml
+                // whose root is <bitmap android:src="@drawable/X"> (or
+                // android:src="@raw/X") materializes as a BitmapDrawable
+                // whose bitmap IS X's decoded pixels; getIntrinsicWidth/
+                // Height answer the bitmap dims (density-scaled). The raster
+                // branch above only fills drawables whose OWN entry is a
+                // raster; an XML wrapper (SolitaireCG cardback.xml /
+                // medsuits.xml → @drawable/*.png) kept intrinsic -1, so the
+                // app's Bitmap.createBitmap(0, -1, ARGB_4444) threw the AOSP
+                // IllegalArgumentException at DrawMaster.DrawPortraitCards
+                // and SolitaireCG.onStart died before the board rendered.
+                else if (ax.root().name == "bitmap") {
+                    const resources::AxmlAttribute* src =
+                        ax.root().attr("src", "android");
+                    if (src && src->value.is_reference()) {
+                        uint32_t src_resid = src->value.ref_id;
+                        std::vector<uint8_t> sbytes;
+                        std::string spath;
+                        uint16_t sdensity = 0;
+                        if (dbr(src_resid, sbytes, spath, sdensity) &&
+                            !sbytes.empty()) {
+                            framework::DalvikHeapAdapter adapter(&heap_, this);
+                            uint32_t bmp_oid =
+                                framework::BitmapShadow::decode_and_register(
+                                    sbytes, spath, &adapter);
+                            if (bmp_oid != 0) {
+                                const framework::StoredBitmap* sb =
+                                    framework::BitmapStore::instance().get(
+                                        bmp_oid);
+                                int32_t bw = sb ? sb->width : 0;
+                                int32_t bh = sb ? sb->height : 0;
+                                float bratio = 1.0f;
+                                if (sdensity > 0 && sdensity < 420)
+                                    bratio = 420.0f / (float)sdensity;
+                                int32_t iw = (int32_t)(bw * bratio + 0.5f);
+                                int32_t ih = (int32_t)(bh * bratio + 0.5f);
+                                heap_.set_object_field(
+                                    dw, "__dr_bitmap__",
+                                    DalvikValue::make_object(
+                                        bmp_oid, "Landroid/graphics/Bitmap;"));
+                                heap_.set_object_field(
+                                    dw, "__dr_width__",
+                                    DalvikValue::make_int(iw));
+                                heap_.set_object_field(
+                                    dw, "__dr_height__",
+                                    DalvikValue::make_int(ih));
+                                drawable_class =
+                                    "Landroid/graphics/drawable/"
+                                    "BitmapDrawable;";
+                                std::cerr << "[RES] S231 bitmap-drawable "
+                                          << "intrinsic " << iw << "x" << ih
+                                          << " src=" << spath << std::endl;
+                            }
+                        }
+                    }
                 }
             }
         }
