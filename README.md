@@ -12,6 +12,21 @@ MiniAndroid exists to run real Android applications directly on the host CPU, an
 - **Out of scope:** ARM-only APKs (`ABI_OUT_OF_SCOPE` — skipped, never counted as a failure), and MiniAndroid is **not** a full Android OS, not an emulator, not an Android agent, and not an ARM translator.
 - **Never claimed:** "runs Android apps" without per-app evidence. Every count in this README comes from [`docs/METRICS.json`](docs/METRICS.json), generated from the canonical registries — 152 canonical titles (24 `VERIFIED`, 112 `OBSERVED`), 91 games + 15 apps registered, 797 recorded root causes.
 
+## Canonical game demonstrations (animated, real gameplay)
+
+<table>
+<tr>
+<td align="center"><img src="docs/evidence/canonical/com.miniandroid.g2048.gif" alt="2048 gameplay animation: tile slides and merges with score progression" width="200"><br><b>2048</b> — real tile merges + score/state progression<br><a href="docs/evidence/canonical/registry.json">record 52</a></td>
+<td align="center"><img src="docs/evidence/canonical/com.miniandroid.tetris.gif" alt="Mini Tetris gameplay animation: falling pieces, next queue, timed animation" width="200"><br><b>Mini Tetris</b> — falling pieces, next queue, timer-driven animation<br><a href="docs/evidence/canonical/registry.json">record 51</a></td>
+</tr>
+<tr>
+<td align="center"><img src="docs/evidence/canonical/com.miniandroid.snakedeluxe.gif" alt="Snake Deluxe gameplay animation: snake movement, food, state transitions" width="200"><br><b>Snake Deluxe</b> — real gameplay loop + state transitions<br><a href="docs/evidence/canonical/registry.json">record 50</a></td>
+<td align="center"><img src="docs/evidence/canonical/com.miniandroid.minicraft.gif" alt="MiniCraft gameplay animation: terrain walk, block placement, house build demo" width="200"><br><b>MiniCraft</b> — terrain walk, block place/dig, house build demo<br><a href="docs/evidence/canonical/registry.json">record 147</a></td>
+</tr>
+</table>
+
+Provenance: all four are genuine animations (65/75/49/15 frames; 400x737 / 360x640; 5.6–22.5 s; measured 2026-11-13), canonical records in [`docs/evidence/canonical/registry.json`](docs/evidence/canonical/registry.json) with in-house APK SHA-256 per record (`games/` source). Interaction-verified at record time (S83/S86); release-candidate re-runs of these four are tracked as PARTIAL in [#587 S213-E](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/587#issuecomment-6853869494) — the five demos below are the ones re-verified on the current RC binary.
+
 ## How it works
 
 ```

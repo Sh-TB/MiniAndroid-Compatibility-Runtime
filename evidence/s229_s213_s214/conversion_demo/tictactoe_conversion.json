@@ -1,0 +1,78 @@
+[
+ {
+  "source": "evidence/s195_audit/cohort/runs/tictactoe_s195fix_r1/screenshot.png",
+  "source_sha256": "c3da168896e7707bf61ef678a6b126b7ddf764abc25416027f5dbc00d502a81c",
+  "source_bytes": 3360833,
+  "converted": true,
+  "image_class": "PHOTO_NOISY",
+  "dimensions": "1080x1920",
+  "resized_to": "540x960",
+  "output": "/tmp/s229_staging/screenshot.jpg",
+  "output_bytes": 99178,
+  "output_sha256": "fa29f65c5ce78af1b826a998c1d622764d656c911d482ebb705b342525a58f5d",
+  "quality": 75,
+  "ladder_attempts": [
+   {
+    "quality": 85,
+    "bytes": 788768,
+    "scale": 1.0
+   },
+   {
+    "quality": 80,
+    "bytes": 694830,
+    "scale": 1.0
+   },
+   {
+    "quality": 75,
+    "bytes": 621982,
+    "scale": 1.0
+   },
+   {
+    "quality": 70,
+    "bytes": 568566,
+    "scale": 1.0
+   },
+   {
+    "quality": 85,
+    "bytes": 377375,
+    "scale": 0.75
+   },
+   {
+    "quality": 80,
+    "bytes": 326446,
+    "scale": 0.75
+   },
+   {
+    "quality": 75,
+    "bytes": 287598,
+    "scale": 0.75
+   },
+   {
+    "quality": 70,
+    "bytes": 259608,
+    "scale": 0.75
+   },
+   {
+    "quality": 85,
+    "bytes": 138043,
+    "scale": 0.5
+   },
+   {
+    "quality": 80,
+    "bytes": 116583,
+    "scale": 0.5
+   },
+   {
+    "quality": 75,
+    "bytes": 99178,
+    "scale": 0.5
+   }
+  ],
+  "settings": "JPEG sRGB q=75 optimize progressive, metadata stripped",
+  "output_dimensions": "540x960",
+  "size_delta_bytes": -3261655,
+  "compression_ratio": 33.89,
+  "visual_metric": "RMS-DELTA(gray 256x256 downsample)=0.634 max_delta=5",
+  "provenance": "source SHA-256 c3da168896e7707bf61ef678a6b126b7ddf764abc25416027f5dbc00d502a81c; lossy conversion \u2014 never a pixel-exact claim"
+ }
+]
