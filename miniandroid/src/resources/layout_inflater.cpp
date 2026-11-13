@@ -1669,6 +1669,25 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             if (a.layout_weight == 0 && raw == "1") a.layout_weight = 1000;
         }
         else if (n == "weightSum") a.weight_sum = (float)atof(raw.c_str()), a.weight_sum_valid = true;
+        else if (n == "numColumns") {
+            // F-S231-B (#585 §5): GridView android:numColumns. "auto_fit"
+            // (and the compiled -1) = AOSP AUTO_FIT; positive = fixed
+            // column count. Parsed for ANY element (AOSP AbsListView attr,
+            // consumed by the GridView layout law in the renderer).
+            if (at.value.is_int()) a.grid_num_columns = (int)at.value.data;
+            else if (raw == "auto_fit") a.grid_num_columns = -1;
+            else a.grid_num_columns = atoi(raw.c_str());
+        }
+        else if (n == "columnWidth") a.grid_column_width = parse_dim_attr(&at, stats);
+        else if (n == "verticalSpacing") a.grid_v_spacing = parse_dim_attr(&at, stats);
+        else if (n == "horizontalSpacing") a.grid_h_spacing = parse_dim_attr(&at, stats);
+        else if (n == "stretchMode") {
+            if (at.value.is_int()) a.grid_stretch_mode = (int)at.value.data;
+            else if (raw == "columnWidth") a.grid_stretch_mode = 1;
+            else if (raw == "spacingWidth") a.grid_stretch_mode = 2;
+            else if (raw == "spacingWidthUniform") a.grid_stretch_mode = 3;
+            else a.grid_stretch_mode = 0;
+        }
         else if (n == "text") {
             if (at.value.is_reference()) {
                 auto val = arsc_.resolve_value(at.value.ref_id);
@@ -2127,6 +2146,15 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.max_w = a.max_w; node.max_h = a.max_h;
     node.adjust_view_bounds = a.adjust_view_bounds;
     node.lp_width = a.layout_width; node.lp_height = a.layout_height;
+    // F-S231-B (#585 §5): GridView column contract onto the node (consumed
+    // by the renderer's grid layout law; a GridView without numColumns
+    // keeps the CONT-102 vertical-stack fallback, an explicit AUTO_FIT
+    // without columnWidth also stays 1 column per AOSP).
+    node.grid_num_columns = a.grid_num_columns;
+    node.grid_column_width = a.grid_column_width;
+    node.grid_v_spacing = a.grid_v_spacing;
+    node.grid_h_spacing = a.grid_h_spacing;
+    node.grid_stretch_mode = a.grid_stretch_mode;
     // M3 FIX-M3-002: style-bag layout params — AOSP obtainStyledAttributes
     // precedence: the direct XML attribute wins; when the XML is silent the
     // style= bag (and its parent chain) supplies layout_width/height/weight/
@@ -4145,7 +4173,42 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 horizontal = false;
             if (is_scrollv) horizontal = false;
             if (is_scrollh) horizontal = true;
-            if (is_a(n->class_desc, "Landroid/widget/FrameLayout;") ||
+            // F-S231-B (#585 §5): GridView column-contract measure law —
+            // an ACTIVE grid wraps to rows·(row-max-h + vSpacing) − vSpacing
+            // and its width usage is cols·track + (cols−1)·hSpacing
+            // (AOSP GridView.onMeasure column math). An INACTIVE grid
+            // (unparsed numColumns / 1 / AUTO_FIT without columnWidth)
+            // keeps the pre-existing arm — no silent behavior change.
+            int grid_cols_m = 0;
+            if (n->class_desc.find("GridView;") != std::string::npos) {
+                if (n->grid_num_columns > 1) grid_cols_m = n->grid_num_columns;
+                else if (n->grid_num_columns == -1 && n->grid_column_width > 0) {
+                    const int avail_w = std::max(0, sw.size - hpad);
+                    grid_cols_m = std::max(1, (avail_w + n->grid_h_spacing) /
+                        (n->grid_column_width + n->grid_h_spacing));
+                }
+            }
+            if (grid_cols_m > 1) {
+                const int avail_w = std::max(0, sw.size - hpad);
+                int track = (avail_w - (grid_cols_m - 1) * n->grid_h_spacing) /
+                            grid_cols_m;
+                track = std::max(1, track);
+                const size_t rows = (kids.size() + grid_cols_m - 1) / grid_cols_m;
+                int stride_sum = 0;
+                for (size_t r = 0; r < rows; ++r) {
+                    int row_max = 0;
+                    for (size_t k = 0; k < (size_t)grid_cols_m; ++k) {
+                        size_t idx = r * grid_cols_m + k;
+                        if (idx >= kids.size()) break;
+                        auto* cn = views->find_node(kids[idx]);
+                        int m = cn ? cn->lp_margin_top + cn->lp_margin_bottom : 0;
+                        row_max = std::max(row_max, child_sizes[idx].second + m);
+                    }
+                    stride_sum += row_max + n->grid_v_spacing;
+                }
+                content_h = std::max(0, stride_sum - n->grid_v_spacing);
+                content_w = grid_cols_m * track + (grid_cols_m - 1) * n->grid_h_spacing;
+            } else if (is_a(n->class_desc, "Landroid/widget/FrameLayout;") ||
                 is_a(n->class_desc, "Landroid/widget/RelativeLayout;") ||
                 (!is_ll && !is_scrollv && !is_scrollh)) {
                 for (const auto& cs : child_sizes) {
@@ -5050,6 +5113,84 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 stack.push_back(
                     {bar_id, cl, ct, std::min(bar_w, cw),
                      bar_h > 0 ? bar_h : bar_h_eff});
+            }
+        } else if (n->class_desc.find("GridView;") != std::string::npos &&
+                   [cw](const framework::ViewShadow::ViewNode& g) {
+                       int gc = 0;
+                       if (g.grid_num_columns > 1) gc = g.grid_num_columns;
+                       else if (g.grid_num_columns == -1 && g.grid_column_width > 0)
+                           gc = std::max(1, (cw + g.grid_h_spacing) /
+                                            (g.grid_column_width + g.grid_h_spacing));
+                       return gc;
+                   }(*n) > 1) {
+            // ── F-S231-B (#585 §5): GridView column layout law (AOSP
+            // GridView.onLayout) — row-major flow into the resolved column
+            // tracks. Row stride = row-max-h + vSpacing; stretchMode
+            // columnWidth(1) fills the cell, no_stretch(0) keeps
+            // columnWidth/measured width (leftover right-packed); spacing
+            // strides both axes. INACTIVE grids (unparsed/1/AUTO_FIT
+            // without columnWidth) keep the generic vertical stack — the
+            // CONT-102 fallback, no silent behavior change. Items do NOT
+            // span tracks (span is GridLayout semantics; the ViewNode note
+            // records this approximation — structured, never silent).
+            int grid_cols = 0;
+            {
+                const auto& g = *n;
+                if (g.grid_num_columns > 1) grid_cols = g.grid_num_columns;
+                else if (g.grid_num_columns == -1 && g.grid_column_width > 0)
+                    grid_cols = std::max(1, (cw + g.grid_h_spacing) /
+                                            (g.grid_column_width + g.grid_h_spacing));
+            }
+            int track = n->grid_stretch_mode == 0
+                ? (n->grid_column_width > 0 ? n->grid_column_width
+                                            : cw / grid_cols)
+                : (cw - (grid_cols - 1) * n->grid_h_spacing) / grid_cols;
+            track = std::max(1, track);
+            const size_t nk = kids.size();
+            const size_t rows = (nk + grid_cols - 1) / grid_cols;
+            std::vector<int> row_h(rows, 0);
+            std::vector<std::pair<int, int>> box(nk, {0, 0});
+            for (size_t i = 0; i < nk; ++i) {
+                auto* cn = views->find_node(kids[i]);
+                if (!cn) continue;
+                // TRAIN-58 R-NEW-347 ONE-STORE read (same law as the
+                // generic arm below): the DEX measure capture wins when
+                // valid — adapter rows carry real onMeasure answers too.
+                const int mw = (cn->dex_measure_valid && cn->dex_measured_w > 1)
+                                   ? cn->dex_measured_w : cn->measured_width;
+                const int mh = (cn->dex_measure_valid && cn->dex_measured_h > 1)
+                                   ? cn->dex_measured_h : cn->measured_height;
+                box[i] = {mw, mh};
+                row_h[i / grid_cols] = std::max(row_h[i / grid_cols], mh);
+            }
+            int y = ct;
+            for (size_t r = 0; r < rows; ++r) {
+                for (size_t k = 0; k < (size_t)grid_cols; ++k) {
+                    size_t i = r * grid_cols + k;
+                    if (i >= nk) break;
+                    auto* cn = views->find_node(kids[i]);
+                    if (!cn) continue;
+                    // Item-width law: stretch 1 → the track fills the cell;
+                    // stretch 2/3 → the fixed columnWidth (gaps absorb the
+                    // leftover); stretch 0 / WRAP items → the measured width
+                    // capped to the track.
+                    int w_final = box[i].first;
+                    if (n->grid_stretch_mode == 1 && cn->lp_width != -2)
+                        w_final = track;
+                    else if ((n->grid_stretch_mode == 2 ||
+                              n->grid_stretch_mode == 3) &&
+                             n->grid_column_width > 0)
+                        w_final = n->grid_column_width;
+                    else if (n->grid_stretch_mode == 0)
+                        w_final = std::min(box[i].first > 0 ? box[i].first : track,
+                                           track);
+                    if (w_final <= 0) w_final = track;
+                    stack.push_back({kids[i], cl + k * (track + n->grid_h_spacing),
+                                     y, std::min(w_final, cw), box[i].second > 0
+                                                            ? box[i].second
+                                                            : row_h[r]});
+                }
+                y += row_h[r] + n->grid_v_spacing;
             }
         } else {
             // generic ViewGroup: stack children vertically top-down

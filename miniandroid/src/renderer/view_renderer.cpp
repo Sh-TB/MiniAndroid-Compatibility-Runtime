@@ -38,6 +38,27 @@ bool ViewRenderer::is_linear(const ViewShadow::ViewNode& n) const {
 bool ViewRenderer::is_relative(const ViewShadow::ViewNode& n) const {
     return n.class_desc.find("RelativeLayout;") != std::string::npos;
 }
+
+// F-S231-B (#585 §5): the ACTIVE GridView column law (AOSP GridView.java
+// onMeasure/onLayout column math):
+//   * numColumns=N > 1  → N columns.
+//   * numColumns=AUTO_FIT(-1) → columns = floor((avail + hSpacing) /
+//     (columnWidth + hSpacing)) when columnWidth>0; 1 column when no
+//     columnWidth was given (AOSP AUTO_FIT needs columnWidth to fit).
+//   * anything else (unparsed / 1 / 0) → 0 = grid law OFF, the CONT-102
+//     vertical stack stays the behavior (no silent behavior change for
+//     existing corpus apps).
+int ViewRenderer::grid_columns(const ViewShadow::ViewNode& n,
+                               int content_w) const {
+    if (n.class_desc.find("GridView;") == std::string::npos) return 0;
+    if (n.grid_num_columns > 1) return n.grid_num_columns;
+    if (n.grid_num_columns == -1 && n.grid_column_width > 0 && content_w > 0) {
+        int hsp = n.grid_h_spacing;
+        int fit = (content_w + hsp) / (n.grid_column_width + hsp);
+        return std::max(1, fit);
+    }
+    return 0;
+}
 bool ViewRenderer::is_scroll(const ViewShadow::ViewNode& n) const {
     return n.class_desc.find("ScrollView;") != std::string::npos ||
            n.class_desc.find("HorizontalScrollView;") != std::string::npos;
@@ -124,6 +145,35 @@ ViewRenderer::Box ViewRenderer::measure_view(ViewShadow::ViewNode& n,
             int cw = 0, ch = 0;
             bool is_list = n.class_desc.find("ListView;") != std::string::npos ||
                            n.class_desc.find("GridView;") != std::string::npos;
+            // ── F-S231-B (#585 §5): GridView wrap law — an ACTIVE grid
+            // wraps to rows·(row-max-h + vSpacing) − vSpacing, NOT the
+            // vertical-stack sum (CONT-102 fallback stays for the
+            // law-off case).
+            int gc = grid_columns(n, b.w - n.padding_l - n.padding_r);
+            if (gc > 1) {
+                int track_w = (b.w - n.padding_l - n.padding_r -
+                               (gc - 1) * n.grid_h_spacing) / gc;
+                track_w = std::max(1, track_w);
+                int rows = int((n.children.size() + gc - 1) / gc);
+                int row_max = 0, stride_sum = 0;
+                for (int r = 0; r < rows; ++r) {
+                    row_max = 0;
+                    for (int k = 0; k < gc; ++k) {
+                        size_t idx = size_t(r) * gc + k;
+                        if (idx >= n.children.size()) break;
+                        ViewShadow::ViewNode* c =
+                            views_->find_node(n.children[idx]);
+                        if (!c || c->visibility == 8) continue;
+                        Box cb = measure_view(*c, track_w, avail_h);
+                        row_max = std::max(row_max,
+                                           cb.h + c->lp_margin_top +
+                                               c->lp_margin_bottom);
+                    }
+                    stride_sum += row_max + n.grid_v_spacing;
+                }
+                ch = std::max(0, stride_sum - n.grid_v_spacing);
+                cw = gc * track_w + (gc - 1) * n.grid_h_spacing;
+            } else {
             bool horiz = is_linear(n) && !is_list && n.orientation != 1;  // FIX-G10-001
             for (uint32_t cid : n.children) {
                 ViewShadow::ViewNode* c = views_->find_node(cid);
@@ -147,6 +197,7 @@ ViewRenderer::Box ViewRenderer::measure_view(ViewShadow::ViewNode& n,
                     cw = std::max(cw, cb.w + c->lp_margin_left + c->lp_margin_right);
                 }
             }
+            }  // F-S231-B grid wrap arm
             if (wrap_w) b.w = cw + n.padding_l + n.padding_r;
             if (wrap_h) b.h = ch + n.padding_t + n.padding_b;
         }
@@ -284,10 +335,121 @@ void ViewRenderer::layout_children_linear(ViewShadow::ViewNode& n, const Box& b)
             c->height = e.box.h;
         }
         Box cb{c->x, c->y, c->width, c->height};
-        if (is_linear(c)) layout_children_linear(c, cb);
+        int gc = grid_columns(c, cb.w - c->padding_l - c->padding_r);
+        if (gc > 1) layout_children_grid(c, cb, gc);
+        else if (is_linear(c)) layout_children_linear(c, cb);
         else if (is_relative(c)) layout_children_relative(c, cb);
         else layout_children_frame(c, cb);
     }
+}
+
+// ── F-S231-B (#585 §5): GridView column layout law ────────────────────
+// AOSP GridView.java: items flow row-major into `cols` column tracks.
+//   * stretchMode=columnWidth (corpus default): every track stretches to
+//     (content_w − (cols−1)·hSpacing) / cols — items fill their cell.
+//   * stretchMode=no_stretch: tracks keep columnWidth (or the item's own
+//     measured width); leftover width stays on the RIGHT (left-packed).
+//   * stretchMode=spacingWidth/uniform: item width fixed, the leftover is
+//     distributed into the gaps (uniform = gaps on both edges).
+//   * Row stride = the max item height in the row + vSpacing (top-aligned
+//     items — the AOSP stretch-row-height face is the recorded PARTIAL
+//     simplification, exposed in the layout dump, never silent).
+// Disposition: items do NOT span multiple tracks (AOSP GridView items
+// never span either — span is GridLayout semantics; the structured note
+// lives on the ViewNode comment).
+void ViewRenderer::layout_children_grid(ViewShadow::ViewNode& n, const Box& b,
+                                        int cols) {
+    int content_w = b.w - n.padding_l - n.padding_r;
+    int content_h = b.h - n.padding_t - n.padding_b;
+    int hsp = n.grid_h_spacing, vsp = n.grid_v_spacing;
+
+    struct Entry {
+        ViewShadow::ViewNode* v;
+        Box box;   // measured box (cell-local origin)
+    };
+    std::vector<Entry> entries;
+    for (uint32_t cid : n.children) {
+        ViewShadow::ViewNode* c = views_->find_node(cid);
+        if (!c || c->visibility == 8) continue;
+        entries.push_back({c, Box{0, 0, 0, 0}});
+    }
+    if (entries.empty()) return;
+
+    // Track width per stretch law.
+    int track_w = 0;
+    if (n.grid_stretch_mode == 0) {
+        track_w = n.grid_column_width > 0 ? n.grid_column_width : content_w / cols;
+    } else {
+        // columnWidth / spacingWidth / uniform: tracks evenly divide the
+        // content box after the horizontal gaps (spacingWidth grows the
+        // gaps instead — the fixed-width arm below handles the item box).
+        track_w = (content_w - (cols - 1) * hsp) / cols;
+    }
+    track_w = std::max(1, track_w);
+    // spacingWidth/uniform: item width fixed at columnWidth (or measured),
+    // gaps absorb the leftover.
+    int gap = hsp;
+    int item_w_fixed = 0;
+    if (n.grid_stretch_mode == 2 || n.grid_stretch_mode == 3) {
+        item_w_fixed = n.grid_column_width;
+    }
+
+    // Measure + bucket into rows of `cols`.
+    int rows = int((entries.size() + cols - 1) / cols);
+    int y_cursor = 0;
+    for (int r = 0; r < rows; ++r) {
+        int row_h = 0;
+        for (int k = 0; k < cols; ++k) {
+            int idx = r * cols + k;
+            if (idx >= int(entries.size())) break;
+            Entry& e = entries[idx];
+            e.box.w = item_w_fixed > 0 ? item_w_fixed
+                      : (n.grid_stretch_mode == 0 ? 0 : track_w);
+            Box mb = measure_view(*e.v,
+                                  e.box.w > 0 ? e.box.w : track_w,
+                                  content_h);
+            if (e.box.w <= 0 || e.box.w > track_w) e.box.w = mb.w;
+            e.box.h = mb.h;
+            row_h = std::max(row_h, mb.h);
+        }
+        // Place the row (cell-local coordinates; written back with the
+        // node origin like the linear path).
+        int gap_eff = gap;
+        if (n.grid_stretch_mode == 2 || n.grid_stretch_mode == 3) {
+            int fixed = item_w_fixed > 0 ? item_w_fixed : track_w;
+            int leftover = content_w - cols * fixed;
+            int gaps = n.grid_stretch_mode == 3 ? cols + 1 : cols + 1;
+            if (leftover > 0 && gaps > 0) gap_eff = leftover / gaps;
+        }
+        for (int k = 0; k < cols; ++k) {
+            int idx = r * cols + k;
+            if (idx >= int(entries.size())) break;
+            Entry& e = entries[idx];
+            int x = k * (e.box.w + gap_eff);
+            if (n.grid_stretch_mode == 3) x += gap_eff;  // uniform leading gap
+            e.v->x = b.x + n.padding_l + x;
+            e.v->y = b.y + n.padding_t + y_cursor;
+            // Item-width law: stretch 1 → track fills the cell;
+            // stretch 2/3 → the FIXED item width (gaps absorb leftover);
+            // stretch 0 / WRAP_CONTENT items → the measured width.
+            int w_final = e.box.w;
+            if (n.grid_stretch_mode == 1 && e.v->lp_width != -2)
+                w_final = track_w;
+            else if ((n.grid_stretch_mode == 2 || n.grid_stretch_mode == 3) &&
+                     item_w_fixed > 0)
+                w_final = item_w_fixed;
+            e.v->width = w_final > 0 ? w_final : e.box.w;
+            e.v->height = e.box.h;
+            Box cb{e.v->x, e.v->y, e.v->width, e.v->height};
+            int gc = grid_columns(*e.v, cb.w - e.v->padding_l - e.v->padding_r);
+            if (gc > 1) layout_children_grid(*e.v, cb, gc);
+            else if (is_linear(*e.v)) layout_children_linear(*e.v, cb);
+            else if (is_relative(*e.v)) layout_children_relative(*e.v, cb);
+            else layout_children_frame(*e.v, cb);
+        }
+        y_cursor += row_h + vsp;
+    }
+    stats_.laid_out += int(entries.size());
 }
 
 void ViewRenderer::layout_children_relative(ViewShadow::ViewNode& n, const Box& b) {
@@ -325,7 +487,9 @@ void ViewRenderer::layout_children_relative(ViewShadow::ViewNode& n, const Box& 
             c->height = cb.h;
         }
         Box nb{c->x, c->y, c->width, c->height};
-        if (is_linear(*c)) layout_children_linear(*c, nb);
+        int gc = grid_columns(*c, nb.w - c->padding_l - c->padding_r);
+        if (gc > 1) layout_children_grid(*c, nb, gc);
+        else if (is_linear(*c)) layout_children_linear(*c, nb);
         else if (is_relative(*c)) layout_children_relative(*c, nb);
         else layout_children_frame(*c, nb);
     }
@@ -356,7 +520,9 @@ void ViewRenderer::layout_children_frame(ViewShadow::ViewNode& n, const Box& b) 
             c->height = cb.h;
         }
         Box nb{c->x, c->y, c->width, c->height};
-        if (is_linear(*c)) layout_children_linear(*c, nb);
+        int gc = grid_columns(*c, nb.w - c->padding_l - c->padding_r);
+        if (gc > 1) layout_children_grid(*c, nb, gc);
+        else if (is_linear(*c)) layout_children_linear(*c, nb);
         else if (is_relative(*c)) layout_children_relative(*c, nb);
         else layout_children_frame(*c, nb);
     }
@@ -371,7 +537,9 @@ int ViewRenderer::layout(uint32_t root_id) {
     root->width = root->lp_width >= 0 ? root->lp_width : screen_w_;
     root->height = root->lp_height >= 0 ? root->lp_height : screen_h_;
     Box b{0, 0, root->width, root->height};
-    if (is_linear(*root)) layout_children_linear(*root, b);
+    int root_gc = grid_columns(*root, b.w - root->padding_l - root->padding_r);
+    if (root_gc > 1) layout_children_grid(*root, b, root_gc);
+    else if (is_linear(*root)) layout_children_linear(*root, b);
     else if (is_relative(*root)) layout_children_relative(*root, b);
     else layout_children_frame(*root, b);
     return stats_.laid_out;

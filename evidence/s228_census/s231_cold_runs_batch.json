@@ -1,0 +1,510 @@
+{
+ "binary_sha16": "06f98d2a9c21ea92",
+ "main_head": "9309c9bdff119980a0f22aa525624adb2298a64c",
+ "mandate": "#582 comment 6821150791 \u00a73/\u00a74 (cold-run census)",
+ "routing": ".cache/s228_cold_runs (untracked); compact JSON promoted only",
+ "cohort": {
+  "dooz": {
+   "apk": "io.github.yamin8000.dooz_23.apk",
+   "apk_sha16": "299eab21ac8b3c61",
+   "runs": [
+    {
+     "run": "dooz_1",
+     "install_rc": 0,
+     "package": "io.github.yamin8000.dooz",
+     "rc": 0,
+     "wall_s": 242.7,
+     "face_sha16": "29a4f37ca45a4277",
+     "png_bytes": 10372,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "SUCCESS"
+     },
+     "firsts": {
+      "UNCAUGHT": "uncaught (frame unwind + propagate)",
+      "APP_BOUNDARY": "APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=io.github.yamin8000.dooz \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "dooz_2",
+     "install_rc": 0,
+     "package": "io.github.yamin8000.dooz",
+     "rc": 0,
+     "wall_s": 244.9,
+     "face_sha16": "eccabf418a7cce52",
+     "png_bytes": 10372,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "SUCCESS"
+     },
+     "firsts": {
+      "UNCAUGHT": "uncaught (deferred frame unwind + propagate)",
+      "APP_BOUNDARY": "APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=io.github.yamin8000.dooz \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "dooz_3",
+     "install_rc": 0,
+     "package": "io.github.yamin8000.dooz",
+     "rc": 0,
+     "wall_s": 239.1,
+     "face_sha16": "bbd77c465b8ab2f7",
+     "png_bytes": 10361,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "SUCCESS"
+     },
+     "firsts": {
+      "UNCAUGHT": "uncaught (frame unwind + propagate)",
+      "APP_BOUNDARY": "APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=io.github.yamin8000.dooz \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "FATAL": "FATAL EXCEPTION (KillApplicationHandler) thread=67649 caller=Llo;.K"
+     }
+    }
+   ],
+   "face_stable_x3": false,
+   "distinct_faces": 3,
+   "majority_face": "29a4f37ca45a4277"
+  },
+  "gomoku": {
+   "apk": "com.traffar.gomoku_4.apk",
+   "apk_sha16": "d5dd197010476582",
+   "runs": [
+    {
+     "run": "gomoku_1",
+     "install_rc": 0,
+     "package": "com.traffar.gomoku",
+     "rc": 0,
+     "wall_s": 2.1,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "ELF": "ELF class: ELFCLASS32",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.traffar.gomoku \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "gomoku_2",
+     "install_rc": 0,
+     "package": "com.traffar.gomoku",
+     "rc": 0,
+     "wall_s": 2.0,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "ELF": "ELF class: ELFCLASS32",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.traffar.gomoku \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "gomoku_3",
+     "install_rc": 0,
+     "package": "com.traffar.gomoku",
+     "rc": 0,
+     "wall_s": 2.1,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "ELF": "ELF class: ELFCLASS32",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.traffar.gomoku \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    }
+   ],
+   "face_stable_x3": true,
+   "distinct_faces": 1,
+   "majority_face": "b5a7a35d5fe0564b"
+  },
+  "rttt": {
+   "apk": "org.kirkezz.rttt_3.apk",
+   "apk_sha16": "704fa51869ad7ff4",
+   "runs": [
+    {
+     "run": "rttt_1",
+     "install_rc": 0,
+     "package": "org.kirkezz.rttt",
+     "rc": 0,
+     "wall_s": 2.3,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=org.kirkezz.rttt \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "rttt_2",
+     "install_rc": 0,
+     "package": "org.kirkezz.rttt",
+     "rc": 0,
+     "wall_s": 2.3,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=org.kirkezz.rttt \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "rttt_3",
+     "install_rc": 0,
+     "package": "org.kirkezz.rttt",
+     "rc": 0,
+     "wall_s": 2.2,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=org.kirkezz.rttt \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    }
+   ],
+   "face_stable_x3": true,
+   "distinct_faces": 1,
+   "majority_face": "b5a7a35d5fe0564b"
+  },
+  "ttt": {
+   "apk": "com.emmanuelmess.tictactoe_3.apk",
+   "apk_sha16": "760fe5acf7b39435",
+   "runs": [
+    {
+     "run": "ttt_1",
+     "install_rc": 0,
+     "package": "com.emmanuelmess.tictactoe",
+     "rc": 0,
+     "wall_s": 21.4,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "UNCAUGHT": "uncaught (deferred frame unwind + propagate)",
+      "ROUTE": "ROUTE] DECISION pkg=com.emmanuelmess.tictactoe primary=LIBGDX routes=LIBGDX+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+SDL+FLUTTER profile=./reports/apk_routes/com.emmanuelmess.tictactoe.json",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_OES_texture_npot GL_OES_compressed_ETC1_RGB8_texture GL_OES_standard_derivatives GL_EXT_texture_filter_anisotropic"
+     }
+    },
+    {
+     "run": "ttt_2",
+     "install_rc": 0,
+     "package": "com.emmanuelmess.tictactoe",
+     "rc": 0,
+     "wall_s": 20.7,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "UNCAUGHT": "uncaught (deferred frame unwind + propagate)",
+      "ROUTE": "ROUTE] DECISION pkg=com.emmanuelmess.tictactoe primary=LIBGDX routes=LIBGDX+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+SDL+FLUTTER profile=./reports/apk_routes/com.emmanuelmess.tictactoe.json",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_OES_texture_npot GL_OES_compressed_ETC1_RGB8_texture GL_OES_standard_derivatives GL_EXT_texture_filter_anisotropic"
+     }
+    },
+    {
+     "run": "ttt_3",
+     "install_rc": 0,
+     "package": "com.emmanuelmess.tictactoe",
+     "rc": 0,
+     "wall_s": 20.8,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "UNCAUGHT": "uncaught (deferred frame unwind + propagate)",
+      "ROUTE": "ROUTE] DECISION pkg=com.emmanuelmess.tictactoe primary=LIBGDX routes=LIBGDX+VIEW+MEDIA forbidden=WEBVIEW_HTML5_PACKAGED+SDL+FLUTTER profile=./reports/apk_routes/com.emmanuelmess.tictactoe.json",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_OES_texture_npot GL_OES_compressed_ETC1_RGB8_texture GL_OES_standard_derivatives GL_EXT_texture_filter_anisotropic"
+     }
+    }
+   ],
+   "face_stable_x3": true,
+   "distinct_faces": 1,
+   "majority_face": "b5a7a35d5fe0564b"
+  },
+  "freebloks": {
+   "apk": "de.saschahlusiak.freebloks_184.apk",
+   "apk_sha16": "11908519d6b8edde",
+   "runs": [
+    {
+     "run": "freebloks_1",
+     "install_rc": 0,
+     "package": "de.saschahlusiak.freebloks",
+     "rc": 0,
+     "wall_s": 4.0,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=de.saschahlusiak.freebloks \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "freebloks_2",
+     "install_rc": 0,
+     "package": "de.saschahlusiak.freebloks",
+     "rc": 0,
+     "wall_s": 4.1,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=de.saschahlusiak.freebloks \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "freebloks_3",
+     "install_rc": 0,
+     "package": "de.saschahlusiak.freebloks",
+     "rc": 0,
+     "wall_s": 4.1,
+     "face_sha16": "b5a7a35d5fe0564b",
+     "png_bytes": 10352,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=de.saschahlusiak.freebloks \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    }
+   ],
+   "face_stable_x3": true,
+   "distinct_faces": 1,
+   "majority_face": "b5a7a35d5fe0564b"
+  },
+  "tower3d": {
+   "apk": "stack.tower3d_1.apk",
+   "apk_sha16": "ba5b0a48d74e3348",
+   "runs": [
+    {
+     "run": "tower3d_1",
+     "install_rc": 0,
+     "package": "stack.tower3d",
+     "rc": 0,
+     "wall_s": 2.6,
+     "face_sha16": "11a38a5aeeff45a6",
+     "png_bytes": 6122,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "UNCAUGHT": "uncaught (frame unwind + propagate)",
+      "APP_BOUNDARY": "APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=stack.tower3d \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_OES_texture_npot GL_OES_compressed_ETC1_RGB8_texture GL_OES_standard_derivatives GL_EXT_texture_filter_anisotropic"
+     }
+    },
+    {
+     "run": "tower3d_2",
+     "install_rc": 0,
+     "package": "stack.tower3d",
+     "rc": 0,
+     "wall_s": 2.6,
+     "face_sha16": "11a38a5aeeff45a6",
+     "png_bytes": 6122,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "UNCAUGHT": "uncaught (frame unwind + propagate)",
+      "APP_BOUNDARY": "APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=stack.tower3d \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_OES_texture_npot GL_OES_compressed_ETC1_RGB8_texture GL_OES_standard_derivatives GL_EXT_texture_filter_anisotropic"
+     }
+    },
+    {
+     "run": "tower3d_3",
+     "install_rc": 0,
+     "package": "stack.tower3d",
+     "rc": 0,
+     "wall_s": 2.6,
+     "face_sha16": "11a38a5aeeff45a6",
+     "png_bytes": 6122,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "FAILURE"
+     },
+     "firsts": {
+      "UNCAUGHT": "uncaught (frame unwind + propagate)",
+      "APP_BOUNDARY": "APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=stack.tower3d \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "JNI_OnLoad": "JNI_OnLoad)",
+      "GL": "GL_OES_texture_npot GL_OES_compressed_ETC1_RGB8_texture GL_OES_standard_derivatives GL_EXT_texture_filter_anisotropic"
+     }
+    }
+   ],
+   "face_stable_x3": true,
+   "distinct_faces": 1,
+   "majority_face": "11a38a5aeeff45a6"
+  },
+  "bouncy": {
+   "apk": "com.dozingcatsoftware.bouncy_43.apk",
+   "apk_sha16": "ffda0d9cb0b1b2aa",
+   "runs": [
+    {
+     "run": "bouncy_1",
+     "install_rc": 0,
+     "package": "com.dozingcatsoftware.bouncy",
+     "rc": 0,
+     "wall_s": 27.8,
+     "face_sha16": "98abca389fb01380",
+     "png_bytes": 36434,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "SUCCESS"
+     },
+     "firsts": {
+      "ABI": "abilty but it's not the case here: java.vm.version=\"null\"",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.dozingcatsoftware.bouncy \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "JNI_OnLoad": "JNI_OnLoad)"
+     }
+    },
+    {
+     "run": "bouncy_2",
+     "install_rc": 0,
+     "package": "com.dozingcatsoftware.bouncy",
+     "rc": 0,
+     "wall_s": 28.7,
+     "face_sha16": "98abca389fb01380",
+     "png_bytes": 36434,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "SUCCESS"
+     },
+     "firsts": {
+      "ABI": "abilty but it's not the case here: java.vm.version=\"null\"",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.dozingcatsoftware.bouncy \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "JNI_OnLoad": "JNI_OnLoad)"
+     }
+    },
+    {
+     "run": "bouncy_3",
+     "install_rc": 0,
+     "package": "com.dozingcatsoftware.bouncy",
+     "rc": 0,
+     "wall_s": 28.8,
+     "face_sha16": "98abca389fb01380",
+     "png_bytes": 36434,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "SUCCESS"
+     },
+     "firsts": {
+      "ABI": "abilty but it's not the case here: java.vm.version=\"null\"",
+      "ROUTE": "ROUTE] NO_PROFILE for stem=com.dozingcatsoftware.bouncy \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass.",
+      "JNI_OnLoad": "JNI_OnLoad)"
+     }
+    }
+   ],
+   "face_stable_x3": true,
+   "distinct_faces": 1,
+   "majority_face": "98abca389fb01380"
+  },
+  "gmdice": {
+   "apk": "de.duenndns.gmdice_8.apk",
+   "apk_sha16": "1621eda11b5dbc0c",
+   "runs": [
+    {
+     "run": "gmdice_1",
+     "install_rc": 0,
+     "package": "de.duenndns.gmdice",
+     "rc": 0,
+     "wall_s": 2.6,
+     "face_sha16": "d540433a06dc6431",
+     "png_bytes": 33336,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "SUCCESS"
+     },
+     "firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=de.duenndns.gmdice \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "gmdice_2",
+     "install_rc": 0,
+     "package": "de.duenndns.gmdice",
+     "rc": 0,
+     "wall_s": 2.6,
+     "face_sha16": "d540433a06dc6431",
+     "png_bytes": 33336,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "SUCCESS"
+     },
+     "firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=de.duenndns.gmdice \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    },
+    {
+     "run": "gmdice_3",
+     "install_rc": 0,
+     "package": "de.duenndns.gmdice",
+     "rc": 0,
+     "wall_s": 2.6,
+     "face_sha16": "d540433a06dc6431",
+     "png_bytes": 33336,
+     "screenshot_verdict": "OK",
+     "report": {
+      "status": "SUCCESS"
+     },
+     "firsts": {
+      "ROUTE": "ROUTE] NO_PROFILE for stem=de.duenndns.gmdice \u2014 generate with tools/s188_route_classifier.py (S188 \u00a74); runtime proceeds route-blind, which is NOT a pass."
+     }
+    }
+   ],
+   "face_stable_x3": true,
+   "distinct_faces": 1,
+   "majority_face": "d540433a06dc6431"
+  }
+ },
+ "probes": {
+  "ttt_no_tap": {
+   "face_sha16": "7354c1b231cd581d",
+   "status": "SUCCESS",
+   "wall_s": 21.2,
+   "note": "pin-safe without input; the census tap runs capture the I-stage divergence (tap->uniform-gray)",
+   "binary_sha16": "06f98d2a9c21ea92"
+  }
+ }
+}

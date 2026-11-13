@@ -19787,11 +19787,67 @@ int DalvikExecutionEngine::materialize_adapter_rows_for(uint32_t adapter_id) {
         if (!nptr || nptr->adapter_id != adapter_id) continue;
         const uint32_t lv_id = nid;
         const std::string& lv_cls = nptr->class_desc;
+        // ── F-S231-A (#585 §5): AOSP RecycleBin relayout law. The ListView's
+        // previous active rows return to SCRAP (keyed by the item-view type
+        // recorded at bind time) before the rebuild; obtainView then pops a
+        // scrap view of the SAME type as convertView — the adapter REBINDS
+        // a materialized row instead of inflating a new one every pass
+        // (ListView.java obtainView / RecycleBin.addScrapView).
         // AOSP relayout: ListView children are exactly the adapter rows —
-        // rebuild instead of appending (objects survive the detach; the
-        // recycler window is the recorded frontier).
+        // rebuild instead of appending (objects survive the detach).
         std::vector<uint32_t> stale = nptr->children;
-        for (uint32_t c : stale) vs->remove_child(lv_id, c);
+        for (uint32_t c : stale) {
+            auto tit = adapter_row_type_.find(c);
+            adapter_scrap_.stash(lv_id, c,
+                                 tit != adapter_row_type_.end()
+                                     ? tit->second : 0);
+        }
+        // getViewTypeCount once per rebuild (AOSP: adapter metadata queried
+        // per layout pass; bounded-lenient default 1 when the DEX chain
+        // does not override — the BaseAdapter default).
+        int type_count = 1;
+        {
+            DalvikValue tc = DalvikValue::make_void();
+            DalvikExecutionResult tres;
+            std::vector<DalvikValue> targs{DalvikValue::make_object(
+                adapter_id, ad_cls)};
+            if (try_recursive_invoke(s130_norm_cls(ad_cls),
+                                     "getViewTypeCount", targs, tc, tres) &&
+                tc.type == DalvikType::INT32 && tc.int_val >= 1)
+                type_count = (int)std::min<int64_t>(tc.int_val, 64);
+        }
+        // obtainView helper: getItemViewType(position) → recycled or null.
+        auto obtain_convert_view = [&](int pos, int& type_out) -> uint32_t {
+            int type = 0;
+            DalvikValue tv = DalvikValue::make_void();
+            DalvikExecutionResult tres;
+            std::vector<DalvikValue> targs{
+                DalvikValue::make_object(adapter_id, ad_cls),
+                DalvikValue::make_int(pos)};
+            if (try_recursive_invoke(s130_norm_cls(ad_cls),
+                                     "getItemViewType", targs, tv, tres) &&
+                tv.type == DalvikType::INT32)
+                type = (int)tv.int_val;
+            if (type == framework::AdapterScrapBin::kIgnoreType) {
+                // ITEM_VIEW_TYPE_IGNORE: never recycled (AOSP law).
+                type_out = framework::AdapterScrapBin::kIgnoreType;
+                return 0;
+            }
+            if (type < 0 || type >= type_count) {
+                // Adapter contract violation (AOSP throws ISE at bind);
+                // bounded-lenient: count it, bind as type 0.
+                ++recycle_type_violations_;
+                type = 0;
+            }
+            type_out = type;
+            uint32_t cv = 0;
+            if (adapter_scrap_.pop(lv_id, type, cv)) {
+                ++recycle_rows_reused_;
+                return cv;
+            }
+            ++recycle_rows_inflated_;
+            return 0;  // cold bind: null convertView (AOSP scrap miss)
+        };
         int count = 0;
         DalvikValue cret = DalvikValue::make_void();
         DalvikExecutionResult cres;
@@ -19819,12 +19875,22 @@ int DalvikExecutionEngine::materialize_adapter_rows_for(uint32_t adapter_id) {
         }
         int materialized = 0;
         for (int i = 0; i < count && i < 64; i++) {
+            int row_type = 0;
+            uint32_t convert_view = obtain_convert_view(i, row_type);
+            std::string cv_cls = lv_cls;
+            if (convert_view != 0) {
+                std::string got;
+                if (heap_.get_object_class(convert_view, got) && !got.empty())
+                    cv_cls = got;
+            }
             DalvikValue vret = DalvikValue::make_void();
             DalvikExecutionResult vres;
             std::vector<DalvikValue> vargs{
                 DalvikValue::make_object(adapter_id, ad_cls),
                 DalvikValue::make_int(i),
-                DalvikValue::make_null(),
+                convert_view != 0
+                    ? DalvikValue::make_object(convert_view, cv_cls)
+                    : DalvikValue::make_null(),
                 DalvikValue::make_object(lv_id, lv_cls)};
             bool got_row =
                 try_recursive_invoke(s130_norm_cls(ad_cls), "getView", vargs,
@@ -19835,6 +19901,9 @@ int DalvikExecutionEngine::materialize_adapter_rows_for(uint32_t adapter_id) {
             // subclass that declares no getView of its own still renders —
             // the F-NEW-602 default row law synthesized from the SAME
             // backing store (item.toString via real DEX; TextView row).
+            // The default-row law synthesizes a FRESH row; a handed-back
+            // scrap view would alias the rebind (the default law has no
+            // bind step), so a convertView-bearing miss rebinds as cold.
             if (row_oid == 0 && s191_backing != 0) {
                 DalvikValue gv = DalvikValue::make_void();
                 ApiCallTrace::Status gv_status = ApiCallTrace::Status::MISSING;
@@ -19851,6 +19920,7 @@ int DalvikExecutionEngine::materialize_adapter_rows_for(uint32_t adapter_id) {
             }
             if (row_oid != 0) {
                 vs->add_child(lv_id, row_oid);
+                adapter_row_type_[row_oid] = row_type;  // F-S231-A bind record
                 materialized++;
             }
         }
@@ -19858,8 +19928,17 @@ int DalvikExecutionEngine::materialize_adapter_rows_for(uint32_t adapter_id) {
         std::cerr << "[S191-ADAPTER] rematerialize lv=o" << lv_id
                   << " adapter=o" << adapter_id << " (" << ad_cls
                   << ") count=" << count
-                  << " rows=" << materialized << std::endl;
+                  << " rows=" << materialized
+                  << " [S231-RECYCLE] types=" << type_count
+                  << " reused_total=" << recycle_rows_reused_
+                  << " inflated_total=" << recycle_rows_inflated_
+                  << " violations=" << recycle_type_violations_
+                  << std::endl;
     }
+    // F-S231-A: bins of dead ListViews are dropped (prune-by-aliveness).
+    adapter_scrap_.prune([vs](uint32_t oid) {
+        return vs->find_node(oid) != nullptr;
+    });
     return total;
 }
 

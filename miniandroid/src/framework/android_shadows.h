@@ -21,6 +21,7 @@
 #define MINIANDROID_FRAMEWORK_ANDROID_SHADOWS_H
 
 #include "shadow_registry.h"
+#include "adapter_scrap_bin.h"  // F-S231-A: RecycleBin scrap contract (re-export)
 
 #include <chrono>
 #include <deque>
@@ -1850,6 +1851,23 @@ public:
         // reads the same identity.
         uint32_t adapter_id = 0;                   // ListAdapter / SpinnerAdapter
         std::string adapter_class;
+        // ── F-S231-B (#585 §5): GridView column contract — android:
+        // numColumns / verticalSpacing / horizontalSpacing / columnWidth /
+        // stretchMode. AOSP GridView.java laws: numColumns=-1 (default) =
+        // AUTO_FIT (columns derived from columnWidth, 1 when no
+        // columnWidth); columnWidth<=0 with AUTO_FIT stays 1 column
+        // (vertical stack, the CONT-102 shape). stretchMode:
+        //   0 = NO_STRETCH, 1 = STRETCH_COLUMN_WIDTH,
+        //   2 = STRETCH_SPACING_WIDTH, 3 = STRETCH_SPACING_UNIFORM.
+        // Structured PARTIAL diagnostic: items do NOT span multiple
+        // columns on this runtime (GridView items never span in AOSP
+        // either — span is GridLayout semantics; recorded so the
+        // approximation is visible, not silent).
+        int grid_num_columns = 0;      // 0 = unparsed (AOSP default -1/AUTO_FIT)
+        int grid_column_width = 0;     // px; 0 = none
+        int grid_v_spacing = 0;        // px
+        int grid_h_spacing = 0;        // px
+        int grid_stretch_mode = 0;     // GridView.STRETCH_*  (0..3)
         uint32_t item_long_click_listener_id = 0;  // OnItemLongClickListener
         std::string item_long_click_listener_class;
         uint32_t item_selected_listener_id = 0;    // OnItemSelectedListener

@@ -52,6 +52,8 @@ private:
     };
     Box measure_view(framework::ViewShadow::ViewNode& n, int avail_w, int avail_h);
     void layout_children_linear(framework::ViewShadow::ViewNode& n, const Box& b);
+    void layout_children_grid(framework::ViewShadow::ViewNode& n, const Box& b,
+                              int cols);
     void layout_children_relative(framework::ViewShadow::ViewNode& n, const Box& b);
     void layout_children_frame(framework::ViewShadow::ViewNode& n, const Box& b);
     void draw_view(framework::ViewShadow::ViewNode& n, FrameBuffer& fb,
@@ -60,6 +62,9 @@ private:
                         int left, int top, int w, int h);
     bool decode_into(const std::string& zip_path, apk::ApkParser& apk);
     bool is_linear(const framework::ViewShadow::ViewNode& n) const;
+    // F-S231-B (#585 §5): GridView column law — returns the ACTIVE column
+    // count (0 = grid law OFF, the CONT-102 vertical stack applies).
+    int grid_columns(const framework::ViewShadow::ViewNode& n, int content_w) const;
     bool is_relative(const framework::ViewShadow::ViewNode& n) const;
     bool is_frame(const framework::ViewShadow::ViewNode& n) const;
     bool is_scroll(const framework::ViewShadow::ViewNode& n) const;

@@ -1,28 +1,34 @@
 {
- "binary_sha16": "06f98d2a9c21ea92",
+ "binary_sha16": "2f2af2694984933f",
  "goldens": {
   "bouncy": {
-   "wall_s": 23.8,
+   "wall_s": 23.9,
    "face_sha16": "98abca389fb01380",
    "uncaught": 0,
+   "screenshot_bytes": 36434,
+   "screenshot_verdict": "OK",
    "pin": "98abca38",
-   "binary": "06f98d2a9c21ea92",
+   "binary": "2f2af2694984933f",
    "hold": true
   },
   "unote": {
    "wall_s": 1.5,
    "face_sha16": "3b8dcb0adbbc17a9",
    "uncaught": 0,
+   "screenshot_bytes": 17205,
+   "screenshot_verdict": "OK",
    "pin": "3b8dcb0a",
-   "binary": "06f98d2a9c21ea92",
+   "binary": "2f2af2694984933f",
    "hold": true
   },
   "dooz": {
-   "wall_s": 292.2,
+   "wall_s": 289.3,
    "face_sha16": "a0fae9072313e2d1",
    "uncaught": 0,
+   "screenshot_bytes": 16160,
+   "screenshot_verdict": "OK",
    "pin": "a0fae907",
-   "binary": "06f98d2a9c21ea92",
+   "binary": "2f2af2694984933f",
    "hold": true
   }
  },

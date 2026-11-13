@@ -42,6 +42,7 @@ extern std::set<uint32_t> g_s221_bridged;
 #include "../resources/res_config.h"    // G04 §4: device_config() (inTargetDensity)
 #include "../storage/sqlite_shadow.h"   // M3 F-ROOM-CHAIN: databases dir wiring
 #include "../storage/data_root.h"       // M3 FINDING-012: app-data root law
+#include "../framework/adapter_scrap_bin.h"  // F-S231-A: RecycleBin scrap contract
 #include <fstream>                      // LOADING-CAMPAIGN (ST-2): OpenWriter.ofstream
 // EXP-051: Shadow registry forward-declarations.
 namespace miniandroid { namespace framework {
@@ -2247,7 +2248,25 @@ public:
     // getCount()/getView()). Rebuilds the row children of every ListView
     // node bound to this adapter (bounded 64-row window, same documented
     // simplification as CONT-102).
+    // F-S231-A (#585 §5): the rebuild now honors the AOSP RecycleBin
+    // contract — previous active rows return to scrap keyed by the
+    // adapter's item-view type and are handed back as convertView
+    // (getViewTypeCount/getItemViewType through the real DEX chain;
+    // ITEM_VIEW_TYPE_IGNORE rows never recycle; out-of-range types are a
+    // counted violation, never silent).
     int materialize_adapter_rows_for(uint32_t adapter_id);
+    // F-S231-A: per-ListView scrap bins + row→type map from the last bind.
+  private:
+    framework::AdapterScrapBin adapter_scrap_;
+    std::unordered_map<uint32_t, int> adapter_row_type_;  // row_oid → type
+    uint64_t recycle_rows_reused_ = 0;    // getView got non-null convertView
+    uint64_t recycle_rows_inflated_ = 0;  // getView got no scrap (cold bind)
+    uint64_t recycle_type_violations_ = 0;// getItemViewType out-of-range
+  public:
+    uint64_t recycle_rows_reused() const { return recycle_rows_reused_; }
+    uint64_t recycle_rows_inflated() const { return recycle_rows_inflated_; }
+    uint64_t recycle_type_violations() const { return recycle_type_violations_; }
+    framework::AdapterScrapBin& adapter_scrap() { return adapter_scrap_; }
     // R-NEW-431: CompoundButton.onCheckedChanged(buttonView, isChecked).
     void dispatch_checked_changed(uint32_t view_id, bool checked);
     // R-NEW-432: key pipeline — onKey listener → onKeyDown/onKeyUp law.

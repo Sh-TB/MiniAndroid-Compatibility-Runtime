@@ -319,6 +319,15 @@ private:
         int  gravity = -1;        // android:gravity (container content gravity)
         int  layout_gravity = -1; // child gravity inside parent
         int  layout_weight = 0;
+        // F-S231-B (#585 §5): GridView column contract (AOSP GridView.java
+        // AbsListView spinner/abslist attrs). numColumns=-1 = AUTO_FIT
+        // (default); UNSET sentinel = 0 so the node can distinguish "no
+        // attribute seen" from an explicit AUTO_FIT.
+        int  grid_num_columns = 0;
+        int  grid_column_width = 0;
+        int  grid_v_spacing = 0;
+        int  grid_h_spacing = 0;
+        int  grid_stretch_mode = 0; // 0 none / 1 columnWidth / 2 spacingWidth / 3 uniform
         std::string text, hint;
         float text_size_px = 0;
         uint32_t text_color = 0;

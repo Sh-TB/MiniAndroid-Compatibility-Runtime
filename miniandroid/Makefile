@@ -221,7 +221,7 @@ TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
 	encoded_value_law_test gp583_gles_law_test c9_bitmap_density_law_test \
 	r25_dispatch_matrix_test gp583_img004_bounds_law_test \
 	gp_dex003_fuzz_law_test \
-	s225m_wave_law_test
+	s225m_wave_law_test s231_view_resource_law_test
 TEST_BATTERY = $(TEST_CORE) $(TEST_HOSTILE) $(TEST_LAW)
 
 # S225-M wave law test links pthread_shadow.o (the interposition object the
