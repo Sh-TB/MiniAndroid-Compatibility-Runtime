@@ -1,45 +1,67 @@
 {
- "version": "v0.0.6.1-Exchequer",
- "release_date": "2026-11-02",
- "git_commit": "7877e99e lineage tip (tag v0.0.6.1-Exchequer sits on the release-docs commit)",
+ "version": "v0.0.6.2",
+ "release_date": "2026-11-13",
+ "git_commit": "release branch tip at tag creation (see RELEASE_v0.0.6.2.md; tag v0.0.6.2)",
  "parent_release": {
-  "version": "v0.0.6-Leghorn",
-  "date": "2026-09-16",
-  "git_commit": "22c58a55",
-  "commits_since": 814
+  "version": "v0.0.6.1-Exchequer",
+  "date": "2026-11-02",
+  "git_commit": "7877e99e lineage tip (tag v0.0.6.1-Exchequer sits on the release-docs commit)",
+  "commits_since": null,
+  "note": "commit count intentionally not stated (divergent graph; count via git log v0.0.6.1-Exchequer..HEAD = 213+)"
  },
  "root_registry": {
-  "entries_at_this_release": 853,
-  "entries_at_parent": 348,
-  "note": "honest per-root status vocabulary; see root_registry.json"
+  "entries_at_this_release": 797,
+  "entries_at_parent": 853,
+  "note": "canonical counts from docs/METRICS.json; see root_registry.json"
+ },
+ "metrics": {
+  "source": "docs/METRICS.json",
+  "canonical_titles_total": 152,
+  "canonical_verified": 24,
+  "games_registered": 91,
+  "apps_registered": 15
  },
  "verification_at_tag": {
-  "anchor_wall": "12/13 BYTE-EXACT x3 (scripts/s149_true_wall.sh): opencalc 63020bc7 / chess 3f7e6707 / dooz 851cc176 / microtimer bbd350b6 / unote 7481e9b4 / tower3d 11a38a5a + games f43face08/b818a6a7/5235683f/e77a073f/4876e47d/748bb6cf; snakeneon 4a19b1fe x3 deterministic vs pin b669ce89 (build-env face drift, 98.9% real content, flagged)",
-  "regression_gates": "negatives 19/19 · reinstall 8/8 · multiapp 3/3 · gate-A probe 98/0/1 · agent-skill selftest 13/13 · fnew259 probe 7/7 · fnew476 probe 5/5 · F253PROBE 21/21 · W3PROBE 12/12",
-  "battery": "94 -> 124 stages ALL PASS (GATE A record, 2026-10-03); BATTERY_INDEX.json remains the frozen S95-era 94-stage inventory; the standing gate on this lineage is the byte-exact anchor wall",
-  "reproducibility": "recorded binaries reproduced byte-identically from clean rebuilds across >=8 independent waves (CONT-15/65/77/106/107/135/152, CONT-11 W7b, S149-TRUE)",
-  "sqlite_proof": "sqltasks all four CRUD arms REAL (INSERT x2 / UPDATE done=1 / DELETE id=2 / CLEAR ALL); Telegram x41 eliminated and HOLDS (bf5c9ef920aa32d7 == S147 pin, 0 exceptions, opendb OK)",
-  "interaction_proof": "g2048 PLAYED (4 real clicks, f43face08 -> 550470af); microtimer two real alarm rows (5,5,1,11770)+(5,5,2,20410), list query rows=2",
-  "telegram": "fully clean execution (0 errors/warnings/uncaught, S115); native lib really loaded (libtmessages.49.so dlopen + JNI_OnLoad, T18)"
+  "pins": "6-pin byte-exact HOLD on binary 06f98d2a9c21ea92: bouncy 98abca38 (re-pinned, pixel-proven background-only change) / unote 3b8dcb0a / dooz a0fae907 / gmdice 3891679d x2 identical / microtimer b39665f6 / ttt 7354c1b2 x3 deterministic",
+  "test_all": "28/28",
+  "policy_validator": "0 violations (docs/POLICY_ALLOWLIST.json 4,990 reviewed entries with owner/expiry)",
+  "forensic_ledger": "validate: 390 rows, 0 errors",
+  "release_content": "PASS (0 development artifacts)",
+  "metrics_staleness": "OK",
+  "smoke_test": "out-of-source: demo APK + real gmdice APK reproduce pinned face 3891679d"
  },
- "artifacts": {
-  "windows": "NOT BUILT for this release (no MinGW in the release environment); latest packaged binaries remain v0.0.6-Leghorn",
-  "linux": "source-tag release; build from source via scripts/build/bootstrap_toolchain.sh + make; Linux builds verified via the byte-exact anchor wall"
- },
- "previous_release_artifacts": {
-  "windows_artifact": "MiniAndroid-v0.0.6-Leghorn-windows-x64.zip",
-  "windows_artifact_sha256": "934d6edcf1ee32060eef10c7fe0eabb84584a83132795fabcc9b3256594f3267",
-  "linux_artifact": "MiniAndroid-v0.0.6-Leghorn-linux-x64.tar.gz",
-  "linux_artifact_sha256": "20ece9256b052a06839a5124fd64c19bb15512f1ff9de5eb3b6df705898f8780"
- },
- "changelog": "miniandroid/CHANGELOG.md ([v0.0.6.1-Exchequer] - 2026-11-02; Keep a Changelog 1.1.0; includes retroactive v0.0.4/v0.0.5/v0.0.6 entries)",
- "release_notes": "docs/releases/RELEASE_v0.0.6.1-Exchequer.md",
+ "artifacts": [
+  {
+   "name": "MiniAndroid-v0.0.6.2-linux-x64.tar.gz",
+   "sha256": "e45433dda4ca897e9cd95e78f9c77bac0d48a594e18386930056b061f9c14629",
+   "bytes": 4761562,
+   "platform": "linux-x64",
+   "build": "clean clone, make -C miniandroid -j1, g++ 14.2.0 Debian 13; stripped binary (build-id only delta vs main-tree build)"
+  }
+ ],
+ "previous_release_artifacts": [
+  {
+   "windows_artifact": "MiniAndroid-v0.0.6-Leghorn-windows-x64.zip",
+   "windows_artifact_sha256": "934d6edcf1ee32060eef10c7fe0eabb84584a83132795fabcc9b3256594f3267",
+   "linux_artifact": "MiniAndroid-v0.0.6-Leghorn-linux-x64.tar.gz",
+   "linux_artifact_sha256": "20ece9256b052a06839a5124fd64c19bb15512f1ff9de5eb3b6df705898f8780"
+  },
+  {
+   "version": "v0.0.6.1-Exchequer",
+   "note": "v0.0.6.1 had zero attached binary assets (recorded in #587 WP8)"
+  },
+  {
+   "version": "v0.0.6-Leghorn",
+   "date": "2026-09-16",
+   "note": "last packaged Linux/Windows binaries; NOT re-shipped"
+  }
+ ],
+ "changelog": "miniandroid/CHANGELOG.md#v0062---2026-11-13",
+ "release_notes": "docs/releases/RELEASE_v0.0.6.2.md",
  "known_limitations": [
-  "Compose clickable dispatch not yet fixed (root pinned at the composed-modifier factory dispatch; TRAIN-70 queued); Compose draw path (layer drawContent -> canvas ops) open",
-  "microtimer alarm-list row render open (persistence + query real)",
-  "snakeneon build-env face drift flagged vs standing pin (98.9% real content)",
-  "Windows artifacts not built for this release",
-  "Telegram full messenger UI not claimed",
-  "corpus titles outside the executable/ABI envelope are ABI_OUT_OF_SCOPE SKIP per LAW-001, never failures"
+  "ARM-only APKs out of scope (ABI_OUT_OF_SCOPE)",
+  "Compose subset: first-frame proven; deeper stateful apps partial (dooz frontier)",
+  "stub census + uncaught exceptions recorded per run; SUCCESS claims bounded",
+  "Windows binary honestly omitted this release (no pinned toolchain in build env)"
  ]
 }
