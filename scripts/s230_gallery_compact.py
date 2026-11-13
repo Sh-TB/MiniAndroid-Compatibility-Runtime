@@ -21,7 +21,7 @@ import shutil
 import subprocess
 import sys
 
-ROOT = "/home/z/my-project"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BIN = f"{ROOT}/miniandroid/build/miniandroid"
 OUT = f"{ROOT}/run/s230_gallery"
 REC = f"{ROOT}/evidence/s230/gallery_rc_rerun.json"

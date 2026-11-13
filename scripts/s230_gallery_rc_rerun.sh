@@ -2,7 +2,7 @@
 # S230: RC re-runs of the four README gallery demos on binary 06f98d2a9c21ea92.
 # Drivers are the canonical documented schedules (S80/S98 campaigns).
 set -u
-cd /home/z/my-project
+cd "$(git rev-parse --show-toplevel 2>/dev/null || dirname "$(dirname "$(readlink -f "$0")")/..")"
 OUT=/tmp/s230_gallery
 mkdir -p "$OUT"
 

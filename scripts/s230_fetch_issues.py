@@ -6,7 +6,7 @@ import json, subprocess, os
 import urllib.request
 
 REPO = "Sh-TB/MiniAndroid-Compatibility-Runtime"
-OUT = "/home/z/my-project/evidence/s230"
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "evidence", "s230")
 os.makedirs(OUT, exist_ok=True)
 
 cred = subprocess.run(["git", "credential", "fill"],

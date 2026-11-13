@@ -28619,6 +28619,24 @@
    "reason": "historical record of the S229 clean-clone no-residue test \u2014 legitimately quotes the session path it proves absent from the build outputs (\u00a7172.5 self-reference class, same as tests/path_ownership_gate_test.py)",
    "owner": "S230 wave (#587 forgotten-items completion)",
    "expiry": "#386 externalization wave"
+  },
+  {
+   "path": "scripts/s156_tb_koin_xref.py",
+   "reason": "historical one-off S156 campaign script transferred verbatim by the S226 patch (#586); not a runtime dependency",
+   "owner": "S230 wave (#587/#586 receipt)",
+   "expiry": "#386 externalization wave"
+  },
+  {
+   "path": "scripts/s226_post_issue.py",
+   "reason": "historical one-off S226 issue-posting script transferred verbatim by the S226 patch (#586); not a runtime dependency",
+   "owner": "S230 wave (#587/#586 receipt)",
+   "expiry": "#386 externalization wave"
+  },
+  {
+   "path": "scripts/s230_fetch_issues.py",
+   "reason": "S230 issue-fetch tool; absolute fallback removed in the same commit \u2014 recorded literal retained in history only",
+   "owner": "S230 wave (#587/#586 receipt)",
+   "expiry": "#386 externalization wave"
   }
  ],
  "machine_paths_maintained_records": [

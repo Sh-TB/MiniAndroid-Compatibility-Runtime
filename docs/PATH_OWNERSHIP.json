@@ -784,7 +784,8 @@
   "upstream/s43",
   "upstream/s44",
   "upstream/scatter_s37",
-  "evidence/s230"
+  "evidence/s230",
+  "evidence/s156_4app"
  ],
  "frozen_snapshot": {
   "audit": {
@@ -831,9 +832,9 @@
   },
   "evidence": {
    "lifecycle": "frozen \u2014 no new files, no new directories",
-   "tracked_file_count": 6149,
-   "snapshot_sha256": "e44d7cdd71039d138c5170a6efff12af80daa481125875d80f39e698e45f4aac",
-   "basis": "sorted tracked-children list (s229_s213_s214 excluded per wave-prefix rule); re-baselined at the S230 ledgered migration wave (#587): 15 evidence/ paths replaced png->jpg under the disposition ledger evidence/s230/legacy_migration_ledger.tsv + consumer checks (S214 migration clause); count unchanged"
+   "tracked_file_count": 6166,
+   "snapshot_sha256": "822f3270d95ad6e2773f9bd9d6bcfa9c7a8ed90d70689db122db7b5a193346bf",
+   "basis": "sorted tracked-children list (s229_s213_s214 excluded per wave-prefix rule); re-baselined at the S230 ledgered migration wave (#587): 15 evidence/ paths replaced png->jpg under the disposition ledger evidence/s230/legacy_migration_ledger.tsv + consumer checks (S214 migration clause); count unchanged; re-baselined again at the S226 TRANSFER receipt (S230): evidence/s156_4app/ registered and landed per #586"
   },
   "docs/history": {
    "lifecycle": "frozen \u2014 no new files, no new directories",
@@ -904,6 +905,20 @@
    "wave": "S230 (#587)",
    "reason": "ledgered legacy-image migration (15 png->jpg replacements, 248 KB saved; ledger + consumer checks attached)",
    "ledger": "evidence/s230/legacy_migration_ledger.tsv"
+  },
+  {
+   "area": "evidence",
+   "date": "2026-11-13",
+   "wave": "S230 S226 receipt",
+   "reason": "S226 TRANSFER patch landed (#586): evidence/s156_4app/ 11 files registered + applied",
+   "ledger": "docs/PATH_OWNERSHIP.json wave_evidence_registered_s226"
   }
- ]
+ ],
+ "wave_evidence_registered_s226": {
+  "path": "evidence/s156_4app",
+  "owner": "S226 TRANSFER receipt (S230; #586 patch per K-2)",
+  "approved_in": "#586 comment 6830325674 (transfer request) + S230 receipt",
+  "expected_classes": "json, md, py",
+  "note": "13/16 patch segments applied verbatim; 3 truncated hunks reconstructed with markers; registry rows APP-016..019 landed"
+ }
 }
