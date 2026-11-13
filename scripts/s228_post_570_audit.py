@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-BASE = Path('/home/z/my-project')
+BASE = Path(__file__).resolve().parents[1]  # repo-root discovery (WP4/R11 portability law)
 
 BODY = """# [S228 OWNER AUDIT] SESSION-5 JNI-index chain (comments 6823786730 / 6824070879 / 6824189594) — line-by-line verdict: **F-JNI-1 ALREADY-FIXED on main since S170 (2026-11-05, `d5c14b83`)**; the A/B PoC stands as a valid independent demonstration of the pre-S170 defect; the 43-lib census bridge-side column is stale, its library-side metadata is retained as discovery evidence and feeds the S228 route census
 

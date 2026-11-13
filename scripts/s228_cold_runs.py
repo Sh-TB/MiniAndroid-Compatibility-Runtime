@@ -20,7 +20,7 @@ import subprocess
 import time
 from pathlib import Path
 
-BASE = Path('/home/z/my-project')
+BASE = Path(__file__).resolve().parents[1]  # repo-root discovery (WP4/R11 portability law)
 BIN = BASE / 'miniandroid/build/miniandroid'
 RUNS = BASE / 'evidence/s228_census/runs'
 RUNS.mkdir(parents=True, exist_ok=True)

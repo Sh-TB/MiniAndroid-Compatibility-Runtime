@@ -19,7 +19,7 @@ import sys
 import zipfile
 from pathlib import Path
 
-BASE = Path('/home/z/my-project')
+BASE = Path(__file__).resolve().parents[1]  # repo-root discovery (WP4/R11 portability law)
 APK_DIR = BASE / 'upload/canonical_apks'
 OUT = BASE / 'evidence/s228_census'
 OUT.mkdir(parents=True, exist_ok=True)

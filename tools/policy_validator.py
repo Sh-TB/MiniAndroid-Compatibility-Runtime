@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Policy validator — the executable arm of CONSTITUTION_V2 §172 (#587 R32).
+"""Policy validator — the executable arm of CONSTITUTION_V2 §172 (#587 R32)
+plus the S213 image-size policy and the S214 default-deny path law (#587).
 
 Dependency-free. Modes:
   check (default)   validate the CURRENT tracked tree; exit non-zero on any
-                    violation not covered by docs/POLICY_ALLOWLIST.json.
+                    violation not covered by docs/POLICY_ALLOWLIST.json,
+                    docs/IMAGE_POLICY_BASELINE.json, docs/IMAGE_EXCEPTIONS.json
+                    or docs/PATH_OWNERSHIP.json.
   allowlist-json    print the machine-readable current violations (for the
                     one-time grandfather pass / review).
 
@@ -21,6 +24,19 @@ Checks (Constitution §172.5):
   7. contradictory evidence: NO_APP_OPS + REAL_APP_CONTENT, draw_ops=0 with
      SUCCESS-style headline, stale screenshot-size claims (report-only scan of
      trace_summary.json / report.md pairs, failing outside the grandfather set)
+
+S213 image policy (docs/IMAGE_POLICY_BASELINE.json + docs/IMAGE_EXCEPTIONS.json):
+  8. PNG >100 KiB and GIF/WebP >200 KiB and JPEG >200 KiB require a per-path legacy
+     baseline record or a narrow per-file exception; a mutated baseline entry fails
+
+S214 default-deny path law (docs/PATH_OWNERSHIP.json + docs/SIZE_BUDGET.json):
+  9. frozen-area snapshot drift: ANY added/removed child path in a frozen area fails
+ 10. unregistered directory: any tracked file whose directory prefix is not in the
+     approved_dirs adoption inventory fails (new dirs are forbidden by default)
+ 11. scratch residue: .rej/.bak/.orig/tilde everywhere; stdout/stderr-capture,
+     scratch/api-dump/cache/build-system names outside exempt historical areas
+ 12. symlink escape: tracked symlink resolving outside the repo (or absolute) fails
+ 13. size budget: tracked path-summed bytes per top-level area over budget fails
 
 Root allowlist (§172.2): README.md LICENSE CONSTITUTION_V2.md .gitignore
 root_registry.json (documented compatibility projection).
@@ -88,9 +104,187 @@ def load_allowlist():
                 "forbidden_classes": [], "contradictory_evidence": []}
 
 
+def _load_json(rel, default):
+    try:
+        text = open(os.path.join(ROOT, rel), encoding="utf-8").read().strip()
+        return json.loads(text) if text else default
+    except FileNotFoundError:
+        return default
+
+
+def load_image_baseline():
+    d = _load_json("docs/IMAGE_POLICY_BASELINE.json", {})
+    return {e["path"]: e for e in d.get("legacy_images", [])}
+
+
+def load_image_exceptions():
+    d = _load_json("docs/IMAGE_EXCEPTIONS.json", {})
+    return {e["path"]: e for e in d.get("exceptions", [])}
+
+
+def load_path_registry():
+    return _load_json("docs/PATH_OWNERSHIP.json", None)
+
+
+def load_size_budget():
+    return _load_json("docs/SIZE_BUDGET.json", None)
+
+
 def tracked_files():
     out = subprocess.run(["git", "-C", ROOT, "ls-files"], capture_output=True, text=True)
     return [l for l in out.stdout.splitlines() if l]
+
+
+def _snapshot_paths(files, prefix, exclude_prefixes):
+    return [f for f in files if f.startswith(prefix)
+            and not any(f.startswith(x) for x in exclude_prefixes)]
+
+
+def _list_sha(paths):
+    import hashlib
+    return hashlib.sha256("\n".join(sorted(paths)).encode()).hexdigest()
+
+
+def _dir_prefix(f):
+    """The owning directory prefix for default-deny review: top-level name for
+    loose/2-level files, the 2-level prefix for deeper paths."""
+    parts = f.split("/")
+    return parts[0] if len(parts) <= 2 else "/".join(parts[:2])
+
+
+def s213_s214_checks(files, violations, warnings, mode, registry=None):
+    """S213 image-size policy + S214 default-deny path law (#587).
+
+    All checks degrade gracefully when their registry files are absent so the
+    validator still works on minimal fixtures (tests provide their own).
+    """
+    baseline = load_image_baseline()
+    exceptions = load_image_exceptions()
+    if registry is None:
+        registry = load_path_registry()
+    budget_doc = load_size_budget()
+
+    # 8. S213 image-size policy
+    png_limit = 100 * 1024
+    promote_limit = 200 * 1024
+    for f in files:
+        low = f.lower()
+        ext = os.path.splitext(low)[1]
+        if ext not in (".png", ".jpg", ".jpeg", ".gif", ".webp"):
+            continue
+        p = Path(ROOT) / f
+        if p.is_symlink():
+            continue
+        try:
+            size = p.stat().st_size
+        except OSError:
+            continue
+        limit = png_limit if ext == ".png" else promote_limit
+        if size <= limit:
+            continue
+        if f in exceptions:
+            continue
+        if f in baseline:
+            rec = baseline[f]
+            if rec.get("bytes") is not None and rec["bytes"] != size:
+                violations.append(("IMAGE_POLICY_MUTATED", f,
+                    f"legacy baseline entry says {rec['bytes']} bytes, tree has {size} — "
+                    "re-measure and amend the baseline/exception in review, never silently"))
+            continue
+        violations.append(("IMAGE_POLICY_NEW", f,
+            f"{size} bytes {ext[1:].upper()} over the {'100 KiB PNG' if ext == '.png' else '200 KiB promoted'} "
+            "limit — needs narrow per-file exception (docs/IMAGE_EXCEPTIONS.json) or baseline amendment in review"))
+
+    if registry is None:
+        return  # minimal fixture without a registry: S214 structural checks not armed
+
+    wave_evidence = registry.get("wave_evidence_registered", {}).get("path", "")
+    wave_prefix = wave_evidence + "/" if wave_evidence else None
+
+    # 9. frozen-area snapshot drift (any added or removed child path fails)
+    for key, snap in registry.get("frozen_snapshot", {}).items():
+        prefix = key if key.endswith("/") else key + "/"
+        excludes = [wave_prefix] if (key == "evidence" and wave_prefix) else []
+        members = _snapshot_paths(files, prefix, excludes)
+        want_n, want_sha = snap.get("tracked_file_count"), snap.get("snapshot_sha256")
+        got_sha = _list_sha(members)
+        if len(members) != want_n or got_sha != want_sha:
+            direction = "added" if len(members) > (want_n or 0) else "removed/changed"
+            violations.append(("FROZEN_SNAPSHOT_DRIFT", key,
+                f"frozen area changed: {len(members)} tracked children vs frozen {want_n} "
+                f"({direction}) — frozen areas accept no new files; promotion needs a registry "
+                "amendment approved in review"))
+
+    # 10. unregistered directories (default-deny)
+    approved = set(registry.get("approved_dirs", []))
+    for f in files:
+        pre = _dir_prefix(f)
+        if pre not in approved and f not in approved:
+            violations.append(("UNREGISTERED_DIRECTORY", f,
+                f"directory prefix '{pre}' is not in docs/PATH_OWNERSHIP.json approved_dirs — "
+                "new directories are forbidden by default; register path/owner/purpose/"
+                "consumers/lifecycle in review first"))
+
+    # 11. scratch residue
+    rules = registry.get("scratch_rules", {})
+    compiled = [(re.compile(rx), universal) for rx, universal in
+                [(r, True) for r in rules.get("regex", [])]]
+    universal_residue = re.compile(r"\.(rej|orig|bak)$|~$")
+    exempt_prefixes = tuple(rules.get("exempt_prefixes", []))
+    exempt_exts = tuple(rules.get("exempt_extensions", []))
+    for f in files:
+        p = Path(ROOT) / f
+        if p.is_symlink():
+            continue
+        low = f.lower()
+        if universal_residue.search(low):
+            violations.append(("SCRATCH_RESIDUE", f,
+                "patch-reject/backup residue tracked — delete it; keep the applied change in history"))
+            continue
+        if universal_residue.search(low):
+            continue
+        if low.endswith(exempt_exts):
+            continue
+        if f.startswith(exempt_prefixes):
+            continue
+        for rx, _u in compiled:
+            if rx.search(low) and not universal_residue.search(low):
+                violations.append(("SCRATCH_RESIDUE", f,
+                    f"matches scratch rule '{rx.pattern}' — run output belongs in ignored "
+                    ".cache/<tool-or-suite>/<run-id>/; tracked capture needs promotion review"))
+                break
+
+    # 12. symlink escape
+    root_real = os.path.realpath(ROOT)
+    for f in files:
+        p = Path(ROOT) / f
+        if not p.is_symlink():
+            continue
+        target = os.readlink(p)
+        resolved = os.path.realpath(p)
+        if os.path.isabs(target) or not (resolved == root_real or resolved.startswith(root_real + os.sep)):
+            violations.append(("SYMLINK_ESCAPE", f,
+                f"symlink target '{target}' resolves outside the repository — "
+                "machine-specific escape paths are forbidden"))
+
+    # 13. size budget
+    if budget_doc:
+        areas = budget_doc.get("areas", {})
+        sums = {}
+        for f in files:
+            p = Path(ROOT) / f
+            if p.is_symlink():
+                continue
+            try:
+                sums[f.split("/")[0]] = sums.get(f.split("/")[0], 0) + p.stat().st_size
+            except OSError:
+                pass
+        for top, info in areas.items():
+            b = info.get("budget_bytes")
+            if b is not None and sums.get(top, 0) > b:
+                violations.append(("SIZE_BUDGET_EXCEEDED", top,
+                    f"{sums[top]} tracked bytes over budget {b} — reviewed per-area exception "
+                    "with reason+expiry required, or shrink the area"))
 
 
 def _paths(entries):
@@ -107,21 +301,30 @@ def main():
     allow = {} if raw else load_allowlist()
     al_mp = _paths(allow.get("machine_paths"))
     al_mp_rec = _paths(allow.get("machine_paths_maintained_records"))
-    al_img = _paths(allow.get("oversize_images"))
-    al_dup = _paths(allow.get("duplicates"))
     al_cls = _paths(allow.get("forbidden_classes"))
     al_contra = _paths(allow.get("contradictory_evidence"))
+    al_dup = _paths(allow.get("duplicates"))
+    # a narrow per-file S213 exception (docs/IMAGE_EXCEPTIONS.json) IS the reviewed
+    # entry the §172.5 image-size gate demands — merge it into the accepted set
+    al_img = _paths(allow.get("oversize_images")) | set(load_image_exceptions().keys())
     violations, warnings = [], []
 
     files = tracked_files()
+    registry = load_path_registry()
 
-    # 1+2. root law + top-level ownership
+    # 1+2. root law + top-level ownership (registry is authoritative when present;
+    # the hardcoded sets are the fallback for minimal fixtures without a registry)
+    if registry is not None:
+        approved_root = set(registry.get("approved_dirs", []))
+        effective_tops = set(registry.get("top_level", {}).keys())
+    else:
+        approved_root, effective_tops = ROOT_ALLOWLIST, TOP_LEVEL_DIRS
     for f in files:
         if "/" not in f:
-            if f not in ROOT_ALLOWLIST:
+            if f not in approved_root:
                 violations.append(("ROOT_LAW", f,
                     "not in the §172.2 root allowlist; amend CONSTITUTION_V2.md §172.2 in the same change or move the file"))
-        elif f.split("/")[0] not in TOP_LEVEL_DIRS and f.split("/")[0] != ".gitignore":
+        elif f.split("/")[0] not in effective_tops and f.split("/")[0] != ".gitignore":
             violations.append(("TOP_LEVEL_OWNERSHIP", f,
                 f"unknown top-level '{f.split('/')[0]}' — amend Constitution §172.1 + docs/REPOSITORY_STRUCTURE.md first"))
 
@@ -203,6 +406,13 @@ def main():
                         violations.append((*key, "app_draw_ops=0 with verdict REAL_APP_CONTENT — ownership classifier contradiction must be reconciled or allowlisted"))
             except Exception:
                 pass
+
+    # ---- S213/S214 phase (#587) -------------------------------------------
+    s213_s214_checks(files, violations, warnings, mode, registry)
+
+    if mode == "allowlist-json2":
+        print(json.dumps({"note": "see s213_s214_checks codes"}, indent=1))
+        return 0
 
     if mode == "allowlist-json":
         print(json.dumps({
