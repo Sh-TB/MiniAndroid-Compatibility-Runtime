@@ -7,13 +7,14 @@ Saves JSON under evidence/s231/.
 import json, os, subprocess
 import urllib.request
 
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # R11 repo-root discovery
 REPO = "Sh-TB/MiniAndroid-Compatibility-Runtime"
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "evidence", "s231")
+OUT = os.path.join(BASE, "evidence", "s231")
 os.makedirs(OUT, exist_ok=True)
 
 cred = subprocess.run(["git", "credential", "fill"],
                       input="protocol=https\nhost=github.com\n\n",
-                      capture_output=True, text=True, cwd="/home/z/my-project").stdout
+                      capture_output=True, text=True, cwd=BASE).stdout
 token = [l.split("=", 1)[1] for l in cred.splitlines() if l.startswith("password=")][0]
 
 def api(url):
