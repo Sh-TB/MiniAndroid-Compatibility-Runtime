@@ -76,6 +76,6 @@ developer-private path.
 ## Regression gates
 
 6-pin byte-exact HOLD; `make test-all` 28/28; policy validator 0 violations
-(4,990 reviewed grandfather entries, expiry recorded); forensic ledger
+(4,990 reviewed grandfather entries, expiry recorded); CI trigger PARTIAL — workflow shipped at `docs/ci/policy.yml`, activation requires a `workflow`-scope token (push of `.github/workflows/policy.yml` was rejected by GitHub for the stored token; validator + law test + ledger + metric checks are all runnable locally and green); forensic ledger
 validate 390 rows / 0 errors; release-content validator PASS; README metric
 staleness check OK.

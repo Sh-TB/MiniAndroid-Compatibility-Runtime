@@ -46,8 +46,10 @@ machine paths, and evaluate from a small set of reproducible demonstrations.
 **Repository law + cleanup (R01–R35):**
 - Constitution §172: directory-ownership map, root-file law, new-file
   contract, output routing — enforced by `tools/policy_validator.py`,
-  `tests/policy_validator_law_test.py` (positive + 8 negative classes) and
-  the `policy-guard` CI workflow.
+  `tests/policy_validator_law_test.py` (positive + 8 negative classes) and the `policy-guard` CI workflow
+  (shipped at `docs/ci/policy.yml`; activating it in `.github/workflows/`
+  requires a `workflow`-scope token — the release token lacks it, so CI
+  wiring is PARTIAL while all checks run green locally).
 - Cleanup: 29 session-residue files, 1,199 byte-identical evidence paths
   (14.6 MiB checkout), the vendored OSMesa bundle (94.4 MiB; six copies of
   one 15.7 MB ELF; replaced by `tests/graphics/backends/osmesa/` + pinned

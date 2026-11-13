@@ -1,3 +1,10 @@
+# NOTE (#587 R32): this workflow is shipped at docs/ci/policy.yml because the
+# release-environment GitHub token lacks the `workflow` scope required to push
+# into .github/workflows/. To activate: copy this file to
+# .github/workflows/policy.yml with a workflow-scope token. The checks it runs
+# (tools/policy_validator.py, tests/policy_validator_law_test.py,
+# scripts/forensic_ledger.py validate, tools/check_readme_metrics.py) are all
+# runnable locally right now — see docs/releases/RELEASE_v0.0.6.2.md gate results.
 name: policy-guard
 
 on: [push, pull_request]
