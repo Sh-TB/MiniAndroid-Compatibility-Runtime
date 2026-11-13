@@ -1,0 +1,18 @@
+{
+ "policy": "#587 WP10 \u00a75 retention tiers (A canonical golden pixel-exact; B batch determinism evidence; C derivative labeled NOT PIXEL-EXACT; D compact trace summary)",
+ "generated": "2026-11-13",
+ "inventory": "evidence/evidence_size_inventory.tsv",
+ "duplicate_groups": "evidence/s212/wp1_inventory/evidence_duplicate_groups.tsv (1,199 removed, canonical redirects recorded)",
+ "batch_summaries": [
+  "evidence/s188_w18/halma_w18_batch_summary.json (11-run compaction: 1 retained full PNG + per-run SHA rows)",
+  "evidence/s188_w18/halma_w18_retention_manifest.json (derivative provenance)",
+  "evidence/s188_w18/halma_w18_BATCH_REPORT.md (corrected truthful report)"
+ ],
+ "totals": {
+  "tracked_images": 1349,
+  "image_bytes_path_summed": 61043422,
+  "over_1mib": 9,
+  "over_800k_noise_threshold": 13
+ },
+ "future_runner_rules": "scripts/s207_gate.py post-capture gate: >800KB screenshot flagged NOISE (uninitialized-buffer suspicion); >1MiB fails without canonical allowlist entry; repeated runs write batch-level SHA rows not per-run full PNGs"
+}

@@ -1,0 +1,1350 @@
+path	type	bytes	dimensions	sha256_16	class	disposition
+docs/achievements/balltap_win.png	png	21338	1080x1920	b6668bd2dbf7c4bf	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/achievements/chessclock_rendered.png	png	6166	1080x1920	f5cde13304ed1e8e	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/achievements/connectfour_y_wins.png	png	19110	1080x1920	27be5bc71b691f4f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/achievements/crossword_solved.png	png	28279	1080x1920	c7b8544e02f66b00	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/achievements/minesweep_win.png	png	15033	1080x1920	ce332207fa0da156	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/achievements/tictactoe_x_wins.png	png	28190	1080x1920	c7b0a259241885e3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/achievements/unote_rendered.png	png	24560	1080x1920	b0126a09e98034c4	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/achievements/wordpredict_done.png	png	26025	1080x1920	4e698269aefe2164	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/assets/hello_color_readme_540.png	png	53522	540x960	24d44c17b38bffd5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/assets/miniandroid-silkie-mascot.png	png	9327	640x640	dc82a61f37f029dc	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/demos/demo_frames.png	png	87106	2584x796	744c8c2fae941c16	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/demos/demo_proof.gif	gif	64212	540x560	0dd8325e4efcc8f5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/bgclockhansdezwart/click/screenshot.png	png	10355	1080x1920	d70220fa11bed1aa	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/bgclockhansdezwart/screenshot.png	png	10355	1080x1920	d70220fa11bed1aa	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/bouncy/click/click_frame_2.png	png	11984	1080x1920	d94aeff5a2fceed8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/bouncy/click/click_frame_3.png	png	11984	1080x1920	d94aeff5a2fceed8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/bouncy/click/click_frame_4.png	png	11984	1080x1920	d94aeff5a2fceed8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/bouncy/click/click_frame_5.png	png	11984	1080x1920	d94aeff5a2fceed8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/bouncy/click/click_frame_6.png	png	11984	1080x1920	d94aeff5a2fceed8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/bouncy/click/screenshot.png	png	0	?	e69de29bb2d1d643	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/bouncy/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/chessclock/click/screenshot.png	png	6469	1080x1920	5dbe8083541f5d62	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/chessclock/screenshot.png	png	6469	1080x1920	5dbe8083541f5d62	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/dooz/click/screenshot.png	png	10351	1080x1920	f24815999d0b429a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/dooz/screenshot.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/droidify/click/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/droidify/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/gmdice/click/click_frame_0.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/gmdice/click/click_frame_1.png	png	10861	1080x1920	44985088f182d7aa	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/gmdice/click/click_frame_2.png	png	10861	1080x1920	44985088f182d7aa	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/gmdice/click/click_frame_3.png	png	10927	1080x1920	c2d67686a1eed291	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/gmdice/click/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/gmdice/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/headingcalculator/click/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/headingcalculator/screenshot.png	png	11980	1080x1920	e6a700a887374340	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/microtimer/click/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/microtimer/screenshot.png	png	10362	1080x1920	589283448dfb8403	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/notesbillthefarmer/click/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/notesbillthefarmer/screenshot.png	png	10371	1080x1920	d842e31398ab3775	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/openlauncher/click/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/openlauncher/screenshot.png	png	11395	1080x1920	4961c9eef053653f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/simplekeyboard/click/click_frame_0.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/simplekeyboard/click/click_frame_1.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/simplekeyboard/click/screenshot.png	png	10416	1080x1920	e9f8c57496e9dbaf	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/simplekeyboard/screenshot.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/simplestopwatch/click/click_frame_0.png	png	15622	1080x1920	d6c74f40a0da9ce4	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/simplestopwatch/click/click_frame_1.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/simplestopwatch/click/screenshot.png	png	15698	1080x1920	b188dda26e896786	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/simplestopwatch/screenshot.png	png	15698	1080x1920	b188dda26e896786	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/stopwatchmuellerma/click/screenshot.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/stopwatchmuellerma/screenshot.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/telegram_v12/click/click_frame_0.png	png	11196	1080x1920	a227a0d4b5871cd5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/telegram_v12/click/click_frame_1.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/telegram_v12/click/click_frame_2.png	png	11196	1080x1920	a227a0d4b5871cd5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/telegram_v12/click/click_frame_3.png	png	11196	1080x1920	a227a0d4b5871cd5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/telegram_v12/click/click_frame_4.png	png	11196	1080x1920	a227a0d4b5871cd5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/telegram_v12/click/screenshot.png	png	10359	1080x1920	7b7a861bb40ff3c9	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/campaign014/telegram_v12/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/tictactoeemmanuelmess/click/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/tictactoeemmanuelmess/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign014/tinymusicplayer/click/screenshot.png	png	0	?	e69de29bb2d1d643	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/campaign3_chessclock_real_screenshot/screenshot.png	png	6166	1080x1920	f5cde13304ed1e8e	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/canonical/app.varlorg.unote.jpg	jpg	5639	303x540	8b0b3e9cc8457ae3	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/ca.rmen.nounours.gif	gif	2969	360x640	f37dba32fcdf8fec	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/ch.logixisland.anuto.jpg	jpg	8787	540x960	933c392ec1fc24dd	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.cax.pmk.jpg	jpg	14699	540x960	1d8f45f63c06e984	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.chessclock.android.jpg	jpg	3519	303x540	394713a568e92f79	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif	gif	78450	360x640	d33e2b86a3169b0a	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.dozingcatsoftware.bouncy.jpg	jpg	17552	540x960	e0f21659d241d742	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.dozingcatsoftware.dodge.gif	gif	44895	360x640	9c490e1ff11c6b61	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.emmanuelmess.tictactoe.gif	gif	58149	360x640	2e5aaae62864cb1b	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.gh4a.jpg	jpg	11152	540x960	20acca6874739c32	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.jeffliu.balancetheball.jpg	jpg	6365	303x540	ec4fad0e21c7c34b	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.miniandroid.browser.gif	gif	11902	400x711	2d380c03aa18c964	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.miniandroid.browser.zai.gif	gif	8577	400x711	c2ad80d6c39f9fcc	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.miniandroid.g2048.gif	gif	979913	400x737	8eb3ab1ab9d097db	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.miniandroid.minicraft.gif	gif	172914	360x640	971cc73423417d1f	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.miniandroid.snakedeluxe.gif	gif	493247	400x737	870a8a931e7c9b8b	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.miniandroid.tetris.gif	gif	770771	400x737	4198967fae45b948	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.miniandroid.tictactoedeluxe.gif	gif	51126	360x640	406a45d6f1019422	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.smorgasbork.hotdeath.gif	gif	5414	360x640	bdd87e21d2f6d1fb	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.trianguloy.adnihilation.jpg	jpg	85930	540x960	28a37d5134e94392	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/com.trianguloy.urlchecker.gif	gif	54659	360x640	9d8206e25641eb24	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/cos.premy.mines.jpg	jpg	6895	303x540	1f96c3fc017293f8	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/cz.romario.opensudoku.jpg	jpg	13066	540x960	108bd7700d80f143	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/de.duenndns.gmdice.jpg	jpg	9699	303x540	7055d75ee19dacf9	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/de.georgsieber.ballbreak.jpg	jpg	11671	540x960	b60cea2899e7219b	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/dubrowgn.microtimer.jpg	jpg	6496	303x540	9d9284750750aaba	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/eu.quelltext.memory.jpg	jpg	3213	303x540	7ff67b3e34d829d5	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/eu.veldsoft.fish.rings.gif	gif	77975	400x711	ab656434966c18b1	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/eu.veldsoft.fish.rings.jpg	jpg	31860	540x960	340d131888f4d7a3	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/eu.veldsoft.free.klondike.jpg	jpg	20378	540x960	977c89dcb2b1f551	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/eu.veldsoft.tri.peaks.jpg	jpg	24626	540x960	34b114e894b83a56	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/io.github.buildsbyben.shoppinglistcalc.jpg	jpg	15863	540x960	3427eeba6e924ff7	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/io.github.yamin8000.dooz.jpg	jpg	9324	540x960	34565e8dfe8ecc5e	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/omegacentauri.mobi.simplestopwatch.jpg	jpg	5352	303x540	d35060dbf330578d	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/one.scarecrow.games.OPMT.jpg	jpg	40088	540x960	34bacf35ed1f2ef7	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/org.billthefarmer.notes.jpg	jpg	4166	303x540	61c7565339b8c1aa	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/org.billthefarmer.siggen.jpg	jpg	8109	430x764	9302c4f84371a34d	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/org.bobstuff.bobball.gif	gif	23316	360x640	8d521a58d9cf43fc	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/org.debian.eugen.headingcalculator.jpg	jpg	19486	303x540	b38659533ca65ae2	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/org.miniandroid.helloworld.jpg	jpg	22953	540x960	c3300a18754b55fc	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/canonical/x653.all_in_gold.jpg	jpg	9331	540x960	145e48d21c3d2610	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/external_hello_golden/baseline_g08_broken.png	png	10362	1080x1920	589283448dfb8403	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/external_hello_golden/interaction/frame_000.png	png	39851	1080x1920	c1692d1530de9463	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/external_hello_golden/interaction/frame_001.png	png	40432	1080x1920	ba1b1c3d1e5354cd	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/external_hello_golden/miniandroid_frame1.png	png	25419	1080x1920	acfd0dd3a7e03fe8	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/external_hello_golden/miniandroid_typography.png	png	39851	1080x1920	c1692d1530de9463	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/external_hello_golden/reference_phone.png	png	10305	600x1067	4c576a1032cdc0a4	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/foundation/determinism/f01_color_run1/screenshot.png	png	9348	1080x1920	270350e23274ce04	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/determinism/f01_color_run2/screenshot.png	png	9348	1080x1920	270350e23274ce04	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f01_color_run3/screenshot.png	png	9348	1080x1920	270350e23274ce04	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f04_text_run1/screenshot.png	png	21056	1080x1920	05dd339d934f06a8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/determinism/f04_text_run2/screenshot.png	png	21056	1080x1920	05dd339d934f06a8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f04_text_run3/screenshot.png	png	21056	1080x1920	05dd339d934f06a8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f05_persian_run1/screenshot.png	png	28523	1080x1920	657e290e11d051e3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/determinism/f05_persian_run2/screenshot.png	png	28523	1080x1920	657e290e11d051e3	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f05_persian_run3/screenshot.png	png	28523	1080x1920	657e290e11d051e3	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f14_relative_run1/screenshot.png	png	10401	1080x1920	96eceb0fabf200d7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/determinism/f14_relative_run2/screenshot.png	png	10401	1080x1920	96eceb0fabf200d7	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f14_relative_run3/screenshot.png	png	10401	1080x1920	96eceb0fabf200d7	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f21_button_run1/click_frame_0.png	png	19220	1080x1920	f9c628a61fd8ffcd	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/determinism/f21_button_run1/screenshot.png	png	17819	1080x1920	4d0d7a32631af010	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/determinism/f21_button_run2/click_frame_0.png	png	19220	1080x1920	f9c628a61fd8ffcd	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f21_button_run2/screenshot.png	png	17819	1080x1920	4d0d7a32631af010	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f21_button_run3/click_frame_0.png	png	19220	1080x1920	f9c628a61fd8ffcd	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f21_button_run3/screenshot.png	png	17819	1080x1920	4d0d7a32631af010	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f27_nav_run1/click_frame_0.png	png	27402	1080x1920	6f6519fa4ac90640	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/determinism/f27_nav_run1/screenshot.png	png	15311	1080x1920	d9e1c3b79949cf7d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/determinism/f27_nav_run2/click_frame_0.png	png	27402	1080x1920	6f6519fa4ac90640	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f27_nav_run2/screenshot.png	png	15311	1080x1920	d9e1c3b79949cf7d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f27_nav_run3/click_frame_0.png	png	27402	1080x1920	6f6519fa4ac90640	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/determinism/f27_nav_run3/screenshot.png	png	15311	1080x1920	d9e1c3b79949cf7d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f01_color/screenshot.png	png	9348	1080x1920	270350e23274ce04	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f03_alpha/screenshot.png	png	10358	1080x1920	01d5696aa6c27495	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f04_text/screenshot.png	png	21056	1080x1920	05dd339d934f06a8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f05_persian/screenshot.png	png	28523	1080x1920	657e290e11d051e3	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f05b_persian2/screenshot.png	png	25542	1080x1920	d8d06e5c93f981b8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f06_invisible/screenshot.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f08_canvasops/screenshot.png	png	16302	1080x1920	2861abba7882f0a8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f11_linear/screenshot.png	png	10448	1080x1920	4baa2ebe80b34818	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f13_frame/screenshot.png	png	10481	1080x1920	102c885620e762fb	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f14_relative/screenshot.png	png	10401	1080x1920	96eceb0fabf200d7	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f18_lltop/screenshot.png	png	10363	1080x1920	610e7f26243e2f0e	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f21_button/click_frame_0.png	png	19220	1080x1920	f9c628a61fd8ffcd	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f21_button/screenshot.png	png	17819	1080x1920	4d0d7a32631af010	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f26_lifecycle/screenshot.png	png	12743	1080x1920	68d84b1eb86ce30b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f27_nav/click_frame_0.png	png	27402	1080x1920	6f6519fa4ac90640	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f27_nav/screenshot.png	png	15311	1080x1920	d9e1c3b79949cf7d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/foundation/fixtures/f31_resources/screenshot.png	png	33674	1080x1920	e2329e7b18824eb6	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f32_dimen/screenshot.png	png	13918	1080x1920	5c884853747c023d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f38_identity/screenshot.png	png	16170	1080x1920	6f162ceb8c6b51d3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f39_44_runtime/screenshot.png	png	21338	1080x1920	9456c25ff3929b79	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f45_exceptions/screenshot.png	png	16000	1080x1920	f60e9c45a48a6863	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f48_bitmap/screenshot.png	png	18795	1080x1920	093af612f5490c86	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f49_canstext/screenshot.png	png	22110	1080x1920	a549cafedf4a5bce	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f50_imagefmt/screenshot.png	png	10770	1080x1920	f0b13399159522b0	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f51_themeattr/screenshot.png	png	10394	1080x1920	e4b3306809305042	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f52_nanlaw/screenshot.png	png	10361	1080x1920	1b0f3e5e69fab63f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f53_getstring/screenshot.png	png	62373	1080x1920	a40d8694a6dbf3a7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/foundation/fixtures/f54_manifestlabel/screenshot.png	png	24086	1080x1920	446e5d1e7843c9d5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g09_corpus/visual/billthefarmer_collapsed_rows.png	png	10732	1080x1920	b5c8471f074fd198	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g09_corpus/visual/chessclock_null_texts.png	png	12356	1080x1920	4b2655e6ec15605b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g09_corpus/visual/dooz_compose_blank.png	png	10658	1080x1920	2678057fc80a0888	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g09_corpus/visual/gmdice_click_state_change.png	png	27727	1080x1920	1051c716072e9452	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g09_corpus/visual/gmdice_ui.png	png	29403	1080x1920	b1bdc50b2b6b358d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g09_corpus/visual/headingcalculator_custom_views_blank.png	png	11170	1080x1920	e866bef1e7ae5c24	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g09_corpus/visual/microtimer_collapsed_keypad.png	png	18903	1080x1920	a19a05c6ba7b2f17	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g09_corpus/visual/simplestopwatch_ui.png	png	14824	1080x1920	091bc867b5315f08	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g09_corpus/visual/unote_ui.png	png	17441	1080x1920	f24201c6321f41b2	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g10_evidence/visual/billthefarmer_AFTER_editor_fab_06ba8026.png	png	10666	1080x1920	9e65ebcd82aca62a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g10_evidence/visual/billthefarmer_BEFORE_collapsed.png	png	10732	1080x1920	b5c8471f074fd198	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g10_evidence/visual/microtimer_AFTER_rows_57503a12.png	png	17761	1080x1920	4df2f5bcbd85381b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g10_evidence/visual/microtimer_BEFORE_collapsed.png	png	18903	1080x1920	a19a05c6ba7b2f17	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g10_evidence/visual/unote_AFTER_gravity_8197687f.png	png	17433	1080x1920	4b140dd768607060	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g10_evidence/visual/unote_BEFORE.png	png	17441	1080x1920	f24201c6321f41b2	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase0/screenshots/base/chessclock.png	png	12356	1080x1920	4b2655e6ec15605b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase0/screenshots/base/gmdice.png	png	29403	1080x1920	b1bdc50b2b6b358d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase0/screenshots/base/headingcalculator.png	png	11170	1080x1920	e866bef1e7ae5c24	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase0/screenshots/base/microtimer.png	png	17761	1080x1920	4df2f5bcbd85381b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase0/screenshots/base/simplestopwatch.png	png	14824	1080x1920	091bc867b5315f08	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase0/screenshots/base/unote.png	png	17433	1080x1920	4b140dd768607060	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase1_after/screenshots/after/chessclock.png	png	12356	1080x1920	4b2655e6ec15605b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase1_after/screenshots/after/gmdice.png	png	29403	1080x1920	b1bdc50b2b6b358d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase1_after/screenshots/after/headingcalculator.png	png	53467	1080x1920	4a9ca1c1610e45a5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g11g12_evidence/phase1_after/screenshots/after/microtimer.png	png	19975	1080x1920	57efb9e4be563977	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/g11g12_evidence/phase1_after/screenshots/after/simplestopwatch.png	png	14824	1080x1920	091bc867b5315f08	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/g11g12_evidence/phase1_after/screenshots/after/unote.png	png	17433	1080x1920	4b140dd768607060	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/golden03/golden03_screenshot.png	png	39851	1080x1920	c1692d1530de9463	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/hello_color_golden/frame_1080x1920.png	png	42401	1080x1920	f75ee2de5aa13472	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/hello_color_golden/retest_run1_frame.png	png	42401	1080x1920	f75ee2de5aa13472	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/hello_color_golden/retest_run2_frame.png	png	42401	1080x1920	f75ee2de5aa13472	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/hello_color_golden/retest_run3_frame.png	png	42401	1080x1920	f75ee2de5aa13472	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/helloworld_golden/golden_helloworld.png	png	25582	1080x1920	572ecab51a0d68a4	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/helloworld_golden/screenshot.png	png	25582	1080x1920	572ecab51a0d68a4	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/bouncy.png	png	33464	1080x1920	4fdd80b9e7111ee3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/chessclock.png	png	6166	1080x1920	f5cde13304ed1e8e	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/m3_campaign/phase0/screenshots/base/diary.png	png	13866	1080x1920	da3437eaa2cdd7ac	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/dooz.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/m3_campaign/phase0/screenshots/base/gmdice.png	png	30095	1080x1920	60e72cfeebb8591e	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/headingcalculator.png	png	59904	1080x1920	d552153ecbdea0fe	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/microtimer.png	png	23913	1080x1920	58a7fed0e10d14fb	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/openlauncher.png	png	10802	1080x1920	8082a2468579e082	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/scope.png	png	11009	1080x1920	6bdd5477ffde8ec6	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/secuso_todo.png	png	10359	1080x1920	2ca60d80059e6fa7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/simplekeyboard.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/m3_campaign/phase0/screenshots/base/simplestopwatch.png	png	20087	1080x1920	f9fc5994b4307fdf	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/m3_campaign/phase0/screenshots/base/unote.png	png	24560	1080x1920	b0126a09e98034c4	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/master_campaign/phase0/screenshots/base/bouncy.png	png	33464	1080x1920	4fdd80b9e7111ee3	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/master_campaign/phase0/screenshots/base/chessclock.png	png	12356	1080x1920	fe3b4abc0bb3bfcb	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/master_campaign/phase0/screenshots/base/dooz.png	png	10658	1080x1920	2678057fc80a0888	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/master_campaign/phase0/screenshots/base/gmdice.png	png	29403	1080x1920	b1bdc50b2b6b358d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/master_campaign/phase0/screenshots/base/headingcalculator.png	png	53467	1080x1920	4a9ca1c1610e45a5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/master_campaign/phase0/screenshots/base/microtimer.png	png	19975	1080x1920	57efb9e4be563977	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/master_campaign/phase0/screenshots/base/simplekeyboard.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/master_campaign/phase0/screenshots/base/simplestopwatch.png	png	14824	1080x1920	091bc867b5315f08	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/master_campaign/phase0/screenshots/base/unote.png	png	24560	1080x1920	b0126a09e98034c4	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/mc4_telegram/tg_run1_frame.png	png	10851	1080x1920	42e675d7b6af030f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s204_ttt_board/ttt_board_after_2_taps_X_blue_O_cyan.png	png	15465	1080x1920	6613bd4e3492772e	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s204_ttt_board/ttt_board_no_tap_score_00.png	png	11404	1080x1920	6cc0a38ee0dfcde3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s207_ttt_gameloop/o_win.jpg	jpg	92301	1080x1920	b2613b506cb2c53c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s207_ttt_gameloop/restart_score_1_0.jpg	jpg	60391	1080x1920	5c0a01b554a1432b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s207_ttt_gameloop/stalemate.jpg	jpg	100377	1080x1920	c47c0f7abf5f0cc9	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s207_ttt_gameloop/x_win.jpg	jpg	88024	1080x1920	fec199452a2f7d3f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s208_dooz/dooz_after_newgame_blank.jpg	jpg	33291	1080x1920	854f428288ef612b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s208_dooz/dooz_before_newgame_golden.jpg	jpg	45960	1080x1920	b5e4977603f1a6b9	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/s208_dooz/s210_dooz_post_nav_corrupted.jpg	jpg	10395	1080x1920	8efdf7292eb9f128	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s208_gmdice/gmdice_roll1_6.jpg	jpg	70847	1080x1920	96a26211801d6b56	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s208_gmdice/gmdice_roll2_5.jpg	jpg	70369	1080x1920	76e230d3eea3e201	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s208_gmdice/gmdice_roll3_3.jpg	jpg	70460	1080x1920	d97d75c763fcbbea	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s208_ttt_round2/round2_x_win_score_2_0.jpg	jpg	118389	1080x1920	845845bd6e9ee56a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s210_dooz/s210_s36_run_post_nav.jpg	jpg	10361	1080x1920	fd5198600dbc11ef	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s21_f074_f075/f074_micro_bands.png	png	10550	1080x1920	caa5a64a89d046c0	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s43_r349_r350_r351/app.varlorg.unote_30.png	png	17946	540x960	00c7feb3169f6265	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s43_r349_r350_r351/com.chessclock.android_29.png	png	1640	540x960	6c171ba6bc0bc0c5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s43_r349_r350_r351/de.duenndns.gmdice_8.png	png	23495	540x960	7034b1400737f10f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s46_agent/agent_tictactoe_gameplay.gif	gif	8279	270x480	686a756b9349b0ed	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s46_agent/frame_000_launch.png	png	13968	1080x1920	441aaaa0cdeb0827	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s46_agent/frame_004_win_attempt.png	png	18284	1080x1920	dfac0ccbbcbd0d43	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s46_agent/frame_009_final_draw.png	png	19964	1080x1920	80717f17037622d4	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s51_audit/bgclock.jpg	jpg	3345	540x960	257786ca8bffe695	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s51_audit/bouncy.jpg	jpg	15389	540x960	57ff58c5c55c884a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s51_audit/chessclock.jpg	jpg	4246	540x960	465bd2d471c28659	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s51_audit/dooz18.jpg	jpg	3343	540x960	168c62db10ca4150	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s51_audit/dooz23.jpg	jpg	3343	540x960	168c62db10ca4150	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s51_audit/flashlight.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s51_audit/headingcalculator.jpg	jpg	27670	540x960	51e071dff6adcb02	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s51_audit/itsfrz.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s51_audit/microtimer.jpg	jpg	8835	540x960	6d627dd78715837d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s51_audit/notesbillthefarmer.jpg	jpg	4890	540x960	5caa309396b4e2d8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s51_audit/openlauncher.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s51_audit/rttt.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s51_audit/secuso_dicer.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s51_audit/simplekeyboard.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s51_audit/stopwatchmuellerma.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s51_audit/tictactoe_corpus.jpg	jpg	3343	540x960	168c62db10ca4150	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s51_audit/unote.jpg	jpg	9220	540x960	956a018354a2cf33	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s53_frames/gmdice_after.jpg	jpg	42542	1080x1920	1c70c7d690170f88	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s53_frames/gmdice_base.jpg	jpg	41812	1080x1920	f92efbaa0ddd08ea	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s53_frames/headingcalculator_after.jpg	jpg	93258	1080x1920	2ff3976cd934721d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s53_frames/headingcalculator_base.jpg	jpg	94547	1080x1920	e0daa2c81797a909	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s53_frames/microtimer_after.jpg	jpg	41244	1080x1920	a9d660b5d8609027	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s53_frames/microtimer_base.jpg	jpg	30740	1080x1920	142d704d0c2f9a22	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s53_frames/simplestopwatch_after.jpg	jpg	36549	1080x1920	35a2b225b5599c29	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s53_frames/simplestopwatch_base.jpg	jpg	35582	1080x1920	8c2b3cd377976c78	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s53_frames/unote_base.jpg	jpg	32192	1080x1920	50c861d2024c78f4	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s54_frames/chessclock_after.jpg	jpg	39095	1080x1920	410ba2c39922e132	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s54_frames/chessclock_base.jpg	jpg	39834	1080x1920	72ebcdbd375cc7ac	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s54_frames/gmdice_after.jpg	jpg	40466	1080x1920	69d24b43ebf1dd77	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s54_frames/gmdice_base.jpg	jpg	46678	1080x1920	93c8345c9156253b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s54_frames/headingcalculator_after.jpg	jpg	93258	1080x1920	2ff3976cd934721d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s54_frames/headingcalculator_base.jpg	jpg	94547	1080x1920	e0daa2c81797a909	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s54_frames/helloworld_ext01_base.jpg	jpg	47235	1080x1920	ea7a8d0676cb8483	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s54_frames/microtimer_after.jpg	jpg	41244	1080x1920	a9d660b5d8609027	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s54_frames/microtimer_base.jpg	jpg	30740	1080x1920	142d704d0c2f9a22	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s54_frames/simplestopwatch_after.jpg	jpg	36549	1080x1920	35a2b225b5599c29	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s54_frames/simplestopwatch_base.jpg	jpg	35582	1080x1920	8c2b3cd377976c78	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s54_frames/unote_base.jpg	jpg	32192	1080x1920	50c861d2024c78f4	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s55_notes/frame_000_markdown_mode.png	png	11281	1080x1920	ed36649fde4003dc	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s55_notes/frame_001_editor_mode.png	png	10672	1080x1920	332906c83eb50a66	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s55_notes_v2/frame_000_initial.png	png	11281	1080x1920	ed36649fde4003dc	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s55_notes_v2/frame_001_after_fab_click.png	png	10672	1080x1920	332906c83eb50a66	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s59_r379/post2_screenshot.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s60_r380/post_f106_screenshot.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s60_r380/v18_regression_screenshot.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s61_r381/deep560_frame.png	png	10464	1080x1920	f327886d90a1c92d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s62_r381/bouncy_frame0_menu.png	png	35523	1080x1920	c59349de803b3879	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s62_r381/bouncy_frame4_after_state_change.png	png	17369	1080x1920	dbba614573839066	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s62plus_spotlight/anuto_frame0_after_onDraw.png	png	6122	1080x1920	4975803bc0f33274	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s62plus_spotlight/opensudoku_det_run1.png	png	16001	1080x1920	d52085b6d95b0518	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s62plus_spotlight/opensudoku_frame0_folderlist.png	png	15677	1080x1920	61d4124701448340	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s63_spotlight/gmdice_frame0_prefix_rolls_all1.png	png	24415	430x764	d8b14d355b80e2c5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s63_spotlight/gmdice_frame1_postF113_roll2.png	png	25024	430x764	f2c166fe3f8cfd0d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s63_spotlight/siggen_frame0.png	png	6405	430x764	245f57f94d826af9	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s64_spotlight/fk_game_board.png	png	37317	1080x1920	d1591dfae396917c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s64_spotlight/fk_game_deal_response.png	png	37043	1080x1920	c3994c2a822c806d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s64_spotlight/fk_menu.png	png	27771	1080x1920	ece986b801ec31a6	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s64_spotlight/fk_splash.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s64_spotlight/pmk_frame0_indicator.png	png	15106	1080x1920	b019d105aec20073	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s64_spotlight/sc_after_click.png	png	21102	1080x1920	704d6e82d4910a9f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s64_spotlight/sc_frame0_launch.png	png	22934	1080x1920	cfaef8040a9717a0	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s65_spotlight/fr_board.png	png	90004	1080x1920	6e8aad796014b5a2	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s65_spotlight/fr_board_after_taps.png	png	100727	1080x1920	655a98304d2755f1	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s65_spotlight/opmt_game_partial.png	png	39178	1080x1920	ed4395946776084d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s65_spotlight/opmt_menu.png	png	26079	1080x1920	19d61946e0c96d05	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s65_spotlight/tp_game_board.png	png	85892	1080x1920	6c7047c866cfac98	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s65_spotlight/tp_lobby.png	png	34468	1080x1920	d3d779eafba0a9e3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s72_w4_snake/frame_000_launch.png	png	18901	1080x1920	ab1e7bc4effd8d07	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s72_w4_snake/frame_001_after_start_tap.png	png	18936	1080x1920	b78945f7756b3ae2	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s72_w4_snake/frame_004_turn_bottom.png	png	18935	1080x1920	3cb2af9e9a0a0559	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s72_w4_snake/frame_013_final_left.png	png	18936	1080x1920	ae92f72f498c05ac	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s73_snake_autoplay/run_01/screenshot.png	png	18901	1080x1920	ab1e7bc4effd8d07	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s73_snake_autoplay/run_02/screenshot.png	png	18901	1080x1920	ab1e7bc4effd8d07	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s73_snake_autoplay/run_03/screenshot.png	png	18901	1080x1920	ab1e7bc4effd8d07	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s73_snake_autoplay/snake_autoplay.gif	gif	39073	540x960	c2ed4c8dd83186e0	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/androidgamesnake/01_launch.png	png	18901	1080x1920	ab1e7bc4effd8d07	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/androidgamesnake/02_food_capture_frame034.png	png	18926	1080x1920	51c93e7cdf9ea4b7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/androidgamesnake/03_final.png	png	18901	1080x1920	ab1e7bc4effd8d07	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/bouncy/01_launch.png	png	36283	1080x1920	3a5db13350dfb4eb	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/bouncy/03_final.png	png	36283	1080x1920	3a5db13350dfb4eb	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/bouncy/04_frame_000.png	png	36283	1080x1920	3a5db13350dfb4eb	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/bouncy/05_frame_003.png	png	18113	1080x1920	be2cbba03e1d6e42	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/bouncy/06_frame_004.png	png	18113	1080x1920	be2cbba03e1d6e42	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/connectfour_golden_fixture/01_launch.png	png	19147	1080x1920	3992ba5839e7d490	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/s74_ops/connectfour_golden_fixture/02_midgame.png	png	22015	1080x1920	7c30b322bde8e988	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/s74_ops/connectfour_golden_fixture/03_y_wins.png	png	23812	1080x1920	3edd7219b64a4a5a	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/s74_ops/dooz/01_launch.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/dooz/03_final.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/fishrings/01_launch.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/fishrings/02_mid_maxdiff.png	png	90093	1080x1920	d16281a4f369363d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/fishrings/03_final.png	png	90093	1080x1920	d16281a4f369363d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/gmdice/01_launch.png	png	32124	1080x1920	6cc664b289fcc0d0	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/gmdice/03_final.png	png	32124	1080x1920	6cc664b289fcc0d0	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/helloworld/01_launch.jpg	jpg	47235	1080x1920	ea7a8d0676cb8483	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/helloworld/02_frame1.png	png	25419	1080x1920	acfd0dd3a7e03fe8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/microtimer/01_launch.png	png	23789	1080x1920	797d412d268674f0	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/microtimer/03_final.png	png	23789	1080x1920	797d412d268674f0	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/microtimer/04_frame_000.png	png	23789	1080x1920	797d412d268674f0	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/microtimer/05_frame_006.png	png	33742	1080x1920	611fb29991f8ab0b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/opmt/01_launch.png	png	26221	1080x1920	58356e319552e64b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/opmt/03_final.png	png	26221	1080x1920	58356e319552e64b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/opmt/04_frame_000.png	png	26221	1080x1920	58356e319552e64b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/opmt/05_frame_002.png	png	26192	1080x1920	65a4bb36af29ea56	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/opmt/06_frame_004.png	png	26192	1080x1920	65a4bb36af29ea56	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/stopwatch/01_launch.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/stopwatch/03_final.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/telegram/01_launch_engine_default.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/tictactoe/01_launch.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/tictactoe/03_final.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/tictactoe_golden_fixture/01_launch.png	png	13968	1080x1920	441aaaa0cdeb0827	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/s74_ops/tictactoe_golden_fixture/02_first_move.png	png	15179	1080x1920	93cff0c44514bca9	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/s74_ops/tictactoe_golden_fixture/03_x_wins.png	png	19187	1080x1920	e52e4daaba6e96c5	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/s74_ops/tripeaks/01_splash_black.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/tripeaks/02_lobby.png	png	34446	1080x1920	812bcc9b1e7f695d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/tripeaks/03_final_lobby.png	png	34446	1080x1920	812bcc9b1e7f695d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/unote/01_launch.png	png	17529	1080x1920	ba46be4486b74a43	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s74_ops/unote/03_final.png	png	17529	1080x1920	ba46be4486b74a43	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/unote/04_frame_000.png	png	17529	1080x1920	ba46be4486b74a43	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s74_ops/unote/05_frame_006.png	png	17529	1080x1920	ba46be4486b74a43	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s75/dooz_f146_probe/screenshot.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s75/gmdice_roll/screenshot.png	png	32124	1080x1920	6cc664b289fcc0d0	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s75/rnew388_f14/screenshot.png	png	10401	1080x1920	96eceb0fabf200d7	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s75/rnew388_tripeaks/screenshot.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s75/snake_fidelity_probe/screenshot.png	png	18901	1080x1920	ab1e7bc4effd8d07	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s75/snake_restart_probe/screenshot.png	png	18901	1080x1920	ab1e7bc4effd8d07	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s76/dooz_f146_upstream/screenshot.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s76/gmdice_roll_visible/screenshot.png	png	34165	1080x1920	63a229e59c618b0d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s76/snake_dialog_restart/run_a_dialog/screenshot.png	png	18901	1080x1920	ab1e7bc4effd8d07	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s76/snake_dialog_restart/run_b_restart/screenshot.png	png	18901	1080x1920	ab1e7bc4effd8d07	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s79/fishrings/board_state_1_before_taps.jpg	jpg	21942	540x960	f4cc6c3ddc751509	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s79/fishrings/board_state_2_after_rotation_1.jpg	jpg	21855	540x960	2cf02e4db38e9f29	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s79/fishrings/board_state_3_after_rotations_2_3.jpg	jpg	21834	540x960	e47846cab6f91807	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s79/reproofs/gmdice_roll_result_rendered.jpg	jpg	13089	540x960	358fb8d24a0e1b3d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s79/reproofs/microtimer_timer_running.jpg	jpg	12096	540x960	02b5ab7469c18e47	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s79/reproofs/unote_after_add_note_tap.jpg	jpg	10758	540x960	565c3e86aea46b2b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s79/reproofs/unote_main_menu.jpg	jpg	7206	540x960	af363740841770e2	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s79/snake_gameplay.gif	gif	250441	480x854	50c4796599876fec	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/g2048_frame_a.jpg	jpg	21266	540x960	3626c85847f6bb89	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/g2048_frame_b.jpg	jpg	22767	540x960	81834fe0ddc8633a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/g2048_frame_c.jpg	jpg	24303	540x960	1f3315db5d6db6d1	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/g2048_gameplay.gif	gif	979913	400x737	8eb3ab1ab9d097db	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s80/snake_frame_a.jpg	jpg	28939	540x960	b6526f6246421e24	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/snake_frame_b.jpg	jpg	29984	540x960	f199a70adf87a83b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/snake_frame_c.jpg	jpg	23956	540x960	aa70bf42ddd391c6	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/snake_gameplay.gif	gif	493247	400x737	870a8a931e7c9b8b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s80/tetris_frame_a.jpg	jpg	26508	540x960	97a92a16fd826f7a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/tetris_frame_b.jpg	jpg	32255	540x960	8cbea189313f0aa0	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/tetris_frame_c.jpg	jpg	29234	540x960	84cf362cc4d1f9d8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s80/tetris_gameplay.gif	gif	770771	400x737	4198967fae45b948	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s81/batch01_balancetheball.jpg	jpg	14090	540x960	c243e1235acd41e7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/batch01_quinb.jpg	jpg	9188	540x960	cb85480f4e24a02c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/batch01_solitaire_blank.jpg	jpg	9188	540x960	cb85480f4e24a02c	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s81/gmdice_visual_audit.jpg	jpg	19306	540x960	13b1e1c3e61b1b58	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/headingcalculator_visual_audit.jpg	jpg	32179	540x960	a89dd9560e1a63fa	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/notes_AFTER_fix.jpg	jpg	10427	540x960	81985214cc20c60d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/notes_garble_BEFORE_fix_crop.jpg	jpg	8299	1080x120	507123b23587c57b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/probe_dialog_items_AFTER_fix.jpg	jpg	12339	540x960	9ca0f239fdf4fff5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/probe_dialog_items_BEFORE_fix.jpg	jpg	11261	540x960	4e2774b8bfec72cb	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/snake_deluxe_L3_reference.jpg	jpg	33523	540x960	4eac6c488ec4f10d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/stopwatch_AFTER_fix.jpg	jpg	14592	540x960	82d8c8f4bc3ecda4	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s81/stopwatch_garble_BEFORE_fix_crop.jpg	jpg	8225	1080x120	7ed690f7a90cd4da	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82/APP-001.jpg	jpg	3504	304x540	df58754c12132ab8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82/APP-002.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-003.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-004.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-005.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-006.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-007.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-008.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-013.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-014.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-029.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-046.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-079.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/APP-089.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-001.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-002.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-003.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-004.jpg	jpg	5596	304x540	ea3d6ab0ffda7b9f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82/GAME-005.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-006.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-007.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-008.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-009.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-012.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-014.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-015.jpg	jpg	3213	304x540	9595184dc09748a2	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82/GAME-016.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-017.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-018.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-019.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-020.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-023.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-025.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-034.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-046.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-047.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-048.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-050.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/GAME-052.jpg	jpg	3521	304x540	3f979ecb0d674c22	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82/INV-com.best.deskclock.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/INV-com.bnyro.clock.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/MAND-001.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/MAND-002.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/dialog_retest_mykanji.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/dialog_retest_solitaire.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/f156_android.jpg	jpg	3343	304x540	2544a01187808079	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82/f156_simplestopwatch.jpg	jpg	4614	304x540	74a3613be0625a65	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82/f156_solitaire.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/gap_android.jpg	jpg	3343	304x540	2544a01187808079	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/gap_gmdice.jpg	jpg	8084	304x540	48994f9e68010c6a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82/gap_unote.jpg	jpg	4870	304x540	e95b173ba86b8db4	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82/placeholder_retest_stopwatch.jpg	jpg	3504	304x540	df58754c12132ab8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82/placeholder_retest_unote.jpg	jpg	4870	304x540	e95b173ba86b8db4	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s82gfx/l0_solid.jpg	jpg	10705	540x960	07fcd1d9d4ceeda0	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82gfx/l1_quadrant.jpg	jpg	9544	540x960	031067ade3890df9	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82gfx/l2_colortypes.jpg	jpg	10049	540x960	88d929bc2affb405	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82gfx/l3_density.jpg	jpg	9035	540x960	8cbde319d48139dc	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82gfx/l4_xmldrawables.jpg	jpg	11149	540x960	5c831d11b44d8184	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82gfx/l5_canvas.jpg	jpg	14565	540x960	3a837eb888d094a3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s82gfx/l6_glsurface.jpg	jpg	8787	540x960	dc9204ea683b56be	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/apps__app.varlorg.unote_30__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	4995	303x540	a16ab3cbb03435df	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/apps__com.best.deskclock_2036__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/apps__com.bnyro.clock_24__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/apps__com.chessclock.android_29__L0_LOADED_ONLY.jpg	jpg	3415	303x540	526b8ec4bda3dd8c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/apps__de.duenndns.gmdice_8__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	8256	303x540	9bb2d66d982a295a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/apps__dubrowgn.microtimer_8__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	5694	303x540	8e969e922cb98c1d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/apps__omegacentauri.mobi.simplestopwatch_26__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	4780	303x540	ae00cf29e8ef1d75	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/apps__org.billthefarmer.notes_139__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3889	303x540	2ca2a8d023b10407	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/apps__org.debian.eugen.headingcalculator_1__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	15817	303x540	6e27c7b2ac79106a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/apps__se.tube42.p9.android_11__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/gameplay__snake_deluxe__stage1_board_ready.jpg	jpg	15915	303x540	a77da4a2658e3b8e	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/gameplay__snake_deluxe__stage2_snake_chasing_apple.jpg	jpg	15061	303x540	70efbc872ad83dd5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/gameplay__snake_deluxe__stage3_late_game.jpg	jpg	13489	303x540	6da300a35d3af58e	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/gameplay__snake_deluxe__stage4_gameover_dialog.jpg	jpg	13132	303x540	df51d675e09fc35e	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/gameplay__tictactoe_deluxe__stage1_X_center.jpg	jpg	14197	303x540	566a4a28e802a6f6	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/gameplay__tictactoe_deluxe__stage2_midgame.jpg	jpg	15364	303x540	26815a6097ce4767	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/gameplay__tictactoe_deluxe__stage3_O_win_strike.jpg	jpg	14014	303x540	6fcb02ac5cebcdd7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/gameplay__tictactoe_deluxe__stage4_roundover_dialog.jpg	jpg	14014	303x540	6fcb02ac5cebcdd7	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/gameplay__tictactoe_deluxe__stage5_round2_fresh_board.jpg	jpg	13023	303x540	bdce9957024764f3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/games__app.halma_15__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__com.astroloop.game_4__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__com.bupkis.tirailleur_13__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__com.eightsines.firestrike.opensource_2000__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__com.jeffliu.balancetheball_4__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	5654	303x540	df897e2af33b45f3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/games__com.rocket9labs.boxcars_104090__L1_NONBLANK.jpg	jpg	3603	303x540	dc76202601fa8c5d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/games__com.sidhant.queens_93__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__com.simondalvai.ball2box_69__L0_LOADED_ONLY.jpg	jpg	3211	303x540	0cf95a2d01819647	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/games__com.vayunmathur.games.solitaire_20260804__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__cos.premy.mines_16__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	5873	303x540	9f1b5143ce0633c8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/games__crypto.o0o0o0o0o.games.blackjack_4__L0_LOADED_ONLY.jpg	jpg	3211	303x540	0cf95a2d01819647	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__de.tobiasbielefeld.solitaire_71__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__dooz__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__eu.quelltext.memory_7__L0_LOADED_ONLY.jpg	jpg	3213	303x540	01308017340d970b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/games__eu.veldsoft.no.thanks_1__L1_NONBLANK.jpg	jpg	3603	303x540	dc76202601fa8c5d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__g2048_v1.0_vc1__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	9993	303x540	139a31bbbeea6a5a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/games__org.secuso.privacyfriendlybattleship_101__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__page.codeberg.lanticy.guandan_7__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__si.palcka.tarok_203__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__snake_deluxe_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg	jpg	15915	303x540	a77da4a2658e3b8e	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/games__tetris_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg	jpg	13148	303x540	86e7b8b1010fb532	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/games__tictactoe_deluxe_v1.0_vc1__L3_STRUCT_CANDIDATE.jpg	jpg	13023	303x540	38c4ee488b6d4fd3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/games__tictactoeclassic__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	5438	303x540	7bda22b0712cd1be	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83/high__com.newsblur_289__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83/high__io.timelimit.android.aosp.direct_231__L2_GRAPHICALLY_INCOMPLETE.jpg	jpg	3505	303x540	dc49ea985b5d525f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/click_APP-GMDICE_CLICK_00.jpg	jpg	23407	540x960	43baa116f6d93bec	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/click_APP-GMDICE_CLICK_01.jpg	jpg	21540	540x960	5cd63612a45ff7f7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/click_APP-UNOTE_CLICK_00.jpg	jpg	14412	540x960	1cce382d6c99b293	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/click_APP-UNOTE_CLICK_01.jpg	jpg	14412	540x960	1cce382d6c99b293	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/click_GAME-TTT-CLASSIC_CLICK_00.jpg	jpg	16144	540x960	5f853df822529ff8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/click_GAME-TTT-CLASSIC_CLICK_01.jpg	jpg	19600	540x960	d6bc3e9f75c45c64	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/click_GAME-TTT-CLASSIC_CLICK_02.jpg	jpg	25183	540x960	c16900118663077a	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/l4e_layerlist.jpg	jpg	20263	540x960	26c5014ab7087a49	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/l4f_codelayer.jpg	jpg	15596	540x960	ebe98ef4881f7c8c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/snake_head_gameplay.gif	gif	130465	540x960	48b76c5c192ef076	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/snake_head_run_00.jpg	jpg	43650	540x960	05c126126f0f2b04	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/snake_head_run_01.jpg	jpg	42207	540x960	5a708e08b3925fb7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/snake_head_run_02.jpg	jpg	42505	540x960	b1e0eca5f245eafb	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/snake_head_run_03.jpg	jpg	38950	540x960	a859a9011fd46378	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/snake_head_run_04.jpg	jpg	38950	540x960	a859a9011fd46378	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_APP-BNYROCLK.jpg	jpg	9403	540x960	2ade1ebc86d91e27	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_APP-CHESSCLK.jpg	jpg	9474	540x960	c7062f3e18c0ce3d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_APP-FLASHLIGHT.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_APP-FOEHNIX.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_APP-GMDICE.jpg	jpg	23407	540x960	43baa116f6d93bec	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_APP-GMDICE_CLICK.jpg	jpg	21540	540x960	5cd63612a45ff7f7	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_APP-KEYBOARD.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_APP-MICROTIMER.jpg	jpg	15903	540x960	e53b08333e438d8b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_APP-NOTES.jpg	jpg	10983	540x960	e5e6d4369322e446	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_APP-STOPWATCH.jpg	jpg	16493	540x960	be8e920e66bc4e9b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_APP-STOPWATCH2.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_APP-TRANQUIL.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_APP-UNOTE.jpg	jpg	14412	540x960	1cce382d6c99b293	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_APP-UNOTE_CLICK.jpg	jpg	14412	540x960	1cce382d6c99b293	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-2048.jpg	jpg	27584	540x960	54223b6c5fc9c2c5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_GAME-AS2048.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-BALANCE.jpg	jpg	15824	540x960	9b500e55a98ed99d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_GAME-BALL2BOX.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-BATTLE.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-BLACKJACK.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-DICER.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-DOOZ18.jpg	jpg	9326	540x960	dde60886d2f3b6b6	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_GAME-EDGEROLL.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-FISHRINGS.jpg	jpg	8787	540x960	8edbe98b02c51f3f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_GAME-MEMORY.jpg	jpg	8789	540x960	e892c85c8f0e3717	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_GAME-MINES1.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-MINES2.jpg	jpg	10295	540x960	602a0a34b765f562	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_GAME-NOTHANKS.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-PF2048.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-QUEENS.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-QUINB.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-RTTT.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-SNAKE1.jpg	jpg	15739	540x960	873cbfa5419a1dde	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_GAME-SNAKEDX.jpg	jpg	43650	540x960	05c126126f0f2b04	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-SUDOKU.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-SUDOKU2.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-TETRIS.jpg	jpg	38836	540x960	b96bc13dabd6d536	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83b/sweep_GAME-TRIPEAKS.jpg	jpg	8787	540x960	8edbe98b02c51f3f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-TTT-CLASSIC.jpg	jpg	16144	540x960	5f853df822529ff8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-TTT-CLASSIC_CLICK.jpg	jpg	25183	540x960	c16900118663077a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_GAME-TTT-FRZ.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_MAND-P9.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83b/sweep_MAND-TIMELIMIT.jpg	jpg	9403	540x960	2ade1ebc86d91e27	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/s83gfx/f159_APP-001.jpg	jpg	10747	540x960	7cfa5d3f89d13c6b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/f159_MAND-002.jpg	jpg	9472	540x960	2c81fa457dbd341c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l0_solid.jpg	jpg	11683	540x960	3172d8cb0559744f	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l1_quadrant.jpg	jpg	9865	540x960	f3eb4020c8c77b50	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l2_colortypes.jpg	jpg	10722	540x960	2a837c2cc2ed6cca	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l3_density.jpg	jpg	9163	540x960	25d172f3822cf84c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l4_xmldrawables.jpg	jpg	12447	540x960	a6660554a67599f7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l4c_vector.jpg	jpg	22905	540x960	4ff38b5a58159829	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l4d_ninepatch.jpg	jpg	13350	540x960	8af79c9bfc6f0ce4	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l5_canvas.jpg	jpg	17015	540x960	c4f6101a49c70b2c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l5b_canvas2.jpg	jpg	15783	540x960	d060113f7486caa4	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s83gfx/l6_glsurface.jpg	jpg	8789	540x960	afaee27708c03431	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s98/minicraft_autoplay.gif	gif	160932	1080x1920	6bd2a52758834da5	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/s98/snakeneon_autoplay.gif	gif	117425	1080x1920	22434dc31b9a548b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/tictactoe_golden/board_launch.png	png	14082	1080x1920	f35a1038b1a6e1bb	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/tictactoe_golden/board_x_wins.png	png	19183	1080x1920	5d551c0c93fe258d	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/tictactoe_golden/launch_vs_xwins.png	png	13020	1092x960	c20ecf4da1ab7344	A_CANONICAL_GOLDEN	KEEP
+docs/evidence/u013/screens/bouncy-click-frame.png	png	11984	1080x1920	d94aeff5a2fceed8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/u013/screens/bouncy-frame1.png	png	10641	1080x1920	94f1d269cf4946d1	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/u013/screens/chessclock-frame1.png	png	6469	1080x1920	5dbe8083541f5d62	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/u013/screens/gmdice-dialog-visible.png	png	10973	1080x1920	576987f2de249f86	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/u013/screens/gmdice-frame1.png	png	11044	1080x1920	16a1ebfe2787319b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/u013/screens/gmdice-item-selected-2nd-dialog.png	png	10927	1080x1920	c2d67686a1eed291	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/u013/screens/headingcalculator-frame1.png	png	11980	1080x1920	e6a700a887374340	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/u013/screens/notesbillthefarmer-frame1.png	png	10371	1080x1920	d842e31398ab3775	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/u013/screens/unote-frame1.png	png	10891	1080x1920	ae581b8c23d68850	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/canvas_probe/probe_full.png	png	11648	1080x1920	9ff2897ba272ced1	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/dooz/v18_full.png	png	10444	1080x1920	86928d7cd04037b3	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/dooz/v23_full.png	png	10464	1080x1920	f327886d90a1c92d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/s65_reval/fishrings/after_tap1_full.png	png	91087	1080x1920	1a24d500e62d83dd	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/s65_reval/fishrings/after_tap2_full.png	png	101007	1080x1920	3ff52ce7ff8779fd	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/s65_reval/fishrings/after_tap3_full.png	png	100727	1080x1920	655a98304d2755f1	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/s65_reval/fishrings/board_full.png	png	90004	1080x1920	6e8aad796014b5a2	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/s65_reval/fishrings/board_vs_after_tap3_diff.png	png	56823	1080x1920	b79d1108a0bc55dd	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/s65_reval/fishrings/splash_full.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/s65_reval/opmt/game_partial_full.png	png	39178	1080x1920	ed4395946776084d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/s65_reval/opmt/menu_full.png	png	26221	1080x1920	58356e319552e64b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/s65_reval/opmt/menu_vs_game_diff.png	png	27590	1080x1920	a425b9e850259da8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/s65_reval/tripeaks/board_full.png	png	85892	1080x1920	6c7047c866cfac98	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/s65_reval/tripeaks/lobby_full.png	png	34446	1080x1920	812bcc9b1e7f695d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/s65_reval/tripeaks/lobby_vs_board_diff.png	png	40762	1080x1920	69eaa9ffcdf80965	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/s65_reval/tripeaks/splash_full.png	png	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run1/diff.png	png	9398	1080x1920	e2676176be6b3651	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/tictactoe/run1/final_full.png	png	19187	1080x1920	e52e4daaba6e96c5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run1/initial_full.png	png	13968	1080x1920	441aaaa0cdeb0827	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run1/mid_full.png	png	16466	1080x1920	d4c045ddddc73965	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/evidence/visual_forensics/tictactoe/run1/win_full.png	png	19187	1080x1920	e52e4daaba6e96c5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run2/diff.png	png	9398	1080x1920	e2676176be6b3651	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run2/final_full.png	png	19187	1080x1920	e52e4daaba6e96c5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run2/initial_full.png	png	13968	1080x1920	441aaaa0cdeb0827	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run2/mid_full.png	png	16466	1080x1920	d4c045ddddc73965	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run2/win_full.png	png	19187	1080x1920	e52e4daaba6e96c5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run3/diff.png	png	9398	1080x1920	e2676176be6b3651	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run3/final_full.png	png	19187	1080x1920	e52e4daaba6e96c5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run3/initial_full.png	png	13968	1080x1920	441aaaa0cdeb0827	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run3/mid_full.png	png	16466	1080x1920	d4c045ddddc73965	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/evidence/visual_forensics/tictactoe/run3/win_full.png	png	19187	1080x1920	e52e4daaba6e96c5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/history/experiments/exp_graphics_image_e2e/ssw_buttons_after.png	png	9821	860x280	12cced2e97faef1c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/history/experiments/exp_graphics_image_e2e/ssw_buttons_before.png	png	1278	860x280	ebf2b6e4dd77a701	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/history/experiments/exp_graphics_image_e2e/ssw_frame_after_full.png	png	18473	1080x1920	3ac0720b51a2728b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/history/experiments/exp_graphics_image_e2e/ssw_frame_before_full.png	png	10836	1080x1920	e10c7be0df5e7a1d	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/history/s78_quarantine_recovery/docs/achievements/balltap_win.png	png	21338	1080x1920	b6668bd2dbf7c4bf	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/history/s78_quarantine_recovery/docs/achievements/connectfour_y_wins.png	png	19110	1080x1920	27be5bc71b691f4f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/history/s78_quarantine_recovery/docs/achievements/crossword_solved.png	png	28279	1080x1920	c7b8544e02f66b00	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/history/s78_quarantine_recovery/docs/achievements/minesweep_win.png	png	15033	1080x1920	ce332207fa0da156	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/history/s78_quarantine_recovery/docs/achievements/wordpredict_done.png	png	26025	1080x1920	4e698269aefe2164	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/history/s78_quarantine_recovery/docs/evidence/s46_agent/agent_tictactoe_gameplay.gif	gif	8279	270x480	686a756b9349b0ed	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/history/s78_quarantine_recovery/docs/evidence/s46_agent/frame_004_win_attempt.png	png	18284	1080x1920	dfac0ccbbcbd0d43	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/history/s78_quarantine_recovery/docs/evidence/s46_agent/frame_009_final_draw.png	png	19964	1080x1920	80717f17037622d4	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011/u011_gmdice_real_ui.png	png	12237	1080x1920	b6f546f3e8993c84	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/evidence/u011/u011_simplestopwatch_real_ui.png	png	30899	1080x1920	ca00cc1e5ed5c605	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/evidence/u011/u011_telegram_v12_baseline_match.png	png	11587	1080x1920	c57fe56b0c4b0597	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/evidence/u011_1/u011_1_gmdice_real_ui.png	png	11634	1080x1920	6e7aadd6113b760b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/evidence/u011_1/u011_1_simplestopwatch_real_ui.png	png	10836	1080x1920	e10c7be0df5e7a1d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011_1/u011_1_telegram_v12_libpng.png	png	11238	1080x1920	cb1a3bd3e4928a5b	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/evidence/u011_2/clicktest/gmdice_after.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011_2/clicktest/gmdice_before.png	png	11634	1080x1920	6e7aadd6113b760b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011_2/clicktest/ssw_before.png	png	18473	1080x1920	3ac0720b51a2728b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011_2/clicktest/ssw_onButtonStart_after.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011_2/matrix/ssw_golden.png	png	18473	1080x1920	3ac0720b51a2728b	A_CANONICAL_GOLDEN	KEEP
+docs/runtime/evidence/u011_2/matrix/telegram_golden.png	png	11238	1080x1920	cb1a3bd3e4928a5b	A_CANONICAL_GOLDEN	KEEP
+docs/runtime/evidence/u011_2/real_apps/whatsapp_default_screen.png	png	10362	1080x1920	589283448dfb8403	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011_3/clicktest/gmdice_before.png	png	11634	1080x1920	6e7aadd6113b760b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011_3/clicktest/ssw_before.png	png	18473	1080x1920	3ac0720b51a2728b	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011_3/clicktest/ssw_onButtonStart_after.png	png	15622	1080x1920	d6c74f40a0da9ce4	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/evidence/u011_3/oracle/ssw_start_diff.png	png	9341	1080x1920	801fec249df00ee1	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/knowledge/campaign010/evidence/uc010_gles_cube.png	png	1205	320x240	ddf8880d2434ef95	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/knowledge/campaign010/evidence/uc010_gles_cube_1080.png	png	15440	1080x1920	ec9f771c1cae8540	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/knowledge/campaign010/evidence/uc010_gles_cube_320.png	png	1205	320x240	ddf8880d2434ef95	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+docs/runtime/knowledge/run-assets/uc_v12_preview.png	png	7236	540x960	ae8ae43f545d8980	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/knowledge/run-assets/uc_v12_top.png	png	4739	1080x700	ee22d208169ceffc	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/knowledge/run-assets/wsc2_text_pipeline.png	png	41806	1080x340	c655b4ffbde5b22c	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/light_corpus/chessclock_click_sequence.png	png	10212	1308x364	c46602d84d1281d8	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/light_corpus/corpus_launch_grid.png	png	27589	1122x710	8c81c9ed17b2e3c9	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/light_corpus/gmdice_click_sequence.png	png	28456	1308x364	42df2dd7161892e7	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/light_corpus/simplestopwatch_click_sequence.png	png	13742	1308x364	368657ef3c27b2d1	B_RUN_EVIDENCE_COMPACT	KEEP
+docs/runtime/light_corpus/unote_click_sequence.png	png	7209	1308x364	71948a550b3b63cb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/audit_s107/contact_sheet_1.png	png	151382	1112x4216	f22a7d5814c2e389	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/audit_s107/contact_sheet_2.png	png	135040	1112x4216	0ad431d256e624ee	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/audit_s107/contact_sheet_3.png	png	188257	1112x4216	518a711594494697	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/audit_s107/contact_sheet_4.png	png	134043	1112x4216	cc93e6305ae28779	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/batch367_rerun/com.miniandroid.snakeneon/out/screenshot.png	png	17602	1080x1920	15edf65e8ae8dc09	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/batch367_rerun/de.duenndns.gmdice/out/screenshot.png	png	20215	1080x1920	c49b6b7b98471dcf	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/batch367_rerun/zhangman.github.snake/out/screenshot.png	png	10552	1080x1920	f7f8c715acedf27b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont107/opencalc_post107_face.png	png	10555	1080x1920	95280f2abc3c02b3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont107/opencalc_pre107_face.png	png	38369	1080x1920	70bfb9367f7d4630	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont107/telegram_post107_face.png	png	15671	1080x1920	1b7a1fa83dbe74df	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont11/cont11_mosaic.png	png	62621	1188x1512	0c18c353b00c554c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont11/w9/final3_chess_run1.png	png	12621	1080x1920	4163c1369605ead7	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont13/fossify_calendar_post_f518.png	png	7146	1080x1920	e4f5f6f9deb29587	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont13/fossify_math_post_f518.png	png	20071	1080x1920	9be464041ac76a49	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont14/batterymonitor_postfix_screenshot.png	png	15958	1080x1920	443e7f394b0dffbc	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont43_dooz_ext180_frame.png	png	11402	1080x1920	e2cc6320bf1982b9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont43_dooz_ext180_small.png	png	3974	360x640	522720a911d1cf8d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont43_opencalc_pad_zoom.png	png	14841	610x700	1298d021dd6568d2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont43_opencalc_pre_post.png	png	14460	546x480	dbe08c9417d09acd	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont43_tananaev_frame.png	png	1360	270x480	44ecb689f5f8eae9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont56/CONT56_APP_MOSAIC.png	png	173898	940x2941	fa3ff1d82cf5d5c1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont56/alex_full.png	png	3592	540x960	58dcb2bad8a53caa	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont56/bmi_full.png	png	3995	540x960	942b37cf1112206a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont56/cont56_mosaic.png	png	122603	1620x3048	fbbca81e262d3fc6	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont56/dooz180_full.png	png	6285	540x960	5948c62690de1e9f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont56/opencalc_full.png	png	24226	540x960	a85169502344f123	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont56/simplecalc_full.png	png	21610	540x960	372b0ed02cf7417b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont56/tanana_full.png	png	3583	540x960	ad1c2e914b296192	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont57/CONT57_APP_MOSAIC.png	png	188328	940x2935	7527cd0f44b67611	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont57/opencalc_before.png	png	36555	1080x1920	8323c4b0210c6f27	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont57/opencalc_fixed_full.png	png	36930	1080x1920	4aaa2c974d8eeeeb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont58/CONT58_BEFORE_AFTER.png	png	34415	1100x260	e71ed0088728c759	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont58/simplecalc_old_new.png	png	44072	1080x960	b2faa8a2d9cc282e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont58/tanana_rows_before.png	png	828	540x200	3d307b99552a9b55	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont58/tanana_rows_fixed.png	png	27396	540x200	1493ddcb3fd7fa6a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont59/CONT59_APP_MOSAIC.png	png	265809	1660x3086	74c26115cf62b5ab	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont59/bmi_f337_before_after.png	png	20318	1110x1000	61958d04ff119e6b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont59/f338_faces_review.png	png	60123	940x1096	a748c00fa356ce3d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont59/gmdice_f337b_before_after.png	png	23082	1080x660	fdc380c9a1423ae4	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont59/unote_f338_topband.png	png	6192	1080x420	559ac6f3fab190f6	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont60/CONT60_APP_MOSAIC.png	png	262376	1660x2329	814cb56a706e373b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont60/bmi_w1_fixed_form.png	png	16839	1080x580	d6ca5590f51f2342	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont60/opencalc_f341_before_after.png	png	38618	1110x1000	19633ac1bdcf0e70	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont60/opencalc_w2_fixed_bottom.png	png	8595	1080x420	ccb41673cb66a77b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont60/opencalc_w2_fixed_top.png	png	7487	1080x760	9c1b300c96625d71	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont60/opencalc_w2_pad.png	png	34512	1080x1520	773142862a4fc185	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont60/opencalc_w3_bottom.png	png	8527	1080x420	8264ebdf5d5a4918	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont60/opencalc_w3_top.png	png	7422	1080x760	d8883da635bba5fd	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont61/CONT61_APP_MOSAIC.png	png	273082	1660x2329	84e6f4aea7a655b0	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont61/csw_post_f344_r1.png	png	30730	1080x1920	26c81cf599ff52a4	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont61/csw_post_f344_view.png	png	20994	360x640	fa51d50f62f90e80	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont61/csw_pre_f344_view.png	png	17583	360x640	18c64f6234a14f3d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont61/dooz180_post_f344.png	png	15100	1080x1920	21d712e114456465	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont62/cont62_mosaic.png	png	132863	1188x1512	8527e58aba50dd1f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont63/cont63_mosaic.png	png	295980	1490x2786	83a6f5975fa0686a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont64/cont64_mosaic.png	png	237931	1490x2790	158d18c98fa3e9a5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont64/f352_probe_face.png	png	10521	1080x1920	eee74b41944f77ac	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont65/capaudit_face.png	png	90756	1080x1920	4a2d3d12ba22ffec	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont65/cont65_mosaic.png	png	278296	1490x2062	9b029be532630210	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont66/bmi_face_fixed.png	png	24377	1080x1920	f195b53a0bef3ba0	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont66/cont66_mosaic.png	png	230497	1490x2062	d8c38cd1358e79db	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont66/faces_strip.png	png	46507	1390x510	0fb80b81b068ab85	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont66/microtimer_pair.png	png	9742	450x390	1b5cfb5dc0640dce	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont66/simplecalc_pair.png	png	16125	450x800	4d1e2d35dd217a28	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont67/capaudit_face.png	png	90756	1080x1920	4a2d3d12ba22ffec	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/cont67/chessclock_face_fixed.png	png	28680	1080x1920	539f24785105f098	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont67/cont67_mosaic.png	png	347833	1490x2746	1cdddd040a38b0bf	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont67/dooz_play_face.png	png	16080	1080x1920	cfe77c2f1a056f64	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont67/klondike_game_face.png	png	62967	1080x1920	cfe776315e85dc0d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont67/klondike_menu_face.png	png	29383	1080x1920	ede856c27d906f81	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont67/notes_face.png	png	14524	1080x1920	0f480e17a58b8ae9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont68/memory_final_face.png	png	21600	1080x1920	9397d9d2fa730d6f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont68/notes_final_face.png	png	14699	1080x1920	cc67ff1db06c6966	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont69/cont69_mosaic.jpg	jpg	50423	553x1280	b114f5457f4572d3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont69/cont69_mosaic.png	png	896399	2160x5000	8cecd0cb1b1b500b	B_BATCH_FULL_FRAME / size-gated	KEEP
+evidence/cont70/before/bouncy_old_dd0c14257fa1f2af.png	png	35264	1080x1920	d0661a7256ca9925	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont70/before/font_probe_tinytext.png	png	10889	1080x1920	ee00cb7e80a44106	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont70/before/g2048_old_59ca1526611c4622.png	png	20541	1080x1920	7f1c0719f7f26636	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont70/before/tttdeluxe_old_af6094295ecb50e3.png	png	37352	1080x1920	bfc763fd2dfbc563	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont70/cont70_mosaic.jpg	jpg	58743	553x1280	55ff2858f573e5ba	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont70/cont70_mosaic.png	png	894882	2160x5000	6bc532b78a585992	B_BATCH_FULL_FRAME / size-gated	KEEP
+evidence/cont73/cont73_mosaic.png	png	66632	1500x1158	ee157cf960031ef8	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont74/cont74_mosaic.png	png	119544	1180x760	80774a551a839418	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont8/fishrings_gamecontent_frame399.png	png	90093	1080x1920	d16281a4f369363d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/cont8/w4_ladder_probe_screenshot.png	png	17459	1080x1920	deaff88dac2a64f6	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont94/cont94_mosaic.png	png	39239	1860x700	9e8622bf3aa29e8a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont94/s94_c94p_probe_post.jpg	jpg	13831	460x817	8d46ab7a351efa91	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont94/s94_c94p_probe_pre.jpg	jpg	14760	460x817	5dd543e74f016cfd	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont94/s94_forkgram1_post_login.jpg	jpg	13142	460x817	f9209f2fba57e325	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont94/s94_telegram1_post_login_pixels.jpg	jpg	10237	460x817	607e46b8c89dae11	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/cont94/s94_telegram1_pre_white_frontier.jpg	jpg	6659	460x817	9767ca6ea7085f12	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/diff366/root_a/asteroids_com.game.asteroids_revenge/screenshot.png	png	10352	1080x1920	7a2c0ecf0f84935e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/diff366/root_a/memory_com.sanskritbasics.memory/screenshot.png	png	10362	1080x1920	b69984afca4a17f8	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/diff366/root_a/microtimer_dubrowgn.microtimer/screenshot.png	png	24378	1080x1920	df92b4e39a5e838a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/diff366/root_a/spacevertex_fr.arnaudguyon.spacevertex/screenshot.png	png	10352	1080x1920	9f3197101fccc5de	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/diff366/root_a/unote_app.varlorg.unote/screenshot.png	png	17638	1080x1920	7b53e90196c921b5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/diff366/screen/t67_com.sanskritbasics.memory/screenshot.png	png	10355	1080x1920	618e01c85fdd52d1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/f231_installed_access/bouncy_from_installed_run1.png	png	16832	1080x1920	24204bd448a7ffe1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/f231_installed_access/opencalc_from_installed_run1.png	png	36307	1080x1920	ee65f20393968038	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s106_fresh/ballbreak_postfix1/screenshot.png	png	10659	1080x1920	11c2618f9bba184a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s106_fresh/mykanji_postfix1/screenshot.png	png	42988	1080x1920	1a866a235bb2d4f7	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_fresh/bouncy_run1/screenshot.png	png	35804	1080x1920	d3dc18e3c8a09d3c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_fresh/unote_run1/screenshot.png	png	17240	1080x1920	164455f1372a5093	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/com.agatamessina.webinspector_run1/screenshot.png	png	10860	1080x1920	64c21a02266ac9a2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/com.bbzone.isitprime_run1/screenshot.png	png	25361	1080x1920	92add34f6e6c0576	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/com.crome.forecastpoint_run1/screenshot.png	png	10876	1080x1920	ad153ea76a694666	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/com.joeld.minesweeper_run1/screenshot.png	png	10354	1080x1920	c76832b1e609d5ca	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/com.kompact_run1/screenshot.png	png	10860	1080x1920	1cd88603e907a9a5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/com.smorgasbork.hotdeath_run1/screenshot.png	png	75827	1080x1920	c8df403e3eea5c1f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/com.vovagorodok.blidraughts_run1/screenshot.png	png	29274	1080x1920	25c2aaf32b87f45d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/com.vsmartcard.acardemulator_run1/screenshot.png	png	10352	1080x1920	6c6c67802e7db455	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/de.phasenrauscher.bicyweather_run1/screenshot.png	png	20464	1080x1920	7d8f5a93ba0f94d2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/dudeofx.eval_run1/screenshot.png	png	10464	1080x1920	48ac799e444f5152	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/eve.game.tracker_run1/screenshot.png	png	10874	1080x1920	947da683ba0a5006	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/fr.ign.geoportail_run1/screenshot.png	png	11917	1080x1920	d843b5e744cc7b65	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/lab.rreedd.oriens_run1/screenshot.png	png	10956	1080x1920	a4fcdf4f0d1e735d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/me.timeto.app_run1/screenshot.png	png	6861	1080x1920	e31820f281436181	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/net.sourceforge.solitaire_cg_run1/screenshot.png	png	25398	1080x1920	35ab0e1dafa75238	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/org.asafonov.weather_run1/screenshot.png	png	15418	1080x1920	6c6a4dd1e98fe7b8	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/org.billthefarmer.buses_run1/screenshot.png	png	16714	1080x1920	c8341a5fb63fa645	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/org.bobstuff.bobball_run1/screenshot.png	png	32608	1080x1920	7db77d63b5f2eee5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/org.codeberg.scovillo.bubble_run1/screenshot.png	png	39513	1080x1920	f5cfbf41c470e6df	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/org.ucam.ssb22.pinyinfdroid_run1/screenshot.png	png	58237	1080x1920	2a5d05e959795d97	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s107_games/trailence.org_run1/screenshot.png	png	29147	1080x1920	2ec8ea0e34c56934	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s108_telegram/reference_forkgram.png	png	242151	1080x2160	2aaee2158721b314	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s108_telegram/screenshot.png	png	10943	1080x1920	e2dee165c70c760f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s109_webview/breakout_after/screenshot.png	png	10524	1080x1920	475b55ece930db9b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s109_webview/breakout_before/screenshot.png	png	15613	1080x1920	e11aea6172763c2d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s109_webview/breakout_fix48_run1/screenshot.png	png	11927	1080x1920	fccb59e238e66274	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s109_webview/breakout_fix49_run1/screenshot.png	png	12230	1080x1920	85b689194e7f82cb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s109_webview/breakout_fix50b_run1/screenshot.png	png	11892	1080x1920	85f331b4f5c9ab91	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s109_webview/breakout_fix50c_run1/screenshot.png	png	9175	1080x1920	2db9cd6d968e6c79	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s109_webview/breakout_fix52_run1/screenshot.png	png	11168	1080x1920	df0138e74c9fe45e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s109_webview/breakout_run1/screenshot.png	png	14529	1080x1920	74e15f998ebea762	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s110_tickets/html5_breakout/reference_froid.jpg	jpg	75633	591x1280	eaf75893d5f3b88f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s110_tickets/html5_breakout/reference_froid.png	png	1203315	1080x2340	2dbba3ad3e4ceb06	A_CANONICAL_GOLDEN (oversize allowlisted)	KEEP
+evidence/s110_tickets/html5_breakout/screenshot.png	png	15613	1080x1920	e11aea6172763c2d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s110_tickets/native_games/ballbreak/screenshot.png	png	10659	1080x1920	11c2618f9bba184a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s110_tickets/native_games/dooz/screenshot.png	png	10860	1080x1920	64c21a02266ac9a2	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s110_tickets/telegram/compare_reference_vs_current.png	png	477303	1760x1690	812cefc87798a32a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s112_html5_generalization/gates/ballbreak/screenshot.png	png	18833	1080x1920	d6205b78561e369a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s112_html5_generalization/mykanji_run1/screenshot.png	png	32455	1080x1920	530a08c307d41d21	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s113_fullgui/accelerace_run1/screenshot.png	png	10354	1080x1920	ec26091414f6e7f7	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s113_fullgui/blockbuster_run1/screenshot.png	png	13101	1080x1920	4fdae80d6aafd57b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s113_fullgui/gates/breakout/screenshot.png	png	10547	1080x1920	3ead390c724f020c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s113_fullgui/mykanji_final/screenshot.png	png	59860	1080x1920	eb8bcd3d6188fa85	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s113_fullgui/mykanji_run1/screenshot.png	png	44546	1080x1920	2c4ead6dda3bb155	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s113_fullgui/mykanji_run2/screenshot.png	png	41080	1080x1920	fa3773f001bf2cc1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s113_fullgui/mykanji_run4/screenshot.png	png	10354	1080x1920	4d5b82f3403d2793	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s113_fullgui/mykanji_run7/screenshot.png	png	59850	1080x1920	c2da0c74d2721659	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s113_fullgui/mykanji_tap6/screenshot.png	png	61146	1080x1920	5434559809815015	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/accelerace/screenshot.png	png	14060	1080x1920	9b351c34ead3515d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/accelerace/screenshot_small.png	png	5217	540x960	b44a43163712ec32	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/blockbuster_game/screenshot.png	png	12646	1080x1920	48f7f7809b79c048	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/blockbuster_game8/screenshot.png	png	13878	1080x1920	2244b9305123fd5a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/blockbuster_game9/screenshot.png	png	14181	1080x1920	3463bd12bb03479b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/blockbuster_recheck/screenshot.png	png	14004	1080x1920	f813a770420336f9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/blockbuster_run1/screenshot.png	png	23503	1080x1920	91d70bdc27075b61	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/blockbuster_run2/screenshot.png	png	28835	1080x1920	88c2dc17446dce5c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/blockbuster_run3/screenshot.png	png	31265	1080x1920	79dd8cbc6b9595fb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/blockbuster_start/screenshot.png	png	19332	1080x1920	d106ddc5544a2e74	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/final/accelerace_1080.png	png	11162	1080x1920	287ae54b2588faef	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/final/accelerace_small.png	png	3236	540x960	91ad8193ab9a84c2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/final/blockbuster_game_1080.png	png	13536	1080x1920	34ad6b0073b7e6a2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/final/blockbuster_game_small.png	png	8104	540x960	634bd454ef4a8389	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/final/blockbuster_start_1080.png	png	16102	1080x1920	3c9401d4a426ad7c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/final/blockbuster_start_small.png	png	12423	540x960	723173056146c5c6	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/final/mykanji_1080.png	png	59131	1080x1920	62d757eb34afa7ce	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/final/mykanji_small.png	png	28562	540x960	4fadc2b2717ebaa5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/g_ballbreak/screenshot.png	png	10582	1080x1920	5ce2198a06081ffb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/g_ballbreak/screenshot_small.png	png	3131	540x960	919b2dc7891fd433	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/g_dooz/screenshot_small.png	png	2797	540x960	9307a50feb59f970	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s114_bigfix/mykanji/screenshot_small.png	png	2796	540x960	182017b9f6df4a06	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s115_sweep/t216_org.asafonov.weather/screenshot.png	png	19909	1080x1920	a1be652401a7a64a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s117_complete_graphics/accelerace/screenshot_small.png	png	3824	540x960	23e5c8446bf35754	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s117_complete_graphics/blockbuster/screenshot_small.png	png	6496	540x960	797e6caffee230e6	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s117_complete_graphics/g_ballbreak/screenshot_small.png	png	3099	540x960	be6f59090acf1348	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s117_complete_graphics/g_dooz/screenshot_small.png	png	3267	540x960	d17cfe658987c39e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s117_complete_graphics/mykanji/screenshot_small.png	png	19778	540x960	d46bc5361bd31f46	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s117_complete_graphics/weather/screenshot_small.png	png	3961	540x960	b166b1db13e17e38	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s118_complete/accelerace_scene.jpg	jpg	6622	540x960	575c5ee56f2fac63	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s118_complete/blockbuster_gate.jpg	jpg	7906	540x960	ebad8f5879e23949	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s118_complete/mykanji_fullgui.jpg	jpg	15214	540x960	fe3cd1effa92a0b3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s118_complete/weather_moscow_live.jpg	jpg	3932	540x960	ef14b2798cbdd22c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s119_games/g2048_real_score84.png	png	33338	460x817	d16b89b4899fbdfe	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s119_games/minicraft_cottage.png	png	64794	460x817	6418537a326f1605	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s119_games/snake_real_score2.png	png	33188	460x817	200b9a6d2b6063ab	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s119_games/snakeneon_capture.png	png	27064	460x817	7d257026d8f4c2b3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s119_games/tetris_stack_7locks.png	png	68552	460x817	038ff80faf202a6c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s119_games/ttt1_opening_x_o.png	png	44718	460x817	2c4209efc70516c2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s119_games/ttt2_win_and_dialog.png	png	48047	460x817	cdf7810761c569c8	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s119_games/ttt3_round2_score_kept.png	png	39565	460x817	7e09f65164d91280	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s120_new_games/bouncy_menu.png	png	27179	460x817	6de5eb9940052dcb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s120_new_games/fishrings_puzzle_board.png	png	64012	460x817	94e650fdba46a981	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s120_new_games/gmdice_agent_roll_result6.png	png	30381	460x817	90aad5bebca85db5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s120_new_games/opmt_full_menu.png	png	45791	460x817	4a1fa1df6b5e308c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s120_new_games/tripeaks1_new_game_deal.jpg	jpg	36021	460x817	2af24fc6dd40a6db	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s120_new_games/tripeaks2_agent_move_state_change.jpg	jpg	35894	460x817	9caf040e24e5d603	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s121_full_sessions/bouncy_menu.jpg	jpg	16319	450x800	c372611a3b6e9550	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s121_full_sessions/dooz_compose_blank_fail.jpg	jpg	699	168x300	1187bffe8157de3d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s121_full_sessions/fishrings_after_two_taps.jpg	jpg	21060	450x800	37dbb31333b6c088	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s121_full_sessions/gmdice_3d20_three_dice.jpg	jpg	14311	450x800	7954a800b4b49555	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s121_full_sessions/opmt_board_selection.jpg	jpg	21146	450x800	528fde8904e99fba	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s121_full_sessions/tripeaks1_deal.jpg	jpg	35243	450x800	9b51f2be0b9bbef9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s121_full_sessions/tripeaks2_full_session_hud.jpg	jpg	37775	240x900	528e2a414791b9dc	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s122_harder_games/chess_full_load_0err_toolbar.jpg	jpg	7124	460x818	4fa1d86b722c4f6a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s122_harder_games/klondike1_menu_rendered.jpg	jpg	12264	460x818	ae2e3e94cbf8aa14	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s122_harder_games/klondike2_new_game_table_deck.jpg	jpg	15022	460x818	0dc7efe382cc259d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s122_harder_games/klondike3_after_deck_tap_aces_up.jpg	jpg	16086	460x818	2280eef378ae4914	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s123_themed_apps/calc1_themed_keypad_initial.jpg	jpg	30194	460x818	42dcc82ba6d7bd75	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s123_themed_apps/calc2_display_after_keypad_input.jpg	jpg	30192	460x818	cc3d445070cada29	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s123_themed_apps/flappycow0_before_law_corrupt_tiles.jpg	jpg	31880	460x818	71c9b04c2b6bf5c1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s123_themed_apps/flappycow1_start_screen_full.jpg	jpg	41095	460x818	4bb5a19bce0ba7ce	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s123_themed_apps/flappycow2_game_activity_after_play_tap.jpg	jpg	41512	460x818	544257d54e2b9fdb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s123_themed_apps/telegram1_launch_activity_frame.jpg	jpg	4420	460x818	b08f16e6d05fa748	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s123_themed_apps/whatsapp1_main_launch_frame.jpg	jpg	2938	460x818	97d02c6f97e400cb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s124_theme_base/s124_calc1_themed_render.jpg	jpg	12205	258x460	332b7f0bd68f28e2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s124_theme_base/s124_dooz1_blank_frontier.jpg	jpg	2721	258x460	acad0999eb8a09d4	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s124_theme_base/s124_flappy1_start_screen_golden.jpg	jpg	15159	258x460	e48a6ca3359e95bf	A_CANONICAL_GOLDEN	KEEP
+evidence/s124_theme_base/s124_gmdice1_themed_menu.jpg	jpg	4375	258x460	0d56e49f874da0ca	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s124_theme_base/s124_microtimer1_keypad.jpg	jpg	4925	258x460	38a7f34156a91e1d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s124_theme_base/s124_notes1_defstyle.jpg	jpg	3219	258x460	c51cea6802dca89a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s124_theme_base/s124_telegram1_grey_frontier.jpg	jpg	2857	258x460	e916e075506a298c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s124_theme_base/s124_unote1_menu.jpg	jpg	3824	258x460	d4a9a1b8691fca9f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s124_theme_base/s124_whatsapp1_blackwhite_frontier.jpg	jpg	2829	258x460	c5289f6d25d3ca7a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s127_base_graphics/flappycow_menu_golden_13cf4746.jpg	jpg	43685	460x817	4bdd00331c56902f	A_CANONICAL_GOLDEN	KEEP
+evidence/s127_base_graphics/gmdice_stable.jpg	jpg	12158	460x817	8c7fd496d6d7ae25	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s127_base_graphics/headingcalc_golden_a169346e.jpg	jpg	36293	460x817	39e1ba7afcfa9b8a	A_CANONICAL_GOLDEN	KEEP
+evidence/s127_base_graphics/helloworld_light_window.jpg	jpg	13731	460x817	5f803c3d2847c4e6	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s127_base_graphics/notes_restored_65colors.jpg	jpg	8722	460x817	e0df06cc561c9e20	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s127_base_graphics/unote_after_s127_lawful_csl_text.jpg	jpg	10676	460x817	2f803929f78baeea	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s127_base_graphics/unote_before_s126_corrupt_text.jpg	jpg	9646	460x817	4bca8dad1a368c81	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s128_input_law/s128_calc1_before_taps.jpg	jpg	28050	460x817	540f676187374b4d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s128_input_law/s128_calc2_after_taps_123.jpg	jpg	28051	460x817	bf84ae128fc7fa2d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s128_input_law/s128_calc3_golden_reference.jpg	jpg	28050	460x817	540f676187374b4d	A_CANONICAL_GOLDEN	KEEP
+evidence/s128_input_law/s128_flappy1_menu_golden_13cf4746.jpg	jpg	36918	460x817	e6c1be03c52030f7	A_CANONICAL_GOLDEN	KEEP
+evidence/s128_input_law/s128_flappy2_after_tap_chain.jpg	jpg	5053	460x817	2e382e1c3d2f0c18	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s128_input_law/s128_telegram_grey_notarender.jpg	jpg	3584	460x817	0cf0009f21014c61	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s128_input_law/s128_unote_boot_order_77.jpg	jpg	6069	460x817	37e9a55c6c80975a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s128_input_law/s128_whatsapp_bw_notarender.jpg	jpg	2857	460x817	c91f63bc64ad3c50	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s129_input_law/s129_calc_golden_preserved_a169346e.jpg	jpg	31069	460x817	be1ca8118568841c	A_CANONICAL_GOLDEN	KEEP
+evidence/s129_input_law/s129_delegate_tap_real_dex_DELEGATE_CLICK.jpg	jpg	11582	460x817	ea2a186b123e864c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s129_input_law/s129_flappy_menu_golden_preserved_13cf4746.jpg	jpg	8866	460x817	1a0ec5532b2ecafe	A_CANONICAL_GOLDEN	KEEP
+evidence/s129_input_law/s129_telegram_honest_not_a_render_3colors.jpg	jpg	7636	460x817	3bddebe6ce40c739	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s129_input_law/s129_ttt_byte_identical_b5a7a35d.jpg	jpg	6659	460x817	bf92d72cbf91eaae	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s129_input_law/s129_unote_swipe_move_delivery.jpg	jpg	10121	460x817	67aa7ebab1070183	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s129_input_law/s129_velocity_real_dex_VY999.jpg	jpg	12131	460x817	8a5a0046ff3699c9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s129_input_law/s129_whatsapp_honest_not_a_render_2colors.jpg	jpg	7148	460x817	9bf0d81d6dc0c42c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s131_input_wave/sudoku_after_skip.jpg	jpg	7804	460x817	3664b2812a985250	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s131_input_wave/sudoku_after_tap.jpg	jpg	7484	460x817	8dfc5be10607690d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s131_input_wave/sudoku_baseline.jpg	jpg	7484	460x817	8dfc5be10607690d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s132_reuse_wave/bouncy_tablelayout_fanout.jpg	jpg	18909	460x818	2c1df76960613a2e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s132_reuse_wave/oc_after_pad_renders.jpg	jpg	18965	460x818	1f24ebaed22df461	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s132_reuse_wave/oc_before_blank.jpg	jpg	7173	460x818	bde6753702402ffe	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s133_browser/s100_browser_zai_textreader.png	png	19758	1080x1920	6e66b0eb2b3838c2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s133_browser/zai_live_white_shell.png	png	13251	1080x1920	abb6b7ca2c1063db	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s133_webfix/T02_inlineblock_colors.png	png	51171	1080x1920	e0f5e07e3cb9d877	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s133_webfix/T05_img_element.png	png	51170	1080x1920	5025d77da1bb2525	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s133_webfix/T06_svg_shapes.png	png	52637	1080x1920	51670adf0728f197	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s133_webfix/T09_canvas.png	png	52342	1080x1920	21b0116855dddabe	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s133_webfix/T14_2000cell_grid.png	png	51412	1080x1920	c6ac18a4e32b18f0	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s133_webfix/T15_module.png	png	51165	1080x1920	98459e55b9eb52c5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s133_webfix/T16_dyn_import.png	png	51165	1080x1920	b07b20e495cb4782	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s151_trains/run_com.better.alarm_31504/screenshot.png	png	13065	1080x1920	9bc951df869d5b6b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s151_trains/run_de.smasi.tickmate_50/screenshot.png	png	10364	1080x1920	ad99ae65e90634b2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s151_trains/run_fr.neamar.kiss_224/screenshot.png	png	38262	1080x1920	97d2997bbeeb57a9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s151_trains/run_free.rm.skytube.oss_63/screenshot.png	png	10352	1080x1920	8a768de8adfc163b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s151_trains/run_org.billthefarmer.diary_1105/screenshot.png	png	10760	1080x1920	6d84a1c137ab9fde	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s151_trains/run_org.isoron.uhabits_20302/screenshot.png	png	10352	1080x1920	b049136da1c92116	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s151_trains/run_org.y20k.transistor_117/screenshot.png	png	16550	1080x1920	dfb12395417c0d8a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s163_runs/S163_dooz_longshot_screenshot.png	png	6122	1080x1920	4975803bc0f33274	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s163_runs/S163_etar_bgonly.png	png	10353	1080x1920	efe634ea8e8a40f2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s163_runs/S163_telegram_content.png	png	15676	1080x1920	c6239e1eab113203	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s163_runs/S163_todolist_content.png	png	12130	1080x1920	2711311be8c2ce25	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s164_trains/S164_tg_baseline_screenshot.png	png	15676	1080x1920	c6239e1eab113203	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s164_trains/S164_tg_deep_screenshot.png	png	15676	1080x1920	c6239e1eab113203	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s164_trains/S164_tg_train_screenshot.png	png	15676	1080x1920	c6239e1eab113203	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s179_c9/harness/run_160en/screenshot.png	png	13835	1080x1920	922c93c5d228b39d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s179_c9/harness/run_240en/screenshot.png	png	13891	1080x1920	f5991c5eb93d0256	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s179_c9/harness/run_420en/screenshot.png	png	14016	1080x1920	0fa33df6afcced8e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s179_c9/harness/run_420fa/screenshot.png	png	14339	1080x1920	c4c9e4ce894f2d04	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s182_mosaic/S182_MOSAIC.jpg	jpg	35360	140x1280	ff34b7b978639c09	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s182_mosaic/S182_MOSAIC.png	png	1607246	1724x15714	098e28b7f3bca6a8	A_CANONICAL_GOLDEN (oversize allowlisted)	KEEP
+evidence/s183_audit1112/S183_PROOF_STRIP.png	png	151132	1548x2492	d58c9c54efe8ab58	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s183_audit1112/ttt_fixture_01_launch.png	png	13968	1080x1920	441aaaa0cdeb0827	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s183_audit1112/ttt_fixture_02_first_move.png	png	15179	1080x1920	93cff0c44514bca9	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s183_audit1112/ttt_fixture_03_x_wins.png	png	19187	1080x1920	e52e4daaba6e96c5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s183_gdx/S183B_bouncy_face.jpg	jpg	19655	540x960	974d29f51eae5e61	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s183_gdx/S183B_emmanuelttt_face.jpg	jpg	91367	540x960	64929c942cc5cb8d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s183_gdx/S183B_stacktower3d_face.jpg	jpg	8787	540x960	75aee216486cfdbf	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_app.halma_face.jpg	jpg	88722	540x960	9d70e0c2fd90edf4	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_bim.app_face.jpg	jpg	8787	540x960	58fbaa3686deec8b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_com.clavierhaus.gnubg_face.jpg	jpg	8787	540x960	2cff82c211911344	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_com.hfut.schedule_face.jpg	jpg	8787	540x960	6ccc1348f699d0f3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_com.jeffliu.balancetheball_face.jpg	jpg	13938	540x960	ed7bd8513ea19b81	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_cos.premy.mines_face.jpg	jpg	17516	540x960	73ed27c4b3da1966	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_crypto.o0o0o0o0o.games.blackjack_face.jpg	jpg	10128	540x960	016d30c2b39c8579	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_de.seemoo.at_tracking_detection_face.jpg	jpg	8805	540x960	d6df0d595348662c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_de.taz.android.app.free_face.jpg	jpg	8787	540x960	02f5b221a317dae5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_de.tobiasbielefeld.solitaire_face.jpg	jpg	8788	540x960	813483c177c1b595	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_eu.quelltext.memory_face.jpg	jpg	18236	540x960	df818091b58362f2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_eu.veldsoft.no.thanks_face.jpg	jpg	14540	540x960	6a4ed38adc8eb9c3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_me.river.nightbell_face.jpg	jpg	8787	540x960	e094daa28b18da7b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_org.nitri.opentopo_face.jpg	jpg	8788	540x960	f1de9759fd0f62ac	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_org.secuso.privacyfriendlybattleship_face.jpg	jpg	9229	540x960	7b45ef02789f4d42	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_page.codeberg.lanticy.guandan_face.jpg	jpg	8787	540x960	aeed3a0d5af1a0b4	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186C_se.tube42.p9.android_face.jpg	jpg	136391	540x960	fa1b18e3653ef7b3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186I_app.halma_face.jpg	jpg	88850	540x960	2c4ae04f6f730d11	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186I_com.eightsines.firestrike.opensource_face.jpg	jpg	9219	540x960	51381171e7649cbc	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186I_com.vayunmathur.games.solitaire_face.jpg	jpg	8787	540x960	6ccc1348f699d0f3	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s186_s107/S186I_foehnix.widget_face.jpg	jpg	8787	540x960	2cff82c211911344	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s186_s107/S186I_io.github.aoc_normal_face.jpg	jpg	8787	540x960	75aee216486cfdbf	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s186_s107/S186I_se.tube42.p9.android_face.jpg	jpg	136389	540x960	3ac308dc30e35b8b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186_bouncy_face.jpg	jpg	18708	540x960	e5e42edb6e42979f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s186_s107/S186b_bouncy_face.jpg	jpg	19655	540x960	974d29f51eae5e61	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w10/face_com.justdeax.composeStopwatch.jpg	jpg	4307	360x640	d62a0a4a1b2e5176	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/face_com.sidhant.queens.jpg	jpg	4307	360x640	650d26679ee0f522	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/face_cos.premy.mines.jpg	jpg	9242	360x640	d51a6d2ed6a1a13f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/face_crypto.o0o0o0o0o.games.blackjack.jpg	jpg	5153	360x640	62e6c77241b84fa1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/face_eu.quelltext.memory.jpg	jpg	9748	360x640	eef00a3955f94d7f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/face_eu.veldsoft.no.thanks.jpg	jpg	7875	360x640	0dadbf0065cf6a4f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/face_org.secuso.privacyfriendlybattleship.jpg	jpg	4567	360x640	ad6be4d00c3be03d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/face_tibarj.tranquilstopwatch.jpg	jpg	4307	360x640	c5a8376fc11a3c00	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/runs/bj_mcm0/screenshot.png	png	12416	1080x1920	4ece41ef1c8c65f2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/runs/cos.premy.mines/screenshot.png	png	35053	1080x1920	0f46a40022bda8c1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/runs/crypto.o0o0o0o0o.games.blackjack/screenshot.png	png	12416	1080x1920	c1cc981b9719ac34	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/runs/eu.quelltext.memory/screenshot.png	png	28406	1080x1920	6016880aa5ce7dc1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/runs/eu.veldsoft.no.thanks/screenshot.png	png	20563	1080x1920	ecc1a66aa90de0c9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w10/runs/org.secuso.privacyfriendlybattleship/screenshot.png	png	12081	1080x1920	322b6cc8199c1f7e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w11/face_cos.premy.mines.jpg	jpg	9242	360x640	d51a6d2ed6a1a13f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w11/face_eu.veldsoft.no.thanks.jpg	jpg	7875	360x640	0dadbf0065cf6a4f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w12/face_cos.premy.mines.jpg	jpg	9242	360x640	d51a6d2ed6a1a13f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w12/face_eu.veldsoft.no.thanks.jpg	jpg	7875	360x640	0dadbf0065cf6a4f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w13/face_app.halma.jpg	jpg	30199	360x640	ebe4f6fd2256f102	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/face_com.jeffliu.balancetheball.jpg	jpg	7192	360x640	20b4f758840e0f61	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/face_com.vayunmathur.games.solitaire.jpg	jpg	4307	360x640	86448f4aeafddbc4	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/face_cos.premy.mines.jpg	jpg	9242	360x640	d51a6d2ed6a1a13f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w13/face_de.tobiasbielefeld.solitaire.jpg	jpg	4308	360x640	0406ddfb656901a1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/face_eu.veldsoft.no.thanks.jpg	jpg	7875	360x640	0dadbf0065cf6a4f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w13/face_me.river.nightbell.jpg	jpg	4307	360x640	e68d30292b64f681	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/face_page.codeberg.lanticy.guandan.jpg	jpg	4307	360x640	51af2c0befac4374	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/face_se.tube42.p9.android.jpg	jpg	45257	360x640	399bdfc3dc3a6c50	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/runs/app.halma/screenshot.png	png	2865494	1080x1920	82bfcff7617ad1f1	A_CANONICAL_GOLDEN (oversize allowlisted)	KEEP
+evidence/s188_w13/runs/com.jeffliu.balancetheball/screenshot.png	png	23689	1080x1920	56f75ce1992f7b13	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/runs/de.tobiasbielefeld.solitaire/screenshot.png	png	10354	1080x1920	e00d84dcaf973b24	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/runs/me.river.nightbell/screenshot.png	png	10354	1080x1920	ec337731f1223a20	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w13/runs/page.codeberg.lanticy.guandan/screenshot.png	png	10355	1080x1920	abc2bda32f5cef7e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w14/face_app.halma.jpg	jpg	30428	360x640	093613ac3ee800c9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w14/face_se.tube42.p9.android.jpg	jpg	45257	360x640	399bdfc3dc3a6c50	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w14/runs/app.halma/screenshot.png	png	2865516	1080x1920	6a2f48cd7a14518c	A_CANONICAL_GOLDEN (oversize allowlisted)	KEEP
+evidence/s188_w15/face_app.halma.jpg	jpg	30421	360x640	1681688dea992491	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w15/face_app.varlorg.unote.jpg	jpg	5556	360x640	051f5259f7f267cf	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w15/face_com.dozingcatsoftware.bouncy.jpg	jpg	11247	360x640	fa7995f65dbfec08	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w15/face_io.github.yamin8000.dooz.jpg	jpg	6160	360x640	65e6cdd1659e356b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w15/face_se.tube42.p9.android.jpg	jpg	45257	360x640	399bdfc3dc3a6c50	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w15/runs/app.halma/screenshot.png	png	2865519	1080x1920	84bf103506c50f66	A_CANONICAL_GOLDEN (oversize allowlisted)	KEEP
+evidence/s188_w15/runs/app.varlorg.unote/screenshot.png	png	17205	1080x1920	8fb42f5ec092bb03	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w15/runs/com.dozingcatsoftware.bouncy/screenshot.png	png	37496	1080x1920	1379bca052ff078f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w15/runs/io.github.yamin8000.dooz/screenshot.png	png	16160	1080x1920	7c2a2209f7673a47	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w16/face_com.eightsines.firestrike.opensource.jpg	jpg	4471	360x640	cd6de4bb7d0f5127	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w16/face_de.seemoo.at_tracking_detection.jpg	jpg	4307	360x640	7c3549b20ebc850f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w16/runs/com.eightsines.firestrike.opensource/screenshot.png	png	12482	1080x1920	cae73317d8a22661	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w17/face_app.halma.jpg	jpg	174088	540x960	9e24a0909cd54b1f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w17/face_se.tube42.p9.android.jpg	jpg	274791	540x960	c459cbd67e9705d4	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w17/floor_rerun/face_cos.premy.mines.jpg	jpg	9242	360x640	d51a6d2ed6a1a13f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w17/floor_rerun/face_eu.veldsoft.no.thanks.jpg	jpg	7875	360x640	0dadbf0065cf6a4f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w18/face_halma_w18_r1.jpg	jpg	30246	360x640	aeec41f991719319	B_RUN_EVIDENCE_COMPACT	REMOVED(w18 compaction)
+evidence/s188_w18/face_halma_w18_r2.jpg	jpg	30243	360x640	2fb8f1f4b83cfcce	B_RUN_EVIDENCE_COMPACT	REMOVED(w18 compaction)
+evidence/s188_w18/face_halma_w18_r3.jpg	jpg	30523	360x640	833a001b61fb83a4	B_RUN_EVIDENCE_COMPACT	REMOVED(w18 compaction)
+evidence/s188_w18/face_p9_w18_r1.jpg	jpg	45260	360x640	0682bb7acb7e5160	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w18/floor_rerun/face_cos.premy.mines.jpg	jpg	9242	360x640	d51a6d2ed6a1a13f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w18/floor_rerun/face_eu.veldsoft.no.thanks.jpg	jpg	7875	360x640	0dadbf0065cf6a4f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w18/halma_w18_preview.jpg	jpg	43725	360x640	1af3712061e13be2	B_RUN_EVIDENCE_COMPACT	REMOVED(w18 compaction)
+evidence/s188_w18/runs/halma_w18_r1/screenshot.png	png	2863835	1080x1920	ad152874a80eb8a2	A_CANONICAL_GOLDEN (oversize allowlisted)	KEEP
+evidence/s188_w2/face_cos.premy.mines.jpg	jpg	9242	360x640	d51a6d2ed6a1a13f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w2/face_eu.veldsoft.no.thanks.jpg	jpg	7875	360x640	0dadbf0065cf6a4f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w6/face_ts_w6d.jpg	jpg	2247	240x426	44477629da7c07cd	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s188_w7/face_cos.premy.mines.jpg	jpg	9242	360x640	d51a6d2ed6a1a13f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s188_w7/face_eu.veldsoft.no.thanks.jpg	jpg	4307	360x640	86448f4aeafddbc4	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s194_intake/runs/opencalc_int1/screenshot.png	png	20947	1080x1920	b85a22bfc95d3174	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s195_audit/cohort/face_chessclock_s195_r1.jpg	jpg	10601	360x640	bd51b4ba87579886	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s195_audit/cohort/face_gmdice_s195_r1.jpg	jpg	10158	360x640	35e25ed68e21d449	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s195_audit/cohort/face_microtimer_s195_r1.jpg	jpg	9160	360x640	028347190f17eb53	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s195_audit/cohort/face_opencalc_s195_r1.jpg	jpg	13419	360x640	767fabbf1eb8cdaa	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s195_audit/cohort/face_tictactoe_s195_r1.jpg	jpg	31051	360x640	729d4d330eefadb1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s195_audit/cohort/face_tictactoe_s195fix_r1.jpg	jpg	31049	360x640	a178375699ea07b7	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s195_audit/cohort/runs/gmdice_s195_r1/screenshot.png	png	28349	1080x1920	0da01752cf40d3b0	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s195_audit/cohort/runs/tictactoe_s195fix_r1/screenshot.png	png	3360833	1080x1920	fad2abb2cc863a88	A_CANONICAL_GOLDEN (oversize allowlisted)	KEEP
+evidence/s195_audit/gates/runs/spot_halma/screenshot.png	png	2865546	1080x1920	49add77356e041ce	A_CANONICAL_GOLDEN (oversize allowlisted)	KEEP
+evidence/s199/battery/face_chessclock_s199_r1.jpg	jpg	27642	1080x1920	61edf9be1f9c30c8	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s199/battery/face_microtimer_s199_r1.jpg	jpg	23677	1080x1920	53ecf8e253e2c88d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s199/battery/face_opencalc_s199_r1.jpg	jpg	38113	1080x1920	e248f204825d8a10	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s199/face_ttt_dbg4.jpg	jpg	33267	1080x1920	e62919ae463a1e94	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s199/face_ttt_dbg6.jpg	jpg	33267	1080x1920	9583a6cd45c138d9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s199/face_ttt_dbg7.jpg	jpg	34734	1080x1920	64d953931fec9c7d	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s199/face_ttt_first_glyphs.png	png	10846	1080x1920	04c52a493d2cbedf	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s199/face_ttt_s199_int_r1.jpg	jpg	10351	1080x1920	f24815999d0b429a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s200/face_gmdice_gate.jpg	jpg	6082	240x426	50f708534a6bfeb5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/face_mtm_full_final.jpg	jpg	5256	240x426	d9be97b1e9accac6	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/face_mtm_full_row.jpg	jpg	6736	240x426	ed61874b1878426b	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/face_ttt_f622.jpg	jpg	2423	240x426	01b3f49da90c4180	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/face_ttt_f624.jpg	jpg	2425	240x426	75acf8d0155581f7	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/runs/mtm_gate_gmdice_r1/screenshot.png	png	32785	1080x1920	ae82e029ba55d9e3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/runs/mtm_persist_A/screenshot.png	png	27853	1080x1920	24a4def54d17c2ad	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/runs/mtm_persist_B/screenshot.png	png	27495	1080x1920	1432e0071dffc1e4	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/runs/mtm_persist_f621_B/screenshot.png	png	28731	1080x1920	878f113745d076d7	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/runs/mtm_probe_f621/screenshot.png	png	30249	1080x1920	507e0460c1d34e04	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/runs/s202_625_forced/screenshot.png	png	3360830	1080x1920	5a01ca22e080db3a	A_CANONICAL_GOLDEN (oversize allowlisted)	KEEP
+evidence/s200/runs/s202_gmdice_r1/screenshot.png	png	34865	1080x1920	9640cbdb9a2546a7	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/runs/s202_mtm_spot/screenshot.png	png	32322	1080x1920	aab41ad7ef7e0e82	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/runs/s203_final_ttt/screenshot.png	png	22318	1080x1920	4858c1ca39e265b0	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s200/runs/s203_gold_bouncy/screenshot.png	png	37542	1080x1920	9ab17d0ad6a1c7ac	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s204/runs/s204_ttt0/screenshot.png	png	11404	1080x1920	6cc0a38ee0dfcde3	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s204/runs/s204_ttt_tap2/screenshot.png	png	15465	1080x1920	6613bd4e3492772e	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+evidence/s206/runs/s206_ttt0/screenshot.png	png	11386	1080x1920	4a9e70f4d8850ee5	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s206/runs/s206_ttt_tap/screenshot.png	png	13181	1080x1920	517d96c42a36a0bc	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s206/runs/s206_ttt_win/screenshot.png	png	23840	1080x1920	50faa23af687a697	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_cal_p_r3_c1/screenshot.png	png	13182	1080x1920	75dc7e525030352a	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_cal_p_r3_c3/screenshot.png	png	13182	1080x1920	3eb2ce87c969d825	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_gl2_o_win_0/screenshot.png	png	25704	1080x1920	6ea1c45eca7197c2	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_gl2_restart_after_win_0/screenshot.png	png	20314	1080x1920	9b0f4c9aca2578c3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_gl2_stalemate_0/screenshot.png	png	27342	1080x1920	1e1b85a23dfd427f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_gl3_restart_v2_0/screenshot.png	png	11421	1080x1920	1331819c26be89f1	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_gl3_x_win_0/screenshot.png	png	23836	1080x1920	d163d20019b763dc	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_gl_o_win_0/screenshot.png	png	17092	1080x1920	a4b1cbb2e3f8d409	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_gl_restart_after_win_0/screenshot.png	png	17074	1080x1920	10f4770ddcdde04f	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_gl_stalemate_0/screenshot.png	png	22235	1080x1920	43ef9e3bfead86eb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_gold_bouncy/screenshot.png	png	36434	1080x1920	bf2c91442698e536	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_q_r1c1_after_anchor/screenshot.png	png	15349	1080x1920	7ed0abfb03203ef0	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s207_q_row3/screenshot.png	png	13202	1080x1920	9229070b4e6f25fb	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s208_dooz_ng2/screenshot.png	png	10372	1080x1920	e3251e0cb10b63d4	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s208_gmdice_2taps/screenshot.png	png	32121	1080x1920	e5e88455353593c8	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s208_gmdice_d6_1/screenshot.png	png	33336	1080x1920	ff5b2242112b814e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s207/runs/s208_r2_0/screenshot.png	png	20170	1080x1920	abc784d4c23374c8	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s215/runs/ar_probe/screenshot.png	png	278575	1080x1920	d33ee3780610884c	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s215/runs/r1_probe/screenshot.png	png	79553	1080x1920	db240e3ec3dcd119	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s216/cont131/mt_trace/screenshot.png	png	10462	1080x1920	7715cf210a9fb690	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s220/runs/s220_thextech_isTaskRoot/screenshot.png	png	44234	1080x1920	1c4993bf8b24ff67	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s220/runs/s221_dooz_b6/screenshot.png	png	10372	1080x1920	69a5e09cbb3ac4a3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s220/runs/s221_dooz_tht/screenshot.png	png	10768	1080x1920	b345adaccdb3f145	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s220/runs/s222_baseline/screenshot.png	png	11368	1080x1920	e79be3b19abd0ed9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s220/runs/s222_waveA/screenshot.png	png	10689	1080x1920	a750a4e187a5c06e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s220/runs/s222_waveE/screenshot.png	png	10396	1080x1920	7fe8b03c7fffff52	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s223/runs/s223_dooz_render/screenshot.png	png	10367	1080x1920	9946204c2c4995bf	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s223/runs/s224_dooz_default/screenshot.png	png	10480	1080x1920	7d9c6ef961ef5e75	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s223/runs/s224_dooz_tapdrain/screenshot.png	png	10372	1080x1920	b3fb8f6e85a487fd	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s223/runs/s224_dooz_tapdrain2/screenshot.png	png	11467	1080x1920	de070d9584254713	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s224/runs/opmt/screenshot.png	png	74567	1080x1920	60559259cdbf1961	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s224/runs/opmt_tap2/screenshot.png	png	33149	1080x1920	5363b76a2521e2a9	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s225/census_runs/tower3d_r0/screenshot.png	png	6133	1080x1920	62649e56f1765614	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s226/runs/bouncy_d30/screenshot.png	png	8802	1080x1920	9ab298f8f46b9da3	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s226/runs/bouncy_f243/screenshot.png	png	6459	1080x1920	b785f29d2f7233ce	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s57/s57_mosaic.png	png	88922	1296x1220	7d258c670f3072ae	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s58/alex_face.png	png	10361	1080x1920	05390a11ef25ad7e	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s58/s58_mosaic.png	png	419777	2160x4000	205443f17c5d8297	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s58/tripeaks_dark_face.png	png	10352	1080x1920	9f2f20d28b263c36	B_RUN_EVIDENCE_COMPACT	KEEP
+evidence/s59/bouncy_15s_view.png	png	26307	540x960	85963e0ca7a83a03	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/capaudit_probe/assets/anim.gif	gif	562	48x48	e52485424bd7a650	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/capaudit_probe/assets/bg.png	png	554	128x128	8073f6de65894feb	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/capaudit_probe/assets/img.jpg	jpg	967	64x64	27a9974c1998681a	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/capaudit_probe/assets/img.webp	webp	628	64x64	b5f7f91cb780a670	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/capaudit_probe/assets/png_palette.png	png	886	64x64	af6c77b51554885e	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/capaudit_probe/assets/png_rgba.png	png	734	64x64	5b7d4258ed65ad78	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/capaudit_probe/res/drawable/bg.png	png	554	128x128	8073f6de65894feb	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/capaudit_probe/res/drawable/img_jpg.jpg	jpg	967	64x64	27a9974c1998681a	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/capaudit_probe/res/drawable/png_palette.png	png	886	64x64	af6c77b51554885e	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/capaudit_probe/res/drawable/png_rgba.png	png	734	64x64	5b7d4258ed65ad78	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/cont99_img_probe/res/drawable-nodpi/blue_port.png	png	359	100x200	6f5f2a9ec47ad7ff	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/cont99_img_probe/res/drawable-nodpi/green_sq.png	png	224	100x100	e4c6feda22a9f9d8	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/cont99_img_probe/res/drawable-nodpi/red_land.png	png	282	200x100	5b22a4c36faf93a3	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/gate_a_probe/assets/gate_stored.png	png	75	8x8	e847253717c538c0	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/gate_a_probe/res/drawable-mdpi/probe_cfg.png	png	78	16x16	64c36e11f30a0b36	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/gate_a_probe/res/drawable-xhdpi/probe_cfg.png	png	97	32x32	be1a7bf0b4b8bc48	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/gate_a_probe/res/drawable/probe_img.png	png	75	8x8	e847253717c538c0	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/loading_probe/assets/img.png	png	75	8x8	e847253717c538c0	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/loading_probe/res/drawable/probe_img.png	png	75	8x8	e847253717c538c0	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/s133_webfix/assets/fixture_red.png	png	911	300x300	8c57bf234141ba79	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s81_visual_probe/res/drawable/picon.png	png	173	48x48	55eea114abe7b416	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s81_visual_probe/res/drawable/picon2.png	png	163	48x48	fd384a659b8ec1c4	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l1_quadrant/res/drawable/quadrant.png	png	270	64x64	e9ed66707005bcc9	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l2_colortypes/res/drawable/ga.png	png	94	32x32	4d47d0e65a347eec	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l2_colortypes/res/drawable/gray.png	png	82	32x32	a1625a27aac679cd	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l2_colortypes/res/drawable/pal.png	png	200	256x16	b95a1613b3fae161	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l2_colortypes/res/drawable/rgb.png	png	102	32x32	d4eada965e3649f9	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l3_density/res/drawable-hdpi/marker.png	png	242	72x72	db2041ca5e0a0a1c	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l3_density/res/drawable-mdpi/marker.png	png	153	48x48	09bca056388fa2fa	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l3_density/res/drawable-xhdpi/marker.png	png	306	96x96	01f4c964c3ad160d	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l3_density/res/drawable-xxhdpi/marker.png	png	444	144x144	68b888c2e0b4b76f	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l3_density/res/drawable-xxxhdpi/marker.png	png	606	192x192	20645f71fe86dddb	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s82gfx/l4d_ninepatch/res/drawable/btn.9.png	png	139	24x12	3f2d6791d6c2c6f0	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s92battery/casea_covered_button/res/drawable/ic_main.png	png	227	48x48	492e42432f8f6cad	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s92battery/casec_corrupt_png/res/drawable/ic_main.png	png	227	48x48	492e42432f8f6cad	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/s92battery/cased_splash/res/drawable/ic_main.png	png	227	48x48	492e42432f8f6cad	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/s92battery/casee_not_clickable/res/drawable/ic_main.png	png	227	48x48	492e42432f8f6cad	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/s92battery/casef_silent_callback/res/drawable/ic_main.png	png	227	48x48	492e42432f8f6cad	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+fixtures/s92battery/caseg_density/res/mipmap-xxhdpi/ic_dense.png	png	702	144x144	269fb9b303390d82	B_RUN_EVIDENCE_COMPACT	KEEP
+fixtures/s92battery/good/res/drawable/ic_main.png	png	227	48x48	492e42432f8f6cad	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+hc_provenance/run1/screenshot.png	png	42401	1080x1920	f75ee2de5aa13472	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+hc_provenance/run1_run.png	png	42401	1080x1920	f75ee2de5aa13472	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+hc_provenance/run2/screenshot.png	png	42401	1080x1920	f75ee2de5aa13472	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+hc_provenance/run2_run.png	png	42401	1080x1920	f75ee2de5aa13472	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+hc_provenance/run3/screenshot.png	png	42401	1080x1920	f75ee2de5aa13472	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+hc_provenance/run3_run.png	png	42401	1080x1920	f75ee2de5aa13472	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/chessclock.jpg	jpg	4246	540x960	465bd2d471c28659	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/chessclock.png	png	1640	540x960	6c171ba6bc0bc0c5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/dooz_placeholder.jpg	jpg	3644	540x960	c297998408d51339	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/dooz_placeholder.png	png	4368	540x960	f7ffa453e8e4dd9c	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/dooz_s34_placeholder.jpg	jpg	3644	540x960	c297998408d51339	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/dooz_s34_placeholder.png	png	4368	540x960	f7ffa453e8e4dd9c	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/gmdice.jpg	jpg	13107	540x960	4bdd3edba2d36b9e	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/gmdice.png	png	23495	540x960	7034b1400737f10f	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/gmdice_after_tap.jpg	jpg	13097	540x960	9063040bdd774823	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/gmdice_after_tap.png	png	22634	540x960	f038592a05fc51cd	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/headingcalculator.jpg	jpg	5874	540x960	803ed1c31035ddd5	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/headingcalculator.png	png	10905	540x960	84ff54080f77fb85	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/hello_smoke.jpg	jpg	14657	540x960	8100b4d58256abca	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/hello_widgets.jpg	jpg	41323	540x960	2ed9f30d7e01a198	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/hellocolor.jpg	jpg	89025	1080x1920	fa6308a2b2ee2d3e	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/hellocolor.png	png	42401	1080x1920	f75ee2de5aa13472	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/helloworld.jpg	jpg	14366	540x960	6cc7feff8768e82c	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/helloworld.png	png	27926	540x960	53b3f1a6307f5943	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/microtimer.jpg	jpg	8835	540x960	6d627dd78715837d	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/microtimer.png	png	15911	540x960	1608de5dcedb9976	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s35_placeholder_empty.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s35_placeholder_empty.png	png	2885	540x960	487c0e3ef94a8da2	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_bouncy.jpg	jpg	15590	540x960	1d30c1ce30e760c6	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_bouncy.png	png	8267	540x960	cb2b327f0da1769c	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_bouncycastle.jpg	jpg	4111	540x960	ee4aa67f27752857	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_bouncycastle.png	png	2173	540x960	5449db479edab806	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_diceoverflow.jpg	jpg	3343	540x960	168c62db10ca4150	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_diceoverflow.png	png	978	540x960	25a4e794c46f6523	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_dooz_gvariant.jpg	jpg	3643	540x960	114a6bf26ef42ac8	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_dooz_gvariant.png	png	1288	540x960	2f6d9609362d6ea5	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_dooz_variant.jpg	jpg	3643	540x960	114a6bf26ef42ac8	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_dooz_variant.png	png	1288	540x960	2f6d9609362d6ea5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_dooz_vc23.jpg	jpg	4093	540x960	0d5b407184e67229	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_dooz_vc23.png	png	2144	540x960	35df852c47e2be7e	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_edgeroll.jpg	jpg	7652	540x960	7f737ceac85d2bef	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_edgeroll.png	png	3446	540x960	8963d83cb7b0ce5a	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_game2048.jpg	jpg	4094	540x960	cc8e88f1fd1247ae	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_game2048.png	png	2153	540x960	980a8d9cd9967131	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_minesweep_johnathan.jpg	jpg	4098	540x960	d32522e343fe28a5	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_minesweep_johnathan.png	png	2148	540x960	472e9062845ee61e	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.jpg	jpg	3413	540x960	cd1bf3ded0fc23b5	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_secuso_yahtzee.png	png	1040	540x960	be09935fed0b286e	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_sidhant_puzzle.jpg	jpg	3413	540x960	cd1bf3ded0fc23b5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_sidhant_puzzle.png	png	1040	540x960	be09935fed0b286e	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_solitaire.jpg	jpg	3413	540x960	cd1bf3ded0fc23b5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_solitaire.png	png	1040	540x960	be09935fed0b286e	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_thesuncat_sudoku.jpg	jpg	3413	540x960	cd1bf3ded0fc23b5	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_thesuncat_sudoku.png	png	1040	540x960	be09935fed0b286e	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_tictactoe_classic.jpg	jpg	8890	540x960	070672b709f22471	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_tictactoe_classic.png	png	5167	540x960	0f0d3126caa05155	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/s37_tictactoe_legacy.jpg	jpg	3343	540x960	168c62db10ca4150	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/s37_tictactoe_legacy.png	png	978	540x960	25a4e794c46f6523	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/scroll_min.jpg	jpg	9818	540x960	44f02ba4dd09a169	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/simplekeyboard.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/simplekeyboard.png	png	2885	540x960	487c0e3ef94a8da2	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/simplestopwatch.jpg	jpg	9355	540x960	22e722d84afee038	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/simplestopwatch.png	png	17784	540x960	1dfce32108ae2cad	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/stopwatch.jpg	jpg	9678	540x960	6fe8a5c9e1f98913	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/stopwatch.png	png	19942	540x960	5cbe16417a3af8fb	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/sttt_partial.jpg	jpg	3632	540x960	0d78d2ff2b8e5e40	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/sttt_partial.png	png	2885	540x960	487c0e3ef94a8da2	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+miniandroid/docs/evidence/apps_ledger/tictactoe_xwins.jpg	jpg	6638	540x960	1ff77ff549f0c151	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/tictactoe_xwins.png	png	9093	540x960	5470646c517d8db2	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/unote.jpg	jpg	6570	540x960	143ed0ba2e8fa70c	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/docs/evidence/apps_ledger/unote.png	png	9675	540x960	f14638a9869dfa42	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/c9_resources/res/drawable-hdpi/c9_photo.png	png	109	60x30	e759b52e10514a3d	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/c9_resources/res/drawable-mdpi/c9_photo.png	png	93	40x20	0196f4df43732fd1	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/c9_resources/res/drawable-nodpi/c9_nodpi.png	png	93	40x20	e567815738416370	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/c9_resources/res/drawable/c9_webp.webp	webp	38	24x12	f516359ec69c3ad7	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/density_matrix/res/drawable-mdpi/icon.png	png	94	40x20	87defa272e9be6d9	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/density_matrix/res/drawable-nodpi/icon_nodpi.png	png	94	40x20	4af63535a29bff34	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/density_matrix/res/drawable-xhdpi/icon.png	png	94	40x20	4394bed2fbd7d6a3	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/density_matrix/res/drawable-xxxhdpi/icon.png	png	94	40x20	0e1317042bcc656b	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/density_matrix/res/drawable/icon.png	png	94	40x20	5b6df1ff3e013cba	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/hello_color/res/drawable/hello_art.png	png	3471	256x256	ce33cb74d19bef96	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/hello_widgets/res/drawable/w_banner.png	png	1412	480x140	c873ad5eb9adb17a	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/s95_vector/res/drawable-hdpi/ic_tri.png	png	264	72x72	ee46a0eb3c771719	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures/s95_vector/res/drawable-mdpi/ic_tri.png	png	154	48x48	8b9e937eef33f2c0	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures_foundation/f48_bitmap/res/drawable/ic_red.png	png	132	60x40	4b3743d71eaac004	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/gif_test.gif	gif	165	100x60	acfe940d4fa2565d	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/img_gray.png	png	224	100x60	f56f7cc48568d29c	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/img_jpg.jpg	jpg	741	100x60	016973bd0aa175b3	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/img_odd.png	png	112	37x23	b4606ff481a617d6	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/img_palette.png	png	1134	100x60	d798e8ac0472f480	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/img_webp.webp	webp	98	100x60	a04eaf1ca0efc1b1	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures_foundation/f50_imagefmt/res/drawable/one.png	png	70	1x1	cf5d58995cb3a089	B_RUN_EVIDENCE_COMPACT	KEEP
+miniandroid/tests/fixtures_foundation/f54_manifestlabel/res/drawable/app_icon.png	png	69	1x1	61c0dfb403a4e92c	B_RUN_EVIDENCE_COMPACT	KEEP
+probe_store/data/data/com.probe.gatea/files/copy_gate.png	png	75	8x8	e847253717c538c0	DEDUP_REMOVED (see evidence_duplicate_groups.tsv)	REMOVED(dedup)
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/Screenshot_mainview.png	png	53722	1080x1920	8d8f1b661ac4ad72	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/Screenshot_mainview1.png	png	51190	1080x1920	229062dfa0bcb364	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/assets/images/restart_game.png	png	898	96x96	cb571dfd1119aaa2	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-hdpi/ic_launcher.png	png	1884	72x72	7ba4e203b8d6ba2d	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-hdpi/ic_launcher_foreground.png	png	2482	162x162	4ae134050e4f1bbc	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-hdpi/ic_launcher_round.png	png	3764	72x72	4ead2b4588c9b072	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-mdpi/ic_launcher.png	png	1337	48x48	b87982f50ab6ab7f	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-mdpi/ic_launcher_foreground.png	png	1648	108x108	b43bb47731fe1f21	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-mdpi/ic_launcher_round.png	png	2432	48x48	6428d7d906216794	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-xhdpi/ic_launcher.png	png	2727	96x96	4addce7757595e09	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-xhdpi/ic_launcher_foreground.png	png	3424	216x216	841d59e819505e76	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-xhdpi/ic_launcher_round.png	png	5412	96x96	224a801b86dbcc1e	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-xxhdpi/ic_launcher.png	png	4127	144x144	7634c28e9f733d3b	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-xxhdpi/ic_launcher_foreground.png	png	5529	324x324	ba22935d4e9cb0dc	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-xxhdpi/ic_launcher_round.png	png	8461	144x144	a84f10f6fde2cd68	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-xxxhdpi/ic_launcher.png	png	5696	192x192	7949f35b2649d892	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-xxxhdpi/ic_launcher_foreground.png	png	7781	432x432	e2c435710448a43b	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/android/res/mipmap-xxxhdpi/ic_launcher_round.png	png	12165	192x192	05554a895788e0bd	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/en-US/images/featureGraphic.png	png	21782	1024x500	6a20086cf672633d	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/fastlane/metadata/android/en-US/images/icon.png	png	18791	512x512	14f1cacaa270a4fd	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.emmanuelmess.tictactoe/src/TicTacToeGame-1.0.0/icon.png	png	16874	848x936	82dc641506e82b4d	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.github.muellerma.stopwatch/src/Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/app/src/main/res/mipmap-hdpi/ic_launcher.png	png	3966	72x72	78c60c828a3d1b5a	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.github.muellerma.stopwatch/src/Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/app/src/main/res/mipmap-mdpi/ic_launcher.png	png	2530	48x48	6ca4f2b1cc895d3d	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.github.muellerma.stopwatch/src/Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/app/src/main/res/mipmap-xhdpi/ic_launcher.png	png	5643	96x96	77b9eddcf202c2fe	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.github.muellerma.stopwatch/src/Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/app/src/main/res/mipmap-xxhdpi/ic_launcher.png	png	9043	144x144	6ae4399b398a637a	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.github.muellerma.stopwatch/src/Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png	png	12920	192x192	dd7c3d1e58b1dd17	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.github.muellerma.stopwatch/src/Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/fastlane/metadata/android/en-US/images/featureGraphic.png	png	462408	1024x500	92799156d1f128fd	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.github.muellerma.stopwatch/src/Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/fastlane/metadata/android/en-US/images/icon.png	png	15579	512x512	f0a6c8c20178d5b2	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/com.github.muellerma.stopwatch/src/Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png	png	48654	1080x2280	94acc73db442a2a7	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable-hdpi/ic_action_brightness_high.png	png	797	48x48	a756ddba250fedc3	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable-hdpi/ic_action_brightness_low.png	png	750	48x48	c23c534a76d33fdb	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable-hdpi/logo.png	png	7503	72x72	013bb48565cc95e3	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable-xhdpi/ic_action_brightness_high.png	png	1021	64x64	025c130f93eca0ad	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable-xhdpi/ic_action_brightness_low.png	png	959	64x64	fb037f01e76536e0	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable-xxhdpi/ic_action_brightness_high.png	png	1408	96x96	dcc8b1b1654112db	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable-xxhdpi/ic_action_brightness_low.png	png	1409	96x96	8f7a916ab3ccadd4	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/ic_action_brightness_high.png	png	476	32x32	3c913779ff1f1ffc	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/ic_action_brightness_low.png	png	504	32x32	bbe2c065386d2820	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/logo.png	png	3773	48x48	e676f89efb73a0b9	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_down_disabled.9.png	png	422	80x45	596294b6208043eb	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_down_disabled_focused.9.png	png	580	80x45	662cffd19081c3d7	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_down_normal.9.png	png	795	80x45	f17e8f942ac659a4	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_down_pressed.9.png	png	1161	80x45	777bcf5f35c592b2	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_down_selected.9.png	png	1170	80x45	b45db62121d416b1	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_input_disabled.9.png	png	280	80x41	f73658e73e57dda6	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_input_normal.9.png	png	582	80x41	8032adac1441f1e7	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_input_pressed.9.png	png	604	80x41	30d8d5fa15af4797	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_input_selected.9.png	png	517	80x41	874f18f2bb021d7c	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_up_disabled.9.png	png	491	80x42	327b0b5ad926c56f	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_up_disabled_focused.9.png	png	728	80x42	4c96680fefb95d31	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_up_normal.9.png	png	989	80x42	dcd26e0115e0e463	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_up_pressed.9.png	png	1433	80x42	7dac77868749d88b	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/de.duenndns.gmdice/src/gamemasterdice-1.0/res/drawable/timepicker_up_selected.9.png	png	1428	80x42	35dae8ef11a49c38	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/dubrowgn.microtimer/src/micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/app/src/main/ic_launcher-playstore.png	png	19324	512x512	a9f4f6d3d562e7c1	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/dubrowgn.microtimer/src/micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/fastlane/metadata/android/en-US/images/icon.png	png	2800	192x192	a68e5fcd3ed954d5	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/dubrowgn.microtimer/src/micro-timer-825faf52fbcb886e8ef6637bcb0e8478b4b0162e/fastlane/metadata/android/en-US/images/phoneScreenshots/main.png	png	33	?	e900b65e5a2a35ea	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-hdpi/ic_launcher.png	png	5607	72x72	4bd3cfc9049a9e6b	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/blue.png	png	29160	300x300	08bd1ae3f586cab6	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/bottomaanticlockwise.png	png	13801	600x424	0e69a0feec583ab2	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/bottombclockwise.png	png	13922	600x424	eb191512d3770a70	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/ebingo_logo.png	png	32216	250x66	4a9cfb6c5aa16f6e	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/green.png	png	42300	300x300	a81a060ef146bde3	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/ic_launcher.png	png	3310	48x48	2cc0952d73a7bfd3	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_1.png	png	5406	42x41	6cb1a4b25caa0046	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_2.png	png	6119	41x57	952581fcdc60ac5a	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_3.png	png	4199	27x57	4399ce14e9731556	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_4.png	png	4662	42x41	d150c2a46f2988e1	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_5.png	png	5367	41x50	ca0cf279cb5dc31e	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/logo_letter_6.png	png	4903	42x41	6e192bdab925df91	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/red.png	png	29165	300x300	7e14d12e8d8f90ad	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/topaclockwise.png	png	13935	600x424	af7b098774ee13b9	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/topbanticlockwise.png	png	13835	600x424	ceb4b87ad2cabf85	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-mdpi/violet.png	png	32356	300x300	074556bc0459b7cd	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-xhdpi/ic_launcher.png	png	8064	96x96	48b218312d365519	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-xxhdpi/ic_launcher.png	png	13995	144x144	b928bd61d150b9ac	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/FishRingsForAndroid/src/main/res/mipmap-xxxhdpi/ic_launcher.png	png	20839	192x192	46776a2c4d5ce150	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/fastlane/metadata/android/en-US/images/featureGraphic.png	png	111660	1024x500	8f7c538228cdd466	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/fastlane/metadata/android/en-US/images/icon.png	png	67640	512x512	50d33bd6e3f28262	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/fastlane/metadata/android/en-US/phoneScreenshots/screenshot1.png	png	171605	720x1280	00fb81ab4498bdff	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/eu.veldsoft.fish.rings/src/Fish-Rings-for-Android-dc3807e7d405843453afc798c6cc02205b65e1fb/fastlane/metadata/android/en-US/phoneScreenshots/screenshot2.png	png	99909	720x1280	0e65627694338db8	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/ic_launcher-playstore.png	png	4557	512x512	104c48369a1f9cf6	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-hdpi/ic_launcher.png	png	2698	72x72	af116e197884971c	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-mdpi/ic_launcher.png	png	1575	48x48	d34b26f18e8f9426	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xhdpi/ic_launcher.png	png	3488	96x96	b4ea46818432eb31	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xxhdpi/ic_launcher.png	png	5749	144x144	b9e57338bf9f1237	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png	png	8230	192x192	ca24e9ae5f546003	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg	jpg	60237	576x1280	f23bc1a7bf7943cf	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg	jpg	39780	576x1280	222372c1b937ff2c	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg	jpg	47459	576x1280	cb8016f344f477d2	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/screenshot/1.0.0/Screenshot_2022-11-19-19-48-49-220_io.github.yamin8000.dooz.jpg	jpg	280115	1080x2400	797951f5c57a555c	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/io.github.yamin8000.dooz/src/Dooz-0c60e78b861a29fab26cc11e7e7a30a419527064/screenshot/alpha/photo_2022-09-21_04-19-55.jpg	jpg	60673	576x1280	cc03df22daf93e90	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/app/src/main/res/drawable/board.png	png	10339	430x431	188efd42485ebeb8	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/app/src/main/res/drawable/gear.png	png	2852	211x215	63ff051b4f2a0b3b	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/app/src/main/res/drawable/homescreenwithtext.png	png	64793	1080x1920	3e109b221685116a	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/app/src/main/res/mipmap-xxxhdpi/icon.png	png	11255	500x500	c461b2d37109cf2d	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/app/src/main/res/mipmap-xxxhdpi/iconcircle.png	png	18342	500x500	139bb90ddc4bcb5e	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png	png	107990	1080x2220	5f4d87f596a92791	B_RUN_EVIDENCE_COMPACT	KEEP
+upstream/corpus/one.scarecrow.games.OPMT/src/OPMT-3240c4cf/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png	png	129832	1080x2220	5e0c6db2d4501802	B_RUN_EVIDENCE_COMPACT	KEEP

@@ -71,6 +71,18 @@ def run_app(apk, tag, taps=None, frames=8, delay=250):
         shot = cands[-1] if cands else None
     rec = {'wall_s': wall, 'face_sha16': sha16(shot) if shot else None,
            'uncaught': len(re.findall(r'uncaught exception|FATAL', log))}
+    # WP10 §7 prevention (#587): size/noise policy — a screenshot above the
+    # byte budget is colored-noise suspicion (uninitialized framebuffer bytes
+    # compress badly), never silently accepted as evidence.
+    if shot is not None:
+        nbytes = shot.stat().st_size
+        rec['screenshot_bytes'] = nbytes
+        if nbytes > 1_048_576:
+            rec['screenshot_verdict'] = 'NOISE >1MiB (canonical allowlist entry required)'
+        elif nbytes > 800_000:
+            rec['screenshot_verdict'] = 'NOISE-SUSPECT >800KB'
+        else:
+            rec['screenshot_verdict'] = 'OK'
     return rec
 
 
