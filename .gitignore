@@ -336,3 +336,7 @@ evidence/s200/runs/ttt_f62*
 evidence/s200/runs/*.console.log
 evidence/s204/wt_1b4d0293/
 evidence/s204/wt_head/
+
+# S230: raw GitHub API exports are local fetch artifacts (WP0 no-giant-export law)
+evidence/s230/issue*.json
+evidence/s230/issue*_comments.json

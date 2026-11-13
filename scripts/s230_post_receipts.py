@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """S230: post the wave receipts on #586, #585, #587 and push."""
 import json
+import os
 import subprocess
 
 REPO = "Sh-TB/MiniAndroid-Compatibility-Runtime"
@@ -10,7 +11,7 @@ def token():
     cred = subprocess.run(["git", "credential", "fill"],
                           input="protocol=https\nhost=github.com\n\n",
                           capture_output=True, text=True,
-                          cwd="/home/z/my-project").stdout
+                          cwd=subprocess.run(["git","rev-parse","--show-toplevel"],capture_output=True,text=True,cwd=os.path.dirname(os.path.abspath(__file__))).stdout.strip() or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))).stdout
     return [l.split("=", 1)[1] for l in cred.splitlines()
             if l.startswith("password=")][0]
 

@@ -834,7 +834,7 @@
    "lifecycle": "frozen \u2014 no new files, no new directories",
    "tracked_file_count": 6166,
    "snapshot_sha256": "822f3270d95ad6e2773f9bd9d6bcfa9c7a8ed90d70689db122db7b5a193346bf",
-   "basis": "sorted tracked-children list (s229_s213_s214 excluded per wave-prefix rule); re-baselined at the S230 ledgered migration wave (#587): 15 evidence/ paths replaced png->jpg under the disposition ledger evidence/s230/legacy_migration_ledger.tsv + consumer checks (S214 migration clause); count unchanged; re-baselined again at the S226 TRANSFER receipt (S230): evidence/s156_4app/ registered and landed per #586"
+   "basis": "sorted tracked-children list (s229_s213_s214 excluded per wave-prefix rule); re-baselined at the S230 ledgered migration wave (#587): 15 evidence/ paths replaced png->jpg under the disposition ledger evidence/s230/legacy_migration_ledger.tsv + consumer checks (S214 migration clause); count unchanged; re-baselined again at the S226 TRANSFER receipt (S230): evidence/s156_4app/ registered and landed per #586; final S230 re-baseline (receipt wave: s230 ledgers/census tracked, raw API exports excluded by .gitignore)"
   },
   "docs/history": {
    "lifecycle": "frozen \u2014 no new files, no new directories",
