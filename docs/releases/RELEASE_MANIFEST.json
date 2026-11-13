@@ -1,7 +1,33 @@
 {
+ "schema": "MiniAndroid release manifest v2 (S214 \u2014 #587 comment 6853939129)",
  "version": "v0.0.6.2",
  "release_date": "2026-11-13",
  "git_commit": "release branch tip at tag creation (see RELEASE_v0.0.6.2.md; tag v0.0.6.2)",
+ "release_class": {
+  "value": "linux-only-preview",
+  "law": "S214 no-silent-downgrade: a normal/stable desktop release requires BOTH linux-x64 and windows-x64 PASS. v0.0.6.2 Silver ships Linux x86_64 only \u2014 it is classified as a Linux-only preview, NOT a completed cross-platform release; the platform gap is prominent here, in the release notes and on the GitHub release page",
+  "windows_status": "BLOCKED",
+  "note": "S214 no-silent-downgrade: a normal/stable desktop release requires BOTH linux-x64 and windows-x64 PASS. the Windows x86_64 artifact is BLOCKED (see required_platforms.windows-x64), so v0.0.6.2 Silver ships Linux x86_64 only \u2014 it is classified as a Linux-only preview, NOT a completed cross-platform release; the platform gap is prominent here, in the release notes and on the GitHub release page"
+ },
+ "required_platforms": {
+  "linux-x64": {
+   "status": "PASS",
+   "artifact": "MiniAndroid-v0.0.6.2-linux-x64.tar.gz",
+   "sha256": "e45433dda4ca897e9cd95e78f9c77bac0d48a594e18386930056b061f9c14629",
+   "bytes": 4761562,
+   "build": "clean clone, make -C miniandroid -j1, g++ 14.2.0 Debian 13; stripped binary (build-id only delta vs main-tree build)",
+   "verification": "out-of-source smoke test: demo APK + real gmdice APK reproduce pinned face 3891679d; 6-pin byte-exact HOLD battery 28/28"
+  },
+  "windows-x64": {
+   "status": "BLOCKED",
+   "artifact": null,
+   "sha256": null,
+   "bytes": null,
+   "blocker": "no Windows-capable build in this environment: the runtime links 11 POSIX C-dependency families (zlib, libjpeg, sqlite3, openssl, mpg123, sndfile, freetype, harfbuzz, fribidi, libpng, webp) that have no Windows builds in the tree, and 15 tracked sources use POSIX-only APIs (dlfcn/dlopen, execinfo backtrace, pthread, mmap, sys/utsname)",
+   "diagnosis": "docs/ci/WINDOWS_TOOLCHAIN.md (measured 2026-11-13: zig 0.17.1 -target x86_64-windows-gnu compile probe of 4 representative TUs \u2014 exact first errors recorded; cross-compile attempt script scripts/release/build_windows_zig.sh)",
+   "unblock_path": "Windows dependency builds (vcpkg/pinned sources) + POSIX shim layer (dlopen->LoadLibrary, execinfo->DbgHelp, pthread shim) + CI windows runner; tracked in #386"
+  }
+ },
  "parent_release": {
   "version": "v0.0.6.1-Exchequer",
   "date": "2026-11-02",
@@ -53,15 +79,15 @@
   {
    "version": "v0.0.6-Leghorn",
    "date": "2026-09-16",
-   "note": "last packaged Linux/Windows binaries; NOT re-shipped"
+   "note": "last packaged Linux/Windows binaries; NOT re-shipped and NOT re-labelled for v0.0.6.2"
   }
  ],
  "changelog": "miniandroid/CHANGELOG.md#v0062---2026-11-13",
  "release_notes": "docs/releases/RELEASE_v0.0.6.2.md",
  "known_limitations": [
+  "PLATFORM: Windows x86_64 artifact BLOCKED (S214 WP1) \u2014 v0.0.6.2 is a Linux-only preview, not a completed cross-platform release; R19 remains OPEN until a tested Windows artifact passes the same gates",
   "ARM-only APKs out of scope (ABI_OUT_OF_SCOPE)",
   "Compose subset: first-frame proven; deeper stateful apps partial (dooz frontier)",
-  "stub census + uncaught exceptions recorded per run; SUCCESS claims bounded",
-  "Windows binary honestly omitted this release (no pinned toolchain in build env)"
+  "stub census + uncaught exceptions recorded per run; SUCCESS claims bounded"
  ]
 }

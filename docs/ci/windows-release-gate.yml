@@ -1,0 +1,26 @@
+# NOTE (S214-WP1, #587): this workflow is shipped at docs/ci/windows-release-gate.yml
+# because the release-environment GitHub token lacks the `workflow` scope required to
+# push into .github/workflows/. To activate: copy to .github/workflows/windows-release-gate.yml
+# with a workflow-scope token. It runs scripts/release/validate_release_manifest.py —
+# runnable locally today — which FAILS any normal/stable release whose required
+# platforms (linux-x64 AND windows-x64) are not both PASS with sha256/bytes evidence.
+name: windows-release-gate
+
+on:
+  push:
+    tags: ["v*"]
+  pull_request:
+    paths: ["docs/releases/RELEASE_MANIFEST.json", "docs/releases/*.md"]
+
+permissions:
+  contents: read
+
+jobs:
+  release-manifest-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: S214 hard release gate (no silent downgrade)
+        run: python3 scripts/release/validate_release_manifest.py
+      - name: Image policy + path ownership + budget (S213/S214)
+        run: python3 tools/policy_validator.py

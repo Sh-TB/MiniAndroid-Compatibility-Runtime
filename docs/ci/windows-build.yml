@@ -1,0 +1,43 @@
+# NOTE (S214-WP1, #587): this workflow is shipped at docs/ci/windows-build.yml because
+# the release-environment GitHub token lacks the `workflow` scope required to push into
+# .github/workflows/. To activate: copy to .github/workflows/windows-build.yml with a
+# workflow-scope token. Toolchain recipe + measured blockers: docs/ci/WINDOWS_TOOLCHAIN.md.
+name: windows-build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned cross toolchain
+        run: pip install ziglang==0.17.1
+      - name: Compile probe (portability diagnosis)
+        shell: bash
+        run: bash scripts/release/build_windows_zig.sh || true
+      - name: Full build (unblocks when dependency + shim port lands)
+        shell: bash
+        run: |
+          cd miniandroid
+          python3 -m ziglang build-exe \
+            $(grep -v '^#' core_sources.manifest | sed 's|^|src/|') \
+            -target x86_64-windows-gnu -lc -lzdll || echo "BLOCKED: see docs/ci/WINDOWS_TOOLCHAIN.md"
+      - uses: actions/upload-artifact@v4
+        if: hashFiles('miniandroid/MiniAndroid.exe') != ''
+        with:
+          name: MiniAndroid-windows-x64
+          path: miniandroid/MiniAndroid.exe
+      - name: Content validation (never publish unvalidated)
+        if: hashFiles('miniandroid/MiniAndroid.exe') != ''
+        shell: bash
+        run: python3 scripts/release/validate_release_content.py --platform windows <staging-dir>

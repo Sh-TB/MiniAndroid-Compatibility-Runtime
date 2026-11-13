@@ -11,7 +11,27 @@ Release codenames continue the project's hen-breed line
 
 ## [Unreleased]
 
-Nothing yet. The standing 12-slot program queue and next wagons live in
+### Governance — S213/S214 (#587, 2026-11-13)
+
+- **S213 image policy:** JPEG-by-default for photographic/noisy evidence
+  (`tools/evidence_image_optimizer.py`, quality ladder 85→70, staging-only,
+  SHA-mapped, RMS-Δ metric, idempotent) + per-path baseline/exception registries
+  (`docs/IMAGE_POLICY_BASELINE.json`, `docs/IMAGE_EXCEPTIONS.json`); validator
+  rejects new over-threshold PNG/JPEG evidence; README first screen now carries
+  the four canonical animated demos with registry provenance.
+- **S214 hard release gate:** `RELEASE_MANIFEST.json` schema v2 with
+  `required_platforms` (linux-x64 PASS / windows-x64 BLOCKED) + release-class
+  law — `scripts/release/validate_release_manifest.py` fails any normal/stable
+  release missing a mandated platform; Windows BLOCKED with a measured
+  cross-compile diagnosis (`docs/ci/WINDOWS_TOOLCHAIN.md`, zig 0.17.1 probe);
+  v0.0.6.2 reclassified **Linux-only preview** (no re-tagging).
+- **S214 default-deny path law:** `docs/PATH_OWNERSHIP.json` (exact approved-dir
+  inventory + frozen-area snapshots) and `docs/SIZE_BUDGET.json` (per-area byte
+  budgets) enforced by `tools/policy_validator.py` (frozen-drift, unregistered
+  directory, scratch residue, symlink escape, budget checks) + positive/negative
+  test battery.
+
+The standing 12-slot program queue and next wagons live in
 `docs/PROGRAM_QUEUE.json` (TRAIN-70 dooz clickable live census, microtimer
 alarm-list row render, sqlnotes DELETE re-proof, new GitHub-source programs).
 

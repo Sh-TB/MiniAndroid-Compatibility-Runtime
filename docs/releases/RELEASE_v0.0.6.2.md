@@ -48,8 +48,15 @@ committed tree (`git log v0.0.6.1-Exchequer..HEAD` = 213+ commits).
 - Contents: stripped runtime binary, `run-miniandroid.sh`, `LICENSE`,
   `README.txt`, `miniandroid-demo.apk`. Release-content validator: PASS
   (0 development artifacts).
-- **Windows asset honestly omitted** — no pinned Windows toolchain in this
-  build environment; never re-ship an older binary (v0.0.3 precedent).
+- **Platform classification (S214 hard gate): this is a LINUX-ONLY PREVIEW
+  release, not a completed cross-platform release.** The Windows x86_64
+  artifact is BLOCKED with a measured diagnosis (zig 0.17.1 cross-probe of
+  4 representative TUs + the 11-family C-dependency matrix): no Windows-capable
+  build exists in this environment. Never re-ship an older binary
+  (v0.0.3 precedent). Gate: `scripts/release/validate_release_manifest.py`
+  rejects any normal/stable release class unless BOTH mandated platforms are
+  PASS; `docs/releases/RELEASE_MANIFEST.json` records windows-x64
+  status=BLOCKED with the exact blocker + unblock path.
 - Build provenance: built in a **clean clone** (`/tmp` clone of the release
   commit, `make -C miniandroid -j1`, g++ 14.2.0 Debian 13). Unstripped
   clean-clone binary `925d3e2ccf0a781b…`; main-tree unstripped binary
@@ -71,11 +78,16 @@ developer-private path.
 - Per-run stub census (F-NEW-200) and uncaught exceptions (F-016) are
   recorded and must accompany any SUCCESS claim.
 - dooz gameplay state and Halma gameplay are documented frontiers, not claims.
-- Windows binary not produced this release.
+- Windows x86_64 binary BLOCKED this release (S214 WP1): POSIX shims
+  (dlfcn/execinfo/pthread) + 11 C-dependency Windows builds required —
+  measured matrix in `docs/ci/WINDOWS_TOOLCHAIN.md`; R19 remains OPEN.
 
 ## Regression gates
 
-6-pin byte-exact HOLD; `make test-all` 28/28; policy validator 0 violations
+6-pin byte-exact HOLD; `make test-all` 28/28; S214 release-manifest gate PASS
+(linux-x64=PASS / windows-x64=BLOCKED, class=linux-only-preview, negative
+tests: stable-class without Windows + fake PASS both rejected); policy validator
+0 violations
 (4,990 reviewed grandfather entries, expiry recorded); CI trigger PARTIAL — workflow shipped at `docs/ci/policy.yml`, activation requires a `workflow`-scope token (push of `.github/workflows/policy.yml` was rejected by GitHub for the stored token; validator + law test + ledger + metric checks are all runnable locally and green); forensic ledger
 validate 390 rows / 0 errors; release-content validator PASS; README metric
 staleness check OK.
