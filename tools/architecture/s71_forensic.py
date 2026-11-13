@@ -25,9 +25,12 @@ import json
 import re
 import sys
 from collections import Counter, defaultdict
+import os
 from pathlib import Path
 
-ROOT = Path("/home/z/my-project")
+ROOT = Path(__file__).resolve().parents[2]  # repo-root discovery; override with MINIANDROID_REPO_ROOT env
+if os.environ.get("MINIANDROID_REPO_ROOT"):
+    ROOT = Path(os.environ["MINIANDROID_REPO_ROOT"])
 GDIR = ROOT / "docs" / "foundation"
 
 # ── forensic resolution table ───────────────────────────────────────────────

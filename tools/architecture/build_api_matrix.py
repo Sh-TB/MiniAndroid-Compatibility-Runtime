@@ -15,9 +15,12 @@ Output: docs/foundation/api_matrix.json — queryable, machine-readable (§23).
 import json
 import time
 from collections import Counter, defaultdict
+import os
 from pathlib import Path
 
-ROOT = Path("/home/z/my-project")
+ROOT = Path(__file__).resolve().parents[2]  # repo-root discovery; override with MINIANDROID_REPO_ROOT env
+if os.environ.get("MINIANDROID_REPO_ROOT"):
+    ROOT = Path(os.environ["MINIANDROID_REPO_ROOT"])
 OUT = ROOT / "docs" / "foundation" / "api_matrix.json"
 CENSUS = ROOT / "docs" / "foundation" / "dex_census" / "_aggregate.json"
 LIVE = ROOT / "docs" / "foundation" / "live_runs.json"

@@ -16,6 +16,7 @@ import re
 import sys
 import time
 from collections import Counter, defaultdict
+import os
 from pathlib import Path
 
 import logging
@@ -24,7 +25,9 @@ logging.getLogger().setLevel(logging.ERROR)
 for noisy in ("androguard", "loguru"):
     logging.getLogger(noisy).setLevel(logging.CRITICAL)
 
-ROOT = Path("/home/z/my-project")
+ROOT = Path(__file__).resolve().parents[2]  # repo-root discovery; override with MINIANDROID_REPO_ROOT env
+if os.environ.get("MINIANDROID_REPO_ROOT"):
+    ROOT = Path(os.environ["MINIANDROID_REPO_ROOT"])
 CORPUS = ROOT / "upload" / "canonical_apks"
 OUT = ROOT / "docs" / "foundation" / "dex_census"
 

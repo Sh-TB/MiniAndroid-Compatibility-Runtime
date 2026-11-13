@@ -22,9 +22,12 @@ Exit code is 0 whenever the query RAN (even when the answer is "gap").
 """
 import json
 import sys
+import os
 from pathlib import Path
 
-ROOT = Path("/home/z/my-project")
+ROOT = Path(__file__).resolve().parents[2]  # repo-root discovery; override with MINIANDROID_REPO_ROOT env
+if os.environ.get("MINIANDROID_REPO_ROOT"):
+    ROOT = Path(os.environ["MINIANDROID_REPO_ROOT"])
 GRAPH = ROOT / "docs" / "foundation" / "knowledge_graph.json"
 
 # foundation layer of a framework class (§PHASE 7 domain matrix) — derived

@@ -15,9 +15,12 @@ Output: docs/foundation/source_map.json (§3 machine-readable index).
 import json
 import re
 import time
+import os
 from pathlib import Path
 
-ROOT = Path("/home/z/my-project")
+ROOT = Path(__file__).resolve().parents[2]  # repo-root discovery; override with MINIANDROID_REPO_ROOT env
+if os.environ.get("MINIANDROID_REPO_ROOT"):
+    ROOT = Path(os.environ["MINIANDROID_REPO_ROOT"])
 UP = ROOT / "upstream" / "corpus"
 CENSUS = ROOT / "docs" / "foundation" / "dex_census"
 LIVE = ROOT / "docs" / "foundation" / "live_runs.json"

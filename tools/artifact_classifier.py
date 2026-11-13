@@ -16,7 +16,23 @@ import subprocess
 import sys
 from collections import defaultdict
 
-REPO = "/home/z/my-project"
+# Repository-root discovery (R11/WP4: must work outside one developer's VM).
+# Default: the repository containing this file. Override: `--root <path>` or
+# MINIANDROID_REPO_ROOT env (validated: must be a git worktree).
+def _discover_repo_root() -> str:
+    argv = sys.argv[1:]
+    if "--root" in argv:
+        cand = argv[argv.index("--root") + 1]
+        if not os.path.isdir(os.path.join(cand, ".git")):
+            sys.exit(f"artifact_classifier: --root {cand} is not a git worktree")
+        return os.path.abspath(cand)
+    env = os.environ.get("MINIANDROID_REPO_ROOT")
+    if env:
+        return os.path.abspath(env)
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+REPO = _discover_repo_root()
 OUT = os.path.join(REPO, "docs/ARTIFACT_REGISTRY.json")
 
 SECRET_PATTERNS = [

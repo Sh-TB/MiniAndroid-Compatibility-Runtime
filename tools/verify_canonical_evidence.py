@@ -23,9 +23,10 @@ import glob
 import hashlib
 import json
 import os
+from pathlib import Path
 import sys
 
-ROOT = "/home/z/my-project"
+ROOT = os.environ.get("MINIANDROID_REPO_ROOT") or str(Path(__file__).resolve().parents[1])
 CAN = f"{ROOT}/docs/evidence/canonical"
 FAILS = []
 WARNS = []

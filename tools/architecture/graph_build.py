@@ -28,9 +28,12 @@ import re
 import subprocess
 from collections import defaultdict
 from datetime import datetime, timezone
+import os
 from pathlib import Path
 
-ROOT = Path("/home/z/my-project")
+ROOT = Path(__file__).resolve().parents[2]  # repo-root discovery; override with MINIANDROID_REPO_ROOT env
+if os.environ.get("MINIANDROID_REPO_ROOT"):
+    ROOT = Path(os.environ["MINIANDROID_REPO_ROOT"])
 FD = ROOT / "docs" / "foundation"
 OUT = FD / "knowledge_graph.json"
 

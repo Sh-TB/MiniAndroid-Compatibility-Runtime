@@ -2,7 +2,7 @@
 # S74-FINAL §27 validator — enforces ledger consistency; fails on false completions.
 import json, os, re, sys
 
-ROOT = "/home/z/my-project"
+ROOT = os.environ.get("MINIANDROID_REPO_ROOT") or str(Path(__file__).resolve().parents[1])
 LEDGER = os.path.join(ROOT, "docs/audit/master_audit.json")
 STATUSES = {"DONE","IMPLEMENTED","TESTED","OBSERVED","PARTIAL","BLOCKED","PENDING",
             "UNVERIFIED","SUPERSEDED","DUPLICATE","NOT_APPLICABLE","CONFLICT"}
