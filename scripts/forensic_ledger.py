@@ -14,13 +14,132 @@ Sources (all independent of agent claims):
 
 Output:
   docs/FORENSIC_ALL_REQUESTS_LEDGER.jsonl   one row per reconstructed request
-  forensic_data/ledger_stats.json           §19 statistics (derived, reproducible)
+  docs/FORENSIC_LEDGER_STATS.json           §19 statistics (derived, reproducible)
+
+Modes (#587 R27-3 — the normal checkout must not require multi-MB raw API exports):
+  validate (default)  validate the checked-in compact ledger + recompute stats from it.
+                      No raw dumps, no network, deterministic — safe for CI/tests.
+  rebuild [dir]       legacy reconstruction from raw API dumps in [dir]
+                      (default: .cache/forensics/latest). Fails with instructions if absent.
+  fetch               explicit online acquisition -> .cache/forensics/<snapshot-id>/,
+                      then rebuild from there. Uses the git credential store token;
+                      never hardcodes one.
 """
-import json, re, os
+import json, re, os, sys, gzip
+from pathlib import Path
 from collections import Counter, defaultdict
 
-D = "/home/z/my-project"
-FD = f"{D}/forensic_data"
+# repo root discovery — no machine-specific absolute paths (R11)
+D = str(Path(__file__).resolve().parents[1])
+
+_args = sys.argv[1:]
+MODE = _args[0] if _args and _args[0] in ("validate", "rebuild", "fetch") else "validate"
+
+STATS_OUT = f"{D}/docs/FORENSIC_LEDGER_STATS.json"
+
+if MODE == "validate":
+    # ---- compact validation: ledger is the normalized source; raw dumps NOT required
+    ledger_path = f"{D}/docs/FORENSIC_ALL_REQUESTS_LEDGER.jsonl"
+    rows = [json.loads(l) for l in open(ledger_path, encoding="utf-8") if l.strip()]
+    errs = []
+    REQUIRED = ["request_id", "issue", "source", "date", "claimed_status",
+                "verified_status", "evidence_level"]
+    ids = Counter()
+    for i, r in enumerate(rows):
+        for k in REQUIRED:
+            if k not in r:
+                errs.append(f"row {i}: missing field {k}")
+        ids[r.get("request_id", "")] += 1
+    dup_ids = [k for k, v in ids.items() if k and v > 1]
+    if dup_ids:
+        errs.append(f"duplicate request_ids: {dup_ids[:5]}")
+    if len(rows) != 390:
+        errs.append(f"expected 390 rows, found {len(rows)}")
+    vs = Counter(r["verified_status"] for r in rows)
+    lv = Counter(r["evidence_level"] for r in rows)
+    stats = {
+        "total_reconstructed_requests": len(rows),
+        "issue_rows": sum(1 for r in rows if r["issue"]),
+        "non_issue_rows": sum(1 for r in rows if not r["issue"]),
+        "verified_status_counts": dict(vs),
+        "evidence_level_counts": dict(lv),
+        "notes": {
+            "MAPPED_status_vocab": "root-registry statuses were normalized: ROOT-CAUSED-FIXED/VERIFIED-FIXED -> TESTED-family evidence retained in explanation; see per-row fields",
+            "reproducibility": "docs/FORENSIC_ALL_REQUESTS_LEDGER.jsonl is the single source; validated/recomputed by scripts/forensic_ledger.py validate (no raw dumps needed); full reconstruction: rebuild/fetch modes",
+            "validated": not errs,
+            "errors": errs,
+        },
+    }
+    json.dump(stats, open(STATS_OUT, "w"), indent=1)
+    print(f"validate: {len(rows)} rows, {len(errs)} errors -> {STATS_OUT}")
+    if errs:
+        sys.exit(1)
+    sys.exit(0)
+
+if MODE == "fetch":
+    # ---- explicit online acquisition into an ignored cache dir, then rebuild
+    import subprocess, datetime
+    snap_id = datetime.datetime.now(datetime.timezone.utc).strftime("snap-%Y%m%d-%H%M%S")
+    cache = Path(D) / ".cache/forensics" / snap_id
+    cache.mkdir(parents=True, exist_ok=True)
+    tok = subprocess.run(["bash", "-c", 'printf "protocol=https\nhost=github.com\n" | git credential fill 2>/dev/null | grep "^password=" | cut -d= -f2'],
+                         capture_output=True, text=True).stdout.strip()
+    API = "https://api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime"
+    import urllib.request
+    def get_json(url):
+        req = urllib.request.Request(url, headers={"Authorization": f"Bearer {tok}", "Accept": "application/vnd.github+json", "User-Agent": "miniandroid-forensic"} if tok else {"Accept": "application/vnd.github+json"})
+        return json.load(urllib.request.urlopen(req, timeout=120))
+    issues = []
+    page = 1
+    while True:
+        chunk = get_json(f"{API}/issues?state=all&per_page=100&page={page}&sort=created&direction=asc")
+        if not chunk:
+            break
+        issues += chunk
+        if len(chunk) < 100:
+            break
+        page += 1
+    json.dump(issues, open(cache / "issues_all.json", "w"))
+    comments = []
+    page = 1
+    while True:
+        chunk = get_json(f"{API}/issues/comments?per_page=100&page={page}")
+        if not chunk:
+            break
+        comments += chunk
+        if len(chunk) < 100:
+            break
+        page += 1
+    import gzip as _gz
+    with _gz.open(cache / "all_issue_comments.json.gz", "wt") as f:
+        json.dump(comments, f)
+    commits = []
+    page = 1
+    while True:
+        chunk = get_json(f"{API}/commits?per_page=100&page={page}")
+        if not chunk:
+            break
+        commits += chunk
+        if len(chunk) < 100:
+            break
+        page += 1
+    json.dump(commits, open(cache / "commits.json", "w"))
+    (cache / "LATEST").write_text(snap_id)
+    latest = Path(D) / ".cache/forensics/latest"
+    if latest.exists() or latest.is_symlink():
+        latest.unlink()
+    latest.symlink_to(snap_id)
+    print(f"fetch: snapshot {snap_id} at {cache} (ignored dir; not committed)")
+    FD = str(cache)
+elif MODE == "rebuild":
+    raw_dir = _args[1] if len(_args) > 1 else f"{D}/.cache/forensics/latest"
+    if not Path(raw_dir).exists():
+        sys.exit(f"rebuild: raw dumps not present at {raw_dir}.\n"
+                 f"Run 'python3 scripts/forensic_ledger.py fetch' (writes to ignored .cache/forensics/<snapshot-id>/)\n"
+                 f"or pass an explicit raw dir. The committed checkout intentionally does NOT ship raw API dumps (R27-3).")
+    FD = raw_dir
+else:
+    sys.exit("unknown mode")  # unreachable
 
 issues = {i["number"]: i for i in json.load(open(f"{FD}/issues_all.json"))}
 comments = json.load(gzip.open(f"{FD}/all_issue_comments.json.gz"))
@@ -31,7 +150,8 @@ for c in comments:
     if m:
         cmts_by_issue[int(m.group(1))].append(c)
 
-rootreg = json.load(open(f"{D}/root_registry.json"))["roots"]
+_rr_raw = json.load(open(f"{D}/root_registry.json"))
+rootreg = (_rr_raw["roots"] if isinstance(_rr_raw, dict) else _rr_raw)  # schema-tolerant: historical {"roots":[..]} vs later list projection
 root_by_id = {r.get("id"): r for r in rootreg if isinstance(r, dict)}
 mg = json.load(open(f"{D}/docs/MICRO_GAP_REGISTRY.json"))["tickets"]
 titles202 = json.load(open(f"{D}/docs/corpus/s82/title_registry.json"))["TITLES"]
@@ -463,7 +583,7 @@ stats = {
         "reproducibility": "docs/FORENSIC_ALL_REQUESTS_LEDGER.jsonl is the single source; recompute with scripts/forensic_ledger.py",
     },
 }
-json.dump(stats, open(f"{FD}/ledger_stats.json", "w"), indent=1)
+json.dump(stats, open(STATS_OUT, "w"), indent=1)
 
 with open(f"{D}/docs/FORENSIC_ALL_REQUESTS_LEDGER.jsonl", "w") as f:
     for r in rows:

@@ -22,6 +22,8 @@
  },
  "notes": {
   "MAPPED_status_vocab": "root-registry statuses were normalized: ROOT-CAUSED-FIXED/VERIFIED-FIXED -> TESTED-family evidence retained in explanation; see per-row fields",
-  "reproducibility": "docs/FORENSIC_ALL_REQUESTS_LEDGER.jsonl is the single source; recompute with scripts/forensic_ledger.py"
+  "reproducibility": "docs/FORENSIC_ALL_REQUESTS_LEDGER.jsonl is the single source; validated/recomputed by scripts/forensic_ledger.py validate (no raw dumps needed); full reconstruction: rebuild/fetch modes",
+  "validated": true,
+  "errors": []
  }
 }
