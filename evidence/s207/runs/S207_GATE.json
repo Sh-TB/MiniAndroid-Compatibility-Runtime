@@ -1,14 +1,14 @@
 {
- "binary_sha16": "03ddc59ce9258dd0",
+ "binary_sha16": "006d05fc28f8c090",
  "goldens": {
   "bouncy": {
-   "wall_s": 24.8,
+   "wall_s": 23.6,
    "face_sha16": "98abca389fb01380",
    "uncaught": 0,
    "screenshot_bytes": 36434,
    "screenshot_verdict": "OK",
    "pin": "98abca38",
-   "binary": "03ddc59ce9258dd0",
+   "binary": "006d05fc28f8c090",
    "hold": true
   },
   "unote": {
@@ -18,17 +18,17 @@
    "screenshot_bytes": 17205,
    "screenshot_verdict": "OK",
    "pin": "3b8dcb0a",
-   "binary": "03ddc59ce9258dd0",
+   "binary": "006d05fc28f8c090",
    "hold": true
   },
   "dooz": {
-   "wall_s": 305.7,
+   "wall_s": 283.8,
    "face_sha16": "a0fae9072313e2d1",
    "uncaught": 0,
    "screenshot_bytes": 16160,
    "screenshot_verdict": "OK",
    "pin": "a0fae907",
-   "binary": "03ddc59ce9258dd0",
+   "binary": "006d05fc28f8c090",
    "hold": true
   }
  },
@@ -59,21 +59,21 @@
  "tictactoe": {
   "runs": [
    {
-    "wall_s": 20.5,
+    "wall_s": 20.0,
     "face_sha16": "7354c1b231cd581d",
     "uncaught": 0,
     "screenshot_bytes": 11386,
     "screenshot_verdict": "OK"
    },
    {
-    "wall_s": 21.1,
+    "wall_s": 20.2,
     "face_sha16": "7354c1b231cd581d",
     "uncaught": 0,
     "screenshot_bytes": 11386,
     "screenshot_verdict": "OK"
    },
    {
-    "wall_s": 21.1,
+    "wall_s": 20.0,
     "face_sha16": "7354c1b231cd581d",
     "uncaught": 0,
     "screenshot_bytes": 11386,

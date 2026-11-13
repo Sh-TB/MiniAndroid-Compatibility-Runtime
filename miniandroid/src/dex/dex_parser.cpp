@@ -813,14 +813,24 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
                                 data + methods_base + (size_t)k * 8 + 4,
                                 sizeof(set_off));
                     method_ann_idx = method_idx_dir;
-                    if (set_off == 0 || set_off + 4 > current_size_)
+                    // ── GP-DEX-012 residual closeout (S232, #582 ledger):
+                    // the offset additions must be evaluated in 64-bit
+                    // BEFORE the size compare — the same wrap law the
+                    // interfaces_off/annotations_off rows already obey
+                    // (0xFFFFFFFC + 4 wraps to 0 in uint32, passes the
+                    // guard, and data + set_off then reads past the
+                    // buffer). set_off is uint32_t: both the guard and
+                    // the follow-up range check must cast it first.
+                    if (set_off == 0 ||
+                        (uint64_t)set_off + 4 > current_size_)
                         continue;
                     // ── decode annotation_set_item at set_off ──
                     uint32_t ann_set_size = 0;
                     std::memcpy(&ann_set_size, data + set_off,
                                 sizeof(ann_set_size));
                     if (ann_set_size == 0 || ann_set_size >= 0x1000u ||
-                        set_off + 4 + (uint64_t)ann_set_size * 4 >
+                        (uint64_t)set_off + 4 +
+                                (uint64_t)ann_set_size * 4 >
                             current_size_)
                         continue;
                     for (uint32_t a = 0; a < ann_set_size; ++a) {

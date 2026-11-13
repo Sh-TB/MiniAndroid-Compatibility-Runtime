@@ -14,12 +14,19 @@
 //       CYCLE (self + mutual), DEPTH_EXCEEDED
 //   §8  attribute-key style-bag query with ResTable_map_entry parent
 //       inheritance, parent-cycle safety
+//   §10 GP-RES-001 crafted-pool memory-safety battery (#582 ledger): the
+//       three wrap/allocation faces the GP audit ASan-reproduced on the
+//       resource string pool — hostile count pre-allocation, uint32
+//       offset-table wrap, strings_start/entry-offset wrap — must all be
+//       rejected or answered with the named Arsc-law empty entry, never
+//       dereferenced.
 //
 // AOSP oracle: aosp-mirror/platform_frameworks_base @ 1cdfff555f4a —
 // ResourceTypes.h Res_value/ResTable_map, TypedValue.java
 // (complexToFloat @1054, applyDimension @917, complexToDimensionPixelSize,
 // complexToFraction @961), AssetManager2 resolveReference chain semantics.
 #include "synthetic_arsc.h"
+#include "../src/resources/string_pool.h"
 
 #include <cmath>
 #include <cstdio>
@@ -212,6 +219,84 @@ int main() {
               "bag_value: parent cycle fails safely (nullopt, no hang)");
         check(!arsc.bag_value(0x7f030000, 0x01010101, device).has_value(),
               "bag_value: absent key with no parent → deterministic nullopt");
+    }
+
+    // ── §10 GP-RES-001 crafted-pool memory-safety battery (#582 ledger) ───
+    {
+        auto put32 = [](std::vector<uint8_t>& v, size_t off, uint32_t x) {
+            v[off] = x & 0xFF; v[off + 1] = (x >> 8) & 0xFF;
+            v[off + 2] = (x >> 16) & 0xFF; v[off + 3] = (x >> 24) & 0xFF;
+        };
+        // Face 1 — the exact GP reproducer: 64-byte chunk, header_size 28,
+        // string_count 1, strings_start 0xFFFFFFF0, entry offset 0x20.
+        // Pre-fix, strings_start + off wrapped to 0x10 and the decoder
+        // dereferenced ~4 GiB past the buffer (ASan SEGV). The law: the
+        // entry answers the Arsc empty-string face, the parse returns
+        // cleanly, nothing is dereferenced.
+        {
+            std::vector<uint8_t> pool(64, 0);
+            pool[0] = 0x01; pool[1] = 0x00;      // type = RES_STRING_POOL_TYPE
+            pool[2] = 28;                        // header_size = 28
+            put32(pool, 4, 64);                  // chunk_size = 64
+            put32(pool, 8, 1);                   // string_count = 1
+            put32(pool, 20, 0xFFFFFFF0u);        // strings_start = WRAP
+            put32(pool, 28, 0x20);               // offsets[0] = 0x20
+            ResStringPool sp;
+            size_t consumed = 0;
+            std::string err;
+            bool ok = sp.parse(pool.data(), pool.size(), consumed, &err);
+            // Either face is legal (named failure OR clean parse with the
+            // empty-entry law) — the FAILURE face is a crash/OOB.
+            const bool safe = !ok || sp.at(0).empty();
+            check(safe,
+                  "GP-RES-001 face 1: strings_start=0xFFFFFFF0 + off=0x20 "
+                  "never dereferenced (empty-entry/named-error face)");
+        }
+        // Face 2 — hostile count wrap: string_count 0x40000000 multiplied
+        // in uint32 wrapped to 0 pre-fix and the oversized table passed.
+        // The 64-bit law rejects with the named error BEFORE the resize.
+        {
+            std::vector<uint8_t> pool(64, 0);
+            pool[0] = 0x01; pool[1] = 0x00;
+            pool[2] = 28;
+            put32(pool, 4, 64);
+            put32(pool, 8, 0x40000000u);         // string_count = 2^30
+            put32(pool, 20, 64);                 // strings_start = chunk end
+            ResStringPool sp;
+            size_t consumed = 0;
+            std::string err;
+            bool ok = sp.parse(pool.data(), pool.size(), consumed, &err);
+            check(!ok && err.find("offset table overruns chunk") != std::string::npos,
+                  "GP-RES-001 face 2: count 2^30 offset table rejected "
+                  "pre-allocation (named error)");
+        }
+        // Face 3 — chunk_size overruns the available bytes (the parser's
+        // first allocation gate; hostile chunk_size must not read past).
+        {
+            std::vector<uint8_t> pool(40, 0);
+            pool[0] = 0x01; pool[1] = 0x00;
+            pool[2] = 28;
+            put32(pool, 4, 0xFFFFFFF0u);         // chunk_size ≫ avail
+            ResStringPool sp;
+            size_t consumed = 0;
+            std::string err;
+            bool ok = sp.parse(pool.data(), pool.size(), consumed, &err);
+            check(!ok && err.find("chunk overruns data") != std::string::npos,
+                  "GP-RES-001 face 3: chunk_size > avail rejected (named error)");
+        }
+        // Positive control — a well-formed 2-string pool decodes verbatim
+        // (the safety laws must not break the honest path).
+        {
+            std::vector<uint8_t> pool =
+                synthetic_arsc::string_pool({"Easy", "Medium"});
+            ResStringPool sp;
+            size_t consumed = 0;
+            std::string err;
+            bool ok = sp.parse(pool.data(), pool.size(), consumed, &err);
+            check(ok && sp.count() == 2 && sp.at(0) == "Easy" &&
+                  sp.at(1) == "Medium",
+                  "GP-RES-001 positive control: valid 2-string pool decodes");
+        }
     }
 
     std::cout << "RESULT: " << g_pass << " passed, " << g_fail << " failed\n";
