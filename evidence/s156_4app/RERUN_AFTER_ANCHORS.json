@@ -1,0 +1,52 @@
+{
+ "engine": "a9b58de1d4e56f01",
+ "stage": "rerun_after_anchors",
+ "anchors": {
+  "dooz": {
+   "face": "11a38a5aeeff45a6",
+   "expected": "11a38a5aeeff45a6",
+   "match": true,
+   "uncaught": 6
+  },
+  "unote": {
+   "face": "3b8dcb0adbbc17a9",
+   "expected": "3b8dcb0adbbc17a9",
+   "match": true,
+   "uncaught": 0
+  }
+ },
+ "apps": {
+  "tusky": {
+   "face": "31ddd4d5b8e6d18e",
+   "wall_s": 0.5,
+   "uncaught": 0,
+   "npe": 0,
+   "ndfe": [],
+   "frames": 12
+  },
+  "nextcloud": {
+   "face": null,
+   "wall_s": 2.2,
+   "uncaught": 0,
+   "npe": 2,
+   "ndfe": [],
+   "frames": 0
+  },
+  "connectbot": {
+   "face": "b5a7a35d5fe0564b",
+   "wall_s": 3.3,
+   "uncaught": 13,
+   "npe": 7,
+   "ndfe": [],
+   "frames": 12
+  },
+  "thunderbird": {
+   "face": "b270ff040b3601dc",
+   "wall_s": 3.8,
+   "uncaught": 38,
+   "npe": 1,
+   "ndfe": [],
+   "frames": 12
+  }
+ }
+}

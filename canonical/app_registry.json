@@ -316,6 +316,93 @@
    "evidence_refs": [
     "docs/maintenance/worklog.md S38"
    ]
+  },
+  {
+   "id": "APP-016",
+   "title": "Thunderbird (F-Droid vc33)",
+   "package": "net.thunderbird.android",
+   "status": "BLOCKED",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "note": "S156 wave: boot reached deep (Koin module DSL 463 index puts, AppCompat decor works) but createEagerInstances NDFE on Logger killed startKoin. At S225-M: the NDFE + _koin-miss STILL reproduce (6 NDFE rows, SGET-MISS _koin) but the 'KoinApplication has not been started' cascade is absorbed by mainline laws — face moved b270ff04→43bfdac6, uncaught 38→9. Registry-merge lever still open (F-NEW-485). androguard: vc=33 v24.0 minSdk23 tgt36 2 dexes koin=38 compose=2446.",
+   "sessions": "S156+S226-transfer",
+   "evidence_refs": [
+    "evidence/s156_4app/S156_T4_THUNDERBIRD.md",
+    "evidence/s156_4app/PIN_LEDGER.json",
+    "evidence/s156_4app/TB_KOIN_XREF.json"
+   ]
+  },
+  {
+   "id": "APP-017",
+   "title": "Tusky (F-Droid vc145)",
+   "package": "com.keylesspalace.tusky",
+   "status": "PARTIAL",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "note": "S156 wave: TLS/native frontier solved on the S155 lineage by the bionic FORTIFY anchor family (uncaught 26->0, NPE 25->0); at S225-M the anchor surface already covers 12/15 symbols — residue F-NEW-484 (3 symbols) transfers. Boot clean; final frame = honest generic Compose-family face (app content awaits the generic Compose pipeline, not a Tusky-specific blocker). androguard: vc=145 v33.1 classic-View+sqlite.",
+   "sessions": "S156+S226-transfer",
+   "evidence_refs": [
+    "evidence/s156_4app/S156_T5_TUSKY.md",
+    "evidence/s156_4app/RERUN_AFTER_ANCHORS.json"
+   ]
+  },
+  {
+   "id": "APP-018",
+   "title": "Nextcloud (F-Droid vc350000290)",
+   "package": "com.nextcloud.client",
+   "status": "PARTIAL",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "note": "S156 wave: process death at native TLS init on the S155 lineage; at S225-M (a4516511) the mainline resolves it — Nextcloud renders its FIRST FRAME (face b5a7a35d, verdict SAFE+DEFAULT_BACKGROUND_ONLY, 20 uncaught residual). Chain preserved as F-NEW-487 RESOLVED-BY-MAINLINE. Heaviest Compose of the wave (compose/ui=7617, 7 dexes); app content awaits the Compose pipeline.",
+   "sessions": "S156+S226-transfer",
+   "evidence_refs": [
+    "evidence/s156_4app/S156_T6_NEXTCLOUD.md"
+   ]
+  },
+  {
+   "id": "APP-019",
+   "title": "ConnectBot (vc11101000)",
+   "package": "org.connectbot",
+   "status": "PARTIAL",
+   "checkpoints": {
+    "L0": true,
+    "L1": true,
+    "L2": true,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "note": "S156 wave: consumeRestoredStateForKey ISE on the S155 lineage; at S225-M the mainline resolves the attach ordering — CLEAN boot (0 uncaught), chrome-only face b5a7a35d (Compose family). Chain preserved as F-NEW-486 RESOLVED-BY-MAINLINE. vc=11101000 CLOSED this wave. androguard: v1.11.1-oss compose=2503 trilead=127 dagger=30, no koin.",
+   "sessions": "S156+S226-transfer",
+   "evidence_refs": [
+    "evidence/s156_4app/S156_T7_CONNECTBOT.md"
+   ]
   }
  ]
 }

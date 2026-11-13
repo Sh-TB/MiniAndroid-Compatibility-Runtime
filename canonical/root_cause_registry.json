@@ -8029,5 +8029,45 @@
   "priority": "P0",
   "layer": "theme-resources",
   "evidence": "CONT-155 TRAIN 5 (todolist 103, binary 7b6927614ebef26f, run/c155/t5_*): (1) [F-NEW-175] TypedArray attrs=127 theme-backed; the APK's own R$styleable.AppCompatTheme fill payload byte-verified (raw dex decode: ident=0x0300 ew=4 n=127) — 0x10100ab windowActionBar and 0x1010033 theme ABSENT from the array (build-rewritten styleable, 2 framework attrs remain) — engine faithfully materialized dex data, NOT an engine defect; index constants remap consistently per AOSP hasValue(index) law. (2) F093-DIAG census: 125/127 MISS, 2 HIT (0x1010057 windowNoTitle, 0x10100ae windowActionModeOverlay) = exactly the app-owned theme keys. (3) App-arsc parent chain (scripts/cont155_theme_chain.py, sparse-law walker): 0x7f1201e9 -> 0x7f1202eb -> 0x7f1202e9 -> 0x7f120081 -> 0x7f120080 -> 0x010302e3 (android:Theme.Material.Light.NoActionBar); 5 levels, 10 app-owned keys, windowActionBar absent at every app level — the app parents into the PLATFORM Material theme, not the bundled appcompat styles. (4) The engine's materialized map has 373 keys (S124 diag) = 10 app + ~363 framework-chain keys; 0x10100ab NOT among them. (5) hasValue -> false -> ISE 'You need to use a Theme.AppCompat theme' -> APP-BOUNDARY unwind -> WINDOW_ROOT (todolist/leradar/exodusprivacy). TRAIN 6 single question: does miniandroid/framework_res Material bag carry 0x10100ab — engine-side env-gated theme-bag dump (python walker handles DENSE/OFFSET16 but the fw arsc mixes SPARSE-pair chunks; the engine parser is the authority). Fix lever: theme engine / framework table — never the app. CONT-155 TRAIN 6 (binary post bag-dump diag, run/c155/t6_*): (6) engine-side env-gated theme-bag dump added (MINIANDROID_THEME_BAG_DUMP, read-only diag in Theme::apply_style) — the materialized 373-key map for the todolist theme: 0x1010033 theme PRESENT, 0x1010057 windowNoTitle PRESENT, 0x10100ae PRESENT, 0x10100ab windowActionBar ABSENT (probe x2 apply calls) — the 0x10100a0-0x10100ad window family cluster is missing from the expansion. (7) THE CHECK SLOT PINNED: [SGET] AppCompatTheme_windowActionBar value=117 at createSubDecor pc=8 — the hasValue slot is index 117 of the 127-entry array (an app-namespace attr 0x7f04xxxx region, not a framework id); slot 117 absent from the theme map -> hasValue=false -> the pc=404 ISE. (8) On a real device the same slot resolves because the appcompat Theme.AppCompat.Empty chain level (~130 compat attrs) participates in the theme; the engine's materialized chain (5 app styles with 3/1/3/1/2 keys) jumps to the Platform.AppCompat.Light level and the compat attr-bag level is NOT expanded — the named residual: expand the appcompat Empty chain level into the theme map (style-name resolution needs the UTF-8 string-pool flag law — flags 0x100 = UTF-8 — for the next probe). Fix lever unchanged: theme engine / framework expansion — never the app. CONT-155 TRAIN 7 (axml decode + arsc name probe): (9) the manifest's theme typed values decoded byte-exact: application AND view.MainActivity theme = REFERENCE 0x7f120010 = @style/AppTheme (attr bytes: size=8 res0=0 dtype=0x01 REFERENCE data=0x7f120010); (10) the engine's bound theme (F366 diag + THEME-BAG-DUMP) = 0x7f1201e9 = @style/SplashScreenTheme (androidx core-splashscreen library theme; chain: SplashScreenTheme -> Theme.SplashScreen.IconBackground -> Theme.SplashScreen -> Base.Theme.SplashScreen.DayNight -> Base.Theme.SplashScreen -> android:Theme.Material.Light.NoActionBar; 5 levels 10 app keys, ZERO compat attrs) — the launch path bound the WRONG style: 0x7f1201e9 instead of the manifest's 0x7f120010. (11) Complete causal chain for the C-type: wrong theme bound -> no compat attrs -> AppCompatTheme_windowActionBar slot-117 hasValue=false -> createSubDecor pc=404 ISE -> APP-BOUNDARY unwind at MainActivity.onCreate -> WINDOW_ROOT. TRAIN 8 single question: which link picks 0x7f1201e9 — ManifestReader theme_resid parse, the F-094 find_id ('@style/AppTheme') resolution, or the splash-lib attachBaseContext2 theme clone — probe resolve_activity_theme inputs/outputs env-gated."
+ },
+ {
+  "id": "F-NEW-484",
+  "status": "RESIDUE-OPEN (preventive: grep-verified absent at a4516511; no current boot binds them)",
+  "priority": "P0",
+  "layer": "native library dlopen / bionic FORTIFY anchor surface",
+  "date": "2026-11-12",
+  "title": "bionic FORTIFY anchor residue at S225-M: the mainline anchor surface already covers __memchr_chk/__memcpy_chk/__memmove_chk/__read_chk/__readlink_chk/__strcat_chk/__strchr_chk/__strcpy_chk/__strlen_chk/__strncat_chk/__strncpy_chk/__strrchr_chk + the __system_property_* API, but THREE symbols are still missing: __memset_chk, __vsnprintf_chk, __stack_chk_fail (the exact set conscrypt-class app-native libs bind). The S155-era wave fixed the whole family on a parallel lineage (unresolved __strchr_chk killed Tusky/Nextcloud dlopen); this residue is the remaining delta.",
+  "root_cause": "conscrypt-family dlopen binds __memset_chk/__vsnprintf_chk/__stack_chk_fail; a bionic-built app .so dlopened against the engine fails at any of them (Undefined symbol -> UnsatisfiedLinkError) exactly as recorded in the S156 wave for Tusky_145.",
+  "verification": "S226 transfer battery at a4516511: tusky strchr_ule rows=0, uncaught=16, NPE-classes=see console; the 3-symbol patch (bionic_compat.c, +31 lines) transfers with git apply --check CLEAN."
+ },
+ {
+  "id": "F-NEW-485",
+  "status": "LIVE-REDUCED at S225-M (NDFE + _koin-miss still reproduce; the downstream cascade is absorbed)",
+  "priority": "P0",
+  "layer": "DI / Koin eager-instance registry",
+  "date": "2026-11-12",
+  "title": "Thunderbird (net.thunderbird.android_33, vc33) Koin eager-instance registry divergence: startKoin (R8-inlined into ThunderbirdApp.attachBaseContext) executes the module DSL (463 Module.indexPrimaryType puts observed) but Koin.createEagerInstances() throws NoDefinitionFoundException for net.thunderbird.core.logging.Logger; GlobalContext._koin never stored; every later getKoin() consumer cascades ISE 'KoinApplication has not been started' (okhttp3/CacheControl$Companion.get$default = R8-merged getKoin() helper).",
+  "root_cause": "definitions declared through the binds/default-arg bridge family ($inlined$singleListOf$default$1, single$default) must land in the SAME registry surface Scope.resolveFromContext consults; the module-map -> registry merge is silent in the engine (put rows land on 6+ distinct map objects).",
+  "verification": "S226 battery at a4516511: koin_not_started_rows=0, uncaught=9, face=43bfdac6023cba66 (chrome-only) — LIVE at current main. Full chain: evidence/s156_4app/S156_T4_THUNDERBIRD.md + TB_KOIN_XREF.json (androguard disassembly). Next lever: LinkedHashMap shadow across the module-map merge."
+ },
+ {
+  "id": "F-NEW-486",
+  "status": "RESOLVED-BY-MAINLINE (verified live at a4516511: consumeISE rows=0, uncaught 13→0)",
+  "priority": "P1",
+  "layer": "lifecycle / androidx.savedstate attach ordering",
+  "date": "2026-11-12",
+  "title": "ConnectBot (org.connectbot, vc=11101000 CLOSED) SavedStateRegistry attach law: ViewModelProvider.create -> ViewModelKt.createSavedStateHandle -> SavedStateHandlesProvider.performRestore -> consumeRestoredStateForKey throws ISE 'only after the CREATED state' because the androidx.savedstate attach chain never executes (console: one SavedStateRegistryImpl.<init> row, zero performAttach). Distinct from the F-020 enum law (that fixed the isAtLeast guard; this is attach ORDERING).",
+  "root_cause": "ComponentActivity ctor/shadow chain must run SavedStateRegistryController.performAttach (+ performRestore at CREATED) before the first ViewModelProvider.create, mirroring ART super.onCreate() ordering.",
+  "verification": "S226 battery at a4516511: consume_ise_rows=0, uncaught=0, face=b5a7a35d5fe0564b — LIVE at current main. Chain: evidence/s156_4app/S156_T7_CONNECTBOT.md."
+ },
+ {
+  "id": "F-NEW-487",
+  "status": "RESOLVED-BY-MAINLINE (verified live at a4516511: abort gone; Nextcloud renders its first frame — face b5a7a35d, was 0-frame process death)",
+  "priority": "P1",
+  "layer": "native execution / JNI registration surface",
+  "date": "2026-11-12",
+  "title": "Nextcloud (com.nextcloud.client_350000290) conscrypt native-init abort: after the dlopen boundary holds, libconscrypt_jni.so abort()s inside its own init at modoff=0x10186e (via NativeCryptoJni.init; REC-MISS Class.getPackage right before) — the JNI registration surface (JNI_OnLoad/RegisterNatives/env table) is the missing engine capability. S225-M's JNI dispatch-precedence law is the right neighborhood; this is the app-native JNI_OnLoad gap.",
+  "root_cause": "JNI env function table incomplete for conscrypt's native registration; abort() is the lib's own contract for a failed init.",
+  "verification": "S226 battery at a4516511: conscrypt_abort=False, frames=b5a7a35d5fe0564b — LIVE at current main. Forensics: run/s226_transfer/nextcloud.console.log [S100-CRASH-FORENSICS]."
  }
 ]

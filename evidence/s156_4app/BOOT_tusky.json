@@ -1,0 +1,20 @@
+{
+ "tag": "tusky",
+ "package": "com.keylesspalace.tusky",
+ "apk_sha16": "8154cabe67374f2e",
+ "engine": "S155 main rebuild",
+ "install": "cached",
+ "cmd_max_seconds": 100,
+ "cmd_frames": 12,
+ "wall_s": 0.5,
+ "process_killed": false,
+ "n_frames_captured": 12,
+ "screenshot_sha16": "31ddd4d5b8e6d18e",
+ "verdicts": [],
+ "frame_analysis_state": [],
+ "uncaught": 0,
+ "ndfe": [],
+ "cnfe": [],
+ "npe_rows": 0,
+ "console_bytes": 30901
+}

@@ -1,0 +1,20 @@
+{
+ "tag": "nextcloud",
+ "package": "com.nextcloud.client",
+ "apk_sha16": "c9ba2e85b13fee45",
+ "engine": "S155 main rebuild",
+ "install": "cached",
+ "cmd_max_seconds": 100,
+ "cmd_frames": 12,
+ "wall_s": 2.2,
+ "process_killed": false,
+ "n_frames_captured": 0,
+ "screenshot_sha16": null,
+ "verdicts": [],
+ "frame_analysis_state": [],
+ "uncaught": 0,
+ "ndfe": [],
+ "cnfe": [],
+ "npe_rows": 2,
+ "console_bytes": 137745
+}

@@ -1,0 +1,280 @@
+{
+ "wave": "S156",
+ "stage": "pin",
+ "apks": {
+  "thunderbird": {
+   "file": "net.thunderbird.android_33.apk",
+   "exists": true,
+   "zip_magic_ok": true,
+   "sha256": "473b33da5963d0a4261a834c845aaf8e3878309565e9f40e61f6e5def21565e5",
+   "sha16": "473b33da5963d0a4",
+   "size_bytes": 10965795,
+   "package": "net.thunderbird.android",
+   "versionCode": "33",
+   "versionName": "24.0",
+   "minSdk": "23",
+   "targetSdk": "36",
+   "main_activity": "net.thunderbird.app.common.MainActivity",
+   "n_activities": 31,
+   "n_permissions": 16,
+   "permissions_top": [
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.CAMERA",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+    "android.permission.INTERNET",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.READ_CONTACTS",
+    "android.permission.READ_SYNC_SETTINGS",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.SCHEDULE_EXACT_ALARM",
+    "android.permission.USE_BIOMETRIC"
+   ],
+   "libraries": [
+    "androidx.window.extensions",
+    "androidx.window.sidecar",
+    "com.sec.android.app.multiwindow"
+   ],
+   "dex_census": [
+    {
+     "dex": "classes.dex",
+     "bytes": 11010328,
+     "classes": 11265,
+     "markers": {
+      "koin": 38,
+      "compose": 2446,
+      "kotlin": 293
+     }
+    },
+    {
+     "dex": "classes2.dex",
+     "bytes": 567764,
+     "classes": 678,
+     "markers": {
+      "koin": 0,
+      "compose": 0,
+      "kotlin": 0
+     }
+    }
+   ],
+   "markers_total": {
+    "koin": 38,
+    "compose": 2446,
+    "kotlin": 293
+   }
+  },
+  "tusky": {
+   "file": "com.keylesspalace.tusky_145.apk",
+   "exists": true,
+   "zip_magic_ok": true,
+   "sha256": "8154cabe67374f2e1f477fc4de8a44bbefe3cafdfa1b05495a6a9f762c6efd7d",
+   "sha16": "8154cabe67374f2e",
+   "size_bytes": 22491280,
+   "package": "com.keylesspalace.tusky",
+   "versionCode": "145",
+   "versionName": "33.1",
+   "minSdk": "24",
+   "targetSdk": "36",
+   "main_activity": "com.keylesspalace.tusky.MainActivity",
+   "n_activities": 31,
+   "n_permissions": 10,
+   "permissions_top": [
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.INTERNET",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.VIBRATE",
+    "android.permission.WAKE_LOCK",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "com.keylesspalace.tusky.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+   ],
+   "libraries": [
+    "androidx.window.extensions",
+    "androidx.window.sidecar"
+   ],
+   "dex_census": [
+    {
+     "dex": "classes.dex",
+     "bytes": 7748680,
+     "classes": 8094,
+     "markers": {
+      "koin": 0,
+      "compose": 58,
+      "kotlin": 10
+     }
+    }
+   ],
+   "markers_total": {
+    "koin": 0,
+    "compose": 58,
+    "kotlin": 10
+   }
+  },
+  "nextcloud": {
+   "file": "com.nextcloud.client_350000290.apk",
+   "exists": true,
+   "zip_magic_ok": true,
+   "sha256": "c9ba2e85b13fee457238f959d367223834db44ec14531ec93abb2be97ab3fcff",
+   "sha16": "c9ba2e85b13fee45",
+   "size_bytes": 112503320,
+   "package": "com.nextcloud.client",
+   "versionCode": "350000290",
+   "versionName": "35.0.2",
+   "minSdk": "28",
+   "targetSdk": "36",
+   "main_activity": "com.nmc.android.ui.LauncherActivity",
+   "n_activities": 46,
+   "n_permissions": 33,
+   "permissions_top": [
+    "android.permission.ACCESS_MEDIA_LOCATION",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.AUTHENTICATE_ACCOUNTS",
+    "android.permission.CAMERA",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
+    "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+    "android.permission.GET_ACCOUNTS",
+    "android.permission.INTERNET",
+    "android.permission.MANAGE_ACCOUNTS",
+    "android.permission.MANAGE_EXTERNAL_STORAGE",
+    "android.permission.POST_NOTIFICATIONS"
+   ],
+   "libraries": [
+    "androidx.window.extensions",
+    "androidx.window.sidecar",
+    "org.apache.http.legacy"
+   ],
+   "dex_census": [
+    {
+     "dex": "classes.dex",
+     "bytes": 13814792,
+     "classes": 9235,
+     "markers": {
+      "koin": 0,
+      "compose": 15257,
+      "kotlin": 2265
+     }
+    },
+    {
+     "dex": "classes2.dex",
+     "bytes": 10086192,
+     "classes": 7772,
+     "markers": {
+      "koin": 0,
+      "compose": 5067,
+      "kotlin": 587
+     }
+    },
+    {
+     "dex": "classes3.dex",
+     "bytes": 9454596,
+     "classes": 8261,
+     "markers": {
+      "koin": 0,
+      "compose": 227,
+      "kotlin": 472
+     }
+    },
+    {
+     "dex": "classes4.dex",
+     "bytes": 10901416,
+     "classes": 9443,
+     "markers": {
+      "koin": 0,
+      "compose": 368,
+      "kotlin": 380
+     }
+    },
+    {
+     "dex": "classes5.dex",
+     "bytes": 11049380,
+     "classes": 9035,
+     "markers": {
+      "koin": 0,
+      "compose": 15,
+      "kotlin": 3168
+     }
+    },
+    {
+     "dex": "classes6.dex",
+     "bytes": 9275764,
+     "classes": 10205,
+     "markers": {
+      "koin": 0,
+      "compose": 2,
+      "kotlin": 2
+     }
+    },
+    {
+     "dex": "classes7.dex",
+     "bytes": 590996,
+     "classes": 411,
+     "markers": {
+      "koin": 0,
+      "compose": 1,
+      "kotlin": 2
+     }
+    }
+   ],
+   "markers_total": {
+    "koin": 0,
+    "compose": 20937,
+    "kotlin": 6876
+   }
+  },
+  "connectbot": {
+   "file": "org.connectbot.apk",
+   "exists": true,
+   "zip_magic_ok": true,
+   "sha256": "96cf501a83e89284ff3ec93ac06e7a6a6aa8a35c0c02486b865945fe59ac8223",
+   "sha16": "96cf501a83e89284",
+   "size_bytes": 13092258,
+   "package": "org.connectbot",
+   "versionCode": "11101000",
+   "versionName": "1.11.1-oss",
+   "minSdk": "24",
+   "targetSdk": "36",
+   "main_activity": "org.connectbot.ui.MainActivity",
+   "n_activities": 1,
+   "n_permissions": 12,
+   "permissions_top": [
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING",
+    "android.permission.INTERNET",
+    "android.permission.NEARBY_WIFI_DEVICES",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.USE_BIOMETRIC",
+    "android.permission.USE_FINGERPRINT",
+    "android.permission.VIBRATE",
+    "android.permission.WAKE_LOCK",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "org.connectbot.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+   ],
+   "libraries": [
+    "androidx.window.extensions",
+    "androidx.window.sidecar"
+   ],
+   "dex_census": [
+    {
+     "dex": "classes.dex",
+     "bytes": 6447528,
+     "classes": 6697,
+     "markers": {
+      "koin": 0,
+      "compose": 2503,
+      "kotlin": 224
+     }
+    }
+   ],
+   "markers_total": {
+    "koin": 0,
+    "compose": 2503,
+    "kotlin": 224
+   }
+  }
+ }
+}

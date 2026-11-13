@@ -1,0 +1,159 @@
+{
+ "wave": "S156",
+ "stage": "baseline",
+ "engine": "S155 main rebuild",
+ "anchors": {
+  "dooz": {
+   "file": "io.github.yamin8000.dooz_23.apk",
+   "package": "io.github.yamin8000.dooz",
+   "expected_face": "11a38a5aeeff45a6",
+   "runs": [
+    {
+     "run_id": "r1",
+     "wall_s": 74.5,
+     "killed": false,
+     "install": "rc=0 t=0s",
+     "face": "11a38a5aeeff45a6",
+     "uncaught": 6,
+     "verdicts": [
+      "DEFAULT_BACKGROUND_ONLY"
+     ]
+    },
+    {
+     "run_id": "r2",
+     "wall_s": 74.3,
+     "killed": false,
+     "install": "cached",
+     "face": "11a38a5aeeff45a6",
+     "uncaught": 6,
+     "verdicts": [
+      "DEFAULT_BACKGROUND_ONLY"
+     ]
+    }
+   ],
+   "stable_x2": true,
+   "face": "11a38a5aeeff45a6",
+   "matches_expectation": true
+  },
+  "unote": {
+   "file": "app.varlorg.unote_30.apk",
+   "package": "app.varlorg.unote",
+   "expected_face": "3b8dcb0adbbc17a9",
+   "runs": [
+    {
+     "run_id": "r1",
+     "wall_s": 1.5,
+     "killed": false,
+     "install": "rc=0 t=0s",
+     "face": "3b8dcb0adbbc17a9",
+     "uncaught": 0,
+     "verdicts": []
+    },
+    {
+     "run_id": "r2",
+     "wall_s": 1.5,
+     "killed": false,
+     "install": "cached",
+     "face": "3b8dcb0adbbc17a9",
+     "uncaught": 0,
+     "verdicts": []
+    }
+   ],
+   "stable_x2": true,
+   "face": "3b8dcb0adbbc17a9",
+   "matches_expectation": true
+  },
+  "microtimer": {
+   "file": "dubrowgn.microtimer_8.apk",
+   "package": "dubrowgn.microtimer",
+   "expected_face": null,
+   "runs": [
+    {
+     "run_id": "r1",
+     "wall_s": 1.5,
+     "killed": false,
+     "install": "rc=0 t=0s",
+     "face": "bbd350b6c14fbd52",
+     "uncaught": 0,
+     "verdicts": []
+    }
+   ],
+   "face": "bbd350b6c14fbd52",
+   "matches_expectation": true
+  },
+  "opencalc": {
+   "file": "com.darkempire78.opencalculator_53.apk",
+   "package": "com.darkempire78.opencalculator",
+   "expected_face": null,
+   "runs": [
+    {
+     "run_id": "r1",
+     "wall_s": 2.6,
+     "killed": false,
+     "install": "rc=0 t=0s",
+     "face": "63020bc7334048fe",
+     "uncaught": 0,
+     "verdicts": []
+    }
+   ],
+   "face": "63020bc7334048fe",
+   "matches_expectation": true
+  },
+  "tictactoe": {
+   "file": "com.emmanuelmess.tictactoe.apk",
+   "package": "com.emmanuelmess.tictactoe",
+   "expected_face": null,
+   "runs": [
+    {
+     "run_id": "r1",
+     "wall_s": 1.6,
+     "killed": false,
+     "install": "rc=0 t=0s",
+     "face": "b5a7a35d5fe0564b",
+     "uncaught": 8,
+     "verdicts": [
+      "DEFAULT_BACKGROUND_ONLY"
+     ]
+    }
+   ],
+   "face": "b5a7a35d5fe0564b",
+   "matches_expectation": true
+  },
+  "bouncy": {
+   "file": "com.dozingcatsoftware.bouncy_43.apk",
+   "package": "com.dozingcatsoftware.bouncy",
+   "expected_face": null,
+   "runs": [
+    {
+     "run_id": "r1",
+     "wall_s": 2.2,
+     "killed": false,
+     "install": "rc=0 t=0s",
+     "face": "8a6c24ac8a7d718e",
+     "uncaught": 0,
+     "verdicts": []
+    }
+   ],
+   "face": "8a6c24ac8a7d718e",
+   "matches_expectation": true
+  },
+  "gmdice": {
+   "file": "de.duenndns.gmdice_8.apk",
+   "package": "de.duenndns.gmdice",
+   "expected_face": null,
+   "runs": [
+    {
+     "run_id": "r1",
+     "wall_s": 1.5,
+     "killed": false,
+     "install": "rc=0 t=0s",
+     "face": "3891679dff449331",
+     "uncaught": 0,
+     "verdicts": []
+    }
+   ],
+   "face": "3891679dff449331",
+   "matches_expectation": true
+  }
+ }
+}
