@@ -891,7 +891,7 @@ static void group_atomic(DalvikExecutionEngine& e) {
 static void group_stream(DalvikExecutionEngine& e) {
     std::cout << "\n[GROUP ST] InputStream.read — REAL asset bytes (simplestopwatch license.html)\n";
     const char* cache = getenv("MINIANDROID_APK_CACHE");
-    std::string base = cache ? cache : "/home/z/my-project/miniandroid_ws/apk_cache";
+    std::string base = cache ? cache : "MINIANDROID_WS_ROOT/miniandroid_ws/apk_cache";
     std::string apk = base + "/corpus/simplestopwatch.apk";
     // Independent oracle: extract the first bytes OUTSIDE the engine.
     std::string truth;

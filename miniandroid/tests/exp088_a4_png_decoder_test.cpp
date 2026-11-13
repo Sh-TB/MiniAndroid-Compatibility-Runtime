@@ -46,7 +46,7 @@ static std::vector<uint8_t> read_file(const std::string& path) {
 
 int main(int argc, char** argv) {
     std::string dir = (argc > 1) ? argv[1]
-        : "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp088_a4/known_pngs";
+        : "MINIANDROID_WS_ROOT/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp088_a4/known_pngs";
 
     // Load manifest
     auto manifest_bytes = read_file(dir + "/manifest.json");

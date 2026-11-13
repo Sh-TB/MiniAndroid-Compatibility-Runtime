@@ -24,7 +24,7 @@ import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO_ROOT = Path("/home/z/my-project/MiniAndroid-Compatibility-Runtime")
+REPO_ROOT = Path(__file__).resolve().parents[2]
 MINIANDROID = REPO_ROOT / "miniandroid" / "build" / "miniandroid"
 RESULTS_DIR = REPO_ROOT / "miniandroid" / "tests" / "corpus" / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)

@@ -32,7 +32,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-RESULTS_DIR = Path("/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/tests/corpus/results")
+RESULTS_DIR = Path(__file__).resolve().parents[2] / "miniandroid/tests/corpus/results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 DB_PATH = "/tmp/exp088_sqlite_micro.db"

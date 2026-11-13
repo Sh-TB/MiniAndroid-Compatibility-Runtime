@@ -3823,4 +3823,112 @@ Binding rules:
 
 ---
 
+# 172. REPOSITORY LAYOUT, DIRECTORY OWNERSHIP & ARTIFACT LIFECYCLE LAW (S212, #587 WP11 — PERMANENT)
+
+This chapter is the normative authority for repository structure and artifact
+ownership. Supporting documents (`docs/REPOSITORY_STRUCTURE.md`,
+`docs/REPOSITORY_HYGIENE.md`, `docs/ARTIFACT_LIFECYCLE.md`) are explanatory or
+generated maps, never competing policies. The executable policy validator
+(`tools/policy_validator.py`, wired into CI) is the enforcement arm; a policy
+paragraph without a failing check is not a law.
+
+## 172.1 Ownership map — every top-level path has exactly one job
+
+| Path | Sole ownership / allowed content |
+|---|---|
+| `miniandroid/` | Runtime implementation, framework data, build files, maintained runtime tests; no run output |
+| `tests/` | Maintained test harnesses and backend/contract tests; no one-off wave dumps |
+| `fixtures/` | Small intentional source/input fixtures referenced by tests; never generated fixture build output |
+| `examples/`, `games/` | First-party runnable example/game source only |
+| `third_party/` | Only currently consumed vendored dependencies, or documented optional test dependencies; pinned version/license/URL/SHA/consumer each |
+| `upstream/` | Pinned third-party source trees consumed by reproducible source-first builds |
+| `docs/upstream/` | Versioned third-party reference snapshots (never compiled); per-version MANIFEST with URL/revision/license |
+| `canonical/` | Canonical machine-readable registries only; one owner per data family; generated projections declare their generator and are never hand-edited |
+| `registry/` | Legacy registry area — distinct contract only; must not duplicate a canonical registry |
+| `docs/` | Human documentation, architecture, development, compatibility, decisions, releases, navigation |
+| `docs/evidence/canonical/` | Small curated proof assets referenced by the canonical evidence registry; never raw run folders |
+| `evidence/` | Historical campaign evidence (transitional during migration); no new unreviewed wave dumps |
+| `scripts/` | Maintained, repeatable build/test/release/audit scripts; one-off run outputs never written beside scripts |
+| `tools/` | Maintained developer tools; no scratch binaries/builds/caches |
+| `library_ecosystem/` | Metadata-only build-on-demand dependency capability/consumer/lock registry (S185/S186 law) |
+| `.github/` | Workflows, templates, repository automation, policy enforcement |
+| `.agent/` | Current agent contract + pointers to this Constitution |
+| `reports/`, `research/`, `audit/`, `probe_store/`, `hc_provenance/`, `campaigns/` | No automatic write permission; each retained root needs a documented distinct role in `docs/REPOSITORY_STRUCTURE.md` |
+| `forensic_data/` | RETIRED (R27): raw API dumps live in ignored `.cache/forensics/` only |
+
+No new top-level directory may be created for a coder, session, S-wave, issue,
+app, run, experiment or campaign. A genuinely necessary new top-level directory
+requires a Constitution edit, structure-doc update, root-allowlist test update
+and issue rationale in the same reviewed change.
+
+## 172.2 Root-level file law
+
+The root allowlist is exactly: `README.md`, `LICENSE`, `CONSTITUTION_V2.md`,
+`.gitignore`, plus the documented compatibility projection
+`root_registry.json` (byte-identical projection of
+`canonical/root_cause_registry.json`; 265 historical scripts read the root
+path; retirement trigger = externalization of that script corpus). Raw logs
+(`*_out*.txt`, `*_gate_out.txt`), stderr/stdout captures, traces, screenshots,
+random JSON/JSONL, database/WAL/SHM/LOCK files, one-off reports, patches,
+worklogs and duplicate registry copies are FORBIDDEN at the root. The policy
+validator enforces this list; a new root entry fails CI with the instruction to
+amend this chapter instead.
+
+## 172.3 New-file contract — mandatory BEFORE creating a tracked path
+
+1. Classify: runtime source / test / fixture / vendored dependency / reference
+   source / canonical registry / canonical evidence / documentation /
+   generated output / raw log / cache / temporary scratch.
+2. Find the existing canonical owner directory; reuse it.
+3. Name the consumer: exact build target, test, script, documented claim or
+   evidence ID. No consumer → do not commit.
+4. State provenance: upstream URL/revision/license for third-party material;
+   producing commit/tool/command for generated material; APK SHA/session/run
+   ID for app evidence.
+5. State lifecycle: KEEP / REGENERATE / EXTERNALIZE / DELETE after use;
+   expected size; needed in a clean clone?
+6. A coder cannot make a file "evidence" by writing it into `evidence/`; the
+   evidence validator must confirm it supports a claim.
+
+## 172.4 Default output routing — no new noise
+
+Build products, binaries, extracted APKs, package data, databases/WAL/SHM,
+run screenshots, raw traces, temporary JSON and debug logs go under an ignored
+local `.cache/`, `build/`, or an explicitly configured output directory.
+Committed scripts default to ignored output. A run becomes permanent evidence
+only after a separate promotion step creates a compact summary and validates
+provenance. Raw GitHub/API research exports use ignored `.cache/forensics/`.
+A test run must leave no newly tracked files in a clean checkout.
+
+## 172.5 Automated enforcement
+
+`tools/policy_validator.py` (dependency-free) is invoked by CI and local
+preflight and enforces: the root allowlist; the ownership map for new tracked
+paths; rejection of APK/AAB, extracted app trees, build/cache/temp outputs,
+raw stdout/stderr/logs, DB/WAL/SHM/LOCK, Python bytecode, unapproved
+ELF/archives and scratch traces; rejection of new screenshot/image paths
+outside canonical evidence locations or above evidence size thresholds without
+a per-file allowlist entry (purpose + claim/issue + owner + source SHA +
+review expiry); SHA duplicate detection distinguishing symlink/alias from
+duplicated regular files; generator/source declarations on generated
+documents; machine-path detection (`/home/z/...`, `C:\Users\...`) with
+per-entry reviewed allowlist for explicitly marked historical records and ZERO
+tolerance in maintained areas (`tools/`, `scripts/release/`, `miniandroid/`,
+`tests/`, `.github/`, `docs/`, `canonical/`, root); contradictory-evidence
+detection (`NO_APP_OPS` with `REAL_APP_CONTENT`, zero draw ops presented as
+complete UI, stale screenshot sizes, SUCCESS hiding uncaught/stub-bounded
+semantics). Positive and negative tests live in
+`tests/policy_validator_law_test.py`; CI runs the validator on every push/PR
+without downloading any toolchain.
+
+## 172.6 Cleanup responsibility
+
+Every temporary artifact is removed at run end; every promoted artifact has a
+reason to live. Once an issue/wave closes, its scratch area is frozen and
+reviewed. Every quarter/release a full tree scan publishes a compact hygiene
+delta; every removal carries path/SHA/consumer/disposition records. No
+automatic mass deletions; no history rewrite; no force-push.
+
+---
+
 # END OF MASTER CODER CONSTITUTION V2

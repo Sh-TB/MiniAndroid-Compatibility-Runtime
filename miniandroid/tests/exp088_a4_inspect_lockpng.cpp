@@ -14,7 +14,7 @@ using miniandroid::renderer::DecodedImage;
 using miniandroid::apk::ApkParser;
 
 int main() {
-    std::string apk_path = "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk";
+    std::string apk_path = "MINIANDROID_WS_ROOT/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk";
     ApkParser apk;
     apk.parse(apk_path);
 

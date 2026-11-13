@@ -56,8 +56,8 @@ struct ImagePlacement {
 
 int main(int argc, char** argv) {
     std::string dir = (argc > 1) ? argv[1]
-        : "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp088_a4/known_pngs";
-    std::string out_dir = "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp088_a4/render_multi";
+        : "MINIANDROID_WS_ROOT/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp088_a4/known_pngs";
+    std::string out_dir = "MINIANDROID_WS_ROOT/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp088_a4/render_multi";
 
     auto manifest_bytes = read_file(dir + "/manifest.json");
     json manifest;

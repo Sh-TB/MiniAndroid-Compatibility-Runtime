@@ -3,7 +3,8 @@
 Independent oracle — does not reuse the runtime's parser (§25 JADX-style check)."""
 import struct, zipfile, sys
 
-APK = '/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk'
+import os
+APK = os.environ.get('MINIANDROID_TEST_APK', 'miniandroid/download/exp073_real_apps/de.duenndns.gmdice_8.apk')
 data = zipfile.ZipFile(APK).read('classes.dex')
 
 def u32(o): return struct.unpack_from('<I', data, o)[0]

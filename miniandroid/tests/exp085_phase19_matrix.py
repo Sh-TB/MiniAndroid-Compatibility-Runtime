@@ -18,7 +18,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO_ROOT = Path("/home/z/my-project/MiniAndroid-Compatibility-Runtime")
+REPO_ROOT = Path(__file__).resolve().parents[2]
 RESULTS_DIR = REPO_ROOT / "miniandroid" / "tests" / "corpus" / "results"
 
 

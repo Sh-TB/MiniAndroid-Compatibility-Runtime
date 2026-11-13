@@ -202,11 +202,11 @@ static void render_tree(SoftwareCanvas& canvas, ApkParser& apk,
 
 int main(int argc, char** argv) {
     std::string apk_path = (argc > 1) ? argv[1]
-        : "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk";
+        : "MINIANDROID_WS_ROOT/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26.apk";
     std::string layout_cache_path = (argc > 2) ? argv[2]
-        : "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26_layout_cache.json";
+        : "MINIANDROID_WS_ROOT/MiniAndroid-Compatibility-Runtime/miniandroid/download/exp073_real_apps/omegacentauri.mobi.simplestopwatch_26_layout_cache.json";
     std::string out_dir = (argc > 3) ? argv[3]
-        : "/home/z/my-project/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp088_a4/simplestopwatch_render";
+        : "MINIANDROID_WS_ROOT/MiniAndroid-Compatibility-Runtime/miniandroid/run/exp088_a4/simplestopwatch_render";
 
     std::cout << "APK:          " << apk_path << std::endl;
     std::cout << "Layout cache: " << layout_cache_path << std::endl;

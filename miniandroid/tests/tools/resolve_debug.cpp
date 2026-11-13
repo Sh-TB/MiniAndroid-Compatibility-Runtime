@@ -5,7 +5,7 @@
 using namespace miniandroid::resources;
 
 int main(int argc, char** argv) {
-    const char* apk = argc > 1 ? argv[1] : "/home/z/my-project/repo/miniandroid/download/corpus/gmdice.apk";
+    const char* apk = argc > 1 ? argv[1] : "MINIANDROID_WS_ROOT/repo/miniandroid/download/corpus/gmdice.apk";
     ResourceRuntime& rt = ResourceRuntime::instance();
     if (!rt.ensure_loaded(apk)) { printf("load failed\n"); return 1; }
     uint32_t ids[] = {0x7f040008, 0x7f04000c, 0x7f080000, 0x7f080001, 0x7f030000, 0x0102000a};

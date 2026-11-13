@@ -9,7 +9,7 @@
 using namespace miniandroid;
 
 int main(int argc, char** argv) {
-    const char* apk = "/home/z/corpus/external_hello/HelloWorldSelfAware-1.1.0-android.apk";
+    const char* apk = "MINIANDROID_CORPUS_ROOT/corpus/external_hello/HelloWorldSelfAware-1.1.0-android.apk";
     (void)argc; (void)argv;
     apk::ApkParser ap;
     auto info = ap.parse(apk);

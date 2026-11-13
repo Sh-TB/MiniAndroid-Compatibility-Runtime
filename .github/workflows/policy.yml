@@ -1,0 +1,23 @@
+name: policy-guard
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Repository policy validator (Constitution §172)
+        run: |
+          python3 tools/policy_validator.py check
+      - name: Policy-validator law test (positive + 8 negative classes)
+        run: |
+          python3 tests/policy_validator_law_test.py
+      - name: Forensic ledger validation (no raw dumps, no network)
+        run: |
+          python3 scripts/forensic_ledger.py validate
