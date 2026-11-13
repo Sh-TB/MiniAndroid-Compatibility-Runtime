@@ -1,0 +1,692 @@
+{
+ "batch": "evidence/s188_w18/runs/halma_w18_r1..r11",
+ "analysis": "S212/WP10\u00a76 for #587",
+ "runs": [
+  {
+   "run": "halma_w18_r1",
+   "png_bytes": 2863835,
+   "sha256": "15130c72ce569ae8aa457ffe9ce9d3e0cd068330d7812fccc0147bb0d4b44868",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 0,
+   "px_diff_pct": 0.0,
+   "top_color_pairs": [],
+   "f_new_200_census": {
+    "IMPLEMENTED": 924,
+    "STUBBED": 63,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "KEEP (representative full PNG)"
+  },
+  {
+   "run": "halma_w18_r2",
+   "png_bytes": 2863792,
+   "sha256": "c727cc1def211d0bd29109fa6304cf0f60bf3e44d6dccebd336b1570b5869d82",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      47,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 924,
+    "STUBBED": 63,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  },
+  {
+   "run": "halma_w18_r3",
+   "png_bytes": 2863816,
+   "sha256": "246038d50f256bfed91586e361ac520095d8b251a0262f6374df4eacd6d79df8",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      220,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 924,
+    "STUBBED": 63,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  },
+  {
+   "run": "halma_w18_r4",
+   "png_bytes": 2863825,
+   "sha256": "697871d87bed1c20821de6e3027ddbdcdcf0aae0480910e60a283d3e1ef07c8d",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      167,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 920,
+    "STUBBED": 39,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  },
+  {
+   "run": "halma_w18_r5",
+   "png_bytes": 2863808,
+   "sha256": "062b52e217af3e1e3092da7cdc58cad8ae90c607025f129c31a03eb824478c39",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      237,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 920,
+    "STUBBED": 39,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  },
+  {
+   "run": "halma_w18_r6",
+   "png_bytes": 2863796,
+   "sha256": "92f2c0f7c2d31f2f937e97c0d5202db02096b9b4d278f73e8c933be4ade7ad09",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      13,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 920,
+    "STUBBED": 39,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  },
+  {
+   "run": "halma_w18_r7",
+   "png_bytes": 2863832,
+   "sha256": "02c65d46d540a6a38c254083874de31f8894e3c6dcd1e2d856961fc6699a1d90",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      90,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 920,
+    "STUBBED": 39,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  },
+  {
+   "run": "halma_w18_r8",
+   "png_bytes": 2863821,
+   "sha256": "0b50d4a750e8823282ba9f3e5e4126ba09f0371262bf786aa1db2b2a2c8d09be",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      215,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 920,
+    "STUBBED": 39,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  },
+  {
+   "run": "halma_w18_r9",
+   "png_bytes": 2863824,
+   "sha256": "0db08e64f34399ca03b9eb553d906b01692a7ee29145b0f0a0eb0624d3681163",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      159,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 920,
+    "STUBBED": 39,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  },
+  {
+   "run": "halma_w18_r10",
+   "png_bytes": 2863825,
+   "sha256": "55aa0b9ceabada66d834dcac99fed9d30ba5f063a62182e7dc0c820be1c473c6",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      144,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 920,
+    "STUBBED": 39,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  },
+  {
+   "run": "halma_w18_r11",
+   "png_bytes": 2863822,
+   "sha256": "a42fe2511d9c859751054d59b55e031af96ae24dc724e677e799a3b36cf43c33",
+   "dims": [
+    1080,
+    1920
+   ],
+   "mode": "RGB",
+   "app_draw_ops": null,
+   "nodes_visited": null,
+   "verdict": "REAL_APP_CONTENT",
+   "app_owned_px": null,
+   "trace_events": 30,
+   "render_ok": true,
+   "no_app_ops": true,
+   "uncaught": 1,
+   "stubbed_calls": null,
+   "census_implemented": 1,
+   "census_stubbed": 1,
+   "px_diff_vs_r1": 10572,
+   "px_diff_pct": 0.5098,
+   "top_color_pairs": [
+    {
+     "from": [
+      70,
+      127,
+      0
+     ],
+     "to": [
+      75,
+      127,
+      0
+     ],
+     "n": 10572
+    }
+   ],
+   "f_new_200_census": {
+    "IMPLEMENTED": 924,
+    "STUBBED": 63,
+    "MISSING": 0,
+    "ERROR": 0
+   },
+   "f016_uncaught_inflight": 1,
+   "first_failure_event": {
+    "event": "RUN_END",
+    "seq": 29,
+    "state_excerpt": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames \u2014 ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.lo"
+   },
+   "frame_analysis_key_facts": {
+    "app_draw_ops": 0,
+    "app_owned_pixels": 975949,
+    "depth_max": 0,
+    "draw_walk_ran": true,
+    "verdict": "REAL_APP_CONTENT"
+   },
+   "verdict_contradiction": {
+    "summary_verdict": "REAL_APP_CONTENT",
+    "trace_verdict": "NO_APP_OPS (RENDER_OK result NO_APP_OPS)",
+    "resolution": "BLOCKER recorded: ownership classifier attributes theme-fill pixels (975,949 px) as app-owned while app_draw_ops=0 and ViewTree depth_max=0; verdict must NOT be read as real app UI until classifier is reconciled (WP10 \u00a73 issue flag)"
+   },
+   "disposition": "DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)"
+  }
+ ],
+ "conclusion": {
+  "visual": "all 11 frames are the same default Halma menu/first frame; the ONLY inter-run pixels are one shade pair (70,127,0)->(47,127,0) across 10,572 px (0.51%) \u2014 nondeterministic shading, no error/first-divergence/state transition",
+  "honest_status": "proves APK load + manifest/DEX parse + lifecycle dispatch + surface creation + repeatable first frame; does NOT prove Halma gameplay or meaningful Compose content (app_draw_ops=0, ViewTree depth_max=0, 1 uncaught in-flight exception, stub-bounded census)",
+  "kept_full_png": "halma_w18_r1/screenshot.png",
+  "deleted_pngs": 10,
+  "checkout_bytes_saved_target": 28630000
+ }
+}

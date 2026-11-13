@@ -1,0 +1,79 @@
+{
+ "policy": "S212/WP10 \u00a75 tier B (repeated-run determinism evidence): one representative full PNG + compact per-run rows",
+ "retained_full_png": {
+  "path": "evidence/s188_w18/runs/halma_w18_r1/screenshot.png",
+  "sha256": "15130c72ce569ae8aa457ffe9ce9d3e0cd068330d7812fccc0147bb0d4b44868",
+  "bytes": 2863835,
+  "dims": [
+   1080,
+   1920
+  ],
+  "mode": "RGB",
+  "class": "CANONICAL_FULL_PIXEL_EVIDENCE (pixel-exact, unmodified)"
+ },
+ "derivative_preview": {
+  "path": "evidence/s188_w18/halma_w18_preview.jpg",
+  "label": "DERIVATIVE / NOT PIXEL-EXACT",
+  "source_path": "evidence/s188_w18/runs/halma_w18_r1/screenshot.png",
+  "source_sha256": "15130c72ce569ae8aa457ffe9ce9d3e0cd068330d7812fccc0147bb0d4b44868",
+  "dims": [
+   360,
+   640
+  ],
+  "encoder": "PIL JPEG quality=82, RGB, max dim 640",
+  "purpose": "human review only; never used by pixel-exact gates"
+ },
+ "deleted_screenshots": {
+  "halma_w18_r2": {
+   "sha256": "c727cc1def211d0bd29109fa6304cf0f60bf3e44d6dccebd336b1570b5869d82",
+   "bytes": 2863792,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  },
+  "halma_w18_r3": {
+   "sha256": "246038d50f256bfed91586e361ac520095d8b251a0262f6374df4eacd6d79df8",
+   "bytes": 2863816,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  },
+  "halma_w18_r4": {
+   "sha256": "697871d87bed1c20821de6e3027ddbdcdcf0aae0480910e60a283d3e1ef07c8d",
+   "bytes": 2863825,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  },
+  "halma_w18_r5": {
+   "sha256": "062b52e217af3e1e3092da7cdc58cad8ae90c607025f129c31a03eb824478c39",
+   "bytes": 2863808,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  },
+  "halma_w18_r6": {
+   "sha256": "92f2c0f7c2d31f2f937e97c0d5202db02096b9b4d278f73e8c933be4ade7ad09",
+   "bytes": 2863796,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  },
+  "halma_w18_r7": {
+   "sha256": "02c65d46d540a6a38c254083874de31f8894e3c6dcd1e2d856961fc6699a1d90",
+   "bytes": 2863832,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  },
+  "halma_w18_r8": {
+   "sha256": "0b50d4a750e8823282ba9f3e5e4126ba09f0371262bf786aa1db2b2a2c8d09be",
+   "bytes": 2863821,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  },
+  "halma_w18_r9": {
+   "sha256": "0db08e64f34399ca03b9eb553d906b01692a7ee29145b0f0a0eb0624d3681163",
+   "bytes": 2863824,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  },
+  "halma_w18_r10": {
+   "sha256": "55aa0b9ceabada66d834dcac99fed9d30ba5f063a62182e7dc0c820be1c473c6",
+   "bytes": 2863825,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  },
+  "halma_w18_r11": {
+   "sha256": "a42fe2511d9c859751054d59b55e031af96ae24dc724e677e799a3b36cf43c33",
+   "bytes": 2863822,
+   "redirect": "halma_w18_r1/screenshot.png (pixel-diff = documented shade pair only)"
+  }
+ },
+ "pixel_equality_verdict": "NOT byte-identical (11 distinct SHAs) but visually equivalent: 10,572 px differ from r1, all one shade pair"
+}

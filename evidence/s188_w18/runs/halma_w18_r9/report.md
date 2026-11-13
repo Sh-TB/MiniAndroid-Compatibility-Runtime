@@ -1,74 +1,12 @@
-# MiniAndroid Execution Report
+# W18 Halma run halma_w18_r9 — CORRECTED (S212/WP10§6)
 
-## Application
+- APK package: `app.halma` (canonical `upload/canonical_apks/app.halma*.apk`)
+- screenshot sha256: `0db08e64f34399ca03b9eb553d906b01692a7ee29145b0f0a0eb0624d3681163` (2863824 bytes, 1080x1920)
+- disposition: DELETE screenshot (visually equivalent: single shade pair (70,127,0)->(47,127,0) x 10,572 px vs r1; SHA + run identity preserved here)
+- F-016: 1 uncaught in-flight exception(s); F-NEW-200 census: 920 IMPLEMENTED / 39 STUBBED
+- trace verdict: NO_APP_OPS (RENDER_OK); summary verdict REAL_APP_CONTENT is an unreconciled classifier contradiction — NOT evidence of app UI
+- honest status: first-frame boundary evidence only; NOT Halma gameplay/UI
 
-- **APK:** `/home/z/my-project/evidence/s188_w18/runs/store_halma_w18_r1/data/app/app.halma/base.apk`
-- **Package:** `app.halma`
-- **Status:** **SUCCESS** ✅
+Full batch analysis: `../../halma_w18_BATCH_REPORT.md`; per-run SHAs: `../../halma_w18_batch_summary.json`.
 
-## Metrics
-
-| Metric | Value |
-|--------|-------|
-| APIs Called | 0 |
-| Frames Rendered | 2 |
-| Execution Time | 0ms |
-| Memory Peak | 0.00 B |
-| Errors | 0 |
-| Warnings | 0 |
-
-## API Trace Summary
-
-| Class | Calls |
-|-------|-------|
-| `DalvikEngine` | 3 |
-| `ExecutionEngine` | 5165 |
-| `TraceEngine` | 3 |
-
-## Top Method Calls
-
-| Method | Calls |
-|--------|-------|
-| `ExecutionEngine.stage_load_classes` | 5127 |
-| `ExecutionEngine.stage_capture_output` | 6 |
-| `ExecutionEngine.trace_files` | 5 |
-| `ExecutionEngine.stage_render_frame` | 4 |
-| `ExecutionEngine.stage_gl_surfaces` | 4 |
-| `DalvikEngine.execute_apk` | 3 |
-| `TraceEngine.log_screenshot` | 2 |
-| `ExecutionEngine.trace_export` | 2 |
-| `ExecutionEngine.stage_parse_dex` | 2 |
-| `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
-| `ExecutionEngine.stage_initialize_runtime` | 2 |
-| `ExecutionEngine.stage_load_apk` | 2 |
-| `TraceEngine.start_session` | 1 |
-| `ExecutionEngine.validation` | 1 |
-| `ExecutionEngine.stage_generate_reports` | 1 |
-| `ExecutionEngine.stage_execute_application` | 1 |
-| `ExecutionEngine.phase_b_click` | 1 |
-| `ExecutionEngine.lifecycle_verified` | 1 |
-| `ExecutionEngine.lifecycle_source` | 1 |
-| `ExecutionEngine.execution_source` | 1 |
-
-## Screenshots
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w18/runs/halma_w18_r9/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w18/runs/halma_w18_r9/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w18/runs/halma_w18_r9/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w18/runs/halma_w18_r9/screenshot.png)
-
-## Session Info
-
-- **Session ID:** `EXP-001-20261108-135526-1343`
-- **Generated:** 2026-11-08 13:55:29 UTC
+(screenshot removed; byte-identical content class retained at `../halma_w18_r1/screenshot.png`; original sha256 recorded above and in `../../halma_w18_retention_manifest.json`)
