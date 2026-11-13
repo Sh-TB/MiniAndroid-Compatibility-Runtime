@@ -1,0 +1,28 @@
+{
+ "what": "OSMesa optional headless real-GL test backend (source test + pinned bootstrap; no vendored binaries)",
+ "decided": "2026-11-13 (issue #587 R26)",
+ "packages": {
+  "libosmesa6": {
+   "version": "25.0.7-2+deb13u1",
+   "amd64_sha256": "d0260a10601b816e3ba5249efa68116d830c8af474b4e92349a0ea8670574cea",
+   "bytes": 3197344
+  },
+  "libosmesa6-dev": {
+   "version": "25.0.7-2+deb13u1"
+  },
+  "libgl-dev": {
+   "version": "1.7.0-1+b2",
+   "amd64_sha256": "2c5044a44bc7cd7a196d554ca6ff78ae0358fbb98b7d2cce49176bdc6a816fe4"
+  }
+ },
+ "license": "Mesa is LGPL-2.1-or-later; Khronos/Mesa headers under their own permissive notices; Debian packaging files under GPL-2/LGPL as shipped in /usr/share/doc in the .deb",
+ "upstream": "https://deb.debian.org/debian/ (trixie/main amd64); source https://mesa3d.org",
+ "consumer_search": "git grep -i osmesa over all tracked source/build/scripts/workflows/configs at 3d242e42..550b4b36: only docs/evidence mentions, the optional cont83 anchor probes, and this directory; no Makefile/CMake/dlopen/link consumer",
+ "removed_bundle": "third_party/osmesa/ (39 paths, 94.39 MiB path bytes, 6 duplicate ELF paths sharing blob 75dd953d\u2026, 3 .deb archives, extracted devpkg/ + usr/ trees, prebuilt test ELF)",
+ "verification": "clean-room build+run on Debian 13 container: OSMESA REAL GL OK (see README.md)",
+ "retained": [
+  "test_osmesa.c",
+  "README.md",
+  "MANIFEST.json"
+ ]
+}
