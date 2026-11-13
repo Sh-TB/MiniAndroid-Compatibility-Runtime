@@ -1,0 +1,31 @@
+{
+ "_meta": {
+  "law": "#587 S213 image-size policy (JPEG-by-default for photographic/noisy evidence) + tools/evidence_image_optimizer.py + tools/policy_validator.py",
+  "generated": "2026-11-13",
+  "rules": [
+   "exceptions are EXACT-PATH, narrowly scoped, owned, and expiring; no directory-wide or extension-wide blanket exception is valid",
+   "each entry must record: path, owner, evidence/claim ID, reason class (alpha|diagram|pixel-art|pixel-exact|animation|other-justified), source sha256, measured JPEG alternative (size/quality) when applicable, review/expiry trigger",
+   "legacy over-threshold assets present at S213 adoption are recorded in docs/IMAGE_POLICY_BASELINE.json (per-path legacy inventory), NOT here; new files must pass the policy or hold an entry here",
+   "a new over-threshold image without a matching entry here or in the baseline fails the policy validator",
+   "animated assets are never flattened to stills; their exception reason must be animation-preservation"
+  ],
+  "owner": "release engineering (#587 S229 wave)",
+  "expiry": "per-entry review_trigger; unconditional review at the incremental migration wave tracked in #386"
+ },
+ "exceptions": [
+  {
+   "path": "evidence/cont69/cont69_mosaic.png",
+   "owner": "release engineering (#587 S213-C, S229 wave)",
+   "evidence_claim_id": "CONT-69 / F-NEW-369 (canonical/root_cause_registry.json evidence record)",
+   "reason_class": "pixel-exact-provenance",
+   "reason": "full-resolution (2160x5000) provenance source of the CONT-69 refreshed-face mosaic; the presentation asset is the derived 553x1280 JPEG (50,423 B, measured ratio 17.78x total / 1.75x format-only); the PNG is kept only for zoomed fine-print verification and provenance fidelity, not presentation",
+   "source_sha256": "3ef9443010366c76edd922dfe3d35e91624346e1ae5518b3d790f315c168825b",
+   "measured_jpeg_alternative": {
+    "bytes": 512223,
+    "quality": 85,
+    "note": "native-resolution q85; the tracked presentation JPG is 50,423 B at 553x1280"
+   },
+   "review_trigger": "#386 incremental migration wave (or earlier if the provenance role is superseded)"
+  }
+ ]
+}
