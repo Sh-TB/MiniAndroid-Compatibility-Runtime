@@ -26,6 +26,14 @@
     "note": "native-resolution q85; the tracked presentation JPG is 50,423 B at 553x1280"
    },
    "review_trigger": "#386 incremental migration wave (or earlier if the provenance role is superseded)"
+  },
+  {
+   "path": "evidence/s232/runs/s232_opensudoku/screenshot.png",
+   "owner": "S232 wave (#592 SQLQB independent verification)",
+   "evidence_claim_id": "S232_SQLQB_OPENSUDOKU.json (the F-SQLQB OpenSudoku 4.11.3 verification run)",
+   "reason": "real app-owned render evidence: 11,649-distinct-color face proving the SQLQB-integrated binary renders real OpenSudoku UI; 316,065 bytes PNG (rich content, JPEG-derivative would blur the UI text the evidence exists to show)",
+   "bytes": 316065,
+   "expiry": "review"
   }
  ]
 }

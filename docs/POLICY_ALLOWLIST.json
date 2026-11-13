@@ -28649,6 +28649,18 @@
    "reason": "runtime-generated absolute path recorded by the producing run tool (historical record of the S232 census run, not a runtime dependency)",
    "owner": "S232 wave evidence",
    "expiry": "externalization wave"
+  },
+  {
+   "path": "evidence/s232/runs/s232_opensudoku/lifecycle_trace.json",
+   "reason": "runtime-generated absolute path recorded by the producing run tool (historical record of the S232 SQLQB verification run, not a runtime dependency)",
+   "owner": "S232 wave evidence",
+   "expiry": "externalization wave"
+  },
+  {
+   "path": "evidence/s232/runs/s232_opensudoku/report.md",
+   "reason": "runtime-generated absolute path recorded by the producing run tool (historical record of the S232 SQLQB verification run, not a runtime dependency)",
+   "owner": "S232 wave evidence",
+   "expiry": "externalization wave"
   }
  ],
  "machine_paths_maintained_records": [

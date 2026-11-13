@@ -112,7 +112,7 @@ def scan_repo():
     with open(SCAN, 'w') as f:
         f.write('report\tviolations\n')
         for p in sorted(per):
-            f.write(f"{p}\t{','.join(sorted(per[p]))}\n")
+            f.write(f"{relpath(p)}\t{','.join(sorted(per[p]))}\n")
     print(f"scan: {len(per)} reports with violations -> {SCAN}")
 
 
@@ -192,8 +192,12 @@ def sha_pass(reports):
 def sha_scan_list():
     """Reports from the scan TSV carrying MISSING_SCREENSHOT_SHA."""
     rows = list(csv.reader(open(SCAN), delimiter='\t'))
-    return [r[0] for r in rows[1:]
+    return [str(ROOT / r[0]) for r in rows[1:]
             if 'MISSING_SCREENSHOT_SHA' in r[1]]
+
+
+def relpath(p):
+    return os.path.relpath(p, ROOT) if os.path.isabs(p) else p
 
 
 def main(argv):

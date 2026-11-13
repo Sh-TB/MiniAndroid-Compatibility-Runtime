@@ -344,3 +344,4 @@ evidence/s230/issue*_comments.json
 # S231: raw GitHub API exports are local fetch artifacts (WP0 no-giant-export law)
 evidence/s231/issue*.json
 evidence/s231/issue*_comments.json
+worklog.md
