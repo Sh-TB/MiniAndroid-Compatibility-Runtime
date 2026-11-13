@@ -28613,6 +28613,12 @@
    "reason": "recorded literal of the generating session in a historical one-off script/report (not a runtime dependency)",
    "owner": "historical corpus",
    "expiry": "externalization wave"
+  },
+  {
+   "path": "evidence/s229_s213_s214/clean_clone_residue.md",
+   "reason": "historical record of the S229 clean-clone no-residue test \u2014 legitimately quotes the session path it proves absent from the build outputs (\u00a7172.5 self-reference class, same as tests/path_ownership_gate_test.py)",
+   "owner": "S230 wave (#587 forgotten-items completion)",
+   "expiry": "#386 externalization wave"
   }
  ],
  "machine_paths_maintained_records": [

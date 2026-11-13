@@ -1,0 +1,107 @@
+action	source	source_sha16	output	output_sha16	bytes_before	bytes_after	delta_pct	consumers_updated	status
+MIGRATE	docs/assets/hello_color_readme_540.png	0b67bf61f57f6302			53522				DEFERRED consumer: docs/ARTIFACT_REGISTRY.json (jpeg would save 3958 B)
+MIGRATE	docs/demos/demo_frames.png	a9cc4b7a5d1ad6d6			87106				KEPT_PNG_MEASURED jpeg larger: 87106->117166
+MIGRATE	docs/evidence/hello_color_golden/frame_1080x1920.png	11e0056320d8546d			42401				KEPT_PNG_MEASURED jpeg larger: 42401->99991
+MIGRATE	docs/evidence/hello_color_golden/retest_run1_frame.png	11e0056320d8546d			42401				KEPT_PNG_MEASURED jpeg larger: 42401->99991
+MIGRATE	docs/evidence/hello_color_golden/retest_run2_frame.png	11e0056320d8546d			42401				KEPT_PNG_MEASURED jpeg larger: 42401->99991
+MIGRATE	docs/evidence/hello_color_golden/retest_run3_frame.png	11e0056320d8546d			42401				KEPT_PNG_MEASURED jpeg larger: 42401->99991
+MIGRATE	docs/evidence/m3_campaign/phase0/screenshots/base/bouncy.png	072ff17874b74846			33464				KEPT_PNG_MEASURED jpeg larger: 33464->49019
+MIGRATE	docs/evidence/master_campaign/phase0/screenshots/base/bouncy.png	072ff17874b74846			33464				KEPT_PNG_MEASURED jpeg larger: 33464->49019
+MIGRATE	docs/evidence/s62_r381/bouncy_frame0_menu.png	4219c5116ea2a867			35523				KEPT_PNG_MEASURED jpeg larger: 35523->49875
+MIGRATE	docs/evidence/s64_spotlight/fk_game_board.png	f3c81cfb97f59754			37317				KEPT_PNG_MEASURED jpeg larger: 37317->43342
+MIGRATE	docs/evidence/s64_spotlight/fk_game_deal_response.png	f9639e683ca736f6			37043				KEPT_PNG_MEASURED jpeg larger: 37043->43175
+MIGRATE	docs/evidence/s65_spotlight/fr_board.png	bb09f55f4c710ee6			90004				DEFERRED consumer: docs/ARTIFACT_REGISTRY.json (jpeg would save 12624 B)
+MIGRATE	docs/evidence/s65_spotlight/fr_board_after_taps.png	365602413a50ee8b			100727				DEFERRED consumer: docs/ARTIFACT_REGISTRY.json (jpeg would save 23604 B)
+MIGRATE	docs/evidence/s65_spotlight/tp_game_board.png	c3014c5cb6c20687			85892				DEFERRED consumer: docs/ARTIFACT_REGISTRY.json (jpeg would save 26084 B)
+MIGRATE	docs/evidence/s74_ops/bouncy/01_launch.png	f1f268c3d005f435			36283				KEPT_PNG_MEASURED jpeg larger: 36283->53187
+MIGRATE	docs/evidence/s74_ops/bouncy/03_final.png	f1f268c3d005f435			36283				KEPT_PNG_MEASURED jpeg larger: 36283->53187
+MIGRATE	docs/evidence/s74_ops/bouncy/04_frame_000.png	f1f268c3d005f435			36283				KEPT_PNG_MEASURED jpeg larger: 36283->53187
+MIGRATE	docs/evidence/s74_ops/fishrings/02_mid_maxdiff.png	a341e3ad9092f640			90093				DEFERRED consumer: docs/ARTIFACT_REGISTRY.json (jpeg would save 17490 B)
+MIGRATE	docs/evidence/s74_ops/fishrings/03_final.png	a341e3ad9092f640			90093				DEFERRED consumer: docs/ARTIFACT_REGISTRY.json (jpeg would save 17490 B)
+MIGRATE	docs/evidence/visual_forensics/s65_reval/fishrings/after_tap1_full.png	8c6e1879c5aae61a	docs/evidence/visual_forensics/s65_reval/fishrings/after_tap1_full.jpg	22c660fc79248271	91087	78049	14.3	0	MIGRATED (batch r1, reconciled)
+MIGRATE	docs/evidence/visual_forensics/s65_reval/fishrings/after_tap2_full.png	4a229e9261dbbd13	docs/evidence/visual_forensics/s65_reval/fishrings/after_tap2_full.jpg	7916bba043a23bb0	101007	77027	23.7	0	MIGRATED (batch r1, reconciled)
+MIGRATE	docs/evidence/visual_forensics/s65_reval/fishrings/after_tap3_full.png	365602413a50ee8b			100727				DEFERRED consumer: docs/ACHIEVEMENTS.md (jpeg would save 23604 B)
+MIGRATE	docs/evidence/visual_forensics/s65_reval/fishrings/board_full.png	bb09f55f4c710ee6			90004				DEFERRED consumer: docs/ARTIFACT_REGISTRY.json (jpeg would save 12624 B)
+MIGRATE	docs/evidence/visual_forensics/s65_reval/fishrings/board_vs_after_tap3_diff.png	9b9e4db10f6dbc27			56823				KEPT_PNG_MEASURED jpeg larger: 56823->73681
+MIGRATE	docs/evidence/visual_forensics/s65_reval/opmt/menu_vs_game_diff.png	c91320c07fe14096			27590				KEPT_PNG_MEASURED jpeg larger: 27590->98468
+MIGRATE	docs/evidence/visual_forensics/s65_reval/tripeaks/board_full.png	c3014c5cb6c20687			85892				DEFERRED consumer: docs/ACHIEVEMENTS.md (jpeg would save 26084 B)
+MIGRATE	docs/evidence/visual_forensics/s65_reval/tripeaks/lobby_vs_board_diff.png	525abc8e05c18b71			40762				KEPT_PNG_MEASURED jpeg larger: 40762->60800
+MIGRATE	docs/runtime/light_corpus/simplestopwatch_click_sequence.png	d365e7bd76530e5a			13742				KEPT_PNG_MEASURED jpeg larger: 13742->23364
+MIGRATE	evidence/audit_s107/contact_sheet_1.png	89e3b59e3322f870			151382				DEFERRED frozen consumer: evidence/s195_audit/issues_raw.json
+MIGRATE	evidence/audit_s107/contact_sheet_2.png	4c2f6bb60bfcaa37			135040				KEPT_PNG_MEASURED jpeg larger: 135040->190308
+MIGRATE	evidence/audit_s107/contact_sheet_3.png	7833f38f4bbb7cd6			188257				DEFERRED consumer: docs/IMAGE_POLICY_BASELINE.json (jpeg would save 33066 B)
+MIGRATE	evidence/audit_s107/contact_sheet_4.png	8cffe76cdf002ca4			134043				KEPT_PNG_MEASURED jpeg larger: 134043->195499
+MIGRATE	evidence/cont11/cont11_mosaic.png	b0b7155618d38040			62621				KEPT_PNG_MEASURED jpeg larger: 62621->65881
+MIGRATE	evidence/cont43_opencalc_pad_zoom.png	b7cbde9e6c94a7eb			14841				DEFERRED frozen consumer: evidence/cont43/CONT43_CROSS_THE_PAGE.md
+MIGRATE	evidence/cont43_opencalc_pre_post.png	3636b4a9409ccb29			14460				DEFERRED frozen consumer: evidence/cont43/CONT43_CROSS_THE_PAGE.md
+MIGRATE	evidence/cont56/CONT56_APP_MOSAIC.png	9784cc466ef50541			173898				DEFERRED frozen consumer: evidence/cont56/CONT56_RESULT.md
+MIGRATE	evidence/cont56/cont56_mosaic.png	89f29a24b9537886			122603				DEFERRED frozen consumer: evidence/cont56/cont56_scoreboard.json
+MIGRATE	evidence/cont57/CONT57_APP_MOSAIC.png	9596650b546eb4f9			188328				DEFERRED consumer: canonical/root_cause_registry.json (jpeg would save 62112 B)
+MIGRATE	evidence/cont59/f338_faces_review.png	f24f4c431664d226			60123				DEFERRED consumer: canonical/root_cause_registry.json (jpeg would save 16217 B)
+MIGRATE	evidence/cont60/opencalc_f341_before_after.png	38e15b20c27919dd			38618				KEPT_PNG_MEASURED jpeg larger: 38618->50143
+MIGRATE	evidence/cont62/cont62_mosaic.png	ac0e7eb93ef40188			132863				DEFERRED consumer: docs/IMAGE_POLICY_BASELINE.json (jpeg would save 35371 B)
+MIGRATE	evidence/cont65/capaudit_face.png	cb6373f68fabd702			90756				DEFERRED frozen consumer: evidence/s212/issue587_comments_p1.json
+MIGRATE	evidence/cont67/capaudit_face.png	cb6373f68fabd702			90756				DEFERRED frozen consumer: evidence/s212/issue587_comments_p1.json
+MIGRATE	evidence/cont67/klondike_game_face.png	310b27515efb8acc			62967				KEPT_PNG_MEASURED jpeg larger: 62967->68132
+MIGRATE	evidence/cont70/before/tttdeluxe_old_af6094295ecb50e3.png	af6094295ecb50e3			37352				KEPT_PNG_MEASURED jpeg larger: 37352->69571
+MIGRATE	evidence/cont73/cont73_mosaic.png	9ed75bf809c1536d			66632				DEFERRED frozen consumer: evidence/cont73/cont73_evidence.json
+MIGRATE	evidence/cont74/cont74_mosaic.png	380ea4e6c0a743c3			119544				DEFERRED frozen consumer: evidence/cont74/cont74_evidence.json
+MIGRATE	evidence/cont8/fishrings_gamecontent_frame399.png	a341e3ad9092f640			90093				DEFERRED frozen consumer: evidence/cont8/w4_fishrings_scheduling.json
+MIGRATE	evidence/s107_games/com.smorgasbork.hotdeath_run1/screenshot.png	7c811bffb9a7c590			75827				DEFERRED frozen consumer: evidence/s107_games/com.smorgasbork.hotdeath_run1/report.md
+MIGRATE	evidence/s107_games/org.codeberg.scovillo.bubble_run1/screenshot.png	87fd4f1e0ccaf1a7			39513				DEFERRED frozen consumer: evidence/s107_games/org.codeberg.scovillo.bubble_run1/report.md
+MIGRATE	evidence/s113_fullgui/mykanji_final/screenshot.png	429ffe7c12c84e89			59860				DEFERRED frozen consumer: evidence/s113_fullgui/mykanji_final/report.md
+MIGRATE	evidence/s113_fullgui/mykanji_run1/screenshot.png	8f47dfc812dc4762			44546				DEFERRED frozen consumer: evidence/s113_fullgui/mykanji_run1/report.md
+MIGRATE	evidence/s113_fullgui/mykanji_run2/screenshot.png	b5989669d107c9da			41080				DEFERRED frozen consumer: evidence/s113_fullgui/mykanji_run2/report.md
+MIGRATE	evidence/s113_fullgui/mykanji_run7/screenshot.png	0a012107a677de8d			59850				DEFERRED frozen consumer: evidence/s113_fullgui/mykanji_run7/report.md
+MIGRATE	evidence/s113_fullgui/mykanji_tap6/screenshot.png	79597e3fe9921bba			61146				DEFERRED frozen consumer: evidence/s113_fullgui/mykanji_tap6/report.md
+MIGRATE	evidence/s114_bigfix/blockbuster_run1/screenshot.png	321fdcb3c236e476			23503				DEFERRED frozen consumer: evidence/s114_bigfix/blockbuster_run1/report.md
+MIGRATE	evidence/s114_bigfix/blockbuster_run2/screenshot.png	eaab6579cc5bda3e			28835				DEFERRED frozen consumer: evidence/s114_bigfix/blockbuster_run2/report.md
+MIGRATE	evidence/s114_bigfix/blockbuster_run3/screenshot.png	ea78465ae04b950d			31265				DEFERRED frozen consumer: evidence/s114_bigfix/blockbuster_run3/report.md
+MIGRATE	evidence/s114_bigfix/blockbuster_start/screenshot.png	a82fe4c636e768a1			19332				DEFERRED frozen consumer: evidence/s114_bigfix/blockbuster_start/report.md
+MIGRATE	evidence/s114_bigfix/final/blockbuster_start_small.png	088f06298b9e31c5			12423				DEFERRED frozen consumer: evidence/s195_audit/issues_raw.json
+MIGRATE	evidence/s114_bigfix/final/mykanji_1080.png	23198557c3b9691c			59131				DEFERRED frozen consumer: evidence/s195_audit/issues_raw.json
+MIGRATE	evidence/s114_bigfix/final/mykanji_small.png	d5253807bb4cde41	evidence/s114_bigfix/final/mykanji_small.jpg	b84753074684e80b	28562	16002	44.0	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s117_complete_graphics/blockbuster/screenshot_small.png	806e3399d69cd8b0			6496				KEPT_PNG_MEASURED jpeg larger: 6496->8777
+MIGRATE	evidence/s117_complete_graphics/mykanji/screenshot_small.png	6bffccb7b416d787	evidence/s117_complete_graphics/mykanji/screenshot_small.jpg	68c4211c627246dd	19778	15796	20.1	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s119_games/g2048_real_score84.png	af84aa765025109b	evidence/s119_games/g2048_real_score84.jpg	75070e238031448b	33338	22766	31.7	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s119_games/minicraft_cottage.png	a012ae52265fe371	evidence/s119_games/minicraft_cottage.jpg	9c59c8a9bd79bf1c	64794	50170	22.6	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s119_games/snake_real_score2.png	8bf338391ec320f0	evidence/s119_games/snake_real_score2.jpg	da9894a309d6e52e	33188	30169	9.1	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s119_games/snakeneon_capture.png	a7e1a59e7970fd66	evidence/s119_games/snakeneon_capture.jpg	c3b3d39fcbe736da	27064	17650	34.8	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s119_games/tetris_stack_7locks.png	ba8ea1434d075d81	evidence/s119_games/tetris_stack_7locks.jpg	9ea5041adb560545	68552	35208	48.6	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s119_games/ttt1_opening_x_o.png	978349957bf6c544			44718				DEFERRED consumer: docs/TELEGRAM_JOURNEY_S117_S119.md (jpeg would save 15104 B)
+MIGRATE	evidence/s119_games/ttt2_win_and_dialog.png	a48e615ffd7714a1	evidence/s119_games/ttt2_win_and_dialog.jpg	c2b0f518a6a34ddb	48047	30077	37.4	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s119_games/ttt3_round2_score_kept.png	24391c0e22efcecd	evidence/s119_games/ttt3_round2_score_kept.jpg	b615f49df0dcd718	39565	27139	31.4	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s120_new_games/bouncy_menu.png	165267d4bf0e5533	evidence/s120_new_games/bouncy_menu.jpg	f03ccb4fd0bcc91e	27179	17509	35.6	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s120_new_games/fishrings_puzzle_board.png	d2b4e24908439a89	evidence/s120_new_games/fishrings_puzzle_board.jpg	81e7214e5a6f39ae	64012	21579	66.3	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s120_new_games/gmdice_agent_roll_result6.png	a7456de9a54e6eba	evidence/s120_new_games/gmdice_agent_roll_result6.jpg	fd024d8b386fac67	30381	14051	53.8	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s120_new_games/opmt_full_menu.png	bc9a3e1bb2a9b425	evidence/s120_new_games/opmt_full_menu.jpg	97940e1aa90c223b	45791	21192	53.7	0	MIGRATED (batch r1, reconciled)
+MIGRATE	evidence/s183_audit1112/S183_PROOF_STRIP.png	9e459071514a768e			151132				DEFERRED frozen consumer: docs/history/WORKLOG.md
+MIGRATE	evidence/s200/runs/s202_gmdice_r1/screenshot.png	3891679dff449331			34865				DEFERRED frozen consumer: evidence/s200/runs/s202_gmdice_r1/report.md
+MIGRATE	evidence/s220/runs/s220_thextech_isTaskRoot/screenshot.png	6c9f40bedac766ab			44234				DEFERRED frozen consumer: evidence/s220/runs/s220_thextech_isTaskRoot/report.md
+MIGRATE	evidence/s224/runs/opmt/screenshot.png	8eea9a6a5a9346e4			74567				DEFERRED frozen consumer: evidence/s224/runs/opmt/report.md
+MIGRATE	evidence/s57/s57_mosaic.png	624bf7aa6f34aa5b			88922				DEFERRED frozen consumer: evidence/s57/s57_wave_evidence.json
+MIGRATE	hc_provenance/run1/screenshot.png	11e0056320d8546d			42401				DEFERRED frozen consumer: hc_provenance/run1/report.md
+MIGRATE	hc_provenance/run1_run.png	11e0056320d8546d			42401				KEPT_PNG_MEASURED jpeg larger: 42401->99991
+MIGRATE	hc_provenance/run2/screenshot.png	11e0056320d8546d			42401				DEFERRED frozen consumer: hc_provenance/run2/report.md
+MIGRATE	hc_provenance/run2_run.png	11e0056320d8546d			42401				KEPT_PNG_MEASURED jpeg larger: 42401->99991
+MIGRATE	hc_provenance/run3/screenshot.png	11e0056320d8546d			42401				DEFERRED frozen consumer: hc_provenance/run3/report.md
+MIGRATE	hc_provenance/run3_run.png	11e0056320d8546d			42401				KEPT_PNG_MEASURED jpeg larger: 42401->99991
+MIGRATE	miniandroid/docs/evidence/apps_ledger/hellocolor.png	11e0056320d8546d			42401				NOT_CONVERTED (optimizer policy)
+MIGRATE	miniandroid/docs/evidence/apps_ledger/s37_bouncy.png	3e48c85e4fe622e9			8267				NOT_CONVERTED (optimizer policy)
+DELETE	docs/evidence/campaign014/bouncy/click/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/bouncy/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/droidify/click/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/droidify/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/gmdice/click/click_frame_0.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/gmdice/click/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/gmdice/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/headingcalculator/click/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/microtimer/click/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/notesbillthefarmer/click/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/openlauncher/click/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/simplestopwatch/click/click_frame_1.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/telegram_v12/click/click_frame_1.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/telegram_v12/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/tictactoeemmanuelmess/click/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/tictactoeemmanuelmess/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)
+DELETE	docs/evidence/campaign014/tinymusicplayer/click/screenshot.png	null				0	100.0	0	DELETED unreadable residue (S229 DELETE_CANDIDATE)

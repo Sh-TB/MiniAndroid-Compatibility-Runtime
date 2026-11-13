@@ -1,0 +1,68 @@
+{
+ "582": {
+  "title": "[GP MASTER AUDIT] Living Dalvik Engine & Unified Runtime Safety, Correctness, Compose, Native, and APK Execution Repair Program",
+  "state": "open",
+  "created": "2026-11-11T15:43:07Z",
+  "body_updated": "2026-11-12T10:30:03Z",
+  "user": "Sh-TB",
+  "n_comments": 49,
+  "last_comment_id": 6821150791,
+  "last_comment_at": "2026-11-12T10:30:03Z",
+  "last_comment_user": "Sh-TB"
+ },
+ "583": {
+  "title": "[GP MASTER AUDIT] Why Coder 2\u20139 Work Does Not Reliably Reach the Main Runtime \u2014 Cross-Lane Integration Failures, Source Defects, and Executable Repair Plan",
+  "state": "open",
+  "created": "2026-11-11T17:05:19Z",
+  "body_updated": "2026-11-12T07:06:00Z",
+  "user": "Sh-TB",
+  "n_comments": 28,
+  "last_comment_id": 6817153661,
+  "last_comment_at": "2026-11-12T07:06:00Z",
+  "last_comment_user": "Sh-TB"
+ },
+ "584": {
+  "title": "A-R5 \u2014 KNOWLEDGE TRANSFER: the S215\u2013S217 frontier \u2014 #581 integrity CLOSED (15/16 post-images exact, cda66364 = the true post-image), R23/R24/R25 re-census at 14c4bf4e (all three still open), the forgotten work COMPLETED (R23 Collections algorithmic face + R24 StringBuilder mutation family + the R25 4\u00d74 declared\u2260runtime receiver matrix, 14/14), and one new finding (R27: the resolve_method_proto_uncached \"()V\" constant) \u2014 patch sha16 35e0c189b6d21746, base 14c4bf4e",
+  "state": "open",
+  "created": "2026-11-11T19:18:16Z",
+  "body_updated": "2026-11-12T07:06:02Z",
+  "user": "Sh-TB",
+  "n_comments": 6,
+  "last_comment_id": 6817154057,
+  "last_comment_at": "2026-11-12T07:06:02Z",
+  "last_comment_user": "Sh-TB"
+ },
+ "585": {
+  "title": "[LEGACY-100] Oldest open compatibility issues \u2014 root-cause audit and shared runtime recovery plan",
+  "state": "open",
+  "created": "2026-11-12T05:43:23Z",
+  "body_updated": "2026-11-12T11:07:35Z",
+  "user": "Sh-TB",
+  "n_comments": 5,
+  "last_comment_id": 6821914883,
+  "last_comment_at": "2026-11-12T11:07:35Z",
+  "last_comment_user": "Sh-TB"
+ },
+ "586": {
+  "title": "S226 TRANSFER \u2014 the S156 4-canonical-F-Droid-app wave (Thunderbird/Tusky/Nextcloud/ConnectBot \u00d7 5 stages) re-censused and re-reproduced live at S225-M (a4516511) \u2014 F-NEW-485 Koin registry divergence LIVE-REDUCED, F-NEW-486/487 RESOLVED-BY-MAINLINE (verified), F-NEW-484 FORTIFY residue, APP-016..019 registered, Nextcloud first frame \u2014 patch in comments per K-2, base a4516511",
+  "state": "open",
+  "created": "2026-11-12T17:03:37Z",
+  "body_updated": "2026-11-12T17:03:43Z",
+  "user": "Sh-TB",
+  "n_comments": 3,
+  "last_comment_id": 6830327432,
+  "last_comment_at": "2026-11-12T17:03:43Z",
+  "last_comment_user": "Sh-TB"
+ },
+ "587": {
+  "title": "RELEASE-0.0.6.2 \u2014 Repository cleanup, canonical structure, professional README & reproducible release",
+  "state": "open",
+  "created": "2026-11-13T04:25:33Z",
+  "body_updated": "2026-11-13T14:45:26Z",
+  "user": "Sh-TB",
+  "n_comments": 6,
+  "last_comment_id": 6856290771,
+  "last_comment_at": "2026-11-13T14:45:26Z",
+  "last_comment_user": "Sh-TB"
+ }
+}

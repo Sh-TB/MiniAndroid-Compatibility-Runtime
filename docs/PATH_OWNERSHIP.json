@@ -783,7 +783,8 @@
   "upstream/nav_s36",
   "upstream/s43",
   "upstream/s44",
-  "upstream/scatter_s37"
+  "upstream/scatter_s37",
+  "evidence/s230"
  ],
  "frozen_snapshot": {
   "audit": {
@@ -831,8 +832,8 @@
   "evidence": {
    "lifecycle": "frozen \u2014 no new files, no new directories",
    "tracked_file_count": 6149,
-   "snapshot_sha256": "b76cea01671a13ddbb57926af89e670cef7d10b6979be05704af51a2af0b6fed",
-   "basis": "sorted git ls-files list at adoption S229 (#587 S213/S214; owner-approved in the #587 closeout thread)"
+   "snapshot_sha256": "e44d7cdd71039d138c5170a6efff12af80daa481125875d80f39e698e45f4aac",
+   "basis": "sorted tracked-children list (s229_s213_s214 excluded per wave-prefix rule); re-baselined at the S230 ledgered migration wave (#587): 15 evidence/ paths replaced png->jpg under the disposition ledger evidence/s230/legacy_migration_ledger.tsv + consumer checks (S214 migration clause); count unchanged"
   },
   "docs/history": {
    "lifecycle": "frozen \u2014 no new files, no new directories",
@@ -888,5 +889,21 @@
    ".cmake"
   ],
   "note": ".rej/.bak/.orig residue fails EVERYWHERE including maintained areas; stderr/stdout-style names only fail when they are not script sources"
- }
+ },
+ "wave_evidence_registered_s230": {
+  "path": "evidence/s230",
+  "owner": "S230 forgotten-items completion wave (#587)",
+  "approved_in": "#587 user instruction: forgotten items executed (S230)",
+  "expected_classes": "md, json, tsv, tsv.gz",
+  "note": "registered at wave start (S214 default-deny law; files exist only after registration step \u2014 validator order enforced going forward)"
+ },
+ "frozen_snapshot_amendments": [
+  {
+   "area": "evidence",
+   "date": "2026-11-13",
+   "wave": "S230 (#587)",
+   "reason": "ledgered legacy-image migration (15 png->jpg replacements, 248 KB saved; ledger + consumer checks attached)",
+   "ledger": "evidence/s230/legacy_migration_ledger.tsv"
+  }
+ ]
 }

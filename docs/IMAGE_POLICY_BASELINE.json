@@ -7,197 +7,17 @@
    "every entry expires at the incremental migration wave (tracked in #386)",
    "new files are never covered by this baseline; they must pass the policy or hold a narrow exception"
   ],
-  "count": 72,
-  "total_bytes": 38179812
+  "count": 55,
+  "total_bytes": 38179812,
+  "s230_migration_wave": {
+   "date": "2026-11-13",
+   "ledger": "evidence/s230/legacy_migration_ledger.tsv",
+   "expired_entries": 17,
+   "measured_kept_png_updated": 2,
+   "note": "entries for migrated/deleted paths removed; KEPT_PNG entries carry the measured JPEG-larger outcome (JPEG conversion rejected where it would grow bytes)"
+  }
  },
  "legacy_images": [
-  {
-   "path": "docs/evidence/campaign014/bouncy/click/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/bouncy/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/droidify/click/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/droidify/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/gmdice/click/click_frame_0.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/gmdice/click/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/gmdice/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/headingcalculator/click/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/microtimer/click/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/notesbillthefarmer/click/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/openlauncher/click/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/simplestopwatch/click/click_frame_1.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/telegram_v12/click/click_frame_1.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/telegram_v12/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/tictactoeemmanuelmess/click/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/tictactoeemmanuelmess/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
-  {
-   "path": "docs/evidence/campaign014/tinymusicplayer/click/screenshot.png",
-   "bytes": 0,
-   "sha256": null,
-   "extension": "png",
-   "image_class": "UNREADABLE_CORRUPT",
-   "policy_verdict": "UNREADABLE_CORRUPT",
-   "owner": "S213 adoption baseline (#587)",
-   "reason": "unreadable/corrupt or empty image at S213 adoption (UnidentifiedImageError); disposition (DELETE_CANDIDATE) required at migration wave",
-   "review_trigger": "incremental migration wave tracked in #386"
-  },
   {
    "path": "docs/evidence/canonical/com.miniandroid.g2048.gif",
    "bytes": 979913,
@@ -349,8 +169,8 @@
    "image_class": "PHOTO_NOISY",
    "policy_verdict": "MIGRATE_TO_JPEG",
    "owner": "S213 adoption baseline (#587)",
-   "reason": "legacy asset present at S213 adoption; per-path record, not a blanket exception",
-   "review_trigger": "incremental migration wave tracked in #386"
+   "reason": "S230 measured outcome supersedes blanket verdict: KEPT_PNG_MEASURED jpeg larger: 135040->190308",
+   "review_trigger": "#386 next incremental wave"
   },
   {
    "path": "evidence/audit_s107/contact_sheet_3.png",
@@ -371,8 +191,8 @@
    "image_class": "PHOTO_NOISY",
    "policy_verdict": "MIGRATE_TO_JPEG",
    "owner": "S213 adoption baseline (#587)",
-   "reason": "legacy asset present at S213 adoption; per-path record, not a blanket exception",
-   "review_trigger": "incremental migration wave tracked in #386"
+   "reason": "S230 measured outcome supersedes blanket verdict: KEPT_PNG_MEASURED jpeg larger: 134043->195499",
+   "review_trigger": "#386 next incremental wave"
   },
   {
    "path": "evidence/cont56/CONT56_APP_MOSAIC.png",

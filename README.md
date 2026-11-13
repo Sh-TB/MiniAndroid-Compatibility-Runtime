@@ -25,7 +25,7 @@ MiniAndroid exists to run real Android applications directly on the host CPU, an
 </tr>
 </table>
 
-Provenance: all four are genuine animations (65/75/49/15 frames; 400x737 / 360x640; 5.6–22.5 s; measured 2026-11-13), canonical records in [`docs/evidence/canonical/registry.json`](docs/evidence/canonical/registry.json) with in-house APK SHA-256 per record (`games/` source). Interaction-verified at record time (S83/S86); release-candidate re-runs of these four are tracked as PARTIAL in [#587 S213-E](https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/587#issuecomment-6853869494) — the five demos below are the ones re-verified on the current RC binary.
+Provenance: all four are genuine animations (65/75/49/15 frames; 400x737 / 360x640; 5.6–22.5 s; measured 2026-11-13), canonical records in [`docs/evidence/canonical/registry.json`](docs/evidence/canonical/registry.json) with in-house APK SHA-256 per record (`games/` source). Interaction-verified at record time (S83/S86) and re-verified on the current release-candidate binary `06f98d2a9c21ea92` (2026-11-13, S230 record `evidence/s230/gallery_rc_rerun.json`): g2048 and minicraft full real-interaction passes; tetris and snake-deluxe real gameplay rendered on the RC (click dispatch → game logic → live tick chain → per-frame board evolution).
 
 ## How it works
 

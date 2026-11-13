@@ -24,6 +24,7 @@ import hashlib
 import json
 import os
 import subprocess
+import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MA_BIN = os.path.join(REPO, "miniandroid", "build", "miniandroid")
@@ -75,8 +76,43 @@ def write_record(rundir, record):
     return os.path.join(rundir, "autoplay_record.json")
 
 
-def standard_run(title, apk, frames, taps, compare=(0, -1), out_root=None):
-    """Full standard protocol for one title; returns the record dict."""
+def compact_preview(src_png, out_jpg, max_dim=640, budget_kb=250):
+    """C-tier preview derivative (#587 forensic addendum §7): max 640 px,
+    byte-budget ~150-250 KB, explicitly labeled DERIVATIVE / NOT
+    PIXEL-EXACT in the sidecar manifest. Canonical/pixel-gate images are
+    exempt (they never go through this function)."""
+    from PIL import Image
+    img = Image.open(src_png)
+    img.thumbnail((max_dim, max_dim))
+    q = 85
+    while True:
+        img.convert("RGB").save(out_jpg, format="JPEG", quality=q,
+                                optimize=True)
+        if os.path.getsize(out_jpg) <= budget_kb * 1024 or q <= 70:
+            break
+        q -= 5
+    with open(out_jpg + ".manifest.json", "w") as f:
+        json.dump({
+            "derivative": "DERIVATIVE / NOT PIXEL-EXACT",
+            "source": os.path.relpath(src_png, REPO),
+            "source_sha256": hashlib.sha256(
+                open(src_png, "rb").read()).hexdigest(),
+            "dimensions": list(img.size),
+            "encoder": f"PIL JPEG q={q} optimize",
+            "bytes": os.path.getsize(out_jpg),
+        }, f, indent=1)
+    return out_jpg
+
+
+def standard_run(title, apk, frames, taps, compare=(0, -1), out_root=None,
+                 retain_full_screenshot=False):
+    """Full standard protocol for one title; returns the record dict.
+
+    §7 default: run artifacts are compact — the full-resolution screenshot
+    is retained only behind retain_full_screenshot=True (canonical-evidence
+    opt-in); otherwise a 640-px JPEG preview + the per-run SHA row stand in
+    for the full PNG (which still lives in the ignored local run tree for
+    the session but is NOT promoted)."""
     rundir = os.path.join(out_root or OUT_ROOT, title)
     rc = run_mini(rundir, apk, frames, taps)
     frames_dir = os.path.join(rundir, "frames")
@@ -97,5 +133,23 @@ def standard_run(title, apk, frames, taps, compare=(0, -1), out_root=None):
             fb = names[compare[1]]
             rec["state_change_px"] = state_change_px(rundir, fa, fb)
             rec["state_change_frames"] = [fa, fb]
+    if os.path.exists(shot) and not retain_full_screenshot:
+        prev = compact_preview(shot, os.path.join(rundir, "screenshot_preview.jpg"))
+        rec["preview"] = os.path.relpath(prev, REPO)
+        rec["preview_law"] = "DERIVATIVE / NOT PIXEL-EXACT (C-tier)"
+        rec["full_screenshot_retained"] = False
+    else:
+        rec["full_screenshot_retained"] = bool(os.path.exists(shot))
+    # report-honesty gate (#587 §7): reject a contradictory report at the
+    # moment it is produced, not at review time.
+    rpt = os.path.join(rundir, "report.md")
+    if os.path.exists(rpt):
+        sys.path.insert(0, os.path.join(REPO, "tools"))
+        try:
+            import report_sanity
+            rec["report_sanity_violations"] = [
+                c for c, _ in report_sanity.check_report(rpt)]
+        except Exception as e:  # never crash a run on gate failure
+            rec["report_sanity_violations"] = [f"GATE_ERROR {e}"]
     write_record(rundir, rec)
     return rec

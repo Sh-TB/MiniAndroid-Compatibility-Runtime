@@ -1,0 +1,19 @@
+run_id	defects	action
+p9_w18_r1	duplicate_embed,stale_size	corrected sha=0b7e8056d61d4875 embed-removed
+p9_w18_r2	duplicate_embed,stale_size	corrected sha=0b7e8056d61d4875 embed-removed
+p9_w18_r3	duplicate_embed,stale_size	corrected sha=0b7e8056d61d4875 embed-removed
+p9_w18ft	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft10	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft11	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft12	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft13	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft14	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft2	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft3	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft4	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft5	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft6	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft7	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft8	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18ft9	duplicate_embed,stale_size,missing_run_id	corrected sha=adb95814e8ecc136 embed-removed
+p9_w18smoke	duplicate_embed,stale_size,missing_run_id	corrected sha=0b7e8056d61d4875 embed-removed

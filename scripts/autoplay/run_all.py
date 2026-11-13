@@ -58,6 +58,40 @@ def main():
         print(f"{title:<14} {rc:>4} {str(px):>10} {sha:<18}")
     ok = sum(1 for _, rc, _ in results if rc == 0)
     print(f"\n{ok}/{len(results)} drivers completed (rc=0)")
+
+    # §7 batch evidence law (#587 forensic addendum): repeated runs write ONE
+    # batch-level runs.jsonl with per-run metrics + SHAs — never one full
+    # PNG per run. Each row: run id, apk sha, engine sha, exit, frames,
+    # screenshot sha, state-change px, preview path, report-sanity verdict.
+    engine_sha = None
+    ma_bin = os.path.join(REPO, "miniandroid", "build", "miniandroid")
+    if os.path.exists(ma_bin):
+        import hashlib
+        engine_sha = hashlib.sha256(open(ma_bin, "rb").read()).hexdigest()[:16]
+    batch_path = os.path.join(REPO, "run", "autoplay", "runs.jsonl")
+    with open(batch_path, "w") as f:
+        for title, rc, rec in results:
+            row = {
+                "run_id": title,
+                "apk": rec.get("apk") if rec else None,
+                "apk_sha16": rec.get("apk_sha16") if rec else None,
+                "engine_sha16": engine_sha,
+                "exit": rc,
+                "frames": rec.get("frames") if rec else None,
+                "screenshot_sha16": rec.get("screenshot_sha16") if rec else None,
+                "state_change_px": rec.get("state_change_px") if rec else None,
+                "preview": rec.get("preview") if rec else None,
+                "full_screenshot_retained":
+                    rec.get("full_screenshot_retained") if rec else None,
+                "report_sanity_violations":
+                    rec.get("report_sanity_violations") if rec else None,
+            }
+            f.write(json.dumps(row) + "\n")
+    print(f"batch evidence: {batch_path} ({len(results)} rows)")
+    bad = [t for t, _, rec in results if rec and rec.get("report_sanity_violations")]
+    if bad:
+        print(f"REPORT-SANITY violations in: {bad}")
+        return 1
     return 0 if ok == len(results) else 1
 
 
