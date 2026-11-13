@@ -22,7 +22,7 @@ Every row must point at a real artifact in the repo (commit-pinned at HEAD `0383
   micro-proof + real-APK columns and commit pins.
 - `docs/research/ROOT_IMPACT_MATRIX.md`, `docs/research/ROOT_LAW_COMPLETENESS_MATRIX.md`,
   `docs/research/ROOT_DISCOVERY_GUIDE.md`, `docs/research/ROOT_DISCOVERY_EVIDENCE.md` (F-044 worked example).
-- `F023_ROOT_CAUSE.md` — the Compose host chain (9+1 laws, M3).
+- `docs/history/docs/history/F023_ROOT_CAUSE.md` — the Compose host chain (9+1 laws, M3).
 - `docs/compatibility/MASTER_CURRENT_GAP_MATRIX.md`, `docs/history/MASTER_CAMPAIGN4_FINAL_REPORT.md`.
 
 ## 4. Machine-readable

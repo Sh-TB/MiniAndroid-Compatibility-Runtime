@@ -148,7 +148,7 @@ file loading is proven innocent in all nine (Case A in every case).
 | **Compose / WebView / native** | Compose: composition machinery fails before first draw (R8-rename CNFE — diagnose-only); WebView: engine ships (s133 webfix wave); native: no dlopen/JNI layer yet (S-2 — reached cleanly by asteroids) |
 | **Installed-APK capability** | source SHA == installed base.apk SHA == pkgaudit live re-hash (11/11); uninstall 16/16; per-package context-root law ([LOAD-AUDIT docs](docs/REAL_ANDROID_LOADING_ORACLE.md)) |
 | **Upstream reuse** | 7 replacement rows dispositioned (2 PENDING_RESEARCH, 4 AVAILABLE_NOT_USED, 1 ADAPTED) — [UPSTREAM_REPLACEMENT_PLAN.jsonl](docs/UPSTREAM_REPLACEMENT_PLAN.jsonl); 127-entry source-first library |
-| **Roadmap** | [docs/ROADMAP_STATUS.md](docs/ROADMAP_STATUS.md) (generated) · live state: [CAMPAIGN_STATE.md](CAMPAIGN_STATE.md) continuation wave |
+| **Roadmap** | [docs/ROADMAP_STATUS.md](docs/ROADMAP_STATUS.md) (generated) · historical state: [docs/history/CAMPAIGN_STATE.md](docs/history/CAMPAIGN_STATE.md) |
 
 ---
 
