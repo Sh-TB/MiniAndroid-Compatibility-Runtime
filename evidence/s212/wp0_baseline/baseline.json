@@ -1,0 +1,37 @@
+{
+ "captured_utc": "2026-11-13T06:09:56Z",
+ "issue": "Sh-TB/MiniAndroid-Compatibility-Runtime#587 (RELEASE-0.0.6.2)",
+ "head": "1a0fa259737f1f6b907d43873ddf346c767be806",
+ "tree": "4a178ebf95c350ec97ba6bad002e4b87b3966278",
+ "branch": "main",
+ "last_tag": "v0.0.6.1-Exchequer",
+ "working_tree_clean": false,
+ "dirty_entries": [
+  "?? scripts/s212_wp0_baseline.py"
+ ],
+ "toolchain": {
+  "git": "git version 2.47.3",
+  "gpp": "g++ (Debian 14.2.0-19) 14.2.0",
+  "cmake": "",
+  "python": "Python 3.12.16",
+  "os": "Linux 5.10.134-013.15.kangaroo.al8.x86_64 x86_64 GNU/Linux"
+ },
+ "paths": {
+  "tracked_file_paths": 16269,
+  "path_summed_blob_bytes": 409187306,
+  "path_summed_blob_mib": 390.23,
+  "unique_blobs": 12611,
+  "duplicate_groups": 1066,
+  "duplicate_wasted_checkout_bytes": 120955472,
+  "duplicate_wasted_mib": 115.35
+ },
+ "measurements": {
+  "tracked_checkout_bytes": 409187306,
+  "tracked_checkout_mib": 390.23,
+  "local_git_dir_bytes": 188668646,
+  "local_git_dir_mib": 179.93,
+  "github_metadata_size_kb": 125334,
+  "github_metadata_mib": 122.4,
+  "note": "GitHub metadata size is GitHub's own pack estimate and is NOT any of the local measurements; checkout bytes count tracked paths materialized; path-summed blob bytes count ls-tree sizes with duplicates per path."
+ }
+}
