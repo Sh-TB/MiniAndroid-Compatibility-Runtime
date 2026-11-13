@@ -5,7 +5,7 @@ The S145 tap run shows the UP reaches Liw0; (SuspendingPointerInputModifierNodeI
 compose-ui 1.6.7) but the app lambda never runs post-UP ([QUEUE] zero enqueues,
 zero io.github.yamin8000.dooz methods in the tap window).
 
-The 1.6.7 VERBATIM source (reference/compose_167/commonMain/.../
+The 1.6.7 VERBATIM source (docs/upstream/androidx/compose/1.6.7/commonMain/.../
 SuspendingPointerInputFilter.kt) pins the law:
   onPointerEvent -> (first event) coroutineScope.launch(UNDISPATCHED){pointerInputHandler()}
                  -> dispatchPointerEvent -> forEachCurrentPointerHandler{ it.offerPointerEvent }

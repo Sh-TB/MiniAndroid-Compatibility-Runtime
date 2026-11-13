@@ -1,0 +1,10 @@
+{
+ "what": "AndroidX Compose 1.6.7 verbatim source snapshot (reference-only; NEVER compiled into MiniAndroid)",
+ "version": "1.6.7",
+ "upstream": "https://android.googlesource.com/platform/frameworks/support (androidx.compose.ui + androidx.compose.foundation subset)",
+ "license": "Apache-2.0 (Copyright 2019-2020 The Android Open Source Project, headers in each file)",
+ "files": 42,
+ "purpose": "verbatim reference used by scripts/s146_train64_liw0_disasm.py (LIW0 disassembly law mining against real Compose gesture/pointer sources)",
+ "moved_from": "reference/compose_167/ (2026-11-13, #587 R06: reference/ retired into docs/upstream/<project>/<version>/)",
+ "consumer": "scripts/s146_train64_liw0_disasm.py"
+}

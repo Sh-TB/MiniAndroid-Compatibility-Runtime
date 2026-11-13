@@ -59,3 +59,4 @@ Format: **Law** · Source (version) · Relevant API · MiniAndroid implementatio
 - compose runtime/ui 1.11.4 sources (versions read from APK META-INF — `corpus_cache/dooz23_extracted/`)
 - protobuf-javalite 3.x — ground-truth `MessageSchema.java` in this directory
 - OpenJDK `ArrayList`/`Collections`/`File` (jdk17u)
+- androidx compose 1.6.7 gesture/pointer subset (42 files, Apache-2.0) — `androidx/compose/1.6.7/` — verbatim reference for s146 LIW0 disasm law; moved from retired `reference/compose_167/` (#587 R06).
