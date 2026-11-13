@@ -1,0 +1,33 @@
+{
+ "generated_utc": "2026-11-13T07:05:29Z",
+ "source_of_truth": {
+  "titles": "docs/evidence/canonical/registry.json",
+  "games": "canonical/game_registry.json",
+  "apps": "canonical/app_registry.json",
+  "roots": "root_registry.json (compatibility projection of canonical/root_cause_registry.json)",
+  "head": "git"
+ },
+ "head": "3b2ab6a4443e6bafe920524b230b3eccb0a74578",
+ "tree": "ac7ad1bc24fde14dce60d198352f5df28ac7c5f2",
+ "tracked_files": 14775,
+ "canonical_titles_total": 152,
+ "canonical_title_status": {
+  "OBSERVED": 112,
+  "VISUALLY_PARTIAL": 5,
+  "FRAME_CAPTURED": 1,
+  "VERIFIED": 24,
+  "candidate_VISUALLY_VERIFIED": 1,
+  "candidate_INTERACTION_VERIFIED": 6,
+  "FAILED": 1,
+  "PARTIAL": 2
+ },
+ "canonical_verified": 24,
+ "games_registered": 91,
+ "apps_registered": 15,
+ "root_causes_total": 797,
+ "abi_scope": "x86 / x86_64 only",
+ "excluded_from_readme": [
+  "S95/S125/S131-era campaign counters (stale)",
+  "any count not present in this file"
+ ]
+}

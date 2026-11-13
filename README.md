@@ -1,337 +1,80 @@
-# MINIANDROID — Android Compatibility Runtime
+# MiniAndroid Compatibility Runtime
 
-<p align="center">
-  <img src="docs/assets/miniandroid-silkie-mascot.png" width="132" alt="MiniAndroid mascot — a fluffy Silkie hen (decorative only)">
-</p>
-<p align="center"><sub>Decorative mascot (a Silkie hen) — not an Android/Google mark; carries no claim.</sub></p>
+**A from-scratch, CPU-first Android APK compatibility runtime for x86/x86_64 Linux hosts** — it parses real APKs, executes Dalvik bytecode with its own engine, and drives real app UI (lifecycle, layout, input, rendering, state) without an emulator, a VM, or ARM translation.
 
-**Repository:** https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime (original project, not a fork) · **License:** MIT · **Wave:** S95-CTRL (engineering control system)
+## Mission
 
----
+MiniAndroid exists to run real Android applications directly on the host CPU, and to prove every claim with reproducible evidence: a demonstration is only a demonstration when the APK identity, the exact runtime build, the run command, the rendered frames, the input, and the measured state change are all recorded. Where something does not work yet, the frontier is documented instead of claimed.
 
-## ⚖️ LAW-001 — FIRST TEST LAW: ABI SCOPE (x86 / x86_64 ONLY)
+## Scope (read this first)
 
-> **Every app or game loaded by this runtime must be executable on the host
-> CPU: pure-DEX (no native libs — ABI-neutral) or shipping x86 / x86_64
-> native libraries. An APK whose native trees contain NO x86/x86_64 ABI
-> (ARM32 / ARM64 / other) is OUT OF SCOPE: it is recorded as
-> `ABI_OUT_OF_SCOPE` (SKIP) — never counted as "MiniAndroid could not run
-> the game".**
+- **Runs today:** pure-DEX APKs (no native libraries — ABI-neutral) and APKs shipping **x86/x86_64** native libraries.
+- **Out of scope:** ARM-only APKs (`ABI_OUT_OF_SCOPE` — skipped, never counted as a failure), and MiniAndroid is **not** a full Android OS, not an emulator, not an Android agent, and not an ARM translator.
+- **Never claimed:** "runs Android apps" without per-app evidence. Every count in this README comes from [`docs/METRICS.json`](docs/METRICS.json), generated from the canonical registries — 152 canonical titles (24 `VERIFIED`, 112 `OBSERVED`), 91 games + 15 apps registered, 797 recorded root causes.
 
-| Path | Eligibility | Verdict |
+## How it works
+
+```
+APK → ZIP/AXML/resources parsing → Dalvik-class DEX execution (own engine)
+    → Android object model + lifecycle (Activity/Service/Receiver/Provider shadows)
+    → layout + render (View walk, Compose subset, PortableGL GLES bridge) → input dispatch
+    → state/storage (SharedPreferences, SQLite shadow, files)
+```
+
+Maintained C++ sources live under [`miniandroid/`](miniandroid/) (74 TUs listed in `core_sources.manifest`); the repository layout law is [CONSTITUTION_V2 §172](CONSTITUTION_V2.md), mapped in [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md).
+
+## What genuinely runs (all re-verified on release-candidate binary `06f98d2a9c21ea92`, 2026-11-13)
+
+| Demo | What is proven | Current evidence |
 |---|---|---|
-| **MAIN TEST PATH** | x86 / x86_64 native libs, or pure-DEX (no libs) | full pipeline: DEX → Framework → Lifecycle → UI → Rendering → Input → State → Filesystem → DB → … |
-| **OUT OF CURRENT SCOPE** | ARM32 / ARM64 / other ABI only (no x86/x86_64 tree) | `ABI_OUT_OF_SCOPE` — SKIP bucket, separate from failures |
+| **Vector Pinball** (bouncy) | GL surface + app menu composited per the SurfaceView z-order law: Select-Table panel, 5 menu buttons, status bar render above the GL frame; face `98abca38` byte-exact, 0 uncaught | [run](evidence/s207/runs/s207_gold_bouncy/report.md) · [GIF](docs/evidence/canonical/com.dozingcatsoftware.bouncy.gif) |
+| **GameMasterDice** | real dice-roll taps; two independent runs byte-identical (`3891679d`) | [r1](evidence/s207/runs/s207_gmdice_r1/report.md) · [r2](evidence/s207/runs/s207_gmdice_r2/report.md) |
+| **TicTacToe Deluxe** | full game loop; 3 runs deterministic `7354c1b2`; win/stalemate board states | [ttt0–2](evidence/s207/runs/s207_ttt0/report.md) · [GIF](docs/evidence/canonical/com.emmanuelmess.tictactoe.gif) |
+| **uNote** | notes app UI; VERIFIED canonical title; face `3b8dcb0a` | [run](evidence/s207/runs/s207_gold_unote/report.md) · [image](docs/evidence/canonical/app.varlorg.unote.jpg) |
+| **MicroTimer** | timer UI + taps; face `b39665f6`, 0 uncaught | [run](evidence/s207/runs/s207_mtm_spot/report.md) · [image](docs/evidence/canonical/dubrowgn.microtimer.jpg) |
 
-* ARM is **deferred, not deleted**: removed from the failure criteria only;
-  ABI translation may become a separate project/phase once the core runtime
-  matures (instruction translation, syscall/ABI compat, JNI bridging,
-  alignment — a separate large layer deliberately not mixed into this one).
-* The check runs **first**, before install/launch, from the real
-  `lib/<abi>/` tree (gate: `scripts/unknown_apk_preflight.py`, verdict
-  contract 1.1; profile: `docs/ENVIRONMENT_PROFILE.json` ENV-005; full law
-  text: [CONSTITUTION_V2.md → LAW-001](CONSTITUTION_V2.md)).
-* Honest statistics: ARM-only titles land in their own
-  `ABI_OUT_OF_SCOPE` bucket — never inflating failures, never silently
-  dropped. Mixed APKs (x86_64 + ARM) stay in scope.
+The gate battery (`scripts/s207_gate.py`) pins all of the above byte-exactly and runs `make test-all` (28/28) — see [`docs/releases/RELEASE_v0.0.6.2.md`](docs/releases/RELEASE_v0.0.6.2.md).
 
----
+## In progress — honest partials (never labeled complete)
 
-## MISSION
+| Example | What works | Exact frontier |
+|---|---|---|
+| **dooz** (Compose Tic-Tac-Toe) | Compose UI first frame: 3×3 board + turn-state text render, pin `a0fae907` | deeper Compose game-state interaction unproven; first-frame boundary is the current frontier ([run](evidence/s207/runs/s207_gold_dooz/report.md)) |
+| **Halma** | APK load → manifest/DEX parse → lifecycle dispatch → surface creation → repeatable first frame (11-run batch, one canonical frame) | `app_draw_ops=0`, one uncaught in-flight exception, stub-bounded census — **not** gameplay ([batch report](evidence/s188_w18/halma_w18_BATCH_REPORT.md)) |
 
-Execute **real Android APKs** on a from-scratch runtime and prove compatibility
-with **measurable, hash-pinned evidence** — not screenshots that merely look
-plausible: real DEX execution, real lifecycle, real view trees, real input, real
-state change, real pixels.
+## Known limitations
 
-**MINIANDROID IS** — a C++17 compatibility runtime: APK
-→ Manifest / Resources → DEX → Runtime → Android object model → Lifecycle
-→ View/Layout → Rendering → Input → Storage/Concurrency/Media → meaningful
-application state → meaningful screenshot/output. Every claim is pinned to
-committed SHA256-tracked evidence; nothing is asserted from `rc=0` alone.
+- ARM-only native libraries are skipped by the ABI gate (no translation layer).
+- Compose support is a subset: first-frame/board rendering proven; complex stateful apps remain partial.
+- API coverage is stub-bounded in places — every run records its `IMPLEMENTED/STUBBED` census (F-NEW-200) and uncaught exceptions (F-016); "SUCCESS" is never claimed past those caveats.
+- Networking, media playback and background services are not claim-complete; per-title facts live in the [canonical registry](docs/evidence/canonical/registry.json).
 
-**MINIANDROID IS NOT** — an Android agent, a computer-use agent, a static APK
-analyzer, a game-only emulator, or a screenshot generator. There is no Linux
-kernel, no ART/Dalvik binary, no GPU: app logic runs through a re-implemented
-Dalvik-class interpreter over a deterministic software raster pipeline.
+## Quick start (tested on Debian 13, g++ 14.2)
 
----
+```bash
+git clone https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime
+cd MiniAndroid-Compatibility-Runtime
+make -C miniandroid -j4            # builds miniandroid/build/miniandroid
 
-## 0→100 STATUS · CURRENT VERIFIED STATUS
+# install a pure-DEX or x86/x86_64 APK and run it:
+./miniandroid/build/miniandroid install app.apk --data-root /tmp/ma_store
+./miniandroid/build/miniandroid run --execution-mode real-dalvik --data-root /tmp/ma_store \
+    -o /tmp/ma_out --package <app.package> --frames 8 --frame-delay 250
+# → /tmp/ma_out/screenshot.png + report.md + traces
+```
 
-> Full map: [docs/MINIANDROID_0_TO_100.md](docs/MINIANDROID_0_TO_100.md) ·
-> evidence-derived; validated by `tools/validate_control_system.py`.
+Repository policy: machine paths, run stores, raw logs and oversized non-canonical images are rejected by [`tools/policy_validator.py`](tools/policy_validator.py) (CI: `policy-guard`).
 
-| Signal | Value (canonical source) |
-|---|---|
-| Real APK corpus executed & recorded | **150** (88 games · 61 apps · 1 fixture) — [canonical/registry.json](docs/evidence/canonical/registry.json) |
-| Content-verified tier | **22 VERIFIED** (+ 5 candidate visual/interactive, 12 interactive GIF titles) — [ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md) |
-| Honest frontier tier | 112 OBSERVED · 7 PARTIAL-family · 1 FRAME_CAPTURED · 1 FAILED — each with recorded cause |
-| Regression battery | **99/99 ALL PASS** — [testing/BATTERY_INDEX.json](docs/testing/BATTERY_INDEX.json) |
-| Engine roots closed | **421-root append-only registry**; 21+ ROOT-CAUSED-FIXED families — [root_registry.json](root_registry.json) |
-| Source-first library | **127 entries · 122 distinct verified repos · 48 evidenced laws · 65 deep-inspected** — [GRAPHICS_SOURCE_REGISTRY.md](docs/GRAPHICS_SOURCE_REGISTRY.md) |
-| Open problem state | **33 canonical tickets** (1 P0 · 10 P1 · 16 P2 · 6 P3; 29 open / 4 CLOSED) — [TICKET_REGISTRY.json](docs/TICKET_REGISTRY.json) |
-| Position on 0→100 scale | **~52/100** (chain proven E4–E6; deep semantics open in text shaping, real networking, media-at-APK, web, native, modern runtimes) |
-
-## CONTROL SYSTEM (canonical, S125/S128)
-
-> Living control system per [docs/ROADMAP.md](docs/ROADMAP.md) — every metric
-> below is **generated** from canonical state, never hand-invented.
-
-| Panel | Generated file |
-|---|---|
-| **CANONICAL MASTER WORKLIST (S131: 643 items — 424 roots + 197 caps + 22 mandates, all 27 fields + reuse_candidate, 129 categories, P0–P4 queues, APK matrix, dependency graph; §12 REUSE MAP: 43 candidates 21 mandated fields; INPUT caps PENDING 33, R-NEW-251/252 superseded by R-NEW-424)** | [docs/MASTER_WORKLIST.md](docs/MASTER_WORKLIST.md) + [canonical/master_worklist.json](canonical/master_worklist.json) + [docs/REUSE_EXTERNAL_COMPONENT_MAP.md](docs/REUSE_EXTERNAL_COMPONENT_MAP.md) + [docs/REUSE_AUDIT_INPUT.md](docs/REUSE_AUDIT_INPUT.md) |
-| Capability registry (197 capabilities, SS5–22 layers) | [canonical/capability_registry.json](canonical/capability_registry.json) |
-| Status control panel (computed percentages, frontiers, load pipeline) | [docs/ROADMAP_STATUS.md](docs/ROADMAP_STATUS.md) |
-| Per-capability matrix | [docs/CAPABILITY_MATRIX.md](docs/CAPABILITY_MATRIX.md) |
-| App registry (L0–L7 checkpoints; honest BLOCKED frontiers) | [canonical/app_registry.json](canonical/app_registry.json) |
-| Game registry (91 titles; OBSERVED ≠ VERIFIED) | [canonical/game_registry.json](canonical/game_registry.json) |
-| Root-cause read model (421 roots) | [canonical/root_cause_registry.json](canonical/root_cause_registry.json) |
-| Evidence registry (waves + evidence law) | [canonical/evidence_registry.json](canonical/evidence_registry.json) |
-| Title × subsystem compatibility matrix | [canonical/compatibility_matrix.json](canonical/compatibility_matrix.json) |
-
-Honesty law: Telegram's grey frame and WhatsApp's black/white frame are **load
-frontiers — NOT renders**; no title is ever labelled "100% rendered".
-
-## Real Executed Apps & Games
-
-Four real demos — actual APKs that executed on MiniAndroid with SHA-pinned,
-click-to-inspect evidence (GIF + run protocol + state-change record). Status
-vocabulary is the strict audit set — nothing is claimed VERIFIED beyond its
-recorded evidence ([audit](docs/VERIFIED_EXECUTED_GAMES.md)):
-
-| Demo | Capability demonstrated | Status | Source | Evidence |
-|---|---|---|---|---|
-| **Snake Deluxe** — full gameplay loop: 2 lives, game over, CJK dialog, restart | game loop · input · state machine · dialog | VERIFIED (E5, x2 full runs + 4-run sweep) | [in-house source](games/snake-deluxe/) | [GIF](docs/evidence/canonical/com.miniandroid.snakedeluxe.gif) · [S79 run matrix](docs/evidence/s79/reproofs/S79_REPROOF_MATRIX.json) |
-| **2048** — tile merges advance SCORE to 200 | grid UI · merge state · score | VERIFIED (E4) | [in-house source](games/2048/) | [GIF](docs/evidence/canonical/com.miniandroid.g2048.gif) · [autoplay log](docs/evidence/s80/g2048_autoplay_log.txt) |
-| **Mini Tetris** — falling pieces, NEXT queue, deterministic animation | timer-driven animation · game physics | VERIFIED (E5, x3 deterministic runs) | [in-house source](games/mini-tetris/) | [GIF](docs/evidence/canonical/com.miniandroid.tetris.gif) · [determinism record](docs/evidence/s95/wave_c_determinism.json) |
-| **Fish Rings** — external F-Droid APK; 3 real taps: board paints, then fish rings rotate (5-state interactive GIF) | real external APK · resources · setImageResource · persistence (L10) | VERIFIED (E5, x3 repeats + RC=0 reproof + S99 tap-sequence GIF) | [upstream source](https://github.com/VelbazhdSoftwareLLC/FishRingsForAndroid) · [F-Droid](https://f-droid.org/en/packages/eu.veldsoft.fish.rings/) | [GIF](docs/evidence/canonical/eu.veldsoft.fish.rings.gif) · [S91 reproof](docs/evidence/s91_fish_reproof/README.md) |
-| **Mini Browser** — loads a REAL website over HTTPS on tap: example.com (HTTP 200, 559 bytes; 12,087 px measured state change; 3/3 byte-identical runs) AND **z.ai** (HTTP 200, 15,727 bytes — the 307 → chat.z.ai redirect followed end-to-end over TLS; S102 HEADER-OWS-TRIM law) | java.net.URL · HttpURLConnection · real TLS (OpenSSL) · BufferedReader streams · TextView render (NO WebView — small-APK law) | VERIFIED (E5, x3 deterministic + canonical GIFs) | [in-house source](games/simple-browser/) | [GIF example.com](docs/evidence/canonical/com.miniandroid.browser.gif) · [GIF z.ai](docs/evidence/canonical/com.miniandroid.browser.zai.gif) · [evidence record](docs/evidence/s100_browser/README.md) |
+## Project map
 
 | | |
 |---|---|
-| <img src="docs/evidence/canonical/com.miniandroid.snakedeluxe.gif" width="260" alt="Snake Deluxe gameplay GIF — real APK on MiniAndroid"> | <img src="docs/evidence/canonical/com.miniandroid.g2048.gif" width="260" alt="2048 gameplay GIF — real APK on MiniAndroid"> |
-| <img src="docs/evidence/canonical/com.miniandroid.tetris.gif" width="260" alt="Mini Tetris gameplay GIF — real APK on MiniAndroid"> | <img src="docs/evidence/canonical/eu.veldsoft.fish.rings.gif" width="260" alt="Fish Rings interactive gameplay GIF — real F-Droid APK on MiniAndroid, tap-driven ring rotations"> |
-| <img src="docs/evidence/canonical/com.miniandroid.browser.gif" width="260" alt="Mini Browser — real HTTPS website load on MiniAndroid, tap Go to fetch example.com over TLS"> | <img src="docs/evidence/canonical/com.miniandroid.browser.zai.gif" width="260" alt="Mini Browser loading z.ai — real TLS fetch of z.ai with the 307 redirect to chat.z.ai followed (HTTP 200, 15727 bytes), S102 HEADER-OWS-TRIM law"> |
+| Architecture & structure | [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md) · [Constitution](CONSTITUTION_V2.md) |
+| Contributing & evidence standards | [`docs/REPOSITORY_HYGIENE.md`](docs/REPOSITORY_HYGIENE.md) · [CONTRIBUTING](docs/CONTRIBUTING.md) |
+| Status & roadmap | [`docs/METRICS.json`](docs/METRICS.json) · [canonical registry](docs/evidence/canonical/registry.json) |
+| Release | [`docs/releases/RELEASE_v0.0.6.2.md`](docs/releases/RELEASE_v0.0.6.2.md) · [changelog](miniandroid/CHANGELOG.md) |
+| Evidence tiers & retention | [`evidence/evidence_retention_manifest.json`](evidence/evidence_retention_manifest.json) |
 
-> See the complete execution GIF/evidence index:
-> **[docs/EXECUTED_GIFS.md](docs/EXECUTED_GIFS.md)** — every real-execution GIF in
-> the repository, with SHA, run protocol, and state-change records. The full
-> per-game audit (23 games with real execution evidence; 20 VERIFIED) lives in
-> **[docs/VERIFIED_EXECUTED_GAMES.md](docs/VERIFIED_EXECUTED_GAMES.md)**.
+## License
 
----
-
-## CURRENT CAPABILITY STATE (evidence-derived, continuation T9)
-
-> Every number below is generated from a canonical artifact — never hand-invented.
-> Status vocabulary is the strict audit set: **VERIFIED / TESTED / OBSERVED / PARTIAL /
-> BLOCKED / PENDING** — a screenshot file, an exit code, or a byte-stable capture is
-> **never** execution or visual proof ([evidence standard](#evidence-standard)).
-
-**Working vs white — the one-paragraph answer** (#366 differential evidence, 9 apps × 3 runs
-with installed-APK identity proofs): apps that render are exactly those whose paths cross
-ViewTree → measure → layout → draw with **≥7 app-owned draw ops**; white-screen apps are
-arrested before any app-owned draw op survives — at distinct generic roots (WindowInsets
-statics, Class metadata/newInstance null contracts, provider-context identity, Compose
-composition machinery, native surface). Installation / package identity / resource / asset /
-file loading is proven innocent in all nine (Case A in every case).
-
-| Capability area | Current state (evidence) |
-|---|---|
-| **Real rendered achievements** | 4 user-designated goldens **4/4 REAL_APP_CONTENT** pixel-gated (2048 · Snake Deluxe · MiniCraft · HelloWorld — `scripts/user_golden_gate.py`) + canonical registry 150 titles with 22 VERIFIED-tier rows |
-| **Determinism anchors (NOT visual successes)** | chess + dooz regression gates are byte-stability anchors whose frames are 100% white — BYTE-STABLE ≠ PIXEL-TRUTH ([F-NEW-233](docs/DIFFERENTIAL_WORKING_VS_WHITE.md)) |
-| **White/blocked frontier** | 5 white-screen roots: ComposeView materialization (4-way separation in [§16](docs/DIFFERENTIAL_WORKING_VS_WHITE.md)), Godot/native S-2, Fragment-adjacent ActivityResult, startup-metadata (WorkManager), memory zip/WebView path — each with recorded first divergence |
-| **Root-cause frontier** | **535 roots** ([root_registry.json](root_registry.json), projection == store); R-NEW-458..462 ROOT-A/B/C fixes landed with fan-out + zero golden drift |
-| **202-title corpus** | **79 executed-with-evidence** (71 OBSERVED + 8 VERIFIED) · 119 NOT_TESTED (explicitly closed) · 4 BLOCKED-DOWNLOAD — [M6 reconciliation](docs/FORENSIC_MISSING_EVIDENCE.jsonl); stale "41/161/96" numbers are historical |
-| **Telegram** | forkgram face `bbb6cd10a834963d` byte-identical ×2 at current HEAD ( ActionBar-chain NPE frontier); official **BLOCKED-APK-ABSENT**; grey frames are load frontiers — never renders ([journey](docs/TELEGRAM_JOURNEY_S117_S119.md)) |
-| **Compose / WebView / native** | Compose: composition machinery fails before first draw (R8-rename CNFE — diagnose-only); WebView: engine ships (s133 webfix wave); native: no dlopen/JNI layer yet (S-2 — reached cleanly by asteroids) |
-| **Installed-APK capability** | source SHA == installed base.apk SHA == pkgaudit live re-hash (11/11); uninstall 16/16; per-package context-root law ([LOAD-AUDIT docs](docs/REAL_ANDROID_LOADING_ORACLE.md)) |
-| **Upstream reuse** | 7 replacement rows dispositioned (2 PENDING_RESEARCH, 4 AVAILABLE_NOT_USED, 1 ADAPTED) — [UPSTREAM_REPLACEMENT_PLAN.jsonl](docs/UPSTREAM_REPLACEMENT_PLAN.jsonl); 127-entry source-first library |
-| **Roadmap** | [docs/ROADMAP_STATUS.md](docs/ROADMAP_STATUS.md) (generated) · historical state: [docs/history/CAMPAIGN_STATE.md](docs/history/CAMPAIGN_STATE.md) |
-
----
-
-## ARCHITECTURE (target vs status)
-
-```text
-APK
-├── Container / ZIP ................. DONE        (every corpus run)
-├── Manifest / AXML ................. DONE
-├── Resources / ARSC ................ DONE  (qualifiers PARTIAL)
-├── DEX
-│   ├── Parser / Resolver ........... DONE
-│   ├── Interpreter ................. DONE        (invoke/array/exception laws)
-│   └── Exceptions / Arrays / Invokes DONE      (96-stage semantic family)
-├── Java / Kotlin Object Model ...... PARTIAL    (modern idioms open: DEX-001)
-├── Android Framework
-│   ├── Context / Activity / Intent . TESTED
-│   ├── Lifecycle ................... DONE        (incl. Fragment super-chain)
-│   └── Services .................... PENDING
-├── UI
-│   ├── View / Measure / Draw ....... DONE        (custom-view onDraw open: GFX-001)
-│   ├── Layout ...................... TESTED      (weights open: GFX-002)
-│   ├── Input (click / long-press) .. TESTED
-│   └── Accessibility / Semantics ... PENDING
-├── Graphics
-│   ├── Canvas / Paint / Bitmap ..... DONE
-│   ├── Drawable / Density / Vector . TESTED      (S95: 3 titles cleared of WRONG_COLOR)
-│   ├── Clip / Transform ............ TESTED      (S95: no real clip divergence found)
-│   ├── NinePatch ................... UNTESTED    (GFX-004)
-│   ├── Animation ................... TESTED      (S95 refuted the frozen claim)
-│   └── Screenshot provenance ....... VERIFIED    (S92/S93 anti-false-positive laws)
-├── Text
-│   ├── Typeface / Glyph raster ..... DONE        (Latin; EXT-01 typography golden)
-│   ├── Theme color chain ........... TESTED      (S95 default-dark + textColorPrimary)
-│   ├── Shaping (HarfBuzz/Minikin) .. PARTIAL     (POC proven, not wired: TEXT-001)
-│   └── Font fallback / RTL ......... UNTESTED    (TEXT-002)
-├── Media
-│   ├── Audio state machines ........ IMPLEMENTED (real codecs; APK-level UNTESTED: AUDIO-001)
-│   └── Video ....................... PENDING frontier (VIDEO-001)
-├── Network
-│   ├── API shadow tracking ......... DONE        (instrument)
-│   └── Real HTTP(S)/DNS/TCP/TLS .... GAP — TOP P0 (NET-001)
-├── Storage
-│   ├── Files / Preferences ......... DONE
-│   └── SQLite ...................... TESTED      (Room law fixture; depth open: STORE-001)
-├── Concurrency ..................... PARTIAL    (shadows; coroutines UNTESTED: CONC-001)
-├── AndroidX ........................ PARTIAL    (F-NEW-171..174 chains)
-├── Compose ......................... BLOCKED frontier (COMPOSE-001)
-├── JNI / Native .................... PARTIAL    (bridge exists: JNI-001)
-└── WebView / Browser ............... PARTIAL → SIMPLE BROWSER target (WEB-001)
-```
-
-**CAPABILITY MATRIX (per-capability status + evidence levels):**
-[docs/MINIANDROID_CAPABILITY_MATRIX.md](docs/MINIANDROID_CAPABILITY_MATRIX.md)
-
----
-
-## REAL APK CORPUS
-
-148 titles with one canonical record each: source, APK SHA256, execution
-session, evidence level (E0–E6), ONE canonical screenshot (interactive titles
-get ONE GIF). In-house instrument games: Snake Deluxe · Mini Tetris · 2048 ·
-TicTacToe Deluxe · MiniCraft. External families from F-Droid + upstream
-repositories (Vector Pinball, URLChecker, Dooz, TicTacToe Classic, Dodge,
-SolitaireCG, Mines 3D, …). Corpus registry:
-[docs/ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md) ·
-[docs/evidence/canonical/registry.json](docs/evidence/canonical/registry.json) ·
-downloader: `miniandroid/scripts/download_test_apks.py` (zero-APK-in-repo law;
-cache outside the repo, SHA-pinned).
-
-## OPEN PROBLEMS
-
-**Single source of truth:** [docs/TICKET_REGISTRY.json](docs/TICKET_REGISTRY.json)
-(31 tickets) — status vocabulary `UNKNOWN/UNTESTED/OBSERVED/PARTIAL/FAILED/
-ROOT_CAUSE_FOUND/IMPLEMENTED/TESTED/VERIFIED/BLOCKED/PENDING/CLOSED/SUPERSEDED`.
-
-| Top open tickets | Area | Status |
-|---|---|---|
-| **NET-001 real HTTP(S) stack** (P0) | network | OBSERVED gap — no real socket today |
-| GFX-001 programmatic UI execution | graphics | ROOT_CAUSE_FOUND ([C013-ONDRAW] evidence) |
-| GFX-002 LinearLayout weight measure | graphics/layout | ROOT_CAUSE_FOUND (~1645px children) |
-| WEB-001 simple browser target (reuse matrix first) | web | PENDING |
-| GFX-003 GIF disposal semantics (12 titles) | graphics | OBSERVED |
-| TEXT-001 shaping wire-up (HarfBuzz POC → runtime) | text | PARTIAL |
-| COMPOSE-001 / DEX-001 modern-runtime frontier | dex/compose | OBSERVED (dooz, Telegram L1) |
-
-Recently CLOSED (do not redo): bobball, mini-tetris, minicraft, hotdeath
-parent records (S95 evidence chains; the ANIMATION_FROZEN family was refuted
-as a harness tap-miss with 3-run deterministic proof).
-
-## HIGH-RISK AREAS
-
-Predictive risk register (risks WITHOUT tickets are forbidden — every row
-carries one): [docs/MINIANDROID_RISK_REGISTER.md](docs/MINIANDROID_RISK_REGISTER.md).
-Top predicted families: thin-glyph verifier false positives (GFX-005),
-shader/color-filter silence (GFX-006), coroutine scheduling (CONC-001),
-JMM visibility (CONC-002), TLS error surfaces (NET-003/004), SQLite
-transactions (STORE-001), JNI native loading (JNI-001).
-
-## SOURCE-FIRST LIBRARY
-
-S94's Graphics Source Library is permanent infrastructure and the prototype
-for every subsystem: **classify → look up → read upstream source AND tests →
-only then implement. Never reproduce behavior from memory.**
-
-- Registry: [docs/GRAPHICS_SOURCE_REGISTRY.md](docs/GRAPHICS_SOURCE_REGISTRY.md)
-  (+ `.json`, 127 entries / 122 repos / 48 laws, license map with pinned SHAs)
-- Automatic consultation (mandatory): `python3 tools/source_lookup.py <category>`
-- Proven on real APKs: [docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md](docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md)
-  (8 laws implemented · 7/11 titles improved · fan-out measured · controls stable)
-- Reuse-first ledger: [docs/GRAPHICS_DO_NOT_REINVENT.md](docs/GRAPHICS_DO_NOT_REINVENT.md)
-- No new custom code without a recorded upstream-search answer.
-
-## CONTRIBUTOR QUICK START
-
-- **Guide:** [docs/MINIANDROID_TICKET_GUIDE.md](docs/MINIANDROID_TICKET_GUIDE.md)
-- **Contributing:** [docs/MINIANDROID_CONTRIBUTING.md](docs/MINIANDROID_CONTRIBUTING.md)
-- **20 minutes?** Reproduce a ticket · verify an APK SHA · run the battery ·
-  validate a control APK.
-- **2 hours?** Port a law behind a fixture (GFX-002 weight law is ready) ·
-  add a battery stage · run a fan-out measurement.
-- **Advanced?** NET-001 (P0 networking) · DEX/ART idioms · shaping wire-up ·
-  browser reuse matrix.
-- Bootstrap: `make -j` (in `miniandroid/`) →
-  `bash scripts/build/bootstrap_toolchain.sh` →
-  `bash scripts/test/run_test_battery.sh` (expect **99/99 ALL PASS**) →
-  `python3 tools/validate_control_system.py`.
-
-## EVIDENCE STANDARD
-
-Levels: **E0** hypothesis · **E1** source evidence · **E2** unit test ·
-**E3** runtime trace · **E4** real APK execution · **E5** deterministic
-repeated APK execution · **E6** corpus fan-out.
-A capability cannot be marked DONE without the appropriate evidence level;
-"implemented" ≠ "verified". Screenshot claims follow the S92/S93 laws — no
-FULLY_VERIFIED from nonblank images, entropy, color counts, PNG validity or
-exit codes; semantic evidence only. BEFORE/AFTER claims require same APK +
-same input + same capture protocol. Unmeasurable values are reported as
-`NOT_MEASURED`, never invented.
-
-## ROADMAP
-
-- Master 0→100: [docs/MINIANDROID_0_TO_100.md](docs/MINIANDROID_0_TO_100.md)
-- Wave-level reconciled status: [docs/ROADMAP_STATUS.md](docs/ROADMAP_STATUS.md)
-- Priority queue: [docs/MINIANDROID_MASTER_QUEUE.md](docs/MINIANDROID_MASTER_QUEUE.md)
-- Knowledge index: [docs/KNOWLEDGE_INDEX.md](docs/KNOWLEDGE_INDEX.md) ·
-  doc index: [docs/INDEX.md](docs/INDEX.md)
-
-## RECENT VERIFIED ACHIEVEMENTS
-
-- **S95 P0 execution wave:** S94's source library PROVEN on real APKs —
-  8 laws implemented from pinned upstream evidence; hotdeath FAIL→PASS;
-  bouncy/urlchecker WRONG_COLOR 3×→0; bobball WRONG_CLIP 4×→0 (buttons
-  44→126 px via the AOSP 48dip law); mini-tetris/minicraft frozen-claims
-  refuted (3-run determinism); simplestopwatch theme layers fixed, one named
-  gap left; controls 3/3 stable; battery 99/99. Canonical table:
-  [docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md](docs/GRAPHICS_SOURCE_LIBRARY_VALIDATION.md).
-- **S94:** 122 distinct verified repositories, 48/48 evidenced semantic laws,
-  426 hash-evidenced files, permanent registry + automatic lookup law
-  (CONSTITUTION §170).
-- **S92/S93:** adversarial visual-verification battery (tamper-proof),
-  15-state verdict ladder, TABLE OF TRUTH corpus.
-- Full ledger: [docs/ACHIEVEMENTS.md](docs/ACHIEVEMENTS.md) ·
-  [docs/EXECUTION_ACHIEVEMENTS.md](docs/EXECUTION_ACHIEVEMENTS.md)
-
-## CURRENT BLOCKERS
-
-1. **NET-001 (P0)** — no real network stack; urlchecker's core function and
-   networked apps are shadow-recorded only.
-2. **COMPOSE-001/DEX-001** — modern runtime idioms block Compose-family apps
-   at L1 (dooz, Telegram honestly OBSERVED).
-3. **GFX-001/GFX-002** — two root-caused measure/dispatch gaps with
-   fixture-ready plans (P1, execution-ready).
-4. **Video frontier (VIDEO-001)** — reuse matrix required before any code.
-5. **Backup branch publication** — `backup/s78-accidental-snapshot` contains a
-   150.98MB zip (> GitHub's 100MB hard limit); needs an owner decision (LFS or
-   history rewrite); `main` is fully published.
-
-## HOW TO HELP
-
-Pick by skill: graphics → GFX-00x · text → TEXT-00x · networking → NET-00x ·
-parsing/runtime → DEX-00x · tests/fixtures → the UNTESTED pool (10 tickets) ·
-upstream research → the 57 IDENTITY_ONLY registry repos. Then follow the
-ticket guide's 9-step chain. The project optimizes for: **more compatibility,
-less custom code, more reuse, more tests, more real APK execution, more
-fan-out — zero guessing.**
+MIT — see [LICENSE](LICENSE). Third-party pinned sources carry their own licenses, recorded per directory (`docs/upstream/*/MANIFEST.json`, `tests/graphics/backends/osmesa/MANIFEST.json`).
