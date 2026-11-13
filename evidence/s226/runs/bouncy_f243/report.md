@@ -99,14 +99,6 @@
 
 ![Screenshot](evidence/s226/runs/bouncy_f243/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s226/runs/bouncy_f243/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 6.31 KB
-
-![Screenshot](evidence/s226/runs/bouncy_f243/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261112-174357-9516`

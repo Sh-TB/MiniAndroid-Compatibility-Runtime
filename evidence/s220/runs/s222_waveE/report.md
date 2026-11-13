@@ -98,14 +98,7 @@
 - **Size:** 15.78 KB
 
 ![Screenshot](/home/z/my-project/evidence/s220/runs/s222_waveE/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s220/runs/s222_waveE/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 10.15 KB
-
-![Screenshot](/home/z/my-project/evidence/s220/runs/s222_waveE/screenshot.png)
+- **SHA256:** `e155f48b2aed8308f8e1abd0d1ff2ba12a5b54fd778cfa2a2d0d1f83cafbb84f` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

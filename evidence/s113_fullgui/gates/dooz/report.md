@@ -99,15 +99,8 @@
 
 ![Screenshot](evidence/s113_fullgui/gates/dooz/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s113_fullgui/gates/dooz/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s113_fullgui/gates/dooz/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260927-210137-8869`
+- Run id: `EXP-001-20260927-210137-8869` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-27 21:01:39 UTC

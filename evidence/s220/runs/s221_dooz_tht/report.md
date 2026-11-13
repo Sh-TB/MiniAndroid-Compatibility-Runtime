@@ -98,14 +98,7 @@
 - **Size:** 15.78 KB
 
 ![Screenshot](/home/z/my-project/evidence/s220/runs/s221_dooz_tht/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s220/runs/s221_dooz_tht/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 10.52 KB
-
-![Screenshot](/home/z/my-project/evidence/s220/runs/s221_dooz_tht/screenshot.png)
+- **SHA256:** `6a2e3d9cd101af18b4456347c67cbdf7105264b97f29818581aece741a12fd35` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

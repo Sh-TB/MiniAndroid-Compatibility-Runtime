@@ -60,14 +60,6 @@
 
 ![Screenshot](evidence/s224/runs/opmt_tap2/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s224/runs/opmt_tap2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 32.37 KB
-
-![Screenshot](evidence/s224/runs/opmt_tap2/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261112-082159-4002`

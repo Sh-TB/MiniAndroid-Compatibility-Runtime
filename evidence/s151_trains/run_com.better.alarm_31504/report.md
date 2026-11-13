@@ -254,14 +254,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s151_trains/run_com.better.alarm_31504/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s151_trains/run_com.better.alarm_31504/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s151_trains/run_com.better.alarm_31504/screenshot.png)
+- **SHA256:** `0bd24c912042a6c1818a4a3c1b6c8d666614198c37b369c77676fb976540e50d` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -60,14 +60,6 @@
 
 ![Screenshot](evidence/s114_bigfix/blockbuster_game3/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s114_bigfix/blockbuster_game3/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s114_bigfix/blockbuster_game3/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260928-002651-3077`

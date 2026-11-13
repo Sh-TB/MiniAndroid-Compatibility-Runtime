@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w13/runs/app.halma/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w13/runs/app.halma/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w13/runs/app.halma/screenshot.png)
+- **SHA256:** `39162e8d8175c46f75b04dc62d7d5be4dae4facd4c18dc976c80618e7a5942aa` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-203055-9674`
+- Run id: `EXP-001-20261107-203055-9674` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 20:30:58 UTC

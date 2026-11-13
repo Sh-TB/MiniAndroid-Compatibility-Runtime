@@ -122,14 +122,7 @@
 - **Size:** 43.20 KB
 
 ![Screenshot](/home/z/my-project/evidence/s220/runs/s220_thextech_isTaskRoot/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s220/runs/s220_thextech_isTaskRoot/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 43.20 KB
-
-![Screenshot](/home/z/my-project/evidence/s220/runs/s220_thextech_isTaskRoot/screenshot.png)
+- **SHA256:** `6c9f40bedac766abcaef7e89ad5b5982443c5be1aa5d8b1ee933b55577ebd20d` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

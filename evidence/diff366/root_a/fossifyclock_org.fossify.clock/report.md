@@ -74,16 +74,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/root_a/fossifyclock_org.fossify.clock/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/root_a/fossifyclock_org.fossify.clock/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/root_a/fossifyclock_org.fossify.clock/screenshot.png)
+- **SHA256:** `31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261003-044155-8628`
+- Run id: `EXP-001-20261003-044155-8628` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-03 04:41:56 UTC

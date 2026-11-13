@@ -158,14 +158,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/com.dozingcatsoftware.bouncy_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/com.dozingcatsoftware.bouncy_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/com.dozingcatsoftware.bouncy_run1/screenshot.png)
+- **SHA256:** `cf76282e5c2a6925d02c7c9a29190ab71bb6b315d69474414685d806a0e55423` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

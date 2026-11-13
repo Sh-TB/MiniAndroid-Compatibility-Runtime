@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s194_intake/runs/opencalc_int1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s194_intake/runs/opencalc_int1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s194_intake/runs/opencalc_int1/screenshot.png)
+- **SHA256:** `3e73a5ad1ab7379dd1db0fe48025974e30b7da24bbc319759891613d67c245bb` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

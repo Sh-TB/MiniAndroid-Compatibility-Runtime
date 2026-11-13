@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/root_e/asteroids_current/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/root_e/asteroids_current/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/root_e/asteroids_current/screenshot.png)
+- **SHA256:** `c125d541e4d4f0347f350494778f85bcbe45ded1c2423b0bebd7e750ce04eede` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261003-052400-0960`
+- Run id: `EXP-001-20261003-052400-0960` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-03 05:24:01 UTC

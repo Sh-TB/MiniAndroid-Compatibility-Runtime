@@ -68,14 +68,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/final/opencalc_com.darkempire78.opencalculator/run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/final/opencalc_com.darkempire78.opencalculator/run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/final/opencalc_com.darkempire78.opencalculator/run1/screenshot.png)
+- **SHA256:** `e364b001ee7abd668d0ab798431eb4a34032f16fb5b4d6233e2ef3e0a1629ec5` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

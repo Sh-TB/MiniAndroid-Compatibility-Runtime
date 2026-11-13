@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w7/runs/ts_w7b/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w7/runs/ts_w7b/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w7/runs/ts_w7b/screenshot.png)
+- **SHA256:** `11a38a5aeeff45a6a161f71005c3e4b069871382c1e7347576d9f8e0cf0bc57f` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

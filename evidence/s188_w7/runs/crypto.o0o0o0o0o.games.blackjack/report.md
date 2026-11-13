@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w7/runs/crypto.o0o0o0o0o.games.blackjack/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w7/runs/crypto.o0o0o0o0o.games.blackjack/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w7/runs/crypto.o0o0o0o0o.games.blackjack/screenshot.png)
+- **SHA256:** `b6c35dfb15399d22d380b4ec633c2405eb1da817b0955db917a2fe268cb0b0a0` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

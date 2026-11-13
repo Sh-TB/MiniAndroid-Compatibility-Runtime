@@ -59,14 +59,7 @@
 - **Size:** 16.80 KB
 
 ![Screenshot](/home/z/my-project/evidence/s216/gate_runs/s216_gold_unote/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s216/gate_runs/s216_gold_unote/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 16.80 KB
-
-![Screenshot](/home/z/my-project/evidence/s216/gate_runs/s216_gold_unote/screenshot.png)
+- **SHA256:** `3b8dcb0adbbc17a938d82f6866d4fb9b70641a566f3907d295bdea8d612cc943` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

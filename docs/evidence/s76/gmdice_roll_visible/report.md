@@ -63,4 +63,5 @@
 ## Session Info
 
 - **Session ID:** `EXP-001-20260921-152221-0172`
+- Run id: `EXP-001-20260921-152221-0172` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-21 15:22:22 UTC

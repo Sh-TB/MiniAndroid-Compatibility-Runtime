@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s194_intake/runs/opencalc_optin/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s194_intake/runs/opencalc_optin/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s194_intake/runs/opencalc_optin/screenshot.png)
+- **SHA256:** `a84863964c6172d1d2d583ce5c21b1b64cf7d633b78cd8e9f4fa0d3b3722f862` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-200949-5784`
+- Run id: `EXP-001-20261107-200949-5784` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 20:09:50 UTC

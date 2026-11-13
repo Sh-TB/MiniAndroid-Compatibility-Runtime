@@ -60,14 +60,6 @@
 
 ![Screenshot](/home/z/my-project/evidence/s212/verify/verify_bouncy_r1/screenshot.png)
 
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s212/verify/verify_bouncy_r1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 35.58 KB
-
-![Screenshot](/home/z/my-project/evidence/s212/verify/verify_bouncy_r1/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261113-060004-4324`

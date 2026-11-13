@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f49_canstext/screenshot.png)
+- **SHA256:** `aa5d1397c5196ca67d943a1d1105f7339a3b4e4e47ff501043925cf0acc1b5cc` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

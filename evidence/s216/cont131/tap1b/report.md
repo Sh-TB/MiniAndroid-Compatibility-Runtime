@@ -98,14 +98,7 @@
 - **Size:** 15.78 KB
 
 ![Screenshot](/home/z/my-project/evidence/s216/cont131/tap1b/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s216/cont131/tap1b/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 10.13 KB
-
-![Screenshot](/home/z/my-project/evidence/s216/cont131/tap1b/screenshot.png)
+- **SHA256:** `eccabf418a7cce524c438f308be0c481db750c15092b1c3f495e39ca6fe4f0cb` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -98,16 +98,10 @@
 - **Size:** 15.78 KB
 
 ![Screenshot](/home/z/my-project/evidence/s216/cont131/mt_trace/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s216/cont131/mt_trace/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 10.22 KB
-
-![Screenshot](/home/z/my-project/evidence/s216/cont131/mt_trace/screenshot.png)
+- **SHA256:** `26e120c2967b2f186c9a38d83bb12a784042b60716bce4106ab9cfdcb881d7a7` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261111-144441-0615`
+- Run id: `EXP-001-20261111-144441-0615` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-11 14:49:23 UTC

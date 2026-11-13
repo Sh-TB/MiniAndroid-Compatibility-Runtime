@@ -110,16 +110,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w16/runs/com.newsblur/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w16/runs/com.newsblur/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w16/runs/com.newsblur/screenshot.png)
+- **SHA256:** `d602648e8e401895b7b440bc9c0becd4af8748b37808ce0870735b19502dab71` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261108-050233-8411`
+- Run id: `EXP-001-20261108-050233-8411` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-08 05:02:36 UTC

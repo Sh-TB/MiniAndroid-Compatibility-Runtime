@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f45_exceptions/screenshot.png)
+- **SHA256:** `b4e5904706f006edd77b240a04aed8c127decea66a4737bda015454fd75cb56d` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

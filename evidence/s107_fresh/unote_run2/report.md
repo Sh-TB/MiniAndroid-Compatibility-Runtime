@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_fresh/unote_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_fresh/unote_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_fresh/unote_run2/screenshot.png)
+- **SHA256:** `64cf6eadefe07a7b5a6b89382d2f01f97a1e834b7c279f8a8557e0d480a97d30` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/root_a/unote_app.varlorg.unote/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/root_a/unote_app.varlorg.unote/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/root_a/unote_app.varlorg.unote/screenshot.png)
+- **SHA256:** `4f1a9e4e8f64fae8c8e21aec3ddae4812e3df00d4d897872cc4b69fa41c05b86` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261003-061801-4857`
+- Run id: `EXP-001-20261003-061801-4857` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-03 06:18:01 UTC

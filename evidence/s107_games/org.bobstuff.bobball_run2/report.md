@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/org.bobstuff.bobball_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/org.bobstuff.bobball_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/org.bobstuff.bobball_run2/screenshot.png)
+- **SHA256:** `efaced30f29f0d45aa7826af29563ffb8b1408bf9d5225e2815e387fd92d093d` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -122,14 +122,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s115_sweep/t218_com.fpf.smartscan/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s115_sweep/t218_com.fpf.smartscan/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s115_sweep/t218_com.fpf.smartscan/screenshot.png)
+- **SHA256:** `eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

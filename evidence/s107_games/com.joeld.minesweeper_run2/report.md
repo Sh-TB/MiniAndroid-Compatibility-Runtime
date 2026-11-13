@@ -80,14 +80,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/com.joeld.minesweeper_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/com.joeld.minesweeper_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/com.joeld.minesweeper_run2/screenshot.png)
+- **SHA256:** `f465f8dff6dc9509c76b4ac960495728b352a9e4dfed269b316220785d432686` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

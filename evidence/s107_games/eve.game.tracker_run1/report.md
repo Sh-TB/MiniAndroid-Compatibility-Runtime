@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/eve.game.tracker_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/eve.game.tracker_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/eve.game.tracker_run1/screenshot.png)
+- **SHA256:** `c64d615320e57de9234045e14fde94f8d3db6a1cc7387cbc2d89201c6443f491` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

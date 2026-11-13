@@ -98,14 +98,7 @@
 - **Size:** 15.78 KB
 
 ![Screenshot](/home/z/my-project/evidence/s216/runs/s216_invoke_trace/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s216/runs/s216_invoke_trace/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 15.78 KB
-
-![Screenshot](/home/z/my-project/evidence/s216/runs/s216_invoke_trace/screenshot.png)
+- **SHA256:** `a0fae9072313e2d1b0d5659bf02f12cc48fb9f7f23c2e0ed4182bf1a0882affe` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

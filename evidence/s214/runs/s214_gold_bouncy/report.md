@@ -59,14 +59,7 @@
 - **Size:** 36.62 KB
 
 ![Screenshot](/home/z/my-project/evidence/s214/runs/s214_gold_bouncy/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s214/runs/s214_gold_bouncy/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 36.62 KB
-
-![Screenshot](/home/z/my-project/evidence/s214/runs/s214_gold_bouncy/screenshot.png)
+- **SHA256:** `8a6c24ac8a7d718e8029018bc08c94cb12d75eadc95c41da3dc3285cb1d15925` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -81,15 +81,8 @@
 
 ![Screenshot](evidence/s117_complete_graphics/mykanji/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s117_complete_graphics/mykanji/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s117_complete_graphics/mykanji/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260929-120735-0908`
+- Run id: `EXP-001-20260929-120735-0908` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-29 12:07:36 UTC

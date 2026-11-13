@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f38_identity/screenshot.png)
+- **SHA256:** `252bfd25403b004398f3d4cf016bfbe7eba5ed55ccb9f872e7cd4086e3a9d67a` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

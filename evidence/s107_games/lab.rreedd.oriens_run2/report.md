@@ -194,14 +194,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/lab.rreedd.oriens_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/lab.rreedd.oriens_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/lab.rreedd.oriens_run2/screenshot.png)
+- **SHA256:** `588751d454e5867a178e6cfb6ba8235eaacdc10f2c561ee87f32d838556238c1` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

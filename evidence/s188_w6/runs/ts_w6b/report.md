@@ -60,14 +60,6 @@
 
 ![Screenshot](evidence/s188_w6/runs/ts_w6b/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s188_w6/runs/ts_w6b/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s188_w6/runs/ts_w6b/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-054807-4478`

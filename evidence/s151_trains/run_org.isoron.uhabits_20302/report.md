@@ -146,14 +146,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s151_trains/run_org.isoron.uhabits_20302/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s151_trains/run_org.isoron.uhabits_20302/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s151_trains/run_org.isoron.uhabits_20302/screenshot.png)
+- **SHA256:** `558a146cd091f5584e945f3f2f6138be4f470d52eef7f58f911e654061af8f07` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -254,16 +254,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w16/runs/de.taz.android.app.free/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w16/runs/de.taz.android.app.free/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w16/runs/de.taz.android.app.free/screenshot.png)
+- **SHA256:** `b270ff040b3601dc7f216f1f8b960fc719a7687d4cd58ee59acaf9fa7eac504c` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261108-050257-7860`
+- Run id: `EXP-001-20261108-050257-7860` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-08 05:03:09 UTC

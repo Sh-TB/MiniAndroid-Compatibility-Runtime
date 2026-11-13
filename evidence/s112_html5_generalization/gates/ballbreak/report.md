@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s112_html5_generalization/gates/ballbreak/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s112_html5_generalization/gates/ballbreak/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s112_html5_generalization/gates/ballbreak/screenshot.png)
+- **SHA256:** `8a951f5f975c47426bb2bb22fa5239ba6b5ec6ff42c6c0cfa628b41b23ae3eb4` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261001-152555-0593`
+- Run id: `EXP-001-20261001-152555-0593` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-01 15:25:56 UTC

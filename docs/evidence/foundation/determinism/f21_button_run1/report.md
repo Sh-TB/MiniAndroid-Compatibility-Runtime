@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/determinism/f21_button_run1/screenshot.png)
+- **SHA256:** `393f7bcbdf2c95126b08f34131f2939846549868879d9b12f601192d00da1a18` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

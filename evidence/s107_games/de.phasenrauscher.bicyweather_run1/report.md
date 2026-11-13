@@ -80,14 +80,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/de.phasenrauscher.bicyweather_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/de.phasenrauscher.bicyweather_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/de.phasenrauscher.bicyweather_run1/screenshot.png)
+- **SHA256:** `5e06f2271df948474b491e622faa86208707379d652eb852fb02ba4d8840a1ea` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

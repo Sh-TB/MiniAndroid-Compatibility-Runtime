@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_fresh/ballbreak_run3/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_fresh/ballbreak_run3/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_fresh/ballbreak_run3/screenshot.png)
+- **SHA256:** `fe797c19ba1920edc7d50073786c685f65b63f9929c8116305ffbb9e2220580d` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

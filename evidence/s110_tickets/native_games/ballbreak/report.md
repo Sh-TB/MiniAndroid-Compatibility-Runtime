@@ -60,15 +60,8 @@
 
 ![Screenshot](/home/z/my-project/run/s110_tickets/native_ballbreak/screenshot.png)
 
-### Output Frame
-
-- **File:** `/home/z/my-project/run/s110_tickets/native_ballbreak/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/run/s110_tickets/native_ballbreak/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260927-154208-1271`
+- Run id: `EXP-001-20260927-154208-1271` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-27 15:42:08 UTC

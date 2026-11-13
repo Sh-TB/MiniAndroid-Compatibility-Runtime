@@ -60,14 +60,6 @@
 
 ![Screenshot](evidence/s200/runs/s202_cellD/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s200/runs/s202_cellD/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s200/runs/s202_cellD/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261109-092141-9562`

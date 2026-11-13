@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s200/runs/s203_gmdice_r2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s200/runs/s203_gmdice_r2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s200/runs/s203_gmdice_r2/screenshot.png)
+- **SHA256:** `3891679dff4493313674272066cf8eeb8b4ba953a1e7d6593399c456fccb861c` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

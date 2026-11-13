@@ -146,14 +146,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/final/spacevertex_fr.arnaudguyon.spacevertex/run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/final/spacevertex_fr.arnaudguyon.spacevertex/run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/final/spacevertex_fr.arnaudguyon.spacevertex/run2/screenshot.png)
+- **SHA256:** `9d8c64b1f9f908b4f543829f25824f7984e53b38a99d3ed69a1895d9b2aded93` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

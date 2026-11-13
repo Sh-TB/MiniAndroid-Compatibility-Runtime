@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f53_getstring/screenshot.png)
+- **SHA256:** `8c11659a7ca24512dd9547f44e47ccab9f57298c4caadee5378c69581bc6dd8c` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f26_lifecycle/screenshot.png)
+- **SHA256:** `753970f1b35e556d411feb94c49a6e6f26834450768797745d62eda722e6842d` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

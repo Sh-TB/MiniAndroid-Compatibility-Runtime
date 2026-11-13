@@ -218,14 +218,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s151_trains/run_free.rm.skytube.oss_63/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s151_trains/run_free.rm.skytube.oss_63/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s151_trains/run_free.rm.skytube.oss_63/screenshot.png)
+- **SHA256:** `fe9bef568d3f291767d22cec5eae65ded8a8edcde6ac0a2723490b0d0886e4fc` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

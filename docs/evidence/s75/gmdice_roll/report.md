@@ -59,8 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](./screenshot.png)
+- **SHA256:** `5438f6e2bd5561e4659501378499084a2773aad2a2e91516294a78c252f4f733` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20260921-091139-0042`
+- Run id: `EXP-001-20260921-091139-0042` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-21 09:11:40 UTC

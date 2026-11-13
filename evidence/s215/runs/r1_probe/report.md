@@ -59,14 +59,7 @@
 - **Size:** 77.69 KB
 
 ![Screenshot](/home/z/my-project/evidence/s215/runs/r1_probe/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s215/runs/r1_probe/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 77.69 KB
-
-![Screenshot](/home/z/my-project/evidence/s215/runs/r1_probe/screenshot.png)
+- **SHA256:** `c4284c2b42b1d9eca945d8c389bbc9d076d929738970efbdaccf36c955ff6d19` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

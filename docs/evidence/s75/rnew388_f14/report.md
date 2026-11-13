@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](./screenshot.png)
+- **SHA256:** `95115e108144e91e728a6c2f3471f2984e88ae8279cc55504f4f13ee7911c877` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

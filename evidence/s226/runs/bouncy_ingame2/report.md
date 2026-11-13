@@ -60,14 +60,6 @@
 
 ![Screenshot](evidence/s226/runs/bouncy_ingame2/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s226/runs/bouncy_ingame2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 8.60 KB
-
-![Screenshot](evidence/s226/runs/bouncy_ingame2/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261112-155449-3381`

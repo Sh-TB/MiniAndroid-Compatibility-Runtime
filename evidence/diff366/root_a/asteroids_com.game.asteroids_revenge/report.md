@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/root_a/asteroids_com.game.asteroids_revenge/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/root_a/asteroids_com.game.asteroids_revenge/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/root_a/asteroids_com.game.asteroids_revenge/screenshot.png)
+- **SHA256:** `c125d541e4d4f0347f350494778f85bcbe45ded1c2423b0bebd7e750ce04eede` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261003-061756-4082`
+- Run id: `EXP-001-20261003-061756-4082` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-03 06:17:57 UTC

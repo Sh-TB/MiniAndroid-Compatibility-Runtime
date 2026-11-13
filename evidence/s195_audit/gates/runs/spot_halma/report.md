@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s195_audit/gates/runs/spot_halma/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s195_audit/gates/runs/spot_halma/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s195_audit/gates/runs/spot_halma/screenshot.png)
+- **SHA256:** `df1579b0f621644477e4ba684dd2992f6db3753eed754027a5b212b6017fefac` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261108-184637-4448`
+- Run id: `EXP-001-20261108-184637-4448` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-08 18:46:40 UTC

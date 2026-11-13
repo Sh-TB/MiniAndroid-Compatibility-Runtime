@@ -59,8 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/s76/snake_dialog_restart/run_b_restart/screenshot.png)
+- **SHA256:** `6cc8087e690d97da3abdc4b437b6b8c82d7e95ab75ba44121b04e446a696496a` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20260921-203920-8010`
+- Run id: `EXP-001-20260921-203920-8010` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-21 20:39:45 UTC

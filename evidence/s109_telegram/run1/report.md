@@ -99,14 +99,6 @@
 
 ![Screenshot](evidence/s109_telegram/run1/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s109_telegram/run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s109_telegram/run1/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260927-154409-6713`

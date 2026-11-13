@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s195_audit/cohort/runs/gmdice_s195_r1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s195_audit/cohort/runs/gmdice_s195_r1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s195_audit/cohort/runs/gmdice_s195_r1/screenshot.png)
+- **SHA256:** `7ee46dd3692bb3d36c89266d9526d590b028d6d963c4f711a76c301e4df72bfd` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -60,14 +60,6 @@
 
 ![Screenshot](/home/z/my-project/run/s110_tg/fix44/screenshot.png)
 
-### Output Frame
-
-- **File:** `/home/z/my-project/run/s110_tg/fix44/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/run/s110_tg/fix44/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260927-160231-7353`

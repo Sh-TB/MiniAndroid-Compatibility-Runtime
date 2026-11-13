@@ -69,14 +69,6 @@
 
 ![Screenshot](evidence/s112_html5_generalization/blidraughts_run3/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s112_html5_generalization/blidraughts_run3/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s112_html5_generalization/blidraughts_run3/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260927-184448-5679`

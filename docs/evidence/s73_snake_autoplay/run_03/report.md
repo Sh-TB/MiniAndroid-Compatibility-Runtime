@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/s73_snake_autoplay/run_03/screenshot.png)
+- **SHA256:** `6cc8087e690d97da3abdc4b437b6b8c82d7e95ab75ba44121b04e446a696496a` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

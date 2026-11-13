@@ -68,14 +68,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s112_html5_generalization/blidraughts_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s112_html5_generalization/blidraughts_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s112_html5_generalization/blidraughts_run2/screenshot.png)
+- **SHA256:** `74870cd951301294ba05488f0aa16307ca4aeb48b2d52bee705559325159353b` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

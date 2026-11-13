@@ -60,15 +60,8 @@
 
 ![Screenshot](evidence/s200/runs/probe_mtm_boot/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s200/runs/probe_mtm_boot/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s200/runs/probe_mtm_boot/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261108-202938-7657`
+- Run id: `EXP-001-20261108-202938-7657` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-08 20:29:40 UTC

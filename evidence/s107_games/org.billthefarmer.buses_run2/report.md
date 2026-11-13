@@ -110,14 +110,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/org.billthefarmer.buses_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/org.billthefarmer.buses_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/org.billthefarmer.buses_run2/screenshot.png)
+- **SHA256:** `73d547e985b2896df95b2a6f2843214488152d8b47dbcdffad3849081ce550b6` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

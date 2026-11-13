@@ -60,15 +60,8 @@
 
 ![Screenshot](evidence/s114_bigfix/blockbuster_game/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s114_bigfix/blockbuster_game/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s114_bigfix/blockbuster_game/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260928-002138-9020`
+- Run id: `EXP-001-20260928-002138-9020` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-28 00:21:39 UTC

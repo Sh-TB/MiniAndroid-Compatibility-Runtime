@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gl3_restart_v2_0/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s207/runs/s207_gl3_restart_v2_0/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gl3_restart_v2_0/screenshot.png)
+- **SHA256:** `a5ae21eeb4f19bed97218c6e20fb6fc9fec81fd9931dcc2eb006e1c540f18e6f` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

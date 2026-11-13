@@ -146,14 +146,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s151_trains/run_fr.neamar.kiss_224/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s151_trains/run_fr.neamar.kiss_224/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s151_trains/run_fr.neamar.kiss_224/screenshot.png)
+- **SHA256:** `6b3bbf6d2f3bc5db3e281a98442e1f761bdcb6b372bde4823483b2d3a8c8b836` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -18,7 +18,7 @@ S207_GATE.json (binary_sha16 0672ecac127664fa) is the companion record.
 import hashlib, json, re, shutil, subprocess, time, os
 from pathlib import Path
 
-BASE = Path('/home/z/my-project')
+BASE = Path(__file__).resolve().parents[1]  # R11 repo-root discovery
 BIN = BASE / 'miniandroid/build/miniandroid'
 OUT = BASE / 'evidence/s232'
 RUN = OUT / 'runs/s232_dooz_census'

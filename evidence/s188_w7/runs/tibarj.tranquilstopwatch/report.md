@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w7/runs/tibarj.tranquilstopwatch/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w7/runs/tibarj.tranquilstopwatch/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w7/runs/tibarj.tranquilstopwatch/screenshot.png)
+- **SHA256:** `11a38a5aeeff45a6a161f71005c3e4b069871382c1e7347576d9f8e0cf0bc57f` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-083541-6531`
+- Run id: `EXP-001-20261107-083541-6531` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 08:35:42 UTC

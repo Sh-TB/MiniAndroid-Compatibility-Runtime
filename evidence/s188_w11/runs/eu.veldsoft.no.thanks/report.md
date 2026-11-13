@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w11/runs/eu.veldsoft.no.thanks/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w11/runs/eu.veldsoft.no.thanks/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w11/runs/eu.veldsoft.no.thanks/screenshot.png)
+- **SHA256:** `abe61411a5ee6da402cca282b81f969118b5972dd15651c6a87eb71ab24733b9` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-182832-9962`
+- Run id: `EXP-001-20261107-182832-9962` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 18:28:35 UTC

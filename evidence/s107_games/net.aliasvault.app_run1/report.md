@@ -254,14 +254,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/net.aliasvault.app_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/net.aliasvault.app_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/net.aliasvault.app_run1/screenshot.png)
+- **SHA256:** `eb16ab5c68fa9b6cd22ab1e067163464ec219989b59ade6e6887d2920552caf3` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f51_themeattr/screenshot.png)
+- **SHA256:** `fdd863dd63aa47ae2982166e641d016499ed4b7736b7581797ecb3ffcc9b192c` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

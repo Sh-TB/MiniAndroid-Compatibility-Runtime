@@ -98,16 +98,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s112_html5_generalization/gates/dooz/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s112_html5_generalization/gates/dooz/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s112_html5_generalization/gates/dooz/screenshot.png)
+- **SHA256:** `ba8a95eb2278594fbf6f28324316e7f980cffd3d47b30f05e8f8c7d0510d41cc` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261001-152556-3400`
+- Run id: `EXP-001-20261001-152556-3400` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-01 15:25:58 UTC

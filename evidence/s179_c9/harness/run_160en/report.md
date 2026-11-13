@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s179_c9/harness/run_160en/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s179_c9/harness/run_160en/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s179_c9/harness/run_160en/screenshot.png)
+- **SHA256:** `69f885e98ed3254e7861d6bf786f92315605f14ef0d2f4950de1415de689878f` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

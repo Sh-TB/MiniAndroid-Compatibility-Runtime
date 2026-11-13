@@ -68,14 +68,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/com.kaeruct.raumballer_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/com.kaeruct.raumballer_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/com.kaeruct.raumballer_run2/screenshot.png)
+- **SHA256:** `b5a7a35d5fe0564b08842f187f4e293bbb1d1b63099ba43978542449ae8c1f5b` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/final/microtimer_dubrowgn.microtimer/run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/final/microtimer_dubrowgn.microtimer/run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/final/microtimer_dubrowgn.microtimer/run2/screenshot.png)
+- **SHA256:** `da73010a37dd018962d88c90445bbf335bec78cc7132e59ee80984ed437a18cf` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -98,14 +98,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/me.timeto.app_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/me.timeto.app_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/me.timeto.app_run2/screenshot.png)
+- **SHA256:** `e0a20a2130af4d7eba652a01318ddec054fc0946a471109626593815704ac289` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

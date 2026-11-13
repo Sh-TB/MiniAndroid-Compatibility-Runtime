@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f08_canvasops/screenshot.png)
+- **SHA256:** `de1888bed01058f40766706d36268e18b48592443a462f9595db336aea930e07` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

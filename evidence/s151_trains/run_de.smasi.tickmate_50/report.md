@@ -128,14 +128,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s151_trains/run_de.smasi.tickmate_50/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s151_trains/run_de.smasi.tickmate_50/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s151_trains/run_de.smasi.tickmate_50/screenshot.png)
+- **SHA256:** `073ce3e5c804eda0ea41f5b25ae5457b462b71be97fff6ab904bef3a4def7e03` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s200/runs/mtm_probe_r1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s200/runs/mtm_probe_r1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s200/runs/mtm_probe_r1/screenshot.png)
+- **SHA256:** `7913f6393e8051ffbb09594824db09963439ca3cbbd1b7c861ebede229115bba` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

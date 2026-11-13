@@ -60,14 +60,6 @@
 
 ![Screenshot](evidence/s188_w10/runs/bj_mcm0/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s188_w10/runs/bj_mcm0/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s188_w10/runs/bj_mcm0/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-173043-4573`

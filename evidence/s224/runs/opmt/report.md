@@ -59,16 +59,10 @@
 - **Size:** 72.82 KB
 
 ![Screenshot](/home/z/my-project/evidence/s224/runs/opmt/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s224/runs/opmt/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 72.82 KB
-
-![Screenshot](/home/z/my-project/evidence/s224/runs/opmt/screenshot.png)
+- **SHA256:** `8eea9a6a5a9346e4154700179ceb9b5c0b3b6000ab1a367f598bfe176ee95296` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261112-081743-4888`
+- Run id: `EXP-001-20261112-081743-4888` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-12 08:17:46 UTC

@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/audit_s107/three_run/org.ucam.ssb22.pinyinfdroid_run2/screenshot.png)
+- **SHA256:** `e03921ecbff1246d05f6d7e1109b30dbb496614816cc1558bcebd763e76ea0d3` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

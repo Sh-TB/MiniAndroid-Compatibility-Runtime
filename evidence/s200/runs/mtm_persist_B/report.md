@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s200/runs/mtm_persist_B/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s200/runs/mtm_persist_B/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s200/runs/mtm_persist_B/screenshot.png)
+- **SHA256:** `f6f7b1eb3fd3aeefb64c76c55a03d9964ff221f9044251b3dcc4eb829d9f88bf` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261108-203431-0425`
+- Run id: `EXP-001-20261108-203431-0425` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-08 20:34:33 UTC

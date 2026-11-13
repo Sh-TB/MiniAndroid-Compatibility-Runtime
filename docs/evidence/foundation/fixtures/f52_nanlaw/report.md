@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f52_nanlaw/screenshot.png)
+- **SHA256:** `b9d4fdb3882ff2ff76a1092fc499698ea8150f75e5c636b4a9b21df11c2e15bf` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

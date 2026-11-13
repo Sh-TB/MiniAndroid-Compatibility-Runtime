@@ -98,14 +98,7 @@
 - **Size:** 10.11 KB
 
 ![Screenshot](/home/z/my-project/evidence/s232/runs/s232_dooz_census/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s232/runs/s232_dooz_census/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 10.11 KB
-
-![Screenshot](/home/z/my-project/evidence/s232/runs/s232_dooz_census/screenshot.png)
+- **SHA256:** `d602648e8e401895b7b440bc9c0becd4af8748b37808ce0870735b19502dab71` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

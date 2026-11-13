@@ -104,14 +104,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/final/memory_com.sanskritbasics.memory/run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/final/memory_com.sanskritbasics.memory/run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/final/memory_com.sanskritbasics.memory/run2/screenshot.png)
+- **SHA256:** `0666775d14475766346d906d17dfa7cc81f00bc67eba9bb23f6939bf0ee6a28e` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

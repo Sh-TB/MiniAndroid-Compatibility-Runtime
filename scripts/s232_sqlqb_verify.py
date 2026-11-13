@@ -12,7 +12,7 @@ Output: evidence/s232/S232_SQLQB_OPENSUDOKU.json + runs/s232_opensudoku/.
 import hashlib, json, re, shutil, subprocess, time, os
 from pathlib import Path
 
-BASE = Path('/home/z/my-project')
+BASE = Path(__file__).resolve().parents[1]  # R11 repo-root discovery
 BIN = BASE / 'miniandroid/build/miniandroid'
 OUT = BASE / 'evidence/s232'
 RUN = OUT / 'runs/s232_opensudoku'

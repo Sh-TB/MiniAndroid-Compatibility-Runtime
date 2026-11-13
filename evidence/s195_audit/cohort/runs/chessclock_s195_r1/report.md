@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s195_audit/cohort/runs/chessclock_s195_r1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s195_audit/cohort/runs/chessclock_s195_r1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s195_audit/cohort/runs/chessclock_s195_r1/screenshot.png)
+- **SHA256:** `e30b3023445b288a10f2364d7f59849e54cedbaf09268016f6896f00054dbd84` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

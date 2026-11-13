@@ -99,14 +99,6 @@
 
 ![Screenshot](/home/z/my-project/evidence/s212/verify/verify_dooz_r1/screenshot.png)
 
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s212/verify/verify_dooz_r1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 15.78 KB
-
-![Screenshot](/home/z/my-project/evidence/s212/verify/verify_dooz_r1/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261113-060209-1541`

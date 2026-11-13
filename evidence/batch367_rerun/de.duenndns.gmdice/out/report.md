@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/batch367_rerun/de.duenndns.gmdice/out/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/batch367_rerun/de.duenndns.gmdice/out/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/batch367_rerun/de.duenndns.gmdice/out/screenshot.png)
+- **SHA256:** `f3b483fe7b7cf51bea257283c0ec3209d954c2b31e21fc582d87aab35e051dd5` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261003-080925-0201`
+- Run id: `EXP-001-20261003-080925-0201` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-03 08:09:26 UTC

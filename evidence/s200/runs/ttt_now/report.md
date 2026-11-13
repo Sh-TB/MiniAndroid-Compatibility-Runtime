@@ -60,15 +60,8 @@
 
 ![Screenshot](evidence/s200/runs/ttt_now/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s200/runs/ttt_now/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s200/runs/ttt_now/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261109-051308-3117`
+- Run id: `EXP-001-20261109-051308-3117` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-09 05:13:12 UTC

@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/root_a/spacevertex_fr.arnaudguyon.spacevertex/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/root_a/spacevertex_fr.arnaudguyon.spacevertex/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/root_a/spacevertex_fr.arnaudguyon.spacevertex/screenshot.png)
+- **SHA256:** `9d8c64b1f9f908b4f543829f25824f7984e53b38a99d3ed69a1895d9b2aded93` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261003-061757-7132`
+- Run id: `EXP-001-20261003-061757-7132` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-03 06:17:58 UTC

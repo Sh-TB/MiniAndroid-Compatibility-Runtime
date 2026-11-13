@@ -74,14 +74,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w14/runs/se.tube42.p9.android/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w14/runs/se.tube42.p9.android/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w14/runs/se.tube42.p9.android/screenshot.png)
+- **SHA256:** `874082a27c7e1976a37d14843f84d74d8617485f2b676794bb7d4a227cc9b8a9` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

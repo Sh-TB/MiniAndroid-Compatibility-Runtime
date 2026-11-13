@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s115_sweep/t216_org.asafonov.weather/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s115_sweep/t216_org.asafonov.weather/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s115_sweep/t216_org.asafonov.weather/screenshot.png)
+- **SHA256:** `d799823b94d1f5ce3a1e8b3141707587c5c999491c09166cdda2af034a095d87` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

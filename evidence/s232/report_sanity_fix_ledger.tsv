@@ -1,0 +1,7 @@
+report	sections_removed	violations_before	violations_after	status
+evidence/s211/runs/s211_ctail/report.md	1	2	0	FIXED
+evidence/s211/runs/s211_dooz_regdump/report.md	1	2	0	FIXED
+evidence/s211/runs/s211_iputtrace/report.md	1	2	0	FIXED
+evidence/s211/runs/s211_segtrace/report.md	1	2	0	FIXED
+evidence/s232/runs/s232_dooz_census/report.md	1	2	0	FIXED
+evidence/s232/runs/s232_opensudoku/report.md	1	2	0	FIXED

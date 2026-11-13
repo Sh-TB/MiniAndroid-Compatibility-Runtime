@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/org.asafonov.weather_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/org.asafonov.weather_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/org.asafonov.weather_run1/screenshot.png)
+- **SHA256:** `cf68967717d19eed2823d16c5cc47db0e60c58d82171efba0100f9d8758842bb` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

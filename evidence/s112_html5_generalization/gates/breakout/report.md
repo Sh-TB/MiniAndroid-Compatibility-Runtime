@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s112_html5_generalization/gates/breakout/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s112_html5_generalization/gates/breakout/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s112_html5_generalization/gates/breakout/screenshot.png)
+- **SHA256:** `568342fb901a75abd74744d1b2830362716587f9409a5fa0e66ce708101a2501` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20260927-190906-0604`
+- Run id: `EXP-001-20260927-190906-0604` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-27 19:09:07 UTC

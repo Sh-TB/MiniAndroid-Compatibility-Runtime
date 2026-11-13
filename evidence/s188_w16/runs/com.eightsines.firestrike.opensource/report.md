@@ -80,16 +80,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w16/runs/com.eightsines.firestrike.opensource/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w16/runs/com.eightsines.firestrike.opensource/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w16/runs/com.eightsines.firestrike.opensource/screenshot.png)
+- **SHA256:** `66dec916c37b264799c00331db8072a57836a2e685f8868066c5e55bf5c4af27` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261108-050138-3696`
+- Run id: `EXP-001-20261108-050138-3696` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-08 05:01:41 UTC

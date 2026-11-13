@@ -99,14 +99,6 @@
 
 ![Screenshot](evidence/s216/cont131/d180_r4/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s216/cont131/d180_r4/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 15.78 KB
-
-![Screenshot](evidence/s216/cont131/d180_r4/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261111-152539-2882`

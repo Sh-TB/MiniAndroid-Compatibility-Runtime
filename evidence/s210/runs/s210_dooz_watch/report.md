@@ -98,14 +98,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s210/runs/s210_dooz_watch/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s210/runs/s210_dooz_watch/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s210/runs/s210_dooz_watch/screenshot.png)
+- **SHA256:** `08f6ceb6bd12ce96854482d462fac0f8def96ac6892a167215332b94ef76b004` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

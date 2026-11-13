@@ -60,15 +60,8 @@
 
 ![Screenshot](evidence/s117_complete_graphics/g_ballbreak/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s117_complete_graphics/g_ballbreak/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s117_complete_graphics/g_ballbreak/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260929-120921-5152`
+- Run id: `EXP-001-20260929-120921-5152` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-29 12:09:22 UTC

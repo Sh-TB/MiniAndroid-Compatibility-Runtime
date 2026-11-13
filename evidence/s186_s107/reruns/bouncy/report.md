@@ -140,16 +140,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s186_s107/reruns/bouncy/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s186_s107/reruns/bouncy/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s186_s107/reruns/bouncy/screenshot.png)
+- **SHA256:** `dd0c14257fa1f2af1f3478e87fdcf90ffef9682c0287f6ac272fb136d2b9e871` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261106-144630-2807`
+- Run id: `EXP-001-20261106-144630-2807` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-06 14:46:32 UTC

@@ -68,14 +68,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/fr.ign.geoportail_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/fr.ign.geoportail_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/fr.ign.geoportail_run1/screenshot.png)
+- **SHA256:** `3ca13cb4286e95bfce26e097400f6131d999322b264208112eac676bbfcd7245` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

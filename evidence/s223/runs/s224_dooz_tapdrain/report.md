@@ -98,14 +98,7 @@
 - **Size:** 15.78 KB
 
 ![Screenshot](/home/z/my-project/evidence/s223/runs/s224_dooz_tapdrain/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s223/runs/s224_dooz_tapdrain/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 10.13 KB
-
-![Screenshot](/home/z/my-project/evidence/s223/runs/s224_dooz_tapdrain/screenshot.png)
+- **SHA256:** `29a4f37ca45a4277d60fe6bdbed188cfeef3d59287e06ad84848ed9f2144e1b8` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

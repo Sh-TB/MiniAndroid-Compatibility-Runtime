@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s114_bigfix/blockbuster_recheck/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s114_bigfix/blockbuster_recheck/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s114_bigfix/blockbuster_recheck/screenshot.png)
+- **SHA256:** `625eb52c8643514a2729664a3eec64be2a3607bbc006cd5060880127687685d2` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20260928-034119-0990`
+- Run id: `EXP-001-20260928-034119-0990` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-28 03:41:20 UTC

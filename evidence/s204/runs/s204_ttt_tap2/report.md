@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s204/runs/s204_ttt_tap2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s204/runs/s204_ttt_tap2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s204/runs/s204_ttt_tap2/screenshot.png)
+- **SHA256:** `446dbeb0d7c10836346405198796ef76033508ab935ef461c39f8e1c9ce55267` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w10/runs/eu.quelltext.memory/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w10/runs/eu.quelltext.memory/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w10/runs/eu.quelltext.memory/screenshot.png)
+- **SHA256:** `35295a57f6c898abbe0712ce51dea1370dcb8eb58cdce925143d2a55fd46ebc2` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-174456-1368`
+- Run id: `EXP-001-20261107-174456-1368` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 17:44:56 UTC

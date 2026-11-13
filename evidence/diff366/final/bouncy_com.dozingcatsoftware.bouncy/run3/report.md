@@ -116,14 +116,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/final/bouncy_com.dozingcatsoftware.bouncy/run3/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/final/bouncy_com.dozingcatsoftware.bouncy/run3/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/final/bouncy_com.dozingcatsoftware.bouncy/run3/screenshot.png)
+- **SHA256:** `b6dde6074bf47264b6cf8ab53a9c259eb47dfe88fd549c2ce5cc7f7c47abf4cc` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

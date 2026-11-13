@@ -68,14 +68,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/trailence.org_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/trailence.org_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/trailence.org_run1/screenshot.png)
+- **SHA256:** `da6423b868dcc9ec533ba3f7442a5cea995e7fb2b727f8787162596955567bb0` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

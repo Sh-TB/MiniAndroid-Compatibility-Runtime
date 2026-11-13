@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w13/runs/com.justdeax.composeStopwatch/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w13/runs/com.justdeax.composeStopwatch/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w13/runs/com.justdeax.composeStopwatch/screenshot.png)
+- **SHA256:** `b5a7a35d5fe0564b08842f187f4e293bbb1d1b63099ba43978542449ae8c1f5b` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-203012-3551`
+- Run id: `EXP-001-20261107-203012-3551` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 20:30:18 UTC

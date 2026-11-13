@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w12/runs/org.secuso.privacyfriendlybattleship/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w12/runs/org.secuso.privacyfriendlybattleship/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w12/runs/org.secuso.privacyfriendlybattleship/screenshot.png)
+- **SHA256:** `e38791080097fe753e5676ca7a5dc63d8732db67234fdece7729dcf91d6e295a` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-201039-1844`
+- Run id: `EXP-001-20261107-201039-1844` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 20:10:42 UTC

@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/net.sourceforge.solitaire_cg_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/net.sourceforge.solitaire_cg_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/net.sourceforge.solitaire_cg_run1/screenshot.png)
+- **SHA256:** `25cf22e7510f45e93547f76f2d47b0ab2cc590677cfb8c97a0a668627ae15f65` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

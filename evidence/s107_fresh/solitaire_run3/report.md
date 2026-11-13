@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_fresh/solitaire_run3/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_fresh/solitaire_run3/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_fresh/solitaire_run3/screenshot.png)
+- **SHA256:** `59fdbfcd60b86a23f24b6d678e2e80c48d349dbbb71028ca9ec0ee00993c298d` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

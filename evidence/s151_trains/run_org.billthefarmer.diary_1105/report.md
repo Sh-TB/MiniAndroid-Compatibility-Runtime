@@ -86,14 +86,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s151_trains/run_org.billthefarmer.diary_1105/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s151_trains/run_org.billthefarmer.diary_1105/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s151_trains/run_org.billthefarmer.diary_1105/screenshot.png)
+- **SHA256:** `b18c3ee6c28185609c5edc24be8b8ec5e7527c5ae3696b4c11e3087742e74c26` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -255,15 +255,8 @@
 
 ![Screenshot](/home/z/my-project/evidence/s117_complete_graphics/g_dooz/screenshot.png)
 
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s117_complete_graphics/g_dooz/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s117_complete_graphics/g_dooz/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20260929-112645-1287`
+- Run id: `EXP-001-20260929-112645-1287` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-09-29 11:26:46 UTC

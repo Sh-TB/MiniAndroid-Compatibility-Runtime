@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/dudeofx.eval_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/dudeofx.eval_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/dudeofx.eval_run1/screenshot.png)
+- **SHA256:** `0d80ea35c5dbbde9742989520ab33e0b9adf7428481b1fa1f4f4c2f4e6580905` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

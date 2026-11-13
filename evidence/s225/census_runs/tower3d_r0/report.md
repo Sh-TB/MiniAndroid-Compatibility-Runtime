@@ -59,14 +59,7 @@
 - **Size:** 5.99 KB
 
 ![Screenshot](/home/z/my-project/evidence/s225/census_runs/tower3d_r0/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s225/census_runs/tower3d_r0/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 5.99 KB
-
-![Screenshot](/home/z/my-project/evidence/s225/census_runs/tower3d_r0/screenshot.png)
+- **SHA256:** `6a4e81a849ed79e5df1ae3f45388eed81dbdd58c6086f2f0e2230d0b60fc4025` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

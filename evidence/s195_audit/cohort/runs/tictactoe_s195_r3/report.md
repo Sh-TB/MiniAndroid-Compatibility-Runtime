@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s195_audit/cohort/runs/tictactoe_s195_r3/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s195_audit/cohort/runs/tictactoe_s195_r3/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s195_audit/cohort/runs/tictactoe_s195_r3/screenshot.png)
+- **SHA256:** `4545df3411a210784ca221f5e6f7b9ab1deab765bc07cde0ba4abecda10ea290` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

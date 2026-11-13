@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/com.crome.forecastpoint_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/com.crome.forecastpoint_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/com.crome.forecastpoint_run2/screenshot.png)
+- **SHA256:** `0f390c47262b0376b726027cc959e62c0c5af5520ed0b7bef466ee876a07bf40` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

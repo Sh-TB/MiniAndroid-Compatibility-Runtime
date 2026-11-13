@@ -59,16 +59,10 @@
 - **Size:** 272.05 KB
 
 ![Screenshot](/home/z/my-project/evidence/s215/runs/ar_probe/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s215/runs/ar_probe/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 272.05 KB
-
-![Screenshot](/home/z/my-project/evidence/s215/runs/ar_probe/screenshot.png)
+- **SHA256:** `a48cf00b1670110911d5c5fc29c7f1bc881f001b2f8e8aff99d23e8ea00cbdc2` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261111-055243-2322`
+- Run id: `EXP-001-20261111-055243-2322` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-11 05:52:44 UTC

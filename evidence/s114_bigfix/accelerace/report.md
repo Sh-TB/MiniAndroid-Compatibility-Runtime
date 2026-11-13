@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s114_bigfix/accelerace/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s114_bigfix/accelerace/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s114_bigfix/accelerace/screenshot.png)
+- **SHA256:** `ef12edecb78e9bdbc9fc6a8bbf6686d15eff35e4f82d4a26e8546b9382bdba99` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261002-013320-0169`
+- Run id: `EXP-001-20261002-013320-0169` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-02 01:33:22 UTC

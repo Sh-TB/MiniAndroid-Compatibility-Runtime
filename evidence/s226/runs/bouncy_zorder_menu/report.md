@@ -60,15 +60,8 @@
 
 ![Screenshot](evidence/s226/runs/bouncy_zorder_menu/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s226/runs/bouncy_zorder_menu/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 36.62 KB
-
-![Screenshot](evidence/s226/runs/bouncy_zorder_menu/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261112-161321-7952`
+- Run id: `EXP-001-20261112-161321-7952` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-12 16:13:24 UTC

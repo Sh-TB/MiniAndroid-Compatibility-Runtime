@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f05b_persian2/screenshot.png)
+- **SHA256:** `5d2e29e25e0c4667090444bbd34753f06e76862016b083eecca8c57d55049f0a` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

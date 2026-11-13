@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w13/runs/com.jeffliu.balancetheball/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w13/runs/com.jeffliu.balancetheball/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w13/runs/com.jeffliu.balancetheball/screenshot.png)
+- **SHA256:** `e056a03cbd8833154294fe4a88e30fb24c666bc7a7ca883c711576aafa54320d` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-203103-6333`
+- Run id: `EXP-001-20261107-203103-6333` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 20:31:04 UTC

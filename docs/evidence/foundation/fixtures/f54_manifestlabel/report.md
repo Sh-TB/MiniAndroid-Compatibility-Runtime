@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f54_manifestlabel/screenshot.png)
+- **SHA256:** `9f0bb2bef165c2988c6cc2bfbf92347cef00cdfc12a191935cbacdc69e1a463d` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

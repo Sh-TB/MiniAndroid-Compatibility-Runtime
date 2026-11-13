@@ -60,15 +60,8 @@
 
 ![Screenshot](evidence/s188_w10/runs/bj_diag/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s188_w10/runs/bj_diag/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s188_w10/runs/bj_diag/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-173620-1776`
+- Run id: `EXP-001-20261107-173620-1776` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 17:36:21 UTC

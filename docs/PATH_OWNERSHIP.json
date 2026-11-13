@@ -498,6 +498,7 @@
   "evidence/s154_awaitup_gate",
   "evidence/s154_registry_check",
   "evidence/s155_dooz_placement",
+  "evidence/s156_4app",
   "evidence/s156_record_loop",
   "evidence/s162_ime",
   "evidence/s163_runs",
@@ -571,6 +572,11 @@
   "evidence/s226",
   "evidence/s228_census",
   "evidence/s229_s213_s214",
+  "evidence/s230",
+  "evidence/s232",
+  "evidence/s232/runs",
+  "evidence/s232/runs/s232_dooz_census",
+  "evidence/s232/runs/s232_opensudoku",
   "evidence/s57",
   "evidence/s58",
   "evidence/s59",
@@ -783,9 +789,7 @@
   "upstream/nav_s36",
   "upstream/s43",
   "upstream/s44",
-  "upstream/scatter_s37",
-  "evidence/s230",
-  "evidence/s156_4app"
+  "upstream/scatter_s37"
  ],
  "frozen_snapshot": {
   "audit": {
@@ -832,8 +836,8 @@
   },
   "evidence": {
    "lifecycle": "frozen \u2014 no new files, no new directories (wave prefix excluded)",
-   "tracked_file_count": 6171,
-   "snapshot_sha256": "ac1cbcc355779ca8a3cf5784706f4f4e6efc2a592f02108a0989d995e00153bf",
+   "tracked_file_count": 6185,
+   "snapshot_sha256": "406ec847dcd5777533bfba0c2429cdbc7b51d456fd6e09bfd8c53cb7bba6c968",
    "basis": "sorted git ls-files list re-baselined at S231 wave start (wave_evidence_registered=evidence/s228_census; the S230 baseline held s229_s213_s214 excluded)"
   },
   "docs/history": {
@@ -844,11 +848,11 @@
   }
  },
  "wave_evidence_registered": {
-  "path": "evidence/s228_census",
-  "owner": "S231 native-route census wave (#582 GP mandate 6821150791 \u00a73/\u00a74)",
-  "approved_in": "#582 GP census directive (comment 6821150791) \u2014 'Immediate next deliverable: a route matrix'",
-  "expected_classes": "json, bin",
-  "note": "registered at wave start (S214 default-deny law); the S228 census dir already existed with native_census.json \u2014 this wave adds the executed cold-run batch summary"
+  "path": "evidence/s232",
+  "owner": "S232 reconciliation wave (#591/#592/#582 + #386 report-sanity queue)",
+  "approved_in": "#591 body Phase 4 + the master directive \u00a75/\u00a74 execution",
+  "expected_classes": "json, md, tsv",
+  "note": "wave exclusion switched from evidence/s230 to evidence/s232 (the S231 amendment pattern); snapshot re-baselined at 6171 with the s232 wave files outside"
  },
  "run_output_routing": {
   "default": ".cache/<tool-or-suite>/<run-id>/ (gitignored, untracked)",
@@ -919,6 +923,20 @@
    "wave": "S231 (#582 route-matrix census)",
    "reason": "wave exclusion switched from evidence/s229_s213_s214 to evidence/s228_census; snapshot re-baselined with the s229 wave files back inside and s228_census wave files outside",
    "ledger": "evidence/s228_census/s231_cold_runs_batch.json"
+  },
+  {
+   "area": "evidence",
+   "date": "2026-11-14",
+   "wave": "S232 (coder reconciliation + P0 closeout + #386 report-sanity queue)",
+   "reason": "evidence/s232 registered as the new wave evidence area (16 tracked children added); snapshot count re-baselined",
+   "ledger": "evidence/s232/report_sanity_sha_ledger.tsv"
+  },
+  {
+   "area": "evidence",
+   "date": "2026-11-14",
+   "wave": "S232 (coder reconciliation + P0 closeout + #386 report-sanity queue)",
+   "reason": "wave exclusion switched from evidence/s228_census to evidence/s232 AND the six-pin gate reruns on the three S232 binaries legitimately added 14 regenerated screenshot/store evidence children to s207 runs (pin-neutral reruns, byte-exact pins); snapshot count+sha re-baselined",
+   "ledger": "evidence/s232/report_sanity_sha_ledger.tsv"
   }
  ],
  "wave_evidence_registered_s226": {
@@ -939,7 +957,7 @@
   "path": "evidence/s232",
   "owner": "S232 W23-census-probe integration wave (#591 reconciliation)",
   "approved_in": "#591 W23 body Phase 4: 'adoptable on the main line independently of my W-laws' \u2014 operator integration per the master directive \u00a75",
-  "expected_classes": "json, md",
-  "note": "registered at wave start (S214 default-deny law); probe-only hunk applied verbatim (sha256 f35901eba4c247cb...), six-pin gate ALL HOLD on 0672ecac127664fa recorded in evidence/s207/runs/S207_GATE.json"
+  "expected_classes": "json, md, tsv",
+  "note": "registered at wave start (S214 default-deny law); probe-only hunk applied verbatim (sha256 f35901eba4c247cb...), six-pin gate ALL HOLD on 0672ecac127664fa recorded in evidence/s207/runs/S207_GATE.json; wave 2 added the report-sanity fix ledgers (dedupe 717->0, sha 913->0, run-id 220->15)"
  }
 }

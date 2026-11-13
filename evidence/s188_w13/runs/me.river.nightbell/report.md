@@ -254,16 +254,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w13/runs/me.river.nightbell/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w13/runs/me.river.nightbell/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w13/runs/me.river.nightbell/screenshot.png)
+- **SHA256:** `b1a2ca45e3bc9c0bd7042c52e6e76547601d9663993b38dbdfc8ce2afd81797e` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-204206-3899`
+- Run id: `EXP-001-20261107-204206-3899` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 20:42:14 UTC

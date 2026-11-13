@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/com.davidtakac.bura_run1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/com.davidtakac.bura_run1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/com.davidtakac.bura_run1/screenshot.png)
+- **SHA256:** `a2ba4a494215292699120d9e9a5ac82441d2def9b3ae95c273951018c126b438` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

@@ -59,6 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/docs/evidence/foundation/fixtures/f18_lltop/screenshot.png)
+- **SHA256:** `6965d332d0ef11d8955b5c2aaf6fa409623b1ece38cf33feb74d57423d3b54a6` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

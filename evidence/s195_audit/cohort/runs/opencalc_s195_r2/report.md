@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s195_audit/cohort/runs/opencalc_s195_r2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s195_audit/cohort/runs/opencalc_s195_r2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s195_audit/cohort/runs/opencalc_s195_r2/screenshot.png)
+- **SHA256:** `a84863964c6172d1d2d583ce5c21b1b64cf7d633b78cd8e9f4fa0d3b3722f862` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

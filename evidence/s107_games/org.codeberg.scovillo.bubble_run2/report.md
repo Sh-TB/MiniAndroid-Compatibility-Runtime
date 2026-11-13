@@ -80,14 +80,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s107_games/org.codeberg.scovillo.bubble_run2/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s107_games/org.codeberg.scovillo.bubble_run2/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s107_games/org.codeberg.scovillo.bubble_run2/screenshot.png)
+- **SHA256:** `87fd4f1e0ccaf1a7fd1fe964531cb625cec6426e55853df01ad85a85350ee69a` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

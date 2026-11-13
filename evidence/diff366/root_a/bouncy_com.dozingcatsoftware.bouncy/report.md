@@ -116,16 +116,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/diff366/root_a/bouncy_com.dozingcatsoftware.bouncy/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/diff366/root_a/bouncy_com.dozingcatsoftware.bouncy/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/diff366/root_a/bouncy_com.dozingcatsoftware.bouncy/screenshot.png)
+- **SHA256:** `b6dde6074bf47264b6cf8ab53a9c259eb47dfe88fd549c2ce5cc7f7c47abf4cc` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261003-061758-5643`
+- Run id: `EXP-001-20261003-061758-5643` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-03 06:17:59 UTC

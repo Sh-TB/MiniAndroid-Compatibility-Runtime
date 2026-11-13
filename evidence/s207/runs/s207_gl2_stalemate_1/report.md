@@ -59,14 +59,7 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gl2_stalemate_1/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s207/runs/s207_gl2_stalemate_1/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gl2_stalemate_1/screenshot.png)
+- **SHA256:** `cd6202ac23ea8b0bb918655d2642b7fe569d99f40ac640db21226060a83b17a5` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 

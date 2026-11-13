@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s195_audit/gates/runs/spot_android/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s195_audit/gates/runs/spot_android/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s195_audit/gates/runs/spot_android/screenshot.png)
+- **SHA256:** `9b80e815013809004133f6b90563b3557f35878d8c36eabd957cf2213fd3d2bb` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261108-184632-3142`
+- Run id: `EXP-001-20261108-184632-3142` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-08 18:46:37 UTC

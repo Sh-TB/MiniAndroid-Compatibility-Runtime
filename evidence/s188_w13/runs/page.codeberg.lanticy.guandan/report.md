@@ -254,16 +254,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w13/runs/page.codeberg.lanticy.guandan/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w13/runs/page.codeberg.lanticy.guandan/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w13/runs/page.codeberg.lanticy.guandan/screenshot.png)
+- **SHA256:** `4e58f3a3788914971e845f2b00a8b530c0fb062586ac628fec0e99fdadecdbae` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-204216-8175`
+- Run id: `EXP-001-20261107-204216-8175` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 20:42:19 UTC

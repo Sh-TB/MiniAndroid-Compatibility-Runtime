@@ -60,14 +60,6 @@
 
 ![Screenshot](evidence/s200/runs/s202_gldbg/screenshot.png)
 
-### Output Frame
-
-- **File:** `evidence/s200/runs/s202_gldbg/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](evidence/s200/runs/s202_gldbg/screenshot.png)
-
 ## Session Info
 
 - **Session ID:** `EXP-001-20261109-092234-3134`

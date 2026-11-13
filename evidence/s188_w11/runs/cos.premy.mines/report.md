@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/s188_w11/runs/cos.premy.mines/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/s188_w11/runs/cos.premy.mines/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/s188_w11/runs/cos.premy.mines/screenshot.png)
+- **SHA256:** `493baf65950a51b04989cfe48dead90a9ddc3e977f3a1deb68080dd0aad904c3` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261107-182829-4632`
+- Run id: `EXP-001-20261107-182829-4632` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-11-07 18:28:29 UTC

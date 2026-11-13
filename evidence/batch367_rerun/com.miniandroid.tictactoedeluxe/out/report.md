@@ -59,16 +59,10 @@
 - **Size:** 7.91 MB
 
 ![Screenshot](/home/z/my-project/evidence/batch367_rerun/com.miniandroid.tictactoedeluxe/out/screenshot.png)
-
-### Output Frame
-
-- **File:** `/home/z/my-project/evidence/batch367_rerun/com.miniandroid.tictactoedeluxe/out/screenshot.png`
-- **Resolution:** 1080x1920
-- **Size:** 7.91 MB
-
-![Screenshot](/home/z/my-project/evidence/batch367_rerun/com.miniandroid.tictactoedeluxe/out/screenshot.png)
+- **SHA256:** `af6094295ecb50e38e624cdbd1ce74f75d3407f595438ac51cf58180df52f483` (recorded by tools/report_sanity_fix.py from the actual retained file)
 
 ## Session Info
 
 - **Session ID:** `EXP-001-20261003-080930-1876`
+- Run id: `EXP-001-20261003-080930-1876` (derived from the report\'s own Session ID line)
 - **Generated:** 2026-10-03 08:09:32 UTC
