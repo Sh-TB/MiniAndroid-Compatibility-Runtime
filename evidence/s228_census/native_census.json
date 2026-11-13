@@ -1,0 +1,1879 @@
+[
+ {
+  "apk": "upload/canonical_apks/app.varlorg.unote_30.apk",
+  "apk_sha256_16": "be91103f0e7db443",
+  "size": 163498,
+  "abis": [],
+  "libs": {},
+  "route": "PURE-DEX",
+  "manifest": {
+   "package": "app.varlorg.unote",
+   "versionCode": 30,
+   "versionName": "1.8.0",
+   "launcher_activities": [
+    "app.varlorg.unote.NoteMain"
+   ],
+   "all_activities": [
+    "app.varlorg.unote.NoteEdition",
+    "app.varlorg.unote.NoteMain",
+    "app.varlorg.unote.Preference",
+    "app.varlorg.unote.RestoreDbActivity",
+    "app.varlorg.unote.PreferenceEdition",
+    "app.varlorg.unote.PreferenceExport",
+    "app.varlorg.unote.PreferenceGlobal",
+    "app.varlorg.unote.PreferenceMain",
+    "app.varlorg.unote.ReminderActivity"
+   ],
+   "app_label": 2131361797
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/bouncy.apk",
+  "apk_sha256_16": "ffda0d9cb0b1b2aa",
+  "size": 3233743,
+  "abis": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "libs": {
+   "lib/arm64-v8a/libgdx-box2d.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "7d515ea338555d67",
+    "size": 236376
+   },
+   "lib/armeabi-v7a/libgdx-box2d.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "783bffc8c38928b7",
+    "size": 207920
+   },
+   "lib/x86/libgdx-box2d.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "2b67a89ad432de0e",
+    "size": 274996
+   },
+   "lib/x86_64/libgdx-box2d.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "06ce00298a99c770",
+    "size": 270816
+   }
+  },
+  "route": "libGDX",
+  "manifest": {
+   "package": "com.dozingcatsoftware.bouncy",
+   "versionCode": 43,
+   "versionName": "1.16.0",
+   "launcher_activities": [
+    "com.dozingcatsoftware.bouncy.BouncyActivity"
+   ],
+   "all_activities": [
+    "com.dozingcatsoftware.bouncy.BouncyActivity",
+    "com.dozingcatsoftware.bouncy.AboutActivity",
+    "com.dozingcatsoftware.bouncy.BouncyPreferences"
+   ],
+   "app_label": 2131230721
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/com.dozingcatsoftware.bouncy_43.apk",
+  "apk_sha256_16": "ffda0d9cb0b1b2aa",
+  "size": 3233743,
+  "abis": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "libs": {
+   "lib/arm64-v8a/libgdx-box2d.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "7d515ea338555d67",
+    "size": 236376
+   },
+   "lib/armeabi-v7a/libgdx-box2d.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "783bffc8c38928b7",
+    "size": 207920
+   },
+   "lib/x86/libgdx-box2d.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "2b67a89ad432de0e",
+    "size": 274996
+   },
+   "lib/x86_64/libgdx-box2d.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "06ce00298a99c770",
+    "size": 270816
+   }
+  },
+  "route": "libGDX",
+  "manifest": {
+   "package": "com.dozingcatsoftware.bouncy",
+   "versionCode": 43,
+   "versionName": "1.16.0",
+   "launcher_activities": [
+    "com.dozingcatsoftware.bouncy.BouncyActivity"
+   ],
+   "all_activities": [
+    "com.dozingcatsoftware.bouncy.BouncyActivity",
+    "com.dozingcatsoftware.bouncy.AboutActivity",
+    "com.dozingcatsoftware.bouncy.BouncyPreferences"
+   ],
+   "app_label": 2131230721
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/com.emmanuelmess.tictactoe_3.apk",
+  "apk_sha256_16": "760fe5acf7b39435",
+  "size": 4474946,
+  "abis": [
+   "arm64-v8a",
+   "armeabi",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "libs": {
+   "lib/arm64-v8a/libgdx-box2d.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "421cc130a97302fb",
+    "size": 239552
+   },
+   "lib/arm64-v8a/libgdx-freetype.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "796af52b90b0aeec",
+    "size": 796504
+   },
+   "lib/arm64-v8a/libgdx.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "liblog.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "d41d2e6764210653",
+    "size": 227664
+   },
+   "lib/armeabi-v7a/libgdx-box2d.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "0526d4d80958cfdb",
+    "size": 222828
+   },
+   "lib/armeabi-v7a/libgdx-freetype.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "0992a6c79ffc367b",
+    "size": 763412
+   },
+   "lib/armeabi-v7a/libgdx.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "liblog.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "00b8548c4436b23b",
+    "size": 227328
+   },
+   "lib/armeabi/libgdx-box2d.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "e9549248b10b3101",
+    "size": 292460
+   },
+   "lib/armeabi/libgdx-freetype.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "cd6d9952c4d0eda1",
+    "size": 775700
+   },
+   "lib/armeabi/libgdx.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "liblog.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "8bfe771258e7ff95",
+    "size": 239616
+   },
+   "lib/x86/libgdx-box2d.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "06600a9a62117f90",
+    "size": 271916
+   },
+   "lib/x86/libgdx-freetype.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "c58db971ea72d62a",
+    "size": 837076
+   },
+   "lib/x86/libgdx.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "liblog.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "123cf2b266a80728",
+    "size": 251840
+   },
+   "lib/x86_64/libgdx-box2d.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "ebd2096fe2693867",
+    "size": 268496
+   },
+   "lib/x86_64/libgdx-freetype.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "96e407539d21ee73",
+    "size": 870496
+   },
+   "lib/x86_64/libgdx.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "liblog.so",
+     "libstdc++.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "419f603ef7fc4519",
+    "size": 260696
+   }
+  },
+  "route": "libGDX",
+  "manifest": {
+   "package": "com.emmanuelmess.tictactoe",
+   "versionCode": 3,
+   "versionName": "1.0.0",
+   "launcher_activities": [
+    "com.emmanuelmess.tictactoe.AndroidLauncher"
+   ],
+   "all_activities": [
+    "com.emmanuelmess.tictactoe.AndroidLauncher"
+   ],
+   "app_label": 2130903040
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/com.github.muellerma.stopwatch_6.apk",
+  "apk_sha256_16": "3b6a10c8dc8ddc72",
+  "size": 738101,
+  "abis": [],
+  "libs": {},
+  "route": "PURE-DEX",
+  "manifest": {
+   "package": "com.github.muellerma.stopwatch",
+   "versionCode": 6,
+   "versionName": "1.5",
+   "launcher_activities": [],
+   "all_activities": [],
+   "app_label": 2131558428
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/com.traffar.gomoku_4.apk",
+  "apk_sha256_16": "d5dd197010476582",
+  "size": 4398072,
+  "abis": [
+   "armeabi",
+   "armeabi-v7a",
+   "x86"
+  ],
+  "libs": {
+   "lib/armeabi-v7a/libSDL2.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libdl.so",
+     "libGLESv1_CM.so",
+     "libGLESv2.so",
+     "liblog.so",
+     "libandroid.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so"
+    ],
+    "sha256_16": "30dd82b23d2faabe",
+    "size": 672972
+   },
+   "lib/armeabi-v7a/libSDL2_image.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL2.so",
+     "libz.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "c4cc9009a2b5606f",
+    "size": 226564
+   },
+   "lib/armeabi-v7a/libSDL2_mixer.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL2.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "cec94be2cfe204d4",
+    "size": 136524
+   },
+   "lib/armeabi-v7a/libmain.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL2.so",
+     "libSDL2_image.so",
+     "libSDL2_mixer.so",
+     "libGLESv1_CM.so",
+     "liblog.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "12487e53c3028663",
+    "size": 237468
+   },
+   "lib/armeabi/libSDL2.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libdl.so",
+     "libGLESv1_CM.so",
+     "libGLESv2.so",
+     "liblog.so",
+     "libandroid.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so"
+    ],
+    "sha256_16": "b21916361a054a5e",
+    "size": 767172
+   },
+   "lib/armeabi/libSDL2_image.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL2.so",
+     "libz.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "f1572087631b820f",
+    "size": 226556
+   },
+   "lib/armeabi/libSDL2_mixer.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL2.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "dd66efccd4597db5",
+    "size": 140612
+   },
+   "lib/armeabi/libmain.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL2.so",
+     "libSDL2_image.so",
+     "libSDL2_mixer.so",
+     "libGLESv1_CM.so",
+     "liblog.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "1a5f22c96aeb17c3",
+    "size": 274320
+   },
+   "lib/x86/libSDL2.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libdl.so",
+     "libGLESv1_CM.so",
+     "libGLESv2.so",
+     "liblog.so",
+     "libandroid.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so"
+    ],
+    "sha256_16": "76f1be1eb2fa907f",
+    "size": 1074328
+   },
+   "lib/x86/libSDL2_image.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL2.so",
+     "libz.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "4ffe731a0fa9c6b4",
+    "size": 402588
+   },
+   "lib/x86/libSDL2_mixer.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL2.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "57b78b98b59c3659",
+    "size": 193748
+   },
+   "lib/x86/libmain.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL2.so",
+     "libSDL2_image.so",
+     "libSDL2_mixer.so",
+     "libGLESv1_CM.so",
+     "liblog.so",
+     "libstdc++.so",
+     "libm.so",
+     "libc.so",
+     "libdl.so"
+    ],
+    "sha256_16": "05c03ddb8dfbee6c",
+    "size": 393128
+   }
+  },
+  "route": "SDL2",
+  "manifest": {
+   "package": "com.traffar.gomoku",
+   "versionCode": 4,
+   "versionName": "0.4",
+   "launcher_activities": [
+    "gomokuActivity"
+   ],
+   "all_activities": [
+    "gomokuActivity"
+   ],
+   "app_label": 2130968576
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/de.duenndns.gmdice_8.apk",
+  "apk_sha256_16": "1621eda11b5dbc0c",
+  "size": 63998,
+  "abis": [],
+  "libs": {},
+  "route": "PURE-DEX",
+  "manifest": {
+   "package": "de.duenndns.gmdice",
+   "versionCode": 8,
+   "versionName": "1.0",
+   "launcher_activities": [
+    "de.duenndns.gmdice.GameMasterDice"
+   ],
+   "all_activities": [
+    "de.duenndns.gmdice.GameMasterDice"
+   ],
+   "app_label": 2130968577
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/de.saschahlusiak.freebloks_184.apk",
+  "apk_sha256_16": "11908519d6b8edde",
+  "size": 5999178,
+  "abis": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "libs": {
+   "lib/arm64-v8a/libandroidx.graphics.path.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "41e9a793c43a0f4f",
+    "size": 10096
+   },
+   "lib/arm64-v8a/libktx.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "liblog.so",
+     "libGLESv1_CM.so",
+     "libandroid.so",
+     "libc.so",
+     "libm.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "2652e56399860759",
+    "size": 31936
+   },
+   "lib/arm64-v8a/libserver.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "liblog.so",
+     "libc.so",
+     "libm.so",
+     "libdl.so"
+    ],
+    "sha256_16": "a71f437c316a64d7",
+    "size": 314000
+   },
+   "lib/armeabi-v7a/libandroidx.graphics.path.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "41399eba6fc2a60f",
+    "size": 7252
+   },
+   "lib/armeabi-v7a/libktx.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "liblog.so",
+     "libGLESv1_CM.so",
+     "libandroid.so",
+     "libc.so",
+     "libm.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "3c05a075b5eb50b8",
+    "size": 20668
+   },
+   "lib/armeabi-v7a/libserver.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "liblog.so",
+     "libc.so",
+     "libm.so",
+     "libdl.so"
+    ],
+    "sha256_16": "87c637dc28d907cd",
+    "size": 184192
+   },
+   "lib/x86/libandroidx.graphics.path.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "eb0570b41fd3bff2",
+    "size": 9284
+   },
+   "lib/x86/libktx.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "liblog.so",
+     "libGLESv1_CM.so",
+     "libandroid.so",
+     "libc.so",
+     "libm.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "86697223b0867346",
+    "size": 35052
+   },
+   "lib/x86/libserver.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "liblog.so",
+     "libc.so",
+     "libm.so",
+     "libdl.so"
+    ],
+    "sha256_16": "b4b502f71316dc1b",
+    "size": 270004
+   },
+   "lib/x86_64/libandroidx.graphics.path.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "4e56c996f13670e7",
+    "size": 10760
+   },
+   "lib/x86_64/libktx.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "liblog.so",
+     "libGLESv1_CM.so",
+     "libandroid.so",
+     "libc.so",
+     "libm.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "96263abff361c670",
+    "size": 37160
+   },
+   "lib/x86_64/libserver.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "liblog.so",
+     "libc.so",
+     "libm.so",
+     "libdl.so"
+    ],
+    "sha256_16": "37eca7ba3af64378",
+    "size": 314240
+   }
+  },
+  "route": "JNI-libs",
+  "manifest": {
+   "package": "de.saschahlusiak.freebloks",
+   "versionCode": 184,
+   "versionName": "1.8.4",
+   "launcher_activities": [
+    "de.saschahlusiak.freebloks.game.FreebloksActivity"
+   ],
+   "all_activities": [
+    "de.saschahlusiak.freebloks.game.FreebloksActivity",
+    "de.saschahlusiak.freebloks.preferences.SettingsActivity",
+    "de.saschahlusiak.freebloks.statistics.StatisticsActivity",
+    "de.saschahlusiak.freebloks.rules.RulesActivity",
+    "androidx.compose.ui.tooling.PreviewActivity"
+   ],
+   "app_label": 2131820588
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/dooz_23_toplevel.apk",
+  "apk_sha256_16": "299eab21ac8b3c61",
+  "size": 1840400,
+  "abis": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "libs": {
+   "lib/arm64-v8a/libandroidx.graphics.path.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "41e9a793c43a0f4f",
+    "size": 10096
+   },
+   "lib/arm64-v8a/libdatastore_shared_counter.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libandroid.so",
+     "liblog.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "178f89a2c6c9234d",
+    "size": 7784
+   },
+   "lib/armeabi-v7a/libandroidx.graphics.path.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "41399eba6fc2a60f",
+    "size": 7252
+   },
+   "lib/armeabi-v7a/libdatastore_shared_counter.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libandroid.so",
+     "liblog.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "b4a465c02ee3ab58",
+    "size": 5916
+   },
+   "lib/x86/libandroidx.graphics.path.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "eb0570b41fd3bff2",
+    "size": 9284
+   },
+   "lib/x86/libdatastore_shared_counter.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libandroid.so",
+     "liblog.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "ad9ce026fa71181a",
+    "size": 6124
+   },
+   "lib/x86_64/libandroidx.graphics.path.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "4e56c996f13670e7",
+    "size": 10760
+   },
+   "lib/x86_64/libdatastore_shared_counter.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libandroid.so",
+     "liblog.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "ccd1862ef8f854d2",
+    "size": 7336
+   }
+  },
+  "route": "JNI-libs",
+  "manifest": {
+   "package": "io.github.yamin8000.dooz",
+   "versionCode": 23,
+   "versionName": "1.0.23",
+   "launcher_activities": [
+    "io.github.yamin8000.dooz.ui.MainActivity"
+   ],
+   "all_activities": [
+    "io.github.yamin8000.dooz.ui.MainActivity"
+   ],
+   "app_label": 2131558406
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/dubrowgn.microtimer_8.apk",
+  "apk_sha256_16": "79c6f730f64886e7",
+  "size": 208895,
+  "abis": [],
+  "libs": {},
+  "route": "PURE-DEX",
+  "manifest": {
+   "package": "dubrowgn.microtimer",
+   "versionCode": 8,
+   "versionName": "1.8",
+   "launcher_activities": [
+    "dubrowgn.microtimer.MainActivity"
+   ],
+   "all_activities": [
+    "dubrowgn.microtimer.MainActivity"
+   ],
+   "app_label": 2131296256
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/fishrings_v1.23_vc6.apk",
+  "apk_sha256_16": "14d7dd80f7563c6a",
+  "size": 398995,
+  "abis": [],
+  "libs": {},
+  "route": "PURE-DEX",
+  "manifest": {
+   "package": "eu.veldsoft.fish.rings",
+   "versionCode": 6,
+   "versionName": "1.23",
+   "launcher_activities": [
+    ".SplashActivity"
+   ],
+   "all_activities": [
+    ".GameActivity",
+    ".HelpActivity",
+    ".AboutActivity",
+    ".SplashActivity",
+    ".InstructionActivity"
+   ],
+   "app_label": 2131099650
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/io.github.yamin8000.dooz_23.apk",
+  "apk_sha256_16": "299eab21ac8b3c61",
+  "size": 1840400,
+  "abis": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "libs": {
+   "lib/arm64-v8a/libandroidx.graphics.path.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "41e9a793c43a0f4f",
+    "size": 10096
+   },
+   "lib/arm64-v8a/libdatastore_shared_counter.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libandroid.so",
+     "liblog.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "178f89a2c6c9234d",
+    "size": 7784
+   },
+   "lib/armeabi-v7a/libandroidx.graphics.path.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "41399eba6fc2a60f",
+    "size": 7252
+   },
+   "lib/armeabi-v7a/libdatastore_shared_counter.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libandroid.so",
+     "liblog.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "b4a465c02ee3ab58",
+    "size": 5916
+   },
+   "lib/x86/libandroidx.graphics.path.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "eb0570b41fd3bff2",
+    "size": 9284
+   },
+   "lib/x86/libdatastore_shared_counter.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libandroid.so",
+     "liblog.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "ad9ce026fa71181a",
+    "size": 6124
+   },
+   "lib/x86_64/libandroidx.graphics.path.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "4e56c996f13670e7",
+    "size": 10760
+   },
+   "lib/x86_64/libdatastore_shared_counter.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libandroid.so",
+     "liblog.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "ccd1862ef8f854d2",
+    "size": 7336
+   }
+  },
+  "route": "JNI-libs",
+  "manifest": {
+   "package": "io.github.yamin8000.dooz",
+   "versionCode": 23,
+   "versionName": "1.0.23",
+   "launcher_activities": [
+    "io.github.yamin8000.dooz.ui.MainActivity"
+   ],
+   "all_activities": [
+    "io.github.yamin8000.dooz.ui.MainActivity"
+   ],
+   "app_label": 2131558406
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/opmt_v0.1.2_vc1.apk",
+  "apk_sha256_16": "4f91e3801780684a",
+  "size": 100730,
+  "abis": [],
+  "libs": {},
+  "route": "PURE-DEX",
+  "manifest": {
+   "package": "one.scarecrow.games.OPMT",
+   "versionCode": 1,
+   "versionName": "0.1.2",
+   "launcher_activities": [
+    ".MainMenu"
+   ],
+   "all_activities": [
+    ".settingsActivity",
+    ".GameActivity",
+    ".MainMenu"
+   ],
+   "app_label": 2131099649
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/org.kirkezz.rttt_3.apk",
+  "apk_sha256_16": "704fa51869ad7ff4",
+  "size": 23386246,
+  "abis": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "libs": {
+   "lib/arm64-v8a/libSDL3.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libOpenSLES.so",
+     "libdl.so",
+     "liblog.so",
+     "libandroid.so",
+     "libGLESv1_CM.so",
+     "libGLESv2.so",
+     "libc.so"
+    ],
+    "sha256_16": "d6a26ef15864455d",
+    "size": 1939904
+   },
+   "lib/arm64-v8a/libSDL3_image.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "75fe838d12c74d4c",
+    "size": 170976
+   },
+   "lib/arm64-v8a/libSDL3_mixer.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "8fe6ba9fcfa59628",
+    "size": 297048
+   },
+   "lib/arm64-v8a/libSDL3_ttf.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "b9c05fc145ecc83f",
+    "size": 1789216
+   },
+   "lib/arm64-v8a/libmain.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libSDL3_ttf.so",
+     "libSDL3_mixer.so",
+     "libSDL3_image.so",
+     "libSDL3.so",
+     "librmlui_debugger.so",
+     "librmlui.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "cc92cf0ba89fd001",
+    "size": 108200
+   },
+   "lib/arm64-v8a/librmlui.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "fcf483222dba87f1",
+    "size": 4518608
+   },
+   "lib/arm64-v8a/librmlui_debugger.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "librmlui.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "aea9c87095fce703",
+    "size": 312032
+   },
+   "lib/arm64-v8a/libtiff.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "4de72eae01f70104",
+    "size": 434608
+   },
+   "lib/arm64-v8a/libtiffxx.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libtiff.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "84736cd2dfc52739",
+    "size": 913320
+   },
+   "lib/armeabi-v7a/libSDL3.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libOpenSLES.so",
+     "libdl.so",
+     "liblog.so",
+     "libandroid.so",
+     "libGLESv1_CM.so",
+     "libGLESv2.so",
+     "libc.so"
+    ],
+    "sha256_16": "111b5eded115636a",
+    "size": 1401868
+   },
+   "lib/armeabi-v7a/libSDL3_image.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "1fbd5b2a6029541a",
+    "size": 130196
+   },
+   "lib/armeabi-v7a/libSDL3_mixer.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "ac7f81915f1317ec",
+    "size": 223756
+   },
+   "lib/armeabi-v7a/libSDL3_ttf.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "4e2c7c56f6368ead",
+    "size": 1285436
+   },
+   "lib/armeabi-v7a/libmain.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL3_ttf.so",
+     "libSDL3_mixer.so",
+     "libSDL3_image.so",
+     "libSDL3.so",
+     "librmlui_debugger.so",
+     "librmlui.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "23081895336b24df",
+    "size": 61656
+   },
+   "lib/armeabi-v7a/librmlui.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "1b527452dfa4efb6",
+    "size": 3246224
+   },
+   "lib/armeabi-v7a/librmlui_debugger.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "librmlui.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "12bf4440da3cd3da",
+    "size": 252248
+   },
+   "lib/armeabi-v7a/libtiff.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "132b9349b0951bc4",
+    "size": 340960
+   },
+   "lib/armeabi-v7a/libtiffxx.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libtiff.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "091a543f4177d15a",
+    "size": 581380
+   },
+   "lib/x86/libSDL3.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libOpenSLES.so",
+     "libdl.so",
+     "liblog.so",
+     "libandroid.so",
+     "libGLESv1_CM.so",
+     "libGLESv2.so",
+     "libc.so"
+    ],
+    "sha256_16": "08835ae3afd33959",
+    "size": 2154340
+   },
+   "lib/x86/libSDL3_image.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "d28d100f049a71b5",
+    "size": 202012
+   },
+   "lib/x86/libSDL3_mixer.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "2e3db4d365008415",
+    "size": 334468
+   },
+   "lib/x86/libSDL3_ttf.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "7b8d046b70ec3cde",
+    "size": 1931572
+   },
+   "lib/x86/libmain.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libSDL3_ttf.so",
+     "libSDL3_mixer.so",
+     "libSDL3_image.so",
+     "libSDL3.so",
+     "librmlui_debugger.so",
+     "librmlui.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "03a934ab21634dc0",
+    "size": 105432
+   },
+   "lib/x86/librmlui.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "7cf372970518f6f2",
+    "size": 4679380
+   },
+   "lib/x86/librmlui_debugger.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "librmlui.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "b2b97fd9d5dc3c77",
+    "size": 310760
+   },
+   "lib/x86/libtiff.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "4ea2531edbc3cd33",
+    "size": 460700
+   },
+   "lib/x86/libtiffxx.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libtiff.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "a792cbc4691c9936",
+    "size": 881092
+   },
+   "lib/x86_64/libSDL3.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libOpenSLES.so",
+     "libdl.so",
+     "liblog.so",
+     "libandroid.so",
+     "libGLESv1_CM.so",
+     "libGLESv2.so",
+     "libc.so"
+    ],
+    "sha256_16": "0e4b298f73de219c",
+    "size": 2127280
+   },
+   "lib/x86_64/libSDL3_image.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "698b2e56974cb0f3",
+    "size": 205448
+   },
+   "lib/x86_64/libSDL3_mixer.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "596155fd6b918843",
+    "size": 326968
+   },
+   "lib/x86_64/libSDL3_ttf.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libSDL3.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "1e94e1def2bc5f05",
+    "size": 1910720
+   },
+   "lib/x86_64/libmain.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libSDL3_ttf.so",
+     "libSDL3_mixer.so",
+     "libSDL3_image.so",
+     "libSDL3.so",
+     "librmlui_debugger.so",
+     "librmlui.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "685a51a4f4917a4d",
+    "size": 109808
+   },
+   "lib/x86_64/librmlui.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "52f35b744128d804",
+    "size": 4684896
+   },
+   "lib/x86_64/librmlui_debugger.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "librmlui.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "f95087d18b9b9a1f",
+    "size": 315440
+   },
+   "lib/x86_64/libtiff.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "d099a968a5b5051a",
+    "size": 462840
+   },
+   "lib/x86_64/libtiffxx.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libtiff.so",
+     "libm.so",
+     "libdl.so",
+     "libc.so"
+    ],
+    "sha256_16": "3bb2292e4bd1236c",
+    "size": 882744
+   }
+  },
+  "route": "SDL3",
+  "manifest": {
+   "package": "org.kirkezz.rttt",
+   "versionCode": 3,
+   "versionName": "1.3",
+   "launcher_activities": [
+    "org.libsdl.app.SDLActivity"
+   ],
+   "all_activities": [
+    "org.libsdl.app.SDLActivity"
+   ],
+   "app_label": "RTTT"
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/org.secuso.privacyfriendlymemory_100.apk",
+  "apk_sha256_16": "82f83d9ea572240a",
+  "size": 8638470,
+  "abis": [],
+  "libs": {},
+  "route": "PURE-DEX",
+  "manifest": {
+   "package": "org.secuso.privacyfriendlymemory",
+   "versionCode": 100,
+   "versionName": "1.1.3-google",
+   "launcher_activities": [
+    "org.secuso.privacyfriendlymemory.ui.SplashActivity"
+   ],
+   "all_activities": [
+    "org.secuso.privacyfriendlymemory.ui.SplashActivity",
+    "org.secuso.privacyfriendlymemory.ui.MainActivity",
+    "org.secuso.privacyfriendlymemory.ui.navigation.AboutActivity",
+    "org.secuso.privacyfriendlymemory.ui.navigation.HelpActivity",
+    "org.secuso.privacyfriendlymemory.ui.navigation.HighscoreActivity",
+    "org.secuso.privacyfriendlymemory.ui.navigation.StatisticsActivity",
+    "org.secuso.privacyfriendlymemory.ui.navigation.DeckChoiceActivity",
+    "org.secuso.privacyfriendlymemory.ui.MemoActivity"
+   ],
+   "app_label": 2131689505
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/stack.tower3d_1.apk",
+  "apk_sha256_16": "ba5b0a48d74e3348",
+  "size": 4461839,
+  "abis": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "libs": {
+   "lib/arm64-v8a/libgdx-freetype.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "f56f42e4b14e5295",
+    "size": 797976
+   },
+   "lib/arm64-v8a/libgdx.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "liblog.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "7bb9092466caf8d4",
+    "size": 163888
+   },
+   "lib/armeabi-v7a/libgdx-freetype.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "258eed89823fb946",
+    "size": 757848
+   },
+   "lib/armeabi-v7a/libgdx.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "liblog.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "88587a4f2287514f",
+    "size": 160156
+   },
+   "lib/x86/libgdx-freetype.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "9895aeb35e09d3db",
+    "size": 853248
+   },
+   "lib/x86/libgdx.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "libm.so",
+     "liblog.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "e15c128facef4a21",
+    "size": 189668
+   },
+   "lib/x86_64/libgdx-freetype.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "2d5c92f093aace92",
+    "size": 888928
+   },
+   "lib/x86_64/libgdx.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "libm.so",
+     "liblog.so",
+     "libc.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "5a4c83c5c2dae70a",
+    "size": 193008
+   }
+  },
+  "route": "libGDX",
+  "manifest": {
+   "package": "stack.tower3d",
+   "versionCode": 1,
+   "versionName": "1.0.0",
+   "launcher_activities": [
+    "stack.tower3d.android.AndroidLauncher"
+   ],
+   "all_activities": [
+    "stack.tower3d.android.AndroidLauncher"
+   ],
+   "app_label": 2131296257
+  }
+ },
+ {
+  "apk": "upload/canonical_apks/tripeaks_v1.2.1_vc4.apk",
+  "apk_sha256_16": "52272ae619c0fec8",
+  "size": 417854,
+  "abis": [],
+  "libs": {},
+  "route": "PURE-DEX",
+  "manifest": {
+   "package": "eu.veldsoft.tri.peaks",
+   "versionCode": 4,
+   "versionName": "1.2.1",
+   "launcher_activities": [
+    ".SplashActivity"
+   ],
+   "all_activities": [
+    ".LobbyActivity",
+    ".GameActivity",
+    ".HelpActivity",
+    ".AboutUsActivity",
+    ".SplashActivity"
+   ],
+   "app_label": 2131034114
+  }
+ },
+ {
+  "apk": "upload/chess_jwtc_298.apk",
+  "apk_sha256_16": "3245b9ec35f6c1df",
+  "size": 3557014,
+  "abis": [
+   "arm64-v8a",
+   "armeabi-v7a",
+   "x86",
+   "x86_64"
+  ],
+  "libs": {
+   "lib/arm64-v8a/libchess-jni.so": {
+    "machine": "aarch64",
+    "class": "ELF64",
+    "dt_needed": [
+     "liblog.so",
+     "libc.so",
+     "libm.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "1dd71cd56d91c36a",
+    "size": 122704
+   },
+   "lib/armeabi-v7a/libchess-jni.so": {
+    "machine": "arm",
+    "class": "ELF32",
+    "dt_needed": [
+     "liblog.so",
+     "libc.so",
+     "libm.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "42f479839c28b2c4",
+    "size": 87632
+   },
+   "lib/x86/libchess-jni.so": {
+    "machine": "x86",
+    "class": "ELF32",
+    "dt_needed": [
+     "liblog.so",
+     "libc.so",
+     "libm.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "22c0c53deb5ede25",
+    "size": 122244
+   },
+   "lib/x86_64/libchess-jni.so": {
+    "machine": "x86_64",
+    "class": "ELF64",
+    "dt_needed": [
+     "liblog.so",
+     "libc.so",
+     "libm.so",
+     "libstdc++.so",
+     "libdl.so"
+    ],
+    "sha256_16": "2bb4de2ea1377c6e",
+    "size": 126616
+   }
+  },
+  "route": "JNI-libs",
+  "manifest": {
+   "package": "jwtc.android.chess",
+   "versionCode": 298,
+   "versionName": "10.6.0",
+   "launcher_activities": [
+    "jwtc.android.chess.start"
+   ],
+   "all_activities": [
+    "jwtc.android.chess.start",
+    "jwtc.android.chess.HtmlActivity",
+    "jwtc.android.chess.activities.BoardPreferencesActivity",
+    "jwtc.android.chess.activities.AccessibilityPreferences",
+    "jwtc.android.chess.play.PlayActivity",
+    "jwtc.android.chess.setup.SetupActivity",
+    "jwtc.android.chess.setup.SetupRandomFischerActivity",
+    "jwtc.android.chess.GamesListActivity",
+    "jwtc.android.chess.puzzle.PuzzleActivity",
+    "jwtc.android.chess.practice.PracticeActivity",
+    "jwtc.android.chess.ics.ICSClient",
+    "jwtc.android.chess.ics.ICSPrefs"
+   ],
+   "app_label": 2131886112
+  }
+ }
+]
