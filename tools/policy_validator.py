@@ -377,8 +377,9 @@ def main():
         if need_text:
             text = data.decode("utf-8", errors="ignore")
             if MACHINE_PATH.search(text):
-                if f in ("tools/policy_validator.py", "tests/policy_validator_law_test.py"):
-                    continue  # the enforcement tooling itself documents the pattern it detects (§172.5 self-reference)
+                if f in ("tools/policy_validator.py", "tests/policy_validator_law_test.py",
+                         "tests/path_ownership_gate_test.py"):
+                    continue  # the enforcement tooling + its law tests document the pattern they detect (§172.5 self-reference)
                 if any(f.startswith(mp) for mp in MAINTAINED_PREFIXES) or "/" not in f:
                     if f in al_mp_rec:
                         continue  # narrow source-reviewed exception: recorded run-output data record
