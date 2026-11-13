@@ -1,0 +1,45 @@
+{
+ "wave": "S226-VERIFY",
+ "date": "2026-11-13",
+ "purpose": "Anti-phantom independent verification of F-GLZ-2 + F-BLANK-1 (Vector Pinball menu-overpaint fix) before landing; requester instruction: verify the coder claim of completing VECTOR PINBALL",
+ "binary_sha16": "06f98d2a9c21ea92",
+ "runs": {
+  "bouncy": {
+   "tag": "verify_bouncy_r1",
+   "face_sha16": "98abca389fb01380",
+   "pin_match": true,
+   "wall_s": 24.0,
+   "uncaught": 0,
+   "pixel_diff_vs_9d6a29d6": {
+    "differing_px": 936460,
+    "total_px": 2073600,
+    "pct": 45.16,
+    "color_pairs": {
+     "#303030->#000000": 936460
+    },
+    "conclusion": "every differing pixel is exactly the window-background fill #303030->#000000; menu panel/buttons/table art byte-identical"
+   }
+  },
+  "unote": {
+   "tag": "verify_unote_r1",
+   "face_sha16": "3b8dcb0adbbc17a9",
+   "pin_match": true,
+   "wall_s": 1.5,
+   "uncaught": 0
+  },
+  "dooz": {
+   "tag": "verify_dooz_r1",
+   "face_sha16": "a0fae9072313e2d1",
+   "pin_match": true,
+   "wall_s": 300.2,
+   "uncaught": 0
+  }
+ },
+ "test_all": {
+  "total": 28,
+  "passed": 28,
+  "failed": 0
+ },
+ "visual": "Select Table dialog + Start Game/High scores/Help/Preferences/Quit buttons + 'Touch to start' status bar rendered above GL surface",
+ "verdict": "VECTOR PINBALL menu claim VERIFIED TRUE; all 6 pins byte-exact HOLD on binary 06f98d2a9c21ea92"
+}

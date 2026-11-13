@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """S207 gate — baseline-protection battery on the rebuilt post-C9 binary.
-Expected pins per the S206 record (commit cad6467b): bouncy 8a6c24ac (original,
-restored), unote 3b8dcb0a, dooz a0fae907, gmdice 3891679d rerun-identical,
+Expected pins per the S206 record (commit cad6467b): bouncy 98abca38
+(RE-PINNED at S226: 8a6c24ac was the menu face over the DEFAULT theme
+fill #303030; the F-BLANK-1 launch-theme law resolves the app's real
+theme windowBackground (#000000, Theme.Black family) and the F-GLZ-2
+under-lay compositor law keeps the menu above the GL surface — the face
+changed exactly in the background fill, menu panel/buttons/text pixels
+byte-identical 746-distinct-color face, 0 uncaught, verified visually),
+unote 3b8dcb0a, dooz a0fae907, gmdice 3891679d rerun-identical,
 microtimer 0-uncaught face b39665f6, tictactoe deterministic x3 face
 7354c1b231cd581d (re-pinned by the C9-16/17 font-family law).
 PHASE env: 'goldens' | 'fast' | 'all' (foreground chunks to survive the sandbox)."""
@@ -70,7 +76,7 @@ def run_app(apk, tag, taps=None, frames=8, delay=250):
 
 if PHASE in ('goldens', 'all'):
     GOLDENS = [
-        ('bouncy', 'com.dozingcatsoftware.bouncy', '8a6c24ac'),
+        ('bouncy', 'com.dozingcatsoftware.bouncy', '98abca38'),
         ('unote', 'app.varlorg.unote', '3b8dcb0a'),
         ('dooz', 'io.github.yamin8000.dooz', 'a0fae907'),
     ]

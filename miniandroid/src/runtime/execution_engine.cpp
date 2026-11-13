@@ -6498,6 +6498,37 @@ bool ExecutionEngine::blit_gl_surface_at(uint32_t vid, int gx, int gy, int gw,
     // intersection copies zero pixels and must NOT report a presented
     // GL frame downstream (provenance derives every bit from this).
     size_t blitted_px = 0;
+    // ── F-GLZ-2 (S226; bouncy/Vector-Pinball menu-overpaint root) ────────
+    // AOSP SurfaceView/GLES20 z-order law: the GL surface composits
+    // BEHIND the window's own draw content but IN FRONT of the window
+    // background. The pre-wave blit overpainted the FULL GL rect with the
+    // PGL back buffer AFTER the view walk had presented the menu panel —
+    // Vector Pinball's Select-Table/Start-Game panel was erased under a
+    // GL present (face 8a6c24ac -> 7579c536, the menu-black BREAK the
+    // gate caught; the wave receipt named exactly this as the frontier:
+    // "the resolution is the compositor-level layering"). The in-walk
+    // pump A/B is NOT the answer (ttt_3 walk/pump entanglement, recorded
+    // in the F-GLZ-1 placement note) — the composite stays POST-WALK and
+    // the z-order becomes a per-pixel law:
+    //   GL pixel wins  <=> the walk painted NOTHING over that pixel this
+    //                      frame, i.e. the presented pixel still equals
+    //                      the frame-entry baseline (frame_baseline_,
+    //                      captured at stage_render_frame_impl entry
+    //                      before any walk paint).
+    //   Overlay pixel stays <=> the walk painted a different value there
+    //                      this frame (the menu panel, the splash bar,
+    //                      any later sibling's opaque content).
+    // This is the faithful SurfaceView contract: the window background
+    // (== baseline, both the resolved theme fill) lets the surface show
+    // through; real draw content covers it. Byte-inert by construction
+    // for GL apps with no post-GL overlay content (ttt_3 full-screen
+    // libGDX: every walk paint either equals baseline or never happens
+    // — the pump face is unchanged) and for every app with NO GL surface
+    // (the loop never runs). The walk-time in-walk hook is NOT needed:
+    // frame_baseline_ is the walk-position-free witness of "before this
+    // frame's draw content".
+    size_t covered_px = 0;
+    const bool guard_ok = frame_baseline_.size() == framebuffer_.size();
     for (int y = y0; y < y1; ++y) {
         for (int x = x0; x < x1; ++x) {
             const int sx = x - gx;
@@ -6507,6 +6538,14 @@ bool ExecutionEngine::blit_gl_surface_at(uint32_t vid, int gx, int gy, int gw,
             const size_t idx =
                 ((size_t)y * config.screen_width + x) * 4;
             if (idx + 3 >= framebuffer_.size()) continue;
+            if (guard_ok && idx + 3 < frame_baseline_.size()) {
+                const bool covered =
+                    framebuffer_[idx + 0] != frame_baseline_[idx + 0] ||
+                    framebuffer_[idx + 1] != frame_baseline_[idx + 1] ||
+                    framebuffer_[idx + 2] != frame_baseline_[idx + 2] ||
+                    framebuffer_[idx + 3] != frame_baseline_[idx + 3];
+                if (covered) { ++covered_px; continue; }
+            }
             ++blitted_px;
             // PGL pix_t = RGBA8888 (R lowest byte, little-endian order)
             framebuffer_[idx + 0] = (uint8_t)(px & 0xFF);
@@ -6517,7 +6556,10 @@ bool ExecutionEngine::blit_gl_surface_at(uint32_t vid, int gx, int gy, int gw,
     }
     trace_engine_.info("ExecutionEngine", "blit_gl_surface_at",
                        "GL frame presented " + std::to_string(gw) + "x" +
-                           std::to_string(gh) + (first ? " (surface created)" : ""));
+                           std::to_string(gh) + (first ? " (surface created)" : "") +
+                           " wrote=" + std::to_string(blitted_px) +
+                           " covered_by_overlay=" + std::to_string(covered_px) +
+                           " (F-GLZ-2 under-lay law)");
     // S135 §14: GL/Surface renderer family + frame-presented events.
     if (first) {
         auto sc = trace_engine_.make_event(
