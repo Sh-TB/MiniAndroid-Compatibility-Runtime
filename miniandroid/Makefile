@@ -307,7 +307,8 @@ check-source-parity:
 		esac; \
 		if echo "$(CORE_SOURCES)" | tr ' ' '\n' | grep -qx "$$f"; then continue; fi; \
 		if echo "$(DORMANT_SOURCES)" | tr ' ' '\n' | grep -qx "$$f"; then echo "[PARITY-DORMANT] $$f (documented dormant — not linked)"; continue; fi; \
-		echo "[PARITY-FAIL] unclassified source (not in manifest, not exp-main, not dormant): $$f"; status=1; \
+		if echo "$(LITEHTML_OPTIONAL_SOURCES)" | tr ' ' '\n' | grep -qx "$$f"; then echo "[PARITY-OPTIONAL] $$f (MINIANDROID_USE_LITEHTML-gated — built only when the flag is ON, never linked into the portable binary)"; continue; fi; \
+		echo "[PARITY-FAIL] unclassified source (not in manifest, not exp-main, not dormant, not optional-gated): $$f"; status=1; \
 	done; \
 	if [ $$status -eq 0 ]; then echo "[PARITY-OK] $(words $(CORE_SOURCES)) core sources manifest-parity"; fi; \
 	exit $$status
@@ -407,3 +408,47 @@ $(MEGABATCH_OBJECT): $(JSON_DIR)/include/nlohmann/json.hpp
 resource_trace:
 	$(CXX) $(CXXFLAGS) -Wl,--no-keep-memory $(INCLUDES) $(JSON_INCLUDE) -o $(BUILDDIR)/resource_trace tools/resource_trace.cpp $(CORE_OBJECTS) $(THUNK_OBJECT) $(QUICKJS_OBJECTS) $(LIBS) $(FONTS_LIBS)
 
+
+# ── M-16 litehtml optional prototype (#596 §2.5, audit/m16-litehtml) ──────
+# MINIANDROID_USE_LITEHTML: OFF by default — the portable runtime NEVER
+# requires litehtml (or any host browser). When ON: a pinned vendored
+# third_party/litehtml (ebb9d32b28cb, BSD-3 + bundled gumbo Apache-2.0)
+# builds a static set + the render-only adapter into tests/litehtml_probe
+# (the isolated prototype runner: local + external HTML/CSS -> PPM).
+MINIANDROID_USE_LITEHTML ?= OFF
+LITEHTML_OPTIONAL_SOURCES = src/webview/litehtml_adapter.cpp
+LITEHTML_DIR := third_party/litehtml
+LITEHTML_CXXSRCS := $(wildcard $(LITEHTML_DIR)/src/*.cpp)
+LITEHTML_CSRCS := $(wildcard $(LITEHTML_DIR)/src/gumbo/src/*.c)
+LITEHTML_OBJECTS := $(LITEHTML_CXXSRCS:$(LITEHTML_DIR)/src/%.cpp=$(BUILDDIR)/litehtml/%.o) \
+                    $(LITEHTML_CSRCS:$(LITEHTML_DIR)/src/gumbo/src/%.c=$(BUILDDIR)/litehtml/gumbo/%.o)
+
+$(BUILDDIR)/litehtml/%.o: $(LITEHTML_DIR)/src/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) -std=c++17 -O2 -c -I$(LITEHTML_DIR)/include -I$(LITEHTML_DIR)/include/litehtml -I$(LITEHTML_DIR)/src/gumbo/src -o $@ $<
+
+$(BUILDDIR)/litehtml/gumbo/%.o: $(LITEHTML_DIR)/src/gumbo/src/%.c
+	@mkdir -p $(dir $@)
+	gcc -std=c99 -O2 -c -o $@ $<
+
+# The probe: with the flag OFF the GENERIC tests pattern rule (above) builds
+# it from the source alone against the default flags — the binary then only
+# carries the OFF-law stub main. With the flag ON, the explicit rule below
+# adds the adapter + the pinned litehtml set; the OFF-default engine build
+# (build/miniandroid) never sees MINIANDROID_USE_LITEHTML either way.
+ifeq ($(MINIANDROID_USE_LITEHTML),ON)
+$(BUILDDIR)/tests/litehtml_probe: $(TESTDIR)/litehtml_probe.cpp \
+		$(SRCDIR)/webview/litehtml_adapter.cpp $(LITEHTML_OBJECTS) \
+		$(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT)
+	@mkdir -p $(dir $@)
+	$(CXX) -std=c++17 -O2 -g0 -DMINIANDROID_USE_LITEHTML $(INCLUDES) \
+		$(JSON_INCLUDE) -I$(LITEHTML_DIR)/include -o $@ $^ \
+		$(LIBS) $(FONTS_LIBS)
+	@echo "litehtml probe built (MINIANDROID_USE_LITEHTML=ON path)"
+else
+$(BUILDDIR)/tests/litehtml_probe: $(TESTDIR)/litehtml_probe.cpp \
+		$(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT)
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $^ $(LIBS) $(FONTS_LIBS)
+	@echo "litehtml probe built in OFF-default stub mode"
+endif
