@@ -418,6 +418,16 @@ CallResult DialogShadow::dispatch_builder(const CallContext& ctx, DialogWindow& 
     if (m == "setOnItemClickListener" || m == "setOnItemSelectedListener") {
         return CallResult::handled_object(ctx.receiver_id, ctx.class_name);
     }
+    // ── F-NEW-647 (S235-1, #588 Games-g1 lane): the Builder fluent-setter
+    // completeness law — OpenSudoku gui/a.b pc=35 F447-NPE: the
+    // enumerated branches missed setIcon (and any future AOSP setter), so
+    // the chain broke and the receiver read NULL → null-receiver NPE →
+    // onCreate died. AOSP AlertDialog.Builder law: EVERY setter returns
+    // `this` — the catch-all below stores nothing and answers identity,
+    // so a new AOSP setter can never break a chain again.
+    if (m.rfind("set", 0) == 0) {
+        return CallResult::handled_object(ctx.receiver_id, ctx.class_name);
+    }
     if (m == "create") {
         // Allocate the Dialog object bound to this same window.
         uint32_t dlg = heap_ ? heap_->allocate("Landroid/app/AlertDialog;") : 0;
@@ -721,11 +731,74 @@ CallResult ArrayAdapterShadow::dispatch(const CallContext& ctx) {
 
     if (m == "<init>") {
         items_[recv].clear();
-        // ctor variants that take a List/Object[] as last argument
+        // ── F-NEW-648 (S235-1, #588 Games-g1 lane): AOSP ArrayAdapter ctor
+        // seeding law — chess start menu: ArrayAdapter(this, R.layout.
+        // menu_item, R.array.menu_items) passed the DATA argument and the
+        // old ctor loop ignored every argument (the comment below was the
+        // whole body) → getCount() 0 → zero rows. AOSP ArrayAdapter
+        // (Context, int, T[]|List) copies the DATA into mObjects at ctor
+        // time. Two faces: the T[] array (engine-modeled array object —
+        // get_object_array_length + string elements) and the List face
+        // (engine ArrayList backing, the canonical array[i] value fields).
+        // The SAME items are seeded into the engine-side S191 backing
+        // (__ad_objects__ ArrayList) so the LIST row materializer (which
+        // reads the engine store) renders the rows even when THIS shadow
+        // intercepts the ctor.
+        uint32_t data_obj = 0;
+        bool data_is_array = false;
         for (auto& a : ctx.args) {
-            if (a.kind == CallContext::Arg::Kind::OBJECT &&
-                    !a.string_val.empty()) {
-                // string_val is only populated for String objects
+            if (a.kind == CallContext::Arg::Kind::OBJECT && a.object_id != 0)
+                data_obj = a.object_id;
+        }
+        if (heap_ && data_obj != 0) {
+            std::string dcls;
+            heap_->get_object_class(data_obj, dcls);
+            data_is_array = dcls.rfind("[L", 0) == 0;
+            std::vector<std::string> seeded;
+            if (data_is_array) {
+                int32_t alen = 0;
+                if (heap_->get_object_array_length(data_obj, alen)) {
+                    for (int32_t i = 0; i < alen && i < 256; ++i) {
+                        std::string s;
+                        if (heap_->get_object_array_string_element(
+                                data_obj, (size_t)i, s) && !s.empty())
+                            seeded.push_back(s);
+                    }
+                }
+            } else if (dcls.find("List") != std::string::npos ||
+                       dcls.find("list") != std::string::npos) {
+                for (int32_t i = 0; i < 256; ++i) {
+                    CallContext::Arg el;
+                    if (!heap_->get_value_field(
+                            data_obj, "array[" + std::to_string(i) + "]", el))
+                        break;
+                    if (el.kind == CallContext::Arg::Kind::STRING &&
+                        !el.string_val.empty())
+                        seeded.push_back(el.string_val);
+                    else
+                        break;
+                }
+            }
+            if (!seeded.empty()) {
+                items_[recv] = seeded;
+                // engine-side S191 backing (same convention the row
+                // materializer + getItemAtPosition read)
+                uint32_t backing = heap_->allocate("Ljava/util/ArrayList;");
+                for (size_t i = 0; i < seeded.size(); ++i)
+                    heap_->set_string_field(
+                        backing, "array[" + std::to_string(i) + "]",
+                        seeded[i]);
+                heap_->set_object_int_field(
+                    backing, "__array_length__", (int32_t)seeded.size());
+                heap_->set_object_ref_field(recv, "__ad_objects__", backing,
+                                            "Ljava/util/ArrayList;", "",
+                                            false);
+                heap_->set_object_int_field(recv, "__ad_notify__", 1);
+                std::cerr << "[ARRAY-ADAPTER] ctor-seeded ad=o" << recv
+                          << " backing=o" << backing
+                          << " items=" << seeded.size()
+                          << " (data=o" << data_obj << " cls=" << dcls << ")"
+                          << std::endl;
             }
         }
         return CallResult::handled_void();
@@ -772,7 +845,14 @@ CallResult ArrayAdapterShadow::dispatch(const CallContext& ctx) {
         return CallResult::handled_void();
     }
     if (m == "getView" || m == "getDropDownView") {
-        return CallResult::handled_null();  // dialog rows render from items_ directly
+        // F-NEW-650 (S235-1, #588 Games-g1 lane): pass-through — the
+        // framework-ArrayAdapter face renders through the F-NEW-602 bridge
+        // law (backing store → TextView row). The old handled_null
+        // short-circuited the bridge inside bridge_to_api's shadow
+        // pre-pass, so every adapter-backed list rendered zero rows (the
+        // chess-menu face). Dialog rows keep rendering from items_for()
+        // (they never call getView).
+        return CallResult::not_handled();
     }
     return CallResult::not_handled();
 }

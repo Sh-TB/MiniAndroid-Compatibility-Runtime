@@ -2255,6 +2255,11 @@ public:
     // ITEM_VIEW_TYPE_IGNORE rows never recycle; out-of-range types are a
     // counted violation, never silent).
     int materialize_adapter_rows_for(uint32_t adapter_id);
+    // F-NEW-650 (S235-1, #588 Games-g1 lane): the android:entries ListView
+    // adapter drain — synthesizes the S191-convention ArrayAdapter for
+    // nodes the inflater recorded entries on, binds it, and runs the ONE
+    // row materializer (the AOSP ListView(Context, AttributeSet) ctor law).
+    int materialize_entries_listviews(uint32_t root_view_id);
     // F-S231-A: per-ListView scrap bins + row→type map from the last bind.
   private:
     framework::AdapterScrapBin adapter_scrap_;

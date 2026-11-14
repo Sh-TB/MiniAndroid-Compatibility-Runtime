@@ -1867,6 +1867,13 @@ public:
         // reads the same identity.
         uint32_t adapter_id = 0;                   // ListAdapter / SpinnerAdapter
         std::string adapter_class;
+        // ── F-NEW-650 (S235-1, #588 Games-g1 lane): AOSP ListView(Context,
+        // AttributeSet) android:entries ctor law — the widget builds its
+        // adapter INSIDE the constructor (no app setAdapter exists). The
+        // inflater records the resolved array here; the engine's attach
+        // wave synthesizes the S191-convention ArrayAdapter and runs the
+        // ONE row materializer.
+        std::vector<std::string> entries_items;
         // ── F-S231-B (#585 §5): GridView column contract — android:
         // numColumns / verticalSpacing / horizontalSpacing / columnWidth /
         // stretchMode. AOSP GridView.java laws: numColumns=-1 (default) =

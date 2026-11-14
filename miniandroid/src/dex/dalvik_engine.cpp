@@ -21182,7 +21182,69 @@ bool DalvikExecutionEngine::dispatch_attached_subtree_from(uint32_t root_view_id
             for (uint32_t c : n2->children) worklist.push_back(c);
         }
     }
+    // ── F-NEW-650 (S235-1, #588 Games-g1 lane): the android:entries
+    // ListView drain — the inflater records the resolved array on the
+    // node; the AOSP ListView(Context, AttributeSet) ctor built its
+    // adapter INSIDE the widget (no app setAdapter), so the attach wave
+    // synthesizes the S191-convention adapter and runs the ONE row
+    // materializer here.
+    materialize_entries_listviews(root_view_id);
     return any_ok;
+}
+
+// F-NEW-650 (S235-1): the android:entries ListView adapter drain. Walks the
+// attached subtree; every ListView-family node carrying resolved entries
+// and no adapter gets a synthesized engine ArrayAdapter (the S191
+// __ad_objects__ convention) bound through the SAME adapter identity the
+// setAdapter/getCount/item-click laws read, then the RecycleBin row
+// materializer renders the rows.
+int DalvikExecutionEngine::materialize_entries_listviews(uint32_t root_view_id) {
+    if (shadow_registry_ == nullptr || root_view_id == 0) return 0;
+    auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+    if (vs == nullptr) return 0;
+    int total = 0;
+    std::vector<uint32_t> work{root_view_id};
+    std::unordered_set<uint32_t> visited;
+    size_t guard = 0;
+    while (!work.empty() && guard++ < 256) {
+        uint32_t id = work.back();
+        work.pop_back();
+        if (id == 0 || visited.count(id)) continue;
+        visited.insert(id);
+        const auto* n = vs->find_node(id);
+        if (n == nullptr) continue;
+        for (uint32_t c : n->children) work.push_back(c);
+        if (n->entries_items.empty() || n->adapter_id != 0) continue;
+        if (n->class_desc.find("ListView") == std::string::npos &&
+            n->class_desc.find("AbsListView") == std::string::npos &&
+            n->class_desc.find("GridView") == std::string::npos)
+            continue;
+        const uint32_t frame =
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id;
+        uint32_t ad = heap_.allocate("Landroid/widget/ArrayAdapter;", pc_, frame);
+        uint32_t backing = heap_.allocate("Ljava/util/ArrayList;", pc_, frame);
+        for (size_t i = 0; i < n->entries_items.size() && i < 64; ++i)
+            heap_.set_object_field(
+                backing, "array[" + std::to_string(i) + "]",
+                DalvikValue::make_string(n->entries_items[i], 0));
+        heap_.set_object_field(
+            backing, "__array_length__",
+            DalvikValue::make_int((int32_t)n->entries_items.size()));
+        heap_.set_object_field(
+            ad, "__ad_objects__",
+            DalvikValue::make_object(backing, "Ljava/util/ArrayList;"));
+        heap_.set_object_field(ad, "__ad_notify__", DalvikValue::make_int(1));
+        if (auto* mn = vs->get_or_create_node(id, n->class_desc)) {
+            mn->adapter_id = ad;
+            mn->adapter_class = "Landroid/widget/ArrayAdapter;";
+        }
+        const int rows = materialize_adapter_rows_for(ad);
+        total += rows;
+        std::cerr << "[F-NEW-650] ListView entries lv=o" << id
+                  << " items=" << n->entries_items.size()
+                  << " rows=" << rows << std::endl;
+    }
+    return total;
 }
 
 bool DalvikExecutionEngine::dispatch_click_by_class(const std::string& class_substring) {
@@ -30938,7 +31000,87 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
             // static_key so identity (==) comparisons hold.
             const int ordinal = framework_enum_ordinal(
                 field_res.class_descriptor, field_res.field_name);
-            if (ordinal >= 0) {
+            if (field_res.class_descriptor ==
+                           "Landroid/content/Context;" &&
+                       field_res.field_name.size() > 8 &&
+                       field_res.field_name.rfind("_SERVICE") ==
+                           field_res.field_name.size() - 8) {
+                // ── F-NEW-639 (S235-1, #588 Wave-5 lane): AOSP Context
+                // .*_SERVICE string-constant law — the lane's F-NEW-637 face
+                // (conversations POWER_SERVICE → silent null service): the
+                // engine had NO framework static STRING table, so every
+                // Context.POWER_SERVICE / TELEPHONY_SERVICE sget-object
+                // answered null → getSystemService(null) → null manager →
+                // the app dies at the cast/NPE boundary. AOSP Context.java:
+                // every service constant is a public static final String
+                // whose VALUE is the service-registry key ("power",
+                // "phone", ...). Served from the table below (the AOSP
+                // Context.java string truth), cached per static_key like
+                // the Locale law.
+                static const miniandroid::dalvik::KvPair t_ctx_services[] = {
+                    {"POWER_SERVICE", "power"},
+                    {"WINDOW_SERVICE", "window"},
+                    {"LAYOUT_INFLATER_SERVICE", "layout_inflater"},
+                    {"ACTIVITY_SERVICE", "activity"},
+                    {"INPUT_METHOD_SERVICE", "input_method"},
+                    {"ALARM_SERVICE", "alarm"},
+                    {"KEYGUARD_SERVICE", "keyguard"},
+                    {"LOCATION_SERVICE", "location"},
+                    {"SEARCH_SERVICE", "search"},
+                    {"NOTIFICATION_SERVICE", "notification"},
+                    {"ACCESSIBILITY_SERVICE", "accessibility"},
+                    {"DEVICE_POLICY_SERVICE", "device_policy"},
+                    {"UI_MODE_SERVICE", "uimode"},
+                    {"DOWNLOAD_SERVICE", "download"},
+                    {"STORAGE_SERVICE", "storage"},
+                    {"AUDIO_SERVICE", "audio"},
+                    {"VIBRATOR_SERVICE", "vibrator"},
+                    {"CONNECTIVITY_SERVICE", "connectivity"},
+                    {"WIFI_SERVICE", "wifi"},
+                    {"BATTERY_SERVICE", "battery"},
+                    {"CLIPBOARD_SERVICE", "clipboard"},
+                    {"INPUT_SERVICE", "input"},
+                    {"DISPLAY_SERVICE", "display"},
+                    {"SENSOR_SERVICE", "sensor"},
+                    {"BLUETOOTH_SERVICE", "bluetooth"},
+                    {"NSD_SERVICE", "nsd"},
+                    {"MEDIA_ROUTER_SERVICE", "media_router"},
+                    {"TELEPHONY_SERVICE", "phone"},
+                    {"TELEPHONY_SUBSCRIPTION_SERVICE", "isub"},
+                    {"CARRIER_CONFIG_SERVICE", "carrier_config"},
+                    {"TELECOM_SERVICE", "telecom"},
+                    {"APPWIDGET_SERVICE", "appwidget"},
+                    {"WALLPAPER_SERVICE", "wallpaper"},
+                    {"RESTRICTIONS_SERVICE", "restrictions"},
+                    {"PRINT_SERVICE", "print"},
+                    {"ACCOUNT_SERVICE", "account"},
+                    {"JOB_SCHEDULER_SERVICE", "jobscheduler"},
+                    {"MEDIA_SESSION_SERVICE", "media_session"},
+                    {"DROPBOX_SERVICE", "dropbox"},
+                    {"NETWORK_STATS_SERVICE", "networkstats"},
+                    {"USB_SERVICE", "usb"},
+                    {"VIBRATOR_MANAGER_SERVICE", "vibrator_manager"},
+                    {"APP_OPS_SERVICE", "appops"},
+                    {"CAMERA_SERVICE", "camera"},
+                    {"USER_SERVICE", "user"},
+                };
+                if (const char* svc = kv_table_find(
+                        t_ctx_services,
+                        sizeof(t_ctx_services) /
+                            sizeof(t_ctx_services[0]),
+                        field_res.field_name)) {
+                    result_value = DalvikValue::make_string(svc, pc);
+                    static_field_storage_[static_key] = result_value;
+                    static thread_local uint64_t f639_const_n = 0;
+                    if (f639_const_n++ < 8)
+                        std::cerr << "[F-NEW-639] Context."
+                                  << field_res.field_name << " -> \"" << svc
+                                  << "\" caller=" << current_class_ << "."
+                                  << current_method_ << std::endl;
+                } else {
+                    static_field_storage_[static_key] = result_value;
+                }
+            } else if (ordinal >= 0) {
                 uint32_t enum_id = heap_.allocate(field_res.class_descriptor, pc, 0);
                 heap_.set_object_field(enum_id, "ordinal",
                                        DalvikValue::make_int(ordinal));
@@ -36711,6 +36853,9 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     // getSystemService(JobScheduler::class.java) → NULL → the ctor NPE'd
     // at pc=0x0 and the whole WorkManager bootstrap died.
     {"Landroid/app/JobScheduler;", "jobscheduler"},
+    // F-NEW-639 (S235-1): the AOSP TELEPHONY_SERVICE spelling ("phone") —
+    // getSystemService(TelephonyManager.class) resolves through it.
+    {"Landroid/telephony/TelephonyManager;", "phone"},
 };
             const char* cn = kv_table_find(t_svc_cls339,
                     sizeof(t_svc_cls339) / sizeof(t_svc_cls339[0]),
@@ -36738,6 +36883,8 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
     {"display", "Landroid/hardware/display/DisplayManager;"},
     {"accessibility", "Landroid/view/accessibility/AccessibilityManager;"},
     {"autofill", "Landroid/view/autofill/AutofillManager;"},
+    // F-NEW-639 (S235-1): the AOSP TELEPHONY_SERVICE spelling ("phone").
+    {"phone", "Landroid/telephony/TelephonyManager;"},
     // S83: input service (see the class-table note above).
     {"input", "Landroid/hardware/input/InputManager;"},
     // R-NEW-540 (CONT-36): jobscheduler (see the class-table note above).
@@ -70815,6 +70962,25 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     // P0.10 — PackageManager.getPackageInfo → PackageInfo
     // EXP-093/F011: Use manifest-derived package identity instead of hardcoded
+    // ── F-NEW-641 (S235-1, #588 Wave-5 lane): AOSP PackageManager
+    // .getResourcesForApplication LAW — OIFM MimeTypeParser.<init> died on
+    // a null Resources (the engine had NO handler → typed-default null →
+    // NPE at the Resources use). AOSP contract: for an INSTALLED package
+    // the answer is never null — the app's own Resources object. This
+    // runtime serves ONE Resources identity per package (the canonical
+    // singleton the resource laws already share).
+    if (method == "getResourcesForApplication" &&
+        class_name.find("PackageManager") != std::string::npos) {
+        result = get_or_create_singleton("Landroid/content/res/Resources;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        static thread_local uint64_t f641_res_n = 0;
+        if (f641_res_n++ < 8)
+            std::cerr << "[F-NEW-641] getResourcesForApplication -> Resources"
+                      << " o" << result.object_id
+                      << " (never-null installed-package law)"
+                      << std::endl;
+        return true;
+    }
     // Telegram values. This is a GENERIC fix — affects ALL APKs.
     // ────────────────────────────────────────────────────────────────────────
     if (method == "getPackageInfo" &&
@@ -71004,6 +71170,18 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         package_name.string_val = package_name_.empty() ? "unknown.package" : package_name_;
         package_name.ref_id = 0;
         heap_.set_object_field(obj_id, "packageName", package_name);
+        // ── F-NEW-646 (S235-1, #588 Wave-5 lane): AOSP PackageInfo
+        // .applicationInfo law — OIFM VersionUtils.getApplicationName pc=17
+        // read pi.applicationInfo.labelRes off a PackageInfo that never
+        // carried the field → NPE. AOSP PackageManager.getPackageInfo
+        // populates applicationInfo for the running package (the SAME
+        // install-time identity the Context.getApplicationInfo law serves).
+        {
+            DalvikValue ai =
+                get_or_create_singleton("Landroid/content/pm/ApplicationInfo;");
+            if (ai.type == DalvikType::OBJECT_REF && ai.object_id != 0)
+                heap_.set_object_field(obj_id, "applicationInfo", ai);
+        }
         // GATE A (issue #370) — GET_PROVIDERS (flags bit 0x8) law (AOSP
         // PackageManager.getPackageInfo: with GET_PROVIDERS the returned
         // PackageInfo.providers array lists every manifest <provider> as a
@@ -71253,6 +71431,19 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 }
             }
         }
+        // ── F-NEW-650 (S235-1, #588 Games-g1 lane): framework-ArrayAdapter
+        // face. The getView probe above drives the app DEX chain (try_
+        // recursive_invoke does NOT consult shadows); a FRAMEWORK
+        // ArrayAdapter (chess start menu: ArrayAdapter(this, R.layout.
+        // menu_item, R.string.array) — no app subclass) has no DEX getView
+        // → zero rows. The RecycleBin materializer (S191 backing fast path
+        // for the count + the bridge-direct getView fallback for the rows)
+        // already renders that face — hand the rebuild to it, exactly as
+        // the F-LISTACTIVITY drain does. Zero materialized rows covers both
+        // the empty-adapter and the framework-adapter faces (the
+        // materializer answers 0 honestly for a genuinely empty adapter).
+        if (materialized == 0)
+            materialized = materialize_adapter_rows_for(ad_id);
         std::cerr << "[C102-ADAPTER] setAdapter count=" << count
                   << " materialized=" << materialized << std::endl;
         status = ApiCallTrace::Status::IMPLEMENTED;
@@ -71294,6 +71485,197 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_int(0);
         status = ApiCallTrace::Status::IMPLEMENTED;
         return true;
+    }
+    // ── F-NEW-649 (S235-1, #588 Games-g1 lane): AOSP AdapterView position
+    // accessor law — chess start$1.onItemClick pc=4 null-recv NPE: the app
+    // reads parent.getItemAtPosition(position) and the engine had NO arm
+    // (typed-default null). AOSP AdapterView contracts, served from the
+    // SAME adapter identity the setAdapter/getCount laws bind on the node:
+    //   getAdapter() → the bound adapter (null when none)
+    //   getItemAtPosition(pos) → the item data — engine S191 backing store
+    //     array[pos] (ArrayAdapter.getStateDrawable law convention), else
+    //     the materialized entries row text, else null
+    //   getItemIdAtPosition(pos) → pos (AOSP ArrayAdapter stable-id default)
+    if ((method == "getAdapter" || method == "getItemAtPosition" ||
+         method == "getItemIdAtPosition") &&
+        args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 &&
+        (class_name.find("ListView") != std::string::npos ||
+         class_name.find("GridView") != std::string::npos ||
+         class_name.find("AbsListView") != std::string::npos ||
+         class_name.find("AdapterView") != std::string::npos ||
+         class_name.find("Spinner") != std::string::npos)) {
+        uint32_t ad_id = 0;
+        std::string ad_cls;
+        if (shadow_registry_) {
+            auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+            if (vs) {
+                auto* n = vs->find_node(args[0].object_id);
+                if (n && n->adapter_id != 0) {
+                    ad_id = n->adapter_id;
+                    ad_cls = n->adapter_class;
+                }
+            }
+        }
+        if (method == "getAdapter") {
+            if (ad_id != 0) {
+                result = DalvikValue::make_object(ad_id, ad_cls);
+            } else {
+                result = DalvikValue::make_null();
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        int32_t pos = args.size() >= 2 && args[1].type == DalvikType::INT32
+                          ? args[1].int_val
+                          : 0;
+        if (method == "getItemIdAtPosition") {
+            result = DalvikValue::make_int(
+                pos >= 0 ? pos : 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // getItemAtPosition: S191 backing store first (the engine-side
+        // ArrayAdapter convention), then the entries-row text face.
+        if (ad_id != 0) {
+            auto bf = heap_.get_object_field(ad_id, "__ad_objects__");
+            if (bf.has_value() && bf->type == DalvikType::OBJECT_REF) {
+                auto el = heap_.get_object_field(
+                    bf->object_id, "array[" + std::to_string(pos) + "]");
+                if (el.has_value()) {
+                    result = *el;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    std::cerr << "[F-NEW-649] getItemAtPosition pos=" << pos
+                              << " (adapter backing) caller="
+                              << current_class_ << "." << current_method_
+                              << std::endl;
+                    return true;
+                }
+            }
+        }
+        if (shadow_registry_) {
+            auto* vs = shadow_registry_->find_as<framework::ViewShadow>();
+            auto* n = vs ? vs->find_node(args[0].object_id) : nullptr;
+            if (n && pos >= 0 &&
+                pos < static_cast<int32_t>(n->children.size())) {
+                const auto* row = vs->find_node(n->children[pos]);
+                if (row && !row->text.empty()) {
+                    result = DalvikValue::make_string(row->text, pc_);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    std::cerr << "[F-NEW-649] getItemAtPosition pos=" << pos
+                              << " (entries row text) caller="
+                              << current_class_ << "." << current_method_
+                              << std::endl;
+                    return true;
+                }
+            }
+        }
+        result = DalvikValue::make_null();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ── F-NEW-640 (S235-1, #588 Wave-5 lane): AOSP ActionBar / Tab object
+    // law — vanilla CompatHoneycomb.addActionBarTabs pc=9 NPE: the engine
+    // had NO getActionBar handler (Activity side serves the bar object in
+    // the shadow law) and no ActionBar contract arms. AOSP ActionBar.java:
+    //   newTab() → fresh Tab; Tab.setText/setTabListener → the SAME tab
+    //   addTab(Tab[, selected]) → mTabs.add, count grows
+    //   selectTab(Tab) → mSelectedTab = tab
+    //   getSelectedTab() → the selected tab; getTabCount() → mTabs.size()
+    //   getTabAt(index) → the tab (null when out of range)
+    // State lives on the bar object (__ab_*__ fields) — one heap slot, no
+    // parallel store (the F-NEW-510 lesson).
+    if (class_name == "Landroid/app/ActionBar;" ||
+        class_name == "Landroid/app/ActionBar$Tab;") {
+        const bool is_tab = class_name == "Landroid/app/ActionBar$Tab;";
+        if (method == "newTab" && !is_tab) {
+            uint32_t tab = heap_.allocate("Landroid/app/ActionBar$Tab;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            result = DalvikValue::make_object(tab, "Landroid/app/ActionBar$Tab;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (is_tab &&
+            (method == "setText" || method == "setTabListener" ||
+             method == "setIcon" || method == "setCustomView")) {
+            // Fluent Tab setters return the SAME tab (AOSP law). The text
+            // half stores for getText; listener/icon/custom-view are
+            // recorded as opaque fields (the corpus never reads them back
+            // through this runtime yet — honest scope).
+            if (method == "setText" && args.size() >= 2) {
+                if (args[1].type == DalvikType::STRING_REF)
+                    heap_.set_object_field(args[0].object_id, "__tab_text__",
+                                           args[1]);
+            }
+            result = DalvikValue::make_object(args[0].object_id,
+                                              class_name);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (is_tab && method == "getText" && args.size() >= 1) {
+            auto tv = heap_.get_object_field(args[0].object_id, "__tab_text__");
+            result = (tv.has_value() && tv->type == DalvikType::STRING_REF)
+                         ? *tv
+                         : DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (!is_tab && args.size() >= 1 &&
+            args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+            uint32_t bar = args[0].object_id;
+            if (method == "addTab") {
+                int32_t n = 0;
+                auto nf = heap_.get_object_field(bar, "__ab_tab_count__");
+                if (nf.has_value() && nf->type == DalvikType::INT32)
+                    n = nf->int_val;
+                bool select = args.size() >= 3 && args[2].type == DalvikType::INT32
+                                  ? args[2].int_val != 0
+                                  : false;
+                heap_.set_object_field(
+                    bar, "__ab_tab_" + std::to_string(n) + "__", args[1]);
+                heap_.set_object_field(bar, "__ab_tab_count__",
+                                       DalvikValue::make_int(n + 1));
+                if (select || nf.has_value() == false)
+                    heap_.set_object_field(bar, "__ab_sel_tab__", args[1]);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "selectTab") {
+                heap_.set_object_field(bar, "__ab_sel_tab__", args[1]);
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getSelectedTab") {
+                auto sf = heap_.get_object_field(bar, "__ab_sel_tab__");
+                result = (sf.has_value() && sf->type == DalvikType::OBJECT_REF)
+                             ? *sf
+                             : DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getTabCount") {
+                int32_t n = 0;
+                auto nf = heap_.get_object_field(bar, "__ab_tab_count__");
+                if (nf.has_value() && nf->type == DalvikType::INT32)
+                    n = nf->int_val;
+                result = DalvikValue::make_int(n);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (method == "getTabAt" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                auto tf = heap_.get_object_field(
+                    bar, "__ab_tab_" + std::to_string(args[1].int_val) + "__");
+                result = (tf.has_value() && tf->type == DalvikType::OBJECT_REF)
+                             ? *tf
+                             : DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -71383,8 +71765,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 args[2].object_id != 0) {
                 std::string a3cls;
                 heap_.get_object_class(args[2].object_id, a3cls);
+                // F-NEW-648 (S235-1, #588 Games-g1 lane): the T[] array
+                // face — chess ArrayAdapter(this, layout,
+                // getStringArray(R.array.menu_items)) passes a "[L…"
+                // descriptor array; the old gate accepted only List-typed
+                // objects → the backing store stayed empty → the menu
+                // rendered zero rows. Both faces store under the SAME
+                // canonical array[i]/__array_length__ convention.
                 if (a3cls.find("List") != std::string::npos ||
-                    a3cls.find("list") != std::string::npos) {
+                    a3cls.find("list") != std::string::npos ||
+                    a3cls.rfind("[L", 0) == 0 ||
+                    a3cls.rfind("[Ljava", 0) == 0) {
                     int32_t n = s191_ad_len(args[2].object_id);
                     for (int32_t i = 0; i < n; ++i) {
                         auto el = heap_.get_object_field(
@@ -76142,6 +76533,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // class-table mirror above carries the full law note).
     {"wifi", "Landroid/net/wifi/WifiManager;"},
     {"telephony", "Landroid/telephony/TelephonyManager;"},
+    // F-NEW-639 (S235-1, #588 Wave-5 lane): the AOSP Context.TELEPHONY_SERVICE
+    // value is "phone" (vanilla PlaybackService.onCreate pc=232:
+    // EXP093-SVC "phone" → null → cast death). Same manager as the
+    // "telephony" spelling above — both names resolve to one law.
+    {"phone", "Landroid/telephony/TelephonyManager;"},
     {"download", "Landroid/app/DownloadManager;"},
     {"battery", "Landroid/os/BatteryManager;"},
     {"usb", "Landroid/hardware/usb/UsbManager;"},
@@ -91091,7 +91487,16 @@ measure_cm_done:;
             std::string key = args[1].type == DalvikType::STRING_REF ? args[1].string_val : "";
             if (bundle_id && heap_.has_object(bundle_id) && !key.empty()) {
                 auto val = heap_.get_object_field(bundle_id, "bundle:" + key);
+                // F-NEW-642 (S235-1, #588 Wave-5 lane): INT32 face —
+                // putBoolean through the SHADOW layer (Intent.getExtras
+                // Bundle build) stores boxed Z as an INT32 0/1 field; the
+                // AOSP answer is the same truth either way.
                 if (val.has_value() && val->type == DalvikType::BOOLEAN) { result = *val; status = ApiCallTrace::Status::IMPLEMENTED; return true; }
+                if (val.has_value() && val->type == DalvikType::INT32) {
+                    result = DalvikValue::make_bool(val->int_val != 0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
             }
             bool def = (args.size() >= 3 && args[2].type == DalvikType::BOOLEAN) ? args[2].int_val != 0 : false;
             result = DalvikValue::make_bool(def);
@@ -92115,6 +92520,60 @@ measure_cm_done:;
                                 pos += rep.size();
                             }
                         }
+                    } else if (pat.find("\\p{Han}") != std::string::npos ||
+                               pat.find("\\p{IsHan}") != std::string::npos) {
+                        // ── F-NEW-645 (S235-1, #588 Wave-5 lane): AOSP \p{Han}
+                        // CJK Unicode-class law — ShatteredPD
+                        // RenderedTextMultiline.text rewrites
+                        //   "\\p{Han}" spacing on every label string;
+                        // ECMAScript std::regex has NO \p{...} property
+                        // classes → regex_error → typed-default null →
+                        // String.length NPE. OpenJDK law: the class matches
+                        // the Han script — drop (or first-drop) those
+                        // codepoints, UTF-8 aware. Ranges: the Unicode Han
+                        // script set this runtime models (CJK U+4E00–9FFF,
+                        // Ext-A U+3400–4DBF, Compat U+F900–FAFF,
+                        // Ext-B U+20000–2A6DF).
+                        auto is_han = [](uint32_t cp) {
+                            return (cp >= 0x4E00 && cp <= 0x9FFF) ||
+                                   (cp >= 0x3400 && cp <= 0x4DBF) ||
+                                   (cp >= 0xF900 && cp <= 0xFAFF) ||
+                                   (cp >= 0x20000 && cp <= 0x2A6DF);
+                        };
+                        out.clear();
+                        out.reserve(hs.size());
+                        bool first_dropped = false;
+                        for (size_t i = 0; i < hs.size();) {
+                            unsigned char c0 = (unsigned char)hs[i];
+                            size_t len = 1;
+                            uint32_t cp = c0;
+                            if ((c0 & 0xE0) == 0xC0 && i + 1 < hs.size()) {
+                                len = 2;
+                                cp = ((c0 & 0x1F) << 6) |
+                                     (hs[i + 1] & 0x3F);
+                            } else if ((c0 & 0xF0) == 0xE0 &&
+                                       i + 2 < hs.size()) {
+                                len = 3;
+                                cp = ((c0 & 0x0F) << 12) |
+                                     ((hs[i + 1] & 0x3F) << 6) |
+                                     (hs[i + 2] & 0x3F);
+                            } else if ((c0 & 0xF8) == 0xF0 && i + 3 < hs.size()) {
+                                len = 4;
+                                cp = ((c0 & 0x07) << 18) |
+                                     ((hs[i + 1] & 0x3F) << 12) |
+                                     ((hs[i + 2] & 0x3F) << 6) |
+                                     (hs[i + 3] & 0x3F);
+                            }
+                            if (is_han(cp) &&
+                                (method == "replaceAll" ||
+                                 !first_dropped)) {
+                                first_dropped = true;
+                                i += len;  // drop the Han codepoint
+                                continue;
+                            }
+                            out.append(hs, i, len);
+                            i += len;
+                        }
                     } else {
                         std::regex re(pat, std::regex::ECMAScript);
                         const auto flags =
@@ -92143,6 +92602,237 @@ measure_cm_done:;
                 std::cerr << "[F-NEW-588] regex_error (" << e.what()
                           << ") — falling through to stub" << std::endl;
             }
+        }
+    }
+    // ── F-NEW-645 (S235-1, #588 Wave-5 lane): AOSP java.util.ResourceBundle
+    // law — ShatteredPD Messages.setup pc=28 NPE: getBundle answered the
+    // typed-default null → the app died on the first getString. AOSP
+    // ListResourceBundle-over-.properties contract: getBundle(baseName[,
+    // locale]) locates "<base with / separators>.properties" on the
+    // CLASSPATH (in an APK: the entry at the package path or under
+    // assets/), parses the ISO-8859-1 properties grammar (key[=:]
+    // value, # ! comments, \uXXXX escapes), and getString/getObject
+    // return the stored values. The bundle object stores each key as an
+    // "rb:<key>" field; the locale-suffixed candidate (AOSP
+    // toBundleName) is tried first when a locale string is passed.
+    if (class_name == "Ljava/util/ResourceBundle;") {
+        if (method == "getBundle") {
+            std::string base, lang;
+            for (const auto& a : args) {
+                if (a.type == DalvikType::STRING_REF) {
+                    if (base.empty()) base = a.string_val;
+                    else if (lang.empty()) lang = a.string_val;
+                }
+            }
+            auto rb_throw = [&](const std::string& why) {
+                std::cerr << "[F-NEW-645] getBundle base=\"" << base
+                          << "\" lang=\"" << lang << "\" MISS (" << why
+                          << ") → MissingResourceException (AOSP contract)"
+                          << std::endl;
+                throw_deferred("Ljava/util/MissingResourceException;",
+                               "Can't find bundle for base name " + base,
+                               "F-NEW-645");
+                result = DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            };
+            if (base.empty()) return rb_throw("no base name");
+            auto parse_properties = [&](const std::string& body,
+                                        std::map<std::string, std::string>&
+                                            out) {
+                size_t i = 0;
+                auto unescape = [](const std::string& s) {
+                    std::string o;
+                    o.reserve(s.size());
+                    for (size_t k = 0; k < s.size(); ++k) {
+                        char ch = s[k];
+                        if (ch != '\\') {
+                            o.push_back(ch);
+                            continue;
+                        }
+                        if (++k >= s.size()) break;
+                        char e = s[k];
+                        switch (e) {
+                            case 'n': o.push_back('\n'); break;
+                            case 't': o.push_back('\t'); break;
+                            case 'r': o.push_back('\r'); break;
+                            case 'f': o.push_back('\f'); break;
+                            case 'u': {
+                                if (k + 4 < s.size()) {
+                                    auto hexv = [](char h) -> int {
+                                        if (h >= '0' && h <= '9') return h - '0';
+                                        if (h >= 'a' && h <= 'f') return h - 'a' + 10;
+                                        if (h >= 'A' && h <= 'F') return h - 'A' + 10;
+                                        return -1;
+                                    };
+                                    int v = 0;
+                                    bool ok = true;
+                                    for (int q = 1; q <= 4; ++q) {
+                                        int d = hexv(s[k + q]);
+                                        if (d < 0) { ok = false; break; }
+                                        v = v * 16 + d;
+                                    }
+                                    if (ok) {
+                                        // ISO-8859-1 contract: encode
+                                        // UTF-8 for > 0x7F so downstream
+                                        // renders stay consistent.
+                                        uint32_t cp = (uint32_t)v;
+                                        if (cp < 0x80) o.push_back((char)cp);
+                                        else if (cp < 0x800) {
+                                            o.push_back(
+                                                (char)(0xC0 | (cp >> 6)));
+                                            o.push_back(
+                                                (char)(0x80 | (cp & 0x3F)));
+                                        } else {
+                                            o.push_back(
+                                                (char)(0xE0 | (cp >> 12)));
+                                            o.push_back((char)(
+                                                0x80 | ((cp >> 6) & 0x3F)));
+                                            o.push_back(
+                                                (char)(0x80 | (cp & 0x3F)));
+                                        }
+                                        k += 4;
+                                    } else {
+                                        o.push_back('u');
+                                    }
+                                } else {
+                                    o.push_back('u');
+                                }
+                                break;
+                            }
+                            default: o.push_back(e); break;
+                        }
+                    }
+                    return o;
+                };
+                while (i < body.size()) {
+                    size_t eol = body.find('\n', i);
+                    if (eol == std::string::npos) eol = body.size();
+                    std::string line = body.substr(i, eol - i);
+                    i = eol + 1;
+                    if (!line.empty() && line.back() == '\r') line.pop_back();
+                    // leading whitespace skip
+                    size_t b = line.find_first_not_of(" \t\f");
+                    if (b == std::string::npos) continue;
+                    if (line[b] == '#' || line[b] == '!') continue;
+                    // natural-line continuation: trailing odd backslashes
+                    while (true) {
+                        int bs = 0;
+                        for (int q = (int)line.size() - 1;
+                             q >= 0 && line[q] == '\\'; --q)
+                            ++bs;
+                        if ((bs % 2) == 1 && i < body.size()) {
+                            size_t eol2 = body.find('\n', i);
+                            if (eol2 == std::string::npos)
+                                eol2 = body.size();
+                            std::string nxt = body.substr(i, eol2 - i);
+                            i = eol2 + 1;
+                            if (!nxt.empty() && nxt.back() == '\r')
+                                nxt.pop_back();
+                            size_t nb = nxt.find_first_not_of(" \t\f");
+                            line += (nb == std::string::npos)
+                                        ? ""
+                                        : nxt.substr(nb);
+                            if (nb == std::string::npos) break;
+                            continue;
+                        }
+                        break;
+                    }
+                    size_t sep = line.find_first_of("=:\t ");
+                    if (sep == std::string::npos) continue;
+                    // skip run of the separator char (=: forms) then ws
+                    size_t vb = sep;
+                    if (line[sep] == '=' || line[sep] == ':') ++vb;
+                    else {
+                        while (vb < line.size() &&
+                               (line[vb] == ' ' || line[vb] == '\t'))
+                            ++vb;
+                        // "key value" form: the value starts after ws
+                    }
+                    while (vb < line.size() &&
+                           (line[vb] == ' ' || line[vb] == '\t'))
+                        ++vb;
+                    std::string key = unescape(line.substr(b, sep - b));
+                    std::string val = unescape(line.substr(vb));
+                    if (!key.empty()) out[key] = val;
+                }
+            };
+            std::string slash;
+            for (char c : base) slash.push_back(c == '.' ? '/' : c);
+            const std::string props = slash + ".properties";
+            std::string lang_props;
+            if (!lang.empty()) {
+                for (char c : lang) lang_props.push_back(c == '.' ? '/' : c);
+                lang_props = slash + "_" + lang_props + ".properties";
+            }
+            auto& rt = resources::ResourceRuntime::instance();
+            std::string body;
+            std::string used;
+            const std::string candidates[] = {
+                lang_props.empty() ? std::string() : lang_props,
+                "assets/" + (lang_props.empty() ? std::string()
+                                                : lang_props),
+                props,
+                "assets/" + props,
+            };
+            for (const auto& cand : candidates) {
+                if (cand.empty()) continue;
+                std::vector<unsigned char> bytes;
+                try {
+                    bytes = rt.apk().extract_entry(apk_path_, cand);
+                } catch (const std::exception& ex) {
+                    (void)ex;  // missing/corrupt entry → next candidate
+                }
+                if (!bytes.empty()) {
+                    body.assign(bytes.begin(), bytes.end());
+                    used = cand;
+                    break;
+                }
+            }
+            if (body.empty()) return rb_throw("no entry " + props +
+                                              " in " + apk_path_);
+            std::map<std::string, std::string> kv;
+            parse_properties(body, kv);
+            uint32_t rb = heap_.allocate("Ljava/util/ResourceBundle;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            for (const auto& [k, v] : kv)
+                heap_.set_object_field(rb, "rb:" + k,
+                                       DalvikValue::make_string(v, 0));
+            heap_.set_object_field(rb, "__rb_size__",
+                                   DalvikValue::make_int(
+                                       (int32_t)kv.size()));
+            heap_.set_object_field(rb, "__rb_base__",
+                                   DalvikValue::make_string(base, 0));
+            result = DalvikValue::make_object(rb, "Ljava/util/ResourceBundle;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            std::cerr << "[F-NEW-645] ResourceBundle.getBundle(base=\""
+                      << base << "\", lang=\"" << lang << "\") -> o" << rb
+                      << " real keys=" << kv.size() << " (entry " << used
+                      << ")" << std::endl;
+            return true;
+        }
+        if ((method == "getString" || method == "getObject") &&
+            args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
+            const std::string& key = args[1].string_val;
+            auto vf = heap_.get_object_field(args[0].object_id, "rb:" + key);
+            if (vf.has_value() && vf->type == DalvikType::STRING_REF &&
+                !vf->string_val.empty()) {
+                result = *vf;
+            } else {
+                // AOSP: missing key → MissingResourceException. This
+                // runtime answers the 2-arg default when present, else
+                // null (recorded — the corpus never reads absent keys).
+                if (args.size() >= 3)
+                    result = args[2];
+                else {
+                    std::cerr << "[F-NEW-645] getString(\"" << key
+                              << "\") MISS on bundle o" << args[0].object_id
+                              << std::endl;
+                    result = DalvikValue::make_null();
+                }
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
         }
     }
     //

@@ -5429,6 +5429,19 @@ CallResult FragmentManagerShadow::dispatch(const CallContext& ctx) {
             if (b == 0) return CallResult::handled_null();
             return CallResult::handled_object(b, "Landroid/os/Bundle;");
         }
+        // ── F-NEW-644 (S235-1, #588 Wave-5 lane): AOSP Fragment.getActivity
+        // law — conversations ConversationFragment.setupIme pc=6 NPE: the
+        // getter had NO arm → typed-default null → null-receiver NPE. The
+        // created-drain already records the host on the fragment object
+        // (F-NEW-304: __frag_host__ = the Activity the pending-op drain
+        // runs within), so the getter is a pure field read.
+        if (m == "getActivity") {
+            uint32_t h = 0;
+            if (heap_) heap_->get_object_ref_field(ctx.receiver_id,
+                                                   "__frag_host__", h);
+            if (h == 0) return CallResult::handled_null();
+            return CallResult::handled_object(h, "Landroid/app/Activity;");
+        }
     }
     return CallResult::not_handled();
 }
@@ -6814,6 +6827,34 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         pi->package_name = ctx.arg_as_string(0);
         return CallResult::handled_object(ctx.receiver_id, "Landroid/content/Intent;");
     }
+    // ── F-NEW-642 (S235-1, #588 Wave-5 lane): AOSP Intent.getExtras law ──
+    // OIFM EulaActivity.onCreate pc=20 NPE: the app reads
+    // getExtras().getBoolean(...) — the engine had NO getExtras handler →
+    // the typed-default stub answered null → null-receiver NPE at
+    // Bundle.getBoolean. AOSP contract: getExtras returns the intent's
+    // extras Bundle (null ONLY when no extras were ever put), and the
+    // returned Bundle carries every put* value under the canonical
+    // "bundle:<key>" fields so the engine's Bundle getter laws (EXP-093)
+    // answer them — the round trip is one law, not two.
+    if (m == "getExtras") {
+        const bool any_extras =
+            !pi->extras_string.empty() || !pi->extras_int.empty() ||
+            !pi->extras_bool.empty();
+        if (!any_extras) return CallResult::handled_null();
+        if (!heap_) return CallResult::handled_null();
+        uint32_t b = heap_->allocate("Landroid/os/Bundle;");
+        for (const auto& [k, v] : pi->extras_string)
+            heap_->set_string_field(b, "bundle:" + k, v);
+        for (const auto& [k, v] : pi->extras_int)
+            heap_->set_object_int_field(b, "bundle:" + k, v);
+        for (const auto& [k, v] : pi->extras_bool) {
+            CallContext::Arg a;
+            a.kind = CallContext::Arg::Kind::BOOL;
+            a.bool_val = v;
+            heap_->set_value_field(b, "bundle:" + k, a);
+        }
+        return CallResult::handled_object(b, "Landroid/os/Bundle;");
+    }
     return CallResult::not_handled();
 }
 
@@ -6867,6 +6908,21 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                           << " (AOSP Activity.setTheme law)" << std::endl;
         }
         return CallResult::handled_void();
+    }
+    // ── F-NEW-640 (S235-1, #588 Wave-5 lane): AOSP Activity.getActionBar
+    // LAW — vanilla CompatHoneycomb.addActionBarTabs pc=9 NPE: the engine
+    // had NO handler → typed-default null → null-receiver NPE at
+    // bar.addActionBarTabs. AOSP Activity.getActionBar: never null for a
+    // window-feature'd activity — this runtime serves the bar OBJECT and
+    // the F-NEW-640 engine gate (dalvik_engine.cpp) carries the
+    // newTab/addTab/selectTab/getTabCount contract arms.
+    if (m == "getActionBar") {
+        if (!heap_) return CallResult::handled_null();
+        uint32_t bar = heap_->get_or_create("Landroid/app/ActionBar;");
+        std::cerr << "[F-NEW-640] getActionBar -> ActionBar o" << bar
+                  << " (never-null law) caller=" << ctx.class_name
+                  << std::endl;
+        return CallResult::handled_object(bar, "Landroid/app/ActionBar;");
     }
     // ── F-058 (R-NEW-279): ActivityLifecycleCallbacks registration ──────
     // AOSP Activity.java L1627: registerActivityLifecycleCallbacks(cb)

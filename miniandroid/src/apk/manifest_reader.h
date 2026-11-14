@@ -565,6 +565,11 @@ private:
     std::string current_activity_target_;  // EXP-038: targetActivity for activity-alias
     bool activity_has_main_action_ = false;
     bool activity_has_launcher_category_ = false;
+    // F-NEW-643 (S235-1, #588 Wave-5 lane): MAIN+HOME launch gate —
+    // home-screen apps (ADW.Launcher) carry android.intent.category.HOME
+    // with NO LAUNCHER category; AOSP Intent.resolveActivity treats
+    // MAIN+HOME as a launchable entry point.
+    bool activity_has_home_category_ = false;
     
     bool verbose_ = false;
 };

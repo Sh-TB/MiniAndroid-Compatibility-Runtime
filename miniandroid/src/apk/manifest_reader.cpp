@@ -682,8 +682,9 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
         current_activity_target_ = get_attribute_value(attrs, "targetActivity");
         activity_has_main_action_ = false;
         activity_has_launcher_category_ = false;
+        activity_has_home_category_ = false;
         in_activity_ = true;
-        
+
         ManifestInfo::ActivityInfo act_info;
         act_info.name = current_activity_name_;
         // CONT-102 (F-NEW-425): parse android:exported + android:launchMode
@@ -1042,6 +1043,15 @@ void ManifestReader::process_start_element(const std::string& ns, const std::str
                 activity_has_launcher_category_ = true;
                 log("Found LAUNCHER category");
             }
+            // F-NEW-643 (S235-1, #588 Wave-5 lane): MAIN+HOME launch gate —
+            // home-screen apps (ADW.Launcher boot stopped at
+            // execute_application with an empty launch class) declare
+            // android.intent.category.HOME with NO LAUNCHER category;
+            // AOSP Intent.resolveActivity treats MAIN+HOME as launchable.
+            if (category_name == "android.intent.category.HOME" || category_name == "HOME") {
+                activity_has_home_category_ = true;
+                log("Found HOME category");
+            }
             // CODER7 WAVE-3: the activity's filter category set (the
             // MATCH_DEFAULT_ONLY law reads the MATCHING filter's own
             // categories; union-level data cannot express that).
@@ -1210,7 +1220,10 @@ void ManifestReader::process_end_element(const std::string& ns, const std::strin
     if (name == "receiver") in_receiver_ = false;
     // EXP-038 (BLOCKER-022 FIX): Also handle activity-alias END_ELEMENT
     if ((name == "activity" || name == "activity-alias") && in_activity_) {
-        if (activity_has_main_action_ && activity_has_launcher_category_) {
+        // F-NEW-643 (S235-1): MAIN + (LAUNCHER | HOME) both pick the launch
+        // entry — AOSP Intent.resolveActivity contract (home-screen apps).
+        if (activity_has_main_action_ &&
+            (activity_has_launcher_category_ || activity_has_home_category_)) {
             // EXP-038: Only set main_activity on FIRST match (don't overwrite).
             // Telegram has 6+ activity-alias elements with MAIN+LAUNCHER
             // (DefaultIcon, NoxIcon, TurboIcon, PremiumIcon, AquaIcon, VintageIcon).
@@ -1489,7 +1502,8 @@ ManifestInfo ManifestReader::parse_plain_xml(const std::vector<uint8_t>& data) {
             current_activity_name_ = extract_attr("android:name");
             activity_has_main_action_ = false;
             activity_has_launcher_category_ = false;
-            
+            activity_has_home_category_ = false;
+
             ManifestInfo::ActivityInfo act;
             act.name = current_activity_name_;
             result_.activities.push_back(act);

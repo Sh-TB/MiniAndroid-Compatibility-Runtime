@@ -1716,10 +1716,25 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             // (F-NEW-319). A Spinner never carries android:text, so writing
             // the selected item into a.text is unambiguous and flows through
             // the generic text pipeline (layout + paint) unchanged.
+            // F-NEW-650 (S235-1, #588 Games-g1 lane): the LIST face — a
+            // ListView with android:entries (chess start.xml entries=
+            // 0x7f020016) builds its adapter INSIDE the ctor and renders
+            // ALL entries as rows. The full resolved array is recorded on
+            // the ViewNode; the engine's attach wave synthesizes the
+            // S191-convention ArrayAdapter and runs the ONE row
+            // materializer (the Spinner text face above is untouched).
             if (at.value.is_reference()) {
                 auto items = arsc_.resolve_string_array(at.value.ref_id);
-                if (items && !items->empty()) a.text = (*items)[0];
-                else stats.unresolved_refs++;
+                if (items && !items->empty()) {
+                    a.text = (*items)[0];
+                    if (node.class_desc.find("ListView") !=
+                            std::string::npos ||
+                        node.class_desc.find("AbsListView") !=
+                            std::string::npos ||
+                        node.class_desc.find("GridView") !=
+                            std::string::npos)
+                        node.entries_items = *items;
+                } else stats.unresolved_refs++;
             } else stats.unresolved_refs++;
         }
         else if (n == "textSize") {
