@@ -345,3 +345,101 @@ evidence/s230/issue*_comments.json
 evidence/s231/issue*.json
 evidence/s231/issue*_comments.json
 worklog.md
+
+# =============================================================================
+# LOCAL-ONLY SESSION ARTIFACTS (2026-11-14, the S235-0 boundary-sweep fix)
+# ---------------------------------------------------------------------------
+# Incident: session-boundary auto-commits (UUID messages b110be50, bff51d90)
+# twice swept 1556 untracked local files into the tree: 45 MB of OSMesa vendor
+# blobs (three libOSMesa copies + the .deb packages), 0-byte PNG evidence,
+# forensic raw data, reference dumps and historical run-store internals from
+# pre-S230 sessions. The repository stays SOURCE + curated evidence (the same
+# law as worklog.md, work/ and the build trees). These paths stay local-only.
+# gitignore never untracks: the curated files already promoted per wave (e.g.
+# docs/evidence/campaign014's tracked subset, evidence/s207/s208/s232 in
+# S234-2/S234-3) remain tracked; new wave evidence keeps its deliberate
+# per-wave promotion (evidence/s2xx registered in PATH_OWNERSHIP).
+# =============================================================================
+/CAMPAIGN_STATE.md
+/CONT-*.md
+/F023_ROOT_CAUSE.md
+/PLAYABILITY_REPORT.md
+/MessageSchema.java
+/current_size_
+/gfx_trace.jsonl
+/third_party/
+/forensic_data/
+/reference/
+/docs/evidence/campaign014/
+# historical pre-S230 evidence dirs carrying untracked run artifacts
+
+# --- inventory-completion pass (v2): every remaining untracked group ---
+/docs/evidence/g09_corpus/
+/docs/evidence/g11g12_evidence/
+/docs/evidence/m3_campaign/
+/docs/evidence/master_campaign/
+/docs/evidence/s210_dooz/
+/docs/evidence/s21_f074_f075/
+/docs/evidence/s91_sandbox/
+/docs/evidence/visual_forensics/
+/evidence/audit_s107/
+/evidence/batch367_rerun/
+/evidence/cont107/
+/evidence/cont11/
+/evidence/cont48/
+/evidence/cont49/
+/evidence/cont54/
+/evidence/cont55/
+/evidence/cont61/
+/evidence/cont65/
+/evidence/diff366/
+/evidence/s106_fresh/
+/evidence/s107_fresh/
+/evidence/s107_games/
+/evidence/s109_telegram/
+/evidence/s109_webview/
+/evidence/s110_telegram/
+/evidence/s110_tickets/
+/evidence/s112_html5_generalization/
+/evidence/s113_fullgui/
+/evidence/s114_bigfix/
+/evidence/s115_sweep/
+/evidence/s115_telegram/
+/evidence/s117_complete_graphics/
+/evidence/s119_games/
+/evidence/s120_new_games/
+/evidence/s151_trains/
+/evidence/s186_s107/
+/evidence/s188/
+/evidence/s188_w10/
+/evidence/s188_w11/
+/evidence/s188_w12/
+/evidence/s188_w13/
+/evidence/s188_w14/
+/evidence/s188_w15/
+/evidence/s188_w16/
+/evidence/s188_w17/
+/evidence/s188_w18/
+/evidence/s188_w2/
+/evidence/s188_w5/
+/evidence/s188_w6/
+/evidence/s188_w7/
+/evidence/s194_intake/
+/evidence/s195_audit/
+/evidence/s199/
+/evidence/s200/
+/evidence/s204/
+/evidence/s206/
+/evidence/s210/
+/evidence/s211/
+/evidence/s213/
+/evidence/s214/
+/evidence/s215/
+/evidence/s216/
+/evidence/s220/
+/evidence/s223/
+/evidence/s224/
+/evidence/s225/
+/evidence/s226/
+/evidence/s58/
+/miniandroid/build_status.txt
