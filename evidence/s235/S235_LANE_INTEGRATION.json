@@ -1,0 +1,93 @@
+{
+  "wave": "S235-1 (#588 runtime-lane integration — F-NEW-639..650)",
+  "date": "2026-11-14",
+  "commit": "b9a099d2 (+ the gate-commit hash recorded below)",
+  "source": "the runtime lane's three evidence waves on the achievements thread #588 (comments 6870803490 = Wave-5 F-NEW-630..646, 6871461012 = the a2048 WebView set, 6872280176 = Games-g1 F-NEW-647..654), all pushed from the S212-era base ba178ed4 with the lane's own id numbering; the diff was never posted (evidence comments carry images + logs only), so the laws were re-implemented on main FROM THE COMMENT DEFINITIONS (the W26 precedent) and mapped onto main's F-NEW sequence BY FUNCTION",
+  "id_space_divergence": "main's F-NEW-630 (typed-view limit), F-NEW-632 (SF-ORDER probe), F-NEW-636/637/638 (the W26 three) are unrelated to the lane's 630..646 — main continued landing laws while the lane worked on ba178ed4; the lane's contracts landed as main F-NEW-639..650",
+  "laws": {
+    "F-NEW-639": "AOSP Context.*_SERVICE static String constants (46-row table, the AOSP Context.java service-name truth) + the 'phone' service row in all three service tables (t_svc_map339 / t_svc_cls339 / t_service_map) — the vanilla PlaybackService face: EXP093-SVC 'phone' -> null. The lane's 630 + 637.",
+    "F-NEW-640": "Activity.getActionBar never-null (ActivityShadow) + the ActionBar/Tab object laws in the bridge (newTab/setText/getText/addTab/selectTab/getSelectedTab/getTabCount/getTabAt, state in __ab_*__ heap fields, no parallel store) — vanilla CompatHoneycomb.addActionBarTabs pc=9 NPE. The lane's 631.",
+    "F-NEW-641": "PackageManager.getResourcesForApplication never-null (the canonical Resources singleton) — OIFM MimeTypeParser.<init> null Resources. The lane's 632.",
+    "F-NEW-642": "Intent.getExtras -> a real Bundle carrying every put* under the canonical bundle:<key> fields (null only when no extras were ever put, AOSP) + Bundle.getBoolean INT32 face (the shadow-layer Box stores Z as INT32 0/1) — OIFM EulaActivity pc=20 NPE. The lane's 633.",
+    "F-NEW-643": "MAIN+HOME launch gate (manifest_reader: activity_has_home_category_, android.intent.category.HOME accepted, the launch conjunction is MAIN AND (LAUNCHER OR HOME)) — ADW boot stopped at execute_application with an empty launch class. The lane's 635.",
+    "F-NEW-644": "Fragment.getActivity -> the live host activity (reads __frag_host__, which the F-NEW-304 created-drain already records) — conversations ConversationFragment.setupIme pc=6 NPE. The lane's 642.",
+    "F-NEW-645": "java.util.ResourceBundle.getBundle over the APK's REAL .properties (4-candidate extract_entry paths: locale-suffixed root/assets, base root/assets; ISO-8859-1 properties grammar: # ! comments, key=|:|space, natural-line continuations, \\uXXXX -> UTF-8) + getString/getObject + the String \\p{Han} CJK Unicode-class law (UTF-8-aware Han-range drop for replaceAll/replaceFirst; std::regex has no \\p classes -> the old path threw regex_error -> typed-default null) — ShatteredPD Messages.setup pc=28 NPE / RenderedTextMultiline String.length NPE. The lane's 645 + 646.",
+    "F-NEW-646": "PackageInfo.applicationInfo populated at the running-package getPackageInfo construction (the SAME install-time ApplicationInfo singleton the Context.getApplicationInfo law serves) — OIFM VersionUtils.getApplicationName pc=17 labelRes NPE. The lane's 641/643/644.",
+    "F-NEW-647": "AlertDialog.Builder fluent-setter completeness: the enumerated branches now end in a set* catch-all answering THIS — a future AOSP setter can never break a chain again (AOSP Builder law) — OpenSudoku gui/a.b pc=35 F447-NPE (the enumerated list missed setIcon). The lane's 647.",
+    "F-NEW-648": "ArrayAdapter(Context,int,T[]|List) ctor seeds the backing store from the DATA argument: the shadow law seeds BOTH stores (items_ for dialogs + the engine __ad_objects__ S191 convention for the list materializer), the T[] face via get_object_array_length + get_object_array_string_element, the List face via the value-field walk; the engine <init> gate gained the [L descriptor face — chess menu adapter stayed empty. The lane's 648 + 650(array half).",
+    "F-NEW-649": "AdapterView.getItemAtPosition/getItemIdAtPosition/getAdapter served from the SAME adapter identity the setAdapter/getCount laws bind on the node (item data from the S191 backing array[pos], then the entries-row text face; stable-id default = position) — chess start$1.onItemClick pc=4 null-recv NPE. The lane's 654.",
+    "F-NEW-650": "The ListView android:entries ctor law: the inflater records the resolved array on ViewNode.entries_items; the attach wave (dispatch_attached_subtree_from tail) runs materialize_entries_listviews -> synthesizes the S191-convention ArrayAdapter -> binds it -> the ONE RecycleBin row materializer renders the rows. PLUS the CONT-102 framework-ArrayAdapter fallback (zero materialized rows -> the RecycleBin materializer hand-off) PLUS ArrayAdapterShadow.getView handled_null -> not_handled (the shadow pre-pass was short-circuiting the F-NEW-602 bridge row law inside bridge_to_api — the chess zero-rows ROOT CAUSE). The lane's 649 + 652."
+  },
+  "already_on_main_crosslinks": {
+    "ListActivity getListView/setListAdapter binding": "F-LISTACTIVITY + the engine setListAdapter drain (the lane's 649 binding face — main's design forwards through the ONE CONT-102 path)",
+    "AppWidgetManager/WallpaperManager service objects": "the F-C4-542 service-table family (the lane's 638/639)",
+    "SQLiteQueryBuilder + SimpleCursorAdapter": "S232 F-SQLQB (the lane's 653 re-implemented it on the older base)",
+    "CSS stacking law": "S118 (the lane's S136 face)",
+    "portablegl substrate": "third_party/portablegl already integrated (the GLES wave's foundation)"
+  },
+  "battery": {
+    "file": "tests/s235_lane_laws_test.cpp",
+    "registered": "Makefile TEST_LAW",
+    "rows": 17,
+    "result": "17/17 PASS (measured; see the s235_battery_final.log face)",
+    "row_map": {
+      "r1a_power_service_const": "F-NEW-639 Context.POWER_SERVICE == \"power\"",
+      "r1b_phone_service_const": "F-NEW-639 Context.TELEPHONY_SERVICE == \"phone\" (the AOSP value, not 'telephony')",
+      "r1c_phone_service_obj": "F-NEW-639 getSystemService(\"phone\") -> TelephonyManager (the vanilla face)",
+      "r1d_power_service_len": "F-NEW-639 the served string is the real constant (length 5)",
+      "r2a_get_actionbar_nonnull": "F-NEW-640 getActionBar never-null (the vanilla pc=9 face)",
+      "r2b_actionbar_tab_chain": "F-NEW-640 the full tab chain: newTab/setText/addTab/getTabCount==1/selectTab/getSelectedTab",
+      "r3a_res_for_app": "F-NEW-641 never-null Resources",
+      "r8a_pi_application_info": "F-NEW-646 getPackageInfo(running).applicationInfo non-null",
+      "r9a_intent_extras_bool": "F-NEW-642 putExtra(BOOL) -> getExtras -> Bundle.getBoolean round trip",
+      "r10a_han_noop": "F-NEW-645 \\p{Han} no-op on the REAL ShatteredPD label face (length 24 unchanged)",
+      "r10b_han_removed": "F-NEW-645 the drop face (bare Han arg -> empty)",
+      "r4a_fragment_get_activity_host": "F-NEW-644 the host identity round trip",
+      "r5a_builder_seticon_identity": "F-NEW-647 setIcon answers the SAME builder (the enumerated-miss face)",
+      "r6a_arrayadapter_ctor_seeded": "F-NEW-648 the ctor seed (shadow items_ AND the engine backing)",
+      "r7a_entries_listview_rows": "F-NEW-650 the entries chain: 3 rows materialized with the real texts",
+      "r7b_entries_adapter_backing_bound": "F-NEW-650/649 the synthesized adapter bound + the backing answers item[1]",
+      "r11a_listview_item_id": "F-NEW-648/650/649 the chess-menu chain end-to-end on hand-assembled Dalvik"
+    },
+    "debug_lessons_recorded": [
+      "the F-NEW-639 arm condition needed size()-8: '_SERVICE' is 8 chars — the probe-proven first cut used -7 and the arm never fired while printing identical text",
+      "DexFieldId field order is {class_idx, type_idx, name_idx} (dex field_id_item) — the first test helper swapped name/type",
+      "try_recursive_invoke does NOT consult shadows while bridge_to_api DOES — a shadow handled_null short-circuits the bridge law (the ArrayAdapter getView face)",
+      "the synthetic const-string table mangles 3-byte UTF-8 (r10c measured a 3-char input as len=2) — an honest engine decode gap recorded, worked around via the execute_method arg path"
+    ]
+  },
+  "test_all": "make test-all 31/31 PASS (the new s235_lane_laws_test registered in TEST_LAW; zero regressions across the battery)",
+  "parity": "check-source-parity 75/75 OK",
+  "binary_sha16": "f0ba2e129a5b3678 (the post-S235-1 main binary the gate verifies)",
+  "six_pin_gate": {
+    "binary_sha16": "f0ba2e129a5b3678",
+    "results": {
+      "gmdice": "3891679dff449331 x2 rerun-identical — HOLD byte-exact",
+      "microtimer": "b39665f68f3938e6 0-uncaught — HOLD byte-exact",
+      "unote": "3b8dcb0adbbc17a9 — HOLD byte-exact",
+      "dooz": "a0fae9072313e2d1 — HOLD byte-exact",
+      "bouncy": "60182d11b51f1c87 vs pin 98abca38 — MOVED (0-uncaught)",
+      "tictactoe": "d005914bf16f5a67 x3 deterministic vs pin 7354c1b2 — MOVED (uninitialized-noise capture face, 3360830 bytes)"
+    },
+    "sandbox_boundary_control_proof": {
+      "question": "did the S235-1 laws move the two GL faces, or did the sandbox recycle?",
+      "control": "a laws-free binary built from 6be77b40 (S235-0, BEFORE the laws) in a clean worktree, same recipes",
+      "bouncy_control": "60182d11b51f1c87 — BYTE-IDENTICAL to the laws-bearing binary's face: the laws are pin-neutral for bouncy",
+      "ttt_control": "3360830-byte noise face — EXACT byte-size match to the laws-bearing binary's noise face: the laws are pin-neutral for ttt",
+      "conclusion": "both GL face moves reproduce byte-exact WITHOUT the laws — the drift sits at the sandbox recycle boundary (the pins were recorded on e11de0b5/39817406 built in the previous sandbox; every binary built in the recycled sandbox shifts the two GL faces the same way). The four non-GL pins hold byte-exact, so the drift is GL-surface-specific.",
+      "visual_characterization": {
+        "bouncy": "the OLD pin face carried the 'Touch to start' first-frame overlay (yellow text on the top strip); the NEW face (both binaries) renders the same menu without that first-frame overlay — a first-frame timing face, menu content byte-similar",
+        "ttt": "the OLD pin face was the clean board; the NEW face (both binaries) is the uninitialized-noise capture (41 frames rendered, ~2.07M px/frame diff) — the GL surface content stopped reaching the captured frame in the recycled sandbox"
+      },
+      "followup": "re-establish the two GL pins IN THIS SANDBOX as their own wave (S235-2 candidate): root-cause the GL surface/capture divergence at the recycle boundary, verify visually per the S226 re-pin precedent, then re-pin"
+    }
+  },
+  "honest_gaps": [
+    "GLES PD_TEXTURE_QUAD shader family (the lane's 636) NOT integrated — needs the GLSL-source-extraction pipeline as its own wave",
+    "WebView CSS laws S134/S135/S137/S138/S139/S140 (the a2048 set) NOT integrated — needs the functional dedup vs main's S118 stacking/S135-family first; S140 interaction probe unchanged",
+    "ResourceBundle.getBundle is code-verified only (the 17-row battery has no APK-asset row) — no ShatteredPD-class APK run was executed this wave",
+    "the engine MUTF-8 synthetic-string 3-byte decode gap (r10c evidence) is recorded, not fixed",
+    "the chess list-row min-height cosmetic law (AOSP ~84px vs 44px) pending"
+  ],
+  "policy": "PENDING (validator line after the commit)"
+}

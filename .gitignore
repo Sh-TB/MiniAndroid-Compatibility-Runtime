@@ -443,3 +443,7 @@ worklog.md
 /evidence/s226/
 /evidence/s58/
 /miniandroid/build_status.txt
+
+# S235: the lane-comment working archive (machine-path logs; the canonical
+# source lives on GitHub #588) — local-only like worklog.md
+/scripts/s235_comments/

@@ -11,6 +11,6 @@
   "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s207_gmdice_r1/data/app/de.duenndns.gmdice/base.apk",
   "apkSha256": "1621eda11b5dbc0c232b54c652d27aeab2f8a3c95be2c1f0632d6233b12d8a85",
   "apkSize": 63998,
-  "installedAt": "2026-11-14T05:19:32Z",
+  "installedAt": "2026-11-14T12:51:48Z",
   "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
 }

@@ -1,5 +1,5 @@
 {
- "binary_sha16": "e11de0b5d251f252",
+ "binary_sha16": "f0ba2e129a5b3678",
  "gmdice": {
   "r1": {
    "wall_s": 2.6,
@@ -9,7 +9,7 @@
    "screenshot_verdict": "OK"
   },
   "r2": {
-   "wall_s": 2.5,
+   "wall_s": 2.6,
    "face_sha16": "3891679dff449331",
    "uncaught": 0,
    "screenshot_bytes": 34865,
@@ -27,58 +27,58 @@
  "tictactoe": {
   "runs": [
    {
-    "wall_s": 19.9,
-    "face_sha16": "7354c1b231cd581d",
+    "wall_s": 11.6,
+    "face_sha16": "d005914bf16f5a67",
     "uncaught": 0,
-    "screenshot_bytes": 11386,
-    "screenshot_verdict": "OK"
+    "screenshot_bytes": 3360830,
+    "screenshot_verdict": "NOISE >1MiB (canonical allowlist entry required)"
    },
    {
-    "wall_s": 20.0,
-    "face_sha16": "7354c1b231cd581d",
+    "wall_s": 11.7,
+    "face_sha16": "d005914bf16f5a67",
     "uncaught": 0,
-    "screenshot_bytes": 11386,
-    "screenshot_verdict": "OK"
+    "screenshot_bytes": 3360830,
+    "screenshot_verdict": "NOISE >1MiB (canonical allowlist entry required)"
    },
    {
-    "wall_s": 19.9,
-    "face_sha16": "7354c1b231cd581d",
+    "wall_s": 11.8,
+    "face_sha16": "d005914bf16f5a67",
     "uncaught": 0,
-    "screenshot_bytes": 11386,
-    "screenshot_verdict": "OK"
+    "screenshot_bytes": 3360830,
+    "screenshot_verdict": "NOISE >1MiB (canonical allowlist entry required)"
    }
   ],
   "deterministic_x3": true
  },
  "goldens": {
   "bouncy": {
-   "wall_s": 24.0,
-   "face_sha16": "98abca389fb01380",
+   "wall_s": 24.5,
+   "face_sha16": "60182d11b51f1c87",
    "uncaught": 0,
-   "screenshot_bytes": 36434,
+   "screenshot_bytes": 34231,
    "screenshot_verdict": "OK",
    "pin": "98abca38",
-   "binary": "e11de0b5d251f252",
-   "hold": true
+   "binary": "f0ba2e129a5b3678",
+   "hold": false
   },
   "unote": {
-   "wall_s": 1.5,
+   "wall_s": 1.6,
    "face_sha16": "3b8dcb0adbbc17a9",
    "uncaught": 0,
    "screenshot_bytes": 17205,
    "screenshot_verdict": "OK",
    "pin": "3b8dcb0a",
-   "binary": "e11de0b5d251f252",
+   "binary": "f0ba2e129a5b3678",
    "hold": true
   },
   "dooz": {
-   "wall_s": 284.8,
+   "wall_s": 290.5,
    "face_sha16": "a0fae9072313e2d1",
    "uncaught": 0,
    "screenshot_bytes": 16160,
    "screenshot_verdict": "OK",
    "pin": "a0fae907",
-   "binary": "e11de0b5d251f252",
+   "binary": "f0ba2e129a5b3678",
    "hold": true
   }
  }

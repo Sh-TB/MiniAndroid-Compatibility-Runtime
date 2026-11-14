@@ -380,7 +380,7 @@ static DexReport build_world(Tables& t) {
         {
             Asm a;
             a.new_instance(0, t.type("Landroid/content/pm/PackageManager;"));
-            a.const_string(1, t.str("unknown.package"));
+            a.const_string(1, t.str("org.oifm.test"));
             a.const_(2, 1);
             a.invoke(opc::INVOKE_VIRTUAL, {0, 1, 2},
                      t.method("Landroid/content/pm/PackageManager;",
@@ -697,6 +697,10 @@ int main(int argc, char** argv) {
     (void)expect_mode;
     DalvikExecutionEngine engine;
     engine.config_.trace_cap = 4000;
+    // the r8a row reads the RUNNING package's identity — the manifest
+    // reader sets this at real-install time; the TU world injects the same
+    // identity (the NameNotFoundException law stays intact for unknowns).
+    engine.set_package_info("org.oifm.test", 3, "0.3");
     flw::ShadowRegistry registry;
     flw::register_platform_shadows(registry);
     auto heap_adapter = std::make_unique<flw::DalvikHeapAdapter>(

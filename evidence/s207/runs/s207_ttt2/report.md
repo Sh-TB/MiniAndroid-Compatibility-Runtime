@@ -14,7 +14,7 @@
 | Frames Rendered | 41 |
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
-| Errors | 0 |
+| Errors | 2 |
 | Warnings | 0 |
 
 ## API Trace Summary
@@ -24,6 +24,7 @@
 | `DalvikEngine` | 3 |
 | `ExecutionEngine` | 2335 |
 | `TraceEngine` | 3 |
+| `Unknown` | 2 |
 
 ## Top Method Calls
 
@@ -35,20 +36,34 @@
 | `ExecutionEngine.stage_gl_surfaces` | 41 |
 | `ExecutionEngine.stage_capture_output` | 6 |
 | `ExecutionEngine.trace_files` | 5 |
-| `DalvikEngine.execute_apk` | 3 |
 | `ExecutionEngine.stage_initialize_runtime` | 3 |
-| `TraceEngine.log_screenshot` | 2 |
-| `ExecutionEngine.trace_export` | 2 |
-| `ExecutionEngine.stage_parse_dex` | 2 |
-| `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
+| `DalvikEngine.execute_apk` | 3 |
 | `ExecutionEngine.stage_load_apk` | 2 |
-| `ExecutionEngine.stage_frame_sequence` | 1 |
-| `TraceEngine.start_session` | 1 |
+| `ExecutionEngine.stage_execute_application_real_dalvik` | 2 |
+| `ExecutionEngine.stage_parse_dex` | 2 |
+| `ExecutionEngine.trace_export` | 2 |
+| `TraceEngine.log_screenshot` | 2 |
+| `Unknown.Unknown` | 2 |
 | `ExecutionEngine.validation` | 1 |
+| `TraceEngine.start_session` | 1 |
 | `ExecutionEngine.stage_generate_reports` | 1 |
+| `ExecutionEngine.stage_frame_sequence` | 1 |
 | `ExecutionEngine.stage_execute_application` | 1 |
 | `ExecutionEngine.phase_b_click` | 1 |
-| `ExecutionEngine.lifecycle_verified` | 1 |
+
+## Errors & Issues
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Lcom/badlogic/gdx/utils/GdxRuntimeException; unwound Lcom/badlogic/gdx/backends/android/AndroidApplication;.<clinit> invoke_pc=0x0 depth=3
+- **Location:** `.`
+- **Fatal:** No
+
+### EXC-UNCAUGHT-TOP
+
+- **Message:** [EXC-UNWIND] Lcom/badlogic/gdx/utils/GdxRuntimeException; unwound Lcom/emmanuelmess/tictactoe/AndroidLauncher;.<init> invoke_pc=0x0 depth=2
+- **Location:** `.`
+- **Fatal:** No
 
 ## Screenshots
 
@@ -56,7 +71,7 @@
 
 - **File:** `/home/z/my-project/evidence/s207/runs/s207_ttt2/screenshot.png`
 - **Resolution:** 1080x1920
-- **Size:** 10.84 KB
+- **Size:** 3.21 MB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_ttt2/screenshot.png)
 
@@ -64,11 +79,11 @@
 
 - **File:** `/home/z/my-project/evidence/s207/runs/s207_ttt2/screenshot.png`
 - **Resolution:** 1080x1920
-- **Size:** 11.12 KB
+- **Size:** 3.21 MB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_ttt2/screenshot.png)
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261114-052019-1263`
-- **Generated:** 2026-11-14 05:20:39 UTC
+- **Session ID:** `EXP-001-20261114-125220-8984`
+- **Generated:** 2026-11-14 12:52:31 UTC
