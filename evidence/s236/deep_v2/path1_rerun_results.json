@@ -1,0 +1,70 @@
+{
+ "chess": {
+  "rc": 0,
+  "duration_s": 11.49,
+  "stdout_markers": {
+   "loadPGN": 0,
+   "FEN": 0,
+   "board": 0,
+   "practice": 0,
+   "rawQuery rows=1": 0,
+   "SQLITE-INSERT": 0,
+   "PRAGMA table_info(games)": 0
+  },
+  "stderr_markers": {
+   "F596-P1": 11,
+   "371-GETXML-NOTFOUND": 0,
+   "uncaught": 0,
+   "C013-ONDRAW": 189,
+   "practice.pgn": 0,
+   "AssetManager": 0,
+   "IllegalStateException": 0,
+   "loadPGNHead": 0,
+   "FEN": 0,
+   "onDraw": 0
+  },
+  "census": [
+   {
+    "db": "chess_pgn.db",
+    "table": "games",
+    "rows": 1
+   },
+   {
+    "db": "c7_pkg_cache.sqlite3",
+    "table": "pkg_cache",
+    "rows": 1
+   }
+  ]
+ },
+ "sudoku": {
+  "rc": 0,
+  "duration_s": 20.22,
+  "stdout_markers": {
+   "ListView": 0,
+   "folder": 0,
+   "getView": 0,
+   "SQLITE-INSERT": 0
+  },
+  "stderr_markers": {
+   "F596-P1": 3,
+   "f141-null-recv": 1,
+   "uncaught": 0,
+   "Instant.now": 3,
+   "toEpochMilli": 0,
+   "rawQuery": 0,
+   "SQLITE-LIFECYCLE": 2,
+   "SimpleCursorAdapter": 0,
+   "getView": 4,
+   "C013-ONDRAW": 0,
+   "onLayout": 0,
+   "NotFoundException": 6
+  },
+  "census": [
+   {
+    "db": "c7_pkg_cache.sqlite3",
+    "table": "pkg_cache",
+    "rows": 1
+   }
+  ]
+ }
+}

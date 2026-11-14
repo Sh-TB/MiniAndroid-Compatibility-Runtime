@@ -1,0 +1,17 @@
+{
+ "tag": "install_s236_chessflow3_root_aw6qg_hd",
+ "cmd": [
+  "/tmp/s236_audit/miniandroid/build/miniandroid",
+  "install",
+  "/home/z/my-project/upload/chess_jwtc_298.apk",
+  "--data-root",
+  "/tmp/s236_chessflow3_root_aw6qg_hd"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 0.07,
+ "rc": 0,
+ "stdout_bytes": 686,
+ "stderr_bytes": 0
+}

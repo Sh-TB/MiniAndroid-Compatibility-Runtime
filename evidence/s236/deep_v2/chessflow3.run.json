@@ -1,0 +1,30 @@
+{
+ "tag": "chessflow3",
+ "cmd": [
+  "/tmp/s236_audit/miniandroid/build/miniandroid",
+  "run",
+  "--execution-mode",
+  "real-dalvik",
+  "--data-root",
+  "/tmp/s236_chessflow3_root_aw6qg_hd",
+  "-o",
+  "/tmp/s236_chessflow3_out_xlgffixe",
+  "--package",
+  "jwtc.android.chess",
+  "--frames",
+  "90",
+  "--frame-delay",
+  "250",
+  "--tap",
+  "540,820@8",
+  "--tap",
+  "540,230@45"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 18.72,
+ "rc": 0,
+ "stdout_bytes": 2922,
+ "stderr_bytes": 2723770
+}

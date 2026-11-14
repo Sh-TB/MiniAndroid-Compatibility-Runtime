@@ -1,0 +1,17 @@
+{
+ "tag": "install_s236_sudokufix_root_feow6p_s",
+ "cmd": [
+  "/tmp/s236_audit/miniandroid/build/miniandroid",
+  "install",
+  "/home/z/my-project/upload/opensudoku_v4113.apk",
+  "--data-root",
+  "/tmp/s236_sudokufix_root_feow6p_s"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 0.7,
+ "rc": 0,
+ "stdout_bytes": 702,
+ "stderr_bytes": 0
+}

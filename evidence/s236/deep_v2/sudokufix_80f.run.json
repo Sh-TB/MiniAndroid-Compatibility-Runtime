@@ -1,0 +1,26 @@
+{
+ "tag": "sudokufix_80f",
+ "cmd": [
+  "/tmp/s236_audit/miniandroid/build/miniandroid",
+  "run",
+  "--execution-mode",
+  "real-dalvik",
+  "--data-root",
+  "/tmp/s236_sudokufix_root_feow6p_s",
+  "-o",
+  "/tmp/s236_sudokufix_out_0aj3igsd",
+  "--package",
+  "org.moire.opensudoku",
+  "--frames",
+  "80",
+  "--frame-delay",
+  "250"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 20.22,
+ "rc": 0,
+ "stdout_bytes": 1605,
+ "stderr_bytes": 857714
+}

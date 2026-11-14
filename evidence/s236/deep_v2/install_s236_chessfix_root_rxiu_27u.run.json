@@ -1,0 +1,17 @@
+{
+ "tag": "install_s236_chessfix_root_rxiu_27u",
+ "cmd": [
+  "/tmp/s236_audit/miniandroid/build/miniandroid",
+  "install",
+  "/home/z/my-project/upload/chess_jwtc_298.apk",
+  "--data-root",
+  "/tmp/s236_chessfix_root_rxiu_27u"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 0.19,
+ "rc": 0,
+ "stdout_bytes": 684,
+ "stderr_bytes": 0
+}
