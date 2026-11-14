@@ -756,6 +756,94 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
             ctx.receiver_class);
         return framework::CallResult::handled_int(changed);
     }
+    // ── F-NEW-658 (#588 Games-g2): SQLiteDatabase.insert / insertOrThrow /
+    // insertWithOnConflict(String table, String nullColumnHack,
+    // ContentValues values) — a REAL sqlite3 INSERT. Column binds come
+    // from the ContentValues flat mirror (the dalvik put() handler
+    // flattens while the boxed value is live; F-NEW-658b unboxes
+    // heap-Strings). AOSP return contract: insert answers the new rowId
+    // or -1 (NEVER silent — the practice seeding loop's unhandled arm
+    // surfaced as the provider's SQLException); insertWithOnConflict
+    // takes the conflict algorithm as args[0] (table shifts to args[1]).
+    // nullColumnHack: when values is empty, AOSP inserts one NULL row
+    // keyed by the hack column (the engine-side fallback row).
+    if ((m == "insert" || m == "insertOrThrow" ||
+         m == "insertWithOnConflict") &&
+        ctx.args.size() >= 1) {
+        if (!raw) return framework::CallResult::handled_int(-1);
+        size_t tbl_i = (m == "insertWithOnConflict") ? 1 : 0;
+        if (ctx.args[tbl_i].kind != framework::CallContext::Arg::Kind::STRING)
+            return framework::CallResult::not_handled();
+        const std::string& table = ctx.args[tbl_i].string_val;
+        size_t cv_i = tbl_i + 2;  // (algorithm,) table, nullColumnHack, values
+        uint32_t cv_oid =
+            (ctx.args.size() > cv_i &&
+             ctx.args[cv_i].kind == framework::CallContext::Arg::Kind::OBJECT)
+                ? ctx.args[cv_i].object_id
+                : 0;
+        std::vector<miniandroid::dalvik::CvFlat> cv =
+            miniandroid::dalvik::content_values_flat_snapshot(cv_oid);
+        std::string hack;
+        if (ctx.args.size() > tbl_i + 1 &&
+            ctx.args[tbl_i + 1].kind ==
+                framework::CallContext::Arg::Kind::STRING)
+            hack = ctx.args[tbl_i + 1].string_val;
+        std::string sql;
+        if (cv.empty() && !hack.empty()) {
+            sql = "INSERT INTO " + table + " (" + hack + ") VALUES (NULL)";
+        } else if (cv.empty()) {
+            std::cerr << "[SQLITE-SHADOW] insert: empty ContentValues (oid="
+                      << cv_oid << ") table=" << table << std::endl;
+            return framework::CallResult::handled_int(-1);
+        } else {
+            sql = "INSERT INTO " + table + " (";
+            for (size_t i = 0; i < cv.size(); i++) {
+                if (i) sql += ", ";
+                sql += cv[i].key;
+            }
+            sql += ") VALUES (";
+            for (size_t i = 0; i < cv.size(); i++) {
+                if (i) sql += ", ";
+                sql += "?";
+            }
+            sql += ")";
+        }
+        sqlite3_stmt* ps = nullptr;
+        int rc = sqlite3_prepare_v2(raw, sql.c_str(), -1, &ps, nullptr);
+        if (rc != SQLITE_OK) {
+            std::cerr << "[SQLITE-SHADOW] insert rc=" << rc << " err="
+                      << sqlite3_errmsg(raw) << " sql=\"" << sql << "\""
+                      << std::endl;
+            return framework::CallResult::handled_int(-1);
+        }
+        int b = 1;
+        for (const auto& e : cv) {
+            switch (e.kind) {
+                case 1: sqlite3_bind_int64(ps, b++, e.i); break;
+                case 2: sqlite3_bind_double(ps, b++, e.d); break;
+                case 3:
+                    sqlite3_bind_text(ps, b++, e.s.c_str(), -1,
+                                      SQLITE_TRANSIENT);
+                    break;
+                default: sqlite3_bind_null(ps, b++); break;
+            }
+        }
+        rc = sqlite3_step(ps);
+        sqlite3_finalize(ps);
+        if (rc != SQLITE_DONE) {
+            std::cerr << "[SQLITE-SHADOW] insert step rc=" << rc << " err="
+                      << sqlite3_errmsg(raw) << " sql=\"" << sql << "\""
+                      << std::endl;
+            return framework::CallResult::handled_int(-1);
+        }
+        int64_t rowid = sqlite3_last_insert_rowid(raw);
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "SQLITE-INSERT", st ? st->path : std::string("<closed>"), true,
+            sql.substr(0, std::min<size_t>(80, sql.size())),
+            ctx.receiver_class);
+        return framework::CallResult::handled_int(
+            static_cast<int32_t>(rowid));
+    }
     if (m == "close") {
         close_db(db_oid);
         return framework::CallResult::handled_void();

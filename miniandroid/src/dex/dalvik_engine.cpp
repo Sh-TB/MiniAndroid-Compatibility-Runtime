@@ -28551,6 +28551,34 @@ std::string DalvikExecutionEngine::true_dex_field_declarer(
     return std::string();  // framework-owned field: no DEX declarer
 }
 
+// ── F-NEW-657 (#588 Games-g2): the STATIC-field declarer walker — the
+// sput half of R-NEW-561. JVM static identity: an inherited static lives
+// in the DECLARING class's ONE storage cell (javac/dx emit the access-site
+// class for inherited statics, so a subclass <clinit> rebind keyed by the
+// access-site lands in a cell the superclass query never reads — the
+// lane's face: MyPuzzleProvider.<clinit> sput on ChessPuzzleProvider's
+// sUriMatcher was invisible to the superclass query()). Mirrors
+// true_dex_field_declarer over the DEX static_fields bodies; "" = not
+// DEX-declared anywhere on the chain (engine-synthetic statics keep the
+// ref-class key — every existing face preserved).
+std::string DalvikExecutionEngine::static_field_declarer_of(
+    const std::string& ref_cls, const std::string& name) const {
+    if (ref_cls.empty() || name.empty()) return std::string();
+    std::string walk = ref_cls;
+    for (int hop = 0; hop < 32 && !walk.empty(); ++hop) {
+        if (!is_dex_defined_class(walk)) break;  // framework ancestor: stop
+        auto cit = class_info_index_.find(walk);
+        if (cit != class_info_index_.end() && dex_report_ != nullptr) {
+            const dex::ClassInfo& ci = dex_report_->classes[cit->second];
+            for (const auto& f : ci.static_fields)
+                if (f.name == name) return walk;  // the DECLARING class
+        }
+        auto sit = class_to_superclass_.find(walk);
+        walk = (sit != class_to_superclass_.end()) ? sit->second : std::string();
+    }
+    return std::string();  // engine-synthetic static: keep the ref key
+}
+
 // ── CONT-29 W1 R-NEW-467: FIELD-RESOLUTION MEMOIZATION ──────────────────
 // Epoch = the fingerprint of everything the resolution + declarer walk
 // reads. Fixed after parse: nothing — BOTH hierarchy tables can grow
@@ -31752,6 +31780,25 @@ bool DalvikExecutionEngine::execute_sput(uint32_t pc, InstructionTrace& trace) {
     
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+        // F-NEW-657 (#588 Games-g2): the sput half of R-NEW-561 — the
+        // write lands in the DECLARING class's ONE storage cell. A
+        // subclass <clinit> rebind of an inherited static keyed by the
+        // access-site class was invisible to the superclass query()'s
+        // cell (the chess provider face); key the write at the DEX
+        // declarer when the chain declares the static. Engine-synthetic
+        // statics (no DEX declarer) keep the ref-class key unchanged.
+        std::string f657_decl = static_field_declarer_of(
+            field_res.class_descriptor, field_res.field_name);
+        if (!f657_decl.empty() && f657_decl != field_res.class_descriptor) {
+            static thread_local uint64_t f657_writes = 0;
+            if (f657_writes++ < 8)
+                std::cerr << "[F-NEW-657] sput declarer-key "
+                          << field_res.class_descriptor << "."
+                          << field_res.field_name << " -> " << f657_decl
+                          << " (caller " << current_class_ << "."
+                          << current_method_ << ")" << std::endl;
+            static_key = f657_decl + "." + field_res.field_name;
+        }
         static_field_storage_[static_key] = src_val;
     }
     
@@ -31810,6 +31857,20 @@ bool DalvikExecutionEngine::execute_sput_object(uint32_t pc, InstructionTrace& t
     
     if (field_res.resolved) {
         std::string static_key = field_res.class_descriptor + "." + field_res.field_name;
+        // F-NEW-657: the sput-object declarer-key law — same as the
+        // sput scalar half (the sUriMatcher face is an OBJECT static).
+        std::string f657_decl = static_field_declarer_of(
+            field_res.class_descriptor, field_res.field_name);
+        if (!f657_decl.empty() && f657_decl != field_res.class_descriptor) {
+            static thread_local uint64_t f657_owrites = 0;
+            if (f657_owrites++ < 8)
+                std::cerr << "[F-NEW-657] sput-object declarer-key "
+                          << field_res.class_descriptor << "."
+                          << field_res.field_name << " -> " << f657_decl
+                          << " (caller " << current_class_ << "."
+                          << current_method_ << ")" << std::endl;
+            static_key = f657_decl + "." + field_res.field_name;
+        }
         static_field_storage_[static_key] = src_val;
         // S123 DIAG (bounded): where do ContainerHelpers' static writes land?
         if (current_method_ == "<clinit>" &&
@@ -38369,6 +38430,50 @@ static void c9_fill_display_metrics(DalvikHeap& heap,
 }
 }  // namespace
 
+// ── F-NEW-659 (#588 Games-g2) — the framework (0x01-package) string-id
+// table.android-4.4w_r1 public.xml (docs/upstream/aosp/public.xml,
+// byte-verified ids) × the tag's own core/res/res/values/strings.xml
+// (values fetched + verified per row from the googlesource tag; the two
+// newer-than-4.4w rows 0x01040018/0x01040019 are NOT carried — their
+// texts cannot be verified in this tag). The GATE-A law resolves from
+// this table BEFORE the NotFoundException throw: GameControl.newGame
+// pc=52 died on android.R.string.unknownName (0x0104000e) — a framework
+// id the APK's ARSC table never carries. NOTE: the 4.4w truth for
+// unknownName is "(Unknown)" (the lane's log paraphrased "Unknown");
+// every value here is the tag's byte-verified English default.
+struct F659FrameworkString { uint32_t id; const char* text; };
+static const F659FrameworkString f659_table[] = {
+    {0x01040000, "Cancel"},
+    {0x01040001, "Copy"},
+    {0x01040002, "Copy URL"},
+    {0x01040003, "Cut"},
+    {0x01040004, "Voicemail"},
+    {0x01040005, "MSISDN1"},
+    {0x01040006, "(No phone number)"},
+    {0x01040007, "Couldn't open the page because the URL is invalid."},
+    {0x01040008, "The protocol isn't supported."},
+    {0x01040009, "Cancel"},                 // android.R.string.no
+    {0x0104000a, "OK"},                     // android.R.string.ok
+    {0x0104000b, "Paste"},
+    {0x0104000c, "Search"},
+    {0x0104000d, "Select all"},
+    {0x0104000e, "(Unknown)"},              // android.R.string.unknownName
+    {0x0104000f, "<Untitled>"},
+    {0x01040010, "OK"},
+    {0x01040011, "Can't play this video."},
+    {0x01040012, "Video problem"},
+    {0x01040013, "OK"},                     // android.R.string.yes
+    {0x01040014, "Attention"},
+    {0x01040015, "This video isn't valid for streaming to this device."},
+    {0x01040016, "Select text"},
+    {0x01040017, "999+"},
+};
+static const char* framework_string_id_text(uint32_t resid) {
+    for (const auto& row : f659_table)
+        if (row.id == resid) return row.text;
+    return nullptr;
+}
+
 bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           const std::string& method,
                                           const std::vector<DalvikValue>& args_raw,
@@ -38378,6 +38483,35 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     bridge_census_init();
     BridgeCensusGuard c97_census_guard;
     if (bridge_census().on) c97_census_guard.begin(class_name, method);
+    // ────────────────────────────────────────────────────────────────────────
+    // F-NEW-655 (#588 Games-g2) — Activity.managedQuery is a verbatim
+    // forward to ContentResolver.query (AOSP Activity.java: managedQuery
+    // (Uri, String[], String, String[], String) ==
+    // getContentResolver().query(...)). The loader-free legacy path
+    // ChessViewPractice.OnResume ships with — without the forward the
+    // practice ancestry chain ran out at the Activity bridge and the
+    // fail-soft null became "There was a problem loading the puzzle."
+    // Rewrite the receiver to a ContentResolver and let the ONE resolver
+    // query law (44887) handle the rest — no parallel query path.
+    // ────────────────────────────────────────────────────────────────────────
+    if ((class_name == "Landroid/app/Activity;" ||
+         class_name == "Landroid/app/ListActivity;" ||
+         class_name == "Landroid/content/ContextWrapper;") &&
+        method == "managedQuery" && args_raw.size() >= 6) {
+        uint32_t f655_cr =
+            heap_.allocate("Landroid/content/ContentResolver;", pc_, 0);
+        std::vector<DalvikValue> f655_args;
+        f655_args.push_back(
+            DalvikValue::make_object(f655_cr,
+                                     "Landroid/content/ContentResolver;"));
+        f655_args.insert(f655_args.end(), args_raw.begin() + 1,
+                         args_raw.end());
+        std::cerr << "[F-NEW-655] managedQuery -> ContentResolver.query"
+                  << " forward caller=" << current_class_ << "."
+                  << current_method_ << std::endl;
+        return bridge_to_api("Landroid/content/ContentResolver;", "query",
+                             f655_args, result, status, method_idx_hint);
+    }
     // ────────────────────────────────────────────────────────────────────────
     // F-NEW-580b (S196, C3) — String receiver identity-form normalization at
     // the bridge boundary (the ONE chokepoint every String-method law
@@ -46253,6 +46387,14 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&
                 args[1].object_id != 0 && args[1].object_id != args[0].object_id) {
                 content_values_[args[0].object_id] = content_values_[args[1].object_id];
+                // F-NEW-658c (#588 Games-g2, S236 audit completion): the
+                // copy-ctor mirrors the FLAT map too — the provider's
+                // local ContentValues copy is what db.insert reads through
+                // the static flat snapshot; #371 copied only the
+                // engine-side store, so the provider-copy path inserted
+                // empty rows (the lane's seeding face).
+                g_content_values_mirror_ref()[args[0].object_id] =
+                    g_content_values_mirror_ref()[args[1].object_id];
             }
             result = DalvikValue::make_void();
             status = ApiCallTrace::Status::IMPLEMENTED;
@@ -46262,19 +46404,36 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             std::string k = args[1].type == DalvikType::STRING_REF
                                 ? std::string(args[1].string_val)
                                 : std::string();
-            ensure_cv(args[0].object_id).emplace_back(k, args[2]);
-            // TRAIN-59 (S144): mirror the entry into the process-wide flat
-            // map (see the header law) — flatten NOW while the heap object
-            // is live; the sqlite shadow's UPDATE arm reads it later.
-            {
-                DalvikValue v = args[2];
-                if (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
-                    heap_.has_object(v.object_id)) {
-                    auto boxed = heap_.get_object_field(v.object_id, "value");
-                    if (boxed.has_value() &&
-                        boxed->type != DalvikType::OBJECT_REF)
-                        v = *boxed;
+            // F-NEW-658b: unbox ONCE, store the unboxed value in BOTH the
+            // engine-side store and the flat mirror — getAsString/get*
+            // answer the TEXT, never a live heap object reference.
+            DalvikValue f658b_v = args[2];
+            if (f658b_v.type == DalvikType::OBJECT_REF &&
+                f658b_v.object_id != 0 &&
+                heap_.has_object(f658b_v.object_id)) {
+                auto boxed = heap_.get_object_field(f658b_v.object_id,
+                                                    "value");
+                if (!boxed.has_value() ||
+                    boxed->type == DalvikType::OBJECT_REF) {
+                    auto sval = heap_.get_object_field(
+                        f658b_v.object_id, "__string_value__");
+                    if (sval.has_value() &&
+                        (sval->type == DalvikType::STRING_REF ||
+                         sval->type == DalvikType::INT32 ||
+                         sval->type == DalvikType::INT64 ||
+                         sval->type == DalvikType::BOOLEAN))
+                        f658b_v = *sval;
+                } else if (boxed->type != DalvikType::OBJECT_REF) {
+                    f658b_v = *boxed;
                 }
+            }
+            ensure_cv(args[0].object_id).emplace_back(k, f658b_v);
+            // TRAIN-59 (S144): mirror the entry into the process-wide flat
+            // map (see the header law) — flatten NOW while the boxed value
+            // is live; the sqlite shadow's UPDATE/INSERT arms read it
+            // later. F-NEW-658b: the flatten flattens the UNBOXED value.
+            {
+                DalvikValue v = f658b_v;
                 CvFlat f;
                 f.key = k;
                 switch (v.type) {
@@ -46502,7 +46661,17 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                         t0 = sl + 1;
                     }
                     bool eq = rpath == pseg;
-                    if (!eq && rpath.find('*') != std::string::npos &&
+                    // F-NEW-656c (S236 audit #595 finding): the segment
+                    // law gates on '*' only — an AOSP '#' rule ("t1/#")
+                    // contains no '*', never reached the segment loop and
+                    // ALWAYS answered no_match (the lane's chess provider
+                    // face: "practices/#" routing). '#' and '*' are BOTH
+                    // segment-wise wildcards (AOSP UriMatcher.addURI);
+                    // gate the loop on either. The '*' text-vs-numeric
+                    // strictness nuance stays the recorded #371
+                    // approximation (behavior-preserving audit rule).
+                    if (!eq && (rpath.find('*') != std::string::npos ||
+                                rpath.find('#') != std::string::npos) &&
                         rsegs.size() == segs.size()) {
                         eq = true;
                         for (size_t i = 0; i < rsegs.size() && eq; ++i) {
@@ -52683,6 +52852,41 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                            stringify_arg(args[2]));
                 r24_writeback(cur);
                 return r24_this();
+            }
+            if (method == "indexOf" && args.size() >= 2 &&
+                args[1].type == DalvikType::STRING_REF) {
+                // F-NEW-660 (#588 Games-g2): the SEARCH half of the
+                // removeDoubleSpaces pair — OpenJDK
+                // AbstractStringBuilder.indexOf(String[, int fromIndex]):
+                // the first index >= fromIndex where the substring occurs,
+                // -1 when absent; null str is a NullPointerException (the
+                // String.indexOf law at the bridge already behaves the
+                // same way). Read-only — no writeback, no chaining.
+                const std::string& needle = args[1].string_val;
+                int32_t from = 0;
+                if (args.size() >= 3 &&
+                    (args[2].type == DalvikType::INT32 ||
+                     args[2].type == DalvikType::BOOLEAN ||
+                     args[2].type == DalvikType::CHAR))
+                    from = r24_int_arg(2);
+                if (from < 0) from = 0;
+                if (needle.empty()) {
+                    // OpenJDK: an empty needle matches at max(from, 0)
+                    // within [0, length]; beyond length -> -1.
+                    if (static_cast<size_t>(from) <= cur.size()) {
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_int(from);
+                        return true;
+                    }
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_int(-1);
+                    return true;
+                }
+                size_t p = cur.find(needle, static_cast<size_t>(from));
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_int(
+                    p == std::string::npos ? -1 : static_cast<int32_t>(p));
+                return true;
             }
             if (method == "deleteCharAt" && args.size() >= 2 &&
                 args[1].type == DalvikType::INT32) {
@@ -75739,6 +75943,23 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_string(resolved, 0);
             return true;
+        }
+        // F-NEW-659/659b (#588 Games-g2): framework (0x01-package) string
+        // ids resolve from the byte-verified android-4.4w_r1 table BEFORE
+        // the GATE-A throw — the APK's ARSC never carries framework ids,
+        // and the throw killed GameControl.newGame on
+        // android.R.string.unknownName mid-practice-chain. 0 still keeps
+        // the legacy honest-empty contract for degenerate call sites.
+        if (resid != 0 && (resid & 0xFF000000u) == 0x01000000u) {
+            if (const char* f659_text =
+                    framework_string_id_text((uint32_t)resid)) {
+                std::cerr << "[F-NEW-659] framework string resid=0x"
+                          << std::hex << resid << std::dec << " → \""
+                          << f659_text << "\" (GATE-A)" << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_string(f659_text, 0);
+                return true;
+            }
         }
         // GATE A (issue #370 §7) — ResourceNotFound law (AOSP
         // ResourcesImpl.getString → Resources.NotFoundException). A
