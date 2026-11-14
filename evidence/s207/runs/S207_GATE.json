@@ -1,5 +1,5 @@
 {
- "binary_sha16": "f0ba2e129a5b3678",
+ "binary_sha16": "9745c3e7a09d0194",
  "gmdice": {
   "r1": {
    "wall_s": 2.6,
@@ -18,7 +18,7 @@
   "rerun_identical": true
  },
  "microtimer": {
-  "wall_s": 2.5,
+  "wall_s": 2.6,
   "face_sha16": "b39665f68f3938e6",
   "uncaught": 0,
   "screenshot_bytes": 32322,
@@ -27,21 +27,21 @@
  "tictactoe": {
   "runs": [
    {
-    "wall_s": 11.6,
+    "wall_s": 12.6,
     "face_sha16": "d005914bf16f5a67",
     "uncaught": 0,
     "screenshot_bytes": 3360830,
     "screenshot_verdict": "NOISE >1MiB (canonical allowlist entry required)"
    },
    {
-    "wall_s": 11.7,
+    "wall_s": 12.7,
     "face_sha16": "d005914bf16f5a67",
     "uncaught": 0,
     "screenshot_bytes": 3360830,
     "screenshot_verdict": "NOISE >1MiB (canonical allowlist entry required)"
    },
    {
-    "wall_s": 11.8,
+    "wall_s": 12.5,
     "face_sha16": "d005914bf16f5a67",
     "uncaught": 0,
     "screenshot_bytes": 3360830,
@@ -52,33 +52,33 @@
  },
  "goldens": {
   "bouncy": {
-   "wall_s": 24.5,
+   "wall_s": 44.2,
    "face_sha16": "60182d11b51f1c87",
    "uncaught": 0,
    "screenshot_bytes": 34231,
    "screenshot_verdict": "OK",
    "pin": "98abca38",
-   "binary": "f0ba2e129a5b3678",
+   "binary": "9745c3e7a09d0194",
    "hold": false
   },
   "unote": {
-   "wall_s": 1.6,
+   "wall_s": 2.0,
    "face_sha16": "3b8dcb0adbbc17a9",
    "uncaught": 0,
    "screenshot_bytes": 17205,
    "screenshot_verdict": "OK",
    "pin": "3b8dcb0a",
-   "binary": "f0ba2e129a5b3678",
+   "binary": "9745c3e7a09d0194",
    "hold": true
   },
   "dooz": {
-   "wall_s": 290.5,
+   "wall_s": 356.2,
    "face_sha16": "a0fae9072313e2d1",
    "uncaught": 0,
    "screenshot_bytes": 16160,
    "screenshot_verdict": "OK",
    "pin": "a0fae907",
-   "binary": "f0ba2e129a5b3678",
+   "binary": "9745c3e7a09d0194",
    "hold": true
   }
  }
