@@ -98,9 +98,16 @@
 - **Size:** 15.78 KB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gold_dooz/screenshot.png)
-- **SHA256:** `a0fae9072313e2d1b0d5659bf02f12cc48fb9f7f23c2e0ed4182bf1a0882affe` (recorded by tools/report_sanity_fix.py from the actual retained file)
+
+### Output Frame
+
+- **File:** `/home/z/my-project/evidence/s207/runs/s207_gold_dooz/screenshot.png`
+- **Resolution:** 1080x1920
+- **Size:** 15.78 KB
+
+![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gold_dooz/screenshot.png)
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261113-215224-9128`
-- **Generated:** 2026-11-13 21:57:08 UTC
+- **Session ID:** `EXP-001-20261114-051447-5116`
+- **Generated:** 2026-11-14 05:19:31 UTC

@@ -1,37 +1,5 @@
 {
- "binary_sha16": "006d05fc28f8c090",
- "goldens": {
-  "bouncy": {
-   "wall_s": 23.6,
-   "face_sha16": "98abca389fb01380",
-   "uncaught": 0,
-   "screenshot_bytes": 36434,
-   "screenshot_verdict": "OK",
-   "pin": "98abca38",
-   "binary": "006d05fc28f8c090",
-   "hold": true
-  },
-  "unote": {
-   "wall_s": 1.5,
-   "face_sha16": "3b8dcb0adbbc17a9",
-   "uncaught": 0,
-   "screenshot_bytes": 17205,
-   "screenshot_verdict": "OK",
-   "pin": "3b8dcb0a",
-   "binary": "006d05fc28f8c090",
-   "hold": true
-  },
-  "dooz": {
-   "wall_s": 283.8,
-   "face_sha16": "a0fae9072313e2d1",
-   "uncaught": 0,
-   "screenshot_bytes": 16160,
-   "screenshot_verdict": "OK",
-   "pin": "a0fae907",
-   "binary": "006d05fc28f8c090",
-   "hold": true
-  }
- },
+ "binary_sha16": "e11de0b5d251f252",
  "gmdice": {
   "r1": {
    "wall_s": 2.6,
@@ -41,7 +9,7 @@
    "screenshot_verdict": "OK"
   },
   "r2": {
-   "wall_s": 2.6,
+   "wall_s": 2.5,
    "face_sha16": "3891679dff449331",
    "uncaught": 0,
    "screenshot_bytes": 34865,
@@ -59,14 +27,7 @@
  "tictactoe": {
   "runs": [
    {
-    "wall_s": 20.0,
-    "face_sha16": "7354c1b231cd581d",
-    "uncaught": 0,
-    "screenshot_bytes": 11386,
-    "screenshot_verdict": "OK"
-   },
-   {
-    "wall_s": 20.2,
+    "wall_s": 19.9,
     "face_sha16": "7354c1b231cd581d",
     "uncaught": 0,
     "screenshot_bytes": 11386,
@@ -74,6 +35,13 @@
    },
    {
     "wall_s": 20.0,
+    "face_sha16": "7354c1b231cd581d",
+    "uncaught": 0,
+    "screenshot_bytes": 11386,
+    "screenshot_verdict": "OK"
+   },
+   {
+    "wall_s": 19.9,
     "face_sha16": "7354c1b231cd581d",
     "uncaught": 0,
     "screenshot_bytes": 11386,
@@ -81,5 +49,37 @@
    }
   ],
   "deterministic_x3": true
+ },
+ "goldens": {
+  "bouncy": {
+   "wall_s": 24.0,
+   "face_sha16": "98abca389fb01380",
+   "uncaught": 0,
+   "screenshot_bytes": 36434,
+   "screenshot_verdict": "OK",
+   "pin": "98abca38",
+   "binary": "e11de0b5d251f252",
+   "hold": true
+  },
+  "unote": {
+   "wall_s": 1.5,
+   "face_sha16": "3b8dcb0adbbc17a9",
+   "uncaught": 0,
+   "screenshot_bytes": 17205,
+   "screenshot_verdict": "OK",
+   "pin": "3b8dcb0a",
+   "binary": "e11de0b5d251f252",
+   "hold": true
+  },
+  "dooz": {
+   "wall_s": 284.8,
+   "face_sha16": "a0fae9072313e2d1",
+   "uncaught": 0,
+   "screenshot_bytes": 16160,
+   "screenshot_verdict": "OK",
+   "pin": "a0fae907",
+   "binary": "e11de0b5d251f252",
+   "hold": true
+  }
  }
 }

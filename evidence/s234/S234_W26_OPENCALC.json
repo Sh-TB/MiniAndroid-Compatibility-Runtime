@@ -1,0 +1,56 @@
+{
+ "wave": "S234-2 (#594 integration)",
+ "date": "2026-11-14",
+ "binary_sha256": "e11de0b5d251f252227e4f115a850967761d4c9a82337a2560371ae6cb0a0742",
+ "binary_sha16": "e11de0b5d251f252",
+ "apk": {
+  "name": "com.darkempire78.opencalculator_53.apk",
+  "sha256": "2642613868a8a80f0ce963a4863bc153e7281b97b3bbdf36ca92a99dded7134a",
+  "source": "https://f-droid.org/repo/com.darkempire78.opencalculator_53.apk",
+  "kept": "local-only per the zero_apk_policy (upload/ gitignored)"
+ },
+ "laws_landed": {
+  "F-NEW-636": "Class.getSuperclass resolves bootclasspath classes through the SAME AOSP framework_direct_superclass table as getGenericSuperclass (F-NEW-225c); Class.getInterfaces serves the F-NEW-236 framework_class_interfaces table (dex-first precedence kept)",
+  "F-NEW-637": "OpenJDK StringReader.read law \u2014 serves the <init> \"s\" source, tracks __sr_pos, returns count / 0 iff len==0 / -1 at EOF",
+  "F-NEW-638": "degenerate-container pass-through in node_at \u2014 a container WITH children and a <=0 box fills its parent for the input walk; childless 0x0 keeps rejecting"
+ },
+ "opencalc_end_to_end": {
+  "cold_run": {
+   "face_sha16": "a84863964c6172d1",
+   "matches_W25_gold": true,
+   "uncaught": 0,
+   "recipe": "run --execution-mode real-dalvik --frames 10 --frame-delay 250"
+  },
+  "tap_run": {
+   "face_sha16": "0b15f225c9975cc4",
+   "matches_W26_post_tap": true,
+   "uncaught": 0,
+   "tap": "150,1005@4 (the '7' keypad button)",
+   "chain": "hit-test -> onClick -> app state -> re-render"
+  },
+  "note": "both faces byte-identical to the W26 issue #594 declared faces; the W26 diff was never posted, the three laws were re-implemented on main from the issue body and re-verified here against the same SHA-pinned APK"
+ },
+ "gates": {
+  "check_source_parity": "75/75",
+  "test_all": "30/30 (battery 29->30 with tests/s234_w26_engine_laws_test.cpp: F-NEW-636 rows w1a-e, F-NEW-637 rows s1a-g/s2/s3, F-NEW-638 rows h1-h3; 15 checks)",
+  "kotlin_family": "8/8 + 1 OBS NPE face",
+  "six_pin_gate": {
+   "binary_sha16": "e11de0b5d251f252",
+   "result": "ALL HOLD byte-exact",
+   "pins": [
+    "bouncy 98abca38",
+    "unote 3b8dcb0a",
+    "dooz a0fae907",
+    "gmdice 3891679d x2 identical",
+    "microtimer b39665f6 0-uncaught",
+    "ttt 7354c1b2 x3 deterministic"
+   ]
+  }
+ },
+ "dooz_pin_flakiness_note": {
+  "pin": "a0fae907 (UNCHANGED)",
+  "observations_on_this_binary": "5x a0fae907 / 1x d602648e (the 04:33 gate run)",
+  "disposition": "pre-existing run-to-run variance (the S231 census documented 3 distinct faces x3 runs, the kotlinx family); the W26 bisect briefly implicated StringReader but the restored binary reproduced a0fae907 3/3 full-recipe runs \u2014 the one blank observation is the S232-documented post-nav face, not a W26 causal change; pin kept, drift recorded honestly"
+ },
+ "policy": "validator 0 violations 5 warnings (pre-existing oversized-GIF)"
+}

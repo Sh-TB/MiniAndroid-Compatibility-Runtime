@@ -69,6 +69,35 @@ bool node_at(ViewShadow* views, const ViewShadow::ViewNode* n, int x, int y) {
             nh = (nh < 0) ? 100000 : nh;
         }
     }
+    // F-NEW-638 (W26, opencalc vc53 face): the DEGENERATE-CONTAINER
+    // pass-through. A container whose custom onMeasure never runs
+    // (com.sothree.slidinguppanel.SlidingUpPanelLayout in OpenCalc)
+    // materializes with a 0x0 box while every child holds its real
+    // absolute box; the claim walk bounds-checks THE CHILD before
+    // descending into its subtree (R-NEW-399), so the 0x0 panel
+    // rejected the whole keypad subtree (HITPROBE d=3 id=846 (0,0 0x0)
+    // REJECT) and every tap returned target=0. Law: a container WITH
+    // CHILDREN and a <=0 box FILLS ITS PARENT for the input walk (the
+    // same MATCH_PARENT fill precedent as the sentinel chain above);
+    // the deepest-wins recursion still lands on a child's real box.
+    // A CHILDLESS 0x0 view keeps rejecting (a truly empty view has no
+    // touchable area — the honest AOSP answer).
+    if ((nw == 0 || nh == 0) && !n->children.empty()) {
+        const ViewShadow::ViewNode* p =
+                (n->parent_id && views) ? views->find_node(n->parent_id)
+                                        : nullptr;
+        while (p && (p->width <= 0 || p->height <= 0)) {
+            p = (p->parent_id && views) ? views->find_node(p->parent_id)
+                                        : nullptr;
+        }
+        if (p && p->width > 0 && p->height > 0) {
+            nx = p->x; ny = p->y; nw = p->width; nh = p->height;
+        } else {
+            nx = 0; ny = 0;
+            nw = 100000;
+            nh = 100000;
+        }
+    }
     // F-NEW-408: the node's own translation + scale-about-pivot move its
     // hit rect with it (AOSP isTransformedTouchPointInView applies the
     // child's matrix before the containment test).

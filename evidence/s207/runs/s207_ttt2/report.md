@@ -59,9 +59,16 @@
 - **Size:** 10.84 KB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_ttt2/screenshot.png)
-- **SHA256:** `7354c1b231cd581d239c78cea07f992c7ab9cc1e5d71b802f9f456d412298ce1` (recorded by tools/report_sanity_fix.py from the actual retained file)
+
+### Output Frame
+
+- **File:** `/home/z/my-project/evidence/s207/runs/s207_ttt2/screenshot.png`
+- **Resolution:** 1080x1920
+- **Size:** 11.12 KB
+
+![Screenshot](/home/z/my-project/evidence/s207/runs/s207_ttt2/screenshot.png)
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261113-215757-9990`
-- **Generated:** 2026-11-13 21:58:17 UTC
+- **Session ID:** `EXP-001-20261114-052019-1263`
+- **Generated:** 2026-11-14 05:20:39 UTC

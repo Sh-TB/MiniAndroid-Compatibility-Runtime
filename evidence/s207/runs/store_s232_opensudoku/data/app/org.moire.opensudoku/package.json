@@ -1,0 +1,18 @@
+{
+  "package": "org.moire.opensudoku",
+  "versionName": "4.11.3",
+  "versionCode": 20261008,
+  "mainActivity": "org.moire.opensudoku.gui.screen.title.TitleScreenActivity",
+  "minSdk": "26",
+  "targetSdk": "37",
+  "requestedPermissions": [
+    "android.permission.CAMERA"
+  ],
+  "origin": "sideload",
+  "codePath": "/data/app/org.moire.opensudoku/base.apk",
+  "hostCodePath": "/home/z/my-project/evidence/s207/runs/store_s232_opensudoku/data/app/org.moire.opensudoku/base.apk",
+  "apkSha256": "ac4c6c8d0bc9058c1cc8d8f4570dc51977b3bc51577a82a12b94e6ec7714b9f0",
+  "apkSize": 19398348,
+  "installedAt": "2026-11-13T21:33:15Z",
+  "installLayout": "MiniAndroid deterministic package store (F-NEW-231; AOSP /data/app law, deterministic mapping deviation)"
+}

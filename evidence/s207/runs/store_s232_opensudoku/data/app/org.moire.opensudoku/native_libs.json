@@ -1,0 +1,10 @@
+{
+  "primaryAbi": "arm64-v8a",
+  "nativeLibraryDir": "/data/app/org.moire.opensudoku/lib/arm64-v8a",
+  "extracted": [
+    {"entry": "lib/arm64-v8a/libc++_shared.so", "size": 1292904},
+    {"entry": "lib/arm64-v8a/libopencv_java5.so", "size": 33382992},
+    {"entry": "lib/arm64-v8a/libtensorflowlite_jni.so", "size": 3549384}
+  ],
+  "count": 3
+}

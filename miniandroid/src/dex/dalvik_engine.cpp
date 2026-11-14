@@ -79231,15 +79231,27 @@ measure_cm_done:;
         }
         if (method == "getInterfaces" && !dotted.empty()) {
             std::vector<std::string> ifaces;
+            bool dex_found = false;
             for (const auto& cd : dex_report_->classes) {
                 if (cd.name == referent_desc) {
                     ifaces = cd.interfaces;
+                    dex_found = true;
                     break;
                 }
             }
-            // Engine-synthetic classes: known framework interface subsets
-            // stay empty ([] — the honest libcore answer for a synthetic
-            // Class with no parsed dex def).
+            // F-NEW-636 (W26): the framework classes serve the F-NEW-236
+            // framework_class_interfaces table when the dex has no def —
+            // the engine-synthetic empty answer broke the Gson TypeToken
+            // family walk the same way the null superclass climb did.
+            // A table ENTRY (even an empty one, e.g. Stack) is the
+            // authoritative framework answer; an unknown class keeps the
+            // honest empty [] (libcore never returns null).
+            if (!dex_found) {
+                const auto& tbl = framework::framework_class_interfaces();
+                auto it = tbl.find(
+                    framework::normalize_class_desc(referent_desc));
+                if (it != tbl.end()) ifaces = it->second;
+            }
             uint32_t arr_id = heap_.allocate(
                 "[Ljava/lang/Class;", pc_, 0);
             heap_.set_object_field(
@@ -79389,6 +79401,23 @@ measure_cm_done:;
                         super_desc = cd.superclass_name;
                         break;
                     }
+                }
+                // F-NEW-636 (W26, opencalc vc53 face): BOOTCLASSPATH classes
+                // are NOT in the DexReport — the dex scan above answers
+                // empty and the climb handed a null MID-CHAIN ($Gson$Types
+                // .resolve walks getSuperclass chains of the TypeToken
+                // rawType j1/a.a; Class.getSuperclass (F-NEW-190b) only
+                // knew APK-dex classes → null `from` → NPE at the next
+                // getSuperclass hop → the factory rethrow → APP-BOUNDARY
+                // death). Resolve framework classes through the SAME AOSP
+                // framework_direct_superclass table the sibling
+                // getGenericSuperclass (F-NEW-225c) already uses — one
+                // hierarchy, two entry points; the climb terminates
+                // exactly like on a JVM. Dex-first precedence is kept
+                // (an app class def is authoritative for its own name).
+                if (super_desc.empty()) {
+                    super_desc =
+                        framework::framework_superclass_of(referent_desc);
                 }
             }
             // Interfaces have no superclass (dex reports none in
@@ -88410,6 +88439,54 @@ measure_cm_done:;
         result = DalvikValue::make_void();
         std::cerr << "[XML-PULL] StringReader.<init>(\"" << args[1].string_val.substr(0, 40)
                   << "\")" << std::endl;
+        return true;
+    }
+    if (class_name == "Ljava/io/StringReader;" && method == "read") {
+        // F-NEW-637 (W26, opencalc vc53 face): OpenJDK StringReader.read
+        // law. Gson JsonReader.fillBuffer exits ONLY on
+        // read(char[],int,int) == -1; the engine's StringReader had NO
+        // read handler → the generic stub answered 0 → `pos` never
+        // advanced → the fillBuffer loop spun to the F084 halt →
+        // VirtualMachineError ×2 uncaught under --tap. OpenJDK law:
+        // serve from the source captured at <init> (the "s" field),
+        // track __sr_pos, return the char count / 0 iff len==0 (with
+        // pos < length) / -1 at EOF (EOF checked FIRST, like the JDK).
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        uint32_t rid = args[0].object_id;
+        std::string s;
+        auto src = heap_.get_object_field(rid, "s");
+        if (src.has_value() && src->type == DalvikType::STRING_REF)
+            s = src->string_val;
+        auto posv = heap_.get_object_field(rid, "__sr_pos");
+        int64_t pos = (posv.has_value() && posv->type == DalvikType::INT32)
+                          ? posv->int_val : 0;
+        if (pos < 0) pos = 0;
+        if (pos >= static_cast<int64_t>(s.size())) {
+            result = DalvikValue::make_int(-1);  // EOF
+        } else if (args.size() >= 4 &&
+                   args[1].type == DalvikType::OBJECT_REF) {
+            // read([CII)I — the JsonReader.fillBuffer face.
+            int32_t off = dalvik_int_value(args[2]);
+            int32_t len = dalvik_int_value(args[3]);
+            int64_t n = std::min<int64_t>(
+                static_cast<int64_t>(s.size()) - pos,
+                len > 0 ? len : 0);
+            for (int64_t k = 0; k < n; ++k)
+                heap_.set_object_field(
+                    args[1].object_id,
+                    "array[" + std::to_string(off + k) + "]",
+                    DalvikValue::make_char(s[static_cast<size_t>(pos + k)]));
+            pos += n;
+            heap_.set_object_field(rid, "__sr_pos",
+                                   DalvikValue::make_int((int32_t)pos));
+            result = DalvikValue::make_int(static_cast<int32_t>(n));
+        } else {
+            // read()I — one char (0..65535) or -1 at EOF.
+            result = DalvikValue::make_char(s[static_cast<size_t>(pos)]);
+            pos += 1;
+            heap_.set_object_field(rid, "__sr_pos",
+                                   DalvikValue::make_int((int32_t)pos));
+        }
         return true;
     }
     if ((class_name == "Landroid/util/Xml;" || class_name == "Lorg/xmlpull/v1/Xml;") &&

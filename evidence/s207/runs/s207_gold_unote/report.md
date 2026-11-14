@@ -59,9 +59,16 @@
 - **Size:** 16.80 KB
 
 ![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gold_unote/screenshot.png)
-- **SHA256:** `3b8dcb0adbbc17a938d82f6866d4fb9b70641a566f3907d295bdea8d612cc943` (recorded by tools/report_sanity_fix.py from the actual retained file)
+
+### Output Frame
+
+- **File:** `/home/z/my-project/evidence/s207/runs/s207_gold_unote/screenshot.png`
+- **Resolution:** 1080x1920
+- **Size:** 16.80 KB
+
+![Screenshot](/home/z/my-project/evidence/s207/runs/s207_gold_unote/screenshot.png)
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261113-215223-9088`
-- **Generated:** 2026-11-13 21:52:24 UTC
+- **Session ID:** `EXP-001-20261114-051445-2139`
+- **Generated:** 2026-11-14 05:14:46 UTC
