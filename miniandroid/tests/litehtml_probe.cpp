@@ -80,6 +80,12 @@ int main(int argc, char** argv) {
     }
 
     miniandroid::MiniLitehtmlContainer container(w, h);
+    // The document base for relative resource/@import resolution: the
+    // external CSS URL (a user stylesheet IS the document's stylesheet
+    // context here). Without a base, relative @import cannot resolve —
+    // the honest FETCH-FAILED record proved that face.
+    if (!css_url.empty()) container.set_base_url(css_url.c_str());
+    else if (!master_url.empty()) container.set_base_url(master_url.c_str());
     bool ok = container.render_document(html, master_css.empty()
                                                    ? litehtml::master_css
                                                    : master_css,

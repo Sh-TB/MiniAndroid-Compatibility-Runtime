@@ -283,10 +283,23 @@ void MiniLitehtmlContainer::import_css(std::string& text,
                                        std::string& baseurl) {
     std::string body, ct;
     std::string full = url;
-    if (!url.empty() && url[0] == '/' && !base_url_.empty() &&
-        base_url_.rfind("http", 0) == 0) {
-        size_t sp = base_url_.find('/', 7);
-        full = (sp == std::string::npos ? base_url_ : base_url_.substr(0, sp)) + url;
+    std::cerr << "[M16-PROBE] import_css url='" << url << "' baseurl='"
+              << baseurl << "' doc_base='" << base_url_ << "'" << std::endl;
+    auto is_abs = [](const std::string& u) {
+        return u.rfind("http://", 0) == 0 || u.rfind("file://", 0) == 0 ||
+               (!u.empty() && u[0] == '/');
+    };
+    if (!is_abs(full)) {
+        // CSS spec: a relative @import resolves against the IMPORTING
+        // STYLESHEET's URL (the baseurl litehtml passes), NOT the document
+        // base. Fall back to the document base only when the importer's
+        // base is unknown.
+        const std::string& base = baseurl.empty() ? base_url_ : baseurl;
+        if (base.rfind("http", 0) == 0) {
+            size_t sp = base.rfind('/');
+            if (sp != std::string::npos && sp >= 7)
+                full = base.substr(0, sp + 1) + full;
+        }
     }
     if (litehtml_fetch_url(full, body, ct)) {
         text = body;
