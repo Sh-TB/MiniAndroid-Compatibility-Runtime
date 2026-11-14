@@ -1,0 +1,26 @@
+{
+ "tag": "sudoku_596_40f",
+ "cmd": [
+  "/tmp/s236_audit/miniandroid/build/miniandroid",
+  "run",
+  "--execution-mode",
+  "real-dalvik",
+  "--data-root",
+  "/tmp/s236_sudoku_596_root_9a02w2t5",
+  "-o",
+  "/tmp/s236_sudoku_596_out_md_1m32r",
+  "--package",
+  "org.moire.opensudoku",
+  "--frames",
+  "40",
+  "--frame-delay",
+  "250"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 22.21,
+ "rc": 0,
+ "stdout_bytes": 1612,
+ "stderr_bytes": 523117
+}

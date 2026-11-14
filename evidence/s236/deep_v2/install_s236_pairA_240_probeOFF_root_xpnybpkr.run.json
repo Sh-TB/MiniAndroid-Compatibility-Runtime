@@ -1,0 +1,17 @@
+{
+ "tag": "install_s236_pairA_240_probeOFF_root_xpnybpkr",
+ "cmd": [
+  "/tmp/s236_audit/miniandroid/build/miniandroid",
+  "install",
+  "/home/z/my-project/upload/chess_jwtc_298.apk",
+  "--data-root",
+  "/tmp/s236_pairA_240_probeOFF_root_xpnybpkr"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 0.06,
+ "rc": 0,
+ "stdout_bytes": 694,
+ "stderr_bytes": 0
+}

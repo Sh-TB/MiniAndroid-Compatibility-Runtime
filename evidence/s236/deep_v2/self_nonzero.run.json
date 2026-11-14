@@ -1,0 +1,14 @@
+{
+ "tag": "self_nonzero",
+ "cmd": [
+  "/tmp/s236_harness_selftest_st2x2u8h/fake_runner.sh",
+  "fail_nonzero"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 0.0,
+ "rc": 3,
+ "stdout_bytes": 20,
+ "stderr_bytes": 0
+}

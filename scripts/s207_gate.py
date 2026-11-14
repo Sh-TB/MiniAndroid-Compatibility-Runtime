@@ -16,7 +16,9 @@ from pathlib import Path
 
 BASE = Path('/home/z/my-project')
 PHASE = os.environ.get('S207_PHASE', 'all')
-BIN = BASE / 'miniandroid/build/miniandroid'
+import os
+BIN = Path(os.environ.get('MINIANDROID_BIN') or
+          BASE / 'miniandroid/build/miniandroid')  # S236 audit: env override, default unchanged
 RUNS = BASE / 'evidence/s207/runs'
 RUNS.mkdir(parents=True, exist_ok=True)
 BIN_SHA = hashlib.sha256(BIN.read_bytes()).hexdigest()[:16]

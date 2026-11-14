@@ -1,0 +1,14 @@
+{
+ "tag": "self_mixed",
+ "cmd": [
+  "/tmp/s236_harness_selftest_st2x2u8h/fake_runner.sh",
+  "mixed"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 0.0,
+ "rc": 0,
+ "stdout_bytes": 15,
+ "stderr_bytes": 3
+}

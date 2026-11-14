@@ -1,0 +1,46 @@
+{
+ "pkg": "org.moire.opensudoku",
+ "rc": 0,
+ "duration_s": 22.21,
+ "stdout_bytes": 1612,
+ "stderr_bytes": 523117,
+ "stdout_markers": {
+  "C013-ONDRAW": 0,
+  "_fieldColor": 0,
+  "SQLITE-INSERT": 0,
+  "SQLITE-SHADOW] rawQuery rows=1": 0,
+  "CV-PUT": 0,
+  "F-NEW-65": 0,
+  "loadPGN": 0,
+  "FEN": 0,
+  "practice": 0,
+  "S191": 0,
+  "C102-ADAPTER": 0,
+  "getView": 0,
+  "TRY-ENTRY] Ljwtc/android/chess/helpers/MyPGNProvider": 0,
+  "Thread": 0,
+  "start()": 0
+ },
+ "stderr_markers": {
+  "SQLITE-SHADOW] rawQuery": 0,
+  "SQLITE-SHADOW] query": 0,
+  "SimpleCursorAdapter": 0,
+  "getView": 4,
+  "S191": 0,
+  "C013-ONDRAW": 0,
+  "ListView": 0,
+  "measure": 84,
+  "onLayout": 0,
+  "uncaught": 1,
+  "NotFoundException": 6,
+  "folder": 0,
+  "provider": 1
+ },
+ "census": [
+  {
+   "db": "c7_pkg_cache.sqlite3",
+   "table": "pkg_cache",
+   "rows": 1
+  }
+ ]
+}

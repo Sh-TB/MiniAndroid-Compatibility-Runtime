@@ -1,0 +1,68 @@
+{
+ "pairA_240_probeOFF": {
+  "pkg": "jwtc.android.chess",
+  "rc": 1,
+  "duration_s": 51.23,
+  "timed_out": false,
+  "stdout_bytes": 2049,
+  "census": [
+   {
+    "db": "chess_pgn.db",
+    "table": "games",
+    "rows": 1
+   },
+   {
+    "db": "c7_pkg_cache.sqlite3",
+    "table": "pkg_cache",
+    "rows": 1
+   }
+  ],
+  "markers": {
+   "R-NEW-345": 0,
+   "consume_pending_start": 0,
+   "run_thread_start_body": 0,
+   "THREAD": 0,
+   "run() body": 0,
+   "PRAGMA table_info(games)": 0,
+   "PRAGMA user_version": 0,
+   "SQLITE-SHADOW] rawQuery": 0,
+   "SQLITE-SHADOW] insert": 0,
+   "SQLITE-INSERT": 0,
+   "CV-PUT": 0,
+   "C013-ONDRAW": 0
+  }
+ },
+ "pairB_240_probeON": {
+  "pkg": "jwtc.android.chess",
+  "rc": 1,
+  "duration_s": 50.72,
+  "timed_out": false,
+  "stdout_bytes": 2041,
+  "census": [
+   {
+    "db": "chess_pgn.db",
+    "table": "games",
+    "rows": 1
+   },
+   {
+    "db": "c7_pkg_cache.sqlite3",
+    "table": "pkg_cache",
+    "rows": 1
+   }
+  ],
+  "markers": {
+   "R-NEW-345": 0,
+   "consume_pending_start": 0,
+   "run_thread_start_body": 0,
+   "THREAD": 0,
+   "run() body": 0,
+   "PRAGMA table_info(games)": 0,
+   "PRAGMA user_version": 0,
+   "SQLITE-SHADOW] rawQuery": 0,
+   "SQLITE-SHADOW] insert": 0,
+   "SQLITE-INSERT": 0,
+   "CV-PUT": 0,
+   "C013-ONDRAW": 0
+  }
+ }
+}

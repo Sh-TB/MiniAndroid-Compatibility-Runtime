@@ -1,0 +1,26 @@
+{
+ "tag": "pairA_240_probeOFF",
+ "cmd": [
+  "/tmp/s236_audit/miniandroid/build/miniandroid",
+  "run",
+  "--execution-mode",
+  "real-dalvik",
+  "--data-root",
+  "/tmp/s236_pairA_240_probeOFF_root_xpnybpkr",
+  "-o",
+  "/tmp/s236_pairA_240_probeOFF_out_4obau_fq",
+  "--package",
+  "jwtc.android.chess",
+  "--frames",
+  "240",
+  "--frame-delay",
+  "250"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 51.23,
+ "rc": 1,
+ "stdout_bytes": 2049,
+ "stderr_bytes": 5468587
+}

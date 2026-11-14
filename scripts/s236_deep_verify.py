@@ -1,71 +1,102 @@
 #!/usr/bin/env python3
-"""S236 audit deep verification (#595 follow-up).
+"""S236.1 deep harness v2 (#596 §1.1): every run persists stdout, stderr,
+exit code, command, duration, env overrides and timeout state as a JSON
+sidecar beside the RAW .stdout/.stderr files. A run with no captured output
+is a HARNESS FAIL, never a zero-marker success. Marker counts are derived
+from the retained raw stdout only.
 
-Raw-log-first: every run's FULL console lands in evidence/s236/deep/ so the
-markers are read from the REAL formats, not guessed strings.
-
-1. chess_fresh      — clean root, 60 frames, no tap: the 2380-row frontier
-                      (the onDraw-storm interrupt) + the RAW storm evidence.
-2. chess_fresh_probe— SAME but MINIANDROID_S236_PROBE_DEFER_DRAW=1: the
-                      custom-view onDraw storm is skipped -> the causality
-                      measurement (insert count with vs without the storm).
-3. chess_seeded     — the seeded root + tap 540,110@8: Practice list ->
-                      rawQuery rows / adapter bind / FEN-into-model trace
-                      (the REAL-app reachability for 655/657/658b/659/660).
-4. sudoku_deep      — 40 frames + the folder tap: cursor -> adapter -> rows
-                      bound AND rendered.
+Self-tests (self_test()): a fake runner proves stdout-only, stderr-only,
+mixed, non-zero-exit and missing-output behavior.
 """
 import json
 import os
-import shutil
 import sqlite3
 import subprocess
 import tempfile
+import time
 from pathlib import Path
 
 BIN = Path("/tmp/s236_audit/miniandroid/build/miniandroid")
 UPLOAD = Path("/home/z/my-project/upload")
-OUT = Path("/tmp/s236_audit/evidence/s236/deep")
+OUT = Path("/tmp/s236_audit/evidence/s236/deep_v2")
 OUT.mkdir(parents=True, exist_ok=True)
 CH = UPLOAD / "chess_jwtc_298.apk"
 SU = UPLOAD / "opensudoku_v4113.apk"
-results = {}
 
-def run(cmd, env=None, timeout=900):
-    e = dict(os.environ)
-    if env:
-        e.update(env)
-    return subprocess.run([str(c) for c in cmd], capture_output=True,
-                          text=True, timeout=timeout, env=e)
+class HarnessFail(Exception):
+    pass
+
+def run(cmd, tag, env=None, timeout=900):
+    """Persist everything about one run; return the record."""
+    rec = {"tag": tag,
+           "cmd": [str(c) for c in cmd],
+           "env": {k: v for k, v in (env or {}).items()},
+           "timeout_s": timeout, "timed_out": False,
+           "duration_s": None, "rc": None,
+           "stdout_bytes": 0, "stderr_bytes": 0}
+    t0 = time.time()
+    try:
+        r = subprocess.run(rec["cmd"], capture_output=True, text=True,
+                           timeout=timeout,
+                           env={**os.environ, **(env or {})})
+        rec.update(rc=r.returncode, stdout=r.stdout, stderr=r.stderr,
+                   duration_s=round(time.time() - t0, 2))
+    except subprocess.TimeoutExpired as e:
+        rec.update(timed_out=True,
+                   stdout=(e.stdout or b"").decode(errors="replace"),
+                   stderr=(e.stderr or b"").decode(errors="replace"),
+                   duration_s=round(time.time() - t0, 2))
+    rec["stdout_bytes"] = len(rec.get("stdout", ""))
+    rec["stderr_bytes"] = len(rec.get("stderr", ""))
+    raw_s = OUT / f"{tag}.stdout.log"
+    raw_e = OUT / f"{tag}.stderr.log"
+    raw_s.write_text(rec.get("stdout", ""))
+    raw_e.write_text(rec.get("stderr", ""))
+    if rec["stdout_bytes"] == 0 and rec["stderr_bytes"] == 0:
+        raise HarnessFail(
+            f"[{tag}] NO captured output on stdout OR stderr — refusing to "
+            f"interpret as a zero-marker success (cmd: {rec['cmd'][:3]}...)")
+    (OUT / f"{tag}.run.json").write_text(
+        json.dumps({k: v for k, v in rec.items() if k not in
+                    ("stdout", "stderr")}, indent=1) + "\n")
+    return rec
+
+def markers_from_raw(rec):
+    """Parse ONLY the retained raw stdout file; assert it is non-empty."""
+    raw = OUT / f"{rec['tag']}.stdout.log"
+    if not raw.exists() or raw.stat().st_size == 0:
+        raise HarnessFail(f"[{rec['tag']}] raw stdout missing/empty")
+    txt = raw.read_text(errors="replace")
+    return {m: txt.count(m) for m in (
+        "C013-ONDRAW", "_fieldColor", "SQLITE-INSERT",
+        "SQLITE-SHADOW] rawQuery rows=1", "CV-PUT", "F-NEW-65",
+        "loadPGN", "FEN", "practice", "S191", "C102-ADAPTER",
+        "getView", "TRY-ENTRY] Ljwtc/android/chess/helpers/MyPGNProvider",
+        "Thread", "start()")}
 
 def install(apk, store):
-    run([BIN, "install", apk, "--data-root", store])
-    apps = store / "data" / "app"
+    r = run([BIN, "install", apk, "--data-root", store],
+            tag=f"install_{Path(store).name}")
+    apps = Path(store) / "data" / "app"
     ds = [d.name for d in sorted(apps.iterdir())
           if d.is_dir() and not d.name.startswith(".")
           and not d.name.endswith(".staging")
           and (d / "base.apk").exists()]
     return ds[0] if ds else None
 
-def run_app(store, pkg, out, frames, taps=None, env=None, delay=250):
+def run_app(store, pkg, out, tag, frames, taps=None, env=None):
     cmd = [BIN, "run", "--execution-mode", "real-dalvik",
            "--data-root", store, "-o", out, "--package", pkg,
-           "--frames", str(frames), "--frame-delay", str(delay)]
+           "--frames", str(frames), "--frame-delay", "250"]
     for t in (taps or []):
         cmd += ["--tap", t]
-    r = run(cmd, env=env)
-    log = Path(out) / "console.log"
-    txt = log.read_text(errors="replace") if log.exists() else ""
-    if not txt:
-        # the console may land beside the frame dir
-        for cand in Path(out).rglob("console.log"):
-            txt = cand.read_text(errors="replace")
-            break
-    return txt
+    rec = run(cmd, tag=tag, env=env)
+    rec["markers"] = markers_from_raw(rec)
+    return rec
 
 def census(store):
     rows = []
-    for db in list(store.rglob("*.db")) + list(store.rglob("*.sqlite3")):
+    for db in list(Path(store).rglob("*.db")) + list(Path(store).rglob("*.sqlite3")):
         try:
             con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
             for (t,) in con.execute(
@@ -81,50 +112,47 @@ def census(store):
             pass
     return rows
 
-def markers(txt):
-    hits = {}
-    for m in ("SQLITE-SHADOW] insert", "SQLITE-INSERT", "CV-PUT",
-              "_fieldColor", "loadPGN", "rawQuery rows=", "[FEN",
-              "[F-NEW-659]", "[F-NEW-655]", "[F-NEW-657]", "[F-NEW-658",
-              "C013-ONDRAW", "S191", "C102-ADAPTER", "getView",
-              "NotFoundException", "F-016", "practice"):
-        hits[m] = txt.count(m)
-    return hits
+def self_test():
+    """§1.1 self-tests on a fake runner."""
+    tmp = Path(tempfile.mkdtemp(prefix="s236_harness_selftest_"))
+    fake = tmp / "fake_runner.sh"
+    fake.write_text(
+        '#!/bin/bash\n'
+        'case "$1" in\n'
+        '  stdout_only) echo "C013-ONDRAW x7" ;;\n'
+        '  stderr_only) echo "err text" >&2 ;;\n'
+        '  mixed) echo "C013-ONDRAW x3"; echo "E1" >&2 ;;\n'
+        '  fail_nonzero) echo "partial C013-ONDRAW"; exit 3 ;;\n'
+        '  silent) exit 0 ;;\n'
+        'esac\n')
+    fake.chmod(0o755)
+    results = {}
+    # stdout-only: rc 0, markers parsed from the retained raw stdout
+    r = run([fake, "stdout_only"], tag="self_stdout")
+    results["stdout_only"] = (r["rc"] == 0 and r["stdout_bytes"] > 0
+                              and markers_from_raw(r)["C013-ONDRAW"] == 1)
+    # stderr-only: passes the no-output guard via stderr
+    r = run([fake, "stderr_only"], tag="self_stderr")
+    results["stderr_only"] = (r["stderr_bytes"] > 0 and r["stdout_bytes"] == 0)
+    # mixed: both retained, stdout parsed
+    r = run([fake, "mixed"], tag="self_mixed")
+    results["mixed"] = (r["stdout_bytes"] > 0 and r["stderr_bytes"] > 0
+                        and markers_from_raw(r)["C013-ONDRAW"] == 1)
+    # non-zero exit: rc preserved, NOT hidden
+    r = run([fake, "fail_nonzero"], tag="self_nonzero")
+    results["nonzero_rc_preserved"] = (r["rc"] == 3 and r["stdout_bytes"] > 0)
+    # missing output: harness FAIL, never zero-markers
+    try:
+        run([fake, "silent"], tag="self_silent")
+        results["silent_raises"] = False
+    except HarnessFail:
+        results["silent_raises"] = True
+    (tmp / "selftest_results.json").write_text(
+        json.dumps(results, indent=1) + "\n")
+    ok = all(results.values())
+    print("HARNESS SELF-TESTS:", json.dumps(results))
+    print("SELFTEST:", "ALL PASS" if ok else "FAIL")
+    return ok
 
-# ── 1+2: the causality pair (fresh roots, probe OFF then ON) ────────────────
-for tag, env in (("chess_fresh", None),
-                 ("chess_fresh_probe",
-                  {"MINIANDROID_S236_PROBE_DEFER_DRAW": "1"})):
-    store = Path(tempfile.mkdtemp(prefix=f"s236_{tag}_"))
-    out = Path(tempfile.mkdtemp(prefix=f"s236_{tag}_out_"))
-    pkg = install(CH, store)
-    txt = run_app(store, pkg, out, 60, env=env)
-    (OUT / f"{tag}.console.log").write_text(txt)
-    results[tag] = {"pkg": pkg, "census": census(store), "markers": markers(txt)}
-
-# ── 3: the seeded Practice chain (REAL-app reachability) ───────────────────
-store = Path(tempfile.mkdtemp(prefix="s236_chess_seeded_"))
-out = Path(tempfile.mkdtemp(prefix="s236_chess_seeded_out_"))
-pkg = install(CH, store)
-txt0 = run_app(store, pkg, out, 60)          # the seeding boot
-seeded_census = census(store)
-txt1 = run_app(store, pkg, out, 16, taps=["540,110@8"])   # Practice tap
-(OUT / "chess_seeded.console.log").write_text(txt1)
-results["chess_seeded"] = {"pkg": pkg, "census_after_seed": seeded_census,
-                           "markers": markers(txt1),
-                           "tap": "540,110@8", "frames": 16}
-
-# ── 4: OpenSudoku deep ──────────────────────────────────────────────────────
-su_store = Path(tempfile.mkdtemp(prefix="s236_sudoku_deep_"))
-su_out = Path(tempfile.mkdtemp(prefix="s236_sudoku_deep_out_"))
-spkg = install(SU, su_store)
-sutxt = run_app(su_store, spkg, su_out, 40)
-(OUT / "sudoku_boot.console.log").write_text(sutxt)
-results["sudoku_boot"] = {"pkg": spkg, "markers": markers(sutxt),
-                          "census": census(su_store)}
-sutxt2 = run_app(su_store, spkg, su_out, 16, taps=["540,250@30"])
-(OUT / "sudoku_tapped.console.log").write_text(sutxt2)
-results["sudoku_tapped"] = {"markers": markers(sutxt2), "tap": "540,250@30"}
-
-(OUT / "deep_results.json").write_text(json.dumps(results, indent=1) + "\n")
-print(json.dumps(results, indent=1))
+if __name__ == "__main__":
+    self_test()

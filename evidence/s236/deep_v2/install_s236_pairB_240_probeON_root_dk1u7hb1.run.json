@@ -1,0 +1,17 @@
+{
+ "tag": "install_s236_pairB_240_probeON_root_dk1u7hb1",
+ "cmd": [
+  "/tmp/s236_audit/miniandroid/build/miniandroid",
+  "install",
+  "/home/z/my-project/upload/chess_jwtc_298.apk",
+  "--data-root",
+  "/tmp/s236_pairB_240_probeON_root_dk1u7hb1"
+ ],
+ "env": {},
+ "timeout_s": 900,
+ "timed_out": false,
+ "duration_s": 0.11,
+ "rc": 0,
+ "stdout_bytes": 693,
+ "stderr_bytes": 0
+}
