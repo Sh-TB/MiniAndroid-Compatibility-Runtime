@@ -836,8 +836,8 @@
       "basis": "sorted git ls-files list at adoption S229 (#587 S213/S214; owner-approved in the #587 closeout thread)"
     },
     "evidence": {
-      "tracked_file_count": 6197,
-      "snapshot_sha256": "754fc46556f06cccd05b4bc5d6836dbea17bef1ffdc2819c96600182d1ca1efd"
+      "tracked_file_count": 6244,
+      "snapshot_sha256": "433f567e31b5b438d909c3e2b450660021029819c8ec50c717968572cbbd5389"
     },
     "docs/history": {
       "lifecycle": "frozen \u2014 no new files, no new directories",
