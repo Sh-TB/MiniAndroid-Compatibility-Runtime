@@ -38840,6 +38840,63 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             return true;
         }
     }
+    // ── F596-P1 java.time.Instant (OpenSudoku v4113 DB-upgrade chain) ────
+    // OpenJDK law: now() ALWAYS returns a real Instant — never null. The
+    // pre-fix REC-MISS face handed the app a null receiver and the deferred
+    // f141-null-recv NPE killed the SQLiteOpenHelper.onCreate real-DEX
+    // callback (the puzzle-DB upgrade never ran). Mirror of the F516-L2
+    // LocalTime shadow: wall-clock source = the System.currentTimeMillis
+    // law (EXP-043); toEpochMilli reads the stored field; ofEpochMilli
+    // builds (negative input = DateTimeException, OpenJDK contract).
+    if (class_name == "Ljava/time/Instant;") {
+        if (method == "now") {
+            auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count();
+            uint32_t oid = heap_.allocate("Ljava/time/Instant;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(oid, "__epoch_milli__",
+                DalvikValue::make_long(now_ms));
+            static thread_local uint64_t f596_inst = 0;
+            if (f596_inst < 6) { ++f596_inst;
+                std::cerr << "[F596-P1] Instant.now -> oid=" << oid
+                          << " epoch_milli=" << now_ms << std::endl; }
+            result = DalvikValue::make_object(oid, "Ljava/time/Instant;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "ofEpochMilli" && !args.empty() &&
+            args[0].type == DalvikType::INT64) {
+            int64_t ms = args[0].long_val;
+            // OpenJDK: negative epoch-milli is VALID pre-1970 (no throw);
+            // only the arithmetic overflow bounds are excluded. Store verbatim.
+            uint32_t oid = heap_.allocate("Ljava/time/Instant;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            heap_.set_object_field(oid, "__epoch_milli__",
+                DalvikValue::make_long(ms));
+            result = DalvikValue::make_object(oid, "Ljava/time/Instant;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "toEpochMilli" && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF) {
+            auto mv = heap_.get_object_field(args[0].object_id,
+                                             "__epoch_milli__");
+            if (mv.has_value() && mv->type == DalvikType::INT64) {
+                result = DalvikValue::make_long(mv->long_val);
+            } else {
+                // Unmodeled receiver shape: OpenJDK contract for a valid
+                // Instant object is a real value; the engine never hands the
+                // app a null Instant now (the f141 null face is gone at the
+                // source), so this arm answers 0L + a recorded row.
+                std::cerr << "[F596-P1] Instant.toEpochMilli on unmodeled "
+                             "receiver obj#" << args[0].object_id
+                          << " -> 0L (recorded)" << std::endl;
+                result = DalvikValue::make_long(0);
+            }
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     if (class_name == "Ljava/time/LocalTime;") {
         if ((method == "of" && args.size() >= 2) || method == "ofSecondOfDay" ||
             method == "ofNanoOfDay" || method == "now") {
@@ -59293,11 +59350,41 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (xml_parser_for_resid(resid, parser)) {
                 result = parser;
             } else {
-                throw_deferred("Landroid/content/res/Resources$NotFoundException;",
-                               "File " + std::to_string(resid) +
-                                   " from xml type xml resource ID",
-                               "371-GETXML-NOTFOUND");
-                result = DalvikValue::make_null();
+                // F596-P1: scope the NotFound throw to APP-table ids (0x7f…)
+                // — the same AOSP contract boundary as the F513-GETVALUE law:
+                // a genuinely missing app-package XML throws on device;
+                // EVERY other unresolved shape (0x01… framework ids, 0xFF…
+                // theme/attr -1 leaks) is an upstream engine leak the app
+                // would never see on device (W9 live A/B: throwing on the
+                // leak shapes killed chess + opencalc onCreate). The leak
+                // shape serves a REAL K-35 parser over an empty document
+                // (0 drawable elements -> the androidx consumer's parse loop
+                // ends at END_DOCUMENT and yields the null/empty default —
+                // the same observable family as the F513 zero-state
+                // TypedValue). Recorded, never silently counted as content.
+                const uint32_t xpkg = ((uint32_t)resid >> 24) & 0xFF;
+                if (xpkg == 0x7f) {
+                    throw_deferred(
+                        "Landroid/content/res/Resources$NotFoundException;",
+                        "File " + std::to_string(resid) +
+                            " from xml type xml resource ID",
+                        "371-GETXML-NOTFOUND");
+                    result = DalvikValue::make_null();
+                } else {
+                    uint32_t frame_id = call_stack_.empty()
+                        ? 0 : call_stack_.top().frame_id;
+                    uint32_t obj_id = heap_.allocate(
+                        "Lorg/xmlpull/v1/XmlPullParser;", pc_, frame_id);
+                    xml_parsers_[obj_id] = XmlPullState{};
+                    xml_parsers_[obj_id].content = "<x/>";
+                    xml_parsers_[obj_id].event = 0;
+                    std::cerr << "[F596-P1] 371-GETXML leak-shape resid=0x"
+                              << std::hex << resid << std::dec
+                              << " -> empty-parser obj#" << obj_id
+                              << " (no throw, F513-scope law)" << std::endl;
+                    result = DalvikValue::make_object(
+                        obj_id, "Lorg/xmlpull/v1/XmlPullParser;");
+                }
             }
             status = ApiCallTrace::Status::IMPLEMENTED;
             return true;
