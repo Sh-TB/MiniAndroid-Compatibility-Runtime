@@ -25,6 +25,7 @@
 #include "pending_intent_shadow.h"
 #include "task_stack_builder_shadow.h"
 #include "choreographer_shadow.h"
+#include "kotlin_shadow.h"  // A-R6 R30: kotlin well-known types (roadmap §8 F)
 #include "../storage/sqlite_shadow.h"
 
 #include <algorithm>
@@ -258,6 +259,15 @@ void register_platform_shadows(ShadowRegistry& reg) {
     reg.register_shadow<ArchTaskExecutorShadow>();
     reg.register_shadow<CollectionShadow>();
     reg.register_shadow<ThreadShadow>();
+    // A-R6 R30 (roadmap §8 F): the Kotlin well-known types — Unit/Pair/
+    // Triple/Intrinsics — claim ONLY their four classes (exact-name gate in
+    // handles_class); every broader kotlin.* class keeps executing as guest
+    // DEX. Registered in the base-layer block: the Kotlin null-safety
+    // contract (Intrinsics) and the Unit identity are base semantics every
+    // Kotlin APK leans on, and no Android shadow ever claims an Lkotlin/*
+    // class (census: zero kotlin claims pre-A-R6), so the position cannot
+    // shadow a framework family.
+    reg.register_shadow<KotlinShadow>();
     // F-141 chain (S72-W3): java.lang.Runtime singleton law — registered
     // with the subsystem shadows (exact-class claim) BEFORE any catch-all
     // path. Evidence: dooz Lxr1;.<clinit> needed Runtime.getRuntime().

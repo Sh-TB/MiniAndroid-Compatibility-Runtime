@@ -30947,6 +30947,28 @@ bool DalvikExecutionEngine::execute_sget_object(uint32_t pc, InstructionTrace& t
                 result_value = DalvikValue::make_object(enum_id,
                                                         field_res.class_descriptor);
                 static_field_storage_[static_key] = result_value;
+            } else if (field_res.class_descriptor == "Lkotlin/Unit;" &&
+                       field_res.field_name == "INSTANCE") {
+                // ── A-R6 R30 — KOTLIN UNIT OBJECT-DECLARATION LAW ──────
+                // (roadmap §8 F1, the kotlin_family_probe census at
+                // 1a0fa259: the unresolved-static world answered NULL for
+                // Lkotlin/Unit;.INSTANCE — every Unit-typed expression in
+                // a host-boundary report read null, and the null identity
+                // propagated through static stores). Kotlin law
+                // (Tier 1, kotlin/Unit): an object declaration holds
+                // exactly ONE instance per runtime, loaded from the static
+                // INSTANCE field. get_or_create_singleton mints it once
+                // per engine — identity (===) across reads and
+                // static-field roundtrips holds by construction, and the
+                // a1/a2 probe rows are the executable proof.
+                result_value = get_or_create_singleton("Lkotlin/Unit;");
+                static_field_storage_[static_key] = result_value;
+                static thread_local uint64_t r30_unit_n{0};
+                if (r30_unit_n++ < 8)
+                    std::cerr << "[R30-UNIT] sget-object Lkotlin/Unit;.INSTANCE -> o"
+                              << result_value.object_id << " caller="
+                              << current_class_ << "." << current_method_
+                              << std::endl;
             } else if (field_res.class_descriptor == "Ljava/lang/Boolean;" &&
                        (field_res.field_name == "TRUE" ||
                         field_res.field_name == "FALSE")) {

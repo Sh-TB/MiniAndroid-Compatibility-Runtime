@@ -189,6 +189,25 @@ public:
         return false;
     }
 
+    // ── A-R6 R30: GENERIC VALUE-FIELD R/W (the kotlin.Pair/Triple law) ──
+    // Shadows that materialize value-carrying guest-world objects must
+    // persist their constructor arguments into the SAME heap storage the
+    // interpreter's iput/iget-object reads — no shadow-side parallel store
+    // (the F-NEW-510 drift lesson). The Arg form carries the full kind
+    // spectrum (string/object/int/long/bool/float/double/null); the adapter
+    // converts to the heap's DalvikValue. Default no-op (adapters without
+    // heap access answer false → the caller logs honestly).
+    virtual bool set_value_field(uint32_t object_id, const std::string& field_name,
+                                 const CallContext::Arg& value) {
+        (void)object_id; (void)field_name; (void)value;
+        return false;
+    }
+    virtual bool get_value_field(uint32_t object_id, const std::string& field_name,
+                                 CallContext::Arg& out) {
+        (void)object_id; (void)field_name; (void)out;
+        return false;
+    }
+
     // [R-NEW-360 (S45)] Read the i-th ELEMENT of an engine-modeled array
     // object ("array[i]" fields) as an OBJECT_REF (out = object_id).
     virtual bool get_object_array_ref_element(uint32_t array_id, size_t index,

@@ -184,6 +184,19 @@ $(R25_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(R25_SOUR
 	@mkdir -p $(BUILDDIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $(R25_SOURCE) $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(LIBS) $(FONTS_LIBS)
 
+# A-R6 (S226 main): the Kotlin well-known-types family probe (roadmap §8 F1)
+# — the A-R6 census rows (Unit identity · Pair/Triple product semantics ·
+# interface default-body dispatch · Intrinsics null-safety contract) gated
+# as hard asserts after the fix wave. Same LAWS130 + THUNK_OBJECT pattern.
+KOTLIN_SOURCE = $(TESTDIR)/kotlin_family_probe_test.cpp
+KOTLIN_EXECUTABLE = $(BUILDDIR)/kotlin_family_probe
+kotlin_family: $(KOTLIN_EXECUTABLE)
+	./$(KOTLIN_EXECUTABLE) --expect
+
+$(KOTLIN_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(KOTLIN_SOURCE)
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $(KOTLIN_SOURCE) $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(LIBS) $(FONTS_LIBS)
+
 # GP583-TEST-001: the default `test` target ran ONLY simple_test while the
 # tests/ directory carries the real regression battery (law tests, hostile-
 # resource suites, the GP-582 engine boundary probe, opcode probes). A green

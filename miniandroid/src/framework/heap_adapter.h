@@ -108,6 +108,93 @@ public:
             object_id, field_name, dalvik::DalvikValue::make_string(value, 0));
     }
 
+    // ── A-R6 R30: GENERIC VALUE-FIELD R/W (the kotlin.Pair/Triple law) ──
+    // Full-kind field write/read through the SAME heap storage the
+    // interpreter's iput/iget-object uses (the set_object_field path
+    // applies the shared field-key resolver, so the storage lands in the
+    // one canonical slot). Arg ↔ DalvikValue conversion here, once.
+    bool set_value_field(uint32_t object_id, const std::string& field_name,
+                         const CallContext::Arg& value) override {
+        if (!heap_) return false;
+        dalvik::DalvikValue v;
+        switch (value.kind) {
+            case CallContext::Arg::Kind::STRING:
+                v = dalvik::DalvikValue::make_string(value.string_val, 0);
+                break;
+            case CallContext::Arg::Kind::OBJECT:
+                v = dalvik::DalvikValue::make_object(value.object_id,
+                                                     value.object_class);
+                break;
+            case CallContext::Arg::Kind::INT:
+                v = dalvik::DalvikValue::make_int(value.int_val);
+                break;
+            case CallContext::Arg::Kind::LONG:
+                v = dalvik::DalvikValue::make_long(value.long_val);
+                break;
+            case CallContext::Arg::Kind::BOOL:
+                v = dalvik::DalvikValue::make_bool(value.bool_val);
+                break;
+            case CallContext::Arg::Kind::FLOAT:
+                v = dalvik::DalvikValue::make_float(value.float_val);
+                break;
+            case CallContext::Arg::Kind::DOUBLE:
+                v = dalvik::DalvikValue::make_double(value.double_val);
+                break;
+            case CallContext::Arg::Kind::NULL_REF:
+            default:
+                v = dalvik::DalvikValue::make_null();
+                break;
+        }
+        return heap_->set_object_field(object_id, field_name, v);
+    }
+
+    bool get_value_field(uint32_t object_id, const std::string& field_name,
+                         CallContext::Arg& out) override {
+        if (!heap_) return false;
+        auto v = heap_->get_object_field(object_id, field_name);
+        if (!v) return false;
+        out = CallContext::Arg{};
+        switch (v->type) {
+            case dalvik::DalvikType::STRING_REF:
+                out.kind = CallContext::Arg::Kind::STRING;
+                out.string_val = v->string_val;
+                return true;
+            case dalvik::DalvikType::OBJECT_REF:
+                if (v->object_id == 0) {
+                    out.kind = CallContext::Arg::Kind::NULL_REF;
+                    return true;
+                }
+                out.kind = CallContext::Arg::Kind::OBJECT;
+                out.object_id = v->object_id;
+                out.object_class = v->class_desc;
+                return true;
+            case dalvik::DalvikType::INT32:
+                out.kind = CallContext::Arg::Kind::INT;
+                out.int_val = v->int_val;
+                return true;
+            case dalvik::DalvikType::INT64:
+                out.kind = CallContext::Arg::Kind::LONG;
+                out.long_val = v->long_val;
+                return true;
+            case dalvik::DalvikType::BOOLEAN:
+                out.kind = CallContext::Arg::Kind::BOOL;
+                out.bool_val = v->bool_val;
+                return true;
+            case dalvik::DalvikType::FLOAT32:
+                out.kind = CallContext::Arg::Kind::FLOAT;
+                out.float_val = v->float_val;
+                return true;
+            case dalvik::DalvikType::FLOAT64:
+                out.kind = CallContext::Arg::Kind::DOUBLE;
+                out.double_val = v->double_val;
+                return true;
+            case dalvik::DalvikType::NULL_REF:
+            default:
+                out.kind = CallContext::Arg::Kind::NULL_REF;
+                return true;
+        }
+    }
+
     // CYCLE-E: expose heap float fields to shadows (RectF geometry reads).
     bool get_object_float_field(uint32_t object_id,
                                 const std::string& field_name,

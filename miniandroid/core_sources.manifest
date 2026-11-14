@@ -34,6 +34,7 @@ src/gles/gles20_bridge.cpp
 src/gles/gl_copy_bridge.cpp
 src/fonts/text_shaper.cpp
 src/framework/executor_shadow.cpp
+src/framework/kotlin_shadow.cpp
 src/framework/matrix_shadow.cpp
 src/framework/locale_insets_shadow.cpp
 src/framework/window_insets_shadow.cpp
