@@ -3553,6 +3553,13 @@ public:
     // class is DEX-defined (solitaire: DrawerLayout$g -> width).
     std::string true_dex_field_declarer(const std::string& ref_cls,
                                         const std::string& name) const;
+    // F-NEW-657 (#588 Games-g2): the STATIC-field declarer walker — the
+    // sput half of R-NEW-561. Walks the superclass chain over the DEX
+    // static_fields bodies and returns the DECLARING class, or "" when no
+    // DEX class on the chain declares the static (engine-synthetic
+    // statics keep the ref-class key, preserving every existing face).
+    std::string static_field_declarer_of(const std::string& ref_cls,
+                                         const std::string& name) const;
     // S122 (R-NEW-414): lazily scan a DEX class's <init> methods for the
     // javac inline field-initializer pattern (new-instance T vN; … ;
     // iput-object vN → F) and record field F → T in init_field_defaults_.
