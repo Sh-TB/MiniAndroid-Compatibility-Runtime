@@ -1,0 +1,50 @@
+{
+ "chess_pkg": "jwtc.android.chess",
+ "chess_fresh": {
+  "asset_read": 0,
+  "asset_bytes_170546": false,
+  "insert_marker": 0,
+  "npe_storm_2049": 0,
+  "f659_hits": 0,
+  "f657_hits": 0,
+  "f655_hits": 0,
+  "f656_provider_branch": 0,
+  "loadpgn_reached": false,
+  "uncaught_f016": false
+ },
+ "chess_db_census": [
+  {
+   "db": "chess_pgn.db",
+   "table": "games",
+   "rows": 1
+  },
+  {
+   "db": "c7_pkg_cache.sqlite3",
+   "table": "pkg_cache",
+   "rows": 1
+  }
+ ],
+ "chess_seeded": {
+  "rawquery_rows_2380": false,
+  "rawquery_any": 0,
+  "fen_reached": false,
+  "loadpgn_match": false,
+  "paintboard": false,
+  "board_cells_draw": 0,
+  "c013_replay": 0,
+  "table_rows_y0": 0
+ },
+ "sudoku_pkg": "org.moire.opensudoku",
+ "sudoku": {
+  "sca_cursor_bound": false,
+  "rows_bound": 0,
+  "adapter_set": 0,
+  "folder_rows_render": 0
+ },
+ "gmdice": {
+  "s191_adapter": 1,
+  "c102_adapter": 0,
+  "getview": 0,
+  "pin_face_stable": true
+ }
+}

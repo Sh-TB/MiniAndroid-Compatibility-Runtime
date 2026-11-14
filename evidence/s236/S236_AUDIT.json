@@ -1,0 +1,28 @@
+{
+  "wave": "S236 pre-merge regression audit (issue #595)",
+  "date": "2026-11-14",
+  "baseline": {"pushed_main": "ba184db9", "local_main_head": "74eb5efc (boundary sweep, 1 benign file)", "tags": ["audit/s236-baseline=ba184db9", "audit/s236-baseline-head=74eb5efc"], "dag_verified": "100bc576->b9a099d2->6be77b40; ba184db9->100bc576"},
+  "candidate": {"branch": "audit/s236", "commits": ["536cd5ac (the G1+G2 port)", "a8644248 (the 12-row battery)"], "binary_sha16": "f76b6df780c6d468"},
+  "s236_source_commits": "BLOCKED — none exist in any ref (local/remote); the lane's builds were local and wiped (the lane's own g3 comment); the candidate is comment-derived per the S235-1 precedent",
+  "rule_ledger": {
+    "F-NEW-655": "PORTED (bridge-top forward; r9 PROVES the resolver law now reaches — vanilla face was not-handled)",
+    "F-NEW-656": "SUPERSEDED (#371) + PARTIAL FIXED: the '#' rule gate bug — 't1/#' rules NEVER matched pre-fix (r10 proves the fix)",
+    "F-NEW-657": "PORTED (the sput half of R-NEW-561; r1 proves the declarer cell)",
+    "F-NEW-657b": "SUPERSEDED (EXP-071 receiver-inclusive, engine:40192)",
+    "F-NEW-658": "PORTED (real sqlite3 INSERT, rowIds 1,2 + the row read back: r2a-c)",
+    "F-NEW-658b": "PORTED (heap-String unbox once; r3: the flat mirror carries the text)",
+    "F-NEW-658c": "PARTIAL->FIXED (audit finding: #371's copy-ctor copied only the engine store, NOT the static flat mirror; r4)",
+    "F-NEW-659/659b": "PORTED (24-row byte-verified 4.4w table; r5 '(Unknown)', r6 'Cancel', r7 negative: unlisted ids still throw)",
+    "F-NEW-660": "PORTED (sb indexOf(String[,from]); r8)",
+    "F-NEW-661b": "SUPERSEDED (the framework tables participate in EVERY classification, S138+/TRAIN-31)",
+    "F-NEW-662": "SUPERSEDED (C013 per-view replay geometry + F-NEW-421 clip)"
+  },
+  "gates": {"s236_battery": "12/12 x3 consecutive clean runs", "test_all": "32/32 PASS zero regressions", "parity": "OK", "six_pin_x3": {"gmdice": "3891679d HOLD byte-exact x3", "microtimer": "b39665f6 HOLD x3", "unote": "3b8dcb0a HOLD (2 fresh + 1 cached)", "dooz": "a0fae907 HOLD x2 fresh + 1x d602648e (the S232-documented known-flaky face)", "bouncy": "60182d11 x3 fresh = the S235-1 known-drift face UNCHANGED (neutral)", "ttt": "cd1c71df x3 per-binary noise = the SAME sandbox-boundary noise class (3360829 vs 3360830 bytes)"}},
+  "execution_chains": {
+    "chess": "REPRODUCED the lane's g3 frontier on the candidate: chess_pgn.db games=1 REAL row (the first-draw _fieldColor NPE storm interrupts the seeding at ~1 insert — the traversal-order guard is the lane's NEXT named law, OUTSIDE the S236 port set, classification PENDING); the 2380-row completion is gated on that law",
+    "opensudoku": "PARTIAL at the 16-frame census (the marker parse needs a deeper run; the cursor value path is carried by the S232 laws + the 658c fix)",
+    "gmdice": "pin-stable; S191 adapter provenance present in the gate run"
+  },
+  "rollack": "git checkout audit/s236-baseline-head -- . (or: main is untouched — no rollback needed on main)",
+  "merge_sequence_proposed": "1) audit/s236 -> main as ONE merge commit (536cd5ac+a8644248), 2) the evidence/s236 registration commit (PATH_OWNERSHIP wave switch), 3) the receipts. AWAITING the separate explicit approval — main untouched."
+}
