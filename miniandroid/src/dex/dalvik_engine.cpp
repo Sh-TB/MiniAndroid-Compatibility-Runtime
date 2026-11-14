@@ -17618,6 +17618,18 @@ bool DalvikExecutionEngine::try_recursive_invoke(
 // bytecode and capture the draw primitives via CanvasShadow. Returns the
 // number of captured ops (0 = nothing drawn / no onDraw / no heap object).
 int DalvikExecutionEngine::dispatch_custom_view_draw(uint32_t view_object_id) {
+    // S236-AUDIT CAUSALITY PROBE (#595, diagnostic-only, env-gated, zero
+    // default cost): with MINIANDROID_S236_PROBE_DEFER_DRAW set, the
+    // custom-view onDraw dispatch is SKIPPED — isolating the variable
+    // "the board view's first-draw storm runs concurrently with the
+    // provider seeding thread". The probe is NOT the fix and ships as
+    // nothing: it exists so the audit can MEASURE the seeding insert
+    // count with and without the draw storm (the lane's 2380-row/onDraw
+    // root cause). A real fix defers the first draw until the data is
+    // ready — preserving BOTH completion and rendering.
+    static const bool s236_probe_defer =
+        std::getenv("MINIANDROID_S236_PROBE_DEFER_DRAW") != nullptr;
+    if (s236_probe_defer) return 0;
     if (shadow_registry_ == nullptr) return 0;
     auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
     auto* canvas_shadow = shadow_registry_->find_as<framework::CanvasShadow>();

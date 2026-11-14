@@ -1,0 +1,162 @@
+{
+ "chess_fresh": {
+  "pkg": "jwtc.android.chess",
+  "census": [
+   {
+    "db": "chess_pgn.db",
+    "table": "games",
+    "rows": 1
+   },
+   {
+    "db": "c7_pkg_cache.sqlite3",
+    "table": "pkg_cache",
+    "rows": 1
+   }
+  ],
+  "markers": {
+   "SQLITE-SHADOW] insert": 0,
+   "SQLITE-INSERT": 0,
+   "CV-PUT": 0,
+   "_fieldColor": 0,
+   "loadPGN": 0,
+   "rawQuery rows=": 0,
+   "[FEN": 0,
+   "[F-NEW-659]": 0,
+   "[F-NEW-655]": 0,
+   "[F-NEW-657]": 0,
+   "[F-NEW-658": 0,
+   "C013-ONDRAW": 0,
+   "S191": 0,
+   "C102-ADAPTER": 0,
+   "getView": 0,
+   "NotFoundException": 0,
+   "F-016": 0,
+   "practice": 0
+  }
+ },
+ "chess_fresh_probe": {
+  "pkg": "jwtc.android.chess",
+  "census": [
+   {
+    "db": "chess_pgn.db",
+    "table": "games",
+    "rows": 1
+   },
+   {
+    "db": "c7_pkg_cache.sqlite3",
+    "table": "pkg_cache",
+    "rows": 1
+   }
+  ],
+  "markers": {
+   "SQLITE-SHADOW] insert": 0,
+   "SQLITE-INSERT": 0,
+   "CV-PUT": 0,
+   "_fieldColor": 0,
+   "loadPGN": 0,
+   "rawQuery rows=": 0,
+   "[FEN": 0,
+   "[F-NEW-659]": 0,
+   "[F-NEW-655]": 0,
+   "[F-NEW-657]": 0,
+   "[F-NEW-658": 0,
+   "C013-ONDRAW": 0,
+   "S191": 0,
+   "C102-ADAPTER": 0,
+   "getView": 0,
+   "NotFoundException": 0,
+   "F-016": 0,
+   "practice": 0
+  }
+ },
+ "chess_seeded": {
+  "pkg": "jwtc.android.chess",
+  "census_after_seed": [
+   {
+    "db": "chess_pgn.db",
+    "table": "games",
+    "rows": 1
+   },
+   {
+    "db": "c7_pkg_cache.sqlite3",
+    "table": "pkg_cache",
+    "rows": 1
+   }
+  ],
+  "markers": {
+   "SQLITE-SHADOW] insert": 0,
+   "SQLITE-INSERT": 0,
+   "CV-PUT": 0,
+   "_fieldColor": 0,
+   "loadPGN": 0,
+   "rawQuery rows=": 0,
+   "[FEN": 0,
+   "[F-NEW-659]": 0,
+   "[F-NEW-655]": 0,
+   "[F-NEW-657]": 0,
+   "[F-NEW-658": 0,
+   "C013-ONDRAW": 0,
+   "S191": 0,
+   "C102-ADAPTER": 0,
+   "getView": 0,
+   "NotFoundException": 0,
+   "F-016": 0,
+   "practice": 0
+  },
+  "tap": "540,110@8",
+  "frames": 16
+ },
+ "sudoku_boot": {
+  "pkg": "org.moire.opensudoku",
+  "markers": {
+   "SQLITE-SHADOW] insert": 0,
+   "SQLITE-INSERT": 0,
+   "CV-PUT": 0,
+   "_fieldColor": 0,
+   "loadPGN": 0,
+   "rawQuery rows=": 0,
+   "[FEN": 0,
+   "[F-NEW-659]": 0,
+   "[F-NEW-655]": 0,
+   "[F-NEW-657]": 0,
+   "[F-NEW-658": 0,
+   "C013-ONDRAW": 0,
+   "S191": 0,
+   "C102-ADAPTER": 0,
+   "getView": 0,
+   "NotFoundException": 0,
+   "F-016": 0,
+   "practice": 0
+  },
+  "census": [
+   {
+    "db": "c7_pkg_cache.sqlite3",
+    "table": "pkg_cache",
+    "rows": 1
+   }
+  ]
+ },
+ "sudoku_tapped": {
+  "markers": {
+   "SQLITE-SHADOW] insert": 0,
+   "SQLITE-INSERT": 0,
+   "CV-PUT": 0,
+   "_fieldColor": 0,
+   "loadPGN": 0,
+   "rawQuery rows=": 0,
+   "[FEN": 0,
+   "[F-NEW-659]": 0,
+   "[F-NEW-655]": 0,
+   "[F-NEW-657]": 0,
+   "[F-NEW-658": 0,
+   "C013-ONDRAW": 0,
+   "S191": 0,
+   "C102-ADAPTER": 0,
+   "getView": 0,
+   "NotFoundException": 0,
+   "F-016": 0,
+   "practice": 0
+  },
+  "tap": "540,250@30"
+ }
+}
