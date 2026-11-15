@@ -99,7 +99,8 @@ def main():
     cand = sys.argv[1]
     out = Path(sys.argv[2])
     out.mkdir(parents=True, exist_ok=True)
-    pristine = "/tmp/bin_main_pristine"
+    pristine = os.environ.get(
+        "SIXPIN_PRISTINE", "/tmp/bin_main_pristine")
     rows = {}
     for name in PINS:
         a = run_pin(pristine, name, out)
