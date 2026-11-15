@@ -86766,6 +86766,40 @@ measure_cm_done:;
     // args for static valueOf: [receiver-slot?, value] — instance calls pass
     // `this` first; static calls may or may not. Scan for the first arg
     // slot that carries the value (args[0] for static resolution here).
+    // ── W16 (#564) F-C4-625 family: String.regionMatches — the base-layer
+    // region-compare law. The S240 id sweep found the W16 law stacks land
+    // with content faces EXCEPT this one: zero engine hits for
+    // regionMatches on main. AOSP OpenJdk11: thisValue(toffset, len) vs
+    // otherValue(ooffset, len), UTF-16 code-unit comparison; the 6-arg
+    // variant folds via toUpperCase/toLowerCase. Bridge shape:
+    // (recv, toffset, other, ooffset, len[, ignoreCase]).
+    if (class_name == "Ljava/lang/String;" && method == "regionMatches" &&
+        args.size() >= 5) {
+        std::string a = (args[0].type == DalvikType::STRING_REF)
+                            ? std::string(args[0].string_val) : std::string();
+        std::string b = (args[2].type == DalvikType::STRING_REF)
+                            ? std::string(args[2].string_val) : std::string();
+        int64_t toff = args[1].int_val, ooff = args[3].int_val,
+                len = args[4].int_val;
+        bool ignore = (args.size() >= 6) &&
+                      (args[5].type == DalvikType::BOOLEAN
+                           ? args[5].bool_val : args[5].int_val != 0);
+        bool ok = toff >= 0 && ooff >= 0 && len >= 0 &&
+                  toff + len <= (int64_t)a.size() &&
+                  ooff + len <= (int64_t)b.size();
+        if (ok)
+            for (int64_t i = 0; i < len && ok; i++) {
+                char ca = a[(size_t)(toff + i)], cb = b[(size_t)(ooff + i)];
+                if (ignore) {
+                    ca = (char)toupper((unsigned char)ca);
+                    cb = (char)toupper((unsigned char)cb);
+                }
+                ok = ca == cb;
+            }
+        result = DalvikValue::make_bool(ok);
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
     if (class_name == "Ljava/lang/String;" && method == "valueOf" &&
         !args.empty()) {
         // Static: args[0] is the first param. (Some call paths prepend a

@@ -411,6 +411,23 @@
    "status": "PENDING",
    "checkpoints": {
     "L0": true,
+    "L1": true,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "note": "LAW-001 preflight RUNTIME_ROOT (pure-DEX classes.dex, abis=[], in_current_test_scope=true, counts_as_failure=false) on the F-Droid org.moire.opensudoku_20180507.apk sha256 a874f3c9abc7a91dc7d74bbd… (S239 corpus lane, 2026-11-15); L1+ lanes not yet executed; S240: the harness-v2 rerun (s236_sudoku_596.py, 40 frames) rc=0 — the composed-CREATE dedupe arm removed the null-cursor frontier (audit/s236 0f4e43b3)"
+  },
+  {
+   "id": "APP-021",
+   "title": "2048 (Uberspot)",
+   "package": "com.uberspot.a2048",
+   "status": "PENDING",
+   "checkpoints": {
+    "L0": true,
     "L1": false,
     "L2": false,
     "L3": false,
@@ -419,7 +436,7 @@
     "L6": false,
     "L7": false
    },
-   "note": "LAW-001 preflight RUNTIME_ROOT (pure-DEX classes.dex, abis=[], in_current_test_scope=true, counts_as_failure=false) on the F-Droid org.moire.opensudoku_20180507.apk sha256 a874f3c9abc7a91dc7d74bbd… (S239 corpus lane, 2026-11-15); L1+ lanes not yet executed"
+   "note": "LAW-001 preflight CAPTURE_ONLY (abis=[], counts_as_failure=false, verdict_class=FINDING) on the F-Droid com.uberspot.a2048_23.apk sha256 e7bf6cb62cda6830a7fe (S240 corpus lane, 2026-11-15); L1+ lanes not yet executed"
   }
  ]
 }
