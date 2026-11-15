@@ -158,6 +158,13 @@ struct FamilySig {
     uint32_t types[8];
     int n_attribs;
     bool fragment_sampler;
+    // F-PD-636: family-dependent uniform shapes. The four libGDX families
+    // carry exactly one mat4 (n_mat4=1) and zero vec4 fragment uniforms
+    // (n_frag_vec4=0) — the defaults preserve their contracts verbatim.
+    // The PD glwrap pair carries TWO mat4s (uCamera+uModel) and TWO vec4
+    // fragment uniforms (uColorM+uColorA).
+    int n_mat4 = 1;
+    int n_frag_vec4 = 0;
 };
 const FamilySig kFamilySigs[] = {
     {GLES20Bridge::ShaderFamily::SPRITEBATCH,
@@ -178,6 +185,15 @@ const FamilySig kFamilySigs[] = {
      {"position", "inColor", "inRadiusSquared", "inInnerRadiusSquared",
       "inCenter"},
      {0x8B52u, 0x8B52u, 0x8B50u, 0x8B50u, 0x8B52u}, 5, false},
+    // ── F-PD-636 (Wave-5, #588; ShatteredPD glwrap/NoosaScript): the
+    // texture-quad family. Declared interface only — aXYZW (vec4) +
+    // aUV (vec2) attribs, uCamera+uModel mat4s, the sampler + tint
+    // vec4s on the fragment side. aXYZW/aUV are glwrap-specific names
+    // (NoosaScript), so the structural contract does not collide with
+    // the libGDX families.
+    {GLES20Bridge::ShaderFamily::PD_TEXTURE_QUAD,
+     {"aXYZW", "aUV"},
+     {0x8B52u, 0x8B51u}, 2, true, 2, 2},
 };
 
 // Is this VERTEX source a member of the family? Structural checks only —
@@ -196,19 +212,21 @@ bool vertex_matches_family(const GlslFace& f, const FamilySig& sig) {
         if (u.first == "mat4") ++mat4;
         else return false;  // any other uniform type is outside the families
     }
-    return mat4 == 1;
+    return mat4 == sig.n_mat4;
 }
 
 bool fragment_matches_family(const GlslFace& f, const FamilySig& sig) {
     if (!f.syntax_ok || !f.has_main || !f.assigns_fragcolor) return false;
     if (!f.attributes.empty()) return false;  // no attributes in a fragment shader
-    int samplers = 0;
+    int samplers = 0, vec4s = 0;
     for (const auto& u : f.uniforms) {
         // uniforms are stored (type, name) — the TYPE is first.
         if (u.first == "sampler2D") ++samplers;
+        else if (u.first == "vec4") ++vec4s;  // F-PD-636: uColorM/uColorA
         else return false;
     }
     if (samplers != (sig.fragment_sampler ? 1 : 0)) return false;
+    if (vec4s != sig.n_frag_vec4) return false;
     // Family fragments pipe the declared vec4 varying into gl_FragColor —
     // the name is whatever the source declares (gdx SpriteBatch uses
     // v_color, ShapeRenderer uses v_col). A degenerate no-varying fragment
@@ -581,7 +599,8 @@ bool GLES20Bridge::dispatch(const std::string& method,
             if (!pit->second.supported) {
                 trace = "glUseProgram: unsupported-program "
                         "(family unverified; PGL executes C-function shaders "
-                        "only; SpriteBatch/ShapeRenderer families supported)";
+                        "only; SpriteBatch/ShapeRenderer/Bouncy/"
+                        "PD_TEXTURE_QUAD families supported)";
                 cur_engine_prog_ = 0;
                 stats_.state_ops++;
                 return true;
@@ -596,6 +615,9 @@ bool GLES20Bridge::dispatch(const std::string& method,
                 mapped = pgl_bouncy_line_program_for(prog);
             else if (pit->second.family == ShaderFamily::BOUNCY_CIRCLE)
                 mapped = pgl_bouncy_circle_program_for(prog);
+            else if (pit->second.family ==
+                     GLES20Bridge::ShaderFamily::PD_TEXTURE_QUAD)
+                mapped = pgl_pd_texture_quad_program_for(prog);
             else
                 mapped = pgl_spritebatch_program_for(prog);
             cur_engine_prog_ = mapped ? prog : 0;
@@ -663,6 +685,8 @@ bool GLES20Bridge::dispatch(const std::string& method,
             if (cur_engine_prog_) {
                 if (const std::string* nm = sb_uniform_name_for_loc((GLint)idx)) {
                     int canon = pgl_sb_attrib_location(nm->c_str());
+                    if (canon < 0)
+                        canon = pgl_pd_attrib_location(nm->c_str());
                     if (canon >= 0) idx = (unsigned)canon;
                 }
             }
@@ -676,6 +700,8 @@ bool GLES20Bridge::dispatch(const std::string& method,
                     const std::string* nm2 = cur_engine_prog_
                         ? sb_uniform_name_for_loc((GLint)I(0)) : nullptr;
                     int canon2 = nm2 ? pgl_sb_attrib_location(nm2->c_str()) : -1;
+                    if (nm2 && canon2 < 0)
+                        canon2 = pgl_pd_attrib_location(nm2->c_str());
                     std::fprintf(stderr,
                         "[GLDBG] vap RAW idx=%u prog=%u name=%s canon=%d "
                         "final=%u\n",
@@ -719,6 +745,8 @@ bool GLES20Bridge::dispatch(const std::string& method,
         if (cur_engine_prog_) {
             if (const std::string* nm = sb_uniform_name_for_loc((GLint)idx)) {
                 int canon = pgl_sb_attrib_location(nm->c_str());
+                    if (canon < 0)
+                        canon = pgl_pd_attrib_location(nm->c_str());
                 if (canon >= 0) idx = (unsigned)canon;
             }
         }
@@ -731,6 +759,8 @@ bool GLES20Bridge::dispatch(const std::string& method,
         if (cur_engine_prog_) {
             if (const std::string* nm = sb_uniform_name_for_loc((GLint)idx)) {
                 int canon = pgl_sb_attrib_location(nm->c_str());
+                    if (canon < 0)
+                        canon = pgl_pd_attrib_location(nm->c_str());
                 if (canon >= 0) idx = (unsigned)canon;
             }
         }
@@ -824,7 +854,16 @@ bool GLES20Bridge::dispatch(const std::string& method,
                             "[BGL-U] mvp -> engine=%u m00=%g m30=%g\n",
                             cur_engine_prog_, ((const GLfloat*)P(0))[0],
                             ((const GLfloat*)P(0))[12]);
-                } else if (nm && bun_diag_on()) {
+                }
+                // F-PD-636: the PD glwrap pair carries TWO mat4 uniforms —
+                // uCamera (the projection) and uModel (the per-draw
+                // transform) — both routed to the per-engine-program
+                // uniform block (the F-NEW-609b per-program law).
+                if (nm && (*nm == "uCamera" || *nm == "uModel"))
+                    pgl_pd_set_matrix_for(cur_engine_prog_, nm->c_str(),
+                                          (const GLfloat*)P(0),
+                                          I(2) != 0);
+                else if (nm && bun_diag_on()) {
                     static int bun2 = 0;
                     if (bun2++ < 6)
                         std::fprintf(stderr,
@@ -844,6 +883,35 @@ bool GLES20Bridge::dispatch(const std::string& method,
     }
     if (method == "glUniform4f") {
         glUniform4f((GLint)I(0), fargs[1], fargs[2], fargs[3], fargs[4]);
+        // F-PD-636: scalar-form tint uniforms — same per-engine-program
+        // block law as the array form below.
+        if (cur_engine_prog_) {
+            const std::string* nm4f =
+                sb_uniform_name_for_loc((GLint)I(0));
+            if (nm4f && (*nm4f == "uColorM" || *nm4f == "uColorA")) {
+                const float v4f[4] = {fargs[1], fargs[2], fargs[3],
+                                      fargs[4]};
+                pgl_pd_set_color_for(cur_engine_prog_, nm4f->c_str(), v4f);
+            }
+        }
+        stats_.uniform_ops++;
+        return true;
+    }
+    if (method == "glUniform4fv") {
+        // F-PD-636: the glwrap tint path — glUniform4fv(uColorM|uColorA,
+        // 1, ptr). PGL's glUniform* are app-managed stubs for
+        // engine-minted programs, so the PD uniform block is fed here
+        // (the F-NEW-609 law shape); other programs pass through to PGL
+        // untouched.
+        if (cur_engine_prog_) {
+            const std::string* nm4 = sb_uniform_name_for_loc((GLint)I(0));
+            if (nm4 && (*nm4 == "uColorM" || *nm4 == "uColorA") &&
+                P(0) != nullptr)
+                pgl_pd_set_color_for(cur_engine_prog_, nm4->c_str(),
+                                     (const GLfloat*)P(0));
+        } else if (P(0) != nullptr) {
+            glUniform4fv((GLint)I(0), (GLsizei)I(1), (const GLfloat*)P(0));
+        }
         stats_.uniform_ops++;
         return true;
     }

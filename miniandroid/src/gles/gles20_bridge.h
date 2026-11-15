@@ -56,6 +56,14 @@ public:
         // uniform, no samplers) and execute as the registered C pairs.
         BOUNCY_LINE = 3,
         BOUNCY_CIRCLE = 4,
+        // ── F-PD-636 (Wave-5, #588; ShatteredPD glwrap/NoosaScript): the
+        // texture-quad family — attribs aXYZW (vec4) + aUV (vec2), the two
+        // mat4 uniforms uCamera (projection) + uModel (per-draw transform),
+        // and the tint multiply-add fragment (uColorM/uColorA against the
+        // bound uTex). Classified structurally (the same declared-interface
+        // law as the four existing families); executes as the registered C
+        // pair (pd_vert/pd_frag).
+        PD_TEXTURE_QUAD = 5,
     };
 
     // ── GP583-GLES-008: PER-PROGRAM introspection (was canned/global) ──

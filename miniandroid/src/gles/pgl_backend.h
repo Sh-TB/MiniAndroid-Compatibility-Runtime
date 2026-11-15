@@ -77,6 +77,14 @@ uint32_t pgl_spritebatch_program();                 // legacy first-slot face
 uint32_t pgl_spritebatch_program_for(uint32_t engine_id);  // F-NEW-609b
 // F-BGLSL-1 (S226): the Vector-Pinball line/circle C-pair programs (per
 // engine id, context-generation law identical to the SpriteBatch slots).
+// ── F-PD-636 (Wave-5, #588): the ShatteredPD texture-quad family —
+// per-engine-program PGL mapping + the uniform/attrib routing law.
+uint32_t pgl_pd_texture_quad_program_for(uint32_t engine_id);
+int pgl_pd_attrib_location(const char* name);
+void pgl_pd_set_matrix_for(uint32_t engine_id, const char* name,
+                           const float* m16, bool transpose);
+void pgl_pd_set_color_for(uint32_t engine_id, const char* name,
+                          const float* v4);
 uint32_t pgl_bouncy_line_program_for(uint32_t engine_id);
 uint32_t pgl_bouncy_circle_program_for(uint32_t engine_id);
 void pgl_bouncy_set_mvp_for(uint32_t engine_id, const float* m16,

@@ -369,6 +369,132 @@ void pgl_bouncy_set_mvp_for(uint32_t engine_id, const float* m16,
         bouncy_mvp_copy(&cit->second.uniforms, m16, transpose);
 }
 
+// ── F-PD-636 (Wave-5, #588; ShatteredPD glwrap/NoosaScript): the
+// PD_TEXTURE_QUAD C pair. Vertex: gl_Position = uCamera * (uModel *
+// aXYZW); vUV = aUV passthrough. Fragment: gl_FragColor = texture2D
+// (the bound uTex, vUV) * uColorM + uColorA (the glwrap tint
+// multiply-add). Canonical attrib slots (the bind law the bridge
+// answers): aXYZW=0, aUV=1.
+struct PDUniforms {
+    float u_camera[16] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    float u_model[16] = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    float u_color_m[4] = {1.f, 1.f, 1.f, 1.f};
+    float u_color_a[4] = {0.f, 0.f, 0.f, 0.f};
+};
+
+void pd_vert(float* vs_output, vec4* vertex_attribs,
+             Shader_Builtins* builtins, void* uniforms) {
+    PDUniforms* u = (PDUniforms*)uniforms;
+    {
+        static long pn = 0;
+        if (pn++ < 6)
+            std::fprintf(stderr,
+                "[PD-V] #%ld xyzw=%.1f,%.1f,%.1f uv=%.2f,%.2f "
+                "cam00=%g mod00=%g\n",
+                pn, vertex_attribs[0].x, vertex_attribs[0].y,
+                vertex_attribs[0].z, vertex_attribs[1].x,
+                vertex_attribs[1].y, u->u_camera[0], u->u_model[0]);
+    }
+    vec4 mid = mult_m4_v4(u->u_model, vertex_attribs[0]);  // aXYZW (0)
+    builtins->gl_Position = mult_m4_v4(u->u_camera, mid);
+    ((vec2*)vs_output)[0] =
+        vec2{vertex_attribs[1].x, vertex_attribs[1].y};    // aUV (1)
+}
+
+void pd_frag(float* fs_input, Shader_Builtins* builtins, void* uniforms) {
+    PDUniforms* u = (PDUniforms*)uniforms;
+    vec2 uv = ((vec2*)fs_input)[0];
+    // uTex is sampler unit 0 in the glwrap quad pipeline — sample the
+    // CURRENTLY bound GL_TEXTURE_2D (the same object glBindTexture
+    // selected; the SpriteBatch sb_frag precedent).
+    GLuint tex = c->bound_textures[GL_TEXTURE_2D - GL_TEXTURE_UNBOUND - 1];
+    vec4 t = texture2D(tex, uv.x, uv.y);
+    vec4 o = {t.x * u->u_color_m[0] + u->u_color_a[0],
+              t.y * u->u_color_m[1] + u->u_color_a[1],
+              t.z * u->u_color_m[2] + u->u_color_a[2],
+              t.w * u->u_color_m[3] + u->u_color_a[3]};
+    builtins->gl_FragColor = o;
+}
+
+struct PDSlot {
+    uint32_t pgl_id = 0;
+    uint64_t context_gen = 0;
+    PDUniforms uniforms;
+};
+static std::map<uint32_t, PDSlot> g_pd_map;
+
+static PDSlot* pd_slot_for(uint32_t engine_id) {
+    // PGL context guard: c (the global PGL context) is nullptr until a
+    // real GL surface exists — creating the slot then would deref c in
+    // pglCreateProgram's programs scan (the isolated-bridge-call face
+    // the s238 audit battery exposed). Answer 0 honestly; glUseProgram
+    // keeps cur_engine_prog_=0 (the same shape as the unsupported
+    // program path).
+    if (c == nullptr) return nullptr;
+    auto it = g_pd_map.find(engine_id);
+    if (it != g_pd_map.end()) {
+        // Context-generation law (GLES-002): an id minted in a destroyed
+        // context is invalid — remint in the current one.
+        if (it->second.pgl_id != 0 &&
+            it->second.context_gen == g_pgl_context_gen)
+            return &it->second;
+        it->second.pgl_id = 0;
+    }
+    PDSlot& s = g_pd_map[engine_id];
+    GLenum interp[4] = {PGL_SMOOTH2};  // one varying: vUV (vec2)
+    s.pgl_id = pglCreateProgram(pd_vert, pd_frag, 2, interp, GL_FALSE);
+    s.context_gen = g_pgl_context_gen;
+    if (s.pgl_id) pglSetProgramUniform(s.pgl_id, &s.uniforms);
+    return s.pgl_id ? &s : nullptr;
+}
+
+uint32_t pgl_pd_texture_quad_program_for(uint32_t engine_id) {
+    PDSlot* s = pd_slot_for(engine_id);
+    return s ? s->pgl_id : 0;
+}
+
+int pgl_pd_attrib_location(const char* name) {
+    if (!name) return -1;
+    if (std::strcmp(name, "aXYZW") == 0) return 0;
+    if (std::strcmp(name, "aUV") == 0) return 1;
+    return -1;
+}
+
+static void pd_matrix_copy(float* dst, const float* m16, bool transpose) {
+    if (!transpose) {
+        for (int i = 0; i < 16; ++i) dst[i] = m16[i];
+    } else {
+        for (int r = 0; r < 4; ++r)
+            for (int k = 0; k < 4; ++k)
+                dst[r * 4 + k] = m16[k * 4 + r];
+    }
+}
+
+void pgl_pd_set_matrix_for(uint32_t engine_id, const char* name,
+                           const float* m16, bool transpose) {
+    if (!name || !m16) return;
+    auto it = g_pd_map.find(engine_id);
+    if (it == g_pd_map.end()) return;
+    if (std::strcmp(name, "uCamera") == 0)
+        pd_matrix_copy(it->second.uniforms.u_camera, m16, transpose);
+    else if (std::strcmp(name, "uModel") == 0)
+        pd_matrix_copy(it->second.uniforms.u_model, m16, transpose);
+}
+
+void pgl_pd_set_color_for(uint32_t engine_id, const char* name,
+                          const float* v4) {
+    if (!name || !v4) return;
+    auto it = g_pd_map.find(engine_id);
+    if (it == g_pd_map.end()) return;
+    float* dst = nullptr;
+    if (std::strcmp(name, "uColorM") == 0)
+        dst = it->second.uniforms.u_color_m;
+    else if (std::strcmp(name, "uColorA") == 0)
+        dst = it->second.uniforms.u_color_a;
+    if (dst)
+        for (int i = 0; i < 4; ++i) dst[i] = v4[i];
+}
+
 // GP583-GLES-001 (offset clarification): is an ELEMENT_ARRAY_BUFFER bound?
 // When it is, the glDrawElements `indices` argument is a BYTE OFFSET into
 // that buffer — never a host pointer. The bridge's (env-gated) diagnostic

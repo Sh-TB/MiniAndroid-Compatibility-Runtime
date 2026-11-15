@@ -68642,6 +68642,41 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             // identity; the engine binds them here and materializes rows
             // through the ONE CONT-102 adapter path (same law the plain
             // ListView.setAdapter bridge uses).
+            // ── F-LISTACTIVITY-GV (Wave-5, #588): ListActivity.
+            // getListView — the other half of the F-NEW-634 pair. AOSP
+            // ListActivity.getListView() returns mList, the managed
+            // ListView resolved through findViewById(android.R.id.list);
+            // the inflated node carries android_view_id ==
+            // android.R.id.list (0x0102000A, the shadow's law), so the
+            // arm resolves it from the ViewShadow tree (the same walk
+            // the setListAdapter drain reads) and returns the view
+            // object. No list materialized yet → the honest null.
+            if (method == "getListView" && shadow_registry_ != nullptr) {
+                uint32_t gv_id = 0;
+                if (auto* act = shadow_registry_->find_as<
+                        framework::ActivityShadow>()) {
+                    gv_id = act->list_activity_list_id();
+                    if (gv_id == 0 && args.size() >= 1) {
+                        if (auto* vs = shadow_registry_->find_as<
+                                framework::ViewShadow>()) {
+                            // rooted-BFS misses → the R-NEW-441b full-node
+                            // scan covers the appcompat delegate roots.
+                            gv_id = vs->find_by_android_id(0, 0x0102000A);
+                        }
+                    }
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                if (gv_id != 0) {
+                    DalvikValue r;
+                    r.type = DalvikType::OBJECT_REF;
+                    r.object_id = gv_id;
+                    r.class_desc = "Landroid/widget/ListView;";
+                    result = r;
+                } else {
+                    result = DalvikValue::make_null();
+                }
+                return true;
+            }
             if (method == "setListAdapter" && shadow_registry_ != nullptr) {
                 if (auto* act =
                         shadow_registry_->find_as<framework::ActivityShadow>()) {
