@@ -403,6 +403,23 @@
    "evidence_refs": [
     "evidence/s156_4app/S156_T7_CONNECTBOT.md"
    ]
+  },
+  {
+   "id": "APP-020",
+   "title": "OpenSudoku",
+   "package": "org.moire.opensudoku",
+   "status": "PENDING",
+   "checkpoints": {
+    "L0": true,
+    "L1": false,
+    "L2": false,
+    "L3": false,
+    "L4": false,
+    "L5": false,
+    "L6": false,
+    "L7": false
+   },
+   "note": "LAW-001 preflight RUNTIME_ROOT (pure-DEX classes.dex, abis=[], in_current_test_scope=true, counts_as_failure=false) on the F-Droid org.moire.opensudoku_20180507.apk sha256 a874f3c9abc7a91dc7d74bbd… (S239 corpus lane, 2026-11-15); L1+ lanes not yet executed"
   }
  ]
 }
