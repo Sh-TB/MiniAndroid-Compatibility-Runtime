@@ -236,11 +236,61 @@ private:
     static constexpr int kBaseFaceCount = 6;
 
     bool load_face(int idx, const char* path);
+    public:
+    // -----------------------------------------------------------------
+    // FONT-PIPE-002 (#605) — font-load verification API. "How do you KNOW
+    // a font really loaded?" has exactly one consumer-visible answer:
+    // per-face truth + an ink-pixel render proof. No diagnostic may claim
+    // a load it cannot demonstrate. (PUBLIC: the batteries and any
+    // consumer verify through this surface.)
+    // -----------------------------------------------------------------
+    enum class FaceState { MISSING, LOADED, ALIASED };
+    struct FaceInfo {
+        int index = -1;
+        FaceState state = FaceState::MISSING;
+        int glyph_count = 0;      // FT num_glyphs of the backing face
+        int units_per_em = 0;
+        std::string path;         // real file path, or the alias source
+    };
+    FaceInfo face_info(int idx) const;
+    int loaded_face_count() const;        // real (non-aliased) loaded faces
+    uint32_t loaded_face_mask() const;    // bit i set = base face i LOADED
+    std::string font_diagnostic_report() const;  // one line per face + verdict
+    struct RenderProof {
+        bool ok = false;          // glyph_count>0 && ink_pixels>0
+        long ink_pixels = 0;      // blitted alpha coverage (honest ink)
+        long glyph_count = 0;     // codepoints this face actually covered
+        long notdef_count = 0;    // codepoints with no glyph in this face
+        std::string detail;
+    };
+    // Shapes the string THROUGH THE NAMED FACE ONLY (bypasses the fallback
+    // routing on purpose — this proves the face itself), rasterizes every
+    // covered glyph via FreeType and counts the alpha ink actually written.
+    RenderProof verify_text_renders(int idx, const std::string& utf8,
+                                    float size_px) const;
+    private:
+    // FONT-PIPE-002 (#605): ordered per-face candidate search across the
+    // common distro font-tree layouts (Debian truetype/, Fedora TTF/,
+    // Arch, Noto's noto/ dir — the emoji face's old single pinned path
+    // /usr/share/fonts/truetype/emoji/ does not exist on Debian, which
+    // ships truetype/noto/). The canonical candidate stays FIRST so a
+    // reproducible environment resolves identically everywhere. A genuine
+    // miss is REPORTED (loud stderr + FileIoTrace row), never silently
+    // aliased; aliased faces carry the honest flag below.
+    bool load_face_first(int idx);
 
     struct Face {
         void* ft_face = nullptr;   // FT_Face
         int units_per_em = 0;
         std::string path;
+        // FONT-PIPE-002 (#605): TRUE when this face is backed by ANOTHER
+        // face's FT_Face (the optional-face missing-file alias — bold/
+        // fallback/monospace fall back to the regular face so bold text
+        // still renders). The flag makes the alias CONSUMER-VISIBLE
+        // (face_info/loaded_face_count/font_diagnostic_report) instead of
+        // the silent constructor substitution that used to mask real
+        // shaping bugs as bare notdef counts.
+        bool aliased = false;
         // For memory-loaded app faces: the byte buffer must outlive the face.
         std::shared_ptr<std::vector<uint8_t>> bytes;
     };
