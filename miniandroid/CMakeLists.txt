@@ -206,7 +206,34 @@ target_sources(miniandroid PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
     ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.c
+    # #612-A5: the QuickJS WebView engine's C runtime — the Makefile links
+    # QUICKJS_OBJECTS (5 third_party C files); the manifest-parity wave
+    # (GP583-BUILD-002) covered only the .cpp core, so the CMake runtime
+    # linked with undefined JS_* references (webview_engine.cpp). Same
+    # sources, same role, now as normal target sources (C language enabled
+    # up front).
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/quickjs.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/libregexp.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/libunicode.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/cutils.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/libbf.c
 )
+# #612-A5: the Makefile builds QuickJS with its own QUIET C dialect
+# (QUICKJS_CFLAGS: gnu11, _GNU_SOURCE, CONFIG_VERSION, CONFIG_BIGNUM, -w).
+# C++17 flags + missing CONFIG_VERSION broke the build inside quickjs.c
+# (expected ')' before CONFIG). Same flags, same dialect, per source.
+set(MINIANDROID_QUICKJS_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/quickjs.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/libregexp.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/libunicode.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/cutils.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/libbf.c
+)
+set_source_files_properties(${MINIANDROID_QUICKJS_SOURCES} PROPERTIES
+    LANGUAGE C
+    C_STANDARD 11
+    C_EXTENSIONS ON
+    COMPILE_OPTIONS "-w;-D_GNU_SOURCE;-DCONFIG_VERSION=\"2024-01-13\";-DCONFIG_BIGNUM;-I${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs")
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
     PROPERTIES LANGUAGE ASM)
 
