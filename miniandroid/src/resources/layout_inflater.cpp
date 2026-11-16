@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <cctype>
 #include <functional>
+#include <set>
 #include <iostream>
 
 namespace miniandroid {
@@ -1681,6 +1682,34 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         else if (n == "columnWidth") a.grid_column_width = parse_dim_attr(&at, stats);
         else if (n == "verticalSpacing") a.grid_v_spacing = parse_dim_attr(&at, stats);
         else if (n == "horizontalSpacing") a.grid_h_spacing = parse_dim_attr(&at, stats);
+        // ── LAYOUT-PIPE-001 (#606 D-wave): real GridLayout params ──
+        // columnCount/rowCount (AOSP GridLayout.GridLayout():
+        // `if (mHorizontalAxis.definedCount == UNDEFINED) ...` — -1 = the
+        // axis derives the count from maxIndex+span) and the per-child
+        // LayoutParams cell family layout_row/column/rowSpan/columnSpan
+        // (AOSP DEFAULT_SPAN = 1, DEFAULT_ROW/-COLUMN = UNDEFINED = -1).
+        else if (n == "columnCount") a.gl_col_count =
+            at.value.is_int() ? (int)at.value.data : atoi(raw.c_str());
+        else if (n == "rowCount") a.gl_row_count =
+            at.value.is_int() ? (int)at.value.data : atoi(raw.c_str());
+        else if (n == "layout_row") a.gl_row =
+            at.value.is_int() ? (int)at.value.data : atoi(raw.c_str());
+        else if (n == "layout_column") a.gl_col =
+            at.value.is_int() ? (int)at.value.data : atoi(raw.c_str());
+        else if (n == "layout_rowSpan") a.gl_row_span =
+            at.value.is_int() ? (int)at.value.data : atoi(raw.c_str());
+        else if (n == "layout_columnSpan") a.gl_col_span =
+            at.value.is_int() ? (int)at.value.data : atoi(raw.c_str());
+        // layoutDirection (AOSP View.java LAYOUT_DIRECTION_LTR/RTL/INHERIT/
+        // LOCALE; the XML default is INHERIT). Resolution happens in
+        // measure_layout's top-down walk — the parse stores the REQUEST.
+        else if (n == "layoutDirection") {
+            if (at.value.is_int()) a.layout_dir = (int)at.value.data;
+            else if (raw == "ltr") a.layout_dir = 0;
+            else if (raw == "rtl") a.layout_dir = 1;
+            else if (raw == "locale") a.layout_dir = 3;
+            else a.layout_dir = 2;  // inherit
+        }
         else if (n == "stretchMode") {
             if (at.value.is_int()) a.grid_stretch_mode = (int)at.value.data;
             else if (raw == "columnWidth") a.grid_stretch_mode = 1;
@@ -1978,16 +2007,26 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
             // normalizes START/END onto LEFT/RIGHT under the LTR resolved
             // direction (RelativeLayout.java mRules mapping in
             // getRelativeLayoutParams/TAG rules; this runtime is LTR).
-            else if (n == "layout_toEndOf") a.rel_right_of = nm;
-            else if (n == "layout_toStartOf") a.rel_left_of = nm;
+            // LAYOUT-PIPE-001 (#606 D-wave): the runtime now resolves
+            // direction per view (layoutDirection walk) — the aliases keep
+            // their directionality markers so the RelativeLayout law can
+            // mirror them under RTL (AOSP
+            // RelativeLayout.LayoutParams.resolveLayoutDirection: END_OF →
+            // LEFT_OF when the container resolves RTL).
+            else if (n == "layout_toEndOf") { a.rel_right_of = nm;
+                                             a.rel_right_of_is_end = true; }
+            else if (n == "layout_toStartOf") { a.rel_left_of = nm;
+                                                a.rel_left_of_is_start = true; }
             // ALIGN_* edge alignment — own fields, NOT aliases of the
             // position family (AOSP RelativeLayout.ALIGN_LEFT sets mLeft to
             // the anchor's left EDGE; toLeftOf sets mRight BEFORE the
             // anchor's left edge).
             else if (n == "layout_alignLeft") a.rel_align_left = nm;
             else if (n == "layout_alignRight") a.rel_align_right = nm;
-            else if (n == "layout_alignStart") a.rel_align_left = nm;
-            else if (n == "layout_alignEnd") a.rel_align_right = nm;
+            else if (n == "layout_alignStart") { a.rel_align_left = nm;
+                                                 a.rel_align_left_is_start = true; }
+            else if (n == "layout_alignEnd") { a.rel_align_right = nm;
+                                               a.rel_align_right_is_end = true; }
             else if (n == "layout_alignTop") a.rel_align_top = nm;
             else a.rel_align_bottom = nm;
         }
@@ -2003,8 +2042,8 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
         // LEFT/RIGHT under LTR). OPMT's whole board anchors its right column
         // with layout_alignParentEnd — previously dropped, collapsing the
         // right buttons onto x=0 over their left twins.
-        else if (n == "layout_alignParentStart") { a.rel_align_parent_left = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
-        else if (n == "layout_alignParentEnd") { a.rel_align_parent_right = at.value.is_bool() ? at.value.data != 0 : raw == "true"; }
+        else if (n == "layout_alignParentStart") { a.rel_align_parent_left = at.value.is_bool() ? at.value.data != 0 : raw == "true"; a.rel_align_parent_left_is_start = true; }
+        else if (n == "layout_alignParentEnd") { a.rel_align_parent_right = at.value.is_bool() ? at.value.data != 0 : raw == "true"; a.rel_align_parent_right_is_end = true; }
         // F-148 (S72-W4): ConstraintLayout.LayoutParams anchor family
         // (XML path). The anchor VALUE is either the literal "parent"
         // sentinel or a sibling id reference — resolved to a NAME with the
@@ -2170,6 +2209,20 @@ void LayoutInflater::apply_element_attrs(framework::ViewShadow::ViewNode& node,
     node.grid_v_spacing = a.grid_v_spacing;
     node.grid_h_spacing = a.grid_h_spacing;
     node.grid_stretch_mode = a.grid_stretch_mode;
+    // LAYOUT-PIPE-001 (#606 D-wave): GridLayout cells + RTL request pass-through.
+    node.grid_row = a.gl_row;
+    node.grid_col = a.gl_col;
+    node.grid_row_span = a.gl_row_span;
+    node.grid_col_span = a.gl_col_span;
+    node.gl_col_count = a.gl_col_count;
+    node.gl_row_count = a.gl_row_count;
+    node.layout_dir = a.layout_dir;
+    node.rel_right_of_is_end = a.rel_right_of_is_end;
+    node.rel_left_of_is_start = a.rel_left_of_is_start;
+    node.rel_align_parent_right_is_end = a.rel_align_parent_right_is_end;
+    node.rel_align_parent_left_is_start = a.rel_align_parent_left_is_start;
+    node.rel_align_right_is_end = a.rel_align_right_is_end;
+    node.rel_align_left_is_start = a.rel_align_left_is_start;
     // M3 FIX-M3-002: style-bag layout params — AOSP obtainStyledAttributes
     // precedence: the direct XML attribute wins; when the XML is silent the
     // style= bag (and its parent chain) supplies layout_width/height/weight/
@@ -3219,26 +3272,57 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 auto* cn = views->find_node(kids[i]);
                 if (!cn || cn->visibility == 8) { child_sizes[i] = {0, 0}; continue; }
                 Edge& e = edges[kids[i]];
+                // ── LAYOUT-PIPE-001 (#606 D-wave): effective rules under the
+                // RESOLVED direction (AOSP RelativeLayout.LayoutParams
+                // .resolveLayoutDirection) — the directional aliases mirror;
+                // literal LEFT/RIGHT rules never move.
+                const bool rl_rtl = n->layout_dir_resolved == 1;
+                std::string left_of_eff = cn->rel_left_of_name;
+                std::string right_of_eff = cn->rel_right_of_name;
+                std::string align_left_eff = cn->rel_align_left_name;
+                std::string align_right_eff = cn->rel_align_right_name;
+                bool apl_eff = cn->rel_align_parent_left;
+                bool apr_eff = cn->rel_align_parent_right;
+                if (rl_rtl) {
+                    if (cn->rel_right_of_is_end) {
+                        left_of_eff = cn->rel_right_of_name;   // END_OF → LEFT_OF
+                        right_of_eff.clear();
+                    }
+                    if (cn->rel_left_of_is_start) {
+                        right_of_eff = cn->rel_left_of_name;   // START_OF → RIGHT_OF
+                        left_of_eff.clear();
+                    }
+                    if (cn->rel_align_right_is_end) {
+                        align_left_eff = cn->rel_align_right_name;  // ALIGN_END → ALIGN_LEFT
+                        align_right_eff.clear();
+                    }
+                    if (cn->rel_align_left_is_start) {
+                        align_right_eff = cn->rel_align_left_name;  // ALIGN_START → ALIGN_RIGHT
+                        align_left_eff.clear();
+                    }
+                    if (cn->rel_align_parent_right_is_end) { apl_eff = true; apr_eff = false; }
+                    if (cn->rel_align_parent_left_is_start) { apr_eff = true; apl_eff = false; }
+                }
                 // applyHorizontalSizeRules (anchor margins included, AOSP).
-                if (uint32_t a = name_to_id(cn->rel_left_of_name)) {
+                if (uint32_t a = name_to_id(left_of_eff)) {
                     auto* an = views->find_node(a);
                     if (an) e.r = edges[a].l - (an->lp_margin_left + cn->lp_margin_right);
                 }
-                if (uint32_t a = name_to_id(cn->rel_right_of_name)) {
+                if (uint32_t a = name_to_id(right_of_eff)) {
                     auto* an = views->find_node(a);
                     if (an) e.l = edges[a].r + (an->lp_margin_right + cn->lp_margin_left);
                 }
-                if (uint32_t a = name_to_id(cn->rel_align_left_name)) {
+                if (uint32_t a = name_to_id(align_left_eff)) {
                     auto* an = views->find_node(a);
                     if (an) e.l = edges[a].l + cn->lp_margin_left;
                 }
-                if (uint32_t a = name_to_id(cn->rel_align_right_name)) {
+                if (uint32_t a = name_to_id(align_right_eff)) {
                     auto* an = views->find_node(a);
                     if (an) e.r = edges[a].r - cn->lp_margin_right;
                 }
-                if (cn->rel_align_parent_left)
+                if (apl_eff)
                     e.l = n->padding_left + cn->lp_margin_left;
-                if (cn->rel_align_parent_right)
+                if (apr_eff)
                     e.r = myWidth - n->padding_right - cn->lp_margin_right;
 
                 const Spec wspec = rl_child_spec(e.l, e.r, cn->lp_width,
@@ -4242,6 +4326,67 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 }
                 content_h = std::max(0, stride_sum - n->grid_v_spacing);
                 content_w = grid_cols_m * track + (grid_cols_m - 1) * n->grid_h_spacing;
+            } else if (is_a(n->class_desc, "Landroid/widget/GridLayout;")) {
+                // ── LAYOUT-PIPE-001 (#606 D-wave): AOSP GridLayout track
+                // law. Track size = max over its span-1 cells (margins
+                // included); a spanned child's excess over its track sum is
+                // split EVENLY across the spanned tracks — the documented
+                // engine simplification of the AOSP linear-constraint
+                // solver (arc links + Bellman-Ford in GridLayout.java);
+                // identical result for the common single-largest-spanned
+                // case. Wrap content = Σ tracks (GridLayout has NO spacing
+                // attr — margins carry the gaps).
+                int gl_cols = 0, gl_rows = 0;
+                gl_resolve_cells(views, n, kids, gl_cols, gl_rows);
+                std::vector<int> colW(gl_cols, 0), rowH(gl_rows, 0);
+                for (size_t i = 0; i < kids.size(); ++i) {
+                    auto* cn = views->find_node(kids[i]);
+                    if (!cn || cn->visibility == 8) continue;
+                    const int mw = child_sizes[i].first +
+                                   cn->lp_margin_left + cn->lp_margin_right;
+                    const int mh = child_sizes[i].second +
+                                   cn->lp_margin_top + cn->lp_margin_bottom;
+                    if (cn->grid_col_span <= 1 && cn->grid_col >= 0 &&
+                        cn->grid_col < gl_cols)
+                        colW[cn->grid_col] = std::max(colW[cn->grid_col], mw);
+                    if (cn->grid_row_span <= 1 && cn->grid_row >= 0 &&
+                        cn->grid_row < gl_rows)
+                        rowH[cn->grid_row] = std::max(rowH[cn->grid_row], mh);
+                }
+                for (size_t i = 0; i < kids.size(); ++i) {
+                    auto* cn = views->find_node(kids[i]);
+                    if (!cn || cn->visibility == 8) continue;
+                    const int cs = std::max(1, cn->grid_col_span);
+                    const int rs = std::max(1, cn->grid_row_span);
+                    const int mw = child_sizes[i].first +
+                                   cn->lp_margin_left + cn->lp_margin_right;
+                    const int mh = child_sizes[i].second +
+                                   cn->lp_margin_top + cn->lp_margin_bottom;
+                    if (cn->grid_col >= 0 && cs > 1 &&
+                        cn->grid_col + cs <= gl_cols) {
+                        int sum = 0;
+                        for (int c = cn->grid_col; c < cn->grid_col + cs; ++c)
+                            sum += colW[c];
+                        if (mw > sum) {
+                            const int add = (mw - sum + cs - 1) / cs;
+                            for (int c = cn->grid_col; c < cn->grid_col + cs; ++c)
+                                colW[c] += add;
+                        }
+                    }
+                    if (cn->grid_row >= 0 && rs > 1 &&
+                        cn->grid_row + rs <= gl_rows) {
+                        int sum = 0;
+                        for (int r = cn->grid_row; r < cn->grid_row + rs; ++r)
+                            sum += rowH[r];
+                        if (mh > sum) {
+                            const int add = (mh - sum + rs - 1) / rs;
+                            for (int r = cn->grid_row; r < cn->grid_row + rs; ++r)
+                                rowH[r] += add;
+                        }
+                    }
+                }
+                for (int c = 0; c < gl_cols; ++c) content_w += colW[c];
+                for (int r = 0; r < gl_rows; ++r) content_h += rowH[r];
             } else if (is_a(n->class_desc, "Landroid/widget/FrameLayout;") ||
                 is_a(n->class_desc, "Landroid/widget/RelativeLayout;") ||
                 (!is_ll && !is_scrollv && !is_scrollh)) {
@@ -4318,6 +4463,72 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
         return {n->measured_width, n->measured_height};
 }
 
+// ── LAYOUT-PIPE-001 (#606 D-wave): AOSP GridLayout cell resolution ──────
+// (GridLayout.java validateLayoutParams, honest subset):
+//  • explicit layout_row/layout_column are FIXED cells (spans marked used);
+//  • auto children scan row-major from the cursor for the first FREE run
+//    that fits (AOSP fits(maxSizes, major, minor, minor+minorSpan));
+//  • wrap law: `if (minor + minorSpan <= count) minor++ else {minor=0;
+//    major++}` — wrap at the COUNT, never at the screen width;
+//  • count = max(definedCount, maxIndex+span) (Axis.getCount law) — so an
+//    unconfigured GridLayout is a ONE-column grid (the classic default);
+//  • resolved cells are written back to grid_row/grid_col (setCellGroup).
+void LayoutInflater::gl_resolve_cells(framework::ViewShadow* views,
+                                      framework::ViewShadow::ViewNode* n,
+                                      const std::vector<uint32_t>& kids,
+                                      int& cols, int& rows) {
+    int defined_cols = n->gl_col_count >= 0 ? n->gl_col_count : -1;
+    int max_idx = 1;
+    for (uint32_t cid : kids) {
+        auto* cn = views->find_node(cid);
+        if (!cn || cn->visibility == 8) continue;
+        if (cn->grid_col >= 0)
+            max_idx = std::max(max_idx,
+                               cn->grid_col + std::max(1, cn->grid_col_span));
+        else if (defined_cols < 0 && cn->grid_col_span > 1)
+            max_idx = std::max(max_idx, cn->grid_col_span);
+    }
+    cols = defined_cols >= 0 ? std::max(defined_cols, max_idx)
+                             : std::max(1, max_idx);
+    std::set<std::pair<int, int>> used;
+    int cur_r = 0, cur_c = 0, max_row = 0;
+    for (uint32_t cid : kids) {
+        auto* cn = views->find_node(cid);
+        if (!cn || cn->visibility == 8) continue;
+        const int rs = std::max(1, cn->grid_row_span);
+        const int cs = std::max(1, cn->grid_col_span);
+        if (cn->grid_row >= 0 && cn->grid_col >= 0) {
+            for (int r = 0; r < rs; ++r)
+                for (int c = 0; c < cs; ++c)
+                    used.insert({cn->grid_row + r, cn->grid_col + c});
+            max_row = std::max(max_row, cn->grid_row + rs - 1);
+            continue;
+        }
+        if (cn->grid_row >= 0) cur_r = cn->grid_row;  // row pinned, col auto
+        if (cn->grid_col >= 0) cur_c = cn->grid_col;  // col pinned
+        int r = cur_r, c = cur_c;
+        for (;;) {
+            if (c + cs > cols) { c = 0; ++r; }   // the wrap-at-count law
+            bool ok = true;
+            for (int rr = r; rr < r + rs && ok; ++rr)
+                for (int cc = c; cc < c + cs && ok; ++cc)
+                    if (used.count({rr, cc})) ok = false;
+            if (ok) break;
+            ++c;                                  // fits() scan advance
+        }
+        cn->grid_row = r;
+        cn->grid_col = c;                         // setCellGroup write-back
+        for (int rr = 0; rr < rs; ++rr)
+            for (int cc = 0; cc < cs; ++cc)
+                used.insert({r + rr, c + cc});
+        max_row = std::max(max_row, r + rs - 1);
+        cur_r = r;
+        cur_c = c + cs;                           // minor += minorSpan
+    }
+    int defined_rows = n->gl_row_count >= 0 ? n->gl_row_count : -1;
+    rows = std::max(defined_rows, max_row + 1);
+}
+
 void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_id) {
     if (std::getenv("MINIANDROID_PROBE"))
         fprintf(stderr, "[ROOT064-ENTRY] measure_layout root=%u\n", root_id);
@@ -4332,6 +4543,28 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                       M_AT_MOST = MS_AT_MOST;
     auto& m3_measure_memo = m3_measure_memo_;
     m3_measure_memo_.clear();
+
+    // ── LAYOUT-PIPE-001 (#606 D-wave): layoutDirection resolution walk ──
+    // AOSP View.resolveLayoutDirection: an INHERIT view takes its parent's
+    // RESOLVED direction; an explicit ltr/rtl wins; locale falls back to
+    // LTR on this runtime (no locale service — honest, documented). The
+    // ROOT that inherits is LTR: the Jellybean-MR1 compat law — apps that
+    // do not declare android:supportsRtl stay LTR (the engine has no
+    // per-app manifest rtl flag, so the compat default IS the law).
+    {
+        std::function<void(uint32_t, int)> rdir =
+            [&](uint32_t vid, int parent_dir) {
+            auto* n = views->find_node(vid);
+            if (!n) return;
+            n->layout_dir_resolved =
+                n->layout_dir == 1 ? 1
+                : (n->layout_dir == 0 || n->layout_dir == 3) ? 0
+                : parent_dir;  // inherit (2) / unset
+            for (uint32_t cid : n->children)
+                rdir(cid, n->layout_dir_resolved);
+        };
+        rdir(root_id, 0);
+    }
     // =======================================================================
     // MEASURE PASS — AOSP MeasureSpec semantics (FIX-2, generic; no app
     // special-casing). Replaces the fixed 0.62f char-width text estimate:
@@ -4625,7 +4858,18 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // re-measure — record the final main size on the node so
                     // evidence/dumps see post-weight measured dims.
                     cn->measured_width = w;
-                                        stack.push_back({cid, x, y, w, h});
+                    // LAYOUT-PIPE-001 (#606 D-wave): AOSP LinearLayout
+                    // layoutHorizontal RTL law — the whole row mirrors:
+                    // every child sits at the mirrored distance from the
+                    // LEFT content edge (LinearLayout.java isLayoutRtl
+                    // branch: childLeft = parentRight - childWidth - ...).
+                    // Main-axis container gravity flips with the mirror.
+                    if (n->layout_dir_resolved == 1) {
+                        const int mx = cl + cw - (x - cl) - w;
+                        stack.push_back({cid, mx, y, w, h});
+                    } else {
+                        stack.push_back({cid, x, y, w, h});
+                    }
                     x += w + cn->lp_margin_right;
                 }
             } else {
@@ -4739,8 +4983,26 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // paddingLeft + lp.leftMargin; CENTER adds
                     // leftMargin − rightMargin; RIGHT subtracts rightMargin.
                     int cml = cn->lp_margin_left, cmr = cn->lp_margin_right;
-                    if (vg >= 0 && (vg & 0x1)) x = cl + (cw - w) / 2 + cml - cmr;
-                    else if (vg >= 0 && (vg & 0x7) == 0x5) x = cl + cw - w - cmr;
+                    // LAYOUT-PIPE-001 (#606 D-wave): the engine's OWN
+                    // axis-field equality law (mask 0x7 FIRST, then
+                    // compare — the same law the horizontal row and the
+                    // FrameLayout branches apply). The old bit-test
+                    // `vg & 0x1` fired for LEFT(0x3) and RIGHT(0x5) too —
+                    // both fell into the CENTER branch. Plus the
+                    // relative-flag RTL flip (Gravity.getAbsoluteGravity):
+                    // START/END mirror under a resolved RTL column.
+                    int vg_eff = vg;
+                    if ((vg_eff & 0x00800000) &&
+                        n->layout_dir_resolved == 1) {
+                        const int hf0 = vg_eff & 0x7;
+                        if (hf0 == 0x3)      vg_eff = (vg_eff & ~0x7) | 0x5;
+                        else if (hf0 == 0x5) vg_eff = (vg_eff & ~0x7) | 0x3;
+                    }
+                    const int hf_v = vg_eff & 0x7;
+                    if (vg >= 0 && hf_v == 0x1)
+                        x = cl + (cw - w) / 2 + cml - cmr;
+                    else if (vg >= 0 && hf_v == 0x5)
+                        x = cl + cw - w - cmr;
                     else x = cl + cml;
                     if (w > cw) w = cw;
                     // G04 §9: the weight distribution IS the EXACTLY
@@ -4930,33 +5192,66 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                             if (pass == 0 || !b.done) resolved++;
                         }
                         // ── horizontal ──
+                        // LAYOUT-PIPE-001 (#606 D-wave): the legacy
+                        // fixed-point fallback applies the SAME effective
+                        // directional rules as the measure-time pass (the
+                        // replay path inherits them through the cached
+                        // edges; this path re-derives — literals never
+                        // move, Start/End aliases mirror under RTL).
+                        const bool rl_rtl = n->layout_dir_resolved == 1;
+                        std::string right_of_eff = cn->rel_right_of_name;
+                        std::string left_of_eff = cn->rel_left_of_name;
+                        std::string align_left_eff = cn->rel_align_left_name;
+                        std::string align_right_eff = cn->rel_align_right_name;
+                        bool apr_eff = cn->rel_align_parent_right;
+                        bool apl_eff = cn->rel_align_parent_left;
+                        if (rl_rtl) {
+                            if (cn->rel_right_of_is_end) {
+                                left_of_eff = cn->rel_right_of_name;
+                                right_of_eff.clear();
+                            }
+                            if (cn->rel_left_of_is_start) {
+                                right_of_eff = cn->rel_left_of_name;
+                                left_of_eff.clear();
+                            }
+                            if (cn->rel_align_right_is_end) {
+                                align_left_eff = cn->rel_align_right_name;
+                                align_right_eff.clear();
+                            }
+                            if (cn->rel_align_left_is_start) {
+                                align_right_eff = cn->rel_align_left_name;
+                                align_left_eff.clear();
+                            }
+                            if (cn->rel_align_parent_right_is_end) { apl_eff = true; apr_eff = false; }
+                            if (cn->rel_align_parent_left_is_start) { apr_eff = true; apl_eff = false; }
+                        }
                         int x = b.x;
-                        if (!cn->rel_right_of_name.empty()) {
-                            if (uint32_t rid = name_to_id(cn->rel_right_of_name)) {
+                        if (!right_of_eff.empty()) {
+                            if (uint32_t rid = name_to_id(right_of_eff)) {
                                 x = boxes[rid].x + boxes[rid].w + cn->lp_margin_left;
                             }
-                        } else if (!cn->rel_left_of_name.empty()) {
-                            if (uint32_t lid = name_to_id(cn->rel_left_of_name)) {
+                        } else if (!left_of_eff.empty()) {
+                            if (uint32_t lid = name_to_id(left_of_eff)) {
                                 x = boxes[lid].x - b.w - cn->lp_margin_right;
                             }
-                        } else if (!cn->rel_align_left_name.empty()) {
-                            if (uint32_t lid = name_to_id(cn->rel_align_left_name)) {
+                        } else if (!align_left_eff.empty()) {
+                            if (uint32_t lid = name_to_id(align_left_eff)) {
                                 x = boxes[lid].x + cn->lp_margin_left;
                             }
-                        } else if (!cn->rel_align_right_name.empty()) {
-                            if (uint32_t rid = name_to_id(cn->rel_align_right_name)) {
+                        } else if (!align_right_eff.empty()) {
+                            if (uint32_t rid = name_to_id(align_right_eff)) {
                                 x = boxes[rid].x + boxes[rid].w - b.w - cn->lp_margin_right;
                             }
                         } else if (cn->rel_center_in_parent || cn->rel_center_horizontal) {
                             x = cl + (cw - b.w) / 2 + cn->lp_margin_left - cn->lp_margin_right;
-                        } else if (cn->rel_align_parent_right) {
+                        } else if (apr_eff) {
                             x = cl + cw - b.w - cn->lp_margin_right;
                         // F-142a (AOSP applyHorizontalSizeRules law):
                         // alignParentLeft → mLeft = paddingLeft + leftMargin;
                         // flow-left default = the same law; centerHorizontal
                         // offsets by leftMargin − rightMargin (gravity law
                         // shared with the LinearLayout branch above).
-                        } else if (cn->rel_align_parent_left || pass == 0) {
+                        } else if (apl_eff || pass == 0) {
                             x = cl + cn->lp_margin_left;  // alignParentLeft / flow left
                         }
                         if (x != b.x || b.done) {
@@ -5034,6 +5329,19 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                     // into CENTER_VERTICAL (billthefarmer FAB pair was
                     // centered instead of bottom-right).
                     if (vg > 0) {
+                        // LAYOUT-PIPE-001 (#606 D-wave): AOSP Gravity
+                        // relative-flag law — a gravity carrying the
+                        // RELATIVE_LAYOUT_DIRECTION bit (0x00800000:
+                        // START=0x800003, END=0x800005) resolves LEFT/RIGHT
+                        // by the container's RESOLVED direction
+                        // (Gravity.getAbsoluteGravity): under RTL START→
+                        // RIGHT, END→LEFT. Literal LEFT/RIGHT (no relative
+                        // bit) never move.
+                        if ((vg & 0x00800000) && n->layout_dir_resolved == 1) {
+                            const int hf0 = vg & 0x7;
+                            if (hf0 == 0x3)      vg = (vg & ~0x7) | 0x5;
+                            else if (hf0 == 0x5) vg = (vg & ~0x7) | 0x3;
+                        }
                         const int hf = vg & 0x7;
                         if (hf == 0x1) x = cl + (cw - w) / 2 + cn->lp_margin_left - cn->lp_margin_right;
                         else if (hf == 0x5) x = cl + cw - w - cn->lp_margin_right;
@@ -5231,12 +5539,117 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         w_final = std::min(box[i].first > 0 ? box[i].first : track,
                                            track);
                     if (w_final <= 0) w_final = track;
-                    stack.push_back({kids[i], cl + k * (track + n->grid_h_spacing),
+                    // LAYOUT-PIPE-001 (#606 D-wave): AbsListView RTL law —
+                    // the column order mirrors (first item at the RIGHT
+                    // edge under a resolved RTL direction); rows keep
+                    // their vertical law.
+                    const int col_k = n->layout_dir_resolved == 1
+                        ? (grid_cols - 1 - (int)k) : (int)k;
+                    stack.push_back({kids[i], cl + col_k * (track + n->grid_h_spacing),
                                      y, std::min(w_final, cw), box[i].second > 0
                                                             ? box[i].second
                                                             : row_h[r]});
                 }
                 y += row_h[r] + n->grid_v_spacing;
+            }
+        } else if (is_a(n->class_desc, "Landroid/widget/GridLayout;")) {
+            // ── LAYOUT-PIPE-001 (#606 D-wave): AOSP GridLayout.onLayout ──
+            // Children sit at their resolved cell's track origin + margins;
+            // the default gravity is START/TOP (AOSP
+            // Spec.getAbsoluteAlignment: weight 0 → horizontal START,
+            // vertical BASELINE — a non-text view has no baseline, which
+            // lawfully falls back to top); FILL stretches to the cell
+            // INNER box (cell minus margins); RTL mirrors the X component
+            // only (onLayout: cx = targetWidth - width - paddingRight -
+            // rightMargin - dx).
+            int gl_cols = 0, gl_rows = 0;
+            gl_resolve_cells(views, n, kids, gl_cols, gl_rows);
+            std::vector<int> colW(gl_cols, 0), rowH(gl_rows, 0);
+            for (uint32_t cid : kids) {
+                auto* cn = views->find_node(cid);
+                if (!cn || cn->visibility == 8) continue;
+                const int mw = cn->measured_width +
+                               cn->lp_margin_left + cn->lp_margin_right;
+                const int mh = cn->measured_height +
+                               cn->lp_margin_top + cn->lp_margin_bottom;
+                if (cn->grid_col_span <= 1 && cn->grid_col >= 0 &&
+                    cn->grid_col < gl_cols)
+                    colW[cn->grid_col] = std::max(colW[cn->grid_col], mw);
+                if (cn->grid_row_span <= 1 && cn->grid_row >= 0 &&
+                    cn->grid_row < gl_rows)
+                    rowH[cn->grid_row] = std::max(rowH[cn->grid_row], mh);
+            }
+            for (uint32_t cid : kids) {   // spanned excess, even split
+                auto* cn = views->find_node(cid);
+                if (!cn || cn->visibility == 8) continue;
+                const int cs = std::max(1, cn->grid_col_span);
+                const int rs = std::max(1, cn->grid_row_span);
+                const int mw = cn->measured_width +
+                               cn->lp_margin_left + cn->lp_margin_right;
+                const int mh = cn->measured_height +
+                               cn->lp_margin_top + cn->lp_margin_bottom;
+                if (cn->grid_col >= 0 && cs > 1 && cn->grid_col + cs <= gl_cols) {
+                    int sum = 0;
+                    for (int c = cn->grid_col; c < cn->grid_col + cs; ++c)
+                        sum += colW[c];
+                    if (mw > sum) {
+                        const int add = (mw - sum + cs - 1) / cs;
+                        for (int c = cn->grid_col; c < cn->grid_col + cs; ++c)
+                            colW[c] += add;
+                    }
+                }
+                if (cn->grid_row >= 0 && rs > 1 && cn->grid_row + rs <= gl_rows) {
+                    int sum = 0;
+                    for (int r = cn->grid_row; r < cn->grid_row + rs; ++r)
+                        sum += rowH[r];
+                    if (mh > sum) {
+                        const int add = (mh - sum + rs - 1) / rs;
+                        for (int r = cn->grid_row; r < cn->grid_row + rs; ++r)
+                            rowH[r] += add;
+                    }
+                }
+            }
+            std::vector<int> colX(gl_cols + 1, 0), rowY(gl_rows + 1, 0);
+            for (int c = 0; c < gl_cols; ++c) colX[c + 1] = colX[c] + colW[c];
+            for (int r = 0; r < gl_rows; ++r) rowY[r + 1] = rowY[r] + rowH[r];
+            for (uint32_t cid : kids) {
+                auto* cn = views->find_node(cid);
+                if (!cn || cn->visibility == 8) continue;
+                const int cs = std::max(1, cn->grid_col_span);
+                const int rs = std::max(1, cn->grid_row_span);
+                const int gc = std::min(std::max(cn->grid_col, 0), gl_cols - 1);
+                const int gr = std::min(std::max(cn->grid_row, 0), gl_rows - 1);
+                const int cell_l = cl + colX[gc];
+                const int cell_t = ct + rowY[gr];
+                const int cell_w = colX[std::min(gl_cols, gc + cs)] - colX[gc];
+                const int cell_h = rowY[std::min(gl_rows, gr + rs)] - rowY[gr];
+                int w = cn->measured_width, h = cn->measured_height;
+                int x = cell_l + cn->lp_margin_left;   // START default
+                int y = cell_t + cn->lp_margin_top;    // TOP/BASELINE default
+                int vg = cn->child_gravity >= 0 ? cn->child_gravity : 0;
+                if ((vg & 0x00800000) && n->layout_dir_resolved == 1) {
+                    const int hf0 = vg & 0x7;
+                    if (hf0 == 0x3)      vg = (vg & ~0x7) | 0x5;
+                    else if (hf0 == 0x5) vg = (vg & ~0x7) | 0x3;
+                }
+                const int hf = vg & 0x7, vf = vg & 0x70;
+                const int inner_w = cell_w - cn->lp_margin_left -
+                                    cn->lp_margin_right;
+                const int inner_h = cell_h - cn->lp_margin_top -
+                                    cn->lp_margin_bottom;
+                if (hf == 0x7)      w = std::max(0, inner_w);            // FILL
+                else if (hf == 0x1) x = cell_l + (cell_w - w) / 2;       // CENTER
+                else if (hf == 0x5)
+                    x = cell_l + cell_w - w - cn->lp_margin_right;       // END
+                if (vf == 0x70)     h = std::max(0, inner_h);
+                else if (vf == 0x10) y = cell_t + (cell_h - h) / 2;
+                else if (vf == 0x50)
+                    y = cell_t + cell_h - h - cn->lp_margin_bottom;
+                if (n->layout_dir_resolved == 1) {
+                    const int dx = x - cl;
+                    x = cl + cw - dx - w;      // the X-only mirror law
+                }
+                stack.push_back({cid, x, y, w, h});
             }
         } else {
             // generic ViewGroup: stack children vertically top-down

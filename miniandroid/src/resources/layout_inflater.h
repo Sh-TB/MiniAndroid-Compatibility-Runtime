@@ -328,6 +328,15 @@ private:
         int  grid_v_spacing = 0;
         int  grid_h_spacing = 0;
         int  grid_stretch_mode = 0; // 0 none / 1 columnWidth / 2 spacingWidth / 3 uniform
+        // LAYOUT-PIPE-001 (#606 D-wave): real GridLayout cells + RTL params.
+        int  gl_row = -1, gl_col = -1;                  // layout_row / layout_column
+        int  gl_row_span = 1, gl_col_span = 1;          // layout_rowSpan / layout_columnSpan
+        int  gl_col_count = -1, gl_row_count = -1;      // columnCount / rowCount (-1 UNDEFINED)
+        int  layout_dir = 2;                            // 0 ltr / 1 rtl / 2 inherit / 3 locale
+        bool rel_right_of_is_end = false, rel_left_of_is_start = false;
+        bool rel_align_parent_right_is_end = false;
+        bool rel_align_parent_left_is_start = false;
+        bool rel_align_right_is_end = false, rel_align_left_is_start = false;
         std::string text, hint;
         float text_size_px = 0;
         uint32_t text_color = 0;
@@ -502,6 +511,15 @@ private:
         }
     };
     std::map<M3MemoKey, std::pair<int, int>> m3_measure_memo_;
+    // ── LAYOUT-PIPE-001 (#606 D-wave): AOSP GridLayout cell resolution ──
+    // validateLayoutParams law: explicit (row,col) win; auto children fill
+    // row-major with a cursor that wraps at the minor COUNT (count =
+    // max(definedCount, maxIndex+span) per Axis.getCount); resolved cells
+    // are written back to grid_row/grid_col like AOSP setCellGroup.
+    void gl_resolve_cells(framework::ViewShadow* views,
+                          framework::ViewShadow::ViewNode* n,
+                          const std::vector<uint32_t>& kids,
+                          int& cols, int& rows);
     // Raw measure law (the former measure_layout lambda, promoted) + the
     // memo wrapper every call site routes through.
     std::pair<int, int> measure_node_raw(framework::ViewShadow* views,

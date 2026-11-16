@@ -1891,6 +1891,31 @@ public:
         int grid_v_spacing = 0;        // px
         int grid_h_spacing = 0;        // px
         int grid_stretch_mode = 0;     // GridView.STRETCH_*  (0..3)
+        // ── LAYOUT-PIPE-001 (#606 D-wave): real GridLayout cells + RTL ──
+        // layout_row / layout_column (-1 = UNDEFINED → AOSP auto-placement).
+        // Spans default 1 (AOSP LayoutParams DEFAULT_SPAN = 1).
+        int grid_row = -1, grid_col = -1;
+        int grid_row_span = 1, grid_col_span = 1;
+        // GridLayout columnCount / rowCount (-1 = UNDEFINED → the axis
+        // derives the count: count = max(defined, maxIndex+span) per the
+        // AOSP Axis.getCount law).
+        int gl_col_count = -1, gl_row_count = -1;
+        // layoutDirection: 0=ltr 1=rtl 2=inherit(default) 3=locale.
+        // Resolution walk in measure_layout: inherit → parent's resolved
+        // direction; root inherits → LTR (the Jellybean-MR1 compat law:
+        // apps without android:supportsRtl stay LTR). locale → LTR on this
+        // runtime (no locale service — honest, documented).
+        int layout_dir = 2;
+        int layout_dir_resolved = 0;
+        // Directional-alias markers: the R-NEW-410 LTR normalization
+        // (toEndOf→right_of, toStartOf→left_of, alignParentEnd→right,
+        // alignParentStart→left, alignEnd→align_right, alignStart→align_left)
+        // is now DIRECTIONAL — under a resolved RTL container these edges
+        // mirror (AOSP RelativeLayout.LayoutParams.resolveLayoutDirection).
+        bool rel_right_of_is_end = false, rel_left_of_is_start = false;
+        bool rel_align_parent_right_is_end = false;
+        bool rel_align_parent_left_is_start = false;
+        bool rel_align_right_is_end = false, rel_align_left_is_start = false;
         uint32_t item_long_click_listener_id = 0;  // OnItemLongClickListener
         std::string item_long_click_listener_class;
         uint32_t item_selected_listener_id = 0;    // OnItemSelectedListener
