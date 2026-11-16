@@ -3266,10 +3266,17 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 } else if (e.l != NOT_SET && e.r == NOT_SET) {
                     e.r = e.l + sz.first;
                 } else if (e.l == NOT_SET && e.r == NOT_SET) {
-                    if ((cn->rel_center_in_parent || cn->rel_center_horizontal) &&
-                        myWidth >= 0 && sw.mode != M_EXACTLY) {
-                        // centerHorizontal law (wrap RL → positionAtEdge).
-                        e.l = (myWidth - sz.first) / 2;
+                    if (cn->rel_center_in_parent || cn->rel_center_horizontal) {
+                        // LAYOUT-PIPE-001 (#606): AOSP positionChildHorizontal
+                        // center law — centerInParent centers within the
+                        // RESOLVED parent width, offset by
+                        // (leftMargin - rightMargin), with NO spec-mode
+                        // condition. The old `sw.mode != M_EXACTLY` guard was
+                        // INVERTED: a normal full-screen RL root IS EXACTLY,
+                        // so every centered child silently fell to flow-left
+                        // (probe P5 measured (0,0) instead of (440,860)).
+                        e.l = (myWidth - sz.first) / 2 +
+                              cn->lp_margin_left - cn->lp_margin_right;
                         e.r = e.l + sz.first;
                     } else {
                         e.l = n->padding_left + cn->lp_margin_left;
@@ -3330,9 +3337,13 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 } else if (e.t != NOT_SET && e.b == NOT_SET) {
                     e.b = e.t + sz.second;
                 } else if (e.t == NOT_SET && e.b == NOT_SET) {
-                    if ((cn->rel_center_in_parent || cn->rel_center_vertical) &&
-                        myHeight >= 0 && sh.mode != M_EXACTLY) {
-                        e.t = (myHeight - sz.second) / 2;
+                    if (cn->rel_center_in_parent || cn->rel_center_vertical) {
+                        // LAYOUT-PIPE-001 (#606): the same AOSP
+                        // positionChildVertical center law — no spec-mode
+                        // guard, margin offset applied (see the horizontal
+                        // twin above).
+                        e.t = (myHeight - sz.second) / 2 +
+                              cn->lp_margin_top - cn->lp_margin_bottom;
                         e.b = e.t + sz.second;
                     } else {
                         e.t = n->padding_top + cn->lp_margin_top;
@@ -3757,6 +3768,14 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
             if (n->class_desc.find("ScrollView;") != std::string::npos &&
                 n->class_desc.find("Horizontal") == std::string::npos)
                 csh = {std::max(0, sh.size - vpad), M_UNSPEC};
+            // LAYOUT-PIPE-001 (#606): HorizontalScrollView measures its
+            // child with UNSPECIFIED WIDTH — the exact AOSP mirror of the
+            // vertical law (HorizontalScrollView.onMeasure). Without it the
+            // wrap content child got EXACTLY(viewport) and paged content
+            // wider than the screen collapsed to 1080 (probe P7).
+            if (n->class_desc.find("HorizontalScrollView") !=
+                std::string::npos)
+                csw = {std::max(0, sw.size - hpad), M_UNSPEC};
             child_sizes[i] = measure_node(views, kids[i], csw, csh, depth + 1);
         }
 
@@ -5022,7 +5041,19 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                         if (vf == 0x10) y = ct + (ch - h) / 2 + cn->lp_margin_top - cn->lp_margin_bottom;
                         else if (vf == 0x50) y = ct + ch - h - cn->lp_margin_bottom;
                     }
-                    if (x + w > t.left + t.width) w = std::max(0, t.left + t.width - x);
+                    // LAYOUT-PIPE-001 (#606): scroll-container content is
+                    // the ONE legal overflow — AOSP ScrollView.onLayout
+                    // places the child at its measured size and the viewport
+                    // CLIPS it (that is what scrolling IS). The oversized
+                    // clamp below stays for plain FrameLayout children (the
+                    // g10 [12] law) but must not eat scrollable content
+                    // (probe P7: HSV content 3000 wide clamped to 1080 —
+                    // the page simply disappeared).
+                    const bool scroll_parent =
+                        n->class_desc.find("ScrollView") != std::string::npos;
+                    if (!scroll_parent &&
+                        x + w > t.left + t.width)
+                        w = std::max(0, t.left + t.width - x);
                     stack.push_back({cid, x, y, w, h});
                 }
             }
