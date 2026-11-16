@@ -2,8 +2,21 @@
 # EXP-001: HelloWorld Loader
 # EXP-002: Runtime Stub (Class Resolution)
 
+# ============== Build recipes (issue #612 P0) ==============
+#   runtime only (the default `all`):   cmake --build .            # = miniandroid + core lib
+#   runtime binary alone:               cmake --build . --target miniandroid
+#   the full test battery (opt-in):     cmake -DBUILD_TESTS=ON .. && cmake --build .
+#   one law test binary:                cmake --build . --target s247_grid_rtl_law_test
+#   experiments (opt-in, never `all`):  cmake --build . --target miniandroid_exp005
+# Default `all` builds ONLY the distributable runtime (miniandroid + core
+# lib); EXP-00x/batch/megabatch executables are EXCLUDE_FROM_ALL, and the
+# test battery is behind -DBUILD_TESTS=ON — a normal runtime build compiles
+# no experiments and no tests.
 cmake_minimum_required(VERSION 3.16)
-project(MiniAndroid VERSION 0.1 LANGUAGES CXX DESCRIPTION "Minimal Android Compatibility Runtime")
+# #612-A1: the jni compat shims are C (bionic_compat.c, pthread_shadow.c)
+# and the thunk is ASM — all three languages are declared up front so the
+# shims compile as normal target sources, never as hand-built .o files.
+project(MiniAndroid VERSION 0.1 LANGUAGES C CXX ASM DESCRIPTION "Minimal Android Compatibility Runtime")
 
 # C++ Standard
 set(CMAKE_CXX_STANDARD 17)
@@ -157,6 +170,18 @@ if(USE_VULKAN AND Vulkan_FOUND)
 endif()
 
 # Platform-specific settings
+# #612-C: mirror the Makefile's source-specific debug-info exception —
+# dalvik_engine.cpp (~5.0 MiB) and android_shadows.cpp (~646 KiB) blow the
+# compiler's memory budget when debug info is generated (documented Makefile
+# -g0 override). -g0 is appended LAST so it overrides any config -g
+# (Debug/RelWithDebInfo), matching the Makefile semantics in every config.
+set(MINIANDROID_BIG_TUS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/framework/android_shadows.cpp
+)
+set_source_files_properties(${MINIANDROID_BIG_TUS} PROPERTIES
+    COMPILE_OPTIONS "-g0")
+
 if(APPLE)
     target_compile_options(miniandroid_core PRIVATE -Wno-everything)
 elseif(UNIX)
@@ -170,28 +195,23 @@ add_executable(miniandroid
 
 target_link_libraries(miniandroid PRIVATE miniandroid_core)
 
-# GP583-BUILD-002: the executable-side native objects the Makefile links
-# (S-2 thunk assembly + bionic C compat shims). Same objects, same role.
-enable_language(ASM)
+# GP583-BUILD-002 + #612-A1/A2: the executable-side native sources the
+# Makefile links (S-2 thunk assembly + bionic C compat shims) are declared
+# as NORMAL target sources — CMake compiles them into the build tree with
+# declared dependencies. The old PRE_LINK design compiled
+# src/jni/*.o INTO THE SOURCE TREE and linked files that did not exist at
+# configure time (Ninja: "missing and no known rule to make it") — that
+# was a broken generated-file dependency, not compiler slowness.
 target_sources(miniandroid PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.c
 )
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
     PROPERTIES LANGUAGE ASM)
-target_link_libraries(miniandroid PRIVATE
-    miniandroid_core
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.o
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.o
-)
-add_custom_command(TARGET miniandroid PRE_LINK
-    COMMAND cc -O2 -fPIC -c -o ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.o
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.c
-    COMMAND cc -O2 -fPIC -c -o ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.o
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.c
-)
 
 # ============== EXP-002 Executable (Class Resolution) ==============
-add_executable(miniandroid_exp002
+add_executable(miniandroid_exp002 EXCLUDE_FROM_ALL
     src/exp002_main.cpp
 )
 
@@ -199,7 +219,7 @@ target_link_libraries(miniandroid_exp002 PRIVATE miniandroid_core)
 
 # ============== EXP-003-A Executable (const-string Opcode) ==============
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/exp003a_main.cpp)  # BUILD-TRAIN: dead-target guard (cleanup waves removed sources; cmake-4.x generate fails otherwise)
-add_executable(miniandroid_exp003a
+add_executable(miniandroid_exp003a EXCLUDE_FROM_ALL
     src/exp003a_main.cpp
     src/dex/dex_interpreter.cpp
 )
@@ -208,14 +228,14 @@ target_link_libraries(miniandroid_exp003a PRIVATE miniandroid_core)
 endif()
 
 # ============== EXP-003-A.1 Validator (Const-String Validation) ==============
-add_executable(miniandroid_exp003a1_validate
+add_executable(miniandroid_exp003a1_validate EXCLUDE_FROM_ALL
     src/exp003a1_validate.cpp
 )
 
 target_link_libraries(miniandroid_exp003a1_validate PRIVATE miniandroid_core)
 
 # ============== EXP-003-BATCH (Minimal DEX Execution Engine) ==============
-add_executable(miniandroid_batch
+add_executable(miniandroid_batch EXCLUDE_FROM_ALL
     src/exp003batch_main.cpp
     src/dex/dex_interpreter_batch.cpp
 )
@@ -223,7 +243,7 @@ add_executable(miniandroid_batch
 target_link_libraries(miniandroid_batch PRIVATE miniandroid_core)
 
 # ============== EXP-004 (Android Object Model Foundation) ==============
-add_executable(miniandroid_exp004
+add_executable(miniandroid_exp004 EXCLUDE_FROM_ALL
     src/exp004_main.cpp
     src/dex/dex_interpreter_batch.cpp
 )
@@ -231,7 +251,7 @@ add_executable(miniandroid_exp004
 target_link_libraries(miniandroid_exp004 PRIVATE miniandroid_core)
 
 # ============== EXP-005 (Minimal Software Rendering Pipeline) ==============
-add_executable(miniandroid_exp005
+add_executable(miniandroid_exp005 EXCLUDE_FROM_ALL
     src/exp005_main.cpp
     src/renderer/software_renderer.cpp
     src/renderer/vector_decode.cpp
@@ -240,14 +260,14 @@ add_executable(miniandroid_exp005
 target_link_libraries(miniandroid_exp005 PRIVATE miniandroid_core)
 
 # ============== EXP-006 (Android Resource and Layout Foundation) ==============
-add_executable(miniandroid_exp006
+add_executable(miniandroid_exp006 EXCLUDE_FROM_ALL
     src/exp006_main.cpp
 )
 
 target_link_libraries(miniandroid_exp006 PRIVATE miniandroid_core)
 
 # ============== EXP-007→EXP-012 MEGA BATCH (Unified Runtime Integration) ==============
-add_executable(miniandroid_megabatch
+add_executable(miniandroid_megabatch EXCLUDE_FROM_ALL
     src/exp007_012_megabatch_main.cpp
     src/runtime/application_runtime.cpp
 )
@@ -269,7 +289,9 @@ install(DIRECTORY src/
 )
 
 # ============== Test Target (Optional) ==============
-option(BUILD_TESTS "Build unit tests" ON)
+# #612-B3: tests are available and registered, but a normal runtime build
+# must not compile the full battery — opt in with -DBUILD_TESTS=ON.
+option(BUILD_TESTS "Build unit tests" OFF)
 
 if(BUILD_TESTS)
     enable_testing()
@@ -289,7 +311,7 @@ if(BUILD_TESTS)
     # tests. Every branch now registers at least one real test.
     if(GTest_FOUND OR TARGET GTest::gtest)
         if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/main.cpp)
-            add_executable(miniandroid_test
+            add_executable(miniandroid_test EXCLUDE_FROM_ALL
                 tests/main.cpp
             )
             target_link_libraries(miniandroid_test PRIVATE
@@ -309,7 +331,7 @@ if(BUILD_TESTS)
 
     if(NOT TARGET miniandroid_test)
         # Create a simple test executable without GTest
-        add_executable(miniandroid_test
+        add_executable(miniandroid_test EXCLUDE_FROM_ALL
             tests/simple_test.cpp
         )
 
