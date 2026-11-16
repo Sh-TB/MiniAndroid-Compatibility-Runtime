@@ -3602,6 +3602,47 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                 frame_census_.auth_root_valid = true;
             }
 
+            // ── S-TOAST RENDER (GAME-190 / #613): a Toast is a WINDOW-level
+            // transient — AOSP paints it through WindowManager regardless of
+            // the activity's content root. Hello World Toast (84 KB baseline
+            // app) has NO content root BY DESIGN: its onCreate is only
+            // Toast.makeText(...).show(); finish(). Without this window-level
+            // paint the S-TOAST bridge law recorded the toast but the frame
+            // stayed a uniform background — the app's entire UI was invisible.
+            if (root_id == 0) {
+                if (auto* toast_shadow =
+                        shadow_registry_->find_as<framework::DialogShadow>()) {
+                    if (toast_shadow->toast_active()) {
+                        renderer::FrameBuffer tfb(config.screen_width,
+                                                  config.screen_height);
+                        renderer::SoftwareCanvas tcanvas(&tfb);
+                        toast_shadow->render_dialogs(
+                            tcanvas, tfb, config.screen_width,
+                            config.screen_height,
+                            [this](int32_t resid) -> std::string {
+                                auto& fn = dalvik_engine_.field_name_by_resid_;
+                                auto it = fn.find(resid);
+                                if (it == fn.end()) return "";
+                                auto& sv = dalvik_engine_.resource_string_values_;
+                                auto sv_it = sv.find(it->second);
+                                return sv_it != sv.end() ? sv_it->second
+                                                         : std::string();
+                            });
+                        const auto& tp = tfb.get_pixels();
+                        for (size_t i = 0;
+                             i < tp.size() && i * 4 + 3 < framebuffer_.size();
+                             ++i) {
+                            framebuffer_[i * 4] = tp[i].r;
+                            framebuffer_[i * 4 + 1] = tp[i].g;
+                            framebuffer_[i * 4 + 2] = tp[i].b;
+                            framebuffer_[i * 4 + 3] = tp[i].a;
+                        }
+                        std::cerr << "[TOAST-RENDER] no-root window painted"
+                                  << " (toast overlay)" << std::endl;
+                    }
+                }
+            }
+
             if (root_id != 0) {
                 const auto* root_node = view_shadow->find_node(root_id);
                 if (root_node) {

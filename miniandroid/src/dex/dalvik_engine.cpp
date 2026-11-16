@@ -41558,6 +41558,38 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << " caller=" << current_class_ << "." << current_method_
                       << " pc=" << pc_ << std::endl; }
     }
+    // ── S-TOAST (GAME-190 / #613) — android.widget.Toast through the API
+    // bridge. Toast.makeText is an INVOKE-STATIC on a framework class the
+    // DEX never defines: the REC-MISS fall-through consults bridge_to_api,
+    // which had NO Toast case — the call answered STUBBED-null and the
+    // toast never existed (Hello World Toast: the whole 84 KB app IS a
+    // toast; its onCreate = Toast.makeText(...).show(); finish()). The
+    // DialogShadow already owns the toast LAW (makeText/show/cancel state,
+    // resolve_strings + the bottom-transient frame painter) — route the
+    // bridge consult to the registry so that one law serves both static
+    // and instance dispatches. AOSP Toast.java: SHORT=0, LONG=1.
+    if (class_name.find("Toast;") != std::string::npos && shadow_registry_) {
+        framework::CallContext tctx;
+        tctx.caller = current_class_ + "." + current_method_ +
+                      " pc=" + std::to_string(pc_);
+        tctx.class_name = class_name;
+        tctx.method = method;
+        for (const auto& a : args) tctx.args.push_back(dalvik_value_to_arg(a));
+        auto tcr = shadow_registry_->dispatch(tctx);
+        if (tcr.handled) {
+            result = call_result_to_dalvik(tcr);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // Unhandled Toast verb (setGravity/setMargin/setDuration on exotic
+        // builds): honest void — the toast state stays consistent.
+        if (method == "setGravity" || method == "setMargin" ||
+            method == "setDuration") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
     // F-089 diagnostics: Map interface dispatch visibility (navigation
     // NavigatorProvider registration chain — put(name, navigator) /
     // get(name) must hit the same backing store).

@@ -7336,6 +7336,39 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 std::cerr << "[EXP088-B-DBG] view_shadow is null" << std::endl;
             }
         }
+        // ── S83-DELEGATE (AOSP window content-root law, GAME-185 follow-up)
+        // ── Activity.findViewById must NEVER answer null for
+        // android.R.id.content: PhoneWindow.installDecor installs the
+        // content parent FrameLayout at attach time, BEFORE any
+        // setContentView. Live defect (dk.cocode.chess 0.5.22, Compose
+        // setContent): ComponentActivityKt.setContent asks
+        // findViewById(android.R.id.content) while content_view_id_ is
+        // still 0 → handled_null → decor.findViewById(...).getViewTreeObserver
+        // NPE on the null receiver (LX0/c.y) escaped MainActivity.onCreate
+        // and killed the puzzle load before the CSV asset ran. The
+        // ViewShadow path already implements the full law (receiver subtree
+        // → legacy window root → S83 lazy materialization with the
+        // one-stable-object rule) — delegate to it instead of nulling.
+        if (registry_ && target_id == 0x01020002 /* android.R.id.content */) {
+            auto* view_shadow = registry_->find_as<ViewShadow>();
+            if (view_shadow) {
+                // Ensure the activity-as-view node exists so the S83
+                // materialization can link the content parent beneath it
+                // (same get_or_create + add_child discipline as F023).
+                if (ctx.receiver_id != 0 && !view_shadow->find_node(ctx.receiver_id)) {
+                    view_shadow->get_or_create_node(
+                        ctx.receiver_id, "Landroid/view/View;");
+                }
+                CallResult delegated = view_shadow->dispatch(ctx);
+                if (delegated.handled &&
+                    delegated.ret_kind != CallResult::RetKind::NULL_REF) {
+                    std::cerr << "[S83-DELEGATE] Activity findViewById(content)"
+                              << " → ViewShadow law (content_view_id="
+                              << content_view_id_ << " case)" << std::endl;
+                    return delegated;
+                }
+            }
+        }
         return CallResult::handled_null();
     }
     if (m == "getIntent") {

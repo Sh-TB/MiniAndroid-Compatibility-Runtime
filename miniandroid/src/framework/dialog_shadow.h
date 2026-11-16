@@ -134,6 +134,10 @@ public:
     CallResult dispatch(const CallContext& ctx) override;
 
     // ── accessors for renderer / engine ────────────────────────────────
+    // S-TOAST RENDER (#613/GAME-190): the toast is a WINDOW-level transient —
+    // the no-content-root frame path (Toast-only apps) needs to know whether
+    // a toast is active without touching the private state.
+    bool toast_active() const { return toast_.showing; }
     std::vector<DialogWindow>& windows() { return windows_; }
     const std::vector<DialogWindow>& windows() const { return windows_; }
     DialogWindow* window_by_obj(uint32_t obj_id);
