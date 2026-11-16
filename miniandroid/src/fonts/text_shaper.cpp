@@ -540,7 +540,18 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
     if (it != shape_cache_.end()) return it->second;
 
     ShapedText result;
-    if (!available_ || utf8.empty()) {
+    // FONT-PIPE-002 follow-up (#605): the guard keys on the RESOLVED face,
+    // not on available_ (the SYSTEM-chain health flag). AOSP law: an app's
+    // own face (createFromAsset / @font-face) must render even when the
+    // system font tree is broken — a broken system tree degrades system
+    // text to empty runs, it must never take app fonts down with it.
+    bool face_ok = false;
+    if (rf >= 0 && rf < kBaseFaceCount)
+        face_ok = faces_[rf].ft_face != nullptr;
+    else if (rf >= kBaseFaceCount &&
+             rf - kBaseFaceCount < (int)app_faces_.size())
+        face_ok = app_faces_[rf - kBaseFaceCount].ft_face != nullptr;
+    if (!face_ok || utf8.empty()) {
         auto res = shape_cache_.emplace(key, std::move(result));
         return res.first->second;
     }
@@ -1052,7 +1063,10 @@ void TextShaper::metrics(float size_px, bool bold, int face_idx,
 
 int TextShaper::register_app_font_memory(const std::vector<uint8_t>& bytes,
                                          const std::string& debug_name, bool is_bold) {
-    if (!available_ || bytes.empty()) return -1;
+    // FONT-PIPE-002 follow-up (#605): app fonts load from APK bytes
+    // INDEPENDENTLY of the system chain (AOSP createFromAsset law) — the
+    // guard keys on the FreeType library, not on the system-tree health.
+    if (!ft_lib_ || bytes.empty()) return -1;
     // S114 lifetime law (FT_New_Memory_Face contract): the face does NOT
     // copy the buffer — it keeps the raw pointer. The kept copy must be the
     // SAME allocation the face reads; copying AFTER FT_New_Memory_Face left

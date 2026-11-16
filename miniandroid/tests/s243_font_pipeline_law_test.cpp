@@ -117,6 +117,10 @@ int main() {
                "");
         // A13-A16: error paths through the REAL registration API
         std::vector<uint8_t> real = file_bytes(ts.primary_font_path());
+        // (Guard the slice: hidden-font worlds have no system file —
+        // slicing an empty vector is UB. 300 junk bytes then stand in.)
+        if (real.empty())
+            for (int i = 0; i < 300; ++i) real.push_back((uint8_t)(0x41));
         record("A13_corrupt_bytes_fail",
                ts.register_app_font_memory(
                    std::vector<uint8_t>(real.begin(), real.begin() + 200),
