@@ -5,6 +5,7 @@
 //   G2  explicit cells + count derivation (Axis.getCount law)
 //   G3  track sizing (max per track) + spans (even-split deviation, documented)
 //   G4  cell gravity (START default / FILL / CENTER / END) + wrap_content
+//   G6  the REAL AOSP constraint solver (leading + interval arcs, fixpoint)
 //   G5  GridLayout RTL mirror (X-only)
 //   R1  layoutDirection resolution (explicit / inherit chain)
 //   R2  LinearLayout horizontal row mirror (+ weighted shares)
@@ -155,19 +156,21 @@ int main() {
         r.measure(g);
         auto k = r.get(g)->children;
         // AOSP validateLayoutParams: the span-2 child OCCUPIES (0,0)+(0,1),
-        // so the auto child wraps to (1,0) — x=0, y=rowY[1]. The even-split
-        // excess widens both tracks to 400 (the documented engine
-        // simplification of the AOSP constraint solver).
+        // so the auto child wraps to (1,0) — x=0, y=rowY[1]. E-wave: the
+        // REAL constraint solve gives lines [0,200,600] → tracks 200/400
+        // (the excess lands in the TRAILING track of the span).
         record(r.get(k[1])->measured_left == 0 &&
                r.get(k[1])->measured_top == 100 &&
-               r.get(s)->measured_width == 600,
-               "G3.2 span occupies row 0: auto child wraps to (1,0); tracks 400/400");
+               r.get(s)->measured_width == 600 &&
+               r.get(k[0])->measured_left == 0,
+               "G3.2 span occupies row 0; solver tracks 200/400 (trailing excess)");
     }
 
     // ---- G4: cell gravity + wrap_content ----------------------------------------
     {   // G4.1 default gravity: START/top — measured size at the cell
-        // origin. The span-2 sibling's 200px over tracks (0,100) splits
-        // evenly (+50 each) → tracks 50/150; cell (1,1) origin = 50.
+        // origin. E-wave solver law: span arc (0→2, 200) with col-1 max 100
+        // gives lines [0,0,200] → tracks 0/200 (col0 empty, excess in the
+        // trailing track); cell (1,1) origin = line1 = 0.
         Rig r;
         uint32_t g = r.node("Landroid/widget/GridLayout;", 0, -1, -1);
         r.get(g)->gl_col_count = 2;
@@ -176,14 +179,15 @@ int main() {
         uint32_t c = r.node("Landroid/view/View;", g, 100, 50);
         r.get(c)->grid_row = 1; r.get(c)->grid_col = 1;
         r.measure(g);
-        record(r.get(c)->measured_left == 50 &&
+        record(r.get(c)->measured_left == 0 &&
                r.get(c)->measured_top == 100 &&
                r.get(c)->measured_width == 100 &&
                r.get(s)->measured_width == 200,
-               "G4.1 even-split tracks 50/150; START child at cell origin");
+               "G4.1 solver tracks 0/200; START child at line1 origin");
     }
     {   // G4.2 FILL gravity: the child takes the cell INNER box
-        // (track minus its margins) — here the col-1 track is 150 wide.
+        // (solved track minus its margins) — solver tracks 0/200 → the
+        // col-1 cell is 200 wide.
         Rig r;
         uint32_t g = r.node("Landroid/widget/GridLayout;", 0, -1, -1);
         r.get(g)->gl_col_count = 2;
@@ -193,10 +197,10 @@ int main() {
         r.get(c)->grid_row = 1; r.get(c)->grid_col = 1;
         r.get(c)->child_gravity = 0x7 | 0x70;  // FILL both axes
         r.measure(g);
-        record(r.get(c)->measured_left == 50 &&
-               r.get(c)->measured_width == 150 &&
+        record(r.get(c)->measured_left == 0 &&
+               r.get(c)->measured_width == 200 &&
                r.get(c)->measured_height == 50,
-               "G4.2 FILL: child stretches to the track inner box (150)");
+               "G4.2 FILL: child stretches to the solved track inner box (200)");
     }
     {   // G4.3 CENTER in cell: cell (1,1) = [200..300]×[100..150] with a
         // (0,0) 200px sibling — the 100x50 child centers exactly at origin.
@@ -223,6 +227,116 @@ int main() {
         record(r.get(g)->measured_width == 500 &&
                r.get(g)->measured_height == 270,
                "G4.4 wrap grid = ΣcolW=500 × ΣrowH=270");
+    }
+
+    // ---- G6: the REAL AOSP constraint solver (E-wave, #606 FINAL) -----------------
+    {   // G6.1 trailing law: lines [0,200,600] — the whole excess lands in
+        // the TRAILING track of the span (200/400), not an even split.
+        Rig r;
+        uint32_t g = r.node("Landroid/widget/GridLayout;", 0, -1, -1);
+        r.get(g)->gl_col_count = 2;
+        uint32_t a = r.node("Landroid/view/View;", g, 200, 100);
+        r.get(a)->grid_row = 0; r.get(a)->grid_col = 0;
+        uint32_t b = r.node("Landroid/view/View;", g, 200, 100);
+        r.get(b)->grid_row = 0; r.get(b)->grid_col = 1;
+        uint32_t c = r.node("Landroid/view/View;", g, 600, 100);
+        r.get(c)->grid_row = 1; r.get(c)->grid_col = 0;
+        r.get(c)->grid_col_span = 2;
+        r.measure(g);
+        record(r.get(c)->measured_left == 0 &&
+               r.get(c)->measured_top == 100 &&
+               r.get(c)->measured_width == 600,
+               "G6.1 span-2 600 over 200/200: lines [0,200,600] (trailing excess)");
+    }
+    {   // G6.2 neighbors untouched: lines [0,100,450,550] — track1 takes the
+        // whole span excess (350), tracks 0 and 2 keep their own maxima.
+        Rig r;
+        uint32_t g = r.node("Landroid/widget/GridLayout;", 0, -1, -1);
+        r.get(g)->gl_col_count = 3;
+        uint32_t a = r.node("Landroid/view/View;", g, 100, 100);
+        r.get(a)->grid_row = 0; r.get(a)->grid_col = 0;
+        uint32_t b = r.node("Landroid/view/View;", g, 100, 100);
+        r.get(b)->grid_row = 0; r.get(b)->grid_col = 1;
+        uint32_t c = r.node("Landroid/view/View;", g, 100, 100);
+        r.get(c)->grid_row = 0; r.get(c)->grid_col = 2;
+        uint32_t d = r.node("Landroid/view/View;", g, 450, 100);
+        r.get(d)->grid_row = 1; r.get(d)->grid_col = 0;
+        r.get(d)->grid_col_span = 2;
+        r.measure(g);
+        record(r.get(b)->measured_left == 100 &&
+               r.get(c)->measured_left == 450 &&
+               r.get(d)->measured_width == 450 &&
+               r.get(d)->measured_left == 0,
+               "G6.2 span-2 450 over 100/100: excess in track1 (350), others kept");
+    }
+    {   // G6.3 span-3: lines [0,100,200,500] → tracks 100/100/300.
+        Rig r;
+        uint32_t g = r.node("Landroid/widget/GridLayout;", 0, -1, -1);
+        r.get(g)->gl_col_count = 3;
+        for (int i = 0; i < 3; ++i) {
+            uint32_t v = r.node("Landroid/view/View;", g, 100, 100);
+            r.get(v)->grid_row = 0; r.get(v)->grid_col = i;
+        }
+        uint32_t d = r.node("Landroid/view/View;", g, 500, 100);
+        r.get(d)->grid_row = 1; r.get(d)->grid_col = 0;
+        r.get(d)->grid_col_span = 3;
+        r.measure(g);
+        record(r.get(d)->measured_left == 0 &&
+               r.get(d)->measured_top == 100 &&
+               r.get(d)->measured_width == 500,
+               "G6.3 span-3 500 over 100/100/100: lines [0,100,200,500]");
+    }
+    {   // G6.4 two interacting arcs: A span-2 (0→2, 500) + B at col2 (100):
+        // lines [0,0,500,600] → tracks 0/500/100; B sits exactly at line2.
+        Rig r;
+        uint32_t g = r.node("Landroid/widget/GridLayout;", 0, -1, -1);
+        r.get(g)->gl_col_count = 3;
+        uint32_t a = r.node("Landroid/view/View;", g, 500, 100);
+        r.get(a)->grid_row = 0; r.get(a)->grid_col = 0;
+        r.get(a)->grid_col_span = 2;
+        uint32_t b = r.node("Landroid/view/View;", g, 100, 100);
+        r.get(b)->grid_row = 0; r.get(b)->grid_col = 2;
+        r.measure(g);
+        record(r.get(a)->measured_width == 500 &&
+               r.get(b)->measured_left == 500 &&
+               r.get(a)->measured_left == 0,
+               "G6.4 span arc (0→2,500): line2=500, B at the arc's end line");
+    }
+    {   // G6.5 the ROW axis runs the same solver: rows [0,100,350] →
+        // 100/250; the spanned child sits at rowY[2]=200 with its 250 height.
+        Rig r;
+        uint32_t g = r.node("Landroid/widget/GridLayout;", 0, -1, -1);
+        r.get(g)->gl_col_count = 1;
+        uint32_t a = r.node("Landroid/view/View;", g, 100, 100);
+        r.get(a)->grid_row = 0; r.get(a)->grid_col = 0;
+        uint32_t b = r.node("Landroid/view/View;", g, 100, 100);
+        r.get(b)->grid_row = 1; r.get(b)->grid_col = 0;
+        uint32_t c = r.node("Landroid/view/View;", g, 100, 250);
+        r.get(c)->grid_row = 2; r.get(c)->grid_col = 0;
+        r.get(c)->grid_row_span = 2;
+        r.measure(g);
+        record(r.get(c)->measured_top == 200 &&
+               r.get(c)->measured_height == 250 &&
+               r.get(b)->measured_top == 100,
+               "G6.5 row-axis solver: rows [0,100,350] (excess in trailing row)");
+    }
+    {   // G6.6 no widening when the spanned child FITS: lines [0,100,300]
+        // — the track maxima win over the 150 arc.
+        Rig r;
+        uint32_t g = r.node("Landroid/widget/GridLayout;", 0, -1, -1);
+        r.get(g)->gl_col_count = 2;
+        uint32_t a = r.node("Landroid/view/View;", g, 100, 100);
+        r.get(a)->grid_row = 0; r.get(a)->grid_col = 0;
+        uint32_t b = r.node("Landroid/view/View;", g, 200, 100);
+        r.get(b)->grid_row = 0; r.get(b)->grid_col = 1;
+        uint32_t c = r.node("Landroid/view/View;", g, 150, 100);
+        r.get(c)->grid_row = 1; r.get(c)->grid_col = 0;
+        r.get(c)->grid_col_span = 2;
+        r.measure(g);
+        record(r.get(b)->measured_left == 100 &&
+               r.get(c)->measured_width == 150 &&
+               r.get(c)->measured_left == 0,
+               "G6.6 span 150 < tracks 300: no widening (minimal solution)");
     }
 
     // ---- G5: GridLayout RTL mirror (X only) --------------------------------------

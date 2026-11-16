@@ -2895,6 +2895,41 @@ bool LayoutInflater::measure_view_spec(framework::ViewShadow* views,
     return true;
 }
 
+// ── LAYOUT-PIPE-001 (#606 FINAL): the AOSP Axis constraint law ──────────
+// (GridLayout.java computeLinks + solve — honest port). The grid lines are
+// the MINIMAL solution of two arc families:
+//   • span-1 cells:      line[i+1] ≥ line[i] + trackMax[i]   (leading arcs)
+//   • spanned children:  line[max]  ≥ line[min] + size      (interval arcs)
+// Bellman-Ford over these forward-only arcs: forward relaxation iterated to
+// a fixpoint (≤ n passes — every arc points forward). Consequence: the
+// excess a spanned child needs lands in its TRAILING tracks (earlier lines
+// keep their own minimal constraints) — the exact AOSP semantics that
+// replaces the D-wave's even-split simplification (the last documented
+// approximation of #606).
+static void gl_solve_tracks(const std::vector<int>& track_max,
+                            const std::vector<int>& span_min,
+                            const std::vector<int>& span_max,
+                            const std::vector<int>& span_size,
+                            std::vector<int>& lines) {
+    const int n = (int)track_max.size();
+    lines.assign(n + 1, 0);
+    for (int pass = 0; pass <= n; ++pass) {
+        bool changed = false;
+        for (int i = 0; i < n; ++i) {
+            const int want = lines[i] + track_max[i];
+            if (want > lines[i + 1]) { lines[i + 1] = want; changed = true; }
+        }
+        for (size_t k = 0; k < span_min.size(); ++k) {
+            const int want = lines[span_min[k]] + span_size[k];
+            if (want > lines[span_max[k]]) {
+                lines[span_max[k]] = want;
+                changed = true;
+            }
+        }
+        if (!changed) break;
+    }
+}
+
 std::pair<int, int> LayoutInflater::measure_node_raw(
     framework::ViewShadow* views, uint32_t vid, const MeasureSpec2& sw,
     const MeasureSpec2& sh, int depth) {
@@ -4338,55 +4373,48 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 // attr — margins carry the gaps).
                 int gl_cols = 0, gl_rows = 0;
                 gl_resolve_cells(views, n, kids, gl_cols, gl_rows);
-                std::vector<int> colW(gl_cols, 0), rowH(gl_rows, 0);
-                for (size_t i = 0; i < kids.size(); ++i) {
-                    auto* cn = views->find_node(kids[i]);
-                    if (!cn || cn->visibility == 8) continue;
-                    const int mw = child_sizes[i].first +
-                                   cn->lp_margin_left + cn->lp_margin_right;
-                    const int mh = child_sizes[i].second +
-                                   cn->lp_margin_top + cn->lp_margin_bottom;
-                    if (cn->grid_col_span <= 1 && cn->grid_col >= 0 &&
-                        cn->grid_col < gl_cols)
-                        colW[cn->grid_col] = std::max(colW[cn->grid_col], mw);
-                    if (cn->grid_row_span <= 1 && cn->grid_row >= 0 &&
-                        cn->grid_row < gl_rows)
-                        rowH[cn->grid_row] = std::max(rowH[cn->grid_row], mh);
-                }
-                for (size_t i = 0; i < kids.size(); ++i) {
-                    auto* cn = views->find_node(kids[i]);
-                    if (!cn || cn->visibility == 8) continue;
-                    const int cs = std::max(1, cn->grid_col_span);
-                    const int rs = std::max(1, cn->grid_row_span);
-                    const int mw = child_sizes[i].first +
-                                   cn->lp_margin_left + cn->lp_margin_right;
-                    const int mh = child_sizes[i].second +
-                                   cn->lp_margin_top + cn->lp_margin_bottom;
-                    if (cn->grid_col >= 0 && cs > 1 &&
-                        cn->grid_col + cs <= gl_cols) {
-                        int sum = 0;
-                        for (int c = cn->grid_col; c < cn->grid_col + cs; ++c)
-                            sum += colW[c];
-                        if (mw > sum) {
-                            const int add = (mw - sum + cs - 1) / cs;
-                            for (int c = cn->grid_col; c < cn->grid_col + cs; ++c)
-                                colW[c] += add;
+                // E-wave (#606 FINAL): the REAL AOSP constraint solve
+                // replaces the D-wave even-split simplification — arc
+                // families collected, fixpoint solved, content = Σ tracks.
+                {
+                    std::vector<int> tmax_c(gl_cols, 0), tmax_r(gl_rows, 0);
+                    std::vector<int> smin_c, smax_c, ssz_c, smin_r, smax_r, ssz_r;
+                    for (size_t i = 0; i < kids.size(); ++i) {
+                        auto* cn = views->find_node(kids[i]);
+                        if (!cn || cn->visibility == 8) continue;
+                        const int cs = std::max(1, cn->grid_col_span);
+                        const int rs = std::max(1, cn->grid_row_span);
+                        const int mw = child_sizes[i].first +
+                                       cn->lp_margin_left + cn->lp_margin_right;
+                        const int mh = child_sizes[i].second +
+                                       cn->lp_margin_top + cn->lp_margin_bottom;
+                        if (cn->grid_col >= 0 && cn->grid_col < gl_cols) {
+                            if (cs <= 1)
+                                tmax_c[cn->grid_col] =
+                                    std::max(tmax_c[cn->grid_col], mw);
+                            else if (cn->grid_col + cs <= gl_cols) {
+                                smin_c.push_back(cn->grid_col);
+                                smax_c.push_back(cn->grid_col + cs);
+                                ssz_c.push_back(mw);
+                            }
+                        }
+                        if (cn->grid_row >= 0 && cn->grid_row < gl_rows) {
+                            if (rs <= 1)
+                                tmax_r[cn->grid_row] =
+                                    std::max(tmax_r[cn->grid_row], mh);
+                            else if (cn->grid_row + rs <= gl_rows) {
+                                smin_r.push_back(cn->grid_row);
+                                smax_r.push_back(cn->grid_row + rs);
+                                ssz_r.push_back(mh);
+                            }
                         }
                     }
-                    if (cn->grid_row >= 0 && rs > 1 &&
-                        cn->grid_row + rs <= gl_rows) {
-                        int sum = 0;
-                        for (int r = cn->grid_row; r < cn->grid_row + rs; ++r)
-                            sum += rowH[r];
-                        if (mh > sum) {
-                            const int add = (mh - sum + rs - 1) / rs;
-                            for (int r = cn->grid_row; r < cn->grid_row + rs; ++r)
-                                rowH[r] += add;
-                        }
-                    }
+                    std::vector<int> lc, lr;
+                    gl_solve_tracks(tmax_c, smin_c, smax_c, ssz_c, lc);
+                    gl_solve_tracks(tmax_r, smin_r, smax_r, ssz_r, lr);
+                    content_w = lc.empty() ? 0 : lc.back();
+                    content_h = lr.empty() ? 0 : lr.back();
                 }
-                for (int c = 0; c < gl_cols; ++c) content_w += colW[c];
-                for (int r = 0; r < gl_rows; ++r) content_h += rowH[r];
             } else if (is_a(n->class_desc, "Landroid/widget/FrameLayout;") ||
                 is_a(n->class_desc, "Landroid/widget/RelativeLayout;") ||
                 (!is_ll && !is_scrollv && !is_scrollh)) {
@@ -5564,54 +5592,49 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
             // rightMargin - dx).
             int gl_cols = 0, gl_rows = 0;
             gl_resolve_cells(views, n, kids, gl_cols, gl_rows);
-            std::vector<int> colW(gl_cols, 0), rowH(gl_rows, 0);
-            for (uint32_t cid : kids) {
-                auto* cn = views->find_node(cid);
-                if (!cn || cn->visibility == 8) continue;
-                const int mw = cn->measured_width +
-                               cn->lp_margin_left + cn->lp_margin_right;
-                const int mh = cn->measured_height +
-                               cn->lp_margin_top + cn->lp_margin_bottom;
-                if (cn->grid_col_span <= 1 && cn->grid_col >= 0 &&
-                    cn->grid_col < gl_cols)
-                    colW[cn->grid_col] = std::max(colW[cn->grid_col], mw);
-                if (cn->grid_row_span <= 1 && cn->grid_row >= 0 &&
-                    cn->grid_row < gl_rows)
-                    rowH[cn->grid_row] = std::max(rowH[cn->grid_row], mh);
-            }
-            for (uint32_t cid : kids) {   // spanned excess, even split
-                auto* cn = views->find_node(cid);
-                if (!cn || cn->visibility == 8) continue;
-                const int cs = std::max(1, cn->grid_col_span);
-                const int rs = std::max(1, cn->grid_row_span);
-                const int mw = cn->measured_width +
-                               cn->lp_margin_left + cn->lp_margin_right;
-                const int mh = cn->measured_height +
-                               cn->lp_margin_top + cn->lp_margin_bottom;
-                if (cn->grid_col >= 0 && cs > 1 && cn->grid_col + cs <= gl_cols) {
-                    int sum = 0;
-                    for (int c = cn->grid_col; c < cn->grid_col + cs; ++c)
-                        sum += colW[c];
-                    if (mw > sum) {
-                        const int add = (mw - sum + cs - 1) / cs;
-                        for (int c = cn->grid_col; c < cn->grid_col + cs; ++c)
-                            colW[c] += add;
-                    }
-                }
-                if (cn->grid_row >= 0 && rs > 1 && cn->grid_row + rs <= gl_rows) {
-                    int sum = 0;
-                    for (int r = cn->grid_row; r < cn->grid_row + rs; ++r)
-                        sum += rowH[r];
-                    if (mh > sum) {
-                        const int add = (mh - sum + rs - 1) / rs;
-                        for (int r = cn->grid_row; r < cn->grid_row + rs; ++r)
-                            rowH[r] += add;
-                    }
-                }
-            }
+            // E-wave (#606 FINAL): tracks and line positions come from the
+            // REAL AOSP constraint solve (the same law the measure branch
+            // applies) — the solved lines ARE the cell origins.
             std::vector<int> colX(gl_cols + 1, 0), rowY(gl_rows + 1, 0);
-            for (int c = 0; c < gl_cols; ++c) colX[c + 1] = colX[c] + colW[c];
-            for (int r = 0; r < gl_rows; ++r) rowY[r + 1] = rowY[r] + rowH[r];
+            {
+                std::vector<int> tmax_c(gl_cols, 0), tmax_r(gl_rows, 0);
+                std::vector<int> smin_c, smax_c, ssz_c, smin_r, smax_r, ssz_r;
+                for (uint32_t cid : kids) {
+                    auto* cn = views->find_node(cid);
+                    if (!cn || cn->visibility == 8) continue;
+                    const int cs = std::max(1, cn->grid_col_span);
+                    const int rs = std::max(1, cn->grid_row_span);
+                    const int mw = cn->measured_width +
+                                   cn->lp_margin_left + cn->lp_margin_right;
+                    const int mh = cn->measured_height +
+                                   cn->lp_margin_top + cn->lp_margin_bottom;
+                    if (cn->grid_col >= 0 && cn->grid_col < gl_cols) {
+                        if (cs <= 1)
+                            tmax_c[cn->grid_col] =
+                                std::max(tmax_c[cn->grid_col], mw);
+                        else if (cn->grid_col + cs <= gl_cols) {
+                            smin_c.push_back(cn->grid_col);
+                            smax_c.push_back(cn->grid_col + cs);
+                            ssz_c.push_back(mw);
+                        }
+                    }
+                    if (cn->grid_row >= 0 && cn->grid_row < gl_rows) {
+                        if (rs <= 1)
+                            tmax_r[cn->grid_row] =
+                                std::max(tmax_r[cn->grid_row], mh);
+                        else if (cn->grid_row + rs <= gl_rows) {
+                            smin_r.push_back(cn->grid_row);
+                            smax_r.push_back(cn->grid_row + rs);
+                            ssz_r.push_back(mh);
+                        }
+                    }
+                }
+                std::vector<int> lc, lr;
+                gl_solve_tracks(tmax_c, smin_c, smax_c, ssz_c, lc);
+                gl_solve_tracks(tmax_r, smin_r, smax_r, ssz_r, lr);
+                colX = lc;
+                rowY = lr;
+            }
             for (uint32_t cid : kids) {
                 auto* cn = views->find_node(cid);
                 if (!cn || cn->visibility == 8) continue;
