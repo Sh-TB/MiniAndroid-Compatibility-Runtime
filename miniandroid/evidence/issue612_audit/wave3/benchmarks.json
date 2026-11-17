@@ -1,0 +1,16 @@
+{
+ "O2": {
+  "wall_s": 219.28,
+  "rc": 0,
+  "obj_bytes": 9199344,
+  "peak_rss_mb": 2870,
+  "top_phases": []
+ },
+ "O0": {
+  "wall_s": 47.1,
+  "rc": 0,
+  "obj_bytes": 21902936,
+  "peak_rss_mb": 2870,
+  "top_phases": []
+ }
+}
