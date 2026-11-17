@@ -590,8 +590,14 @@ static inline uint32_t dalvik_raw_bits32(const DalvikValue& v) {
 
 // ============================================================================
 // DalvikValue Serialization
+// ISSUE-612 WAVE-3 PILOT EXTRACTION (the smallest independent family):
+// these two pure member functions touch NO file-local state — only their
+// own fields + nlohmann::json. Default (DALVIK_MODULAR=0, monolithic
+// fallback): defined HERE. DALVIK_MODULAR=1: defined in
+// dex/dalvik_value_glue.cpp instead. The paired #ifndef/#ifdef guards
+// guarantee exactly one definition in every mode (no ODR duplication).
 // ============================================================================
-
+#ifndef MINIANDROID_DALVIK_MODULAR
 std::string DalvikValue::to_string() const {
     switch (type) {
         case DalvikType::INT32: return std::to_string(int_val);
@@ -609,7 +615,9 @@ std::string DalvikValue::to_string() const {
         default: return "<???>";
     }
 }
+#endif  // MINIANDROID_DALVIK_MODULAR (fallback: body stays in the monolith)
 
+#ifndef MINIANDROID_DALVIK_MODULAR
 json DalvikValue::to_json() const {
     json j;
     j["type"] = [this]() -> std::string {
@@ -651,6 +659,7 @@ json DalvikValue::to_json() const {
     }
     return j;
 }
+#endif  // MINIANDROID_DALVIK_MODULAR (fallback: body stays in the monolith)
 
 // ============================================================================
 // Constructor/Destructor

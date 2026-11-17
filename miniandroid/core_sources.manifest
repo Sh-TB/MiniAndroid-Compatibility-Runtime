@@ -73,3 +73,4 @@ src/storage/sqlite_shadow.cpp
 src/jni/dlopen_exec.cpp
 src/jni/native_dep.cpp
 src/jni/ma_native_bridge.cpp
+src/dex/dalvik_value_glue.cpp

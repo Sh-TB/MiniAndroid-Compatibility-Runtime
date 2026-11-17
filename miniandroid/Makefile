@@ -87,6 +87,27 @@ QUICKJS_OBJECTS = $(patsubst $(QUICKJS_DIR)/%.c,$(BUILDDIR)/quickjs/%.o,$(QUICKJ
 QUICKJS_CFLAGS = -O2 -std=gnu11 -D_GNU_SOURCE -DCONFIG_VERSION=\"2024-01-13\" -DCONFIG_BIGNUM -w -I$(QUICKJS_DIR)
 
 CORE_OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(CORE_SOURCES))
+
+# ISSUE-612 WAVE-3 PILOT: DALVIK_MODULAR=1 moves the DalvikValue serialization
+# family (to_string/to_json — the smallest independent family, zero file-local
+# state) out of the 94K-line monolith into dex/dalvik_value_glue.cpp.
+#   make DALVIK_MODULAR=1      → modular definitions (engine copies compiled out)
+#   make                       → original monolithic build (fallback, unchanged)
+# The glue TU is in core_sources.manifest (shared with CMakeLists.txt) and
+# compiles EMPTY in monolithic mode (#ifdef pair in both files) so exactly one
+# definition exists in every mode — no ODR duplication, one-command switch.
+# The mode stamp below forces dalvik_engine.o/dalvik_value_glue.o to rebuild
+# when the mode flips (make tracks timestamps, not flag changes).
+DALVIK_MODULAR ?= 0
+ifeq ($(DALVIK_MODULAR),1)
+CXXFLAGS += -DMINIANDROID_DALVIK_MODULAR
+endif
+DALVIK_MODE_STAMP = $(BUILDDIR)/dalvik_mode_$(DALVIK_MODULAR).stamp
+$(DALVIK_MODE_STAMP):
+	@mkdir -p $(BUILDDIR)
+	@rm -f $(BUILDDIR)/dalvik_mode_*.stamp
+	@touch $@
+$(BUILDDIR)/dex/dalvik_engine.o $(BUILDDIR)/dex/dalvik_value_glue.o: $(DALVIK_MODE_STAMP)
 # S-2 native execution thunk (System V x86_64 dynamic call)
 THUNK_OBJECT = $(BUILDDIR)/jni/native_thunk.o
 
