@@ -1,0 +1,12 @@
+{
+ "profile": "-O2",
+ "rows": [
+  {
+   "tu": "dex/dalvik_engine.cpp",
+   "sec": 216.24,
+   "rc": 0,
+   "peakMB_new": 2877,
+   "peakMB_cum": 2877
+  }
+ ]
+}

@@ -25,6 +25,24 @@ ifeq ($(MINIANDROID_HAVE_LOTTIE),1)
 INCLUDES += -I$(RLOTTIE_DIR)/inc
 CXXFLAGS += -DMINIANDROID_HAVE_LOTTIE
 endif
+
+# ===== ISSUE-612 WAVE-2: fast developer feedback (P0) =====
+# DEV=1 swaps the optimization profile of EVERY translation unit to
+# -O0 -g0 (parse/sema iteration speed). Without DEV the production
+# profile (-O2 -g) is byte-identical to the pre-WAVE-2 build.
+# Measured on this host (evidence/issue612_audit/tu_cost_*.json):
+#   dex/dalvik_engine.cpp     -O2: 216.2s (peak ~2.9GB) | -O0: 35.8s
+#   runtime/execution_engine  -O2: ~100s+               | -O0: 10.7s
+#   framework/android_shadows -O2: ~90s+                 | -O0:  5.9s
+# PCH probe (-include prebuilt pch of json.hpp + engine header): 36.4s —
+# NO benefit (frontend cost is the TU's own 94K lines) → rejected.
+# DEV=1 is for the L0/L1 component loop; L3/L4 (real-APK / regression)
+# always rebuild with the production profile.
+ifeq ($(DEV),1)
+CXXFLAGS := $(filter-out -O2 -g,$(CXXFLAGS)) -O0 -g0
+# DEV artifacts live in build_dev/ — the BUILDDIR override below is applied
+# AFTER the base `BUILDDIR = build` assignment (assignment order matters).
+endif
 # EXP-097 §5/§6: image codec libraries.
 # libwebp — Google reference WebP decoder (used by AOSP Skia / BitmapFactory)
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
@@ -43,6 +61,14 @@ FONTS_LIBS = -lfreetype -lharfbuzz -lfribidi -lpng
 SRCDIR = src
 BUILDDIR = build
 TESTDIR = tests
+# ISSUE-612 WAVE-2: DEV=1 builds use a SEPARATE object tree (build_dev/) so a
+# -O0 dev build never silently replaces production -O2 objects of unchanged
+# sources — make tracks timestamps, not flags; a mixed-profile build/ tree
+# would ship -O0 objects into the production binary. (Placed BELOW the base
+# assignment so the override wins.)
+ifeq ($(DEV),1)
+BUILDDIR := build_dev
+endif
 
 # GP583-BUILD-002: ONE shared source manifest consumed by BOTH build
 # graphs. The old duplicated list drifted (CMake carried 12 TUs while the
@@ -149,6 +175,36 @@ $(BUILDDIR)/main.o: $(MAIN_SOURCE)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 # Tests
+# ===== ISSUE-612 WAVE-2: independent module build targets (Phase 3) =====
+# `make module MODULE=resources` builds every MANIFEST source of ONE module.
+# The manifest (core_sources.manifest) is the single source of truth —
+# dormant/unclassified sources (e.g. resources/real_layout.cpp, which does
+# not compile against the current headers and is not linked into the runtime)
+# are NOT built by module targets, mirroring the main build's manifest rule.
+MODULE ?= resources
+MODULE_SOURCES = $(filter $(SRCDIR)/$(MODULE)/%.cpp,$(CORE_SOURCES))
+MODULE_OBJECTS = $(MODULE_SOURCES:$(SRCDIR)/%.cpp=$(BUILDDIR)/%.o)
+
+.PHONY: module list-modules
+module: $(MODULE_OBJECTS)
+	@echo "[module $(MODULE)] $(words $(MODULE_OBJECTS)) objects up to date (CXXFLAGS: $(CXXFLAGS))"
+list-modules:
+	@ls $(SRCDIR)
+
+# ===== ISSUE-612 WAVE-2: L0/L1 component tests (Phase 4/5) =====
+# Each component test links the SMALLEST object closure that provides the
+# component under test — production objects, never duplicated test code.
+# A one-line change inside that component rebuilds only its own object
+# (measured per-TU in evidence/issue612_audit) and relinks a tiny binary.
+MUTF8_TEST_EXEC = $(BUILDDIR)/i612_mutf8_component_test
+
+.PHONY: mutf8_component
+mutf8_component: $(MUTF8_TEST_EXEC)
+	./$(MUTF8_TEST_EXEC)
+
+$(MUTF8_TEST_EXEC): $(BUILDDIR)/dex/mutf8.o tests/i612_mutf8_component_test.cpp
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ tests/i612_mutf8_component_test.cpp $(BUILDDIR)/dex/mutf8.o $(LIBS)
 # S130 law tests (pure models, deterministic). Full CORE closure so the
 # battery gate can always rebuild them reproducibly.
 LAWS130_SOURCE = $(TESTDIR)/s130_laws_test.cpp

@@ -1,0 +1,11 @@
+experiment	step	seconds	rc
+F1 no-change	F1 no-change	8.51	0
+F2 no-change	F2 no-change	0.02	0
+F3 no-change	F3 no-change	0.02	0
+A dalvik-TU -O0	A dalvik-TU -O0	38.50	0
+A link-full	A link-full	56.47	0
+D shadows-TU -O0	D shadows-TU -O0	6.81	0
+D link-full	D link-full	1.27	0
+E affected-TUs -O0	E affected-TUs -O0	98.36	0
+E relink-only	E relink-only	0.02	0
+L0 mutf8-loop	L0 mutf8-loop	0.41	0
