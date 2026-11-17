@@ -33842,6 +33842,32 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
                 pc_ = pc + 3;  // R-NEW-355 pc-advance contract
                 return true;
             }
+            // ── R350-DEXPATH (NOTEPAD-GAP wave 4): ART's forName resolves
+            // against the FULL classpath — the APK's OWN shipped classes
+            // included. The old law answered CNFE for every non-whitelisted
+            // name, so androidx DataStore's protobuf-lite schema factory
+            // (Class.forName("…protobuf.ExtensionSchemaFull") family —
+            // reflective schema lookup by design, NOT strippable by R8)
+            // failed every read, NotepadActivity's preference-gated
+            // setContentView never ran, and the window captured a blank
+            // theme background. Law: a forName whose L-descriptor exists in
+            // the loaded DEX class index answers a REAL class token,
+            // initialized per the 3-arg initialize flag (ART semantics).
+            if (!class_info_index_.empty() &&
+                class_info_index_.find(want_desc) != class_info_index_.end()) {
+                const bool r350_dx_init =
+                    args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+                    args[1].int_val != 0;
+                if (r350_dx_init) ensure_class_initialized(want_desc);
+                std::cerr << "[R351-FORNAME-DEX] \"" << want_name
+                          << "\" → APK classpath class token" << std::endl;
+                return_val = DalvikValue::make_class(want_desc,
+                                                     instruction_sequence_);
+                last_invoke_return_ = return_val;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                pc_ = pc + 3;
+                return true;
+            }
             // Real law: unknown class → ClassNotFoundException (deferred —
             // the DEX catch at the call site must observe it).
             // F-NEW-394 (CONT-86): java.lang.Thread joins the bridge set —

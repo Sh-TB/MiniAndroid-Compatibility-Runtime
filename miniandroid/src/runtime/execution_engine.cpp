@@ -7922,10 +7922,21 @@ bool ExecutionEngine::stage_launch_drain(ExecutionResult& result,
     auto* cs = registry->find_as<framework::ChoreographerShadow>();
     int rounds = 0, drained_total = 0;
     int64_t advanced_total_ms = 0;
-    // Bounds: 96 rounds and 8s virtual — generous for a real launch chain
-    // (AppCompat+DataStore+fragment init ≈ a handful of hops), bounded for
-    // determinism (a self-reposting ticker cannot spin the stage forever).
-    for (int round = 0; round < 512; ++round) {
+    // per-thread idle-resume counters (the S-LAUNCHDRAIN anti-spin law).
+    std::map<uint32_t, uint32_t> launch_drain_resume_spins;
+    // Bounds: 4096 rounds, 16s virtual, and a 25s WALL budget — generous
+    // for a real launch chain (AppCompat+DataStore+fragment init; notepad's
+    // DataStore read chain made steady progress ≈2.5 units/round and needed
+    // more than the first 512), bounded for determinism and run budget.
+    const auto drain_wall_start = std::chrono::steady_clock::now();
+    for (int round = 0; round < 4096; ++round) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - drain_wall_start)
+                .count() > 25000) {
+            std::cerr << "[S-LAUNCHDRAIN] wall budget (25s) hit at round="
+                      << round << std::endl;
+            break;
+        }
         bool did_work = false;
         // The ENGINE's cross-queue drain (main MessageQueue + Choreographer
         // due frames + pending Thread starts) — the scheduler boundary the
@@ -7982,6 +7993,19 @@ bool ExecutionEngine::stage_launch_drain(ExecutionResult& result,
                 int64_t now150 = hs->virtual_now_ms();
                 while (resumed < 8 &&
                        ts150->take_due_yielded(now150, y_oid, yr_oid)) {
+                    // S-LAUNCHDRAIN anti-spin: a parked coroutine worker's
+                    // body that RE-PARKS immediately after its resume (the
+                    // kotlinx Worker findTask/park idle cycle — notepad
+                    // ground truth: 10,245 THREAD-START resumes producing
+                    // zero app progress) is an IDLE worker, not progress.
+                    // Real AOSP: an unparked thread that finds no task
+                    // blocks WITHOUT consuming the scheduler. Cap each
+                    // thread's idle resumes; real work (a handler item, a
+                    // timer fire, a G08 chain) resets nothing — the cap
+                    // just stops ONE body from owning the whole stage.
+                    uint32_t& spin = launch_drain_resume_spins[y_oid];
+                    if (spin >= 32) continue;
+                    ++spin;
                     ++resumed;
                     dalvik_engine_.run_thread_start_body(y_oid, yr_oid);
                     now150 = hs->virtual_now_ms();
@@ -8003,13 +8027,13 @@ bool ExecutionEngine::stage_launch_drain(ExecutionResult& result,
                 int64_t next_ready = hs->next_ready_ms();
                 int64_t now_ms = hs->virtual_now_ms();
                 if (next_ready > now_ms &&
-                    advanced_total_ms + (next_ready - now_ms) <= 8000) {
+                    advanced_total_ms + (next_ready - now_ms) <= 16000) {
                     int64_t delta = next_ready - now_ms;
                     hs->advance_virtual(delta);
                     advanced_total_ms += delta;
                     did_work = true;
                 }
-            } else if (advanced_total_ms <= 8000) {
+            } else if (advanced_total_ms <= 16000) {
                 hs->advance_virtual(1);
                 advanced_total_ms += 1;
                 did_work = true;
