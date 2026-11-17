@@ -33495,6 +33495,47 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
                 int32_t bits = v.int_val;
                 std::memcpy(&f, &bits, sizeof(f));
                 args.push_back(DalvikValue::make_float(f));
+            } else if (v.type == DalvikType::INT32) {
+                // ROOT-1 (GAME-185 #608) — signature-aware primitive retyping
+                // in the INLINE packer: DEX registers are untyped; the proto's
+                // param char is the only authority. The shared build_invoke_args
+                // carries this law (CHAR-PROBE campaign), but this inline packer
+                // handled only 'F' — so kotlin's split(delimiter: Char) lowered
+                // to invoke-static String.valueOf(char) received INT32 44 and
+                // produced "44" instead of ",". dk.cocode.chess: 0 of 9,000 CSV
+                // rows ever split; every parseLine collapsed to one column and
+                // the puzzle repository stayed empty ("No puzzles available").
+                // Same register word, proto-char authority: C→CHAR, Z→BOOLEAN,
+                // B→BYTE, S→SHORT.
+                switch (pt.empty() ? 'I' : pt[0]) {
+                    case 'C': {
+                        DalvikValue c = v;
+                        c.type = DalvikType::CHAR;
+                        c.int_val &= 0xFFFF;
+                        args.push_back(c);
+                        break;
+                    }
+                    case 'Z':
+                        args.push_back(DalvikValue::make_bool(v.int_val != 0));
+                        break;
+                    case 'B': {
+                        DalvikValue b = v;
+                        b.type = DalvikType::BYTE;
+                        b.int_val = static_cast<int8_t>(v.int_val & 0xFF);
+                        args.push_back(b);
+                        break;
+                    }
+                    case 'S': {
+                        DalvikValue s = v;
+                        s.type = DalvikType::SHORT;
+                        s.int_val = static_cast<int16_t>(v.int_val & 0xFFFF);
+                        args.push_back(s);
+                        break;
+                    }
+                    default:
+                        args.push_back(v);
+                        break;
+                }
             } else {
                 args.push_back(v);
             }
@@ -39763,6 +39804,56 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         result = DalvikValue::make_bool(method == "isWhitespace" ? ws : sc);
         return true;
     }
+    // ── ROOT-2 (GAME-185 #608) — Character.isDigit / getNumericValue law.
+    // The engine had NO digit handler: Character.isDigit('8') answered the
+    // silent-stub false, so chesslib's FEN parser (obfuscated LF/A0;.z)
+    // treated the empty-square count digit as a PIECE and threw
+    // IllegalArgumentException "Unknown piece '8'" — the parse of all 9,000
+    // puzzles died on the FIRST FEN right after the split() law landed.
+    // AOSP Character.java: isDigit = Unicode Nd category (engine-consistent
+    // approximation: ASCII + the common fullwidth/Arabic-Indic/Devanagari
+    // ranges); getNumericValue = digit value for Nd, 10..35 for A-Z/a-z
+    // (AOSP Character.getNumericValue), -1 otherwise. Both take a char —
+    // callers deliver it CHAR-typed through the ROOT-1 retyping law.
+    if (class_name == "Ljava/lang/Character;" &&
+        (method == "isDigit" || method == "getNumericValue" ||
+         method == "isLetterOrDigit") &&
+        args.size() >= 1) {
+        int32_t c = 0;
+        if (args[0].type == DalvikType::CHAR || args[0].type == DalvikType::INT32)
+            c = args[0].int_val;
+        auto is_nd = [](int32_t ch) {
+            return (ch >= '0' && ch <= '9') ||          // ASCII Nd
+                   (ch >= 0x0660 && ch <= 0x0669) ||    // Arabic-Indic
+                   (ch >= 0x06F0 && ch <= 0x06F9) ||    // Extended Arabic
+                   (ch >= 0x0966 && ch <= 0x096F) ||    // Devanagari
+                   (ch >= 0xFF10 && ch <= 0xFF19);      // Fullwidth
+        };
+        if (method == "isDigit") {
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(is_nd(c));
+            return true;
+        }
+        if (method == "isLetterOrDigit") {
+            bool alpha = (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                         c >= 0x80;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_bool(alpha || is_nd(c));
+            return true;
+        }
+        // getNumericValue: AOSP semantics.
+        int32_t nv = -1;
+        if (c >= '0' && c <= '9') nv = c - '0';
+        else if (c >= 'a' && c <= 'z') nv = c - 'a' + 10;
+        else if (c >= 'A' && c <= 'Z') nv = c - 'A' + 10;
+        else if (c >= 0x0660 && c <= 0x0669) nv = c - 0x0660;
+        else if (c >= 0x06F0 && c <= 0x06F9) nv = c - 0x06F0;
+        else if (c >= 0x0966 && c <= 0x096F) nv = c - 0x0966;
+        else if (c >= 0xFF10 && c <= 0xFF19) nv = c - 0xFF10;
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(nv);
+        return true;
+    }
     // ── S188-W18 F-NEW-608 — Character statics on the createCharset
     // demand chain (p9 AssetLoaderService.createCharset real bytecode:
     // isAlphabetic pc=136, toUpperCase pc=170, toLowerCase pc=216).
@@ -41557,6 +41648,30 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                       << " recv_oid=" << (!args.empty() ? args[0].object_id : 0)
                       << " caller=" << current_class_ << "." << current_method_
                       << " pc=" << pc_ << std::endl; }
+    }
+    // ── S-OBJHASH (GAME-185 ROOT-2b) — Object.hashCode at the framework
+    // boundary answers the IDENTITY hash. A DEX collection subclass
+    // (chesslib's obfuscated PieceList, Lw1/f; = LinkedList descendant)
+    // inherits AbstractList.hashCode: the element walk calls hashCode on
+    // each element; elements without a DEX body resolve to the Object
+    // framework boundary — and the old boundary path re-dispatched into
+    // the receiver's OWN DEX hashCode (the enclosing list walk again) →
+    // infinite recursion: [RECURSION-LIMIT] frame dropped:
+    // Ljava/lang/Object;.hashCode depth=2048 caller=Lw1/f;.hashCode →
+    // the unwind surfaced as a spurious NPE and the 9,000-puzzle parse
+    // died inside the FIRST FEN. AOSP Object.hashCode = the identity
+    // hash — same Fibonacci mix as the System.identityHashCode law
+    // (deterministic per heap id, 0 for null).
+    if ((class_name == "Ljava/lang/Object;" ||
+         class_name.rfind("Ljava/util/", 0) == 0 ||
+         class_name.rfind("Ljava/util/concurrent/", 0) == 0) &&
+        method == "hashCode" &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF) {
+        uint32_t oid = args[0].object_id;
+        uint32_t h = oid == 0 ? 0u : oid * 2654435761u;
+        result = DalvikValue::make_int(static_cast<int32_t>(h));
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
     }
     // ── S-TOAST (GAME-190 / #613) — android.widget.Toast through the API
     // bridge. Toast.makeText is an INVOKE-STATIC on a framework class the
