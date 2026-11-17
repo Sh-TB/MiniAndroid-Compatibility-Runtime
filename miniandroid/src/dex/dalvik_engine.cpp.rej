@@ -1,0 +1,642 @@
+diff a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp	(rejected hunks)
+@@ -12718,7 +12718,64 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+         // all_methods() copy moved the whole method table (bytecode vectors
+         // included) 13k+ times per run. Same order + overload semantics:
+         // the first ACC_NATIVE method with the requested name dispatches.
++        //
++        // F-NEW-584 (S188) — EXACT-DESCRIPTOR native resolution (ART law:
++        // the native implementation belongs to the method the invoke
++        // RESOLVED — resolution is (class, name, descriptor), never name
++        // alone). Live face: gdx FreeType$Library declares BOTH a private
++        // static native newMemoryFace(JLjava/nio/ByteBuffer;II)J AND the
++        // public Java wrapper newMemoryFace(Ljava/nio/ByteBuffer;I)LFace;
++        // the old name-only hit dispatched the REAL native with the
++        // WRAPPER's argument shape (receiver o596 + buffer + faceIndex →
++        // the C body read the library handle from the receiver tag and
++        // dataSize=0) → FT_New_Memory_Face returned NULL →
++        // "Couldn't load font" → face null → checkForBitmapFont NPE →
++        // AndroidLauncher.onCreate APP-BOUNDARY death (tictactoe_3).
++        // With the caller's descriptor: dispatch the native ONLY when the
++        // invoked descriptor IS the native's; when the descriptor selects
++        // a bytecode method (the wrapper), the wrapper's body runs — its
++        // own invoke-static then hits the native with the exact descriptor
++        // and the correct (J, L, I, I) marshaling. Internal callers that
++        // pass no descriptor keep the name-only behavior verbatim.
+         const dex::MethodInfo* native_hit = nullptr;
++        if (!method_descriptor.empty()) {
++            bool invoked_found = false;
++            for (const auto& mm : cls_ref.direct_methods) {
++                if (mm.name == method_name &&
++                    mm.descriptor == method_descriptor) {
++                    invoked_found = true;
++                    if (mm.access_flags & 0x100) native_hit = &mm;
++                    break;
++                }
++            }
++            if (!invoked_found) {
++                for (const auto& mm : cls_ref.virtual_methods) {
++                    if (mm.name == method_name &&
++                        mm.descriptor == method_descriptor) {
++                        invoked_found = true;
++                        if (mm.access_flags & 0x100) native_hit = &mm;
++                        break;
++                    }
++                }
++            }
++            // S188 diag (bounded): every freetype-family resolution —
++            // the exact (name, desc) the caller resolved and whether the
++            // native-hit gate answered.
++            static thread_local const bool s188_nh_diag =
++                std::getenv("MINIANDROID_S188_NATIVE_HIT") != nullptr;
++            if (s188_nh_diag && current_class_.find("freetype") !=
++                                    std::string::npos) {
++                static std::atomic<uint64_t> s188_nh_n{0};
++                if (s188_nh_n.fetch_add(1, std::memory_order_relaxed) < 300)
++                    std::cerr << "[S188-NH] " << class_descriptor << "."
++                              << method_name << method_descriptor
++                              << " found=" << invoked_found
++                              << " native=" << (native_hit ? 1 : 0)
++                              << std::endl;
++            }
++            // invoked_found but not native → the bytecode method runs (the
++            // normal flow below); not found at all → superclass walk.
++        } else {
+         for (const auto& mm : cls_ref.direct_methods) {
+             if (mm.name == method_name && (mm.access_flags & 0x100)) {
+                 native_hit = &mm; break;
+@@ -12731,6 +12788,7 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                 }
+             }
+         }
++        }
+         for (const dex::MethodInfo* method = native_hit; method != nullptr;
+              method = nullptr) {
+             // Found a native method — dispatch to JNI bridge
+@@ -12852,24 +12910,49 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                     // a faulting allocator) keeps precedence over the real
+                     // library. STUBBED + no loaded libs keeps the old
+                     // fail-soft semantics verbatim.
+-                    const bool stub_shadow = bres &&
+-                        bridge_status == ApiCallTrace::Status::STUBBED &&
+-                        nativeexec::has_loaded_libs();
+-                    if (stub_shadow) {
++                    // ── F-NEW-585 (S188) — REAL-NATIVE-FIRST law (the
++                    // F-C4-594 native-precedence completion; AOSP
++                    // art_jni.cc: an ACC_NATIVE method's implementation IS
++                    // the symbol the loader resolved — an IMPLEMENTED
++                    // engine/shadow answer must not shadow a symbol that
++                    // RESOLVES either). Live face: the gdx font pipeline's
++                    // FreeType$GlyphMetrics.getHeight(J)I was claimed by
++                    // the shadow-registry geometry law (answer 0 — a
++                    // View-geometry answer for a FOREIGN class) → xHeight 0
++                    // → "No x-height character found in font" →
++                    // AndroidLauncher.onCreate death (tictactoe_3) while the
++                    // REAL libgdx-freetype64.so symbol works. Ordering:
++                    //   1. no loaded libs → the bridge answer wins verbatim
++                    //      (the whole non-native corpus, zero change);
++                    //   2. libs loaded → the REAL symbol attempt runs FIRST
++                    //      (STUBBED and IMPLEMENTED answers alike are
++                    //      remembered); a symbol MISS or a guarded FAULT
++                    //      restores the remembered answer (the F-NEW-504
++                    //      tower3d heap-model allocator still owns the
++                    //      observable its law exists for — e.g. copyJni's
++                    //      Object-variant symbol is absent from the host
++                    //      build, so the engine-side byte-copy law answers).
++                    if (bres && !nativeexec::has_loaded_libs()) {
++                        return_val = bridge_val;
++                        recursion_depth_--;
++                        return true;
++                    }
++                    if (bres) {
+                         f594_stub_had_answer = true;
+                         f594_stub_answer = bridge_val;
+                         static thread_local uint64_t f594_n = 0;
+-                        if (f594_n++ < 12) {
++                        if (f594_n++ < 40) {
+                             std::cerr << "[F-C4-594] native precedence: "
+                                       << class_descriptor << "." << method_name
+-                                      << " bridge tail was STUBBED — trying the"
+-                                         " REAL registered/dlsym symbol first"
++                                      << (bridge_status ==
++                                                  ApiCallTrace::Status::STUBBED
++                                              ? " bridge tail was STUBBED"
++                                              : " bridge law answered — "
++                                                "deferred")
++                                      << " — trying the REAL registered/"
++                                         "dlsym symbol first"
+                                       << std::endl;
+                         }
+-                    } else if (bres) {
+-                        return_val = bridge_val;
+-                        recursion_depth_--;
+-                        return true;
+                     }
+                 }
+                 // ── #371 CLOSEOUT S-2: REAL native execution attempt ────
+@@ -12933,11 +13016,457 @@ bool DalvikExecutionEngine::try_recursive_invoke(
+                                     jargs.push_back(nativeexec::JArg::null());
+                             }
+                         }
++                        // ── F-NEW-586 (S188): primitive-array host
++                        // mirrors. The JNI Get<prim>ArrayElements /
++                        // GetPrimitiveArrayCritical family answers a
++                        // pointer to the array's storage (AOSP
++                        // jni_internal.cc); the engine heap stores arrays
++                        // as per-index fields, so the mirror is built
++                        // heap→host BEFORE the call and the native's
++                        // writes are synced back host→heap AFTER (calloc
++                        // zero-fill = the byte-determinism law). This is
++                        // the surface every real native array consumer
++                        // rides (gdx2d newPixmap, Box2D array params...).
++                        std::vector<uint32_t> f586_oids;
++                        std::vector<std::string> f586_cls;
++                        for (const auto& ja : jargs) {
++                            if (ja.kind != nativeexec::JArg::Kind::OBJECT)
++                                continue;
++                            std::string acls586;
++                            if (!heap_.get_object_class(ja.object_id, acls586))
++                                continue;
++                            if (acls586.size() != 2 || acls586[0] != '[' ||
++                                acls586[1] == 'L')
++                                continue;
++                            int32_t alen586 = 0;
++                            auto lf586 = heap_.get_object_field(
++                                ja.object_id, "__array_length__");
++                            if (lf586.has_value() &&
++                                lf586->type == DalvikType::INT32)
++                                alen586 = lf586->int_val;
++                            if (alen586 <= 0) {
++                                auto nf586 = heap_.get_object_field(
++                                    ja.object_id, "__new_array_length__");
++                                if (nf586.has_value() &&
++                                    nf586->type == DalvikType::INT32)
++                                    alen586 = nf586->int_val;
++                            }
++                            if (alen586 <= 0) continue;
++                            int32_t esz586 =
++                                (acls586[1] == 'J' || acls586[1] == 'D')
++                                    ? 8
++                                    : ((acls586[1] == 'I' ||
++                                        acls586[1] == 'F')
++                                           ? 4
++                                           : ((acls586[1] == 'C' ||
++                                               acls586[1] == 'S')
++                                                  ? 2
++                                                  : 1));
++                            void* mirror586 = nullptr;
++                            int32_t mc586 = 0, msz586 = 0;
++                            bool fresh586 =
++                                !nativeexec::lookup_primitive_array(
++                                    ja.object_id, &mirror586, &mc586, &msz586);
++                            if (fresh586 || mc586 < alen586 || msz586 != esz586) {
++                                void* nm586 = std::calloc(
++                                    (size_t)alen586, (size_t)esz586);
++                                nativeexec::register_primitive_array(
++                                    ja.object_id, nm586, alen586, esz586);
++                                mirror586 = nm586;
++                            }
++                            for (int32_t k586 = 0; k586 < alen586; ++k586) {
++                                auto ev586 = heap_.get_object_field(
++                                    ja.object_id,
++                                    "array[" + std::to_string(k586) + "]");
++                                unsigned char* slot586 =
++                                    (unsigned char*)mirror586 +
++                                    (size_t)k586 * esz586;
++                                switch (acls586[1]) {
++                                    case 'J': {
++                                        int64_t v = ev586.has_value()
++                                                        ? (ev586->type ==
++                                                                   DalvikType::INT64
++                                                               ? ev586->long_val
++                                                               : ev586->int_val)
++                                                        : 0;
++                                        memcpy(slot586, &v, 8);
++                                        break;
++                                    }
++                                    case 'I': {
++                                        int32_t v = ev586.has_value()
++                                                        ? ev586->int_val
++                                                        : 0;
++                                        memcpy(slot586, &v, 4);
++                                        break;
++                                    }
++                                    case 'F': {
++                                        float v = ev586.has_value()
++                                                      ? ev586->float_val
++                                                      : 0.f;
++                                        memcpy(slot586, &v, 4);
++                                        break;
++                                    }
++                                    case 'D': {
++                                        double v = ev586.has_value()
++                                                       ? ev586->double_val
++                                                       : 0.0;
++                                        memcpy(slot586, &v, 8);
++                                        break;
++                                    }
++                                    case 'Z': {
++                                        unsigned char v =
++                                            ev586.has_value()
++                                                ? (unsigned char)(ev586->bool_val
++                                                                      ? 1
++                                                                      : 0)
++                                                : 0;
++                                        slot586[0] = v;
++                                        break;
++                                    }
++                                    case 'B': {
++                                        signed char v =
++                                            ev586.has_value()
++                                                ? ev586->byte_val
++                                                : 0;
++                                        slot586[0] = (unsigned char)v;
++                                        break;
++                                    }
++                                    case 'C': {
++                                        // Java chars are 16-bit; the
++                                        // engine char model is 8-bit —
++                                        // zero-extended store, low byte
++                                        // on read-back (documented
++                                        // honest boundary).
++                                        unsigned short v =
++                                            ev586.has_value()
++                                                ? (unsigned short)(
++                                                      (unsigned char)
++                                                          ev586->char_val)
++                                                : 0;
++                                        memcpy(slot586, &v, 2);
++                                        break;
++                                    }
++                                    case 'S': {
++                                        short v = ev586.has_value()
++                                                      ? ev586->short_val
++                                                      : 0;
++                                        memcpy(slot586, &v, 2);
++                                        break;
++                                    }
++                                }
++                            }
++                            f586_oids.push_back(ja.object_id);
++                            f586_cls.push_back(acls586);
++                            {
++                                static std::atomic<uint64_t> s586_m{0};
++                                if (s586_m.fetch_add(
++                                        1, std::memory_order_relaxed) < 10)
++                                    std::cerr << "[F-NEW-586] mirror o"
++                                              << ja.object_id << " " << acls586
++                                              << " len=" << alen586
++                                              << " esz=" << esz586 << std::endl;
++                            }
++                        }
+                         nativeexec::JOutcome out;
+                         std::string nerr;
++                        // F-NEW-582 diag (bounded): the FreeType
++                        // newMemoryFace hand-off — the exact (library,
++                        // dataSize, faceIndex) the REAL FT_New_Memory_Face
++                        // receives and the first font bytes at the buffer's
++                        // registered real memory (validates the whole
++                        // copyJni → GetDirectBufferAddress → FT chain).
++                        if (method_name == "newMemoryFace") {
++                            static std::atomic<uint64_t> s582_nmf{0};
++                            if (s582_nmf.fetch_add(1,
++                                                   std::memory_order_relaxed) <
++                                4) {
++                                std::cerr << "[F-NEW-582] newMemoryFace jargs:";
++                                for (const auto& ja : jargs) {
++                                    if (ja.kind ==
++                                        nativeexec::JArg::Kind::LONG)
++                                        std::cerr << " J=" << ja.i64;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::OBJECT)
++                                        std::cerr << " L=o" << ja.object_id;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::INT)
++                                        std::cerr << " I=" << ja.i32;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::NULLREF)
++                                        std::cerr << " null";
++                                    else
++                                        std::cerr << " k"
++                                                  << (int)ja.kind;
++                                }
++                                std::cerr << std::endl;
++                                for (const auto& ja : jargs) {
++                                    if (ja.kind ==
++                                        nativeexec::JArg::Kind::OBJECT) {
++                                        void* da582 = nullptr;
++                                        int32_t dc582 = 0;
++                                        if (nativeexec::lookup_direct_buffer(
++                                                ja.object_id, &da582,
++                                                &dc582) &&
++                                            da582) {
++                                            std::cerr << "[F-NEW-582] font@"
++                                                      << da582 << " cap="
++                                                      << dc582 << " head=";
++                                            const unsigned char* p582 =
++                                                (const unsigned char*)da582;
++                                            // offset probes: head + 4 spread
++                                            // points (the FT Invalid_Table
++                                            // face means a BROKEN middle —
++                                            // compare with the APK's own
++                                            // bytes at the same offsets).
++                                            static const int32_t
++                                                k582_probe_off[4] = {0, 4096,
++                                                                     65536,
++                                                                     171640};
++                                            for (int pb582 = 0; pb582 < 4;
++                                                 ++pb582) {
++                                                int32_t o582 =
++                                                    k582_probe_off[pb582];
++                                                if (o582 >= dc582) continue;
++                                                std::cerr << "[F-NEW-582] @"
++                                                          << o582 << " =";
++                                                for (int b582 = 0; b582 < 12;
++                                                     ++b582)
++                                                    fprintf(stderr,
++                                                            " %02x",
++                                                            p582[o582 + b582]);
++                                                std::cerr << std::endl;
++                                            }
++                                        }
++                                        break;
++                                    }
++                                }
++                            }
++                        }
+                         bool f594_call_ok = nativeexec::call_native(
+                             fn, is_static, method->descriptor, jargs, out,
+                             nerr);
++                        if (f594_call_ok && method_name == "getHeight") {
++                            static std::atomic<uint64_t> s582_gh{0};
++                            if (s582_gh.fetch_add(
++                                    1, std::memory_order_relaxed) < 6)
++                                std::cerr << "[F-NEW-582] getHeight ret="
++                                          << out.i << " kind="
++                                          << (int)out.kind
++                                          << " cls=" << class_descriptor
++                                          << std::endl;
++                        }
++                        // S196 diag (bounded): pixmap pipeline truth —
++                        // Bitmap dims + the newPixmap native outcome (the
++                        // "Error loading pixmap." throw needs the exact
++                        // w/h/format gdx2d_new received).
++                        if (f594_call_ok && class_descriptor ==
++                                "Lcom/badlogic/gdx/graphics/g2d/freetype/"
++                                "FreeType$Bitmap;") {
++                            static std::atomic<uint64_t> s196_bm{0};
++                            if (s196_bm.fetch_add(
++                                    1, std::memory_order_relaxed) < 10)
++                                std::cerr << "[S196-PIX] Bitmap."
++                                          << method_name << " ret=" << out.i
++                                          << " kind=" << (int)out.kind
++                                          << std::endl;
++                        }
++                        if (f594_call_ok && method_name == "newPixmap") {
++                            static std::atomic<uint64_t> s196_np{0};
++                            if (s196_np.fetch_add(
++                                    1, std::memory_order_relaxed) < 8) {
++                                std::cerr << "[S196-PIX] newPixmap argc="
++                                          << jargs.size();
++                                for (const auto& ja : jargs) {
++                                    if (ja.kind == nativeexec::JArg::Kind::INT)
++                                        std::cerr << " I=" << ja.i32;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::OBJECT)
++                                        std::cerr << " J[]=o"
++                                                  << ja.object_id;
++                                    else if (ja.kind ==
++                                             nativeexec::JArg::Kind::LONG)
++                                        std::cerr << " L=" << ja.i64;
++                                    else
++                                        std::cerr << " k"
++                                                  << (int)ja.kind;
++                                }
++                                std::cerr << " ret kind=" << (int)out.kind
++                                          << " objid=" << out.object_id
++                                          << " addr=" << out.native_addr
++                                          << " cap=" << out.native_cap
++                                          << std::endl;
++                            }
++                        }
++                        if (f594_call_ok && method_name == "loadChar") {
++                            // F-NEW-582 diag (bounded): per-loadChar
++                            // native result + FT lastError (the x-height
++                            // throw needs the exact glyph that failed).
++                            static std::atomic<uint64_t> s582_lc{0};
++                            if (s582_lc.fetch_add(
++                                    1, std::memory_order_relaxed) < 6) {
++                                std::cerr << "[F-NEW-582] loadChar ret="
++                                          << (out.kind ==
++                                                      nativeexec::JOutcome::
++                                                          Kind::BOOLEAN
++                                                  ? (out.i ? 1 : 0)
++                                                  : (int)out.i)
++                                          << " argc=" << jargs.size();
++                                for (const auto& ja : jargs)
++                                    if (ja.kind ==
++                                        nativeexec::JArg::Kind::INT)
++                                        std::cerr << " I=" << ja.i32;
++                                std::string lerr_tried2;
++                                void* lerr_fn2 = nativeexec::find_symbol(
++                                    "Lcom/badlogic/gdx/graphics/g2d/"
++                                    "freetype/FreeType;",
++                                    "getLastErrorCode", "()I", lerr_tried2);
++                                if (lerr_fn2) {
++                                    nativeexec::JOutcome lout2;
++                                    std::string lerr2;
++                                    if (nativeexec::call_native(
++                                            lerr_fn2, true, "()I", {}, lout2,
++                                            lerr2))
++                                        std::cerr << " FTerr="
++                                                  << lout2.i;
++                                }
++                                std::cerr << std::endl;
++                            }
++                        }
++                        // F-NEW-586: mirror→heap sync after the native
++                        // (the native's writes — pixmap handles, pixel
++                        // pointers — land in the array's heap fields).
++                        if (f594_call_ok) {
++                            for (size_t ai586 = 0; ai586 < f586_oids.size();
++                                 ++ai586) {
++                                void* mirror586b = nullptr;
++                                int32_t mc586b = 0, msz586b = 0;
++                                if (!nativeexec::lookup_primitive_array(
++                                        f586_oids[ai586], &mirror586b,
++                                        &mc586b, &msz586b) ||
++                                    !mirror586b)
++                                    continue;
++                                char cc586 = f586_cls[ai586].size() == 2
++                                                 ? f586_cls[ai586][1]
++                                                 : 0;
++                                for (int32_t k586b = 0; k586b < mc586b;
++                                     ++k586b) {
++                                    const unsigned char* slot586b =
++                                        (const unsigned char*)mirror586b +
++                                        (size_t)k586b * msz586b;
++                                    switch (cc586) {
++                                        case 'J': {
++                                            int64_t v;
++                                            memcpy(&v, slot586b, 8);
++                                            DalvikValue dv;
++                                            dv.type = DalvikType::INT64;
++                                            dv.long_val = v;
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                dv);
++                                            break;
++                                        }
++                                        case 'I':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_int(
++                                                    *(const int32_t*)
++                                                        slot586b));
++                                            break;
++                                        case 'F':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_float(
++                                                    *(const float*)
++                                                        slot586b));
++                                            break;
++                                        case 'D':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_double(
++                                                    *(const double*)
++                                                        slot586b));
++                                            break;
++                                        case 'Z': {
++                                            bool b = slot586b[0] != 0;
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_bool(b));
++                                            break;
++                                        }
++                                        case 'B':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_byte(
++                                                    (int8_t)slot586b[0]));
++                                            break;
++                                        case 'C':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_char(
++                                                    (char)slot586b[0]));
++                                            break;
++                                        case 'S':
++                                            heap_.set_object_field(
++                                                f586_oids[ai586],
++                                                "array[" +
++                                                    std::to_string(k586b) +
++                                                    "]",
++                                                DalvikValue::make_short(
++                                                    *(const int16_t*)
++                                                        slot586b));
++                                            break;
++                                    }
++                                }
++                            }
++                        }
++                        if (f594_call_ok && method_name == "newMemoryFace") {
++                            static std::atomic<uint64_t> s582_nmf2{0};
++                            if (s582_nmf2.fetch_add(
++                                    1, std::memory_order_relaxed) < 4)
++                                std::cerr << "[F-NEW-582] newMemoryFace ret="
++                                          << out.i << " ok=1" << std::endl;
++                            if (out.i == 0) {
++                                // F-NEW-582 diag: the REAL FreeType
++                                // lastError — the exact FT_Error the
++                                // FT_New_Memory_Face call produced.
++                                std::string lerr_tried;
++                                void* lerr_fn = nativeexec::find_symbol(
++                                    "Lcom/badlogic/gdx/graphics/g2d/"
++                                    "freetype/FreeType;",
++                                    "getLastErrorCode", "()I", lerr_tried);
++                                if (lerr_fn) {
++                                    nativeexec::JOutcome lout;
++                                    std::string lerr;
++                                    if (nativeexec::call_native(
++                                            lerr_fn, true, "()I", {}, lout,
++                                            lerr))
++                                        std::cerr << "[F-NEW-582] FT "
++                                                     "lastError = "
++                                                  << lout.i << std::endl;
++                                }
++                            }
++                        }
+                         out.provenance = tried;
+                         if (!f594_call_ok && f594_stub_had_answer) {
+                             // F-C4-594 (W10) HONEST-FALLBACK: the real
+@@ -34467,13 +35036,47 @@ void DalvikExecutionEngine::c7_service_bring_down(ServiceInstance& svc,
+ 
+ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+                                           const std::string& method,
+-                                          const std::vector<DalvikValue>& args,
++                                          const std::vector<DalvikValue>& args_raw,
+                                           DalvikValue& result,
+                                           ApiCallTrace::Status& status,
+                                           uint32_t method_idx_hint) {
+     bridge_census_init();
+     BridgeCensusGuard c97_census_guard;
+     if (bridge_census().on) c97_census_guard.begin(class_name, method);
++    // ────────────────────────────────────────────────────────────────────────
++    // F-NEW-580b (S188) — String receiver identity-form normalization at
++    // the bridge boundary (the ONE chokepoint every String-method law
++    // funnels through — 5 invoke sites route here). A String may arrive as
++    // a HEAP OBJECT: the new-instance→<init> identity law keeps the
++    // caller's OBJECT_REF register alive and stores the content under
++    // __string_value__ (the new String(buf,0,offset) product inside
++    // PropertiesUtils.load is exactly this form). Every String-family law
++    // downstream reads args[0] as STRING_REF; without normalization the
++    // receiver read "" — the S186 "identity-form hole" family (File.toString
++    // at bridge layer), now proven a THIRD time for substring
++    // (SIOOBE length=0; begin=0; end=4 at PropertiesUtils.load pc=59 —
++    // tictactoe_3 wall 3, after getChars + String(char[],off,len) landed).
++    // libcore semantics are identical for both forms; normalize ONCE here —
++    // zero app-specific branches. The vector copy happens ONLY for the
++    // heap-String receiver shape; every other call keeps the zero-cost alias.
++    // ────────────────────────────────────────────────────────────────────────
++    std::vector<DalvikValue> f580_args_storage;
++    if (class_name == "Ljava/lang/String;" && !args_raw.empty() &&
++        args_raw[0].type == DalvikType::OBJECT_REF &&
++        args_raw[0].object_id != 0 &&
++        heap_.has_object(args_raw[0].object_id)) {
++        auto f580_sv = heap_.get_object_field(args_raw[0].object_id,
++                                              "__string_value__");
++        if (!f580_sv.has_value())
++            f580_sv = heap_.get_object_field(args_raw[0].object_id, "value");
++        if (f580_sv.has_value() && f580_sv->type == DalvikType::STRING_REF) {
++            f580_args_storage = args_raw;
++            f580_args_storage[0] =
++                DalvikValue::make_string(f580_sv->string_val, 0);
++        }
++    }
++    const std::vector<DalvikValue>& args =
++        f580_args_storage.empty() ? args_raw : f580_args_storage;
+     // S188-W2b diag (env-gated, bounded, read-only): WHICH createBitmap
+     // shapes enter the bridge and from where. Evidence gap: the
+     // battleship GameResources.rotateShipBitmaps 7-arg Matrix overload

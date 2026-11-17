@@ -1,0 +1,45 @@
+diff a/miniandroid/src/jni/dlopen_exec.cpp b/miniandroid/src/jni/dlopen_exec.cpp	(rejected hunks)
+@@ -1120,9 +1311,11 @@ void init_tables() {
+     // F-NEW-590 (W10): the direct-Buffer family — W9 census env230=4
+     // (DartMessenger platform messages into libflutter's native
+     // dispatch); 229/231 complete the family.
+-    g_jni_table[229] = (void*)&jni_NewDirectByteBuffer;     // 229 NewDirectByteBuffer
+-    g_jni_table[230] = (void*)&jni_GetDirectBufferAddress;  // 230 GetDirectBufferAddress (W9 census: queens ×4)
+-    g_jni_table[231] = (void*)&jni_GetDirectBufferCapacity; // 231 GetDirectBufferCapacity
++    // S196 merge: the F-NEW-582 superset slots own the family (W10
++    // engine-hook snapshot path preserved as the in-function fallback).
++    g_jni_table[229] = (void*)&f582_NewDirectByteBuffer;     // 229 NewDirectByteBuffer
++    g_jni_table[230] = (void*)&f582_GetDirectBufferAddress;  // 230 GetDirectBufferAddress (W9 census: queens ×4)
++    g_jni_table[231] = (void*)&f582_GetDirectBufferCapacity; // 231 GetDirectBufferCapacity
+     FillUnsupported<kVmSlots - 1, true>::fill(g_vm_table);
+     // F-NEW-594 diag: the slot-152 identity — the throw-probe chain said
+     // libflutter's slot-152 call landed on exe code at 0x676ff7, not on
+@@ -1166,6 +1359,14 @@ void mangle_escape(const std::string& in, std::string& out) {
+         if (c == '_') out += "_1";
+         else if (c == ';') out += "_2";
+         else if (c == '[') out += "_3";
++        // F-NEW-583 (S188): JNI-spec inner-class escape — '$' mangles to
++        // _00024 (jni.h native-method naming law). Live face: the REAL
++        // libgdx-freetype64.so exports
++        // Java_..._FreeType_00024Library_newMemoryFace; the raw '$' form
++        // never matched, find_symbol answered nullptr, the F-C4-594
++        // honest-fallback restored the stub zero → null Face →
++        // checkForBitmapFont NPE → tictactoe_3 font wall.
++        else if (c == '$') out += "_00024";
+         else if (c == '/' || c == '.') out += '_';
+         else if (c < 0x20 || c > 0x7e) {
+             snprintf(buf, sizeof buf, "_0%04x", (unsigned)c);
+@@ -1617,6 +1889,13 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
+             if (!ref) {
+                 out.kind = JOutcome::Kind::OBJECT;
+                 out.object_id = 0;
++            } else if (NativeDirectBuffer* db = as_direct_buffer(ref)) {
++                // F-NEW-582 (S188): a native-minted direct ByteBuffer → the
++                // engine mints a real heap ByteBuffer with the SAME backing
++                // memory (DIRECT_BUFFER outcome — registered on minting).
++                out.kind = JOutcome::Kind::DIRECT_BUFFER;
++                out.native_addr = db->addr;
++                out.native_cap = db->cap;
+             } else if (NativeObjArray* arr = as_obj_array(ref)) {
+                 // F-C4-587 (W10): a native-built jobjectArray → the engine
+                 // mints a real DEX array (STRING_ARRAY outcome). Elements

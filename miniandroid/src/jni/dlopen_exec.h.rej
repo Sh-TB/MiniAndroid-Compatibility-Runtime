@@ -1,0 +1,10 @@
+diff a/miniandroid/src/jni/dlopen_exec.h b/miniandroid/src/jni/dlopen_exec.h	(rejected hunks)
+@@ -72,7 +72,7 @@ struct JArg {
+ // Invocation result (return type per DEX descriptor).
+ struct JOutcome {
+     enum class Kind { VOID, INT, LONG, FLOAT, DOUBLE, BOOLEAN, CHAR, SHORT,
+-                      BYTE, STRING, OBJECT, STRING_ARRAY } kind = Kind::VOID;
++                      BYTE, STRING, OBJECT, STRING_ARRAY, DIRECT_BUFFER } kind = Kind::VOID;
+     int64_t i = 0;           // INT/LONG/BOOLEAN/CHAR/SHORT/BYTE
+     double d = 0.0;          // FLOAT/DOUBLE
+     std::string str;         // STRING (materialized from the native side)

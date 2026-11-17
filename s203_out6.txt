@@ -1,0 +1,32 @@
+RUN /home/z/my-project/miniandroid/build/miniandroid run --execution-mode real-dalvik --data-root /home/z/my-project/evidence/s200/runs/store_s203_glyph -o /home/z/my-project/evidence/s200/runs/s203_glyph_probe --package com.emmanuelmess.tictactoe --frames 40 --frame-delay 250
+face: 0cd50fa91686a751 fatal: 0
+ft_count: 27876 gdx2d_count: 3940
+ TEX [GLDBG] tex2D 1024x1024 fmt=0x9E type=0xF2 ptr=0x7f06d8ad9900 bytesum=863527243 nonzero=3403700/4194304 b0=ff b1=ff
+ TEX [GLDBG] tex2D 1024x1024 fmt=0x9E type=0xF2 ptr=0x7f06d9aa1d20 bytesum=844139988 nonzero=3325708/4194304 b0=ff b1=ff
+ TEX [GLDBG] tex2D 1024x1024 fmt=0x9E type=0xF2 ptr=0x7f06da8ee700 bytesum=828675116 nonzero=3262752/4194304 b0=ff b1=ff
+ TEX [GLDBG] tex2D 96x96 fmt=0x9E type=0xF2 ptr=0x7f06db6d0940 bytesum=369598 nonzero=1617/36864 b0=00 b1=00
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType;.initFreeTypeJni()J args: sig=()J
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType;.initFreeTypeJni ok=1 kind=2 i=139667580194048
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Library;.newMemoryFace(JLjava/nio/ByteBuffer;II)J args: a0=139667580194048 a1=o608 a2=171656 a3=0 sig=(JLjava/nio/Byt
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Library;.newMemoryFace ok=1 kind=2 i=139667380846752
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.getFaceFlags(J)I args: a0=139667380846752 sig=(J)I mem:01000000000000000000000000000000190800000000000000000000
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.getFaceFlags ok=1 kind=1 i=2073
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.setPixelSizes(JII)Z args: a0=139667380846752 a1=0 a2=15 sig=(JII)Z mem:0100000000000000000000000000000019080000
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.setPixelSizes ok=1 kind=5 i=1
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.setPixelSizes(JII)Z args: a0=139667380846752 a1=0 a2=120 sig=(JII)Z mem:010000000000000000000000000000001908000
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.setPixelSizes ok=1 kind=5 i=1
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.getSize(J)J args: a0=139667380846752 sig=(J)J mem:0100000000000000000000000000000019080000000000000000000000000
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.getSize ok=1 kind=2 i=139667580195408
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Size;.getMetrics(J)J args: a0=139667580195408 sig=(J)J mem:a0409fd8067f0000000000000000000000000000000000007800780000
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Size;.getMetrics ok=1 kind=2 i=139667580195432
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$SizeMetrics;.getAscender(J)I args: a0=139667580195432 sig=(J)I mem:780078000000000000c003000000000000c003000000000000
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$SizeMetrics;.getAscender ok=1 kind=1 i=7168
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$SizeMetrics;.getDescender(J)I args: a0=139667580195432 sig=(J)I mem:780078000000000000c003000000000000c00300000000000
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$SizeMetrics;.getDescender ok=1 kind=1 i=-1920
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$SizeMetrics;.getHeight(J)I args: a0=139667580195432 sig=(J)I mem:780078000000000000c003000000000000c0030000000000001c
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$SizeMetrics;.getHeight ok=1 kind=1 i=9024
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.loadChar(JII)Z args: a0=139667380846752 a1=32 a2=32 sig=(JII)Z mem:01000000000000000000000000000000190800000000
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.loadChar ok=1 kind=5 i=1
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.getGlyph(J)J args: a0=139667380846752 sig=(J)J mem:010000000000000000000000000000001908000000000000000000000000
+ FT  [W18-FT] ret Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$Face;.getGlyph ok=1 kind=2 i=139667602416896
+ FT  [W18-FT] call Lcom/badlogic/gdx/graphics/g2d/freetype/FreeType$GlyphSlot;.getMetrics(J)J args: a0=139667602416896 sig=(J)J mem:000d81e4067f0000a0409fd8067f0000000000000000000004000
