@@ -1,0 +1,11 @@
+  [PASS] Bundle operations
+  [PASS] TextView operations
+  [PASS] Activity operations
+  [PASS] Trace Engine operations
+  [PASS] Paint & Canvas operations
+  [PASS] View hierarchy operations
+rc=0
+[PASS] simple_test
+[PASS] s130_laws_test
+[PASS] gp582_engine_probe_test
+rc=0
