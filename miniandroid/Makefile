@@ -87,8 +87,10 @@ CORE_SOURCES := $(shell grep -v '^#' core_sources.manifest)
 # A split-mode stamp forces the affected objects to rebuild on a flip (make
 # tracks timestamps, not manifest/flag changes).
 DALVIK_SPLIT ?= 1
+# WAVE-5: opcode range decomposed 3-way (interpreter / field ops / invoke+framework)
 DALVIK_SPLIT_PARTS = dex/dalvik_engine_core.cpp dex/dalvik_engine_invoke.cpp \
-	dex/dalvik_opcodes.cpp dex/dalvik_bridge.cpp dex/dalvik_engine_tail.cpp
+	dex/dalvik_interpreter.cpp dex/dalvik_opcodes.cpp \
+	dex/dalvik_opcodes_invoke.cpp dex/dalvik_bridge.cpp dex/dalvik_engine_tail.cpp
 ifeq ($(DALVIK_SPLIT),0)
 CORE_SOURCES := $(filter-out $(addprefix $(SRCDIR)/,$(DALVIK_SPLIT_PARTS)),$(CORE_SOURCES))
 CORE_SOURCES += $(SRCDIR)/dex/dalvik_engine.cpp
@@ -129,7 +131,8 @@ $(DALVIK_MODE_STAMP):
 	@touch $@
 $(BUILDDIR)/dex/dalvik_engine.o $(BUILDDIR)/dex/dalvik_value_glue.o \
 $(BUILDDIR)/dex/dalvik_engine_core.o $(BUILDDIR)/dex/dalvik_engine_invoke.o \
-$(BUILDDIR)/dex/dalvik_opcodes.o $(BUILDDIR)/dex/dalvik_bridge.o \
+$(BUILDDIR)/dex/dalvik_interpreter.o $(BUILDDIR)/dex/dalvik_opcodes.o \
+$(BUILDDIR)/dex/dalvik_opcodes_invoke.o $(BUILDDIR)/dex/dalvik_bridge.o \
 $(BUILDDIR)/dex/dalvik_engine_tail.o: $(DALVIK_MODE_STAMP) $(DALVIK_SPLIT_STAMP)
 # S-2 native execution thunk (System V x86_64 dynamic call)
 THUNK_OBJECT = $(BUILDDIR)/jni/native_thunk.o
@@ -189,10 +192,11 @@ $(BUILDDIR)/dex/dalvik_engine.o: $(SRCDIR)/dex/dalvik_engine.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
-# ISSUE-612 WAVE-4: the split part TUs inherit the same CONT-37 contract
-# (-O2 unchanged, debug sections dropped for these heavy TUs only)…
+# ISSUE-612 WAVE-4/WAVE-5: the split part TUs inherit the same CONT-37
+# contract (-O2 unchanged, debug sections dropped for these heavy TUs only)…
 $(BUILDDIR)/dex/dalvik_engine_core.o $(BUILDDIR)/dex/dalvik_engine_invoke.o \
-$(BUILDDIR)/dex/dalvik_opcodes.o $(BUILDDIR)/dex/dalvik_engine_tail.o: \
+$(BUILDDIR)/dex/dalvik_interpreter.o $(BUILDDIR)/dex/dalvik_opcodes.o \
+$(BUILDDIR)/dex/dalvik_opcodes_invoke.o $(BUILDDIR)/dex/dalvik_engine_tail.o: \
 $(BUILDDIR)/dex/%.o: $(SRCDIR)/dex/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<

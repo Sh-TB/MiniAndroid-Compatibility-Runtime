@@ -100,10 +100,13 @@ file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/core_sources.manifest" MINIANDROID_COR
 # excludes the five split part TUs; ON excludes the monolith (kept in the
 # repo as the documented fallback).
 option(DALVIK_SPLIT "Build the split dalvik engine TUs instead of the monolith" ON)
+# WAVE-5: opcode range decomposed 3-way (interpreter / field ops / invoke+framework)
 set(MINIANDROID_SPLIT_PARTS
     src/dex/dalvik_engine_core.cpp
     src/dex/dalvik_engine_invoke.cpp
+    src/dex/dalvik_interpreter.cpp
     src/dex/dalvik_opcodes.cpp
+    src/dex/dalvik_opcodes_invoke.cpp
     src/dex/dalvik_bridge.cpp
     src/dex/dalvik_engine_tail.cpp)
 if(DALVIK_SPLIT)
@@ -196,7 +199,9 @@ set(MINIANDROID_BIG_TUS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_core.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_invoke.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_interpreter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_opcodes.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_opcodes_invoke.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_tail.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/framework/android_shadows.cpp
