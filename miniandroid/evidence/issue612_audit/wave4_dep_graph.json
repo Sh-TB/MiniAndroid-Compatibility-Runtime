@@ -1,0 +1,1193 @@
+{
+ "static": [
+  "axml_attr_text",
+  "axml_bytes_to_text_371",
+  "build_invoke_args",
+  "call_result_to_dalvik",
+  "dalvik_bool_value",
+  "dalvik_raw_bits32",
+  "dalvik_value_to_arg",
+  "dalvik_value_to_string",
+  "diag_env",
+  "field_trace_filter_set",
+  "frag_stage_of",
+  "framework_string_id_text",
+  "g_content_values_mirror_ref",
+  "host_path_for_virtual_volume",
+  "parse_proto_param_types",
+  "r414_opcode_size",
+  "s130_norm_cls",
+  "s134_field_default",
+  "xml_escape_text_371"
+ ],
+ "hdr_decl": [
+  "DalvikExecutionEngine::advance_fragments_to_created",
+  "DalvikExecutionEngine::advance_fragments_to_resumed",
+  "DalvikExecutionEngine::advance_fragments_to_started",
+  "DalvikExecutionEngine::app_object_equals",
+  "DalvikExecutionEngine::asset_entry_bytes",
+  "DalvikExecutionEngine::asset_entry_names",
+  "DalvikExecutionEngine::awaitup_gate_abort_reset",
+  "DalvikExecutionEngine::awaitup_gate_check",
+  "DalvikExecutionEngine::bind_manifest_application",
+  "DalvikExecutionEngine::build_class_dex_index",
+  "DalvikExecutionEngine::c7_activity_launch_gate",
+  "DalvikExecutionEngine::c7_activity_parent_of",
+  "DalvikExecutionEngine::c7_resolve_activity_xpkg",
+  "DalvikExecutionEngine::c7_tsb_start_dispatch",
+  "DalvikExecutionEngine::cached_asset_bytes",
+  "DalvikExecutionEngine::call_compute_scroll",
+  "DalvikExecutionEngine::chain_overrides_method",
+  "DalvikExecutionEngine::class_chain_defines_method",
+  "DalvikExecutionEngine::class_has_no_arg_ctor",
+  "DalvikExecutionEngine::dispatch_activity_lifecycle_callbacks",
+  "DalvikExecutionEngine::dispatch_attached_subtree_from",
+  "DalvikExecutionEngine::dispatch_click_by_class",
+  "DalvikExecutionEngine::dispatch_custom_view_draw",
+  "DalvikExecutionEngine::dispatch_custom_view_measure",
+  "DalvikExecutionEngine::dispatch_custom_view_onsizechanged",
+  "DalvikExecutionEngine::dispatch_gl_surface_view_frame",
+  "DalvikExecutionEngine::dispatch_memory_and_config_signals",
+  "DalvikExecutionEngine::dispatch_root_window_insets",
+  "DalvikExecutionEngine::dispatch_surface_view_lifecycle",
+  "DalvikExecutionEngine::dispatch_text_input_by_class",
+  "DalvikExecutionEngine::dispatch_view_attached",
+  "DalvikExecutionEngine::dispatch_view_lifecycle_once",
+  "DalvikExecutionEngine::dispatch_view_relayout",
+  "DalvikExecutionEngine::drain_park_queues_bounded",
+  "DalvikExecutionEngine::dump_cont4_solver_diag",
+  "DalvikExecutionEngine::dump_frame_locals_diag",
+  "DalvikExecutionEngine::dump_view_tree",
+  "DalvikExecutionEngine::eager_harvest_r_classes",
+  "DalvikExecutionEngine::ensure_class_initialized",
+  "DalvikExecutionEngine::execute_apk",
+  "DalvikExecutionEngine::execute_apk_with_activity",
+  "DalvikExecutionEngine::execute_check_cast",
+  "DalvikExecutionEngine::execute_const",
+  "DalvikExecutionEngine::execute_const_16",
+  "DalvikExecutionEngine::execute_const_4",
+  "DalvikExecutionEngine::execute_const_class",
+  "DalvikExecutionEngine::execute_const_string",
+  "DalvikExecutionEngine::execute_goto",
+  "DalvikExecutionEngine::execute_if_eqz",
+  "DalvikExecutionEngine::execute_if_gez",
+  "DalvikExecutionEngine::execute_if_gtz",
+  "DalvikExecutionEngine::execute_if_lez",
+  "DalvikExecutionEngine::execute_if_ltz",
+  "DalvikExecutionEngine::execute_if_nez",
+  "DalvikExecutionEngine::execute_iget",
+  "DalvikExecutionEngine::execute_iget_object",
+  "DalvikExecutionEngine::execute_instance_of",
+  "DalvikExecutionEngine::execute_iput",
+  "DalvikExecutionEngine::execute_iput_object",
+  "DalvikExecutionEngine::execute_method",
+  "DalvikExecutionEngine::execute_method_internal",
+  "DalvikExecutionEngine::execute_move",
+  "DalvikExecutionEngine::execute_move_object",
+  "DalvikExecutionEngine::execute_move_object_16",
+  "DalvikExecutionEngine::execute_move_object_from16",
+  "DalvikExecutionEngine::execute_move_result",
+  "DalvikExecutionEngine::execute_move_result_object",
+  "DalvikExecutionEngine::execute_new_instance",
+  "DalvikExecutionEngine::execute_return",
+  "DalvikExecutionEngine::execute_return_object",
+  "DalvikExecutionEngine::execute_return_void",
+  "DalvikExecutionEngine::execute_return_wide",
+  "DalvikExecutionEngine::execute_sget",
+  "DalvikExecutionEngine::execute_sget_object",
+  "DalvikExecutionEngine::execute_sput",
+  "DalvikExecutionEngine::execute_sput_object",
+  "DalvikExecutionEngine::fetch_decode_execute",
+  "DalvikExecutionEngine::fetch_opcode",
+  "DalvikExecutionEngine::field_memo_epoch",
+  "DalvikExecutionEngine::find_catch_handler_for_pc",
+  "DalvikExecutionEngine::flush_finalizers",
+  "DalvikExecutionEngine::foreign_owner_package",
+  "DalvikExecutionEngine::frag_build_preference_list_view",
+  "DalvikExecutionEngine::framework_ancestor_for_dispatch",
+  "DalvikExecutionEngine::generate_child_layout_params",
+  "DalvikExecutionEngine::get_or_create_dir_file",
+  "DalvikExecutionEngine::get_or_create_singleton",
+  "DalvikExecutionEngine::get_register",
+  "DalvikExecutionEngine::get_timestamp",
+  "DalvikExecutionEngine::harvest_r_class_fields",
+  "DalvikExecutionEngine::inject_foreign_apk_code",
+  "DalvikExecutionEngine::inject_secondary_dex_classes",
+  "DalvikExecutionEngine::install_collection_equality_law",
+  "DalvikExecutionEngine::install_content_providers",
+  "DalvikExecutionEngine::instantiate_fragment_tag",
+  "DalvikExecutionEngine::invoke_lifecycle_method",
+  "DalvikExecutionEngine::invoke_provider_method",
+  "DalvikExecutionEngine::is_button_class",
+  "DalvikExecutionEngine::is_edit_text_class",
+  "DalvikExecutionEngine::is_image_view_class",
+  "DalvikExecutionEngine::is_text_view_class",
+  "DalvikExecutionEngine::is_thread_receiver",
+  "DalvikExecutionEngine::is_view_class",
+  "DalvikExecutionEngine::is_view_group_class",
+  "DalvikExecutionEngine::java_format_walk",
+  "DalvikExecutionEngine::log",
+  "DalvikExecutionEngine::make_stable_class_token",
+  "DalvikExecutionEngine::make_uri_object",
+  "DalvikExecutionEngine::manifest_service_fgs_type",
+  "DalvikExecutionEngine::materialize_adapter_rows_for",
+  "DalvikExecutionEngine::materialize_entries_listviews",
+  "DalvikExecutionEngine::materialize_init_default",
+  "DalvikExecutionEngine::populate_drawable_paths_from_arsc",
+  "DalvikExecutionEngine::populate_resource_drawable_paths",
+  "DalvikExecutionEngine::raise_synthetic_exception",
+  "DalvikExecutionEngine::read_dex_string_from_raw",
+  "DalvikExecutionEngine::read_signed_literal",
+  "DalvikExecutionEngine::realinit_fragment_manager_singleton",
+  "DalvikExecutionEngine::reconcile_class_decl",
+  "DalvikExecutionEngine::register_name",
+  "DalvikExecutionEngine::reset_s221_bridge_frame",
+  "DalvikExecutionEngine::resolve_field",
+  "DalvikExecutionEngine::resolve_method_class_for_dex",
+  "DalvikExecutionEngine::resolve_method_class_uncached",
+  "DalvikExecutionEngine::resolve_method_name_for_dex",
+  "DalvikExecutionEngine::resolve_method_name_uncached",
+  "DalvikExecutionEngine::resolve_method_proto_for_dex",
+  "DalvikExecutionEngine::resolve_method_proto_uncached",
+  "DalvikExecutionEngine::resolve_provider_for_authority",
+  "DalvikExecutionEngine::resolve_string_for_dex",
+  "DalvikExecutionEngine::resolve_type_for_dex",
+  "DalvikExecutionEngine::resolved_field_declarer",
+  "DalvikExecutionEngine::run_custom_view_constructor",
+  "DalvikExecutionEngine::runtime_content_measure_class",
+  "DalvikExecutionEngine::scan_init_field_defaults",
+  "DalvikExecutionEngine::seed_framework_device_statics",
+  "DalvikExecutionEngine::set_foreign_class_owner",
+  "DalvikExecutionEngine::set_register",
+  "DalvikExecutionEngine::set_wide_pair",
+  "DalvikExecutionEngine::static_field_declarer_of",
+  "DalvikExecutionEngine::throw_deferred",
+  "DalvikExecutionEngine::to_hex",
+  "DalvikExecutionEngine::to_hex16",
+  "DalvikExecutionEngine::true_dex_field_declarer",
+  "DalvikExecutionEngine::try_interface_default_invoke",
+  "DalvikExecutionEngine::try_recursive_invoke",
+  "DalvikExecutionEngine::try_recursive_invoke_on_super",
+  "DalvikExecutionEngine::vsync_keepalive_tick",
+  "DalvikExecutionEngine::xml_pull_advance",
+  "DalvikExecutionResult::to_full_report",
+  "DalvikValue::to_json",
+  "DalvikValue::to_string",
+  "content_values_flat_snapshot",
+  "ring_normalize_chrono"
+ ],
+ "free_fns": [
+  "diag_env",
+  "g_content_values_mirror_ref",
+  "content_values_flat_snapshot",
+  "field_trace_filter_set",
+  "kv_table_find",
+  "kvint_table_find",
+  "ring_normalize_chrono",
+  "kv_table_contains",
+  "str_table_contains",
+  "phase_clock",
+  "dalvik_value_to_string",
+  "build_invoke_args",
+  "dalvik_bool_value",
+  "dalvik_raw_bits32",
+  "axml_attr_text",
+  "xml_escape_text_371",
+  "axml_bytes_to_text_371",
+  "frag_stage_of",
+  "s130_norm_cls",
+  "s134_field_default",
+  "r414_opcode_size",
+  "parse_proto_param_types",
+  "build_invoke_args",
+  "dalvik_value_to_arg",
+  "call_result_to_dalvik",
+  "host_path_for_virtual_volume",
+  "framework_string_id_text",
+  "w14_resolve_real_fm_class"
+ ],
+ "edges": {
+  "content_values_flat_snapshot": [
+   "g_content_values_mirror_ref"
+  ],
+  "dalvik_value_to_string": [
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::build_class_dex_index": [
+   "DalvikExecutionEngine::execute_method",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::read_dex_string_from_raw",
+   "DalvikExecutionEngine::resolve_field",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::inject_secondary_dex_classes": [
+   "DalvikExecutionEngine::log",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::inject_foreign_apk_code": [
+   "DalvikExecutionEngine::set_foreign_class_owner",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::resolve_string_for_dex": [
+   "DalvikExecutionEngine::read_dex_string_from_raw",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::class_chain_defines_method": [
+   "kv_table_contains"
+  ],
+  "DalvikExecutionEngine::runtime_content_measure_class": [
+   "kv_table_contains"
+  ],
+  "DalvikExecutionEngine::resolve_method_name_uncached": [
+   "DalvikExecutionEngine::read_dex_string_from_raw",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::resolve_method_class_uncached": [
+   "DalvikExecutionEngine::read_dex_string_from_raw"
+  ],
+  "DalvikExecutionEngine::resolve_type_for_dex": [
+   "DalvikExecutionEngine::read_dex_string_from_raw"
+  ],
+  "DalvikExecutionEngine::resolve_method_proto_uncached": [
+   "DalvikExecutionEngine::read_dex_string_from_raw",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::execute_apk": [
+   "DalvikExecutionEngine::execute_apk_with_activity"
+  ],
+  "DalvikExecutionEngine::execute_apk_with_activity": [
+   "DalvikExecutionEngine::advance_fragments_to_created",
+   "DalvikExecutionEngine::bind_manifest_application",
+   "DalvikExecutionEngine::build_class_dex_index",
+   "DalvikExecutionEngine::dispatch_activity_lifecycle_callbacks",
+   "DalvikExecutionEngine::execute_apk",
+   "DalvikExecutionEngine::execute_method",
+   "DalvikExecutionEngine::execute_method_internal",
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikExecutionEngine::get_timestamp",
+   "DalvikExecutionEngine::inject_foreign_apk_code",
+   "DalvikExecutionEngine::inject_secondary_dex_classes",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikValue::to_string",
+   "ring_normalize_chrono"
+  ],
+  "DalvikExecutionEngine::execute_method": [
+   "DalvikExecutionEngine::build_class_dex_index",
+   "DalvikExecutionEngine::execute_apk",
+   "DalvikExecutionEngine::execute_apk_with_activity",
+   "DalvikExecutionEngine::execute_method_internal",
+   "DalvikExecutionEngine::get_timestamp",
+   "DalvikExecutionEngine::log",
+   "ring_normalize_chrono"
+  ],
+  "DalvikExecutionEngine::dump_frame_locals_diag": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::dump_cont4_solver_diag": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_method_internal": [
+   "DalvikExecutionEngine::ensure_class_initialized",
+   "DalvikExecutionEngine::execute_method",
+   "DalvikExecutionEngine::execute_return",
+   "DalvikExecutionEngine::fetch_decode_execute",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikValue::to_string",
+   "dalvik_value_to_string",
+   "diag_env",
+   "parse_proto_param_types",
+   "phase_clock"
+  ],
+  "DalvikExecutionEngine::eager_harvest_r_classes": [
+   "DalvikExecutionEngine::harvest_r_class_fields"
+  ],
+  "DalvikExecutionEngine::ensure_class_initialized": [
+   "DalvikExecutionEngine::eager_harvest_r_classes",
+   "DalvikExecutionEngine::execute_method",
+   "DalvikExecutionEngine::execute_method_internal",
+   "DalvikExecutionEngine::harvest_r_class_fields",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "diag_env",
+   "phase_clock"
+  ],
+  "DalvikExecutionEngine::cached_asset_bytes": [
+   "DalvikExecutionEngine::asset_entry_bytes"
+  ],
+  "axml_attr_text": [
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::install_collection_equality_law": [
+   "DalvikExecutionEngine::app_object_equals",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikExecutionEngine::try_recursive_invoke_on_super"
+  ],
+  "DalvikExecutionEngine::app_object_equals": [
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikExecutionEngine::try_recursive_invoke_on_super"
+  ],
+  "DalvikExecutionEngine::install_content_providers": [
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::c7_tsb_start_dispatch": [
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::resolve_provider_for_authority": [
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikExecutionEngine::inject_foreign_apk_code",
+   "DalvikExecutionEngine::install_content_providers",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::invoke_provider_method": [
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::invoke_lifecycle_method": [
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::dispatch_memory_and_config_signals": [
+   "DalvikExecutionEngine::invoke_lifecycle_method",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::advance_fragments_to_created": [
+   "DalvikExecutionEngine::invoke_lifecycle_method",
+   "frag_stage_of"
+  ],
+  "DalvikExecutionEngine::instantiate_fragment_tag": [
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::advance_fragments_to_started": [
+   "DalvikExecutionEngine::frag_build_preference_list_view",
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikExecutionEngine::invoke_lifecycle_method",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "frag_stage_of"
+  ],
+  "DalvikExecutionEngine::advance_fragments_to_resumed": [
+   "DalvikExecutionEngine::invoke_lifecycle_method",
+   "frag_stage_of"
+  ],
+  "DalvikExecutionEngine::frag_build_preference_list_view": [
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::bind_manifest_application": [
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikExecutionEngine::install_content_providers",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::dispatch_activity_lifecycle_callbacks": [
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::try_recursive_invoke_on_super": [
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "diag_env"
+  ],
+  "DalvikExecutionEngine::try_interface_default_invoke": [
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::try_recursive_invoke": [
+   "DalvikExecutionEngine::asset_entry_names",
+   "DalvikExecutionEngine::cached_asset_bytes",
+   "DalvikExecutionEngine::dump_frame_locals_diag",
+   "DalvikExecutionEngine::ensure_class_initialized",
+   "DalvikExecutionEngine::execute_method",
+   "DalvikExecutionEngine::execute_method_internal",
+   "DalvikExecutionEngine::execute_return",
+   "DalvikExecutionEngine::execute_return_object",
+   "DalvikExecutionEngine::execute_sget",
+   "DalvikExecutionEngine::find_catch_handler_for_pc",
+   "DalvikExecutionEngine::get_or_create_dir_file",
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::raise_synthetic_exception",
+   "DalvikExecutionEngine::realinit_fragment_manager_singleton",
+   "DalvikExecutionEngine::resolve_method_name_for_dex",
+   "DalvikExecutionEngine::resolve_type_for_dex",
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikExecutionEngine::to_hex",
+   "DalvikExecutionEngine::try_recursive_invoke_on_super",
+   "DalvikValue::to_string",
+   "call_result_to_dalvik",
+   "dalvik_value_to_arg",
+   "diag_env",
+   "phase_clock",
+   "w14_resolve_real_fm_class"
+  ],
+  "DalvikExecutionEngine::dispatch_custom_view_draw": [
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikValue::to_string",
+   "diag_env"
+  ],
+  "DalvikExecutionEngine::dispatch_custom_view_onsizechanged": [
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::run_custom_view_constructor": [
+   "DalvikExecutionEngine::class_chain_defines_method",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::runtime_content_measure_class",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::dispatch_custom_view_measure": [
+   "DalvikExecutionEngine::dispatch_view_relayout",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::generate_child_layout_params": [
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::dispatch_view_lifecycle_once": [
+   "DalvikExecutionEngine::class_chain_defines_method",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::dispatch_view_relayout": [
+   "DalvikExecutionEngine::class_chain_defines_method",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::dispatch_gl_surface_view_frame": [
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::dispatch_surface_view_lifecycle": [
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::chain_overrides_method": [
+   "DalvikExecutionEngine::class_chain_defines_method",
+   "phase_clock"
+  ],
+  "DalvikExecutionEngine::call_compute_scroll": [
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "s130_norm_cls"
+  ],
+  "DalvikExecutionEngine::materialize_adapter_rows_for": [
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "s130_norm_cls"
+  ],
+  "DalvikExecutionEngine::dispatch_view_attached": [
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::dispatch_root_window_insets": [
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::dispatch_attached_subtree_from": [
+   "DalvikExecutionEngine::materialize_entries_listviews",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::materialize_entries_listviews": [
+   "DalvikExecutionEngine::materialize_adapter_rows_for",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::dispatch_click_by_class": [
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::dump_view_tree": [
+   "DalvikExecutionEngine::is_button_class",
+   "DalvikExecutionEngine::is_edit_text_class",
+   "DalvikExecutionEngine::is_image_view_class",
+   "DalvikExecutionEngine::is_text_view_class",
+   "DalvikExecutionEngine::is_view_class",
+   "DalvikExecutionEngine::is_view_group_class"
+  ],
+  "DalvikExecutionEngine::awaitup_gate_check": [
+   "DalvikExecutionEngine::log"
+  ],
+  "DalvikExecutionEngine::vsync_keepalive_tick": [
+   "DalvikExecutionEngine::log"
+  ],
+  "DalvikExecutionEngine::fetch_decode_execute": [
+   "DalvikExecutionEngine::awaitup_gate_check",
+   "DalvikExecutionEngine::dump_cont4_solver_diag",
+   "DalvikExecutionEngine::dump_frame_locals_diag",
+   "DalvikExecutionEngine::execute_check_cast",
+   "DalvikExecutionEngine::execute_const",
+   "DalvikExecutionEngine::execute_const_16",
+   "DalvikExecutionEngine::execute_const_4",
+   "DalvikExecutionEngine::execute_const_class",
+   "DalvikExecutionEngine::execute_const_string",
+   "DalvikExecutionEngine::execute_goto",
+   "DalvikExecutionEngine::execute_if_eqz",
+   "DalvikExecutionEngine::execute_if_gez",
+   "DalvikExecutionEngine::execute_if_gtz",
+   "DalvikExecutionEngine::execute_if_lez",
+   "DalvikExecutionEngine::execute_if_ltz",
+   "DalvikExecutionEngine::execute_if_nez",
+   "DalvikExecutionEngine::execute_iget",
+   "DalvikExecutionEngine::execute_iget_object",
+   "DalvikExecutionEngine::execute_instance_of",
+   "DalvikExecutionEngine::execute_iput",
+   "DalvikExecutionEngine::execute_iput_object",
+   "DalvikExecutionEngine::execute_method",
+   "DalvikExecutionEngine::execute_method_internal",
+   "DalvikExecutionEngine::execute_move",
+   "DalvikExecutionEngine::execute_move_object",
+   "DalvikExecutionEngine::execute_move_object_16",
+   "DalvikExecutionEngine::execute_move_object_from16",
+   "DalvikExecutionEngine::execute_move_result",
+   "DalvikExecutionEngine::execute_move_result_object",
+   "DalvikExecutionEngine::execute_new_instance",
+   "DalvikExecutionEngine::execute_return",
+   "DalvikExecutionEngine::execute_return_object",
+   "DalvikExecutionEngine::execute_return_void",
+   "DalvikExecutionEngine::execute_return_wide",
+   "DalvikExecutionEngine::execute_sget",
+   "DalvikExecutionEngine::execute_sget_object",
+   "DalvikExecutionEngine::execute_sput",
+   "DalvikExecutionEngine::execute_sput_object",
+   "DalvikExecutionEngine::fetch_opcode",
+   "DalvikExecutionEngine::find_catch_handler_for_pc",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::raise_synthetic_exception",
+   "DalvikExecutionEngine::resolve_method_class_for_dex",
+   "DalvikExecutionEngine::resolve_method_name_for_dex",
+   "DalvikExecutionEngine::resolve_method_proto_for_dex",
+   "DalvikExecutionEngine::resolve_string_for_dex",
+   "DalvikExecutionEngine::resolve_type_for_dex",
+   "DalvikExecutionEngine::set_register",
+   "DalvikExecutionEngine::set_wide_pair",
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikExecutionEngine::to_hex",
+   "DalvikExecutionEngine::to_hex16",
+   "DalvikExecutionEngine::try_interface_default_invoke",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikExecutionEngine::vsync_keepalive_tick",
+   "DalvikValue::to_string",
+   "build_invoke_args",
+   "dalvik_raw_bits32",
+   "dalvik_value_to_string",
+   "diag_env",
+   "parse_proto_param_types",
+   "phase_clock"
+  ],
+  "DalvikExecutionEngine::find_catch_handler_for_pc": [
+   "DalvikExecutionEngine::resolve_type_for_dex"
+  ],
+  "DalvikExecutionEngine::throw_deferred": [
+   "DalvikExecutionEngine::find_catch_handler_for_pc",
+   "DalvikExecutionEngine::to_hex"
+  ],
+  "DalvikExecutionEngine::raise_synthetic_exception": [
+   "DalvikExecutionEngine::find_catch_handler_for_pc",
+   "DalvikExecutionEngine::to_hex",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::execute_const_4": [
+   "DalvikExecutionEngine::execute_const",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_const_16": [
+   "DalvikExecutionEngine::execute_const",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_const": [
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_const_string": [
+   "DalvikExecutionEngine::execute_const",
+   "DalvikExecutionEngine::resolve_string_for_dex",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_const_class": [
+   "DalvikExecutionEngine::execute_const",
+   "DalvikExecutionEngine::execute_const_string",
+   "DalvikExecutionEngine::resolve_type_for_dex",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_move": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::register_name",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_move_object": [
+   "DalvikExecutionEngine::execute_move",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::register_name",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_move_object_from16": [
+   "DalvikExecutionEngine::execute_move",
+   "DalvikExecutionEngine::execute_move_object",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_move_object_16": [
+   "DalvikExecutionEngine::execute_move",
+   "DalvikExecutionEngine::execute_move_object",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_move_result": [
+   "DalvikExecutionEngine::execute_move",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_move_result_object": [
+   "DalvikExecutionEngine::execute_move",
+   "DalvikExecutionEngine::execute_move_result",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_new_instance": [
+   "DalvikExecutionEngine::ensure_class_initialized",
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::resolve_type_for_dex",
+   "DalvikExecutionEngine::set_register",
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikValue::to_string",
+   "diag_env"
+  ],
+  "DalvikExecutionEngine::execute_check_cast": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::reconcile_class_decl",
+   "DalvikExecutionEngine::resolve_type_for_dex",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_instance_of": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::reconcile_class_decl",
+   "DalvikExecutionEngine::register_name",
+   "DalvikExecutionEngine::resolve_type_for_dex",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::resolve_field": [
+   "DalvikExecutionEngine::field_memo_epoch",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::read_dex_string_from_raw",
+   "DalvikValue::to_string",
+   "phase_clock"
+  ],
+  "DalvikExecutionEngine::execute_iget": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::raise_synthetic_exception",
+   "DalvikExecutionEngine::set_register",
+   "DalvikValue::to_string",
+   "dalvik_value_to_string",
+   "diag_env",
+   "field_trace_filter_set",
+   "phase_clock",
+   "s134_field_default"
+  ],
+  "DalvikExecutionEngine::scan_init_field_defaults": [
+   "DalvikExecutionEngine::resolve_field",
+   "DalvikExecutionEngine::resolve_type_for_dex",
+   "r414_opcode_size"
+  ],
+  "DalvikExecutionEngine::materialize_init_default": [
+   "DalvikExecutionEngine::class_has_no_arg_ctor",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::class_has_no_arg_ctor": [
+   "DalvikExecutionEngine::materialize_init_default"
+  ],
+  "DalvikExecutionEngine::execute_iget_object": [
+   "DalvikExecutionEngine::class_has_no_arg_ctor",
+   "DalvikExecutionEngine::execute_iget",
+   "DalvikExecutionEngine::execute_iput",
+   "DalvikExecutionEngine::execute_iput_object",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::materialize_init_default",
+   "DalvikExecutionEngine::raise_synthetic_exception",
+   "DalvikExecutionEngine::resolved_field_declarer",
+   "DalvikExecutionEngine::scan_init_field_defaults",
+   "DalvikExecutionEngine::set_register",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikValue::to_string",
+   "dalvik_value_to_string",
+   "diag_env",
+   "field_trace_filter_set"
+  ],
+  "DalvikExecutionEngine::execute_iput": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::raise_synthetic_exception",
+   "DalvikValue::to_string",
+   "dalvik_value_to_string",
+   "diag_env",
+   "field_trace_filter_set"
+  ],
+  "DalvikExecutionEngine::execute_iput_object": [
+   "DalvikExecutionEngine::execute_iput",
+   "DalvikExecutionEngine::execute_method",
+   "DalvikExecutionEngine::execute_method_internal",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::raise_synthetic_exception",
+   "DalvikExecutionEngine::resolved_field_declarer",
+   "DalvikValue::to_string",
+   "dalvik_value_to_string",
+   "diag_env",
+   "field_trace_filter_set"
+  ],
+  "DalvikExecutionEngine::execute_sget": [
+   "DalvikExecutionEngine::ensure_class_initialized",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::resolve_field",
+   "DalvikExecutionEngine::set_register",
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikValue::to_string",
+   "field_trace_filter_set"
+  ],
+  "DalvikExecutionEngine::execute_sget_object": [
+   "DalvikExecutionEngine::ensure_class_initialized",
+   "DalvikExecutionEngine::execute_sget",
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::resolve_field",
+   "DalvikExecutionEngine::set_register",
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikValue::to_string",
+   "diag_env",
+   "field_trace_filter_set",
+   "kv_table_find",
+   "phase_clock"
+  ],
+  "DalvikExecutionEngine::execute_sput": [
+   "DalvikExecutionEngine::ensure_class_initialized",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::resolve_field",
+   "DalvikExecutionEngine::static_field_declarer_of",
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikValue::to_string",
+   "field_trace_filter_set"
+  ],
+  "DalvikExecutionEngine::execute_sput_object": [
+   "DalvikExecutionEngine::ensure_class_initialized",
+   "DalvikExecutionEngine::execute_sput",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::resolve_field",
+   "DalvikExecutionEngine::static_field_declarer_of",
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikValue::to_string",
+   "field_trace_filter_set"
+  ],
+  "DalvikExecutionEngine::execute_return_void": [
+   "DalvikExecutionEngine::execute_return",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::to_hex"
+  ],
+  "DalvikExecutionEngine::execute_return": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::to_hex",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_return_object": [
+   "DalvikExecutionEngine::execute_return",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::to_hex",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_return_wide": [
+   "DalvikExecutionEngine::execute_return",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::to_hex",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_goto": [
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::to_hex",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_if_eqz": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_if_nez": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::log",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_if_ltz": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_if_gez": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_if_gtz": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::execute_if_lez": [
+   "DalvikExecutionEngine::get_register",
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::register_name": [
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::seed_framework_device_statics": [
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::java_format_walk": [
+   "DalvikValue::to_string"
+  ],
+  "DalvikExecutionEngine::drain_park_queues_bounded": [
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::try_recursive_invoke"
+  ],
+  "DalvikExecutionEngine::framework_ancestor_for_dispatch": [
+   "DalvikExecutionEngine::log"
+  ],
+  "DalvikExecutionEngine::get_or_create_dir_file": [
+   "DalvikExecutionEngine::log"
+  ],
+  "DalvikExecutionEngine::realinit_fragment_manager_singleton": [
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "w14_resolve_real_fm_class"
+  ],
+  "DalvikExecutionEngine::get_or_create_singleton": [
+   "DalvikExecutionEngine::log"
+  ],
+  "DalvikExecutionEngine::to_hex16": [
+   "DalvikExecutionEngine::to_hex"
+  ],
+  "DalvikExecutionResult::to_full_report": [
+   "DalvikValue::to_json"
+  ],
+  "diag_env": [],
+  "DalvikExecutionEngine::harvest_r_class_fields": [],
+  "phase_clock": [],
+  "DalvikExecutionEngine::log": [],
+  "DalvikExecutionEngine::read_dex_string_from_raw": [],
+  "DalvikValue::to_string": [],
+  "DalvikExecutionEngine::get_register": [],
+  "DalvikExecutionEngine::reconcile_class_decl": [],
+  "DalvikExecutionEngine::set_register": [],
+  "DalvikExecutionEngine::to_hex": [],
+  "field_trace_filter_set": [],
+  "w14_resolve_real_fm_class": [],
+  "frag_stage_of": [],
+  "DalvikExecutionEngine::set_foreign_class_owner": [],
+  "ring_normalize_chrono": [],
+  "DalvikExecutionEngine::get_timestamp": [],
+  "kv_table_find": [],
+  "s130_norm_cls": [],
+  "DalvikExecutionEngine::asset_entry_names": [],
+  "r414_opcode_size": [],
+  "kv_table_contains": [],
+  "dalvik_value_to_arg": [],
+  "DalvikExecutionEngine::asset_entry_bytes": [],
+  "call_result_to_dalvik": [],
+  "DalvikExecutionEngine::resolve_method_name_for_dex": [],
+  "s134_field_default": [],
+  "DalvikExecutionEngine::resolved_field_declarer": [],
+  "DalvikExecutionEngine::static_field_declarer_of": [],
+  "DalvikExecutionEngine::resolve_method_proto_for_dex": [],
+  "build_invoke_args": [],
+  "DalvikExecutionEngine::set_wide_pair": [],
+  "dalvik_raw_bits32": [],
+  "parse_proto_param_types": [],
+  "DalvikExecutionEngine::fetch_opcode": [],
+  "DalvikExecutionEngine::resolve_method_class_for_dex": [],
+  "DalvikExecutionEngine::field_memo_epoch": [],
+  "g_content_values_mirror_ref": [],
+  "kvint_table_find": [],
+  "str_table_contains": [],
+  "dalvik_bool_value": [],
+  "DalvikValue::to_json": [],
+  "DalvikExecutionEngine::foreign_owner_package": [],
+  "DalvikExecutionEngine::c7_activity_launch_gate": [],
+  "DalvikExecutionEngine::c7_resolve_activity_xpkg": [],
+  "DalvikExecutionEngine::is_view_class": [],
+  "DalvikExecutionEngine::is_edit_text_class": [],
+  "DalvikExecutionEngine::is_view_group_class": [],
+  "DalvikExecutionEngine::is_button_class": [],
+  "DalvikExecutionEngine::is_image_view_class": [],
+  "DalvikExecutionEngine::is_text_view_class": [],
+  "DalvikExecutionEngine::flush_finalizers": [],
+  "xml_escape_text_371": [],
+  "axml_bytes_to_text_371": [],
+  "DalvikExecutionEngine::xml_pull_advance": [],
+  "DalvikExecutionEngine::manifest_service_fgs_type": [],
+  "DalvikExecutionEngine::c7_activity_parent_of": [],
+  "DalvikExecutionEngine::make_uri_object": [],
+  "DalvikExecutionEngine::dispatch_text_input_by_class": [],
+  "DalvikExecutionEngine::awaitup_gate_abort_reset": [],
+  "DalvikExecutionEngine::reset_s221_bridge_frame": [],
+  "DalvikExecutionEngine::populate_resource_drawable_paths": [],
+  "DalvikExecutionEngine::populate_drawable_paths_from_arsc": [],
+  "DalvikExecutionEngine::true_dex_field_declarer": [],
+  "DalvikExecutionEngine::make_stable_class_token": [],
+  "host_path_for_virtual_volume": [],
+  "framework_string_id_text": [],
+  "DalvikExecutionEngine::is_thread_receiver": [],
+  "DalvikExecutionEngine::read_signed_literal": []
+ },
+ "components": [
+  [
+   "DalvikExecutionEngine::advance_fragments_to_created",
+   "DalvikExecutionEngine::advance_fragments_to_resumed",
+   "DalvikExecutionEngine::advance_fragments_to_started",
+   "DalvikExecutionEngine::app_object_equals",
+   "DalvikExecutionEngine::asset_entry_bytes",
+   "DalvikExecutionEngine::asset_entry_names",
+   "DalvikExecutionEngine::awaitup_gate_check",
+   "DalvikExecutionEngine::bind_manifest_application",
+   "DalvikExecutionEngine::build_class_dex_index",
+   "DalvikExecutionEngine::c7_tsb_start_dispatch",
+   "DalvikExecutionEngine::cached_asset_bytes",
+   "DalvikExecutionEngine::call_compute_scroll",
+   "DalvikExecutionEngine::chain_overrides_method",
+   "DalvikExecutionEngine::class_chain_defines_method",
+   "DalvikExecutionEngine::class_has_no_arg_ctor",
+   "DalvikExecutionEngine::dispatch_activity_lifecycle_callbacks",
+   "DalvikExecutionEngine::dispatch_attached_subtree_from",
+   "DalvikExecutionEngine::dispatch_click_by_class",
+   "DalvikExecutionEngine::dispatch_custom_view_draw",
+   "DalvikExecutionEngine::dispatch_custom_view_measure",
+   "DalvikExecutionEngine::dispatch_custom_view_onsizechanged",
+   "DalvikExecutionEngine::dispatch_gl_surface_view_frame",
+   "DalvikExecutionEngine::dispatch_memory_and_config_signals",
+   "DalvikExecutionEngine::dispatch_root_window_insets",
+   "DalvikExecutionEngine::dispatch_surface_view_lifecycle",
+   "DalvikExecutionEngine::dispatch_view_attached",
+   "DalvikExecutionEngine::dispatch_view_lifecycle_once",
+   "DalvikExecutionEngine::dispatch_view_relayout",
+   "DalvikExecutionEngine::drain_park_queues_bounded",
+   "DalvikExecutionEngine::dump_cont4_solver_diag",
+   "DalvikExecutionEngine::dump_frame_locals_diag",
+   "DalvikExecutionEngine::eager_harvest_r_classes",
+   "DalvikExecutionEngine::ensure_class_initialized",
+   "DalvikExecutionEngine::execute_apk",
+   "DalvikExecutionEngine::execute_apk_with_activity",
+   "DalvikExecutionEngine::execute_check_cast",
+   "DalvikExecutionEngine::execute_const",
+   "DalvikExecutionEngine::execute_const_16",
+   "DalvikExecutionEngine::execute_const_4",
+   "DalvikExecutionEngine::execute_const_class",
+   "DalvikExecutionEngine::execute_const_string",
+   "DalvikExecutionEngine::execute_goto",
+   "DalvikExecutionEngine::execute_if_eqz",
+   "DalvikExecutionEngine::execute_if_gez",
+   "DalvikExecutionEngine::execute_if_gtz",
+   "DalvikExecutionEngine::execute_if_lez",
+   "DalvikExecutionEngine::execute_if_ltz",
+   "DalvikExecutionEngine::execute_if_nez",
+   "DalvikExecutionEngine::execute_iget",
+   "DalvikExecutionEngine::execute_iget_object",
+   "DalvikExecutionEngine::execute_instance_of",
+   "DalvikExecutionEngine::execute_iput",
+   "DalvikExecutionEngine::execute_iput_object",
+   "DalvikExecutionEngine::execute_method",
+   "DalvikExecutionEngine::execute_method_internal",
+   "DalvikExecutionEngine::execute_move",
+   "DalvikExecutionEngine::execute_move_object",
+   "DalvikExecutionEngine::execute_move_object_16",
+   "DalvikExecutionEngine::execute_move_object_from16",
+   "DalvikExecutionEngine::execute_move_result",
+   "DalvikExecutionEngine::execute_move_result_object",
+   "DalvikExecutionEngine::execute_new_instance",
+   "DalvikExecutionEngine::execute_return",
+   "DalvikExecutionEngine::execute_return_object",
+   "DalvikExecutionEngine::execute_return_void",
+   "DalvikExecutionEngine::execute_return_wide",
+   "DalvikExecutionEngine::execute_sget",
+   "DalvikExecutionEngine::execute_sget_object",
+   "DalvikExecutionEngine::execute_sput",
+   "DalvikExecutionEngine::execute_sput_object",
+   "DalvikExecutionEngine::fetch_decode_execute",
+   "DalvikExecutionEngine::fetch_opcode",
+   "DalvikExecutionEngine::field_memo_epoch",
+   "DalvikExecutionEngine::find_catch_handler_for_pc",
+   "DalvikExecutionEngine::frag_build_preference_list_view",
+   "DalvikExecutionEngine::framework_ancestor_for_dispatch",
+   "DalvikExecutionEngine::generate_child_layout_params",
+   "DalvikExecutionEngine::get_or_create_dir_file",
+   "DalvikExecutionEngine::get_or_create_singleton",
+   "DalvikExecutionEngine::get_register",
+   "DalvikExecutionEngine::get_timestamp",
+   "DalvikExecutionEngine::harvest_r_class_fields",
+   "DalvikExecutionEngine::inject_foreign_apk_code",
+   "DalvikExecutionEngine::inject_secondary_dex_classes",
+   "DalvikExecutionEngine::install_collection_equality_law",
+   "DalvikExecutionEngine::install_content_providers",
+   "DalvikExecutionEngine::instantiate_fragment_tag",
+   "DalvikExecutionEngine::invoke_lifecycle_method",
+   "DalvikExecutionEngine::invoke_provider_method",
+   "DalvikExecutionEngine::java_format_walk",
+   "DalvikExecutionEngine::log",
+   "DalvikExecutionEngine::materialize_adapter_rows_for",
+   "DalvikExecutionEngine::materialize_entries_listviews",
+   "DalvikExecutionEngine::materialize_init_default",
+   "DalvikExecutionEngine::raise_synthetic_exception",
+   "DalvikExecutionEngine::read_dex_string_from_raw",
+   "DalvikExecutionEngine::realinit_fragment_manager_singleton",
+   "DalvikExecutionEngine::reconcile_class_decl",
+   "DalvikExecutionEngine::register_name",
+   "DalvikExecutionEngine::resolve_field",
+   "DalvikExecutionEngine::resolve_method_class_for_dex",
+   "DalvikExecutionEngine::resolve_method_class_uncached",
+   "DalvikExecutionEngine::resolve_method_name_for_dex",
+   "DalvikExecutionEngine::resolve_method_name_uncached",
+   "DalvikExecutionEngine::resolve_method_proto_for_dex",
+   "DalvikExecutionEngine::resolve_method_proto_uncached",
+   "DalvikExecutionEngine::resolve_provider_for_authority",
+   "DalvikExecutionEngine::resolve_string_for_dex",
+   "DalvikExecutionEngine::resolve_type_for_dex",
+   "DalvikExecutionEngine::resolved_field_declarer",
+   "DalvikExecutionEngine::run_custom_view_constructor",
+   "DalvikExecutionEngine::runtime_content_measure_class",
+   "DalvikExecutionEngine::scan_init_field_defaults",
+   "DalvikExecutionEngine::seed_framework_device_statics",
+   "DalvikExecutionEngine::set_foreign_class_owner",
+   "DalvikExecutionEngine::set_register",
+   "DalvikExecutionEngine::set_wide_pair",
+   "DalvikExecutionEngine::static_field_declarer_of",
+   "DalvikExecutionEngine::throw_deferred",
+   "DalvikExecutionEngine::to_hex",
+   "DalvikExecutionEngine::to_hex16",
+   "DalvikExecutionEngine::try_interface_default_invoke",
+   "DalvikExecutionEngine::try_recursive_invoke",
+   "DalvikExecutionEngine::try_recursive_invoke_on_super",
+   "DalvikExecutionEngine::vsync_keepalive_tick",
+   "DalvikValue::to_string",
+   "axml_attr_text",
+   "build_invoke_args",
+   "call_result_to_dalvik",
+   "dalvik_raw_bits32",
+   "dalvik_value_to_arg",
+   "dalvik_value_to_string",
+   "diag_env",
+   "field_trace_filter_set",
+   "frag_stage_of",
+   "kv_table_contains",
+   "kv_table_find",
+   "parse_proto_param_types",
+   "phase_clock",
+   "r414_opcode_size",
+   "ring_normalize_chrono",
+   "s130_norm_cls",
+   "s134_field_default",
+   "w14_resolve_real_fm_class"
+  ],
+  [
+   "DalvikExecutionEngine::dump_view_tree",
+   "DalvikExecutionEngine::is_button_class",
+   "DalvikExecutionEngine::is_edit_text_class",
+   "DalvikExecutionEngine::is_image_view_class",
+   "DalvikExecutionEngine::is_text_view_class",
+   "DalvikExecutionEngine::is_view_class",
+   "DalvikExecutionEngine::is_view_group_class"
+  ],
+  [
+   "content_values_flat_snapshot",
+   "g_content_values_mirror_ref"
+  ],
+  [
+   "DalvikExecutionResult::to_full_report",
+   "DalvikValue::to_json"
+  ],
+  [
+   "kvint_table_find"
+  ],
+  [
+   "str_table_contains"
+  ],
+  [
+   "dalvik_bool_value"
+  ],
+  [
+   "DalvikExecutionEngine::foreign_owner_package"
+  ],
+  [
+   "DalvikExecutionEngine::c7_activity_launch_gate"
+  ],
+  [
+   "DalvikExecutionEngine::c7_resolve_activity_xpkg"
+  ],
+  [
+   "DalvikExecutionEngine::flush_finalizers"
+  ],
+  [
+   "xml_escape_text_371"
+  ],
+  [
+   "axml_bytes_to_text_371"
+  ],
+  [
+   "DalvikExecutionEngine::xml_pull_advance"
+  ],
+  [
+   "DalvikExecutionEngine::manifest_service_fgs_type"
+  ],
+  [
+   "DalvikExecutionEngine::c7_activity_parent_of"
+  ],
+  [
+   "DalvikExecutionEngine::make_uri_object"
+  ],
+  [
+   "DalvikExecutionEngine::dispatch_text_input_by_class"
+  ],
+  [
+   "DalvikExecutionEngine::awaitup_gate_abort_reset"
+  ],
+  [
+   "DalvikExecutionEngine::reset_s221_bridge_frame"
+  ],
+  [
+   "DalvikExecutionEngine::populate_resource_drawable_paths"
+  ],
+  [
+   "DalvikExecutionEngine::populate_drawable_paths_from_arsc"
+  ],
+  [
+   "DalvikExecutionEngine::true_dex_field_declarer"
+  ],
+  [
+   "DalvikExecutionEngine::make_stable_class_token"
+  ],
+  [
+   "host_path_for_virtual_volume"
+  ],
+  [
+   "framework_string_id_text"
+  ],
+  [
+   "DalvikExecutionEngine::is_thread_receiver"
+  ],
+  [
+   "DalvikExecutionEngine::read_signed_literal"
+  ]
+ ]
+}

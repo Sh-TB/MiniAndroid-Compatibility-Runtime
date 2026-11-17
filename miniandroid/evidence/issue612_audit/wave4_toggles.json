@@ -1,0 +1,150 @@
+{
+ "baseline_prod": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_baseline_prod.o",
+  "extra_flags": [],
+  "rc": 0,
+  "wall": 221.97,
+  "peak_rss_mb": 2871,
+  "obj_bytes": 9199344
+ },
+ "g0": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_g0.o -g0",
+  "extra_flags": [
+   "-g0"
+  ],
+  "rc": 0,
+  "wall": 219.71,
+  "peak_rss_mb": 2871,
+  "obj_bytes": 9199344
+ },
+ "g": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_g.o -g",
+  "extra_flags": [
+   "-g"
+  ],
+  "rc": 1,
+  "wall": 87.51,
+  "peak_rss_mb": 3093,
+  "obj_bytes": 0
+ },
+ "no_inline": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_no_inline.o -fno-inline-functions",
+  "extra_flags": [
+   "-fno-inline-functions"
+  ],
+  "rc": 0,
+  "wall": 213.26,
+  "peak_rss_mb": 2869,
+  "obj_bytes": 9227832
+ },
+ "no_ipa_cp": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_no_ipa_cp.o -fno-ipa-cp",
+  "extra_flags": [
+   "-fno-ipa-cp"
+  ],
+  "rc": 0,
+  "wall": 170.18,
+  "peak_rss_mb": 2903,
+  "obj_bytes": 9339664
+ },
+ "no_ipa_sra": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_no_ipa_sra.o -fno-ipa-sra",
+  "extra_flags": [
+   "-fno-ipa-sra"
+  ],
+  "rc": 0,
+  "wall": 185.79,
+  "peak_rss_mb": 2837,
+  "obj_bytes": 9537216
+ },
+ "no_ipa_clone": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_no_ipa_clone.o -fno-ipa-clone",
+  "extra_flags": [
+   "-fno-ipa-clone"
+  ],
+  "rc": 1,
+  "wall": 0.01,
+  "peak_rss_mb": 12,
+  "obj_bytes": 0
+ },
+ "no_vec": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_no_vec.o -fno-tree-vectorize",
+  "extra_flags": [
+   "-fno-tree-vectorize"
+  ],
+  "rc": 0,
+  "wall": 215.71,
+  "peak_rss_mb": 2870,
+  "obj_bytes": 9210824
+ },
+ "no_unroll": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_no_unroll.o -fno-unroll-loops",
+  "extra_flags": [
+   "-fno-unroll-loops"
+  ],
+  "rc": 0,
+  "wall": 205.81,
+  "peak_rss_mb": 2873,
+  "obj_bytes": 9199184
+ },
+ "no_icf": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_no_icf.o -fno-ipa-icf",
+  "extra_flags": [
+   "-fno-ipa-icf"
+  ],
+  "rc": 0,
+  "wall": 216.77,
+  "peak_rss_mb": 2873,
+  "obj_bytes": 9208184
+ },
+ "O1": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_O1.o -O1",
+  "extra_flags": [
+   "-O1"
+  ],
+  "rc": 1,
+  "wall": 61.88,
+  "peak_rss_mb": 3125,
+  "obj_bytes": 0
+ },
+ "Og": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_Og.o -Og",
+  "extra_flags": [
+   "-Og"
+  ],
+  "rc": 0,
+  "wall": 63.38,
+  "peak_rss_mb": 2647,
+  "obj_bytes": 10445944
+ },
+ "O0g": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_O0g.o -O0",
+  "extra_flags": [
+   "-O0"
+  ],
+  "rc": 0,
+  "wall": 36.32,
+  "peak_rss_mb": 2605,
+  "obj_bytes": 21902936
+ },
+ "g1": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_g1.o -g1",
+  "extra_flags": [
+   "-g1"
+  ],
+  "rc": 0,
+  "wall": 190.1,
+  "peak_rss_mb": 3019,
+  "obj_bytes": 32989008
+ },
+ "no_cp_clone": {
+  "cmd": "/usr/bin/g++ -std=c++17 -Wall -Wextra -g -O2 -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine.o src/dex/dalvik_engine.cpp -o /tmp/w4_no_cp_clone.o -fno-ipa-cp-clone",
+  "extra_flags": [
+   "-fno-ipa-cp-clone"
+  ],
+  "rc": 0,
+  "wall": 185.93,
+  "peak_rss_mb": 2872,
+  "obj_bytes": 9199344
+ }
+}
