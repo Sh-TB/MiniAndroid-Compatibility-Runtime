@@ -78,6 +78,26 @@ endif
 # `make check-source-parity` asserts the Makefile expansion equals the
 # manifest (run in the test battery).
 CORE_SOURCES := $(shell grep -v '^#' core_sources.manifest)
+
+# ISSUE-612 WAVE-4: the 94K-line dalvik_engine.cpp monolith is split into 5
+# verbatim-range TUs (core/invoke/opcodes/bridge/tail — cuts at verified
+# brace-depth-2 boundaries; see scripts/w4_split.py + checkpoint comments).
+# DALVIK_SPLIT=1 (default) builds the split TUs; DALVIK_SPLIT=0 restores the
+# original monolithic fallback (file kept in the repo, one-command switch).
+# A split-mode stamp forces the affected objects to rebuild on a flip (make
+# tracks timestamps, not manifest/flag changes).
+DALVIK_SPLIT ?= 1
+DALVIK_SPLIT_PARTS = dex/dalvik_engine_core.cpp dex/dalvik_engine_invoke.cpp \
+	dex/dalvik_opcodes.cpp dex/dalvik_bridge.cpp dex/dalvik_engine_tail.cpp
+ifeq ($(DALVIK_SPLIT),0)
+CORE_SOURCES := $(filter-out $(addprefix $(SRCDIR)/,$(DALVIK_SPLIT_PARTS)),$(CORE_SOURCES))
+CORE_SOURCES += $(SRCDIR)/dex/dalvik_engine.cpp
+endif
+DALVIK_SPLIT_STAMP = $(BUILDDIR)/dalvik_split_$(DALVIK_SPLIT).stamp
+$(DALVIK_SPLIT_STAMP):
+	@mkdir -p $(BUILDDIR)
+	@rm -f $(BUILDDIR)/dalvik_split_*.stamp
+	@touch $@
 # Per-lane views of the manifest are kept for documentation purposes only;
 # the canonical list is the manifest. (The old hand-maintained duplicates
 # were removed — they were the drift surface BUILD-002 documents.)
@@ -107,7 +127,10 @@ $(DALVIK_MODE_STAMP):
 	@mkdir -p $(BUILDDIR)
 	@rm -f $(BUILDDIR)/dalvik_mode_*.stamp
 	@touch $@
-$(BUILDDIR)/dex/dalvik_engine.o $(BUILDDIR)/dex/dalvik_value_glue.o: $(DALVIK_MODE_STAMP)
+$(BUILDDIR)/dex/dalvik_engine.o $(BUILDDIR)/dex/dalvik_value_glue.o \
+$(BUILDDIR)/dex/dalvik_engine_core.o $(BUILDDIR)/dex/dalvik_engine_invoke.o \
+$(BUILDDIR)/dex/dalvik_opcodes.o $(BUILDDIR)/dex/dalvik_bridge.o \
+$(BUILDDIR)/dex/dalvik_engine_tail.o: $(DALVIK_MODE_STAMP) $(DALVIK_SPLIT_STAMP)
 # S-2 native execution thunk (System V x86_64 dynamic call)
 THUNK_OBJECT = $(BUILDDIR)/jni/native_thunk.o
 
@@ -165,6 +188,25 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 $(BUILDDIR)/dex/dalvik_engine.o: $(SRCDIR)/dex/dalvik_engine.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+# ISSUE-612 WAVE-4: the split part TUs inherit the same CONT-37 contract
+# (-O2 unchanged, debug sections dropped for these heavy TUs only)…
+$(BUILDDIR)/dex/dalvik_engine_core.o $(BUILDDIR)/dex/dalvik_engine_invoke.o \
+$(BUILDDIR)/dex/dalvik_opcodes.o $(BUILDDIR)/dex/dalvik_engine_tail.o: \
+$(BUILDDIR)/dex/%.o: $(SRCDIR)/dex/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+# dalvik_bridge.o (bridge_to_api — 55,195 lines) EXCEEDS this 4 GB host's
+# cc1plus peak at -O2 (measured: OOM kill at ~3,030 MB across -O2 plain,
+# -fno-ipa-cp, -fno-ipa-sra, and GGC-tuned variants; the monolith peaked at
+# 2,871 MB). This rule takes the CONT-37 precedent one documented step
+# further: -Og (debug-quality optimization) for THIS TU only, -O2 everywhere
+# else. Measured: -Og fits at 2,124 MB peak / 38.9 s. Runtime impact is
+# measured on the Guess regression in the wave-4 evidence.
+$(BUILDDIR)/dex/dalvik_bridge.o: $(SRCDIR)/dex/dalvik_bridge.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -Og -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 # CONT-39 (F-NEW-301): android_shadows.cpp hit the SAME cc1plus -g peak
 # (OOM kill at ~936 MB RSS during this wave's build — dmesg recorded).
@@ -373,6 +415,14 @@ test-all: check-source-parity $(addprefix $(BUILDDIR)/tests/,$(TEST_BATTERY))
 DORMANT_SOURCES = src/dex/api_dispatcher.cpp src/dex/exception_system.cpp \
 	src/dex/execution_guard.cpp src/dex/execution_observatory.cpp \
 	src/renderer/view_renderer.cpp src/resources/real_layout.cpp
+# ISSUE-612 WAVE-4: in split mode (default) the original monolith is the
+# documented fallback kept in the repo but not linked; in DALVIK_SPLIT=0 mode
+# the split parts are dormant instead. Exactly one classification per mode.
+ifeq ($(DALVIK_SPLIT),1)
+DORMANT_SOURCES += src/dex/dalvik_engine.cpp
+else
+DORMANT_SOURCES += $(addprefix src/,$(DALVIK_SPLIT_PARTS))
+endif
 check-source-parity:
 	@status=0; \
 	for f in $(CORE_SOURCES); do \

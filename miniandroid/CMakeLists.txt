@@ -95,6 +95,23 @@ endif()
 # QuickJS WebView were all absent from the CMake runtime).
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/core_sources.manifest" MINIANDROID_CORE_SOURCES
     REGEX "^[^#].*\\.cpp$")
+# ISSUE-612 WAVE-4: DALVIK_SPLIT mirror of the Makefile switch (default ON).
+# OFF (-DDALVIK_SPLIT=0) restores the original dalvik_engine.cpp monolith and
+# excludes the five split part TUs; ON excludes the monolith (kept in the
+# repo as the documented fallback).
+option(DALVIK_SPLIT "Build the split dalvik engine TUs instead of the monolith" ON)
+set(MINIANDROID_SPLIT_PARTS
+    src/dex/dalvik_engine_core.cpp
+    src/dex/dalvik_engine_invoke.cpp
+    src/dex/dalvik_opcodes.cpp
+    src/dex/dalvik_bridge.cpp
+    src/dex/dalvik_engine_tail.cpp)
+if(DALVIK_SPLIT)
+    list(REMOVE_ITEM MINIANDROID_CORE_SOURCES "src/dex/dalvik_engine.cpp")
+else()
+    list(REMOVE_ITEM MINIANDROID_CORE_SOURCES ${MINIANDROID_SPLIT_PARTS})
+    list(APPEND MINIANDROID_CORE_SOURCES "src/dex/dalvik_engine.cpp")
+endif()
 list(LENGTH MINIANDROID_CORE_SOURCES MINIANDROID_CORE_SOURCE_COUNT)
 message(STATUS "miniandroid_core: ${MINIANDROID_CORE_SOURCE_COUNT} TUs from core_sources.manifest (shared with Makefile)")
 add_library(miniandroid_core STATIC ${MINIANDROID_CORE_SOURCES})
@@ -177,6 +194,11 @@ endif()
 # (Debug/RelWithDebInfo), matching the Makefile semantics in every config.
 set(MINIANDROID_BIG_TUS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_core.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_invoke.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_opcodes.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_tail.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/framework/android_shadows.cpp
 )
 set_source_files_properties(${MINIANDROID_BIG_TUS} PROPERTIES
