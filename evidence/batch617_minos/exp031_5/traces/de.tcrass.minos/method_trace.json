@@ -1,0 +1,595 @@
+{
+  "apk_name": "de.tcrass.minos_10004.apk",
+  "main_class": "Lde/tcrass/minos/MainActivity;",
+  "main_method": "onCreate",
+  "methods": [
+    {
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "entry_point": true,
+      "method": "onCreate",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/app/Activity;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "i",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967294"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setContentView",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "p4294967294"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "findViewById",
+      "return_value": "Landroid/widget/FrameLayout;#18",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967295"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/view/WindowManager;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getWindowManager",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/WindowManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967295"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/view/WindowManager;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getWindowManager",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/WindowManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroid/view/Display;",
+      "invocation_type": "virtual",
+      "method": "getWidth",
+      "return_value": "1080",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroid/view/Display;",
+      "invocation_type": "virtual",
+      "method": "getHeight",
+      "return_value": "1920",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/graphics/Point;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getDisplaySize",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287"
+      ],
+      "class": "Landroid/view/Display;",
+      "invocation_type": "virtual",
+      "method": "getRotation",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287",
+        "v1"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#23",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287",
+        "v3"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#23",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"=> screenOrientation: 1\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "i",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getCurrentScreenOrientation",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v3"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setRequestedOrientation",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/model/SettingsFormData;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p0",
+        "v2"
+      ],
+      "class": "Landroid/app/Activity;<super>",
+      "invocation_type": "virtual",
+      "method": "onPostCreate",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "i",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "i",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967295"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/view/WindowManager;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getWindowManager",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/WindowManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967295"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/view/WindowManager;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getWindowManager",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/WindowManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroid/view/Display;",
+      "invocation_type": "virtual",
+      "method": "getWidth",
+      "return_value": "1080",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroid/view/Display;",
+      "invocation_type": "virtual",
+      "method": "getHeight",
+      "return_value": "1920",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/graphics/Point;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getDisplaySize",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287"
+      ],
+      "class": "Landroid/view/Display;",
+      "invocation_type": "virtual",
+      "method": "getRotation",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287",
+        "v1"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#27",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287",
+        "v3"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#27",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"=> screenOrientation: 1\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "i",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getCurrentScreenOrientation",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v1"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setRequestedOrientation",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967295"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/view/WindowManager;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getWindowManager",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/WindowManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v1",
+        "p4294967295"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "getSystemService",
+      "return_value": "Landroid/view/WindowManager;#20",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getWindowManager",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/view/WindowManager;",
+      "invocation_type": "virtual",
+      "method": "getDefaultDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getDisplay",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroid/view/Display;",
+      "invocation_type": "virtual",
+      "method": "getWidth",
+      "return_value": "1080",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2"
+      ],
+      "class": "Landroid/view/Display;",
+      "invocation_type": "virtual",
+      "method": "getHeight",
+      "return_value": "1920",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/graphics/Point;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getDisplaySize",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287"
+      ],
+      "class": "Landroid/view/Display;",
+      "invocation_type": "virtual",
+      "method": "getRotation",
+      "return_value": "0",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287",
+        "v1"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#29",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287",
+        "v3"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "append",
+      "return_value": "Ljava/lang/StringBuilder;#29",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967287"
+      ],
+      "class": "Ljava/lang/StringBuilder;",
+      "invocation_type": "virtual",
+      "method": "toString",
+      "return_value": "\"=> screenOrientation: 1\"",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Landroid/util/Log;",
+      "invocation_type": "virtual",
+      "method": "i",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/view/DisplayUtils;",
+      "invocation_type": "virtual",
+      "method": "getCurrentScreenOrientation",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "v2",
+        "v1"
+      ],
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "setRequestedOrientation",
+      "return_value": "void",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/MainActivity$3;",
+      "invocation_type": "virtual",
+      "method": "<init>",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "arguments": [
+        "p4294967294",
+        "v1"
+      ],
+      "class": "Landroid/widget/FrameLayout;",
+      "invocation_type": "virtual",
+      "method": "post",
+      "return_value": "true",
+      "source": "REAL_DALVIK_INTERPRETER"
+    },
+    {
+      "class": "Lde/tcrass/minos/MainActivity;",
+      "invocation_type": "virtual",
+      "method": "createGame",
+      "source": "REAL_DALVIK_INTERPRETER"
+    }
+  ],
+  "timestamp": "2026-11-17T15:01:27Z",
+  "total_api_calls": 72
+}

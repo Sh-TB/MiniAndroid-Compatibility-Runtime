@@ -1,0 +1,647 @@
+[*] MAX-SECONDS enabled (90 s wall-clock soft budget)
+[*] FRAME-SEQUENCE enabled (4 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] frame delay: 500ms virtual
+[*] DUMP-VIEW-TREE enabled (view_tree.json after final capture)
+[*] Running APK: /home/z/my-project/upload/handoff_apks/de.tcrass.minos_10004.apk
+[*] Output directory: /home/z/my-project/evidence/batch617_minos
+[ROUTE] NO_PROFILE for stem=de — generate with tools/s188_route_classifier.py (S188 §4); runtime proceeds route-blind, which is NOT a pass.
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=80
+[BOOT-RSS] stage=load_apk rss_mb=11.793
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$anim; offset=0x14768 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$anim; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$color; offset=0x14773 static_fields=6 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$color; with_defaults=6/6
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$dimen; offset=0x14792 static_fields=3 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$dimen; with_defaults=3/3
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$drawable; offset=0x147a2 static_fields=4 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$drawable; with_defaults=4/4
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$id; offset=0x147b7 static_fields=5 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$id; with_defaults=5/5
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$layout; offset=0x147d1 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$layout; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$menu; offset=0x147dc static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$menu; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$raw; offset=0x147e2 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$raw; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$string; offset=0x147ed static_fields=4 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$string; with_defaults=4/4
+[EXP062-SV] parse_static_values for Lde/tcrass/minos/R$style; offset=0x14802 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lde/tcrass/minos/R$style; with_defaults=1/1
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=93
+[BOOT-RSS] stage=parse_dex rss_mb=12.5625
+[U007-RES] ResourceRuntime loaded: /home/z/my-project/upload/handoff_apks/de.tcrass.minos_10004.apk named_ids=30 types=10
+[S124-FWRES] framework-res table NOT FOUND (degrading to generated attr-default table)
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=148
+[BOOT-RSS] stage=initialize_runtime rss_mb=20.6719
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=148
+[BOOT-RSS] stage=load_classes rss_mb=20.6719
+[DATA-ROOT] context package = de.tcrass.minos (data dir runtime/data/data/data/de.tcrass.minos)
+[S123-ACTION-REG] activities=1 action_targets=2
+FONT_SOURCE apk=/home/z/my-project/upload/handoff_apks/de.tcrass.minos_10004.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 144 entries (94 from APK + 50 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'de.tcrass.minos.MainActivity'
+[ARSC-VALUES] apk=/home/z/my-project/upload/handoff_apks/de.tcrass.minos_10004.apk strings=4 colors=6 dimens=3 bools=0 integers=0 raw=2 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Minos" (resid @0x7f090002)
+[A7b] icon @0x7f040003 -> res/drawable-xxhdpi-v4/ic_launcher.png (1555 bytes) DECODED 144x144 palette→rgba rgba_bytes=82944 fnv1a=0xc81fed024c171770
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=29)
+[S1-PROVIDER] manifest providers transferred: 0
+[C7-STORE-AUTO] runtime/data/data/app ok=1 install store absent — nothing to auto-index
+[C7-W8] install-store auto-index root=runtime/data packages=0 cold=0 warm=0 failed=0
+[C7-STORE-OWN] de.tcrass.minos ok=1 components: a=1 s=0 r=0 p=0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lde/tcrass/minos/MainActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lde/tcrass/minos/MainActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lde/tcrass/minos/MainActivity;.<init> insns=10 RSS=38.3633 MB
+[TRY-ENTRY] Lde/tcrass/minos/MainActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lde/tcrass/minos/MainActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lde/tcrass/minos/MainActivity;' id=15
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lde/tcrass/minos/MainActivity;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onCreate method_id=3 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lde/tcrass/minos/MainActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP062-INIT] Lde/tcrass/minos/MainActivity; static_fields=4 with_defaults=3
+[CLASS_INIT] class=Lde/tcrass/minos/MainActivity; method=<clinit> bytecode_size=9
+[TRY-ENTRY] Lde/tcrass/minos/MainActivity;.<clinit> dex_report=YES
+[TRY-ENTRY] Ljava/lang/Class;.getSimpleName dex_report=YES
+[REC-MISS] Ljava/lang/Class;.getSimpleName caller=Lde/tcrass/minos/MainActivity;.<clinit>
+[MEM] method_exit: Lde/tcrass/minos/MainActivity;.<clinit> insns=5 RSS=38.3633 MB
+[CLASS_INIT] class=Lde/tcrass/minos/MainActivity; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=29
+[SGET] class=Lde/tcrass/minos/MainActivity; method=onCreate pc=3 field=Lde/tcrass/minos/MainActivity;.TAG obj_id=0
+[TRY-ENTRY] Landroid/util/Log;.i dex_report=YES
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/MainActivity;.onCreate
+LOG/i/MainActivity: onCreate
+[TRY-ENTRY] Lde/tcrass/minos/MainActivity;.setContentView dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Lde/tcrass/minos/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Lde/tcrass/minos/MainActivity; args=1 arg0_kind=0 arg0_int=2131099648
+[U007-INFLATE] setContentView(layoutResId=0x7f060000)
+[U007-VS] inflate vs=0x557d2e532500 reg=0x7ffd00cb70e0
+[U007-INFLATE] root_id=17 views=2 map_now=2 strings=0 ids=0 unresolved=0
+[P0-1-ORDER] setContentView(res) root=17 recorded for first-traversal attach+measure
+[TRY-ENTRY] Lde/tcrass/minos/MainActivity;.findViewById dex_report=YES
+[EXP088-B-ENTER] bridge_to_api: Lde/tcrass/minos/MainActivity;.findViewById args=2 shadow=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=findViewById class=Lde/tcrass/minos/MainActivity;
+[EXP075-ACTIVITY] ActivityShadow.dispatch: method=findViewById class=Lde/tcrass/minos/MainActivity; args=1 arg0_kind=0 arg0_int=2131034114
+[EXP088-B-DBG] findViewById: target=0x7f050002 content_view_id=11 registry=YES
+[EXP088-B] findViewById(0x7f050002) → view_id=18
+[CLASS_INIT] class=Lde/tcrass/minos/view/DisplayUtils; method=<clinit> bytecode_size=9
+[TRY-ENTRY] Lde/tcrass/minos/view/DisplayUtils;.<clinit> dex_report=YES
+[TRY-ENTRY] Ljava/lang/Class;.getSimpleName dex_report=YES
+[REC-MISS] Ljava/lang/Class;.getSimpleName caller=Lde/tcrass/minos/view/DisplayUtils;.<clinit>
+[CLASS_INIT] class=Lde/tcrass/minos/view/DisplayUtils; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=30
+[TRY-ENTRY] Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation dex_report=YES
+[TRY-ENTRY] Lde/tcrass/minos/view/DisplayUtils;.getDisplay dex_report=YES
+[TRY-ENTRY] Lde/tcrass/minos/view/DisplayUtils;.getWindowManager dex_report=YES
+[TRY-ENTRY] Lde/tcrass/minos/MainActivity;.getSystemService dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.getSystemService dex_report=YES
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[TRY-ENTRY] Landroid/content/ContextWrapper;.getSystemService dex_report=YES
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[TRY-ENTRY] Landroid/content/Context;.getSystemService dex_report=YES
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[TRY-ENTRY] Landroid/content/Context;.getSystemService dex_report=YES
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager)
+[TRY-ENTRY] Landroid/view/WindowManager;.getDefaultDisplay dex_report=YES
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplay
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplay
+[REC-MISS] Landroid/view/Display;.getWidth caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[REC-MISS] Landroid/view/Display;.getHeight caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[REC-MISS] Landroid/graphics/Point;.<init> caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[S186I-STUB] Landroid/graphics/Point;.<init> argc=3 caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[REC-MISS] Landroid/view/Display;.getRotation caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[SGET] class=Lde/tcrass/minos/view/DisplayUtils; method=getCurrentScreenOrientation pc=62 field=Lde/tcrass/minos/view/DisplayUtils;.TAG obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+LOG/i/DisplayUtils: => screenOrientation: 1
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Lde/tcrass/minos/MainActivity; as Landroid/app/Activity; for .setRequestedOrientation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .setRequestedOrientation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .setRequestedOrientation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S186I-STUB] Landroid/content/Context;.setRequestedOrientation argc=2 caller=Lde/tcrass/minos/MainActivity;.onCreate
+[CLASS_INIT] class=Lde/tcrass/minos/model/SettingsFormData; method=<clinit> bytecode_size=8
+[MEM] method_exit: Lde/tcrass/minos/model/SettingsFormData$1;.<init> insns=2 RSS=38.3633 MB
+[CLASS_INIT] class=Lde/tcrass/minos/model/SettingsFormData; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=31
+[REC-MISS] Landroid/app/Activity;.onPostCreate caller=Lde/tcrass/minos/MainActivity;.onPostCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onPostCreate method_id=7 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lde/tcrass/minos/MainActivity;.onPostCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onPostCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onPostCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onPostCreate class=Lde/tcrass/minos/MainActivity;
+[S186I-STUB] Landroid/content/Context;.onPostCreate argc=2 caller=Lde/tcrass/minos/MainActivity;.onPostCreate
+[SGET] class=Lde/tcrass/minos/MainActivity; method=onPostCreate pc=3 field=Lde/tcrass/minos/MainActivity;.TAG obj_id=0
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/MainActivity;.onPostCreate
+LOG/i/MainActivity: onPostCreate
+[SGET] class=Lde/tcrass/minos/MainActivity; method=createGame pc=0 field=Lde/tcrass/minos/MainActivity;.TAG obj_id=0
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/MainActivity;.createGame
+LOG/i/MainActivity: createGame
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplay
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplay
+[REC-MISS] Landroid/view/Display;.getWidth caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[REC-MISS] Landroid/view/Display;.getHeight caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[REC-MISS] Landroid/graphics/Point;.<init> caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[S186I-STUB] Landroid/graphics/Point;.<init> argc=3 caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[REC-MISS] Landroid/view/Display;.getRotation caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[SGET] class=Lde/tcrass/minos/view/DisplayUtils; method=getCurrentScreenOrientation pc=62 field=Lde/tcrass/minos/view/DisplayUtils;.TAG obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+LOG/i/DisplayUtils: => screenOrientation: 1
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Lde/tcrass/minos/MainActivity; as Landroid/app/Activity; for .setRequestedOrientation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .setRequestedOrientation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .setRequestedOrientation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S186I-STUB] Landroid/content/Context;.setRequestedOrientation argc=2 caller=Lde/tcrass/minos/MainActivity;.createGame
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplay
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplay
+[REC-MISS] Landroid/view/Display;.getWidth caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[REC-MISS] Landroid/view/Display;.getHeight caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[REC-MISS] Landroid/graphics/Point;.<init> caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[S186I-STUB] Landroid/graphics/Point;.<init> argc=3 caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplaySize
+[REC-MISS] Landroid/view/Display;.getRotation caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[SGET] class=Lde/tcrass/minos/view/DisplayUtils; method=getCurrentScreenOrientation pc=62 field=Lde/tcrass/minos/view/DisplayUtils;.TAG obj_id=0
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Ljava/lang/StringBuilder;.append caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Ljava/lang/StringBuilder;.toString caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/view/DisplayUtils;.getCurrentScreenOrientation
+LOG/i/DisplayUtils: => screenOrientation: 1
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Lde/tcrass/minos/MainActivity; as Landroid/app/Activity; for .setRequestedOrientation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .setRequestedOrientation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .setRequestedOrientation
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setRequestedOrientation class=Lde/tcrass/minos/MainActivity;
+[S186I-STUB] Landroid/content/Context;.setRequestedOrientation argc=2 caller=Lde/tcrass/minos/MainActivity;.createGame
+[REC-MISS] Landroid/widget/FrameLayout;.post caller=Lde/tcrass/minos/MainActivity;.createGame
+[QUEUE] Runnable id=30 enqueued (delay=0ms, ready_at=0ms virtual, queue_depth=1, source=View.post)
+[QUEUE] Runnable id=30 dequeued (ready_at=0ms <= now=0ms virtual, thread=main)
+[EXP090-DRAIN] Invoking Runnable id=30 class=Lde/tcrass/minos/MainActivity$3;
+[SGET] class=Lde/tcrass/minos/MainActivity; method=access$000 pc=0 field=Lde/tcrass/minos/MainActivity;.TAG obj_id=0
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/MainActivity$3;.run
+LOG/i/MainActivity: Creating game...
+[EXP062-INIT] Lde/tcrass/minos/model/factory/GameMetrics; static_fields=4 with_defaults=4
+[CLASS_INIT] class=Lde/tcrass/minos/model/factory/GameMetrics; method=<clinit> bytecode_size=22
+[REC-MISS] Ljava/lang/Math;.log caller=Lde/tcrass/minos/model/factory/GameMetrics;.<clinit>
+[REC-MISS] Ljava/lang/Math;.log caller=Lde/tcrass/minos/model/factory/GameMetrics;.<clinit>
+[SGET] class=Lde/tcrass/minos/model/factory/GameMetrics; method=<clinit> pc=16 field=Lde/tcrass/minos/model/factory/GameMetrics;.LOG2 value=1060205080
+[CLASS_INIT] class=Lde/tcrass/minos/model/factory/GameMetrics; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=35
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Class;.getSimpleName caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/widget/FrameLayout;.getResources caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/ViewGroup;.getResources caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/View;.getResources caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/View;.getResources caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/content/res/Resources;.getDimension caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[S186I-STUB] Landroid/content/res/Resources;.getDimension argc=2 caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/widget/FrameLayout;.getWidth caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/ViewGroup;.getWidth caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/View;.getWidth caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/View;.getWidth caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/widget/FrameLayout;.getHeight caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/ViewGroup;.getHeight caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/View;.getHeight caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/View;.getHeight caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/widget/FrameLayout;.getContext caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/ViewGroup;.getContext caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/View;.getContext caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Landroid/view/View;.getContext caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[V6-CTX-FALLBACK] view=obj#18 cls=Landroid/widget/FrameLayout; ctor-context MISSING — falling back to activity context obj#15 (events=1)
+[REC-MISS] Landroid/app/Activity;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/ContextWrapper;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[REC-MISS] Landroid/content/Context;.getSystemService caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager
+[R339-SVC] getSystemService("window") → Landroid/view/WindowManager; (shadow layer, caller=Lde/tcrass/minos/view/DisplayUtils;.getWindowManager)
+[REC-MISS] Landroid/view/WindowManager;.getDefaultDisplay caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplay
+[REC-MISS] Landroid/util/DisplayMetrics;.<init> caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplayMetrics
+[S186I-STUB] Landroid/util/DisplayMetrics;.<init> argc=1 caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplayMetrics
+[REC-MISS] Landroid/view/Display;.getMetrics caller=Lde/tcrass/minos/view/DisplayUtils;.getDisplayMetrics
+[REC-MISS] Ljava/lang/Math;.min caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Math;.max caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Math;.floor caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Math;.floor caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Math;.floor caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Math;.floor caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Math;.min caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[REC-MISS] Ljava/lang/Integer;.valueOf caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+[EXP093-STRFMT] String.format("ctor: containerWidth=%s, containerHeight=%s, cols=%s, rows=%s, cellSize=%s", n=5) → "ctor: containerWidth=0, containerHeight=0, cols=0, rows=6, cellSize=0"
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/model/factory/GameMetrics;.<init>
+LOG/i/GameMetrics: ctor: containerWidth=0, containerHeight=0, cols=0, rows=6, cellSize=0
+[CLASS_INIT] class=Lde/tcrass/minos/model/factory/GameFactory; method=<clinit> bytecode_size=9
+[REC-MISS] Ljava/lang/Class;.getSimpleName caller=Lde/tcrass/minos/model/factory/GameFactory;.<clinit>
+[CLASS_INIT] class=Lde/tcrass/minos/model/factory/GameFactory; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=36
+[CLASS_INIT] class=Lde/tcrass/minos/model/Game; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lde/tcrass/minos/model/Game; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=37
+[CLASS_INIT] class=Lde/tcrass/minos/model/Maze; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lde/tcrass/minos/model/Maze; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=38
+[REC-MISS] Ljava/util/List;.size caller=Lde/tcrass/minos/model/Maze;.<init>
+[CLASS_INIT] class=Lde/tcrass/minos/model/Player; method=<clinit> bytecode_size=8
+[CLASS_INIT] class=Lde/tcrass/minos/model/Player; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=39
+[CLASS_INIT] class=Lde/tcrass/minos/model/GameState; method=<clinit> bytecode_size=88
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lde/tcrass/minos/model/GameState;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lde/tcrass/minos/model/GameState;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lde/tcrass/minos/model/GameState;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lde/tcrass/minos/model/GameState;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lde/tcrass/minos/model/GameState;.<init>
+[REC-MISS] Ljava/lang/Enum;.<init> caller=Lde/tcrass/minos/model/GameState;.<init>
+[SGET] class=Lde/tcrass/minos/model/GameState; method=<clinit> pc=63 field=Lde/tcrass/minos/model/GameState;.NASCENT obj_id=47
+[SGET] class=Lde/tcrass/minos/model/GameState; method=<clinit> pc=67 field=Lde/tcrass/minos/model/GameState;.READY obj_id=48
+[SGET] class=Lde/tcrass/minos/model/GameState; method=<clinit> pc=71 field=Lde/tcrass/minos/model/GameState;.PLAYING obj_id=49
+[SGET] class=Lde/tcrass/minos/model/GameState; method=<clinit> pc=75 field=Lde/tcrass/minos/model/GameState;.PAUSED obj_id=50
+[SGET] class=Lde/tcrass/minos/model/GameState; method=<clinit> pc=79 field=Lde/tcrass/minos/model/GameState;.FINISHED obj_id=51
+[CLASS_INIT] class=Lde/tcrass/minos/model/GameState; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=46
+[SGET] class=Lde/tcrass/minos/model/Game; method=<init> pc=22 field=Lde/tcrass/minos/model/GameState;.NASCENT obj_id=47
+[SGET] class=Lde/tcrass/minos/model/Game; method=<init> pc=3 field=Lde/tcrass/minos/model/GameState;.NASCENT obj_id=47
+[CLASS_INIT] class=Lde/tcrass/minos/model/factory/MazeFactory; method=<clinit> bytecode_size=8
+[REC-MISS] Ljava/util/Random;.<init> caller=Lde/tcrass/minos/model/factory/MazeFactory;.<clinit>
+[S186I-STUB] Ljava/util/Random;.<init> argc=1 caller=Lde/tcrass/minos/model/factory/MazeFactory;.<clinit>
+[CLASS_INIT] class=Lde/tcrass/minos/model/factory/MazeFactory; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=47
+[REC-MISS] Ljava/util/List;.size caller=Lde/tcrass/minos/model/Maze;.<init>
+[REC-MISS] Ljava/util/ArrayDeque;.<init> caller=Lde/tcrass/minos/model/factory/MazeFactory;.createMaze
+[SGET] class=Lde/tcrass/minos/model/factory/MazeFactory; method=createMaze pc=27 field=Lde/tcrass/minos/model/factory/MazeFactory;.random obj_id=54
+[REC-MISS] Ljava/util/List;.size caller=Lde/tcrass/minos/model/factory/MazeFactory;.createMaze
+[REC-MISS] Ljava/util/Random;.nextInt caller=Lde/tcrass/minos/model/factory/MazeFactory;.createMaze
+[SYNTH-EXC] f086-nextint-bound (deferred): Ljava/lang/IllegalArgumentException; (bound must be positive) method=Lde/tcrass/minos/model/factory/MazeFactory;.createMaze pc=33 → uncaught (deferred frame unwind + propagate)
+[EXC-PROPAGATE] Ljava/lang/IllegalArgumentException; uncaught at caller Lde/tcrass/minos/MainActivity;.onCreate invoke_pc=45 → APP BOUNDARY unwind (ART process-death law; status downgraded, see crash.log)
+[EXP090-DRAIN] Runnable id=30 invoked
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lde/tcrass/minos/MainActivity; runtime_class=Lde/tcrass/minos/MainActivity;
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Landroid/app/Activity; runtime_class=Lde/tcrass/minos/MainActivity;
+[REC-MISS] Landroid/app/Activity;.onStart caller=Lde/tcrass/minos/MainActivity;.onStart
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onStart method_id=12 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lde/tcrass/minos/MainActivity;.onStart
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onStart
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onStart
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onStart class=Lde/tcrass/minos/MainActivity;
+[S186I-STUB] Landroid/content/Context;.onStart argc=1 caller=Lde/tcrass/minos/MainActivity;.onStart
+[SGET] class=Lde/tcrass/minos/MainActivity; method=onStart pc=3 field=Lde/tcrass/minos/MainActivity;.TAG obj_id=0
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/MainActivity;.onStart
+LOG/i/MainActivity: onStart
+[G07-LIFECYCLE] Lde/tcrass/minos/MainActivity;.onStart() dispatched via DEX engine (ok=1, instructions=5)
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lde/tcrass/minos/MainActivity; runtime_class=Lde/tcrass/minos/MainActivity;
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Landroid/app/Activity; runtime_class=Lde/tcrass/minos/MainActivity;
+[REC-MISS] Landroid/app/Activity;.onResume caller=Lde/tcrass/minos/MainActivity;.onResume
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onResume method_id=10 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lde/tcrass/minos/MainActivity;.onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lde/tcrass/minos/MainActivity;
+[S71-ANCESTRY] re-dispatch Landroid/content/ContextWrapper; as Landroid/content/Context; for .onResume
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onResume class=Lde/tcrass/minos/MainActivity;
+[S186I-STUB] Landroid/content/Context;.onResume argc=1 caller=Lde/tcrass/minos/MainActivity;.onResume
+[SGET] class=Lde/tcrass/minos/MainActivity; method=onResume pc=3 field=Lde/tcrass/minos/MainActivity;.TAG obj_id=0
+[REC-MISS] Landroid/util/Log;.i caller=Lde/tcrass/minos/MainActivity;.onResume
+LOG/i/MainActivity: onResume
+[EXP062-INIT] Lorg/greenrobot/eventbus/EventBus; static_fields=4 with_defaults=2
+[CLASS_INIT] class=Lorg/greenrobot/eventbus/EventBus; method=<clinit> bytecode_size=15
+[CLASS_INIT] class=Lorg/greenrobot/eventbus/EventBusBuilder; method=<clinit> bytecode_size=7
+[REC-MISS] Ljava/util/concurrent/Executors;.newCachedThreadPool caller=Lorg/greenrobot/eventbus/EventBusBuilder;.<clinit>
+[EXECUTOR] newCachedThreadPool → ThreadPoolExecutor obj=61 core=1
+[CLASS_INIT] class=Lorg/greenrobot/eventbus/EventBusBuilder; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=50
+[SGET] class=Lorg/greenrobot/eventbus/EventBusBuilder; method=<init> pc=14 field=Lorg/greenrobot/eventbus/EventBusBuilder;.DEFAULT_EXECUTOR_SERVICE obj_id=61
+[CLASS_INIT] class=Lorg/greenrobot/eventbus/EventBus; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=51
+[SGET-MISS] key=Lorg/greenrobot/eventbus/EventBus;.defaultInstance storage_size=51 same_class_keys=3 engine=0x7ffd00cb7e48 first=Lorg/greenrobot/eventbus/EventBus;.TAG
+[SGET] class=Lorg/greenrobot/eventbus/EventBus; method=getDefault pc=0 field=Lorg/greenrobot/eventbus/EventBus;.defaultInstance obj_id=0
+[C8-MONITOR] monitor-enter on class-token/no-heap monitor — not tracked (caller=Lorg/greenrobot/eventbus/EventBus;.getDefault)
+[SGET] class=Lorg/greenrobot/eventbus/EventBus; method=getDefault pc=7 field=Lorg/greenrobot/eventbus/EventBus;.defaultInstance obj_id=0
+[SGET] class=Lorg/greenrobot/eventbus/EventBus; method=<init> pc=0 field=Lorg/greenrobot/eventbus/EventBus;.DEFAULT_BUILDER obj_id=60
+[REC-MISS] Ljava/lang/ThreadLocal;.<init> caller=Lorg/greenrobot/eventbus/EventBus$1;.<init>
+[CLASS_INIT] class=Lorg/greenrobot/eventbus/android/AndroidLogger; method=<clinit> bytecode_size=13
+[R350-FORNAME] "android.util.Log" → ClassNotFoundException
+[SYNTH-EXC] R350-FORNAME (deferred): Ljava/lang/ClassNotFoundException; (android.util.Log) method=Lorg/greenrobot/eventbus/android/AndroidLogger;.<clinit> pc=3 → deferred handler @0x0xa type=Ljava/lang/ClassNotFoundException;
+[CLASS_INIT] class=Lorg/greenrobot/eventbus/android/AndroidLogger; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=53
+[SGET] class=Lorg/greenrobot/eventbus/android/AndroidLogger; method=isAndroidLogAvailable pc=0 field=Lorg/greenrobot/eventbus/android/AndroidLogger;.ANDROID_LOG_AVAILABLE value=0
+[REC-MISS] Ljava/util/concurrent/ConcurrentHashMap;.<init> caller=Lorg/greenrobot/eventbus/EventBus;.<init>
+[SGET] class=Lorg/greenrobot/eventbus/android/AndroidLogger; method=isAndroidLogAvailable pc=0 field=Lorg/greenrobot/eventbus/android/AndroidLogger;.ANDROID_LOG_AVAILABLE value=0
+[EXP062-INIT] Lorg/greenrobot/eventbus/SubscriberMethodFinder; static_fields=6 with_defaults=6
+[CLASS_INIT] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=<clinit> bytecode_size=13
+[REC-MISS] Ljava/util/concurrent/ConcurrentHashMap;.<init> caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.<clinit>
+[CLASS_INIT] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=<clinit> result=OK engine=0x7ffd00cb7e48 storage_size=59
+[IGET-MISS-DIAG] asked="Lorg/greenrobot/eventbus/EventBusBuilder;->strictMethodVerification" obj#60 cls=Lorg/greenrobot/eventbus/EventBusBuilder; keys: executorService eventInheritance Lorg/greenrobot/eventbus/EventBusBuilder;->eventInheritance sendNoSubscriberEvent Lorg/greenrobot/eventbus/EventBusBuilder;->sendSubscriberExceptionEvent Lorg/greenrobot/eventbus/EventBusBuilder;->executorService caller=Lorg/greenrobot/eventbus/EventBus;.<init>
+[IGET-MISS-DIAG] asked="Lorg/greenrobot/eventbus/EventBusBuilder;->ignoreGeneratedIndex" obj#60 cls=Lorg/greenrobot/eventbus/EventBusBuilder; keys: executorService eventInheritance Lorg/greenrobot/eventbus/EventBusBuilder;->eventInheritance sendNoSubscriberEvent Lorg/greenrobot/eventbus/EventBusBuilder;->sendSubscriberExceptionEvent Lorg/greenrobot/eventbus/EventBusBuilder;->executorService caller=Lorg/greenrobot/eventbus/EventBus;.<init>
+[IGET-MISS-DIAG] asked="Lorg/greenrobot/eventbus/EventBusBuilder;->throwSubscriberException" obj#60 cls=Lorg/greenrobot/eventbus/EventBusBuilder; keys: executorService eventInheritance Lorg/greenrobot/eventbus/EventBusBuilder;->eventInheritance sendNoSubscriberEvent Lorg/greenrobot/eventbus/EventBusBuilder;->sendSubscriberExceptionEvent Lorg/greenrobot/eventbus/EventBusBuilder;->executorService caller=Lorg/greenrobot/eventbus/EventBus;.<init>
+[REC-MISS] Landroid/app/Activity;.getClass caller=Lorg/greenrobot/eventbus/EventBus;.register
+[REC-MISS] Landroid/content/ContextWrapper;.getClass caller=Lorg/greenrobot/eventbus/EventBus;.register
+[REC-MISS] Landroid/content/Context;.getClass caller=Lorg/greenrobot/eventbus/EventBus;.register
+[REC-MISS] Ljava/lang/Object;.getClass caller=Lorg/greenrobot/eventbus/EventBus;.register
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Lde/tcrass/minos/MainActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getClass class=Landroid/app/Activity;
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=findSubscriberMethods pc=0 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.METHOD_CACHE obj_id=76
+[REC-MISS] Ljava/util/Map;.get caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findSubscriberMethods
+[F527-HMAP] Ljava/util/concurrent/ConcurrentHashMap;.get argc=2 recv_oid=76 caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findSubscriberMethods pc=2
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=prepareFindState pc=0 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.FIND_STATE_POOL obj_id=77
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=prepareFindState pc=7 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.FIND_STATE_POOL obj_id=77
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=prepareFindState pc=7 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.FIND_STATE_POOL obj_id=77
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=prepareFindState pc=7 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.FIND_STATE_POOL obj_id=77
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=prepareFindState pc=7 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.FIND_STATE_POOL obj_id=77
+[REC-MISS] Ljava/lang/StringBuilder;.<init> caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder$FindState;.<init>
+[REC-MISS] Ljava/lang/Class;.getDeclaredMethods caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[F-NEW-190] getDeclaredMethods(Lde/tcrass/minos/MainActivity;) -> 31 methods
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getParameterTypes caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[R-NEW-464] getParameterTypes((Landroid/view/Menu;)Z) -> 1 params
+[REC-MISS] Ljava/lang/reflect/Method;.getAnnotation caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getParameterTypes caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[R-NEW-464] getParameterTypes((Lde/tcrass/minos/event/GameSettingsChangedEvent;)V) -> 1 params
+[REC-MISS] Ljava/lang/reflect/Method;.getAnnotation caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/util/Map;.put caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder$FindState;.checkAdd
+[F527-HMAP] Ljava/util/HashMap;.put argc=3 recv_oid=80 caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder$FindState;.checkAdd pc=2
+[S186I-STUB] Lorg/greenrobot/eventbus/Subscribe;.threadMode argc=1 caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[S186I-STUB] Lorg/greenrobot/eventbus/Subscribe;.priority argc=1 caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[S186I-STUB] Lorg/greenrobot/eventbus/Subscribe;.sticky argc=1 caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/util/List;.add caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getParameterTypes caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[R-NEW-464] getParameterTypes((Landroid/view/MenuItem;)Z) -> 1 params
+[REC-MISS] Ljava/lang/reflect/Method;.getAnnotation caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getParameterTypes caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[R-NEW-464] getParameterTypes((Landroid/os/Bundle;)V) -> 1 params
+[REC-MISS] Ljava/lang/reflect/Method;.getAnnotation caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/reflect/Method;.getModifiers caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findUsingReflectionInSingleClass
+[REC-MISS] Ljava/lang/Class;.getSuperclass caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder$FindState;.moveToSuperclass
+[REC-MISS] Ljava/lang/Class;.getName caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder$FindState;.moveToSuperclass
+[REC-MISS] Ljava/util/List;.clear caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder$FindState;.recycle
+[REC-MISS] Ljava/util/Map;.clear caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder$FindState;.recycle
+[REC-MISS] Ljava/util/Map;.clear caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder$FindState;.recycle
+[REC-MISS] Ljava/lang/StringBuilder;.setLength caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder$FindState;.recycle
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=getMethodsAndRelease pc=10 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.FIND_STATE_POOL obj_id=77
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=getMethodsAndRelease pc=17 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.FIND_STATE_POOL obj_id=77
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=getMethodsAndRelease pc=23 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.FIND_STATE_POOL obj_id=77
+[REC-MISS] Ljava/util/List;.isEmpty caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findSubscriberMethods
+[SGET] class=Lorg/greenrobot/eventbus/SubscriberMethodFinder; method=findSubscriberMethods pc=30 field=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.METHOD_CACHE obj_id=76
+[REC-MISS] Ljava/util/Map;.put caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findSubscriberMethods
+[F527-HMAP] Ljava/util/concurrent/ConcurrentHashMap;.put argc=3 recv_oid=76 caller=Lorg/greenrobot/eventbus/SubscriberMethodFinder;.findSubscriberMethods pc=32
+[REC-MISS] Ljava/util/List;.iterator caller=Lorg/greenrobot/eventbus/EventBus;.register
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lorg/greenrobot/eventbus/EventBus;.register
+[REC-MISS] Ljava/util/Iterator;.next caller=Lorg/greenrobot/eventbus/EventBus;.register
+[REC-MISS] Ljava/util/Map;.get caller=Lorg/greenrobot/eventbus/EventBus;.subscribe
+[F527-HMAP] Ljava/util/HashMap;.get argc=2 recv_oid=68 caller=Lorg/greenrobot/eventbus/EventBus;.subscribe pc=9
+[REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.<init> caller=Lorg/greenrobot/eventbus/EventBus;.subscribe
+[REC-MISS] Ljava/util/Map;.put caller=Lorg/greenrobot/eventbus/EventBus;.subscribe
+[F527-HMAP] Ljava/util/HashMap;.put argc=3 recv_oid=68 caller=Lorg/greenrobot/eventbus/EventBus;.subscribe pc=24
+[REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.size caller=Lorg/greenrobot/eventbus/EventBus;.subscribe
+[REC-MISS] Ljava/util/concurrent/CopyOnWriteArrayList;.add caller=Lorg/greenrobot/eventbus/EventBus;.subscribe
+[REC-MISS] Ljava/util/Map;.get caller=Lorg/greenrobot/eventbus/EventBus;.subscribe
+[F527-HMAP] Ljava/util/HashMap;.get argc=2 recv_oid=69 caller=Lorg/greenrobot/eventbus/EventBus;.subscribe pc=66
+[REC-MISS] Ljava/util/Map;.put caller=Lorg/greenrobot/eventbus/EventBus;.subscribe
+[F527-HMAP] Ljava/util/HashMap;.put argc=3 recv_oid=69 caller=Lorg/greenrobot/eventbus/EventBus;.subscribe pc=81
+[REC-MISS] Ljava/util/List;.add caller=Lorg/greenrobot/eventbus/EventBus;.subscribe
+[REC-MISS] Ljava/util/Iterator;.hasNext caller=Lorg/greenrobot/eventbus/EventBus;.register
+[G07-LIFECYCLE] Lde/tcrass/minos/MainActivity;.onResume() dispatched via DEX engine (ok=1, instructions=756)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=94 nodes=3 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[REC-MISS] Landroid/widget/LinearLayout;.onAttachedToWindow caller=Lde/tcrass/minos/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/FrameLayout;.onAttachedToWindow caller=Lde/tcrass/minos/MainActivity;.onCreate
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=167
+[BOOT-RSS] stage=execute_application rss_mb=39.5625
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[PARK-DRAIN] launch-drain depth=0 work_units=0
+[S-LAUNCHDRAIN] rounds=4096 drained=0 advanced_ms=4096 queue_left=0
+[BOOT-ORDER] 6/7 stage=launch_drain ok=1 ms=170
+[BOOT-RSS] stage=launch_drain rss_mb=39.5625
+[REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Lde/tcrass/minos/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Lde/tcrass/minos/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/FrameLayout;.dispatchApplyWindowInsets caller=Lde/tcrass/minos/MainActivity;.onCreate
+[REC-MISS] Landroid/widget/FrameLayout;.onApplyWindowInsets caller=Lde/tcrass/minos/MainActivity;.onCreate
+[F384-ROOTINSETS] root=o17 cls=Landroid/widget/LinearLayout; insets=o129 dispatched=false
+[CONT48-F1] eager R$ harvest: 10 classes, 30 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 6/30
+[IMG-RES-RENDER] populated resource_drawable_paths_: 0/30 R-names matched to APK drawable assets
+[ECR-ROOT] scalar content_view_id root=17
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[P0-1-ORDER] first-traversal attach wave root=17 attached=0 (attach strictly precedes measure)
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/FrameLayout; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[BOOT-ORDER] 7/7 stage=render_frame ok=1 ms=207
+[BOOT-RSS] stage=render_frame rss_mb=48.0195
+[EXP061] View tree dumped: 2 nodes to /home/z/my-project/evidence/batch617_minos/view_tree.json
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 8/7 stage=capture_output ok=1 ms=351
+[BOOT-RSS] stage=capture_output rss_mb=56.0195
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 10 classes, 30 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/30
+[ECR-ROOT] scalar content_view_id root=17
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/FrameLayout; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 10 classes, 30 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/30
+[ECR-ROOT] scalar content_view_id root=17
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/FrameLayout; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 10 classes, 30 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/30
+[ECR-ROOT] scalar content_view_id root=17
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/FrameLayout; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=4 dir=/home/z/my-project/evidence/batch617_minos/frames
+[CONT48-F1] eager R$ harvest: 10 classes, 30 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/30
+[ECR-ROOT] scalar content_view_id root=17
+[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
+[V1-CONTENT-BOUNDS] root=17 rect=(0,0,1080,1920)
+[EXP092-RENDER] node=17 class=Landroid/widget/LinearLayout; text="" children=1 depth=0 pos=(0,0) size=(1080x1920)
+[EXP092-RENDER] node=18 class=Landroid/widget/FrameLayout; text="" children=0 depth=1 pos=(0,0) size=(1080x1920)
+[EXP092-COPY] fb has 2073600 non-white pixels out of 2073600 total
+[EXP092-COPY] framebuffer_ updated, checking...
+[EXP092-COPY] framebuffer_ has 2073600 non-white pixels
+[EXP061] View tree dumped: 2 nodes to /home/z/my-project/evidence/batch617_minos/view_tree.json
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 264 IMPLEMENTED, 15 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 5
+Execution Time: 0ms
+Errors: 0
+Warnings: 2
+
+Screenshot: /home/z/my-project/evidence/batch617_minos/screenshot.png
+Report: /home/z/my-project/evidence/batch617_minos/report.md

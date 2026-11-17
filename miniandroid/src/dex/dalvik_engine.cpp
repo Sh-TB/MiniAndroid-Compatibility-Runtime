@@ -33870,16 +33870,46 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
             }
             // Real law: unknown class → ClassNotFoundException (deferred —
             // the DEX catch at the call site must observe it).
-            // F-NEW-394 (CONT-86): java.lang.Thread joins the bridge set —
-            // the class is engine-modeled (ThreadShadow: THREAD-START /
-            // SLEEP-YIELD laws) and org.andstatus.game2048's Luu;.<clinit>
-            // probes it via forName("java.lang.Thread").getMethod(
-            // "onSpinWait") inside a catch-all (the Java 9 spin-hint
-            // availability probe; the CNFE answer was the deferred-
-            // exception handler-match gap, not the app's contract). On
-            // device forName NEVER throws for a shipped framework class —
-            // the app-visible outcome after the bridge (getMethod miss →
-            // caught → fallback) matches the API<34 device truth.
+            // ISSUE-617-FORNAME-BOOTSTRAP (Minos wave): ART's forName NEVER
+            // throws for a BOOTSTRAP-CLASSPATH class — android.util.Log,
+            // android.view.*, org.json.*, etc. are always present on
+            // device. The old law answered CNFE for every non-whitelisted
+            // framework name; live face (de.tcrass.minos): greenrobot
+            // EventBus's AndroidLogger.<clinit> probes
+            // Class.forName("android.util.Log") to select the log backend
+            // and got a deferred CNFE (R350-FORNAME) instead of a class
+            // token. Law: any name in a bootstrap namespace (android.,
+            // androidx., dalvik., java., javax.) answers a REAL class
+            // token (3-arg initialize flag honored, R-NEW-355 pc-advance
+            // kept) — member access later rides the normal shadow /
+            // unknown-API paths, exactly like the whitelist above.
+            {
+                const bool r350_bootstrap_ns =
+                    want_name.rfind("android.", 0) == 0 ||
+                    want_name.rfind("androidx.", 0) == 0 ||
+                    want_name.rfind("dalvik.", 0) == 0 ||
+                    want_name.rfind("java.", 0) == 0 ||
+                    want_name.rfind("javax.", 0) == 0;
+                if (r350_bootstrap_ns) {
+                    const bool r350_bs_init =
+                        args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+                        args[1].int_val != 0;
+                    if (r350_bs_init) ensure_class_initialized(want_desc);
+                    static thread_local uint64_t r350_bs_n = 0;
+                    if (r350_bs_n < 16) {
+                        ++r350_bs_n;
+                        std::cerr << "[R350-FORNAME-BOOTSTRAP] \"" << want_name
+                                  << "\" → framework classpath class token"
+                                  << std::endl;
+                    }
+                    return_val = DalvikValue::make_class(
+                        want_desc, instruction_sequence_);
+                    last_invoke_return_ = return_val;
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    pc_ = pc + 3;
+                    return true;
+                }
+            }
             std::cerr << "[R350-FORNAME] \"" << want_name
                       << "\" → ClassNotFoundException" << std::endl;
             throw_deferred("Ljava/lang/ClassNotFoundException;",
