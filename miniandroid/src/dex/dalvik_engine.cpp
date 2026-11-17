@@ -62483,6 +62483,28 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
             args[0].object_id != 0) {
             uint32_t rid = args[0].object_id;
+            // ISSUE-609 F-CAL-CTOR: Calendar/GregorianCalendar <init> —
+            // OpenJDK law: a freshly constructed Calendar reflects NOW in
+            // the host zone (same state getInstance() produces). Blockinger
+            // GameState.<init> constructs GregorianCalendar(), then
+            // setTimeInMillis(60000) immediately overwrites it — but the
+            // unseeded object previously carried no __cal_millis__ at all,
+            // so every field/getTime read before an explicit set answered
+            // epoch 0. Seed millis + host zone offset exactly like the
+            // static factory arm above.
+            if (method == "<init>" && class_name != "Ljava/util/Date;") {
+                time_t nowt = ::time(nullptr);
+                struct tm nlt {};
+                localtime_r(&nowt, &nlt);
+                heap_.set_object_field(rid, "__cal_millis__",
+                                       DalvikValue::make_long(now_ms()));
+                heap_.set_object_field(
+                    rid, "__cal_zone_offset__",
+                    DalvikValue::make_int((int32_t)nlt.tm_gmtoff * 1000));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
             if (method == "getTime" || method == "getTimeInMillis" ||
                 method == "get" || method == "getTimeZone" ||
                 method == "after" || method == "before" ||
@@ -62534,6 +62556,174 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                 heap_.set_object_field(rid, "__cal_millis__",
                                        DalvikValue::make_long(ms));
                 result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+    }
+    // ── ISSUE-609 F-SDF-1: java.text.SimpleDateFormat (OpenJDK law) ──────
+    // First divergence (Blockinger #609): GameState.<init> renders a fixed
+    // 60s GregorianCalendar through SimpleDateFormat("HH:mm:ss",
+    // Locale.US).format(...) and startsWith-compares the hour digits. The
+    // stub tail answered null → String.startsWith NPE at GameState.<init>
+    // pc=62 → onCreate unwound mid-way (sound/host never assigned → the
+    // onResume Sound.resume + surfaceCreated startGame null-recv chain).
+    // OpenJDK law implemented here: <init> stores the pattern on the
+    // receiver (the Intent-ctor convention — the engine keeps the
+    // new-instance oid as the receiver); format(Date) renders the Date's
+    // millis in the HOST zone (same zone law as Calendar.get above) per
+    // the pattern: runs of one pattern letter are one field, the run
+    // length is the zero-pad width (numeric fields pad to max(run,2) for
+    // two-letter runs; single-letter runs print minimal digits), quoted
+    // sections are literals ('' = a literal quote), unknown letters and
+    // punctuation are literals. Weekday/era render the English abbreviated
+    // forms (Locale.US data — the only locale the engine synthesizes,
+    // see LOCALE-CONST).
+    if (class_name == "Ljava/text/SimpleDateFormat;" ||
+        class_name == "Ljava/text/DateFormat;") {
+        auto sdf_pattern_of = [&](uint32_t oid) -> std::string {
+            auto pf = heap_.get_object_field(oid, "__sdf_pattern__");
+            if (pf.has_value() && pf->type == DalvikType::STRING_REF)
+                return pf->string_val;
+            return "";
+        };
+        auto sdf_render = [&](const std::string& pat, int64_t ms) -> std::string {
+            time_t secs = (time_t)(ms / 1000);
+            struct tm lt {};
+            localtime_r(&secs, &lt);
+            auto pad = [](int v, int w) {
+                std::string s = std::to_string(v < 0 ? 0 : v);
+                while ((int)s.size() < w) s = "0" + s;
+                return s;
+            };
+            static const char* WD[] = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+            std::string out;
+            for (size_t i = 0; i < pat.size();) {
+                char c = pat[i];
+                if (c == '\'') {                    // quoted literal section
+                    size_t j = i + 1;
+                    if (j < pat.size() && pat[j] == '\'') {
+                        out += '\''; i = j + 1; continue;
+                    }
+                    while (j < pat.size() && pat[j] != '\'') ++j;
+                    out.append(pat, i + 1, j - (i + 1));
+                    i = (j < pat.size()) ? j + 1 : j;
+                    continue;
+                }
+                size_t j = i;
+                while (j < pat.size() && pat[j] == c) ++j;
+                size_t n = j - i;                   // run length = width
+                int v; bool numeric = true;
+                switch (c) {
+                    case 'y': case 'Y':
+                        v = lt.tm_year + 1900;
+                        if (n == 2) out += pad(v % 100, 2);
+                        else out += pad(v, (int)(n > 2 ? n : 1));
+                        break;
+                    case 'M': v = lt.tm_mon + 1;
+                        out += pad(v, (int)std::max<size_t>(n, 1)); break;
+                    case 'd': v = lt.tm_mday;
+                        out += pad(v, (int)std::max<size_t>(n, 1)); break;
+                    case 'H': v = lt.tm_hour;
+                        out += pad(v, (int)std::max<size_t>(n, 1)); break;
+                    case 'k': v = (lt.tm_hour == 0 ? 24 : lt.tm_hour);
+                        out += pad(v, (int)std::max<size_t>(n, 1)); break;
+                    case 'h': v = ((lt.tm_hour % 12) == 0 ? 12 : lt.tm_hour % 12);
+                        out += pad(v, (int)std::max<size_t>(n, 1)); break;
+                    case 'K': v = lt.tm_hour % 12;
+                        out += pad(v, (int)std::max<size_t>(n, 1)); break;
+                    case 'm': v = lt.tm_min;
+                        out += pad(v, (int)std::max<size_t>(n, 1)); break;
+                    case 's': v = lt.tm_sec;
+                        out += pad(v, (int)std::max<size_t>(n, 1)); break;
+                    case 'S': v = (int)(ms % 1000);
+                        out += pad(v, (int)n); break;
+                    case 'D': v = lt.tm_yday + 1;
+                        out += pad(v, (int)std::max<size_t>(n, 1)); break;
+                    case 'E': {
+                        numeric = false;
+                        static const char* WDFULL[] = {"Sunday","Monday",
+                            "Tuesday","Wednesday","Thursday","Friday",
+                            "Saturday"};
+                        out += (n >= 4) ? WDFULL[lt.tm_wday] : WD[lt.tm_wday];
+                        break;
+                    }
+                    case 'a':
+                        numeric = false;
+                        out += (lt.tm_hour >= 12) ? "PM" : "AM";
+                        break;
+                    case 'G':
+                        numeric = false;
+                        out += (lt.tm_year + 1900 > 0) ? "AD" : "BC";
+                        break;
+                    case 'z': case 'Z': case 'X':
+                        numeric = false;
+                        out += "+0000";
+                        break;
+                    default:
+                        numeric = false;
+                        out.append(n, c);
+                        break;
+                }
+                (void)numeric;
+                i = j;
+            }
+            return out;
+        };
+        // ctor: (pattern), (pattern, Locale), (pattern, DateFormatSymbols),
+        // (pattern, Locale, DateFormatSymbols) — the pattern is the FIRST
+        // String-typed arg after the receiver.
+        if (method == "<init>") {
+            for (size_t ai = 1; ai < args.size(); ++ai) {
+                if (args[ai].type == DalvikType::STRING_REF &&
+                    !args[ai].string_val.empty()) {
+                    heap_.set_object_field(
+                        args[0].object_id, "__sdf_pattern__",
+                        DalvikValue::make_string(args[ai].string_val, 0));
+                    break;
+                }
+            }
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // static factories: getInstance/getDateInstance/getTimeInstance/
+        // getDateTimeInstance — allocate a SimpleDateFormat with the
+        // default-style pattern (AOSP defaults: datetime
+        // "MMM d, yyyy h:mm a", date "MMM d, yyyy", time "h:mm a").
+        if (method == "getInstance" || method == "getDateInstance" ||
+            method == "getTimeInstance" || method == "getDateTimeInstance") {
+            uint32_t oid = heap_.allocate("Ljava/text/SimpleDateFormat;", 0, 0);
+            const char* pat = method == "getDateInstance" ? "MMM d, yyyy"
+                              : method == "getTimeInstance" ? "h:mm a"
+                              : method == "getDateTimeInstance"
+                                  ? "MMM d, yyyy h:mm a"
+                                  : "HH:mm:ss";
+            heap_.set_object_field(
+                oid, "__sdf_pattern__",
+                DalvikValue::make_string(std::string(pat), 0));
+            result = DalvikValue::make_object(oid,
+                                              "Ljava/text/SimpleDateFormat;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // format: receiver + (Date | Calendar | Long millis). Also
+        // DateFormat.format(Object) dispatch.
+        if (method == "format" && args.size() >= 2) {
+            int64_t ms = -1;
+            if (args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0) {
+                auto mf = heap_.get_object_field(args[1].object_id,
+                                                 "__cal_millis__");
+                if (mf.has_value() && mf->type == DalvikType::INT64)
+                    ms = mf->long_val;
+            } else if (args[1].type == DalvikType::INT64) {
+                ms = args[1].long_val;
+            }
+            if (ms >= 0) {
+                std::string pat = sdf_pattern_of(args[0].object_id);
+                if (pat.empty()) pat = "HH:mm:ss";
+                result = DalvikValue::make_string(sdf_render(pat, ms), 0);
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;
             }
@@ -73702,7 +73892,30 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                        ename.find("SwitchPreference") != std::string::npos ||
                                        ename.find("TwoStatePreference") != std::string::npos ||
                                        ename.find("TogglePreference") != std::string::npos;
-                        std::string raw = dv_a->raw_value;
+                        // ISSUE-609 F-PREF-REF: a defaultValue that is a
+                        // resource REFERENCE (@string/…, @integer/… — the
+                        // AXML attr carries ref_id) persists the REFERENCED
+                        // VALUE (AOSP Preference.setDefaultValue +
+                        // Resources.getValue law), never the numeric
+                        // resource id. Live face (Blockinger): advanced_
+                        // preferences.xml declares EditTextPreference
+                        // pref_fpslimittext with defaultValue="@string/
+                        // pref_fpslimittext_default" — the old walk stored
+                        // "2131361851" (the id); WorkThread then parseInt'd
+                        // it → fpslimit = 2.1e9 → 1000.0f/fpslimit ≈ 0 →
+                        // lastDelay decayed to 0 → the game loop ran with
+                        // NO sleep → the 100M-instruction F084 budget died
+                        // inside Display.drawPreview. Same for pref_rng
+                        // (piece randomizer type) and pref_vibDurOffset.
+                        std::string raw;
+                        if (dv_a->value.ref_id != 0) {
+                            auto& rt_pref_ref =
+                                resources::ResourceRuntime::instance();
+                            auto rs = rt_pref_ref.arsc().resolve_string(
+                                dv_a->value.ref_id);
+                            if (rs) raw = *rs;
+                        }
+                        if (raw.empty()) raw = dv_a->raw_value;
                         if (raw.empty()) {
                             if (dv_a->value.is_string()) raw = dv_a->value.string_value;
                             else if (dv_a->value.type == resources::DataType::INT_BOOLEAN)

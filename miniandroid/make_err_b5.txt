@@ -1,0 +1,1845 @@
+src/dex/dalvik_engine.cpp:609:28: warning: trigraph ??> ignored, use -trigraphs to enable [-Wtrigraphs]
+  609 |         default: return "<???>";
+In file included from src/dex/dalvik_engine.h:37,
+                 from src/dex/dalvik_engine.cpp:13:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine.h:38:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine.h:39:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine.h:43:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1142 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_engine.cpp:133:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::f590_primitive_array(uint32_t, void**, size_t*)’:
+src/dex/dalvik_engine.cpp:976:41: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+  976 |     if (desc == "[L" || desc.size() > 1 && desc[1] == 'L') {
+      |                         ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::execute_method_internal(const std::string&, const std::string&, const std::string&, const std::vector<short unsigned int>&, uint32_t, uint32_t, uint32_t, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikExecutionResult&, uint16_t, const uint8_t*, size_t)’:
+src/dex/dalvik_engine.cpp:5087:51: warning: comparison of integer expressions of different signedness: ‘uint32_t’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 5087 |             if (band_min >= 0 && recursion_depth_ >= band_min &&
+      |                                  ~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+src/dex/dalvik_engine.cpp:5088:34: warning: comparison of integer expressions of different signedness: ‘uint32_t’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+ 5088 |                 recursion_depth_ <= band_max &&
+      |                 ~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+src/dex/dalvik_engine.cpp:6465:46: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+ 6465 |     if (diag_env("MINIANDROID_EXP058_TRACE") && current_method_.find("addFragmentToStack") != std::string::npos ||
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::try_recursive_invoke(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::DalvikExecutionResult&, const std::string&)’:
+src/dex/dalvik_engine.cpp:12633:46: warning: unused variable ‘spec’ [-Wunused-variable]
+12633 |                                         char spec = format_str[i];
+      |                                              ^~~~
+src/dex/dalvik_engine.cpp:13438:71: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+13438 |             (class_descriptor.find("PhoneView$") != std::string::npos &&
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+13439 |              class_descriptor.find("LoginActivity") != std::string::npos || class_descriptor.find("BaseFragment") != std::string::npos);
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:16461:14: warning: unused variable ‘saved_halted_on_return’ [-Wunused-variable]
+16461 |         bool saved_halted_on_return = halted_on_return_;
+      |              ^~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:16462:14: warning: unused variable ‘saved_halted’ [-Wunused-variable]
+16462 |         bool saved_halted = halted_;
+      |              ^~~~~~~~~~~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::dispatch_view_attached()’:
+src/dex/dalvik_engine.cpp:20925:16: warning: unused variable ‘diag_logged’ [-Wunused-variable]
+20925 |     static int diag_logged = 0;
+      |                ^~~~~~~~~~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::fetch_decode_execute(miniandroid::dalvik::DalvikExecutionResult&)’:
+src/dex/dalvik_engine.cpp:22537:22: warning: variable ‘f264_delivered_pending’ set but not used [-Wunused-but-set-variable]
+22537 |                 bool f264_delivered_pending = true;
+      |                      ^~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24311:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24311 |             ARITH_LIT8_CASE(ADD_INT_LIT8, "add-int/lit8", "add")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24312:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24312 |             ARITH_LIT8_CASE(RSUB_INT_LIT8, "rsub-int/lit8", "rsub")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24313:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24313 |             ARITH_LIT8_CASE(MUL_INT_LIT8, "mul-int/lit8", "mul")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24314:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24314 |             ARITH_LIT8_CASE(DIV_INT_LIT8, "div-int/lit8", "div")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24315:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24315 |             ARITH_LIT8_CASE(REM_INT_LIT8, "rem-int/lit8", "rem")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24316:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24316 |             ARITH_LIT8_CASE(AND_INT_LIT8, "and-int/lit8", "and")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24317:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24317 |             ARITH_LIT8_CASE(OR_INT_LIT8,  "or-int/lit8",  "or")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24318:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24318 |             ARITH_LIT8_CASE(XOR_INT_LIT8, "xor-int/lit8", "xor")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24319:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24319 |             ARITH_LIT8_CASE(SHL_INT_LIT8, "shl-int/lit8", "shl")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24320:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24320 |             ARITH_LIT8_CASE(SHR_INT_LIT8, "shr-int/lit8", "shr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24288:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24288 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24293:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24293 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24294:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24294 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24295:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24295 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24296:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24296 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24297:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24297 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24298:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24298 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24299:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24299 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24300:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24300 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24301:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24301 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24302:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24302 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24303:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24303 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24304:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24304 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24321:13: note: in expansion of macro ‘ARITH_LIT8_CASE’
+24321 |             ARITH_LIT8_CASE(USHR_INT_LIT8, "ushr-int/lit8", "ushr")
+      |             ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24349:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24349 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24350:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24350 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24351:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24351 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24352:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24352 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24353:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24353 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24354:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24354 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24355:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24355 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24356:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24356 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24357:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24357 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24358:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24358 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24359:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24359 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24360:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24360 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24367:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24367 |             ARITH_LIT16_CASE(ADD_INT_LIT16, "add-int/lit16", "add")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24349:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24349 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24350:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24350 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24351:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24351 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24352:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24352 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24353:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24353 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24354:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24354 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24355:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24355 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24356:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24356 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24357:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24357 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24358:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24358 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24359:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24359 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24360:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24360 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24368:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24368 |             ARITH_LIT16_CASE(RSUB_INT_LIT16, "rsub-int", "rsub")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24349:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24349 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24350:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24350 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24351:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24351 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24352:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24352 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24353:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24353 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24354:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24354 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24355:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24355 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24356:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24356 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24357:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24357 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24358:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24358 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24359:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24359 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24360:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24360 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24369:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24369 |             ARITH_LIT16_CASE(MUL_INT_LIT16, "mul-int/lit16", "mul")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24349:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24349 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24350:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24350 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24351:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24351 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24352:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24352 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24353:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24353 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24354:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24354 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24355:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24355 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24356:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24356 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24357:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24357 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24358:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24358 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24359:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24359 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24360:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24360 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24370:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24370 |             ARITH_LIT16_CASE(DIV_INT_LIT16, "div-int/lit16", "div")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24349:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24349 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24350:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24350 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24351:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24351 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24352:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24352 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24353:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24353 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24354:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24354 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24355:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24355 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24356:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24356 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24357:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24357 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24358:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24358 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24359:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24359 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24360:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24360 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24371:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24371 |             ARITH_LIT16_CASE(REM_INT_LIT16, "rem-int/lit16", "rem")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24349:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24349 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24350:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24350 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24351:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24351 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24352:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24352 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24353:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24353 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24354:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24354 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24355:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24355 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24356:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24356 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24357:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24357 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24358:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24358 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24359:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24359 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24360:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24360 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24372:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24372 |             ARITH_LIT16_CASE(AND_INT_LIT16, "and-int/lit16", "and")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24349:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24349 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24350:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24350 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24351:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24351 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24352:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24352 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24353:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24353 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24354:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24354 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24355:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24355 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24356:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24356 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24357:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24357 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24358:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24358 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24359:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24359 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24360:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24360 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24373:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24373 |             ARITH_LIT16_CASE(OR_INT_LIT16,  "or-int/lit16",  "or")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:29: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                             ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24344:44: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24344 |                     if ((op == "div" || op == "rem") && lit == 0) { \
+      |                                            ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24349:28: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24349 |                     if (op == "add") result_val.int_val = b_val + lit; \
+      |                            ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24350:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24350 |                     else if (op == "rsub") result_val.int_val = lit - b_val; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24351:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24351 |                     else if (op == "sub") result_val.int_val = b_val - lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24352:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24352 |                     else if (op == "mul") result_val.int_val = b_val * lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24353:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24353 |                     else if (op == "div") result_val.int_val = b_val / lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24354:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24354 |                     else if (op == "rem") result_val.int_val = b_val % lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24355:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24355 |                     else if (op == "and") result_val.int_val = b_val & lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24356:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24356 |                     else if (op == "or")  result_val.int_val = b_val | lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24357:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24357 |                     else if (op == "xor") result_val.int_val = b_val ^ lit; \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24358:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24358 |                     else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24359:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24359 |                     else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24360:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24360 |                     else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24374:13: note: in expansion of macro ‘ARITH_LIT16_CASE’
+24374 |             ARITH_LIT16_CASE(XOR_INT_LIT16, "xor-int/lit16", "xor")
+      |             ^~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24696:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24696 |                     else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24702:13: note: in expansion of macro ‘ARITH_23X_FLOAT_CASE’
+24702 |             ARITH_23X_FLOAT_CASE(ADD_FLOAT, "add-float", "add")
+      |             ^~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24696:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24696 |                     else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24703:13: note: in expansion of macro ‘ARITH_23X_FLOAT_CASE’
+24703 |             ARITH_23X_FLOAT_CASE(SUB_FLOAT, "sub-float", "sub")
+      |             ^~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24696:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24696 |                     else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24704:13: note: in expansion of macro ‘ARITH_23X_FLOAT_CASE’
+24704 |             ARITH_23X_FLOAT_CASE(MUL_FLOAT, "mul-float", "mul")
+      |             ^~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24696:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24696 |                     else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24705:13: note: in expansion of macro ‘ARITH_23X_FLOAT_CASE’
+24705 |             ARITH_23X_FLOAT_CASE(DIV_FLOAT, "div-float", "div")
+      |             ^~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:24696:33: warning: comparison with string literal results in unspecified behavior [-Waddress]
+24696 |                     else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
+      |                                 ^
+src/dex/dalvik_engine.cpp:24706:13: note: in expansion of macro ‘ARITH_23X_FLOAT_CASE’
+24706 |             ARITH_23X_FLOAT_CASE(REM_FLOAT, "rem-float", "rem")
+      |             ^~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:25180:30: warning: unused variable ‘magic’ [-Wunused-variable]
+25180 |                     uint16_t magic = bytecode_[payload_pc];
+      |                              ^~~~~
+src/dex/dalvik_engine.cpp:25472:30: warning: variable ‘matched_try_idx’ set but not used [-Wunused-but-set-variable]
+25472 |                     uint16_t matched_try_idx = 0xFFFF;
+      |                              ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:22345:18: warning: unused variable ‘f107_d0’ [-Wunused-variable]
+22345 |         uint32_t f107_d0 = recursion_depth_;
+      |                  ^~~~~~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::execute_invoke_direct(uint32_t, miniandroid::dalvik::InstructionTrace&, miniandroid::dalvik::DalvikExecutionResult&)’:
+src/dex/dalvik_engine.cpp:33056:23: warning: unused variable ‘obj’ [-Wunused-variable]
+33056 |             if (auto* obj = heap_.get(args[0].object_id)) {
+      |                       ^~~
+src/dex/dalvik_engine.cpp:33079:19: warning: unused variable ‘obj’ [-Wunused-variable]
+33079 |         if (auto* obj = heap_.get(args[0].object_id)) {
+      |                   ^~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::execute_invoke_interface(uint32_t, miniandroid::dalvik::InstructionTrace&, miniandroid::dalvik::DalvikExecutionResult&)’:
+src/dex/dalvik_engine.cpp:34578:22: warning: variable ‘cls_found’ set but not used [-Wunused-but-set-variable]
+34578 |                 bool cls_found = false;
+      |                      ^~~~~~~~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_to_api(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t)’:
+src/dex/dalvik_engine.cpp:45310:14: warning: variable ‘string_array_of’ set but not used [-Wunused-but-set-variable]
+45310 |         auto string_array_of = [&](const DalvikValue& v) -> std::vector<std::string> {
+      |              ^~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:48021:18: warning: unused variable ‘c7_connected’ [-Wunused-variable]
+48021 |             bool c7_connected = c7_deliver_bind(svc, c7_conn_oid0, c7_cb0);
+      |                  ^~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:49816:34: warning: unused variable ‘post_status’ [-Wunused-variable]
+49816 |             ApiCallTrace::Status post_status = ApiCallTrace::Status::STUBBED;
+      |                                  ^~~~~~~~~~~
+src/dex/dalvik_engine.cpp:49807:30: warning: unused variable ‘di_status’ [-Wunused-variable]
+49807 |         ApiCallTrace::Status di_status = ApiCallTrace::Status::STUBBED;
+      |                              ^~~~~~~~~
+src/dex/dalvik_engine.cpp:54454:24: warning: unused variable ‘is_text_view’ [-Wunused-variable]
+54454 |             const bool is_text_view =
+      |                        ^~~~~~~~~~~~
+src/dex/dalvik_engine.cpp: In lambda function:
+src/dex/dalvik_engine.cpp:57457:30: warning: unused variable ‘par’ [-Wunused-variable]
+57457 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_to_api(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t)’:
+src/dex/dalvik_engine.cpp:58903:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+58903 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:61087:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_to_api(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t)::C7Match::pkg’ [-Wmissing-field-initializers]
+61087 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+61088 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:61100:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_to_api(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t)::C7Match::pkg’ [-Wmissing-field-initializers]
+61100 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:61111:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_to_api(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t)::C7Match::pkg’ [-Wmissing-field-initializers]
+61111 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp: In lambda function:
+src/dex/dalvik_engine.cpp:62424:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+62424 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_to_api(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t)’:
+src/dex/dalvik_engine.cpp:65304:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+65304 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:65314:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+65314 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:65321:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+65321 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:73314:38: warning: unused variable ‘cb_status’ [-Wunused-variable]
+73314 |                 ApiCallTrace::Status cb_status = ApiCallTrace::Status::STUBBED;
+      |                                      ^~~~~~~~~
+src/dex/dalvik_engine.cpp:84953:18: warning: variable ‘hit’ set but not used [-Wunused-but-set-variable]
+84953 |             bool hit = false;
+      |                  ^~~
+src/dex/dalvik_engine.cpp:87011:22: warning: unused variable ‘stream_id’ [-Wunused-variable]
+87011 |             uint32_t stream_id = args[0].object_id;
+      |                      ^~~~~~~~~
+src/dex/dalvik_engine.cpp:91188:18: warning: variable ‘host_native_attempted’ set but not used [-Wunused-but-set-variable]
+91188 |             bool host_native_attempted = false;
+      |                  ^~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp: In instantiation of ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_to_api(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t)::<lambda(auto:18&&, const miniandroid::dalvik::DalvikValue&, int)> [with auto:18 = miniandroid::dalvik::DalvikExecutionEngine::bridge_to_api(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t)::<lambda(auto:18&&, const miniandroid::dalvik::DalvikValue&, int)>&; std::string = std::__cxx11::basic_string<char>]’:
+src/dex/dalvik_engine.cpp:44559:39:   required from here
+44559 |                     tuj_out += tuj_str(tuj_str, *el, 0);
+      |                                ~~~~~~~^~~~~~~~~~~~~~~~~
+src/dex/dalvik_engine.cpp:44508:35: warning: unused parameter ‘tuj_self’ [-Wunused-parameter]
+44508 |         auto tuj_str = [&](auto&& tuj_self, const DalvikValue& a,
+      |                            ~~~~~~~^~~~~~~~
+src/dex/dalvik_engine.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::fetch_decode_execute(miniandroid::dalvik::DalvikExecutionResult&)’:
+src/dex/dalvik_engine.cpp:25673:13: warning: this statement may fall through [-Wimplicit-fallthrough=]
+25673 |             }
+      |             ^
+src/dex/dalvik_engine.cpp:25682:13: note: here
+25682 |             case Opcode::MOVE_16: {
+      |             ^~~~
+src/dex/dalvik_engine.cpp: At global scope:
+src/dex/dalvik_engine.cpp:38296:20: warning: ‘std::string miniandroid::dalvik::host_path_for_virtual_volume(const std::string&)’ defined but not used [-Wunused-function]
+38296 | static std::string host_path_for_virtual_volume(const std::string& p) {
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+g++: fatal error: Killed signal terminated program cc1plus
+compilation terminated.
+make: *** [Makefile:120: build/dex/dalvik_engine.o] Error 1
