@@ -25,12 +25,19 @@ EXTRA_HEADER_BLOCKS = [
     (38470, 38549, "C9"),                                     # C9 png/display-metrics
 ]
 BODY_RANGES = {
-    "dalvik_engine_core":   (590, 9816),
-    "dalvik_engine_invoke": (9817, 21753),
-    "dalvik_opcodes":       (21754, 38593),
-    "dalvik_bridge":        (38594, 93789),
-    "dalvik_engine_tail":   (93790, 94201),
+    "dalvik_engine_core":       (590, 9816),
+    "dalvik_engine_invoke":     (9817, 21753),
+    "dalvik_interpreter":       (21754, 27865),
+    "dalvik_opcodes":           (27866, 31963),
+    "dalvik_opcodes_invoke":    (31964, 38593),
+    "dalvik_bridge":            (38594, 93789),
+    "dalvik_engine_tail":       (93790, 94201),
 }
+# WAVE-5 Phase 3: opcode-range 3-way decomposition (dependency evidence:
+# interpreter loop 21754-27865 | field/static/array ops 27866-31963 |
+# invoke family + control flow + framework glue 31964-38593; all cuts at
+# verified brace-depth-2; cross-references resolve via dalvik_engine.h +
+# dalvik_engine_internal.h — linker-driven check at build time).
 NS_CLOSE = "\n} // namespace dalvik\n} // namespace miniandroid\n"
 # ns-scope variable definitions trapped in the 4430-4434 anon block: moved to
 # the core part at real namespace scope (external linkage, header externs).
@@ -178,7 +185,14 @@ parts_lines = "\n".join(f"src/dex/{n}.cpp" for n in BODY_RANGES)
 if "src/dex/dalvik_engine.cpp\n" in man:
     man = man.replace("src/dex/dalvik_engine.cpp\n", parts_lines + "\n")
     open("core_sources.manifest", "w").write(man)
-    print("manifest updated")
+    print("manifest updated (monolith -> 7 parts)")
+elif "src/dex/dalvik_opcodes.cpp\n" in man and "dalvik_opcodes_invoke" not in man:
+    man = man.replace("src/dex/dalvik_opcodes.cpp\n",
+                      "src/dex/dalvik_interpreter.cpp\n"
+                      "src/dex/dalvik_opcodes.cpp\n"
+                      "src/dex/dalvik_opcodes_invoke.cpp\n")
+    open("core_sources.manifest", "w").write(man)
+    print("manifest updated (5 -> 7 parts)")
 else:
     print("manifest already updated")
 

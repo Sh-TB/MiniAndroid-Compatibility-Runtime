@@ -1,0 +1,79 @@
+{
+ "dev_initial": {
+  "rc": 0,
+  "wall": 265.95,
+  "peak_mb": 2126
+ },
+ "loop_reps": [
+  {
+   "make_dev": {
+    "rc": 0,
+    "wall": 9.83,
+    "peak_mb": 877
+   },
+   "make_test": {
+    "rc": 0,
+    "wall": 11.61
+   },
+   "edit_to_test_total": 21.49
+  },
+  {
+   "make_dev": {
+    "rc": 0,
+    "wall": 9.53,
+    "peak_mb": 877
+   },
+   "make_test": {
+    "rc": 0,
+    "wall": 11.78
+   },
+   "edit_to_test_total": 21.36
+  },
+  {
+   "make_dev": {
+    "rc": 0,
+    "wall": 8.58,
+    "peak_mb": 877
+   },
+   "make_test": {
+    "rc": 0,
+    "wall": 11.69
+   },
+   "edit_to_test_total": 20.33
+  },
+  {
+   "make_dev": {
+    "rc": 0,
+    "wall": 9.53,
+    "peak_mb": 877
+   },
+   "make_test": {
+    "rc": 0,
+    "wall": 11.85
+   },
+   "edit_to_test_total": 21.44
+  },
+  {
+   "make_dev": {
+    "rc": 0,
+    "wall": 9.45,
+    "peak_mb": 877
+   },
+   "make_test": {
+    "rc": 0,
+    "wall": 10.5
+   },
+   "edit_to_test_total": 20.0
+  }
+ ],
+ "stats": {
+  "median": 21.36,
+  "min": 20.0,
+  "max": 21.49
+ },
+ "prod_restore": {
+  "rc": 0,
+  "wall": 2.12,
+  "peak_mb": 177
+ }
+}

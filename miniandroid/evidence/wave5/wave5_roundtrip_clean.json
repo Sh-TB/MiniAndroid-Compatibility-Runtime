@@ -1,0 +1,48 @@
+{
+ "roundtrip_split0": {
+  "make": {
+   "rc": 0,
+   "wall": 215.14,
+   "peak_mb": 2869
+  },
+  "parity": "[PARITY-OK] 82 core sources manifest-parity"
+ },
+ "roundtrip_verify0": {
+  "make_test": {
+   "rc": 0,
+   "wall": 159.85
+  },
+  "guess_success": true,
+  "screenshot_sha": "87fe26766fc48d06c59d4c15",
+  "hash_is_canonical": true
+ },
+ "roundtrip_split1": {
+  "make": {
+   "rc": 0,
+   "wall": 1.96,
+   "peak_mb": 177
+  },
+  "parity": "[PARITY-OK] 82 core sources manifest-parity"
+ },
+ "roundtrip_verify1": {
+  "make_test": {
+   "rc": 0,
+   "wall": 0.03
+  },
+  "guess_success": true,
+  "screenshot_sha": "87fe26766fc48d06c59d4c15",
+  "hash_is_canonical": true
+ },
+ "clean_split": {
+  "rc": 0,
+  "wall": 504.28,
+  "peak_mb": 2126,
+  "wall_total": 504.31
+ },
+ "j2_probe": {
+  "rc": 0,
+  "wall": 27.77,
+  "peak_mb": 1029,
+  "note": "two mid-size TUs (-O2, no bridge) in parallel"
+ }
+}

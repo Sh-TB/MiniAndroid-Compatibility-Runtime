@@ -1,0 +1,644 @@
+{
+ "G1_noop": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 1.03,
+    "peak_mb": 32
+   },
+   {
+    "rc": 0,
+    "wall": 1.08,
+    "peak_mb": 32
+   },
+   {
+    "rc": 0,
+    "wall": 1.05,
+    "peak_mb": 32
+   },
+   {
+    "rc": 0,
+    "wall": 1.07,
+    "peak_mb": 32
+   },
+   {
+    "rc": 0,
+    "wall": 1.08,
+    "peak_mb": 32
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 1.07,
+   "min": 1.03,
+   "max": 1.08,
+   "variance": 0.0
+  }
+ },
+ "G2_edit_tail": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 9.59,
+    "peak_mb": 845
+   },
+   {
+    "rc": 0,
+    "wall": 9.27,
+    "peak_mb": 845
+   },
+   {
+    "rc": 0,
+    "wall": 9.59,
+    "peak_mb": 845
+   },
+   {
+    "rc": 0,
+    "wall": 9.62,
+    "peak_mb": 845
+   },
+   {
+    "rc": 0,
+    "wall": 9.36,
+    "peak_mb": 845
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 9.59,
+   "min": 9.27,
+   "max": 9.62,
+   "variance": 0.02
+  }
+ },
+ "G2_edit_opcodes_field": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 12.84,
+    "peak_mb": 929
+   },
+   {
+    "rc": 0,
+    "wall": 12.94,
+    "peak_mb": 929
+   },
+   {
+    "rc": 0,
+    "wall": 12.79,
+    "peak_mb": 929
+   },
+   {
+    "rc": 0,
+    "wall": 12.55,
+    "peak_mb": 929
+   },
+   {
+    "rc": 0,
+    "wall": 12.63,
+    "peak_mb": 929
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 12.79,
+   "min": 12.55,
+   "max": 12.94,
+   "variance": 0.02
+  }
+ },
+ "G2_edit_interpreter": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 41.39,
+    "peak_mb": 1118
+   },
+   {
+    "rc": 0,
+    "wall": 35.7,
+    "peak_mb": 1118
+   },
+   {
+    "rc": 0,
+    "wall": 39.99,
+    "peak_mb": 1118
+   },
+   {
+    "rc": 0,
+    "wall": 40.78,
+    "peak_mb": 1118
+   },
+   {
+    "rc": 0,
+    "wall": 40.9,
+    "peak_mb": 1118
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 40.78,
+   "min": 35.7,
+   "max": 41.39,
+   "variance": 4.307
+  }
+ },
+ "G2_edit_opcodes_invoke": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 17.51,
+    "peak_mb": 973
+   },
+   {
+    "rc": 0,
+    "wall": 17.4,
+    "peak_mb": 973
+   },
+   {
+    "rc": 0,
+    "wall": 17.4,
+    "peak_mb": 973
+   },
+   {
+    "rc": 0,
+    "wall": 17.62,
+    "peak_mb": 973
+   },
+   {
+    "rc": 0,
+    "wall": 17.54,
+    "peak_mb": 973
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 17.51,
+   "min": 17.4,
+   "max": 17.62,
+   "variance": 0.007
+  }
+ },
+ "G2_edit_two_opcodes": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 26.35,
+    "peak_mb": 973
+   },
+   {
+    "rc": 0,
+    "wall": 28.34,
+    "peak_mb": 973
+   },
+   {
+    "rc": 0,
+    "wall": 25.04,
+    "peak_mb": 973
+   },
+   {
+    "rc": 0,
+    "wall": 25.34,
+    "peak_mb": 973
+   },
+   {
+    "rc": 0,
+    "wall": 26.45,
+    "peak_mb": 973
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 26.35,
+   "min": 25.04,
+   "max": 28.34,
+   "variance": 1.339
+  }
+ },
+ "G2_edit_engine_invoke": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 26.39,
+    "peak_mb": 1027
+   },
+   {
+    "rc": 0,
+    "wall": 23.2,
+    "peak_mb": 1027
+   },
+   {
+    "rc": 0,
+    "wall": 22.78,
+    "peak_mb": 1027
+   },
+   {
+    "rc": 0,
+    "wall": 22.86,
+    "peak_mb": 1027
+   },
+   {
+    "rc": 0,
+    "wall": 25.16,
+    "peak_mb": 1027
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 23.2,
+   "min": 22.78,
+   "max": 26.39,
+   "variance": 2.091
+  }
+ },
+ "G2_edit_engine_core": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 24.44,
+    "peak_mb": 1116
+   },
+   {
+    "rc": 0,
+    "wall": 23.5,
+    "peak_mb": 1116
+   },
+   {
+    "rc": 0,
+    "wall": 22.74,
+    "peak_mb": 1115
+   },
+   {
+    "rc": 0,
+    "wall": 22.58,
+    "peak_mb": 1115
+   },
+   {
+    "rc": 0,
+    "wall": 25.34,
+    "peak_mb": 1115
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 23.5,
+   "min": 22.58,
+   "max": 25.34,
+   "variance": 1.09
+  }
+ },
+ "G2_edit_bridge_-Og": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 48.66,
+    "peak_mb": 2126
+   },
+   {
+    "rc": 0,
+    "wall": 47.98,
+    "peak_mb": 2126
+   },
+   {
+    "rc": 0,
+    "wall": 47.67,
+    "peak_mb": 2126
+   },
+   {
+    "rc": 0,
+    "wall": 40.54,
+    "peak_mb": 2126
+   },
+   {
+    "rc": 0,
+    "wall": 40.77,
+    "peak_mb": 2126
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 47.67,
+   "min": 40.54,
+   "max": 48.66,
+   "variance": 13.423
+  }
+ },
+ "G4_link_only": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 2.19,
+    "peak_mb": 177
+   },
+   {
+    "rc": 0,
+    "wall": 2.15,
+    "peak_mb": 177
+   },
+   {
+    "rc": 0,
+    "wall": 2.16,
+    "peak_mb": 177
+   },
+   {
+    "rc": 0,
+    "wall": 2.16,
+    "peak_mb": 177
+   },
+   {
+    "rc": 0,
+    "wall": 2.16,
+    "peak_mb": 177
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 2.16,
+   "min": 2.15,
+   "max": 2.19,
+   "variance": 0.0
+  }
+ },
+ "G5_test_run": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 1.09,
+    "peak_mb": 170
+   },
+   {
+    "rc": 0,
+    "wall": 0.03,
+    "peak_mb": 12
+   },
+   {
+    "rc": 0,
+    "wall": 0.03,
+    "peak_mb": 12
+   },
+   {
+    "rc": 0,
+    "wall": 0.03,
+    "peak_mb": 12
+   },
+   {
+    "rc": 0,
+    "wall": 0.03,
+    "peak_mb": 12
+   }
+  ],
+  "stats": {
+   "median": 0.03,
+   "min": 0.03,
+   "max": 1.09,
+   "variance": 0.18
+  }
+ },
+ "G3_header_touch": {
+  "reps": [
+   {
+    "rc": 0,
+    "wall": 167.32,
+    "peak_mb": 2126
+   },
+   {
+    "rc": 0,
+    "wall": 167.63,
+    "peak_mb": 2126
+   },
+   {
+    "rc": 0,
+    "wall": 146.81,
+    "peak_mb": 2126
+   },
+   {
+    "rc": 0,
+    "wall": 152.22,
+    "peak_mb": 2126
+   },
+   {
+    "rc": 0,
+    "wall": 158.21,
+    "peak_mb": 2126
+   }
+  ],
+  "cmd": [
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/apk_parser.o src/apk/apk_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/apk/manifest_reader.o src/apk/manifest_reader.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_parser.o src/dex/dex_parser.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/mutf8.o src/dex/mutf8.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dex_interpreter_batch.o src/dex/dex_interpreter_batch.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp",
+   "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/c7_package_index.o src/dex/c7_package_index.cpp"
+  ],
+  "stats": {
+   "median": 158.21,
+   "min": 146.81,
+   "max": 167.63,
+   "variance": 67.462
+  }
+ },
+ "G5_test_bins": {
+  "reps": [
+   {
+    "rc": 1,
+    "wall": 0.005,
+    "peak_mb": 0,
+    "bins_ok": 1
+   },
+   {
+    "rc": 1,
+    "wall": 0.004,
+    "peak_mb": 0,
+    "bins_ok": 1
+   },
+   {
+    "rc": 1,
+    "wall": 0.004,
+    "peak_mb": 0,
+    "bins_ok": 1
+   },
+   {
+    "rc": 1,
+    "wall": 0.004,
+    "peak_mb": 0,
+    "bins_ok": 1
+   },
+   {
+    "rc": 1,
+    "wall": 0.004,
+    "peak_mb": 0,
+    "bins_ok": 1
+   }
+  ],
+  "bins": [
+   "build/miniandroid_test",
+   "build/test.d",
+   "build/test.o",
+   "build/tests"
+  ],
+  "stats": {
+   "median": 0.004,
+   "min": 0.004,
+   "max": 0.005,
+   "variance": 0.0
+  }
+ }
+}
