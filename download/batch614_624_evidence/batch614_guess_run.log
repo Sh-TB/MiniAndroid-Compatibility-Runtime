@@ -1,13 +1,13 @@
-[*] MAX-SECONDS enabled (90 s wall-clock soft budget)
-[*] FRAME-SEQUENCE enabled (4 frames @ +300ms virtual each, saved to <output>/frames/)
-[*] frame delay: 500ms virtual
+[*] MAX-SECONDS enabled (70 s wall-clock soft budget)
+[*] FRAME-SEQUENCE enabled (3 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] frame delay: 400ms virtual
 [*] DUMP-VIEW-TREE enabled (view_tree.json after final capture)
 [*] Running APK: /home/z/my-project/upload/handoff_apks/ru.zxalexis.ugaday_15.apk
 [*] Output directory: /home/z/my-project/evidence/batch614_guess
 [ROUTE] NO_PROFILE for stem=ru — generate with tools/s188_route_classifier.py (S188 §4); runtime proceeds route-blind, which is NOT a pass.
 [TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
-[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=87
-[BOOT-RSS] stage=load_apk rss_mb=11.8672
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=77
+[BOOT-RSS] stage=load_apk rss_mb=12.332
 [EXP062-SV] parse_static_values for Lru/zxalexis/ugaday/R$dimen; offset=0x1a3440 static_fields=1 with_defaults=0
 [EXP062-SV-DONE] Lru/zxalexis/ugaday/R$dimen; with_defaults=1/1
 [EXP062-SV] parse_static_values for Lru/zxalexis/ugaday/R$drawable; offset=0x1a3446 static_fields=1 with_defaults=0
@@ -20,14 +20,14 @@
 [EXP062-SV-DONE] Lru/zxalexis/ugaday/R$string; with_defaults=10/10
 [EXP062-SV] parse_static_values for Lru/zxalexis/ugaday/R$style; offset=0x1a349f static_fields=2 with_defaults=0
 [EXP062-SV-DONE] Lru/zxalexis/ugaday/R$style; with_defaults=2/2
-[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=131
-[BOOT-RSS] stage=parse_dex rss_mb=21.5391
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=121
+[BOOT-RSS] stage=parse_dex rss_mb=21.9609
 [U007-RES] ResourceRuntime loaded: /home/z/my-project/upload/handoff_apks/ru.zxalexis.ugaday_15.apk named_ids=20 types=6
 [S124-FWRES] framework-res table NOT FOUND (degrading to generated attr-default table)
-[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=188
-[BOOT-RSS] stage=initialize_runtime rss_mb=31.168
-[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=192
-[BOOT-RSS] stage=load_classes rss_mb=31.168
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=172
+[BOOT-RSS] stage=initialize_runtime rss_mb=31.5898
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=176
+[BOOT-RSS] stage=load_classes rss_mb=31.5898
 [DATA-ROOT] context package = ru.zxalexis.ugaday (data dir runtime/data/data/data/ru.zxalexis.ugaday)
 [S123-ACTION-REG] activities=1 action_targets=1
 FONT_SOURCE apk=/home/z/my-project/upload/handoff_apks/ru.zxalexis.ugaday_15.apk font_files=0 registered=0 first=<none>
@@ -48,7 +48,7 @@ FONT_SOURCE apk=/home/z/my-project/upload/handoff_apks/ru.zxalexis.ugaday_15.apk
 [TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
 [REC-MISS] Landroid/app/Activity;.<init> caller=Lru/zxalexis/ugaday/activity_main;.<init>
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
-[MEM] method_exit: Lru/zxalexis/ugaday/activity_main;.<init> insns=2 RSS=35.4219 MB
+[MEM] method_exit: Lru/zxalexis/ugaday/activity_main;.<init> insns=2 RSS=35.6484 MB
 [TRY-ENTRY] Lru/zxalexis/ugaday/activity_main;.attachBaseContext dex_report=YES
 [U0113-ACTIVITY] activity heap object #15 (Lru/zxalexis/ugaday/activity_main;) recorded for handler dispatch
 [C94-SINGLETON] LAUNCH-STORE key='Lru/zxalexis/ugaday/activity_main;' id=15
@@ -61,7 +61,7 @@ FONT_SOURCE apk=/home/z/my-project/upload/handoff_apks/ru.zxalexis.ugaday_15.apk
 [EXP088-B-DISPATCH] ActivityShadow.dispatch: method=setContentView class=Landroid/app/Activity;
 [EXP075-ACTIVITY] ActivityShadow.dispatch: method=setContentView class=Landroid/app/Activity; args=1 arg0_kind=0 arg0_int=2130903040
 [U007-INFLATE] setContentView(layoutResId=0x7f030000)
-[U007-VS] inflate vs=0x55fda73b5500 reg=0x7ffc25d039c0
+[U007-VS] inflate vs=0x564166ad1500 reg=0x7ffc50cde1b0
 [U007-INFLATE] root_id=16 views=7 map_now=8 strings=3 ids=0 unresolved=1
 [P0-1-ORDER] setContentView(res) root=16 recorded for first-traversal attach+measure
 [C013-HIER] setContentView dispatched via superclass chain: Lru/zxalexis/ugaday/activity_main; -> Landroid/app/Activity; (declared=Lru/zxalexis/ugaday/activity_main; receiver=Lru/zxalexis/ugaday/activity_main;)
@@ -114,8 +114,8 @@ FONT_SOURCE apk=/home/z/my-project/upload/handoff_apks/ru.zxalexis.ugaday_15.apk
 [UC009-ATTACH] attach dispatch complete ok=false
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=222
-[BOOT-RSS] stage=execute_application rss_mb=52.6328
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=204
+[BOOT-RSS] stage=execute_application rss_mb=52.6875
 [PARK-DRAIN] launch-drain depth=0 work_units=0
 [PARK-DRAIN] launch-drain depth=0 work_units=0
 [PARK-DRAIN] launch-drain depth=0 work_units=0
@@ -141,8 +141,8 @@ FONT_SOURCE apk=/home/z/my-project/upload/handoff_apks/ru.zxalexis.ugaday_15.apk
 [PARK-DRAIN] launch-drain depth=0 work_units=0
 [PARK-DRAIN] launch-drain depth=0 work_units=0
 [S-LAUNCHDRAIN] rounds=4096 drained=0 advanced_ms=4096 queue_left=0
-[BOOT-ORDER] 6/7 stage=launch_drain ok=1 ms=225
-[BOOT-RSS] stage=launch_drain rss_mb=52.6328
+[BOOT-ORDER] 6/7 stage=launch_drain ok=1 ms=208
+[BOOT-RSS] stage=launch_drain rss_mb=52.6875
 [REC-MISS] Landroid/widget/LinearLayout;.dispatchApplyWindowInsets caller=Lru/zxalexis/ugaday/activity_main;.onCreate
 [REC-MISS] Landroid/widget/LinearLayout;.onApplyWindowInsets caller=Lru/zxalexis/ugaday/activity_main;.onCreate
 [REC-MISS] Landroid/widget/RelativeLayout;.dispatchApplyWindowInsets caller=Lru/zxalexis/ugaday/activity_main;.onCreate
@@ -177,13 +177,13 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [EXP092-COPY] fb has 2067841 non-white pixels out of 2073600 total
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2067841 non-white pixels
-[BOOT-ORDER] 7/7 stage=render_frame ok=1 ms=264
-[BOOT-RSS] stage=render_frame rss_mb=64.5781
+[BOOT-ORDER] 7/7 stage=render_frame ok=1 ms=241
+[BOOT-RSS] stage=render_frame rss_mb=64.8828
 [EXP061] View tree dumped: 7 nodes to /home/z/my-project/evidence/batch614_guess/view_tree.json
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[BOOT-ORDER] 8/7 stage=capture_output ok=1 ms=420
-[BOOT-RSS] stage=capture_output rss_mb=72.2422
+[BOOT-ORDER] 8/7 stage=capture_output ok=1 ms=395
+[BOOT-RSS] stage=capture_output rss_mb=72.5312
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
 [F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
 [F100-STATE] pump entry: pending_cb=0 queue_size=0
@@ -222,25 +222,7 @@ FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
 [EXP092-COPY] framebuffer_ updated, checking...
 [EXP092-COPY] framebuffer_ has 2067841 non-white pixels
 [FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
-[F100-STATE] pump entry: pending_cb=0 queue_size=0
-[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
-[CONT48-F1] eager R$ harvest: 7 classes, 20 resids
-[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/20
-[ECR-ROOT] scalar content_view_id root=16
-[EXT01-WINBG] windowBackground=@0xff303030 rgb(48,48,48)
-[V1-CONTENT-BOUNDS] root=16 rect=(0,0,1080,1920)
-[EXP092-RENDER] node=16 class=Landroid/widget/LinearLayout; text="" children=4 depth=0 pos=(0,0) size=(1080x1920)
-[EXP092-RENDER] node=17 class=Landroid/widget/RelativeLayout; text="" children=1 depth=1 pos=(0,0) size=(1080x56)
-[EXP092-RENDER] node=18 class=Landroid/widget/TextView; text="Guess the number (1 – 100)" children=0 depth=2 pos=(220,0) size=(640x56)
-[EXP092-RENDER] node=19 class=Landroid/widget/EditText; text="" children=0 depth=1 pos=(0,56) size=(1080x105)
-[EXP092-RENDER] node=20 class=Landroid/widget/RelativeLayout; text="" children=1 depth=1 pos=(0,161) size=(1080x126)
-[EXP092-RENDER] node=21 class=Landroid/widget/Button; text="Put the number" children=0 depth=2 pos=(0,161) size=(1080x126)
-[EXP092-RENDER] node=22 class=Landroid/widget/TextView; text="   " children=0 depth=1 pos=(0,287) size=(1080x1633)
-[EXP092-COPY] fb has 2067841 non-white pixels out of 2073600 total
-[EXP092-COPY] framebuffer_ updated, checking...
-[EXP092-COPY] framebuffer_ has 2067841 non-white pixels
-[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
-[FRAME-SEQ] done: runnables_fired=0 frames=4 dir=/home/z/my-project/evidence/batch614_guess/frames
+[FRAME-SEQ] done: runnables_fired=0 frames=3 dir=/home/z/my-project/evidence/batch614_guess/frames
 [CONT48-F1] eager R$ harvest: 7 classes, 20 resids
 [ARSC-VALUES] drawable paths resolved via canonical resolver: 0/20
 [ECR-ROOT] scalar content_view_id root=16
@@ -266,7 +248,7 @@ Message: Execution completed successfully [F-NEW-200 stub-census: 12 IMPLEMENTED
 
 --- Metrics ---
 API Calls: 0
-Frames Rendered: 5
+Frames Rendered: 4
 Execution Time: 0ms
 Errors: 0
 Warnings: 0

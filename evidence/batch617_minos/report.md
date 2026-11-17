@@ -11,7 +11,7 @@
 | Metric | Value |
 |--------|-------|
 | APIs Called | 0 |
-| Frames Rendered | 5 |
+| Frames Rendered | 4 |
 | Execution Time | 0ms |
 | Memory Peak | 0.00 B |
 | Errors | 0 |
@@ -22,7 +22,7 @@
 | Class | Calls |
 |-------|-------|
 | `DalvikEngine` | 3 |
-| `ExecutionEngine` | 142 |
+| `ExecutionEngine` | 140 |
 | `TraceEngine` | 3 |
 
 ## Top Method Calls
@@ -30,8 +30,8 @@
 | Method | Calls |
 |--------|-------|
 | `ExecutionEngine.stage_load_classes` | 95 |
-| `ExecutionEngine.stage_render_frame` | 10 |
 | `ExecutionEngine.stage_capture_output` | 9 |
+| `ExecutionEngine.stage_render_frame` | 8 |
 | `ExecutionEngine.trace_files` | 5 |
 | `DalvikEngine.execute_apk` | 3 |
 | `ExecutionEngine.stage_initialize_runtime` | 3 |
@@ -70,5 +70,5 @@
 
 ## Session Info
 
-- **Session ID:** `EXP-001-20261117-150127-7892`
-- **Generated:** 2026-11-17 15:01:28 UTC
+- **Session ID:** `EXP-001-20261117-154428-2512`
+- **Generated:** 2026-11-17 15:44:29 UTC
