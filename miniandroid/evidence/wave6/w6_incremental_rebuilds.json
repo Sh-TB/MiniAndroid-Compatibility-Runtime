@@ -1,0 +1,43 @@
+{
+ "status": "TESTED for engine-TU and header touches (wave-5 x5 reps); build-config touch PENDING",
+ "dep_graph_summary": {
+  "dalvik_engine_internal.h": {
+   "rebuilds": 7,
+   "objects": 7,
+   "wall_s": 158.21
+  },
+  "shadow_registry.h": {
+   "objects": 29
+  },
+  "nlohmann_json.hpp": {
+   "objects": 30
+  }
+ },
+ "rebuild_sets": {
+  "opcode_impl_edit": {
+   "objects": 1,
+   "wall_s": 12.79
+  },
+  "bridge_impl_edit": {
+   "objects": 1,
+   "wall_s": 47.67,
+   "note": "-Og TU"
+  },
+  "interpreter_impl_edit": {
+   "objects": 1,
+   "wall_s": 40.78
+  },
+  "private_header_internal": {
+   "objects": 7,
+   "wall_s": 158.21
+  },
+  "shared_header_engine_h": {
+   "objects": ">=7 engine TUs + glue",
+   "measured": "PENDING"
+  },
+  "build_config_makefile": {
+   "measured": "PENDING"
+  }
+ },
+ "isolation_mechanism": "wave-5 stamps + build_dev separation verified; per-TU edits rebuild exactly 1 TU + 2.16s link"
+}

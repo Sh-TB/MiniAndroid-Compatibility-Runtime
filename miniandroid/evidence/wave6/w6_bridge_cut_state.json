@@ -1,0 +1,33 @@
+{
+ "extra_params": [
+  [
+   "const std::vector<DalvikValue>&",
+   "args"
+  ]
+ ],
+ "extracted": [
+  {
+   "start": 49937,
+   "lines": 128,
+   "helper": "bridge_arm_49937"
+  },
+  {
+   "start": 49792,
+   "lines": 121,
+   "helper": "bridge_arm_49792"
+  },
+  {
+   "start": 46205,
+   "lines": 132,
+   "helper": "bridge_arm_46205"
+  },
+  {
+   "start": 5892,
+   "lines": 161,
+   "helper": "bridge_arm_5892"
+  }
+ ],
+ "hoist_ids": [
+  "f356_mp_engine_for"
+ ]
+}

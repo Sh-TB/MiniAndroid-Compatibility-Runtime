@@ -1,0 +1,38 @@
+{
+ "bridge_Og_ggc10_2048": {
+  "rc": 0,
+  "wall_s": 51.4,
+  "peak_mb": 1829,
+  "level": "-Og",
+  "params": "--param ggc-min-expand=10 --param ggc-min-heapsize=2048",
+  "obj_sha16": "16e7d7c77da083a5",
+  "codegen_identical_to_baseline": true
+ },
+ "bridge_Og_ggc5_1024": {
+  "rc": 0,
+  "wall_s": 59.5,
+  "peak_mb": 1796,
+  "level": "-Og",
+  "params": "--param ggc-min-expand=5 --param ggc-min-heapsize=1024",
+  "obj_sha16": "16e7d7c77da083a5",
+  "codegen_identical_to_baseline": true
+ },
+ "bridge_O2_ggc10_2048": {
+  "rc": 1,
+  "wall_s": 73.43,
+  "peak_mb": 3087,
+  "level": "-O2",
+  "params": "--param ggc-min-expand=10 --param ggc-min-heapsize=2048",
+  "obj_sha16": null,
+  "codegen_identical_to_baseline": false
+ },
+ "interp_O2_inline_budget": {
+  "rc": 0,
+  "wall_s": 21.28,
+  "peak_mb": 1070,
+  "level": "-O2",
+  "params": "--param inline-unit-growth=15 --param large-function-growth=120",
+  "obj_sha16": "1e558f949558546a",
+  "codegen_identical_to_baseline": null
+ }
+}

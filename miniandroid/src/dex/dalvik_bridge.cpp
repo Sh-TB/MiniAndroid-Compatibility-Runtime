@@ -183,6 +183,15 @@ static bool diag_env(const char* name) {
 
 #include "dex/dalvik_engine_internal.h"
 namespace miniandroid {
+namespace {
+static auto f356_mp_engine_for = [](uint32_t oid) -> audio::MediaPlayer* {
+        static std::map<uint32_t, std::unique_ptr<audio::MediaPlayer>> m;
+        auto it = m.find(oid);
+        if (it == m.end())
+            it = m.emplace(oid, std::make_unique<audio::MediaPlayer>()).first;
+        return it->second.get();
+    };
+}  // namespace
 namespace dalvik {
 
 bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
@@ -2068,13 +2077,6 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // CONT-65 F-NEW-356 helper: one audio::MediaPlayer engine per DEX
     // MediaPlayer heap object (lazy attach; single shared map — the engine
     // carries the decoded source between setDataSource and prepare).
-    static auto f356_mp_engine_for = [](uint32_t oid) -> audio::MediaPlayer* {
-        static std::map<uint32_t, std::unique_ptr<audio::MediaPlayer>> m;
-        auto it = m.find(oid);
-        if (it == m.end())
-            it = m.emplace(oid, std::make_unique<audio::MediaPlayer>()).first;
-        return it->second.get();
-    };
     if (class_name == "Landroid/media/AudioAttributes$Builder;") {
         if (method == "<init>") {
             if (!args.empty() && args[0].type == DalvikType::OBJECT_REF) {
@@ -5889,167 +5891,7 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
     }
-    if (is_baos_family) {
-        uint32_t bid = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
-                           ? args[0].object_id : 0;
-        std::string& buf = baos_buffers_[bid];
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        // CONT-49 JAVA-FIELD SYNC: real DEX subclasses (gdx's
-        // OptimizedByteArrayOutputStream override) read the AOSP fields
-        // `buf` (byte[]) and `count` (int) DIRECTLY — the C++ map alone
-        // left this.buf null → array-length NPE. Mirror after every
-        // mutation: count = size; buf array capacity doubling, full copy
-        // (asset-scale buffers only — bounded 1MiB honest ceiling).
-        auto sync_baos_fields = [&](uint32_t oid, const std::string& data) {
-            if (oid == 0 || !heap_.has_object(oid) ||
-                data.size() > (1u << 20))
-                return;
-            heap_.set_object_field(oid, "count",
-                                   DalvikValue::make_int(
-                                       static_cast<int32_t>(data.size())));
-            uint32_t arr_id = 0;
-            int64_t cap = 0;
-            if (auto bf = heap_.get_object_field(oid, "buf");
-                bf.has_value() && bf->type == DalvikType::OBJECT_REF &&
-                bf->object_id != 0 && heap_.has_object(bf->object_id)) {
-                arr_id = bf->object_id;
-                if (auto lf = heap_.get_object_field(arr_id, "__array_length__");
-                    lf.has_value() && lf->type == DalvikType::INT32)
-                    cap = lf->int_val;
-                if (cap == 0)
-                    if (auto lf2 = heap_.get_object_field(
-                            arr_id, "__new_array_length__");
-                        lf2.has_value() && lf2->type == DalvikType::INT32)
-                        cap = lf2->int_val;
-            }
-            if (arr_id == 0 || cap < (int64_t)data.size()) {
-                int64_t ncap = cap > 0 ? cap : 32;
-                while (ncap < (int64_t)data.size()) ncap *= 2;
-                uint32_t nid = heap_.allocate("[B", pc_, 0);
-                heap_.set_object_field(
-                    nid, "__array_length__",
-                    DalvikValue::make_int(static_cast<int32_t>(ncap)));
-                heap_.set_object_field(
-                    nid, "__new_array_length__",
-                    DalvikValue::make_int(static_cast<int32_t>(ncap)));
-                for (int64_t k = 0; k < (int64_t)data.size(); ++k)
-                    heap_.set_object_field(
-                        nid, "array[" + std::to_string(k) + "]",
-                        DalvikValue::make_byte(
-                            static_cast<int8_t>(data[k])));
-                heap_.set_object_field(
-                    oid, "buf", DalvikValue::make_object(nid, "[B"));
-                return;
-            }
-            // capacity fits: refresh the valid prefix
-            for (int64_t k = 0; k < (int64_t)data.size(); ++k)
-                heap_.set_object_field(
-                    arr_id, "array[" + std::to_string(k) + "]",
-                    DalvikValue::make_byte(static_cast<int8_t>(data[k])));
-        };
-        if (method == "<init>") {
-            if (heap_.has_object(bid)) {
-                heap_.set_object_field(bid, "count", DalvikValue::make_int(0));
-                // AOSP BAOS(int): the initial buffer. Seed the java field
-                // so subclass bytecode never sees a null buf.
-                int32_t seed_cap = 32;
-                if (args.size() >= 2 && args[1].type == DalvikType::INT32 &&
-                    args[1].int_val > 0 && args[1].int_val <= (1 << 20))
-                    seed_cap = args[1].int_val;
-                uint32_t nid = heap_.allocate("[B", pc_, 0);
-                heap_.set_object_field(
-                    nid, "__array_length__",
-                    DalvikValue::make_int(seed_cap));
-                heap_.set_object_field(
-                    nid, "__new_array_length__",
-                    DalvikValue::make_int(seed_cap));
-                heap_.set_object_field(
-                    bid, "buf", DalvikValue::make_object(nid, "[B"));
-            }
-            result = DalvikValue::make_void();
-            return true;
-        }
-        if (method == "write") {
-            for (size_t ai = 1; ai < args.size(); ++ai) {
-                if (args[ai].type == DalvikType::INT32) {
-                    buf += static_cast<char>(args[ai].int_val & 0xff);
-                } else if (args[ai].type == DalvikType::OBJECT_REF &&
-                           args[ai].object_id != 0 &&
-                           heap_.has_object(args[ai].object_id)) {
-                    const auto* arr = heap_.get(args[ai].object_id);
-                    int64_t arr_len = 0;
-                    auto lf = arr->get_field("__array_length__");
-                    if (lf.type == DalvikType::INT32) arr_len = lf.int_val;
-                    if (arr_len == 0) {
-                        auto lf2 = arr->get_field("__new_array_length__");
-                        if (lf2.type == DalvikType::INT32) arr_len = lf2.int_val;
-                    }
-                    int32_t off = 0,
-                           len = arr_len > 0 ? static_cast<int32_t>(arr_len) : 0;
-                    if (ai + 2 < args.size() &&
-                        args[ai + 1].type == DalvikType::INT32 &&
-                        args[ai + 2].type == DalvikType::INT32) {
-                        off = args[ai + 1].int_val;
-                        len = args[ai + 2].int_val;
-                    }
-                    for (int32_t k = 0; k < len; ++k) {
-                        auto b = arr->get_field(
-                            "array[" + std::to_string(off + k) + "]");
-                        if (b.type == DalvikType::BYTE ||
-                            b.type == DalvikType::INT32)
-                            buf += static_cast<char>(b.int_val);
-                        else if (b.type == DalvikType::STRING_REF)
-                            buf += b.string_val;
-                    }
-                    break;  // the byte[] arg consumed
-                }
-            }
-            miniandroid::diagnostics::FileIoTrace::instance().record(
-                "WRITE", "baos:o" + std::to_string(bid) + " (" +
-                             std::to_string(buf.size()) + " bytes)",
-                true, "ByteArrayOutputStream.write",
-                current_class_ + "." + current_method_);
-            sync_baos_fields(bid, buf);
-            result = DalvikValue::make_void();
-            return true;
-        }
-        if (method == "toByteArray") {
-            uint32_t arr_id = heap_.allocate("[B", pc_, 0);
-            heap_.set_object_field(arr_id, "__array_length__",
-                                   DalvikValue::make_int(static_cast<int32_t>(buf.size())));
-            heap_.set_object_field(arr_id, "__new_array_length__",
-                                   DalvikValue::make_int(static_cast<int32_t>(buf.size())));
-            for (size_t k = 0; k < buf.size(); ++k) {
-                heap_.set_object_field(
-                    arr_id, "array[" + std::to_string(k) + "]",
-                    DalvikValue::make_byte(static_cast<int8_t>(buf[k])));
-            }
-            DalvikValue av3;
-            av3.type = DalvikType::OBJECT_REF;
-            av3.object_id = arr_id;
-            av3.class_desc = "[B";
-            result = av3;
-            return true;
-        }
-        if (method == "size") {
-            result = DalvikValue::make_int(static_cast<int32_t>(buf.size()));
-            return true;
-        }
-        if (method == "reset") {
-            buf.clear();
-            result = DalvikValue::make_void();
-            return true;
-        }
-        if (method == "close") {
-            result = DalvikValue::make_void();  // AOSP: close is a no-op
-            return true;
-        }
-        if (method == "toString") {
-            result = DalvikValue::make_string(buf, 0);
-            return true;
-        }
-        return false;  // not a BAOS method we claim (bridge continues)
-    }
+    if (is_baos_family) return bridge_arm_5892(class_name, method, args_raw, result, status, method_idx_hint, args);
     // ST-2 FIX: OutputStream WRITE CONTRACT — write(int)/write(byte[])/
     // write(byte[],off,len)/flush/close on FileOutputStream/FileWriter
     // objects (receiver keyed through open_writers_).
@@ -46202,138 +46044,7 @@ measure_cm_done:;
     // threw StringIndexOutOfBoundsException (uncaught → composition pass
     // unwind → empty compose root → blank frame).
     // ────────────────────────────────────────────────────────────────────────
-    if (class_name == "Ljava/io/File;" && method == "<init>") {
-        auto path_field_of = [&](uint32_t oid) -> std::string {
-            std::string best;
-            if (oid != 0 && heap_.has_object(oid)) {
-                const auto& fobj = heap_.all_objects().at(oid);
-                for (const auto& [fname, fval] : fobj.fields) {
-                    if (fval.type == DalvikType::STRING_REF &&
-                        fval.string_val.size() > best.size()) {
-                        best = fval.string_val;
-                    }
-                }
-            }
-            return best;
-        };
-        std::string assembled;
-        // ── S188-W18 F-NEW-608d — STRING-ARG DUAL-FACE read law ────────
-        // A String argument arrives as EITHER an inline STRING_REF (the
-        // const-string/literal convention) OR a MATERIALIZED heap String
-        // (OBJECT_REF whose content lives in __string_value__/value/
-        // sb_value — the String(char[])/String(String) ctor mints). The
-        // pre-608d arms read .string_val only — a heap-String child read
-        // as "" (live face: halma I18NBundle — the freshly-minted
-        // "strings_en_US.properties" flowed into File.<init>(String,
-        // String) as an OBJECT_REF and the path degraded to "" →
-        // "[ASSET-OPEN] MISS assets/" → MissingResourceException). OpenJDK
-        // reads the CHARACTER CONTENT regardless of the internal
-        // representation — same law here.
-        auto f608d_string_of = [&](const DalvikValue& v) -> std::string {
-            if (v.type == DalvikType::STRING_REF) return v.string_val;
-            if (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
-                heap_.has_object(v.object_id)) {
-                for (const char* fld :
-                     {"__string_value__", "value", "sb_value"}) {
-                    auto fv = heap_.get_object_field(v.object_id, fld);
-                    if (fv.has_value() && fv->type == DalvikType::STRING_REF)
-                        return fv->string_val;
-                }
-            }
-            return std::string();
-        };
-        auto f608d_is_str = [&](const DalvikValue& v) -> bool {
-            return v.type == DalvikType::STRING_REF ||
-                   (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
-                    heap_.has_object(v.object_id) &&
-                    heap_.get_object_field(v.object_id,
-                                           "__string_value__")
-                        .has_value());
-        };
-        const bool two_arg =
-            args.size() >= 3 && f608d_is_str(args[1]);
-        if (args.size() >= 2 && f608d_is_str(args[1]) &&
-            args.size() < 3) {
-            // File(String pathname)
-            assembled = f608d_string_of(args[1]);
-        } else if (two_arg && args.size() >= 3 && f608d_is_str(args[2])) {
-            // File(String parent, String child) — both faces (F-NEW-608d).
-            const std::string parent = f608d_string_of(args[1]);
-            const std::string child = f608d_string_of(args[2]);
-            // F-C4-589 (W10, 4APP4 Coder-4) — OpenJDK File(File, String)
-            // ABSOLUTE-CHILD law (java.io.File(File parent, String child):
-            // `if (child == null ...) ... else { this.path =
-            // fs.resolve(parent.path, child); }` — UnixFileSystem.resolve:
-            // an ABSOLUTE child REPLACES the parent entirely (same law for
-            // the String,String form: resolve(parent, child) ignores the
-            // parent when child is absolute). Live-proven (Tusky v33.1):
-            // WorkManager's lock helper built File(cacheDir,
-            // "/data/data/<pkg>/no_backup/androidx.work.workdb.lck") and the
-            // old parent+"/"+child concat produced the MIRRORED path
-            // "<pkg>/cache//data/data/…/…lck" — a path that exists nowhere
-            // in the Android namespace.
-            if (!child.empty() && child[0] == '/') {
-                assembled = child;
-            } else if (parent.empty()) assembled = child;
-            else if (child.empty()) assembled = parent;
-            else assembled = parent + "/" + child;
-        } else if (args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
-                   f608d_is_str(args[2])) {
-            // File(File parent, String child) — the child rides either
-            // string face (F-NEW-608d).
-            const std::string parent = path_field_of(args[1].object_id);
-            const std::string child = f608d_string_of(args[2]);
-            // F-C4-589: absolute child ignores the parent (OpenJDK
-            // UnixFileSystem.resolve law — see the String,String arm).
-            if (!child.empty() && child[0] == '/') {
-                assembled = child;
-            } else if (parent.empty()) assembled = child;
-            else if (child.empty()) assembled = parent;
-            else assembled = parent + "/" + child;
-        } else if (args.size() >= 3 &&
-                   args[1].type == DalvikType::NULL_REF &&
-                   f608d_is_str(args[2])) {
-            // File(null, child) — OpenJDK File(File parent, String child):
-            // `if (parent != null) { ... } else { this.path =
-            //  fs.normalize(child); }` — a null parent degrades to the
-            // plain-path form verbatim.
-            // Evidence (dooz_23 run_k): Lvx0;.a invoked File(null,
-            // "datastore/settings.preferences_pb") — the parent state was
-            // still null; the law must not answer an empty path.
-            assembled = f608d_string_of(args[2]);
-        } else if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
-            // File(File) copy form — copy the parent's path.
-            assembled = path_field_of(args[1].object_id);
-        }
-        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
-            heap_.has_object(args[0].object_id)) {
-            if (auto* fobj = heap_.get(args[0].object_id)) {
-                fobj->fields["path"] = DalvikValue::make_string(assembled, 0);
-            }
-        }
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_void();
-        static thread_local uint64_t r347_fctor_log = 0;
-        if (r347_fctor_log < 40) {
-            ++r347_fctor_log;
-            std::cerr << "[R347-FILE-CTOR] argc=" << args.size()
-                      << " path=\"" << assembled << "\""
-                      << " caller=" << current_class_ << "." << current_method_;
-            for (size_t ai = 1; ai < args.size() && ai < 4; ++ai) {
-                std::cerr << " a" << ai << "t=" << static_cast<int>(args[ai].type);
-                if (args[ai].type == DalvikType::STRING_REF)
-                    std::cerr << "(\"" << args[ai].string_val << "\")";
-                else if (args[ai].type == DalvikType::OBJECT_REF) {
-                    std::cerr << "(o" << args[ai].object_id;
-                    std::string s608d = f608d_string_of(args[ai]);
-                    if (!s608d.empty()) std::cerr << "=\"" << s608d.substr(0, 40) << "\"";
-                    std::cerr << ")";
-                }
-            }
-            std::cerr << std::endl;
-        }
-        return true;
-    }
+    if (class_name == "Ljava/io/File;" && method == "<init>") return bridge_arm_46205(class_name, method, args_raw, result, status, method_idx_hint, args);
 
     // ────────────────────────────────────────────────────────────────────────
     // CONT-64 W2 (F-NEW-352): PorterDuffColorFilter / BlendModeColorFilter
@@ -49789,127 +49500,7 @@ measure_cm_done:;
         return true;
         }
     }
-    if (class_name == "Ljava/lang/String;" && method == "getBytes") {
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        std::string s;
-        std::string charset_name = "UTF-8";
-        if (!args.empty() && args[0].type == DalvikType::STRING_REF)
-            s = args[0].string_val;
-        // args[1] = the Charset object (for the Charset overload) or a
-        // STRING_REF charset name (for the String-name overload).
-        auto read_charset_name = [&](const DalvikValue& v) -> std::string {
-            if (v.type == DalvikType::STRING_REF) return v.string_val;
-            if (v.type == DalvikType::OBJECT_REF && v.object_id != 0) {
-                auto nm = heap_.get_object_field(v.object_id, "__charset_name__");
-                if (nm.has_value() && nm->type == DalvikType::STRING_REF)
-                    return nm->string_val;
-            }
-            return "UTF-8";
-        };
-        if (args.size() >= 2) charset_name = read_charset_name(args[1]);
-        else if (args.size() == 1 && args[0].type == DalvikType::OBJECT_REF)
-            charset_name = read_charset_name(args[0]);  // getBytes(Charset)
-        // (args.size()==1 with a non-string receiver-only arg is getBytes()
-        // on the receiver: keep the UTF-8 default.)
-        std::vector<uint8_t> bytes;
-        auto utf8_len = [](uint32_t cp) -> int {
-            if (cp <= 0x7F) return 1;
-            if (cp <= 0x7FF) return 2;
-            if (cp <= 0xFFFF) return 3;
-            return 4;
-        };
-        // Decode the engine string (UTF-8 host convention) into code points.
-        auto push_encoded = [&](uint32_t cp) {
-            if (charset_name == "UTF-16" || charset_name == "UTF-16LE") {
-                if (cp <= 0xFFFF) {
-                    uint16_t u = static_cast<uint16_t>(cp);
-                    if (charset_name == "UTF-16") {  // BE by convention
-                        bytes.push_back(static_cast<uint8_t>(u >> 8));
-                        bytes.push_back(static_cast<uint8_t>(u & 0xFF));
-                    } else {
-                        bytes.push_back(static_cast<uint8_t>(u & 0xFF));
-                        bytes.push_back(static_cast<uint8_t>(u >> 8));
-                    }
-                } else {
-                    cp -= 0x10000;
-                    uint32_t hi = 0xD800 + (cp >> 10);
-                    uint32_t lo = 0xDC00 + (cp & 0x3FF);
-                    uint16_t pair[2] = {static_cast<uint16_t>(hi),
-                                        static_cast<uint16_t>(lo)};
-                    for (int k = 0; k < 2; ++k) {
-                        if (charset_name == "UTF-16") {
-                            bytes.push_back(static_cast<uint8_t>(pair[k] >> 8));
-                            bytes.push_back(static_cast<uint8_t>(pair[k] & 0xFF));
-                        } else {
-                            bytes.push_back(static_cast<uint8_t>(pair[k] & 0xFF));
-                            bytes.push_back(static_cast<uint8_t>(pair[k] >> 8));
-                        }
-                    }
-                }
-            } else if (charset_name == "US-ASCII") {
-                bytes.push_back(cp <= 0x7F ? static_cast<uint8_t>(cp) : '?');
-            } else if (charset_name == "ISO-8859-1") {
-                bytes.push_back(cp <= 0xFF ? static_cast<uint8_t>(cp) : '?');
-            } else {  // UTF-8 (and any unknown name — UTF-8 default)
-                int n = utf8_len(cp);
-                if (n == 1) bytes.push_back(static_cast<uint8_t>(cp));
-                else if (n == 2) {
-                    bytes.push_back(0xC0 | (cp >> 6));
-                    bytes.push_back(0x80 | (cp & 0x3F));
-                } else if (n == 3) {
-                    bytes.push_back(0xE0 | (cp >> 12));
-                    bytes.push_back(0x80 | ((cp >> 6) & 0x3F));
-                    bytes.push_back(0x80 | (cp & 0x3F));
-                } else {
-                    bytes.push_back(0xF0 | (cp >> 18));
-                    bytes.push_back(0x80 | ((cp >> 12) & 0x3F));
-                    bytes.push_back(0x80 | ((cp >> 6) & 0x3F));
-                    bytes.push_back(0x80 | (cp & 0x3F));
-                }
-            }
-        };
-        for (size_t i = 0; i < s.size();) {
-            unsigned char c = static_cast<unsigned char>(s[i]);
-            uint32_t cp = 0;
-            int extra = 0;
-            if (c < 0x80) { cp = c; extra = 0; }
-            else if ((c & 0xE0) == 0xC0) { cp = c & 0x1F; extra = 1; }
-            else if ((c & 0xF0) == 0xE0) { cp = c & 0x0F; extra = 2; }
-            else if ((c & 0xF8) == 0xF0) { cp = c & 0x07; extra = 3; }
-            else { cp = c; extra = 0; }
-            for (int k = 0; k < extra && i + 1 < s.size(); ++k) {
-                unsigned char cc = static_cast<unsigned char>(s[++i]);
-                cp = (cp << 6) | (cc & 0x3F);
-            }
-            ++i;
-            push_encoded(cp);
-        }
-        int32_t n = static_cast<int32_t>(bytes.size());
-        // F-NEW-358: the result IS a byte[] — AOSP String.getBytes contract.
-        // The legacy synthetic "Larray;" marker broke every [B-classifying
-        // consumer (the String(byte[]) decode law reads the source's heap
-        // class; aget/fill-array family checks the descriptor too). The
-        // engine's array-compat shim (is_array law) already treats both
-        // "[B" and "Larray;" as arrays, so "[B" is the strictly more
-        // correct stamp.
-        uint32_t arr_id = heap_.allocate("[B", pc_, 0);
-        DalvikValue arr;
-        arr.type = DalvikType::OBJECT_REF;
-        arr.object_id = arr_id;
-        arr.class_desc = "[B";
-        arr.int_val = n;
-        heap_.set_object_field(arr_id, "__array_length__",
-                               DalvikValue::make_int(n));
-        heap_.set_object_field(arr_id, "__new_array_length__",
-                               DalvikValue::make_int(n));
-        for (int32_t bi = 0; bi < n; ++bi) {
-            heap_.set_object_field(arr_id, "array[" + std::to_string(bi) + "]",
-                                   DalvikValue::make_byte(
-                                       static_cast<int8_t>(bytes[bi])));
-        }
-        result = arr;
-        return true;
-    }
+    if (class_name == "Ljava/lang/String;" && method == "getBytes") return bridge_arm_49792(class_name, method, args_raw, result, status, method_idx_hint, args);
 
     // ────────────────────────────────────────────────────────────────────────
     // F-054 (M9): hashCode family law — the hash-contract surface.
@@ -49934,134 +49525,7 @@ measure_cm_done:;
     // The receiver is args[0] (engine virtual-dispatch convention, same as
     // the String.equals law above).
     // ────────────────────────────────────────────────────────────────────────
-    if (method == "hashCode" && !args.empty()) {
-        const DalvikValue& recv = args[0];
-        int32_t h = 0;
-        const std::string& cd = recv.class_desc;
-        // S21 hash-forensics (env-gated, read-only): the kotlinx.collections-
-        // immutable persistent-set iterator aborts composition with CME
-        // "Hash code of an element ... has changed" when map.get(key) misses
-        // after map.put(key). This trace proves whether the SAME heap object
-        // yields the SAME hash across put/get (identity law) or whether two
-        // distinct heap objects circulate for one logical singleton.
-        static thread_local const char* hash_trace_substr =
-            std::getenv("MINIANDROID_HASH_TRACE");
-        static thread_local const bool hash_trace_on =
-            hash_trace_substr != nullptr;
-        if (hash_trace_on && cd.find(hash_trace_substr) != std::string::npos) {
-            std::cerr << "[HASH-TRACE] hashCode recv=" << cd
-                      << " obj=" << recv.object_id
-                      << " caller=" << current_class_ << "."
-                      << current_method_ << " pc=" << pc_ << std::endl;
-        }
-        // ── FINAL CAMPAIGN F-NEW-173 (boxed-primitive identity law) ────────
-        // A boxed primitive may arrive as a HEAP OBJECT (invoke-virtual
-        // Object.hashCode passes the box reference). The primitive value then
-        // lives in the box's 'value' field; the register's int_val is 0 and
-        // the old code hashed 0 for EVERY boxed key. Measured live:
-        // WhatsApp RegularImmutableMap.createHashTable — every key hashed 0
-        // → smear(k)&mask == 0 → every probe from slot 0 → the Σ(0..n)
-        // quadratic probe storm (F084 halt after 315 entries).
-        DalvikValue box_val = recv;
-        if (recv.type == DalvikType::OBJECT_REF && recv.object_id != 0 &&
-            heap_.has_object(recv.object_id)) {
-            auto bv = heap_.get_object_field(recv.object_id, "value");
-            if (bv.has_value()) box_val = *bv;
-        }
-        if (cd == "Ljava/lang/Boolean;" || (cd.empty() && recv.type == DalvikType::BOOLEAN)) {
-            int32_t b = box_val.type == DalvikType::INT32 ? box_val.int_val
-                      : box_val.type == DalvikType::BYTE  ? box_val.byte_val
-                      : recv.int_val;
-            h = (b != 0) ? 1231 : 1237;
-        } else if (cd == "Ljava/lang/Long;") {
-            uint64_t uv = box_val.type == DalvikType::INT64
-                ? static_cast<uint64_t>(box_val.long_val)
-                : static_cast<uint64_t>(recv.long_val);
-            h = static_cast<int32_t>(uv ^ (uv >> 32));
-        } else if (cd == "Ljava/lang/Integer;" || cd == "Ljava/lang/Short;" ||
-                   cd == "Ljava/lang/Byte;" || cd == "Ljava/lang/Character;") {
-            h = box_val.type == DalvikType::INT32 ? box_val.int_val
-              : box_val.type == DalvikType::CHAR  ? (int32_t)box_val.char_val
-              : box_val.type == DalvikType::BYTE  ? (int32_t)box_val.byte_val
-              : box_val.type == DalvikType::SHORT ? (int32_t)box_val.short_val
-              : recv.int_val;
-        } else if (recv.type == DalvikType::STRING_REF) {
-            // OpenJDK String.hashCode over UTF-16 code units.
-            int32_t hh = 0;
-            const std::string& s = recv.string_val;
-            for (size_t i = 0; i < s.size();) {
-                uint32_t cp = static_cast<uint8_t>(s[i]);
-                size_t adv = 1;
-                if (cp < 0x80) { /* 1-byte */ }
-                else if ((cp & 0xE0) == 0xC0 && i + 1 < s.size()) {
-                    cp = ((cp & 0x1F) << 6) | (s[i+1] & 0x3F); adv = 2;
-                } else if ((cp & 0xF0) == 0xE0 && i + 2 < s.size()) {
-                    cp = ((cp & 0x0F) << 12) | ((s[i+1] & 0x3F) << 6) | (s[i+2] & 0x3F); adv = 3;
-                } else if ((cp & 0xF8) == 0xF0 && i + 3 < s.size()) {
-                    cp = ((cp & 0x07) << 18) | ((s[i+1] & 0x3F) << 12) |
-                         ((s[i+2] & 0x3F) << 6) | (s[i+3] & 0x3F); adv = 4;
-                }
-                // code point → UTF-16 units (String.hashCode iterates char[])
-                if (cp >= 0x10000) {
-                    uint32_t v = cp - 0x10000;
-                    uint32_t hi = 0xD800 + (v >> 10), lo = 0xDC00 + (v & 0x3FF);
-                    hh = hh * 31 + static_cast<int32_t>(hi);
-                    hh = hh * 31 + static_cast<int32_t>(lo);
-                } else {
-                    hh = hh * 31 + static_cast<int32_t>(cp);
-                }
-                i += adv;
-            }
-            h = hh;
-        } else if (recv.type == DalvikType::OBJECT_REF &&
-                   recv.object_id != 0 && heap_.has_object(recv.object_id)) {
-            const auto* f568_o = heap_.get(recv.object_id);
-            if (f568_o && f568_o->class_descriptor == "Ljava/lang/Class;") {
-                // ── F-C4-568 (W5, 4APP4): CLASS-TOKEN HASH LAW ───────────
-                // A heap-backed java.lang.Class token's hashCode is its
-                // REFERENT DESCRIPTOR's string hash — never the oid-mix.
-                // Companion of F-C4-567 (token equals by referent): hash
-                // and equals must agree, and multiple mint sites
-                // (const-class, F-NEW-282 iput materialization,
-                // Class.forName bridges) can mint distinct tokens for one
-                // referent. With the oid-mix hash, the same logical key
-                // hashed to DIFFERENT CHM BUCKETS at put vs get time —
-                // the lookup missed BEFORE equals ever ran (Thunderbird
-                // v24 Koin: the Logger definition sat at bucket 612 of
-                // the 1024-table while the inject-time key hashed to a
-                // different bucket → NoDefinitionFoundException ×32).
-                auto f568_r = heap_.get_object_field(recv.object_id,
-                                                     "__referent_desc");
-                if (f568_r.has_value() &&
-                    f568_r->type == DalvikType::STRING_REF) {
-                    const std::string& f568_s = f568_r->string_val;
-                    int32_t hh = 0;
-                    for (size_t ci = 0; ci < f568_s.size(); ++ci)
-                        hh = hh * 31 +
-                             (int32_t)(unsigned char)f568_s[ci];
-                    h = hh;
-                } else {
-                    h = 0;  // token without referent: stable zero
-                }
-            } else {
-                // Identity hash: fixed avalanche mix of the deterministic
-                // object id (ART derives from address; contract-equal,
-                // §28-safe).
-                uint32_t x = recv.object_id ^ 0x9E3779B9u;
-                x ^= x >> 16; x *= 0x85EBCA6Bu;
-                x ^= x >> 13; x *= 0xC2B2AE35u;
-                x ^= x >> 16;
-                h = static_cast<int32_t>(x);
-            }
-        }
-        status = ApiCallTrace::Status::IMPLEMENTED;
-        result = DalvikValue::make_int(h);
-        if (hash_trace_on && cd.find(hash_trace_substr) != std::string::npos) {
-            std::cerr << "[HASH-TRACE]   → h=" << h << " obj=" << recv.object_id
-                      << std::endl;
-        }
-        return true;
-    }
+    if (method == "hashCode" && !args.empty()) return bridge_arm_49937(class_name, method, args_raw, result, status, method_idx_hint, args);
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-043 Phase 3: String.equals → boolean
@@ -55382,3 +54846,553 @@ measure_cm_done:;
 }
 } // namespace dalvik
 } // namespace miniandroid
+
+namespace miniandroid { namespace dalvik {
+bool DalvikExecutionEngine::bridge_arm_49937(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+        const DalvikValue& recv = args[0];
+        int32_t h = 0;
+        const std::string& cd = recv.class_desc;
+        // S21 hash-forensics (env-gated, read-only): the kotlinx.collections-
+        // immutable persistent-set iterator aborts composition with CME
+        // "Hash code of an element ... has changed" when map.get(key) misses
+        // after map.put(key). This trace proves whether the SAME heap object
+        // yields the SAME hash across put/get (identity law) or whether two
+        // distinct heap objects circulate for one logical singleton.
+        static thread_local const char* hash_trace_substr =
+            std::getenv("MINIANDROID_HASH_TRACE");
+        static thread_local const bool hash_trace_on =
+            hash_trace_substr != nullptr;
+        if (hash_trace_on && cd.find(hash_trace_substr) != std::string::npos) {
+            std::cerr << "[HASH-TRACE] hashCode recv=" << cd
+                      << " obj=" << recv.object_id
+                      << " caller=" << current_class_ << "."
+                      << current_method_ << " pc=" << pc_ << std::endl;
+        }
+        // ── FINAL CAMPAIGN F-NEW-173 (boxed-primitive identity law) ────────
+        // A boxed primitive may arrive as a HEAP OBJECT (invoke-virtual
+        // Object.hashCode passes the box reference). The primitive value then
+        // lives in the box's 'value' field; the register's int_val is 0 and
+        // the old code hashed 0 for EVERY boxed key. Measured live:
+        // WhatsApp RegularImmutableMap.createHashTable — every key hashed 0
+        // → smear(k)&mask == 0 → every probe from slot 0 → the Σ(0..n)
+        // quadratic probe storm (F084 halt after 315 entries).
+        DalvikValue box_val = recv;
+        if (recv.type == DalvikType::OBJECT_REF && recv.object_id != 0 &&
+            heap_.has_object(recv.object_id)) {
+            auto bv = heap_.get_object_field(recv.object_id, "value");
+            if (bv.has_value()) box_val = *bv;
+        }
+        if (cd == "Ljava/lang/Boolean;" || (cd.empty() && recv.type == DalvikType::BOOLEAN)) {
+            int32_t b = box_val.type == DalvikType::INT32 ? box_val.int_val
+                      : box_val.type == DalvikType::BYTE  ? box_val.byte_val
+                      : recv.int_val;
+            h = (b != 0) ? 1231 : 1237;
+        } else if (cd == "Ljava/lang/Long;") {
+            uint64_t uv = box_val.type == DalvikType::INT64
+                ? static_cast<uint64_t>(box_val.long_val)
+                : static_cast<uint64_t>(recv.long_val);
+            h = static_cast<int32_t>(uv ^ (uv >> 32));
+        } else if (cd == "Ljava/lang/Integer;" || cd == "Ljava/lang/Short;" ||
+                   cd == "Ljava/lang/Byte;" || cd == "Ljava/lang/Character;") {
+            h = box_val.type == DalvikType::INT32 ? box_val.int_val
+              : box_val.type == DalvikType::CHAR  ? (int32_t)box_val.char_val
+              : box_val.type == DalvikType::BYTE  ? (int32_t)box_val.byte_val
+              : box_val.type == DalvikType::SHORT ? (int32_t)box_val.short_val
+              : recv.int_val;
+        } else if (recv.type == DalvikType::STRING_REF) {
+            // OpenJDK String.hashCode over UTF-16 code units.
+            int32_t hh = 0;
+            const std::string& s = recv.string_val;
+            for (size_t i = 0; i < s.size();) {
+                uint32_t cp = static_cast<uint8_t>(s[i]);
+                size_t adv = 1;
+                if (cp < 0x80) { /* 1-byte */ }
+                else if ((cp & 0xE0) == 0xC0 && i + 1 < s.size()) {
+                    cp = ((cp & 0x1F) << 6) | (s[i+1] & 0x3F); adv = 2;
+                } else if ((cp & 0xF0) == 0xE0 && i + 2 < s.size()) {
+                    cp = ((cp & 0x0F) << 12) | ((s[i+1] & 0x3F) << 6) | (s[i+2] & 0x3F); adv = 3;
+                } else if ((cp & 0xF8) == 0xF0 && i + 3 < s.size()) {
+                    cp = ((cp & 0x07) << 18) | ((s[i+1] & 0x3F) << 12) |
+                         ((s[i+2] & 0x3F) << 6) | (s[i+3] & 0x3F); adv = 4;
+                }
+                // code point → UTF-16 units (String.hashCode iterates char[])
+                if (cp >= 0x10000) {
+                    uint32_t v = cp - 0x10000;
+                    uint32_t hi = 0xD800 + (v >> 10), lo = 0xDC00 + (v & 0x3FF);
+                    hh = hh * 31 + static_cast<int32_t>(hi);
+                    hh = hh * 31 + static_cast<int32_t>(lo);
+                } else {
+                    hh = hh * 31 + static_cast<int32_t>(cp);
+                }
+                i += adv;
+            }
+            h = hh;
+        } else if (recv.type == DalvikType::OBJECT_REF &&
+                   recv.object_id != 0 && heap_.has_object(recv.object_id)) {
+            const auto* f568_o = heap_.get(recv.object_id);
+            if (f568_o && f568_o->class_descriptor == "Ljava/lang/Class;") {
+                // ── F-C4-568 (W5, 4APP4): CLASS-TOKEN HASH LAW ───────────
+                // A heap-backed java.lang.Class token's hashCode is its
+                // REFERENT DESCRIPTOR's string hash — never the oid-mix.
+                // Companion of F-C4-567 (token equals by referent): hash
+                // and equals must agree, and multiple mint sites
+                // (const-class, F-NEW-282 iput materialization,
+                // Class.forName bridges) can mint distinct tokens for one
+                // referent. With the oid-mix hash, the same logical key
+                // hashed to DIFFERENT CHM BUCKETS at put vs get time —
+                // the lookup missed BEFORE equals ever ran (Thunderbird
+                // v24 Koin: the Logger definition sat at bucket 612 of
+                // the 1024-table while the inject-time key hashed to a
+                // different bucket → NoDefinitionFoundException ×32).
+                auto f568_r = heap_.get_object_field(recv.object_id,
+                                                     "__referent_desc");
+                if (f568_r.has_value() &&
+                    f568_r->type == DalvikType::STRING_REF) {
+                    const std::string& f568_s = f568_r->string_val;
+                    int32_t hh = 0;
+                    for (size_t ci = 0; ci < f568_s.size(); ++ci)
+                        hh = hh * 31 +
+                             (int32_t)(unsigned char)f568_s[ci];
+                    h = hh;
+                } else {
+                    h = 0;  // token without referent: stable zero
+                }
+            } else {
+                // Identity hash: fixed avalanche mix of the deterministic
+                // object id (ART derives from address; contract-equal,
+                // §28-safe).
+                uint32_t x = recv.object_id ^ 0x9E3779B9u;
+                x ^= x >> 16; x *= 0x85EBCA6Bu;
+                x ^= x >> 13; x *= 0xC2B2AE35u;
+                x ^= x >> 16;
+                h = static_cast<int32_t>(x);
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_int(h);
+        if (hash_trace_on && cd.find(hash_trace_substr) != std::string::npos) {
+            std::cerr << "[HASH-TRACE]   → h=" << h << " obj=" << recv.object_id
+                      << std::endl;
+        }
+        return true;
+}
+
+bool DalvikExecutionEngine::bridge_arm_49792(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        std::string s;
+        std::string charset_name = "UTF-8";
+        if (!args.empty() && args[0].type == DalvikType::STRING_REF)
+            s = args[0].string_val;
+        // args[1] = the Charset object (for the Charset overload) or a
+        // STRING_REF charset name (for the String-name overload).
+        auto read_charset_name = [&](const DalvikValue& v) -> std::string {
+            if (v.type == DalvikType::STRING_REF) return v.string_val;
+            if (v.type == DalvikType::OBJECT_REF && v.object_id != 0) {
+                auto nm = heap_.get_object_field(v.object_id, "__charset_name__");
+                if (nm.has_value() && nm->type == DalvikType::STRING_REF)
+                    return nm->string_val;
+            }
+            return "UTF-8";
+        };
+        if (args.size() >= 2) charset_name = read_charset_name(args[1]);
+        else if (args.size() == 1 && args[0].type == DalvikType::OBJECT_REF)
+            charset_name = read_charset_name(args[0]);  // getBytes(Charset)
+        // (args.size()==1 with a non-string receiver-only arg is getBytes()
+        // on the receiver: keep the UTF-8 default.)
+        std::vector<uint8_t> bytes;
+        auto utf8_len = [](uint32_t cp) -> int {
+            if (cp <= 0x7F) return 1;
+            if (cp <= 0x7FF) return 2;
+            if (cp <= 0xFFFF) return 3;
+            return 4;
+        };
+        // Decode the engine string (UTF-8 host convention) into code points.
+        auto push_encoded = [&](uint32_t cp) {
+            if (charset_name == "UTF-16" || charset_name == "UTF-16LE") {
+                if (cp <= 0xFFFF) {
+                    uint16_t u = static_cast<uint16_t>(cp);
+                    if (charset_name == "UTF-16") {  // BE by convention
+                        bytes.push_back(static_cast<uint8_t>(u >> 8));
+                        bytes.push_back(static_cast<uint8_t>(u & 0xFF));
+                    } else {
+                        bytes.push_back(static_cast<uint8_t>(u & 0xFF));
+                        bytes.push_back(static_cast<uint8_t>(u >> 8));
+                    }
+                } else {
+                    cp -= 0x10000;
+                    uint32_t hi = 0xD800 + (cp >> 10);
+                    uint32_t lo = 0xDC00 + (cp & 0x3FF);
+                    uint16_t pair[2] = {static_cast<uint16_t>(hi),
+                                        static_cast<uint16_t>(lo)};
+                    for (int k = 0; k < 2; ++k) {
+                        if (charset_name == "UTF-16") {
+                            bytes.push_back(static_cast<uint8_t>(pair[k] >> 8));
+                            bytes.push_back(static_cast<uint8_t>(pair[k] & 0xFF));
+                        } else {
+                            bytes.push_back(static_cast<uint8_t>(pair[k] & 0xFF));
+                            bytes.push_back(static_cast<uint8_t>(pair[k] >> 8));
+                        }
+                    }
+                }
+            } else if (charset_name == "US-ASCII") {
+                bytes.push_back(cp <= 0x7F ? static_cast<uint8_t>(cp) : '?');
+            } else if (charset_name == "ISO-8859-1") {
+                bytes.push_back(cp <= 0xFF ? static_cast<uint8_t>(cp) : '?');
+            } else {  // UTF-8 (and any unknown name — UTF-8 default)
+                int n = utf8_len(cp);
+                if (n == 1) bytes.push_back(static_cast<uint8_t>(cp));
+                else if (n == 2) {
+                    bytes.push_back(0xC0 | (cp >> 6));
+                    bytes.push_back(0x80 | (cp & 0x3F));
+                } else if (n == 3) {
+                    bytes.push_back(0xE0 | (cp >> 12));
+                    bytes.push_back(0x80 | ((cp >> 6) & 0x3F));
+                    bytes.push_back(0x80 | (cp & 0x3F));
+                } else {
+                    bytes.push_back(0xF0 | (cp >> 18));
+                    bytes.push_back(0x80 | ((cp >> 12) & 0x3F));
+                    bytes.push_back(0x80 | ((cp >> 6) & 0x3F));
+                    bytes.push_back(0x80 | (cp & 0x3F));
+                }
+            }
+        };
+        for (size_t i = 0; i < s.size();) {
+            unsigned char c = static_cast<unsigned char>(s[i]);
+            uint32_t cp = 0;
+            int extra = 0;
+            if (c < 0x80) { cp = c; extra = 0; }
+            else if ((c & 0xE0) == 0xC0) { cp = c & 0x1F; extra = 1; }
+            else if ((c & 0xF0) == 0xE0) { cp = c & 0x0F; extra = 2; }
+            else if ((c & 0xF8) == 0xF0) { cp = c & 0x07; extra = 3; }
+            else { cp = c; extra = 0; }
+            for (int k = 0; k < extra && i + 1 < s.size(); ++k) {
+                unsigned char cc = static_cast<unsigned char>(s[++i]);
+                cp = (cp << 6) | (cc & 0x3F);
+            }
+            ++i;
+            push_encoded(cp);
+        }
+        int32_t n = static_cast<int32_t>(bytes.size());
+        // F-NEW-358: the result IS a byte[] — AOSP String.getBytes contract.
+        // The legacy synthetic "Larray;" marker broke every [B-classifying
+        // consumer (the String(byte[]) decode law reads the source's heap
+        // class; aget/fill-array family checks the descriptor too). The
+        // engine's array-compat shim (is_array law) already treats both
+        // "[B" and "Larray;" as arrays, so "[B" is the strictly more
+        // correct stamp.
+        uint32_t arr_id = heap_.allocate("[B", pc_, 0);
+        DalvikValue arr;
+        arr.type = DalvikType::OBJECT_REF;
+        arr.object_id = arr_id;
+        arr.class_desc = "[B";
+        arr.int_val = n;
+        heap_.set_object_field(arr_id, "__array_length__",
+                               DalvikValue::make_int(n));
+        heap_.set_object_field(arr_id, "__new_array_length__",
+                               DalvikValue::make_int(n));
+        for (int32_t bi = 0; bi < n; ++bi) {
+            heap_.set_object_field(arr_id, "array[" + std::to_string(bi) + "]",
+                                   DalvikValue::make_byte(
+                                       static_cast<int8_t>(bytes[bi])));
+        }
+        result = arr;
+        return true;
+}
+
+bool DalvikExecutionEngine::bridge_arm_46205(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+        auto path_field_of = [&](uint32_t oid) -> std::string {
+            std::string best;
+            if (oid != 0 && heap_.has_object(oid)) {
+                const auto& fobj = heap_.all_objects().at(oid);
+                for (const auto& [fname, fval] : fobj.fields) {
+                    if (fval.type == DalvikType::STRING_REF &&
+                        fval.string_val.size() > best.size()) {
+                        best = fval.string_val;
+                    }
+                }
+            }
+            return best;
+        };
+        std::string assembled;
+        // ── S188-W18 F-NEW-608d — STRING-ARG DUAL-FACE read law ────────
+        // A String argument arrives as EITHER an inline STRING_REF (the
+        // const-string/literal convention) OR a MATERIALIZED heap String
+        // (OBJECT_REF whose content lives in __string_value__/value/
+        // sb_value — the String(char[])/String(String) ctor mints). The
+        // pre-608d arms read .string_val only — a heap-String child read
+        // as "" (live face: halma I18NBundle — the freshly-minted
+        // "strings_en_US.properties" flowed into File.<init>(String,
+        // String) as an OBJECT_REF and the path degraded to "" →
+        // "[ASSET-OPEN] MISS assets/" → MissingResourceException). OpenJDK
+        // reads the CHARACTER CONTENT regardless of the internal
+        // representation — same law here.
+        auto f608d_string_of = [&](const DalvikValue& v) -> std::string {
+            if (v.type == DalvikType::STRING_REF) return v.string_val;
+            if (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
+                heap_.has_object(v.object_id)) {
+                for (const char* fld :
+                     {"__string_value__", "value", "sb_value"}) {
+                    auto fv = heap_.get_object_field(v.object_id, fld);
+                    if (fv.has_value() && fv->type == DalvikType::STRING_REF)
+                        return fv->string_val;
+                }
+            }
+            return std::string();
+        };
+        auto f608d_is_str = [&](const DalvikValue& v) -> bool {
+            return v.type == DalvikType::STRING_REF ||
+                   (v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&
+                    heap_.has_object(v.object_id) &&
+                    heap_.get_object_field(v.object_id,
+                                           "__string_value__")
+                        .has_value());
+        };
+        const bool two_arg =
+            args.size() >= 3 && f608d_is_str(args[1]);
+        if (args.size() >= 2 && f608d_is_str(args[1]) &&
+            args.size() < 3) {
+            // File(String pathname)
+            assembled = f608d_string_of(args[1]);
+        } else if (two_arg && args.size() >= 3 && f608d_is_str(args[2])) {
+            // File(String parent, String child) — both faces (F-NEW-608d).
+            const std::string parent = f608d_string_of(args[1]);
+            const std::string child = f608d_string_of(args[2]);
+            // F-C4-589 (W10, 4APP4 Coder-4) — OpenJDK File(File, String)
+            // ABSOLUTE-CHILD law (java.io.File(File parent, String child):
+            // `if (child == null ...) ... else { this.path =
+            // fs.resolve(parent.path, child); }` — UnixFileSystem.resolve:
+            // an ABSOLUTE child REPLACES the parent entirely (same law for
+            // the String,String form: resolve(parent, child) ignores the
+            // parent when child is absolute). Live-proven (Tusky v33.1):
+            // WorkManager's lock helper built File(cacheDir,
+            // "/data/data/<pkg>/no_backup/androidx.work.workdb.lck") and the
+            // old parent+"/"+child concat produced the MIRRORED path
+            // "<pkg>/cache//data/data/…/…lck" — a path that exists nowhere
+            // in the Android namespace.
+            if (!child.empty() && child[0] == '/') {
+                assembled = child;
+            } else if (parent.empty()) assembled = child;
+            else if (child.empty()) assembled = parent;
+            else assembled = parent + "/" + child;
+        } else if (args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&
+                   f608d_is_str(args[2])) {
+            // File(File parent, String child) — the child rides either
+            // string face (F-NEW-608d).
+            const std::string parent = path_field_of(args[1].object_id);
+            const std::string child = f608d_string_of(args[2]);
+            // F-C4-589: absolute child ignores the parent (OpenJDK
+            // UnixFileSystem.resolve law — see the String,String arm).
+            if (!child.empty() && child[0] == '/') {
+                assembled = child;
+            } else if (parent.empty()) assembled = child;
+            else if (child.empty()) assembled = parent;
+            else assembled = parent + "/" + child;
+        } else if (args.size() >= 3 &&
+                   args[1].type == DalvikType::NULL_REF &&
+                   f608d_is_str(args[2])) {
+            // File(null, child) — OpenJDK File(File parent, String child):
+            // `if (parent != null) { ... } else { this.path =
+            //  fs.normalize(child); }` — a null parent degrades to the
+            // plain-path form verbatim.
+            // Evidence (dooz_23 run_k): Lvx0;.a invoked File(null,
+            // "datastore/settings.preferences_pb") — the parent state was
+            // still null; the law must not answer an empty path.
+            assembled = f608d_string_of(args[2]);
+        } else if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
+            // File(File) copy form — copy the parent's path.
+            assembled = path_field_of(args[1].object_id);
+        }
+        if (!args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+            heap_.has_object(args[0].object_id)) {
+            if (auto* fobj = heap_.get(args[0].object_id)) {
+                fobj->fields["path"] = DalvikValue::make_string(assembled, 0);
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        result = DalvikValue::make_void();
+        static thread_local uint64_t r347_fctor_log = 0;
+        if (r347_fctor_log < 40) {
+            ++r347_fctor_log;
+            std::cerr << "[R347-FILE-CTOR] argc=" << args.size()
+                      << " path=\"" << assembled << "\""
+                      << " caller=" << current_class_ << "." << current_method_;
+            for (size_t ai = 1; ai < args.size() && ai < 4; ++ai) {
+                std::cerr << " a" << ai << "t=" << static_cast<int>(args[ai].type);
+                if (args[ai].type == DalvikType::STRING_REF)
+                    std::cerr << "(\"" << args[ai].string_val << "\")";
+                else if (args[ai].type == DalvikType::OBJECT_REF) {
+                    std::cerr << "(o" << args[ai].object_id;
+                    std::string s608d = f608d_string_of(args[ai]);
+                    if (!s608d.empty()) std::cerr << "=\"" << s608d.substr(0, 40) << "\"";
+                    std::cerr << ")";
+                }
+            }
+            std::cerr << std::endl;
+        }
+        return true;
+}
+
+bool DalvikExecutionEngine::bridge_arm_5892(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+        uint32_t bid = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                           ? args[0].object_id : 0;
+        std::string& buf = baos_buffers_[bid];
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        // CONT-49 JAVA-FIELD SYNC: real DEX subclasses (gdx's
+        // OptimizedByteArrayOutputStream override) read the AOSP fields
+        // `buf` (byte[]) and `count` (int) DIRECTLY — the C++ map alone
+        // left this.buf null → array-length NPE. Mirror after every
+        // mutation: count = size; buf array capacity doubling, full copy
+        // (asset-scale buffers only — bounded 1MiB honest ceiling).
+        auto sync_baos_fields = [&](uint32_t oid, const std::string& data) {
+            if (oid == 0 || !heap_.has_object(oid) ||
+                data.size() > (1u << 20))
+                return;
+            heap_.set_object_field(oid, "count",
+                                   DalvikValue::make_int(
+                                       static_cast<int32_t>(data.size())));
+            uint32_t arr_id = 0;
+            int64_t cap = 0;
+            if (auto bf = heap_.get_object_field(oid, "buf");
+                bf.has_value() && bf->type == DalvikType::OBJECT_REF &&
+                bf->object_id != 0 && heap_.has_object(bf->object_id)) {
+                arr_id = bf->object_id;
+                if (auto lf = heap_.get_object_field(arr_id, "__array_length__");
+                    lf.has_value() && lf->type == DalvikType::INT32)
+                    cap = lf->int_val;
+                if (cap == 0)
+                    if (auto lf2 = heap_.get_object_field(
+                            arr_id, "__new_array_length__");
+                        lf2.has_value() && lf2->type == DalvikType::INT32)
+                        cap = lf2->int_val;
+            }
+            if (arr_id == 0 || cap < (int64_t)data.size()) {
+                int64_t ncap = cap > 0 ? cap : 32;
+                while (ncap < (int64_t)data.size()) ncap *= 2;
+                uint32_t nid = heap_.allocate("[B", pc_, 0);
+                heap_.set_object_field(
+                    nid, "__array_length__",
+                    DalvikValue::make_int(static_cast<int32_t>(ncap)));
+                heap_.set_object_field(
+                    nid, "__new_array_length__",
+                    DalvikValue::make_int(static_cast<int32_t>(ncap)));
+                for (int64_t k = 0; k < (int64_t)data.size(); ++k)
+                    heap_.set_object_field(
+                        nid, "array[" + std::to_string(k) + "]",
+                        DalvikValue::make_byte(
+                            static_cast<int8_t>(data[k])));
+                heap_.set_object_field(
+                    oid, "buf", DalvikValue::make_object(nid, "[B"));
+                return;
+            }
+            // capacity fits: refresh the valid prefix
+            for (int64_t k = 0; k < (int64_t)data.size(); ++k)
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(k) + "]",
+                    DalvikValue::make_byte(static_cast<int8_t>(data[k])));
+        };
+        if (method == "<init>") {
+            if (heap_.has_object(bid)) {
+                heap_.set_object_field(bid, "count", DalvikValue::make_int(0));
+                // AOSP BAOS(int): the initial buffer. Seed the java field
+                // so subclass bytecode never sees a null buf.
+                int32_t seed_cap = 32;
+                if (args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+                    args[1].int_val > 0 && args[1].int_val <= (1 << 20))
+                    seed_cap = args[1].int_val;
+                uint32_t nid = heap_.allocate("[B", pc_, 0);
+                heap_.set_object_field(
+                    nid, "__array_length__",
+                    DalvikValue::make_int(seed_cap));
+                heap_.set_object_field(
+                    nid, "__new_array_length__",
+                    DalvikValue::make_int(seed_cap));
+                heap_.set_object_field(
+                    bid, "buf", DalvikValue::make_object(nid, "[B"));
+            }
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "write") {
+            for (size_t ai = 1; ai < args.size(); ++ai) {
+                if (args[ai].type == DalvikType::INT32) {
+                    buf += static_cast<char>(args[ai].int_val & 0xff);
+                } else if (args[ai].type == DalvikType::OBJECT_REF &&
+                           args[ai].object_id != 0 &&
+                           heap_.has_object(args[ai].object_id)) {
+                    const auto* arr = heap_.get(args[ai].object_id);
+                    int64_t arr_len = 0;
+                    auto lf = arr->get_field("__array_length__");
+                    if (lf.type == DalvikType::INT32) arr_len = lf.int_val;
+                    if (arr_len == 0) {
+                        auto lf2 = arr->get_field("__new_array_length__");
+                        if (lf2.type == DalvikType::INT32) arr_len = lf2.int_val;
+                    }
+                    int32_t off = 0,
+                           len = arr_len > 0 ? static_cast<int32_t>(arr_len) : 0;
+                    if (ai + 2 < args.size() &&
+                        args[ai + 1].type == DalvikType::INT32 &&
+                        args[ai + 2].type == DalvikType::INT32) {
+                        off = args[ai + 1].int_val;
+                        len = args[ai + 2].int_val;
+                    }
+                    for (int32_t k = 0; k < len; ++k) {
+                        auto b = arr->get_field(
+                            "array[" + std::to_string(off + k) + "]");
+                        if (b.type == DalvikType::BYTE ||
+                            b.type == DalvikType::INT32)
+                            buf += static_cast<char>(b.int_val);
+                        else if (b.type == DalvikType::STRING_REF)
+                            buf += b.string_val;
+                    }
+                    break;  // the byte[] arg consumed
+                }
+            }
+            miniandroid::diagnostics::FileIoTrace::instance().record(
+                "WRITE", "baos:o" + std::to_string(bid) + " (" +
+                             std::to_string(buf.size()) + " bytes)",
+                true, "ByteArrayOutputStream.write",
+                current_class_ + "." + current_method_);
+            sync_baos_fields(bid, buf);
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "toByteArray") {
+            uint32_t arr_id = heap_.allocate("[B", pc_, 0);
+            heap_.set_object_field(arr_id, "__array_length__",
+                                   DalvikValue::make_int(static_cast<int32_t>(buf.size())));
+            heap_.set_object_field(arr_id, "__new_array_length__",
+                                   DalvikValue::make_int(static_cast<int32_t>(buf.size())));
+            for (size_t k = 0; k < buf.size(); ++k) {
+                heap_.set_object_field(
+                    arr_id, "array[" + std::to_string(k) + "]",
+                    DalvikValue::make_byte(static_cast<int8_t>(buf[k])));
+            }
+            DalvikValue av3;
+            av3.type = DalvikType::OBJECT_REF;
+            av3.object_id = arr_id;
+            av3.class_desc = "[B";
+            result = av3;
+            return true;
+        }
+        if (method == "size") {
+            result = DalvikValue::make_int(static_cast<int32_t>(buf.size()));
+            return true;
+        }
+        if (method == "reset") {
+            buf.clear();
+            result = DalvikValue::make_void();
+            return true;
+        }
+        if (method == "close") {
+            result = DalvikValue::make_void();  // AOSP: close is a no-op
+            return true;
+        }
+        if (method == "toString") {
+            result = DalvikValue::make_string(buf, 0);
+            return true;
+        }
+        return false;  // not a BAOS method we claim (bridge continues)
+}
+
+}  // namespace dalvik
+}  // namespace miniandroid

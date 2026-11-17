@@ -4691,6 +4691,11 @@ private:
     // declared earlier in this class (lines ~1624-1640). The duplicate
     // declarations that were here were removed in EXP-075 to fix a
     // redeclaration error introduced by the EXP-071 merge.
+  // WAVE-6 (ISSUE-612): bridge_to_api arm extraction — verbatim bodies
+  bool bridge_arm_49937(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
+  bool bridge_arm_49792(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
+  bool bridge_arm_46205(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
+  bool bridge_arm_5892(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
 };
 
 } // namespace dalvik

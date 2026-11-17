@@ -1,0 +1,88 @@
+{
+ "status": "PARTIAL - x5 repetition suite PENDING (time-boxed); single measurements below are TESTED",
+ "measured": {
+  "clean_split_production": {
+   "wall_s": 504.3,
+   "peak_mb": 2126,
+   "rc": 0,
+   "reps": 1,
+   "source": "wave5"
+  },
+  "monolith_reference_compile": {
+   "wall_s": 219.7,
+   "peak_mb": 2867,
+   "rc": 0,
+   "reps": 1,
+   "source": "w6 profile"
+  },
+  "bridge_compile_-Og": {
+   "wall_s": 43.7,
+   "peak_mb": 2122,
+   "rc": 0,
+   "reps": 2,
+   "note": "post-4-arm-cut"
+  },
+  "bridge_GGC_variants": [
+   {
+    "flags": "-Og ggc-min-expand=10 ggc-min-heapsize=2048",
+    "wall_s": 51.4,
+    "peak_mb": 1829,
+    "obj_sha_identical": true
+   },
+   {
+    "flags": "-Og ggc-min-expand=5 ggc-min-heapsize=1024",
+    "wall_s": 59.5,
+    "peak_mb": 1796,
+    "obj_sha_identical": true
+   },
+   {
+    "flags": "-O2 + GGC",
+    "rc": 1,
+    "peak_mb": 3087,
+    "note": "OOM"
+   }
+  ],
+  "interpreter_flag_variants": [
+   {
+    "flags": "-O2 inline-budget",
+    "wall_s": 21.3,
+    "peak_mb": 1070,
+    "codegen_changes": true
+   },
+   {
+    "flags": "-Og",
+    "wall_s": 9.4,
+    "peak_mb": 1071,
+    "codegen_changes": true
+   }
+  ],
+  "wave5_gates_5reps_reference": {
+   "noop": 1.07,
+   "opcode_field_edit": 12.79,
+   "opcode_invoke_edit": 17.51,
+   "two_opcode_edit": 26.35,
+   "interpreter_edit": 40.78,
+   "bridge_edit": 47.67,
+   "header_touch": 158.21,
+   "link_only": 2.16,
+   "dev_loop": 21.36
+  }
+ },
+ "equivalence_3apks_post_4arm_cut": {
+  "guess": {
+   "rc": 0,
+   "sha": "87fe26766fc48d06c59d4c15"
+  },
+  "tictactoe": {
+   "rc": 1,
+   "sha": "d55056a8928a26ffeb15f66d",
+   "state": "PARTIAL pre-existing"
+  },
+  "diceroller": {
+   "rc": 1,
+   "sha": "46b07062ba6fe36ca8a6e42d",
+   "state": "PARTIAL pre-existing"
+  },
+  "vs_wave3_monolith": "all identical"
+ }
+}

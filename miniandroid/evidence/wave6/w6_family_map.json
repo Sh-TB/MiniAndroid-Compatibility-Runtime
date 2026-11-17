@@ -1,0 +1,416 @@
+{
+ "dalvik_bridge.cpp": {
+  "path": "src/dex/dalvik_bridge.cpp",
+  "defns": [
+   {
+    "start": 63,
+    "brace": 65,
+    "name": "str_utf16_unit_count",
+    "linkage": "internal",
+    "sig": "namespace { int32_t str_utf16_unit_count(const std::string& s)",
+    "end": 76,
+    "lines": 14
+   },
+   {
+    "start": 81,
+    "brace": 82,
+    "name": "str_char_at_unit",
+    "linkage": "internal",
+    "sig": "bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out)",
+    "end": 124,
+    "lines": 44
+   },
+   {
+    "start": 168,
+    "brace": 170,
+    "name": "diag_env",
+    "linkage": "internal",
+    "sig": "static bool diag_env(const char* name) {     struct Entry",
+    "end": 180,
+    "lines": 13
+   },
+   {
+    "start": 187,
+    "brace": 193,
+    "name": "DalvikExecutionEngine::bridge_to_api",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,                                      ",
+    "end": 55382,
+    "lines": 55196
+   }
+  ],
+  "defn_count": 4,
+  "lines_covered": 55267,
+  "top15": [
+   {
+    "start": 187,
+    "brace": 193,
+    "name": "DalvikExecutionEngine::bridge_to_api",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,                                      ",
+    "end": 55382,
+    "lines": 55196
+   },
+   {
+    "start": 81,
+    "brace": 82,
+    "name": "str_char_at_unit",
+    "linkage": "internal",
+    "sig": "bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out)",
+    "end": 124,
+    "lines": 44
+   },
+   {
+    "start": 63,
+    "brace": 65,
+    "name": "str_utf16_unit_count",
+    "linkage": "internal",
+    "sig": "namespace { int32_t str_utf16_unit_count(const std::string& s)",
+    "end": 76,
+    "lines": 14
+   },
+   {
+    "start": 168,
+    "brace": 170,
+    "name": "diag_env",
+    "linkage": "internal",
+    "sig": "static bool diag_env(const char* name) {     struct Entry",
+    "end": 180,
+    "lines": 13
+   }
+  ]
+ },
+ "dalvik_interpreter.cpp": {
+  "path": "src/dex/dalvik_interpreter.cpp",
+  "defns": [
+   {
+    "start": 63,
+    "brace": 65,
+    "name": "str_utf16_unit_count",
+    "linkage": "internal",
+    "sig": "namespace { int32_t str_utf16_unit_count(const std::string& s)",
+    "end": 76,
+    "lines": 14
+   },
+   {
+    "start": 81,
+    "brace": 82,
+    "name": "str_char_at_unit",
+    "linkage": "internal",
+    "sig": "bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out)",
+    "end": 124,
+    "lines": 44
+   },
+   {
+    "start": 168,
+    "brace": 170,
+    "name": "diag_env",
+    "linkage": "internal",
+    "sig": "static bool diag_env(const char* name) {     struct Entry",
+    "end": 180,
+    "lines": 13
+   },
+   {
+    "start": 184,
+    "brace": 187,
+    "name": "DalvikExecutionEngine::fetch_decode_execute",
+    "linkage": "external",
+    "sig": "namespace miniandroid { namespace dalvik { bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionRes",
+    "end": 5619,
+    "lines": 5436
+   },
+   {
+    "start": 5634,
+    "brace": 5637,
+    "name": "DalvikExecutionEngine::find_catch_handler_for_pc",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::find_catch_handler_for_pc(         uint32_t pc, uint32_t& handler_addr, bool& is_c",
+    "end": 5709,
+    "lines": 76
+   },
+   {
+    "start": 5722,
+    "brace": 5725,
+    "name": "DalvikExecutionEngine::throw_deferred",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::throw_deferred(         const std::string& exc_class_desc, const std::string& mess",
+    "end": 5770,
+    "lines": 49
+   },
+   {
+    "start": 5771,
+    "brace": 5774,
+    "name": "DalvikExecutionEngine::raise_synthetic_exception",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::raise_synthetic_exception(         const std::string& exc_class_desc, const std::s",
+    "end": 5815,
+    "lines": 45
+   },
+   {
+    "start": 5823,
+    "brace": 5825,
+    "name": "DalvikExecutionEngine::populate_resource_drawable_paths",
+    "linkage": "external",
+    "sig": "void DalvikExecutionEngine::populate_resource_drawable_paths(         const std::vector<std::string>& entry_na",
+    "end": 5885,
+    "lines": 63
+   },
+   {
+    "start": 5893,
+    "brace": 5895,
+    "name": "DalvikExecutionEngine::populate_drawable_paths_from_arsc",
+    "linkage": "external",
+    "sig": "int DalvikExecutionEngine::populate_drawable_paths_from_arsc(         const resources::ArscParser& arsc, const",
+    "end": 5935,
+    "lines": 43
+   },
+   {
+    "start": 5936,
+    "brace": 5937,
+    "name": "DalvikExecutionEngine::fetch_opcode",
+    "linkage": "external",
+    "sig": "uint16_t DalvikExecutionEngine::fetch_opcode(uint32_t pc) const",
+    "end": 5942,
+    "lines": 7
+   },
+   {
+    "start": 5947,
+    "brace": 5948,
+    "name": "DalvikExecutionEngine::execute_const_4",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_const_4(uint32_t pc, InstructionTrace& trace)",
+    "end": 5987,
+    "lines": 41
+   },
+   {
+    "start": 5988,
+    "brace": 5989,
+    "name": "DalvikExecutionEngine::execute_const_16",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_const_16(uint32_t pc, InstructionTrace& trace)",
+    "end": 6003,
+    "lines": 16
+   },
+   {
+    "start": 6004,
+    "brace": 6005,
+    "name": "DalvikExecutionEngine::execute_const",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_const(uint32_t pc, InstructionTrace& trace)",
+    "end": 6020,
+    "lines": 17
+   },
+   {
+    "start": 6021,
+    "brace": 6022,
+    "name": "DalvikExecutionEngine::execute_const_string",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_const_string(uint32_t pc, InstructionTrace& trace)",
+    "end": 6049,
+    "lines": 29
+   },
+   {
+    "start": 6050,
+    "brace": 6051,
+    "name": "DalvikExecutionEngine::execute_const_class",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_const_class(uint32_t pc, InstructionTrace& trace)",
+    "end": 6111,
+    "lines": 62
+   },
+   {
+    "start": 6116,
+    "brace": 6117,
+    "name": "DalvikExecutionEngine::execute_move",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move(uint32_t pc, InstructionTrace& trace)",
+    "end": 6136,
+    "lines": 21
+   },
+   {
+    "start": 6137,
+    "brace": 6138,
+    "name": "DalvikExecutionEngine::execute_move_object",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move_object(uint32_t pc, InstructionTrace& trace)",
+    "end": 6164,
+    "lines": 28
+   },
+   {
+    "start": 6172,
+    "brace": 6173,
+    "name": "DalvikExecutionEngine::execute_move_object_from16",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move_object_from16(uint32_t pc, InstructionTrace& trace)",
+    "end": 6190,
+    "lines": 19
+   },
+   {
+    "start": 6200,
+    "brace": 6201,
+    "name": "DalvikExecutionEngine::execute_move_object_16",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move_object_16(uint32_t pc, InstructionTrace& trace)",
+    "end": 6217,
+    "lines": 18
+   },
+   {
+    "start": 6218,
+    "brace": 6219,
+    "name": "DalvikExecutionEngine::execute_move_result",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move_result(uint32_t pc, InstructionTrace& trace)",
+    "end": 6251,
+    "lines": 34
+   },
+   {
+    "start": 6252,
+    "brace": 6253,
+    "name": "DalvikExecutionEngine::execute_move_result_object",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move_result_object(uint32_t pc, InstructionTrace& trace)",
+    "end": 6293,
+    "lines": 42
+   }
+  ],
+  "defn_count": 21,
+  "lines_covered": 6117,
+  "top15": [
+   {
+    "start": 184,
+    "brace": 187,
+    "name": "DalvikExecutionEngine::fetch_decode_execute",
+    "linkage": "external",
+    "sig": "namespace miniandroid { namespace dalvik { bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionRes",
+    "end": 5619,
+    "lines": 5436
+   },
+   {
+    "start": 5634,
+    "brace": 5637,
+    "name": "DalvikExecutionEngine::find_catch_handler_for_pc",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::find_catch_handler_for_pc(         uint32_t pc, uint32_t& handler_addr, bool& is_c",
+    "end": 5709,
+    "lines": 76
+   },
+   {
+    "start": 5823,
+    "brace": 5825,
+    "name": "DalvikExecutionEngine::populate_resource_drawable_paths",
+    "linkage": "external",
+    "sig": "void DalvikExecutionEngine::populate_resource_drawable_paths(         const std::vector<std::string>& entry_na",
+    "end": 5885,
+    "lines": 63
+   },
+   {
+    "start": 6050,
+    "brace": 6051,
+    "name": "DalvikExecutionEngine::execute_const_class",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_const_class(uint32_t pc, InstructionTrace& trace)",
+    "end": 6111,
+    "lines": 62
+   },
+   {
+    "start": 5722,
+    "brace": 5725,
+    "name": "DalvikExecutionEngine::throw_deferred",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::throw_deferred(         const std::string& exc_class_desc, const std::string& mess",
+    "end": 5770,
+    "lines": 49
+   },
+   {
+    "start": 5771,
+    "brace": 5774,
+    "name": "DalvikExecutionEngine::raise_synthetic_exception",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::raise_synthetic_exception(         const std::string& exc_class_desc, const std::s",
+    "end": 5815,
+    "lines": 45
+   },
+   {
+    "start": 81,
+    "brace": 82,
+    "name": "str_char_at_unit",
+    "linkage": "internal",
+    "sig": "bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out)",
+    "end": 124,
+    "lines": 44
+   },
+   {
+    "start": 5893,
+    "brace": 5895,
+    "name": "DalvikExecutionEngine::populate_drawable_paths_from_arsc",
+    "linkage": "external",
+    "sig": "int DalvikExecutionEngine::populate_drawable_paths_from_arsc(         const resources::ArscParser& arsc, const",
+    "end": 5935,
+    "lines": 43
+   },
+   {
+    "start": 6252,
+    "brace": 6253,
+    "name": "DalvikExecutionEngine::execute_move_result_object",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move_result_object(uint32_t pc, InstructionTrace& trace)",
+    "end": 6293,
+    "lines": 42
+   },
+   {
+    "start": 5947,
+    "brace": 5948,
+    "name": "DalvikExecutionEngine::execute_const_4",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_const_4(uint32_t pc, InstructionTrace& trace)",
+    "end": 5987,
+    "lines": 41
+   },
+   {
+    "start": 6218,
+    "brace": 6219,
+    "name": "DalvikExecutionEngine::execute_move_result",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move_result(uint32_t pc, InstructionTrace& trace)",
+    "end": 6251,
+    "lines": 34
+   },
+   {
+    "start": 6021,
+    "brace": 6022,
+    "name": "DalvikExecutionEngine::execute_const_string",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_const_string(uint32_t pc, InstructionTrace& trace)",
+    "end": 6049,
+    "lines": 29
+   },
+   {
+    "start": 6137,
+    "brace": 6138,
+    "name": "DalvikExecutionEngine::execute_move_object",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move_object(uint32_t pc, InstructionTrace& trace)",
+    "end": 6164,
+    "lines": 28
+   },
+   {
+    "start": 6116,
+    "brace": 6117,
+    "name": "DalvikExecutionEngine::execute_move",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move(uint32_t pc, InstructionTrace& trace)",
+    "end": 6136,
+    "lines": 21
+   },
+   {
+    "start": 6172,
+    "brace": 6173,
+    "name": "DalvikExecutionEngine::execute_move_object_from16",
+    "linkage": "external",
+    "sig": "bool DalvikExecutionEngine::execute_move_object_from16(uint32_t pc, InstructionTrace& trace)",
+    "end": 6190,
+    "lines": 19
+   }
+  ]
+ }
+}

@@ -1,0 +1,75 @@
+{
+ "git_head": "a20a93cc919bcbf6bf4e04ec69b5cf793d748159",
+ "git_head_short": "a20a93cc",
+ "git_status": [
+  "?? scripts/w6_baseline.py"
+ ],
+ "safety_tags": [
+  "safety/pre-dalvik-wave3-5e7090e3",
+  "safety/pre-dalvik-wave4-c5b919b4"
+ ],
+ "wave5_commits_present": {
+  "0a03944b": true,
+  "a4d38745": true,
+  "9983941b": true
+ },
+ "build_scripts_present": {
+  "w4_split.py": true,
+  "w5_gates.py": true,
+  "w5_dev_loop.py": true,
+  "w5_roundtrip.py": true
+ },
+ "build_mode": {
+  "DALVIK_SPLIT": "1 (default in Makefile)",
+  "split_parts": 7,
+  "DEV": "0 (production); DEV=1 writes to build_dev/ (verified wave-5)",
+  "binary_mtime": "2026-11-17 21:53:35.589791371 +0000"
+ },
+ "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+ "host": {
+  "cpu_count": 2,
+  "mem_total_mb": 4041,
+  "mem_available_mb": 3046,
+  "cgroup_memory_max": "4294967296"
+ },
+ "linker_command": "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -rdynamic -o build/miniandroid build/apk/apk_parser.o build/apk/manifest_reader.o build/dex/dex_parser.o build/dex/mutf8.o build/dex/class_resolver.o build/dex/dex_interpreter_batch.o build/dex/dalvik_engine_core.o build/dex/dalvik_engine_invoke.o build/dex/dalvik_interpreter.o build/dex/dalvik_opcodes.o build/dex/dalvik_opcodes_invoke.o build/dex/dalvik_bridge.o build/dex/dalvik_engine_tail.o build/dex/c7_package_index.o build/dex/trace_exporter.o build/runtime/execution_engine.o build/runtime/application_runtime.o build/runtime/route_law.o build/diagnostics/trace_engine.o build/diagnostics/crash_forensics.o build/diagnostics/trace_overlay.o build/diagnostics/install_inspection.o build/resources/res_id.o build/resources/res_config.o build/resources/resource_parser.o build/resources/string_pool.o build/resources/arsc_parser.o build/resources/axml_parser.o build/resources/layout_inflater.o build/resources/vector_inflater.o build/resources/s132_svg_reader.o build/resources/resource_runtime.o build/resources/font_family.o build/resources/plurals.o build/renderer/software_renderer.o build/renderer/vector_decode.o build/renderer/gif_decoder.o build/gles/pgl_backend.o build/gles/gles20_bridge.o build/gles/gl_copy_bridge.o build/fonts/text_shaper.o build/framework/executor_shadow.o build/framework/kotlin_shadow.o build/framework/matrix_shadow.o build/framework/locale_insets_shadow.o build/framework/window_insets_shadow.o build/framework/display_shadow.o build/framework/gl_surface_shadow.o build/framework/surface_view_shadow.o build/framework/android_shadows.o build/framework/shadow_registry.o build/framework/choreographer_shadow.o build/framework/dialog_shadow.o build/framework/clipboard_shadow.o build/framework/canvas_shadow.o build/framework/bitmap_shadow.o build/framework/velocity_tracker.o build/framework/scroller_shadow.o build/framework/gesture_detector_shadow.o build/framework/key_event_shadow.o build/framework/touch_dispatcher.o build/framework/state_list.o build/framework/lifecycle_controller.o build/framework/locks_shadow.o build/framework/atomic_shadow.o build/framework/pending_intent_shadow.o build/framework/task_stack_builder_shadow.o build/framework/animator_shadow.o build/audio/audio_engine.o build/api/application_context.o build/api/shared_prefs.o build/api/http_client.o build/webview/webview_engine.o build/webview/html_dom.o build/webview/canvas2d.o build/storage/data_root.o build/storage/file_sandbox.o build/storage/sqlite_shadow.o build/jni/dlopen_exec.o build/jni/native_dep.o build/jni/ma_native_bridge.o build/dex/dalvik_value_glue.o build/quickjs/quickjs.o build/quickjs/libregexp.o build/quickjs/libunicode.o build/quickjs/cutils.o build/quickjs/libbf.o build/jni/native_thunk.o build/main.o build/jni/bionic_compat.o build/jni/pthread_shadow.o -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile   -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng",
+ "link_summary": {
+  "driver": "g++",
+  "object_count": 91,
+  "static_objects": true,
+  "test_binary_link": "same static object set into build/miniandroid_test (115MB, ~11.7s relink)"
+ },
+ "flag_samples": {
+  "dalvik_part": "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp",
+  "bridge_-Og": "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -Og -g0 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+  "generic_tu": "g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build/dex/class_resolver.o src/dex/class_resolver.cpp",
+  "quickjs": "gcc -O2 -std=gnu11 -D_GNU_SOURCE -DCONFIG_VERSION=\\\"2024-01-13\\\" -DCONFIG_BIGNUM -w -Ithird_party/quickjs -Ithird_party/quickjs -c -o build/quickjs/cutils.o third_party/quickjs/cutils.c"
+ },
+ "monolith_fallback": {
+  "command": "make DALVIK_SPLIT=0 -j1 all",
+  "wave5_measured": {
+   "wall_s": 215.1,
+   "peak_mb": 2869,
+   "rc": 0
+  },
+  "wave3_mono_binary_leftover": true
+ },
+ "wave5_gate_reference": {
+  "noop_s": 1.07,
+  "opcode_field_edit_s": 12.79,
+  "opcode_invoke_edit_s": 17.51,
+  "two_opcode_edit_s": 26.35,
+  "interpreter_edit_s": 40.78,
+  "bridge_edit_s": 47.67,
+  "header_touch_s": 158.21,
+  "link_only_s": 2.16,
+  "dev_loop_s": 21.36,
+  "clean_split_s": 504.3,
+  "clean_split_peak_mb": 2126,
+  "screenshot_hashes": {
+   "guess": "87fe26766fc48d06c59d4c15",
+   "tictactoe": "d55056a8928a26ffeb15f66d",
+   "diceroller": "46b07062ba6fe36ca8a6e42d"
+  }
+ }
+}

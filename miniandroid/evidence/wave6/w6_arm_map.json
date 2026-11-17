@@ -1,0 +1,2484 @@
+{
+ "bridge_to_api": {
+  "span": {
+   "start": 188,
+   "end": 55382
+  },
+  "arm_count": 124,
+  "arms": [
+   {
+    "start": 476,
+    "cond": "if (class_name ==                             ) {",
+    "end": 541,
+    "lines": 66,
+    "terminal_return": true
+   },
+   {
+    "start": 550,
+    "cond": "        if (class_name ==                      ) {",
+    "end": 598,
+    "lines": 49,
+    "terminal_return": true
+   },
+   {
+    "start": 599,
+    "cond": "if (class_name ==                        ) {",
+    "end": 726,
+    "lines": 128,
+    "terminal_return": true
+   },
+   {
+    "start": 727,
+    "cond": "if (class_name ==                                      ) {",
+    "end": 786,
+    "lines": 60,
+    "terminal_return": true
+   },
+   {
+    "start": 802,
+    "cond": "               if (class_name ==                             ) {",
+    "end": 865,
+    "lines": 64,
+    "terminal_return": true
+   },
+   {
+    "start": 1223,
+    "cond": "if (class_name ==                       ) {",
+    "end": 1284,
+    "lines": 62,
+    "terminal_return": true
+   },
+   {
+    "start": 1313,
+    "cond": "     if (class_name ==                            ) {",
+    "end": 1372,
+    "lines": 60,
+    "terminal_return": true
+   },
+   {
+    "start": 1895,
+    "cond": "                if (method ==          || method ==          ) {",
+    "end": 1945,
+    "lines": 51,
+    "terminal_return": true
+   },
+   {
+    "start": 1946,
+    "cond": "if (std::getenv(                       ) && class_name ==                           ) {",
+    "end": 1951,
+    "lines": 6,
+    "terminal_return": false
+   },
+   {
+    "start": 2078,
+    "cond": "if (class_name ==                                          ) {",
+    "end": 2107,
+    "lines": 30,
+    "terminal_return": true
+   },
+   {
+    "start": 2108,
+    "cond": "if (class_name ==                                  ) {",
+    "end": 2122,
+    "lines": 15,
+    "terminal_return": true
+   },
+   {
+    "start": 2123,
+    "cond": "if (class_name ==                              ) {",
+    "end": 2280,
+    "lines": 158,
+    "terminal_return": true
+   },
+   {
+    "start": 2306,
+    "cond": "                         if (class_name ==                                     ) {",
+    "end": 2333,
+    "lines": 28,
+    "terminal_return": true
+   },
+   {
+    "start": 2334,
+    "cond": "if (class_name ==                             ) {",
+    "end": 2342,
+    "lines": 9,
+    "terminal_return": true
+   },
+   {
+    "start": 2364,
+    "cond": "                     if (class_name ==                                                  ) {",
+    "end": 2410,
+    "lines": 47,
+    "terminal_return": true
+   },
+   {
+    "start": 2437,
+    "cond": "                          if (class_name ==                              ) {",
+    "end": 2636,
+    "lines": 200,
+    "terminal_return": true
+   },
+   {
+    "start": 2638,
+    "cond": " if ((method ==          || method ==         )) {",
+    "end": 2645,
+    "lines": 8,
+    "terminal_return": false
+   },
+   {
+    "start": 2694,
+    "cond": "             if (class_name ==                           ) {",
+    "end": 2782,
+    "lines": 89,
+    "terminal_return": true
+   },
+   {
+    "start": 2801,
+    "cond": "                  if (class_name ==                                           ) {",
+    "end": 2881,
+    "lines": 81,
+    "terminal_return": true
+   },
+   {
+    "start": 3181,
+    "cond": "                 if (class_name ==                              && !args.empty()) {",
+    "end": 3259,
+    "lines": 79,
+    "terminal_return": true
+   },
+   {
+    "start": 3292,
+    "cond": " if (method ==               ) {",
+    "end": 3297,
+    "lines": 6,
+    "terminal_return": false
+   },
+   {
+    "start": 3344,
+    "cond": "          if (class_name.find(        ) != std::string::npos && shadow_registry_) {",
+    "end": 3365,
+    "lines": 22,
+    "terminal_return": true
+   },
+   {
+    "start": 3420,
+    "cond": " if (method ==                     ) {",
+    "end": 3430,
+    "lines": 11,
+    "terminal_return": false
+   },
+   {
+    "start": 3492,
+    "cond": "if (class_name ==                                    && method ==      ) {",
+    "end": 3497,
+    "lines": 6,
+    "terminal_return": true
+   },
+   {
+    "start": 3503,
+    "cond": "     if (std::getenv(                        ) && class_name ==                                                     ) {",
+    "end": 3511,
+    "lines": 9,
+    "terminal_return": false
+   },
+   {
+    "start": 3952,
+    "cond": "              if (class_name ==                      ) {",
+    "end": 3974,
+    "lines": 23,
+    "terminal_return": true
+   },
+   {
+    "start": 5244,
+    "cond": "if (class_name ==                              && method ==         ) {",
+    "end": 5285,
+    "lines": 42,
+    "terminal_return": true
+   },
+   {
+    "start": 5813,
+    "cond": "           if (method ==            && class_name ==                            ) {",
+    "end": 5862,
+    "lines": 50,
+    "terminal_return": true
+   },
+   {
+    "start": 5879,
+    "cond": "if (!is_baos_family) {",
+    "end": 5891,
+    "lines": 13,
+    "terminal_return": false
+   },
+   {
+    "start": 5892,
+    "cond": "if (is_baos_family) {",
+    "end": 6052,
+    "lines": 161,
+    "terminal_return": true
+   },
+   {
+    "start": 6076,
+    "cond": "                       if (class_name ==                     ) {",
+    "end": 6123,
+    "lines": 48,
+    "terminal_return": true
+   },
+   {
+    "start": 7973,
+    "cond": "    if (class_name ==                                  ) {",
+    "end": 8246,
+    "lines": 274,
+    "terminal_return": true
+   },
+   {
+    "start": 8249,
+    "cond": "  if (class_name ==                                  ) {",
+    "end": 8478,
+    "lines": 230,
+    "terminal_return": true
+   },
+   {
+    "start": 8483,
+    "cond": "    if (class_name ==                               ) {",
+    "end": 8571,
+    "lines": 89,
+    "terminal_return": true
+   },
+   {
+    "start": 8574,
+    "cond": "  if (class_name ==                                ) {",
+    "end": 8614,
+    "lines": 41,
+    "terminal_return": true
+   },
+   {
+    "start": 11802,
+    "cond": "                 if (class_name ==                              ) {",
+    "end": 11927,
+    "lines": 126,
+    "terminal_return": true
+   },
+   {
+    "start": 11987,
+    "cond": "if (class_name ==                             && method ==          ) {",
+    "end": 12005,
+    "lines": 19,
+    "terminal_return": false
+   },
+   {
+    "start": 12760,
+    "cond": "                 if (method ==              && is_subclass_of(class_name,                      )) {",
+    "end": 12764,
+    "lines": 5,
+    "terminal_return": true
+   },
+   {
+    "start": 12999,
+    "cond": "                               if (class_name ==                         ) {",
+    "end": 13092,
+    "lines": 94,
+    "terminal_return": true
+   },
+   {
+    "start": 14096,
+    "cond": "            if (class_name ==                                 ) {",
+    "end": 14123,
+    "lines": 28,
+    "terminal_return": true
+   },
+   {
+    "start": 14957,
+    "cond": "                               if (class_name ==                         && method ==                  ) {",
+    "end": 14997,
+    "lines": 41,
+    "terminal_return": true
+   },
+   {
+    "start": 17107,
+    "cond": "  if (method ==           && current_method_ ==           ) {",
+    "end": 17118,
+    "lines": 12,
+    "terminal_return": false
+   },
+   {
+    "start": 17166,
+    "cond": "              if (shadow_registry_ != nullptr) {",
+    "end": 31004,
+    "lines": 13839,
+    "terminal_return": true
+   },
+   {
+    "start": 31197,
+    "cond": "                         if (method ==               ) {",
+    "end": 31240,
+    "lines": 44,
+    "terminal_return": true
+   },
+   {
+    "start": 31448,
+    "cond": "if (method ==               && class_name ==                         ) {",
+    "end": 31456,
+    "lines": 9,
+    "terminal_return": true
+   },
+   {
+    "start": 31486,
+    "cond": "                if (method ==       && class_name ==                                   ) {",
+    "end": 31504,
+    "lines": 19,
+    "terminal_return": true
+   },
+   {
+    "start": 31539,
+    "cond": "if (class_name ==                                    && method ==                      ) {",
+    "end": 31543,
+    "lines": 5,
+    "terminal_return": true
+   },
+   {
+    "start": 32072,
+    "cond": "                                  if (method ==          && args.size() >= 2 && !current_invoke_is_static_) {",
+    "end": 32409,
+    "lines": 338,
+    "terminal_return": true
+   },
+   {
+    "start": 32432,
+    "cond": "           if (method ==                             ) {",
+    "end": 32443,
+    "lines": 12,
+    "terminal_return": true
+   },
+   {
+    "start": 34862,
+    "cond": "                       if (class_name ==                                                    ) {",
+    "end": 34876,
+    "lines": 15,
+    "terminal_return": true
+   },
+   {
+    "start": 36422,
+    "cond": "                   if (method ==            ) {",
+    "end": 36459,
+    "lines": 38,
+    "terminal_return": true
+   },
+   {
+    "start": 36588,
+    "cond": "    if (method ==               && class_name.find(        ) != std::string::npos) {",
+    "end": 36612,
+    "lines": 25,
+    "terminal_return": true
+   },
+   {
+    "start": 36930,
+    "cond": "if (class_name ==                                              ) {",
+    "end": 37009,
+    "lines": 80,
+    "terminal_return": true
+   },
+   {
+    "start": 37591,
+    "cond": "          if (class_name ==                                    ) {",
+    "end": 37616,
+    "lines": 26,
+    "terminal_return": true
+   },
+   {
+    "start": 37617,
+    "cond": "if (class_name ==                            ) {",
+    "end": 37681,
+    "lines": 65,
+    "terminal_return": true
+   },
+   {
+    "start": 37775,
+    "cond": "             if (class_name.find(          ) != std::string::npos) {",
+    "end": 37872,
+    "lines": 98,
+    "terminal_return": true
+   },
+   {
+    "start": 38833,
+    "cond": "                        if (method ==                   ) {",
+    "end": 39024,
+    "lines": 192,
+    "terminal_return": true
+   },
+   {
+    "start": 39117,
+    "cond": "                 if (class_name ==                                       ) {",
+    "end": 39145,
+    "lines": 29,
+    "terminal_return": true
+   },
+   {
+    "start": 39189,
+    "cond": "                           if (class_name ==                                    ) {",
+    "end": 39281,
+    "lines": 93,
+    "terminal_return": true
+   },
+   {
+    "start": 39320,
+    "cond": "             if (class_name.find(                 ) != std::string::npos) {",
+    "end": 39336,
+    "lines": 17,
+    "terminal_return": true
+   },
+   {
+    "start": 39619,
+    "cond": "                     if (class_name ==                           ) {",
+    "end": 39657,
+    "lines": 39,
+    "terminal_return": true
+   },
+   {
+    "start": 41289,
+    "cond": "                                       if (class_name ==                    ) {",
+    "end": 42557,
+    "lines": 1269,
+    "terminal_return": true
+   },
+   {
+    "start": 42616,
+    "cond": "             if (class_name ==                             ) {",
+    "end": 42759,
+    "lines": 144,
+    "terminal_return": true
+   },
+   {
+    "start": 42774,
+    "cond": "              if (class_name ==                      ) {",
+    "end": 42882,
+    "lines": 109,
+    "terminal_return": true
+   },
+   {
+    "start": 42897,
+    "cond": "if (class_name ==                                         ) {",
+    "end": 43122,
+    "lines": 226,
+    "terminal_return": true
+   },
+   {
+    "start": 43124,
+    "cond": " if (class_name ==                          ) {",
+    "end": 43204,
+    "lines": 81,
+    "terminal_return": true
+   },
+   {
+    "start": 43206,
+    "cond": " if (class_name ==                          ) {",
+    "end": 43240,
+    "lines": 35,
+    "terminal_return": true
+   },
+   {
+    "start": 43242,
+    "cond": " if (class_name ==                 ) {",
+    "end": 43278,
+    "lines": 37,
+    "terminal_return": true
+   },
+   {
+    "start": 43280,
+    "cond": " if (class_name ==                            ) {",
+    "end": 43341,
+    "lines": 62,
+    "terminal_return": true
+   },
+   {
+    "start": 43519,
+    "cond": "                                    if (class_name ==                         ) {",
+    "end": 43686,
+    "lines": 168,
+    "terminal_return": true
+   },
+   {
+    "start": 44852,
+    "cond": "  if (class_name ==                       && method ==          ) {",
+    "end": 44862,
+    "lines": 11,
+    "terminal_return": true
+   },
+   {
+    "start": 44977,
+    "cond": "           if (method ==           ) {",
+    "end": 45077,
+    "lines": 101,
+    "terminal_return": false
+   },
+   {
+    "start": 45095,
+    "cond": "                 if (method ==                   ) {",
+    "end": 45138,
+    "lines": 44,
+    "terminal_return": true
+   },
+   {
+    "start": 45160,
+    "cond": "                     if (class_name ==                   ) {",
+    "end": 45293,
+    "lines": 134,
+    "terminal_return": true
+   },
+   {
+    "start": 45295,
+    "cond": " if (class_name ==                      ) {",
+    "end": 45481,
+    "lines": 187,
+    "terminal_return": true
+   },
+   {
+    "start": 45573,
+    "cond": "            if (class_name ==                    && args.size() >= 1) {",
+    "end": 45737,
+    "lines": 165,
+    "terminal_return": true
+   },
+   {
+    "start": 45738,
+    "cond": "if (class_name ==                                && args.size() >= 1) {",
+    "end": 45773,
+    "lines": 36,
+    "terminal_return": true
+   },
+   {
+    "start": 45790,
+    "cond": "                if (class_name ==                    && method ==         ) {",
+    "end": 45808,
+    "lines": 19,
+    "terminal_return": true
+   },
+   {
+    "start": 45809,
+    "cond": "if (class_name ==                    && args.size() >= 1) {",
+    "end": 45969,
+    "lines": 161,
+    "terminal_return": true
+   },
+   {
+    "start": 45984,
+    "cond": "    if (class_name.find(      ) != std::string::npos && method ==         ) {",
+    "end": 45988,
+    "lines": 5,
+    "terminal_return": true
+   },
+   {
+    "start": 46015,
+    "cond": "                          if (class_name ==                            ) {",
+    "end": 46184,
+    "lines": 170,
+    "terminal_return": true
+   },
+   {
+    "start": 46205,
+    "cond": "                    if (class_name ==                  && method ==         ) {",
+    "end": 46336,
+    "lines": 132,
+    "terminal_return": true
+   },
+   {
+    "start": 46423,
+    "cond": "    if (class_name ==                  && method ==         ) {",
+    "end": 46427,
+    "lines": 5,
+    "terminal_return": true
+   },
+   {
+    "start": 46468,
+    "cond": "                                        if (class_name ==                    ) {",
+    "end": 46558,
+    "lines": 91,
+    "terminal_return": true
+   },
+   {
+    "start": 48189,
+    "cond": "     if (class_name ==           || class_name.find(    ) == 0) {",
+    "end": 48204,
+    "lines": 16,
+    "terminal_return": true
+   },
+   {
+    "start": 48288,
+    "cond": "       if (method ==        && class_name.find(              ) != std::string::npos) {",
+    "end": 48361,
+    "lines": 74,
+    "terminal_return": true
+   },
+   {
+    "start": 48370,
+    "cond": "        if (method ==          && class_name.find(              ) != std::string::npos) {",
+    "end": 48465,
+    "lines": 96,
+    "terminal_return": true
+   },
+   {
+    "start": 48639,
+    "cond": "   if (class_name ==                               && method ==         ) {",
+    "end": 48665,
+    "lines": 27,
+    "terminal_return": true
+   },
+   {
+    "start": 48668,
+    "cond": "  if (class_name ==                            && method ==         ) {",
+    "end": 48685,
+    "lines": 18,
+    "terminal_return": true
+   },
+   {
+    "start": 48691,
+    "cond": "     if (class_name ==                            && method ==           ) {",
+    "end": 48762,
+    "lines": 72,
+    "terminal_return": true
+   },
+   {
+    "start": 48902,
+    "cond": "if (class_name ==                             && method ==        ) {",
+    "end": 48912,
+    "lines": 11,
+    "terminal_return": true
+   },
+   {
+    "start": 48913,
+    "cond": "if (class_name ==                      && method ==        ) {",
+    "end": 48977,
+    "lines": 65,
+    "terminal_return": true
+   },
+   {
+    "start": 49477,
+    "cond": "        if (class_name ==                      && method ==         ) {",
+    "end": 49501,
+    "lines": 25,
+    "terminal_return": true
+   },
+   {
+    "start": 49792,
+    "cond": "if (class_name ==                      && method ==           ) {",
+    "end": 49912,
+    "lines": 121,
+    "terminal_return": true
+   },
+   {
+    "start": 49937,
+    "cond": "                        if (method ==            && !args.empty()) {",
+    "end": 50064,
+    "lines": 128,
+    "terminal_return": true
+   },
+   {
+    "start": 50070,
+    "cond": "     if (class_name ==                      && method ==         ) {",
+    "end": 50084,
+    "lines": 15,
+    "terminal_return": true
+   },
+   {
+    "start": 50105,
+    "cond": "                    if (class_name ==                      && method ==         ) {",
+    "end": 50137,
+    "lines": 33,
+    "terminal_return": true
+   },
+   {
+    "start": 50199,
+    "cond": "           if (class_name ==                      && method ==                ) {",
+    "end": 50228,
+    "lines": 30,
+    "terminal_return": true
+   },
+   {
+    "start": 50237,
+    "cond": "        if (class_name ==                      && method ==              ) {",
+    "end": 50248,
+    "lines": 12,
+    "terminal_return": true
+   },
+   {
+    "start": 50252,
+    "cond": "   if (class_name ==                      && method ==              ) {",
+    "end": 50263,
+    "lines": 12,
+    "terminal_return": true
+   },
+   {
+    "start": 50600,
+    "cond": "  if (class_name ==                      && method ==             && args.size() >= 2) {",
+    "end": 50625,
+    "lines": 26,
+    "terminal_return": true
+   },
+   {
+    "start": 50626,
+    "cond": "if (class_name ==                      && method ==          && args.size() >= 2) {",
+    "end": 50643,
+    "lines": 18,
+    "terminal_return": true
+   },
+   {
+    "start": 50677,
+    "cond": "                                 if (class_name ==                      && args.size() >= 1) {",
+    "end": 50979,
+    "lines": 303,
+    "terminal_return": true
+   },
+   {
+    "start": 51048,
+    "cond": "         if (class_name ==                                                ) {",
+    "end": 51093,
+    "lines": 46,
+    "terminal_return": true
+   },
+   {
+    "start": 51336,
+    "cond": "if (class_name ==                          && method ==       ) {",
+    "end": 51383,
+    "lines": 48,
+    "terminal_return": true
+   },
+   {
+    "start": 51575,
+    "cond": "      if (class_name ==                      && method ==           && args.size() >= 3) {",
+    "end": 51658,
+    "lines": 84,
+    "terminal_return": true
+   },
+   {
+    "start": 52136,
+    "cond": "         if (class_name ==                      && method ==          && !args.empty()) {",
+    "end": 52186,
+    "lines": 51,
+    "terminal_return": true
+   },
+   {
+    "start": 52190,
+    "cond": "   if (class_name ==                            && method ==         ) {",
+    "end": 52201,
+    "lines": 12,
+    "terminal_return": true
+   },
+   {
+    "start": 52210,
+    "cond": "        if (class_name ==                            && method ==          ) {",
+    "end": 52226,
+    "lines": 17,
+    "terminal_return": true
+   },
+   {
+    "start": 53097,
+    "cond": " if (class_name.find(     ) != std::string::npos) {",
+    "end": 53101,
+    "lines": 5,
+    "terminal_return": true
+   },
+   {
+    "start": 53179,
+    "cond": " if (method ==          ) {",
+    "end": 53187,
+    "lines": 9,
+    "terminal_return": false
+   },
+   {
+    "start": 53198,
+    "cond": "          if (class_name ==                      && method ==         ) {",
+    "end": 53208,
+    "lines": 11,
+    "terminal_return": true
+   },
+   {
+    "start": 53228,
+    "cond": "  if (class_name ==                      && method ==         ) {",
+    "end": 53238,
+    "lines": 11,
+    "terminal_return": true
+   },
+   {
+    "start": 53243,
+    "cond": "    if (class_name ==                      && method ==                ) {",
+    "end": 53264,
+    "lines": 22,
+    "terminal_return": true
+   },
+   {
+    "start": 53267,
+    "cond": "  if (class_name ==                      && method ==        ) {",
+    "end": 53323,
+    "lines": 57,
+    "terminal_return": true
+   },
+   {
+    "start": 53326,
+    "cond": "  if (class_name ==                           ) {",
+    "end": 53356,
+    "lines": 31,
+    "terminal_return": true
+   },
+   {
+    "start": 53401,
+    "cond": "    if (class_name ==                       && shadow_registry_ == nullptr) {",
+    "end": 53470,
+    "lines": 70,
+    "terminal_return": true
+   },
+   {
+    "start": 53473,
+    "cond": "  if (class_name.find(                ) != std::string::npos) {",
+    "end": 53492,
+    "lines": 20,
+    "terminal_return": true
+   },
+   {
+    "start": 53735,
+    "cond": "    if (method ==               ) {",
+    "end": 53739,
+    "lines": 5,
+    "terminal_return": false
+   },
+   {
+    "start": 53744,
+    "cond": "    if ((method ==          || method ==         ) && shadow_registry_ != nullptr) {",
+    "end": 53754,
+    "lines": 11,
+    "terminal_return": false
+   },
+   {
+    "start": 53755,
+    "cond": "if (shadow_registry_ != nullptr) {",
+    "end": 53823,
+    "lines": 69,
+    "terminal_return": true
+   },
+   {
+    "start": 54429,
+    "cond": "               if (class_name ==                                    ) {",
+    "end": 54445,
+    "lines": 17,
+    "terminal_return": false
+   },
+   {
+    "start": 55114,
+    "cond": "           if (class_name ==                             ) {",
+    "end": 55333,
+    "lines": 220,
+    "terminal_return": true
+   },
+   {
+    "start": 55350,
+    "cond": "if (method_idx_hint != 0xFFFFFFFFu) {",
+    "end": 55379,
+    "lines": 30,
+    "terminal_return": true
+   }
+  ],
+  "arm_lines_total": 22963,
+  "biggest_arms": [
+   {
+    "start": 17166,
+    "cond": "              if (shadow_registry_ != nullptr) {",
+    "end": 31004,
+    "lines": 13839,
+    "terminal_return": true
+   },
+   {
+    "start": 41289,
+    "cond": "                                       if (class_name ==                    ) {",
+    "end": 42557,
+    "lines": 1269,
+    "terminal_return": true
+   },
+   {
+    "start": 32072,
+    "cond": "                                  if (method ==          && args.size() >= 2 && !current_invoke_is_static_) {",
+    "end": 32409,
+    "lines": 338,
+    "terminal_return": true
+   },
+   {
+    "start": 50677,
+    "cond": "                                 if (class_name ==                      && args.size() >= 1) {",
+    "end": 50979,
+    "lines": 303,
+    "terminal_return": true
+   },
+   {
+    "start": 7973,
+    "cond": "    if (class_name ==                                  ) {",
+    "end": 8246,
+    "lines": 274,
+    "terminal_return": true
+   },
+   {
+    "start": 8249,
+    "cond": "  if (class_name ==                                  ) {",
+    "end": 8478,
+    "lines": 230,
+    "terminal_return": true
+   },
+   {
+    "start": 42897,
+    "cond": "if (class_name ==                                         ) {",
+    "end": 43122,
+    "lines": 226,
+    "terminal_return": true
+   },
+   {
+    "start": 55114,
+    "cond": "           if (class_name ==                             ) {",
+    "end": 55333,
+    "lines": 220,
+    "terminal_return": true
+   },
+   {
+    "start": 2437,
+    "cond": "                          if (class_name ==                              ) {",
+    "end": 2636,
+    "lines": 200,
+    "terminal_return": true
+   },
+   {
+    "start": 38833,
+    "cond": "                        if (method ==                   ) {",
+    "end": 39024,
+    "lines": 192,
+    "terminal_return": true
+   },
+   {
+    "start": 45295,
+    "cond": " if (class_name ==                      ) {",
+    "end": 45481,
+    "lines": 187,
+    "terminal_return": true
+   },
+   {
+    "start": 46015,
+    "cond": "                          if (class_name ==                            ) {",
+    "end": 46184,
+    "lines": 170,
+    "terminal_return": true
+   }
+  ],
+  "tail": {
+   "tail_start": 55379
+  }
+ },
+ "fetch_decode_execute": {
+  "span": {
+   "start": 187,
+   "end": 5619
+  },
+  "case_count": 0,
+  "cases": [],
+  "structure": {
+   "dispatch_styles": {
+    "if_op_const": 0,
+    "if_op_hex": 0,
+    "if_op_named_macro": 0,
+    "execute_calls": 64,
+    "continue_stmts": 8,
+    "goto_stmts": 0
+   },
+   "loop_carried_state_refs": {
+    "\\bpc_\\s*=": 35,
+    "\\bcontinue\\b": 25,
+    "\\bhalted_\\b": 10,
+    "\\bthrow\\b": 21,
+    "\\bfind_catch_handler\\b": 0
+   }
+  }
+ },
+ "arm_analysis": [
+  {
+   "start": 476,
+   "end": 541,
+   "lines": 66,
+   "last_top_stmt": "if (f516_logger_void.count(method)) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "if (class_name ==                             ) {"
+  },
+  {
+   "start": 550,
+   "end": 598,
+   "lines": 49,
+   "last_top_stmt": "args[0].type == DalvikType::OBJECT_REF) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "        if (class_name ==                      ) {"
+  },
+  {
+   "start": 599,
+   "end": 726,
+   "lines": 128,
+   "last_top_stmt": "if (method == \"toString\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "if (class_name ==                        ) {"
+  },
+  {
+   "start": 727,
+   "end": 786,
+   "lines": 60,
+   "last_top_stmt": "args[0].type == DalvikType::OBJECT_REF) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "if (class_name ==                                      ) {"
+  },
+  {
+   "start": 802,
+   "end": 865,
+   "lines": 64,
+   "last_top_stmt": "if (method == \"createSSLEngine\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "               if (class_name ==                             ) {"
+  },
+  {
+   "start": 1223,
+   "end": 1284,
+   "lines": 62,
+   "last_top_stmt": "args[0].type == DalvikType::OBJECT_REF) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                       ) {"
+  },
+  {
+   "start": 1313,
+   "end": 1372,
+   "lines": 60,
+   "last_top_stmt": "method == \"getRuleStatus\" || method == \"getRuleStatusVec\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "     if (class_name ==                            ) {"
+  },
+  {
+   "start": 1895,
+   "end": 1945,
+   "lines": 51,
+   "last_top_stmt": ": (!args.empty() && args[0].type == DalvikType::STRING_REF))",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "                if (method ==          || method ==          ) {"
+  },
+  {
+   "start": 1946,
+   "end": 1951,
+   "lines": 6,
+   "last_top_stmt": "<< std::endl;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (std::getenv(                       ) && class_name ==                           ) {"
+  },
+  {
+   "start": 2078,
+   "end": 2107,
+   "lines": 30,
+   "last_top_stmt": "args[0].type == DalvikType::OBJECT_REF) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                                          ) {"
+  },
+  {
+   "start": 2108,
+   "end": 2122,
+   "lines": 15,
+   "last_top_stmt": "method == \"getFlags\" || method == \"getAllowedCapturePolicy\")",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                                  ) {"
+  },
+  {
+   "start": 2123,
+   "end": 2280,
+   "lines": 158,
+   "last_top_stmt": "args[0].object_id != 0) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                              ) {"
+  },
+  {
+   "start": 2306,
+   "end": 2333,
+   "lines": 28,
+   "last_top_stmt": "args[0].object_id != 0) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                         if (class_name ==                                     ) {"
+  },
+  {
+   "start": 2334,
+   "end": 2342,
+   "lines": 9,
+   "last_top_stmt": "if (method == \"<init>\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                             ) {"
+  },
+  {
+   "start": 2364,
+   "end": 2410,
+   "lines": 47,
+   "last_top_stmt": "args[0].object_id != 0) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                     if (class_name ==                                                  ) {"
+  },
+  {
+   "start": 2437,
+   "end": 2636,
+   "lines": 200,
+   "last_top_stmt": "if (method == \"defaultFromStyle\" && args.size() >= 1) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "                          if (class_name ==                              ) {"
+  },
+  {
+   "start": 2638,
+   "end": 2645,
+   "lines": 8,
+   "last_top_stmt": "if (tag_probe < 16) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": " if ((method ==          || method ==         )) {"
+  },
+  {
+   "start": 2694,
+   "end": 2782,
+   "lines": 89,
+   "last_top_stmt": "args[0].type == DalvikType::STRING_REF) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "             if (class_name ==                           ) {"
+  },
+  {
+   "start": 2801,
+   "end": 2881,
+   "lines": 81,
+   "last_top_stmt": "if (method == \"getBlocker\" || method == \"getBlockerRaw\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "                  if (class_name ==                                           ) {"
+  },
+  {
+   "start": 3181,
+   "end": 3259,
+   "lines": 79,
+   "last_top_stmt": "if (method == \"getEventTime\" || method == \"getTime\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                 if (class_name ==                              && !args.empty()) {"
+  },
+  {
+   "start": 3292,
+   "end": 3297,
+   "lines": 6,
+   "last_top_stmt": "<< std::endl;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": " if (method ==               ) {"
+  },
+  {
+   "start": 3344,
+   "end": 3365,
+   "lines": 22,
+   "last_top_stmt": "method == \"setDuration\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "          if (class_name.find(        ) != std::string::npos && shadow_registry_) {"
+  },
+  {
+   "start": 3420,
+   "end": 3430,
+   "lines": 11,
+   "last_top_stmt": "if (!args.empty() && args[0].type == DalvikType::OBJECT_REF)",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": " if (method ==                     ) {"
+  },
+  {
+   "start": 3492,
+   "end": 3497,
+   "lines": 6,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                                    && method ==      ) {"
+  },
+  {
+   "start": 3503,
+   "end": 3511,
+   "lines": 9,
+   "last_top_stmt": "if (cas_caller_n < 6000) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "     if (std::getenv(                        ) && class_name ==                                     "
+  },
+  {
+   "start": 3952,
+   "end": 3974,
+   "lines": 23,
+   "last_top_stmt": "if (method == \"create\" && args.size() >= 2) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "              if (class_name ==                      ) {"
+  },
+  {
+   "start": 5244,
+   "end": 5285,
+   "lines": 42,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                              && method ==         ) {"
+  },
+  {
+   "start": 5813,
+   "end": 5862,
+   "lines": 50,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "           if (method ==            && class_name ==                            ) {"
+  },
+  {
+   "start": 5879,
+   "end": 5891,
+   "lines": 13,
+   "last_top_stmt": "++baos_hops) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (!is_baos_family) {"
+  },
+  {
+   "start": 5892,
+   "end": 6052,
+   "lines": 161,
+   "last_top_stmt": "return false;  // not a BAOS method we claim (bridge continu",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "if (is_baos_family) {"
+  },
+  {
+   "start": 6076,
+   "end": 6123,
+   "lines": 48,
+   "last_top_stmt": "(method == \"isLoggable\" && args.size() >= 2)) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "                       if (class_name ==                     ) {"
+  },
+  {
+   "start": 7973,
+   "end": 8246,
+   "lines": 274,
+   "last_top_stmt": "method == \"setNotificationUri\" || method == \"respond\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "    if (class_name ==                                  ) {"
+  },
+  {
+   "start": 8249,
+   "end": 8478,
+   "lines": 230,
+   "last_top_stmt": "if (method == \"keySet\" || method == \"valueSet\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "  if (class_name ==                                  ) {"
+  },
+  {
+   "start": 8483,
+   "end": 8571,
+   "lines": 89,
+   "last_top_stmt": "if (method == \"match\" && args.size() >= 2) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "    if (class_name ==                               ) {"
+  },
+  {
+   "start": 8574,
+   "end": 8614,
+   "lines": 41,
+   "last_top_stmt": "args.size() >= 1) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "  if (class_name ==                                ) {"
+  },
+  {
+   "start": 11802,
+   "end": 11927,
+   "lines": 126,
+   "last_top_stmt": "method == \"nextElement\")) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "                 if (class_name ==                              ) {"
+  },
+  {
+   "start": 11987,
+   "end": 12005,
+   "lines": 19,
+   "last_top_stmt": "if (rx_diag < 8) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "if (class_name ==                             && method ==          ) {"
+  },
+  {
+   "start": 12760,
+   "end": 12764,
+   "lines": 5,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                 if (method ==              && is_subclass_of(class_name,                      )) {"
+  },
+  {
+   "start": 12999,
+   "end": 13092,
+   "lines": 94,
+   "last_top_stmt": "if (method == \"flush\" || method == \"close\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "                               if (class_name ==                         ) {"
+  },
+  {
+   "start": 14096,
+   "end": 14123,
+   "lines": 28,
+   "last_top_stmt": "if (method == \"<init>\" && ss_id != 0 && args.size() >= 2) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "            if (class_name ==                                 ) {"
+  },
+  {
+   "start": 14957,
+   "end": 14997,
+   "lines": 41,
+   "last_top_stmt": "return true;  // pc advance is the invoke-site's contract (b",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                               if (class_name ==                         && method ==               "
+  },
+  {
+   "start": 17107,
+   "end": 17118,
+   "lines": 12,
+   "last_top_stmt": "<< std::endl;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "  if (method ==           && current_method_ ==           ) {"
+  },
+  {
+   "start": 17166,
+   "end": 31004,
+   "lines": 13839,
+   "last_top_stmt": "{",
+   "ends_unconditional_return": false,
+   "has_goto": true,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "              if (shadow_registry_ != nullptr) {"
+  },
+  {
+   "start": 31197,
+   "end": 31240,
+   "lines": 44,
+   "last_top_stmt": "if (f088_probe < 8) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "                         if (method ==               ) {"
+  },
+  {
+   "start": 31448,
+   "end": 31456,
+   "lines": 9,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (method ==               && class_name ==                         ) {"
+  },
+  {
+   "start": 31486,
+   "end": 31504,
+   "lines": 19,
+   "last_top_stmt": "uint32_t v = as_u32(args[0]);",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                if (method ==       && class_name ==                                   ) {"
+  },
+  {
+   "start": 31539,
+   "end": 31543,
+   "lines": 5,
+   "last_top_stmt": "uint32_t r = 0;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                                    && method ==                      ) {"
+  },
+  {
+   "start": 32072,
+   "end": 32409,
+   "lines": 338,
+   "last_top_stmt": "auto f608d_is_str = [&](const DalvikValue& v) -> bool {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "                                  if (method ==          && args.size() >= 2 && !current_invoke_is_s"
+  },
+  {
+   "start": 32432,
+   "end": 32443,
+   "lines": 12,
+   "last_top_stmt": "} else if (args.size() >= 3 && args[1].type == DalvikType::O",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "           if (method ==                             ) {"
+  },
+  {
+   "start": 34862,
+   "end": 34876,
+   "lines": 15,
+   "last_top_stmt": "std::vector<std::string> lines;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "                       if (class_name ==                                                    ) {"
+  },
+  {
+   "start": 36422,
+   "end": 36459,
+   "lines": 38,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                   if (method ==            ) {"
+  },
+  {
+   "start": 36588,
+   "end": 36612,
+   "lines": 25,
+   "last_top_stmt": "args.size() >= 3) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "    if (method ==               && class_name.find(        ) != std::string::npos) {"
+  },
+  {
+   "start": 36930,
+   "end": 37009,
+   "lines": 80,
+   "last_top_stmt": "if (method == \"endsWith\" && args.size() >= 2 &&",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "if (class_name ==                                              ) {"
+  },
+  {
+   "start": 37591,
+   "end": 37616,
+   "lines": 26,
+   "last_top_stmt": "",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "          if (class_name ==                                    ) {"
+  },
+  {
+   "start": 37617,
+   "end": 37681,
+   "lines": 65,
+   "last_top_stmt": "if (method == \"getAttributeValue\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "if (class_name ==                            ) {"
+  },
+  {
+   "start": 37775,
+   "end": 37872,
+   "lines": 98,
+   "last_top_stmt": "result = DalvikValue::make_null();",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "             if (class_name.find(          ) != std::string::npos) {"
+  },
+  {
+   "start": 38833,
+   "end": 39024,
+   "lines": 192,
+   "last_top_stmt": "{",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "                        if (method ==                   ) {"
+  },
+  {
+   "start": 39117,
+   "end": 39145,
+   "lines": 29,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                 if (class_name ==                                       ) {"
+  },
+  {
+   "start": 39189,
+   "end": 39281,
+   "lines": 93,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "                           if (class_name ==                                    ) {"
+  },
+  {
+   "start": 39320,
+   "end": 39336,
+   "lines": 17,
+   "last_top_stmt": "result = DalvikValue::make_void();",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "             if (class_name.find(                 ) != std::string::npos) {"
+  },
+  {
+   "start": 39619,
+   "end": 39657,
+   "lines": 39,
+   "last_top_stmt": "for (const auto& k : to_remove) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                     if (class_name ==                           ) {"
+  },
+  {
+   "start": 41289,
+   "end": 42557,
+   "lines": 1269,
+   "last_top_stmt": "\"Ljava/util/Collections$EmptySet;\");",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "                                       if (class_name ==                    ) {"
+  },
+  {
+   "start": 42616,
+   "end": 42759,
+   "lines": 144,
+   "last_top_stmt": "if (lenf.has_value() && lenf->type == DalvikType::INT32)",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "             if (class_name ==                             ) {"
+  },
+  {
+   "start": 42774,
+   "end": 42882,
+   "lines": 109,
+   "last_top_stmt": "dst_id, \"array[\" + std::to_string(dst_pos + i) + \"]\", elem);",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "              if (class_name ==                      ) {"
+  },
+  {
+   "start": 42897,
+   "end": 43122,
+   "lines": 226,
+   "last_top_stmt": "if (class_name == \"Ljava/security/KeyStore;\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "if (class_name ==                                         ) {"
+  },
+  {
+   "start": 43124,
+   "end": 43204,
+   "lines": 81,
+   "last_top_stmt": "if (cap > 0) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": " if (class_name ==                          ) {"
+  },
+  {
+   "start": 43206,
+   "end": 43240,
+   "lines": 35,
+   "last_top_stmt": "",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": " if (class_name ==                          ) {"
+  },
+  {
+   "start": 43242,
+   "end": 43278,
+   "lines": 37,
+   "last_top_stmt": "if (c582_objs.size() < 2 || c582_ints.size() < 3) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": " if (class_name ==                 ) {"
+  },
+  {
+   "start": 43280,
+   "end": 43341,
+   "lines": 62,
+   "last_top_stmt": "auto c582_src_byte = [&](int32_t k) -> int {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": " if (class_name ==                            ) {"
+  },
+  {
+   "start": 43519,
+   "end": 43686,
+   "lines": 168,
+   "last_top_stmt": "DalvikValue d582;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "                                    if (class_name ==                         ) {"
+  },
+  {
+   "start": 44852,
+   "end": 44862,
+   "lines": 11,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "  if (class_name ==                       && method ==          ) {"
+  },
+  {
+   "start": 44977,
+   "end": 45077,
+   "lines": 101,
+   "last_top_stmt": ": true);",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "           if (method ==           ) {"
+  },
+  {
+   "start": 45095,
+   "end": 45138,
+   "lines": 44,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                 if (method ==                   ) {"
+  },
+  {
+   "start": 45160,
+   "end": 45293,
+   "lines": 134,
+   "last_top_stmt": "heap_.set_object_field(rid, \"bottom\", args[4]);",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "                     if (class_name ==                   ) {"
+  },
+  {
+   "start": 45295,
+   "end": 45481,
+   "lines": 187,
+   "last_top_stmt": "};",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": " if (class_name ==                      ) {"
+  },
+  {
+   "start": 45573,
+   "end": 45737,
+   "lines": 165,
+   "last_top_stmt": "{",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "            if (class_name ==                    && args.size() >= 1) {"
+  },
+  {
+   "start": 45738,
+   "end": 45773,
+   "lines": 36,
+   "last_top_stmt": "})(resid),",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                                && args.size() >= 1) {"
+  },
+  {
+   "start": 45790,
+   "end": 45808,
+   "lines": 19,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                if (class_name ==                    && method ==         ) {"
+  },
+  {
+   "start": 45809,
+   "end": 45969,
+   "lines": 161,
+   "last_top_stmt": "args[0].type == DalvikType::OBJECT_REF) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                    && args.size() >= 1) {"
+  },
+  {
+   "start": 45984,
+   "end": 45988,
+   "lines": 5,
+   "last_top_stmt": "uint32_t attrs_oid) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "    if (class_name.find(      ) != std::string::npos && method ==         ) {"
+  },
+  {
+   "start": 46015,
+   "end": 46184,
+   "lines": 170,
+   "last_top_stmt": "vv->type == DalvikType::STRING_REF) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "                          if (class_name ==                            ) {"
+  },
+  {
+   "start": 46205,
+   "end": 46336,
+   "lines": 132,
+   "last_top_stmt": "return 0x40000000 | (parent_size & 0x3FFFFFFF);",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "                    if (class_name ==                  && method ==         ) {"
+  },
+  {
+   "start": 46423,
+   "end": 46427,
+   "lines": 5,
+   "last_top_stmt": "",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "    if (class_name ==                  && method ==         ) {"
+  },
+  {
+   "start": 46468,
+   "end": 46558,
+   "lines": 91,
+   "last_top_stmt": "f304_mark_subtree(child);",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "                                        if (class_name ==                    ) {"
+  },
+  {
+   "start": 48189,
+   "end": 48204,
+   "lines": 16,
+   "last_top_stmt": "[&]() {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "     if (class_name ==           || class_name.find(    ) == 0) {"
+  },
+  {
+   "start": 48288,
+   "end": 48361,
+   "lines": 74,
+   "last_top_stmt": "return true;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": true,
+   "cond_raw": "       if (method ==        && class_name.find(              ) != std::string::npos) {"
+  },
+  {
+   "start": 48370,
+   "end": 48465,
+   "lines": 96,
+   "last_top_stmt": "switch (field) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "        if (method ==          && class_name.find(              ) != std::string::npos) {"
+  },
+  {
+   "start": 48639,
+   "end": 48665,
+   "lines": 27,
+   "last_top_stmt": "case 'E': {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "   if (class_name ==                               && method ==         ) {"
+  },
+  {
+   "start": 48668,
+   "end": 48685,
+   "lines": 18,
+   "last_top_stmt": "break;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "  if (class_name ==                            && method ==         ) {"
+  },
+  {
+   "start": 48691,
+   "end": 48762,
+   "lines": 72,
+   "last_top_stmt": "if (ms >= 0) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "     if (class_name ==                            && method ==           ) {"
+  },
+  {
+   "start": 48902,
+   "end": 48912,
+   "lines": 11,
+   "last_top_stmt": "args[0].type == DalvikType::OBJECT_REF)) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                             && method ==        ) {"
+  },
+  {
+   "start": 48913,
+   "end": 48977,
+   "lines": 65,
+   "last_top_stmt": "args[1].type == DalvikType::INT32) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                      && method ==        ) {"
+  },
+  {
+   "start": 49477,
+   "end": 49501,
+   "lines": 25,
+   "last_top_stmt": "",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "        if (class_name ==                      && method ==         ) {"
+  },
+  {
+   "start": 49792,
+   "end": 49912,
+   "lines": 121,
+   "last_top_stmt": "heap_.set_object_field(args[0].object_id, f609, args[1]);",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                      && method ==           ) {"
+  },
+  {
+   "start": 49937,
+   "end": 50064,
+   "lines": 128,
+   "last_top_stmt": "return false;",
+   "ends_unconditional_return": true,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "                        if (method ==            && !args.empty()) {"
+  },
+  {
+   "start": 50070,
+   "end": 50084,
+   "lines": 15,
+   "last_top_stmt": "bool eq = false;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "     if (class_name ==                      && method ==         ) {"
+  },
+  {
+   "start": 50105,
+   "end": 50137,
+   "lines": 33,
+   "last_top_stmt": "if (std::getenv(\"MINIANDROID_F040_DIAG\")) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "                    if (class_name ==                      && method ==         ) {"
+  },
+  {
+   "start": 50199,
+   "end": 50228,
+   "lines": 30,
+   "last_top_stmt": "*value);",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "           if (class_name ==                      && method ==                ) {"
+  },
+  {
+   "start": 50237,
+   "end": 50248,
+   "lines": 12,
+   "last_top_stmt": "args.size() == 1) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "        if (class_name ==                      && method ==              ) {"
+  },
+  {
+   "start": 50252,
+   "end": 50263,
+   "lines": 12,
+   "last_top_stmt": "case DalvikType::NULL_REF: return \"null\";",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "   if (class_name ==                      && method ==              ) {"
+  },
+  {
+   "start": 50600,
+   "end": 50625,
+   "lines": 26,
+   "last_top_stmt": "int32_t f101_copied = 0;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "  if (class_name ==                      && method ==             && args.size() >= 2) {"
+  },
+  {
+   "start": 50626,
+   "end": 50643,
+   "lines": 18,
+   "last_top_stmt": "std::getenv(\"MINIANDROID_F264_ADDALL_DIAG\") != nullptr) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "if (class_name ==                      && method ==          && args.size() >= 2) {"
+  },
+  {
+   "start": 50677,
+   "end": 50979,
+   "lines": 303,
+   "last_top_stmt": "if (f264_sst && !f264_sst->elements.empty()) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "                                 if (class_name ==                      && args.size() >= 1) {"
+  },
+  {
+   "start": 51048,
+   "end": 51093,
+   "lines": 46,
+   "last_top_stmt": "if (f360_got && !f360_elem.is_null) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "         if (class_name ==                                                ) {"
+  },
+  {
+   "start": 51336,
+   "end": 51383,
+   "lines": 48,
+   "last_top_stmt": "f570_got = true;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (class_name ==                          && method ==       ) {"
+  },
+  {
+   "start": 51575,
+   "end": 51658,
+   "lines": 84,
+   "last_top_stmt": "int32_t f91_pos = 0;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": true,
+   "cond_raw": "      if (class_name ==                      && method ==           && args.size() >= 3) {"
+  },
+  {
+   "start": 52136,
+   "end": 52186,
+   "lines": 51,
+   "last_top_stmt": "DataType::DYNAMIC_REFERENCE)) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "         if (class_name ==                      && method ==          && !args.empty()) {"
+  },
+  {
+   "start": 52190,
+   "end": 52201,
+   "lines": 12,
+   "last_top_stmt": "if (f454_type == (int32_t)resources::DataType::DIMENSION) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "   if (class_name ==                            && method ==         ) {"
+  },
+  {
+   "start": 52210,
+   "end": 52226,
+   "lines": 17,
+   "last_top_stmt": "args[2].type == DalvikType::INT32",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "        if (class_name ==                            && method ==          ) {"
+  },
+  {
+   "start": 53097,
+   "end": 53101,
+   "lines": 5,
+   "last_top_stmt": "c8_woken = !still;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": " if (class_name.find(     ) != std::string::npos) {"
+  },
+  {
+   "start": 53179,
+   "end": 53187,
+   "lines": 9,
+   "last_top_stmt": "if (method == \"notifyAll\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": " if (method ==          ) {"
+  },
+  {
+   "start": 53198,
+   "end": 53208,
+   "lines": 11,
+   "last_top_stmt": "method == \"isInterrupted\" || method == \"getState\")) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "          if (class_name ==                      && method ==         ) {"
+  },
+  {
+   "start": 53228,
+   "end": 53238,
+   "lines": 11,
+   "last_top_stmt": "if (method == \"interrupted\") thread_interrupted_[tid] = fals",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "  if (class_name ==                      && method ==         ) {"
+  },
+  {
+   "start": 53243,
+   "end": 53264,
+   "lines": 22,
+   "last_top_stmt": "std::string(st) == \"WAITING\" ? 3",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "    if (class_name ==                      && method ==                ) {"
+  },
+  {
+   "start": 53267,
+   "end": 53323,
+   "lines": 57,
+   "last_top_stmt": "<< current_method_ << std::endl;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "  if (class_name ==                      && method ==        ) {"
+  },
+  {
+   "start": 53326,
+   "end": 53356,
+   "lines": 31,
+   "last_top_stmt": "if (!opened && timed) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "  if (class_name ==                           ) {"
+  },
+  {
+   "start": 53401,
+   "end": 53470,
+   "lines": 70,
+   "last_top_stmt": "if (target == 0) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "    if (class_name ==                       && shadow_registry_ == nullptr) {"
+  },
+  {
+   "start": 53473,
+   "end": 53492,
+   "lines": 20,
+   "last_top_stmt": "\"LOUDLY\" << std::endl;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "  if (class_name.find(                ) != std::string::npos) {"
+  },
+  {
+   "start": 53735,
+   "end": 53739,
+   "lines": 5,
+   "last_top_stmt": "if (method == \"getPendingCount\") {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "    if (method ==               ) {"
+  },
+  {
+   "start": 53744,
+   "end": 53754,
+   "lines": 11,
+   "last_top_stmt": "else if (args[1].type == DalvikType::INT32) n = args[1].int_",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "    if ((method ==          || method ==         ) && shadow_registry_ != nullptr) {"
+  },
+  {
+   "start": 53755,
+   "end": 53823,
+   "lines": 69,
+   "last_top_stmt": "? par.object_id : 0;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (shadow_registry_ != nullptr) {"
+  },
+  {
+   "start": 54429,
+   "end": 54445,
+   "lines": 17,
+   "last_top_stmt": "if (class_name == \"Ljava/util/concurrent/ConcurrentLinkedQue",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": true,
+   "has_static_local": false,
+   "cond_raw": "               if (class_name ==                                    ) {"
+  },
+  {
+   "start": 55114,
+   "end": 55333,
+   "lines": 220,
+   "last_top_stmt": "<< std::endl;",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "           if (class_name ==                             ) {"
+  },
+  {
+   "start": 55350,
+   "end": 55379,
+   "lines": 30,
+   "last_top_stmt": "if (f020_view_ancestry) {",
+   "ends_unconditional_return": false,
+   "has_goto": false,
+   "has_fallthrough_attr": false,
+   "has_lambda": false,
+   "has_static_local": false,
+   "cond_raw": "if (method_idx_hint != 0xFFFFFFFFu) {"
+  }
+ ]
+}
