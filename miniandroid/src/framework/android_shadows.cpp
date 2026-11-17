@@ -7160,11 +7160,14 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 if (!apk_path_.empty() && rt.ensure_loaded(apk_path_) && registry_) {
                     auto* view_shadow = registry_->find_as<ViewShadow>();
                     if (view_shadow) {
+                        std::cerr << "[U007-VS] inflate vs=" << (const void*)view_shadow
+                                  << " reg=" << (const void*)registry_ << std::endl;
                         resources::InflateStats istats;
                         uint32_t root_id = rt.inflater().inflate_layout_resid(
                             view_shadow, (uint32_t)layout_resource_id_, istats);
                         std::cerr << "[U007-INFLATE] root_id=" << root_id
                                   << " views=" << istats.views_created
+                                  << " map_now=" << view_shadow->node_count()
                                   << " strings=" << istats.strings_resolved
                                   << " ids=" << istats.ids_resolved
                                   << " unresolved=" << istats.unresolved_refs << std::endl;
