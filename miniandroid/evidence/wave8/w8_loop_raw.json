@@ -1,0 +1,58 @@
+{
+ "interpreter_loop_s": [
+  [
+   21.04,
+   20.84,
+   0.18,
+   0.02
+  ],
+  [
+   21.1,
+   20.9,
+   0.18,
+   0.02
+  ],
+  [
+   20.74,
+   20.55,
+   0.18,
+   0.02
+  ]
+ ],
+ "opcode_loop_s": [
+  [
+   9.81,
+   9.61,
+   0.18,
+   0.02
+  ],
+  [
+   9.64,
+   9.45,
+   0.18,
+   0.02
+  ]
+ ],
+ "parity": {
+  "ru.zxalexis.ugaday_15": {
+   "rc": 127,
+   "sha256_24": "",
+   "canon": "87fe26766fc48d06c59d4c15",
+   "match": false
+  },
+  "tech.gaskell.diceroller_1_debug": {
+   "rc": 127,
+   "sha256_24": "",
+   "canon": "46b07062ba6fe36ca8a6e42d",
+   "match": false
+  },
+  "com.itsfrz.tictactoe_5": {
+   "rc": 127,
+   "sha256_24": "",
+   "canon": "d55056a8928a26ffeb15f66d",
+   "match": false
+  }
+ },
+ "battery_rc": 0,
+ "test_links_s": 11.99
+}

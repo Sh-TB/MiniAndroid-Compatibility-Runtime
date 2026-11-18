@@ -1,0 +1,12 @@
+{
+  "wave": "WAVE-8",
+  "path_under_test": "build_dev_so/miniandroid_dev + libminiandroid_dalvik.so (dynamic dev path)",
+  "apks": {
+    "ru.zxalexis.ugaday_15": {"rc": 0, "sha256_24": "87fe26766fc48d06c59d4c15", "canonical_16": "87fe2676", "match": true, "state": "SUCCESS"},
+    "tech.gaskell.diceroller_1_debug": {"rc": 1, "sha256_24": "46b07062ba6fe36ca8a6e42d", "canonical_16": "46b07062", "match": true, "state": "PARTIAL (pre-existing; interaction unproven)"},
+    "com.itsfrz.tictactoe_5": {"rc": 1, "sha256_24": "d55056a8928a26ffeb15f66d", "canonical_16": "d55056a8", "match": true, "state": "PARTIAL (pre-existing; interaction unproven)"}
+  },
+  "comparison": {"monolith": "identical hashes", "wave7_split": "identical hashes", "note": "screenshot parity proven; interaction/state parity NOT claimed for PARTIAL apps"},
+  "tests": {"battery_so_path": "3/3 PASS (simple_test, s130_laws_test, gp582_engine_probe_test)", "production_static_path": "untouched; build/miniandroid static binary unchanged", "monolith_fallback": "re-verified WAVE-7 (make DALVIK_SPLIT=0 rc=0)"},
+  "logs": "/tmp/w8_*.log (session-local); evidence JSONs committed to evidence/wave8/"
+}

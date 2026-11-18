@@ -1,0 +1,44 @@
+{
+  "wave": "WAVE-8",
+  "base_commit": "eac17a66",
+  "environment": {"gcc": "14.2.0", "ld": "binutils 2.44 (ld.bfd)", "cpus": 2, "cgroup_gb": 4, "offline": true},
+  "baseline_static_reproduced": {
+    "interpreter_edit_to_test_s": 36.38,
+    "breakdown": {"make_all_incl_compile_and_link_s": 23.87, "compiler_peak_rss_mb": 1074, "test_core_s": 12.51, "ld_peak_rss_mb": 563, "battery_pass": 3},
+    "reps": 1,
+    "note": "wave-7 value 34.1s re-measured at 36.4s (2-run spread, same config)"
+  },
+  "link_cost_facts": {
+    "test_exes": [{"name": "gp582_engine_probe_test", "mb": 116.0}, {"name": "simple_test", "mb": 115.7}, {"name": "s130_laws_test", "mb": 114.5}],
+    "debug_sections_mb": {"debug_info": 56.3, "debug_loclists": 18.3, "debug_str": 17.8, "debug_line": 7.7, "all_debug": 103.6},
+    "text_mb": 8.2, "symbols": 17508, "core_objects_per_test_link": 82,
+    "strip_debug_ab": {"full_s": 4.78, "strip_s": 5.03, "verdict": "strip-debug SLOWER at link; rejected"}
+  },
+  "so_dev_path": {
+    "one_time_pic_compiles_s": {"dalvik_engine_core": 21.27, "dalvik_engine_invoke": 21.33, "dalvik_interpreter": 21.51, "dalvik_opcodes": 9.66, "dalvik_opcodes_invoke": 13.82, "dalvik_bridge": 40.33, "dalvik_engine_tail": 6.68, "total": 114.6},
+    "so_relink_s": 0.18,
+    "test_links_static_plus_so_s": {"simple_test": 5.01, "s130_laws_test": 1.56, "gp582_engine_probe_test": 5.61},
+    "miniandroid_dev_link_s": 0.92,
+    "interpreter_loop_s": [[21.04, 20.84, 0.18, 0.02], [21.10, 20.90, 0.18, 0.02], [20.74, 20.55, 0.18, 0.02]],
+    "opcode_loop_s": [[9.81, 9.61, 0.18, 0.02], [9.64, 9.45, 0.18, 0.02]],
+    "battery_so_path": {"rc": 0, "pass": 3},
+    "peak_rss_mb": {"bridge_pic_cc1plus": 2155, "ld_test_link": 563},
+    "reps": {"interpreter": 3, "opcode": 2, "so_relink": 7},
+    "medians": {"interpreter_loop_s": 21.04, "opcode_loop_s": 9.81}
+  },
+  "targets": {
+    "opcode_lt10s": "MET (9.6-9.8s)",
+    "interpreter_lt15s": "PARTIAL (21.0s, compile-bound 20.8s)",
+    "interpreter_lt30s_wave8_base": "MET (21.0s)",
+    "bridge_lt30s": "PARTIAL (~40.6s)",
+    "noop_lt05s": "PARTIAL (1.07s make overhead)",
+    "peak_rss": "MET (2155MB max)",
+    "no_unnecessary_relink": "MET (zero test-exe relinks per engine edit)"
+  },
+  "blocked": {"linkers": "find / for ld.gold/ld.lld/mold: zero hits; apt blocked (not root)", "ccache": "absent", "non_pic_so": "R_X86_64_TPOFF32 TLS relocation hard error"},
+  "reproduction": {
+    "one_time": "python3 -I scripts/w8_sodev.py  (builds build_dev_so/ from scratch)",
+    "loop_bench": "python3 -I scripts/w8_loop.py",
+    "rollback": "rm -rf build_dev_so/ && git checkout eac17a66 -- ."
+  }
+}

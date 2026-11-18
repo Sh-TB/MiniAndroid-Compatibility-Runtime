@@ -547,3 +547,85 @@ $(MEGABATCH_OBJECT): $(JSON_DIR)/include/nlohmann/json.hpp
 resource_trace:
 	$(CXX) $(CXXFLAGS) -Wl,--no-keep-memory $(INCLUDES) $(JSON_INCLUDE) -o $(BUILDDIR)/resource_trace tools/resource_trace.cpp $(CORE_OBJECTS) $(THUNK_OBJECT) $(QUICKJS_OBJECTS) $(LIBS) $(FONTS_LIBS)
 
+
+# ============================================================================
+# WAVE-9 (ISSUE-612): OPT-IN shared-library development path.
+# Production static build (all/, test-core) and the Monolith fallback
+# (DALVIK_SPLIT=0) are UNCHANGED — this block is purely additive.
+#
+# Architecture (wave-8, measured): the 7 volatile dalvik TUs are recompiled
+# -fPIC into build_dev_so/objects/ and linked into libminiandroid_dalvik.so
+# (0.18 s relink). Test exes and miniandroid_dev keep the stable runtime +
+# quickjs + thunk STATIC (debug intact) and link the dalvik set DYNAMICALLY,
+# so an engine edit never relinks a test executable.
+#
+# Staleness safety: dev-so-test depends on $(DEV_SO_LIB), which depends on
+# every PIC object — a dalvik source edit always relinks the .so BEFORE any
+# test runs; a missing .so is rebuilt, never silently skipped. PIC objects
+# carry -MMD dep files, so header edits rebuild the PIC object too.
+# Rollback: make dev-so-clean (removes build_dev_so/ entirely); nothing else
+# in the build graph references this path.
+# ============================================================================
+
+DEV_SO_DIR = build_dev_so
+DEV_SO_PARTS_OBJ = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(addprefix $(SRCDIR)/,$(DALVIK_SPLIT_PARTS)))
+DEV_SO_PIC = $(patsubst $(SRCDIR)/dex/%.cpp,$(DEV_SO_DIR)/objects/%.o,$(addprefix $(SRCDIR)/,$(DALVIK_SPLIT_PARTS)))
+DEV_SO_STABLE_OBJS = $(filter-out $(DEV_SO_PARTS_OBJ),$(CORE_OBJECTS))
+DEV_SO_LIB = $(DEV_SO_DIR)/libminiandroid_dalvik.so
+DEV_SO_TEST_EXES = $(addprefix $(DEV_SO_DIR)/tests/,$(TEST_CORE))
+DEV_SO_MAIN_OBJS = $(MAIN_OBJECT) $(BUILDDIR)/jni/bionic_compat.o $(BUILDDIR)/jni/pthread_shadow.o
+
+# PIC objects — flags mirror the production per-TU rules exactly (+ -fPIC):
+# interpreter keeps its wave-7 inline budget, bridge keeps -Og (4 GB host).
+$(DEV_SO_DIR)/objects/dalvik_interpreter.o: $(SRCDIR)/dex/dalvik_interpreter.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -g0 -fPIC --param inline-unit-growth=15 --param large-function-growth=120 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+$(DEV_SO_DIR)/objects/dalvik_bridge.o: $(SRCDIR)/dex/dalvik_bridge.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -Og -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+$(DEV_SO_DIR)/objects/%.o: $(SRCDIR)/dex/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+# Shared library: SONAME pinned; $ORIGIN rpath (make-escaped $$ORIGIN).
+$(DEV_SO_LIB): $(DEV_SO_PIC)
+	@mkdir -p $(DEV_SO_DIR)
+	$(CXX) -shared -o $@ $(DEV_SO_PIC) -Wl,-soname,libminiandroid_dalvik.so -Wl,-rpath,'$$ORIGIN' $(LIBS)
+
+# Test exes: static stable set + dynamic dalvik. The .so is deliberately NOT
+# a prerequisite (no relink per engine edit); staleness handled by dev-so-test.
+$(DEV_SO_DIR)/tests/%: $(TESTDIR)/%.cpp $(DEV_SO_STABLE_OBJS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT)
+	@mkdir -p $(DEV_SO_DIR)/tests
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $< \
+		$(filter-out $<,$^) -L$(DEV_SO_DIR) -lminiandroid_dalvik \
+		-Wl,-rpath,'$$ORIGIN/..' $(LIBS) $(FONTS_LIBS)
+
+# Dev main binary: identical architecture to $(EXECUTABLE).
+$(DEV_SO_DIR)/miniandroid_dev: $(DEV_SO_MAIN_OBJS) $(DEV_SO_STABLE_OBJS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT)
+	@mkdir -p $(DEV_SO_DIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -rdynamic -o $@ $^ \
+		-L$(DEV_SO_DIR) -lminiandroid_dalvik -Wl,-rpath,'$$ORIGIN' $(LIBS) $(FONTS_LIBS)
+
+define DEV_SO_BATTERY
+failed=0; total=0; \
+for t in $(1); do \
+	exe="$(DEV_SO_DIR)/tests/$$t"; \
+	total=$$((total+1)); \
+	if LD_LIBRARY_PATH=$(DEV_SO_DIR) timeout $(TEST_TIMEOUT) ./"$$exe" > "$(DEV_SO_DIR)/tests/$$t.log" 2>&1; then \
+		echo "[PASS] $$t"; \
+	else \
+		rc=$$?; echo "[FAIL] $$t (rc=$$rc) — log: $(DEV_SO_DIR)/tests/$$t.log"; failed=$$((failed+1)); \
+	fi; \
+done; \
+echo "BATTERY SUMMARY: total=$$total passed=$$((total-failed)) failed=$$failed"; \
+test $$failed -eq 0
+endef
+
+.PHONY: dev-so dev-so-test dev-so-clean
+dev-so: $(DEV_SO_LIB) $(DEV_SO_TEST_EXES) $(DEV_SO_DIR)/miniandroid_dev
+dev-so-test: $(DEV_SO_LIB) $(DEV_SO_TEST_EXES)
+	@$(call DEV_SO_BATTERY,$(TEST_CORE))
+dev-so-clean:
+	rm -rf $(DEV_SO_DIR)
