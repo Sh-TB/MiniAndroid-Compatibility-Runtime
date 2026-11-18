@@ -1,0 +1,34 @@
+{
+ "wave": "W15 — 60/20/20 integration, independent audit (#627) reconciliation, runtime continuation",
+ "base_sha": "d72c87e4 (W14 tip)",
+ "final_sha": "45a6e0e8 (pushed, wave10/dalvik-accel)",
+ "integration_review": {
+  "issues_reviewed": ["#627 (18 findings, all 9 comments read)", "#607 (E-01..E-04, 19ee074a branch checked: NOT merged)", "#612", "#618/619/620 (G-01/G-02)", "#613"],
+  "reconciliation_corrections": [
+   "E-02 23x part STALE: ARITH_23X already carried the GP-INT-012/015 law",
+   "G-02 narrowed by #627 comment 7: F-NEW-518 type-match rows unconditional at HEAD; residual question is deferred-delivery, not type matching",
+   "E-01 family WIDER than reported: execute_const_16/CONST_WIDE_16 21s dest truncation + execute_method frame geometry (hardcoded registers_size=16, ins_size=args.size())"],
+  "newly_integrated": ["E-01 (both paths + family)", "E-02 lit8/lit16 (both paths)", "E-03 jumbo shift (both paths)", "H-01 (D-02 braces)", "H-02 (D-01 hash escape + D-04 -lstdc++fs)", "H-03 (D-03 mallinfo2 fallback)", "C-01 (CMake per-TU contract)"],
+  "already_present": ["ARITH_23X law (E-02 partial)", "F-NEW-518 NameNotFoundException rows (G-02)", "S-LAUNCHDRAIN (#615)", "dev-so split workflow (C-02 mitigation)"],
+  "rejected_or_deferred": ["G-01: no change (documented layout, #619 item stays corrected)", "F-01/F-02: catalogued, no corpus app blocked", "C-02 bridge split: next structural task (C-04 proposal 1/2)"]
+ },
+ "runtime_proof": {
+  "test": "tests/w15_dalvik_lit_from16_law_test.cpp (raw-opcode probe, TEST_CORE)",
+  "result": "6/6 PASS",
+  "rows": ["lit8_div_int32min_by_minus1_is_int32min", "lit16_rem_int32min_by_minus1_is_zero", "lit16_add_int32max_plus1_wraps_to_min", "lit8_mul_2_to_the_31_wraps_to_min", "move_from16_reads_param_v301 (302-reg method, (I)I param)", "move_wide_from16_reads_param_v300 ((J)J wide param)"],
+  "labels": {"E-01": "RUNTIME_PASS", "E-02": "RUNTIME_PASS", "E-03": "IMPLEMENTED (no >65k-string harness yet)"}
+ },
+ "build_perf_c04": {
+  "devso_single_tu": "7s", "devso_header_cascade(dalvik_engine.h)": "102s", "devso_shadows_tu": "34s", "static_single_tu_plus_relink": "151s",
+  "conclusion": "edit/test loop 7s (dev-so); dominant remaining cost = central-header cascade 102s (14x) — next structural task: split dalvik_bridge.cpp or stabilize dalvik_engine.h"
+ },
+ "gate": {
+  "law_tests": "gp582 12/12, s130 51/51, F-709 5/5, F-714 7/7, F-716 6/6, w15 6/6",
+  "apk_hashes_3run": {"pz": "4cb90ca61deb5191 x3 (result chain fires x3)", "guess": "87fe26766fc48d06 x3", "np": "31ddd4d5b8e6d18e x3", "dice": "0de952bf75f89409", "ttt": "d55056a8928a26ff"},
+  "regressions": "none — all hashes identical to W14 baseline"
+ },
+ "w16_next_divergences": [
+  "n-Puzzle Game model async image load: post-selection flow never reaches Game.loadImage; board onMeasure throws IllegalStateException('No image loaded') at Game.getImageAspectRatio pc=15; needs Message/notifyParent law + converter resubmission after selection",
+  "GridView item pixels: ARSC drawable paths 0/79 (item slots 0x0)",
+  "BMI Calculator / Blockinger untested this wave (targets pending)"]
+}
