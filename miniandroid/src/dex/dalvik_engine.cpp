@@ -37004,6 +37004,19 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
         }
         if (gss_ctx540) {
         std::string svc_name339;
+        // F-NEW-713 diag (R339 site): entry probe — every gss reaching this
+        // law prints its arg shape (capped), so a silent miss is visible.
+        static thread_local uint64_t f713r_n = 0;
+        if (f713r_n++ < 16) {
+            std::cerr << "[F713R-GSS] receiver=" << class_name
+                      << " argc=" << args.size();
+            if (args.size() >= 2)
+                std::cerr << " arg1_type=" << static_cast<int>(args[1].type)
+                          << " arg1_desc=" << args[1].class_desc
+                          << " arg1_str=" << args[1].string_val;
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
         if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
             svc_name339 = args[1].string_val;
         } else if (args.size() >= 2 && args[1].type == DalvikType::CLASS_REF) {
@@ -77430,6 +77443,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (!service_name.empty()) {
                 std::cerr << "[EXP093-SVC] getSystemService(\"" << service_name
                           << "\") → null (unknown service)" << std::endl;
+            } else {
+                // F-NEW-713 diag (engine site A): null answer with NO resolved
+                // name — print the raw arg shape (same law as the bridge-site
+                // copy): farmerbb/Notepad a0/a.<init> autofill helper ISE hit
+                // this silent exit.
+                static thread_local uint64_t f713a_n = 0;
+                if (f713a_n++ < 24) {
+                    std::cerr << "[F713A-GSS-NULL] receiver=" << class_name
+                              << " argc=" << args.size();
+                    if (args.size() >= 2)
+                        std::cerr << " arg1_type=" << static_cast<int>(args[1].type)
+                                  << " arg1_desc=" << args[1].class_desc
+                                  << " arg1_str=" << args[1].string_val
+                                  << " arg1_oid=" << args[1].object_id
+                                  << " arg1_refid=" << args[1].ref_id;
+                    std::cerr << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
             }
         }
         return true;

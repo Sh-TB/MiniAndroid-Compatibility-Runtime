@@ -38719,6 +38719,51 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // ── F-NEW-714 (W12): android.view.View$MeasureSpec static law ──
+    // Pure AOSP arithmetic (View.java$MeasureSpec):
+    //   getSize(spec)          = spec & MEASURED_SIZE_MASK (0x3fffffff)
+    //   getMode(spec)          = (spec >> MODE_SHIFT) & MODE_MASK (0x3)
+    //   makeMeasureSpec(size, mode) = (mode << MODE_SHIFT) | (size & ~MODE_MASK)
+    //   makeSafeMeasureSpec(size, mode) = UNSPECIFIED → 0, else makeMeasureSpec
+    // These are STATIC, stateless, and every app custom-view measure needs
+    // them: name.livitski n-Puzzle GamePlay$1.onMeasure pc≈0x10 calls
+    // MeasureSpec.getSize → the miss answered the typed default 0 → the
+    // resize math collapsed and resizeContent never scaled the board.
+    // No app keying, no defaults beyond the AOSP formulas.
+    if (class_name == "Landroid/view/View$MeasureSpec;" &&
+        (method == "getSize" || method == "getMode" ||
+         method == "makeMeasureSpec" || method == "makeSafeMeasureSpec")) {
+        // F-714 arg law: MeasureSpec methods are STATIC — args[0] is the
+        // first parameter (no receiver slot).
+        const auto i32 = [](const DalvikValue& v) -> int32_t {
+            return v.type == DalvikType::INT32 ? v.int_val : 0;
+        };
+        if (method == "getSize" && args.size() >= 1) {
+            result = DalvikValue::make_int(i32(args[0]) & 0x3FFFFFFF);
+        } else if (method == "getMode" && args.size() >= 1) {
+            result = DalvikValue::make_int((i32(args[0]) >> 30) & 0x3);
+        } else if ((method == "makeMeasureSpec" ||
+                    method == "makeSafeMeasureSpec") &&
+                   args.size() >= 2) {
+            int32_t sz = i32(args[0]), md = i32(args[1]);
+            // AOSP makeMeasureSpec(int size, int mode): size first, mode
+            // second (the platform never defined a swapped overload).
+            int32_t spec = (md << 30) | (sz & 0x3FFFFFFF);
+            if (method == "makeSafeMeasureSpec" && md == 0) spec = 0;
+            result = DalvikValue::make_int(spec);
+        } else {
+            result = DalvikValue::make_int(0);
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        static thread_local uint64_t f714_n = 0;
+        if (f714_n++ < 12)
+            std::cerr << "[F714-MSPEC] " << method
+                      << " → " << result.int_val
+                      << " caller=" << current_class_ << "." << current_method_
+                      << std::endl;
+        return true;
+    }
+
     // ────────────────────────────────────────────────────────────────────────
     // P1.6 — Context.getSystemService → service object or null
     // EXP-093/F007: Per AOSP ContextImpl.getSystemService, each service name
@@ -38929,6 +38974,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (!service_name.empty()) {
                 std::cerr << "[EXP093-SVC] getSystemService(\"" << service_name
                           << "\") → null (unknown service)" << std::endl;
+            } else {
+                // F-NEW-713 diag: a null answer with NO resolved name —
+                // print the raw arg shape so the caller's lookup path is
+                // visible (farmerbb/Notepad a0/a.<init> autofill helper ISE
+                // "Autofill service could not be located." hit this silent
+                // exit; the empty-name case printed nothing before).
+                static thread_local uint64_t f713_null_n = 0;
+                if (f713_null_n++ < 24) {
+                    std::cerr << "[F713-GSS-NULL] receiver=" << class_name
+                              << " argc=" << args.size();
+                    if (args.size() >= 2)
+                        std::cerr << " arg1_type=" << static_cast<int>(args[1].type)
+                                  << " arg1_desc=" << args[1].class_desc
+                                  << " arg1_str=" << args[1].string_val
+                                  << " arg1_oid=" << args[1].object_id;
+                    std::cerr << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
             }
         }
         return true;

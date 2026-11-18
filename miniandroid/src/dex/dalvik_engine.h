@@ -2990,6 +2990,16 @@ public:
     bool class_chain_defines_method(const std::string& class_desc,
                                     const std::string& method) const;
 
+    // F-NEW-712 (W12): direct DEX superclass descriptor for class_desc —
+    // "" when the class is framework-side (not in class_to_superclass_).
+    // The ancestry walks above cannot cross framework edges; callers that
+    // need the ONE-HOP parent (e.g. the render-stage root onMeasure gate)
+    // use this instead.
+    std::string direct_superclass_of(const std::string& class_desc) const {
+        auto it = class_to_superclass_.find(class_desc);
+        return it == class_to_superclass_.end() ? std::string() : it->second;
+    }
+
     // M3 F-005 FIX-A: true when the ancestry reaches a framework family
     // whose onMeasure CONTENT semantics the runtime implements itself
     // (TextView/Button/ImageView/…). Such nodes take the content measure;

@@ -3889,6 +3889,65 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     [this](const std::string& c, const std::string& a) {
                                         return dalvik_engine_.is_subclass_of(c, a);
                                     });
+                                // ── F-NEW-712 (W12): overrides_on_measure
+                                // RUNTIME-CLASS SYNC (AOSP View identity law)
+                                // ── The M71 DEX-onMeasure dispatch law
+                                // (R-NEW-347, containers included) gates on
+                                // node->overrides_on_measure, which is
+                                // captured at CONSTRUCTOR time from the
+                                // DECLARED class. For app subclasses created
+                                // with `new` (n-Puzzle: `new RelativeLayout(
+                                // this) { onMeasure... }` injected into the
+                                // shell frame via forceSetContentView) the
+                                // ctor shadow runs with the FRAMEWORK declared
+                                // class, so the flag stays false forever: the
+                                // app's onMeasure override never executes →
+                                // resizeContent never runs → zero setTag and
+                                // zero tile drawables (the board stayed empty
+                                // and every dispatched click routed to a null
+                                // tag). Per frame, re-derive the flag from
+                                // the HEAP object's runtime class (field-
+                                // identity law) for every node of the tree;
+                                // the existing M71 hook then dispatches the
+                                // real bytecode with the correct incoming
+                                // specs, including child negotiation and the
+                                // INCOMPLETE-EMULATION law.
+                                if (view_shadow != nullptr && root_id != 0) {
+                                    std::function<void(uint32_t)> sync712 =
+                                        [&](uint32_t vid) {
+                                            auto* n712 =
+                                                view_shadow->find_node(vid);
+                                            if (!n712) return;
+                                            const auto* h712 =
+                                                dalvik_engine_.get_heap().get(
+                                                    vid);
+                                            if (h712 &&
+                                                !h712->class_descriptor.empty() &&
+                                                dalvik_engine_
+                                                    .class_chain_defines_method(
+                                                        h712->class_descriptor,
+                                                        "onMeasure")) {
+                                                if (!n712->overrides_on_measure) {
+                                                    static thread_local
+                                                        uint64_t f712_n = 0;
+                                                    if (f712_n++ < 12)
+                                                        std::cerr
+                                                            << "[F712-SYNC] view="
+                                                            << vid << " "
+                                                            << h712
+                                                               ->class_descriptor
+                                                            << " overrides_on_measure=1"
+                                                            << std::endl;
+                                                }
+                                                n712->overrides_on_measure =
+                                                    true;
+                                            }
+                                            for (uint32_t c712 :
+                                                 n712->children)
+                                                sync712(c712);
+                                        };
+                                    sync712(root_id);
+                                }
                                 rt.inflater().measure_layout(view_shadow, root_id);
                                 // 21-P0-6/P1-2 census: the canonical measure
                                 // + layout pass RAN for this frame.
