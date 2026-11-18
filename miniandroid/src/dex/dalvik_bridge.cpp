@@ -38719,6 +38719,84 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         return true;
     }
 
+    // ── F-NEW-717 (W13): android.view.View.inflate law ──────────────────
+    // AOSP View.java (public static View inflate(Context context,
+    // @LayoutRes int resource, ViewGroup root)):
+    //     return LayoutInflater.from(context)
+    //              .inflate(resource, root, root != null);
+    // Programmatic view composition uses it everywhere: n-Puzzle's shell
+    // Activity.forceSetContentView does View.inflate(this, layoutResID,
+    // null) to inject the subclass content — the stub answered the typed
+    // default (null), the picker's grid slot stayed empty, findViewById
+    // returned null and ImageSelection.onCreate died on
+    // GridView.setOnItemClickListener (F447 null-recv NPE, W12 trace) —
+    // killing the whole multi-activity launch flow. The runtime's inflater
+    // already serves setContentView(res) (UNIFIED_007); this law routes
+    // View.inflate through the SAME machinery. Identity law: the inflated
+    // root's shadow node id IS the heap object id returned to the DEX.
+    // AOSP root semantics: root==null → attachToRoot=false → return the
+    // inflated root; root!=null → attachToRoot=true → addView into the
+    // root and return the ROOT.
+    if (class_name == "Landroid/view/View;" && method == "inflate" &&
+        args.size() >= 2 && args[1].type == DalvikType::INT32) {
+        auto& rt717 = resources::ResourceRuntime::instance();
+        uint32_t resid717 = static_cast<uint32_t>(args[1].int_val);
+        auto* vs717 = shadow_registry_
+                          ? shadow_registry_->find_as<framework::ViewShadow>()
+                          : nullptr;
+        if (vs717 && !apk_path_.empty() && rt717.ensure_loaded(apk_path_)) {
+            resources::InflateStats ist717;
+            uint32_t inflated717 =
+                rt717.inflater().inflate_layout_resid(vs717, resid717, ist717);
+            if (inflated717 != 0) {
+                const auto* infl_node = vs717->find_node(inflated717);
+                std::string infl_cls = infl_node ? infl_node->class_desc
+                                                 : "Landroid/view/View;";
+                uint32_t root_oid =
+                    (args.size() >= 3 &&
+                     args[2].type == DalvikType::OBJECT_REF)
+                        ? args[2].object_id
+                        : 0;
+                if (root_oid != 0) {
+                    // root != null → attachToRoot=true: attach the inflated
+                    // view into the root and return the ROOT (AOSP).
+                    if (vs717->add_child(root_oid, inflated717)) {
+                        const auto* rootn = vs717->find_node(root_oid);
+                        result = DalvikValue::make_object(
+                            root_oid, rootn ? rootn->class_desc
+                                            : "Landroid/view/ViewGroup;");
+                    } else {
+                        result = DalvikValue::make_object(inflated717,
+                                                          infl_cls);
+                    }
+                } else {
+                    result = DalvikValue::make_object(inflated717, infl_cls);
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                static thread_local uint64_t f717_n = 0;
+                if (f717_n++ < 12)
+                    std::cerr << "[F717-INFLATE] View.inflate(res=0x" << std::hex
+                              << resid717 << std::dec << ") → obj#" << inflated717
+                              << " views=" << ist717.views_created
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                return true;
+            }
+            std::cerr << "[F717-INFLATE-FAIL] View.inflate(res=0x" << std::hex
+                      << resid717 << std::dec
+                      << ") produced no root — honest null (caller="
+                      << current_class_ << "." << current_method_ << ")"
+                      << std::endl;
+            result = DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        // No registry/APK context — honest null (never a fabricated view).
+        result = DalvikValue::make_null();
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
     // ── F-NEW-714 (W12): android.view.View$MeasureSpec static law ──
     // Pure AOSP arithmetic (View.java$MeasureSpec):
     //   getSize(spec)          = spec & MEASURED_SIZE_MASK (0x3fffffff)
@@ -41838,6 +41916,58 @@ measure_cm_done:;
             status = ApiCallTrace::Status::IMPLEMENTED;
             result = DalvikValue::make_object(arr_id,
                                               "[Ljava/lang/reflect/Field;");
+            return true;
+        }
+        // ────────────────────────────────────────────────────────────────
+        // F-NEW-718 (W13): Class.getFields — PUBLIC fields (declared +
+        // inherited), JDK Class.getFields law (getDeclaredFields returns
+        // ALL fields; getFields returns only public ones across the chain).
+        // Ground truth (n-Puzzle W12/W13): ImageSource.init pc=177
+        // enumerates the picker's bundled-image ids via
+        // Class.getFields() on R$drawable — the stub answered the typed
+        // default (null), the app iterated a null array
+        // (ARR-LEN-NULL NPE at pc=177 → uncaught through GamePlay.onCreate
+        // → APP BOUNDARY) and the picker's grid never populated. Same
+        // Field-object + array conventions as R-NEW-337 above.
+        if (method == "getFields" && !dotted.empty()) {
+            std::vector<uint32_t> fids718;
+            std::string walk718 = referent_desc;
+            for (int hop718 = 0; hop718 < 16 && !walk718.empty(); ++hop718) {
+                for (const auto& cd : dex_report_->classes) {
+                    if (cd.name != walk718) continue;
+                    auto add718 = [&](const dex::FieldInfo& fd) {
+                        if (!(fd.access_flags & 0x1)) return;  // public only
+                        uint32_t fid718 = make_field500(walk718, fd.name,
+                                                        fd.type, fd.is_static,
+                                                        fd.access_flags);
+                        fids718.push_back(fid718);
+                    };
+                    for (const auto& fd : cd.instance_fields) add718(fd);
+                    for (const auto& fd : cd.static_fields) add718(fd);
+                    break;
+                }
+                auto sup718 = class_to_superclass_.find(walk718);
+                if (sup718 == class_to_superclass_.end()) break;
+                walk718 = sup718->second;
+                if (walk718.empty() || walk718 == "Ljava/lang/Object;") break;
+            }
+            uint32_t arr718 = heap_.allocate(
+                "[Ljava/lang/reflect/Field;", pc_, 0);
+            heap_.set_object_field(
+                arr718, "__array_length__",
+                DalvikValue::make_int((int32_t)fids718.size()));
+            for (size_t i = 0; i < fids718.size(); ++i) {
+                heap_.set_object_field(
+                    arr718, "array[" + std::to_string(i) + "]",
+                    DalvikValue::make_object(fids718[i],
+                                             "Ljava/lang/reflect/Field;"));
+            }
+            std::cerr << "[F718-REFLECT] Class(" << referent_desc
+                      << ").getFields() -> " << fids718.size()
+                      << " public fields arr#" << arr718 << std::endl;
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            result = DalvikValue::make_object(
+                arr718, "[Ljava/lang/reflect/Field;");
             return true;
         }
         // ────────────────────────────────────────────────────────────────
