@@ -1,0 +1,22 @@
+{
+ "parity_so_path": {
+  "ru.zxalexis.ugaday_15": {
+   "rc": 0,
+   "sha256_24": "87fe26766fc48d06c59d4c15",
+   "canonical_16": "87fe2676",
+   "match": true
+  },
+  "tech.gaskell.diceroller_1_debug": {
+   "rc": 1,
+   "sha256_24": "46b07062ba6fe36ca8a6e42d",
+   "canonical_16": "46b07062",
+   "match": true
+  },
+  "com.itsfrz.tictactoe_5": {
+   "rc": 1,
+   "sha256_24": "d55056a8928a26ffeb15f66d",
+   "canonical_16": "d55056a8",
+   "match": true
+  }
+ }
+}

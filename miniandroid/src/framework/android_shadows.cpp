@@ -6797,46 +6797,6 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         }
         return CallResult::handled_object(ctx.receiver_id, "Landroid/content/Intent;");
     }
-    // ── ISSUE-609 F-INTX-1: AOSP Intent.putExtras(Bundle) law ────────────
-    // First divergence (Blockinger #609): MainActivity.start() builds the
-    // GameActivity Intent with a Bundle (putInt mode/level, putString
-    // playername) and hands it over with intent.putExtras(bundle). The
-    // engine had putExtra (singular, per-mapping) but NOT putExtras — the
-    // stub tail answered silently, pi->extras_* stayed EMPTY, and
-    // getExtras() lawfully answered null (no extras were ever put). The
-    // app then died at GameActivity.onCreate's unguarded
-    // game.setLevel(b.getInt("level")) NPE (pc=72) — the guarded
-    // b.getInt("mode") read was skipped, so the crash came from the level
-    // read AFTER the (correct) NEW_GAME branch. AOSP contract:
-    // putExtras(Bundle) copies EVERY source mapping into the intent's
-    // extras (bundle.putAll semantics onto the intent). The engine's
-    // Bundle law (EXP-093) stores each mapping as a "bundle:<key>" field,
-    // so enumerate the source object's fields and copy them into the
-    // pi->extras_* maps the getExtras law (F-NEW-642) already answers.
-    if (m == "putExtras") {
-        if (ctx.args.size() >= 1 &&
-            ctx.args[0].kind == CallContext::Arg::Kind::OBJECT &&
-            ctx.args[0].object_id != 0 && heap_) {
-            for (const auto& fn :
-                 heap_->get_object_field_names(ctx.args[0].object_id)) {
-                if (fn.rfind("bundle:", 0) != 0) continue;
-                const std::string k = fn.substr(7);
-                CallContext::Arg v;
-                if (!heap_->get_value_field(ctx.args[0].object_id, fn, v))
-                    continue;
-                if (v.kind == CallContext::Arg::Kind::STRING)
-                    pi->extras_string[k] = v.string_val;
-                else if (v.kind == CallContext::Arg::Kind::INT)
-                    pi->extras_int[k] = v.int_val;
-                else if (v.kind == CallContext::Arg::Kind::BOOL)
-                    pi->extras_bool[k] = v.bool_val;
-                else if (v.kind == CallContext::Arg::Kind::LONG)
-                    pi->extras_int[k] = static_cast<int32_t>(v.long_val);
-            }
-        }
-        return CallResult::handled_object(ctx.receiver_id,
-                                          "Landroid/content/Intent;");
-    }
     if (m == "getStringExtra") {
         std::string k = ctx.arg_as_string(0);
         auto it = pi->extras_string.find(k);
@@ -7200,14 +7160,11 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                 if (!apk_path_.empty() && rt.ensure_loaded(apk_path_) && registry_) {
                     auto* view_shadow = registry_->find_as<ViewShadow>();
                     if (view_shadow) {
-                        std::cerr << "[U007-VS] inflate vs=" << (const void*)view_shadow
-                                  << " reg=" << (const void*)registry_ << std::endl;
                         resources::InflateStats istats;
                         uint32_t root_id = rt.inflater().inflate_layout_resid(
                             view_shadow, (uint32_t)layout_resource_id_, istats);
                         std::cerr << "[U007-INFLATE] root_id=" << root_id
                                   << " views=" << istats.views_created
-                                  << " map_now=" << view_shadow->node_count()
                                   << " strings=" << istats.strings_resolved
                                   << " ids=" << istats.ids_resolved
                                   << " unresolved=" << istats.unresolved_refs << std::endl;

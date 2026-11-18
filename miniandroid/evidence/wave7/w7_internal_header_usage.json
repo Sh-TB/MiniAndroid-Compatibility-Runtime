@@ -1,0 +1,50 @@
+{
+ "decl_count": 24,
+ "usage": {
+  "dalvik_engine_core": [
+   "atexit",
+   "memcpy",
+   "parse_proto_param_types"
+  ],
+  "dalvik_engine_invoke": [
+   "call_result_to_dalvik",
+   "dalvik_value_to_arg",
+   "memcpy"
+  ],
+  "dalvik_interpreter": [
+   "build_invoke_args",
+   "dalvik_value_to_string",
+   "memcpy",
+   "parse_proto_param_types"
+  ],
+  "dalvik_opcodes": [
+   "dalvik_value_to_string",
+   "field_trace_active",
+   "framework_enum_ordinal",
+   "framework_static_int",
+   "memcpy"
+  ],
+  "dalvik_opcodes_invoke": [
+   "memcpy"
+  ],
+  "dalvik_bridge": [
+   "atexit",
+   "call_result_to_dalvik",
+   "csl_wrap_single",
+   "dalvik_value_to_arg",
+   "dalvik_value_to_string",
+   "framework_enum_constants",
+   "framework_string_id_text",
+   "g_content_values_mirror_ref",
+   "memcpy",
+   "s130_norm_cls",
+   "s134_dex_field_key"
+  ],
+  "dalvik_engine_tail": [
+   "memcpy"
+  ]
+ },
+ "used_by_all": [
+  "memcpy"
+ ]
+}

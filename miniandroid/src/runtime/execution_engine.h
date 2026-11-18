@@ -254,14 +254,6 @@ private:
     bool stage_initialize_runtime(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_load_classes(ExecutionResult& result);
     bool stage_execute_application(ExecutionResult& result, const ExecutionConfig& config);
-    // S-LAUNCHDRAIN (SOLITAIRE-GAP wave 4): the launch-chain completion drain
-    // between execute_application and render_frame — a real device renders the
-    // first frame only after the app's async launch continuations (AppCompat
-    // delegate init, DataStore reads, coroutine hops) have dispatched. The
-    // serialized engine's stage 5 ended while those continuations were parked
-    // (solitaire: the REAL setContentView + 6-view inflate drained AFTER the
-    // capture; 2048: the GL pump fired after it; notepad: the 5873ms item).
-    bool stage_launch_drain(ExecutionResult& result, const ExecutionConfig& config);
     bool stage_render_frame(ExecutionResult& result, const ExecutionConfig& config);
     // F-NEW-198: final_pass=true skips the R-NEW-340 compose pump (the
     // end-of-window re-capture must not advance app state; it records it).

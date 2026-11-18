@@ -241,7 +241,6 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     if (success) success &= boot_stage("initialize_runtime", stage_initialize_runtime(result, config));
     if (success) success &= boot_stage("load_classes", stage_load_classes(result));
     if (success) success &= boot_stage("execute_application", stage_execute_application(result, config));
-    if (success) success &= boot_stage("launch_drain", stage_launch_drain(result, config));
     if (success) success &= boot_stage("render_frame", stage_render_frame(result, config));
     if (success) success &= boot_stage("capture_output", stage_capture_output(result, config));
     // UNIFIED_011.2 CLICK-TEST: runs AFTER the first frame is captured so the
@@ -7898,158 +7897,8 @@ void ExecutionEngine::invoke_choreographer_do_frame(uint32_t callback_id,
     }
 }
 
-// ── S-LAUNCHDRAIN (SOLITAIRE-GAP wave 4): the launch-chain completion drain.
-// AOSP model: ViewRootImpl's first traversal happens AFTER the activity's
-// async launch chain (AppCompat delegate install, DataStore/preference reads,
-// coroutine hops, ViewPager/Fragment init) has dispatched on the main looper.
-// The serialized engine's stage_execute_application returned while those
-// continuations were still queued/parked (measured: solitaire's REAL
-// setContentView + 6-view inflate drained AFTER stage 7 capture; 2048's GL
-// pump fired post-capture; notepad's 5873ms item never fired in a plain run).
-// Law: between stage 5 and the first frame, drain the main queue to
-// quiescence — including the bounded virtual-clock fast-forward to
-// future-dated items (the F-277 parity law, armed unconditionally HERE:
-// completing the launch chain is this stage's whole purpose; apps without
-// deferred chains drain zero rounds and their frozen launch-frame semantics
-// are untouched — GATE H/G07 goldens keep byte-identical frames).
-bool ExecutionEngine::stage_launch_drain(ExecutionResult& result,
-                                         const ExecutionConfig& config) {
-    (void)result; (void)config;
-    auto* registry = dalvik_engine_.get_shadow_registry();
-    if (!registry) return true;
-    auto* hs = registry->find_as<framework::HandlerShadow>();
-    if (!hs) return true;
-    auto* cs = registry->find_as<framework::ChoreographerShadow>();
-    int rounds = 0, drained_total = 0;
-    int64_t advanced_total_ms = 0;
-    // per-thread idle-resume counters (the S-LAUNCHDRAIN anti-spin law).
-    std::map<uint32_t, uint32_t> launch_drain_resume_spins;
-    // Bounds: 4096 rounds, 16s virtual, and a 25s WALL budget — generous
-    // for a real launch chain (AppCompat+DataStore+fragment init; notepad's
-    // DataStore read chain made steady progress ≈2.5 units/round and needed
-    // more than the first 512), bounded for determinism and run budget.
-    const auto drain_wall_start = std::chrono::steady_clock::now();
-    for (int round = 0; round < 4096; ++round) {
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::steady_clock::now() - drain_wall_start)
-                .count() > 25000) {
-            std::cerr << "[S-LAUNCHDRAIN] wall budget (25s) hit at round="
-                      << round << std::endl;
-            break;
-        }
-        bool did_work = false;
-        // The ENGINE's cross-queue drain (main MessageQueue + Choreographer
-        // due frames + pending Thread starts) — the scheduler boundary the
-        // F-150 parked workers re-drain at. Covers the runtime-side handler
-        // items too (invoke_handler_runnable below is kept for the
-        // framework-token routing the engine's drain skips).
-        uint64_t park_units =
-            dalvik_engine_.drain_park_queues_bounded("launch-drain");
-        if (park_units > 0) {
-            did_work = true;
-            drained_total += (int)park_units;
-        }
-        if (cs && cs->has_pending_callbacks()) {
-            auto due = cs->take_due_callbacks();
-            if (!due.empty()) {
-                did_work = true;
-                for (auto& d : due)
-                    invoke_choreographer_do_frame(d.callback_id, d.callback_class,
-                                                  d.frame_time_nanos);
-            }
-        }
-        if (hs->queue_size() > 0) {
-            std::vector<std::pair<uint32_t, uint32_t>> drained;
-            size_t n = hs->drain_ready_ex(&drained);
-            if (n > 0) {
-                did_work = true;
-                drained_total += (int)n;
-                for (auto& rd : drained)
-                    invoke_handler_runnable(rd.first, rd.second);
-            }
-        }
-        if (!did_work) {
-            // G08 frame boundary: a pending startActivity chain (A.onPause →
-            // B.onCreate → …) — the Splash→Main relay lives here. One chain
-            // per round (AOSP TransactionExecutor ordering), same as the
-            // --frames stage's per-frame consumption.
-            nlohmann::json g08 = consume_pending_intent();
-            if (!g08.is_null()) did_work = true;
-        }
-        if (!did_work) {
-            // F-150 boundary: pending thread STARTS + yielded bodies whose
-            // wake ≤ now resume (the plain-run launch chain relies on this —
-            // the same boundary the --frames stage runs per frame).
-            if (auto* ts150 =
-                    registry->find_as<framework::ThreadShadow>()) {
-                uint32_t t_oid = 0, r_oid = 0;
-                int started = 0;
-                while (started < 4 && ts150->consume_pending_start(t_oid, r_oid)) {
-                    ++started;
-                    dalvik_engine_.run_thread_start_body(t_oid, r_oid);
-                }
-                int resumed = 0;
-                uint32_t y_oid = 0, yr_oid = 0;
-                int64_t now150 = hs->virtual_now_ms();
-                while (resumed < 8 &&
-                       ts150->take_due_yielded(now150, y_oid, yr_oid)) {
-                    // S-LAUNCHDRAIN anti-spin: a parked coroutine worker's
-                    // body that RE-PARKS immediately after its resume (the
-                    // kotlinx Worker findTask/park idle cycle — notepad
-                    // ground truth: 10,245 THREAD-START resumes producing
-                    // zero app progress) is an IDLE worker, not progress.
-                    // Real AOSP: an unparked thread that finds no task
-                    // blocks WITHOUT consuming the scheduler. Cap each
-                    // thread's idle resumes; real work (a handler item, a
-                    // timer fire, a G08 chain) resets nothing — the cap
-                    // just stops ONE body from owning the whole stage.
-                    uint32_t& spin = launch_drain_resume_spins[y_oid];
-                    if (spin >= 32) continue;
-                    ++spin;
-                    ++resumed;
-                    dalvik_engine_.run_thread_start_body(y_oid, yr_oid);
-                    now150 = hs->virtual_now_ms();
-                }
-                if (started || resumed) {
-                    did_work = true;
-                    drained_total += started + resumed;
-                }
-            }
-        }
-        if (!did_work) {
-            // quiescence is an EMPTY queue, not a future-dated head
-            // (F-NEW-277 AOSP MessageQueue.next law): fast-forward to the
-            // earliest due item and drain it — THIS stage's purpose. A
-            // fully-idle clock ticks +1ms (the park-yield wake family: a
-            // parked body re-registers at now+1 and the next round resumes
-            // it), bounded by the 8s stage budget.
-            if (hs->queue_size() > 0) {
-                int64_t next_ready = hs->next_ready_ms();
-                int64_t now_ms = hs->virtual_now_ms();
-                if (next_ready > now_ms &&
-                    advanced_total_ms + (next_ready - now_ms) <= 16000) {
-                    int64_t delta = next_ready - now_ms;
-                    hs->advance_virtual(delta);
-                    advanced_total_ms += delta;
-                    did_work = true;
-                }
-            } else if (advanced_total_ms <= 16000) {
-                hs->advance_virtual(1);
-                advanced_total_ms += 1;
-                did_work = true;
-            }
-        }
-        ++rounds;
-        if (!did_work) break;
-    }
-    std::cerr << "[S-LAUNCHDRAIN] rounds=" << rounds
-              << " drained=" << drained_total
-              << " advanced_ms=" << advanced_total_ms
-              << " queue_left=" << (hs ? hs->queue_size() : 0) << std::endl;
-    return true;
-}
-
-// F-050: bounded launch-frame pump (the first-frame law).// AOSP model: the display's vsync arrives when the main Looper is idle;
+// F-050: bounded launch-frame pump (the first-frame law).
+// AOSP model: the display's vsync arrives when the main Looper is idle;
 // Choreographer runs the CALLBACK_ANIMATION queue at the frame time and
 // every withFrameNanos continuation resumes. The resumed dispatcher posts
 // trampoline work on the SAME main Handler queue (one MessageQueue law),
@@ -10128,34 +9977,11 @@ uint32_t ExecutionEngine::effective_content_root_() const {
     if (!as_ || !vs_) return 0;
     uint32_t root_id = as_->content_view_id();
     if (root_id != 0 && vs_->find_node(root_id)) {
-    static thread_local uint64_t ecr_diag = 0;
-    if (ecr_diag++ < 64)
-        std::cerr << "[ECR-ROOT] scalar content_view_id root=" << root_id
-                  << std::endl;
-    return root_id;
-    }
-    // ── S-ECR-PENDING (SOLITAIRE-GAP wave 4) — the scalar content_view_id
-    // recorded a root whose node the ViewShadow does not yet expose (the
-    // AppCompat delegate path: the inflate ran, content_view_id_ = 408, but
-    // find_node missed at first traversal). The P0-1 one-shot pending
-    // inflate-attach record is the recorder's promised "first-traversal
-    // attach+measure" — consume it HERE (peek-consume: if the recorded root
-    // has no node either, re-record so the real traversal keeps its one
-    // shot) and hand the traversal the recorded root.
-    {
-        uint32_t ia_root = 0;
-        if (vs_->consume_pending_inflate_attach(ia_root) && ia_root != 0) {
-            if (vs_->find_node(ia_root)) {
-                static thread_local uint64_t ecr_diag3 = 0;
-                if (ecr_diag3++ < 64)
-                    std::cerr << "[ECR-ROOT] pending-inflate-attach root="
-                              << ia_root << " promoted (first-traversal law)"
-                              << std::endl;
-                return ia_root;
-            }
-            // node not materialized yet — restore the one-shot record.
-            vs_->record_pending_inflate_attach(ia_root);
-        }
+        static thread_local uint64_t ecr_diag = 0;
+        if (ecr_diag++ < 6)
+            std::cerr << "[ECR-ROOT] scalar content_view_id root=" << root_id
+                      << std::endl;
+        return root_id;
     }
     size_t candidates = 0;
     uint32_t first_match = 0;
@@ -10165,74 +9991,8 @@ uint32_t ExecutionEngine::effective_content_root_() const {
             if (first_match == 0) first_match = id;
         }
     }
-    // ── S-ECR-DECOR (SOLITAIRE-GAP wave 4) — AOSP ViewRootImpl renders the
-    // WHOLE decor tree, not just nodes stamped with android_view_id. A
-    // programmatic decor (Window.getDecorView → F023 parent link) carries no
-    // frame-layout resource id, so the 0x01020002 scan above saw 0
-    // candidates and the window had NO root at all — org.secuso
-    // .privacyfriendlysolitaire inflated 6 real views (root_id=408, views=6)
-    // and still captured a dark empty frame. Honest fallback: any node with
-    // NO parent is a window root; prefer the one with the largest subtree
-    // (the single-window decor dominates real launches). Multi-window
-    // boundary: dialogs added later re-record content_view_id and take the
-    // first branch, so this fallback only serves the launch window.
-    {
-        size_t parentless = 0;
-        uint32_t best_root = 0, best_subtree = 0;
-        for (const auto& [id, node_ptr] : vs_->all_nodes()) {
-            if (!node_ptr) continue;
-            if (node_ptr->parent_id != 0) continue;
-            ++parentless;
-            // subtree size: bounded DFS over the children vectors (the
-            // node map may legitimately hold several windows; the largest
-            // tree is the launch decor).
-            size_t sub = 0;
-            std::vector<uint32_t> stack = node_ptr->children;
-            while (!stack.empty() && sub < 4096u) {
-                uint32_t cid = stack.back();
-                stack.pop_back();
-                ++sub;
-                if (const auto* cn = vs_->find_node(cid))
-                    for (uint32_t gc : cn->children) stack.push_back(gc);
-            }
-            if (sub > best_subtree) {
-                best_subtree = (uint32_t)sub;
-                best_root = id;
-            }
-        }
-        static thread_local uint64_t ecr_diag4 = 0;
-        if (ecr_diag4++ < 64) {
-            std::cerr << "[ECR-ROOT] scan root=" << first_match
-                      << " candidates=" << candidates
-                      << " parentless=" << parentless
-                      << " decor-root=" << best_root
-                      << " subtree=" << best_subtree
-                      << " cur_act=" << as_->current_activity_id()
-                      << " total_nodes=" << vs_->node_count()
-                      << std::endl;
-            // SOLITAIRE-GAP diag: name the parentless nodes (bounded).
-            size_t named = 0;
-            for (const auto& [id, node_ptr] : vs_->all_nodes()) {
-                if (!node_ptr || node_ptr->parent_id != 0) continue;
-                std::cerr << "[ECR-ROOT]   orphan id=" << id
-                          << " cls=" << node_ptr->class_desc
-                          << " children=" << node_ptr->children.size()
-                          << std::endl;
-                if (++named >= 4) break;
-            }
-            // probe the ids the solitaire evidence named (408/407/259).
-            for (uint32_t pid : {408u, 407u, 259u, 1344u})
-                if (const auto* pn = vs_->find_node(pid))
-                    std::cerr << "[ECR-ROOT]   probe id=" << pid
-                              << " HIT cls=" << pn->class_desc << std::endl;
-            std::cerr << "[ECR-ROOT]   vs_=" << (const void*)vs_
-                      << " reg=" << (const void*)shadow_registry_
-                      << std::endl;
-        }
-        if (best_root != 0 && best_subtree > 0) return best_root;
-    }
     static thread_local uint64_t ecr_diag2 = 0;
-    if (ecr_diag2++ < 64)
+    if (ecr_diag2++ < 6)
         std::cerr << "[ECR-ROOT] scan root=" << first_match
                   << " candidates=" << candidates
                   << " cur_act=" << as_->current_activity_id()

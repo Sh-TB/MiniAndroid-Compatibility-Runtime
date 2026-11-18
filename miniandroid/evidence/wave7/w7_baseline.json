@@ -1,0 +1,67 @@
+{
+ "git": {
+  "head": "b567ca9a46b2f619249f84ff26b1a07663174aac",
+  "branch": "main",
+  "status": [
+   "?? scripts/w7_baseline.py"
+  ],
+  "w6_commit_present": true,
+  "safety_tags": [
+   "safety/pre-dalvik-wave3-5e7090e3",
+   "safety/pre-dalvik-wave4-c5b919b4"
+  ]
+ },
+ "toolchain": {
+  "gcc": "g++ (Debian 14.2.0-19) 14.2.0",
+  "ld": "GNU ld (GNU Binutils for Debian) 2.44",
+  "make": "GNU Make 4.4.1",
+  "cmake": "absent",
+  "ninja": "absent",
+  "python": "Python 3.12.16",
+  "ccache": "ABSENT",
+  "gold": "ABSENT",
+  "lld": "ABSENT",
+  "mold": "ABSENT",
+  "binutils_ar": "GNU ar (GNU Binutils for Debian) 2.44",
+  "kernel": "Linux 5.10.134-013.15.kangaroo.al8.x86_64",
+  "cpu_quota": "2"
+ },
+ "cgroup": {
+  "memory_max": "n/a",
+  "mem_total_mb": 4041,
+  "oom_repro_evidence": "w6: bridge -O2 rc=1 @ 3,087 MB (limit is real and enforced)"
+ },
+ "filesystem": "c-6afd1a47-140d72b5-b018cca19d41-rootfs overlay  10284308 2028780   7714856  21% /",
+ "configs": {
+  "split_production": {
+   "compile_count": 91,
+   "bridge_flags": "\u2026 -Og -g0 (wave-4 precedent)",
+   "engine_flags": "\u2026 -O2 -g0",
+   "link_cmd_present": true
+  },
+  "monolith_fallback": {
+   "dry_run_object": "2",
+   "wave5_measured": {
+    "wall_s": 215.1,
+    "peak_mb": 2869,
+    "guess_sha": "87fe2676"
+   },
+   "w7_live_verification": "run in background this session"
+  },
+  "dev": {
+   "cmd": "make DEV=1",
+   "build_dir": "build_dev/",
+   "wave5_loop": 21.36
+  }
+ },
+ "w6_helpers_verified": {
+  "in_bridge": "4",
+  "in_header": "4",
+  "tested": "w6: parity 82, test-core 3/3, 3-APK hashes identical vs mono"
+ },
+ "source_inventory": {
+  "compile_commands": 91,
+  "generated_sources": "",
+  "dex_tus": "19"
+ }
+}
