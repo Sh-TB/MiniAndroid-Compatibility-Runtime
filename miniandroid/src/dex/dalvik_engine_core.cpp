@@ -3689,13 +3689,31 @@ DalvikExecutionResult DalvikExecutionEngine::execute_method(
     build_class_dex_index(dex_report);
 
     if (!method.bytecode.empty()) {
+        // W15 (#627 E-01 companion): the frame register count must come
+        // from the method's OWN header (registers_size) — the hardcoded 16
+        // aliased every >255-register method's frame onto v0..15, so
+        // /from16-family rows and R8's large-register methods could never
+        // address their real registers through this entry point. Zero
+        // keeps the historical default for synthetic methods that don't
+        // carry a header size.
+        uint32_t frame_regs = method.registers_size > 0
+                                  ? static_cast<uint32_t>(method.registers_size)
+                                  : 16u;
+        // W15 (same law as frame_regs): ins_size is the method's OWN header
+        // value (wide params occupy TWO registers — a (J)J method's ins is
+        // 2 while args.size() is 1). Deriving it from args.size() shifted
+        // param_start_ past the wide param and its shadow fell out of the
+        // frame. Zero keeps the historical args-derived default.
+        uint32_t frame_ins = method.ins_size > 0
+                                 ? static_cast<uint32_t>(method.ins_size)
+                                 : static_cast<uint32_t>(args.size());
         execute_method_internal(
             method.defining_class,
             method.name,
             method.descriptor,
             method.bytecode,
-            16,  // Default register count
-            static_cast<uint32_t>(args.size()),
+            frame_regs,
+            frame_ins,
             4,   // Default outs
             args,
             result,

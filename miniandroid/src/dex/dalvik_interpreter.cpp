@@ -13,6 +13,7 @@
 #include "dalvik_engine.h"
 #include "dex_parser.h"
 #include "mutf8.h"
+#include "../src/compat/glibc_mallinfo2.h"  // W15 #627 D-03/H-03: mallinfo2 fallback (glibc < 2.33)
 #include <dlfcn.h>  // #371 PHASE B2: real dlopen/dlerror boundary diagnostics
 #include <openssl/evp.h>  // #371 PHASE B2: sha16 file identity for loadLibrary law
 #include <atomic>  // CONT-86 F-NEW-390 bounded diag counters
@@ -2727,23 +2728,32 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     result_val.type = DalvikType::INT32; \
                     int32_t b_val = dalvik_int_value(b); \
                     /* K-29: lit8 div/rem by zero throws (deferred mechanism).  */ \
-                    if ((op == "div" || op == "rem") && lit == 0) { \
+                    /* W15 (#627 E-02, mirroring the GP-INT-012/015 /2addr law): */ \
+                    /* lit8/lit16 kept the 23x/2addr-era defects — `op == "div"`  */ \
+                    /* compared literal POINTER addresses (unspecified per        */ \
+                    /* [expr.eq]; worked only by string-pool luck) and the signed */ \
+                    /* add/sub/mul/div/rem arithmetic was C++ UB on overflow and  */ \
+                    /* on the INT32_MIN/-1 edge. DEX/Java law (JLS 15.17.2/15.19):*/ \
+                    /* two's-complement wrap; MIN/-1 division == MIN, MIN/-1 rem  */ \
+                    /* == 0. Computed in unsigned width, stored as the identical  */ \
+                    /* bit pattern.                                               */ \
+                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && lit == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT8"); \
                         pc_ = pc_ + 2; \
                         break; \
                     } \
-                    if (op == "add") result_val.int_val = b_val + lit; \
-                    else if (op == "rsub") result_val.int_val = lit - b_val; \
-                    else if (op == "sub") result_val.int_val = b_val - lit; \
-                    else if (op == "mul") result_val.int_val = b_val * lit; \
-                    else if (op == "div") result_val.int_val = b_val / lit; \
-                    else if (op == "rem") result_val.int_val = b_val % lit; \
-                    else if (op == "and") result_val.int_val = b_val & lit; \
-                    else if (op == "or")  result_val.int_val = b_val | lit; \
-                    else if (op == "xor") result_val.int_val = b_val ^ lit; \
-                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
-                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "rsub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(lit) - static_cast<uint32_t>(b_val)); \
+                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "div") == 0) result_val.int_val = (lit == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / lit; \
+                    else if (strcmp(op, "rem") == 0) result_val.int_val = (lit == -1) ? 0 : b_val % lit; \
+                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & lit; \
+                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | lit; \
+                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ lit; \
+                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) << (lit & 0x1f)); \
+                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (lit & 0x1f); \
+                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ = pc_ + 2; \
@@ -2783,23 +2793,26 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
                     int32_t b_val = dalvik_int_value(b); \
-                    if ((op == "div" || op == "rem") && lit == 0) { \
+                    /* W15 (#627 E-02): same lit-family law as ARITH_LIT8 —   */ \
+                    /* strcmp dispatch (was literal-ptr compare), unsigned-    */ \
+                    /* width wrap semantics, MIN/-1 div/rem edge (JLS 15.17.2).*/ \
+                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && lit == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT16"); \
                         pc_ = pc_ + 2; \
                         break; \
                     } \
-                    if (op == "add") result_val.int_val = b_val + lit; \
-                    else if (op == "rsub") result_val.int_val = lit - b_val; \
-                    else if (op == "sub") result_val.int_val = b_val - lit; \
-                    else if (op == "mul") result_val.int_val = b_val * lit; \
-                    else if (op == "div") result_val.int_val = b_val / lit; \
-                    else if (op == "rem") result_val.int_val = b_val % lit; \
-                    else if (op == "and") result_val.int_val = b_val & lit; \
-                    else if (op == "or")  result_val.int_val = b_val | lit; \
-                    else if (op == "xor") result_val.int_val = b_val ^ lit; \
-                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
-                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "rsub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(lit) - static_cast<uint32_t>(b_val)); \
+                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "div") == 0) result_val.int_val = (lit == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / lit; \
+                    else if (strcmp(op, "rem") == 0) result_val.int_val = (lit == -1) ? 0 : b_val % lit; \
+                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & lit; \
+                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | lit; \
+                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ lit; \
+                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) << (lit & 0x1f)); \
+                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (lit & 0x1f); \
+                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
                     set_register(vA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ = pc_ + 2; \
@@ -2826,7 +2839,22 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ + 1 >= bytecode_.size()) return false;
                 uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
                 uint16_t src = bytecode_[pc_ + 1];
-                DalvikValue val = get_register(static_cast<uint8_t>(src));
+                // W15 (#627 E-01): /from16 carries a 16-BIT source register
+                // (exists for methods with >255 registers — R8 emits them
+                // then). The static_cast<uint8_t> aliased v256+ onto
+                // v0..255 and read the WRONG register (the object variant
+                // execute_move_object_from16 was already correct; the int
+                // and wide variants were missed — intra-family drift).
+                // Pass the full uint16_t, mirroring the object law.
+                DalvikValue val = get_register(src);
+                static thread_local uint64_t w15_m16 = 0;
+                if (w15_m16++ < 8)
+                    std::cerr << "[W15-M16S] src=" << src << " val_type="
+                              << (int)val.type << " int_val=" << val.int_val
+                              << " dest=" << (int)dest
+                              << " rf_size=" << (current_registers_
+                                  ? current_registers_->get_size() : 0)
+                              << std::endl;
                 set_register(dest, val);
                 trace.opcode_name = "move/from16";
                 pc_ += 2;
@@ -2861,7 +2889,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ + 2 >= bytecode_.size()) return false;
                 uint16_t instr = bytecode_[pc_];
                 uint8_t dest = (instr >> 8) & 0xFF;
-                uint32_t string_idx = (bytecode_[pc_ + 2] << 16) | bytecode_[pc_ + 1];
+                // W15 (#627 E-03): uint16_t promotes to SIGNED int — (idx>>16)<<16
+                // overflows int for high jumbo indices (UB). Mask into
+                // unsigned width before the shift, matching the packed-
+                // sites at the other 31c readers.
+                uint32_t string_idx =
+                    (static_cast<uint32_t>(bytecode_[pc_ + 2]) << 16) |
+                    static_cast<uint32_t>(bytecode_[pc_ + 1]);
                 DalvikValue val;
                 val.type = DalvikType::STRING_REF;
                 val.int_val = string_idx;
@@ -4157,7 +4191,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ + 1 >= bytecode_.size()) return false;
                 uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
                 uint16_t src = bytecode_[pc_ + 1];
-                DalvikValue val = get_register(static_cast<uint8_t>(src));
+                // W15 (#627 E-01): same 16-bit-source law as move/from16 —
+                // the uint8_t cast aliased v256+ onto v0..255.
+                DalvikValue val = get_register(src);
                 // F-028b: wide values occupy TWO slots (vDest, vDest+1) —
                 // fill the shadow with the high 32-bit word (ART layout).
                 // The missing shadow left range-invoke wide-arg merges
@@ -4437,7 +4473,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
             // const-wide/16 (21s: AA|op BBBB, 2 code units)
             case Opcode::CONST_WIDE_16: {
                 if (pc_ + 1 >= bytecode_.size()) return false;
-                uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
+                // W15 (#627 E-01 family): 21s dest untruncated (v256+ law).
+                uint16_t vAA =
+                    static_cast<uint16_t>((bytecode_[pc_] >> 8) & 0xFF);
                 int16_t val = static_cast<int16_t>(bytecode_[pc_ + 1]);
                 // EXP-071 Phase 8: write to long_val (64-bit) for INT64 type,
                 // NOT int_val (32-bit). The previous bug left long_val with
@@ -5989,11 +6027,20 @@ bool DalvikExecutionEngine::execute_const_4(uint32_t pc, InstructionTrace& trace
 bool DalvikExecutionEngine::execute_const_16(uint32_t pc, InstructionTrace& trace) {
     // Format: 21s [op] vAA, #+BBBB
     if (pc + 1 >= bytecode_.size()) return false;
-    
+
     uint16_t instr = bytecode_[pc];
-    uint8_t dest_reg = (instr >> 8) & 0xFF;
+    // W15 (#627 E-01 family): the 21s dest is a full 8-bit register index —
+    // keep it untruncated so v256+ methods address the right slot (mirrors
+    // the move/from16 law).
+    uint16_t dest_reg = static_cast<uint16_t>((instr >> 8) & 0xFF);
     int16_t literal = static_cast<int16_t>(bytecode_[pc + 1]);
-    
+
+    static thread_local uint64_t w15_c16 = 0;
+    if (w15_c16++ < 8)
+        std::cerr << "[W15-C16] dest=" << dest_reg << " lit=" << literal
+                  << " rf_size=" << (current_registers_
+                      ? current_registers_->get_size() : 0)
+                  << std::endl;
     set_register(dest_reg, DalvikValue::make_int(static_cast<int32_t>(literal)));
     
     trace.operands.push_back({"v" + std::to_string(dest_reg), std::to_string(literal)});

@@ -182,6 +182,36 @@ set(MINIANDROID_BIG_TUS
 set_source_files_properties(${MINIANDROID_BIG_TUS} PROPERTIES
     COMPILE_OPTIONS "-g0")
 
+# W15 (#627 C-01): per-TU compile CONTRACT parity with the Makefile.
+# The Makefile carries measured per-TU memory/optimization overrides that
+# this file previously mirrored only for the two big TUs above. Without
+# them the CMake path compiled dalvik_bridge.cpp at -O2 — the exact
+# configuration the Makefile documents as a ~3 GB cc1plus OOM — and gave
+# the six split parts full debug info (which the Makefile explicitly
+# drops). COMPILE_OPTIONS append AFTER the config flags, so these override
+# them in every config (gcc last-flag-wins), matching the Makefile.
+set(MINIANDROID_SPLIT_PART_TUS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_core.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_invoke.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_interpreter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_opcodes.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_opcodes_invoke.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_tail.cpp
+)
+set_source_files_properties(${MINIANDROID_SPLIT_PART_TUS} PROPERTIES
+    COMPILE_OPTIONS "-g0")
+# dalvik_bridge.cpp (55K lines): -Og + -g0 (the Makefile's measured
+# substitute for -O2: -Og fits in ~2.1 GB where -O2 OOMs at ~3 GB).
+set_source_files_properties(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge.cpp PROPERTIES
+    COMPILE_OPTIONS "-Og;-g0")
+# dalvik_interpreter.cpp: -g0 + the two GCC inline-budget params from the
+# Makefile (5.4K-line fetch_decode_execute; 35.9s -> 21.3s measured).
+set_source_files_properties(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_interpreter.cpp PROPERTIES
+    COMPILE_OPTIONS "-g0;--param=inline-unit-growth=15;--param=large-function-growth=120")
+
 if(APPLE)
     target_compile_options(miniandroid_core PRIVATE -Wno-everything)
 elseif(UNIX)

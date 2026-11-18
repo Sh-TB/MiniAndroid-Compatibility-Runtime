@@ -48,6 +48,13 @@ endif
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
 # rlottie  — Samsung reference Lottie renderer (Telegram uses it directly)
 LIBS = -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile  # S100 NET-001: TLS through OpenSSL (BoringSSL lineage)  # M3 F-ROOM-CHAIN: real SQLite backend
+# W15 (#627 D-04/H-02): std::filesystem lives in libstdc++fs on GCC < 9
+# (Debian 10 / g++-8). Version-conditional — newest libstdc++ may not
+# ship the archive, so never add it unconditionally.
+GCC_MAJOR := $(shell $(CXX) -dumpversion 2>/dev/null | cut -d. -f1)
+ifeq ($(shell test "$(GCC_MAJOR)" -lt 9 && echo yes),yes)
+LIBS += -lstdc++fs
+endif
 ifeq ($(MINIANDROID_HAVE_WEBP),1)
 LIBS += -lwebp -lwebpdemux
 endif
@@ -77,7 +84,11 @@ endif
 # the Makefile and miniandroid/CMakeLists.txt both read it, and
 # `make check-source-parity` asserts the Makefile expansion equals the
 # manifest (run in the test battery).
-CORE_SOURCES := $(shell grep -v '^#' core_sources.manifest)
+# W15 (#627 D-01/H-02): \# is the documented GNU make literal-hash
+# escape — an unescaped # inside $(shell ) is parsed as a comment
+# start by GNU Make < 4.3 (Ubuntu 20.04 ships 4.2.1) and breaks the
+# manifest load. Verified identical behavior on 4.4.
+CORE_SOURCES := $(shell grep -v '^\#' core_sources.manifest)
 
 # ISSUE-612 WAVE-4: the 94K-line dalvik_engine.cpp monolith is split into 5
 # verbatim-range TUs (core/invoke/opcodes/bridge/tail — cuts at verified
@@ -355,7 +366,8 @@ $(KOTLIN_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(KOTLI
 #                          APK fixture path as argv (exit 2 = usage); they
 #                          run inside their dedicated waves with fixtures,
 #                          NOT from the zero-arg battery.
-TEST_CORE = simple_test s130_laws_test gp582_engine_probe_test
+TEST_CORE = simple_test s130_laws_test gp582_engine_probe_test \
+            w15_dalvik_lit_from16_law_test
 TEST_HOSTILE = g04_hostile_test g06g08_hostile_test resource_hostile_test
 TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
 	g10_layout_law_test g11_ctor_law_test \
