@@ -26098,10 +26098,16 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
           class_name == "Ljava/util/LinkedList;") ||
          f264_recv_is_list) &&
         args.size() >= 2 && args[0].type == DalvikType::OBJECT_REF &&
-        args[1].type == DalvikType::OBJECT_REF &&
-        args[1].object_id != 0) {
+        ((args[1].type == DalvikType::OBJECT_REF &&
+          args[1].object_id != 0) ||
+         (method == "addAll" && args.size() >= 3 &&
+          args[1].type == DalvikType::INT32 &&
+          args[2].type == DalvikType::OBJECT_REF &&
+          args[2].object_id != 0))) {
         uint32_t f101_arr = args[0].object_id;
-        uint32_t f101_src = args[1].object_id;
+        uint32_t f101_src = (args[1].type == DalvikType::OBJECT_REF)
+                                ? args[1].object_id
+                                : args[2].object_id;
         const auto* f101_sobj = heap_.get(f101_src);
         std::string f101_scls =
             f101_sobj ? f101_sobj->class_descriptor : std::string(args[1].class_desc);
@@ -26211,6 +26217,90 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             }
         }
         int32_t f101_append_base = 0;
+        // ── F-NEW-721 (W14): addAll(int index, Collection) INSERT law ───
+        // OpenJDK ArrayList/LinkedList.addAll(int, Collection): insert at
+        // the index, shifting the tail. n-Puzzle's ImageSource.init builds
+        // the picker list with the 3-ARG overload (argc=3 evidence,
+        // [S186I-STUB] Ljava/util/LinkedList;.addAll) — the silent stub
+        // left the adapter's list EMPTY, getItem(position) answered null,
+        // and the item-click handler NPE'd at
+        // ImageWithConstraints.getImageId (pc=6) — the last divergence
+        // before the Activity result chain. Shape: args =
+        // (this, index INT, collection). Index-faithful: the shadow store
+        // (CollectionState parallel vectors) inserts at the index and the
+        // heap mirror array[i] is REWRITTEN from the index onward so
+        // heap-side readers agree.
+        if (method == "addAll" && args.size() >= 3 &&
+            args[1].type == DalvikType::INT32 && shadow_registry_ != nullptr) {
+            auto* csh721 =
+                shadow_registry_->find_as<framework::CollectionShadow>();
+            auto* dst721 = csh721 ? csh721->get_or_create(
+                                        args[0].object_id, /*is_map=*/false)
+                                  : nullptr;
+            auto* src721 = csh721 ? csh721->get_or_create(
+                                        args[2].object_id, /*is_map=*/false)
+                                  : nullptr;
+            if (dst721 && src721 && !src721->elements.empty()) {
+                int32_t idx721 = args[1].int_val;
+                if (idx721 < 0) idx721 = 0;
+                if (idx721 > static_cast<int32_t>(dst721->elements.size()))
+                    idx721 = static_cast<int32_t>(dst721->elements.size());
+                size_t sn721 = src721->elements.size();
+                auto at721 = dst721->elements.begin() + idx721;
+                dst721->elements.insert(at721, src721->elements.begin(),
+                                        src721->elements.end());
+                {
+                    size_t k721 = std::min<size_t>(idx721,
+                                                   dst721->elem_kinds.size());
+                    auto kit = dst721->elem_kinds.begin() + k721;
+                    dst721->elem_kinds.insert(
+                        kit, src721->elem_kinds.begin(),
+                        src721->elem_kinds.end());
+                }
+                {
+                    size_t k721 = std::min<size_t>(idx721,
+                                                   dst721->elem_strings.size());
+                    auto kit = dst721->elem_strings.begin() + k721;
+                    dst721->elem_strings.insert(
+                        kit, src721->elem_strings.begin(),
+                        src721->elem_strings.end());
+                }
+                {
+                    size_t k721 = std::min<size_t>(idx721,
+                                                   dst721->elem_ints.size());
+                    auto kit = dst721->elem_ints.begin() + k721;
+                    dst721->elem_ints.insert(kit, src721->elem_ints.begin(),
+                                             src721->elem_ints.end());
+                }
+                // Heap mirror: rewrite every slot from the insert index so
+                // the shifted tail stays coherent (object-kind only, same
+                // convention as the append path).
+                for (size_t i721 = static_cast<size_t>(idx721);
+                     i721 < dst721->elements.size(); ++i721) {
+                    uint8_t k721 = i721 < dst721->elem_kinds.size()
+                                       ? dst721->elem_kinds[i721]
+                                       : 0;
+                    if (k721 == 1 && dst721->elements[i721] != 0)
+                        heap_.set_object_field(
+                            args[0].object_id,
+                            "array[" + std::to_string(i721) + "]",
+                            DalvikValue::make_object(
+                                dst721->elements[i721],
+                                "Ljava/lang/Object;"));
+                }
+                heap_.set_object_field(
+                    args[0].object_id, "__array_length__",
+                    DalvikValue::make_int(
+                        static_cast<int32_t>(dst721->elements.size())));
+                std::cerr << "[F721-ADDALL] addAll(idx=" << args[1].int_val
+                          << ", n=" << sn721 << ") recv=obj#"
+                          << args[0].object_id << " size_now="
+                          << dst721->elements.size() << std::endl;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_bool(true);
+                return true;
+            }
+        }
         if (method == "addAll") {
             auto f101_rlen =
                 heap_.get_object_field(f101_arr, "__array_length__");
@@ -33878,6 +33968,43 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                               << std::endl;
                     return true;
                 }
+            }
+        }
+        // ── F-NEW-722 (W14): the CUSTOM-ADAPTER face — AOSP
+        // AdapterView.getItemAtPosition(position) IS
+        // `mAdapter.getItem(position)` (AdapterView.java). n-Puzzle's
+        // ImageSelection.onItemClick: getItemAtPosition(0) →
+        // ImageWithConstraints.getImageId — the law's existing faces
+        // (ArrayAdapter __ad_objects__ backing store, entries-row text)
+        // don't cover an app BaseAdapter subclass, the honest-null answer
+        // NPE'd the handler at pc=6 and the whole result chain died.
+        // Dispatch the adapter's REAL getItem — the same
+        // try_recursive_invoke shape the C102 materializer uses for
+        // getCount/getView.
+        if (ad_id != 0 && pos >= 0 && !ad_cls.empty()) {
+            DalvikValue gret = DalvikValue::make_void();
+            DalvikExecutionResult gres;
+            std::vector<DalvikValue> gargs{
+                DalvikValue::make_object(ad_id, ad_cls),
+                DalvikValue::make_int(pos)};
+            if (try_recursive_invoke(s130_norm_cls(ad_cls), "getItem",
+                                     gargs, gret, gres)) {
+                result = gret;
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                static thread_local uint64_t f722_n = 0;
+                if (f722_n++ < 12) {
+                    bool gobj = gret.type == DalvikType::OBJECT_REF &&
+                                gret.object_id != 0;
+                    std::cerr << "[F722-GIAP] getItemAtPosition(pos=" << pos
+                              << ") -> "
+                              << (gobj ? "obj#" + std::to_string(gret.object_id)
+                                       : "null")
+                              << " adapter=obj#" << ad_id
+                              << " (" << ad_cls << ")"
+                              << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
+                return true;
             }
         }
         result = DalvikValue::make_null();

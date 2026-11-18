@@ -7372,6 +7372,57 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
     std::cerr << "[CLICK-TEST] " << xml_candidates.size()
               << " view(s) with XML android:onClick handlers" << std::endl;
 
+    // ── F-NEW-719 probe reach (W14): AdapterView items are a THIRD touch
+    // path — items carry no per-view listener; the AdapterView's stored
+    // item listener (setOnItemClickListener law) dispatches onItemClick
+    // via the F-719 tap law inside dispatch_click. n-Puzzle's picker grid
+    // was invisible to this probe (0 item taps → 0 result chains ever
+    // fired). Law: every direct child of an AdapterView holding an item
+    // listener is a probe candidate; dispatch_click resolves the item
+    // law at tap time (per-view/XML handlers still win first, per AOSP
+    // View.performClick ordering).
+    {
+        size_t item_cand719 = 0;
+        size_t adapter_nodes719 = 0;
+        for (const auto& [id719, np719] : view_shadow->all_nodes()) {
+            // The stored item listener IS the AdapterView discriminator
+            // (setOnItemClickListener only exists on adapter views); a
+            // class-substring check would miss GridView/ListView
+            // subclasses ("Landroid/widget/GridView;" does not contain
+            // "AdapterView;").
+            if (!np719) continue;
+            if (np719->item_click_listener_id != 0) {
+                ++adapter_nodes719;
+                std::cerr << "[F719-SCAN] adapter node=" << id719
+                          << " (" << np719->class_desc << ")"
+                          << " children=" << np719->children.size()
+                          << " adapter_id=" << np719->adapter_id
+                          << std::endl;
+                for (uint32_t ch719 : np719->children) {
+                    candidates.push_back(ch719);
+                    ++item_cand719;
+                }
+            }
+        }
+        std::cerr << "[CLICK-TEST] " << item_cand719
+                  << " AdapterView item(s) with item-click listeners"
+                  << " (adapter_nodes=" << adapter_nodes719 << ")"
+                  << std::endl;
+        // F-719 identity probe: the store law recorded the listener on
+        // node 156 during onCreate; if the click-test's ViewShadow shows
+        // a different node state, the registry handed out TWO instances.
+        if (const auto* n156 = view_shadow->find_node(156)) {
+            std::cerr << "[F719-SCAN] node156 exists cls=" << n156->class_desc
+                      << " listener=" << n156->item_click_listener_id
+                      << " children=" << n156->children.size()
+                      << " vs=" << (const void*)view_shadow
+                      << std::endl;
+        } else {
+            std::cerr << "[F719-SCAN] node156 ABSENT vs="
+                      << (const void*)view_shadow << std::endl;
+        }
+    }
+
     if (candidates.empty() && xml_candidates.empty()) return true;
 
     const std::vector<uint8_t> frame1 = framebuffer_;  // untouched baseline
