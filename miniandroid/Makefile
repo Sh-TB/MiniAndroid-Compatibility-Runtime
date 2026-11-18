@@ -25,6 +25,24 @@ ifeq ($(MINIANDROID_HAVE_LOTTIE),1)
 INCLUDES += -I$(RLOTTIE_DIR)/inc
 CXXFLAGS += -DMINIANDROID_HAVE_LOTTIE
 endif
+
+# ===== ISSUE-612 WAVE-2: fast developer feedback (P0) =====
+# DEV=1 swaps the optimization profile of EVERY translation unit to
+# -O0 -g0 (parse/sema iteration speed). Without DEV the production
+# profile (-O2 -g) is byte-identical to the pre-WAVE-2 build.
+# Measured on this host (evidence/issue612_audit/tu_cost_*.json):
+#   dex/dalvik_engine.cpp     -O2: 216.2s (peak ~2.9GB) | -O0: 35.8s
+#   runtime/execution_engine  -O2: ~100s+               | -O0: 10.7s
+#   framework/android_shadows -O2: ~90s+                 | -O0:  5.9s
+# PCH probe (-include prebuilt pch of json.hpp + engine header): 36.4s —
+# NO benefit (frontend cost is the TU's own 94K lines) → rejected.
+# DEV=1 is for the L0/L1 component loop; L3/L4 (real-APK / regression)
+# always rebuild with the production profile.
+ifeq ($(DEV),1)
+CXXFLAGS := $(filter-out -O2 -g,$(CXXFLAGS)) -O0 -g0
+# DEV artifacts live in build_dev/ — the BUILDDIR override below is applied
+# AFTER the base `BUILDDIR = build` assignment (assignment order matters).
+endif
 # EXP-097 §5/§6: image codec libraries.
 # libwebp — Google reference WebP decoder (used by AOSP Skia / BitmapFactory)
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
@@ -43,6 +61,14 @@ FONTS_LIBS = -lfreetype -lharfbuzz -lfribidi -lpng
 SRCDIR = src
 BUILDDIR = build
 TESTDIR = tests
+# ISSUE-612 WAVE-2: DEV=1 builds use a SEPARATE object tree (build_dev/) so a
+# -O0 dev build never silently replaces production -O2 objects of unchanged
+# sources — make tracks timestamps, not flags; a mixed-profile build/ tree
+# would ship -O0 objects into the production binary. (Placed BELOW the base
+# assignment so the override wins.)
+ifeq ($(DEV),1)
+BUILDDIR := build_dev
+endif
 
 # GP583-BUILD-002: ONE shared source manifest consumed by BOTH build
 # graphs. The old duplicated list drifted (CMake carried 12 TUs while the
@@ -52,6 +78,28 @@ TESTDIR = tests
 # `make check-source-parity` asserts the Makefile expansion equals the
 # manifest (run in the test battery).
 CORE_SOURCES := $(shell grep -v '^#' core_sources.manifest)
+
+# ISSUE-612 WAVE-4: the 94K-line dalvik_engine.cpp monolith is split into 5
+# verbatim-range TUs (core/invoke/opcodes/bridge/tail — cuts at verified
+# brace-depth-2 boundaries; see scripts/w4_split.py + checkpoint comments).
+# DALVIK_SPLIT=1 (default) builds the split TUs; DALVIK_SPLIT=0 restores the
+# original monolithic fallback (file kept in the repo, one-command switch).
+# A split-mode stamp forces the affected objects to rebuild on a flip (make
+# tracks timestamps, not manifest/flag changes).
+DALVIK_SPLIT ?= 1
+# WAVE-5: opcode range decomposed 3-way (interpreter / field ops / invoke+framework)
+DALVIK_SPLIT_PARTS = dex/dalvik_engine_core.cpp dex/dalvik_engine_invoke.cpp \
+	dex/dalvik_interpreter.cpp dex/dalvik_opcodes.cpp \
+	dex/dalvik_opcodes_invoke.cpp dex/dalvik_bridge.cpp dex/dalvik_engine_tail.cpp
+ifeq ($(DALVIK_SPLIT),0)
+CORE_SOURCES := $(filter-out $(addprefix $(SRCDIR)/,$(DALVIK_SPLIT_PARTS)),$(CORE_SOURCES))
+CORE_SOURCES += $(SRCDIR)/dex/dalvik_engine.cpp
+endif
+DALVIK_SPLIT_STAMP = $(BUILDDIR)/dalvik_split_$(DALVIK_SPLIT).stamp
+$(DALVIK_SPLIT_STAMP):
+	@mkdir -p $(BUILDDIR)
+	@rm -f $(BUILDDIR)/dalvik_split_*.stamp
+	@touch $@
 # Per-lane views of the manifest are kept for documentation purposes only;
 # the canonical list is the manifest. (The old hand-maintained duplicates
 # were removed — they were the drift surface BUILD-002 documents.)
@@ -61,6 +109,31 @@ QUICKJS_OBJECTS = $(patsubst $(QUICKJS_DIR)/%.c,$(BUILDDIR)/quickjs/%.o,$(QUICKJ
 QUICKJS_CFLAGS = -O2 -std=gnu11 -D_GNU_SOURCE -DCONFIG_VERSION=\"2024-01-13\" -DCONFIG_BIGNUM -w -I$(QUICKJS_DIR)
 
 CORE_OBJECTS = $(patsubst $(SRCDIR)/%.cpp,$(BUILDDIR)/%.o,$(CORE_SOURCES))
+
+# ISSUE-612 WAVE-3 PILOT: DALVIK_MODULAR=1 moves the DalvikValue serialization
+# family (to_string/to_json — the smallest independent family, zero file-local
+# state) out of the 94K-line monolith into dex/dalvik_value_glue.cpp.
+#   make DALVIK_MODULAR=1      → modular definitions (engine copies compiled out)
+#   make                       → original monolithic build (fallback, unchanged)
+# The glue TU is in core_sources.manifest (shared with CMakeLists.txt) and
+# compiles EMPTY in monolithic mode (#ifdef pair in both files) so exactly one
+# definition exists in every mode — no ODR duplication, one-command switch.
+# The mode stamp below forces dalvik_engine.o/dalvik_value_glue.o to rebuild
+# when the mode flips (make tracks timestamps, not flag changes).
+DALVIK_MODULAR ?= 0
+ifeq ($(DALVIK_MODULAR),1)
+CXXFLAGS += -DMINIANDROID_DALVIK_MODULAR
+endif
+DALVIK_MODE_STAMP = $(BUILDDIR)/dalvik_mode_$(DALVIK_MODULAR).stamp
+$(DALVIK_MODE_STAMP):
+	@mkdir -p $(BUILDDIR)
+	@rm -f $(BUILDDIR)/dalvik_mode_*.stamp
+	@touch $@
+$(BUILDDIR)/dex/dalvik_engine.o $(BUILDDIR)/dex/dalvik_value_glue.o \
+$(BUILDDIR)/dex/dalvik_engine_core.o $(BUILDDIR)/dex/dalvik_engine_invoke.o \
+$(BUILDDIR)/dex/dalvik_interpreter.o $(BUILDDIR)/dex/dalvik_opcodes.o \
+$(BUILDDIR)/dex/dalvik_opcodes_invoke.o $(BUILDDIR)/dex/dalvik_bridge.o \
+$(BUILDDIR)/dex/dalvik_engine_tail.o: $(DALVIK_MODE_STAMP) $(DALVIK_SPLIT_STAMP)
 # S-2 native execution thunk (System V x86_64 dynamic call)
 THUNK_OBJECT = $(BUILDDIR)/jni/native_thunk.o
 
@@ -119,6 +192,35 @@ $(BUILDDIR)/dex/dalvik_engine.o: $(SRCDIR)/dex/dalvik_engine.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
+# ISSUE-612 WAVE-4/WAVE-5: the split part TUs inherit the same CONT-37
+# contract (-O2 unchanged, debug sections dropped for these heavy TUs only)…
+$(BUILDDIR)/dex/dalvik_engine_core.o $(BUILDDIR)/dex/dalvik_engine_invoke.o \
+$(BUILDDIR)/dex/dalvik_interpreter.o $(BUILDDIR)/dex/dalvik_opcodes.o \
+$(BUILDDIR)/dex/dalvik_opcodes_invoke.o $(BUILDDIR)/dex/dalvik_engine_tail.o: \
+$(BUILDDIR)/dex/%.o: $(SRCDIR)/dex/%.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+# dalvik_bridge.o (bridge_to_api — 55,195 lines) EXCEEDS this 4 GB host's
+# cc1plus peak at -O2 (measured: OOM kill at ~3,030 MB across -O2 plain,
+# -fno-ipa-cp, -fno-ipa-sra, and GGC-tuned variants; the monolith peaked at
+# 2,871 MB). This rule takes the CONT-37 precedent one documented step
+# further: -Og (debug-quality optimization) for THIS TU only, -O2 everywhere
+# else. Measured: -Og fits at 2,124 MB peak / 38.9 s. Runtime impact is
+# measured on the Guess regression in the wave-4 evidence.
+$(BUILDDIR)/dex/dalvik_bridge.o: $(SRCDIR)/dex/dalvik_bridge.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -Og -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+# WAVE-7 (ISSUE-612): dalvik_interpreter.cpp's fetch_decode_execute is ONE
+# 5,436-line function; -O2 GIMPLE growth on it costs 35.9 s / 1,118 MB
+# (w6 profile). Inline-budget params measured 21.3 s / 1,070 MB with -O2
+# retained (w6 flag experiment). Adopted only after runtime proof: 3-APK
+# screenshot hashes + batteries (wave-7 evidence/wave7).
+$(BUILDDIR)/dex/dalvik_interpreter.o: $(SRCDIR)/dex/dalvik_interpreter.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) --param inline-unit-growth=15 --param large-function-growth=120 -c -o $@ $<
+
 # CONT-39 (F-NEW-301): android_shadows.cpp hit the SAME cc1plus -g peak
 # (OOM kill at ~936 MB RSS during this wave's build — dmesg recorded).
 # Same precedent, same contract: -O2 unchanged, debug sections dropped
@@ -149,6 +251,36 @@ $(BUILDDIR)/main.o: $(MAIN_SOURCE)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 # Tests
+# ===== ISSUE-612 WAVE-2: independent module build targets (Phase 3) =====
+# `make module MODULE=resources` builds every MANIFEST source of ONE module.
+# The manifest (core_sources.manifest) is the single source of truth —
+# dormant/unclassified sources (e.g. resources/real_layout.cpp, which does
+# not compile against the current headers and is not linked into the runtime)
+# are NOT built by module targets, mirroring the main build's manifest rule.
+MODULE ?= resources
+MODULE_SOURCES = $(filter $(SRCDIR)/$(MODULE)/%.cpp,$(CORE_SOURCES))
+MODULE_OBJECTS = $(MODULE_SOURCES:$(SRCDIR)/%.cpp=$(BUILDDIR)/%.o)
+
+.PHONY: module list-modules
+module: $(MODULE_OBJECTS)
+	@echo "[module $(MODULE)] $(words $(MODULE_OBJECTS)) objects up to date (CXXFLAGS: $(CXXFLAGS))"
+list-modules:
+	@ls $(SRCDIR)
+
+# ===== ISSUE-612 WAVE-2: L0/L1 component tests (Phase 4/5) =====
+# Each component test links the SMALLEST object closure that provides the
+# component under test — production objects, never duplicated test code.
+# A one-line change inside that component rebuilds only its own object
+# (measured per-TU in evidence/issue612_audit) and relinks a tiny binary.
+MUTF8_TEST_EXEC = $(BUILDDIR)/i612_mutf8_component_test
+
+.PHONY: mutf8_component
+mutf8_component: $(MUTF8_TEST_EXEC)
+	./$(MUTF8_TEST_EXEC)
+
+$(MUTF8_TEST_EXEC): $(BUILDDIR)/dex/mutf8.o tests/i612_mutf8_component_test.cpp
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ tests/i612_mutf8_component_test.cpp $(BUILDDIR)/dex/mutf8.o $(LIBS)
 # S130 law tests (pure models, deterministic). Full CORE closure so the
 # battery gate can always rebuild them reproducibly.
 LAWS130_SOURCE = $(TESTDIR)/s130_laws_test.cpp
@@ -296,6 +428,14 @@ test-all: check-source-parity $(addprefix $(BUILDDIR)/tests/,$(TEST_BATTERY))
 DORMANT_SOURCES = src/dex/api_dispatcher.cpp src/dex/exception_system.cpp \
 	src/dex/execution_guard.cpp src/dex/execution_observatory.cpp \
 	src/renderer/view_renderer.cpp src/resources/real_layout.cpp
+# ISSUE-612 WAVE-4: in split mode (default) the original monolith is the
+# documented fallback kept in the repo but not linked; in DALVIK_SPLIT=0 mode
+# the split parts are dormant instead. Exactly one classification per mode.
+ifeq ($(DALVIK_SPLIT),1)
+DORMANT_SOURCES += src/dex/dalvik_engine.cpp
+else
+DORMANT_SOURCES += $(addprefix src/,$(DALVIK_SPLIT_PARTS))
+endif
 check-source-parity:
 	@status=0; \
 	for f in $(CORE_SOURCES); do \
