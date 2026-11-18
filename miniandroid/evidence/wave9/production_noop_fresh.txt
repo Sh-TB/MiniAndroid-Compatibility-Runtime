@@ -1,0 +1,3 @@
+production_noop_fresh|rc=0|wall=1.06s|children_peak_rss=34MB|children_cpu=1.08s|PASS=0
+
+Note: earlier catch-up production rebuilds (31.5s / 75.4s) were LEGITIMATE - wave-8 benchmark touches had left production objects stale; dep tracking caught them. Fresh no-op above.
