@@ -1,0 +1,120 @@
+{
+ "traces": {
+  "B_opcode": {
+   "wall_s": 9.51,
+   "rc": 0,
+   "pic_compiles": 1,
+   "so_relink": 1,
+   "test_exe_relinks": 0,
+   "battery_pass": 3
+  },
+  "C_interpreter": {
+   "wall_s": 20.55,
+   "rc": 0,
+   "pic_compiles": 1,
+   "so_relink": 1,
+   "test_exe_relinks": 0,
+   "battery_pass": 3
+  },
+  "D_bridge": {
+   "wall_s": 38.39,
+   "rc": 0,
+   "pic_compiles": 1,
+   "so_relink": 1,
+   "test_exe_relinks": 0,
+   "battery_pass": 3
+  }
+ },
+ "cycles": {
+  "dex/dalvik_interpreter": [
+   21.33,
+   21.58,
+   20.99,
+   21.96,
+   20.86
+  ],
+  "dex/dalvik_opcodes": [
+   9.76,
+   9.73,
+   9.73,
+   9.77,
+   10.16
+  ],
+  "dex/dalvik_bridge": [
+   40.29,
+   41.0,
+   38.95
+  ]
+ },
+ "phases": {
+  "dex/dalvik_interpreter": [
+   [
+    21.44,
+    0.21,
+    0.04
+   ],
+   [
+    21.35,
+    0.2,
+    0.04
+   ]
+  ],
+  "dex/dalvik_opcodes": [
+   [
+    10.08,
+    0.22,
+    0.04
+   ],
+   [
+    9.56,
+    0.21,
+    0.04
+   ]
+  ],
+  "dex/dalvik_bridge": [
+   [
+    39.7,
+    0.2,
+    0.04
+   ],
+   [
+    40.49,
+    0.22,
+    0.04
+   ]
+  ]
+ },
+ "noop": [
+  0.04,
+  0.04,
+  0.04,
+  0.04,
+  0.04
+ ],
+ "apks": {
+  "ru.zxalexis.ugaday_15": {
+   "rc": 0,
+   "sha256_24": "87fe26766fc48d06c59d4c15",
+   "canonical": "87fe2676",
+   "match": true,
+   "state": "SUCCESS",
+   "wall_s": 1.01
+  },
+  "tech.gaskell.diceroller_1_debug": {
+   "rc": 1,
+   "sha256_24": "46b07062ba6fe36ca8a6e42d",
+   "canonical": "46b07062",
+   "match": true,
+   "state": "PARTIAL",
+   "wall_s": 1.48
+  },
+  "com.itsfrz.tictactoe_5": {
+   "rc": 1,
+   "sha256_24": "d55056a8928a26ffeb15f66d",
+   "canonical": "d55056a8",
+   "match": true,
+   "state": "PARTIAL",
+   "wall_s": 1.81
+  }
+ }
+}

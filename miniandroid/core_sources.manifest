@@ -4,7 +4,13 @@ src/dex/dex_parser.cpp
 src/dex/mutf8.cpp
 src/dex/class_resolver.cpp
 src/dex/dex_interpreter_batch.cpp
-src/dex/dalvik_engine.cpp
+src/dex/dalvik_engine_core.cpp
+src/dex/dalvik_engine_invoke.cpp
+src/dex/dalvik_interpreter.cpp
+src/dex/dalvik_opcodes.cpp
+src/dex/dalvik_opcodes_invoke.cpp
+src/dex/dalvik_bridge.cpp
+src/dex/dalvik_engine_tail.cpp
 src/dex/c7_package_index.cpp
 src/dex/trace_exporter.cpp
 src/runtime/execution_engine.cpp
@@ -73,3 +79,4 @@ src/storage/sqlite_shadow.cpp
 src/jni/dlopen_exec.cpp
 src/jni/native_dep.cpp
 src/jni/ma_native_bridge.cpp
+src/dex/dalvik_value_glue.cpp

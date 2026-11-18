@@ -447,3 +447,6 @@ worklog.md
 # S235: the lane-comment working archive (machine-path logs; the canonical
 # source lives on GitHub #588) — local-only like worklog.md
 /scripts/s235_comments/
+
+# WAVE-9 (ISSUE-612): shared-library dev build outputs stay out of git
+miniandroid/build_dev_so/
