@@ -5958,6 +5958,26 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
 
     log("Executing: " + class_name + "." + method_name + descriptor);
+    // W16 (#612 n-Puzzle): generic APP-method entry tracer. Env-gated,
+    // count-capped, stderr-only — answers "which app methods actually ran"
+    // (the DEX-tooling gap the Game.loadImage caller hunt exposed). Classes
+    // outside L-prefix (framework/java arrays) are skipped; non-app runtime
+    // bridges print their own tags already.
+    static thread_local bool ait_on =
+        diag_env("MINIANDROID_APP_INVOKE_TRACE");
+    static thread_local uint64_t ait_n = 0;
+    if (ait_on && ait_n < 4000 && !class_name.empty() &&
+        class_name[0] == 'L') {
+        ++ait_n;
+        std::cerr << "[APP-INVOKE] " << class_name << "." << method_name
+                  << " pc=0 insns=" << bytecode.size()
+                  << " caller="
+                  << (!call_stack_.empty()
+                          ? (call_stack_.top().class_name + "." +
+                             call_stack_.top().method_name)
+                          : std::string("<entry>"))
+                  << std::endl;
+    }
     log("Bytecode size: " + std::to_string(bytecode.size()) + " instructions");
     
     // Create stack frame
