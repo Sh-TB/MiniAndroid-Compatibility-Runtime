@@ -5892,6 +5892,76 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
         }
     }
     if (is_baos_family) return bridge_arm_5892(class_name, method, args_raw, result, status, method_idx_hint, args);
+    // ── F-NEW-709 (W11-APPS): java.io.FileDescriptor materialization law ──
+    // Real apps flush durability-critical writes with the
+    //   stream.getFD().sync()
+    // pattern (OpenJDK FileOutputStream.getFD → THE stream's shared
+    // FileDescriptor; FileDescriptor.sync → fsync). farmerbb/Notepad
+    // v3.0.6 crashed exactly here: getFD() fell through the S186I stub
+    // triage, answered null, and Lv1/F;.j (pc=191 caught by a catch-all,
+    // pc=196 re-thrown, handler NOT_FOUND) unwound four NPEs to the top
+    // → no window content root → blank screen. AOSP libcore law:
+    //   - FileOutputStream/FileWriter/FileInputStream.getFD() returns a
+    //     NON-NULL descriptor for every open stream;
+    //   - FileDescriptor.sync() flushes and returns void (the software
+    //     runtime flushes the host stream — durability to the OS page
+    //     cache — and does not raise SyncFailedException);
+    //   - FileDescriptor.valid() answers true for a live descriptor;
+    //   - sync()/valid() on a NULL receiver stays an NPE (art law kept).
+    // The fd object is materialized once per stream and remembered in
+    // fd_to_stream_ so sync()/valid() resolve the writer through the
+    // same wrapper-hop model as the write contract.
+    if ((class_name == "Ljava/io/FileOutputStream;" ||
+         class_name == "Ljava/io/FileWriter;" ||
+         class_name == "Ljava/io/FileInputStream;") &&
+        method == "getFD" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        uint32_t sid = args[0].object_id;
+        uint32_t fd_oid = 0;
+        for (const auto& [k, v] : fd_to_stream_)
+            if (v == sid) { fd_oid = k; break; }
+        if (fd_oid == 0) {
+            fd_oid = heap_.allocate("Ljava/io/FileDescriptor;", pc_, 0);
+            fd_to_stream_[fd_oid] = sid;
+        }
+        result = DalvikValue::make_object(fd_oid, "Ljava/io/FileDescriptor;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        miniandroid::diagnostics::FileIoTrace::instance().record(
+            "GETFD", "", true, "FileDescriptor materialized for stream o" +
+                std::to_string(sid),
+            current_class_ + "." + current_method_);
+        return true;
+    }
+    if (class_name == "Ljava/io/FileDescriptor;" &&
+        (method == "sync" || method == "valid" || method == "getDescriptor")) {
+        uint32_t fd_oid = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                              ? args[0].object_id : 0;
+        if (fd_oid == 0 || !heap_.has_object(fd_oid)) {
+            // AOSP: these are instance methods — a null receiver is an NPE.
+            throw_deferred("Ljava/lang/NullPointerException;",
+                           "Attempt to invoke 'Ljava/io/FileDescriptor;." +
+                               method + "' on a null object reference",
+                           "F-NEW-709");
+            pc_ += 3;
+            return false;
+        }
+        auto mit = fd_to_stream_.find(fd_oid);
+        if (method == "sync" && mit != fd_to_stream_.end()) {
+            auto wit = open_writers_.find(mit->second);
+            if (wit != open_writers_.end() && wit->second.ever_opened) {
+                wit->second.out.flush();  // fsync face: durability to the OS
+                miniandroid::diagnostics::FileIoTrace::instance().record(
+                    "SYNC", wit->second.host_path, true, "FileDescriptor.sync",
+                    current_class_ + "." + current_method_);
+            }
+        }
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        if (method == "valid")
+            result = DalvikValue::make_bool(true);
+        else
+            result = DalvikValue::make_void();
+        return true;
+    }
     // ST-2 FIX: OutputStream WRITE CONTRACT — write(int)/write(byte[])/
     // write(byte[],off,len)/flush/close on FileOutputStream/FileWriter
     // objects (receiver keyed through open_writers_).

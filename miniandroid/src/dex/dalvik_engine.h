@@ -3143,8 +3143,12 @@ public:
     // to the API stub layer.
     // EXP-077: Made public so ApplicationRuntime can dispatch createView
     // on fragments that need lifecycle advancement.
+    // F-NEW-710: declaring_class is taken BY VALUE — callers may bind it
+    // to heap_obj->class_descriptor; the re-entered interpreter and the
+    // bridge laws allocate on the heap and a heap vector realloc would
+    // dangle a bound reference (Notepad provider-init segfault, 2026-11-18).
     bool try_recursive_invoke(
-        const std::string& declaring_class,
+        const std::string declaring_class,
         const std::string& method_name,
         const std::vector<DalvikValue>& args,
         DalvikValue& return_val,
@@ -3170,7 +3174,7 @@ public:
     // preserved — inherited virtual methods execute with the runtime
     // receiver exactly as ART does. Depth-capped; ends at Object.
     bool try_recursive_invoke_on_super(
-        const std::string& declaring_class,
+        const std::string declaring_class,  // BY VALUE (F-NEW-710)
         const std::string& method_name,
         const std::vector<DalvikValue>& args,
         DalvikValue& return_val,
@@ -4193,6 +4197,9 @@ public:
         bool ever_opened = false;
     };
     std::map<uint32_t, OpenWriter> open_writers_;
+    // F-NEW-709: materialized FileDescriptor → owning stream oid
+    // (getFD() law; sync()/valid() resolve the writer through it).
+    std::map<uint32_t, uint32_t> fd_to_stream_;
     // LOADING-CAMPAIGN: ByteArrayOutputStream buffers (heap oid → bytes).
     std::map<uint32_t, std::string> baos_buffers_;
     // LOADING-CAMPAIGN: drain pending writes at run end (idempotent).

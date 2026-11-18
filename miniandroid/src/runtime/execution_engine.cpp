@@ -245,10 +245,18 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     if (success) success &= boot_stage("capture_output", stage_capture_output(result, config));
     // UNIFIED_011.2 CLICK-TEST: runs AFTER the first frame is captured so the
     // baseline PNG on disk is the untouched frame 1. Never fails the run.
-    if (success && config.click_test) stage_click_test(result, config);
-    // DEMO-CLICK-SEQUENCE: multi-click frame capture (see stage docs).
-    // Runs after click-test so both probes see the launch framebuffer.
-    if (success && config.click_count > 0) stage_click_sequence(result, config);
+    // F-NEW-711 (W11-APPS): the probe is DIAGNOSTIC and must also run when
+    // the app reached a rendered frame but ended with a soft in-flight
+    // exception (F-016 compatibility-continue → success==false, rc=1).
+    // Gating on `success` alone discarded ALL interaction evidence for
+    // exactly the PARTIAL class the APK campaign measures (real Android
+    // still delivers clicks to a crashed-but-resumed activity). First
+    // live face: name.livitski n-Puzzle (1 in-flight exception, 60 frames
+    // rendered, view 22 + Activity$4 listener registered, probe skipped).
+    if ((success || result.content_view) && config.click_test)
+        stage_click_test(result, config);
+    if ((success || result.content_view) && config.click_count > 0)
+        stage_click_sequence(result, config);
     // GOLDEN-02: coordinate-anchored long-press gesture (AOSP touch law).
     if (success && config.long_press_enabled) stage_long_press(result, config);
     // G06 §4/§6: canonical tap gesture through the TouchDispatcher law

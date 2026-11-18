@@ -9602,7 +9602,8 @@ size_t DalvikExecutionEngine::dispatch_activity_lifecycle_callbacks(
 // ORIGINAL object identity — an inherited method executes with the runtime
 // receiver, exactly as ART resolves invokevirtual/interface invokes.
 bool DalvikExecutionEngine::try_recursive_invoke_on_super(
-    const std::string& declaring_class,
+    const std::string declaring_class,  // BY VALUE (F-NEW-710, see
+    // try_recursive_invoke) — callers may bind heap_obj->class_descriptor.
     const std::string& method_name,
     const std::vector<DalvikValue>& args,
     DalvikValue& return_val,
@@ -9815,7 +9816,12 @@ bool DalvikExecutionEngine::try_interface_default_invoke(
 }
 
 bool DalvikExecutionEngine::try_recursive_invoke(
-    const std::string& declaring_class,
+    const std::string declaring_class,  // BY VALUE (F-NEW-710): callers may
+    // bind this to heap_obj->class_descriptor; the re-entered interpreter
+    // and the bridge laws allocate on the heap, and a heap vector realloc
+    // would dangle a bound reference — farmerbb/Notepad provider init
+    // segfaulted in string::rfind exactly that way. One owned copy per
+    // call keeps every find()/rfind() below on stable storage.
     const std::string& method_name,
     const std::vector<DalvikValue>& args,
     DalvikValue& return_val,
