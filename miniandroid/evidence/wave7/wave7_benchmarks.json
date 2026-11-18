@@ -1,0 +1,38 @@
+{
+ "status": "PARTIAL - x5 suite not re-run this wave (reference: wave-5 x5); new W7 measurements reps=1-2 as labeled",
+ "monolith_fallback_reverification": {
+  "cmd": "make DALVIK_SPLIT=0 -j1 all",
+  "rc": 0,
+  "wall_s": 152.0,
+  "note": "live post-W6 header change; Guess hash 87fe2676 (wave-5 full parity stands)"
+ },
+ "interpreter_inline_budget_adopted": {
+  "flags": "-O2 -g0 --param inline-unit-growth=15 --param large-function-growth=120",
+  "compile_s": 21.8,
+  "peak_mb": 1070,
+  "previous_compile_s": 35.9,
+  "gate_end_to_end_s": 34.1,
+  "gate_breakdown": {
+   "make_incl_link": 21.8,
+   "test_incl_static_relink": 12.4
+  },
+  "reps": 1,
+  "runtime_proof": {
+   "guess": "87fe2676",
+   "diceroller": "46b07062",
+   "tictactoe": "d55056a8",
+   "battery_test_core": "27 PASS"
+  }
+ },
+ "blocked_offline": {
+  "ccache": "binary absent, apt blocked (not root, dpkg lock)",
+  "lld_mold_gold": "absent",
+  "cmake_ninja": "absent -> modules/CMake-PCH not adoptable"
+ },
+ "pending": [
+  "ld.bfd --hash-style=gnu relink probe",
+  "bridge Option C inline-budget RSS probe",
+  "PCH .gch A/B in build_pch/",
+  "x5 medians for the new interpreter gate"
+ ]
+}

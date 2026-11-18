@@ -212,6 +212,15 @@ $(BUILDDIR)/dex/dalvik_bridge.o: $(SRCDIR)/dex/dalvik_bridge.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -Og -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
+# WAVE-7 (ISSUE-612): dalvik_interpreter.cpp's fetch_decode_execute is ONE
+# 5,436-line function; -O2 GIMPLE growth on it costs 35.9 s / 1,118 MB
+# (w6 profile). Inline-budget params measured 21.3 s / 1,070 MB with -O2
+# retained (w6 flag experiment). Adopted only after runtime proof: 3-APK
+# screenshot hashes + batteries (wave-7 evidence/wave7).
+$(BUILDDIR)/dex/dalvik_interpreter.o: $(SRCDIR)/dex/dalvik_interpreter.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) --param inline-unit-growth=15 --param large-function-growth=120 -c -o $@ $<
+
 # CONT-39 (F-NEW-301): android_shadows.cpp hit the SAME cc1plus -g peak
 # (OOM kill at ~936 MB RSS during this wave's build — dmesg recorded).
 # Same precedent, same contract: -O2 unchanged, debug sections dropped

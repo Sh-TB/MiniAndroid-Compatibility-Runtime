@@ -1,0 +1,29 @@
+{
+ "apks": {
+  "guess": {
+   "rc": 0,
+   "sha256_16": "87fe26766fc48d06c59d4c15",
+   "state": "SUCCESS"
+  },
+  "diceroller": {
+   "rc": 1,
+   "sha256_16": "46b07062ba6fe36ca8a6e42d",
+   "state": "PARTIAL (pre-existing, interaction unproven)"
+  },
+  "tictactoe": {
+   "rc": 1,
+   "sha256_16": "d55056a8928a26ffeb15f66d",
+   "state": "PARTIAL (pre-existing, interaction unproven)"
+  }
+ },
+ "baseline_comparison": {
+  "wave6_split": "identical hashes",
+  "wave3_monolith": "identical hashes",
+  "note": "screenshot parity proven; interaction/state parity NOT independently claimed for PARTIAL apps"
+ },
+ "tests": {
+  "parity": "82 sources",
+  "test_core": "27 PASS",
+  "monolith_fallback": "rc=0"
+ }
+}
