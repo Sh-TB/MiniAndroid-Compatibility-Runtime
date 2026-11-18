@@ -1,0 +1,117 @@
+{
+ "devso_rebuild": {
+  "wall_s": 450.24,
+  "rc": 0
+ },
+ "battery": {
+  "wall_s": 0.05,
+  "rc": 0,
+  "pass": 3
+ },
+ "apks": {
+  "ru.zxalexis.ugaday_15": {
+   "canonical": "87fe2676",
+   "expected_class": "SUCCESS",
+   "reps": [
+    {
+     "rc": 0,
+     "sha256_24": "87fe26766fc48d06c59d4c15",
+     "match": true,
+     "wall_s": 1.03
+    },
+    {
+     "rc": 0,
+     "sha256_24": "87fe26766fc48d06c59d4c15",
+     "match": true,
+     "wall_s": 0.95
+    },
+    {
+     "rc": 0,
+     "sha256_24": "87fe26766fc48d06c59d4c15",
+     "match": true,
+     "wall_s": 0.97
+    }
+   ],
+   "all_match": true,
+   "hashes_identical_across_reps": true
+  },
+  "tech.gaskell.diceroller_1_debug": {
+   "canonical": "46b07062",
+   "expected_class": "PARTIAL",
+   "reps": [
+    {
+     "rc": 1,
+     "sha256_24": "46b07062ba6fe36ca8a6e42d",
+     "match": true,
+     "wall_s": 1.51
+    },
+    {
+     "rc": 1,
+     "sha256_24": "46b07062ba6fe36ca8a6e42d",
+     "match": true,
+     "wall_s": 1.51
+    },
+    {
+     "rc": 1,
+     "sha256_24": "46b07062ba6fe36ca8a6e42d",
+     "match": true,
+     "wall_s": 1.42
+    }
+   ],
+   "all_match": true,
+   "hashes_identical_across_reps": true
+  },
+  "com.itsfrz.tictactoe_5": {
+   "canonical": "d55056a8",
+   "expected_class": "PARTIAL",
+   "reps": [
+    {
+     "rc": 1,
+     "sha256_24": "d55056a8928a26ffeb15f66d",
+     "match": true,
+     "wall_s": 1.91
+    },
+    {
+     "rc": 1,
+     "sha256_24": "d55056a8928a26ffeb15f66d",
+     "match": true,
+     "wall_s": 1.48
+    },
+    {
+     "rc": 1,
+     "sha256_24": "d55056a8928a26ffeb15f66d",
+     "match": true,
+     "wall_s": 1.48
+    }
+   ],
+   "all_match": true,
+   "hashes_identical_across_reps": true
+  }
+ },
+ "traces": {
+  "interpreter": {
+   "wall_s": 12.1,
+   "rc": 0,
+   "pic_compiles": 1,
+   "so_relink": 1,
+   "test_exe_relinks": 0,
+   "pass": 3
+  },
+  "bridge": {
+   "wall_s": 25.68,
+   "rc": 0,
+   "pic_compiles": 1,
+   "so_relink": 1,
+   "test_exe_relinks": 0,
+   "pass": 3
+  },
+  "opcode": {
+   "wall_s": 10.23,
+   "rc": 0,
+   "pic_compiles": 1,
+   "so_relink": 1,
+   "test_exe_relinks": 0,
+   "pass": 3
+  }
+ }
+}

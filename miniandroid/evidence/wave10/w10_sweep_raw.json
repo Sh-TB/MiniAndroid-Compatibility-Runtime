@@ -1,0 +1,50 @@
+{
+ "interpreter": {
+  "I1_growth10_80": {
+   "wall_s": 21.79,
+   "rc": 0
+  },
+  "I2_growth8_60_auto20": {
+   "wall_s": 21.74,
+   "rc": 0
+  },
+  "I3_growth6_45_auto12": {
+   "wall_s": 21.3,
+   "rc": 0
+  },
+  "I4_noipa": {
+   "wall_s": 22.19,
+   "rc": 0
+  },
+  "I5_ggc": {
+   "wall_s": 22.97,
+   "rc": 0
+  }
+ },
+ "bridge": {
+  "B1_ggc30": {
+   "wall_s": 39.37,
+   "rc": 0
+  },
+  "B2_ggc60": {
+   "wall_s": 39.61,
+   "rc": 0
+  },
+  "B3_O1": {
+   "wall_s": 39.26,
+   "rc": 1
+  },
+  "B4_noipa": {
+   "wall_s": 39.41,
+   "rc": 0
+  },
+  "B5_inline_caps": {
+   "wall_s": 39.4,
+   "rc": 0
+  },
+  "B6_O0": {
+   "wall_s": 25.51,
+   "rc": 0
+  }
+ }
+}

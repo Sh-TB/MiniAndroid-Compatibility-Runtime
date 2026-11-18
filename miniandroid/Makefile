@@ -573,15 +573,25 @@ DEV_SO_LIB = $(DEV_SO_DIR)/libminiandroid_dalvik.so
 DEV_SO_TEST_EXES = $(addprefix $(DEV_SO_DIR)/tests/,$(TEST_CORE))
 DEV_SO_MAIN_OBJS = $(MAIN_OBJECT) $(BUILDDIR)/jni/bionic_compat.o $(BUILDDIR)/jni/pthread_shadow.o
 
-# PIC objects — flags mirror the production per-TU rules exactly (+ -fPIC):
-# interpreter keeps its wave-7 inline budget, bridge keeps -Og (4 GB host).
+# PIC objects — WAVE-10 speed profiles for the DEV-SO PATH ONLY (production
+# per-TU rules below are untouched: interpreter -O2 + wave-7 budget, bridge -Og).
+# Attribution (wave-10, -ftime-report x5): both TUs are optimization/codegen
+# bound (callgraph functions expansion 63%/50%). Dev-path profiles chosen from
+# measured candidates: interpreter -O1 12.0s (RSS 1074MB, cycle <15s); bridge
+# -O0 26.6s (RSS 2185MB, cycle <30s). Bridge -O1 is BLOCKED: cc1plus is
+# OOM-killed by the 4GB cgroup (measured). Runtime parity for both profiles is
+# proven per wave-10 acceptance (battery + 3-APK screenshot hashes).
 $(DEV_SO_DIR)/objects/dalvik_interpreter.o: $(SRCDIR)/dex/dalvik_interpreter.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -g0 -fPIC --param inline-unit-growth=15 --param large-function-growth=120 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -O1 -g0 -fPIC --param inline-unit-growth=15 --param large-function-growth=120 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 $(DEV_SO_DIR)/objects/dalvik_bridge.o: $(SRCDIR)/dex/dalvik_bridge.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -Og -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -O0 -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+$(DEV_SO_DIR)/objects/dalvik_opcodes.o: $(SRCDIR)/dex/dalvik_opcodes.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -O1 -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 $(DEV_SO_DIR)/objects/%.o: $(SRCDIR)/dex/%.cpp
 	@mkdir -p $(dir $@)

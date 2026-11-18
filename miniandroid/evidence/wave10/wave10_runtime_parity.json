@@ -1,0 +1,143 @@
+{
+ "apk_files_identity_sha256_16": {
+  "ru.zxalexis.ugaday_15.apk (Guess)": "000ae2e5751f9a85",
+  "tech.gaskell.diceroller_1_debug.apk (DiceRoller)": "d812e69612ccee06",
+  "com.itsfrz.tictactoe_5.apk (TicTacToe)": "2a057a9a519acd81"
+ },
+ "canonical_screenshots": {
+  "ru.zxalexis.ugaday_15": "87fe2676",
+  "tech.gaskell.diceroller_1_debug": "46b07062",
+  "com.itsfrz.tictactoe_5": "d55056a8"
+ },
+ "expected_classes": {
+  "ru.zxalexis.ugaday_15": "SUCCESS",
+  "tech.gaskell.diceroller_1_debug": "PARTIAL",
+  "com.itsfrz.tictactoe_5": "PARTIAL"
+ },
+ "interpreter_bridge_profiles_x3_reps": {
+  "ru.zxalexis.ugaday_15": {
+   "canonical": "87fe2676",
+   "expected_class": "SUCCESS",
+   "reps": [
+    {
+     "rc": 0,
+     "sha256_24": "87fe26766fc48d06c59d4c15",
+     "match": true,
+     "wall_s": 1.03
+    },
+    {
+     "rc": 0,
+     "sha256_24": "87fe26766fc48d06c59d4c15",
+     "match": true,
+     "wall_s": 0.95
+    },
+    {
+     "rc": 0,
+     "sha256_24": "87fe26766fc48d06c59d4c15",
+     "match": true,
+     "wall_s": 0.97
+    }
+   ],
+   "all_match": true,
+   "hashes_identical_across_reps": true
+  },
+  "tech.gaskell.diceroller_1_debug": {
+   "canonical": "46b07062",
+   "expected_class": "PARTIAL",
+   "reps": [
+    {
+     "rc": 1,
+     "sha256_24": "46b07062ba6fe36ca8a6e42d",
+     "match": true,
+     "wall_s": 1.51
+    },
+    {
+     "rc": 1,
+     "sha256_24": "46b07062ba6fe36ca8a6e42d",
+     "match": true,
+     "wall_s": 1.51
+    },
+    {
+     "rc": 1,
+     "sha256_24": "46b07062ba6fe36ca8a6e42d",
+     "match": true,
+     "wall_s": 1.42
+    }
+   ],
+   "all_match": true,
+   "hashes_identical_across_reps": true
+  },
+  "com.itsfrz.tictactoe_5": {
+   "canonical": "d55056a8",
+   "expected_class": "PARTIAL",
+   "reps": [
+    {
+     "rc": 1,
+     "sha256_24": "d55056a8928a26ffeb15f66d",
+     "match": true,
+     "wall_s": 1.91
+    },
+    {
+     "rc": 1,
+     "sha256_24": "d55056a8928a26ffeb15f66d",
+     "match": true,
+     "wall_s": 1.48
+    },
+    {
+     "rc": 1,
+     "sha256_24": "d55056a8928a26ffeb15f66d",
+     "match": true,
+     "wall_s": 1.48
+    }
+   ],
+   "all_match": true,
+   "hashes_identical_across_reps": true
+  }
+ },
+ "opcode_profile_recheck_x1": {
+  "ru.zxalexis.ugaday_15": {
+   "rc": 0,
+   "sha": "87fe26766fc48d06c59d4c15",
+   "match": true
+  },
+  "tech.gaskell.diceroller_1_debug": {
+   "rc": 1,
+   "sha": "46b07062ba6fe36ca8a6e42d",
+   "match": true
+  },
+  "com.itsfrz.tictactoe_5": {
+   "rc": 1,
+   "sha": "d55056a8928a26ffeb15f66d",
+   "match": true
+  }
+ },
+ "final_combined_profile_gate": {
+  "battery": {
+   "rc": 0,
+   "pass": 3
+  },
+  "apks": {
+   "ru.zxalexis.ugaday_15": {
+    "rc": 0,
+    "sha": "87fe26766fc48d06c59d4c15",
+    "match": true
+   },
+   "tech.gaskell.diceroller_1_debug": {
+    "rc": 1,
+    "sha": "46b07062ba6fe36ca8a6e42d",
+    "match": true
+   },
+   "com.itsfrz.tictactoe_5": {
+    "rc": 1,
+    "sha": "d55056a8928a26ffeb15f66d",
+    "match": true
+   }
+  }
+ },
+ "conclusion": {
+  "guess": "SUCCESS \u2014 hash identical, stable across reps",
+  "diceroller": "PARTIAL \u2014 preserved, not upgraded (no genuine interaction evidence)",
+  "tictactoe": "PARTIAL \u2014 preserved, not upgraded (no genuine interaction evidence)",
+  "runtime_perf_note": "dev-so .so at reduced optimization still renders identical output; runs complete in 1-2s wall each"
+ }
+}

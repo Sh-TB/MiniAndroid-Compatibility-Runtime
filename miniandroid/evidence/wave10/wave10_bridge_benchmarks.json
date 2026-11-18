@@ -1,0 +1,102 @@
+{
+ "meta": {
+  "revision": "1e5c8fb94be593c176184f066c05500711366b4f",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "host": "2-core, 4GB cgroup",
+  "blocker": "bridge -O1 candidate OOM-killed by 4GB cgroup; -O0 accepted"
+ },
+ "bridge": {
+  "source_file": "src/dex/dalvik_bridge.cpp",
+  "source_revision": "1e5c8fb94be593c176184f066c05500711366b4f",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "compile_command": "g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_bridge.o src/dex/dalvik_bridge.cpp",
+  "runs": [
+   {
+    "rep": 1,
+    "cycle_s": 25.51,
+    "rc": 0,
+    "peak_rss_mb": 2193,
+    "pic_compiles": 1,
+    "so_relink": 1,
+    "test_exe_relinks": 0,
+    "runtime_result": {
+     "battery_pass": 3,
+     "battery_total": 3
+    }
+   },
+   {
+    "rep": 2,
+    "cycle_s": 25.37,
+    "rc": 0,
+    "peak_rss_mb": 2193,
+    "pic_compiles": 1,
+    "so_relink": 1,
+    "test_exe_relinks": 0,
+    "runtime_result": {
+     "battery_pass": 3,
+     "battery_total": 3
+    }
+   },
+   {
+    "rep": 3,
+    "cycle_s": 25.51,
+    "rc": 0,
+    "peak_rss_mb": 2193,
+    "pic_compiles": 1,
+    "so_relink": 1,
+    "test_exe_relinks": 0,
+    "runtime_result": {
+     "battery_pass": 3,
+     "battery_total": 3
+    }
+   },
+   {
+    "rep": 4,
+    "cycle_s": 25.39,
+    "rc": 0,
+    "peak_rss_mb": 2193,
+    "pic_compiles": 1,
+    "so_relink": 1,
+    "test_exe_relinks": 0,
+    "runtime_result": {
+     "battery_pass": 3,
+     "battery_total": 3
+    }
+   },
+   {
+    "rep": 5,
+    "cycle_s": 26.81,
+    "rc": 0,
+    "peak_rss_mb": 2193,
+    "pic_compiles": 1,
+    "so_relink": 1,
+    "test_exe_relinks": 0,
+    "runtime_result": {
+     "battery_pass": 3,
+     "battery_total": 3
+    }
+   }
+  ],
+  "median_s": 25.51,
+  "min_s": 25.37,
+  "max_s": 26.81,
+  "phase_decomposition": [
+   {
+    "compile_s": 25.35,
+    "so_link_s": 0.32,
+    "test_exec_s": 0.04,
+    "sum_s": 25.71,
+    "compile_rss_mb": 2193,
+    "all_rc0": true
+   },
+   {
+    "compile_s": 24.92,
+    "so_link_s": 0.32,
+    "test_exec_s": 0.04,
+    "sum_s": 25.28,
+    "compile_rss_mb": 2193,
+    "all_rc0": true
+   }
+  ]
+ }
+}

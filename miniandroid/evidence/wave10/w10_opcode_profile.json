@@ -1,0 +1,32 @@
+{
+ "rebuild_battery": {
+  "wall_s": 0.04,
+  "rc": 0,
+  "pass": 3
+ },
+ "apks": {
+  "ru.zxalexis.ugaday_15": {
+   "rc": 0,
+   "sha": "87fe26766fc48d06c59d4c15",
+   "match": true
+  },
+  "tech.gaskell.diceroller_1_debug": {
+   "rc": 1,
+   "sha": "46b07062ba6fe36ca8a6e42d",
+   "match": true
+  },
+  "com.itsfrz.tictactoe_5": {
+   "rc": 1,
+   "sha": "d55056a8928a26ffeb15f66d",
+   "match": true
+  }
+ },
+ "opcode_cycles_x5": [
+  8.18,
+  8.11,
+  8.18,
+  7.82,
+  8.21
+ ],
+ "opcode_median": 8.18
+}
