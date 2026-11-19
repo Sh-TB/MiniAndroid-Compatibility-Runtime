@@ -1,0 +1,6 @@
+W19-1 baseline @ 2026-11-19T07:08:13Z
+HEAD=8e225b25 branch=wave10/dalvik-accel remote-tip=8e225b25
+tree=clean domain-TUs=5+frame.h
+parts(manifest=Makefile=CMake)=12 incl. dalvik_bridge.cpp + 5 domains
+g++ 14.2.0, ld 2.44, nproc=2, RAM=4041MB
+DALVIK_SPLIT ?= 1 (Makefile:100)
