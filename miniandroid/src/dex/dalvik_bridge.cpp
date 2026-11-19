@@ -16649,6 +16649,57 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                     args[0].object_id,
                     static_cast<uint32_t>(args[1].int_val));
             }
+            // ── W18 BITMAP-DRAWABLE-CTOR LAW (#612 n-Puzzle black board) ──
+            // BitmapDrawable.<init>(bitmap) / (res, bitmap) / (res, bitmap,
+            // filter): the wrapper previously kept NO probeable bitmap
+            // field, so the P1-2 image-state router (setImageDrawable)
+            // answered "drawable object without a probeable bitmap field"
+            // and every programmatically-wrapped bitmap died before the
+            // painter. AOSP law: BitmapDrawable OWNS the bitmap — store
+            // the oid under the same names the R-NEW-360 probe scans
+            // ("bitmap"/"mBitmap") plus the dims the intrinsic handlers
+            // consume.
+            if (class_name.find("BitmapDrawable;") != std::string::npos &&
+                method == "<init>") {
+                for (size_t bdi = 1; bdi < args.size(); ++bdi) {
+                    if (args[bdi].type == DalvikType::OBJECT_REF &&
+                        args[bdi].object_id != 0 &&
+                        args[bdi].class_desc.find("Bitmap;") !=
+                            std::string::npos) {
+                        DalvikValue bmp_val = DalvikValue::make_object(
+                            args[bdi].object_id, "Landroid/graphics/Bitmap;");
+                        heap_.set_object_field(args[0].object_id, "bitmap",
+                                               bmp_val);
+                        heap_.set_object_field(args[0].object_id, "mBitmap",
+                                               bmp_val);
+                        if (const auto* sbw = framework::BitmapStore::
+                                instance().get(args[bdi].object_id)) {
+                            heap_.set_object_field(
+                                args[0].object_id, "__bmp_width__",
+                                DalvikValue::make_int(sbw->width));
+                            heap_.set_object_field(
+                                args[0].object_id, "__bmp_height__",
+                                DalvikValue::make_int(sbw->height));
+                            std::cerr << "[W18-BDCTOR] BitmapDrawable "
+                                         "obj#"
+                                      << args[0].object_id << " wraps obj#"
+                                      << args[bdi].object_id << " ("
+                                      << sbw->width << "x" << sbw->height
+                                      << ", has_pixels="
+                                      << (sbw->has_pixels ? 1 : 0) << ")"
+                                      << std::endl;
+                        } else {
+                            std::cerr << "[W18-BDCTOR] BitmapDrawable "
+                                         "obj#"
+                                      << args[0].object_id << " wraps obj#"
+                                      << args[bdi].object_id
+                                      << " (no BitmapStore entry)"
+                                      << std::endl;
+                        }
+                        break;
+                    }
+                }
+            }
             // 2. setBackground(Drawable) / setBackgroundDrawable(Drawable)
             if ((method == "setBackground" || method == "setBackgroundDrawable") &&
                 args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF) {
@@ -21044,6 +21095,85 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     // ────────────────────────────────────────────────────────────────────────
     if (method == "createBitmap" && class_name == "Landroid/graphics/Bitmap;") {
         int32_t cb_w = 0, cb_h = 0;
+        // ── W18 TILE-CROP LAW (#612 n-Puzzle black-board) ────────────────
+        // (src, x, y, w, h[, matrix, filter]) — the CROP overload. The old
+        // handler covered only (w,h,cfg)/(dm,w,h,cfg)/colors, so the crop
+        // form fell through to the generic fallback and answered a bitmap
+        // with NO BitmapStore pixels; every tile BitmapDrawable wrapped an
+        // empty image and the board stayed black. AOSP law: the crop is a
+        // rectangular view-copy — row-wise memcpy of the source's pixel
+        // store into a NEW Bitmap registered in BitmapStore with
+        // has_pixels=true. Bounds: x/w beyond the source →
+        // IllegalArgumentException (AOSP), never a silent clamp.
+        bool cb_crop =
+            args.size() >= 5 &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 &&
+            args[1].type == DalvikType::INT32 &&
+            args[2].type == DalvikType::INT32 &&
+            args[3].type == DalvikType::INT32 &&
+            args[4].type == DalvikType::INT32;
+        if (cb_crop) {
+            const uint32_t src_oid = args[0].object_id;
+            const int32_t cx = args[1].int_val, cy = args[2].int_val;
+            const int32_t cw = args[3].int_val, ch = args[4].int_val;
+            const framework::StoredBitmap* src_sb =
+                framework::BitmapStore::instance().get(src_oid);
+            if (cw <= 0 || ch <= 0) {
+                // AOSP: IllegalArgumentException on non-positive dims
+                throw_deferred("Ljava/lang/IllegalArgumentException;",
+                               "w and h must be > 0 in createBitmap crop",
+                               "W18-CROP");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            if (!src_sb || !src_sb->has_pixels) {
+                std::cerr << "[W18-CROP] source bitmap obj#" << src_oid
+                          << " has no BitmapStore pixels — honest empty crop"
+                          << std::endl;
+            } else if (cx < 0 || cy < 0 || cx + cw > src_sb->width ||
+                       cy + ch > src_sb->height) {
+                throw_deferred(
+                    "Ljava/lang/IllegalArgumentException;",
+                    "x + width must be <= bitmap.width() in createBitmap crop",
+                    "W18-CROP");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = DalvikValue::make_null();
+                return true;
+            }
+            uint32_t bmp_oid = heap_.allocate(
+                "Landroid/graphics/Bitmap;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            framework::BitmapStore::instance().create(
+                bmp_oid, cw, ch, "createBitmap-crop");
+            auto* dst_sb = framework::BitmapStore::instance().get_mut(bmp_oid);
+            if (dst_sb) {
+                dst_sb->rgba.assign((size_t)cw * ch * 4, 0);
+                dst_sb->has_pixels = true;
+                if (src_sb && src_sb->has_pixels) {
+                    for (int32_t yy = 0; yy < ch; ++yy) {
+                        const size_t src_row =
+                            ((size_t)(cy + yy) * src_sb->width + cx) * 4;
+                        std::memcpy(&dst_sb->rgba[(size_t)yy * cw * 4],
+                                    &src_sb->rgba[src_row],
+                                    (size_t)cw * 4);
+                    }
+                }
+            }
+            static thread_local uint64_t w18_crop_n = 0;
+            if (w18_crop_n++ < 12)
+                std::cerr << "[W18-CROP] createBitmap crop " << cw << "x" << ch
+                          << " @(" << cx << "," << cy << ") src obj#" << src_oid
+                          << " -> obj#" << bmp_oid
+                          << (src_sb && src_sb->has_pixels ? " (pixels copied)"
+                                                           : " (empty)")
+                          << std::endl;
+            result = DalvikValue::make_object(bmp_oid,
+                                              "Landroid/graphics/Bitmap;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
         // (w, h, cfg[, mutable]) — 2 INTs first. The (colors, w, h, cfg) and
         // (src, …) overloads must NOT land here (colors carries pixels the
         // law would silently zero-fill).
