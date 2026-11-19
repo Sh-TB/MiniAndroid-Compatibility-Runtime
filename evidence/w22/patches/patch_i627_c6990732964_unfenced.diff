@@ -1,0 +1,63 @@
+### Section H — Prepared Fixes & Regression Tests
+
+These are minimal, isolated patches for the TESTED portability findings (Section D). They are **proposed**, prepared against `main` @ `9dafaadd`, and NOT merged. D-02/D-03 are zero-risk on modern toolchains; D-01/D-04 broaden host support. Apply on a local branch and run the existing battery; none touches runtime semantics.
+
+#### H-01 — touch_dispatcher.h brace fix (D-02) — valid C++17 on every compiler
+```diff
+--- a/miniandroid/src/framework/touch_dispatcher.h
++++ b/miniandroid/src/framework/touch_dispatcher.h
+@@ -200,9 +200,9 @@
+     // S129 (R-NEW-426, CAP-INPUT-110): TouchDelegate per-gesture state.
+     DelegateState delegate_;
+ 
+-    TokenState tok_check_long_press_{{0}, "CheckForLongPress"};
+-    TokenState tok_perform_click_{{0}, "PerformClick"};
+-    TokenState tok_unset_pressed_{{0}, "UnsetPressedState"};
++    TokenState tok_check_long_press_{0, "CheckForLongPress"};
++    TokenState tok_perform_click_{0, "PerformClick"};
++    TokenState tok_unset_pressed_{0, "UnsetPressedState"};
+ 
+     nlohmann::json trace_ = nlohmann::json::array();
+ };
+```
+
+#### H-02 — Makefile: GNU Make < 4.3 hash escape (D-01) + conditional filesystem lib (D-04)
+```diff
+--- a/miniandroid/Makefile
++++ b/miniandroid/Makefile
+@@ -77,7 +77,7 @@
+-CORE_SOURCES := $(shell grep -v '^#' core_sources.manifest)
++CORE_SOURCES := $(shell grep -v '^\#' core_sources.manifest)
+```
+After the `LIBS =` assignment (`Makefile:50`), append a GCC-version-conditional block (do NOT add `-lstdc++fs` unconditionally — it may be absent on the newest libstdc++):
+```make
+# std::filesystem is in libstdc++fs on GCC < 9 (Debian 10, g++-8).
+GCC_MAJOR := $(shell $(CXX) -dumpversion | cut -d. -f1)
+ifeq ($(shell test $(GCC_MAJOR) -lt 9 && echo yes),yes)
+LIBS += -lstdc++fs
+endif
+```
+
+#### H-03 — glibc < 2.33 mallinfo2 fallback (D-03) — diagnostic-only path
+New header `miniandroid/src/compat/glibc_mallinfo2.h`, included by `dalvik_interpreter.cpp` and `dalvik_engine.cpp` (or via `-include`). Inactive on glibc >= 2.33:
+```cpp
+#ifndef MINIANDROID_GLIBC_MALLINFO2_H
+#define MINIANDROID_GLIBC_MALLINFO2_H
+#include <malloc.h>
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ) && !__GLIBC_PREREQ(2,33)
+struct mallinfo2 { size_t arena,ordblks,smblks,hblks,hblkhd,usmblks,fsmblks,uordblks,fordblks,keepcost; };
+static inline struct mallinfo2 mallinfo2(void){
+    struct mallinfo m = mallinfo();
+    struct mallinfo2 r{};
+    r.arena=(size_t)m.arena; r.uordblks=(size_t)m.uordblks;
+    r.hblkhd=(size_t)m.hblkhd; r.fordblks=(size_t)m.fordblks;
+    return r;
+}
+#endif
+#endif
+```
+
+#### H-04 — Dalvik correctness (Section E): reuse the existing /2addr law
+The lit8/lit16 macros should be brought to the SAME law already present at `dalvik_interpreter.cpp:2593-2605` (GP-INT-012/015): `strcmp` by content, unsigned-width wrap for add/sub/mul/shl, and the MIN/-1 guard for div/rem. move/from16 (:2829) and move-wide/from16 (:4160) pass `src` unchanged (mirror :6180). jumbo (:2864) casts the high code unit to `uint32_t` before `<< 16`. The OpenHands branch `19ee074a` (#607) already implements this; the regression battery `s248` should be confirmed to cover lit16, float-23x rem, move-wide/from16, and INT32_MIN/-1 for both div and rem. No new patch is needed beyond that branch + the coverage checklist E-04.
+
+**Build/test commands for the integrator (modern host):** `make -C miniandroid -j4` then `make -C miniandroid test-all` and the 6-pin gate `python3 scripts/s207_gate.py`. For the portability patches, additionally build on g++-8 / make 4.2 to confirm D-01/D-04. None of H-01..H-03 changes generated code on the reference toolchain.

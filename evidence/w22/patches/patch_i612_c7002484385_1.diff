@@ -1,0 +1,5 @@
+diff --git a/miniandroid/src/dex/dalvik_engine_tail.cpp b/miniandroid/src/dex/dalvik_engine_tail.cpp
+--- a/miniandroid/src/dex/dalvik_engine_tail.cpp
++++ b/miniandroid/src/dex/dalvik_engine_tail.cpp
+@@ -41,1 +41,0 @@
+-#include "../framework/android_shadows.h"

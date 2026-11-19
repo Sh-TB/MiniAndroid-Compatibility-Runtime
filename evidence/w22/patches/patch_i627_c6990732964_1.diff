@@ -1,0 +1,15 @@
+--- a/miniandroid/src/framework/touch_dispatcher.h
++++ b/miniandroid/src/framework/touch_dispatcher.h
+@@ -200,9 +200,9 @@
+     // S129 (R-NEW-426, CAP-INPUT-110): TouchDelegate per-gesture state.
+     DelegateState delegate_;
+ 
+-    TokenState tok_check_long_press_{{0}, "CheckForLongPress"};
+-    TokenState tok_perform_click_{{0}, "PerformClick"};
+-    TokenState tok_unset_pressed_{{0}, "UnsetPressedState"};
++    TokenState tok_check_long_press_{0, "CheckForLongPress"};
++    TokenState tok_perform_click_{0, "PerformClick"};
++    TokenState tok_unset_pressed_{0, "UnsetPressedState"};
+ 
+     nlohmann::json trace_ = nlohmann::json::array();
+ };

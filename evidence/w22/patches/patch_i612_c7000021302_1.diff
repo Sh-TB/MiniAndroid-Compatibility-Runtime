@@ -1,0 +1,106 @@
+diff --git a/miniandroid/src/dex/dalvik_interpreter.cpp b/miniandroid/src/dex/dalvik_interpreter.cpp
+--- a/miniandroid/src/dex/dalvik_interpreter.cpp
++++ b/miniandroid/src/dex/dalvik_interpreter.cpp
+@@ -11,6 +11,7 @@
+  */
+ 
+ #include "dalvik_engine.h"
++#include "compat/glibc_mallinfo2.h" // H-03: old-glibc mallinfo2 fallback
+ #include "dex_parser.h"
+ #include "mutf8.h"
+ #include <dlfcn.h>  // #371 PHASE B2: real dlopen/dlerror boundary diagnostics
+@@ -870,7 +871,7 @@
+                 int16_t bbbb = static_cast<int16_t>(bytecode_[pc_ + 1]);
+                 DalvikValue val;
+                 val.type = DalvikType::INT32;
+-                val.int_val = static_cast<int32_t>(bbbb) << 16;
++                val.int_val = static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint16_t>(bbbb)) << 16); // E-05: unsigned-width shift (bbbb<0 was signed-shift UB)
+                 set_register(vAA, val);
+                 trace.opcode_name = "const/high16";
+                 pc_ = pc_ + 2;
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -11,6 +11,7 @@
+  */
+ 
+ #include "dalvik_engine.h"
++#include "compat/glibc_mallinfo2.h" // H-03: old-glibc mallinfo2 fallback
+ #include "dex_parser.h"
+ #include "mutf8.h"
+ #include <dlfcn.h>  // #371 PHASE B2: real dlopen/dlerror boundary diagnostics
+@@ -22437,7 +22438,7 @@
+                 int16_t bbbb = static_cast<int16_t>(bytecode_[pc_ + 1]);
+                 DalvikValue val;
+                 val.type = DalvikType::INT32;
+-                val.int_val = static_cast<int32_t>(bbbb) << 16;
++                val.int_val = static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint16_t>(bbbb)) << 16); // E-05: unsigned-width shift (bbbb<0 was signed-shift UB)
+                 set_register(vAA, val);
+                 trace.opcode_name = "const/high16";
+                 pc_ = pc_ + 2;
+diff --git a/miniandroid/src/framework/touch_dispatcher.h b/miniandroid/src/framework/touch_dispatcher.h
+--- a/miniandroid/src/framework/touch_dispatcher.h
++++ b/miniandroid/src/framework/touch_dispatcher.h
+@@ -200,9 +200,9 @@
+     // S129 (R-NEW-426, CAP-INPUT-110): TouchDelegate per-gesture state.
+     DelegateState delegate_;
+ 
+-    TokenState tok_check_long_press_{{0}, "CheckForLongPress"};
+-    TokenState tok_perform_click_{{0}, "PerformClick"};
+-    TokenState tok_unset_pressed_{{0}, "UnsetPressedState"};
++    TokenState tok_check_long_press_{0, "CheckForLongPress"};
++    TokenState tok_perform_click_{0, "PerformClick"};
++    TokenState tok_unset_pressed_{0, "UnsetPressedState"};
+ 
+     nlohmann::json trace_ = nlohmann::json::array();
+ };
+diff --git a/miniandroid/Makefile b/miniandroid/Makefile
+--- a/miniandroid/Makefile
++++ b/miniandroid/Makefile
+@@ -48,6 +48,11 @@
+ # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
+ # rlottie  — Samsung reference Lottie renderer (Telegram uses it directly)
+ LIBS = -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile  # S100 NET-001: TLS through OpenSSL (BoringSSL lineage)  # M3 F-ROOM-CHAIN: real SQLite backend
++# H-02: std::filesystem lives in libstdc++fs on GCC < 9 (Debian 10 / g++-8).
++GCC_MAJOR := $(shell $(CXX) -dumpversion | cut -d. -f1)
++ifeq ($(shell test $(GCC_MAJOR) -lt 9 && echo yes),yes)
++LIBS += -lstdc++fs
++endif
+ ifeq ($(MINIANDROID_HAVE_WEBP),1)
+ LIBS += -lwebp -lwebpdemux
+ endif
+@@ -77,7 +82,7 @@
+ # the Makefile and miniandroid/CMakeLists.txt both read it, and
+ # `make check-source-parity` asserts the Makefile expansion equals the
+ # manifest (run in the test battery).
+-CORE_SOURCES := $(shell grep -v '^#' core_sources.manifest)
++CORE_SOURCES := $(shell grep -v '^\#' core_sources.manifest)
+ 
+ # ISSUE-612 WAVE-4: the 94K-line dalvik_engine.cpp monolith is split into 5
+ # verbatim-range TUs (core/invoke/opcodes/bridge/tail — cuts at verified
+diff --git a/miniandroid/src/compat/glibc_mallinfo2.h b/miniandroid/src/compat/glibc_mallinfo2.h
+new file mode 100644
+--- /dev/null
++++ b/miniandroid/src/compat/glibc_mallinfo2.h
+@@ -0,0 +1,21 @@
++#ifndef MINIANDROID_GLIBC_MALLINFO2_H
++#define MINIANDROID_GLIBC_MALLINFO2_H
++// H-03: glibc < 2.33 lacks mallinfo2 (added 2.33). The [ENGINE-MEM] diagnostic
++// (MINIANDROID_ENGINE_MEM-gated) calls it; provide a width-widened mallinfo
++// fallback so the engine builds on older glibc (Debian 10 / glibc 2.28).
++// Inactive on glibc >= 2.33. Diagnostic-only; no runtime-path effect.
++#include <malloc.h>
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
++#if !__GLIBC_PREREQ(2,33)
++struct mallinfo2 { size_t arena,ordblks,smblks,hblks,hblkhd,usmblks,fsmblks,uordblks,fordblks,keepcost; };
++static inline struct mallinfo2 mallinfo2(void){
++    struct mallinfo m = mallinfo();
++    struct mallinfo2 r{};
++    r.arena=(size_t)m.arena; r.uordblks=(size_t)m.uordblks;
++    r.hblkhd=(size_t)m.hblkhd; r.fordblks=(size_t)m.fordblks;
++    return r;
++}
++#endif
++#endif
++#endif
++

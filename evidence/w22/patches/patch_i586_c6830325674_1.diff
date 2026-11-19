@@ -1,0 +1,1142 @@
+diff --git a/canonical/app_registry.json b/canonical/app_registry.json
+index 4e5b5931..340708c2 100644
+--- a/canonical/app_registry.json
++++ b/canonical/app_registry.json
+@@ -316,6 +316,93 @@
+    "evidence_refs": [
+     "docs/maintenance/worklog.md S38"
+    ]
++  },
++  {
++   "id": "APP-016",
++   "title": "Thunderbird (F-Droid vc33)",
++   "package": "net.thunderbird.android",
++   "status": "BLOCKED",
++   "checkpoints": {
++    "L0": true,
++    "L1": true,
++    "L2": false,
++    "L3": false,
++    "L4": false,
++    "L5": false,
++    "L6": false,
++    "L7": false
++   },
++   "note": "S156 wave: boot reached deep (Koin module DSL 463 index puts, AppCompat decor works) but createEagerInstances NDFE on Logger killed startKoin. At S225-M: the NDFE + _koin-miss STILL reproduce (6 NDFE rows, SGET-MISS _koin) but the 'KoinApplication has not been started' cascade is absorbed by mainline laws — face moved b270ff04→43bfdac6, uncaught 38→9. Registry-merge lever still open (F-NEW-485). androguard: vc=33 v24.0 minSdk23 tgt36 2 dexes koin=38 compose=2446.",
++   "sessions": "S156+S226-transfer",
++   "evidence_refs": [
++    "evidence/s156_4app/S156_T4_THUNDERBIRD.md",
++    "evidence/s156_4app/PIN_LEDGER.json",
++    "evidence/s156_4app/TB_KOIN_XREF.json"
++   ]
++  },
++  {
++   "id": "APP-017",
++   "title": "Tusky (F-Droid vc145)",
++   "package": "com.keylesspalace.tusky",
++   "status": "PARTIAL",
++   "checkpoints": {
++    "L0": true,
++    "L1": true,
++    "L2": true,
++    "L3": false,
++    "L4": false,
++    "L5": false,
++    "L6": false,
++    "L7": false
++   },
++   "note": "S156 wave: TLS/native frontier solved on the S155 lineage by the bionic FORTIFY anchor family (uncaught 26->0, NPE 25->0); at S225-M the anchor surface already covers 12/15 symbols — residue F-NEW-484 (3 symbols) transfers. Boot clean; final frame = honest generic Compose-family face (app content awaits the generic Compose pipeline, not a Tusky-specific blocker). androguard: vc=145 v33.1 classic-View+sqlite.",
++   "sessions": "S156+S226-transfer",
++   "evidence_refs": [
++    "evidence/s156_4app/S156_T5_TUSKY.md",
++    "evidence/s156_4app/RERUN_AFTER_ANCHORS.json"
++   ]
++  },
++  {
++   "id": "APP-018",
++   "title": "Nextcloud (F-Droid vc350000290)",
++   "package": "com.nextcloud.client",
++   "status": "PARTIAL",
++   "checkpoints": {
++    "L0": true,
++    "L1": true,
++    "L2": false,
++    "L3": false,
++    "L4": false,
++    "L5": false,
++    "L6": false,
++    "L7": false
++   },
++   "note": "S156 wave: process death at native TLS init on the S155 lineage; at S225-M (a4516511) the mainline resolves it — Nextcloud renders its FIRST FRAME (face b5a7a35d, verdict SAFE+DEFAULT_BACKGROUND_ONLY, 20 uncaught residual). Chain preserved as F-NEW-487 RESOLVED-BY-MAINLINE. Heaviest Compose of the wave (compose/ui=7617, 7 dexes); app content awaits the Compose pipeline.",
++   "sessions": "S156+S226-transfer",
++   "evidence_refs": [
++    "evidence/s156_4app/S156_T6_NEXTCLOUD.md"
++   ]
++  },
++  {
++   "id": "APP-019",
++   "title": "ConnectBot (vc11101000)",
++   "package": "org.connectbot",
++   "status": "PARTIAL",
++   "checkpoints": {
++    "L0": true,
++    "L1": true,
++    "L2": true,
++    "L3": false,
++    "L4": false,
++    "L5": false,
++    "L6": false,
++    "L7": false
++   },
++   "note": "S156 wave: consumeRestoredStateForKey ISE on the S155 lineage; at S225-M the mainline resolves the attach ordering — CLEAN boot (0 uncaught), chrome-only face b5a7a35d (Compose family). Chain preserved as F-NEW-486 RESOLVED-BY-MAINLINE. vc=11101000 CLOSED this wave. androguard: v1.11.1-oss compose=2503 trilead=127 dagger=30, no koin.",
++   "sessions": "S156+S226-transfer",
++   "evidence_refs": [
++    "evidence/s156_4app/S156_T7_CONNECTBOT.md"
++   ]
+   }
+  ]
+ }
+\ No newline at end of file
+diff --git a/canonical/root_cause_registry.json b/canonical/root_cause_registry.json
+index 78a73179..04df6f17 100644
+--- a/canonical/root_cause_registry.json
++++ b/canonical/root_cause_registry.json
+@@ -8029,5 +8029,45 @@
+   "priority": "P0",
+   "layer": "theme-resources",
+   "evidence": "CONT-155 TRAIN 5 (todolist 103, binary 7b6927614ebef26f, run/c155/t5_*): (1) [F-NEW-175] TypedArray attrs=127 theme-backed; the APK's own R$styleable.AppCompatTheme fill payload byte-verified (raw dex decode: ident=0x0300 ew=4 n=127) — 0x10100ab windowActionBar and 0x1010033 theme ABSENT from the array (build-rewritten styleable, 2 framework attrs remain) — engine faithfully materialized dex data, NOT an engine defect; index constants remap consistently per AOSP hasValue(index) law. (2) F093-DIAG census: 125/127 MISS, 2 HIT (0x1010057 windowNoTitle, 0x10100ae windowActionModeOverlay) = exactly the app-owned theme keys. (3) App-arsc parent chain (scripts/cont155_theme_chain.py, sparse-law walker): 0x7f1201e9 -> 0x7f1202eb -> 0x7f1202e9 -> 0x7f120081 -> 0x7f120080 -> 0x010302e3 (android:Theme.Material.Light.NoActionBar); 5 levels, 10 app-owned keys, windowActionBar absent at every app level — the app parents into the PLATFORM Material theme, not the bundled appcompat styles. (4) The engine's materialized map has 373 keys (S124 diag) = 10 app + ~363 framework-chain keys; 0x10100ab NOT among them. (5) hasValue -> false -> ISE 'You need to use a Theme.AppCompat theme' -> APP-BOUNDARY unwind -> WINDOW_ROOT (todolist/leradar/exodusprivacy). TRAIN 6 single question: does miniandroid/framework_res Material bag carry 0x10100ab — engine-side env-gated theme-bag dump (python walker handles DENSE/OFFSET16 but the fw arsc mixes SPARSE-pair chunks; the engine parser is the authority). Fix lever: theme engine / framework table — never the app. CONT-155 TRAIN 6 (binary post bag-dump diag, run/c155/t6_*): (6) engine-side env-gated theme-bag dump added (MINIANDROID_THEME_BAG_DUMP, read-only diag in Theme::apply_style) — the materialized 373-key map for the todolist theme: 0x1010033 theme PRESENT, 0x1010057 windowNoTitle PRESENT, 0x10100ae PRESENT, 0x10100ab windowActionBar ABSENT (probe x2 apply calls) — the 0x10100a0-0x10100ad window family cluster is missing from the expansion. (7) THE CHECK SLOT PINNED: [SGET] AppCompatTheme_windowActionBar value=117 at createSubDecor pc=8 — the hasValue slot is index 117 of the 127-entry array (an app-namespace attr 0x7f04xxxx region, not a framework id); slot 117 absent from the theme map -> hasValue=false -> the pc=404 ISE. (8) On a real device the same slot resolves because the appcompat Theme.AppCompat.Empty chain level (~130 compat attrs) participates in the theme; the engine's materialized chain (5 app styles with 3/1/3/1/2 keys) jumps to the Platform.AppCompat.Light level and the compat attr-bag level is NOT expanded — the named residual: expand the appcompat Empty chain level into the theme map (style-name resolution needs the UTF-8 string-pool flag law — flags 0x100 = UTF-8 — for the next probe). Fix lever unchanged: theme engine / framework expansion — never the app. CONT-155 TRAIN 7 (axml decode + arsc name probe): (9) the manifest's theme typed values decoded byte-exact: application AND view.MainActivity theme = REFERENCE 0x7f120010 = @style/AppTheme (attr bytes: size=8 res0=0 dtype=0x01 REFERENCE data=0x7f120010); (10) the engine's bound theme (F366 diag + THEME-BAG-DUMP) = 0x7f1201e9 = @style/SplashScreenTheme (androidx core-splashscreen library theme; chain: SplashScreenTheme -> Theme.SplashScreen.IconBackground -> Theme.SplashScreen -> Base.Theme.SplashScreen.DayNight -> Base.Theme.SplashScreen -> android:Theme.Material.Light.NoActionBar; 5 levels 10 app keys, ZERO compat attrs) — the launch path bound the WRONG style: 0x7f1201e9 instead of the manifest's 0x7f120010. (11) Complete causal chain for the C-type: wrong theme bound -> no compat attrs -> AppCompatTheme_windowActionBar slot-117 hasValue=false -> createSubDecor pc=404 ISE -> APP-BOUNDARY unwind at MainActivity.onCreate -> WINDOW_ROOT. TRAIN 8 single question: which link picks 0x7f1201e9 — ManifestReader theme_resid parse, the F-094 find_id ('@style/AppTheme') resolution, or the splash-lib attachBaseContext2 theme clone — probe resolve_activity_theme inputs/outputs env-gated."
++ },
++ {
++  "id": "F-NEW-484",
++  "status": "RESIDUE-OPEN (preventive: grep-verified absent at a4516511; no current boot binds them)",
++  "priority": "P0",
++  "layer": "native library dlopen / bionic FORTIFY anchor surface",
++  "date": "2026-11-12",
++  "title": "bionic FORTIFY anchor residue at S225-M: the mainline anchor surface already covers __memchr_chk/__memcpy_chk/__memmove_chk/__read_chk/__readlink_chk/__strcat_chk/__strchr_chk/__strcpy_chk/__strlen_chk/__strncat_chk/__strncpy_chk/__strrchr_chk + the __system_property_* API, but THREE symbols are still missing: __memset_chk, __vsnprintf_chk, __stack_chk_fail (the exact set conscrypt-class app-native libs bind). The S155-era wave fixed the whole family on a parallel lineage (unresolved __strchr_chk killed Tusky/Nextcloud dlopen); this residue is the remaining delta.",
++  "root_cause": "conscrypt-family dlopen binds __memset_chk/__vsnprintf_chk/__stack_chk_fail; a bionic-built app .so dlopened against the engine fails at any of them (Undefined symbol -> UnsatisfiedLinkError) exactly as recorded in the S156 wave for Tusky_145.",
++  "verification": "S226 transfer battery at a4516511: tusky strchr_ule rows=0, uncaught=16, NPE-classes=see console; the 3-symbol patch (bionic_compat.c, +31 lines) transfers with git apply --check CLEAN."
++ },
++ {
++  "id": "F-NEW-485",
++  "status": "LIVE-REDUCED at S225-M (NDFE + _koin-miss still reproduce; the downstream cascade is absorbed)",
++  "priority": "P0",
++  "layer": "DI / Koin eager-instance registry",
++  "date": "2026-11-12",
++  "title": "Thunderbird (net.thunderbird.android_33, vc33) Koin eager-instance registry divergence: startKoin (R8-inlined into ThunderbirdApp.attachBaseContext) executes the module DSL (463 Module.indexPrimaryType puts observed) but Koin.createEagerInstances() throws NoDefinitionFoundException for net.thunderbird.core.logging.Logger; GlobalContext._koin never stored; every later getKoin() consumer cascades ISE 'KoinApplication has not been started' (okhttp3/CacheControl$Companion.get$default = R8-merged getKoin() helper).",
++  "root_cause": "definitions declared through the binds/default-arg bridge family ($inlined$singleListOf$default$1, single$default) must land in the SAME registry surface Scope.resolveFromContext consults; the module-map -> registry merge is silent in the engine (put rows land on 6+ distinct map objects).",
++  "verification": "S226 battery at a4516511: koin_not_started_rows=0, uncaught=9, face=43bfdac6023cba66 (chrome-only) — LIVE at current main. Full chain: evidence/s156_4app/S156_T4_THUNDERBIRD.md + TB_KOIN_XREF.json (androguard disassembly). Next lever: LinkedHashMap shadow across the module-map merge."
++ },
++ {
++  "id": "F-NEW-486",
++  "status": "RESOLVED-BY-MAINLINE (verified live at a4516511: consumeISE rows=0, uncaught 13→0)",
++  "priority": "P1",
++  "layer": "lifecycle / androidx.savedstate attach ordering",
++  "date": "2026-11-12",
++  "title": "ConnectBot (org.connectbot, vc=11101000 CLOSED) SavedStateRegistry attach law: ViewModelProvider.create -> ViewModelKt.createSavedStateHandle -> SavedStateHandlesProvider.performRestore -> consumeRestoredStateForKey throws ISE 'only after the CREATED state' because the androidx.savedstate attach chain never executes (console: one SavedStateRegistryImpl.<init> row, zero performAttach). Distinct from the F-020 enum law (that fixed the isAtLeast guard; this is attach ORDERING).",
++  "root_cause": "ComponentActivity ctor/shadow chain must run SavedStateRegistryController.performAttach (+ performRestore at CREATED) before the first ViewModelProvider.create, mirroring ART super.onCreate() ordering.",
++  "verification": "S226 battery at a4516511: consume_ise_rows=0, uncaught=0, face=b5a7a35d5fe0564b — LIVE at current main. Chain: evidence/s156_4app/S156_T7_CONNECTBOT.md."
++ },
++ {
++  "id": "F-NEW-487",
++  "status": "RESOLVED-BY-MAINLINE (verified live at a4516511: abort gone; Nextcloud renders its first frame — face b5a7a35d, was 0-frame process death)",
++  "priority": "P1",
++  "layer": "native execution / JNI registration surface",
++  "date": "2026-11-12",
++  "title": "Nextcloud (com.nextcloud.client_350000290) conscrypt native-init abort: after the dlopen boundary holds, libconscrypt_jni.so abort()s inside its own init at modoff=0x10186e (via NativeCryptoJni.init; REC-MISS Class.getPackage right before) — the JNI registration surface (JNI_OnLoad/RegisterNatives/env table) is the missing engine capability. S225-M's JNI dispatch-precedence law is the right neighborhood; this is the app-native JNI_OnLoad gap.",
++  "root_cause": "JNI env function table incomplete for conscrypt's native registration; abort() is the lib's own contract for a failed init.",
++  "verification": "S226 battery at a4516511: conscrypt_abort=False, frames=b5a7a35d5fe0564b — LIVE at current main. Forensics: run/s226_transfer/nextcloud.console.log [S100-CRASH-FORENSICS]."
+  }
+ ]
+\ No newline at end of file
+diff --git a/evidence/s156_4app/BASELINE_WALL.json b/evidence/s156_4app/BASELINE_WALL.json
+new file mode 100644
+index 00000000..be47034a
+--- /dev/null
++++ b/evidence/s156_4app/BASELINE_WALL.json
+@@ -0,0 +1,159 @@
++{
++ "wave": "S156",
++ "stage": "baseline",
++ "engine": "S155 main rebuild",
++ "anchors": {
++  "dooz": {
++   "file": "io.github.yamin8000.dooz_23.apk",
++   "package": "io.github.yamin8000.dooz",
++   "expected_face": "11a38a5aeeff45a6",
++   "runs": [
++    {
++     "run_id": "r1",
++     "wall_s": 74.5,
++     "killed": false,
++     "install": "rc=0 t=0s",
++     "face": "11a38a5aeeff45a6",
++     "uncaught": 6,
++     "verdicts": [
++      "DEFAULT_BACKGROUND_ONLY"
++     ]
++    },
++    {
++     "run_id": "r2",
++     "wall_s": 74.3,
++     "killed": false,
++     "install": "cached",
++     "face": "11a38a5aeeff45a6",
++     "uncaught": 6,
++     "verdicts": [
++      "DEFAULT_BACKGROUND_ONLY"
++     ]
++    }
++   ],
++   "stable_x2": true,
++   "face": "11a38a5aeeff45a6",
++   "matches_expectation": true
++  },
++  "unote": {
++   "file": "app.varlorg.unote_30.apk",
++   "package": "app.varlorg.unote",
++   "expected_face": "3b8dcb0adbbc17a9",
++   "runs": [
++    {
++     "run_id": "r1",
++     "wall_s": 1.5,
++     "killed": false,
++     "install": "rc=0 t=0s",
++     "face": "3b8dcb0adbbc17a9",
++     "uncaught": 0,
++     "verdicts": []
++    },
++    {
++     "run_id": "r2",
++     "wall_s": 1.5,
++     "killed": false,
++     "install": "cached",
++     "face": "3b8dcb0adbbc17a9",
++     "uncaught": 0,
++     "verdicts": []
++    }
++   ],
++   "stable_x2": true,
++   "face": "3b8dcb0adbbc17a9",
++   "matches_expectation": true
++  },
++  "microtimer": {
++   "file": "dubrowgn.microtimer_8.apk",
++   "package": "dubrowgn.microtimer",
++   "expected_face": null,
++   "runs": [
++    {
++     "run_id": "r1",
++     "wall_s": 1.5,
++     "killed": false,
++     "install": "rc=0 t=0s",
++     "face": "bbd350b6c14fbd52",
++     "uncaught": 0,
++     "verdicts": []
++    }
++   ],
++   "face": "bbd350b6c14fbd52",
++   "matches_expectation": true
++  },
++  "opencalc": {
++   "file": "com.darkempire78.opencalculator_53.apk",
++   "package": "com.darkempire78.opencalculator",
++   "expected_face": null,
++   "runs": [
++    {
++     "run_id": "r1",
++     "wall_s": 2.6,
++     "killed": false,
++     "install": "rc=0 t=0s",
++     "face": "63020bc7334048fe",
++     "uncaught": 0,
++     "verdicts": []
++    }
++   ],
++   "face": "63020bc7334048fe",
++   "matches_expectation": true
++  },
++  "tictactoe": {
++   "file": "com.emmanuelmess.tictactoe.apk",
++   "package": "com.emmanuelmess.tictactoe",
++   "expected_face": null,
++   "runs": [
++    {
++     "run_id": "r1",
++     "wall_s": 1.6,
++     "killed": false,
++     "install": "rc=0 t=0s",
++     "face": "b5a7a35d5fe0564b",
++     "uncaught": 8,
++     "verdicts": [
++      "DEFAULT_BACKGROUND_ONLY"
++     ]
++    }
++   ],
++   "face": "b5a7a35d5fe0564b",
++   "matches_expectation": true
++  },
++  "bouncy": {
++   "file": "com.dozingcatsoftware.bouncy_43.apk",
++   "package": "com.dozingcatsoftware.bouncy",
++   "expected_face": null,
++   "runs": [
++    {
++     "run_id": "r1",
++     "wall_s": 2.2,
++     "killed": false,
++     "install": "rc=0 t=0s",
++     "face": "8a6c24ac8a7d718e",
++     "uncaught": 0,
++     "verdicts": []
++    }
++   ],
++   "face": "8a6c24ac8a7d718e",
++   "matches_expectation": true
++  },
++  "gmdice": {
++   "file": "de.duenndns.gmdice_8.apk",
++   "package": "de.duenndns.gmdice",
++   "expected_face": null,
++   "runs": [
++    {
++     "run_id": "r1",
++     "wall_s": 1.5,
++     "killed": false,
++     "install": "rc=0 t=0s",
++     "face": "3891679dff449331",
++     "uncaught": 0,
++     "verdicts": []
++    }
++   ],
++   "face": "3891679dff449331",
++   "matches_expectation": true
++  }
++ }
++}
+\ No newline at end of file
+diff --git a/evidence/s156_4app/BOOT_connectbot.json b/evidence/s156_4app/BOOT_connectbot.json
+new file mode 100644
+index 00000000..6ee56a1a
+--- /dev/null
++++ b/evidence/s156_4app/BOOT_connectbot.json
+@@ -0,0 +1,25 @@
++{
++ "tag": "connectbot",
++ "package": "org.connectbot",
++ "apk_sha16": "96cf501a83e89284",
++ "engine": "S155 main rebuild",
++ "install": "cached",
++ "cmd_max_seconds": 100,
++ "cmd_frames": 12,
++ "wall_s": 3.3,
++ "process_killed": false,
++ "n_frames_captured": 12,
++ "screenshot_sha16": "b5a7a35d5fe0564b",
++ "verdicts": [
++  "DEFAULT_BACKGROUND_ONLY"
++ ],
++ "frame_analysis_state": [
++  "DEFAULT_BACKGROUND_ONLY",
++  "DEFAULT_BACKGROUND_ONLY"
++ ],
++ "uncaught": 13,
++ "ndfe": [],
++ "cnfe": [],
++ "npe_rows": 7,
++ "console_bytes": 439523
++}
+\ No newline at end of file
+diff --git a/evidence/s156_4app/BOOT_nextcloud.json b/evidence/s156_4app/BOOT_nextcloud.json
+new file mode 100644
+index 00000000..12bd8e3d
+--- /dev/null
++++ b/evidence/s156_4app/BOOT_nextcloud.json
+@@ -0,0 +1,20 @@
++{
++ "tag": "nextcloud",
++ "package": "com.nextcloud.client",
++ "apk_sha16": "c9ba2e85b13fee45",
++ "engine": "S155 main rebuild",
++ "install": "cached",
++ "cmd_max_seconds": 100,
++ "cmd_frames": 12,
++ "wall_s": 2.2,
++ "process_killed": false,
++ "n_frames_captured": 0,
++ "screenshot_sha16": null,
++ "verdicts": [],
++ "frame_analysis_state": [],
++ "uncaught": 0,
++ "ndfe": [],
++ "cnfe": [],
++ "npe_rows": 2,
++ "console_bytes": 137745
++}
+\ No newline at end of file
+diff --git a/evidence/s156_4app/BOOT_thunderbird.json b/evidence/s156_4app/BOOT_thunderbird.json
+new file mode 100644
+index 00000000..6554d4d4
+--- /dev/null
++++ b/evidence/s156_4app/BOOT_thunderbird.json
+@@ -0,0 +1,25 @@
++{
++ "tag": "thunderbird",
++ "package": "net.thunderbird.android",
++ "apk_sha16": "473b33da5963d0a4",
++ "engine": "S155 main rebuild",
++ "install": "cached",
++ "cmd_max_seconds": 100,
++ "cmd_frames": 12,
++ "wall_s": 3.8,
++ "process_killed": false,
++ "n_frames_captured": 12,
++ "screenshot_sha16": "b270ff040b3601dc",
++ "verdicts": [
++  "DEFAULT_BACKGROUND_ONLY"
++ ],
++ "frame_analysis_state": [
++  "DEFAULT_BACKGROUND_ONLY",
++  "DEFAULT_BACKGROUND_ONLY"
++ ],
++ "uncaught": 38,
++ "ndfe": [],
++ "cnfe": [],
++ "npe_rows": 1,
++ "console_bytes": 330125
++}
+\ No newline at end of file
+diff --git a/evidence/s156_4app/BOOT_tusky.json b/evidence/s156_4app/BOOT_tusky.json
+new file mode 100644
+index 00000000..08fab3b6
+--- /dev/null
++++ b/evidence/s156_4app/BOOT_tusky.json
+@@ -0,0 +1,20 @@
++{
++ "tag": "tusky",
++ "package": "com.keylesspalace.tusky",
++ "apk_sha16": "8154cabe67374f2e",
++ "engine": "S155 main rebuild",
++ "install": "cached",
++ "cmd_max_seconds": 100,
++ "cmd_frames": 12,
++ "wall_s": 0.5,
++ "process_killed": false,
++ "n_frames_captured": 12,
++ "screenshot_sha16": "31ddd4d5b8e6d18e",
++ "verdicts": [],
++ "frame_analysis_state": [],
++ "uncaught": 0,
++ "ndfe": [],
++ "cnfe": [],
++ "npe_rows": 0,
++ "console_bytes": 30901
++}
+\ No newline at end of file
+diff --git a/evidence/s156_4app/PIN_LEDGER.json b/evidence/s156_4app/PIN_LEDGER.json
+new file mode 100644
+index 00000000..74e4b4a9
+--- /dev/null
++++ b/evidence/s156_4app/PIN_LEDGER.json
+@@ -0,0 +1,280 @@
++{
++ "wave": "S156",
++ "stage": "pin",
++ "apks": {
++  "thunderbird": {
++   "file": "net.thunderbird.android_33.apk",
++   "exists": true,
++   "zip_magic_ok": true,
++   "sha256": "473b33da5963d0a4261a834c845aaf8e3878309565e9f40e61f6e5def21565e5",
++   "sha16": "473b33da5963d0a4",
++   "size_bytes": 10965795,
++   "package": "net.thunderbird.android",
++   "versionCode": "33",
++   "versionName": "24.0",
++   "minSdk": "23",
++   "targetSdk": "36",
++   "main_activity": "net.thunderbird.app.common.MainActivity",
++   "n_activities": 31,
++   "n_permissions": 16,
++   "permissions_top": [
++    "android.permission.ACCESS_NETWORK_STATE",
++    "android.permission.CAMERA",
++    "android.permission.FOREGROUND_SERVICE",
++    "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
++    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
++    "android.permission.INTERNET",
++    "android.permission.POST_NOTIFICATIONS",
++    "android.permission.READ_CONTACTS",
++    "android.permission.READ_SYNC_SETTINGS",
++    "android.permission.RECEIVE_BOOT_COMPLETED",
++    "android.permission.SCHEDULE_EXACT_ALARM",
++    "android.permission.USE_BIOMETRIC"
++   ],
++   "libraries": [
++    "androidx.window.extensions",
++    "androidx.window.sidecar",
++    "com.sec.android.app.multiwindow"
++   ],
++   "dex_census": [
++    {
++     "dex": "classes.dex",
++     "bytes": 11010328,
++     "classes": 11265,
++     "markers": {
++      "koin": 38,
++      "compose": 2446,
++      "kotlin": 293
++     }
++    },
++    {
++     "dex": "classes2.dex",
++     "bytes": 567764,
++     "classes": 678,
++     "markers": {
++      "koin": 0,
++      "compose": 0,
++      "kotlin": 0
++     }
++    }
++   ],
++   "markers_total": {
++    "koin": 38,
++    "compose": 2446,
++    "kotlin": 293
++   }
++  },
++  "tusky": {
++   "file": "com.keylesspalace.tusky_145.apk",
++   "exists": true,
++   "zip_magic_ok": true,
++   "sha256": "8154cabe67374f2e1f477fc4de8a44bbefe3cafdfa1b05495a6a9f762c6efd7d",
++   "sha16": "8154cabe67374f2e",
++   "size_bytes": 22491280,
++   "package": "com.keylesspalace.tusky",
++   "versionCode": "145",
++   "versionName": "33.1",
++   "minSdk": "24",
++   "targetSdk": "36",
++   "main_activity": "com.keylesspalace.tusky.MainActivity",
++   "n_activities": 31,
++   "n_permissions": 10,
++   "permissions_top": [
++    "android.permission.ACCESS_NETWORK_STATE",
++    "android.permission.FOREGROUND_SERVICE",
++    "android.permission.INTERNET",
++    "android.permission.POST_NOTIFICATIONS",
++    "android.permission.READ_EXTERNAL_STORAGE",
++    "android.permission.RECEIVE_BOOT_COMPLETED",
++    "android.permission.VIBRATE",
++    "android.permission.WAKE_LOCK",
++    "android.permission.WRITE_EXTERNAL_STORAGE",
++    "com.keylesspalace.tusky.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
++   ],
++   "libraries": [
++    "androidx.window.extensions",
++    "androidx.window.sidecar"
++   ],
++   "dex_census": [
++    {
++     "dex": "classes.dex",
++     "bytes": 7748680,
++     "classes": 8094,
++     "markers": {
++      "koin": 0,
++      "compose": 58,
++      "kotlin": 10
++     }
++    }
++   ],
++   "markers_total": {
++    "koin": 0,
++    "compose": 58,
++    "kotlin": 10
++   }
++  },
++  "nextcloud": {
++   "file": "com.nextcloud.client_350000290.apk",
++   "exists": true,
++   "zip_magic_ok": true,
++   "sha256": "c9ba2e85b13fee457238f959d367223834db44ec14531ec93abb2be97ab3fcff",
++   "sha16": "c9ba2e85b13fee45",
++   "size_bytes": 112503320,
++   "package": "com.nextcloud.client",
++   "versionCode": "350000290",
++   "versionName": "35.0.2",
++   "minSdk": "28",
++   "targetSdk": "36",
++   "main_activity": "com.nmc.android.ui.LauncherActivity",
++   "n_activities": 46,
++   "n_permissions": 33,
++   "permissions_top": [
++    "android.permission.ACCESS_MEDIA_LOCATION",
++    "android.permission.ACCESS_NETWORK_STATE",
++    "android.permission.AUTHENTICATE_ACCOUNTS",
++    "android.permission.CAMERA",
++    "android.permission.FOREGROUND_SERVICE",
++    "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
++    "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
++    "android.permission.GET_ACCOUNTS",
++    "android.permission.INTERNET",
++    "android.permission.MANAGE_ACCOUNTS",
++    "android.permission.MANAGE_EXTERNAL_STORAGE",
++    "android.permission.POST_NOTIFICATIONS"
++   ],
++   "libraries": [
++    "androidx.window.extensions",
++    "androidx.window.sidecar",
++    "org.apache.http.legacy"
++   ],
++   "dex_census": [
++    {
++     "dex": "classes.dex",
++     "bytes": 13814792,
++     "classes": 9235,
++     "markers": {
++      "koin": 0,
++      "compose": 15257,
++      "kotlin": 2265
++     }
++    },
++    {
++     "dex": "classes2.dex",
++     "bytes": 10086192,
++     "classes": 7772,
++     "markers": {
++      "koin": 0,
++      "compose": 5067,
++      "kotlin": 587
++     }
++    },
++    {
++     "dex": "classes3.dex",
++     "bytes": 9454596,
++     "classes": 8261,
++     "markers": {
++      "koin": 0,
++      "compose": 227,
++      "kotlin": 472
++     }
++    },
++    {
++     "dex": "classes4.dex",
++     "bytes": 10901416,
++     "classes": 9443,
++     "markers": {
++      "koin": 0,
++      "compose": 368,
++      "kotlin": 380
++     }
++    },
++    {
++     "dex": "classes5.dex",
++     "bytes": 11049380,
++     "classes": 9035,
++     "markers": {
++      "koin": 0,
++      "compose": 15,
++      "kotlin": 3168
++     }
++    },
++    {
++     "dex": "classes6.dex",
++     "bytes": 9275764,
++     "classes": 10205,
++     "markers": {
++      "koin": 0,
++      "compose": 2,
++      "kotlin": 2
++     }
++    },
++    {
++     "dex": "classes7.dex",
++     "bytes": 590996,
++     "classes": 411,
++     "markers": {
++      "koin": 0,
++      "compose": 1,
++      "kotlin": 2
++     }
++    }
++   ],
++   "markers_total": {
++    "koin": 0,
++    "compose": 20937,
++    "kotlin": 6876
++   }
++  },
++  "connectbot": {
++   "file": "org.connectbot.apk",
++   "exists": true,
++   "zip_magic_ok": true,
++   "sha256": "96cf501a83e89284ff3ec93ac06e7a6a6aa8a35c0c02486b865945fe59ac8223",
++   "sha16": "96cf501a83e89284",
++   "size_bytes": 13092258,
++   "package": "org.connectbot",
++   "versionCode": "11101000",
++   "versionName": "1.11.1-oss",
++   "minSdk": "24",
++   "targetSdk": "36",
++   "main_activity": "org.connectbot.ui.MainActivity",
++   "n_activities": 1,
++   "n_permissions": 12,
++   "permissions_top": [
++    "android.permission.ACCESS_NETWORK_STATE",
++    "android.permission.FOREGROUND_SERVICE",
++    "android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING",
++    "android.permission.INTERNET",
++    "android.permission.NEARBY_WIFI_DEVICES",
++    "android.permission.POST_NOTIFICATIONS",
++    "android.permission.USE_BIOMETRIC",
++    "android.permission.USE_FINGERPRINT",
++    "android.permission.VIBRATE",
++    "android.permission.WAKE_LOCK",
++    "android.permission.WRITE_EXTERNAL_STORAGE",
++    "org.connectbot.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
++   ],
++   "libraries": [
++    "androidx.window.extensions",
++    "androidx.window.sidecar"
++   ],
++   "dex_census": [
++    {
++     "dex": "classes.dex",
++     "bytes": 6447528,
++     "classes": 6697,
++     "markers": {
++      "koin": 0,
++      "compose": 2503,
++      "kotlin": 224
++     }
++    }
++   ],
++   "markers_total": {
++    "koin": 0,
++    "compose": 2503,
++    "kotlin": 224
++   }
++  }
++ }
++}
+\ No newline at end of file
+diff --git a/evidence/s156_4app/PROFILE.json b/evidence/s156_4app/PROFILE.json
+new file mode 100644
+index 00000000..aaf1567c
+--- /dev/null
++++ b/evidence/s156_4app/PROFILE.json
+@@ -0,0 +1,191 @@
++{
++ "wave": "S156",
++ "stage": "profile",
++ "apps": {
++  "thunderbird": {
++   "package": "net.thunderbird.android",
++   "versionCode": "33",
++   "application_class": "net.thunderbird.android.ThunderbirdApp",
++   "main_activity": "net.thunderbird.app.common.MainActivity",
++   "family_census": {
++    "androidx/compose/runtime": 269,
++    "androidx/compose/ui": 999,
++    "androidx/compose/foundation": 703,
++    "androidx/compose/material": 325,
++    "androidx/fragment/app": 78,
++    "androidx/lifecycle": 90,
++    "androidx/recyclerview": 83,
++    "androidx/viewpager": 31,
++    "androidx/appcompat": 253,
++    "androidx/preference": 57,
++    "androidx/navigation": 128,
++    "androidx/work": 191,
++    "androidx/browser": 2,
++    "androidx/core/app/Notification": 14,
++    "kotlinx/coroutines": 311,
++    "kotlin/reflect": 13,
++    "org/koin/core": 29,
++    "org/koin/android": 1,
++    "dagger": 3,
++    "javax/inject": 1,
++    "com/google/android/material": 213,
++    "android/webkit": 15,
++    "okhttp3": 172,
++    "okio": 71,
++    "com/bumptech/glide": 252,
++    "com/squareup/moshi": 36,
++    "android/database/sqlite": 19,
++    "java/util/concurrent": 63,
++    "javax/net/ssl": 16
++   },
++   "top_packages": {
++    "androidx": 5251,
++    "com": 2276,
++    "net": 1445,
++    "android": 857,
++    "java": 769,
++    "kotlinx": 695,
++    "app": 680,
++    "org": 634,
++    "coil3": 378,
++    "kotlin": 263,
++    "okhttp3": 125,
++    "javax": 24
++   }
++  },
++  "tusky": {
++   "package": "com.keylesspalace.tusky",
++   "versionCode": "145",
++   "application_class": "com.keylesspalace.tusky.TuskyApplication",
++   "main_activity": "com.keylesspalace.tusky.MainActivity",
++   "family_census": {
++    "androidx/compose/runtime": 2,
++    "androidx/compose/ui": 54,
++    "androidx/compose/foundation": 2,
++    "androidx/fragment/app": 1,
++    "androidx/lifecycle": 61,
++    "androidx/recyclerview": 4,
++    "androidx/viewpager": 1,
++    "androidx/appcompat": 27,
++    "androidx/preference": 16,
++    "androidx/work": 19,
++    "androidx/browser": 1,
++    "kotlinx/coroutines": 4,
++    "com/google/android/material": 124,
++    "android/webkit": 10,
++    "okhttp3": 1,
++    "com/bumptech/glide": 38,
++    "android/database/sqlite": 19,
++    "java/util/concurrent": 46,
++    "javax/net/ssl": 41
++   },
++   "top_packages": {
++    "android": 877,
++    "java": 512,
++    "com": 482,
++    "org": 352,
++    "androidx": 236,
++    "javax": 81,
++    "dalvik": 10,
++    "kotlin": 9,
++    "kotlinx": 4,
++    "coil3": 1,
++    "de": 1,
++    "okhttp3": 1
++   }
++  },
++  "nextcloud": {
++   "package": "com.nextcloud.client",
++   "versionCode": "350000290",
++   "application_class": "com.owncloud.android.MainApp",
++   "main_activity": "com.nmc.android.ui.LauncherActivity",
++   "family_census": {
++    "androidx/compose/runtime": 2983,
++    "androidx/compose/ui": 7617,
++    "androidx/compose/foundation": 5378,
++    "androidx/compose/material": 3676,
++    "androidx/fragment/app": 324,
++    "androidx/lifecycle": 596,
++    "androidx/appcompat": 558,
++    "androidx/databinding": 202,
++    "androidx/browser": 188,
++    "androidx/core/app/Notification": 130,
++    "kotlinx/coroutines": 1956,
++    "kotlin/reflect": 223,
++    "com/google/android/material": 1586,
++    "java/util/concurrent": 466,
++    "androidx/recyclerview": 260,
++    "androidx/viewpager": 100,
++    "androidx/preference": 134,
++    "androidx/work": 794,
++    "androidx/viewbinding": 6,
++    "android/webkit": 51,
++    "okhttp3": 871,
++    "android/database/sqlite": 34,
++    "androidx/paging": 8,
++    "okio": 341,
++    "com/bumptech/glide": 816,
++    "dagger": 145,
++    "javax/inject": 14,
++    "com/google/gson": 261,
++    "javax/net/ssl": 90,
++    "org/apache/http": 2
++   },
++   "top_packages": {
++    "androidx": 33432,
++    "com": 14475,
++    "org": 12157,
++    "java": 11546,
++    "kotlin": 6214,
++    "io": 3908,
++    "android": 3871,
++    "kotlinx": 2921,
++    "freemarker": 1342,
++    "net": 1003,
++    "coil3": 769,
++    "okhttp3": 511
++   }
++  },
++  "connectbot": {
++   "package": "org.connectbot",
++   "versionCode": "11101000",
++   "application_class": "org.connectbot.ConnectBotApplication",
++   "main_activity": "org.connectbot.ui.MainActivity",
++   "family_census": {
++    "androidx/compose/runtime": 270,
++    "androidx/compose/ui": 940,
++    "androidx/compose/foundation": 732,
++    "androidx/compose/material": 396,
++    "androidx/fragment/app": 50,
++    "androidx/lifecycle": 84,
++    "androidx/recyclerview": 6,
++    "androidx/appcompat": 194,
++    "androidx/preference": 16,
++    "androidx/navigation": 93,
++    "androidx/core/app/Notification": 10,
++    "kotlinx/coroutines": 253,
++    "kotlin/reflect": 4,
++    "dagger": 30,
++    "com/google/android/material": 86,
++    "android/database/sqlite": 11,
++    "java/util/concurrent": 43,
++    "javax/net/ssl": 40,
++    "com/trilead/ssh2": 127
++   },
++   "top_packages": {
++    "androidx": 3570,
++    "org": 2652,
++    "android": 609,
++    "java": 468,
++    "com": 260,
++    "kotlinx": 253,
++    "kotlin": 205,
++    "javax": 72,
++    "sh": 39,
++    "dagger": 30,
++    "asia": 22,
++    "dalvik": 10
++   }
++  }
++ }
++}
+\ No newline at end of file
+diff --git a/evidence/s156_4app/RERUN_AFTER_ANCHORS.json b/evidence/s156_4app/RERUN_AFTER_ANCHORS.json
+new file mode 100644
+index 00000000..b4c6d48d
+--- /dev/null
++++ b/evidence/s156_4app/RERUN_AFTER_ANCHORS.json
+@@ -0,0 +1,52 @@
++{
++ "engine": "a9b58de1d4e56f01",
++ "stage": "rerun_after_anchors",
++ "anchors": {
++  "dooz": {
++   "face": "11a38a5aeeff45a6",
++   "expected": "11a38a5aeeff45a6",
++   "match": true,
++   "uncaught": 6
++  },
++  "unote": {
++   "face": "3b8dcb0adbbc17a9",
++   "expected": "3b8dcb0adbbc17a9",
++   "match": true,
++   "uncaught": 0
++  }
++ },
++ "apps": {
++  "tusky": {
++   "face": "31ddd4d5b8e6d18e",
++   "wall_s": 0.5,
++   "uncaught": 0,
++   "npe": 0,
++   "ndfe": [],
++   "frames": 12
++  },
++  "nextcloud": {
++   "face": null,
++   "wall_s": 2.2,
++   "uncaught": 0,
++   "npe": 2,
++   "ndfe": [],
++   "frames": 0
++  },
++  "connectbot": {
++   "face": "b5a7a35d5fe0564b",
++   "wall_s": 3.3,
++   "uncaught": 13,
++   "npe": 7,
++   "ndfe": [],
++   "frames": 12
++  },
++  "thunderbird": {
++   "face": "b270ff040b3601dc",
++   "wall_s": 3.8,
++   "uncaught": 38,
++   "npe": 1,
++   "ndfe": [],
++   "frames": 12
++  }
++ }
++}
+\ No newline at end of file
+diff --git a/evidence/s156_4app/S156_T4_THUNDERBIRD.md b/evidence/s156_4app/S156_T4_THUNDERBIRD.md
+new file mode 100644
+index 00000000..8396d5d9
+--- /dev/null
++++ b/evidence/s156_4app/S156_T4_THUNDERBIRD.md
+@@ -0,0 +1,81 @@
++# S156-T4 — Thunderbird (net.thunderbird.android_33) five-stage frontier
++
++Engine: S155 main rebuild `35cd06374f3c457b` (reproduces all 7 available
++anchor pins byte-exact — see BASELINE_WALL.json). APK pin `473b33da5963d0a4`
++(sha256 473b33da5963d0a4…, vc=33, v24.0, minSdk 23, targetSdk 36, 2 dexes,
++main `net.thunderbird.app.common.MainActivity`, app class
++`net.thunderbird.android.ThunderbirdApp`, androguard-verified).
++
++## Stage 1 — PIN (PIN_LEDGER.json)
++
++sha16 `473b33da5963d0a4`, zip magic OK, 2 dexes, markers: koin=38 refs,
++compose=2446, kotlin=293. F-Droid canonical APK, byte-exact.
++
++## Stage 2 — androguard profile (PROFILE.json + TB_KOIN_XREF.json)
++
++Families: compose/ui=999, compose/foundation=703, compose/material=325,
++coroutines=311, appcompat=253, glide=252, material=213, work=191, okhttp=172,
++navigation=128, fragment=78. Application class `ThunderbirdApp`.
++
++XREF (androguard disassembly, decisive):
++- `ThunderbirdApp.attachBaseContext` IS the startKoin site — R8 inlined it:
++  pc=38 `KoinApplication.<init>` → pc=60 `DI$$ExternalSyntheticLambda0.invoke`
++  (module DSL) → pc=70 `Koin.createEagerInstances()`.
++- `okhttp3/CacheControl$Companion;.get$default` is an R8 horizontal-merge
++  artifact: `Reflection.getOrCreateKotlinClass` → `Scope.get(...)` — i.e. the
++  app-wide `getKoin().get<T>()` helper.
++- `androidx.startup.InitializationProvider` carries exactly 4 initializers
++  (emoji2 / process-lifecycle / profileinstaller / okhttp platform) — NO Koin
++  initializer; Koin start is solely the attachBaseContext path.
++
++## Stage 3 — BOOT (BOOT_thunderbird.json, console in run/s156_4app/)
++
++12/12 frames, wall 3.7 s, verdict DEFAULT_BACKGROUND_ONLY, face
++`b270ff040b3601dc`, 38 uncaught, 1 NPE row, zero NDFE/CNFE. The UI pipeline
++works deep (AppCompat decor inflation, ContentFrameLayout hierarchy,
++[F-NEW-175] obtainStyledAttributes theme-backed, FitWindowsFrameLayout
++findViewById FOUND) — the frame is chrome-only because app content never
++composes.
++
++## Stage 4 — ROOT CAUSE (console-evidenced, full chain)
++
++1. `ThunderbirdApp.attachBaseContext` runs the inlined startKoin: module DSL
++   bodies EXECUTE — 463 `Module.indexPrimaryType` puts observed
++   ([F527-HMAP]/[F089-MAP] rows, keys like
++   `net.thunderbird.core.featureflag…::_root_`), LoggerModuleKt.<clinit> OK.
++2. `Koin.createEagerInstances()` (pc=70) → `Scope.resolveFromContext`
++   throws `NoDefinitionFoundException` for **net.thunderbird.core.logging.Logger**
++   (name-derivation rows R347/STR right before the throw; the Logger family
++   Logger/Log/LogSink never appears among the indexed primary keys).
++3. The abort kills attachBaseContext BEFORE `GlobalContext._koin` is stored —
++   console `SGET GlobalContext;._koin → obj_id=0` everywhere after.
++4. CASCADE (all evidenced): `IllegalStateException "KoinApplication has not
++   been started"` from the R8-merged `get$default` helper inside
++   `DecryptedFileProvider.<clinit>` / `AttachmentTempFileProvider.<clinit>`
++   (content-provider boot), `ThunderbirdApp.attachBaseContext` inject,
++   `BaseActivity.attachBaseContext`, `BaseApplication.onCreate`
++   (NoDefinitionFoundException rows) → DI-empty app → chrome-only frame.
++
++Root-cause registry entry: **F-NEW-485** (Koin eager-instance registry
++divergence) — engine law candidate: definitions declared through the
++binds/default-arg bridge family (`$inlined$singleListOf$default$1`,
++`single$default`) must land in the SAME registry surface that
++`Scope.resolveFromContext` consults. Next lever: trace the engine's
++LinkedHashMap shadow across the module-map → registry merge
++(put rows land on 6+ distinct map objects; the merge step is silent).
++
++## Stage 5 — VERDICT
++
++BLOCKED-with-root-cause. The blocker is NOT a TB bug: real Android resolves
++`Logger` because its definition is registered; the engine drops exactly that
++declaration family from the consulted registry. Fix queued as F-NEW-485
++(S157 frontier). Engine-side conscrypt dlopen boundary fixed in the same
++wave (bionic FORTIFY anchors — see S156_T5 evidence) so the native-lib layer
++no longer masks the DI layer.
++
++---
++**S226 re-census (a4516511, S225-M):** the NDFE + `_koin` SGET-MISS still
++reproduce LIVE (6 NDFE rows in run/s226_transfer/thunderbird.console.log) but
++the downstream "KoinApplication has not been started" cascade is absorbed by
++the S156→S225 mainline laws — face moved b270ff04→43bfdac6, uncaught 38→9.
++Status: F-NEW-485 LIVE-REDUCED; the registry-merge lever stays open.
+diff --git a/evidence/s156_4app/S156_T5_TUSKY.md b/evidence/s156_4app/S156_T5_TUSKY.md
+new file mode 100644
+index 00000000..0e8e212f
+--- /dev/null
++++ b/evidence/s156_4app/S156_T5_TUSKY.md
+@@ -0,0 +1,58 @@
++# S156-T5 — Tusky (com.keylesspalace.tusky_145) five-stage frontier
++
++Engine chain: S155 rebuild `35cd06374f3c457b` (blocked boot) → S156 anchor
++law `a9b58de1d4e56f01` (clean boot). APK pin `8154cabe67374f2e`, vc=145,
++v33.1, minSdk 24, targetSdk 36, 1 dex, main
++`com.keylesspalace.tusky.MainActivity`, app class `TuskyApplication`
++(androguard-verified).
++
++## Stage 1 — PIN
++
++sha16 `8154cabe67374f2e`, zip magic OK. Classic-View stack (material=124,
++lifecycle=61, sqlite, preference) + light Compose (58).
++
++## Stage 2 — androguard profile
++
++Families: material=124, androidx/lifecycle=61, compose/ui=54, javax/net/ssl=41,
++glide=38, appcompat=27, work=19, android/database/sqlite=19, preference=16,
++android/webkit=10, okhttp platform init expected (okhttp3 internals in dex).
++
++## Stage 3 — BOOT at pre-anchor engine (35cd0637)
++
++Face `31ddd4d5b8e6d18e` (the S151-recorded Compose-family generic face),
++12/12 frames, wall 2.4 s, 26 uncaught, 25 NPE rows. Root exception:
++`UnsatisfiedLinkError: "conscrypt_jni" dlopen failed: undefined symbol
++__strchr_chk` from `org/conscrypt/NativeCrypto;.checkAvailability`, then
++okhttp platform fallback → `IllegalArgumentException "At least one cipher
++suite is required"` cascade (TLS stack dead).
++
++## Stage 4 — FIX (the S156 anchor law) + Stage 5 — VERIFY
++
++Law A (F-NEW-484, FIXED-VERIFIED): the bionic FORTIFY/anchor family — the
++Coder-6 wave-5b/7 anchor block (C6-R9a..R9d, provenance
++wip/coder-engine-postS154 branch, merge-path decision closed) transplanted
++into `miniandroid/src/jni/bionic_compat.c` + S156 extension
++(`__memset_chk`/`__vsnprintf_chk`/`__stack_chk_fail`). The engine links
++-rdynamic so these definitions are the dlopen resolution surface for
++app-native libs.
++
++Verification (engine a9b58de1, RERUN_AFTER_ANCHORS.json):
++- anchors dooz 11a38a5a ✓ / unote 3b8dcb0a ✓ (DEX-face-neutral law).
++- Tusky boot: **uncaught 26→0, NPE 25→0**, wall 0.5 s, 12/12 frames, face
++  `31ddd4d5b8e6d18e` — the boot is now exception-free end to end; conscrypt
++  loads, TLS init passes, okhttp platform init completes.
++
++## VERDICT
++
++PARTIAL: clean boot (L0-L2 true), final frame is the HONEST generic
++Compose-family face (keep-empty white) — Tusky's own content awaits the
++generic Compose render-pipeline wave (the S151-pinned 31ddd4d5 family), not
++a Tusky-specific blocker. Tusky-specific TLS/native blockers: SOLVED this
++wave.
++
++---
++**S226 re-census (a4516511, S225-M):** the mainline anchor surface carries
++12/15 FORTIFY symbols + the property API — the conscrypt dlopen boundary
++holds without my block. Residue: __memset_chk/__vsnprintf_chk/__stack_chk_fail
++still absent (F-NEW-484, transferred). Live battery: gates 4/4 vs the S225-M
++pins; tusky clean-family boot, verdict SAFE + DEFAULT_BACKGROUND_ONLY.
+diff --git a/evidence/s156_4app/S156_T6_NEXTCLOUD.md b/evidence/s156_4app/S156_T6_NEXTCLOUD.md
+new file mode 100644
+index 00000000..dbbbbe9f
+--- /dev/null
++++ b/evidence/s156_4app/S156_T6_NEXTCLOUD.md
+@@ -0,0 +1,53 @@
++# S156-T6 — Nextcloud (com.nextcloud.client_350000290) five-stage frontier
++
++Engine chain: S155 rebuild `35cd06374f3c457b` → S156 anchor law
++`a9b58de1d4e56f01`. APK pin `c9ba2e85b13fee45`, vc=350000290, v35.0.2,
++minSdk 28, targetSdk 36, 7 dexes, main
++`com.nmc.android.ui.LauncherActivity`, app class
+

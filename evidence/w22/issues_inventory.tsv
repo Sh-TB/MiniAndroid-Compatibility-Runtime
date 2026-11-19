@@ -1,0 +1,630 @@
+number	type	state	author	created	comments	title
+1	I	closed	Sh-TB	2026-08-19T20:57:09Z	3	EXP-064 — REAL LOGIN IMAGE PROVEN BY PIXELS (OCR-validated PhoneView rendered)
+2	I	closed	Sh-TB	2026-08-19T21:54:53Z	3	EXP-065 — Fix multi-DEX const-string bug (FIELD_PREFERRED_AUDIO_LANGUAGES leak resolved)
+3	I	closed	Sh-TB	2026-08-20T05:03:09Z	3	EXP-066 — Multi-DEX semantic audit + OutlineTextContainerView text capture (Phone number label visible)
+4	I	closed	Sh-TB	2026-08-20T05:40:58Z	3	EXP-067 — Resource resolution + AXML parser + Drawable decoding (real WebP images in Login UI)
+5	I	closed	Sh-TB	2026-08-20T06:11:58Z	3	EXP-068 — Generic View inheritance + Floating Next button (semantic superclass resolution)
+6	I	closed	Sh-TB	2026-08-20T13:04:09Z	3	EXP-069 — Generic text input + click dispatch: phone number injected + Next button clicked
+7	I	closed	Sh-TB	2026-08-21T16:19:32Z	15	EXP-071 — Telegram Login → SMS Code Page Transition (CHECKPOINT_M PROVEN)
+8	I	closed	Sh-TB	2026-09-05T13:01:45Z	55	MiniAndroid campaign evidence — verified achievements (REUSE-FIRST campaign, 2026-09-05)
+9	I	open	Sh-TB	2026-09-08T07:05:52Z	13	MASTER-ROADMAP v3 — MiniAndroid Compatibility Runtime — 100% Base Execution Closure System (living document)
+10	I	closed	Sh-TB	2026-09-21T01:04:10Z	3	[EXEC] HelloWorld — APK Execution & Visual Proof
+11	I	open	Sh-TB	2026-09-21T01:04:13Z	7	[EXEC] TicTacToe — APK Execution & Gameplay Proof
+12	I	open	Sh-TB	2026-09-21T01:04:16Z	4	[EXEC] ConnectFour — APK Execution & Gameplay Proof
+13	I	closed	Sh-TB	2026-09-21T01:04:18Z	4	[EXEC] AndroidGameSnake — Autonomous Gameplay Proof
+14	I	open	Sh-TB	2026-09-21T01:04:20Z	5	[EXEC] Dooz — Runtime/UI Completion
+15	I	closed	Sh-TB	2026-09-21T01:04:21Z	4	[EXEC] Unote — Runtime/UI Completion
+16	I	open	Sh-TB	2026-09-21T01:04:22Z	5	[EXEC] Telegram — Runtime Compatibility
+17	I	closed	Sh-TB	2026-09-21T01:04:23Z	4	[EXEC] GMDice — APK Execution & Visual Proof
+18	I	closed	Sh-TB	2026-09-21T01:04:24Z	4	[EXEC] MicroTimer — APK Execution & Visual Proof
+19	I	open	Sh-TB	2026-09-21T01:04:25Z	4	[EXEC] FishRings — APK Execution & Gameplay Proof
+20	I	open	Sh-TB	2026-09-21T01:04:26Z	4	[EXEC] TriPeaks — APK Execution & Visual Proof
+21	I	open	Sh-TB	2026-09-21T01:04:27Z	6	[EXEC] Bouncy — APK Execution & Visual Proof
+22	I	open	Sh-TB	2026-09-21T01:04:28Z	4	[EXEC] Stopwatch — Service-Launch Family
+23	I	open	Sh-TB	2026-09-21T01:04:29Z	5	[EXEC] OPMT — APK Execution & Visual Proof
+24	I	open	Sh-TB	2026-09-22T02:27:40Z	3	S81 — REAL APP VISUAL COMPATIBILITY: audit ladder, VF fixes, 200-item F-Droid corpus + BATCH-01
+25	I	open	Sh-TB	2026-09-22T05:57:34Z	4	[GAME-001] com.qwde.ccm — compatibility report
+26	I	open	Sh-TB	2026-09-22T05:57:35Z	2	[GAME-002] com.astroloop.game — compatibility report
+27	I	open	Sh-TB	2026-09-22T05:57:37Z	1	[GAME-003] app.halma — compatibility report
+28	I	open	Sh-TB	2026-09-22T05:57:39Z	2	[GAME-004] com.jeffliu.balancetheball — compatibility report
+29	I	open	Sh-TB	2026-09-22T05:57:41Z	2	[GAME-005] crypto.o0o0o0o0o.games.blackjack — compatibility report
+30	I	open	Sh-TB	2026-09-22T05:57:42Z	3	[GAME-006] eu.veldsoft.no.thanks — compatibility report
+31	I	open	Sh-TB	2026-09-22T05:57:44Z	2	[GAME-007] com.simondalvai.ball2box — compatibility report
+32	I	open	Sh-TB	2026-09-22T05:57:45Z	2	[GAME-008] si.palcka.tarok — compatibility report
+33	I	open	Sh-TB	2026-09-22T05:57:47Z	1	[GAME-009] cos.premy.mines — compatibility report
+34	I	open	Sh-TB	2026-09-22T05:57:49Z	4	[GAME-010] com.sidhant.puzzle — compatibility report
+35	I	open	Sh-TB	2026-09-22T05:57:50Z	4	[GAME-011] com.ivylopez.authsrng — compatibility report
+36	I	open	Sh-TB	2026-09-22T05:57:52Z	6	[GAME-012] io.github.hathibelagal.mykanji — compatibility report
+37	I	open	Sh-TB	2026-09-22T05:57:53Z	1	[GAME-013] io.github.ebraminio.bouncy — compatibility report
+38	I	open	Sh-TB	2026-09-22T05:57:55Z	2	[GAME-014] de.tobiasbielefeld.solitaire — compatibility report
+39	I	open	Sh-TB	2026-09-22T05:57:57Z	2	[GAME-015] eu.quelltext.memory — compatibility report
+40	I	open	Sh-TB	2026-09-22T05:57:58Z	4	[GAME-016] com.sidhant.queens — compatibility report
+41	I	open	Sh-TB	2026-09-22T05:58:00Z	1	[GAME-017] page.codeberg.lanticy.guandan — compatibility report
+42	I	open	Sh-TB	2026-09-22T05:58:01Z	2	[GAME-018] xyz.deepdaikon.quinb — compatibility report
+43	I	open	Sh-TB	2026-09-22T05:58:03Z	2	[GAME-019] com.vayunmathur.games.solitaire — compatibility report
+44	I	open	Sh-TB	2026-09-22T05:58:05Z	4	[GAME-020] bim.app — compatibility report
+45	I	open	Sh-TB	2026-09-22T05:58:06Z	0	[GAME-021] de.schwarz.boardgamepal — compatibility report
+46	I	open	Sh-TB	2026-09-22T05:58:08Z	0	[GAME-022] com.dash1971.maia_chess — compatibility report
+47	I	open	Sh-TB	2026-09-22T05:58:09Z	2	[GAME-023] org.secuso.privacyfriendlybattleship — compatibility report
+48	I	open	Sh-TB	2026-09-22T05:58:11Z	7	[GAME-024] com.kingalex.kingpong — compatibility report
+49	I	open	Sh-TB	2026-09-22T05:58:12Z	1	[GAME-025] com.vovagorodok.blichess — compatibility report
+50	I	open	Sh-TB	2026-09-22T05:58:14Z	0	[GAME-026] io.itch.pirate_solitaire — compatibility report
+51	I	open	Sh-TB	2026-09-22T05:58:16Z	6	[GAME-027] com.dozingcatsoftware.dodge — compatibility report
+52	I	open	Sh-TB	2026-09-22T05:58:17Z	4	[GAME-028] com.helddertierwelt.mentalmath — compatibility report
+53	I	open	Sh-TB	2026-09-22T05:58:19Z	0	[GAME-029] com.sidhant.bubbleshooter — compatibility report
+54	I	open	Sh-TB	2026-09-22T05:58:21Z	0	[GAME-030] net.tigr.navyfleetbattle — compatibility report
+55	I	open	Sh-TB	2026-09-22T05:58:22Z	4	[GAME-031] com.hazelhope.dubster.hamtest — compatibility report
+56	I	open	Sh-TB	2026-09-22T05:58:23Z	1	[GAME-032] ca.rmen.nounours — compatibility report
+57	I	open	Sh-TB	2026-09-22T05:58:25Z	4	[GAME-033] com.nima.triviaapp — compatibility report
+58	I	open	Sh-TB	2026-09-22T05:58:27Z	0	[GAME-034] ru.wohlsoft.thextech.fdroid — compatibility report
+59	I	open	Sh-TB	2026-09-22T05:58:29Z	7	[GAME-035] com.willie.mancala — compatibility report
+60	I	open	Sh-TB	2026-09-22T05:58:30Z	0	[GAME-036] org.lichess.mobileV2 — compatibility report
+61	I	open	Sh-TB	2026-09-22T05:58:32Z	1	[GAME-037] de.georgsieber.ballbreak — compatibility report
+62	I	open	Sh-TB	2026-09-22T05:58:33Z	4	[GAME-038] com.quietgrid.app — compatibility report
+63	I	open	Sh-TB	2026-09-22T05:58:35Z	4	[GAME-039] com.octbit.rutmath — compatibility report
+64	I	open	Sh-TB	2026-09-22T05:58:37Z	3	[GAME-040] com.galaxyrio.sudokusolver — compatibility report
+65	I	open	Sh-TB	2026-09-22T05:58:38Z	3	[GAME-041] org.lufebe16.pysolfc — compatibility report
+66	I	open	Sh-TB	2026-09-22T05:58:40Z	3	[GAME-042] com.kaeruct.raumballer — compatibility report
+67	I	open	Sh-TB	2026-09-22T05:58:42Z	3	[GAME-043] com.sanskritbasics.memory — compatibility report
+68	I	closed	Sh-TB	2026-09-22T05:58:43Z	2	[GAME-044] com.smorgasbork.hotdeath — compatibility report
+69	I	open	Sh-TB	2026-09-22T05:58:45Z	3	[GAME-045] com.serwylo.retrowars — compatibility report
+70	I	open	Sh-TB	2026-09-22T05:58:47Z	4	[GAME-046] org.opensurge2d.surgeengine — compatibility report
+71	I	open	Sh-TB	2026-09-22T05:58:48Z	4	[GAME-047] com.eightsines.firestrike.opensource — compatibility report
+72	I	open	Sh-TB	2026-09-22T05:58:50Z	3	[GAME-048] com.clavierhaus.gnubg — compatibility report
+73	I	open	Sh-TB	2026-09-22T05:58:51Z	4	[GAME-049] com.sidhant.arrowescape — compatibility report
+74	I	open	Sh-TB	2026-09-22T05:58:53Z	3	[GAME-050] com.vovagorodok.blidraughts — compatibility report
+75	I	open	Sh-TB	2026-09-22T05:58:55Z	3	[GAME-051] com.yepgoryo.EggReturnsHome — compatibility report
+76	I	open	Sh-TB	2026-09-22T05:58:56Z	4	[GAME-052] com.rocket9labs.boxcars — compatibility report
+77	I	open	Sh-TB	2026-09-22T05:58:58Z	3	[GAME-053] io.github.johnathan.minesweeper — compatibility report
+78	I	open	Sh-TB	2026-09-22T05:58:59Z	0	[GAME-054] org.piepmeyer.gauguin — compatibility report
+79	I	open	Sh-TB	2026-09-22T05:59:00Z	3	[GAME-055] jwtc.android.chess — compatibility report
+80	I	open	Sh-TB	2026-09-22T05:59:02Z	3	[GAME-056] org.pipoypipagames.cowsrevenge — compatibility report
+81	I	closed	Sh-TB	2026-09-22T05:59:03Z	2	[GAME-057] org.bobstuff.bobball — compatibility report
+82	I	open	Sh-TB	2026-09-22T05:59:05Z	2	[GAME-058] com.vayunmathur.games.alchemist — compatibility report
+83	I	open	Sh-TB	2026-09-22T05:59:06Z	3	[GAME-059] ru.hyst329.openfool — compatibility report
+84	I	open	Sh-TB	2026-09-22T05:59:08Z	2	[GAME-060] org.codeberg.scovillo.bubble — compatibility report
+85	I	open	Sh-TB	2026-09-22T05:59:10Z	3	[GAME-061] com.towerillusion.abdal — compatibility report
+86	I	open	Sh-TB	2026-09-22T05:59:12Z	3	[GAME-062] com.sidhant.blockblast — compatibility report
+87	I	open	Sh-TB	2026-09-22T05:59:14Z	4	[GAME-063] org.quentin_bettoum.librememorygame — compatibility report
+88	I	open	Sh-TB	2026-09-22T05:59:16Z	3	[GAME-064] com.fairytrick.fairymahjong — compatibility report
+89	I	open	Sh-TB	2026-09-22T05:59:18Z	3	[GAME-065] com.tacticmaster — compatibility report
+90	I	open	Sh-TB	2026-09-22T05:59:20Z	3	[GAME-066] com.joeld.minesweeper — compatibility report
+91	I	open	Sh-TB	2026-09-22T05:59:21Z	3	[GAME-067] com.adilhanney.ricochlime — compatibility report
+92	I	open	Sh-TB	2026-09-22T05:59:23Z	0	[GAME-068] com.dozingcatsoftware.cardswithcats — compatibility report
+93	I	open	Sh-TB	2026-09-22T05:59:24Z	0	[GAME-069] eu.veldsoft.scribe4 — compatibility report
+94	I	open	Sh-TB	2026-09-22T05:59:26Z	0	[GAME-070] me.lecaro.breakout — compatibility report
+95	I	open	Sh-TB	2026-09-22T05:59:27Z	0	[GAME-071] cube.run — compatibility report
+96	I	open	Sh-TB	2026-09-22T05:59:29Z	3	[GAME-072] fr.arnaudguyon.spacevertex — compatibility report
+97	I	open	Sh-TB	2026-09-22T05:59:30Z	2	[GAME-073] de.saschahlusiak.freebloks — compatibility report
+98	I	open	Sh-TB	2026-09-22T05:59:31Z	8	[GAME-074] org.secuso.privacyfriendlymemory — compatibility report
+99	I	open	Sh-TB	2026-09-22T05:59:33Z	3	[GAME-075] paper.loop — compatibility report
+100	I	open	Sh-TB	2026-09-22T05:59:34Z	3	[GAME-076] dev.serwin.AnarchRE — compatibility report
+101	I	open	Sh-TB	2026-09-22T05:59:36Z	3	[GAME-077] com.dozingcatsoftware.mouse_pounce — compatibility report
+102	I	open	Sh-TB	2026-09-22T05:59:37Z	3	[GAME-078] com.sidhant.shikaku — compatibility report
+103	I	open	Sh-TB	2026-09-22T05:59:39Z	2	[GAME-079] eve.game.tracker — compatibility report
+104	I	open	Sh-TB	2026-09-22T05:59:41Z	3	[GAME-080] com.sanskritbasics — compatibility report
+105	I	open	Sh-TB	2026-09-22T05:59:43Z	2	[GAME-081] eu.veldsoft.vitosha.blackjack — compatibility report
+106	I	open	Sh-TB	2026-09-22T05:59:45Z	3	[GAME-082] com.mostafa.brickblast — compatibility report
+107	I	open	Sh-TB	2026-09-22T05:59:46Z	3	[GAME-083] com.fr.laboussole.track — compatibility report
+108	I	open	Sh-TB	2026-09-22T05:59:47Z	2	[GAME-084] eu.mokrzycki.learndigits — compatibility report
+109	I	open	Sh-TB	2026-09-22T05:59:49Z	3	[GAME-085] com.game.asteroids_revenge — compatibility report
+110	I	open	Sh-TB	2026-09-22T05:59:50Z	0	[GAME-086] paper.loop2 — compatibility report
+111	I	open	Sh-TB	2026-09-22T05:59:52Z	3	[GAME-087] org.pgnapps.pk2 — compatibility report
+112	I	open	Sh-TB	2026-09-22T05:59:53Z	4	[GAME-088] org.secuso.privacyfriendlydame — compatibility report
+113	I	open	Sh-TB	2026-09-22T05:59:55Z	4	[GAME-089] com.itsfrz.tictactoe — compatibility report
+114	I	open	Sh-TB	2026-09-22T05:59:56Z	3	[GAME-090] nodomain.playmaker — compatibility report
+115	I	open	Sh-TB	2026-09-22T05:59:58Z	3	[GAME-091] com.chenyifaer.fafarunner — compatibility report
+116	I	open	Sh-TB	2026-09-22T05:59:59Z	3	[GAME-092] org.secuso.privacyfriendlysolitaire — compatibility report
+117	I	open	Sh-TB	2026-09-22T06:00:01Z	2	[GAME-093] com.movietrivia.filmfacts — compatibility report
+118	I	open	Sh-TB	2026-09-22T06:00:03Z	2	[GAME-094] com.attenomy.janken — compatibility report
+119	I	open	Sh-TB	2026-09-22T06:00:05Z	3	[GAME-095] com.sidhant.nonogram — compatibility report
+120	I	open	Sh-TB	2026-09-22T06:00:06Z	3	[GAME-096] garden.lina.oblique_strategies — compatibility report
+121	I	closed	Sh-TB	2026-09-22T06:00:08Z	2	[GAME-097] com.dozingcatsoftware.bouncy — compatibility report
+122	I	open	Sh-TB	2026-09-22T06:00:09Z	3	[GAME-098] com.sidhant.triplematch — compatibility report
+123	I	open	Sh-TB	2026-09-22T06:00:11Z	2	[GAME-099] net.sourceforge.solitaire_cg — compatibility report
+124	I	open	Sh-TB	2026-09-22T06:00:12Z	2	[GAME-100] eu.veldsoft.tuty.fruty.slot — compatibility report
+125	I	open	Sh-TB	2026-09-22T06:00:14Z	0	[APP-001] com.hfut.schedule — compatibility report
+126	I	open	Sh-TB	2026-09-22T06:00:15Z	2	[APP-002] foehnix.widget — compatibility report
+127	I	open	Sh-TB	2026-09-22T06:00:17Z	0	[APP-003] de.seemoo.at_tracking_detection — compatibility report
+128	I	open	Sh-TB	2026-09-22T06:00:18Z	1	[APP-004] org.nitri.opentopo — compatibility report
+129	I	open	Sh-TB	2026-09-22T06:00:20Z	2	[APP-005] com.newsblur — compatibility report
+130	I	open	Sh-TB	2026-09-22T06:00:21Z	1	[APP-006] de.taz.android.app.free — compatibility report
+131	I	open	Sh-TB	2026-09-22T06:00:23Z	1	[APP-007] com.bupkis.tirailleur — compatibility report
+132	I	open	Sh-TB	2026-09-22T06:00:24Z	1	[APP-008] io.github.aoc_normal — compatibility report
+133	I	open	Sh-TB	2026-09-22T06:00:26Z	0	[APP-009] fr.shiningcat.binclockwidget — compatibility report
+134	I	open	Sh-TB	2026-09-22T06:00:28Z	0	[APP-010] net.diffengine.romandigitalclock — compatibility report
+135	I	open	Sh-TB	2026-09-22T06:00:29Z	0	[APP-011] eu.weblibre.gecko — compatibility report
+136	I	open	Sh-TB	2026-09-22T06:00:31Z	0	[APP-012] com.jherkenhoff.qalculate — compatibility report
+137	I	open	Sh-TB	2026-09-22T06:00:32Z	0	[APP-013] site.leos.apps.lespas — compatibility report
+138	I	open	Sh-TB	2026-09-22T06:00:34Z	1	[APP-014] me.river.nightbell — compatibility report
+139	I	open	Sh-TB	2026-09-22T06:00:36Z	0	[APP-015] com.madlonkay.orgro — compatibility report
+140	I	open	Sh-TB	2026-09-22T06:00:38Z	1	[APP-016] org.forkgram.classic — compatibility report
+141	I	open	Sh-TB	2026-09-22T06:00:39Z	4	[APP-017] com.kompact — compatibility report
+142	I	open	Sh-TB	2026-09-22T06:00:41Z	3	[APP-018] com.ma.tehro — compatibility report
+143	I	open	Sh-TB	2026-09-22T06:00:42Z	4	[APP-019] net.bible.android.activity — compatibility report
+144	I	open	Sh-TB	2026-09-22T06:00:44Z	0	[APP-020] net.osmand.plus — compatibility report
+145	I	open	Sh-TB	2026-09-22T06:00:45Z	5	[APP-021] com.tutpro.baresip.plus — compatibility report
+146	I	open	Sh-TB	2026-09-22T06:00:47Z	4	[APP-022] it.fast4x.riplay — compatibility report
+147	I	open	Sh-TB	2026-09-22T06:00:48Z	4	[APP-023] org.stingle.photos — compatibility report
+148	I	open	Sh-TB	2026-09-22T06:00:50Z	4	[APP-024] com.forrestguice.suntimeswidget — compatibility report
+149	I	open	Sh-TB	2026-09-22T06:00:51Z	3	[APP-025] com.vayunmathur.clock — compatibility report
+150	I	open	Sh-TB	2026-09-22T06:00:52Z	4	[APP-026] com.luc4n3x.levyra — compatibility report
+151	I	open	Sh-TB	2026-09-22T06:00:54Z	4	[APP-027] com.firebirdberlin.nightdream.noGms — compatibility report
+152	I	open	Sh-TB	2026-09-22T06:00:55Z	3	[APP-028] com.vagujhelyigergely.calculatorm3 — compatibility report
+153	I	open	Sh-TB	2026-09-22T06:00:57Z	4	[APP-029] com.hegocre.nextcloudpasswords — compatibility report
+154	I	open	Sh-TB	2026-09-22T06:00:58Z	2	[APP-030] com.chmouel.liseur — compatibility report
+155	I	open	Sh-TB	2026-09-22T06:01:00Z	3	[APP-031] protectedwp.safespace — compatibility report
+156	I	open	Sh-TB	2026-09-22T06:01:02Z	0	[APP-032] dev.gpxit.app — compatibility report
+157	I	open	Sh-TB	2026-09-22T06:01:03Z	0	[APP-033] com.srkovnar.legacyphotoframe — compatibility report
+158	I	open	Sh-TB	2026-09-22T06:01:05Z	0	[APP-034] com.nfcarchiver.nfc_archiver — compatibility report
+159	I	open	Sh-TB	2026-09-22T06:01:06Z	3	[APP-035] org.ojrandom.paiesque — compatibility report
+160	I	open	Sh-TB	2026-09-22T06:01:08Z	2	[APP-036] com.greenart7c3.nostrsigner — compatibility report
+161	I	open	Sh-TB	2026-09-22T06:01:10Z	3	[APP-037] com.divinelink.scenepeek — compatibility report
+162	I	open	Sh-TB	2026-09-22T06:01:11Z	3	[APP-038] app.fedilab.castlab — compatibility report
+163	I	open	Sh-TB	2026-09-22T06:01:13Z	2	[APP-039] de.schliweb.makeacopy — compatibility report
+164	I	open	Sh-TB	2026-09-22T06:01:15Z	3	[APP-040] fr.corenting.convertisseureurofranc — compatibility report
+165	I	open	Sh-TB	2026-09-22T06:01:16Z	3	[APP-041] io.paperterm.app — compatibility report
+166	I	closed	Sh-TB	2026-09-22T06:01:18Z	2	[APP-042] org.ucam.ssb22.pinyinfdroid — compatibility report
+167	I	open	Sh-TB	2026-09-22T06:01:20Z	3	[APP-043] com.kolakek.pimiwidget — compatibility report
+168	I	open	Sh-TB	2026-09-22T06:01:22Z	2	[APP-044] is.xyz.mpv — compatibility report
+169	I	open	Sh-TB	2026-09-22T06:01:23Z	2	[APP-045] orinasa.njarasoa.maripanatokana — compatibility report
+170	I	open	Sh-TB	2026-09-22T06:01:24Z	4	[APP-046] tibarj.tranquilstopwatch — compatibility report
+171	I	open	Sh-TB	2026-09-22T06:01:26Z	2	[APP-047] com.davidtakac.bura — compatibility report
+172	I	open	Sh-TB	2026-09-22T06:01:27Z	0	[APP-048] m.co.rh.id.a_news_provider — compatibility report
+173	I	open	Sh-TB	2026-09-22T06:01:29Z	0	[APP-049] de.quaddyservices.dynamicnightlight — compatibility report
+174	I	open	Sh-TB	2026-09-22T06:01:31Z	0	[APP-050] com.ominous.quickweather — compatibility report
+175	I	open	Sh-TB	2026-09-22T06:01:32Z	0	[APP-051] cn.rbc.termuc — compatibility report
+176	I	open	Sh-TB	2026-09-22T06:01:34Z	0	[APP-052] com.kaii.photos — compatibility report
+177	I	open	Sh-TB	2026-09-22T06:01:36Z	3	[APP-053] com.co3 — compatibility report
+178	I	open	Sh-TB	2026-09-22T06:01:37Z	2	[APP-054] com.crome.forecastpoint — compatibility report
+179	I	open	Sh-TB	2026-09-22T06:01:39Z	2	[APP-055] com.metromusic — compatibility report
+180	I	open	Sh-TB	2026-09-22T06:01:40Z	2	[APP-056] com.bbzone.isitprime — compatibility report
+181	I	open	Sh-TB	2026-09-22T06:01:42Z	2	[APP-057] com.vsmartcard.acardemulator — compatibility report
+182	I	open	Sh-TB	2026-09-22T06:01:43Z	2	[APP-058] com.iris.gallery — compatibility report
+183	I	open	Sh-TB	2026-09-22T06:01:45Z	3	[APP-059] com.adeeteya.digital_calculator — compatibility report
+184	I	open	Sh-TB	2026-09-22T06:01:46Z	2	[APP-060] lab.rreedd.oriens — compatibility report
+185	I	open	Sh-TB	2026-09-22T06:01:48Z	3	[APP-061] org.godotengine.editor.v4 — compatibility report
+186	I	open	Sh-TB	2026-09-22T06:01:50Z	3	[APP-062] foss.cnugteren.nlweer — compatibility report
+187	I	open	Sh-TB	2026-09-22T06:01:51Z	3	[APP-063] com.axiel7.anihyou — compatibility report
+188	I	open	Sh-TB	2026-09-22T06:01:52Z	0	[APP-064] joshuatee.wx — compatibility report
+189	I	open	Sh-TB	2026-09-22T06:01:54Z	3	[APP-065] net.aliasvault.app — compatibility report
+190	I	open	Sh-TB	2026-09-22T06:01:56Z	2	[APP-066] uk.org.boddie.android.weatherforecast — compatibility report
+191	I	open	Sh-TB	2026-09-22T06:01:57Z	3	[APP-067] de.phasenrauscher.bicyweather — compatibility report
+192	I	open	Sh-TB	2026-09-22T06:01:59Z	3	[APP-068] com.fixupxer — compatibility report
+193	I	open	Sh-TB	2026-09-22T06:02:00Z	3	[APP-069] com.github.vauvenal5.yaga — compatibility report
+194	I	open	Sh-TB	2026-09-22T06:02:01Z	2	[APP-070] fr.ign.geoportail — compatibility report
+195	I	open	Sh-TB	2026-09-22T06:02:03Z	3	[APP-071] com.kylecorry.trail_sense — compatibility report
+196	I	open	Sh-TB	2026-09-22T06:02:05Z	3	[APP-072] de.kaffeemitkoffein.tinyweatherforecastgermany — compatibility report
+197	I	open	Sh-TB	2026-09-22T06:02:07Z	2	[APP-073] dudeofx.eval — compatibility report
+198	I	open	Sh-TB	2026-09-22T06:02:09Z	3	[APP-074] it.rignanese.leo.slimfacebook — compatibility report
+199	I	open	Sh-TB	2026-09-22T06:02:11Z	3	[APP-075] org.fossify.gallery — compatibility report
+200	I	open	Sh-TB	2026-09-22T06:02:12Z	2	[APP-076] deckers.thibault.aves.libre — compatibility report
+201	I	open	Sh-TB	2026-09-22T06:02:14Z	2	[APP-077] io.github.lordofpolls.shellwave — compatibility report
+202	I	open	Sh-TB	2026-09-22T06:02:15Z	3	[APP-078] org.fossify.clock — compatibility report
+203	I	open	Sh-TB	2026-09-22T06:02:17Z	3	[APP-079] com.justdeax.composeStopwatch — compatibility report
+204	I	open	Sh-TB	2026-09-22T06:02:18Z	3	[APP-080] yetzio.yetcalc — compatibility report
+205	I	open	Sh-TB	2026-09-22T06:02:20Z	3	[APP-081] trailence.org — compatibility report
+206	I	open	Sh-TB	2026-09-22T06:02:22Z	4	[APP-082] com.barghest.mesh — compatibility report
+207	I	open	Sh-TB	2026-09-22T06:02:23Z	3	[APP-083] dev.otaj.zelp — compatibility report
+208	I	open	Sh-TB	2026-09-22T06:02:25Z	2	[APP-084] takagi.ru.monica.fdroid — compatibility report
+209	I	open	Sh-TB	2026-09-22T06:02:27Z	0	[APP-085] org.fossify.math — compatibility report
+210	I	open	Sh-TB	2026-09-22T06:02:28Z	3	[APP-086] com.vicolo.chrono — compatibility report
+211	I	open	Sh-TB	2026-09-22T06:02:30Z	2	[APP-087] com.freetime.geoweather — compatibility report
+212	I	open	Sh-TB	2026-09-22T06:02:31Z	3	[APP-088] com.foxdebug.acode — compatibility report
+213	I	open	Sh-TB	2026-09-22T06:02:33Z	2	[APP-089] me.timeto.app — compatibility report
+214	I	open	Sh-TB	2026-09-22T06:02:35Z	3	[APP-090] org.sherpr.app — compatibility report
+215	I	open	Sh-TB	2026-09-22T06:02:36Z	3	[APP-091] org.y20k.transistor — compatibility report
+216	I	open	Sh-TB	2026-09-22T06:02:38Z	3	[APP-092] org.asafonov.weather — compatibility report
+217	I	open	Sh-TB	2026-09-22T06:02:39Z	2	[APP-093] com.agatamessina.webinspector — compatibility report
+218	I	open	Sh-TB	2026-09-22T06:02:40Z	3	[APP-094] com.fpf.smartscan — compatibility report
+219	I	open	Sh-TB	2026-09-22T06:02:42Z	3	[APP-095] org.billthefarmer.buses — compatibility report
+220	I	open	Sh-TB	2026-09-22T06:02:43Z	2	[APP-096] dev.cipher.notes — compatibility report
+221	I	open	Sh-TB	2026-09-22T06:02:44Z	2	[APP-097] io.github.x0b.rcx — compatibility report
+222	I	open	Sh-TB	2026-09-22T06:02:46Z	3	[APP-098] com.google.android.stardroid — compatibility report
+223	I	open	Sh-TB	2026-09-22T06:02:47Z	3	[APP-099] duress.ultimate — compatibility report
+224	I	open	Sh-TB	2026-09-22T06:02:49Z	3	[APP-100] com.artifex.mupdf.viewer.app — compatibility report
+225	I	open	Sh-TB	2026-09-22T06:02:51Z	3	[MAND-001] se.tube42.p9.android — compatibility report
+226	I	open	Sh-TB	2026-09-22T06:02:53Z	3	[MAND-002] io.timelimit.android.aosp.direct — compatibility report
+227	I	open	Sh-TB	2026-09-22T06:04:54Z	5	[F-NEW-156] onCreate APP-BOUNDARY-UNWIND family — root cause (common runtime)
+228	I	open	Sh-TB	2026-09-22T06:04:55Z	1	[F-NEW-157] libGDX AndroidGraphics.createGLSurfaceView NPE (EGL/GLSurfaceView frontier) — root cause (common r
+229	I	open	Sh-TB	2026-09-22T06:04:55Z	1	[VF-NEW-003] IMAGE_DECODED_VS_RENDERED_GAP chain — root cause (common runtime, visual)
+230	I	open	Sh-TB	2026-09-22T19:44:57Z	1	[F-NEW-161] Compose UI runtime internals — deferred-exception family (S84 NEW-50 fan-out, ~24 titles)
+231	I	open	Sh-TB	2026-09-22T19:44:58Z	1	[F-NEW-162] androidx savedstate generated-adapter family — deferred CNFE unwind (S84, 12-title fan-out)
+232	I	open	Sh-TB	2026-09-22T19:44:59Z	0	[S84] Canonical achievements + 50 NEW titles + README landing page — wave report
+233	I	open	Sh-TB	2026-09-24T23:13:39Z	5	[S97/S98] MICRO-GAP SWEEP master wave — 100 probable-bug tickets + games/demo wave (issue-per-problem law)
+234	I	closed	Sh-TB	2026-09-24T23:13:40Z	1	[MG-051] Font fallback selection — text/font (PARTIAL)
+235	I	closed	Sh-TB	2026-09-24T23:13:41Z	1	[MG-073] ellipsize — text/font (PARTIAL)
+236	I	closed	Sh-TB	2026-09-24T23:13:42Z	1	[MG-080] Unicode combining marks — text/font (PARTIAL)
+237	I	closed	Sh-TB	2026-09-24T23:13:44Z	1	[MG-081] RTL basic shaping — text/font (PARTIAL)
+238	I	closed	Sh-TB	2026-09-24T23:13:45Z	1	[MG-082] Arabic joining — text/font (PARTIAL)
+239	I	closed	Sh-TB	2026-09-24T23:13:46Z	1	[MG-083] emoji fallback — text/font (PARTIAL)
+240	I	closed	Sh-TB	2026-09-24T23:13:47Z	1	[MG-084] surrogate pairs — text/font (PARTIAL)
+241	I	closed	Sh-TB	2026-09-24T23:13:48Z	1	[MG-085] UTF-8/UTF-16 boundary — text/font (PARTIAL)
+242	I	closed	Sh-TB	2026-09-24T23:13:49Z	1	[MG-115] requestLayout propagation — layout/geometry (PARTIAL)
+243	I	closed	Sh-TB	2026-09-24T23:13:50Z	1	[MG-123] scroll offset — layout/geometry (PARTIAL)
+244	I	closed	Sh-TB	2026-09-24T23:13:51Z	1	[MG-124] translationX — layout/geometry (PARTIAL)
+245	I	closed	Sh-TB	2026-09-24T23:13:52Z	1	[MG-125] translationY — layout/geometry (PARTIAL)
+246	I	closed	Sh-TB	2026-09-24T23:13:53Z	1	[MG-126] scaleX — layout/geometry (PARTIAL)
+247	I	closed	Sh-TB	2026-09-24T23:13:54Z	1	[MG-127] scaleY — layout/geometry (PARTIAL)
+248	I	closed	Sh-TB	2026-09-24T23:13:55Z	1	[MG-128] rotation — layout/geometry (PARTIAL)
+249	I	closed	Sh-TB	2026-09-24T23:13:56Z	1	[MG-129] pivot — layout/geometry (PARTIAL)
+250	I	closed	Sh-TB	2026-09-24T23:13:57Z	1	[MG-171] SharedPreferences default file — storage/state (PARTIAL)
+251	I	closed	Sh-TB	2026-09-24T23:13:59Z	1	[MG-172] custom file — storage/state (PARTIAL)
+252	I	closed	Sh-TB	2026-09-24T23:14:00Z	1	[MG-173] boolean persistence — storage/state (PARTIAL)
+253	I	closed	Sh-TB	2026-09-24T23:14:01Z	1	[MG-174] int persistence — storage/state (PARTIAL)
+254	I	closed	Sh-TB	2026-09-24T23:14:02Z	1	[MG-175] long persistence — storage/state (PARTIAL)
+255	I	closed	Sh-TB	2026-09-24T23:14:03Z	1	[MG-176] float persistence — storage/state (PARTIAL)
+256	I	closed	Sh-TB	2026-09-24T23:14:04Z	1	[MG-177] string persistence — storage/state (PARTIAL)
+257	I	closed	Sh-TB	2026-09-24T23:14:05Z	1	[MG-178] editor apply — storage/state (PARTIAL)
+258	I	closed	Sh-TB	2026-09-24T23:14:06Z	1	[MG-179] editor commit — storage/state (PARTIAL)
+259	I	closed	Sh-TB	2026-09-24T23:14:07Z	1	[MG-180] remove — storage/state (PARTIAL)
+260	I	closed	Sh-TB	2026-09-24T23:14:09Z	1	[MG-181] clear — storage/state (PARTIAL)
+261	I	closed	Sh-TB	2026-09-24T23:14:10Z	1	[MG-182] contains — storage/state (PARTIAL)
+262	I	closed	Sh-TB	2026-09-24T23:14:11Z	1	[MG-183] preference process persistence — storage/state (PARTIAL)
+263	I	closed	Sh-TB	2026-09-24T23:14:12Z	1	[MG-214] GIF disposal NONE — animation (OBSERVED)
+264	I	closed	Sh-TB	2026-09-24T23:14:13Z	1	[MG-215] GIF disposal BACKGROUND — animation (OBSERVED)
+265	I	closed	Sh-TB	2026-09-24T23:14:14Z	1	[MG-216] GIF disposal PREVIOUS — animation (OBSERVED)
+266	I	closed	Sh-TB	2026-09-24T23:14:16Z	1	[MG-248] HTTP GET — network (PENDING)
+267	I	closed	Sh-TB	2026-09-24T23:14:17Z	1	[MG-047] adaptive icon foreground — resource/asset (PARTIAL)
+268	I	closed	Sh-TB	2026-09-24T23:14:18Z	1	[MG-048] adaptive icon background — resource/asset (PARTIAL)
+269	I	closed	Sh-TB	2026-09-24T23:14:19Z	1	[MG-052] Missing glyph detection — text/font (PARTIAL)
+270	I	closed	Sh-TB	2026-09-24T23:14:20Z	1	[MG-053] tofu detection — text/font (PARTIAL)
+271	I	open	Sh-TB	2026-09-24T23:14:21Z	0	[MG-058] Typeface inheritance — text/font (PARTIAL)
+272	I	open	Sh-TB	2026-09-24T23:14:22Z	0	[MG-060] letterSpacing — text/font (PARTIAL)
+273	I	closed	Sh-TB	2026-09-24T23:14:23Z	1	[MG-061] lineSpacing — text/font (PARTIAL)
+274	I	closed	Sh-TB	2026-09-24T23:14:24Z	1	[MG-062] includeFontPadding — text/font (PARTIAL)
+275	I	closed	Sh-TB	2026-09-24T23:14:25Z	1	[MG-067] font ascent — text/font (PARTIAL)
+276	I	closed	Sh-TB	2026-09-24T23:14:26Z	1	[MG-068] font descent — text/font (PARTIAL)
+277	I	closed	Sh-TB	2026-09-24T23:14:27Z	1	[MG-071] whitespace handling — text/font (PARTIAL)
+278	I	open	Sh-TB	2026-09-24T23:14:28Z	0	[MG-072] tab handling — text/font (PARTIAL)
+279	I	closed	Sh-TB	2026-09-24T23:14:29Z	1	[MG-074] maxLines — text/font (PARTIAL)
+280	I	closed	Sh-TB	2026-09-24T23:14:30Z	1	[MG-075] singleLine — text/font (PARTIAL)
+281	I	open	Sh-TB	2026-09-24T23:14:31Z	0	[MG-076] textColor alpha — text/font (PARTIAL)
+282	I	open	Sh-TB	2026-09-24T23:14:32Z	0	[MG-077] Spannable basic spans — text/font (PARTIAL)
+283	I	open	Sh-TB	2026-09-24T23:14:33Z	0	[MG-078] foreground color span — text/font (PARTIAL)
+284	I	open	Sh-TB	2026-09-24T23:14:34Z	0	[MG-079] style span — text/font (PARTIAL)
+285	I	closed	Sh-TB	2026-09-24T23:14:36Z	1	[MG-086] font file loading failure semantics — text/font (PARTIAL)
+286	I	closed	Sh-TB	2026-09-24T23:14:37Z	1	[MG-087] Android resource font family — text/font (PARTIAL)
+287	I	closed	Sh-TB	2026-09-24T23:14:38Z	1	[MG-088] downloadable-font failure fallback — text/font (PARTIAL)
+288	I	open	Sh-TB	2026-09-24T23:14:39Z	0	[MG-116] invalidate propagation — layout/geometry (PARTIAL)
+289	I	closed	Sh-TB	2026-09-24T23:14:40Z	1	[MG-130] ViewGroup child ordering — layout/geometry (PARTIAL)
+290	I	open	Sh-TB	2026-09-24T23:14:41Z	0	[MG-001] Drawable XML parsing edge cases — resource/asset (PARTIAL)
+291	I	closed	Sh-TB	2026-09-24T23:14:42Z	1	[MG-002] Vector viewportWidth/viewportHeight — resource/asset (PARTIAL)
+292	I	closed	Sh-TB	2026-09-24T23:14:43Z	1	[MG-003] Vector path fillType — resource/asset (PARTIAL)
+293	I	closed	Sh-TB	2026-09-24T23:14:44Z	1	[MG-004] Vector path winding — resource/asset (PARTIAL)
+294	I	closed	Sh-TB	2026-09-24T23:14:45Z	1	[MG-005] Vector path strokeWidth — resource/asset (PARTIAL)
+295	I	open	Sh-TB	2026-09-24T23:14:46Z	0	[MG-006] Vector path strokeLineCap — resource/asset (PARTIAL)
+296	I	open	Sh-TB	2026-09-24T23:14:47Z	0	[MG-007] Vector path strokeLineJoin — resource/asset (PARTIAL)
+297	I	open	Sh-TB	2026-09-24T23:14:48Z	0	[MG-008] Vector path trimPath — resource/asset (PARTIAL)
+298	I	closed	Sh-TB	2026-09-24T23:14:49Z	1	[MG-009] Vector group pivotX/pivotY — resource/asset (PARTIAL)
+299	I	closed	Sh-TB	2026-09-24T23:14:50Z	1	[MG-010] Vector group rotation — resource/asset (PARTIAL)
+300	I	closed	Sh-TB	2026-09-24T23:14:51Z	1	[MG-011] Vector group scale — resource/asset (PARTIAL)
+301	I	closed	Sh-TB	2026-09-24T23:14:52Z	1	[MG-012] Vector group translation — resource/asset (PARTIAL)
+302	I	closed	Sh-TB	2026-09-24T23:14:53Z	1	[MG-013] Vector nested group transforms — resource/asset (PARTIAL)
+303	I	closed	Sh-TB	2026-09-24T23:14:54Z	1	[MG-014] Vector alpha inheritance — resource/asset (PARTIAL)
+304	I	open	Sh-TB	2026-09-24T23:14:55Z	0	[MG-015] Drawable alpha inheritance — resource/asset (PARTIAL)
+305	I	closed	Sh-TB	2026-09-24T23:14:56Z	1	[MG-016] Layer-list ordering — resource/asset (PARTIAL)
+306	I	closed	Sh-TB	2026-09-24T23:14:57Z	1	[MG-017] Layer-list inset — resource/asset (PARTIAL)
+307	I	closed	Sh-TB	2026-09-24T23:14:58Z	1	[MG-020] State-list selected state — resource/asset (PARTIAL)
+308	I	closed	Sh-TB	2026-09-24T23:14:59Z	1	[MG-021] State-list disabled state — resource/asset (PARTIAL)
+309	I	closed	Sh-TB	2026-09-24T23:15:00Z	1	[MG-022] State-list checked state — resource/asset (PARTIAL)
+310	I	closed	Sh-TB	2026-09-24T23:15:01Z	1	[MG-023] State-list state fallback — resource/asset (PARTIAL)
+311	I	open	Sh-TB	2026-09-24T23:15:02Z	0	[MG-024] NinePatch basic padding — resource/asset (PARTIAL)
+312	I	open	Sh-TB	2026-09-24T23:15:03Z	0	[MG-025] NinePatch stretch region — resource/asset (PARTIAL)
+313	I	closed	Sh-TB	2026-09-24T23:15:04Z	1	[MG-046] mipmap XML indirection — resource/asset (PARTIAL)
+314	I	closed	Sh-TB	2026-09-24T23:15:05Z	1	[MG-204] scaling filter quality classes — graphics/render (PARTIAL)
+315	I	closed	Sh-TB	2026-09-24T23:15:06Z	1	[MG-207] canvas translation — graphics/render (PARTIAL)
+316	I	closed	Sh-TB	2026-09-24T23:15:07Z	1	[MG-208] canvas scale — graphics/render (PARTIAL)
+317	I	closed	Sh-TB	2026-09-24T23:15:08Z	1	[MG-209] canvas rotation — graphics/render (PARTIAL)
+318	I	closed	Sh-TB	2026-09-24T23:15:09Z	1	[MG-210] nested transforms — graphics/render (PARTIAL)
+319	I	closed	Sh-TB	2026-09-24T23:15:11Z	1	[MG-146] event cancellation — input (PARTIAL)
+320	I	open	Sh-TB	2026-09-24T23:15:12Z	0	[MG-147] multiple pointer IDs — input (PARTIAL)
+321	I	closed	Sh-TB	2026-09-24T23:15:13Z	1	[MG-149] touch outside bounds — input (PARTIAL)
+322	I	open	Sh-TB	2026-09-24T23:15:14Z	0	[MG-150] translated view hit testing — input (PARTIAL)
+323	I	closed	Sh-TB	2026-09-24T23:15:15Z	1	[MG-223] ValueAnimator basic timing — animation (PARTIAL)
+324	I	open	Sh-TB	2026-09-24T23:15:16Z	0	[MG-228] wrong-order frame detection — animation (PARTIAL)
+325	I	open	Sh-TB	2026-09-24T23:15:17Z	0	[MG-229] disappearing-object detection — animation (PARTIAL)
+326	I	open	Sh-TB	2026-09-24T23:15:18Z	0	[MG-298] timezone — system/edge (PARTIAL)
+327	I	open	Sh-TB	2026-09-24T23:15:19Z	0	[MG-299] locale — system/edge (PARTIAL)
+328	I	open	Sh-TB	2026-09-24T23:15:20Z	0	[MG-310] class initialization ordering — system/edge (PARTIAL)
+329	I	open	Sh-TB	2026-09-24T23:15:22Z	0	[MG-169] saved instance state — lifecycle (PARTIAL)
+330	I	open	Sh-TB	2026-09-24T23:15:23Z	0	[MG-170] Bundle persistence — lifecycle (PARTIAL)
+331	I	closed	Sh-TB	2026-09-24T23:15:24Z	1	[MG-231] SoundPool initialization — audio (PARTIAL)
+332	I	closed	Sh-TB	2026-09-24T23:15:25Z	1	[MG-232] MediaPlayer initialization — audio (PARTIAL)
+333	I	closed	Sh-TB	2026-09-24T23:15:26Z	1	[MG-233] resource audio loading — audio (PARTIAL)
+334	I	closed	Sh-TB	2026-09-24T23:15:27Z	1	[GAMES-1] Full-load 5-10 games end-to-end (launch + render + interaction evidence)
+335	I	closed	Sh-TB	2026-09-24T23:15:28Z	1	[GAMES-2] Autonomous Snake Deluxe play (self-play, no game-memory cheating)
+336	I	closed	Sh-TB	2026-09-24T23:15:29Z	1	[GAMES-3] House-building autonomous play (Minicraft)
+337	I	closed	Sh-TB	2026-09-24T23:15:30Z	1	[GAMES-4] NEW snake variant — build, load, autonomous play
+338	I	closed	Sh-TB	2026-09-24T23:15:31Z	1	[GAMES-5] Autonomous 2048 play
+339	I	open	Sh-TB	2026-09-24T23:15:32Z	1	[GAMES-6] Autonomous Mini Tetris play
+340	I	closed	Sh-TB	2026-09-24T23:15:33Z	1	[GAMES-7] Autonomous TicTacToe Deluxe play
+341	I	closed	Sh-TB	2026-09-24T23:15:34Z	1	[GAMES-8] Wave evidence package + gh-pages gameplay GIFs
+342	I	closed	Sh-TB	2026-09-25T05:05:56Z	1	[F-NEW-165] androidx AppCompatDelegateImpl.createSubDecor theme-gate frontier — theme attr resolution gap for 
+343	I	open	Sh-TB	2026-09-25T05:05:56Z	1	[F-NEW-166] androidx ConstraintLayout core interpreter frontier — ConstraintWidgetContainer solve never popula
+344	I	open	Sh-TB	2026-09-25T05:05:57Z	2	[F-NEW-167] blank-render L0 family — rc=0 games that never draw (klondike/tripeaks/memory/blackjack/counting/a
+345	I	closed	Sh-TB	2026-09-25T05:05:58Z	1	[F-NEW-168] crash-on-launch family — rc=1 NPE chains (raumballer/tictactoe-classic) + dooz rc=-11 process-deat
+346	I	open	Sh-TB	2026-09-25T05:05:59Z	1	[F-NEW-169] SpeedDialView (leinardi) library frontier — babydots cascade: FAB inflate + FabWithLabelView.init 
+347	I	closed	Sh-TB	2026-09-25T07:04:23Z	1	[F-NEW-169] dooz compose-navigation NPE chain — 3 roots after rc=-11 fix
+348	I	open	Sh-TB	2026-09-25T07:54:55Z	2	[F-NEW-170] appcompat decor-toolbar construction family (mykanji, post theme-gate fix)
+349	I	closed	Sh-TB	2026-09-25T13:29:58Z	1	[S102-A] solitaire: R8-merged SavedStateRegistryController — getSavedStateProvider invoked on null registry re
+350	I	closed	Sh-TB	2026-09-25T13:29:59Z	1	[S102-B] compose frontier: 'CompositionLocal LocalDensity not present' — WindowRecomposer host wiring (solitai
+351	I	open	Sh-TB	2026-09-25T13:30:00Z	0	[S102-C] mentalmath: Hilt DI 'ApplicationContextModule must be set' ISE in DaggerMentalMath_HiltComponents_Sin
+352	I	closed	Sh-TB	2026-09-25T13:30:01Z	1	[S102-D] coroutines: CoroutineScheduler$Worker.tryPark interpreter spin (LockSupport.park has no blocking sema
+353	I	open	Sh-TB	2026-09-27T15:52:30Z	14	[HTML5-APPS] WebView: white screen → REAL JS execution — Breakout 71 runs its game loop (#94)
+354	I	open	Sh-TB	2026-09-27T15:52:31Z	37	[GAMES] Native game family — gameplay GIFs, 5 engine-bug laws, verified 3-run titles + the honest 124-reopen a
+355	I	open	Sh-TB	2026-09-27T15:52:31Z	5	[TELEGRAM] Forkgram 12.10.8.0 — errors 32 → 0, first fully clean run (rc=0, 0 uncaught), real login UI tree; p
+356	I	open	Sh-TB	2026-09-29T18:11:01Z	3	[TELEGRAM] Official Telegram S117→S119 — the complete first-person journey changelog: first-ever run (5 errors
+357	I	open	Sh-TB	2026-09-29T18:39:58Z	0	[TELEGRAM] Knowledge transfer 1/7 — master index: every claim, the honest white-screen status, and how to veri
+358	I	open	Sh-TB	2026-09-29T18:40:00Z	0	[TELEGRAM] Knowledge transfer 2/7 — wave 1: official Telegram from first-ever run (5 errors) to rc=0 — four ro
+359	I	open	Sh-TB	2026-09-29T18:40:01Z	0	[TELEGRAM] Knowledge transfer 3/7 — wave 2: the G21 autopsy and seven AOSP measure laws — the login tree comes
+360	I	open	Sh-TB	2026-09-29T18:40:02Z	0	[TELEGRAM] Knowledge transfer 4/7 — the wave-3 record with attribution + the fresh-run proof on the current bu
+361	I	open	Sh-TB	2026-09-29T18:40:04Z	0	[TELEGRAM] Knowledge transfer 5/7 — the tools: full source of all six reproduction scripts + the forensic prob
+362	I	open	Sh-TB	2026-09-29T18:40:07Z	0	[TELEGRAM] Knowledge transfer 6/7 — the complete engine diff of the session (every law change, unified)
+363	I	open	Sh-TB	2026-09-29T18:40:08Z	0	[TELEGRAM] Knowledge transfer 7/7 — the 190-goal roadmap, the regression-gate method, and the honest frontier
+364	I	open	Sh-TB	2026-10-02T20:42:16Z	107	MASTER EXECUTION REQUEST — Upstream Reuse + Complete Compatibility Campaign
+365	I	open	Sh-TB	2026-10-02T20:53:54Z	2	MASTER FORENSIC VERIFICATION — ALL PRIOR REQUESTS / CLAIMED COMPLETIONS / MISSING EVIDENCE
+366	I	open	Sh-TB	2026-10-02T21:34:34Z	3	DIFFERENTIAL EXECUTION — Why 4 apps work and 5 installed apps stay white
+367	I	open	Sh-TB	2026-10-03T04:16:03Z	1	CLOSED ISSUE FORENSIC PROGRAM — BATCH 1/3 — 50 HIGH/HARD CASES
+368	I	open	Sh-TB	2026-10-03T04:50:39Z	1	CLOSED ISSUE FORENSIC PROGRAM — BATCH 2/3 — 50 MEDIUM CASES
+369	I	open	Sh-TB	2026-10-03T04:50:43Z	1	CLOSED ISSUE FORENSIC PROGRAM — BATCH 3/3 — 8 FINAL CASES
+370	I	open	Sh-TB	2026-10-03T07:30:20Z	2	INSTALL-ENVIRONMENT CAPABILITY GATE — Complete post-install Android inspection surface for agents
+371	I	open	Sh-TB	2026-10-03T08:40:03Z	7	MASTER CONTINUATION — Independent verification #364–#369 + full execution #370
+372	I	open	Sh-TB	2026-10-03T21:06:44Z	1	SUPPLEMENTARY DEEP ROOT-CAUSE CLOSEOUT — 330-point black/white/partial/load audit
+373	I	open	Sh-TB	2026-10-04T03:34:12Z	2	ENV-PREREQUISITES — Android API / CPU / ABI / hardware / software compatibility matrix
+374	I	open	Sh-TB	2026-10-04T04:41:52Z	1	BASE-ANDROID — Complete Android Platform Contract Foundation Audit
+375	I	open	Sh-TB	2026-10-04T06:33:34Z	23	BASE + CAMPAIGN COMPLETION — Execute all prior/next missing foundation work and close every evidenced gap
+376	I	open	Sh-TB	2026-10-04T14:50:05Z	19	EXTERNAL ROOT CENSUS — Deep multilingual root discovery and MiniAndroid cross-match
+377	I	open	Sh-TB	2026-10-05T17:23:00Z	2	CONT-6 — External Root KB Forensic Audit + Runtime Fan-out Validation
+378	I	open	Sh-TB	2026-10-05T20:44:11Z	1	CONT-7 — CURRENT-HEAD RECONCILIATION + x86/x86_64 APK EXPANSION + COMPOSE/R8 CLASS-IDENTITY
+379	I	open	Sh-TB	2026-10-06T15:50:39Z	1	CONT-9 / WAVE 5 — Compose Continuation Root + External KB Runtime Fan-out
+380	I	open	Sh-TB	2026-10-07T00:24:37Z	8	CONT-11 / WAVE 7 — Kotlin stdlib semantic backend investigation + Compose draw frontier
+381	I	open	Sh-TB	2026-10-08T01:45:43Z	0	Unverified Claims — Complete Runtime Evidence Audit
+382	I	open	Sh-TB	2026-10-08T09:54:47Z	3	A1–A104 Knowledge Transfer — Primary Coder Audit, Exact Fix Locations, and Minimal Tests
+383	I	open	Sh-TB	2026-10-08T12:27:47Z	3	BASE-FIRST: Establish a Generic Graphical Runtime Baseline
+384	I	open	Sh-TB	2026-10-08T13:27:44Z	5	ARCH-001: Execution Family Matrix for Generic App/Game Compatibility
+385	I	open	Sh-TB	2026-10-08T21:14:45Z	0	[CONT-24 EXPERIMENT — measurement only] Skeleton-Light: one 490-line generic skeleton painter vs ~10.6K lines 
+386	I	open	Sh-TB	2026-10-11T04:15:28Z	3	REPO-HYGIENE — Evidence-Driven Repository Cleanup, Artifact Governance, and Canonical Structure
+387	I	open	Sh-TB	2026-10-23T03:43:10Z	10	CONT-11 RECURRING TASK: cross-app loading-screen blockers — register, root-cause, fix, re-census
+388	I	open	Sh-TB	2026-10-27T05:17:14Z	1	HEAD-SMOKE RECURRING + NEW ROOT: libGDX SharedLibraryLoadRuntimeException (tower3d native-load family) — separ
+389	I	open	Sh-TB	2026-10-27T05:38:25Z	10	F-NEW-562 dooz board frame-clock starvation — chrome renders (231K px), 3x3 board absent (T14 live probe)
+390	I	open	Sh-TB	2026-11-02T04:53:58Z	0	Coder 5 | Full campaign report — open-source game execution campaign on MiniAndroid
+391	I	open	Sh-TB	2026-11-02T06:53:37Z	0	2048
+392	I	open	Sh-TB	2026-11-02T06:53:38Z	0	Anuto TD
+393	I	open	Sh-TB	2026-11-02T06:53:39Z	0	Balance the Ball
+394	I	open	Sh-TB	2026-11-02T06:53:40Z	0	Fish Rings
+395	I	open	Sh-TB	2026-11-02T06:53:42Z	0	FreeKlondike
+396	I	open	Sh-TB	2026-11-02T06:53:43Z	0	Mines (premy)
+397	I	open	Sh-TB	2026-11-02T06:53:44Z	0	Mini Tetris
+398	I	open	Sh-TB	2026-11-02T06:53:44Z	0	MiniCraft (House Builder)
+399	I	open	Sh-TB	2026-11-02T06:53:45Z	0	OPMT (One More Time…)
+400	I	open	Sh-TB	2026-11-02T06:53:46Z	0	OpenSudoku
+401	I	open	Sh-TB	2026-11-02T06:53:47Z	0	Snake Deluxe
+402	I	open	Sh-TB	2026-11-02T06:53:48Z	0	TicTacToe Deluxe
+403	I	open	Sh-TB	2026-11-02T06:53:49Z	5	Vector Pinball (bouncy)
+404	I	open	Sh-TB	2026-11-02T06:53:50Z	1	ca.rmen.nounours
+405	I	open	Sh-TB	2026-11-02T06:53:52Z	2	com.dozingcatsoftware.dodge
+406	I	open	Sh-TB	2026-11-02T06:53:53Z	1	com.smorgasbork.hotdeath
+407	I	open	Sh-TB	2026-11-02T06:53:53Z	0	com.trianguloy.adnihilation
+408	I	open	Sh-TB	2026-11-02T06:53:54Z	0	de.georgsieber.ballbreak
+409	I	open	Sh-TB	2026-11-02T06:53:55Z	1	org.bobstuff.bobball
+410	I	open	Sh-TB	2026-11-02T06:53:56Z	0	x653.all_in_gold
+411	I	open	Sh-TB	2026-11-02T06:53:57Z	0	FlappyCow
+412	I	open	Sh-TB	2026-11-02T06:53:58Z	0	GameMasterDice
+413	I	open	Sh-TB	2026-11-02T06:54:00Z	0	Snake Neon
+414	I	open	Sh-TB	2026-11-02T06:54:01Z	0	TicTacToe Classic
+415	I	open	Sh-TB	2026-11-02T06:54:59Z	2	Coder 3 | Mission & Achievement Board — Full Execution of 20+ Legacy Open-Source Apps on MiniAndroid (Master T
+416	I	open	Sh-TB	2026-11-02T07:08:57Z	0	Coder 3 | Achievement 2 — Fresh environment: full runtime build from source + complete deterministic Snake Del
+417	I	open	Sh-TB	2026-11-02T07:14:19Z	0	Coder 3 | Achievement 3 — Wave 2: 2048 + Mini Tetris + TicTacToe Deluxe on the fresh build, each 3× determinis
+418	I	open	Sh-TB	2026-11-02T07:17:48Z	0	Coder 3 | Achievement 4 — Wave 3: MiniCraft + Snake Neon driven by each app's own ViewTree buttons — real bloc
+419	I	open	Sh-TB	2026-11-02T07:22:40Z	0	Coder 3 | Achievement 5 — Full self-play of Snake Deluxe on the fresh build: SCORE 2 / BEST 2 (canonical S80 d
+420	I	open	Sh-TB	2026-11-02T13:04:27Z	0	Coder 3 | Achievement 6 — Third execution environment: fresh source build + Snake Deluxe canonical reproductio
+421	I	closed	Sh-TB	2026-11-02T14:53:12Z	1	[APP-016][Coder-5] Material Files (me.zhanghai.android.files) — full-interactive ladder MF-M0..M8
+422	I	closed	Sh-TB	2026-11-02T14:53:13Z	1	[APP-017][Coder-5] NewPipe (org.schabi.newpipe) — full-interactive ladder NP-M0..M8
+423	I	closed	Sh-TB	2026-11-02T14:53:14Z	1	[APP-018][Coder-5] Joplin (net.cozic.joplin) — full-interactive ladder JP-G0..M8
+424	I	closed	Sh-TB	2026-11-02T14:53:15Z	1	[APP-019][Coder-5] Element X (io.element.android.x) — full-interactive ladder EX-M0..M9
+425	I	closed	Sh-TB	2026-11-02T14:53:16Z	1	[4APP-SHARED][Coder-5] Shared-layer campaign S1–S7 — fix once, benefit all four titles
+426	I	closed	Sh-TB	2026-11-02T14:53:18Z	1	[CONT-4APP RECURRING][Coder-5] Wave log — census → roots → fixes → battery → evidence
+427	I	closed	Sh-TB	2026-11-02T14:53:19Z	1	[4APP-EPIC][Coder-5] Four-title full-compatibility program: Material Files · NewPipe · Joplin · Element X
+428	I	open	Sh-TB	2026-11-02T15:06:55Z	0	Coder 3 | Achievement 7 — FULL LOAD wave: F-NEW-162 subclass law + honest-surface law + Dodge/BobBall/Hot Deat
+429	I	open	Sh-TB	2026-11-02T15:06:57Z	0	Coder 3 | 📊 MASTER DASHBOARD — all issues + per-app progress % (one-glance status)
+430	I	open	Sh-TB	2026-11-02T15:19:17Z	0	[4APP-EPIC][Coder-4] Four-title full-compatibility program: Thunderbird · Nextcloud · Tusky · ConnectBot
+431	I	open	Sh-TB	2026-11-02T15:19:18Z	8	[APP-020][Coder-4] Thunderbird (net.thunderbird.android) — full-interactive ladder TB-M0..M9
+432	I	open	Sh-TB	2026-11-02T15:19:19Z	7	[APP-021][Coder-4] Nextcloud (com.nextcloud.client) — full-interactive ladder NC-M0..M9
+433	I	open	Sh-TB	2026-11-02T15:19:20Z	7	[APP-022][Coder-4] Tusky (com.keylesspalace.tusky) — full-interactive ladder TK-M0..M9
+434	I	open	Sh-TB	2026-11-02T15:19:21Z	7	[APP-023][Coder-4] ConnectBot (org.connectbot) — full-interactive ladder CB-M0..M9
+435	I	open	Sh-TB	2026-11-02T15:19:22Z	0	[4APP-SHARED][Coder-4] Shared-layer campaign C1–C8 — fix once, benefit all four titles
+436	I	open	Sh-TB	2026-11-02T15:19:23Z	13	[CONT-4APP4 RECURRING][Coder-4] Wave log — census → roots → fixes → battery → evidence
+437	I	open	Sh-TB	2026-11-02T15:25:58Z	17	Coder 6 | Mission & Achievement Board — Full Execution of the 4 Hardest (VLC · Termux · Organic Maps · Mindust
+438	I	open	Sh-TB	2026-11-02T15:25:59Z	19	Coder 6 | Case File — VLC for Android (org.videolan.vlc) · ladder V0–V6
+439	I	open	Sh-TB	2026-11-02T15:26:00Z	27	Coder 6 | Case File — Termux (com.termux) · ladder T0–T5
+440	I	open	Sh-TB	2026-11-02T15:26:01Z	9	Coder 6 | Case File — Organic Maps (app.organicmaps) · ladder O0–O6
+441	I	open	Sh-TB	2026-11-02T15:26:02Z	30	Coder 6 | Case File — Mindustry (io.anuke.mindustry) · ladder M0–M6
+442	I	open	Sh-TB	2026-11-02T16:05:16Z	1	Coder 6 | Achievement 1 — Wave 1: 2 GENERIC roots fixed (live divergence movement ×2) + 2 frontiers root-pinne
+443	I	open	Sh-TB	2026-11-02T17:30:22Z	1	Coder 3 | Achievement 8 — S136 GLES-constant translation + C-shader registration + JSON chain (3 laws): first 
+444	I	open	Sh-TB	2026-11-02T18:01:39Z	0	Coder 6 | Achievement 2 — Wave 2: 9 GENERIC roots fixed (live ×3 apps), Mindustry reaches the draw guard — com
+445	I	open	Sh-TB	2026-11-02T19:20:36Z	0	CODER-6 ACHIEVEMENT 2 — Mindustry FIRST REAL VISUAL RENDER through the full GL pipeline (root-caused ×5, all g
+446	I	open	Sh-TB	2026-11-02T19:30:17Z	1	[Coder 2] Achievement 1 — INFRA: fresh-sandbox runtime rebuild in one 570 s chunk on 4 GB RAM / 2 vCPU / no-KV
+447	I	open	Sh-TB	2026-11-02T19:30:18Z	0	[Coder 2] Achievement 2 — gmdice v8 (canonical registry entry): fresh independent reproduction — SUCCESS, 0 er
+448	I	open	Sh-TB	2026-11-02T19:30:19Z	0	[Coder 2] Finding 1 — Telegram official v13.1.1 (vc72379): ViewTree inflates (15,963 nodes) but every frame is
+449	I	open	Sh-TB	2026-11-02T19:30:20Z	1	[Coder 2] Finding 2 — APK_REGISTRY drift: the Telegram v12.10.1 baseline pin is no longer fetchable from its l
+450	I	open	Sh-TB	2026-11-02T19:30:21Z	4	[Coder 2] Mission Board & Worklist — canonical-corpus breadth campaign + Telegram-family priority (fresh-sandb
+451	I	open	Sh-TB	2026-11-02T19:32:41Z	1	[Coder 2] Achievement 3 — TicTacToe (emmanuelmess) v3 fresh verdict: window paints solid #303030, zero game co
+452	I	open	Sh-TB	2026-11-02T19:43:45Z	0	[Coder 2] Achievement 4 — Chess Clock v29 re-proven on fresh sandbox: clean SUCCESS (0 err / 0 warn / 0 uncaug
+453	I	open	Sh-TB	2026-11-02T19:43:46Z	0	[Coder 2] Achievement 5 — MicroTimer v8 (was `PARTIAL / registry-only`): FIRST full Coder 2 render — SUCCESS, 
+454	I	open	Sh-TB	2026-11-02T19:43:47Z	0	[Coder 2] Achievement 6 — uNote v30 (was `PARTIAL / registry-only`): FIRST full Coder 2 render — SUCCESS, 100%
+455	I	open	Sh-TB	2026-11-02T19:43:48Z	1	[Coder 2] Achievement 7 — Heading Calculator v1 (was `PARTIAL / registry-only`): richest Coder 2 render — 828 
+456	I	open	Sh-TB	2026-11-02T19:43:49Z	0	[Coder 2] Achievement 8 — Simple Stopwatch v26 re-run: content-rich frame (99.4% painted, 156 colors) but stat
+457	I	open	Sh-TB	2026-11-02T19:43:50Z	2	[Coder 2] Finding 4 — Notes (billthefarmer) v139: SUCCESS + 0 errors + inflated 2-child root — yet the framebu
+458	I	open	Sh-TB	2026-11-02T19:43:51Z	0	[Coder 2] Finding 5 — Tiny Music Player v1: registry download_url is DEAD — F-Droid serves a 12,950-byte HTML 
+459	I	open	Sh-TB	2026-11-02T19:43:52Z	1	[Coder 2] Finding 6 — Simple Keyboard v145 (IME): normal run path yields 0 ViewTree nodes and a white frame — 
+460	I	open	Sh-TB	2026-11-02T20:12:47Z	0	[Coder 2] Achievement 9 — PF 2048 (was EXEC BUDGET TIMEOUT): completes at 480s with lean frame schedule and re
+461	I	open	Sh-TB	2026-11-02T20:12:48Z	0	[Coder 2] Finding 7 — Freebloks v1.8.4: DEFAULT_BACKGROUND_ONLY face reproduced; blocker named: Kotlin `latein
+462	I	open	Sh-TB	2026-11-02T20:12:49Z	0	[Coder 2] Finding 8 — RTTT v1.3 white frame: blocker is the SDL lane (SDLActivity.main → getMainSharedObject N
+463	I	open	Sh-TB	2026-11-02T20:12:50Z	0	[Coder 2] Finding 9 — PF Dicer v2.0.0: splash theme paints (SECUSO blue #0274B2, was empty); Thread.uncaughtEx
+464	I	open	Sh-TB	2026-11-02T20:12:51Z	0	[Coder 2] Finding 10 — Antimine v17.6.3: white frame; 434 SGET-MISS burst + xml-resource NotFoundException + n
+465	I	open	Sh-TB	2026-11-02T20:12:52Z	0	[Coder 2] Finding 11 — TicTacToe (itsfrz) v1.0.5: theme-navy #202230 background-only face confirmed; Compose s
+466	I	open	Sh-TB	2026-11-02T20:12:53Z	0	[Coder 2] Finding 12 — OpenLauncher v39: FROZEN pin re-validated; #303030 face; 22 unrendered custom views = b
+467	I	open	Sh-TB	2026-11-02T20:12:54Z	0	[Coder 2] Finding 13 — Lexica v3.13.1: budget face retired (completes at 480s, lean schedule); underneath is a
+468	I	open	Sh-TB	2026-11-02T20:14:30Z	1	[Coder 2] Wave 4 worklist — lean-schedule retests of the white family + corpus closure status + 4 decisions pe
+469	I	open	Sh-TB	2026-11-02T20:31:51Z	0	Coder 3 | Achievement 9 — S137 full-GL-render wave: Vector Pinball's table renders (walls/bumpers/ball), 3x by
+470	I	open	Sh-TB	2026-11-02T20:36:10Z	1	CODER-6 ACHIEVEMENT 3 — WAVE 4: Mindustry load-screen GRID renders through the full GL chain (5 generic roots:
+471	I	open	Sh-TB	2026-11-02T23:31:11Z	0	Coder 3 | Achievement 10 — S154 re-apply of the full S136+S137 law stack at post-slim HEAD 5817cc1 + 9 new law
+472	I	open	Sh-TB	2026-11-02T23:32:15Z	7	[Coder 5] MASTER ACHIEVEMENT LEDGER — Coder-2 campaign: every achievement, finding & evidence (living index)
+473	I	open	Sh-TB	2026-11-02T23:32:16Z	0	[Coder 2] gmdice (de.duenndns.gmdice) v8 — app tracker · living issue until full render
+474	I	open	Sh-TB	2026-11-02T23:32:17Z	0	[Coder 2] Telegram v13.1.1 (org.telegram.messenger.web) v13.1.1 (vc72379) — app tracker · living issue until f
+475	I	open	Sh-TB	2026-11-02T23:32:18Z	3	[Coder 2] TicTacToe (emmanuelmess) (com.emmanuelmess.tictactoe) v3 — app tracker · living issue until full ren
+476	I	open	Sh-TB	2026-11-02T23:32:18Z	0	[Coder 2] Chess Clock (com.chessclock.android) v29 — app tracker · living issue until full render
+477	I	open	Sh-TB	2026-11-02T23:32:20Z	0	[Coder 2] Simple Stopwatch (omegacentauri.mobi.simplestopwatch) v26 — app tracker · living issue until full re
+478	I	open	Sh-TB	2026-11-02T23:32:21Z	0	[Coder 2] MicroTimer (dubrowgn.microtimer) v8 — app tracker · living issue until full render
+479	I	open	Sh-TB	2026-11-02T23:32:22Z	0	[Coder 2] uNote (app.varlorg.unote) v30 — app tracker · living issue until full render
+480	I	open	Sh-TB	2026-11-02T23:32:23Z	0	[Coder 2] Notes (billthefarmer) (org.billthefarmer.notes) v139 — app tracker · living issue until full render
+481	I	open	Sh-TB	2026-11-02T23:32:24Z	0	[Coder 2] Heading Calculator (org.debian.eugen.headingcalculator) v1 — app tracker · living issue until full r
+482	I	open	Sh-TB	2026-11-02T23:32:25Z	0	[Coder 2] Tiny Music Player (com.martinmimigames.tinymusicplayer) v1 — app tracker · living issue until full r
+483	I	open	Sh-TB	2026-11-02T23:32:26Z	0	[Coder 2] Simple Keyboard (rkr.simplekeyboard.inputmethod) v145 — app tracker · living issue until full render
+484	I	open	Sh-TB	2026-11-02T23:32:27Z	4	[Coder 2] PF 2048 (org.secuso.privacyfriendly2048) v1.4.2 (vc100) — app tracker · living issue until full rend
+485	I	open	Sh-TB	2026-11-02T23:32:28Z	0	[Coder 2] Freebloks (de.saschahlusiak.freebloks) v1.8.4 (vc184) — app tracker · living issue until full render
+486	I	open	Sh-TB	2026-11-02T23:32:29Z	0	[Coder 2] RTTT (kirkezz) (org.kirkezz.rttt) v1.3 (vc3) — app tracker · living issue until full render
+487	I	open	Sh-TB	2026-11-02T23:32:30Z	0	[Coder 2] PF Dicer (org.secuso.privacyfriendlydicer) v2.0.0 (vc101) — app tracker · living issue until full re
+488	I	open	Sh-TB	2026-11-02T23:32:31Z	0	[Coder 2] Antimine (dev.lucanlm.antimine) v17.6.3 F — app tracker · living issue until full render
+489	I	open	Sh-TB	2026-11-02T23:32:32Z	0	[Coder 2] TicTacToe (itsfrz) (com.itsfrz.tictactoe) v1.0.5 (vc5) — app tracker · living issue until full rende
+490	I	open	Sh-TB	2026-11-02T23:32:33Z	0	[Coder 2] OpenLauncher (com.benny.openlauncher) v39 — app tracker · living issue until full render
+491	I	open	Sh-TB	2026-11-02T23:32:34Z	0	[Coder 2] Lexica (com.serwylo.lexica) v3.13.1 (vc30018) — app tracker · living issue until full render
+492	I	open	Sh-TB	2026-11-02T23:32:56Z	36	Coder 3 | Master Dashboard — every Issue, every app, one glance (progress % + statistics) — refreshed at refre
+493	I	open	Sh-TB	2026-11-03T01:28:38Z	0	Coder 6 | Wave 6 — the FULL Coder-6 law set is REBASED onto S154 HEAD (public HEAD lacked every Coder-6 law) +
+494	I	open	Sh-TB	2026-11-03T03:37:56Z	7	[4APP-EPIC][Coder-5] FOUR-TITLE FULL-COMPATIBILITY PROGRAM — Material Files · NewPipe · Joplin · Element X
+495	I	open	Sh-TB	2026-11-03T03:37:57Z	9	[APP-016][Coder-5] me.zhanghai.android.files — full-interactive ladder MF-M0..M8
+496	I	open	Sh-TB	2026-11-03T03:37:58Z	0	[APP-017][Coder-5] org.schabi.newpipe — full-interactive ladder NP-M0..M8
+497	I	open	Sh-TB	2026-11-03T03:37:59Z	0	[APP-018][Coder-5] net.cozic.joplin — full-interactive ladder JP-G0..M8
+498	I	open	Sh-TB	2026-11-03T03:38:00Z	0	[APP-019][Coder-5] io.element.android.x — full-interactive ladder EX-M0..M9
+499	I	open	Sh-TB	2026-11-03T03:38:01Z	0	[4APP-S1][Coder-5] GENERALIZED HTTP(S) CLIENT LAYER — OkHttp/SSLSocket/DNS/TLS-verify (NET-001 continuation)
+500	I	open	Sh-TB	2026-11-03T03:38:02Z	0	[4APP-S2][Coder-5] JAVA NIO2 FILESYSTEMPROVIDER OVER HOST FS — Material Files core dependency
+501	I	open	Sh-TB	2026-11-03T03:38:03Z	0	[4APP-S3][Coder-5] FOREGROUND SERVICES + NOTIFICATION RUNTIME — execution path
+502	I	open	Sh-TB	2026-11-03T03:38:04Z	0	[4APP-S4][Coder-5] HERMES/JSI EXECUTION-PATH GATE J0 — Joplin core dependency
+503	I	open	Sh-TB	2026-11-03T03:38:05Z	0	[4APP-S5][Coder-5] COMPOSE RENDER CLUSTER GENERIC FIX — Element X master gate (COMPOSE-001 / M-06)
+504	I	open	Sh-TB	2026-11-03T03:38:06Z	0	[4APP-S6][Coder-5] VIDEO-001 SOFTWARE MEDIAEXTRACTOR/MEDIACODEC PATH — NewPipe playback
+505	I	open	Sh-TB	2026-11-03T03:38:07Z	27	[CONT-4APP RECURRING][Coder-5] — per-session wave log: register → root-cause → fix → re-census → evidence
+506	I	open	Sh-TB	2026-11-03T04:56:01Z	1	[W2][Coder-4] Nine generic laws — 4APP4 arrest chain broken: ConnectBot 10→1 errors · Nextcloud 0-frames→APP_P
+507	I	open	Sh-TB	2026-11-03T05:52:46Z	0	Coder 6 | Wave 7 — second recycle rebuild survived: full law set re-applied on S154 + 12 NEW laws; Mindustry c
+508	I	open	Sh-TB	2026-11-03T05:57:37Z	0	Coder 3 | Achievement 11 - S138: Vector Pinball's game STARTS and the full table renders on EVERY present (33/
+509	I	open	Sh-TB	2026-11-03T14:49:59Z	0	[4APP-S7][Coder-5] RXJAVA + COROUTINE SCHEDULING DEPTH — real executors/looper/dispatchers substrate (CONC-001
+510	I	open	Sh-TB	2026-11-03T15:30:47Z	1	[W3][Coder-4] Three verified laws — NC Dagger graph BUILDS (5730→8111 stubs) · CB runs the real androidx super
+511	I	open	Sh-TB	2026-11-03T19:58:24Z	0	Coder 3 | Achievement 12 - S139: the APK's own libgdx-box2d.so now EXECUTES — real physics (ball launches, mov
+512	I	open	Sh-TB	2026-11-03T20:08:07Z	1	[W4][Coder-4] Tusky Theme.AppCompat ISE KILLED (theme bag 8→819 keys, APP_PIXELS) · CB renders real toString (
+513	I	open	Sh-TB	2026-11-03T21:25:16Z	0	Coder 3 | Achievement 13 - S140: bouncy renders its OWN palette - COMPLETE rendering (slate walls, blue/magent
+514	I	open	Sh-TB	2026-11-03T21:38:23Z	2	[W5][Coder-4] F-C4-566: CHM compute-bypass was eating putVal — Koin's 510 registrations now EXECUTE (596 nodes
+515	I	open	Sh-TB	2026-11-03T21:39:34Z	3	CODER-6 ACHIEVEMENT 4 — WAVE 8: [C6-GLBD] index-mesh law set — Mindustry scene FBO receives REAL app geometry 
+516	I	open	Sh-TB	2026-11-03T23:25:48Z	6	Coder 3 | Achievement 14 - S141: ContactListener callbacks go native-to-Java - the APK's own libgdx-box2d tram
+517	I	open	Sh-TB	2026-11-04T15:27:41Z	3	[W6][Coder-4] TB NDFE ×32 root CHAINED to a HOLLOW includes list (full forensic path, every link proven) · 3 n
+518	I	open	Sh-TB	2026-11-04T18:29:41Z	11	[W7][Coder-4] TB Koin NDFE x32 KILLED — root: SecureRandom REC-MISS minted ONE uuid for ALL 100 modules → Modu
+519	I	open	Sh-TB	2026-11-04T18:30:26Z	127	CODER 8 — Base Concurrency & Scheduling Runtime | Achievement Log (living reference, no-push delivery)
+520	I	open	Sh-TB	2026-11-04T20:42:24Z	107	CODER 7 — Base Android Component Runtime: WAVE-5 PMS-LITE (cross-package component index + REAL-SQLite package
+521	I	open	Sh-TB	2026-11-04T21:08:00Z	76	CODER 9 — Base Resources, Assets & Image Pipeline | Achievement Log (living reference, no-push delivery)
+522	I	open	Sh-TB	2026-11-04T21:47:58Z	2	[W8][Coder-4] FIVE generic laws close the 20-problem work list — TB storage UPGRADES (setVersion law) · NC Dag
+523	I	open	Sh-TB	2026-11-04T23:47:21Z	0	Coder 3 | Achievement 15 - S156: the frame-ceiling war - -O3/-march and PGO are PIN-EXACT (-27% wall), the vir
+524	I	open	Sh-TB	2026-11-05T06:09:57Z	0	Coder 3 | Achievement 16 — S157: four corpus PARTIALs re-judged (simplestopwatch + simplekeyboard now SUCCESS 
+525	I	open	Sh-TB	2026-11-05T14:56:01Z	2	[W9][Coder-4] NINE generic laws — TB command-queue spin DEAD (PBQ family law) · Room converter family DEAD on 
+526	I	open	Sh-TB	2026-11-05T18:14:18Z	3	[W10][Coder-4] NINE generic laws — conscrypt natives EXECUTE for real (RegisterNatives dispatch + JNI object-a
+527	I	open	Sh-TB	2026-11-05T18:34:49Z	2	Coder 3 | Achievement 17 — dooz renders its COMPLETE Material You UI: the dynamic-color baseline-palette law (
+528	I	open	Sh-TB	2026-11-06T06:18:38Z	4	[W11][Coder-4] FIVE generic laws — Kotlin exception identity restored (EXP-045 sanitizeStackTrace gate REMOVED
+529	I	open	Sh-TB	2026-11-06T06:40:51Z	4	COder  ( D )
+530	I	open	Sh-TB	2026-11-06T09:16:50Z	2	Coder 3 | Achievement 18 — S180: Coder-D CONFIRMED findings fix batch — 21 laws at base e0bbffaa (INTEGRATION_
+531	I	open	Sh-TB	2026-11-06T10:54:06Z	1	Coder 3 | A19 · S181 — the S163 pending-measure traverse law: four shapes built and measured, the FIRST real p
+532	I	open	Sh-TB	2026-11-06T11:48:37Z	5	Coder 3 | A20 · S182 — L1 android.graphics.Insets law (Family-3 of the S181 census): the support-v7 clinit kil
+533	I	open	Sh-TB	2026-11-06T11:55:15Z	11	CODER 8 — Base Concurrency & Scheduling Runtime Engineering Worklog
+534	I	open	Sh-TB	2026-11-06T12:27:29Z	4	[W12][Coder-4] SEVEN generic laws — Collections.sort natural-order RESTORED (TK MainActivity AIOOBE dead: okio
+535	I	open	Sh-TB	2026-11-06T13:00:01Z	3	Coder 3 | A21 · S184 — F-NEW-572 bionic init-array null-skip law: the libGDX family's real, APK-bundled libgdx
+536	I	open	Sh-TB	2026-11-06T13:26:43Z	38	S185 — THE SQLITE RULE (standing law for all Coders): VEND, DON'T REWRITE · LOAD-FIRST · TRACER-THEN-PRUNE · N
+537	I	open	Sh-TB	2026-11-06T14:46:56Z	2	Coder 3 | A22 · S186 — B6 decode-chain audit: codec layer REFUTED as the gap (already real+proven); residuals 
+538	I	open	Sh-TB	2026-11-06T15:49:43Z	4	[W13][Coder-4] FOUR generic laws from the stuck-corpus directive — ParcelUuid/UUID.fromString COMPLETE AOSP la
+539	I	open	Sh-TB	2026-11-06T16:31:46Z	1	Coder 3 | A23 · S187 — main-coder progress recon (S172→S186e reviewed): SQLITE RULE adopted, stale local stack
+540	I	open	Sh-TB	2026-11-06T17:33:01Z	1	Coder 3 | S187 — THREE generic silent-null laws (String.replaceAll family · java.util.Stack · ExecutorService.
+541	I	open	Sh-TB	2026-11-06T19:49:28Z	6	[S188 MASTER] Unified Runtime Integration, Route-Aware Execution Graph, and Real Application Recovery — BINDIN
+542	I	open	Sh-TB	2026-11-06T19:49:31Z	3	[S188-RULES] Binding working rules for all coders — UNOBSERVED is never PASS
+543	I	open	Sh-TB	2026-11-06T19:49:33Z	0	[S188 Phase A] Reconcile all existing achievements — machine-readable adoption ledger
+544	I	open	Sh-TB	2026-11-06T19:49:35Z	0	[S188 Phase B] Route-aware FDT execution graph — one graph per APK run
+545	I	open	Sh-TB	2026-11-06T19:49:37Z	0	[S188 Phase C] Per-APK route profiles — reports/apk_routes/<package_id>.json
+546	I	open	Sh-TB	2026-11-06T19:49:39Z	0	[S188 Phase D] Main-coder integration pipeline — dual status systems, never merged
+547	I	open	Sh-TB	2026-11-06T19:49:40Z	1	[S188 Phase E] View & draw pipeline recovery — gmdice real Adapter rows, unote Toolbar children
+548	I	open	Sh-TB	2026-11-06T19:49:42Z	0	[S188 Phase F] libGDX & native game routes — TicTacToe, Bouncy, Mindustry
+549	I	open	Sh-TB	2026-11-06T19:49:44Z	0	[S188 Phase G] Cross-coder integration responsibilities — contributor boundaries must not become runtime bound
+550	I	open	Sh-TB	2026-11-06T19:49:46Z	0	[S188 Phase H] Route-driven library acquisition — no library without a verified consumer
+551	I	open	Sh-TB	2026-11-06T19:49:48Z	0	[S188 Phase I] Reproduce S186i exactly — one final binary per matrix, unverified ≠ success
+552	I	open	Sh-TB	2026-11-06T19:49:50Z	0	[S188 Phase J] Smart recovery priority system — group by confirmed shared roots, never by blank screens
+553	I	open	Sh-TB	2026-11-06T19:49:52Z	0	[S188 Phase K] Small application recovery battery — FIRST MILESTONE: five real graphical recoveries on one bin
+554	I	open	Sh-TB	2026-11-06T19:49:54Z	0	[S188 Phase L] Regression & performance policy — golden anchors from current HEAD, tiered testing
+555	I	open	Sh-TB	2026-11-06T19:49:56Z	0	[S188 Governance] Issues, trackers & dashboard — dashboard shows recovered app count, not API test count
+556	I	open	Sh-TB	2026-11-06T19:55:38Z	31	MINIANDROID — UNIFIED RUNTIME INTEGRATION, ROUTE-AWARE EXECUTION GRAPH, AND REAL APPLICATION RECOVERY
+557	I	open	Sh-TB	2026-11-06T20:51:34Z	41	A24 · S188 — tictactoe_3 FULL EXECUTION (first new app to SUCCESS, rc=0): eleven generic laws from the gdx Str
+558	I	open	Sh-TB	2026-11-06T21:12:29Z	2	[W14][Coder-4] F-C4-613 unified <init> ARITY CLASSIFIER (sunpiano 576,907 px restored with ALL laws on — the S
+559	I	open	Sh-TB	2026-11-06T21:29:02Z	19	[S188 W2] Route map + per-app requirements: which alley each title takes, what each needs
+560	I	open	Sh-TB	2026-11-07T04:17:07Z	2	S157 [A25+A26] Coder 3 — androguard-driven debug wave: headingcalculator COMPLETE gameplay (TH=343 GS=95 exact
+561	I	open	Sh-TB	2026-11-07T09:07:53Z	3	S191 [A27] Coder 3 — androguard-driven: gmdice COMPLETE gameplay (ListActivity/ArrayAdapter law stack; 3x byte
+562	I	open	Sh-TB	2026-11-07T14:49:51Z	4	[W15][Coder-4] THREE new laws + the W11-14 stack RE-LANDED on current main (d3a8d0e): sunpiano REAL_APP_CONTEN
+563	I	open	Sh-TB	2026-11-07T18:27:03Z	4	[W15][Coder-4] FIVE generic laws — Nextcloud 4 death walls killed at the base layer (Room 2.7 onOpen lifecycle
+564	I	open	Sh-TB	2026-11-07T20:19:06Z	2	[W16][Coder-4] SEVEN generic laws — four 4APP walls fall at the base layer (String.regionMatches okhttp scheme
+565	I	open	Sh-TB	2026-11-08T15:41:33Z	2	GOVERNANCE — The Knowledge Transfer Law (K-1..K-7): every issue must be a complete, self-contained, landable t
+566	I	open	Sh-TB	2026-11-08T16:27:35Z	9	[W17][Coder-4] ELEVEN base-layer laws — CB NavHost + TSK okhttp + NC Conscrypt/provider walls DEAD; the S194-i
+567	I	open	Sh-TB	2026-11-08T19:18:59Z	16	[W18][Coder-4] androguard demand census + F-C4-633 GENERIC-STUB CENSUS oracle + fifteen law families — the liv
+568	I	open	Sh-TB	2026-11-08T19:33:00Z	1	[S195][Coder-5] androidx host-boundary completion — F-NEW-626/627/628 + androguard FM census — complete landab
+569	I	open	Sh-TB	2026-11-08T20:00:29Z	1	[S196][Coder-5] getSupportFragmentManager identity-first repair (F-NEW-629) + Godot IO chain (F-NEW-630/631) —
+570	I	open	Sh-TB	2026-11-08T20:25:17Z	19	[RESEARCH] External Tool Audit — independent tool validation for DEX/native/GL (60-sec report)
+571	I	open	Sh-TB	2026-11-08T21:30:44Z	3	[W19][Coder-4] UriMatcher Java-split ROOT (NC uncaught KILLED) + 28-item law stack + appcompat pending-content
+572	I	open	Sh-TB	2026-11-09T00:19:48Z	3	A25 · S195 — unote_30 FULL EXECUTION (first REAL SQLite app journey: create→insert→select→rendered row): five 
+573	I	open	Sh-TB	2026-11-09T09:23:19Z	21	S168 — THE 20-PROBLEM RENDER LADDER for dooz full render (#1 CLOSED: framework-table restore → #527 byte-exact
+574	I	open	Sh-TB	2026-11-09T16:39:06Z	3	[W20][Coder-4] The COMPLETE dagger DI chain LIVE — base-onCreate fan-out + activity-identity gate + the 136-bi
+575	I	open	Sh-TB	2026-11-09T22:45:16Z	21	W21 — The W17-W20 stack LANDED ON S206 + the dooz F720 ZOMBIE root-cause + the gated landing
+576	I	open	Sh-TB	2026-11-10T17:20:59Z	6	A-R1 — KNOWLEDGE TRANSFER: the base families no coder owned (roadmap §30 AB · §32 AD · §37 AI · §39 AK · §44 A
+577	I	open	Sh-TB	2026-11-10T18:09:24Z	14	S211 KT — Never-reviewed interpreter residue verified: move-wide/16 (0x06) method-death, rem-double/2addr (0xC
+578	I	open	Sh-TB	2026-11-10T18:57:49Z	3	A-R2 — KNOWLEDGE TRANSFER: the five base families still unowned after A-R1 (roadmap §15 M · §27 Y · §40 AL · §
+579	I	open	Sh-TB	2026-11-10T19:34:26Z	2	A-R3 — KNOWLEDGE TRANSFER: the eight runtime families still never reviewed after A-R1+A-R2 (roadmap §28 Z · §3
+580	I	open	Sh-TB	2026-11-10T19:41:57Z	0	A-R3 — KNOWLEDGE TRANSFER: the post-A-R2 orphan families (roadmap §89 CI · §87 CG · §33 AE · §36 AH · §90 CJ) 
+581	I	open	Sh-TB	2026-11-11T04:56:05Z	4	A-R4 — KNOWLEDGE TRANSFER: the last never-audited base families (roadmap §7 E · §10 H · §5 C · §4 B · §23 U) —
+582	I	open	Sh-TB	2026-11-11T15:43:07Z	52	[GP MASTER AUDIT] Living Dalvik Engine & Unified Runtime Safety, Correctness, Compose, Native, and APK Executi
+583	I	open	Sh-TB	2026-11-11T17:05:19Z	29	[GP MASTER AUDIT] Why Coder 2–9 Work Does Not Reliably Reach the Main Runtime — Cross-Lane Integration Failure
+584	I	open	Sh-TB	2026-11-11T19:18:16Z	6	A-R5 — KNOWLEDGE TRANSFER: the S215–S217 frontier — #581 integrity CLOSED (15/16 post-images exact, cda66364 =
+585	I	open	Sh-TB	2026-11-12T05:43:23Z	11	[LEGACY-100] Oldest open compatibility issues — root-cause audit and shared runtime recovery plan
+586	I	open	Sh-TB	2026-11-12T17:03:37Z	12	S226 TRANSFER — the S156 4-canonical-F-Droid-app wave (Thunderbird/Tusky/Nextcloud/ConnectBot × 5 stages) re-c
+587	I	open	Sh-TB	2026-11-13T04:25:33Z	7	RELEASE-0.0.6.2 — Repository cleanup, canonical structure, professional README & reproducible release
+588	I	open	Sh-TB	2026-11-13T06:41:48Z	49	[Coder-4] ACHIEVEMENTS REPORT — verified 20-title list (old/famous/lightweight open-source) + full-render & ga
+589	I	open	Sh-TB	2026-11-13T07:48:30Z	4	A-R6 — KNOWLEDGE TRANSFER: §8 F (Kotlin/JVM interop) — the family no coder ever owned — first-ever family revi
+590	I	open	Sh-TB	2026-11-13T16:52:23Z	18	[W22][Coder-4] S210 merged + the dooz post-nav corruption ROOT-CAUSED: the NO-RETURN completion fabrication (F
+591	I	open	Sh-TB	2026-11-13T16:55:01Z	4	[W23][Coder-4] S211-S218 + #587 wave merged (6-pin gate ALL HOLD) + ttt regression ROOT-CAUSED to my W20 F-C4-
+592	I	open	Sh-TB	2026-11-13T20:00:44Z	26	S233 [cODER-ohc] — F-SQLQB: SQLiteQueryBuilder + SimpleCursorAdapter law stack — OpenSudoku folder list RENDER
+593	I	open	Sh-TB	2026-11-13T20:40:41Z	2	[W25][Coder-4] Random corpus re-test (seed 42) + the minimal-gold hunt — OpenCalc gold template; battleship co
+594	I	open	Sh-TB	2026-11-13T22:23:42Z	3	[W26][Coder-4] OpenCalc COMPLETE INTERACTIVE RENDERING — 3 engine laws (Gson framework getSuperclass walk / Js
+595	I	open	Sh-TB	2026-11-14T14:58:46Z	7	S236 pre-merge regression audit: protect S235 and existing runtime behavior
+596	I	open	Sh-TB	2026-11-14T18:10:06Z	5	Sequential campaign: complete S236.1, then M-16 lightweight CSS/WebView integration
+597	I	open	Sh-TB	2026-11-14T19:42:37Z	5	[W27][Coder-4] The "777" root-caused & fixed — F-NEW-639 StringBuilder.append(CharSequence,int,int) bounded-ov
+598	I	open	Sh-TB	2026-11-15T06:17:54Z	3	A-R7 — KNOWLEDGE TRANSFER: the two forgotten Coder-2 S187 laws (S187-B AnnotationDefault decode + S187-D NSD s
+599	I	open	Sh-TB	2026-11-15T18:36:30Z	11	[CS-100][Coder jp.takke.cpustats] jp.takke.cpustats — COMPLETE source-code knowledge transfer + execution rout
+600	I	open	Sh-TB	2026-11-15T18:50:19Z	6	S242 — com.better.alarm (Simple Alarm Clock 3.15.04, F-Droid) — F-NEW-661 ENGINE-ARRAY-BACKED subList BOUNDS L
+601	I	open	Sh-TB	2026-11-15T18:55:11Z	5	S240 [F-RECKONING-001] — Reckoning Skills v1.1.2: full 10-question gameplay, persistence and results
+602	I	open	Sh-TB	2026-11-15T19:01:21Z	4	[CS-101][Coder de.huepping.wortmuehle] de.huepping.wortmuehle — COMPLETE source-code knowledge transfer + exec
+603	I	open	Sh-TB	2026-11-15T19:31:03Z	2	[APP-022] OpenContacts — compatibility report + knowledge transfer (5 CONFIRMED generic roots: DexFile/Thread-
+604	I	closed	Sh-TB	2026-11-15T20:32:32Z	0	perm-probe-delete-me
+605	I	open	Sh-TB	2026-11-15T20:33:21Z	3	FONT-PIPE-002 — distro-portable font resolution + font-load verification (fixes s98/s106 font batteries)
+606	I	closed	Sh-TB	2026-11-16T14:50:19Z	17	LAYOUT-PIPE-001: view-layout domain closure — gravity/scroll/image/text/relative/grid placement laws (the #605
+607	I	open	Sh-TB	2026-11-16T17:18:58Z	7	[P1] Fix Dalvik correctness + Make/CMake parity and prove a real APK execution (GMDice)
+608	I	open	Sh-TB	2026-11-16T17:26:07Z	3	[GAME-185] dk.cocode.chess — compatibility report + source knowledge transfer + execution route to 100% (3 roo
+609	I	open	Sh-TB	2026-11-16T17:39:43Z	4	R090 companion | Blockinger 1.8.2 — complete gameplay source-to-runtime handoff
+610	I	open	Sh-TB	2026-11-16T18:28:39Z	7	Next game | n-Puzzle 1.1 — numeric 8-puzzle source-to-runtime completion
+611	I	open	Sh-TB	2026-11-16T18:28:41Z	3	Next app | Notepad — one plain-text create/save/reopen workflow
+612	I	open	Sh-TB	2026-11-16T18:40:48Z	45	P0 BUILD PERFORMANCE — Fix slow clean builds, broken CMake graph, and oversized C++ compile bottlenecks
+613	I	open	Sh-TB	2026-11-16T18:49:29Z	2	Next easiest app | Hello World Toast — one Activity, one Toast, finish()
+614	I	open	Sh-TB	2026-11-16T18:49:31Z	12	Next easiest game | Guess 0.15 — single Activity number-guessing game
+615	I	open	Sh-TB	2026-11-16T19:03:50Z	4	LATE-LAUNCH STARVATION — next-activity onCreate/setContentView lands after render_frame+capture (blank frame d
+616	I	open	Sh-TB	2026-11-17T01:11:49Z	6	Next simple app | Dice Roller — Java single-Activity dice simulation with SeekBar + XML click
+617	I	open	Sh-TB	2026-11-17T01:11:51Z	5	Next simple game | Minos 1.0.4 — source-pinned drag-to-goal maze gameplay
+618	I	open	Sh-TB	2026-11-17T04:37:17Z	44	Next easiest app | Android Counter — one Activity, two XML onClick buttons, TextView + Toast
+619	I	open	Sh-TB	2026-11-17T04:37:18Z	36	Next easiest game | Tic Tac Toe — Java 3×3 button grid, two-player wins/draw/reset
+620	I	open	Sh-TB	2026-11-17T05:24:41Z	24	MAIN CODER DIRECTIVE — finish #618 Android Counter + #619 Tic Tac Toe end-to-end before expanding
+621	I	open	Sh-TB	2026-11-17T05:24:43Z	4	Next simple game | Rock Paper Scissors — Java ImageButton gameplay, RNG, score and reset
+622	I	open	Sh-TB	2026-11-17T05:24:44Z	7	Next simple app | Classic Calculator — Java/XML keypad, expression editing and arithmetic
+623	I	open	Sh-TB	2026-11-17T05:51:09Z	8	Next simple app | Random Number Generator — EditText + Button + bounded Random + result TextView
+624	I	open	Sh-TB	2026-11-17T05:51:14Z	7	Next simple game | Coin Toss — one Button, heads/tails drawable, Toast and rotation animation
+625	PR	closed	Sh-TB	2026-11-18T12:24:28Z	0	ISSUE-612: Add opt-in shared Dalvik .so development build path
+626	PR	open	Sh-TB	2026-11-18T12:24:38Z	0	ISSUE-612: WAVE-10 dev-so speed profiles — interpreter 12.16s, bridge 26.89s
+627	I	open	Sh-TB	2026-11-18T20:10:58Z	32	[RESEARCH HUB] Independent Engineering Findings, Dalvik Correctness, Build Optimization & Runtime Compatibilit
+628	I	open	Sh-TB	2026-11-19T11:28:22Z	1	[KT] kotlinx-coroutines Dispatchers.IO scheduling in the engine — the complete #619 map: the parked-worker sta
+629	I	open	Sh-TB	2026-11-19T11:28:23Z	1	[KT] R8 structural-dispatch methodology — waves 1-5 reusable laws: opcode polarity, descriptor+direct-list dis

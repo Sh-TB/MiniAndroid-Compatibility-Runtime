@@ -1,0 +1,1113 @@
++caught by catch-all at `MetadataRepo.getViewModel$lifecycle_viewmodel`
++(emoji2), rethrown, ESCAPED at `MainActivity.onCreate` pc=221 (APP BOUNDARY);
++follow-up NPEs at onCreate pc=398 ×2. Console shows exactly ONE
++`SavedStateRegistryImpl.<init>` row (pc=16) and NO performAttach — the
++androidx.savedstate attach chain never executes in the engine, so
++`mAttached` stays false when the first ViewModel asks for restored state.
++
++## Stage 4b — LAW (pinned, not shipped)
++
++**F-NEW-486 (pinned)**: SavedStateRegistry attach law — the
++ComponentActivity ctor/shadow chain must run
++`SavedStateRegistryController.performAttach` (+ performRestore at CREATED)
++BEFORE the first ViewModelProvider.create, mirroring ART's
++super.onCreate() ordering. Distinct from the shipped F-020 enum law (that
++one fixed the isAtLeast guard; this one is the attach-ordering gap). Fix
++queued for S157 with the TB Koin registry law (F-NEW-485).
++
++## Stage 5 — VERDICT
++
++BLOCKED-with-root-cause (evidence-complete). L0 true, L1 true (runtime
++executes deep into DI/ViewModel creation), L2 false (dies in onCreate).
++Not a ConnectBot bug — the same chain would fire on any Hilt+SavedState app.
++
++---
++**S226 re-census (a4516511, S225-M):** the attach-ordering chain no longer
++fires — consumeISE rows=0, uncaught 13→0, CLEAN boot at the current main.
++Status: F-NEW-486 RESOLVED-BY-MAINLINE (verified live). vc=11101000 stays
++CLOSED.
+diff --git a/evidence/s156_4app/S226_TRANSFER_BATTERY.json b/evidence/s156_4app/S226_TRANSFER_BATTERY.json
+new file mode 100644
+index 00000000..3f1cc8d7
+--- /dev/null
++++ b/evidence/s156_4app/S226_TRANSFER_BATTERY.json
+@@ -0,0 +1,133 @@
++{
++ "base": "a4516511 (S225-M)",
++ "battery": "s226_transfer",
++ "gates": {
++  "bouncy": {
++   "tag": "bouncy",
++   "install": "rc=0",
++   "wall_s": 2.2,
++   "face": "8a6c24ac8a7d718e",
++   "uncaught": 0,
++   "verdicts": [
++    "SAFE"
++   ],
++   "ndfe": [],
++   "koin_not_started": 0,
++   "consume_ise": 0,
++   "conscrypt_abort": false,
++   "strchr_ule": 0,
++   "expect8": "8a6c24ac",
++   "match8": true
++  },
++  "unote": {
++   "tag": "unote",
++   "install": "rc=0",
++   "wall_s": 1.5,
++   "face": "3b8dcb0adbbc17a9",
++   "uncaught": 0,
++   "verdicts": [],
++   "ndfe": [],
++   "koin_not_started": 0,
++   "consume_ise": 0,
++   "conscrypt_abort": false,
++   "strchr_ule": 0,
++   "expect8": "3b8dcb0a",
++   "match8": true
++  },
++  "gmdice": {
++   "tag": "gmdice",
++   "install": "rc=0",
++   "wall_s": 1.5,
++   "face": "3891679dff449331",
++   "uncaught": 0,
++   "verdicts": [],
++   "ndfe": [],
++   "koin_not_started": 0,
++   "consume_ise": 0,
++   "conscrypt_abort": false,
++   "strchr_ule": 0,
++   "expect8": "3891679d",
++   "match8": true
++  },
++  "dooz": {
++   "tag": "dooz",
++   "install": "rc=0",
++   "wall_s": 77.5,
++   "face": "a0fae9072313e2d1",
++   "uncaught": 6,
++   "verdicts": [],
++   "ndfe": [],
++   "koin_not_started": 0,
++   "consume_ise": 0,
++   "conscrypt_abort": false,
++   "strchr_ule": 0,
++   "expect8": "a0fae907",
++   "match8": true
++  }
++ },
++ "apps": {
++  "thunderbird": {
++   "tag": "thunderbird",
++   "install": "rc=0",
++   "wall_s": 10.8,
++   "face": "43bfdac6023cba66",
++   "uncaught": 9,
++   "verdicts": [
++    "DEFAULT_BACKGROUND_ONLY"
++   ],
++   "ndfe": [],
++   "koin_not_started": 0,
++   "consume_ise": 0,
++   "conscrypt_abort": false,
++   "strchr_ule": 0
++  },
++  "tusky": {
++   "tag": "tusky",
++   "install": "rc=0",
++   "wall_s": 4.3,
++   "face": "31ddd4d5b8e6d18e",
++   "uncaught": 16,
++   "verdicts": [
++    "SAFE",
++    "DEFAULT_BACKGROUND_ONLY"
++   ],
++   "ndfe": [],
++   "koin_not_started": 0,
++   "consume_ise": 0,
++   "conscrypt_abort": false,
++   "strchr_ule": 0
++  },
++  "nextcloud": {
++   "tag": "nextcloud",
++   "install": "rc=0",
++   "wall_s": 16.7,
++   "face": "b5a7a35d5fe0564b",
++   "uncaught": 20,
++   "verdicts": [
++    "SAFE",
++    "DEFAULT_BACKGROUND_ONLY"
++   ],
++   "ndfe": [],
++   "koin_not_started": 0,
++   "consume_ise": 0,
++   "conscrypt_abort": false,
++   "strchr_ule": 0
++  },
++  "connectbot": {
++   "tag": "connectbot",
++   "install": "rc=0",
++   "wall_s": 4.2,
++   "face": "b5a7a35d5fe0564b",
++   "uncaught": 0,
++   "verdicts": [
++    "SAFE",
++    "DEFAULT_BACKGROUND_ONLY"
++   ],
++   "ndfe": [],
++   "koin_not_started": 0,
++   "consume_ise": 0,
++   "conscrypt_abort": false,
++   "strchr_ule": 0
++  }
++ }
++}
+\ No newline at end of file
+diff --git a/evidence/s156_4app/TB_KOIN_XREF.json b/evidence/s156_4app/TB_KOIN_XREF.json
+new file mode 100644
+index 00000000..011ee03d
+--- /dev/null
++++ b/evidence/s156_4app/TB_KOIN_XREF.json
+@@ -0,0 +1,439 @@
++{
++ "startkoin_callers": [],
++ "target_calls": {
++  "Lcom/fsck/k9/provider/DecryptedFileProvider;-><clinit>": [
++   {
++    "pc": 4,
++    "op": "invoke-direct",
++    "ref": "Ljava/lang/Object;-><init>()V"
++   },
++   {
++    "pc": 18,
++    "op": "invoke-static",
++    "ref": "Lokhttp3/CacheControl$Companion;->get$default(Ljava/lang/Class;)Ljava/lang/Object;"
++   }
++  ],
++  "Lcom/fsck/k9/provider/DecryptedFileProvider;->onCreate": [
++   {
++    "pc": 0,
++    "op": "invoke-virtual",
++    "ref": "Landroid/content/ContentProvider;->getContext()Landroid/content/Context;"
++   },
++   {
++    "pc": 8,
++    "op": "invoke-virtual",
++    "ref": "Landroid/content/Context;->getPackageName()Ljava/lang/String;"
++   },
++   {
++    "pc": 20,
++    "op": "invoke-static",
++    "ref": "Lcoil3/size/ViewSizeResolver$-CC;->m(Ljava/lang/String; Ljava/lang/String;)Ljava/lang/String;"
++   }
++  ],
++  "Lnet/thunderbird/android/ThunderbirdApp;->attachBaseContext": [
++   {
++    "pc": 8,
++    "op": "invoke-static",
++    "ref": "Landroidx/room/util/SchemaInfoUtilKt;->listOf(Ljava/lang/Object;)Ljava/util/List;"
++   },
++   {
++    "pc": 22,
++    "op": "invoke-direct",
++    "ref": "Lapp/k9mail/legacy/di/DI$$ExternalSyntheticLambda0;-><init>(I Ljava/lang/Object; Ljava/lang/Object;)V"
++   },
++   {
++    "pc": 38,
++    "op": "invoke-direct",
++    "ref": "Lorg/koin/core/KoinApplication;-><init>()V"
++   },
++   {
++    "pc": 60,
++    "op": "invoke-virtual",
++    "ref": "Lapp/k9mail/legacy/di/DI$$ExternalSyntheticLambda0;->invoke(Ljava/lang/Object;)Ljava/lang/Object;"
++   },
++   {
++    "pc": 70,
++    "op": "invoke-virtual",
++    "ref": "Lorg/koin/core/Koin;->createEagerInstances()V"
++   },
++   {
++    "pc": 82,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 94,
++    "op": "invoke-virtual",
++    "ref": "Ljava/lang/Object;->getClass()Ljava/lang/Class;"
++   },
++   {
++    "pc": 104,
++    "op": "invoke-super",
++    "ref": "Landroid/app/Application;->attachBaseContext(Landroid/content/Context;)V"
++   },
++   {
++    "pc": 124,
++    "op": "invoke-direct",
++    "ref": "Ljava/lang/Exception;-><init>(Ljava/lang/String;)V"
++   }
++  ],
++  "Lnet/thunderbird/android/ThunderbirdApp;->onCreate": [
++   {
++    "pc": 0,
++    "op": "invoke-virtual",
++    "ref": "Lnet/thunderbird/android/ThunderbirdApp;->onCreate$net$thunderbird$app$common$FeatureFlagApplication()V"
++   },
++   {
++    "pc": 10,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 26,
++    "op": "invoke-virtual",
++    "ref": "Ljava/lang/Object;->getClass()Ljava/lang/Class;"
++   }
++  ],
++  "Lnet/thunderbird/android/ThunderbirdApp;->onCreate$net$thunderbird$app$common$BaseApplication": [
++   {
++    "pc": 0,
++    "op": "invoke-super",
++    "ref": "Landroid/app/Application;->onCreate()V"
++   },
++   {
++    "pc": 16,
++    "op": "invoke-direct",
++    "ref": "Lcom/fsck/k9/K9$init$1;-><init>(I)V"
++   },
++   {
++    "pc": 30,
++    "op": "invoke-virtual",
++    "ref": "Landroid/content/Context;->getSharedPreferences(Ljava/lang/String; I)Landroid/content/SharedPreferences;"
++   },
++   {
++    "pc": 42,
++    "op": "invoke-virtual",
++    "ref": "Ljava/lang/Object;->getClass()Ljava/lang/Class;"
++   },
++   {
++    "pc": 52,
++    "op": "invoke-interface",
++    "ref": "Landroid/content/SharedPreferences;->getInt(Ljava/lang/String; I)I"
++   },
++   {
++    "pc": 64,
++    "op": "invoke-static",
++    "ref": "Lokhttp3/CacheControl$Companion;->get$default(Ljava/lang/Class;)Ljava/lang/Object;"
++   },
++   {
++    "pc": 84,
++    "op": "invoke-static",
++    "ref": "Lcom/fsck/k9/K9;->setDatabasesUpToDate(Z)V"
++   },
++   {
++    "pc": 94,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 110,
++    "op": "invoke-virtual",
++    "ref": "Lcom/fsck/k9/Preferences;->getStorage()Lnet/thunderbird/core/preference/storage/InMemoryStorage;"
++   },
++   {
++    "pc": 118,
++    "op": "invoke-static",
++    "ref": "Lcom/fsck/k9/K9;->loadPrefs(Lnet/thunderbird/core/preference/storage/InMemoryStorage;)V"
++   },
++   {
++    "pc": 128,
++    "op": "invoke-virtual",
++    "ref": "Landroid/content/Context;->getCacheDir()Ljava/io/File;"
++   },
++   {
++    "pc": 140,
++    "op": "invoke-static",
++    "ref": "Lcom/fsck/k9/Core;->setServicesEnabled(Landroid/content/Context;)V"
++   },
++   {
++    "pc": 150,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 178,
++    "op": "invoke-direct",
++    "ref": "Lcom/fsck/k9/Core$restoreNotifications$1;-><init>(I Lkotlin/coroutines/Continuation; I)V"
++   },
++   {
++    "pc": 184,
++    "op": "invoke-static",
++    "ref": "Lkotlinx/coroutines/JobKt;->launch$default(Lkotlinx/coroutines/CoroutineScope; Lkotlin/coroutines/CoroutineContext; Lkotlinx/coroutines/CoroutineStart; Lkotlin/jvm/functions/Function2; I)Lkotlinx/coroutines/StandaloneCoroutine;"
++   },
++   {
++    "pc": 190,
++    "op": "invoke-virtual",
++    "ref": "Lnet/thunderbird/android/ThunderbirdApp;->getAppLanguageManager()Lcom/fsck/k9/ui/base/AppLanguageManager;"
++   },
++   {
++    "pc": 202,
++    "op": "invoke-virtual",
++    "ref": "Lnet/thunderbird/core/preference/display/coreSettings/DefaultDisplayCoreSettingsPreferenceManager;->getConfig()Ljava/lang/Object;"
++   },
++   {
++    "pc": 218,
++    "op": "invoke-virtual",
++    "ref": "Lcom/fsck/k9/ui/base/AppLanguageManager;->setLocale(Ljava/lang/String;)V"
++   },
++   {
++    "pc": 224,
++    "op": "invoke-virtual",
++    "ref": "Lnet/thunderbird/android/ThunderbirdApp;->applyOverrideLocaleToConfiguration()V"
++   },
++   {
++    "pc": 236,
++    "op": "invoke-virtual",
++    "ref": "Lnet/thunderbird/android/ThunderbirdApp;->getAppLanguageManager()Lcom/fsck/k9/ui/base/AppLanguageManager;"
++   },
++   {
++    "pc": 252,
++    "op": "invoke-direct",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt__LimitKt$drop$$inlined$unsafeFlow$1;-><init>(Lkotlinx/coroutines/flow/Flow; I)V"
++   },
++   {
++    "pc": 266,
++    "op": "invoke-direct",
++    "ref": "Lnet/thunderbird/app/common/MainActivity$onCreate$1;-><init>(Ljava/lang/Object; Lkotlin/coroutines/Continuation; I)V"
++   },
++   {
++    "pc": 278,
++    "op": "invoke-direct",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt__MergeKt$flatMapConcat$$inlined$map$1;-><init>(Lkotlinx/coroutines/flow/Flow; Lkotlin/jvm/functions/Function2; I)V"
++   },
++   {
++    "pc": 288,
++    "op": "invoke-static",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt;->launchIn(Lkotlinx/coroutines/flow/Flow; Lkotlinx/coroutines/CoroutineScope;)Lkotlinx/coroutines/StandaloneCoroutine;"
++   },
++   {
++    "pc": 294,
++    "op": "invoke-virtual",
++    "ref": "Lnet/thunderbird/android/ThunderbirdApp;->getAppLanguageManager()Lcom/fsck/k9/ui/base/AppLanguageManager;"
++   },
++   {
++    "pc": 306,
++    "op": "invoke-static",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt;->distinctUntilChanged(Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;"
++   },
++   {
++    "pc": 322,
++    "op": "invoke-direct",
++    "ref": "Landroidx/camera/camera2/pipe/core/WakeLock$release$2;-><init>(Ljava/lang/Object; Lkotlin/coroutines/Continuation; I)V"
++   },
++   {
++    "pc": 332,
++    "op": "invoke-direct",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt__MergeKt$flatMapConcat$$inlined$map$1;-><init>(Lkotlinx/coroutines/flow/Flow; Lkotlin/jvm/functions/Function2; I)V"
++   },
++   {
++    "pc": 338,
++    "op": "invoke-static",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt;->launchIn(Lkotlinx/coroutines/flow/Flow; Lkotlinx/coroutines/CoroutineScope;)Lkotlinx/coroutines/StandaloneCoroutine;"
++   },
++   {
++    "pc": 348,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 378,
++    "op": "invoke-direct",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt__LimitKt$drop$$inlined$unsafeFlow$1;-><init>(Lkotlinx/coroutines/flow/Flow; I)V"
++   },
++   {
++    "pc": 384,
++    "op": "invoke-static",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt;->distinctUntilChanged(Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;"
++   },
++   {
++    "pc": 400,
++    "op": "invoke-direct",
++    "ref": "Lnet/thunderbird/app/common/MainActivity$onCreate$1;-><init>(Ljava/lang/Object; Lkotlin/coroutines/Continuation; I)V"
++   },
++   {
++    "pc": 410,
++    "op": "invoke-direct",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt__MergeKt$flatMapConcat$$inlined$map$1;-><init>(Lkotlinx/coroutines/flow/Flow; Lkotlin/jvm/functions/Function2; I)V"
++   },
++   {
++    "pc": 432,
++    "op": "invoke-interface",
++    "ref": "Lkotlinx/coroutines/CoroutineScope;->getCoroutineContext()Lkotlin/coroutines/CoroutineContext;"
++   },
++   {
++    "pc": 440,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/coroutines/CoroutineContext;->plus(Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;"
++   },
++   {
++    "pc": 448,
++    "op": "invoke-direct",
++    "ref": "Lkotlinx/coroutines/internal/ContextScope;-><init>(Lkotlin/coroutines/CoroutineContext;)V"
++   },
++   {
++    "pc": 454,
++    "op": "invoke-static",
++    "ref": "Lkotlinx/coroutines/flow/FlowKt;->launchIn(Lkotlinx/coroutines/flow/Flow; Lkotlinx/coroutines/CoroutineScope;)Lkotlinx/coroutines/StandaloneCoroutine;"
++   },
++   {
++    "pc": 464,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 480,
++    "op": "invoke-static",
++    "ref": "Landroid/appwidget/AppWidgetManager;->getInstance(Landroid/content/Context;)Landroid/appwidget/AppWidgetManager;"
++   },
++   {
++    "pc": 504,
++    "op": "invoke-static",
++    "ref": "Lnet/thunderbird/legacy/logging/Log;->v(Ljava/lang/String; [Ljava/lang/Object;)V"
++   },
++   {
++    "pc": 510,
++    "op": "invoke-virtual",
++    "ref": "Lapp/k9mail/feature/widget/message/list/MessageListWidgetManager;->getAppWidgetIds()[I"
++   },
++   {
++    "pc": 530,
++    "op": "invoke-virtual",
++    "ref": "Lapp/k9mail/feature/widget/message/list/MessageListWidgetManager;->getAppWidgetIds()[I"
++   },
++   {
++    "pc": 554,
++    "op": "invoke-direct",
++    "ref": "Landroid/content/Intent;-><init>(Landroid/content/Context; Ljava/lang/Class;)V"
++   },
++   {
++    "pc": 564,
++    "op": "invoke-virtual",
++    "ref": "Landroid/content/Intent;->setAction(Ljava/lang/String;)Landroid/content/Intent;"
++   },
++   {
++    "pc": 574,
++    "op": "invoke-virtual",
++    "ref": "Landroid/content/Intent;->putExtra(Ljava/lang/String; [I)Landroid/content/Intent;"
++   },
++   {
++    "pc": 580,
++    "op": "invoke-virtual",
++    "ref": "Landroid/content/Context;->sendBroadcast(Landroid/content/Intent;)V"
++   },
++   {
++    "pc": 586,
++    "op": "invoke-virtual",
++    "ref": "Lapp/k9mail/feature/widget/message/list/MessageListWidgetManager;->registerMessageListChangedListener()V"
++   },
++   {
++    "pc": 596,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 612,
++    "op": "invoke-interface",
++    "ref": "Ljava/lang/Iterable;->iterator()Ljava/util/Iterator;"
++   },
++   {
++    "pc": 620,
++    "op": "invoke-interface",
++    "ref": "Ljava/util/Iterator;->hasNext()Z"
++   },
++   {
++    "pc": 632,
++    "op": "invoke-interface",
++    "ref": "Ljava/util/Iterator;->next()Ljava/lang/Object;"
++   },
++   {
++    "pc": 648,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 660,
++    "op": "invoke-virtual",
++    "ref": "Lcom/fsck/k9/controller/MessagingController;->addListener(Lapp/k9mail/legacy/message/controller/SimpleMessagingListener;)V"
++   },
++   {
++    "pc": 668,
++    "op": "invoke-static",
++    "ref": "Ljava/lang/Thread;->getDefaultUncaughtExceptionHandler()Ljava/lang/Thread$UncaughtExceptionHandler;"
++   },
++   {
++    "pc": 684,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 696,
++    "op": "invoke-direct",
++    "ref": "Lnet/thunderbird/core/common/exception/ExceptionHandler;-><init>(Ljava/lang/Thread$UncaughtExceptionHandler; Lnet/thunderbird/core/logging/Logger;)V"
++   },
++   {
++    "pc": 702,
++    "op": "invoke-static",
++    "ref": "Ljava/lang/Thread;->setDefaultUncaughtExceptionHandler(Ljava/lang/Thread$UncaughtExceptionHandler;)V"
++   },
++   {
++    "pc": 724,
++    "op": "invoke-interface",
++    "ref": "Lkotlin/Lazy;->getValue()Ljava/lang/Object;"
++   },
++   {
++    "pc": 736,
++    "op": "invoke-direct",
++    "ref": "Landroidx/emoji2/text/EmojiCompatInitializer$1;-><init>(Lnet/thunderbird/core/logging/file/FileLogSink;)V"
++   },
++   {
++    "pc": 742,
++    "op": "invoke-virtual",
++    "ref": "Landroidx/lifecycle/LifecycleRegistry;->addObserver(Landroidx/lifecycle/LifecycleObserver;)V"
++   }
++  ],
++  "Lnet/thunderbird/android/ThunderbirdApp;->onCreate$net$thunderbird$app$common$FeatureFlagApplication": [
++   {
++    "pc": 0,
++    "op": "invoke-virtual",
++    "ref": "Lnet/thunderbird/android/ThunderbirdApp;->onCreate$net$thunderbird$app$common$BaseApplication()V"
++   },
++   {
++    "pc": 16,
++    "op": "invoke-direct",
++    "ref": "Landroidx/lifecycle/BlockRunner$cancel$1;-><init>(Ljava/lang/Object; Lkotlin/coroutines/Continuation; I)V"
++   },
++   {
++    "pc": 28,
++    "op": "invoke-static",
++    "ref": "Lkotlinx/coroutines/JobKt;->launch$default(Lkotlinx/coroutines/CoroutineScope; Lkotlin/coroutines/CoroutineContext; Lkotlinx/coroutines/CoroutineStart; Lkotlin/jvm/functions/Function2; I)Lkotlinx/coroutines/StandaloneCoroutine;"
++   }
++  ],
++  "Lokhttp3/CacheControl$Companion;->get$default": [
++   {
++    "pc": 0,
++    "op": "invoke-static",
++    "ref": "Lkotlin/jvm/internal/Reflection;->getOrCreateKotlinClass(Ljava/lang/Class;)Lkotlin/jvm/internal/ClassReference;"
++   },
++   {
++    "pc": 26,
++    "op": "invoke-virtual",
++    "ref": "Lorg/koin/core/scope/Scope;->get(Lkotlin/jvm/internal/ClassReference; Lorg/koin/core/qualifier/Qualifier; Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;"
++   },
++   {
++    "pc": 40,
++    "op": "invoke-static",
++    "ref": "Lokhttp3/internal/_UtilJvmKt$$ExternalSyntheticLambda0;->m$2(Ljava/lang/String;)V"
++   }
++  ]
++ }
++}
+\ No newline at end of file
+diff --git a/miniandroid/src/jni/bionic_compat.c b/miniandroid/src/jni/bionic_compat.c
+index d995b313..99b2d492 100644
+--- a/miniandroid/src/jni/bionic_compat.c
++++ b/miniandroid/src/jni/bionic_compat.c
+@@ -518,3 +518,31 @@ int __android_log_print(int prio, const char* tag, const char* fmt, ...) {
+     va_end(ap);
+     return n;
+ }
++
++/* ═══════════════════════════════════════════════════════════════════════
++ * S226 residue transfer (from the S156 4-app wave, sandbox lineage): the
++ * three FORTIFY/bionic symbols the existing anchor surface above does not
++ * cover yet — needed by app-native dlopen (conscrypt frontier:
++ * net.thunderbird.android_33 / com.keylesspalace.tusky_145 / com.nextcloud.client).
++ * The engine links -rdynamic, so these definitions ARE the dlopen
++ * resolution surface. Honest contracts only — never a fake success.
++ * ═══════════════════════════════════════════════════════════════════════ */
++#include <stdlib.h>
++
++__attribute__((visibility("default")))
++void* __memset_chk(void* d, int c, size_t n, size_t dl) {
++    if (n > dl) { fprintf(stderr, "[S226-FORTIFY] __memset_chk overflow\n"); abort(); }
++    return memset(d, c, n);
++}
++__attribute__((visibility("default")))
++int __vsnprintf_chk(char* s, size_t n, int flags, size_t dl, const char* fmt, va_list ap) {
++    (void)flags;
++    if (n > dl) { fprintf(stderr, "[S226-FORTIFY] __vsnprintf_chk overflow\n"); abort(); }
++    return vsnprintf(s, n, fmt, ap);
++}
++__attribute__((visibility("default")))
++void __stack_chk_fail(void) {
++    /* the bionic contract: SSP violation is fatal */
++    fprintf(stderr, "[S226-FORTIFY] stack smashing detected: abort\n");
++    abort();
++}
+diff --git a/scripts/s156_4app_boot.py b/scripts/s156_4app_boot.py
+new file mode 100644
+index 00000000..1cf13e4c
+--- /dev/null
++++ b/scripts/s156_4app_boot.py
+@@ -0,0 +1,107 @@
++#!/usr/bin/env python3
++"""s156_4app_boot.py — S156 wave stage-3: BOOT the 4 canonical apps on the
++S155 engine (real-dalvik), capture verdict + blocker class per app.
++
++Usage: python3 scripts/s156_4app_boot.py TAG [TAG...]
++  TAG in {thunderbird, tusky, nextcloud, connectbot}
++Output rows -> evidence/s156_4app/BOOT_<TAG>.json, console -> run/s156_4app/.
++"""
++import hashlib
++import json
++import os
++import re
++import subprocess
++import sys
++import time
++from pathlib import Path
++
++BASE = Path("/home/z/my-project/repo")
++MA = BASE / "miniandroid"
++BIN = MA / "build/miniandroid"
++LEDGER = json.loads((BASE / "evidence/s156_4app/PIN_LEDGER.json").read_text())
++OUT = BASE / "run/s156_4app"
++EVID = BASE / "evidence/s156_4app"
++OUT.mkdir(parents=True, exist_ok=True)
++EVID.mkdir(parents=True, exist_ok=True)
++
++DEFAULT_MAX_SECONDS = 100
++DEFAULT_FRAMES = 12
++
++NDFE_RE = re.compile(r"NoClassDefFoundError[:\s]+([\w/$.]+)")
++CNFE_RE = re.compile(r"ClassNotFoundException[:\s]+([\w/$.]+)")
++NPE_RE = re.compile(r"NullPointerException")
++UNCAUGHT_RE = re.compile(r"UNCAUGHT")
++VERDICT_RE = re.compile(r"verdict[\"'= :]+([A-Z_]{4,40})")
++STATE_RE = re.compile(r"FRAME_ANALYSIS state=(\S+)")
++
++
++def sha16(p):
++    return hashlib.sha256(Path(p).read_bytes()).hexdigest()[:16]
++
++
++def install(tag, apk, store):
++    store = Path(store)
++    marker = store / ".installed"
++    if marker.exists():
++        return "cached"
++    store.parent.mkdir(parents=True, exist_ok=True)
++    t0 = time.time()
++    r = subprocess.run([str(BIN), "install", str(apk), "--data-root",
++                        str(store)], capture_output=True, cwd=str(MA),
++                       timeout=600)
++    marker.parent.mkdir(parents=True, exist_ok=True)
++    marker.write_text(f"rc={r.returncode} t={time.time()-t0:.0f}s\n")
++    if r.returncode != 0:
++        (store.parent / "install.stderr.log").write_bytes(r.stderr[:20000])
++    return f"rc={r.returncode} t={time.time()-t0:.0f}s"
++
++
++def boot(tag, max_seconds, frames):
++    row = LEDGER["apks"][tag]
++    apk = Path("/home/z/my-project/upload/canonical_apks") / row["file"]
++    package = row["package"]
++    store = OUT / f"store_{tag}" / "data"
++    rundir = OUT / tag
++    console = OUT / f"{tag}.console.log"
++    inst = install(tag, apk, store)
++    cmd = [str(BIN), "run", "--execution-mode", "real-dalvik",
++           "--data-root", str(store), "-o", str(rundir),
++           "--max-seconds", str(max_seconds), "--frames", str(frames),
++           "--trace", "--package", package]
++    t0 = time.time()
++    killed = False
++    try:
++        with open(console, "w") as cf:
++            subprocess.run(cmd, stdout=cf, stderr=subprocess.STDOUT,
++                           cwd=str(MA), timeout=max_seconds + 90)
++    except subprocess.TimeoutExpired:
++        killed = True
++    wall = round(time.time() - t0, 1)
++    text = console.read_text(errors="replace")
++    frames_dir = rundir / "frames"
++    n_frames = len(list(frames_dir.glob("frame_*"))) if frames_dir.exists() else 0
++    shot = rundir / "screenshot.png"
++    out = {
++        "tag": tag, "package": package, "apk_sha16": row["sha16"],
++        "engine": "S155 main rebuild", "install": inst,
++        "cmd_max_seconds": max_seconds, "cmd_frames": frames,
++        "wall_s": wall, "process_killed": killed,
++        "n_frames_captured": n_frames,
++        "screenshot_sha16": sha16(shot) if shot.exists() else None,
++        "verdicts": list(dict.fromkeys(VERDICT_RE.findall(text)))[:6],
++        "frame_analysis_state": STATE_RE.findall(text)[-3:],
++        "uncaught": len(UNCAUGHT_RE.findall(text)),
++        "ndfe": sorted(set(NDFE_RE.findall(text)))[:12],
++        "cnfe": sorted(set(CNFE_RE.findall(text)))[:12],
++        "npe_rows": len(NPE_RE.findall(text)),
++        "console_bytes": len(text),
++    }
++    (EVID / f"BOOT_{tag}.json").write_text(json.dumps(out, indent=1))
++    print(json.dumps(out, indent=1))
++    return out
++
++
++if __name__ == "__main__":
++    tags = sys.argv[1:] or ["thunderbird", "tusky", "nextcloud", "connectbot"]
++    for t in tags:
++        boot(t, DEFAULT_MAX_SECONDS, DEFAULT_FRAMES)
+diff --git a/scripts/s156_4app_pin.py b/scripts/s156_4app_pin.py
+new file mode 100644
+index 00000000..f9f38c19
+--- /dev/null
++++ b/scripts/s156_4app_pin.py
+@@ -0,0 +1,108 @@
++#!/usr/bin/env python3
++"""s156_4app_pin.py — S156 wave stage-1: PIN LEDGER for the 4 canonical APKs
++(Thunderbird / Tusky / Nextcloud / ConnectBot), androguard-assisted.
++
++Zero-APK policy (§20): APKs stay in the external upload cache; this ledger
++records sha256 + manifest truth only.
++
++Output: evidence/s156_4app/PIN_LEDGER.json (+ stdout summary).
++"""
++import hashlib
++import json
++from pathlib import Path
++
++from androguard.core.apk import APK
++
++BASE = Path("/home/z/my-project/repo")
++APK_DIR = Path("/home/z/my-project/upload/canonical_apks")
++OUT = BASE / "evidence/s156_4app"
++OUT.mkdir(parents=True, exist_ok=True)
++
++APKS = [
++    ("thunderbird", "net.thunderbird.android_33.apk"),
++    ("tusky", "com.keylesspalace.tusky_145.apk"),
++    ("nextcloud", "com.nextcloud.client_350000290.apk"),
++    ("connectbot", "org.connectbot.apk"),
++]
++
++
++def sha256_full(p):
++    h = hashlib.sha256()
++    with open(p, "rb") as f:
++        for chunk in iter(lambda: f.read(1 << 20), b""):
++            h.update(chunk)
++    return h.hexdigest()
++
++
++def dex_census(a):
++    """Per-dex class counts + compose/koin marker hits (string-level scan)."""
++    census = []
++    markers = {}
++    for name in a.get_files():
++        if name.endswith(".dex") and name.count("/") <= 1:
++            try:
++                data = a.get_file(name)
++            except Exception:
++                continue
++            entry = {"dex": name, "bytes": len(data),
++                     "classes": None}
++            try:
++                from androguard.core.dex import DEX
++                d = DEX(data)
++                entry["classes"] = len(d.get_classes())
++            except Exception as e:
++                entry["error"] = str(e)[:80]
++            hits = {
++                "koin": data.count(b"Lorg/koin/"),
++                "compose": data.count(b"Landroidx/compose/"),
++                "kotlin": data.count(b"Lkotlin/"),
++            }
++            entry["markers"] = hits
++            for k, v in hits.items():
++                markers[k] = markers.get(k, 0) + v
++            census.append(entry)
++    return census, markers
++
++
++def main():
++    ledger = {"wave": "S156", "stage": "pin", "apks": {}}
++    for tag, fname in APKS:
++        p = APK_DIR / fname
++        row = {"file": fname, "exists": p.exists()}
++        if p.exists():
++            raw_head = p.read_bytes()[:4]
++            row["zip_magic_ok"] = raw_head == b"PK\x03\x04"
++            row["sha256"] = sha256_full(p)
++            row["sha16"] = row["sha256"][:16]
++            row["size_bytes"] = p.stat().st_size
++            try:
++                a = APK(str(p))
++                row["package"] = a.get_package()
++                row["versionCode"] = a.get_androidversion_code()
++                row["versionName"] = a.get_androidversion_name()
++                row["minSdk"] = a.get_min_sdk_version()
++                row["targetSdk"] = a.get_target_sdk_version()
++                row["main_activity"] = a.get_main_activity()
++                row["n_activities"] = len(a.get_activities())
++                row["n_permissions"] = len(a.get_permissions())
++                row["permissions_top"] = sorted(a.get_permissions())[:12]
++                row["libraries"] = sorted(a.get_libraries())
++                census, markers = dex_census(a)
++                row["dex_census"] = census
++                row["markers_total"] = markers
++            except Exception as e:
++                row["androguard_error"] = str(e)[:200]
++        ledger["apks"][tag] = row
++        print(f"== {tag} ==")
++        for k in ("exists", "zip_magic_ok", "sha16", "size_bytes", "package",
++                  "versionCode", "versionName", "minSdk", "targetSdk",
++                  "main_activity", "markers_total"):
++            if k in row:
++                print(f"  {k}: {row[k]}")
++    out = OUT / "PIN_LEDGER.json"
++    out.write_text(json.dumps(ledger, indent=1))
++    print("WROTE", out)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/s156_4app_profile.py b/scripts/s156_4app_profile.py
+new file mode 100644
+index 00000000..b59ffcd1
+--- /dev/null
++++ b/scripts/s156_4app_profile.py
+@@ -0,0 +1,90 @@
++#!/usr/bin/env python3
++"""s156_4app_profile.py — S156 wave stage-2: androguard static profile.
++
++Per app: application class, framework-family descriptor census from the dex
++string pools (compose/fragment/koin/coroutines/webview/...), top-level
++package histogram. Output: evidence/s156_4app/PROFILE.json.
++"""
++import json
++import re
++from collections import Counter
++from pathlib import Path
++
++from androguard.core.apk import APK
++from loguru import logger
++
++logger.remove()  # silence androguard DEBUG spam
++
++BASE = Path("/home/z/my-project/repo")
++APK_DIR = Path("/home/z/my-project/upload/canonical_apks")
++EVID = BASE / "evidence/s156_4app"
++EVID.mkdir(parents=True, exist_ok=True)
++
++FAMILIES = [
++    "androidx/compose/runtime", "androidx/compose/ui", "androidx/compose/foundation",
++    "androidx/compose/material", "androidx/fragment/app", "androidx/lifecycle",
++    "androidx/recyclerview", "androidx/viewpager", "androidx/appcompat",
++    "androidx/preference", "androidx/navigation", "androidx/paging",
++    "androidx/work", "androidx/viewbinding", "androidx/databinding",
++    "androidx/browser", "androidx/core/app/Notification",
++    "kotlinx/coroutines", "kotlin/reflect", "org/koin/core", "org/koin/android",
++    "dagger", "javax/inject", "com/google/android/material",
++    "android/webkit", "retrofit2", "okhttp3", "okio", "io/coil",
++    "com/bumptech/glide", "com/squareup/moshi", "com/google/gson",
++    "org/jetbrains/anko", "net/sqlcipher", "android/database/sqlite",
++    "java/util/concurrent", "javax/net/ssl", "org/apache/http",
++    "com/trilead/ssh2", "org/connectbot/jcraft", "eu/alefzero/ssh",
++]
++
++PKG_RE = re.compile(rb"L([a-z][\w]*)(?:/[\w$]+){2,};")
++
++
++def app_class(a):
++    try:
++        root = a.get_android_manifest_xml()
++        app = root.find("application")
++        if app is not None:
++            return app.get("{http://schemas.android.com/apk/res/android}name")
++    except Exception:
++        pass
++    return None
++
++
++def main():
++    ledger = json.loads((EVID / "PIN_LEDGER.json").read_text())
++    profile = {"wave": "S156", "stage": "profile", "apps": {}}
++    for tag, row in ledger["apks"].items():
++        p = APK_DIR / row["file"]
++        a = APK(str(p))
++        fam = Counter()
++        pkgs = Counter()
++        for name in a.get_files():
++            if not (name.endswith(".dex") and name.count("/") <= 1):
++                continue
++            data = a.get_file(name)
++            for f in FAMILIES:
++                probe = b"L" + f.encode()
++                if probe in data:
++                    fam[f] += data.count(probe)
++            for m in PKG_RE.finditer(data):
++                pkgs[m.group(1).decode()] += 1
++        top = {k: v for k, v in pkgs.most_common(12)}
++        prow = {
++            "package": row["package"], "versionCode": row["versionCode"],
++            "application_class": app_class(a),
++            "main_activity": row["main_activity"],
++            "family_census": dict(fam),
++            "top_packages": top,
++        }
++        profile["apps"][tag] = prow
++        print(f"== {tag} ==")
++        print("  application_class:", prow["application_class"])
++        fams = sorted(fam.items(), key=lambda kv: -kv[1])
++        print("  families:", ", ".join(f"{k}={v}" for k, v in fams[:16]))
++        print("  top_pkgs:", list(top.items())[:8])
++    (EVID / "PROFILE.json").write_text(json.dumps(profile, indent=1))
++    print("WROTE", EVID / "PROFILE.json")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/s156_baseline_wall.py b/scripts/s156_baseline_wall.py
+new file mode 100644
+index 00000000..c6587084
+--- /dev/null
++++ b/scripts/s156_baseline_wall.py
+@@ -0,0 +1,99 @@
++#!/usr/bin/env python3
++"""s156_baseline_wall.py — S156 stage-0: anchor baseline at the fresh S155
++rebuild, BEFORE any 4-app work (regression reference).
++
++Anchors = the canonical APKs physically present in the upload cache:
++dooz, unote, microtimer, opencalc, tictactoe, bouncy, gmdice.
++Expectations from S155 evidence (rebuilt-engine era):
++  unote  -> 3b8dcb0adbbc17a9 (REAL_APP_CONTENT)
++  dooz   -> 11a38a5aeeff45a6 (DEFAULT_BACKGROUND_ONLY, record-phase spin era)
++Other anchors: record faces (stability x2 for dooz/unote), zero-drift check
++within this engine. Output: evidence/s156_4app/BASELINE_WALL.json.
++"""
++import hashlib
++import json
++import re
++import subprocess
++import sys
++import time
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).parent))
++from s156_4app_boot import MA, BIN, OUT, EVID, sha16, install  # noqa: E402
++
++APK_DIR = Path("/home/z/my-project/upload/canonical_apks")
++
++ANCHORS = [
++    ("dooz", "io.github.yamin8000.dooz_23.apk", "io.github.yamin8000.dooz",
++     "11a38a5aeeff45a6"),
++    ("unote", "app.varlorg.unote_30.apk", "app.varlorg.unote",
++     "3b8dcb0adbbc17a9"),
++    ("microtimer", "dubrowgn.microtimer_8.apk", "dubrowgn.microtimer", None),
++    ("opencalc", "com.darkempire78.opencalculator_53.apk",
++     "com.darkempire78.opencalculator", None),
++    ("tictactoe", "com.emmanuelmess.tictactoe.apk",
++     "com.emmanuelmess.tictactoe", None),
++    ("bouncy", "com.dozingcatsoftware.bouncy_43.apk",
++     "com.dozingcatsoftware.bouncy", None),
++    ("gmdice", "de.duenndns.gmdice_8.apk", "de.duenndns.gmdice", None),
++]
++TWICE = {"dooz", "unote"}
++
++
++def run_once(tag, apk, package, run_id, max_seconds=70, frames=8):
++    store = OUT / f"store_{tag}" / "data"
++    rundir = OUT / f"baseline_{tag}_{run_id}"
++    console = OUT / f"baseline_{tag}_{run_id}.console.log"
++    inst = install(tag, apk, store)
++    cmd = [str(BIN), "run", "--execution-mode", "real-dalvik",
++           "--data-root", str(store), "-o", str(rundir),
++           "--max-seconds", str(max_seconds), "--frames", str(frames),
++           "--trace", "--package", package]
++    t0 = time.time()
++    killed = False
++    try:
++        with open(console, "w") as cf:
++            subprocess.run(cmd, stdout=cf, stderr=subprocess.STDOUT,
++                           cwd=str(MA), timeout=max_seconds + 60)
++    except subprocess.TimeoutExpired:
++        killed = True
++    wall = round(time.time() - t0, 1)
++    text = console.read_text(errors="replace")
++    shot = rundir / "screenshot.png"
++    return {
++        "run_id": run_id, "wall_s": wall, "killed": killed, "install": inst,
++        "face": sha16(shot) if shot.exists() else None,
++        "uncaught": len(re.findall(r"UNCAUGHT", text)),
++        "verdicts": list(dict.fromkeys(
++            re.findall(r"verdict[\"'= :]+([A-Z_]{4,40})", text)))[:4],
++    }
++
++
++def main():
++    rows = {}
++    for tag, fname, package, expect in ANCHORS:
++        apk = APK_DIR / fname
++        if not apk.exists():
++            rows[tag] = {"error": "APK missing", "file": fname}
++            continue
++        r1 = run_once(tag, apk, package, "r1")
++        row = {"file": fname, "package": package, "expected_face": expect,
++               "runs": [r1]}
++        if tag in TWICE:
++            r2 = run_once(tag, apk, package, "r2")
++            row["runs"].append(r2)
++            row["stable_x2"] = r1["face"] == r2["face"] and r1["face"] is not None
++        row["face"] = r1["face"]
++        row["matches_expectation"] = (expect is None or r1["face"] == expect)
++        rows[tag] = row
++        print(tag, "face", r1["face"], "expect", expect,
++              "uncaught", r1["uncaught"], "verdicts", r1["verdicts"])
++    out = EVID / "BASELINE_WALL.json"
++    out.write_text(json.dumps({"wave": "S156", "stage": "baseline",
++                               "engine": "S155 main rebuild", "anchors": rows},
++                              indent=1))
++    print("WROTE", out)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/s156_rerun_after_anchors.py b/scripts/s156_rerun_after_anchors.py
+new file mode 100644
+index 00000000..22b7d5e9
+--- /dev/null
++++ b/scripts/s156_rerun_after_anchors.py
+@@ -0,0 +1,53 @@
++#!/usr/bin/env python3
++"""s156_rerun_after_anchors.py — S156 stage-4 verification battery after the
++bionic FORTIFY anchor law (engine a9b58de1d4e56f01).
++
++1. anchor spot: dooz + unote must keep faces 11a38a5a / 3b8dcb0a (the
++   bionic_compat change must be DEX-face-neutral).
++2. re-boot tusky + nextcloud (dlopen frontier) and connectbot + thunderbird
++   (control — expect unchanged faces until their laws land).
++Output: evidence/s156_4app/RERUN_AFTER_ANCHORS.json
++"""
++import json
++import re
++import subprocess
++import sys
++import time
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).parent))
++from s156_4app_boot import MA, BIN, OUT, EVID, sha16, install, boot  # noqa: E402
++from s156_baseline_wall import APK_DIR, run_once, ANCHORS  # noqa: E402
++
++EXPECT = {"dooz": "11a38a5aeeff45a6", "unote": "3b8dcb0adbbc17a9"}
++
++
++def main():
++    out = {"engine": "a9b58de1d4e56f01", "stage": "rerun_after_anchors"}
++    out["anchors"] = {}
++    for tag, fname, package, _ in ANCHORS:
+

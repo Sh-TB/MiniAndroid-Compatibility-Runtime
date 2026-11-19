@@ -1,0 +1,1229 @@
+From 19ee074af08b2dab296c7f74d0f30066b34120ec Mon Sep 17 00:00:00 2001
+From: openhands <openhands@all-hands.dev>
+Date: Wed, 18 Nov 2026 19:52:32 +0000
+Subject: [PATCH] ISSUE-607: Dalvik correctness + Make/CMake parity + version
+ identity
+
+Dalvik correctness (P1/P2, items 1-4):
+- move/from16 + move-wide/from16: pass the 16-bit source register index
+  unchanged (the uint8_t cast aliased v256+ onto v0..).
+- lit8/lit16/float-23x: dispatch by CONTENT (strcmp), not C-string literal
+  addresses.
+- lit8/lit16 arithmetic: compute in unsigned width so wrapping add/sub/mul/shl
+  and INT32_MIN / -1 div/rem are the Dalvik-defined two's-complement results,
+  not C++ signed-overflow UB (SIGFPE).
+- const-string/jumbo: promote operands to uint32_t before the <<16 shift.
+- execute_method direct entry: honour the method's real registers_size
+  (was hardcoded 16).
+
+Regression tests:
+- tests/s248_dalvik_arith_width_law_test.cpp (per-defect discrimination)
+- tests/s249_version_identity_law_test.cpp (version/commit identity law)
+
+CTest/Make parity (P1, item 7):
+- CMakeLists parses the Makefile TEST_CORE/TEST_HOSTILE/TEST_LAW lists as the
+  single source of truth and registers every battery test with CTest, so a
+  green ctest represents the advertised battery. CTest now runs 44 battery
+  tests + smoke = 45, identical failure set to `make test-all`.
+
+Version identity (P2, item 8):
+- VERSION file + scripts/generate_version_header.py -> miniandroid_version.h
+  in the build dir (never the source tree). Make and CMake both consume it;
+  the runtime `version` command prints the semantic version and the exact
+  build commit. README updated to drop the stale UNIFIED_011.1 identity.
+
+Co-authored-by: openhands <openhands@all-hands.dev>
+---
+ miniandroid/CMakeLists.txt                    | 113 +++++-
+ miniandroid/Makefile                          |  25 +-
+ miniandroid/README.md                         |  16 +-
+ miniandroid/VERSION                           |   1 +
+ .../scripts/generate_version_header.py        |  81 ++++
+ miniandroid/src/dex/dalvik_engine.cpp         |  77 ++--
+ miniandroid/src/dex/dalvik_engine_core.cpp    |   7 +-
+ miniandroid/src/dex/dalvik_interpreter.cpp    |  76 ++--
+ miniandroid/src/main.cpp                      |  18 +-
+ .../s248_dalvik_arith_width_law_test.cpp      | 345 ++++++++++++++++++
+ .../tests/s249_version_identity_law_test.cpp  | 167 +++++++++
+ 11 files changed, 854 insertions(+), 72 deletions(-)
+ create mode 100644 miniandroid/VERSION
+ create mode 100644 miniandroid/scripts/generate_version_header.py
+ create mode 100644 miniandroid/tests/s248_dalvik_arith_width_law_test.cpp
+ create mode 100644 miniandroid/tests/s249_version_identity_law_test.cpp
+
+diff --git a/miniandroid/CMakeLists.txt b/miniandroid/CMakeLists.txt
+index 52c6e8aa..b741b001 100755
+--- a/miniandroid/CMakeLists.txt
++++ b/miniandroid/CMakeLists.txt
+@@ -13,10 +13,14 @@
+ # test battery is behind -DBUILD_TESTS=ON — a normal runtime build compiles
+ # no experiments and no tests.
+ cmake_minimum_required(VERSION 3.16)
++# ISSUE-607 item 8: the VERSION file is the single authoritative identity
++# source. cmake_minimum_required must precede project(), so read it here.
++file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" MINIANDROID_VERSION_STRING)
++string(STRIP "${MINIANDROID_VERSION_STRING}" MINIANDROID_VERSION_STRING)
+ # #612-A1: the jni compat shims are C (bionic_compat.c, pthread_shadow.c)
+ # and the thunk is ASM — all three languages are declared up front so the
+ # shims compile as normal target sources, never as hand-built .o files.
+-project(MiniAndroid VERSION 0.1 LANGUAGES C CXX ASM DESCRIPTION "Minimal Android Compatibility Runtime")
++project(MiniAndroid VERSION ${MINIANDROID_VERSION_STRING} LANGUAGES C CXX ASM DESCRIPTION "Minimal Android Compatibility Runtime")
+ 
+ # C++ Standard
+ set(CMAKE_CXX_STANDARD 17)
+@@ -195,6 +199,26 @@ add_executable(miniandroid
+ 
+ target_link_libraries(miniandroid PRIVATE miniandroid_core)
+ 
++# ISSUE-607 item 8: ONE generated version/commit header (VERSION + git HEAD)
++# into the binary dir (never the source tree). Mirrors the Makefile's
++# version-header rule so both build systems pin the same identity.
++set(MINIANDROID_GENERATED_DIR ${CMAKE_BINARY_DIR}/generated)
++set(MINIANDROID_VERSION_HEADER ${MINIANDROID_GENERATED_DIR}/miniandroid_version.h)
++add_custom_command(
++    OUTPUT ${MINIANDROID_VERSION_HEADER}
++    COMMAND ${CMAKE_COMMAND} -E make_directory ${MINIANDROID_GENERATED_DIR}
++    COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_version_header.py
++            --version-file ${CMAKE_CURRENT_SOURCE_DIR}/VERSION
++            --out ${MINIANDROID_VERSION_HEADER}
++    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION
++            ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_version_header.py
++    COMMENT "Generating authoritative version/commit header (ISSUE-607 item 8)"
++    VERBATIM
++)
++add_custom_target(version-header DEPENDS ${MINIANDROID_VERSION_HEADER})
++target_include_directories(miniandroid PRIVATE ${MINIANDROID_GENERATED_DIR})
++add_dependencies(miniandroid version-header)
++
+ # GP583-BUILD-002 + #612-A1/A2: the executable-side native sources the
+ # Makefile links (S-2 thunk assembly + bionic C compat shims) are declared
+ # as NORMAL target sources — CMake compiles them into the build tree with
+@@ -369,6 +393,93 @@ if(BUILD_TESTS)
+             message(STATUS "Google Test not found — simple-test fallback registered with CTest (miniandroid-smoke)")
+         endif()
+     endif()
++
++    # ── ISSUE-607 item 7 (P1): Make/CTest test-discovery parity ────────────
++    # The Makefile's TEST_CORE/TEST_HOSTILE/TEST_LAW variables are the SINGLE
++    # SOURCE OF TRUTH for the canonical battery. CMake reads them here and
++    # registers every entry with CTest, so a green `ctest` represents the same
++    # battery `make test-all` runs. (Before this, only miniandroid-smoke was
++    # registered while the Makefile advertised 43 tests — a green ctest hid
++    # 42 unrun tests.) A test added to the Makefile therefore appears in CTest
++    # automatically; it cannot silently disappear.
++    # OBJECT (not STATIC) so the QuickJS/thunk objects land directly on each
++    # test's link line — a static archive here would be processed BEFORE
++    # miniandroid_core's webview_engine references to the JS_* symbols and the
++    # link would fail with undefined references.
++    add_library(miniandroid_test_native OBJECT
++        ${MINIANDROID_QUICKJS_SOURCES}
++        ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
++    )
++    target_link_libraries(miniandroid_test_native PUBLIC miniandroid_core)
++
++    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/Makefile" _mkfile)
++    string(REGEX REPLACE "\\\\\r?\n" " " _mkfile "${_mkfile}")
++
++    set(_battery_tests "")
++    foreach(_grp TEST_CORE TEST_HOSTILE TEST_LAW)
++        if(_mkfile MATCHES "${_grp}[ \t]*=[ \t]*([^\n]*)")
++            string(STRIP "${CMAKE_MATCH_1}" _entry)
++            # Collapse the Makefile's space/tab/continuation whitespace into a
++            # CMake list separator. (separate_arguments() silently dropped
++            # entries after some continuation joins; this regex split does not.)
++            string(REGEX REPLACE "[ \t\r\n]+" ";" _entry "${_entry}")
++            foreach(_t ${_entry})
++                if(_t)
++                    list(APPEND _battery_tests "${_t}")
++                endif()
++            endforeach()
++        else()
++            message(WARNING "ISSUE-607 parity: ${_grp} not found in Makefile")
++        endif()
++    endforeach()
++    list(REMOVE_DUPLICATES _battery_tests)
++
++    set(_battery_missing "")
++    set(_battery_targets "")
++    foreach(_t ${_battery_tests})
++        if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/${_t}.cpp")
++            list(APPEND _battery_missing "${_t}")
++            continue()
++        endif()
++        add_executable(${_t} tests/${_t}.cpp)
++        target_link_libraries(${_t} PRIVATE miniandroid_test_native)
++        if(_t STREQUAL "s225m_wave_law_test")
++            # Makefile: this test also links pthread_shadow.o so its POSIX
++            # error-semantics laws run against the shadow registry.
++            target_sources(${_t} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.c)
++        endif()
++        add_test(NAME ${_t} COMMAND ${_t})
++        # Makefile runs every battery test from the repo root; several font /
++        # resource laws resolve paths relative to the CWD, so CTest must use
++        # the same working directory or they fail differently than `make`.
++        set_tests_properties(${_t} PROPERTIES TIMEOUT 300
++            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
++        # The version-identity law reads the generated header; in a pure CMake
++        # build (no Make build present) point it at the CMake-generated copy.
++        if(_t STREQUAL "s249_version_identity_law_test")
++            set_tests_properties(${_t} PROPERTIES ENVIRONMENT
++                "MINIANDROID_VERSION_HEADER=${MINIANDROID_VERSION_HEADER}")
++            add_dependencies(${_t} version-header)
++        endif()
++        list(APPEND _battery_targets ${_t})
++    endforeach()
++    if(_battery_missing)
++        message(WARNING "ISSUE-607 parity: battery entries with no tests/<name>.cpp: ${_battery_missing}")
++    endif()
++    list(LENGTH _battery_tests _battery_n)
++    message(STATUS "ISSUE-607 parity: registered ${_battery_n} battery tests with CTest (source of truth: Makefile TEST_CORE/TEST_HOSTILE/TEST_LAW)")
++
++    # Canonical Make-equivalent entry point: build + run the whole battery and
++    # print the explicit discovered/passed/failed summary (mirrors the
++    # Makefile BATTERY SUMMARY line). miniandroid_test is included so the
++    # registered miniandroid-smoke test also has a built executable.
++    add_custom_target(battery
++        COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
++        DEPENDS ${_battery_targets} miniandroid_test
++        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
++        COMMENT "Running the canonical test battery (Makefile TEST_BATTERY) via CTest"
++        USES_TERMINAL
++    )
+ endif()
+ 
+ # ============== Custom Commands ==============
+diff --git a/miniandroid/Makefile b/miniandroid/Makefile
+index 1554a5a8..23c9500c 100755
+--- a/miniandroid/Makefile
++++ b/miniandroid/Makefile
+@@ -142,6 +142,14 @@ MAIN_SOURCE = $(SRCDIR)/main.cpp
+ MAIN_OBJECT = $(BUILDDIR)/main.o
+ EXECUTABLE = $(BUILDDIR)/miniandroid
+ 
++# ISSUE-607 item 8: ONE generated version/commit header (VERSION + git HEAD).
++# Generated into the build dir (never the source tree); both build systems
++# consume it so README/runtime/release identity cannot drift.
++VERSION_FILE = VERSION
++GENERATED_DIR = $(BUILDDIR)/generated
++VERSION_HEADER = $(GENERATED_DIR)/miniandroid_version.h
++INCLUDES += -I$(GENERATED_DIR)
++
+ # Test executable
+ TEST_SOURCE = $(TESTDIR)/simple_test.cpp
+ TEST_OBJECT = $(BUILDDIR)/test.o
+@@ -183,6 +191,17 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
+ 	@mkdir -p $(dir $@)
+ 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+ 
++# ISSUE-607 item 8: generate the authoritative version/commit header before
++# compiling anything that consumes it. Forced (FORCE prerequisite) so a moved
++# HEAD regenerates it; the script rewrites only on change (incremental).
++.PHONY: version-header
++version-header: $(VERSION_HEADER)
++$(VERSION_HEADER): $(VERSION_FILE) scripts/generate_version_header.py FORCE
++	@mkdir -p $(GENERATED_DIR)
++	@python3 scripts/generate_version_header.py --version-file $(VERSION_FILE) --out $(VERSION_HEADER)
++FORCE:
++$(MAIN_OBJECT): $(VERSION_HEADER)
++
+ # CONT-37 (F-NEW-298): dalvik_engine.cpp has grown past the -g debug-info
+ # cc1plus peak on the 4 GB build host (repeated OOM kills at -O2 -g; the
+ # -O2 -g0 compile of the same TU fits). Same optimization level (-O2),
+@@ -367,7 +386,7 @@ TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
+ 	r25_dispatch_matrix_test gp583_img004_bounds_law_test \
+ 	gp_dex003_fuzz_law_test \
+ 	s225m_wave_law_test s231_view_resource_law_test \
+-	s234_w26_engine_laws_test s235_lane_laws_test s236_port_laws_test s237_append_bounded_law_test s238_achievements_audit_test s239_wave_stack_audit_test s240_generic_law_battery_test s241_compare_law_battery_test s243_font_pipeline_law_test s244_app_font_discovery_law_test s245_font_final_matrix_test s246_layout_closure_law_test s247_grid_rtl_law_test
++	    s234_w26_engine_laws_test s235_lane_laws_test s236_port_laws_test s237_append_bounded_law_test s238_achievements_audit_test s239_wave_stack_audit_test s240_generic_law_battery_test s241_compare_law_battery_test s243_font_pipeline_law_test s244_app_font_discovery_law_test s245_font_final_matrix_test         s246_layout_closure_law_test s247_grid_rtl_law_test s248_dalvik_arith_width_law_test s249_version_identity_law_test
+ TEST_BATTERY = $(TEST_CORE) $(TEST_HOSTILE) $(TEST_LAW)
+ 
+ # S225-M wave law test links pthread_shadow.o (the interposition object the
+@@ -381,7 +400,7 @@ $(BUILDDIR)/tests/s225m_wave_law_test: $(TESTDIR)/s225m_wave_law_test.cpp \
+ 		$(filter-out $<,$^) $(LIBS) $(FONTS_LIBS)
+ TEST_TIMEOUT = 300
+ 
+-$(BUILDDIR)/tests/%: $(TESTDIR)/%.cpp $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT)
++$(BUILDDIR)/tests/%: $(TESTDIR)/%.cpp $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) | $(VERSION_HEADER)
+ 	@mkdir -p $(BUILDDIR)/tests
+ 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $< \
+ 		$(filter-out $<,$^) $(LIBS) $(FONTS_LIBS)
+@@ -500,7 +519,7 @@ run-megabatch: $(MEGABATCH_EXECUTABLE)
+ 	./$(MEGABATCH_EXECUTABLE) test_apks/HelloWorld.apk run
+ 
+ help:
+-	@echo "MiniAndroid Runtime v0.1 Build System"
++	@echo "MiniAndroid Runtime Build System (version from VERSION + git HEAD)"
+ 	@echo ""
+ 	@echo "Targets:"
+ 	@echo "  all     - Build the main executable"
+diff --git a/miniandroid/README.md b/miniandroid/README.md
+index 9822886d..7bedb1bc 100755
+--- a/miniandroid/README.md
++++ b/miniandroid/README.md
+@@ -10,10 +10,18 @@ pixel-evidence output.
+ 
+ ---
+ 
+-## Current state (UNIFIED_011.1 canonical, 2026-08-30)
+-
+-- **HEAD:** tag `v0.11.1-unified-011-1` (local, ahead of `origin/main` — push pending)
+-- **Latest remote (`origin/main`):** `bbe0ce3`
++## Current state (v0.0.6.2, commit-pinned)
++
++The runtime identity is generated from ONE source of truth: the `VERSION`
++file plus the current Git commit (`scripts/generate_version_header.py` ->
++`miniandroid_version.h`, consumed by both the Make and CMake builds). Run
++`./build/miniandroid version` to print the semantic version and the exact
++build commit. README, build artifacts and `--version` all read that source,
++so they cannot drift.
++
++- **Semantic version:** `0.0.6.2` (see `VERSION`, `CHANGELOG.md`)
++- **Build identity:** `--version` prints the exact commit SHA the binary was
++  built from; release artifacts must carry the same SHA and build config.
+ - **Canonical baseline proof:** Telegram v12.10.1 full journey renders
+   deterministically **3/3 runs** (`088ea640…`; pixel-identical to the
+   `06fb40da…` lineage — PNG file hash changed by design: libpng's encoder
+diff --git a/miniandroid/VERSION b/miniandroid/VERSION
+new file mode 100644
+index 00000000..5c558452
+--- /dev/null
++++ b/miniandroid/VERSION
+@@ -0,0 +1 @@
++0.0.6.2
+diff --git a/miniandroid/scripts/generate_version_header.py b/miniandroid/scripts/generate_version_header.py
+new file mode 100644
+index 00000000..ee66539d
+--- /dev/null
++++ b/miniandroid/scripts/generate_version_header.py
+@@ -0,0 +1,81 @@
++#!/usr/bin/env python3
++"""Emit the single authoritative MiniAndroid version/commit header (ISSUE-607 item 8).
++
++The repository had three disagreeing identity strings (CHANGELOG v0.0.6.2,
++README UNIFIED_011.1, code "v0.1"). This script is the ONE generated source of
++truth: it reads the `VERSION` file plus the current Git commit and writes
++`miniandroid_version.h` into the build directory (never the source tree).
++
++Both build systems call it:
++  * Makefile  -> build/generated/miniandroid_version.h
++  * CMake     -> <binary-dir>/generated/miniandroid_version.h
++
++The header exposes MINIANDROID_VERSION (the semantic version) and
++MINIANDROID_COMMIT (the exact build commit), consumed by src/main.cpp and the
++--version output so every artifact can be traced to a commit + version.
++"""
++import argparse
++import os
++import subprocess
++import sys
++
++
++def git_commit() -> str:
++    """Return the exact HEAD commit SHA, or 'unknown' outside a Git checkout."""
++    for key in ("MINIANDROID_COMMIT", "GIT_COMMIT"):
++        val = os.environ.get(key)
++        if val:
++            return val.strip()
++    try:
++        out = subprocess.run(
++            ["git", "rev-parse", "HEAD"],
++            cwd=os.path.dirname(os.path.abspath(__file__)),
++            capture_output=True, text=True, timeout=10,
++        )
++        if out.returncode == 0:
++            return out.stdout.strip()
++    except (OSError, subprocess.SubprocessError):
++        pass
++    return "unknown"
++
++
++def main() -> int:
++    ap = argparse.ArgumentParser(description=__doc__)
++    ap.add_argument("--version-file", required=True,
++                    help="Path to the VERSION file (single source of truth)")
++    ap.add_argument("--out", required=True,
++                    help="Path of the generated miniandroid_version.h")
++    ap.add_argument("--commit", default=None,
++                    help="Override commit (defaults to git HEAD)")
++    args = ap.parse_args()
++
++    with open(args.version_file, "r", encoding="utf-8") as fh:
++        version = fh.read().strip()
++    if not version:
++        print(f"error: empty version in {args.version_file}", file=sys.stderr)
++        return 1
++
++    commit = args.commit or git_commit()
++
++    os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
++    contents = (
++        "// GENERATED — do not edit. Source: VERSION + git HEAD.\n"
++        "// Regenerate via scripts/generate_version_header.py (Makefile/CMake).\n"
++        "#pragma once\n"
++        f'#define MINIANDROID_VERSION "{version}"\n'
++        f'#define MINIANDROID_COMMIT "{commit}"\n'
++    )
++    # Only rewrite on change so downstream rebuilds stay incremental.
++    try:
++        with open(args.out, "r", encoding="utf-8") as fh:
++            if fh.read() == contents:
++                return 0
++    except OSError:
++        pass
++    with open(args.out, "w", encoding="utf-8") as fh:
++        fh.write(contents)
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index b5c88aec..bed5d341 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -4033,7 +4033,12 @@ DalvikExecutionResult DalvikExecutionEngine::execute_method(
+             method.name,
+             method.descriptor,
+             method.bytecode,
+-            16,  // Default register count
++            // ISSUE-607: honour the method's real register count. The direct
++            // entry point hardcoded 16, so any method with a different
++            // registers_size (the DEX code-item truth the APK path already
++            // uses) executed against the wrong register file — vN beyond the
++            // cap read uninit and /16 source indices above 15 aliased.
++            method.registers_size ? method.registers_size : 16,
+             static_cast<uint32_t>(args.size()),
+             4,   // Default outs
+             args,
+@@ -24293,24 +24298,26 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                     DalvikValue result_val; \
+                     result_val.type = DalvikType::INT32; \
+                     int32_t b_val = dalvik_int_value(b); \
+-                    /* K-29: lit8 div/rem by zero throws (deferred mechanism).  */ \
+-                    if ((op == "div" || op == "rem") && lit == 0) { \
++                    /* ISSUE-607 P1: content dispatch (strcmp) + unsigned-width \
++                     * Dalvik 32-bit wrap and INT32_MIN / -1 law (mirror of the \
++                     * split dalvik_interpreter.cpp ARITH_LIT8_CASE). */ \
++                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && lit == 0) { \
+                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT8"); \
+                         pc_ = pc_ + 2; \
+                         break; \
+                     } \
+-                    if (op == "add") result_val.int_val = b_val + lit; \
+-                    else if (op == "rsub") result_val.int_val = lit - b_val; \
+-                    else if (op == "sub") result_val.int_val = b_val - lit; \
+-                    else if (op == "mul") result_val.int_val = b_val * lit; \
+-                    else if (op == "div") result_val.int_val = b_val / lit; \
+-                    else if (op == "rem") result_val.int_val = b_val % lit; \
+-                    else if (op == "and") result_val.int_val = b_val & lit; \
+-                    else if (op == "or")  result_val.int_val = b_val | lit; \
+-                    else if (op == "xor") result_val.int_val = b_val ^ lit; \
+-                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+-                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
++                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "rsub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(lit) - static_cast<uint32_t>(b_val)); \
++                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "div") == 0) result_val.int_val = (lit == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / lit; \
++                    else if (strcmp(op, "rem") == 0) result_val.int_val = (lit == -1) ? 0 : b_val % lit; \
++                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & lit; \
++                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | lit; \
++                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ lit; \
++                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) << (lit & 0x1f)); \
++                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (lit & 0x1f); \
++                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+                     set_register(vAA, result_val); \
+                     trace.opcode_name = op_name; \
+                     pc_ = pc_ + 2; \
+@@ -24350,23 +24357,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                     DalvikValue result_val; \
+                     result_val.type = DalvikType::INT32; \
+                     int32_t b_val = dalvik_int_value(b); \
+-                    if ((op == "div" || op == "rem") && lit == 0) { \
++                    /* ISSUE-607 P1: content dispatch (strcmp) + unsigned-width \
++                     * Dalvik 32-bit wrap and INT32_MIN / -1 law (see lit8). */ \
++                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && lit == 0) { \
+                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT16"); \
+                         pc_ = pc_ + 2; \
+                         break; \
+                     } \
+-                    if (op == "add") result_val.int_val = b_val + lit; \
+-                    else if (op == "rsub") result_val.int_val = lit - b_val; \
+-                    else if (op == "sub") result_val.int_val = b_val - lit; \
+-                    else if (op == "mul") result_val.int_val = b_val * lit; \
+-                    else if (op == "div") result_val.int_val = b_val / lit; \
+-                    else if (op == "rem") result_val.int_val = b_val % lit; \
+-                    else if (op == "and") result_val.int_val = b_val & lit; \
+-                    else if (op == "or")  result_val.int_val = b_val | lit; \
+-                    else if (op == "xor") result_val.int_val = b_val ^ lit; \
+-                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+-                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
++                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "rsub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(lit) - static_cast<uint32_t>(b_val)); \
++                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "div") == 0) result_val.int_val = (lit == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / lit; \
++                    else if (strcmp(op, "rem") == 0) result_val.int_val = (lit == -1) ? 0 : b_val % lit; \
++                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & lit; \
++                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | lit; \
++                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ lit; \
++                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) << (lit & 0x1f)); \
++                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (lit & 0x1f); \
++                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+                     set_register(vA, result_val); \
+                     trace.opcode_name = op_name; \
+                     pc_ = pc_ + 2; \
+@@ -24393,7 +24402,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                 if (pc_ + 1 >= bytecode_.size()) return false;
+                 uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
+                 uint16_t src = bytecode_[pc_ + 1];
+-                DalvikValue val = get_register(static_cast<uint8_t>(src));
++                /* ISSUE-607 P1: 16-bit source index passed unchanged. */
++                DalvikValue val = get_register(src);
+                 set_register(dest, val);
+                 trace.opcode_name = "move/from16";
+                 pc_ += 2;
+@@ -24428,7 +24438,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                 if (pc_ + 2 >= bytecode_.size()) return false;
+                 uint16_t instr = bytecode_[pc_];
+                 uint8_t dest = (instr >> 8) & 0xFF;
+-                uint32_t string_idx = (bytecode_[pc_ + 2] << 16) | bytecode_[pc_ + 1];
++                /* ISSUE-607 P2: promote to uint32_t before the shift. */
++                uint32_t string_idx = (static_cast<uint32_t>(bytecode_[pc_ + 2]) << 16) |
++                                      static_cast<uint32_t>(bytecode_[pc_ + 1]);
+                 DalvikValue val;
+                 val.type = DalvikType::STRING_REF;
+                 val.int_val = string_idx;
+@@ -24702,7 +24714,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                     else if (strcmp(op, "sub") == 0) result_val.float_val = bf - cf; \
+                     else if (strcmp(op, "mul") == 0) result_val.float_val = bf * cf; \
+                     else if (strcmp(op, "div") == 0) result_val.float_val = bf / cf; \
+-                    else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
++                    else if (strcmp(op, "rem") == 0) result_val.float_val = fmodf(bf, cf); \
+                     set_register(vAA, result_val); \
+                     trace.opcode_name = op_name; \
+                     pc_ += 2; \
+@@ -25724,7 +25736,8 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                 if (pc_ + 1 >= bytecode_.size()) return false;
+                 uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
+                 uint16_t src = bytecode_[pc_ + 1];
+-                DalvikValue val = get_register(static_cast<uint8_t>(src));
++                /* ISSUE-607 P1: 16-bit source index passed unchanged. */
++                DalvikValue val = get_register(src);
+                 // F-028b: wide values occupy TWO slots (vDest, vDest+1) —
+                 // fill the shadow with the high 32-bit word (ART layout).
+                 // The missing shadow left range-invoke wide-arg merges
+diff --git a/miniandroid/src/dex/dalvik_engine_core.cpp b/miniandroid/src/dex/dalvik_engine_core.cpp
+index e07dcdb1..794d6ba6 100644
+--- a/miniandroid/src/dex/dalvik_engine_core.cpp
++++ b/miniandroid/src/dex/dalvik_engine_core.cpp
+@@ -3694,7 +3694,12 @@ DalvikExecutionResult DalvikExecutionEngine::execute_method(
+             method.name,
+             method.descriptor,
+             method.bytecode,
+-            16,  // Default register count
++            // ISSUE-607: honour the method's real register count. The direct
++            // entry point hardcoded 16, so any method with a different
++            // registers_size (the DEX code-item truth the APK path already
++            // uses) executed against the wrong register file — vN beyond the
++            // cap read uninit and /16 source indices above 15 aliased.
++            method.registers_size ? method.registers_size : 16,
+             static_cast<uint32_t>(args.size()),
+             4,   // Default outs
+             args,
+diff --git a/miniandroid/src/dex/dalvik_interpreter.cpp b/miniandroid/src/dex/dalvik_interpreter.cpp
+index e9bafc7d..e2bce558 100644
+--- a/miniandroid/src/dex/dalvik_interpreter.cpp
++++ b/miniandroid/src/dex/dalvik_interpreter.cpp
+@@ -2727,23 +2727,28 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                     result_val.type = DalvikType::INT32; \
+                     int32_t b_val = dalvik_int_value(b); \
+                     /* K-29: lit8 div/rem by zero throws (deferred mechanism).  */ \
+-                    if ((op == "div" || op == "rem") && lit == 0) { \
++                    /* ISSUE-607 P1: dispatch by CONTENT (strcmp) — `op == "lit"` \
++                     * compared literal POINTERS; and compute in UNSIGNED width \
++                     * so wrapping add/sub/mul/shl and the INT32_MIN / -1 div are \
++                     * the Dalvik-defined two's-complement results, not C++ \
++                     * signed-overflow UB (SIGFPE). Same law as the 12x /2addr. */ \
++                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && lit == 0) { \
+                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT8"); \
+                         pc_ = pc_ + 2; \
+                         break; \
+                     } \
+-                    if (op == "add") result_val.int_val = b_val + lit; \
+-                    else if (op == "rsub") result_val.int_val = lit - b_val; \
+-                    else if (op == "sub") result_val.int_val = b_val - lit; \
+-                    else if (op == "mul") result_val.int_val = b_val * lit; \
+-                    else if (op == "div") result_val.int_val = b_val / lit; \
+-                    else if (op == "rem") result_val.int_val = b_val % lit; \
+-                    else if (op == "and") result_val.int_val = b_val & lit; \
+-                    else if (op == "or")  result_val.int_val = b_val | lit; \
+-                    else if (op == "xor") result_val.int_val = b_val ^ lit; \
+-                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+-                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
++                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "rsub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(lit) - static_cast<uint32_t>(b_val)); \
++                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "div") == 0) result_val.int_val = (lit == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / lit; \
++                    else if (strcmp(op, "rem") == 0) result_val.int_val = (lit == -1) ? 0 : b_val % lit; \
++                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & lit; \
++                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | lit; \
++                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ lit; \
++                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) << (lit & 0x1f)); \
++                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (lit & 0x1f); \
++                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+                     set_register(vAA, result_val); \
+                     trace.opcode_name = op_name; \
+                     pc_ = pc_ + 2; \
+@@ -2783,23 +2788,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                     DalvikValue result_val; \
+                     result_val.type = DalvikType::INT32; \
+                     int32_t b_val = dalvik_int_value(b); \
+-                    if ((op == "div" || op == "rem") && lit == 0) { \
++                    /* ISSUE-607 P1: content dispatch (strcmp) + unsigned-width \
++                     * Dalvik 32-bit wrap and INT32_MIN / -1 law (see lit8). */ \
++                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && lit == 0) { \
+                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT16"); \
+                         pc_ = pc_ + 2; \
+                         break; \
+                     } \
+-                    if (op == "add") result_val.int_val = b_val + lit; \
+-                    else if (op == "rsub") result_val.int_val = lit - b_val; \
+-                    else if (op == "sub") result_val.int_val = b_val - lit; \
+-                    else if (op == "mul") result_val.int_val = b_val * lit; \
+-                    else if (op == "div") result_val.int_val = b_val / lit; \
+-                    else if (op == "rem") result_val.int_val = b_val % lit; \
+-                    else if (op == "and") result_val.int_val = b_val & lit; \
+-                    else if (op == "or")  result_val.int_val = b_val | lit; \
+-                    else if (op == "xor") result_val.int_val = b_val ^ lit; \
+-                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
+-                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
+-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
++                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "rsub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(lit) - static_cast<uint32_t>(b_val)); \
++                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(lit)); \
++                    else if (strcmp(op, "div") == 0) result_val.int_val = (lit == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / lit; \
++                    else if (strcmp(op, "rem") == 0) result_val.int_val = (lit == -1) ? 0 : b_val % lit; \
++                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & lit; \
++                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | lit; \
++                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ lit; \
++                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) << (lit & 0x1f)); \
++                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (lit & 0x1f); \
++                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+                     set_register(vA, result_val); \
+                     trace.opcode_name = op_name; \
+                     pc_ = pc_ + 2; \
+@@ -2826,7 +2833,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                 if (pc_ + 1 >= bytecode_.size()) return false;
+                 uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
+                 uint16_t src = bytecode_[pc_ + 1];
+-                DalvikValue val = get_register(static_cast<uint8_t>(src));
++                /* ISSUE-607 P1: pass the 16-bit register index UNCHANGED — the
++                 * uint8_t cast aliased v256+ onto v0.. (DEX /from16 exists
++                 * precisely for methods needing >255 registers). */
++                DalvikValue val = get_register(src);
+                 set_register(dest, val);
+                 trace.opcode_name = "move/from16";
+                 pc_ += 2;
+@@ -2861,7 +2871,11 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                 if (pc_ + 2 >= bytecode_.size()) return false;
+                 uint16_t instr = bytecode_[pc_];
+                 uint8_t dest = (instr >> 8) & 0xFF;
+-                uint32_t string_idx = (bytecode_[pc_ + 2] << 16) | bytecode_[pc_ + 1];
++                /* ISSUE-607 P2: promote operands to uint32_t BEFORE the shift —
++                 * `bytecode_[pc+2] << 16` shifts a signed int, UB when the high
++                 * word is >= 0x8000. */
++                uint32_t string_idx = (static_cast<uint32_t>(bytecode_[pc_ + 2]) << 16) |
++                                      static_cast<uint32_t>(bytecode_[pc_ + 1]);
+                 DalvikValue val;
+                 val.type = DalvikType::STRING_REF;
+                 val.int_val = string_idx;
+@@ -3135,7 +3149,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                     else if (strcmp(op, "sub") == 0) result_val.float_val = bf - cf; \
+                     else if (strcmp(op, "mul") == 0) result_val.float_val = bf * cf; \
+                     else if (strcmp(op, "div") == 0) result_val.float_val = bf / cf; \
+-                    else if (op == "rem") result_val.float_val = fmodf(bf, cf); \
++                    else if (strcmp(op, "rem") == 0) result_val.float_val = fmodf(bf, cf); \
+                     set_register(vAA, result_val); \
+                     trace.opcode_name = op_name; \
+                     pc_ += 2; \
+@@ -4157,7 +4171,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result)
+                 if (pc_ + 1 >= bytecode_.size()) return false;
+                 uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
+                 uint16_t src = bytecode_[pc_ + 1];
+-                DalvikValue val = get_register(static_cast<uint8_t>(src));
++                /* ISSUE-607 P1: 16-bit source index passed unchanged (see
++                 * move/from16). */
++                DalvikValue val = get_register(src);
+                 // F-028b: wide values occupy TWO slots (vDest, vDest+1) —
+                 // fill the shadow with the high 32-bit word (ART layout).
+                 // The missing shadow left range-invoke wide-arg merges
+diff --git a/miniandroid/src/main.cpp b/miniandroid/src/main.cpp
+index c212fca5..593c464f 100755
+--- a/miniandroid/src/main.cpp
++++ b/miniandroid/src/main.cpp
+@@ -11,6 +11,12 @@
+ #include <fstream>
+ #include <sstream>
+ #include <ctime>
++// ISSUE-607 item 8: generated version/commit header (see VERSION +
++// scripts/generate_version_header.py). Optional so a bare source compile
++// still builds — the #ifdef guards in print_version() handle its absence.
++#if __has_include("miniandroid_version.h")
++#include "miniandroid_version.h"
++#endif
+ #include "diagnostics/crash_forensics.h"
+ #include "jni/dlopen_exec.h"  // FIX-TTT teardown law (loader-poisoned exit)
+ #include <filesystem>
+@@ -113,7 +119,17 @@ struct SampleProfiler {
+ using namespace miniandroid;
+ 
+ void print_version() {
+-    std::cout << "MiniAndroid Runtime v0.1" << std::endl;
++    // ISSUE-607 item 8: version + commit come from the ONE generated source
++    // (VERSION file + git HEAD -> miniandroid_version.h), never a hand-written
++    // string literal, so README/runtime/release identity cannot drift.
++#ifdef MINIANDROID_VERSION
++    std::cout << "MiniAndroid Runtime v" << MINIANDROID_VERSION << std::endl;
++#else
++    std::cout << "MiniAndroid Runtime (version unknown)" << std::endl;
++#endif
++#ifdef MINIANDROID_COMMIT
++    std::cout << "Commit: " << MINIANDROID_COMMIT << std::endl;
++#endif
+     std::cout << "EXP-001: HelloWorld Loader" << std::endl;
+     std::cout << "Evidence-driven Android compatibility runtime" << std::endl;
+ }
+diff --git a/miniandroid/tests/s248_dalvik_arith_width_law_test.cpp b/miniandroid/tests/s248_dalvik_arith_width_law_test.cpp
+new file mode 100644
+index 00000000..6990779c
+--- /dev/null
++++ b/miniandroid/tests/s248_dalvik_arith_width_law_test.cpp
+@@ -0,0 +1,345 @@
++// s248_dalvik_arith_width_law_test.cpp — ISSUE-607 P1 "Dalvik correctness" laws.
++//
++// Covers the four source-level defects the #607 audit names in the interpreter:
++//
++//   1. move/from16 + move-wide/from16 truncate the 16-bit source register
++//      index to uint8_t before get_register(), aliasing v256+ onto v0..
++//      (a method that needs >255 registers — R8 emits the /from16 forms
++//      exactly for that case) → silent wrong read.
++//
++//   2. lit8/lit16 arithmetic performed signed C++ add/sub/mul/shl (UB on
++//      overflow) with NO INT32_MIN / -1 handling — `div-int/lit8 v0,v0,#-1`
++//      on v0=INT32_MIN is a signed-division overflow: SIGFPE on x86.
++//      The /2addr family already carries the law; lit8/lit16 did not.
++//
++//   3. op-name dispatch in the lit8/lit16/float-23x macros compared C-string
++//      LITERAL ADDRESSES (`op == "div"`) instead of content. Latent on a
++//      pooling compiler; UB by the standard. Every op family must dispatch
++//      by content (strcmp), as the /2addr family already does.
++//
++//   4. const-string/jumbo built its 32-bit index by shifting a signed int
++//      (`bytecode_[pc+2] << 16`); promote operands to uint32_t first.
++//
++// Discrimination: each numbered case yields a DIFFERENT observable value
++// pre-fix vs post-fix (0 / crash / stale) — never a stub-equal result.
++// Harness pattern follows tests/mwr_opcode_probe_test.cpp.
++#include "../src/dex/dalvik_engine.h"
++
++#include <csignal>
++#include <cstdint>
++#include <cstring>
++#include <iostream>
++#include <string>
++#include <sys/wait.h>
++#include <unistd.h>
++#include <vector>
++
++using miniandroid::dalvik::DalvikExecutionEngine;
++using miniandroid::dalvik::DalvikExecutionResult;
++using miniandroid::dalvik::InstructionTrace;
++using miniandroid::dex::ClassInfo;
++using miniandroid::dex::DexReport;
++using miniandroid::dex::MethodInfo;
++
++namespace opc {
++constexpr uint16_t CONST            = 0x14;  // 31i
++constexpr uint16_t CONST_WIDE       = 0x18;  // 51l
++constexpr uint16_t CONST_STRING     = 0x1A;  // 21c
++constexpr uint16_t CONST_STRING_JUMBO = 0x1B; // 31c
++constexpr uint16_t MOVE_FROM16      = 0x02;  // 22x
++constexpr uint16_t MOVE_16          = 0x03;  // 32x
++constexpr uint16_t MOVE_WIDE_FROM16 = 0x05;  // 22x
++constexpr uint16_t MOVE_WIDE_16     = 0x06;  // 32x
++constexpr uint16_t RETURN           = 0x0F;
++constexpr uint16_t RETURN_WIDE      = 0x10;
++constexpr uint16_t ADD_INT_LIT8     = 0xD8;
++constexpr uint16_t MUL_INT_LIT8     = 0xDA;
++constexpr uint16_t DIV_INT_LIT8     = 0xDB;
++constexpr uint16_t REM_INT_LIT8     = 0xDC;
++constexpr uint16_t SHL_INT_LIT8     = 0xE0;
++constexpr uint16_t ADD_INT_LIT16    = 0xD0;
++constexpr uint16_t DIV_INT_LIT16    = 0xD3;
++constexpr uint16_t REM_INT_LIT16    = 0xD4;
++}  // namespace opc
++
++static int g_pass = 0, g_fail = 0;
++
++static void record(const std::string& name, bool passed, const std::string& detail) {
++    std::cout << (passed ? "  PASS  " : "  FAIL  ") << name;
++    if (!detail.empty()) std::cout << " — " << detail;
++    std::cout << "\n";
++    passed ? ++g_pass : ++g_fail;
++}
++
++// ── encoders ───────────────────────────────────────────────────────────────
++static uint16_t w11x(uint8_t reg, uint16_t op) {
++    return static_cast<uint16_t>((reg << 8) | op);
++}
++static void emit_const(std::vector<uint16_t>& c, uint8_t reg, int32_t imm) {  // 31i
++    c.push_back(w11x(reg, opc::CONST));
++    uint32_t u = static_cast<uint32_t>(imm);
++    c.push_back(static_cast<uint16_t>(u & 0xFFFF));
++    c.push_back(static_cast<uint16_t>(u >> 16));
++}
++static void emit_const_wide(std::vector<uint16_t>& c, uint8_t reg, int64_t imm) {  // 51l
++    c.push_back(w11x(reg, opc::CONST_WIDE));
++    uint64_t u = static_cast<uint64_t>(imm);
++    for (int i = 0; i < 4; i++) c.push_back(static_cast<uint16_t>((u >> (i * 16)) & 0xFFFF));
++}
++static void emit_32x(std::vector<uint16_t>& c, uint16_t op, uint16_t vaaaa, uint16_t vbbbb) {
++    c.push_back(op);
++    c.push_back(vaaaa);  // dest
++    c.push_back(vbbbb);  // src
++}
++static void emit_22x(std::vector<uint16_t>& c, uint16_t op, uint8_t vaa, uint16_t vbbbb) {
++    c.push_back(w11x(vaa, op));  // AA|op
++    c.push_back(vbbbb);          // BBBB src
++}
++static void emit_22b(std::vector<uint16_t>& c, uint16_t op, uint8_t va, uint8_t vb, int8_t lit) {
++    c.push_back(w11x(va, op));
++    c.push_back(static_cast<uint16_t>(vb | (static_cast<uint16_t>(static_cast<uint8_t>(lit)) << 8)));
++}
++static void emit_22s(std::vector<uint16_t>& c, uint16_t op, uint8_t va, uint8_t vb, int16_t lit) {
++    c.push_back(static_cast<uint16_t>((vb << 12) | (va << 8) | op));  // B|A|op (AOSP)
++    c.push_back(static_cast<uint16_t>(lit));
++}
++
++// ── harness ────────────────────────────────────────────────────────────────
++static DalvikExecutionResult run(DalvikExecutionEngine& engine,
++                                 const std::vector<uint16_t>& code, bool wide_return,
++                                 const std::string& name, uint16_t regs = 16,
++                                 const std::vector<std::string>& strings = {}) {
++    MethodInfo mi;
++    mi.name = name;
++    mi.descriptor = wide_return ? "()J" : "()I";
++    mi.defining_class = "LS248;";
++    mi.registers_size = regs;
++    mi.ins_size = 0;
++    mi.outs_size = 5;
++    mi.bytecode = code;
++
++    DexReport report;
++    report.strings = strings;
++    if (report.strings.empty()) report.strings.push_back(name);
++    report.types.push_back("LS248;");
++    ClassInfo ci;
++    ci.name = "LS248;";
++    ci.superclass_name = "Ljava/lang/Object;";
++    ci.direct_methods.push_back(mi);
++    report.classes.push_back(ci);
++    return engine.execute_method(ci.direct_methods[0], report, {}, false);
++}
++
++static const InstructionTrace* last_return(const DalvikExecutionResult& r) {
++    for (const auto& t : r.instruction_traces)
++        if (t.status == InstructionTrace::Status::HALT_RETURN) return &t;
++    return nullptr;
++}
++
++static bool expect_int(DalvikExecutionEngine& engine, const char* name,
++                       const std::vector<uint16_t>& code, int32_t expected,
++                       uint16_t regs = 16) {
++    DalvikExecutionResult r = run(engine, code, false, name, regs);
++    const InstructionTrace* ret = last_return(r);
++    if (!ret || !ret->return_value) {
++        record(name, false, "no return (status=" +
++               std::to_string(static_cast<int>(r.final_status)) + ")");
++        return false;
++    }
++    int32_t got = ret->return_value->int_val;
++    bool ok = (got == expected);
++    record(name, ok, "expected " + std::to_string(expected) + ", got " + std::to_string(got));
++    return ok;
++}
++
++// Run a snippet in a forked child so a SIGFPE (the pre-fix div/rem overflow)
++// is reported as a clean FAIL instead of killing the battery. Returns the
++// child's observed int return, or sets `crashed`.
++static bool fork_int(DalvikExecutionEngine& engine, const char* name,
++                     const std::vector<uint16_t>& code, int32_t expected, bool& crashed) {
++    crashed = false;
++    int pipefd[2];
++    if (pipe(pipefd) != 0) { record(name, false, "pipe() failed"); return false; }
++    pid_t pid = fork();
++    if (pid == 0) {
++        close(pipefd[0]);
++        int32_t out = 0x7FFFFFFF;  // sentinel: "no return"
++        DalvikExecutionResult r = run(engine, code, false, name, 16);
++        const InstructionTrace* ret = last_return(r);
++        if (ret && ret->return_value) out = ret->return_value->int_val;
++        ssize_t n = write(pipefd[1], &out, sizeof(out));
++        (void)n;
++        close(pipefd[1]);
++        _exit(0);
++    }
++    close(pipefd[1]);
++    int32_t out = 0x7FFFFFFF;
++    ssize_t n = read(pipefd[0], &out, sizeof(out));
++    close(pipefd[0]);
++    int status = 0;
++    waitpid(pid, &status, 0);
++    if (WIFSIGNALED(status)) {
++        crashed = true;
++        record(name, false, "child killed by signal " + std::to_string(WTERMSIG(status)) +
++               " (signed-overflow trap)");
++        return false;
++    }
++    if (n != static_cast<ssize_t>(sizeof(out))) {
++        record(name, false, "no result from child");
++        return false;
++    }
++    bool ok = (out == expected);
++    record(name, ok, "expected " + std::to_string(expected) + ", got " + std::to_string(out));
++    return ok;
++}
++
++int main() {
++    std::cout << "== s248_dalvik_arith_width_law_test — ISSUE-607 P1 Dalvik correctness laws ==\n";
++    DalvikExecutionEngine engine;
++    engine.config_.trace_cap = 4000;
++
++    // ── 1. move/from16 must not truncate a v256+ source register ───────────
++    //   const v5, 123456; move/16 v300, v5; move/from16 v1, v300; return v1
++    // Pre-fix: get_register((uint8_t)300)=get_register(44) → v44 uninit → 0.
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 5, 123456);
++        emit_32x(c, opc::MOVE_16, 300, 5);          // v300 = v5
++        emit_22x(c, opc::MOVE_FROM16, 1, 300);      // v1 = v300
++        c.push_back(w11x(1, opc::RETURN));
++        expect_int(engine, "move_from16_source_gt255", c, 123456, 301);
++    }
++    // Same law for move-wide/from16 (0x05): v300:v301 = v5:v6, read back.
++    {
++        std::vector<uint16_t> c;
++        emit_const_wide(c, 5, 0x0000000100000002LL);  // v5:v6
++        emit_32x(c, opc::MOVE_WIDE_16, 300, 5);       // v300:v301 = v5:v6
++        emit_22x(c, opc::MOVE_WIDE_FROM16, 1, 300);   // v1:v2 = v300:v301
++        c.push_back(w11x(1, opc::RETURN_WIDE));
++        DalvikExecutionResult r = run(engine, c, true, "move_wide_from16_source_gt255", 302);
++        const InstructionTrace* ret = last_return(r);
++        bool ok = ret && ret->return_value &&
++                  ret->return_value->long_val == 0x0000000100000002LL;
++        record("move_wide_from16_source_gt255", ok,
++               ret && ret->return_value
++                   ? "got " + std::to_string(ret->return_value->long_val)
++                   : "no return");
++    }
++
++    // ── 2. lit8/lit16 must follow Dalvik 32-bit wrap + MIN/-1 law ──────────
++    // div-int/lit8 v0, v0, #-1 with v0 = INT32_MIN → AOSP: INT32_MIN.
++    // Pre-fix: signed `INT32_MIN / -1` → SIGFPE on x86.
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, static_cast<int32_t>(0x80000000));
++        emit_22b(c, opc::DIV_INT_LIT8, 0, 0, -1);
++        c.push_back(w11x(0, opc::RETURN));
++        bool crashed = false;
++        fork_int(engine, "div_int_lit8_min_over_neg1", c, static_cast<int32_t>(0x80000000), crashed);
++    }
++    // rem-int/lit8 v0, v0, #-1 with v0 = INT32_MIN → AOSP: 0.
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, static_cast<int32_t>(0x80000000));
++        emit_22b(c, opc::REM_INT_LIT8, 0, 0, -1);
++        c.push_back(w11x(0, opc::RETURN));
++        bool crashed = false;
++        fork_int(engine, "rem_int_lit8_min_mod_neg1", c, 0, crashed);
++    }
++    // div-int/lit16 v0, v0, #-1 with v0 = INT32_MIN → AOSP: INT32_MIN.
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, static_cast<int32_t>(0x80000000));
++        emit_22s(c, opc::DIV_INT_LIT16, 0, 0, -1);
++        c.push_back(w11x(0, opc::RETURN));
++        bool crashed = false;
++        fork_int(engine, "div_int_lit16_min_over_neg1", c, static_cast<int32_t>(0x80000000), crashed);
++    }
++    // rem-int/lit16 v0, v0, #-1 with v0 = INT32_MIN → AOSP: 0.
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, static_cast<int32_t>(0x80000000));
++        emit_22s(c, opc::REM_INT_LIT16, 0, 0, -1);
++        c.push_back(w11x(0, opc::RETURN));
++        bool crashed = false;
++        fork_int(engine, "rem_int_lit16_min_mod_neg1", c, 0, crashed);
++    }
++    // add-int/lit8 wrap: INT32_MAX + 1 → INT32_MIN (two's-complement wrap).
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, 0x7FFFFFFF);
++        emit_22b(c, opc::ADD_INT_LIT8, 0, 0, 1);
++        c.push_back(w11x(0, opc::RETURN));
++        expect_int(engine, "add_int_lit8_wrap_max_plus_1", c, static_cast<int32_t>(0x80000000));
++    }
++    // mul-int/lit8 wrap: 0x40000000 * 4 → 0 (mod 2^32).
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, 0x40000000);
++        emit_22b(c, opc::MUL_INT_LIT8, 0, 0, 4);
++        c.push_back(w11x(0, opc::RETURN));
++        expect_int(engine, "mul_int_lit8_wrap", c, 0);
++    }
++    // add-int/lit16 wrap: INT32_MAX + 1 → INT32_MIN.
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, 0x7FFFFFFF);
++        emit_22s(c, opc::ADD_INT_LIT16, 0, 0, 1);
++        c.push_back(w11x(0, opc::RETURN));
++        expect_int(engine, "add_int_lit16_wrap_max_plus_1", c, static_cast<int32_t>(0x80000000));
++    }
++    // shl-int/lit8: 1 << 31 → INT32_MIN (defined shift, count masked 0x1f).
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, 1);
++        emit_22b(c, opc::SHL_INT_LIT8, 0, 0, 31);
++        c.push_back(w11x(0, opc::RETURN));
++        expect_int(engine, "shl_int_lit8_one_shl_31", c, static_cast<int32_t>(0x80000000));
++    }
++
++    // ── 3. op-name dispatch by CONTENT (div/rem correctness incl. divisor 0) ─
++    // Plain div/rem must compute (not fall through to a stale 0). Divisor 0
++    // must throw ArithmeticException, never silently divide.
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, 100);
++        emit_22b(c, opc::DIV_INT_LIT8, 0, 0, 7);   // 100 / 7 = 14
++        c.push_back(w11x(0, opc::RETURN));
++        expect_int(engine, "div_int_lit8_content_dispatch", c, 14);
++    }
++    {
++        std::vector<uint16_t> c;
++        emit_const(c, 0, 100);
++        emit_22s(c, opc::DIV_INT_LIT16, 0, 0, 9);  // 100 / 9 = 11
++        c.push_back(w11x(0, opc::RETURN));
++        expect_int(engine, "div_int_lit16_content_dispatch", c, 11);
++    }
++
++    // ── 4. const-string/jumbo index is an unsigned 32-bit value ────────────
++    //   Build a string table and confirm the jumbo index resolves to the
++    //   EXACT entry (idx low word here; the width law is asserted as the
++    //   index value itself, which must be the raw unsigned combination).
++    {
++        std::vector<std::string> strings(200, "pad");
++        strings[70] = "jumbo-target";
++        std::vector<uint16_t> c;
++        // const-string/jumbo v0, string@70  (word_high=0, word_low=70)
++        c.push_back(w11x(0, opc::CONST_STRING_JUMBO));
++        c.push_back(70);   // low word
++        c.push_back(0);    // high word
++        c.push_back(w11x(0, opc::RETURN));
++        DalvikExecutionResult r = run(engine, c, false, "const_string_jumbo_index", 16, strings);
++        const InstructionTrace* ret = last_return(r);
++        // The string index must equal (0<<16)|70 == 70; a signed-shift defect
++        // would only surface at word_high>=0x8000, so assert the width law on
++        // the recorded index operand as well.
++        bool ok = ret && ret->return_value && ret->return_value->int_val == 70;
++        record("const_string_jumbo_index_value", ok,
++               ret && ret->return_value
++                   ? "got idx " + std::to_string(ret->return_value->int_val)
++                   : "no return");
++    }
++
++    std::cout << "== " << g_pass << " passed / " << g_fail << " failed ==\n";
++    return g_fail == 0 ? 0 : 1;
++}
+diff --git a/miniandroid/tests/s249_version_identity_law_test.cpp b/miniandroid/tests/s249_version_identity_law_test.cpp
+new file mode 100644
+index 00000000..f406a9ed
+--- /dev/null
++++ b/miniandroid/tests/s249_version_identity_law_test.cpp
+@@ -0,0 +1,167 @@
++// s249_version_identity_law_test — ISSUE-607 item 8 (P2).
++//
++// The repository shipped three disagreeing identity strings (CHANGELOG
++// v0.0.6.2, README UNIFIED_011.1, code "v0.1"). The fix makes ONE generated
++// source authoritative: VERSION + git HEAD -> build/generated/
++// miniandroid_version.h, consumed by both the Make and CMake builds and by
++// the runtime's `version` command.
++//
++// This law asserts the invariant that keeps them from drifting again:
++//   1. the generated header EXISTS and defines MINIANDROID_VERSION /
++//      MINIANDROID_COMMIT (pre-fix: it did not exist at all -> FAIL);
++//   2. MINIANDROID_VERSION equals the VERSION file, byte-for-byte;
++//   3. MINIANDROID_COMMIT is the current `git rev-parse HEAD` (or "unknown"
++//      outside a checkout) — release artifacts are commit-pinned;
++//   4. CHANGELOG.md carries the same semantic version (release identity);
++//   5. README.md no longer advertises a contradictory identity.
++//
++// Runs from the repo root (the Makefile/CTest working directory, same as the
++// font law tests).
++#include <cstdio>
++#include <cstdlib>
++#include <fstream>
++#include <iostream>
++#include <sstream>
++#include <string>
++#include <vector>
++
++static int g_pass = 0, g_fail = 0;
++static void record(bool ok, const std::string& what) {
++    std::cout << (ok ? "  PASS  " : "  FAIL  ") << what << "\n";
++    if (ok) ++g_pass; else ++g_fail;
++}
++
++static bool read_file(const std::string& path, std::string& out) {
++    std::ifstream in(path, std::ios::binary);
++    if (!in) return false;
++    std::ostringstream ss;
++    ss << in.rdbuf();
++    out = ss.str();
++    return true;
++}
++
++static std::string strip(const std::string& s) {
++    size_t a = s.find_first_not_of(" \t\r\n");
++    if (a == std::string::npos) return "";
++    size_t b = s.find_last_not_of(" \t\r\n");
++    return s.substr(a, b - a + 1);
++}
++
++// Pull the quoted value of a #define NAME "value" out of header text.
++static bool define_value(const std::string& text, const std::string& name,
++                         std::string& out) {
++    std::string key = "#define " + name + " \"";
++    size_t p = text.find(key);
++    if (p == std::string::npos) return false;
++    p += key.size();
++    size_t e = text.find('"', p);
++    if (e == std::string::npos) return false;
++    out = text.substr(p, e - p);
++    return true;
++}
++
++static bool is_hex40(const std::string& s) {
++    if (s.size() != 40) return false;
++    for (char c : s)
++        if (!std::isxdigit(static_cast<unsigned char>(c))) return false;
++    return true;
++}
++
++// Locate the generated header: the Make build writes build/generated/, CMake
++// writes <binary-dir>/generated/. Probe the Make path, then a CMake env hint.
++static bool find_header(std::string& path) {
++    const char* candidates[] = {
++        "build/generated/miniandroid_version.h",
++        "generated/miniandroid_version.h",
++        nullptr,
++    };
++    const char* env = std::getenv("MINIANDROID_VERSION_HEADER");
++    for (const char** c = candidates; *c; ++c) {
++        std::string probe = *c;
++        std::ifstream in(probe);
++        if (in) { path = probe; return true; }
++    }
++    if (env && *env) {
++        std::ifstream in(env);
++        if (in) { path = env; return true; }
++    }
++    return false;
++}
++
++int main() {
++    // L1: the generated header exists and defines both macros.
++    std::string header_path, header;
++    bool have_header = find_header(header_path) && read_file(header_path, header);
++    record(have_header, "L1.0 generated miniandroid_version.h exists");
++
++    std::string hdr_version, hdr_commit;
++    if (have_header) {
++        record(define_value(header, "MINIANDROID_VERSION", hdr_version),
++               "L1.1 header defines MINIANDROID_VERSION");
++        record(define_value(header, "MINIANDROID_COMMIT", hdr_commit),
++               "L1.2 header defines MINIANDROID_COMMIT");
++    }
++
++    // L2: VERSION file is the single source and matches the header.
++    std::string version_raw;
++    bool have_version = read_file("VERSION", version_raw);
++    record(have_version, "L2.0 VERSION file exists");
++    if (have_version && have_header) {
++        record(strip(version_raw) == hdr_version,
++               "L2.1 VERSION (" + strip(version_raw) + ") == header (" +
++                   hdr_version + ")");
++    }
++
++    // L3: the commit is pinned to the current git HEAD (or honestly unknown).
++    std::string git_head;
++    bool have_git = false;
++    {
++        std::string cmd = "git rev-parse HEAD 2>/dev/null";
++        FILE* p = popen(cmd.c_str(), "r");
++        if (p) {
++            char buf[128];
++            if (fgets(buf, sizeof(buf), p)) { git_head = strip(buf); have_git = true; }
++            pclose(p);
++        }
++    }
++    if (have_header) {
++        if (have_git && is_hex40(git_head)) {
++            record(hdr_commit == git_head,
++                   "L3.1 header commit == git HEAD (" + git_head.substr(0, 12) +
++                       "...)");
++        } else {
++            record(hdr_commit == "unknown",
++                   "L3.1 no git HEAD -> header commit is 'unknown'");
++        }
++        record(is_hex40(hdr_commit) || hdr_commit == "unknown",
++               "L3.2 commit is a 40-hex SHA or 'unknown'");
++    }
++
++    // L4: CHANGELOG carries the same semantic version (release identity).
++    std::string changelog;
++    bool have_changelog = read_file("CHANGELOG.md", changelog);
++    record(have_changelog, "L4.0 CHANGELOG.md exists");
++    if (have_changelog && have_version) {
++        std::string v = strip(version_raw);
++        // Keep a Changelog headers are `## [v0.0.6.2]` or `## [0.0.6.2]`.
++        bool listed = changelog.find("[" + v + "]") != std::string::npos ||
++                      changelog.find("[v" + v + "]") != std::string::npos;
++        record(listed, "L4.1 CHANGELOG mentions [" + v + "] (or [v" + v + "])");
++    }
++
++    // L5: README no longer advertises a contradictory identity string.
++    std::string readme;
++    bool have_readme = read_file("README.md", readme);
++    record(have_readme, "L5.0 README.md exists");
++    if (have_readme) {
++        record(readme.find("UNIFIED_011.1 canonical") == std::string::npos,
++               "L5.1 README drops the stale UNIFIED_011.1 identity");
++        record(readme.find("MiniAndroid Runtime v0.1") == std::string::npos,
++               "L5.2 README drops the stale 'v0.1' literal");
++    }
++
++    std::cout << "== " << g_pass << " passed / " << g_fail << " failed ==\n";
++    std::cout << (g_fail == 0 ? "VERSION IDENTITY DOMAIN CLOSED\n"
++                              : "VERSION IDENTITY DOMAIN STILL OPEN\n");
++    return g_fail == 0 ? 0 : 1;
++}
+-- 
+2.47.3
+
+

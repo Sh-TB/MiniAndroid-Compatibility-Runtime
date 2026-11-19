@@ -1,0 +1,11 @@
+measurement,command,wall_s,cpu_user_s,cpu_sys_s,peak_rss_mb,rc,evidence_note
+fresh production build (W22 baseline),make -j1 --output-sync all,572.456,556.494,13.432,1427,0,88 compile slots + 0.9s link; binary sha256 f0633a4183e7f3e778b7d35eda6985084dacec8e38c2ffbdeb5fb0d8d742a422; HEAD 98a77072 pre-E-05
+no-op rebuild x3,make -j1 --output-sync all,1.07 median (1.05-1.32),~1.1,~0.0,33,0,3 repeats; zero TUs recompiled
+link-only relink (touch one .o),make -j1 --output-sync all,2.03-2.10,~2.05,~0.0,163,0,2 repeats; relink only
+leaf edit smallest TU (dalvik_value_glue.cpp 103 lines),comment append + make,2.17,2.19,0,163,0,1 TU + relink
+leaf edit mid TU (class_resolver.cpp 517 lines),comment append + make,4.42,4.31,0,226,0,1 TU + relink
+bridge domain TU edit (dalvik_bridge_domain_io_lang.cpp 10181 lines),comment append + make,28.55,28.45,0,1140,0,repeats 27.70/28.40/27.00 (interpreter-TU repeat) — consistent
+central header edit (dalvik_engine.h 4744 lines),comment append + make,335.75,327.00,0,1427,0,THE ~4-minute operation reproduced at W22 HEAD (W20-P2 measured 401.8s at 28 TUs — same magnitude; fan-out reduced since by the engine_tail include fix)
+test link (full test exe),make build/tests/<name>,~2-5 (not separately measured),,,~1427,0,tests link all CORE_OBJECTS + quickjs
+TOP TU compile slots (from fresh-build log),start-to-start deltas,38.01 exec_engine; 32.45 ui_graphics; 29.78 app_runtime; 28.12 io_lang; 25.08 android_core; 22.04 engine_core; 21.39 engine_invoke; 21.28 jdk; 20.64 application_runtime; 20.43 interpreter,,,0,B2 profile: top-10 = 261.1s = 45.8% of 570.5s compile total; no TU >40s; broad long tail
+toolchain,g++ (Debian 14.2.0-19) 14.2.0 / GNU Make 4.4.1 / kernel 5.10.134-013.15.kangaroo.al8 x86_64,nproc=2 no-SMT,882-3158MB avail,~1.4GB peak build,0,gcc 14.2: no libstdc++fs branch; make 4.4.1: D-01 hash escape is belt-and-braces

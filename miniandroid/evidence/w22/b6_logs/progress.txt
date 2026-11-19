@@ -1,0 +1,11 @@
+=== [1] engine.cpp dormant syntax check 2026-11-19T18:54:15+00:00
+engine_syntax rc=0 (0 = the E-05 edit compiles clean in the dormant monolith)
+=== [2] full battery test-all 2026-11-19T18:54:26+00:00
+  287.64 BATTERY SUMMARY: total=49 passed=49 failed=0
+=== [3] production APK spot checks 2026-11-19T18:59:14+00:00
+SPOT ru.zxalexis.ugaday_15 rc=0 sha16=87fe26766fc48d06 canonical=87fe2676 MATCH
+SPOT tech.gaskell.diceroller_1_debug rc=1 sha16=46b07062ba6fe36c canonical=46b07062 MATCH
+SPOT com.itsfrz.tictactoe_5 rc=1 sha16=d55056a8928a26ff canonical=d55056a8 MATCH
+=== [4] binary identity 2026-11-19T18:59:18+00:00
+031a7aa1454a77b52fd04eb6e0e9139f8aed687d65e2bbb78a05b6731f2d059e  build/miniandroid
+=== B6 DONE

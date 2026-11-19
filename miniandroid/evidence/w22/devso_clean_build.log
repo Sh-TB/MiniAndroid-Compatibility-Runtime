@@ -1,0 +1,1420 @@
+    0.01 Makefile:258: warning: overriding recipe for target 'build/dex/dalvik_interpreter.o'
+    0.01 Makefile:242: warning: ignoring old recipe for target 'build/dex/dalvik_interpreter.o'
+    0.03 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_engine_core.o src/dex/dalvik_engine_core.cpp
+    0.52 src/dex/dalvik_engine_core.cpp:276:28: warning: trigraph ??> ignored, use -trigraphs to enable [-Wtrigraphs]
+    0.52   276 |         default: return "<???>";
+    1.08 In file included from src/dex/dalvik_engine.h:37,
+    1.08                  from src/dex/dalvik_engine_core.cpp:13:
+    1.08 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+    1.08 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+    1.08   348 |     bool is_object_ref;                 // reference type
+    1.08       |          ^~~~~~~~~~~~~
+    1.08 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+    1.08   345 |     json value;                         // Current value (JSON for flexibility)
+    1.08       |          ^~~~~
+    1.08 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+    1.08   351 |     StaticFieldEntry()
+    1.08       |     ^~~~~~~~~~~~~~~~
+    1.08 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+    1.08 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+    1.08   348 |     bool is_object_ref;                 // reference type
+    1.08       |          ^~~~~~~~~~~~~
+    1.08 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+    1.08   345 |     json value;                         // Current value (JSON for flexibility)
+    1.08       |          ^~~~~
+    1.08 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+    1.08   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+    1.08       |     ^~~~~~~~~~~~~~~~
+    1.19 In file included from src/dex/dalvik_engine.h:38:
+    1.19 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+    1.19 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+    1.19   298 |         executor = [](const RuntimeMethodInfo* method,
+    1.19       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+    1.19 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+    1.19   299 |                       const std::vector<json>& args,
+    1.19       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+    1.19 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+    1.19 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+    1.19   635 |                                    const std::vector<json>& args,
+    1.19       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+    1.23 In file included from src/dex/dalvik_engine.h:39:
+    1.23 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+    1.23 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+    1.23   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+    1.23       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+    1.23 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+    1.23 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+    1.23   340 |     virtual void measure(int width_spec, int height_spec) {
+    1.23       |                          ~~~~^~~~~~~~~~
+    1.23 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+    1.23   340 |     virtual void measure(int width_spec, int height_spec) {
+    1.23       |                                          ~~~~^~~~~~~~~~~
+    1.30 In file included from src/dex/../storage/sqlite_shadow.h:32,
+    1.30                  from src/dex/dalvik_engine.h:43:
+    1.30 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+    1.30 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+    1.30   230 |     virtual bool get_object_float_field(uint32_t object_id,
+    1.30       |                                         ~~~~~~~~~^~~~~~~~~
+    1.30 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+    1.30   231 |                                         const std::string& field_name,
+    1.30       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+    1.30 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+    1.30   232 |                                         float& out) {
+    1.30       |                                         ~~~~~~~^~~
+    1.30 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+    1.30 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+    1.30   235 |     virtual bool get_object_int_field(uint32_t object_id,
+    1.30       |                                       ~~~~~~~~~^~~~~~~~~
+    1.30 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+    1.30   236 |                                       const std::string& field_name,
+    1.30       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+    1.30 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+    1.30   237 |                                       int32_t& out) {
+    1.30       |                                       ~~~~~~~~~^~~
+    1.60 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+    1.60 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+    1.60  1142 |         HeapObject& obj =
+    1.60       |                     ^~~
+    2.43 In file included from src/dex/../resources/resource_runtime.h:19,
+    2.43                  from src/dex/dalvik_engine_core.cpp:133:
+    2.43 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+    2.43 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+    2.43   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+    2.43       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+    3.18 src/dex/dalvik_engine_core.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::f590_primitive_array(uint32_t, void**, size_t*)’:
+    3.18 src/dex/dalvik_engine_core.cpp:646:41: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+    3.18   646 |     if (desc == "[L" || desc.size() > 1 && desc[1] == 'L') {
+    3.18       |                         ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+    3.35 src/dex/dalvik_engine_core.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::execute_method_internal(const std::string&, const std::string&, const std::string&, const std::vector<short unsigned int>&, uint32_t, uint32_t, uint32_t, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikExecutionResult&, uint16_t, const uint8_t*, size_t)’:
+    3.35 src/dex/dalvik_engine_core.cpp:4773:51: warning: comparison of integer expressions of different signedness: ‘uint32_t’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+    3.35  4773 |             if (band_min >= 0 && recursion_depth_ >= band_min &&
+    3.35       |                                  ~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+    3.35 src/dex/dalvik_engine_core.cpp:4774:34: warning: comparison of integer expressions of different signedness: ‘uint32_t’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+    3.35  4774 |                 recursion_depth_ <= band_max &&
+    3.35       |                 ~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+    3.43 src/dex/dalvik_engine_core.cpp:6171:46: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+    3.43  6171 |     if (diag_env("MINIANDROID_EXP058_TRACE") && current_method_.find("addFragmentToStack") != std::string::npos ||
+    3.43       |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    5.60 src/dex/dalvik_engine_core.cpp: At global scope:
+    5.60 src/dex/dalvik_engine_core.cpp:82:6: warning: ‘bool {anonymous}::str_char_at_unit(const std::string&, int32_t, int32_t&)’ defined but not used [-Wunused-function]
+    5.60    82 | bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
+    5.60       |      ^~~~~~~~~~~~~~~~
+    5.60 src/dex/dalvik_engine_core.cpp:65:9: warning: ‘int32_t {anonymous}::str_utf16_unit_count(const std::string&)’ defined but not used [-Wunused-function]
+    5.60    65 | int32_t str_utf16_unit_count(const std::string& s) {
+    5.60       |         ^~~~~~~~~~~~~~~~~~~~
+   10.29 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_engine_invoke.o src/dex/dalvik_engine_invoke.cpp
+   11.33 In file included from src/dex/dalvik_engine.h:37,
+   11.33                  from src/dex/dalvik_engine_invoke.cpp:13:
+   11.33 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   11.33 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   11.33   348 |     bool is_object_ref;                 // reference type
+   11.33       |          ^~~~~~~~~~~~~
+   11.33 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   11.33   345 |     json value;                         // Current value (JSON for flexibility)
+   11.33       |          ^~~~~
+   11.33 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   11.33   351 |     StaticFieldEntry()
+   11.33       |     ^~~~~~~~~~~~~~~~
+   11.33 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   11.33 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   11.33   348 |     bool is_object_ref;                 // reference type
+   11.33       |          ^~~~~~~~~~~~~
+   11.33 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   11.33   345 |     json value;                         // Current value (JSON for flexibility)
+   11.33       |          ^~~~~
+   11.33 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   11.33   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   11.33       |     ^~~~~~~~~~~~~~~~
+   11.44 In file included from src/dex/dalvik_engine.h:38:
+   11.44 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   11.44 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   11.44   298 |         executor = [](const RuntimeMethodInfo* method,
+   11.44       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   11.44 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   11.44   299 |                       const std::vector<json>& args,
+   11.44       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   11.45 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   11.45 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   11.45   635 |                                    const std::vector<json>& args,
+   11.45       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   11.49 In file included from src/dex/dalvik_engine.h:39:
+   11.49 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   11.49 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   11.49   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   11.49       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   11.49 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   11.49 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   11.49   340 |     virtual void measure(int width_spec, int height_spec) {
+   11.49       |                          ~~~~^~~~~~~~~~
+   11.49 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   11.49   340 |     virtual void measure(int width_spec, int height_spec) {
+   11.49       |                                          ~~~~^~~~~~~~~~~
+   11.56 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   11.56                  from src/dex/dalvik_engine.h:43:
+   11.56 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   11.56 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   11.56   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   11.56       |                                         ~~~~~~~~~^~~~~~~~~
+   11.56 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   11.56   231 |                                         const std::string& field_name,
+   11.56       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   11.56 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   11.56   232 |                                         float& out) {
+   11.56       |                                         ~~~~~~~^~~
+   11.56 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   11.56 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   11.56   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   11.56       |                                       ~~~~~~~~~^~~~~~~~~
+   11.56 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   11.56   236 |                                       const std::string& field_name,
+   11.56       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   11.56 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   11.56   237 |                                       int32_t& out) {
+   11.56       |                                       ~~~~~~~~~^~~
+   11.85 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   11.85 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   11.85  1142 |         HeapObject& obj =
+   11.85       |                     ^~~
+   12.69 In file included from src/dex/../resources/resource_runtime.h:19,
+   12.69                  from src/dex/dalvik_engine_invoke.cpp:133:
+   12.69 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   12.69 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   12.69   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   12.69       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   13.49 src/dex/dalvik_engine_invoke.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::try_recursive_invoke(std::string, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::DalvikExecutionResult&, const std::string&)’:
+   13.49 src/dex/dalvik_engine_invoke.cpp:3014:46: warning: unused variable ‘spec’ [-Wunused-variable]
+   13.49  3014 |                                         char spec = format_str[i];
+   13.49       |                                              ^~~~
+   13.51 src/dex/dalvik_engine_invoke.cpp:3819:71: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+   13.51  3819 |             (class_descriptor.find("PhoneView$") != std::string::npos &&
+   13.51       |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+   13.51  3820 |              class_descriptor.find("LoginActivity") != std::string::npos || class_descriptor.find("BaseFragment") != std::string::npos);
+   13.51       |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   13.63 src/dex/dalvik_engine_invoke.cpp:6842:14: warning: unused variable ‘saved_halted_on_return’ [-Wunused-variable]
+   13.63  6842 |         bool saved_halted_on_return = halted_on_return_;
+   13.63       |              ^~~~~~~~~~~~~~~~~~~~~~
+   13.63 src/dex/dalvik_engine_invoke.cpp:6843:14: warning: unused variable ‘saved_halted’ [-Wunused-variable]
+   13.63  6843 |         bool saved_halted = halted_;
+   13.63       |              ^~~~~~~~~~~~
+   13.77 src/dex/dalvik_engine_invoke.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::dispatch_view_attached()’:
+   13.77 src/dex/dalvik_engine_invoke.cpp:11380:16: warning: unused variable ‘diag_logged’ [-Wunused-variable]
+   13.77 11380 |     static int diag_logged = 0;
+   13.77       |                ^~~~~~~~~~~
+   15.66 src/dex/dalvik_engine_invoke.cpp: At global scope:
+   15.66 src/dex/dalvik_engine_invoke.cpp:82:6: warning: ‘bool {anonymous}::str_char_at_unit(const std::string&, int32_t, int32_t&)’ defined but not used [-Wunused-function]
+   15.66    82 | bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
+   15.66       |      ^~~~~~~~~~~~~~~~
+   15.66 src/dex/dalvik_engine_invoke.cpp:65:9: warning: ‘int32_t {anonymous}::str_utf16_unit_count(const std::string&)’ defined but not used [-Wunused-function]
+   15.66    65 | int32_t str_utf16_unit_count(const std::string& s) {
+   15.66       |         ^~~~~~~~~~~~~~~~~~~~
+   19.84 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O1 -g0 -fPIC --param inline-unit-growth=15 --param large-function-growth=120 -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_interpreter.o src/dex/dalvik_interpreter.cpp
+   20.85 In file included from src/dex/dalvik_engine.h:37,
+   20.85                  from src/dex/dalvik_interpreter.cpp:13:
+   20.85 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   20.85 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   20.85   348 |     bool is_object_ref;                 // reference type
+   20.85       |          ^~~~~~~~~~~~~
+   20.85 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   20.85   345 |     json value;                         // Current value (JSON for flexibility)
+   20.85       |          ^~~~~
+   20.85 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   20.85   351 |     StaticFieldEntry()
+   20.85       |     ^~~~~~~~~~~~~~~~
+   20.85 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   20.85 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   20.85   348 |     bool is_object_ref;                 // reference type
+   20.85       |          ^~~~~~~~~~~~~
+   20.85 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   20.85   345 |     json value;                         // Current value (JSON for flexibility)
+   20.85       |          ^~~~~
+   20.85 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   20.85   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   20.85       |     ^~~~~~~~~~~~~~~~
+   20.96 In file included from src/dex/dalvik_engine.h:38:
+   20.96 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   20.96 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   20.96   298 |         executor = [](const RuntimeMethodInfo* method,
+   20.96       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   20.96 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   20.96   299 |                       const std::vector<json>& args,
+   20.96       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   20.97 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   20.97 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   20.97   635 |                                    const std::vector<json>& args,
+   20.97       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   21.00 In file included from src/dex/dalvik_engine.h:39:
+   21.00 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   21.00 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   21.00   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   21.00       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   21.00 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   21.00 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   21.00   340 |     virtual void measure(int width_spec, int height_spec) {
+   21.00       |                          ~~~~^~~~~~~~~~
+   21.00 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   21.00   340 |     virtual void measure(int width_spec, int height_spec) {
+   21.00       |                                          ~~~~^~~~~~~~~~~
+   21.07 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   21.07                  from src/dex/dalvik_engine.h:43:
+   21.07 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   21.07 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   21.07   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   21.07       |                                         ~~~~~~~~~^~~~~~~~~
+   21.07 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   21.07   231 |                                         const std::string& field_name,
+   21.07       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   21.07 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   21.07   232 |                                         float& out) {
+   21.07       |                                         ~~~~~~~^~~
+   21.07 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   21.07 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   21.07   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   21.07       |                                       ~~~~~~~~~^~~~~~~~~
+   21.07 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   21.07   236 |                                       const std::string& field_name,
+   21.07       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   21.07 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   21.07   237 |                                       int32_t& out) {
+   21.07       |                                       ~~~~~~~~~^~~
+   21.35 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   21.35 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   21.35  1142 |         HeapObject& obj =
+   21.35       |                     ^~~
+   22.14 In file included from src/dex/../resources/resource_runtime.h:19,
+   22.14                  from src/dex/dalvik_interpreter.cpp:134:
+   22.14 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   22.14 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   22.14   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   22.14       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   22.93 src/dex/dalvik_interpreter.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::fetch_decode_execute(miniandroid::dalvik::DalvikExecutionResult&)’:
+   22.93 src/dex/dalvik_interpreter.cpp:983:22: warning: variable ‘f264_delivered_pending’ set but not used [-Wunused-but-set-variable]
+   22.93   983 |                 bool f264_delivered_pending = true;
+   22.93       |                      ^~~~~~~~~~~~~~~~~~~~~~
+   23.13 src/dex/dalvik_interpreter.cpp:3659:30: warning: unused variable ‘magic’ [-Wunused-variable]
+   23.13  3659 |                     uint16_t magic = bytecode_[payload_pc];
+   23.13       |                              ^~~~~
+   23.14 src/dex/dalvik_interpreter.cpp:3951:30: warning: variable ‘matched_try_idx’ set but not used [-Wunused-but-set-variable]
+   23.14  3951 |                     uint16_t matched_try_idx = 0xFFFF;
+   23.14       |                              ^~~~~~~~~~~~~~~
+   23.24 src/dex/dalvik_interpreter.cpp:788:18: warning: unused variable ‘f107_d0’ [-Wunused-variable]
+   23.24   788 |         uint32_t f107_d0 = recursion_depth_;
+   23.24       |                  ^~~~~~~
+   24.81 src/dex/dalvik_interpreter.cpp:4152:13: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   24.81  4152 |             }
+   24.81       |             ^
+   24.81 src/dex/dalvik_interpreter.cpp:4161:13: note: here
+   24.81  4161 |             case Opcode::MOVE_16: {
+   24.81       |             ^~~~
+   24.95 src/dex/dalvik_interpreter.cpp: At global scope:
+   24.95 src/dex/dalvik_interpreter.cpp:83:6: warning: ‘bool {anonymous}::str_char_at_unit(const std::string&, int32_t, int32_t&)’ defined but not used [-Wunused-function]
+   24.95    83 | bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
+   24.95       |      ^~~~~~~~~~~~~~~~
+   24.95 src/dex/dalvik_interpreter.cpp:66:9: warning: ‘int32_t {anonymous}::str_utf16_unit_count(const std::string&)’ defined but not used [-Wunused-function]
+   24.95    66 | int32_t str_utf16_unit_count(const std::string& s) {
+   24.95       |         ^~~~~~~~~~~~~~~~~~~~
+   31.44 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O1 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_opcodes.o src/dex/dalvik_opcodes.cpp
+   32.48 In file included from src/dex/dalvik_engine.h:37,
+   32.48                  from src/dex/dalvik_opcodes.cpp:13:
+   32.48 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   32.48 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   32.48   348 |     bool is_object_ref;                 // reference type
+   32.48       |          ^~~~~~~~~~~~~
+   32.48 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   32.48   345 |     json value;                         // Current value (JSON for flexibility)
+   32.48       |          ^~~~~
+   32.48 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   32.48   351 |     StaticFieldEntry()
+   32.48       |     ^~~~~~~~~~~~~~~~
+   32.48 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   32.48 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   32.48   348 |     bool is_object_ref;                 // reference type
+   32.48       |          ^~~~~~~~~~~~~
+   32.48 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   32.48   345 |     json value;                         // Current value (JSON for flexibility)
+   32.48       |          ^~~~~
+   32.48 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   32.48   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   32.48       |     ^~~~~~~~~~~~~~~~
+   32.60 In file included from src/dex/dalvik_engine.h:38:
+   32.60 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   32.60 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   32.60   298 |         executor = [](const RuntimeMethodInfo* method,
+   32.60       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   32.60 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   32.60   299 |                       const std::vector<json>& args,
+   32.60       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   32.60 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   32.60 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   32.60   635 |                                    const std::vector<json>& args,
+   32.60       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   32.64 In file included from src/dex/dalvik_engine.h:39:
+   32.64 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   32.64 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   32.64   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   32.64       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   32.64 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   32.64 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   32.64   340 |     virtual void measure(int width_spec, int height_spec) {
+   32.64       |                          ~~~~^~~~~~~~~~
+   32.64 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   32.64   340 |     virtual void measure(int width_spec, int height_spec) {
+   32.64       |                                          ~~~~^~~~~~~~~~~
+   32.72 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   32.72                  from src/dex/dalvik_engine.h:43:
+   32.72 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   32.72 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   32.72   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   32.72       |                                         ~~~~~~~~~^~~~~~~~~
+   32.72 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   32.72   231 |                                         const std::string& field_name,
+   32.72       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   32.72 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   32.72   232 |                                         float& out) {
+   32.72       |                                         ~~~~~~~^~~
+   32.72 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   32.72 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   32.72   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   32.72       |                                       ~~~~~~~~~^~~~~~~~~
+   32.72 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   32.72   236 |                                       const std::string& field_name,
+   32.72       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   32.72 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   32.72   237 |                                       int32_t& out) {
+   32.72       |                                       ~~~~~~~~~^~~
+   33.01 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   33.01 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   33.01  1142 |         HeapObject& obj =
+   33.01       |                     ^~~
+   33.86 In file included from src/dex/../resources/resource_runtime.h:19,
+   33.86                  from src/dex/dalvik_opcodes.cpp:133:
+   33.86 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   33.86 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   33.86   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   33.86       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   36.30 src/dex/dalvik_opcodes.cpp: At global scope:
+   36.30 src/dex/dalvik_opcodes.cpp:82:6: warning: ‘bool {anonymous}::str_char_at_unit(const std::string&, int32_t, int32_t&)’ defined but not used [-Wunused-function]
+   36.30    82 | bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
+   36.30       |      ^~~~~~~~~~~~~~~~
+   36.30 src/dex/dalvik_opcodes.cpp:65:9: warning: ‘int32_t {anonymous}::str_utf16_unit_count(const std::string&)’ defined but not used [-Wunused-function]
+   36.30    65 | int32_t str_utf16_unit_count(const std::string& s) {
+   36.30       |         ^~~~~~~~~~~~~~~~~~~~
+   38.92 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_opcodes_invoke.o src/dex/dalvik_opcodes_invoke.cpp
+   39.96 In file included from src/dex/dalvik_engine.h:37,
+   39.96                  from src/dex/dalvik_opcodes_invoke.cpp:13:
+   39.96 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   39.96 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   39.96   348 |     bool is_object_ref;                 // reference type
+   39.96       |          ^~~~~~~~~~~~~
+   39.96 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   39.96   345 |     json value;                         // Current value (JSON for flexibility)
+   39.96       |          ^~~~~
+   39.96 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   39.96   351 |     StaticFieldEntry()
+   39.96       |     ^~~~~~~~~~~~~~~~
+   39.96 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   39.96 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   39.96   348 |     bool is_object_ref;                 // reference type
+   39.96       |          ^~~~~~~~~~~~~
+   39.96 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   39.96   345 |     json value;                         // Current value (JSON for flexibility)
+   39.96       |          ^~~~~
+   39.96 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   39.96   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   39.96       |     ^~~~~~~~~~~~~~~~
+   40.07 In file included from src/dex/dalvik_engine.h:38:
+   40.07 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   40.07 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   40.07   298 |         executor = [](const RuntimeMethodInfo* method,
+   40.07       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   40.07 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   40.07   299 |                       const std::vector<json>& args,
+   40.07       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   40.08 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   40.08 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   40.08   635 |                                    const std::vector<json>& args,
+   40.08       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   40.11 In file included from src/dex/dalvik_engine.h:39:
+   40.11 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   40.11 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   40.11   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   40.11       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   40.11 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   40.11 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   40.11   340 |     virtual void measure(int width_spec, int height_spec) {
+   40.11       |                          ~~~~^~~~~~~~~~
+   40.11 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   40.11   340 |     virtual void measure(int width_spec, int height_spec) {
+   40.11       |                                          ~~~~^~~~~~~~~~~
+   40.18 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   40.19                  from src/dex/dalvik_engine.h:43:
+   40.19 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   40.19 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   40.19   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   40.19       |                                         ~~~~~~~~~^~~~~~~~~
+   40.19 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   40.19   231 |                                         const std::string& field_name,
+   40.19       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   40.19 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   40.19   232 |                                         float& out) {
+   40.19       |                                         ~~~~~~~^~~
+   40.19 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   40.19 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   40.19   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   40.19       |                                       ~~~~~~~~~^~~~~~~~~
+   40.19 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   40.19   236 |                                       const std::string& field_name,
+   40.19       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   40.19 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   40.19   237 |                                       int32_t& out) {
+   40.19       |                                       ~~~~~~~~~^~~
+   40.47 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   40.47 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   40.47  1142 |         HeapObject& obj =
+   40.47       |                     ^~~
+   41.29 In file included from src/dex/../resources/resource_runtime.h:19,
+   41.29                  from src/dex/dalvik_opcodes_invoke.cpp:133:
+   41.29 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   41.29 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   41.29   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   41.29       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   42.01 src/dex/dalvik_opcodes_invoke.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::execute_invoke_direct(uint32_t, miniandroid::dalvik::InstructionTrace&, miniandroid::dalvik::DalvikExecutionResult&)’:
+   42.01 src/dex/dalvik_opcodes_invoke.cpp:1288:23: warning: unused variable ‘obj’ [-Wunused-variable]
+   42.01  1288 |             if (auto* obj = heap_.get(args[0].object_id)) {
+   42.01       |                       ^~~
+   42.01 src/dex/dalvik_opcodes_invoke.cpp:1311:19: warning: unused variable ‘obj’ [-Wunused-variable]
+   42.01  1311 |         if (auto* obj = heap_.get(args[0].object_id)) {
+   42.01       |                   ^~~
+   42.05 src/dex/dalvik_opcodes_invoke.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::execute_invoke_interface(uint32_t, miniandroid::dalvik::InstructionTrace&, miniandroid::dalvik::DalvikExecutionResult&)’:
+   42.05 src/dex/dalvik_opcodes_invoke.cpp:2840:22: warning: variable ‘cls_found’ set but not used [-Wunused-but-set-variable]
+   42.05  2840 |                 bool cls_found = false;
+   42.05       |                      ^~~~~~~~~
+   43.90 src/dex/dalvik_opcodes_invoke.cpp: At global scope:
+   43.90 src/dex/dalvik_opcodes_invoke.cpp:6728:6: warning: ‘void miniandroid::dalvik::{anonymous}::c9_fill_display_metrics(miniandroid::dalvik::DalvikHeap&, uint32_t)’ defined but not used [-Wunused-function]
+   43.90  6728 | void c9_fill_display_metrics(DalvikHeap& heap,
+   43.90       |      ^~~~~~~~~~~~~~~~~~~~~~~
+   43.90 src/dex/dalvik_opcodes_invoke.cpp:6681:6: warning: ‘bool miniandroid::dalvik::{anonymous}::c9_png_encode_rgba(int, int, const std::vector<unsigned char>&, std::vector<unsigned char>*)’ defined but not used [-Wunused-function]
+   43.90  6681 | bool c9_png_encode_rgba(int w, int h,
+   43.90       |      ^~~~~~~~~~~~~~~~~~
+   43.90 src/dex/dalvik_opcodes_invoke.cpp:6600:20: warning: ‘std::string miniandroid::dalvik::host_path_for_virtual_volume(const std::string&)’ defined but not used [-Wunused-function]
+   43.90  6600 | static std::string host_path_for_virtual_volume(const std::string& p) {
+   43.90       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   43.90 src/dex/dalvik_opcodes_invoke.cpp:82:6: warning: ‘bool {anonymous}::str_char_at_unit(const std::string&, int32_t, int32_t&)’ defined but not used [-Wunused-function]
+   43.90    82 | bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
+   43.90       |      ^~~~~~~~~~~~~~~~
+   43.90 src/dex/dalvik_opcodes_invoke.cpp:65:9: warning: ‘int32_t {anonymous}::str_utf16_unit_count(const std::string&)’ defined but not used [-Wunused-function]
+   43.90    65 | int32_t str_utf16_unit_count(const std::string& s) {
+   43.90       |         ^~~~~~~~~~~~~~~~~~~~
+   46.12 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_bridge.o src/dex/dalvik_bridge.cpp
+   47.15 In file included from src/dex/dalvik_engine.h:37,
+   47.15                  from src/dex/dalvik_bridge_frame.h:25,
+   47.15                  from src/dex/dalvik_bridge.cpp:12:
+   47.15 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   47.15 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   47.15   348 |     bool is_object_ref;                 // reference type
+   47.15       |          ^~~~~~~~~~~~~
+   47.15 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   47.15   345 |     json value;                         // Current value (JSON for flexibility)
+   47.15       |          ^~~~~
+   47.15 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   47.15   351 |     StaticFieldEntry()
+   47.15       |     ^~~~~~~~~~~~~~~~
+   47.15 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   47.15 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   47.15   348 |     bool is_object_ref;                 // reference type
+   47.15       |          ^~~~~~~~~~~~~
+   47.15 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   47.15   345 |     json value;                         // Current value (JSON for flexibility)
+   47.15       |          ^~~~~
+   47.15 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   47.15   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   47.15       |     ^~~~~~~~~~~~~~~~
+   47.26 In file included from src/dex/dalvik_engine.h:38:
+   47.26 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   47.26 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   47.26   298 |         executor = [](const RuntimeMethodInfo* method,
+   47.26       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   47.26 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   47.26   299 |                       const std::vector<json>& args,
+   47.26       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   47.27 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   47.27 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   47.27   635 |                                    const std::vector<json>& args,
+   47.27       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   47.30 In file included from src/dex/dalvik_engine.h:39:
+   47.30 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   47.30 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   47.30   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   47.30       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   47.30 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   47.30 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   47.30   340 |     virtual void measure(int width_spec, int height_spec) {
+   47.30       |                          ~~~~^~~~~~~~~~
+   47.30 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   47.30   340 |     virtual void measure(int width_spec, int height_spec) {
+   47.30       |                                          ~~~~^~~~~~~~~~~
+   47.38 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   47.38                  from src/dex/dalvik_engine.h:43:
+   47.38 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   47.38 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   47.38   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   47.38       |                                         ~~~~~~~~~^~~~~~~~~
+   47.38 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   47.38   231 |                                         const std::string& field_name,
+   47.38       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   47.38 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   47.38   232 |                                         float& out) {
+   47.38       |                                         ~~~~~~~^~~
+   47.38 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   47.38 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   47.38   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   47.38       |                                       ~~~~~~~~~^~~~~~~~~
+   47.38 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   47.38   236 |                                       const std::string& field_name,
+   47.38       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   47.38 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   47.38   237 |                                       int32_t& out) {
+   47.38       |                                       ~~~~~~~~~^~~
+   47.67 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   47.67 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   47.67  1142 |         HeapObject& obj =
+   47.67       |                     ^~~
+   48.48 In file included from src/dex/../resources/resource_runtime.h:19,
+   48.48                  from src/dex/dalvik_bridge_frame.h:82:
+   48.48 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   48.48 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   48.48   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   48.48       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   48.89 src/dex/dalvik_bridge.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_arm_49937(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t, const std::vector<miniandroid::dalvik::DalvikValue>&)’:
+   48.89 src/dex/dalvik_bridge.cpp:206:65: warning: unused parameter ‘class_name’ [-Wunused-parameter]
+   48.89   206 | bool DalvikExecutionEngine::bridge_arm_49937(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.89       |                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   48.89 src/dex/dalvik_bridge.cpp:206:96: warning: unused parameter ‘method’ [-Wunused-parameter]
+   48.89   206 | bool DalvikExecutionEngine::bridge_arm_49937(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.89       |                                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~
+   48.89 src/dex/dalvik_bridge.cpp:206:136: warning: unused parameter ‘args_raw’ [-Wunused-parameter]
+   48.89   206 | bool DalvikExecutionEngine::bridge_arm_49937(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.89       |                                                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   48.89 src/dex/dalvik_bridge.cpp:206:206: warning: unused parameter ‘method_idx_hint’ [-Wunused-parameter]
+   48.89   206 | bool DalvikExecutionEngine::bridge_arm_49937(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.89       |                                                                                                                                                                                                     ~~~~~~~~~^~~~~~~~~~~~~~~
+   48.89 src/dex/dalvik_bridge.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_arm_49792(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t, const std::vector<miniandroid::dalvik::DalvikValue>&)’:
+   48.89 src/dex/dalvik_bridge.cpp:335:65: warning: unused parameter ‘class_name’ [-Wunused-parameter]
+   48.89   335 | bool DalvikExecutionEngine::bridge_arm_49792(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.89       |                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   48.89 src/dex/dalvik_bridge.cpp:335:96: warning: unused parameter ‘method’ [-Wunused-parameter]
+   48.89   335 | bool DalvikExecutionEngine::bridge_arm_49792(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.89       |                                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~
+   48.89 src/dex/dalvik_bridge.cpp:335:136: warning: unused parameter ‘args_raw’ [-Wunused-parameter]
+   48.89   335 | bool DalvikExecutionEngine::bridge_arm_49792(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.89       |                                                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   48.89 src/dex/dalvik_bridge.cpp:335:206: warning: unused parameter ‘method_idx_hint’ [-Wunused-parameter]
+   48.89   335 | bool DalvikExecutionEngine::bridge_arm_49792(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.89       |                                                                                                                                                                                                     ~~~~~~~~~^~~~~~~~~~~~~~~
+   48.90 src/dex/dalvik_bridge.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_arm_46205(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t, const std::vector<miniandroid::dalvik::DalvikValue>&)’:
+   48.90 src/dex/dalvik_bridge.cpp:457:65: warning: unused parameter ‘class_name’ [-Wunused-parameter]
+   48.90   457 | bool DalvikExecutionEngine::bridge_arm_46205(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.90       |                                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   48.90 src/dex/dalvik_bridge.cpp:457:96: warning: unused parameter ‘method’ [-Wunused-parameter]
+   48.90   457 | bool DalvikExecutionEngine::bridge_arm_46205(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.90       |                                                                             ~~~~~~~~~~~~~~~~~~~^~~~~~
+   48.90 src/dex/dalvik_bridge.cpp:457:136: warning: unused parameter ‘args_raw’ [-Wunused-parameter]
+   48.90   457 | bool DalvikExecutionEngine::bridge_arm_46205(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.90       |                                                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   48.90 src/dex/dalvik_bridge.cpp:457:206: warning: unused parameter ‘method_idx_hint’ [-Wunused-parameter]
+   48.90   457 | bool DalvikExecutionEngine::bridge_arm_46205(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.90       |                                                                                                                                                                                                     ~~~~~~~~~^~~~~~~~~~~~~~~
+   48.90 src/dex/dalvik_bridge.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_arm_5892(const std::string&, const std::string&, const std::vector<miniandroid::dalvik::DalvikValue>&, miniandroid::dalvik::DalvikValue&, miniandroid::dalvik::ApiCallTrace::Status&, uint32_t, const std::vector<miniandroid::dalvik::DalvikValue>&)’:
+   48.90 src/dex/dalvik_bridge.cpp:590:64: warning: unused parameter ‘class_name’ [-Wunused-parameter]
+   48.90   590 | bool DalvikExecutionEngine::bridge_arm_5892(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.90       |                                             ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   48.90 src/dex/dalvik_bridge.cpp:590:135: warning: unused parameter ‘args_raw’ [-Wunused-parameter]
+   48.90   590 | bool DalvikExecutionEngine::bridge_arm_5892(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.90       |                                                                                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   48.90 src/dex/dalvik_bridge.cpp:590:205: warning: unused parameter ‘method_idx_hint’ [-Wunused-parameter]
+   48.90   590 | bool DalvikExecutionEngine::bridge_arm_5892(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args) {
+   48.90       |                                                                                                                                                                                                    ~~~~~~~~~^~~~~~~~~~~~~~~
+   51.66 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_engine_tail.o src/dex/dalvik_engine_tail.cpp
+   52.70 In file included from src/dex/dalvik_engine.h:37,
+   52.70                  from src/dex/dalvik_engine_tail.cpp:13:
+   52.70 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   52.70 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   52.70   348 |     bool is_object_ref;                 // reference type
+   52.70       |          ^~~~~~~~~~~~~
+   52.70 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   52.70   345 |     json value;                         // Current value (JSON for flexibility)
+   52.70       |          ^~~~~
+   52.70 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   52.70   351 |     StaticFieldEntry()
+   52.70       |     ^~~~~~~~~~~~~~~~
+   52.70 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   52.70 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   52.70   348 |     bool is_object_ref;                 // reference type
+   52.70       |          ^~~~~~~~~~~~~
+   52.70 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   52.70   345 |     json value;                         // Current value (JSON for flexibility)
+   52.70       |          ^~~~~
+   52.70 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   52.70   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   52.70       |     ^~~~~~~~~~~~~~~~
+   52.81 In file included from src/dex/dalvik_engine.h:38:
+   52.81 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   52.81 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   52.81   298 |         executor = [](const RuntimeMethodInfo* method,
+   52.81       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   52.81 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   52.81   299 |                       const std::vector<json>& args,
+   52.81       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   52.82 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   52.82 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   52.82   635 |                                    const std::vector<json>& args,
+   52.82       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   52.86 In file included from src/dex/dalvik_engine.h:39:
+   52.86 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   52.86 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   52.86   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   52.86       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   52.86 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   52.86 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   52.86   340 |     virtual void measure(int width_spec, int height_spec) {
+   52.86       |                          ~~~~^~~~~~~~~~
+   52.86 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   52.86   340 |     virtual void measure(int width_spec, int height_spec) {
+   52.86       |                                          ~~~~^~~~~~~~~~~
+   52.94 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   52.94                  from src/dex/dalvik_engine.h:43:
+   52.94 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   52.94 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   52.94   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   52.94       |                                         ~~~~~~~~~^~~~~~~~~
+   52.94 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   52.94   231 |                                         const std::string& field_name,
+   52.94       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   52.94 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   52.94   232 |                                         float& out) {
+   52.94       |                                         ~~~~~~~^~~
+   52.94 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   52.94 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   52.94   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   52.94       |                                       ~~~~~~~~~^~~~~~~~~
+   52.94 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   52.94   236 |                                       const std::string& field_name,
+   52.94       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   52.94 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   52.94   237 |                                       int32_t& out) {
+   52.94       |                                       ~~~~~~~~~^~~
+   53.25 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   53.25 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   53.25  1142 |         HeapObject& obj =
+   53.25       |                     ^~~
+   54.09 In file included from src/dex/../resources/resource_runtime.h:19,
+   54.09                  from src/dex/dalvik_engine_tail.cpp:132:
+   54.09 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   54.09 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   54.09   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   54.09       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   56.35 src/dex/dalvik_engine_tail.cpp: At global scope:
+   56.35 src/dex/dalvik_engine_tail.cpp:168:13: warning: ‘bool diag_env(const char*)’ defined but not used [-Wunused-function]
+   56.35   168 | static bool diag_env(const char* name) {
+   56.35       |             ^~~~~~~~
+   56.36 src/dex/dalvik_engine_tail.cpp:81:6: warning: ‘bool {anonymous}::str_char_at_unit(const std::string&, int32_t, int32_t&)’ defined but not used [-Wunused-function]
+   56.36    81 | bool str_char_at_unit(const std::string& s, int32_t idx, int32_t& out) {
+   56.36       |      ^~~~~~~~~~~~~~~~
+   56.36 src/dex/dalvik_engine_tail.cpp:64:9: warning: ‘int32_t {anonymous}::str_utf16_unit_count(const std::string&)’ defined but not used [-Wunused-function]
+   56.36    64 | int32_t str_utf16_unit_count(const std::string& s) {
+   56.36       |         ^~~~~~~~~~~~~~~~~~~~
+   57.45 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_bridge_domain_jdk.o src/dex/dalvik_bridge_domain_jdk.cpp
+   58.49 In file included from src/dex/dalvik_engine.h:37,
+   58.49                  from src/dex/dalvik_bridge_frame.h:25,
+   58.49                  from src/dex/dalvik_bridge_domain_jdk.cpp:11:
+   58.49 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   58.49 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   58.49   348 |     bool is_object_ref;                 // reference type
+   58.49       |          ^~~~~~~~~~~~~
+   58.49 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   58.49   345 |     json value;                         // Current value (JSON for flexibility)
+   58.49       |          ^~~~~
+   58.49 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   58.49   351 |     StaticFieldEntry()
+   58.49       |     ^~~~~~~~~~~~~~~~
+   58.49 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   58.49 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   58.49   348 |     bool is_object_ref;                 // reference type
+   58.49       |          ^~~~~~~~~~~~~
+   58.49 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   58.49   345 |     json value;                         // Current value (JSON for flexibility)
+   58.49       |          ^~~~~
+   58.49 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   58.49   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   58.49       |     ^~~~~~~~~~~~~~~~
+   58.60 In file included from src/dex/dalvik_engine.h:38:
+   58.60 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   58.60 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   58.60   298 |         executor = [](const RuntimeMethodInfo* method,
+   58.60       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   58.60 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   58.60   299 |                       const std::vector<json>& args,
+   58.60       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   58.61 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   58.61 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   58.61   635 |                                    const std::vector<json>& args,
+   58.61       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   58.64 In file included from src/dex/dalvik_engine.h:39:
+   58.64 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   58.64 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   58.64   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   58.64       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   58.64 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   58.64 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   58.64   340 |     virtual void measure(int width_spec, int height_spec) {
+   58.64       |                          ~~~~^~~~~~~~~~
+   58.64 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   58.64   340 |     virtual void measure(int width_spec, int height_spec) {
+   58.64       |                                          ~~~~^~~~~~~~~~~
+   58.72 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   58.72                  from src/dex/dalvik_engine.h:43:
+   58.72 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   58.72 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   58.72   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   58.72       |                                         ~~~~~~~~~^~~~~~~~~
+   58.72 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   58.72   231 |                                         const std::string& field_name,
+   58.72       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   58.72 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   58.72   232 |                                         float& out) {
+   58.72       |                                         ~~~~~~~^~~
+   58.72 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   58.72 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   58.72   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   58.72       |                                       ~~~~~~~~~^~~~~~~~~
+   58.72 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   58.72   236 |                                       const std::string& field_name,
+   58.72       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   58.72 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   58.72   237 |                                       int32_t& out) {
+   58.72       |                                       ~~~~~~~~~^~~
+   59.03 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   59.03 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   59.03  1142 |         HeapObject& obj =
+   59.03       |                     ^~~
+   59.86 In file included from src/dex/../resources/resource_runtime.h:19,
+   59.86                  from src/dex/dalvik_bridge_frame.h:82:
+   59.86 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   59.86 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   59.86   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   59.86       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   60.81 src/dex/dalvik_bridge_domain_jdk.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_jdk(miniandroid::dalvik::DalvikBridgeFrame&)’:
+   60.81 src/dex/dalvik_bridge_domain_jdk.cpp:6578:14: warning: variable ‘string_array_of’ set but not used [-Wunused-but-set-variable]
+   60.81  6578 |         auto string_array_of = [&](const DalvikValue& v) -> std::vector<std::string> {
+   60.81       |              ^~~~~~~~~~~~~~~
+   61.07 src/dex/dalvik_bridge_domain_jdk.cpp: In instantiation of ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_jdk(miniandroid::dalvik::DalvikBridgeFrame&)::<lambda(auto:4&&, const miniandroid::dalvik::DalvikValue&, int)> [with auto:4 = miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_jdk(miniandroid::dalvik::DalvikBridgeFrame&)::<lambda(auto:4&&, const miniandroid::dalvik::DalvikValue&, int)>&; std::string = std::__cxx11::basic_string<char>]’:
+   61.07 src/dex/dalvik_bridge_domain_jdk.cpp:5827:39:   required from here
+   61.07  5827 |                     tuj_out += tuj_str(tuj_str, *el, 0);
+   61.07       |                                ~~~~~~~^~~~~~~~~~~~~~~~~
+   61.07 src/dex/dalvik_bridge_domain_jdk.cpp:5776:35: warning: unused parameter ‘tuj_self’ [-Wunused-parameter]
+   61.07  5776 |         auto tuj_str = [&](auto&& tuj_self, const DalvikValue& a,
+   61.07       |                            ~~~~~~~^~~~~~~~
+   65.17 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_bridge_domain_android_core.o src/dex/dalvik_bridge_domain_android_core.cpp
+   66.22 In file included from src/dex/dalvik_engine.h:37,
+   66.22                  from src/dex/dalvik_bridge_frame.h:25,
+   66.22                  from src/dex/dalvik_bridge_domain_android_core.cpp:11:
+   66.22 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   66.22 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   66.22   348 |     bool is_object_ref;                 // reference type
+   66.22       |          ^~~~~~~~~~~~~
+   66.22 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   66.22   345 |     json value;                         // Current value (JSON for flexibility)
+   66.22       |          ^~~~~
+   66.22 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   66.22   351 |     StaticFieldEntry()
+   66.22       |     ^~~~~~~~~~~~~~~~
+   66.22 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   66.22 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   66.22   348 |     bool is_object_ref;                 // reference type
+   66.22       |          ^~~~~~~~~~~~~
+   66.22 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   66.22   345 |     json value;                         // Current value (JSON for flexibility)
+   66.22       |          ^~~~~
+   66.22 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   66.22   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   66.22       |     ^~~~~~~~~~~~~~~~
+   66.33 In file included from src/dex/dalvik_engine.h:38:
+   66.33 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   66.33 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   66.33   298 |         executor = [](const RuntimeMethodInfo* method,
+   66.33       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   66.33 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   66.33   299 |                       const std::vector<json>& args,
+   66.33       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   66.33 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   66.33 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   66.33   635 |                                    const std::vector<json>& args,
+   66.33       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   66.37 In file included from src/dex/dalvik_engine.h:39:
+   66.37 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   66.37 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   66.37   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   66.37       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   66.37 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   66.37 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   66.37   340 |     virtual void measure(int width_spec, int height_spec) {
+   66.37       |                          ~~~~^~~~~~~~~~
+   66.37 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   66.37   340 |     virtual void measure(int width_spec, int height_spec) {
+   66.37       |                                          ~~~~^~~~~~~~~~~
+   66.44 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   66.44                  from src/dex/dalvik_engine.h:43:
+   66.44 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   66.44 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   66.44   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   66.44       |                                         ~~~~~~~~~^~~~~~~~~
+   66.44 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   66.44   231 |                                         const std::string& field_name,
+   66.44       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   66.44 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   66.44   232 |                                         float& out) {
+   66.44       |                                         ~~~~~~~^~~
+   66.44 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   66.44 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   66.44   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   66.44       |                                       ~~~~~~~~~^~~~~~~~~
+   66.44 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   66.44   236 |                                       const std::string& field_name,
+   66.44       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   66.44 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   66.44   237 |                                       int32_t& out) {
+   66.44       |                                       ~~~~~~~~~^~~
+   66.73 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   66.73 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   66.73  1142 |         HeapObject& obj =
+   66.73       |                     ^~~
+   67.54 In file included from src/dex/../resources/resource_runtime.h:19,
+   67.54                  from src/dex/dalvik_bridge_frame.h:82:
+   67.54 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   67.54 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   67.54   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   67.54       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   68.28 src/dex/dalvik_bridge_domain_android_core.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_android_core(miniandroid::dalvik::DalvikBridgeFrame&)’:
+   68.28 src/dex/dalvik_bridge_domain_android_core.cpp:1431:18: warning: unused variable ‘c7_connected’ [-Wunused-variable]
+   68.28  1431 |             bool c7_connected = c7_deliver_bind(svc, c7_conn_oid0, c7_cb0);
+   68.28       |                  ^~~~~~~~~~~~
+   68.35 src/dex/dalvik_bridge_domain_android_core.cpp:3226:34: warning: unused variable ‘post_status’ [-Wunused-variable]
+   68.35  3226 |             ApiCallTrace::Status post_status = ApiCallTrace::Status::STUBBED;
+   68.35       |                                  ^~~~~~~~~~~
+   68.35 src/dex/dalvik_bridge_domain_android_core.cpp:3217:30: warning: unused variable ‘di_status’ [-Wunused-variable]
+   68.35  3217 |         ApiCallTrace::Status di_status = ApiCallTrace::Status::STUBBED;
+   68.35       |                              ^~~~~~~~~
+   68.54 src/dex/dalvik_bridge_domain_android_core.cpp:7864:24: warning: unused variable ‘is_text_view’ [-Wunused-variable]
+   68.54  7864 |             const bool is_text_view =
+   68.54       |                        ^~~~~~~~~~~~
+   68.55 src/dex/dalvik_bridge_domain_android_core.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   68.55    20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+   68.55       |                                     ^~~~~~~~
+   68.55 src/dex/dalvik_bridge_domain_android_core.cpp:24:14: warning: unused variable ‘method_idx_hint’ [-Wunused-variable]
+   68.55    24 |     uint32_t method_idx_hint = fr.method_idx_hint;
+   68.55       |              ^~~~~~~~~~~~~~~
+   76.44 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_bridge_domain_ui_graphics.o src/dex/dalvik_bridge_domain_ui_graphics.cpp
+   77.51 In file included from src/dex/dalvik_engine.h:37,
+   77.51                  from src/dex/dalvik_bridge_frame.h:25,
+   77.51                  from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+   77.51 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   77.51 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   77.51   348 |     bool is_object_ref;                 // reference type
+   77.51       |          ^~~~~~~~~~~~~
+   77.51 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   77.51   345 |     json value;                         // Current value (JSON for flexibility)
+   77.51       |          ^~~~~
+   77.51 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   77.51   351 |     StaticFieldEntry()
+   77.51       |     ^~~~~~~~~~~~~~~~
+   77.51 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   77.51 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   77.51   348 |     bool is_object_ref;                 // reference type
+   77.51       |          ^~~~~~~~~~~~~
+   77.51 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   77.51   345 |     json value;                         // Current value (JSON for flexibility)
+   77.51       |          ^~~~~
+   77.51 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   77.51   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   77.51       |     ^~~~~~~~~~~~~~~~
+   77.61 In file included from src/dex/dalvik_engine.h:38:
+   77.61 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   77.61 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   77.61   298 |         executor = [](const RuntimeMethodInfo* method,
+   77.61       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   77.61 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   77.61   299 |                       const std::vector<json>& args,
+   77.61       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   77.62 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   77.62 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   77.62   635 |                                    const std::vector<json>& args,
+   77.62       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   77.66 In file included from src/dex/dalvik_engine.h:39:
+   77.66 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   77.66 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   77.66   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   77.66       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   77.66 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   77.66 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   77.66   340 |     virtual void measure(int width_spec, int height_spec) {
+   77.66       |                          ~~~~^~~~~~~~~~
+   77.66 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   77.66   340 |     virtual void measure(int width_spec, int height_spec) {
+   77.66       |                                          ~~~~^~~~~~~~~~~
+   77.73 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   77.73                  from src/dex/dalvik_engine.h:43:
+   77.73 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   77.73 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   77.73   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   77.73       |                                         ~~~~~~~~~^~~~~~~~~
+   77.73 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   77.73   231 |                                         const std::string& field_name,
+   77.73       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   77.73 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   77.73   232 |                                         float& out) {
+   77.73       |                                         ~~~~~~~^~~
+   77.73 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   77.73 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   77.73   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   77.73       |                                       ~~~~~~~~~^~~~~~~~~
+   77.73 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   77.73   236 |                                       const std::string& field_name,
+   77.73       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   77.73 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   77.73   237 |                                       int32_t& out) {
+   77.73       |                                       ~~~~~~~~~^~~
+   78.03 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   78.03 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   78.03  1142 |         HeapObject& obj =
+   78.03       |                     ^~~
+   78.86 In file included from src/dex/../resources/resource_runtime.h:19,
+   78.86                  from src/dex/dalvik_bridge_frame.h:82:
+   78.86 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   78.86 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   78.86   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   78.86       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   79.64 src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+   79.64 src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+   79.64  2462 |                     uint32_t par = 0;
+   79.64       |                              ^~~
+   79.69 src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+   79.69 src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+   79.69  3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+   79.69       |              ^~~~~~~~~~~~~~
+   79.76 src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+   79.76  6192 |                             c7_matches.push_back(
+   79.76       |                             ~~~~~~~~~~~~~~~~~~~~^
+   79.76  6193 |                                 {a.cls, a.exported, a.launch_mode});
+   79.76       |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   79.76 src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+   79.76  6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+   79.76       |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+   79.76 src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+   79.76  6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+   79.76       |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+   79.81 src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+   79.81 src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+   79.81  7529 |             const int64_t msPerDay = 86400000LL;
+   79.81       |                           ^~~~~~~~
+   79.87 src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+   79.87 src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+   79.87 10499 |                                 f570_i < f570_sst->elem_kinds.size()
+   79.87       |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   79.87 src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+   79.87 10509 |                                     f570_i < f570_sst->elem_strings.size()
+   79.87       |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   79.87 src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+   79.87 10516 |                                     f570_i < f570_sst->elem_ints.size()
+   79.87       |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   80.00 src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   80.00    20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+   80.00       |                                     ^~~~~~~~
+   86.61 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_bridge_domain_app_runtime.o src/dex/dalvik_bridge_domain_app_runtime.cpp
+   87.66 In file included from src/dex/dalvik_engine.h:37,
+   87.66                  from src/dex/dalvik_bridge_frame.h:25,
+   87.66                  from src/dex/dalvik_bridge_domain_app_runtime.cpp:11:
+   87.66 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   87.66 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   87.66   348 |     bool is_object_ref;                 // reference type
+   87.66       |          ^~~~~~~~~~~~~
+   87.66 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   87.66   345 |     json value;                         // Current value (JSON for flexibility)
+   87.66       |          ^~~~~
+   87.66 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   87.66   351 |     StaticFieldEntry()
+   87.66       |     ^~~~~~~~~~~~~~~~
+   87.66 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   87.66 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   87.66   348 |     bool is_object_ref;                 // reference type
+   87.66       |          ^~~~~~~~~~~~~
+   87.66 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   87.66   345 |     json value;                         // Current value (JSON for flexibility)
+   87.66       |          ^~~~~
+   87.66 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   87.66   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   87.66       |     ^~~~~~~~~~~~~~~~
+   87.77 In file included from src/dex/dalvik_engine.h:38:
+   87.77 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   87.77 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   87.77   298 |         executor = [](const RuntimeMethodInfo* method,
+   87.77       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   87.77 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   87.77   299 |                       const std::vector<json>& args,
+   87.77       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   87.78 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   87.78 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   87.78   635 |                                    const std::vector<json>& args,
+   87.78       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   87.81 In file included from src/dex/dalvik_engine.h:39:
+   87.81 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   87.81 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   87.81   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   87.81       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   87.82 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   87.82 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   87.82   340 |     virtual void measure(int width_spec, int height_spec) {
+   87.82       |                          ~~~~^~~~~~~~~~
+   87.82 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   87.82   340 |     virtual void measure(int width_spec, int height_spec) {
+   87.82       |                                          ~~~~^~~~~~~~~~~
+   87.89 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   87.89                  from src/dex/dalvik_engine.h:43:
+   87.89 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   87.89 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   87.89   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   87.89       |                                         ~~~~~~~~~^~~~~~~~~
+   87.89 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   87.89   231 |                                         const std::string& field_name,
+   87.89       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   87.89 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   87.89   232 |                                         float& out) {
+   87.89       |                                         ~~~~~~~^~~
+   87.89 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   87.89 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   87.89   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   87.89       |                                       ~~~~~~~~~^~~~~~~~~
+   87.89 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   87.89   236 |                                       const std::string& field_name,
+   87.89       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   87.89 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   87.89   237 |                                       int32_t& out) {
+   87.89       |                                       ~~~~~~~~~^~~
+   88.19 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   88.19 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   88.19  1142 |         HeapObject& obj =
+   88.19       |                     ^~~
+   89.03 In file included from src/dex/../resources/resource_runtime.h:19,
+   89.03                  from src/dex/dalvik_bridge_frame.h:82:
+   89.03 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   89.03 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   89.03   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   89.03       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   89.82 src/dex/dalvik_bridge_domain_app_runtime.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_app_runtime(miniandroid::dalvik::DalvikBridgeFrame&)’:
+   89.82 src/dex/dalvik_bridge_domain_app_runtime.cpp:4015:38: warning: unused variable ‘cb_status’ [-Wunused-variable]
+   89.82  4015 |                 ApiCallTrace::Status cb_status = ApiCallTrace::Status::STUBBED;
+   89.82       |                                      ^~~~~~~~~
+   90.14 src/dex/dalvik_bridge_domain_app_runtime.cpp:21:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   90.14    21 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+   90.14       |                                     ^~~~~~~~
+   90.14 src/dex/dalvik_bridge_domain_app_runtime.cpp:25:14: warning: unused variable ‘method_idx_hint’ [-Wunused-variable]
+   90.14    25 |     uint32_t method_idx_hint = fr.method_idx_hint;
+   90.14       |              ^~~~~~~~~~~~~~~
+   96.59 g++ -std=c++17 -Wall -Wextra -g -MMD -MP -DMINIANDROID_HAVE_WEBP -O0 -g0 -fPIC -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -c -o build_dev_so/objects/dalvik_bridge_domain_io_lang.o src/dex/dalvik_bridge_domain_io_lang.cpp
+   97.63 In file included from src/dex/dalvik_engine.h:37,
+   97.63                  from src/dex/dalvik_bridge_frame.h:25,
+   97.63                  from src/dex/dalvik_bridge_domain_io_lang.cpp:11:
+   97.63 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+   97.63 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   97.63   348 |     bool is_object_ref;                 // reference type
+   97.63       |          ^~~~~~~~~~~~~
+   97.63 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   97.63   345 |     json value;                         // Current value (JSON for flexibility)
+   97.63       |          ^~~~~
+   97.63 src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+   97.63   351 |     StaticFieldEntry()
+   97.63       |     ^~~~~~~~~~~~~~~~
+   97.63 src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+   97.63 src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+   97.63   348 |     bool is_object_ref;                 // reference type
+   97.63       |          ^~~~~~~~~~~~~
+   97.63 src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+   97.63   345 |     json value;                         // Current value (JSON for flexibility)
+   97.63       |          ^~~~~
+   97.63 src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+   97.63   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+   97.63       |     ^~~~~~~~~~~~~~~~
+   97.73 In file included from src/dex/dalvik_engine.h:38:
+   97.73 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   97.73 src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+   97.73   298 |         executor = [](const RuntimeMethodInfo* method,
+   97.73       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   97.73 src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+   97.73   299 |                       const std::vector<json>& args,
+   97.73       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   97.74 src/dex/../runtime/vtable_dispatch.h: In lambda function:
+   97.74 src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+   97.74   635 |                                    const std::vector<json>& args,
+   97.74       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+   97.78 In file included from src/dex/dalvik_engine.h:39:
+   97.78 src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+   97.78 src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+   97.78   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+   97.78       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+   97.78 src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+   97.78 src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+   97.78   340 |     virtual void measure(int width_spec, int height_spec) {
+   97.78       |                          ~~~~^~~~~~~~~~
+   97.78 src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+   97.78   340 |     virtual void measure(int width_spec, int height_spec) {
+   97.78       |                                          ~~~~^~~~~~~~~~~
+   97.86 In file included from src/dex/../storage/sqlite_shadow.h:32,
+   97.86                  from src/dex/dalvik_engine.h:43:
+   97.86 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+   97.86 src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   97.86   230 |     virtual bool get_object_float_field(uint32_t object_id,
+   97.86       |                                         ~~~~~~~~~^~~~~~~~~
+   97.86 src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   97.86   231 |                                         const std::string& field_name,
+   97.86       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   97.86 src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   97.86   232 |                                         float& out) {
+   97.86       |                                         ~~~~~~~^~~
+   97.86 src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+   97.86 src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+   97.86   235 |     virtual bool get_object_int_field(uint32_t object_id,
+   97.86       |                                       ~~~~~~~~~^~~~~~~~~
+   97.86 src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+   97.86   236 |                                       const std::string& field_name,
+   97.86       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+   97.86 src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+   97.86   237 |                                       int32_t& out) {
+   97.86       |                                       ~~~~~~~~~^~~
+   98.15 src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+   98.15 src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+   98.15  1142 |         HeapObject& obj =
+   98.15       |                     ^~~
+   98.96 In file included from src/dex/../resources/resource_runtime.h:19,
+   98.96                  from src/dex/dalvik_bridge_frame.h:82:
+   98.96 src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+   98.96 src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+   98.96   114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+   98.96       |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+   99.69 src/dex/dalvik_bridge_domain_io_lang.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_io_lang(miniandroid::dalvik::DalvikBridgeFrame&)’:
+   99.69 src/dex/dalvik_bridge_domain_io_lang.cpp:1629:18: warning: variable ‘hit’ set but not used [-Wunused-but-set-variable]
+   99.69  1629 |             bool hit = false;
+   99.69       |                  ^~~
+   99.76 src/dex/dalvik_bridge_domain_io_lang.cpp:3687:22: warning: unused variable ‘stream_id’ [-Wunused-variable]
+   99.76  3687 |             uint32_t stream_id = args[0].object_id;
+   99.76       |                      ^~~~~~~~~
+   99.89 src/dex/dalvik_bridge_domain_io_lang.cpp:7617:18: warning: variable ‘host_native_attempted’ set but not used [-Wunused-but-set-variable]
+   99.89  7617 |             bool host_native_attempted = false;
+   99.89       |                  ^~~~~~~~~~~~~~~~~~~~~
+  106.40 g++ -shared -o build_dev_so/libminiandroid_dalvik.so build_dev_so/objects/dalvik_engine_core.o build_dev_so/objects/dalvik_engine_invoke.o build_dev_so/objects/dalvik_interpreter.o build_dev_so/objects/dalvik_opcodes.o build_dev_so/objects/dalvik_opcodes_invoke.o build_dev_so/objects/dalvik_bridge.o build_dev_so/objects/dalvik_engine_tail.o build_dev_so/objects/dalvik_bridge_domain_jdk.o build_dev_so/objects/dalvik_bridge_domain_android_core.o build_dev_so/objects/dalvik_bridge_domain_ui_graphics.o build_dev_so/objects/dalvik_bridge_domain_app_runtime.o build_dev_so/objects/dalvik_bridge_domain_io_lang.o -Wl,-soname,libminiandroid_dalvik.so -Wl,-rpath,'$ORIGIN' -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile   -lwebp -lwebpdemux
+  106.91 g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -o build_dev_so/tests/simple_test tests/simple_test.cpp \
+  106.91 	build/apk/apk_parser.o build/apk/manifest_reader.o build/dex/dex_parser.o build/dex/mutf8.o build/dex/class_resolver.o build/dex/dex_interpreter_batch.o build/dex/c7_package_index.o build/dex/trace_exporter.o build/runtime/execution_engine.o build/runtime/application_runtime.o build/runtime/route_law.o build/diagnostics/trace_engine.o build/diagnostics/crash_forensics.o build/diagnostics/trace_overlay.o build/diagnostics/install_inspection.o build/resources/res_id.o build/resources/res_config.o build/resources/resource_parser.o build/resources/string_pool.o build/resources/arsc_parser.o build/resources/axml_parser.o build/resources/layout_inflater.o build/resources/vector_inflater.o build/resources/s132_svg_reader.o build/resources/resource_runtime.o build/resources/font_family.o build/resources/plurals.o build/renderer/software_renderer.o build/renderer/vector_decode.o build/renderer/gif_decoder.o build/gles/pgl_backend.o build/gles/gles20_bridge.o build/gles/gl_copy_bridge.o build/fonts/text_shaper.o build/framework/executor_shadow.o build/framework/kotlin_shadow.o build/framework/matrix_shadow.o build/framework/locale_insets_shadow.o build/framework/window_insets_shadow.o build/framework/display_shadow.o build/framework/gl_surface_shadow.o build/framework/surface_view_shadow.o build/framework/android_shadows.o build/framework/shadow_registry.o build/framework/choreographer_shadow.o build/framework/dialog_shadow.o build/framework/clipboard_shadow.o build/framework/canvas_shadow.o build/framework/bitmap_shadow.o build/framework/velocity_tracker.o build/framework/scroller_shadow.o build/framework/gesture_detector_shadow.o build/framework/key_event_shadow.o build/framework/touch_dispatcher.o build/framework/state_list.o build/framework/lifecycle_controller.o build/framework/locks_shadow.o build/framework/atomic_shadow.o build/framework/pending_intent_shadow.o build/framework/task_stack_builder_shadow.o build/framework/animator_shadow.o build/audio/audio_engine.o build/api/application_context.o build/api/shared_prefs.o build/api/http_client.o build/webview/webview_engine.o build/webview/html_dom.o build/webview/canvas2d.o build/storage/data_root.o build/storage/file_sandbox.o build/storage/sqlite_shadow.o build/jni/dlopen_exec.o build/jni/native_dep.o build/jni/ma_native_bridge.o build/dex/dalvik_value_glue.o build/quickjs/quickjs.o build/quickjs/libregexp.o build/quickjs/libunicode.o build/quickjs/cutils.o build/quickjs/libbf.o build/jni/native_thunk.o -Lbuild_dev_so -lminiandroid_dalvik \
+  106.91 	-Wl,-rpath,'$ORIGIN/..' -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile   -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng
+  107.41 In file included from tests/simple_test.cpp:12:
+  107.41 src/api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+  107.41 src/api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  107.41   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+  107.41       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+  107.42 src/api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+  107.42 src/api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  107.42   340 |     virtual void measure(int width_spec, int height_spec) {
+  107.42       |                          ~~~~^~~~~~~~~~
+  107.42 src/api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  107.42   340 |     virtual void measure(int width_spec, int height_spec) {
+  107.42       |                                          ~~~~^~~~~~~~~~~
+  111.76 g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -o build_dev_so/tests/s130_laws_test tests/s130_laws_test.cpp \
+  111.76 	build/apk/apk_parser.o build/apk/manifest_reader.o build/dex/dex_parser.o build/dex/mutf8.o build/dex/class_resolver.o build/dex/dex_interpreter_batch.o build/dex/c7_package_index.o build/dex/trace_exporter.o build/runtime/execution_engine.o build/runtime/application_runtime.o build/runtime/route_law.o build/diagnostics/trace_engine.o build/diagnostics/crash_forensics.o build/diagnostics/trace_overlay.o build/diagnostics/install_inspection.o build/resources/res_id.o build/resources/res_config.o build/resources/resource_parser.o build/resources/string_pool.o build/resources/arsc_parser.o build/resources/axml_parser.o build/resources/layout_inflater.o build/resources/vector_inflater.o build/resources/s132_svg_reader.o build/resources/resource_runtime.o build/resources/font_family.o build/resources/plurals.o build/renderer/software_renderer.o build/renderer/vector_decode.o build/renderer/gif_decoder.o build/gles/pgl_backend.o build/gles/gles20_bridge.o build/gles/gl_copy_bridge.o build/fonts/text_shaper.o build/framework/executor_shadow.o build/framework/kotlin_shadow.o build/framework/matrix_shadow.o build/framework/locale_insets_shadow.o build/framework/window_insets_shadow.o build/framework/display_shadow.o build/framework/gl_surface_shadow.o build/framework/surface_view_shadow.o build/framework/android_shadows.o build/framework/shadow_registry.o build/framework/choreographer_shadow.o build/framework/dialog_shadow.o build/framework/clipboard_shadow.o build/framework/canvas_shadow.o build/framework/bitmap_shadow.o build/framework/velocity_tracker.o build/framework/scroller_shadow.o build/framework/gesture_detector_shadow.o build/framework/key_event_shadow.o build/framework/touch_dispatcher.o build/framework/state_list.o build/framework/lifecycle_controller.o build/framework/locks_shadow.o build/framework/atomic_shadow.o build/framework/pending_intent_shadow.o build/framework/task_stack_builder_shadow.o build/framework/animator_shadow.o build/audio/audio_engine.o build/api/application_context.o build/api/shared_prefs.o build/api/http_client.o build/webview/webview_engine.o build/webview/html_dom.o build/webview/canvas2d.o build/storage/data_root.o build/storage/file_sandbox.o build/storage/sqlite_shadow.o build/jni/dlopen_exec.o build/jni/native_dep.o build/jni/ma_native_bridge.o build/dex/dalvik_value_glue.o build/quickjs/quickjs.o build/quickjs/libregexp.o build/quickjs/libunicode.o build/quickjs/cutils.o build/quickjs/libbf.o build/jni/native_thunk.o -Lbuild_dev_so -lminiandroid_dalvik \
+  111.76 	-Wl,-rpath,'$ORIGIN/..' -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile   -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng
+  112.09 In file included from tests/../src/framework/scroller_shadow.h:30,
+  112.09                  from tests/s130_laws_test.cpp:4:
+  112.09 tests/../src/framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+  112.09 tests/../src/framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  112.09   230 |     virtual bool get_object_float_field(uint32_t object_id,
+  112.09       |                                         ~~~~~~~~~^~~~~~~~~
+  112.09 tests/../src/framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  112.09   231 |                                         const std::string& field_name,
+  112.09       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+  112.09 tests/../src/framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  112.09   232 |                                         float& out) {
+  112.09       |                                         ~~~~~~~^~~
+  112.09 tests/../src/framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+  112.09 tests/../src/framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  112.09   235 |     virtual bool get_object_int_field(uint32_t object_id,
+  112.09       |                                       ~~~~~~~~~^~~~~~~~~
+  112.09 tests/../src/framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  112.09   236 |                                       const std::string& field_name,
+  112.09       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+  112.09 tests/../src/framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  112.09   237 |                                       int32_t& out) {
+  112.09       |                                       ~~~~~~~~~^~~
+  112.15 tests/s130_laws_test.cpp: In lambda function:
+  112.15 tests/s130_laws_test.cpp:119:54: warning: unused parameter ‘c’ [-Wunused-parameter]
+  112.15   119 |     gd3.cb = [&](const char* cb, float, float, float c, float d, float e,
+  112.15       |                                                ~~~~~~^
+  112.15 tests/s130_laws_test.cpp:119:63: warning: unused parameter ‘d’ [-Wunused-parameter]
+  112.15   119 |     gd3.cb = [&](const char* cb, float, float, float c, float d, float e,
+  112.15       |                                                         ~~~~~~^
+  112.15 tests/s130_laws_test.cpp:119:72: warning: unused parameter ‘e’ [-Wunused-parameter]
+  112.15   119 |     gd3.cb = [&](const char* cb, float, float, float c, float d, float e,
+  112.15       |                                                                  ~~~~~~^
+  113.38 g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -o build_dev_so/tests/gp582_engine_probe_test tests/gp582_engine_probe_test.cpp \
+  113.38 	build/apk/apk_parser.o build/apk/manifest_reader.o build/dex/dex_parser.o build/dex/mutf8.o build/dex/class_resolver.o build/dex/dex_interpreter_batch.o build/dex/c7_package_index.o build/dex/trace_exporter.o build/runtime/execution_engine.o build/runtime/application_runtime.o build/runtime/route_law.o build/diagnostics/trace_engine.o build/diagnostics/crash_forensics.o build/diagnostics/trace_overlay.o build/diagnostics/install_inspection.o build/resources/res_id.o build/resources/res_config.o build/resources/resource_parser.o build/resources/string_pool.o build/resources/arsc_parser.o build/resources/axml_parser.o build/resources/layout_inflater.o build/resources/vector_inflater.o build/resources/s132_svg_reader.o build/resources/resource_runtime.o build/resources/font_family.o build/resources/plurals.o build/renderer/software_renderer.o build/renderer/vector_decode.o build/renderer/gif_decoder.o build/gles/pgl_backend.o build/gles/gles20_bridge.o build/gles/gl_copy_bridge.o build/fonts/text_shaper.o build/framework/executor_shadow.o build/framework/kotlin_shadow.o build/framework/matrix_shadow.o build/framework/locale_insets_shadow.o build/framework/window_insets_shadow.o build/framework/display_shadow.o build/framework/gl_surface_shadow.o build/framework/surface_view_shadow.o build/framework/android_shadows.o build/framework/shadow_registry.o build/framework/choreographer_shadow.o build/framework/dialog_shadow.o build/framework/clipboard_shadow.o build/framework/canvas_shadow.o build/framework/bitmap_shadow.o build/framework/velocity_tracker.o build/framework/scroller_shadow.o build/framework/gesture_detector_shadow.o build/framework/key_event_shadow.o build/framework/touch_dispatcher.o build/framework/state_list.o build/framework/lifecycle_controller.o build/framework/locks_shadow.o build/framework/atomic_shadow.o build/framework/pending_intent_shadow.o build/framework/task_stack_builder_shadow.o build/framework/animator_shadow.o build/audio/audio_engine.o build/api/application_context.o build/api/shared_prefs.o build/api/http_client.o build/webview/webview_engine.o build/webview/html_dom.o build/webview/canvas2d.o build/storage/data_root.o build/storage/file_sandbox.o build/storage/sqlite_shadow.o build/jni/dlopen_exec.o build/jni/native_dep.o build/jni/ma_native_bridge.o build/dex/dalvik_value_glue.o build/quickjs/quickjs.o build/quickjs/libregexp.o build/quickjs/libunicode.o build/quickjs/cutils.o build/quickjs/libbf.o build/jni/native_thunk.o -Lbuild_dev_so -lminiandroid_dalvik \
+  113.38 	-Wl,-rpath,'$ORIGIN/..' -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile   -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng
+  114.20 In file included from tests/../src/dex/dalvik_engine.h:37,
+  114.20                  from tests/gp582_engine_probe_test.cpp:20:
+  114.20 tests/../src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+  114.20 tests/../src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  114.20   348 |     bool is_object_ref;                 // reference type
+  114.20       |          ^~~~~~~~~~~~~
+  114.20 tests/../src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  114.20   345 |     json value;                         // Current value (JSON for flexibility)
+  114.20       |          ^~~~~
+  114.20 tests/../src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  114.20   351 |     StaticFieldEntry()
+  114.20       |     ^~~~~~~~~~~~~~~~
+  114.20 tests/../src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+  114.20 tests/../src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  114.20   348 |     bool is_object_ref;                 // reference type
+  114.20       |          ^~~~~~~~~~~~~
+  114.20 tests/../src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  114.20   345 |     json value;                         // Current value (JSON for flexibility)
+  114.20       |          ^~~~~
+  114.20 tests/../src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  114.20   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+  114.20       |     ^~~~~~~~~~~~~~~~
+  114.32 In file included from tests/../src/dex/dalvik_engine.h:38:
+  114.32 tests/../src/dex/../runtime/vtable_dispatch.h: In lambda function:
+  114.32 tests/../src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  114.32   298 |         executor = [](const RuntimeMethodInfo* method,
+  114.32       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+  114.32 tests/../src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  114.32   299 |                       const std::vector<json>& args,
+  114.32       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+  114.33 tests/../src/dex/../runtime/vtable_dispatch.h: In lambda function:
+  114.33 tests/../src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  114.33   635 |                                    const std::vector<json>& args,
+  114.33       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+  114.37 In file included from tests/../src/dex/dalvik_engine.h:39:
+  114.37 tests/../src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+  114.37 tests/../src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  114.37   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+  114.37       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+  114.37 tests/../src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+  114.37 tests/../src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  114.37   340 |     virtual void measure(int width_spec, int height_spec) {
+  114.37       |                          ~~~~^~~~~~~~~~
+  114.37 tests/../src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  114.37   340 |     virtual void measure(int width_spec, int height_spec) {
+  114.37       |                                          ~~~~^~~~~~~~~~~
+  114.46 In file included from tests/../src/dex/../storage/sqlite_shadow.h:32,
+  114.46                  from tests/../src/dex/dalvik_engine.h:43:
+  114.46 tests/../src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+  114.46 tests/../src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  114.46   230 |     virtual bool get_object_float_field(uint32_t object_id,
+  114.46       |                                         ~~~~~~~~~^~~~~~~~~
+  114.46 tests/../src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  114.46   231 |                                         const std::string& field_name,
+  114.46       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+  114.46 tests/../src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  114.46   232 |                                         float& out) {
+  114.46       |                                         ~~~~~~~^~~
+  114.46 tests/../src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+  114.46 tests/../src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  114.46   235 |     virtual bool get_object_int_field(uint32_t object_id,
+  114.46       |                                       ~~~~~~~~~^~~~~~~~~
+  114.46 tests/../src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  114.46   236 |                                       const std::string& field_name,
+  114.46       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+  114.46 tests/../src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  114.46   237 |                                       int32_t& out) {
+  114.46       |                                       ~~~~~~~~~^~~
+  114.80 tests/../src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+  114.80 tests/../src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+  114.80  1142 |         HeapObject& obj =
+  114.80       |                     ^~~
+  115.07 tests/gp582_engine_probe_test.cpp: In function ‘uint16_t w23x(uint8_t, uint8_t, uint8_t, uint16_t)’:
+  115.07 tests/gp582_engine_probe_test.cpp:65:43: warning: unused parameter ‘vBB’ [-Wunused-parameter]
+  115.07    65 | static uint16_t w23x(uint8_t vAA, uint8_t vBB, uint8_t vCC, uint16_t op) {
+  115.07       |                                   ~~~~~~~~^~~
+  115.07 tests/gp582_engine_probe_test.cpp:65:56: warning: unused parameter ‘vCC’ [-Wunused-parameter]
+  115.07    65 | static uint16_t w23x(uint8_t vAA, uint8_t vBB, uint8_t vCC, uint16_t op) {
+  115.07       |                                                ~~~~~~~~^~~
+  119.38 g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -o build_dev_so/tests/w15_dalvik_lit_from16_law_test tests/w15_dalvik_lit_from16_law_test.cpp \
+  119.38 	build/apk/apk_parser.o build/apk/manifest_reader.o build/dex/dex_parser.o build/dex/mutf8.o build/dex/class_resolver.o build/dex/dex_interpreter_batch.o build/dex/c7_package_index.o build/dex/trace_exporter.o build/runtime/execution_engine.o build/runtime/application_runtime.o build/runtime/route_law.o build/diagnostics/trace_engine.o build/diagnostics/crash_forensics.o build/diagnostics/trace_overlay.o build/diagnostics/install_inspection.o build/resources/res_id.o build/resources/res_config.o build/resources/resource_parser.o build/resources/string_pool.o build/resources/arsc_parser.o build/resources/axml_parser.o build/resources/layout_inflater.o build/resources/vector_inflater.o build/resources/s132_svg_reader.o build/resources/resource_runtime.o build/resources/font_family.o build/resources/plurals.o build/renderer/software_renderer.o build/renderer/vector_decode.o build/renderer/gif_decoder.o build/gles/pgl_backend.o build/gles/gles20_bridge.o build/gles/gl_copy_bridge.o build/fonts/text_shaper.o build/framework/executor_shadow.o build/framework/kotlin_shadow.o build/framework/matrix_shadow.o build/framework/locale_insets_shadow.o build/framework/window_insets_shadow.o build/framework/display_shadow.o build/framework/gl_surface_shadow.o build/framework/surface_view_shadow.o build/framework/android_shadows.o build/framework/shadow_registry.o build/framework/choreographer_shadow.o build/framework/dialog_shadow.o build/framework/clipboard_shadow.o build/framework/canvas_shadow.o build/framework/bitmap_shadow.o build/framework/velocity_tracker.o build/framework/scroller_shadow.o build/framework/gesture_detector_shadow.o build/framework/key_event_shadow.o build/framework/touch_dispatcher.o build/framework/state_list.o build/framework/lifecycle_controller.o build/framework/locks_shadow.o build/framework/atomic_shadow.o build/framework/pending_intent_shadow.o build/framework/task_stack_builder_shadow.o build/framework/animator_shadow.o build/audio/audio_engine.o build/api/application_context.o build/api/shared_prefs.o build/api/http_client.o build/webview/webview_engine.o build/webview/html_dom.o build/webview/canvas2d.o build/storage/data_root.o build/storage/file_sandbox.o build/storage/sqlite_shadow.o build/jni/dlopen_exec.o build/jni/native_dep.o build/jni/ma_native_bridge.o build/dex/dalvik_value_glue.o build/quickjs/quickjs.o build/quickjs/libregexp.o build/quickjs/libunicode.o build/quickjs/cutils.o build/quickjs/libbf.o build/jni/native_thunk.o -Lbuild_dev_so -lminiandroid_dalvik \
+  119.38 	-Wl,-rpath,'$ORIGIN/..' -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile   -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng
+  120.22 In file included from tests/../src/dex/dalvik_engine.h:37,
+  120.22                  from tests/w15_dalvik_lit_from16_law_test.cpp:23:
+  120.22 tests/../src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+  120.22 tests/../src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  120.22   348 |     bool is_object_ref;                 // reference type
+  120.22       |          ^~~~~~~~~~~~~
+  120.22 tests/../src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  120.22   345 |     json value;                         // Current value (JSON for flexibility)
+  120.22       |          ^~~~~
+  120.22 tests/../src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  120.22   351 |     StaticFieldEntry()
+  120.22       |     ^~~~~~~~~~~~~~~~
+  120.22 tests/../src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+  120.22 tests/../src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  120.22   348 |     bool is_object_ref;                 // reference type
+  120.22       |          ^~~~~~~~~~~~~
+  120.22 tests/../src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  120.22   345 |     json value;                         // Current value (JSON for flexibility)
+  120.22       |          ^~~~~
+  120.22 tests/../src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  120.22   356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+  120.22       |     ^~~~~~~~~~~~~~~~
+  120.35 In file included from tests/../src/dex/dalvik_engine.h:38:
+  120.35 tests/../src/dex/../runtime/vtable_dispatch.h: In lambda function:
+  120.35 tests/../src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  120.35   298 |         executor = [](const RuntimeMethodInfo* method,
+  120.35       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+  120.35 tests/../src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  120.35   299 |                       const std::vector<json>& args,
+  120.35       |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+  120.36 tests/../src/dex/../runtime/vtable_dispatch.h: In lambda function:
+  120.36 tests/../src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  120.36   635 |                                    const std::vector<json>& args,
+  120.36       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+  120.40 In file included from tests/../src/dex/dalvik_engine.h:39:
+  120.40 tests/../src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+  120.40 tests/../src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  120.40   137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+  120.40       |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+  120.41 tests/../src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+  120.41 tests/../src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  120.41   340 |     virtual void measure(int width_spec, int height_spec) {
+  120.41       |                          ~~~~^~~~~~~~~~
+  120.41 tests/../src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  120.41   340 |     virtual void measure(int width_spec, int height_spec) {
+  120.41       |                                          ~~~~^~~~~~~~~~~
+  120.50 In file included from tests/../src/dex/../storage/sqlite_shadow.h:32,
+  120.50                  from tests/../src/dex/dalvik_engine.h:43:
+  120.50 tests/../src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+  120.50 tests/../src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  120.50   230 |     virtual bool get_object_float_field(uint32_t object_id,
+  120.50       |                                         ~~~~~~~~~^~~~~~~~~
+  120.50 tests/../src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  120.50   231 |                                         const std::string& field_name,
+  120.50       |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+  120.50 tests/../src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  120.50   232 |                                         float& out) {
+  120.50       |                                         ~~~~~~~^~~
+  120.50 tests/../src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+  120.50 tests/../src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  120.50   235 |     virtual bool get_object_int_field(uint32_t object_id,
+  120.50       |                                       ~~~~~~~~~^~~~~~~~~
+  120.50 tests/../src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  120.50   236 |                                       const std::string& field_name,
+  120.50       |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+  120.50 tests/../src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  120.50   237 |                                       int32_t& out) {
+  120.50       |                                       ~~~~~~~~~^~~
+  120.87 tests/../src/dex/dalvik_engine.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+  120.87 tests/../src/dex/dalvik_engine.h:1142:21: warning: unused variable ‘obj’ [-Wunused-variable]
+  120.87  1142 |         HeapObject& obj =
+  120.87       |                     ^~~
+  125.51 g++ -std=c++17 -Wall -Wextra -g -O2 -MMD -MP -DMINIANDROID_HAVE_WEBP -Isrc -Isrc/webview -Isrc/apk -Isrc/dex -Isrc/runtime -Isrc/api -Isrc/graphics -Isrc/diagnostics -Isrc/resources -Isrc/renderer -Isrc/framework -Isrc/storage -Isrc/fonts -Isrc/gles -Isrc/jni -Isrc/audio -Ithird_party/portablegl -I/usr/include/freetype2 -Ithird_party/nlohmann_json/include -Ibuild/generated -Ithird_party/nlohmann_json/include -rdynamic -o build_dev_so/miniandroid_dev build/main.o build/jni/bionic_compat.o build/jni/pthread_shadow.o build/apk/apk_parser.o build/apk/manifest_reader.o build/dex/dex_parser.o build/dex/mutf8.o build/dex/class_resolver.o build/dex/dex_interpreter_batch.o build/dex/c7_package_index.o build/dex/trace_exporter.o build/runtime/execution_engine.o build/runtime/application_runtime.o build/runtime/route_law.o build/diagnostics/trace_engine.o build/diagnostics/crash_forensics.o build/diagnostics/trace_overlay.o build/diagnostics/install_inspection.o build/resources/res_id.o build/resources/res_config.o build/resources/resource_parser.o build/resources/string_pool.o build/resources/arsc_parser.o build/resources/axml_parser.o build/resources/layout_inflater.o build/resources/vector_inflater.o build/resources/s132_svg_reader.o build/resources/resource_runtime.o build/resources/font_family.o build/resources/plurals.o build/renderer/software_renderer.o build/renderer/vector_decode.o build/renderer/gif_decoder.o build/gles/pgl_backend.o build/gles/gles20_bridge.o build/gles/gl_copy_bridge.o build/fonts/text_shaper.o build/framework/executor_shadow.o build/framework/kotlin_shadow.o build/framework/matrix_shadow.o build/framework/locale_insets_shadow.o build/framework/window_insets_shadow.o build/framework/display_shadow.o build/framework/gl_surface_shadow.o build/framework/surface_view_shadow.o build/framework/android_shadows.o build/framework/shadow_registry.o build/framework/choreographer_shadow.o build/framework/dialog_shadow.o build/framework/clipboard_shadow.o build/framework/canvas_shadow.o build/framework/bitmap_shadow.o build/framework/velocity_tracker.o build/framework/scroller_shadow.o build/framework/gesture_detector_shadow.o build/framework/key_event_shadow.o build/framework/touch_dispatcher.o build/framework/state_list.o build/framework/lifecycle_controller.o build/framework/locks_shadow.o build/framework/atomic_shadow.o build/framework/pending_intent_shadow.o build/framework/task_stack_builder_shadow.o build/framework/animator_shadow.o build/audio/audio_engine.o build/api/application_context.o build/api/shared_prefs.o build/api/http_client.o build/webview/webview_engine.o build/webview/html_dom.o build/webview/canvas2d.o build/storage/data_root.o build/storage/file_sandbox.o build/storage/sqlite_shadow.o build/jni/dlopen_exec.o build/jni/native_dep.o build/jni/ma_native_bridge.o build/dex/dalvik_value_glue.o build/quickjs/quickjs.o build/quickjs/libregexp.o build/quickjs/libunicode.o build/quickjs/cutils.o build/quickjs/libbf.o build/jni/native_thunk.o \
+  125.51 	-Lbuild_dev_so -lminiandroid_dalvik -Wl,-rpath,'$ORIGIN' -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile   -lwebp -lwebpdemux -lfreetype -lharfbuzz -lfribidi -lpng

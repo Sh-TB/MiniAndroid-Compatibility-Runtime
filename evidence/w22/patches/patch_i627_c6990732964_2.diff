@@ -1,0 +1,5 @@
+--- a/miniandroid/Makefile
++++ b/miniandroid/Makefile
+@@ -77,7 +77,7 @@
+-CORE_SOURCES := $(shell grep -v '^#' core_sources.manifest)
++CORE_SOURCES := $(shell grep -v '^\#' core_sources.manifest)

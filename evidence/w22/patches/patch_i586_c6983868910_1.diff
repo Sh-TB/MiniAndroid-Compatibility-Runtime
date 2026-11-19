@@ -1,0 +1,428 @@
+diff --git a/evidence/s231_koin/s231_gates.json b/evidence/s231_koin/s231_gates.json
+new file mode 100644
+index 00000000..d16fee46
+--- /dev/null
++++ b/evidence/s231_koin/s231_gates.json
+@@ -0,0 +1,38 @@
++{
++ "bouncy": {
++  "face": "98abca389fb01380",
++  "expect8": "8a6c24ac",
++  "match": false,
++  "wall": 26.5,
++  "verdicts": [
++   "SAFE"
++  ],
++  "uncaught": 0
++ },
++ "unote": {
++  "face": "3b8dcb0adbbc17a9",
++  "expect8": "3b8dcb0a",
++  "match": true,
++  "wall": 1.5,
++  "verdicts": [],
++  "uncaught": 0
++ },
++ "gmdice": {
++  "face": "3891679dff449331",
++  "expect8": "3891679d",
++  "match": true,
++  "wall": 1.6,
++  "verdicts": [],
++  "uncaught": 0
++ },
++ "dooz": {
++  "face": "d602648e8e401895",
++  "expect8": "a0fae907",
++  "match": false,
++  "wall": 2.6,
++  "verdicts": [
++   "DEFAULT_BACKGROUND_ONLY"
++  ],
++  "uncaught": 32
++ }
++}
+\ No newline at end of file
+diff --git a/evidence/s231_koin/s231_koin_probe.json b/evidence/s231_koin/s231_koin_probe.json
+new file mode 100644
+index 00000000..2958c64c
+--- /dev/null
++++ b/evidence/s231_koin/s231_koin_probe.json
+@@ -0,0 +1,52 @@
++{
++ "base": "9dafaadd (S231 wave, binary d9850915aa3d6750)",
++ "env": "MINIANDROID_S231_KOIN_TRACE=1",
++ "put_rows": 120,
++ "get_rows": 0,
++ "put_maps": {
++  "1352": 24,
++  "1146": 14,
++  "792": 13,
++  "226": 6,
++  "648": 6,
++  "450": 5,
++  "534": 5,
++  "740": 5,
++  "1571": 5,
++  "813": 4,
++  "885": 4,
++  "584": 3,
++  "706": 3,
++  "1266": 3,
++  "215": 2,
++  "508": 2,
++  "622": 2,
++  "857": 2,
++  "943": 2,
++  "1076": 2,
++  "1120": 2,
++  "1300": 2,
++  "1326": 2,
++  "400": 1,
++  "1102": 1
++ },
++ "asymmetry": "ZERO map-shadow get rows for the Koin family while 120 put rows land \u2014 the Koin gets do NOT route through the generic map-get law at 9dafaadd (S172/S173-era runs DID see them there) \u2014 the put/get surfaces diverge structurally (F-NEW-485 silent-merge hypothesis, instrument-confirmed)",
++ "sample_put_keys": [
++  "android.content.ContentResolver::_root_",
++  "android.content.res.Resources::_root_",
++  "android.net.ConnectivityManager::_root_",
++  "androidx.core.app.NotificationManagerCompat::_root_",
++  "app.k9mail.core.android.common.camera.CameraCaptureHandler::_root_",
++  "app.k9mail.core.android.common.camera.io.CaptureImageFileWriter::_root_",
++  "app.k9mail.core.android.common.contact.AndroidContactPermissionResolver::_root_",
++  "app.k9mail.core.android.common.contact.ContactRepository::_root_",
++  "app.k9mail.core.android.common.contact.ContentResolverContactDataSource::_root_",
++  "app.k9mail.feature.widget.message.list.MessageListLoader::_root_",
++  "app.k9mail.feature.widget.message.list.MessageListWidgetManager::_root_",
++  "app.k9mail.feature.widget.unread.UnreadWidgetDataProvider::_root_"
++ ],
++ "tb_face": "43bfdac6023cba66",
++ "tb_uncaught": 9,
++ "koin_sget_miss_rows": 1,
++ "gates": "unote 3b8dcb0adbbc17a9 MATCH / gmdice 3891679dff449331 MATCH / bouncy 98abca389fb01380 + dooz d602648e8e401895 DRIFT vs S225-M pins \u2014 pristine 9dafaadd A/B identical -> mainline drift, delta byte-neutral"
++}
+\ No newline at end of file
+diff --git a/evidence/s231_koin/s231_pristine_ab.json b/evidence/s231_koin/s231_pristine_ab.json
+new file mode 100644
+index 00000000..ad827eba
+--- /dev/null
++++ b/evidence/s231_koin/s231_pristine_ab.json
+@@ -0,0 +1,12 @@
++{
++ "bouncy": {
++  "face": "98abca389fb01380",
++  "expect8": "8a6c24ac",
++  "match": false
++ },
++ "dooz": {
++  "face": "d602648e8e401895",
++  "expect8": "a0fae907",
++  "match": false
++ }
++}
+\ No newline at end of file
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index 9554a175..371a4e13 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -2994,6 +2994,39 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+                           << " caller=" << ctx.class_name << "."
+                           << ctx.method << std::endl;
+             }
++            // S231 Koin-index get probe (env-gated, bounded 120): the
++            // F-NEW-485 divergence — put keys carry the Koin qualifier
++            // suffix (…:local:_root_) while the failing lookups were
++            // reported bare (#526 prescribed gets). Logs EVERY get whose
++            // caller or key touches the Koin index family so put/get keys
++            // become byte-comparable.
++            {
++                static thread_local uint64_t s231_get = 0;
++                static const bool s231_env =
++                    std::getenv("MINIANDROID_S231_KOIN_TRACE") != nullptr;
++                bool s231_hit =
++                    state->map_string_entries.count(key) > 0 ||
++                    (state->map_entries.count(key) > 0 &&
++                     state->map_entries[key] != 0);
++                if (s231_env && s231_get < 120 &&
++                    (ctx.caller.find("Koin") != std::string::npos ||
++                     ctx.caller.find("koin") != std::string::npos ||
++                     ctx.caller.find("resolveFromContext") !=
++                         std::string::npos ||
++                     key.find("koin") != std::string::npos ||
++                     key.find("Koin") != std::string::npos ||
++                     key.find(":_root_") != std::string::npos)) {
++                    ++s231_get;
++                    std::cerr << "[S231-KOIN-GET] map=" << obj_id
++                              << " key=\"" << key << "\""
++                              << " hit=" << (s231_hit ? 1 : 0)
++                              << " str_entries="
++                              << state->map_string_entries.size()
++                              << " obj_entries=" << state->map_entries.size()
++                              << " caller=" << ctx.caller
++                              << std::endl;
++                }
++            }
+             // Check string entries first.
+             auto sit = state->map_string_entries.find(key);
+             if (sit != state->map_string_entries.end()) {
+@@ -4413,6 +4446,32 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
+                               << " caller=" << ctx.caller << std::endl;
+                 }
+             }
++            // S231 Koin-index put probe (env-gated, bounded 120): the put
++            // twin of [S231-KOIN-GET] — every put whose caller or key
++            // touches the Koin index family (indexKey puts carry the
++            // :qualifier:scopeId suffix, per #526).
++            {
++                static thread_local uint64_t s231_put = 0;
++                static const bool s231_penv =
++                    std::getenv("MINIANDROID_S231_KOIN_TRACE") != nullptr;
++                if (s231_penv && s231_put < 120 &&
++                    (ctx.caller.find("Koin") != std::string::npos ||
++                     ctx.caller.find("koin") != std::string::npos ||
++                     ctx.caller.find("indexPrimaryType") !=
++                         std::string::npos ||
++                     key.find("koin") != std::string::npos ||
++                     key.find("Koin") != std::string::npos ||
++                     key.find(":_root_") != std::string::npos)) {
++                    ++s231_put;
++                    std::cerr << "[S231-KOIN-PUT] map=" << obj_id
++                              << " key=\"" << key << "\""
++                              << " str_entries="
++                              << state->map_string_entries.size()
++                              << " obj_entries=" << state->map_entries.size()
++                              << " caller=" << ctx.caller
++                              << std::endl;
++                }
++            }
+             // EXP-071 Phase 7: Check if the value is a STRING or OBJECT.
+             // For STRING values, store in map_string_entries.
+             // For OBJECT values, store in map_entries.
+diff --git a/miniandroid/src/jni/bionic_compat.c b/miniandroid/src/jni/bionic_compat.c
+index d995b313..2b147b09 100644
+--- a/miniandroid/src/jni/bionic_compat.c
++++ b/miniandroid/src/jni/bionic_compat.c
+@@ -518,3 +518,30 @@ int __android_log_print(int prio, const char* tag, const char* fmt, ...) {
+     va_end(ap);
+     return n;
+ }
++
++/* ═══════════════════════════════════════════════════════════════════════
++ * S231 engine delta (re-lands the S226-transfer residue the S230 receipt
++ * recorded as not-applied): the three FORTIFY/bionic symbols the anchor
++ * surface above does not cover — needed by app-native dlopen (conscrypt
++ * frontier). The engine links -rdynamic, so these definitions ARE the
++ * dlopen resolution surface. Honest contracts only — never a fake success.
++ * ═══════════════════════════════════════════════════════════════════════ */
++#include <stdlib.h>
++
++__attribute__((visibility("default")))
++void* __memset_chk(void* d, int c, size_t n, size_t dl) {
++    if (n > dl) { fprintf(stderr, "[S231-FORTIFY] __memset_chk overflow\n"); abort(); }
++    return memset(d, c, n);
++}
++__attribute__((visibility("default")))
++int __vsnprintf_chk(char* s, size_t n, int flags, size_t dl, const char* fmt, va_list ap) {
++    (void)flags;
++    if (n > dl) { fprintf(stderr, "[S231-FORTIFY] __vsnprintf_chk overflow\n"); abort(); }
++    return vsnprintf(s, n, fmt, ap);
++}
++__attribute__((visibility("default")))
++void __stack_chk_fail(void) {
++    /* the bionic contract: SSP violation is fatal */
++    fprintf(stderr, "[S231-FORTIFY] stack smashing detected: abort\n");
++    abort();
++}
+diff --git a/scripts/s231_gates.py b/scripts/s231_gates.py
+new file mode 100644
+index 00000000..cad72c49
+--- /dev/null
++++ b/scripts/s231_gates.py
+@@ -0,0 +1,71 @@
++#!/usr/bin/env python3
++"""s231_gates.py — minimal 4-gate spot battery at current main (9dafaadd).
++Proves the S231 bionic +3-symbol delta is byte-neutral on the gate faces.
++Pins: bouncy 8a6c24ac… / unote 3b8dcb0a… / gmdice 3891679d… / dooz a0fae907…
++"""
++import hashlib
++import json
++import re
++import subprocess
++import time
++from pathlib import Path
++
++BASE = Path("/home/z/my-project/wt_s225")
++MA = BASE / "miniandroid"
++BIN = MA / "build/miniandroid"
++APK_DIR = Path("/home/z/my-project/upload/canonical_apks")
++OUT = BASE / "run/s231_gates"
++OUT.mkdir(parents=True, exist_ok=True)
++
++GATES = [
++    ("bouncy", "com.dozingcatsoftware.bouncy_43.apk", "com.dozingcatsoftware.bouncy", "8a6c24ac"),
++    ("unote", "app.varlorg.unote_30.apk", "app.varlorg.unote", "3b8dcb0a"),
++    ("gmdice", "de.duenndns.gmdice_8.apk", "de.duenndns.gmdice", "3891679d"),
++    ("dooz", "io.github.yamin8000.dooz_23.apk", "io.github.yamin8000.dooz", "a0fae907"),
++]
++VERDICT_RE = re.compile(r"verdict[\"'= :]+([A-Z_]{4,40})")
++
++
++def sha16(p):
++    return hashlib.sha256(Path(p).read_bytes()).hexdigest()[:16]
++
++
++def main():
++    res = {}
++    for tag, fname, package, expect8 in GATES:
++        store = OUT / f"store_{tag}/data"
++        rundir = OUT / tag
++        console = OUT / f"{tag}.console.log"
++        marker = store / ".installed"
++        marker.parent.mkdir(parents=True, exist_ok=True)
++        if not marker.exists():
++            subprocess.run([str(BIN), "install", str(APK_DIR / fname),
++                            "--data-root", str(store)],
++                           capture_output=True, cwd=str(MA), timeout=600)
++            marker.write_text("ok\n")
++        cmd = [str(BIN), "run", "--execution-mode", "real-dalvik",
++               "--data-root", str(store), "-o", str(rundir),
++               "--max-seconds", "70", "--frames", "8",
++               "--trace", "--package", package]
++        t0 = time.time()
++        try:
++            with open(console, "w") as cf:
++                subprocess.run(cmd, stdout=cf, stderr=subprocess.STDOUT,
++                               cwd=str(MA), timeout=130)
++        except subprocess.TimeoutExpired:
++            pass
++        shot = rundir / "screenshot.png"
++        face = sha16(shot) if shot.exists() else None
++        text = console.read_text(errors="replace")
++        res[tag] = {"face": face, "expect8": expect8,
++                    "match": bool(face and face.startswith(expect8)),
++                    "wall": round(time.time() - t0, 1),
++                    "verdicts": list(dict.fromkeys(VERDICT_RE.findall(text)))[:3],
++                    "uncaught": len(re.findall(r"UNCAUGHT", text))}
++        print("GATE", tag, face, "expect", expect8, "match", res[tag]["match"])
++    (OUT / "s231_gates.json").write_text(json.dumps(res, indent=1))
++    print("WROTE", OUT / "s231_gates.json")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/s231_post.py b/scripts/s231_post.py
+new file mode 100644
+index 00000000..11e67fe6
+--- /dev/null
++++ b/scripts/s231_post.py
+@@ -0,0 +1,136 @@
++#!/usr/bin/env python3
++"""s231_post.py — post the S231 delta to issue #586 (K-2, truncation-safe):
++- per-file sha256 rows (the S230 receipt's suggestion, adopted)
++- smaller diff parts (<=24k chars)
++- metadata table with base/sha16/apply-check
++"""
++import hashlib
++import json
++import subprocess
++import sys
++import urllib.request
++from pathlib import Path
++
++BASE = Path("/home/z/my-project/wt_s225")
++BRANCH = "s231-engine-delta"
++REPO = "Sh-TB/MiniAndroid-Compatibility-Runtime"
++TOKEN = sys.argv[1]
++BASE_SHA = "9dafaadd"
++ISSUE = 586
++
++
++def api(method, path, payload):
++    req = urllib.request.Request(
++        f"https://api.github.com/repos/{REPO}/{path}",
++        data=json.dumps(payload).encode(),
++        headers={"Authorization": f"token {TOKEN}",
++                 "Accept": "application/vnd.github+json"},
++        method=method)
++    with urllib.request.urlopen(req) as r:
++        return json.loads(r.read())
++
++
++def sh(*a):
++    return subprocess.run(a, capture_output=True, text=True, cwd=BASE)
++
++
++def main():
++    diff = sh("git", "diff", BASE_SHA, BRANCH).stdout
++    p = BASE / "run/s231.patch"
++    p.write_text(diff)
++    psha = hashlib.sha256(diff.encode()).hexdigest()[:16]
++    numstat = [l.split("\t") for l in sh("git", "diff", "--numstat",
++               BASE_SHA, BRANCH).stdout.strip().splitlines() if l.strip()]
++    added = sum(int(a) for a, d, f in numstat)
++    deleted = sum(int(d) for a, d, f in numstat)
++
++    sh("git", "worktree", "add", "--detach",
++       "/home/z/my-project/wt_check_s231", BASE_SHA)
++    chk = subprocess.run(["git", "apply", "--check", str(p)],
++                         cwd="/home/z/my-project/wt_check_s231",
++                         capture_output=True, text=True)
++    apply_rc = chk.returncode
++    sh("git", "worktree", "remove", "/home/z/my-project/wt_check_s231", "--force")
++
++    # per-file sha256 rows (adopted from the S230 receipt's suggestion)
++    rows = "\n".join(
++        f"| `{f}` | +{a} / −{d} | `{hashlib.sha256(diff_post(f).encode()).hexdigest()[:16]}…` |"
++        for a, d, f in numstat)
++
++    gates = json.loads((BASE / "run/s231_gates/s231_gates.json").read_text())
++    gate_rows = "\n".join(
++        f"| {t} | `{v['face']}` | {v['expect8']}… | {'MATCH' if v['match'] else 'DRIFT vs S225-M pin — mainline (pristine A/B identical)'} |"
++        for t, v in gates.items())
++
++    body = f"""# S231 — the S226 engine delta re-lands on current main `{BASE_SHA}` (wave9) + the pin-drift audit finding + the Koin put/get probe (per #526) — patch in this comment per K-2 (truncation-safe format adopted)
++
++**Base:** `{BASE_SHA}` (current `origin/main`, PR #625 merge; `git ls-remote`-verified at posting time). Sandbox note: the S226 worktree was lost to a sandbox recycle — this wave re-lands on a fresh fetch.
++
++## 1. The engine delta (what the S230 receipt recorded as not-applied)
++
++The 3 FORTIFY symbols (`__memset_chk` / `__vsnprintf_chk` / `__stack_chk_fail`) re-land on `bionic_compat.c` (+31 lines). **Byte-neutrality proven live**: unote `3b8dcb0adbbc17a9` and gmdice `3891679dff449331` faces byte-identical WITH the delta; the bouncy/dooz faces below are byte-identical to a **pristine `{BASE_SHA}` rebuild without the delta** (A/B in this sandbox).
++
++## 2. AUDIT FINDING — the 6-pin HOLD state is stale at `{BASE_SHA}` (no re-pin record)
++
++| Gate | face at `{BASE_SHA}` (this sandbox) | S225-M-era pin | verdict |
++|---|---|---|---|
++{gate_rows}
++
++bouncy `98abca389fb01380` and dooz `d602648e8e401895` differ from the last recorded pins (S225-M commit message / S230 receipt binary `06f98d2a9c21ea92` claims HOLD). Attribution: the **pristine** `{BASE_SHA}` rebuild (no S231 delta) reproduces the SAME drifted faces → the drift is mainline (S226→S230→wave9: launch-blank/window-law territory), not the S231 delta. No re-pin record found in `evidence/` (grep `98abca38`/`d602648e` → only unrelated s188 traces). The 6-pin HOLD claim needs a fresh re-census + re-pin on the current main.
++
++## 3. The S231 Koin probe (#526's prescribed "add the gets", generalized)
++
++`android_shadows.cpp` +62 lines, env-gated `MINIANDROID_S231_KOIN_TRACE`, bounded 120 per side: `[S231-KOIN-GET]`/`[S231-KOIN-PUT]` rows make the indexKey put/get keys byte-comparable for the whole Koin index family (not just featureflag). Zero behavior change (probe-only; env off = inert). TB face at `{BASE_SHA}`: `43bfdac6023cba66` (== the S226 battery face; F-NEW-485 still LIVE-REDUCED, `_koin` SGET-MISS row present, koin_ise=0).
++
++## 4. Patch per K-2 — truncation-safe format (adopted from the receipt)
++
++| Item | Value |
++|---|---|
++| Base | `{BASE_SHA}` (apply parts in order on a clean tree) |
++| Shape | {len(numstat)} files, +{added} / −{deleted} |
++| Patch SHA256 | `{psha}…` |
++| `git apply --check` | {'**CLEAN rc=0**' if apply_rc == 0 else f'**FAILED rc={apply_rc}**'} on a pristine `{BASE_SHA}` worktree, verified before posting |
++| Per-file sha256 (post-image, sha16) | below |
++
++{rows}
++
++Parts below. **If any part truncates in transit, the per-file rows make it detectable at receipt time.**
++"""
++    parts = split_patch(diff, 24000)
++    n = len(parts)
++    full = body.replace("Parts below.", f"Parts 1..{n} below.")
++    # post as comments: first the receipt body, then patch parts
++    head = api("POST", f"issues/{ISSUE}/comments", {"body": full})
++    print("HEAD", head["id"], f"len {len(full)}")
++    for i, part in enumerate(parts, 1):
++        meta = f"""## S231 patch — PART {i}/{n}/{n} — base `{BASE_SHA}`, patch sha16 `{psha}`, apply-check {'CLEAN rc=0' if apply_rc == 0 else f'FAILED rc={apply_rc}'}
++
++<details><summary>PATCH PART {i}/{n}</summary>
++
++

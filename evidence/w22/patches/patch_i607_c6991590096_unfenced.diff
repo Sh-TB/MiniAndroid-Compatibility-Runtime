@@ -1,0 +1,44 @@
+### Finding
+**E-05 (NEW, not covered by `19ee074a`): `const/high16` left-shifts a NEGATIVE signed value — genuine C++ UB, reproduced with UBSan.** Same family as the lit8 `shl` / jumbo fixes in `19ee074a` but missed by that patch. Present in BOTH execution paths. `const/high16` is extremely common (R8 emits it for most large int constants).
+
+### Evidence classification
+**TESTED** (isolated UBSan probe reproduced the UB; the fixed form verified correct for all sign-bit cases). Source OBSERVED at HEAD `9dafaadd` in both paths.
+
+### Original work recovered / relation
+Extends the #607 Dalvik-width family (OpenHands `19ee074a` fixed lit8/lit16 shl + jumbo). This is the remaining `const/high16` member of that family — a new discovery, not a duplicate.
+
+### Current main verification
+- Split: `dalvik_interpreter.cpp:870-873` — `int16_t bbbb = (int16_t)bytecode_[pc_+1]; val.int_val = static_cast<int32_t>(bbbb) << 16;`
+- Monolith: `dalvik_engine.cpp:22440` — identical `static_cast<int32_t>(bbbb) << 16`.
+- Secondary: `const-wide/high16` `dalvik_interpreter.cpp:4458` / `dalvik_engine.cpp:26025` — `static_cast<int64_t>(val) << 48` (val is `uint16_t`, non-negative).
+
+### Root cause
+`bbbb` is `int16_t`; for any literal with bit 15 set (BBBB >= 0x8000) it is negative. C++17 [expr.shift] defines left-shift only for NON-NEGATIVE signed operands; shifting a negative value is UB (this is exactly the lit8 `shl` UB `19ee074a` fixed, but in the const handler). On x86 it usually yields the right bit pattern by accident, but it is UB and UBSan-flagged, and a different optimizer/platform may not. NOTE the contrast: `const-wide/high16` shifts a NON-NEGATIVE `int64_t` (zero-extended `uint16_t`), which C++17 defines (result representable in the unsigned type) — so that one is fragile-but-defined, not hard UB; hardening it to unsigned is for consistency/sanitizer-cleanliness.
+
+### Proposed solution + Patch
+Compute in unsigned width (the Dalvik result is the 16-bit pattern placed in the high half; the sign of `bbbb` is irrelevant to the final bits). Minimal diff, both files:
+```diff
+--- a/miniandroid/src/dex/dalvik_interpreter.cpp
++++ b/miniandroid/src/dex/dalvik_interpreter.cpp
+@@ const/high16 (around :873) @@
+-                val.int_val = static_cast<int32_t>(bbbb) << 16;
++                // E-05: unsigned-width shift — bbbb<0 made this signed left-shift UB
++                val.int_val = static_cast<int32_t>(static_cast<uint32_t>(static_cast<uint16_t>(bbbb)) << 16);
+```
+Apply the identical change at `dalvik_engine.cpp:22440`. Optional consistency hardening for `const-wide/high16` (both files): `dv.long_val = static_cast<int64_t>(static_cast<uint64_t>(val) << 48);`.
+
+### Regression tests
+Extend `s248_dalvik_arith_width_law_test` with `const/high16` rows: BBBB = 0x8000 → 0x80000000; 0xFFFF → 0xFFFF0000; 0xABCD → 0xABCD0000; 0x7FFF → 0x7FFF0000. Assert exact `int_val`. (The existing `s248` jumbo row uses word_high=0 and does not discriminate shift width — these const rows DO, because bit 15 flips the sign of the shifted operand.)
+
+### Actual results (commands + exit codes)
+`g++ -std=c++17 -O0 -fsanitize=shift -fno-sanitize-recover=all` on `(int32_t)(int16_t)0xFFFF << 16` → **exit 1, `runtime error: left shift of negative value -1`**. Fixed-form probe (`(int32_t)((uint32_t)raw << 16)`) over {0x0000,0x0001,0x7FFF,0x8000,0xFFFF,0x1234,0xABCD}: **exit 0, 7/7 match the Dalvik expectation, 0 mismatches**. Probes are standalone (no engine deps); full-engine run not done here (2 GB host).
+
+### Limitations
+Isolated-probe proof, not an engine/APK run. On the reference x86 -O2 build the current form likely produces the correct bits in practice (UB does not always misbehave), so this is a correctness-hardening + portability fix rather than a confirmed visible app failure. The fix is semantics-preserving (verified bit-exact for all cases).
+
+### Main coder action
+Fold E-05 into the `19ee074a` integration (same family, both files) and add the const/high16 rows to `s248`. One next step: apply the 2-line unsigned-shift change + extend s248.
+
+### Cross-reference
+#627 Section E (E-05) + matrix RC-1. Related: #607 `19ee074a` (the family this completes), #582 (/2addr law).
+

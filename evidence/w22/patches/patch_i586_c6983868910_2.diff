@@ -1,0 +1,114 @@
++
++</details>"""
++        c = api("POST", f"issues/{ISSUE}/comments", {"body": meta})
++        print("PART", i, "comment", c["id"], f"len {len(meta)}")
++
++
++def diff_post(f):
++    return sh("git", "show", f"{BRANCH}:{f}").stdout
++
++
++def split_patch(diff, limit):
++    lines = diff.splitlines(keepends=True)
++    parts, cur, n = [], [], 0
++    for ln in lines:
++        if n + len(ln) > limit and cur:
++            parts.append("".join(cur)); cur, n = [], 0
++        cur.append(ln); n += len(ln)
++    if cur:
++        parts.append("".join(cur))
++    return parts
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/s231_tb_probe.py b/scripts/s231_tb_probe.py
+new file mode 100644
+index 00000000..ef19fc69
+--- /dev/null
++++ b/scripts/s231_tb_probe.py
+@@ -0,0 +1,83 @@
++#!/usr/bin/env python3
++"""s231_tb_probe.py — Thunderbird Koin forensics at current main (9dafaadd).
++
++Runs the TB boot with the engine's env-gated map probes ON
++(MINIANDROID_MAPGET_TRACE + MINIANDROID_S173_PROBE) and extracts:
++- every [S173-MAPGET]/[MAPGET] row (put/get key shapes at the Koin index)
++- the NDFE rows (which type, which caller)
++- _koin SGET-MISS state
++so the put-key (…:local:_root_) vs get-key (bare type) mismatch can be
++verified live at 9dafaadd for the Logger family (#526 prescribed step).
++"""
++import hashlib
++import json
++import os
++import re
++import subprocess
++import time
++from pathlib import Path
++
++BASE = Path("/home/z/my-project/wt_s225")
++MA = BASE / "miniandroid"
++BIN = MA / "build/miniandroid"
++APK = Path("/home/z/my-project/upload/canonical_apks/net.thunderbird.android_33.apk")
++OUT = BASE / "run/s231"
++OUT.mkdir(parents=True, exist_ok=True)
++STORE = OUT / "store/data"
++RUNDIR = OUT / "tb"
++CONSOLE = OUT / "tb.console.log"
++
++PKG = "net.thunderbird.android"
++MAXS = 90
++
++
++def main():
++    store_ok = (STORE / ".installed").exists()
++    if not store_ok:
++        STORE.parent.mkdir(parents=True, exist_ok=True)
++        subprocess.run([str(BIN), "install", str(APK), "--data-root", str(STORE)],
++                       capture_output=True, cwd=str(MA), timeout=600)
++        (STORE / ".installed").write_text("rc=0\n")
++    env = dict(os.environ)
++    env["MINIANDROID_MAPGET_TRACE"] = "1"
++    env["MINIANDROID_S173_PROBE"] = "1"
++    env["MINIANDROID_S231_KOIN_TRACE"] = "1"
++    cmd = [str(BIN), "run", "--execution-mode", "real-dalvik",
++           "--data-root", str(STORE), "-o", str(RUNDIR),
++           "--max-seconds", str(MAXS), "--frames", "12",
++           "--trace", "--package", PKG]
++    t0 = time.time()
++    with open(CONSOLE, "w") as cf:
++        subprocess.run(cmd, stdout=cf, stderr=subprocess.STDOUT,
++                       cwd=str(MA), timeout=MAXS + 60, env=env)
++    wall = round(time.time() - t0, 1)
++    text = CONSOLE.read_text(errors="replace")
++    shot = RUNDIR / "screenshot.png"
++    out = {
++        "base": "9dafaadd", "wall_s": wall,
++        "face": hashlib.sha256(shot.read_bytes()).hexdigest()[:16] if shot.exists() else None,
++        "uncaught": len(re.findall(r"UNCAUGHT", text)),
++        "ndfe_types": sorted(set(re.findall(
++            r"NoClassDefFoundError[:\s]+([\w/$.]+)", text)))[:8],
++        "mapget_rows": len(re.findall(r"\[MAPGET\]", text)),
++        "s173_rows": len(re.findall(r"\[S173-MAPGET\]", text)),
++        "koin_sget_miss": len(re.findall(r"GlobalContext;._koin", text)),
++        "koin_ise": text.count("KoinApplication has not been started"),
++    }
++    mapget = re.findall(r"\[MAPGET\][^\n]*", text)[:12]
++    s173 = re.findall(r"\[S173-MAPGET\][^\n]*", text)[:12]
++    puts = re.findall(r"\[F089-MAPPUT\][^\n]*", text)[:12] or \
++        re.findall(r"\[MAPPUT\][^\n]*", text)[:12]
++    (OUT / "s231_tb_probe.json").write_text(json.dumps({
++        "summary": out, "mapget": mapget, "s173": s173, "puts": puts}, indent=1))
++    print(json.dumps(out, indent=1))
++    for r in mapget[:6]:
++        print("MAPGET", r[:150])
++    for r in s173[:6]:
++        print("S173", r[:150])
++    for r in puts[:6]:
++        print("PUT", r[:150])
++
++
++if __name__ == "__main__":
++    main()
+

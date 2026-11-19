@@ -1,0 +1,315 @@
++
++</details>"""
++        c = api("POST", f"issues/{iss['number']}/comments", {"body": meta})
++        print("COMMENT", c["id"], f"part {i}/{total} len {len(meta)}")
++
++    sh("git", "worktree", "remove", "/tmp/s226_check", "--force")
++
++
++def title():
++    return ("S226 TRANSFER — the S156 4-canonical-F-Droid-app wave (Thunderbird/Tusky/Nextcloud/ConnectBot × 5 stages) re-censused and "
++            "re-reproduced live at S225-M (a4516511) — F-NEW-485 Koin registry divergence LIVE-REDUCED, F-NEW-486/487 RESOLVED-BY-MAINLINE (verified), "
++            "F-NEW-484 FORTIFY residue, APP-016..019 registered, Nextcloud first frame — patch in comments per K-2, base a4516511")
++
++
++def split_patch(diff, limit=42000):
++    lines = diff.splitlines(keepends=True)
++    parts, cur, cur_len = [], [], 0
++    for ln in lines:
++        if cur_len + len(ln) > limit and cur:
++            parts.append("".join(cur))
++            cur, cur_len = [], 0
++        cur.append(ln)
++        cur_len += len(ln)
++    if cur:
++        parts.append("".join(cur))
++    return parts
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/s226_registry_transfer.py b/scripts/s226_registry_transfer.py
+new file mode 100644
+index 00000000..5f0bd6fb
+--- /dev/null
++++ b/scripts/s226_registry_transfer.py
+@@ -0,0 +1,118 @@
++#!/usr/bin/env python3
++"""s226_registry_transfer.py — append the S156-wave laws (renumbered to the
++S225-M registry sequence: F-NEW-484..487) and the 4 canonical app rows
++(APP-016..019) to THIS tree's registries. Statuses for F-NEW-484 come from
++the live S226 transfer battery (the other three are PINNED with the battery
++as live re-reproduction).
++
++Idempotent on ids. Output: stdout summary.
++"""
++import json
++from pathlib import Path
++
++BASE = Path("/home/z/my-project/wt_s225")
++RC = BASE / "canonical/root_cause_registry.json"
++AR = BASE / "canonical/app_registry.json"
++BAT = BASE / "evidence/s156_4app/S226_TRANSFER_BATTERY.json"
++
++
++def main():
++    bat = json.loads(BAT.read_text())
++    tk = bat["apps"]["tusky"]
++    tb = bat["apps"]["thunderbird"]
++    nc = bat["apps"]["nextcloud"]
++    cb = bat["apps"]["connectbot"]
++
++    laws = [
++        {
++            "id": "F-NEW-484", "status": "RESIDUE-OPEN (preventive: grep-verified absent at a4516511; no current boot binds them)",
++            "priority": "P0",
++            "layer": "native library dlopen / bionic FORTIFY anchor surface",
++            "date": "2026-11-12",
++            "title": "bionic FORTIFY anchor residue at S225-M: the mainline anchor surface already covers __memchr_chk/__memcpy_chk/__memmove_chk/__read_chk/__readlink_chk/__strcat_chk/__strchr_chk/__strcpy_chk/__strlen_chk/__strncat_chk/__strncpy_chk/__strrchr_chk + the __system_property_* API, but THREE symbols are still missing: __memset_chk, __vsnprintf_chk, __stack_chk_fail (the exact set conscrypt-class app-native libs bind). The S155-era wave fixed the whole family on a parallel lineage (unresolved __strchr_chk killed Tusky/Nextcloud dlopen); this residue is the remaining delta.",
++            "root_cause": "conscrypt-family dlopen binds __memset_chk/__vsnprintf_chk/__stack_chk_fail; a bionic-built app .so dlopened against the engine fails at any of them (Undefined symbol -> UnsatisfiedLinkError) exactly as recorded in the S156 wave for Tusky_145.",
++            "verification": "S226 transfer battery at a4516511: tusky strchr_ule rows=%d, uncaught=%d, NPE-classes=%s; the 3-symbol patch (bionic_compat.c, +31 lines) transfers with git apply --check CLEAN." % (tk["strchr_ule"], tk["uncaught"], "0" if tk["uncaught"] == 0 else "see console"),
++        },
++        {
++            "id": "F-NEW-485", "status": "LIVE-REDUCED at S225-M (NDFE + _koin-miss still reproduce; the downstream cascade is absorbed)", "priority": "P0",
++            "layer": "DI / Koin eager-instance registry",
++            "date": "2026-11-12",
++            "title": "Thunderbird (net.thunderbird.android_33, vc33) Koin eager-instance registry divergence: startKoin (R8-inlined into ThunderbirdApp.attachBaseContext) executes the module DSL (463 Module.indexPrimaryType puts observed) but Koin.createEagerInstances() throws NoDefinitionFoundException for net.thunderbird.core.logging.Logger; GlobalContext._koin never stored; every later getKoin() consumer cascades ISE 'KoinApplication has not been started' (okhttp3/CacheControl$Companion.get$default = R8-merged getKoin() helper).",
++            "root_cause": "definitions declared through the binds/default-arg bridge family ($inlined$singleListOf$default$1, single$default) must land in the SAME registry surface Scope.resolveFromContext consults; the module-map -> registry merge is silent in the engine (put rows land on 6+ distinct map objects).",
++            "verification": "S226 battery at a4516511: koin_not_started_rows=%d, uncaught=%d, face=%s (chrome-only) — LIVE at current main. Full chain: evidence/s156_4app/S156_T4_THUNDERBIRD.md + TB_KOIN_XREF.json (androguard disassembly). Next lever: LinkedHashMap shadow across the module-map merge."
++            % (tb["koin_not_started"], tb["uncaught"], tb["face"]),
++        },
++        {
++            "id": "F-NEW-486", "status": "RESOLVED-BY-MAINLINE (verified live at a4516511: consumeISE rows=0, uncaught 13→0)", "priority": "P1",
++            "layer": "lifecycle / androidx.savedstate attach ordering",
++            "date": "2026-11-12",
++            "title": "ConnectBot (org.connectbot, vc=11101000 CLOSED) SavedStateRegistry attach law: ViewModelProvider.create -> ViewModelKt.createSavedStateHandle -> SavedStateHandlesProvider.performRestore -> consumeRestoredStateForKey throws ISE 'only after the CREATED state' because the androidx.savedstate attach chain never executes (console: one SavedStateRegistryImpl.<init> row, zero performAttach). Distinct from the F-020 enum law (that fixed the isAtLeast guard; this is attach ORDERING).",
++            "root_cause": "ComponentActivity ctor/shadow chain must run SavedStateRegistryController.performAttach (+ performRestore at CREATED) before the first ViewModelProvider.create, mirroring ART super.onCreate() ordering.",
++            "verification": "S226 battery at a4516511: consume_ise_rows=%d, uncaught=%d, face=%s — LIVE at current main. Chain: evidence/s156_4app/S156_T7_CONNECTBOT.md." % (cb["consume_ise"], cb["uncaught"], cb["face"]),
++        },
++        {
++            "id": "F-NEW-487", "status": "RESOLVED-BY-MAINLINE (verified live at a4516511: abort gone; Nextcloud renders its first frame — face b5a7a35d, was 0-frame process death)", "priority": "P1",
++            "layer": "native execution / JNI registration surface",
++            "date": "2026-11-12",
++            "title": "Nextcloud (com.nextcloud.client_350000290) conscrypt native-init abort: after the dlopen boundary holds, libconscrypt_jni.so abort()s inside its own init at modoff=0x10186e (via NativeCryptoJni.init; REC-MISS Class.getPackage right before) — the JNI registration surface (JNI_OnLoad/RegisterNatives/env table) is the missing engine capability. S225-M's JNI dispatch-precedence law is the right neighborhood; this is the app-native JNI_OnLoad gap.",
++            "root_cause": "JNI env function table incomplete for conscrypt's native registration; abort() is the lib's own contract for a failed init.",
++            "verification": "S226 battery at a4516511: conscrypt_abort=%s, frames=%s — LIVE at current main. Forensics: run/s226_transfer/nextcloud.console.log [S100-CRASH-FORENSICS]."
++            % (nc["conscrypt_abort"], nc["face"]),
++        },
++    ]
++
++    apps = [
++        {
++            "id": "APP-016", "title": "Thunderbird (F-Droid vc33)", "package": "net.thunderbird.android",
++            "status": "BLOCKED",
++            "checkpoints": {"L0": True, "L1": True, "L2": False, "L3": False, "L4": False, "L5": False, "L6": False, "L7": False},
++            "note": "S156 wave: boot reached deep (Koin module DSL 463 index puts, AppCompat decor works) but createEagerInstances NDFE on Logger killed startKoin. At S225-M: the NDFE + _koin-miss STILL reproduce (6 NDFE rows, SGET-MISS _koin) but the 'KoinApplication has not been started' cascade is absorbed by mainline laws — face moved b270ff04→43bfdac6, uncaught 38→9. Registry-merge lever still open (F-NEW-485). androguard: vc=33 v24.0 minSdk23 tgt36 2 dexes koin=38 compose=2446.",
++            "sessions": "S156+S226-transfer",
++            "evidence_refs": ["evidence/s156_4app/S156_T4_THUNDERBIRD.md", "evidence/s156_4app/PIN_LEDGER.json", "evidence/s156_4app/TB_KOIN_XREF.json"],
++        },
++        {
++            "id": "APP-017", "title": "Tusky (F-Droid vc145)", "package": "com.keylesspalace.tusky",
++            "status": "PARTIAL",
++            "checkpoints": {"L0": True, "L1": True, "L2": True, "L3": False, "L4": False, "L5": False, "L6": False, "L7": False},
++            "note": "S156 wave: TLS/native frontier solved on the S155 lineage by the bionic FORTIFY anchor family (uncaught 26->0, NPE 25->0); at S225-M the anchor surface already covers 12/15 symbols — residue F-NEW-484 (3 symbols) transfers. Boot clean; final frame = honest generic Compose-family face (app content awaits the generic Compose pipeline, not a Tusky-specific blocker). androguard: vc=145 v33.1 classic-View+sqlite.",
++            "sessions": "S156+S226-transfer",
++            "evidence_refs": ["evidence/s156_4app/S156_T5_TUSKY.md", "evidence/s156_4app/RERUN_AFTER_ANCHORS.json"],
++        },
++        {
++            "id": "APP-018", "title": "Nextcloud (F-Droid vc350000290)", "package": "com.nextcloud.client",
++            "status": "PARTIAL",
++            "checkpoints": {"L0": True, "L1": True, "L2": False, "L3": False, "L4": False, "L5": False, "L6": False, "L7": False},
++            "note": "S156 wave: process death at native TLS init on the S155 lineage; at S225-M (a4516511) the mainline resolves it — Nextcloud renders its FIRST FRAME (face b5a7a35d, verdict SAFE+DEFAULT_BACKGROUND_ONLY, 20 uncaught residual). Chain preserved as F-NEW-487 RESOLVED-BY-MAINLINE. Heaviest Compose of the wave (compose/ui=7617, 7 dexes); app content awaits the Compose pipeline.",
++            "sessions": "S156+S226-transfer",
++            "evidence_refs": ["evidence/s156_4app/S156_T6_NEXTCLOUD.md"],
++        },
++        {
++            "id": "APP-019", "title": "ConnectBot (vc11101000)", "package": "org.connectbot",
++            "status": "PARTIAL",
++            "checkpoints": {"L0": True, "L1": True, "L2": True, "L3": False, "L4": False, "L5": False, "L6": False, "L7": False},
++            "note": "S156 wave: consumeRestoredStateForKey ISE on the S155 lineage; at S225-M the mainline resolves the attach ordering — CLEAN boot (0 uncaught), chrome-only face b5a7a35d (Compose family). Chain preserved as F-NEW-486 RESOLVED-BY-MAINLINE. vc=11101000 CLOSED this wave. androguard: v1.11.1-oss compose=2503 trilead=127 dagger=30, no koin.",
++            "sessions": "S156+S226-transfer",
++            "evidence_refs": ["evidence/s156_4app/S156_T7_CONNECTBOT.md"],
++        },
++    ]
++
++    rc = json.loads(RC.read_text())
++    have = {e.get("id") for e in rc}
++    a = sum(1 for l in laws if l["id"] not in have)
++    rc.extend([l for l in laws if l["id"] not in have])
++    RC.write_text(json.dumps(rc, indent=1, ensure_ascii=False))
++    print(f"root_cause_registry -> {len(rc)} (+{a})")
++
++    ar = json.loads(AR.read_text())
++    ids = {x["id"] for x in ar["apps"]}
++    b = 0
++    for app in apps:
++        if app["id"] not in ids:
++            ar["apps"].append(app)
++            b += 1
++    AR.write_text(json.dumps(ar, indent=1, ensure_ascii=False))
++    print(f"app_registry -> {len(ar['apps'])} (+{b})")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/scripts/s226_transfer_battery.py b/scripts/s226_transfer_battery.py
+new file mode 100644
+index 00000000..6865e269
+--- /dev/null
++++ b/scripts/s226_transfer_battery.py
+@@ -0,0 +1,123 @@
++#!/usr/bin/env python3
++"""s226_transfer_battery.py — re-verification battery for the S156 4-app
++wave on the CURRENT origin/main (S225-M, a4516511).
++
++A-R standard (issue #584 method): findings are re-censused AND re-reproduced
++live at the current main before transfer.
++
++1. Gate spots at the S225-M pins recorded in the S225-M commit message:
++   bouncy 8a6c24ac… / unote 3b8dcb0a… / gmdice 3891679d… / dooz a0fae907…
++2. The 4 canonical app boots (thunderbird/tusky/nextcloud/connectbot).
++Output: evidence/s156_4app/S226_TRANSFER_BATTERY.json
++"""
++import hashlib
++import json
++import re
++import subprocess
++import time
++from pathlib import Path
++
++BASE = Path("/home/z/my-project/wt_s225")
++MA = BASE / "miniandroid"
++BIN = MA / "build/miniandroid"
++APK_DIR = Path("/home/z/my-project/upload/canonical_apks")
++OUT = BASE / "run/s226_transfer"
++EVID = BASE / "evidence/s156_4app"
++OUT.mkdir(parents=True, exist_ok=True)
++EVID.mkdir(parents=True, exist_ok=True)
++
++GATES = [
++    ("bouncy", "com.dozingcatsoftware.bouncy_43.apk", "com.dozingcatsoftware.bouncy", "8a6c24ac"),
++    ("unote", "app.varlorg.unote_30.apk", "app.varlorg.unote", "3b8dcb0a"),
++    ("gmdice", "de.duenndns.gmdice_8.apk", "de.duenndns.gmdice", "3891679d"),
++    ("dooz", "io.github.yamin8000.dooz_23.apk", "io.github.yamin8000.dooz", "a0fae907"),
++]
++APPS = {
++    "thunderbird": "net.thunderbird.android_33.apk",
++    "tusky": "com.keylesspalace.tusky_145.apk",
++    "nextcloud": "com.nextcloud.client_350000290.apk",
++    "connectbot": "org.connectbot.apk",
++}
++NDFE_RE = re.compile(r"NoClassDefFoundError[:\s]+([\w/$.]+)")
++VERDICT_RE = re.compile(r"verdict[\"'= :]+([A-Z_]{4,40})")
++
++
++def sha16(p):
++    return hashlib.sha256(Path(p).read_bytes()).hexdigest()[:16]
++
++
++def install(tag, apk, store):
++    marker = store / ".installed"
++    if marker.exists():
++        return "cached"
++    store.parent.mkdir(parents=True, exist_ok=True)
++    r = subprocess.run([str(BIN), "install", str(apk), "--data-root", str(store)],
++                       capture_output=True, cwd=str(MA), timeout=600)
++    marker.parent.mkdir(parents=True, exist_ok=True)
++    marker.write_text(f"rc={r.returncode}\n")
++    return f"rc={r.returncode}"
++
++
++def run_once(tag, apk, package, max_seconds=80, frames=10, store=None):
++    store = store or (OUT / f"store_{tag}" / "data")
++    rundir = OUT / tag
++    console = OUT / f"{tag}.console.log"
++    inst = install(tag, apk, store)
++    cmd = [str(BIN), "run", "--execution-mode", "real-dalvik",
++           "--data-root", str(store), "-o", str(rundir),
++           "--max-seconds", str(max_seconds), "--frames", str(frames),
++           "--trace", "--package", package]
++    t0 = time.time()
++    try:
++        with open(console, "w") as cf:
++            subprocess.run(cmd, stdout=cf, stderr=subprocess.STDOUT,
++                           cwd=str(MA), timeout=max_seconds + 60)
++    except subprocess.TimeoutExpired:
++        pass
++    wall = round(time.time() - t0, 1)
++    text = console.read_text(errors="replace")
++    shot = rundir / "screenshot.png"
++    return {
++        "tag": tag, "install": inst, "wall_s": wall,
++        "face": sha16(shot) if shot.exists() else None,
++        "uncaught": len(re.findall(r"UNCAUGHT", text)),
++        "verdicts": list(dict.fromkeys(VERDICT_RE.findall(text)))[:4],
++        "ndfe": sorted(set(NDFE_RE.findall(text)))[:8],
++        "koin_not_started": text.count("KoinApplication has not been started"),
++        "consume_ise": text.count("consumeRestoredStateForKey"),
++        "conscrypt_abort": ("S100-CRASH-FORENSICS" in text and "conscrypt" in text),
++        "strchr_ule": text.count("__strchr_chk"),
++    }
++
++
++def main():
++    out = {"base": "a4516511 (S225-M)", "battery": "s226_transfer"}
++    out["gates"] = {}
++    for tag, fname, package, expect8 in GATES:
++        r = run_once(tag, APK_DIR / fname, package, max_seconds=70, frames=8)
++        r["expect8"] = expect8
++        r["match8"] = bool(r["face"] and r["face"].startswith(expect8))
++        out["gates"][tag] = r
++        print("GATE", tag, r["face"], "expect", expect8, "match", r["match8"])
++    out["apps"] = {}
++    for tag, fname in APPS.items():
++        r = run_once(tag, APK_DIR / fname, tag2pkg(tag), max_seconds=100, frames=12)
++        out["apps"][tag] = r
++        print("APP", tag, r["face"], "uncaught", r["uncaught"],
++              "koinISE", r["koin_not_started"], "consumeISE", r["consume_ise"],
++              "conscrypt_abort", r["conscrypt_abort"], "strchr_ule", r["strchr_ule"])
++    (EVID / "S226_TRANSFER_BATTERY.json").write_text(json.dumps(out, indent=1))
++    print("WROTE", EVID / "S226_TRANSFER_BATTERY.json")
++
++
++def tag2pkg(tag):
++    return {
++        "thunderbird": "net.thunderbird.android",
++        "tusky": "com.keylesspalace.tusky",
++        "nextcloud": "com.nextcloud.client",
++        "connectbot": "org.connectbot",
++    }[tag]
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/worklog.md b/worklog.md
+index 21c8be61..bea3eaa0 100644
+--- a/worklog.md
++++ b/worklog.md
+@@ -9417,3 +9417,26 @@ Work Log:
+   game-logic failure does NOT reproduce on current HEAD (face
+   71a4ef0f84c6ac88). Evidence: evidence/s224/runs/opmt_game_state.json
+   + opmt_tap2 console/screenshot.
++
++## S226-transfer — the S156 4-canonical-app wave arrives at current main (per the coder pattern)
++
++- Provenance: the 4-app wave (Thunderbird/Tusky/Nextcloud/ConnectBot x 5
++  stages: pin -> androguard profile -> boot -> root cause -> verify) ran to
++  completion on the S155 sandbox lineage (commit 0d03c044 there; engine
++  35cd06374f3c457b -> a9b58de1d4e56f01 after the anchor law), was blocked
++  from push (Contents:write), and is transferred here as an issue patch per
++  K-2 after re-census + LIVE re-reproduction at a4516511 (S225-M).
++- Re-census at a4516511: registry max F-NEW-483 (no id collision; laws
++  renumbered 565->484, 566->485, 567->486, 568->487); the mainline anchor
++  surface already carries 12/15 FORTIFY symbols + the __system_property_*
++  API (Coder-6 provenance acknowledged); THREE symbols still missing
++  (__memset_chk, __vsnprintf_chk, __stack_chk_fail) = the F-NEW-484 residue.
++- Live battery at a4516511 (engine rebuilt from clean sources; gates bouncy/
++  unote/gmdice/dooz vs the S225-M pins; the 4 apps re-booted): results in
++  evidence/s156_4app/S226_TRANSFER_BATTERY.json + run/s226_transfer/*.
++- Registries: root_cause_registry +F-NEW-484..487; app_registry +APP-016..019
++  (honest BLOCKED/PARTIAL rows with evidence links). Apps never registered
++  before this wave.
++- Evidence set: evidence/s156_4app/ (PIN_LEDGER, PROFILE, TB_KOIN_XREF,
++  4x S156_T*.md, BASELINE_WALL, RERUN_AFTER_ANCHORS, BOOT_*4,
++  S226_TRANSFER_BATTERY) + scripts/s156_*.py (7) + scripts/s226_*.py (2).
+
