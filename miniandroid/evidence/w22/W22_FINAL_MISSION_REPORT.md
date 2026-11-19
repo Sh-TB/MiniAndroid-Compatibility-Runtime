@@ -259,3 +259,16 @@ well under 120 s — interpreter/opcode cycles pass the 60 s stretch goal)
 `RUNTIME_REGRESSION: PASS` (test-all results in B.6)
 `EVIDENCE_STATUS: VERIFIED` (every number in this report has a committed log,
 JSONL record or grep-able source state behind it)
+
+### Push record
+
+Pushed as `fd160507..8d8edd01` on `origin/main` (commits `10942810` W22-A,
+`940c63af` W22-B, `21a3a591` W22-C, `8d8edd01` W22-D). The initial push was
+declined by GitHub's 100 MB limit because the local-only recovery checkpoint
+`98a77072` (auto-generated UUID commit) carried the 114 MB `build_pg/miniandroid`
+instrumented binary, violating the repo's own S185 bigfile law; the checkpoint
+was rebased away (its only unique content, `evidence/w21/pg_build.json`, was
+preserved in W22-D) and no remote history was rewritten. Note: the production
+binary's embedded `MINIANDROID_COMMIT` pins the pre-rebase local SHA (the
+build predates the rebase); any fresh build bakes the current pushed SHA —
+`./build/miniandroid version` is the identity check.
