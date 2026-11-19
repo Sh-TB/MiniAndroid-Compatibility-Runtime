@@ -1,0 +1,8 @@
+measurement,command,wall_s,cpu_user_s,cpu_sys_s,peak_rss_kb,rc,evidence
+full production build (W21 fresh, -j1 serial),make -j1 --output-sync,555.61,538.46,13.14,1462816,0,evidence/w21_prod_build.json
+full production build (W20-K claimed, unmeasured log),make (serial),539.7,na,na,1460000 (1.46GB claim),0,commit 8d2583b7 message only — NO build log committed (missing evidence recorded)
+pg instrumented build (separate BUILDDIR),make BUILDDIR=build_pg CXXFLAGS=+ -pg,587.0,562.57,22.38,1461064,0,evidence/w21/pg_build.json
+webview TU + link (float/translate/capture/cascade laws),make (incremental),330.30,320.82,8.95,1461488,0,evidence/w21/w21_ws4b_build.json
+domain TU + link (Options field law x2 TUs),make (incremental),35.16,33.49,1.26,1214776,0,evidence/w21/w21_fbrf_build.json
+test-all 48/48 (certified),make test-all,288.35,227.51,22.31,783284,0,evidence/w21_testall2.json
+test-all 47/48 (s235 harness gap, pre-fix),make test-all,263.70,236.76,20.33,783200,2,evidence/w21_testall.json

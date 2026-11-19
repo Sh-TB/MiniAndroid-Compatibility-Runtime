@@ -1,0 +1,6 @@
+hypothesis,profile_verdict,implemented_in_w21,reason
+A method/class resolution cache,PARTIALLY SUPPORTED (~5.5% combined: try_recursive_invoke 1.4% + R530Memo churn 1.5% + string eq share ~2.6%),NO,measured #1 hotspot is elsewhere (container churn ~50%); a cache would not be the highest-value change; deferred with measured plan
+B bitmap decode cache,NOT SUPPORTED (not in chess top-10; WebView img_cache already exists),NO,not a measured shared hotspot
+C incremental StateList re-pick,NOT SUPPORTED (not in top-10),NO,not a measured shared hotspot
+D per-invoke/instruction container churn (std::set dtor 34.8% + map clear 13.7% + HeapObject copies 4.2%),MEASURED #1 (gprof chess 35s),NO — evidence recorded for next session,correct implementation needs its own verified change + 5-rep acceptance; too late in session budget to complete honestly
+E whole-heap clone (_M_assign 215x, ~82K objects each),MEASURED #4,NO,idem

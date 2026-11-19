@@ -1,0 +1,12 @@
+test,disposition,evidence
+test-all @ 568a9380 (W20-K2 claim),47/48 claimed with 1 failure = s98 font-env (WRONG attribution),evidence/w20/w20_k_testall_tail.txt (173 bytes — FAILING TEST NOT NAMED)
+test-all @ W21 fresh run (pre-fix),47/48 REPRODUCED but the 1 failure is s235 r11a_listview_item_id (REC-MISS -> got=-999),evidence/w21/w21_testall_full.log + build/tests/s235_lane_laws_test.log
+s98_text_law_test @ W21,PASSES 21/21 (the font-env lineage claim did NOT reproduce),build/tests/s98_text_law_test.log
+s235 harness fix (T::INT64 branch per coder's own ws6 law),17/17 PASS,evidence/w21/s235_build.json + rerun
+test-all @ W21 certified post-fix,48/48 PASS rc=0 (wall 288.4s measured),evidence/w21/w21_testall_final.log + evidence/w21_testall2.json
+s248 sqlite cursor contract,10/10 PASS,evidence/w21/w21_testall_final.log
+s249 adapter position contract,4/4 PASS,evidence/w21/w21_testall_final.log
+s250 dialog lifecycle contract,8/8 PASS,evidence/w21/w21_testall_final.log
+s251 activity result contract,PASS,evidence/w21/w21_testall_final.log
+s252 view state flags contract,9/9 PASS,evidence/w21/w21_testall_final.log
+three intermediate contract failures (W20-K history),MISSING EVIDENCE (no intermediate log committed; only the final tail exists),recorded in W21_W20K_INTEGRATION_AUDIT.md §4
