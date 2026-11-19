@@ -462,3 +462,6 @@ evidence/w22/issues_raw/
 /tools/ccache.conf
 /tools/ccache_cache/
 /build_cc/
+
+# W23: portable cmake/ccache downloads (not repo content)
+/tools/dl/
