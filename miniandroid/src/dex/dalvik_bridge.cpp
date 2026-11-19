@@ -44384,6 +44384,83 @@ measure_cm_done:;
                 result = box500(sv, type337);
                 return true;
             }
+            // W17 typed Field accessor family (#612 n-Puzzle resid=0x0
+            // root cause): ImageSource.init builds its image table via
+            // Class.getFields -> Field.getInt on R$drawable — the typed
+            // accessors previously had NO handler, fell through to the
+            // generic reflection fallback and answered 0 for every field,
+            // so every ImageEntry carried resid 0x0 and openRawResource
+            // threw (the "No image loaded" x106 face). libcore law: the
+            // typed accessors return the UNBOXED primitive; JNI law
+            // (GetStaticFieldID): a static read via reflection triggers
+            // the declaring class's initialization first — the same
+            // ensure_class_initialized law Field.get already follows.
+            if (method == "getInt" || method == "getLong" ||
+                method == "getBoolean" || method == "getByte" ||
+                method == "getShort" || method == "getChar" ||
+                method == "getFloat" || method == "getDouble") {
+                bool want_static_t = (kind500 == "static");
+                if (kind500.empty())
+                    want_static_t = !(args.size() >= 2 &&
+                                      args[1].type == DalvikType::OBJECT_REF &&
+                                      args[1].object_id != 0);
+                if (want_static_t) {
+                    // static-field read ignores the receiver (libcore law)
+                    std::string skey_t = decl337 + "." + name337;
+                    if (!decl337.empty()) ensure_class_initialized(decl337);
+                    auto it_t = static_field_storage_.find(skey_t);
+                    DalvikValue sv_t =
+                        it_t != static_field_storage_.end()
+                            ? it_t->second
+                            : typed_default500(type337);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = sv_t;  // typed accessors: raw, never boxed
+                    std::cerr << "[W17-REFLECT] Field." << method
+                              << " static " << skey_t << " -> "
+                              << (sv_t.type == DalvikType::INT32
+                                      ? std::to_string(sv_t.int_val)
+                                      : (sv_t.type == DalvikType::BOOLEAN
+                                             ? std::string(sv_t.bool_val
+                                                               ? "true"
+                                                               : "false")
+                                             : std::string("prim")))
+                              << std::endl;
+                    return true;
+                }
+                // instance typed read: null receiver -> NPE (libcore law)
+                if (!(args.size() >= 2 &&
+                      args[1].type == DalvikType::OBJECT_REF &&
+                      args[1].object_id != 0)) {
+                    throw_deferred("Ljava/lang/NullPointerException;",
+                                   "Field." + method +
+                                       " on a null object reference (" +
+                                       decl337 + "." + name337 + ")",
+                                   "W17-REFLECT");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                if (kind500 == "instance" && !decl337.empty() &&
+                    !args[1].class_desc.empty() &&
+                    args[1].class_desc != decl337 &&
+                    !is_subclass_of(args[1].class_desc, decl337)) {
+                    throw_deferred("Ljava/lang/IllegalArgumentException;",
+                                   "receiver not an instance of " + decl337,
+                                   "W17-REFLECT");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                const std::string t_decl =
+                    resolved_field_declarer(decl337, name337);
+                const std::string t_qkey = s134_dex_field_key(
+                    t_decl, name337, is_dex_defined_class(t_decl));
+                auto v_t = heap_.get_object_field(args[1].object_id, t_qkey);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                result = v_t.has_value() ? v_t.value()
+                                         : typed_default500(type337);
+                return true;
+            }
             if (method == "set") {
                 // libcore final-field law: reflection writes to a final
                 // field need setAccessible(true) on THIS Field object.

@@ -99,5 +99,18 @@
    "tools/w16_invoke_xref.py",
    "tools/w16_hybrid_dump.py"
   ]
+ },
+ "wave17": {
+  "base_sha": "ab4da01e (W16 tip)",
+  "root_cause": "ImageSource.init builds its image table via REFLECTION (Class.getFields -> Field.getInt on R$drawable) \u2014 the typed Field accessor family (getInt/getLong/getBoolean/\u2026) had NO handler in the bridge's Ljava/lang/reflect/Field; dispatch block; every call fell through to the generic fallback and answered 0, so all 6 ImageEntries carried resid=0x0 and openRawResource threw NotFoundException (caught by the app) -> bitmap null -> 'No image loaded' x106",
+  "fix": "typed Field accessor family law in dalvik_bridge.cpp Field dispatch: static reads ignore the receiver, trigger ensure_class_initialized (JNI GetStaticFieldID law), read static_field_storage_ (field identity) and return the UNBOXED primitive; instance reads follow the get() NPE/IAE/identity laws; env-tag [W17-REFLECT]",
+  "result": {
+   "NoImageLoaded_exceptions": "106 -> 0",
+   "openRawResource": "resid=0x7f020001 -> res/drawable/puzzle_0.png 7515 bytes (x12 successful)",
+   "render": "3x3 ImageView board (354x354 tiles) replaces the numeric 378x378 fallback; APP BOUND=0",
+   "remaining": "ImageView bitmap -> canvas drawBitmap compositing not yet implemented (render-side, W18 candidate)"
+  },
+  "gate": "unit 4/4 + W15 6/6 + s130 51/51 + gp582 12/12; cross-app regression Blockinger clean, notepad/diceroller exceptions pre-existing (Autofill/ActionBarContextView, law never fired there)",
+  "tools": "scripts/w17_method_calls.py (authoritative DEX call-lister: plain uleb diffs + RESET at the virtual boundary \u2014 matches the engine's dex_parser.cpp semantics; validated against runtime dispatch counts Game.load=69/loadImage=129); scripts/w17_r_class_dump.py (R-class static_values dump, field_ids_off=0x54)"
  }
 }
