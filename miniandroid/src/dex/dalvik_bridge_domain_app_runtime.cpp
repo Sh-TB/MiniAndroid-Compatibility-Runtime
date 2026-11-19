@@ -10965,8 +10965,22 @@ measure_cm_done:;
                     found500 = true;
                     fdecl500 = cur500;
                     ftype500 = fw_type500;
-                    fstatic500 = true;
-                    fflags500 = 0x1 | 0x8 | 0x10;  // public static final
+                    // W21 (AOSP BitmapFactory.java Options law, Frozen Bubble
+                    // live evidence): the Options fields are PUBLIC NON-FINAL
+                    // INSTANCE decode options. The generic framework fallback
+                    // below hardcoded public static final, so Field.set on
+                    // inScaled threw a FALSE IllegalAccessException
+                    // (GameView$GameThread.<init> pc=156, deferred) although
+                    // real Android writes it freely. Only the curated
+                    // static-constant classes (Build.*, R.*) keep the old
+                    // flags.
+                    if (cur500 == "Landroid/graphics/BitmapFactory$Options;") {
+                        fstatic500 = false;
+                        fflags500 = 0x1;  // public, not static, not final
+                    } else {
+                        fstatic500 = true;
+                        fflags500 = 0x1 | 0x8 | 0x10;  // public static final
+                    }
                     break;
                 }
                 auto sup500 = class_to_superclass_.find(cur500);

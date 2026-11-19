@@ -80247,8 +80247,19 @@ measure_cm_done:;
                     found500 = true;
                     fdecl500 = cur500;
                     ftype500 = fw_type500;
-                    fstatic500 = true;
-                    fflags500 = 0x1 | 0x8 | 0x10;  // public static final
+                    // W21 (AOSP BitmapFactory.java Options law): Options
+                    // fields are PUBLIC NON-FINAL INSTANCE decode options —
+                    // the hardcoded public static final threw a FALSE
+                    // IllegalAccessException on Field.set (Frozen Bubble
+                    // GameView$GameThread pc=156). Same law as the split
+                    // domain copy (dalvik_bridge_domain_app_runtime.cpp).
+                    if (cur500 == "Landroid/graphics/BitmapFactory$Options;") {
+                        fstatic500 = false;
+                        fflags500 = 0x1;  // public, not static, not final
+                    } else {
+                        fstatic500 = true;
+                        fflags500 = 0x1 | 0x8 | 0x10;  // public static final
+                    }
                     break;
                 }
                 auto sup500 = class_to_superclass_.find(cur500);
