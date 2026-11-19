@@ -1,0 +1,1 @@
+{"cmd": ["make", "-j1", "--output-sync"], "rc": 0, "wall_s": 555.61, "cpu_user_s": 538.46, "cpu_sys_s": 13.14, "maxrss_kb": 1462816, "nproc": 2}

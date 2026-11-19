@@ -95,6 +95,10 @@ struct WebViewEngine::Impl {
     std::map<std::string, std::string> custom_props;
     std::string apk_path;
     double viewport_w = 1080, viewport_h = 1920;
+    // W21 (W3C Touch Events §5.6 implicit capture): touchmove/touchend keep
+    // targeting the element where the touch STARTED — the 2048 gesture ends
+    // off-board and the touchend was dropped before any listener ran
+    DomNode* touch_capture = nullptr;
 
     std::map<DomNode*, JSValue> el_objs;
     JSValue window_obj = JS_UNDEFINED;
@@ -619,6 +623,16 @@ static void classlist_write(DomNode* n, const std::vector<std::string>& toks) {
     for (auto& t : toks) { if (!v.empty()) v += ' '; v += t; }
     if (v.empty()) n->attrs.erase("class"); else n->attrs["class"] = v;
 }
+// W21 (CSS cascade invalidation): mark the document root — the next render
+// re-matches the stylesheet cascade before painting (a runtime class change
+// must re-resolve selector-derived properties, e.g. 2048's tile-position
+// translate classes).
+static void css_mark_dirty(DomNode* n) {
+    if (!n) return;
+    for (DomNode* r = n; ; r = r->parent) {
+        if (!r->parent) { r->css_needs_rematch = true; return; }
+    }
+}
 static JSValue cl_add(JSContext* ctx, JSValueConst this_v, int argc, JSValueConst* argv) {
     if (wv_trace()) std::cerr << "[WV-T] classList.add" << std::endl;
     auto* n = (DomNode*)JS_GetOpaque(this_v, kElementClass);
@@ -632,6 +646,7 @@ static JSValue cl_add(JSContext* ctx, JSValueConst this_v, int argc, JSValueCons
             }
         }
         classlist_write(n, toks);
+        css_mark_dirty(n);
     }
     return JS_UNDEFINED;
 }
@@ -648,6 +663,7 @@ static JSValue cl_remove(JSContext* ctx, JSValueConst this_v, int argc, JSValueC
             }
         }
         classlist_write(n, toks);
+        css_mark_dirty(n);
     }
     return JS_UNDEFINED;
 }
@@ -1331,7 +1347,7 @@ static JSValue el_set_class_name(JSContext* ctx, JSValueConst this_v, int argc, 
     auto* n = el_of(this_v);
     if (n && argc >= 1) {
         const char* v = JS_ToCString(ctx, argv[0]);
-        if (v) { n->attrs["class"] = v; JS_FreeCString(ctx, v); }
+        if (v) { n->attrs["class"] = v; css_mark_dirty(n); JS_FreeCString(ctx, v); }
     }
     return JS_UNDEFINED;
 }
@@ -1371,6 +1387,8 @@ static JSValue el_append_child(JSContext* ctx, JSValueConst this_v, int argc, JS
     }
     c->parent = n;
     n->children.push_back(std::unique_ptr<DomNode>(c));
+    // W21: tree structure changed — re-cascade at the next paint
+    css_mark_dirty(n);
     // S114 appendChild stylesheet law: JS-created elements receive the
     // ACTIVE stylesheet rules when they enter the document — without this
     // the gameplay objects (createElement + appendChild, no innerHTML) had
@@ -1395,6 +1413,8 @@ static JSValue el_remove_child(JSContext* ctx, JSValueConst this_v, int argc, JS
                 if (pc[i].get() == c) { pc[i].release(); pc.erase(pc.begin() + i); break; }
             // hand ownership to the orphan bridge so the node stays alive
             impl_of(ctx)->orphans.push_back({c, std::unique_ptr<DomNode>(c)});
+            // W21: tree structure changed — re-cascade at the next paint
+            css_mark_dirty(n);
         }
     }
     return argc >= 1 ? JS_DupValue(ctx, argv[0]) : JS_UNDEFINED;
@@ -1531,6 +1551,9 @@ static JSValue el_setAttribute(JSContext* ctx, JSValueConst this_v, int argc, JS
         if (k && v) {
             std::string key = lower_s(k);
             n->attrs[key] = v;
+            // W21 (CSS cascade invalidation): class/style attribute writes
+            // change which rules match this node — re-cascade at next paint
+            if (key == "class" || key == "style") css_mark_dirty(n);
             if (n->is_canvas && key == "width") {
                 if (!n->canvas) n->canvas = std::make_unique<Canvas2D>();
                 n->canvas->set_size(atoi(v), n->canvas->height());
@@ -3917,6 +3940,42 @@ static void style_element(DomNode* n, double vw, double vh,
             n->bg_size_pct = float(::atof(bsz.c_str()));
     }
     if (get("transform").find("scaleX(-1)") != std::string::npos) n->bg_mirror = true;
+    // W21 (S237-WS4B): transform: translate(Xpx, Ypx) — parse the paint/hit
+    // offset from the transform (or its -webkit- twin, same declaration in
+    // every real stylesheet pair). Non-translate transforms stay unclaimed.
+    {
+        std::string tf = get("transform");
+        if (tf.empty()) tf = get("-webkit-transform");
+        size_t tp = tf.find("translate");
+        if (tp != std::string::npos) {
+            size_t po = tf.find('(', tp);
+            size_t pc = tf.find(')', tp);
+            if (po != std::string::npos && pc != std::string::npos && pc > po) {
+                // args may be "Xpx, Ypx" / "Xpx,Ypx" / single-arg "Xpx" —
+                // split on the comma and atof each trimmed component
+                std::string args = tf.substr(po + 1, pc - po - 1);
+                size_t comma = args.find(',');
+                float xs = 0.f, ys = 0.f;
+                xs = float(::atof(trim2(args.substr(0,
+                     comma == std::string::npos ? args.size() : comma)).c_str()));
+                if (comma != std::string::npos)
+                    ys = float(::atof(trim2(args.substr(comma + 1)).c_str()));
+                n->tf_tx = int(xs);
+                n->tf_ty = int(ys);
+            }
+        }
+    }
+    // W21 (S237-WS4B, CSS 2.1 §9.5): float/clear layout state
+    {
+        std::string fl = get("float");
+        n->css_float = fl == "left" ? 1 : fl == "right" ? 2 : 0;
+        std::string cl = get("clear");
+        n->css_clear = cl == "both" ? 1 : cl == "left" ? 2 : cl == "right" ? 3 : 0;
+        if (wv_trace() && (n->css_float || n->css_clear))
+            std::cerr << "[WV-FLOAT] tag=" << n->tag
+                      << " class=" << (n->attrs.count("class") ? n->attrs.at("class") : "")
+                      << " float=" << n->css_float << " clear=" << n->css_clear << std::endl;
+    }
     // S114 gradient-text law (-webkit-background-clip: text): the gradient
     // paints the GLYPHS, not the box (Block'Buster title, game logos).
     {
@@ -4565,6 +4624,10 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
     // shorthands, static paint (CSS animations skipped).
 
     // 0. @media evaluation — once per viewport width (constant per run).
+    // W21 (CSS cascade invalidation): the cascade ALSO re-matches whenever
+    // runtime DOM mutation marked the root (classList / setAttribute("class")
+    // / className / appendChild / removeChild) — the browser re-resolves
+    // selector-derived properties for mutated nodes before the next paint.
     if (impl->css_viewport_w != w) {
         impl->active_rules.clear();
         for (auto& r : impl->css_rules) {
@@ -4572,11 +4635,16 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
             if (r.media_max_w >= 0 && w > r.media_max_w) continue;
             impl->active_rules.push_back(r);
         }
-        HtmlParser::apply_css(impl->doc.root.get(), impl->active_rules,
-                              &impl->custom_props);
         impl->css_viewport_w = w;
         std::cerr << "[WV-CSS] viewport=" << w
                   << " active_rules=" << impl->active_rules.size() << std::endl;
+    }
+    if (impl->css_viewport_w != w || impl->doc.root->css_needs_rematch) {
+        HtmlParser::apply_css(impl->doc.root.get(), impl->active_rules,
+                              &impl->custom_props);
+        impl->doc.root->css_needs_rematch = false;
+        if (wv_trace())
+            std::cerr << "[WV-CSS] cascade re-matched (dirty root)" << std::endl;
     }
 
     // side tables (deterministic per render)
@@ -5064,9 +5132,26 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 cw2 = std::max(cw2, int(sh.shape(t, n->eff_font_size, n->eff_bold,
                                                  face_of(n)).width));
         }
+        // W21 (S237-WS4B, CSS 2.1 §10.3.5): floated children occupy ONE
+        // preferred line in a shrink-to-fit parent — Σ(width + margins) is
+        // the contribution (the 2048 .grid-row measured 106 instead of 469
+        // because every floated cell was taken as an isolated max).
+        int fl_sum = 0;
         for (auto& c : n->children) {
             if (c->tag == "#text") continue;
             if (c->display_none || c->positioned) continue;   // hidden keeps slot (visibility law)
+            if (c->css_float) {
+                int fw2;
+                if (c->has_w)
+                    fw2 = c->w + (c->border_box ? 0 : 2 * c->border_w + c->pad_l + c->pad_r);
+                else if (c->w_pct >= 0 || !c->w_raw.empty())
+                    fw2 = 0;   // deferred to CB — honest zero contribution
+                else
+                    fw2 = measure_w(c.get(), mw_depth + 1) +
+                          (c->border_box ? 0 : 2 * c->border_w + c->pad_l + c->pad_r);
+                fl_sum += fw2 + c->mar_l + c->mar_r;
+                continue;
+            }
             // S133: an atomic inline-block contributes its OUTER width to a
             // shrink-to-fit parent (CSS 2.1 §10.3.9)
             if (c->inline_block && !c->has_w && c->w_pct < 0 && c->w_raw.empty()) {
@@ -5081,6 +5166,7 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
             else if (c->w_pct >= 0 || !c->w_raw.empty()) continue;
             else cw2 = std::max(cw2, measure_w(c.get(), mw_depth + 1));
         }
+        cw2 = std::max(cw2, fl_sum);
         return cw2 + extra;
     };
     // row height law moved above draw_text_of (shared by text paint + layout)
@@ -5184,6 +5270,27 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 c->static_pos_recorded = true;
                 continue;
             }
+            // W21 (S237-WS4B, CSS 2.1 §9.5/§10.3.5): a floated child is
+            // measured shrink-to-fit here and PLACED horizontally in the
+            // placement pass below. Flex items ignore float (CSS Flexbox §4).
+            if (c->css_float && !c->positioned && !c->inline_el && !n->flex) {
+                int owf = outer_w_of(c);
+                if (owf < 0 && c->w_pct >= 0)
+                    owf = int(float(content_w) * c->w_pct / 100.f);
+                if (owf < 0 && !c->w_raw.empty()) {
+                    float pv = cb_len(c->w_raw, float(w), float(h),
+                                      float(content_w),
+                                      float(avail_h > 0 ? avail_h : content_w),
+                                      c->font_size, -1.f, 0);
+                    owf = pv >= 0 ? int(pv) : std::min(measure_w(c, 0), content_w);
+                }
+                if (owf < 0) owf = std::min(measure_w(c, 0), content_w);
+                widths[i] = std::max(owf, 2 * c->border_w);
+                c->static_x = content_x;
+                c->static_y = cy;
+                c->static_pos_recorded = true;
+                continue;
+            }
             // STATIC POSITION RECORD — where this box would sit if it were
             // in-flow (CSS 2.1 §10.3.7: auto offsets use the static position)
             c->static_x = n->flex_row ? cx + c->mar_l : content_x;
@@ -5248,6 +5355,12 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 if (widths[i] >= 0 && heights[i] == 0) heights[i] = -1;  // element child marker
         // S133 inline-run cursors (atomic inline-block line state)
         int ib_x = content_x, ib_y = cy, ib_run_h = 0;
+        // W21 (S237-WS4B, CSS 2.1 §9.5) float row state: floated boxes flow
+        // horizontally from the content edge, wrap as a row, and hold the
+        // parent's bottom open until a clear (or the auto-height law) closes
+        // it. any_float guards the no-float behavior byte-exactly.
+        int fl_x = content_x, fl_y = cy, fl_run_h = 0, fl_bottom = cy;
+        bool any_float = false;
         for (size_t i = 0; i < n->children.size(); ++i) {
             DomNode* c = n->children[i].get();
             if (c->tag == "#text") {
@@ -5260,6 +5373,13 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 continue;
             }
             if (widths[i] < 0) continue;
+            // W21 (CSS 2.1 §9.5): clear — a non-floated box with clear:both
+            // starts BELOW every float seen so far (the .grid-row:after
+            // clearfix closes each 2048 grid row at the float bottom).
+            if (c->css_clear && !c->positioned && !n->flex) {
+                if (cy < fl_bottom) cy = fl_bottom;
+                fl_x = content_x; fl_y = cy; fl_run_h = 0;
+            }
             // ── S133 ATOMIC INLINE-BOX RUN law (CSS 2.1 §9.2.2) ──────────
             // inline-block boxes flow HORIZONTALLY in the parent's line,
             // wrapping to the next line when the run exceeds the container
@@ -5277,6 +5397,29 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 ib_x += iw;
                 ib_run_h = std::max(ib_run_h, hb + c->mar_t + c->mar_b);
                 cy = std::max(cy, ib_y + ib_run_h);
+                continue;
+            }
+            // ── W21 FLOAT PLACEMENT law (CSS 2.1 §9.5) ───────────────────
+            // A floated box takes the next horizontal slot in the float row;
+            // it wraps at the content edge, does NOT advance the block
+            // cursor, and extends the float bottom (auto-height contributor).
+            if (c->css_float && !c->positioned && !c->inline_el && !n->flex) {
+                int fw = widths[i] + c->mar_l + c->mar_r;
+                if (fl_x > content_x && fl_x + fw > content_x + content_w) {
+                    fl_x = content_x;              // wrap: floats start a new row
+                    fl_y += fl_run_h;
+                    fl_run_h = 0;
+                }
+                if (c->css_clear && fl_y < fl_bottom) {
+                    fl_y = fl_bottom;              // floated box honors clear too
+                    fl_run_h = 0;
+                }
+                int hb = layout_inflow(c, fl_x + c->mar_l, fl_y, widths[i],
+                                       avail_h, depth + 1);
+                fl_x += fw;
+                fl_run_h = std::max(fl_run_h, hb + c->mar_t + c->mar_b);
+                fl_bottom = fl_y + fl_run_h;
+                any_float = true;
                 continue;
             }
             int x;
@@ -5307,6 +5450,9 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
                 // S133: a block sibling ends the inline run — the next
                 // inline-block line starts BELOW the placed block
                 ib_x = content_x; ib_y = cy; ib_run_h = 0;
+                // W21: a block sibling also ends the float row — later
+                // floats start at the new block cursor
+                fl_x = content_x; fl_y = cy; fl_run_h = 0;
             }
         }
         // second sweep for flex-row vertical centering (2-pass shift law)
@@ -5327,7 +5473,11 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
         }
         if (n->flex && n->flex_row) { extent_out = row_main; return row_h; }
         extent_out = 0;
-        return cy - content_y - cy_shift;
+        // W21 (CSS 2.1 §9.5): the stack's auto height holds open to the float
+        // bottom when floats were placed (the 2048 .grid-row measured 0
+        // height — floats never contributed — and the grid collapsed).
+        int used_h = cy - content_y - cy_shift;
+        return any_float ? std::max(used_h, fl_bottom - content_y) : used_h;
     };
 
     // in-flow layout: places n at (x,y) with outer width w_in, lays out its
@@ -5355,6 +5505,12 @@ void WebViewEngine::render(uint8_t* dst, int w, int h) {
             else if (!n->off_b.empty()) dy = -int(cb_len(n->off_b, float(w), float(h), cbw, cbh, n->font_size, 0, 1));
             x += dx; y += dy;
         }
+        // W21 (CSS Transforms §1): transform: translate() moves the rendered
+        // box AND its content origin (children laid out after the shift
+        // follow it — the 2048 .tile tile-position classes place every tile
+        // through translate only; idempotent across the 2-pass re-layouts
+        // because x/y are recomputed from scratch each call).
+        x += n->tf_tx; y += n->tf_ty;
         n->x = x; n->y = y; n->w = w_in; n->laid_out = true;
         if (n->tag == "svg") {
             // S117 SVG leaf-box law: an <svg> is a replaced element — its
@@ -6205,21 +6361,35 @@ bool WebViewEngine::pointer_event(int x, int y, const std::string& type) {
         if (depth >= best_depth) { best_depth = depth; best_idx = pi; }
     }
     hit = best_depth >= 0 ? paint_order[best_idx] : nullptr;
+    // W21 (W3C Touch Events §5.6 IMPLICIT CAPTURE law): every event of a
+    // touch sequence targets the element where the touch STARTED — not the
+    // element under the finger. A swipe that leaves the board (2048's
+    // left/right swipes end at x<board edge) used to drop touchend entirely
+    // (`hit=none → return false`) and the game never computed its delta.
+    bool is_start = lower_s(type) == "touchstart";
+    bool is_end = lower_s(type) == "touchend";
+    DomNode* target = hit;
+    if (!is_start && impl->touch_capture) target = impl->touch_capture;
+    if (is_start) impl->touch_capture = hit;
     if (wv_trace())
         std::cerr << "[WV-POINTER] " << type << " at (" << x << "," << y
                   << ") hit=" << (hit ? hit->tag : "none")
                   << (hit && hit->attrs.count("class")
                           ? "." + hit->attrs.at("class")
                           : "")
+                  << " target=" << (target ? target->tag : "none")
+                  << (target && target->attrs.count("class")
+                          ? "." + target->attrs.at("class")
+                          : "")
                   << " listeners="
-                  << (hit && impl->listeners.count(hit)
-                          ? impl->listeners.at(hit).count(lower_s(type))
+                  << (target && impl->listeners.count(target)
+                          ? impl->listeners.at(target).count(lower_s(type))
                           : 0)
                   << std::endl;
-    if (!hit) return false;
+    if (!target) return false;
     JSValue ev = JS_NewObject(impl->ctx);
     JS_SetPropertyStr(impl->ctx, ev, "type", JS_NewString(impl->ctx, type.c_str()));
-    JS_SetPropertyStr(impl->ctx, ev, "target", impl->get_element_js(hit));
+    JS_SetPropertyStr(impl->ctx, ev, "target", impl->get_element_js(target));
     JS_SetPropertyStr(impl->ctx, ev, "button", JS_NewInt32(impl->ctx, 0));
     JS_SetPropertyStr(impl->ctx, ev, "pointerId", JS_NewInt32(impl->ctx, 1));
     JS_SetPropertyStr(impl->ctx, ev, "clientX", JS_NewInt32(impl->ctx, x));
@@ -6279,7 +6449,9 @@ bool WebViewEngine::pointer_event(int x, int y, const std::string& type) {
             }
         }
     }
-    impl->dispatch(hit, lower_s(type), ev);
+    impl->dispatch(target, lower_s(type), ev);
+    // W21: the capture lives exactly for the gesture — touchend releases it
+    if (is_end) impl->touch_capture = nullptr;
     return true;
 }
 

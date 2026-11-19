@@ -92,6 +92,22 @@ struct DomNode {
     bool eff_vis_hidden = false;        // inherited visibility chain
     bool border_box = false;            // box-sizing: border-box
     bool flex_row = false;              // flex-direction: row
+    // W21 (S237-WS4B, CSS 2.1 §9.5): float/clear layout state — the 2048
+    // grid-cell law (16 floated cells stacked vertically collapsed the
+    // auto-sized absolute .grid-container to 106x1741 instead of a 4x4 board)
+    int css_float = 0;                  // 0 none, 1 left, 2 right
+    int css_clear = 0;                  // 0 none, 1 both, 2 left, 3 right
+    // W21 (CSS Transforms §1): transform: translate(Xpx, Ypx) — the paint/
+    // hit offset of the rendered box (2048 tile-position classes place every
+    // .tile through translate only)
+    int tf_tx = 0, tf_ty = 0;
+    // W21 (CSS cascade invalidation): set on the ROOT when any runtime DOM
+    // mutation (class/className/setAttribute/appendChild/removeChild) needs
+    // the stylesheet cascade re-matched before the next paint. The classic
+    // 2048 actuator re-classes moved tiles through a second rAF — without
+    // the re-match the tiles kept their PRE-move transform and the board
+    // never visibly advanced.
+    bool css_needs_rematch = false;
     bool overflow_hidden = false;       // clip children to the padding box
     float line_h_num = -1.f;            // line-height unitless factor (-1 unset)
     int line_h_px = 0;                  // line-height <length> (0 = legacy 1.6 law)

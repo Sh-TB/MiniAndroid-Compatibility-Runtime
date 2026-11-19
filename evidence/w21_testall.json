@@ -1,0 +1,1 @@
+{"cmd": ["make", "test-all"], "rc": 2, "wall_s": 263.695, "cpu_user_s": 236.755, "cpu_sys_s": 20.327, "maxrss_kb": 783200, "nproc": 2}
