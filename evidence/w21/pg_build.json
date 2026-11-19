@@ -1,0 +1,1 @@
+{"cmd": ["make", "BUILDDIR=build_pg", "CXXFLAGS=-std=c++17 -Wall -Wextra -g -O2 -pg -MMD -MP"], "rc": 0, "wall_s": 587.0, "cpu_user_s": 562.566, "cpu_sys_s": 22.378, "maxrss_kb": 1461064, "nproc": 2}
