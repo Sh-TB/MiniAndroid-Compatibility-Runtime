@@ -1,13 +1,36 @@
 {
  "status": "ahead",
- "ahead_by": 3,
+ "ahead_by": 2,
  "behind_by": 0,
- "total_commits": 3,
- "files_changed": 27,
- "merge_base_commit": "125f56901efe",
- "commits": [
+ "total_commits": 2,
+ "files_changed": 23,
+ "commit_shas": [
   "832da02597e2",
-  "1264fcb8a662",
-  "1e5c8fb94be5"
+  "1264fcb8a662"
+ ],
+ "file_names": [
+  ".gitignore",
+  "miniandroid/Makefile",
+  "miniandroid/core_sources.manifest",
+  "miniandroid/evidence/wave8/wave8_benchmarks.json",
+  "miniandroid/evidence/wave8/wave8_final_report.md",
+  "miniandroid/evidence/wave8/wave8_link_cost.md",
+  "miniandroid/evidence/wave9/apk_identity.txt",
+  "miniandroid/evidence/wave9/production_noop_fresh.txt",
+  "miniandroid/evidence/wave9/w9_results.json",
+  "miniandroid/evidence/wave9/wave9_final_evidence.md",
+  "miniandroid/src/dex/dalvik_bridge.cpp",
+  "miniandroid/src/dex/dalvik_engine.cpp",
+  "miniandroid/src/dex/dalvik_engine.h",
+  "miniandroid/src/dex/dalvik_engine_core.cpp",
+  "miniandroid/src/dex/dalvik_engine_internal.h",
+  "miniandroid/src/dex/dalvik_engine_invoke.cpp",
+  "miniandroid/src/dex/dalvik_engine_tail.cpp",
+  "miniandroid/src/dex/dalvik_interpreter.cpp",
+  "miniandroid/src/dex/dalvik_opcodes.cpp",
+  "miniandroid/src/dex/dalvik_opcodes_invoke.cpp",
+  "miniandroid/src/dex/dalvik_value_glue.cpp",
+  "scripts/w8_gate.py",
+  "scripts/w9_bench.py"
  ]
 }
