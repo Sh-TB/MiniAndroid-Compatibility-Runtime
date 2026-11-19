@@ -22444,7 +22444,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 int16_t bbbb = static_cast<int16_t>(bytecode_[pc_ + 1]);
                 DalvikValue val;
                 val.type = DalvikType::INT32;
-                val.int_val = static_cast<int32_t>(bbbb) << 16;
+                val.int_val = static_cast<int32_t>(
+                    static_cast<uint32_t>(static_cast<uint16_t>(bbbb)) << 16);
+                // W22 #627 E-05: unsigned-width shift — bbbb<0 made the signed
+                // left-shift UB (C++17 [expr.shift]); bit pattern unchanged.
                 set_register(vAA, val);
                 trace.opcode_name = "const/high16";
                 pc_ = pc_ + 2;
@@ -26047,7 +26050,10 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 uint8_t vAA = (bytecode_[pc_] >> 8) & 0xFF;
                 uint16_t val = bytecode_[pc_ + 1];
                 // EXP-071 Phase 8: write to long_val for INT64 type.
-                DalvikValue dv; dv.type = DalvikType::INT64; dv.long_val = static_cast<int64_t>(val) << 48;
+                // W22 #627 E-05 hardening: uint64-width shift (0xFFFF<<48 is
+                // not representable in int64_t — defined-but-fragile before).
+                DalvikValue dv; dv.type = DalvikType::INT64;
+                dv.long_val = static_cast<int64_t>(static_cast<uint64_t>(val) << 48);
                 // F-028b: fill the vAA+1 shadow slot (ART two-slot layout)
                 set_wide_pair(vAA, dv);
                 trace.opcode_name = "const-wide/high16";

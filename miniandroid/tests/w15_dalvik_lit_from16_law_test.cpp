@@ -38,6 +38,7 @@ namespace opc {
 constexpr uint16_t CONST = miniandroid::dalvik::Opcode::CONST;              // 0x14 (31i)
 constexpr uint16_t CONST_16 = 0x13;      // const/16 vAA, #+BBBB (21s)
 constexpr uint16_t CONST_WIDE_16 = 0x16; // const-wide/16 vAA, #+BBBB (21s)
+constexpr uint16_t CONST_HIGH16 = 0x15;  // const/high16 vAA, #+BBBB0000 (21h)
 constexpr uint16_t MOVE_FROM16 = 0x02;   // move/from16 vAA, vBBBB (22x)
 constexpr uint16_t MOVE_WIDE_FROM16 = 0x05; // move-wide/from16 (22x)
 constexpr uint16_t RETURN = miniandroid::dalvik::Opcode::RETURN;            // 0x0F
@@ -59,6 +60,11 @@ static void record(const std::string& name, bool passed,
 }
 
 static uint16_t w11x(uint8_t reg, uint16_t op) {
+    return static_cast<uint16_t>((reg << 8) | op);
+}
+
+// 21h: AA|op / BBBB (const/high16).
+static uint16_t w21h_lo(uint8_t reg, uint16_t op) {
     return static_cast<uint16_t>((reg << 8) | op);
 }
 
@@ -192,6 +198,37 @@ int main() {
         c.push_back(w11x(0, opc::RETURN));
         expect_int(engine, "lit8_mul_2_to_the_31_wraps_to_min", c,
                    static_cast<int32_t>(0x80000000u));
+    }
+
+    // ── W22 #627 E-05: const/high16 unsigned-width shift ────────────────
+    // 21h law: vAA = (int32_t)((uint32_t)BBBB << 16). Pre-fix the shift ran
+    // in signed width (BBBB >= 0x8000 is a negative int16 → C++17 UB, the
+    // same family 19ee074a fixed for lit8/lit16 shl). Bit-pattern rows pin
+    // both the sign-bit and the non-sign-bit cases (the old form usually
+    // produced the right bits by accident — these rows keep it defined).
+    {
+        std::vector<uint16_t> c;
+        c.push_back(w21h_lo(0, opc::CONST_HIGH16));
+        c.push_back(static_cast<uint16_t>(0x8000));
+        c.push_back(w11x(0, opc::RETURN));
+        expect_int(engine, "const_high16_8000_is_0x80000000", c,
+                   static_cast<int32_t>(0x80000000u));
+    }
+    {
+        std::vector<uint16_t> c;
+        c.push_back(w21h_lo(0, opc::CONST_HIGH16));
+        c.push_back(static_cast<uint16_t>(0xABCD));
+        c.push_back(w11x(0, opc::RETURN));
+        expect_int(engine, "const_high16_abcd_is_0xabcd0000", c,
+                   static_cast<int32_t>(0xABCD0000u));
+    }
+    {
+        std::vector<uint16_t> c;
+        c.push_back(w21h_lo(0, opc::CONST_HIGH16));
+        c.push_back(static_cast<uint16_t>(0x7FFF));
+        c.push_back(w11x(0, opc::RETURN));
+        expect_int(engine, "const_high16_7fff_is_0x7fff0000", c,
+                   static_cast<int32_t>(0x7FFF0000u));
     }
 
     // ── E-01: /from16 16-bit source registers (>255-register methods) ──
