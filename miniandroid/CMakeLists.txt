@@ -235,7 +235,7 @@ add_executable(miniandroid
     src/main.cpp
 )
 
-target_link_libraries(miniandroid PRIVATE miniandroid_core)
+target_link_libraries(miniandroid PRIVATE miniandroid_core miniandroid_quickjs miniandroid_native)
 
 # ISSUE-607 item 8 (W22): ONE generated version/commit header (VERSION + git
 # HEAD) into the binary dir (never the source tree). Mirrors the Makefile's
@@ -265,20 +265,9 @@ add_dependencies(miniandroid version-header)
 # configure time (Ninja: "missing and no known rule to make it") — that
 # was a broken generated-file dependency, not compiler slowness.
 target_sources(miniandroid PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.c
-    # #612-A5: the QuickJS WebView engine's C runtime — the Makefile links
-    # QUICKJS_OBJECTS (5 third_party C files); the manifest-parity wave
-    # (GP583-BUILD-002) covered only the .cpp core, so the CMake runtime
-    # linked with undefined JS_* references (webview_engine.cpp). Same
-    # sources, same role, now as normal target sources (C language enabled
-    # up front).
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/quickjs.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/libregexp.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/libunicode.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/cutils.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs/libbf.c
+    # W23-06: QuickJS C runtime -> miniandroid_quickjs OBJECT library; the
+    # native thunks/bionic shims -> miniandroid_native OBJECT library. Both
+    # are compiled once and reused by every core-archive consumer.
 )
 # #612-A5: the Makefile builds QuickJS with its own QUIET C dialect
 # (QUICKJS_CFLAGS: gnu11, _GNU_SOURCE, CONFIG_VERSION, CONFIG_BIGNUM, -w).
@@ -298,6 +287,26 @@ set_source_files_properties(${MINIANDROID_QUICKJS_SOURCES} PROPERTIES
     COMPILE_OPTIONS "-w;-D_GNU_SOURCE;-DCONFIG_VERSION=\"2024-01-13\";-DCONFIG_BIGNUM;-I${CMAKE_CURRENT_SOURCE_DIR}/third_party/quickjs")
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
     PROPERTIES LANGUAGE ASM)
+
+# W23-06 / BUG-1 (surfaced by the W23 chain's first megabatch build): the
+# QuickJS C runtime is a SHARED OBJECT library — compiled once and reused by
+# every target that pulls webview_engine.o (which references JS_*) out of the
+# miniandroid_core archive. Before W23 the five C files were compiled only
+# inside the miniandroid executable, so any other target linking the core
+# archive failed at link with undefined JS_* references (pre-existing bug,
+# megabatch was never built since the quickjs wiring existed).
+add_library(miniandroid_quickjs OBJECT ${MINIANDROID_QUICKJS_SOURCES})
+
+# W23-06 / BUG-1b (same class as BUG-1, same chain run): the native shims —
+# thunk assembly + bionic compat — are referenced by core-archive members
+# (dlopen_exec.cpp.o -> miniandroid_native_thunk), so they must exist for ANY
+# target linking the core archive, not only the miniandroid executable.
+# Shared OBJECT library: compiled once, reused everywhere.
+add_library(miniandroid_native OBJECT
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/bionic_compat.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.c
+)
 
 # ============== EXP-002 Executable (Class Resolution) ==============
 add_executable(miniandroid_exp002 EXCLUDE_FROM_ALL
@@ -364,7 +373,7 @@ add_executable(miniandroid_megabatch EXCLUDE_FROM_ALL
     src/exp007_012_megabatch_main.cpp
 )
 
-target_link_libraries(miniandroid_megabatch PRIVATE miniandroid_core)
+target_link_libraries(miniandroid_megabatch PRIVATE miniandroid_core miniandroid_quickjs miniandroid_native)
 
 # Install targets
 install(TARGETS miniandroid

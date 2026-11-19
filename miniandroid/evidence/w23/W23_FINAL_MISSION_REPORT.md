@@ -11,8 +11,8 @@ this report are measured on this host (2 cores, 4 GB RAM, g++ 14.2.0) at HEAD
 | # | Question | Answer |
 |---|---|---|
 | 1 | Original production build time | **591.64 s** fresh cold at `23a4d33b` (W22 recorded 572.46 s; +3.4 % session noise) |
-| 2 | New production clean-build time | PENDING — persisted chain stage 5 writes `evidence/w23/prod_build_final_w23.log` (reference: post-split incremental 415.8 s / 32 TUs; clean-build cost is -O2 codegen CPU work, essentially unchanged by the split — see §6) |
-| 3 | New warm rebuild time | PENDING — chain stage 2 (`ccache_warm_w23.log`); W22 reference 21.16 s (88/88 hits) |
+| 2 | New production clean-build time | **541.33 s** (`prod_build_final_w23.log`, rc=0, sha `a20ad3311f036771`, RSS 1461 MB) — vs 591.64 s baseline (−8.5 %; part of the delta is disk-health: the baseline session ran at a 99 %-full disk) |
+| 3 | New warm rebuild time | **20.94 s** — 88/88 direct ccache hits (cold 553.42 s with 0/88 hits; reproduces W22 21.16 s) |
 | 4 | Typical Dalvik implementation edit | **6.7 s** bridge / **8.9 s** opcode / **13.1 s** interpreter (dev-so cycles, medians of 3) — improved from W22's 8.8/12.6/19.4 s |
 | 5 | TUs compiled per operation | see the matrix in §3 — validated per probe (harness cross-checks the compiled-TU set) |
 | 6 | Header-cascade decrease | **dalvik_engine.h one-line edit: 343.18 s / 18 TUs → 1.04 s / 0 TUs (−99.7 %)** |
@@ -25,9 +25,9 @@ this report are measured on this host (2 cores, 4 GB RAM, g++ 14.2.0) at HEAD
 
 | Field | Value |
 |---|---|
-| PRODUCTION_BUILD_SECONDS | baseline 591.64 s at `23a4d33b`; post-split final clean build PENDING — the persisted measurement chain (`scripts/w23_build_chain.sh`, committed) runs it as stage 5 and writes `evidence/w23/prod_build_final_w23.log`; fill `W23_BUILD_RESULTS.csv` row `I_prod_clean_rebuild` from that log (post-split incremental rebuild reference: 415.8 s for the 32 TUs the repoint invalidated) |
+| PRODUCTION_BUILD_SECONDS | **541.33 s** fresh cold post-split (baseline 591.64 s; ccache cold 553.42 s, warm 20.94 s) |
 | DEVELOPER_BUILD_SECONDS | dev-so clean 138.23 s; cycles 0.06 (no-op) / 6.71 (bridge) / 8.86 (opcode) / 13.12 (interpreter) |
-| WARM_REBUILD_SECONDS | PENDING — chain stage 2 (`evidence/w23/ccache_warm_w23.log`; W22 reference 21.16 s for the pre-split content) |
+| WARM_REBUILD_SECONDS | **20.94 s** (88/88 direct hits) |
 | DALVIK_EDIT_SECONDS | 6.7–13.1 s (dev-so path, validated) |
 | HEADER_CASCADE_SECONDS | 1.04 s for `dalvik_engine.h` (was 343.18 s); proportional closures: impl 317.1 s / 15 TUs, types 336.9 s / 18 TUs, internal 246.1 s / 12 TUs |
 | COMPILED_TU_COUNTS | per-probe, validated — see W23_BUILD_RESULTS.csv |
@@ -89,6 +89,14 @@ W23_DEPENDENCY_ANALYSIS.md §5.
 5. **Validated benchmark harness (W23-07)** — scripts/w23_probe.py (operations
    A–J, per-run real edits, compiled-TU validation, CPU/RSS capture, JSONL
    evidence).
+6. **BUG-1/BUG-1b fixed (fix-loop, this session)** — the chain's first
+   megabatch build surfaced two PRE-EXISTING CMake link gaps: core-archive
+   members reference QuickJS `JS_*` and `miniandroid_native_thunk`, which were
+   compiled only inside the `miniandroid` executable target. Fix: shared
+   OBJECT libraries `miniandroid_quickjs` + `miniandroid_native` (compiled
+   once, reused by every core-archive consumer). VERIFIED: megabatch + the
+   runtime target both build/link rc=0 (`cmake_megabatch_fixed2.log`,
+   14.9 s incremental — the object libs compiled once).
 
 ## 5. Rejected / not-attempted (with reasons)
 
@@ -104,23 +112,43 @@ W23_DEPENDENCY_ANALYSIS.md §5.
 
 ## 6. Production clean build under 120 s — honest accounting
 
-Measured facts: (a) the fresh cold build is 88 serial -O2 compile slots
-(588 CPU-s ≈ wall — CPU-bound, 2 cores, no SMT); the link is 0.9 s. (b) The
-header split does NOT change clean-build cost materially (family TUs still
-compile the same preprocessed content via impl+types; only the 4 repointed
-public-surface TUs parse less). (c) W22 already rejected -j2 (+9 %), PCH
-(1.03×), lld/mold (link 0.9 s — nothing to win), unity builds on this host;
-none were repeated without a new hypothesis. (d) The -g0-everywhere variant
-(chain stage 3, `prod_build_g0profile.log`) quantifies the debug-info share —
-a measurement variant only; adopting it would alter the production flag
-contract (forbidden without explicit sign-off). (e) ccache warm gives the
-fast identical-content production rebuild (W22: 21.16 s, 27×). Conclusion:
-<120 s fresh-cold production clean build is BLOCKED by hardware (2 cores /
-serial -O2 codegen ≈ 588 CPU-s); the honest floor is ≈550-590 s cold,
-≈21 s warm-cache, 6.7-13.1 s developer cycles. The exact remaining bottleneck:
-the top-10 TUs (45.8 % of compile time: execution_engine 38 s, five bridge
+Measured decomposition (all five clean builds in evidence/w23/, identical
+tree at HEAD 2580a504, disk healthy ~7 GB free this session):
+
+| Variant | wall | CPU u+s | peak RSS | rc |
+|---|---:|---:|---:|---|
+| production profile `-O2 -g` (canonical) | **541.33 s** (baseline session 591.64 s at a 99 %-full disk) | 540.7 | 1461 MB | 0 |
+| ccache cold `-O2 -g` | 553.42 s (0/88 hits) | 552.5 | 1427 MB | 0 |
+| ccache warm (identical tree) | **20.94 s** (88/88 direct hits) | 20.9 | 332 MB | 0 |
+| `-O2 -g0` (measurement variant) | 468.06 s | 467.7 | 1225 MB | 0 |
+| `-O1 -g0` (measurement variant) | 325.28 s | 325.2 | 1174 MB | 0 |
+
+Reading: (a) the build is CPU-serial — CPU total ≈ wall at -j1 (one core busy).
+(b) Debug info (-g → -g0) is ~14 % of the clean build. (c) The -O2
+optimization tier costs ~143 s over the -O1 floor (325 s). (d) Even the
+no-optimization floor (-O1 -g0, semantics-weakening, NOT adoptable for
+production) is 2.7× above the 120 s target on 2 cores. (e) -j2: W22 measured
++9 % (RAM-bound, peak 2.9 GB single-TU compiles vs ~3 GB available); re-tested
+this session with a healthy disk: **386.35 s rc=0** (CPU 566.3 s ≈ unchanged
+total work, wall −28.7 % vs -j1, peak RSS 1427 MB, no thrash at 2.4 GB free)
+and the binary is BYTE-IDENTICAL to the -j1 build (sha256
+`a20ad3311f036771…` both) — a pure scheduling improvement, zero flag
+changes. `make -j2 all` is now the documented fast production command on
+2-core hosts with ≥3 GB free RAM; even so, 386 s remains 3.2× above the
+120 s target, so the hardware verdict below stands. (f) ccache warm (20.94 s)
+is the supported path for identical-content production rebuilds.
+
+Verdict: <120 s fresh-cold on THIS host is BLOCKED with measured evidence —
+the floor is set by 88 serial -O2 codegen slots (~541 CPU-s ≈ wall). Reaching
+120 s would require ~5 cores at `-O2 -g0` or ~7-8 cores at the production
+`-O2 -g` profile (wall ≈ CPU/cores), or semantic changes (-O1/-O0/unity) the
+mission forbids. The honest current floors: 541.33 s cold, 20.94 s
+warm-cache, 6.7-13.1 s developer cycles. The exact remaining bottleneck: the
+top-10 TUs (45.8 % of compile time — execution_engine 38 s, five bridge
 domains 21-32 s each, engine core/invoke/interpreter ~21 s) are -O2 codegen of
-genuinely required components.
+genuinely required components; no duplicate compilation remains to eliminate
+(audited: 87 manifest TUs compile exactly once per profile in the Make graph;
+CMake duplicates removed in W23-06).
 
 ## 7. Developer workflow (recommended)
 
@@ -148,4 +176,12 @@ genuinely required components.
 - evidence/w23/gate_hashes_postsplit.txt — 11/11 APK screenshot hashes
 - evidence/w23/runpath_dev.txt — RUNPATH verification
 - evidence/w23/fanout_before.json / fanout_after.json — .d-based fan-out
-- evidence/w23/cmake_configure.log / cmake_megabatch_build.log
+- evidence/w23/cmake_configure.log / cmake_megabatch_build.log (rc=2,
+  BUG-1) / cmake_configure_fixed.log / cmake_megabatch_fixed.log (rc=2,
+  BUG-1b) / cmake_configure_fixed2.log / cmake_megabatch_fixed2.log
+  (rc=0, both OBJECT-lib fixes verified)
+- evidence/w23/prod_build_j2.log — fresh -j2 clean build (386.35 s,
+  byte-identical binary)
+- evidence/w23/prod_build_o1g0profile.log — -O1+g0 measurement variant
+- evidence/w23/final_binary_sha.txt / final G+no-op probes in
+  probes_after.jsonl (tag final_verify: A 1.07 s / G 1.05 s, 0 TUs)

@@ -36,9 +36,17 @@ $RUN --log evidence/w23/prod_build_g0profile.log --out evidence/w23/build_bench.
   make CXXFLAGS="-std=c++17 -Wall -Wextra -O2 -MMD -MP -g0" -j1 --output-sync all
 rm -rf build
 
+# 3b) -O1+g0 profile clean build (measurement variant: decomposition evidence
+#     for the 120 s question — how much of the clean build is the -O2
+#     optimization tier itself. NOT adopted.)
+rm -rf build
+$RUN --log evidence/w23/prod_build_o1g0profile.log --out evidence/w23/build_bench.jsonl \
+  make CXXFLAGS="-std=c++17 -Wall -Wextra -O1 -MMD -MP -g0" -j1 --output-sync all
+rm -rf build
+
 # 4) CMake configure + megabatch (core lib compiles once; megabatch links
 #    against it — validates the W23-06 dup-source removal at link level)
-export PATH=/tmp/dl/cmake-3.28.6-linux-x86_64/bin:$PATH
+export PATH=/home/z/my-project/tools/dl/cmake-3.28.6-linux-x86_64/bin:$PATH
 rm -rf build_cmake
 cmake -S . -B build_cmake -DCMAKE_BUILD_TYPE=Release > evidence/w23/cmake_configure.log 2>&1
 $RUN --log evidence/w23/cmake_megabatch_build.log --out evidence/w23/build_bench.jsonl \

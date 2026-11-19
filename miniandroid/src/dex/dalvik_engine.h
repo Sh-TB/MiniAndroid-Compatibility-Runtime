@@ -29,3 +29,5 @@ class DalvikExecutionEngine;  // definition: dalvik_engine_impl.h
 // W23-BENCH op=G run=1 t=1795118471
 // W23-BENCH op=G run=2 t=1795118472
 // W23-BENCH op=G run=3 t=1795118473
+// W23-BENCH op=G run=1 t=1795125724
+// W23-BENCH op=G run=2 t=1795125725
