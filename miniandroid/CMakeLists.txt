@@ -197,15 +197,19 @@ set(MINIANDROID_SPLIT_PART_TUS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_opcodes.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_opcodes_invoke.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge_domain_jdk.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge_domain_android_core.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge_domain_ui_graphics.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge_domain_app_runtime.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge_domain_io_lang.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_engine_tail.cpp
 )
 set_source_files_properties(${MINIANDROID_SPLIT_PART_TUS} PROPERTIES
     COMPILE_OPTIONS "-g0")
-# dalvik_bridge.cpp (55K lines): -Og + -g0 (the Makefile's measured
-# substitute for -O2: -Og fits in ~2.1 GB where -O2 OOMs at ~3 GB).
-set_source_files_properties(
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/dex/dalvik_bridge.cpp PROPERTIES
-    COMPILE_OPTIONS "-Og;-g0")
+# dalvik_bridge.cpp: the -Og substitute (55K-line mega-TU OOMed at -O2)
+# is GONE after the P0 SPLIT — the coordinator is 748 lines and the five
+# domain TUs compile at the standard split-part -g0 contract (they are in
+# MINIANDROID_SPLIT_PART_TUS above), mirroring the Makefile.
 # dalvik_interpreter.cpp: -g0 + the two GCC inline-budget params from the
 # Makefile (5.4K-line fetch_decode_execute; 35.9s -> 21.3s measured).
 set_source_files_properties(

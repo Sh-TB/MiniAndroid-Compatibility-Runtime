@@ -101,7 +101,12 @@ DALVIK_SPLIT ?= 1
 # WAVE-5: opcode range decomposed 3-way (interpreter / field ops / invoke+framework)
 DALVIK_SPLIT_PARTS = dex/dalvik_engine_core.cpp dex/dalvik_engine_invoke.cpp \
 	dex/dalvik_interpreter.cpp dex/dalvik_opcodes.cpp \
-	dex/dalvik_opcodes_invoke.cpp dex/dalvik_bridge.cpp dex/dalvik_engine_tail.cpp
+	dex/dalvik_opcodes_invoke.cpp dex/dalvik_bridge.cpp dex/dalvik_engine_tail.cpp \
+	dex/dalvik_bridge_domain_jdk.cpp \
+	dex/dalvik_bridge_domain_android_core.cpp \
+	dex/dalvik_bridge_domain_ui_graphics.cpp \
+	dex/dalvik_bridge_domain_app_runtime.cpp \
+	dex/dalvik_bridge_domain_io_lang.cpp
 ifeq ($(DALVIK_SPLIT),0)
 CORE_SOURCES := $(filter-out $(addprefix $(SRCDIR)/,$(DALVIK_SPLIT_PARTS)),$(CORE_SOURCES))
 CORE_SOURCES += $(SRCDIR)/dex/dalvik_engine.cpp
@@ -203,25 +208,27 @@ $(BUILDDIR)/dex/dalvik_engine.o: $(SRCDIR)/dex/dalvik_engine.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
-# ISSUE-612 WAVE-4/WAVE-5: the split part TUs inherit the same CONT-37
-# contract (-O2 unchanged, debug sections dropped for these heavy TUs only)…
+# ISSUE-612 WAVE-4/WAVE-5 + P0 SPLIT: the split part TUs inherit the same
+# CONT-37 contract (-O2 unchanged, debug sections dropped for these heavy
+# TUs only). P0 SPLIT adds the five bridge domain TUs to the same contract.
 $(BUILDDIR)/dex/dalvik_engine_core.o $(BUILDDIR)/dex/dalvik_engine_invoke.o \
 $(BUILDDIR)/dex/dalvik_interpreter.o $(BUILDDIR)/dex/dalvik_opcodes.o \
-$(BUILDDIR)/dex/dalvik_opcodes_invoke.o $(BUILDDIR)/dex/dalvik_engine_tail.o: \
+$(BUILDDIR)/dex/dalvik_opcodes_invoke.o $(BUILDDIR)/dex/dalvik_engine_tail.o \
+$(BUILDDIR)/dex/dalvik_bridge.o $(BUILDDIR)/dex/dalvik_bridge_domain_jdk.o \
+$(BUILDDIR)/dex/dalvik_bridge_domain_android_core.o \
+$(BUILDDIR)/dex/dalvik_bridge_domain_ui_graphics.o \
+$(BUILDDIR)/dex/dalvik_bridge_domain_app_runtime.o \
+$(BUILDDIR)/dex/dalvik_bridge_domain_io_lang.o: \
 $(BUILDDIR)/dex/%.o: $(SRCDIR)/dex/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
-# dalvik_bridge.o (bridge_to_api — 55,195 lines) EXCEEDS this 4 GB host's
-# cc1plus peak at -O2 (measured: OOM kill at ~3,030 MB across -O2 plain,
-# -fno-ipa-cp, -fno-ipa-sra, and GGC-tuned variants; the monolith peaked at
-# 2,871 MB). This rule takes the CONT-37 precedent one documented step
-# further: -Og (debug-quality optimization) for THIS TU only, -O2 everywhere
-# else. Measured: -Og fits at 2,124 MB peak / 38.9 s. Runtime impact is
-# measured on the Guess regression in the wave-4 evidence.
-$(BUILDDIR)/dex/dalvik_bridge.o: $(SRCDIR)/dex/dalvik_bridge.cpp
-	@mkdir -p $(dir $@)
-	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -Og -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+# P0 SPLIT: the old dalvik_bridge.o rule needed -Og (2,124 MB peak / 38.9 s)
+# because bridge_to_api was ONE 55K-line TU that OOMed at -O2 (~3,030 MB).
+# The split decomposes it into five domain TUs (8-15K lines each) which
+# compile at the standard -O2 -g0 part contract; the coordinator (748
+# lines) compiles trivially. The -Og override is gone — the -O2 -g0 rule
+# above now covers dalvik_bridge.o too.
 
 # WAVE-7 (ISSUE-612): dalvik_interpreter.cpp's fetch_decode_execute is ONE
 # 5,436-line function; -O2 GIMPLE growth on it costs 35.9 s / 1,118 MB

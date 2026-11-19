@@ -1,0 +1,7 @@
+TU                                          peak RSS (KB)  wall (s)  cmd
+dalvik_bridge                                      877256       6.7  exit=0
+dalvik_bridge_domain_jdk                          1090896      19.1  exit=0
+dalvik_bridge_domain_android_core                 1255480      23.3  exit=0
+dalvik_bridge_domain_ui_graphics                  1255480      28.2  exit=0
+dalvik_bridge_domain_app_runtime                  1255480      28.0  exit=0
+dalvik_bridge_domain_io_lang                      1255480      28.6  exit=0

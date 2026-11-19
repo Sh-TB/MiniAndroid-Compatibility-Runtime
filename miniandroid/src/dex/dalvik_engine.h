@@ -1751,6 +1751,11 @@ struct DalvikExecutionResult {
  * - Tracks method invocations via call stack
  * - Bridges to Android API stubs
  */
+    // P0 SPLIT: dispatch frame for the bridge domain ranges — defined
+    // in dex/dalvik_bridge_frame.h (references only here; no include
+    // to keep the engine-header dependency graph unchanged).
+    struct DalvikBridgeFrame;
+
 class DalvikExecutionEngine {
 public:
     DalvikExecutionEngine();
@@ -4713,6 +4718,16 @@ private:
   bool bridge_arm_49792(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
   bool bridge_arm_46205(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
   bool bridge_arm_5892(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
+
+    // P0 SPLIT (bridge mega-TU): five domain dispatch ranges of
+    // bridge_to_api — verbatim-range extraction, chained in original
+    // scan order by the coordinator; frame contract in
+    // dex/dalvik_bridge_frame.h.
+  bool bridge_domain_jdk(DalvikBridgeFrame& fr);
+  bool bridge_domain_android_core(DalvikBridgeFrame& fr);
+  bool bridge_domain_ui_graphics(DalvikBridgeFrame& fr);
+  bool bridge_domain_app_runtime(DalvikBridgeFrame& fr);
+  bool bridge_domain_io_lang(DalvikBridgeFrame& fr);
 };
 
 } // namespace dalvik
