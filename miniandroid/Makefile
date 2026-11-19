@@ -614,7 +614,7 @@ $(DEV_SO_DIR)/objects/dalvik_opcodes.o: $(SRCDIR)/dex/dalvik_opcodes.cpp
 
 $(DEV_SO_DIR)/objects/%.o: $(SRCDIR)/dex/%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -O0 -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 # Shared library: SONAME pinned; $ORIGIN rpath (make-escaped $$ORIGIN).
 $(DEV_SO_LIB): $(DEV_SO_PIC)
@@ -634,6 +634,18 @@ $(DEV_SO_DIR)/miniandroid_dev: $(DEV_SO_MAIN_OBJS) $(DEV_SO_STABLE_OBJS) $(QUICK
 	@mkdir -p $(DEV_SO_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -rdynamic -o $@ $^ \
 		-L$(DEV_SO_DIR) -lminiandroid_dalvik -Wl,-rpath,'$$ORIGIN' $(LIBS) $(FONTS_LIBS)
+
+# W20 FIX (P2, build correctness): the dev-so PIC objects generate .d files
+# (-MMD in CXXFLAGS) but those were never included — the wave-9 staleness
+# comment above ("PIC objects carry -MMD dep files, so header edits rebuild
+# the PIC object too") was FALSE: only the .cpp prerequisite existed, so a
+# shared-header edit (dalvik_engine.h, android_shadows.h) silently relinked
+# libminiandroid_dalvik.so from STALE objects (measured W20: engine.h touch
+# rebuilt 13 TUs in the production graph but only the jdk domain in the dev
+# graph). The -include must live BELOW the DEV_SO_PIC/DEV_SO_TEST_EXES
+# definitions or the variables expand empty.
+-include $(DEV_SO_PIC:.o=.d)
+-include $(DEV_SO_TEST_EXES:=.d)
 
 define DEV_SO_BATTERY
 failed=0; total=0; \
@@ -656,3 +668,29 @@ dev-so-test: $(DEV_SO_LIB) $(DEV_SO_TEST_EXES)
 	@$(call DEV_SO_BATTERY,$(TEST_CORE))
 dev-so-clean:
 	rm -rf $(DEV_SO_DIR)
+
+# ============================================================================
+# W20-P4 — developer feedback-loop targets (additive; nothing else changes).
+#   make apk-run APK=<path> [TAP=x,y@ms] [SECS=120]   run one real APK on the
+#       dev binary with trace + screenshot + report under $(W20_RUN_DIR);
+#       uses the fast dev loop (libminiandroid_dalvik.so via rpath).
+#   make gate      the 5-APK/11-run screenshot-hash regression gate (dev binary).
+#   make cycle     edit->build->test fast loop: rebuild dev .so + battery.
+# ============================================================================
+W20_RUN_DIR ?= run/w20_apk
+SECS ?= 120
+TAP_MS ?= 25
+apk-run: build_dev_so/miniandroid_dev build_dev_so/libminiandroid_dalvik.so
+	@mkdir -p $(W20_RUN_DIR)
+	LD_LIBRARY_PATH=build_dev_so ./build_dev_so/miniandroid_dev run \
+		--max-seconds $(SECS) --frames 30 --trace \
+		$(if $(TAP),--tap $(TAP)@$(TAP_MS),) \
+		-o $(W20_RUN_DIR) --execution-mode real-dalvik $(APK) \
+		2>&1 | tee $(W20_RUN_DIR)/run.log; \
+	exit $${PIPESTATUS[0]}
+
+gate:
+	bash scripts/p0_gate.sh /tmp/w20_gate_make
+
+cycle: build_dev_so/libminiandroid_dalvik.so
+	$(MAKE) -j1 dev-so-test
