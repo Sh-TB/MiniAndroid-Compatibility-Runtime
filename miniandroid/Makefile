@@ -48,6 +48,13 @@ endif
 # libjpeg — IJG reference JPEG decoder (Android uses libjpeg-turbo, drop-in API)
 # rlottie  — Samsung reference Lottie renderer (Telegram uses it directly)
 LIBS = -lz -ljpeg -lstdc++ -lm -lpthread -lsqlite3 -lssl -lcrypto -lmpg123 -lsndfile  # S100 NET-001: TLS through OpenSSL (BoringSSL lineage)  # M3 F-ROOM-CHAIN: real SQLite backend
+# W15 (#627 D-04/H-02): std::filesystem lives in libstdc++fs on GCC < 9
+# (Debian 10 / g++-8). Version-conditional — newest libstdc++ may not
+# ship the archive, so never add it unconditionally.
+GCC_MAJOR := $(shell $(CXX) -dumpversion 2>/dev/null | cut -d. -f1)
+ifeq ($(shell test "$(GCC_MAJOR)" -lt 9 && echo yes),yes)
+LIBS += -lstdc++fs
+endif
 ifeq ($(MINIANDROID_HAVE_WEBP),1)
 LIBS += -lwebp -lwebpdemux
 endif
@@ -77,7 +84,11 @@ endif
 # the Makefile and miniandroid/CMakeLists.txt both read it, and
 # `make check-source-parity` asserts the Makefile expansion equals the
 # manifest (run in the test battery).
-CORE_SOURCES := $(shell grep -v '^#' core_sources.manifest)
+# W15 (#627 D-01/H-02): \# is the documented GNU make literal-hash
+# escape — an unescaped # inside $(shell ) is parsed as a comment
+# start by GNU Make < 4.3 (Ubuntu 20.04 ships 4.2.1) and breaks the
+# manifest load. Verified identical behavior on 4.4.
+CORE_SOURCES := $(shell grep -v '^\#' core_sources.manifest)
 
 # ISSUE-612 WAVE-4: the 94K-line dalvik_engine.cpp monolith is split into 5
 # verbatim-range TUs (core/invoke/opcodes/bridge/tail — cuts at verified
@@ -90,7 +101,12 @@ DALVIK_SPLIT ?= 1
 # WAVE-5: opcode range decomposed 3-way (interpreter / field ops / invoke+framework)
 DALVIK_SPLIT_PARTS = dex/dalvik_engine_core.cpp dex/dalvik_engine_invoke.cpp \
 	dex/dalvik_interpreter.cpp dex/dalvik_opcodes.cpp \
-	dex/dalvik_opcodes_invoke.cpp dex/dalvik_bridge.cpp dex/dalvik_engine_tail.cpp
+	dex/dalvik_opcodes_invoke.cpp dex/dalvik_bridge.cpp dex/dalvik_engine_tail.cpp \
+	dex/dalvik_bridge_domain_jdk.cpp \
+	dex/dalvik_bridge_domain_android_core.cpp \
+	dex/dalvik_bridge_domain_ui_graphics.cpp \
+	dex/dalvik_bridge_domain_app_runtime.cpp \
+	dex/dalvik_bridge_domain_io_lang.cpp
 ifeq ($(DALVIK_SPLIT),0)
 CORE_SOURCES := $(filter-out $(addprefix $(SRCDIR)/,$(DALVIK_SPLIT_PARTS)),$(CORE_SOURCES))
 CORE_SOURCES += $(SRCDIR)/dex/dalvik_engine.cpp
@@ -192,25 +208,27 @@ $(BUILDDIR)/dex/dalvik_engine.o: $(SRCDIR)/dex/dalvik_engine.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
-# ISSUE-612 WAVE-4/WAVE-5: the split part TUs inherit the same CONT-37
-# contract (-O2 unchanged, debug sections dropped for these heavy TUs only)…
+# ISSUE-612 WAVE-4/WAVE-5 + P0 SPLIT: the split part TUs inherit the same
+# CONT-37 contract (-O2 unchanged, debug sections dropped for these heavy
+# TUs only). P0 SPLIT adds the five bridge domain TUs to the same contract.
 $(BUILDDIR)/dex/dalvik_engine_core.o $(BUILDDIR)/dex/dalvik_engine_invoke.o \
 $(BUILDDIR)/dex/dalvik_interpreter.o $(BUILDDIR)/dex/dalvik_opcodes.o \
-$(BUILDDIR)/dex/dalvik_opcodes_invoke.o $(BUILDDIR)/dex/dalvik_engine_tail.o: \
+$(BUILDDIR)/dex/dalvik_opcodes_invoke.o $(BUILDDIR)/dex/dalvik_engine_tail.o \
+$(BUILDDIR)/dex/dalvik_bridge.o $(BUILDDIR)/dex/dalvik_bridge_domain_jdk.o \
+$(BUILDDIR)/dex/dalvik_bridge_domain_android_core.o \
+$(BUILDDIR)/dex/dalvik_bridge_domain_ui_graphics.o \
+$(BUILDDIR)/dex/dalvik_bridge_domain_app_runtime.o \
+$(BUILDDIR)/dex/dalvik_bridge_domain_io_lang.o: \
 $(BUILDDIR)/dex/%.o: $(SRCDIR)/dex/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
-# dalvik_bridge.o (bridge_to_api — 55,195 lines) EXCEEDS this 4 GB host's
-# cc1plus peak at -O2 (measured: OOM kill at ~3,030 MB across -O2 plain,
-# -fno-ipa-cp, -fno-ipa-sra, and GGC-tuned variants; the monolith peaked at
-# 2,871 MB). This rule takes the CONT-37 precedent one documented step
-# further: -Og (debug-quality optimization) for THIS TU only, -O2 everywhere
-# else. Measured: -Og fits at 2,124 MB peak / 38.9 s. Runtime impact is
-# measured on the Guess regression in the wave-4 evidence.
-$(BUILDDIR)/dex/dalvik_bridge.o: $(SRCDIR)/dex/dalvik_bridge.cpp
-	@mkdir -p $(dir $@)
-	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -Og -g0 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+# P0 SPLIT: the old dalvik_bridge.o rule needed -Og (2,124 MB peak / 38.9 s)
+# because bridge_to_api was ONE 55K-line TU that OOMed at -O2 (~3,030 MB).
+# The split decomposes it into five domain TUs (8-15K lines each) which
+# compile at the standard -O2 -g0 part contract; the coordinator (748
+# lines) compiles trivially. The -Og override is gone — the -O2 -g0 rule
+# above now covers dalvik_bridge.o too.
 
 # WAVE-7 (ISSUE-612): dalvik_interpreter.cpp's fetch_decode_execute is ONE
 # 5,436-line function; -O2 GIMPLE growth on it costs 35.9 s / 1,118 MB
@@ -355,7 +373,8 @@ $(KOTLIN_EXECUTABLE): $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) $(KOTLI
 #                          APK fixture path as argv (exit 2 = usage); they
 #                          run inside their dedicated waves with fixtures,
 #                          NOT from the zero-arg battery.
-TEST_CORE = simple_test s130_laws_test gp582_engine_probe_test
+TEST_CORE = simple_test s130_laws_test gp582_engine_probe_test \
+            w15_dalvik_lit_from16_law_test
 TEST_HOSTILE = g04_hostile_test g06g08_hostile_test resource_hostile_test
 TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
 	g10_layout_law_test g11_ctor_law_test \
@@ -573,19 +592,29 @@ DEV_SO_LIB = $(DEV_SO_DIR)/libminiandroid_dalvik.so
 DEV_SO_TEST_EXES = $(addprefix $(DEV_SO_DIR)/tests/,$(TEST_CORE))
 DEV_SO_MAIN_OBJS = $(MAIN_OBJECT) $(BUILDDIR)/jni/bionic_compat.o $(BUILDDIR)/jni/pthread_shadow.o
 
-# PIC objects — flags mirror the production per-TU rules exactly (+ -fPIC):
-# interpreter keeps its wave-7 inline budget, bridge keeps -Og (4 GB host).
+# PIC objects — WAVE-10 speed profiles for the DEV-SO PATH ONLY (production
+# per-TU rules below are untouched: interpreter -O2 + wave-7 budget, bridge -Og).
+# Attribution (wave-10, -ftime-report x5): both TUs are optimization/codegen
+# bound (callgraph functions expansion 63%/50%). Dev-path profiles chosen from
+# measured candidates: interpreter -O1 12.0s (RSS 1074MB, cycle <15s); bridge
+# -O0 26.6s (RSS 2185MB, cycle <30s). Bridge -O1 is BLOCKED: cc1plus is
+# OOM-killed by the 4GB cgroup (measured). Runtime parity for both profiles is
+# proven per wave-10 acceptance (battery + 3-APK screenshot hashes).
 $(DEV_SO_DIR)/objects/dalvik_interpreter.o: $(SRCDIR)/dex/dalvik_interpreter.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -g0 -fPIC --param inline-unit-growth=15 --param large-function-growth=120 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -O1 -g0 -fPIC --param inline-unit-growth=15 --param large-function-growth=120 $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 $(DEV_SO_DIR)/objects/dalvik_bridge.o: $(SRCDIR)/dex/dalvik_bridge.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -Og -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -O0 -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+$(DEV_SO_DIR)/objects/dalvik_opcodes.o: $(SRCDIR)/dex/dalvik_opcodes.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -O1 -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 $(DEV_SO_DIR)/objects/%.o: $(SRCDIR)/dex/%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+	$(CXX) $(filter-out -O2,$(CXXFLAGS)) -O0 -g0 -fPIC $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
 
 # Shared library: SONAME pinned; $ORIGIN rpath (make-escaped $$ORIGIN).
 $(DEV_SO_LIB): $(DEV_SO_PIC)
@@ -605,6 +634,18 @@ $(DEV_SO_DIR)/miniandroid_dev: $(DEV_SO_MAIN_OBJS) $(DEV_SO_STABLE_OBJS) $(QUICK
 	@mkdir -p $(DEV_SO_DIR)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -rdynamic -o $@ $^ \
 		-L$(DEV_SO_DIR) -lminiandroid_dalvik -Wl,-rpath,'$$ORIGIN' $(LIBS) $(FONTS_LIBS)
+
+# W20 FIX (P2, build correctness): the dev-so PIC objects generate .d files
+# (-MMD in CXXFLAGS) but those were never included — the wave-9 staleness
+# comment above ("PIC objects carry -MMD dep files, so header edits rebuild
+# the PIC object too") was FALSE: only the .cpp prerequisite existed, so a
+# shared-header edit (dalvik_engine.h, android_shadows.h) silently relinked
+# libminiandroid_dalvik.so from STALE objects (measured W20: engine.h touch
+# rebuilt 13 TUs in the production graph but only the jdk domain in the dev
+# graph). The -include must live BELOW the DEV_SO_PIC/DEV_SO_TEST_EXES
+# definitions or the variables expand empty.
+-include $(DEV_SO_PIC:.o=.d)
+-include $(DEV_SO_TEST_EXES:=.d)
 
 define DEV_SO_BATTERY
 failed=0; total=0; \
@@ -627,3 +668,29 @@ dev-so-test: $(DEV_SO_LIB) $(DEV_SO_TEST_EXES)
 	@$(call DEV_SO_BATTERY,$(TEST_CORE))
 dev-so-clean:
 	rm -rf $(DEV_SO_DIR)
+
+# ============================================================================
+# W20-P4 — developer feedback-loop targets (additive; nothing else changes).
+#   make apk-run APK=<path> [TAP=x,y@ms] [SECS=120]   run one real APK on the
+#       dev binary with trace + screenshot + report under $(W20_RUN_DIR);
+#       uses the fast dev loop (libminiandroid_dalvik.so via rpath).
+#   make gate      the 5-APK/11-run screenshot-hash regression gate (dev binary).
+#   make cycle     edit->build->test fast loop: rebuild dev .so + battery.
+# ============================================================================
+W20_RUN_DIR ?= run/w20_apk
+SECS ?= 120
+TAP_MS ?= 25
+apk-run: build_dev_so/miniandroid_dev build_dev_so/libminiandroid_dalvik.so
+	@mkdir -p $(W20_RUN_DIR)
+	LD_LIBRARY_PATH=build_dev_so ./build_dev_so/miniandroid_dev run \
+		--max-seconds $(SECS) --frames 30 --trace \
+		$(if $(TAP),--tap $(TAP)@$(TAP_MS),) \
+		-o $(W20_RUN_DIR) --execution-mode real-dalvik $(APK) \
+		2>&1 | tee $(W20_RUN_DIR)/run.log; \
+	exit $${PIPESTATUS[0]}
+
+gate:
+	bash scripts/p0_gate.sh /tmp/w20_gate_make
+
+cycle: build_dev_so/libminiandroid_dalvik.so
+	$(MAKE) -j1 dev-so-test

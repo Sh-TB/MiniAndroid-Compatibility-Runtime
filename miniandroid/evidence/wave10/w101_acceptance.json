@@ -1,0 +1,74 @@
+{
+ "branch_tip": "f727991e75fab7e5ed844d629c7d98129d1dc6c5",
+ "clean_dev_build": {
+  "wall_s": 122.7,
+  "rc": 0,
+  "peak_rss_mb": 2179
+ },
+ "battery": {
+  "wall_s": 0.05,
+  "rc": 0,
+  "pass": 3
+ },
+ "noop": {
+  "wall_s": 0.04,
+  "rc": 0
+ },
+ "incr_interpreter": {
+  "wall_s": 12.16,
+  "rc": 0,
+  "pic_compiles": 1,
+  "test_exe_relinks": 0,
+  "pass": 3
+ },
+ "incr_bridge": {
+  "wall_s": 26.89,
+  "rc": 0,
+  "pic_compiles": 1,
+  "test_exe_relinks": 0,
+  "pass": 3
+ },
+ "incr_opcode": {
+  "wall_s": 8.08,
+  "rc": 0,
+  "pic_compiles": 1,
+  "test_exe_relinks": 0,
+  "pass": 3
+ },
+ "prod_build": {
+  "wall_s": 80.54,
+  "rc": 0
+ },
+ "prod_test_core": {
+  "wall_s": 12.11,
+  "rc": 0,
+  "pass": 3
+ },
+ "monolith": {
+  "stale_commands": "3",
+  "battery_wall_s": 209.75,
+  "rc": 0,
+  "pass": 3
+ },
+ "apks": {
+  "ru.zxalexis.ugaday_15": {
+   "rc": 0,
+   "sha256_24": "87fe26766fc48d06c59d4c15",
+   "match": true
+  },
+  "tech.gaskell.diceroller_1_debug": {
+   "rc": 1,
+   "sha256_24": "46b07062ba6fe36ca8a6e42d",
+   "match": true
+  },
+  "com.itsfrz.tictactoe_5": {
+   "rc": 1,
+   "sha256_24": "d55056a8928a26ffeb15f66d",
+   "match": true
+  }
+ },
+ "so_resolution": "static-resolved",
+ "so_resolution_ldd_dev": "libminiandroid_dalvik.so => /home/z/my-project/miniandroid/build_dev_so/libminiandroid_dalvik.so (0x00007fd3d4be7000)",
+ "note": "Fresh W10.1 acceptance reruns on branch tip f727991e. A first attempt ran on a recycle-rolled-back tree (HEAD=main@31cc610f, old wave-9 flags) and was DISCARDED as an environment misfire, not a regression; the tree was restored from origin/wave10/dalvik-accel before these runs.",
+ "so_resolution_note": "test_core has no Dalvik symbol references, so the dynamic linker records no NEEDED entry for it (static runtime + thunk by design); miniandroid_dev resolves libminiandroid_dalvik.so from build_dev_so/ via $ORIGIN - exactly the library that was just relinked (no stale copy)."
+}

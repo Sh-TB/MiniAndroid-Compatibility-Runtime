@@ -1,0 +1,24 @@
+pz_r1 sha=ceb1a6adf7ba1391
+pz_r2 sha=ceb1a6adf7ba1391
+pz_r3 sha=ceb1a6adf7ba1391
+guess_r1 sha=87fe26766fc48d06
+guess_r2 sha=87fe26766fc48d06
+guess_r3 sha=87fe26766fc48d06
+np_r1 sha=31ddd4d5b8e6d18e
+np_r2 sha=31ddd4d5b8e6d18e
+np_r3 sha=31ddd4d5b8e6d18e
+dice sha=0de952bf75f89409
+ttt sha=d55056a8928a26ff
+P0_GATE_DONE
+pz_r1 sha=ceb1a6adf7ba1391
+pz_r2 sha=ceb1a6adf7ba1391
+pz_r3 sha=ceb1a6adf7ba1391
+guess_r1 sha=87fe26766fc48d06
+guess_r2 sha=87fe26766fc48d06
+guess_r3 sha=87fe26766fc48d06
+np_r1 sha=31ddd4d5b8e6d18e
+np_r2 sha=31ddd4d5b8e6d18e
+np_r3 sha=31ddd4d5b8e6d18e
+dice sha=0de952bf75f89409
+ttt sha=d55056a8928a26ff
+P0_GATE_DONE

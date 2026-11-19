@@ -5195,6 +5195,20 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
         }
     }
     if (method == "getSystemService") {
+        // F-NEW-713 diag (PIC R339 site): entry probe — every gss reaching
+        // this law prints its arg shape (capped), so a silent miss is
+        // visible (farmerbb/Notepad autofill helper ISE evidence).
+        static thread_local uint64_t f713p_n = 0;
+        if (f713p_n++ < 16) {
+            std::cerr << "[F713P-GSS] receiver=" << class_name
+                      << " argc=" << args.size();
+            if (args.size() >= 2)
+                std::cerr << " arg1_type=" << static_cast<int>(args[1].type)
+                          << " arg1_desc=" << args[1].class_desc
+                          << " arg1_str=" << args[1].string_val;
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
         // R-NEW-540 guard fix (CONT-36, site A): substring-only guard
         // missed Application/Service receivers whose runtime class lacks
         // the literal "Context"/"Activity" (the S85-FIX law shape — AOSP:

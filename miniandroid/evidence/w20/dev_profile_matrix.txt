@@ -1,0 +1,25 @@
+dalvik_bridge                          -O2: rc=0 wall=6.2s rss=802MB
+dalvik_bridge                          -O1: rc=0 wall=6.7s rss=840MB
+dalvik_bridge_domain_jdk               -O2: rc=0 wall=8.7s rss=1052MB
+dalvik_bridge_domain_jdk               -O1: rc=0 wall=13.6s rss=1073MB
+dalvik_bridge_domain_android_core      -O2: rc=0 wall=11.9s rss=1145MB
+dalvik_bridge_domain_android_core      -O1: rc=0 wall=16.4s rss=1171MB
+dalvik_bridge_domain_ui_graphics       -O2: rc=0 wall=10.7s rss=1112MB
+dalvik_bridge_domain_ui_graphics       -O1: rc=0 wall=18.0s rss=1141MB
+dalvik_bridge_domain_app_runtime       -O2: rc=0 wall=10.4s rss=1117MB
+dalvik_bridge_domain_app_runtime       -O1: rc=0 wall=18.0s rss=1150MB
+dalvik_bridge_domain_io_lang           -O2: rc=0 wall=10.1s rss=1066MB
+dalvik_bridge_domain_io_lang           -O1: rc=0 wall=16.5s rss=1110MB
+dalvik_engine_core                     -O2: rc=0 wall=11.2s rss=968MB
+dalvik_engine_core                     -O1: rc=0 wall=15.5s rss=1079MB
+dalvik_engine_invoke                   -O2: rc=0 wall=9.9s rss=1038MB
+dalvik_engine_invoke                   -O1: rc=0 wall=15.0s rss=1028MB
+dalvik_engine_tail                     -O2: rc=0 wall=6.1s rss=803MB
+dalvik_engine_tail                     -O1: rc=0 wall=6.3s rss=835MB
+dalvik_interpreter                     -O2: rc=0 wall=7.9s rss=1054MB
+dalvik_interpreter                     -O1: rc=0 wall=14.8s rss=1082MB
+dalvik_opcodes                         -O2: rc=0 wall=6.3s rss=879MB
+dalvik_opcodes                         -O1: rc=0 wall=7.6s rss=912MB
+dalvik_opcodes_invoke                  -O2: rc=0 wall=7.4s rss=942MB
+dalvik_opcodes_invoke                  -O1: rc=0 wall=10.5s rss=983MB
+TOTAL 12-TU serial: -O2=106.8s  -O1=158.9s (0.67x)

@@ -10,6 +10,11 @@ src/dex/dalvik_interpreter.cpp
 src/dex/dalvik_opcodes.cpp
 src/dex/dalvik_opcodes_invoke.cpp
 src/dex/dalvik_bridge.cpp
+src/dex/dalvik_bridge_domain_jdk.cpp
+src/dex/dalvik_bridge_domain_android_core.cpp
+src/dex/dalvik_bridge_domain_ui_graphics.cpp
+src/dex/dalvik_bridge_domain_app_runtime.cpp
+src/dex/dalvik_bridge_domain_io_lang.cpp
 src/dex/dalvik_engine_tail.cpp
 src/dex/c7_package_index.cpp
 src/dex/trace_exporter.cpp

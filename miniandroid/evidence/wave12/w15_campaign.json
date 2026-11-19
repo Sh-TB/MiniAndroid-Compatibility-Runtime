@@ -1,0 +1,116 @@
+{
+ "wave": "W15 \u2014 60/20/20 integration, independent audit (#627) reconciliation, runtime continuation",
+ "base_sha": "d72c87e4 (W14 tip)",
+ "final_sha": "45a6e0e8 (pushed, wave10/dalvik-accel)",
+ "integration_review": {
+  "issues_reviewed": [
+   "#627 (18 findings, all 9 comments read)",
+   "#607 (E-01..E-04, 19ee074a branch checked: NOT merged)",
+   "#612",
+   "#618/619/620 (G-01/G-02)",
+   "#613"
+  ],
+  "reconciliation_corrections": [
+   "E-02 23x part STALE: ARITH_23X already carried the GP-INT-012/015 law",
+   "G-02 narrowed by #627 comment 7: F-NEW-518 type-match rows unconditional at HEAD; residual question is deferred-delivery, not type matching",
+   "E-01 family WIDER than reported: execute_const_16/CONST_WIDE_16 21s dest truncation + execute_method frame geometry (hardcoded registers_size=16, ins_size=args.size())"
+  ],
+  "newly_integrated": [
+   "E-01 (both paths + family)",
+   "E-02 lit8/lit16 (both paths)",
+   "E-03 jumbo shift (both paths)",
+   "H-01 (D-02 braces)",
+   "H-02 (D-01 hash escape + D-04 -lstdc++fs)",
+   "H-03 (D-03 mallinfo2 fallback)",
+   "C-01 (CMake per-TU contract)"
+  ],
+  "already_present": [
+   "ARITH_23X law (E-02 partial)",
+   "F-NEW-518 NameNotFoundException rows (G-02)",
+   "S-LAUNCHDRAIN (#615)",
+   "dev-so split workflow (C-02 mitigation)"
+  ],
+  "rejected_or_deferred": [
+   "G-01: no change (documented layout, #619 item stays corrected)",
+   "F-01/F-02: catalogued, no corpus app blocked",
+   "C-02 bridge split: next structural task (C-04 proposal 1/2)"
+  ]
+ },
+ "runtime_proof": {
+  "test": "tests/w15_dalvik_lit_from16_law_test.cpp (raw-opcode probe, TEST_CORE)",
+  "result": "6/6 PASS",
+  "rows": [
+   "lit8_div_int32min_by_minus1_is_int32min",
+   "lit16_rem_int32min_by_minus1_is_zero",
+   "lit16_add_int32max_plus1_wraps_to_min",
+   "lit8_mul_2_to_the_31_wraps_to_min",
+   "move_from16_reads_param_v301 (302-reg method, (I)I param)",
+   "move_wide_from16_reads_param_v300 ((J)J wide param)"
+  ],
+  "labels": {
+   "E-01": "RUNTIME_PASS",
+   "E-02": "RUNTIME_PASS",
+   "E-03": "IMPLEMENTED (no >65k-string harness yet)"
+  }
+ },
+ "build_perf_c04": {
+  "devso_single_tu": "7s",
+  "devso_header_cascade(dalvik_engine.h)": "102s",
+  "devso_shadows_tu": "34s",
+  "static_single_tu_plus_relink": "151s",
+  "conclusion": "edit/test loop 7s (dev-so); dominant remaining cost = central-header cascade 102s (14x) \u2014 next structural task: split dalvik_bridge.cpp or stabilize dalvik_engine.h"
+ },
+ "gate": {
+  "law_tests": "gp582 12/12, s130 51/51, F-709 5/5, F-714 7/7, F-716 6/6, w15 6/6",
+  "apk_hashes_3run": {
+   "pz": "4cb90ca61deb5191 x3 (result chain fires x3)",
+   "guess": "87fe26766fc48d06 x3",
+   "np": "31ddd4d5b8e6d18e x3",
+   "dice": "0de952bf75f89409",
+   "ttt": "d55056a8928a26ff"
+  },
+  "regressions": "none \u2014 all hashes identical to W14 baseline"
+ },
+ "w16_next_divergences": [
+  "n-Puzzle Game model async image load: post-selection flow never reaches Game.loadImage; board onMeasure throws IllegalStateException('No image loaded') at Game.getImageAspectRatio pc=15; needs Message/notifyParent law + converter resubmission after selection",
+  "GridView item pixels: ARSC drawable paths 0/79 (item slots 0x0)",
+  "BMI Calculator / Blockinger untested this wave (targets pending)"
+ ],
+ "wave16_continuation": {
+  "base_sha": "45a6e0e8 (W15 tip)",
+  "final_sha": "0d42cb49",
+  "new_shared_diagnostic": "MINIANDROID_APP_INVOKE_TRACE=1 \u2014 generic app call-graph tracer in execute_method_internal (env-gated, 4000-cap, caller attribution)",
+  "n_puzzle_divergence_map": {
+   "superseded": "W14's Message/notifyParent + async-chain suspicion \u2014 RUNTIME-PROVEN the chain works: executor newCachedThreadPool -> Application.submitBackground -> ImageConverter.run/prepareOptions/openInputStream; post-selection GamePlay.changeBoardImage -> Game.updateImageSize(110) -> Game.loadFullImage(66) -> Board.forEachTile/Game$2.processTile -> Tile.setDrawable",
+   "remaining_first_divergence": "bitmap DECODE fails: openRawResource(resid=0x0) MISS -> NotFoundException CAUGHT by app (prepareOptions invoke_pc) -> bitmap null -> getImageAspectRatio IllegalStateException('No image loaded') x106 at measure",
+   "root_cause_family": "R$raw seeding / ARSC raw+drawable path resolution (ARSC-VALUES drawable paths 0/79; BMF-RESOLVER resid=0x0 select_file null entries=22)",
+   "w17_candidate": "openRawResource raw-path law + R$raw field seeding for app raw entries"
+  },
+  "corpus_targets": {
+   "blockinger": {
+    "sha": "34d7ac0cf77898d8",
+    "exceptions": 0,
+    "render": "non-white 0.999 (healthy first baseline)",
+    "label": "OBSERVED"
+   },
+   "bmi_calculator": "NOT PRESENT in handoff_apks (15 APKs) \u2014 untestable this wave"
+  },
+  "tools_added": [
+   "tools/w16_invoke_xref.py",
+   "tools/w16_hybrid_dump.py"
+  ]
+ },
+ "wave17": {
+  "base_sha": "ab4da01e (W16 tip)",
+  "root_cause": "ImageSource.init builds its image table via REFLECTION (Class.getFields -> Field.getInt on R$drawable) \u2014 the typed Field accessor family (getInt/getLong/getBoolean/\u2026) had NO handler in the bridge's Ljava/lang/reflect/Field; dispatch block; every call fell through to the generic fallback and answered 0, so all 6 ImageEntries carried resid=0x0 and openRawResource threw NotFoundException (caught by the app) -> bitmap null -> 'No image loaded' x106",
+  "fix": "typed Field accessor family law in dalvik_bridge.cpp Field dispatch: static reads ignore the receiver, trigger ensure_class_initialized (JNI GetStaticFieldID law), read static_field_storage_ (field identity) and return the UNBOXED primitive; instance reads follow the get() NPE/IAE/identity laws; env-tag [W17-REFLECT]",
+  "result": {
+   "NoImageLoaded_exceptions": "106 -> 0",
+   "openRawResource": "resid=0x7f020001 -> res/drawable/puzzle_0.png 7515 bytes (x12 successful)",
+   "render": "3x3 ImageView board (354x354 tiles) replaces the numeric 378x378 fallback; APP BOUND=0",
+   "remaining": "ImageView bitmap -> canvas drawBitmap compositing not yet implemented (render-side, W18 candidate)"
+  },
+  "gate": "unit 4/4 + W15 6/6 + s130 51/51 + gp582 12/12; cross-app regression Blockinger clean, notepad/diceroller exceptions pre-existing (Autofill/ActionBarContextView, law never fired there)",
+  "tools": "scripts/w17_method_calls.py (authoritative DEX call-lister: plain uleb diffs + RESET at the virtual boundary \u2014 matches the engine's dex_parser.cpp semantics; validated against runtime dispatch counts Game.load=69/loadImage=129); scripts/w17_r_class_dump.py (R-class static_values dump, field_ids_off=0x54)"
+ }
+}

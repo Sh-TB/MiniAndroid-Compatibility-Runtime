@@ -1,0 +1,12 @@
+=== dalvik_bridge_domain_jdk ===
+ phase setup                        :   0.00 (  0%)   0.00 (  0%)   0.00 (  0%)  1772k (  0%)
+ phase parsing                      :   4.10 ( 21%)   1.83 ( 57%)   5.93 ( 26%)   665M ( 54%)
+ phase lang. deferred               :   1.64 (  8%)   0.56 ( 18%)   2.21 ( 10%)   257M ( 21%)
+ phase opt and generate             :  13.76 ( 71%)   0.81 ( 25%)  14.70 ( 64%)   305M ( 25%)
+ TOTAL                              :  19.50          3.20         22.84         1230M
+=== dalvik_bridge_domain_ui_graphics ===
+ phase setup                        :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  1772k (  0%)
+ phase parsing                      :   3.87 ( 13%)   1.92 ( 52%)   5.80 ( 18%)   691M ( 48%)
+ phase lang. deferred               :   1.54 (  5%)   0.53 ( 14%)   2.06 (  6%)   262M ( 18%)
+ phase opt and generate             :  23.54 ( 81%)   1.23 ( 33%)  24.78 ( 76%)   475M ( 33%)
+ TOTAL                              :  28.95          3.68         32.65         1430M

@@ -1,0 +1,32 @@
+{
+ "wave": "W14 — Activity result delivery + AdapterView item-click chain (permanent 60/20/20)",
+ "base_sha": "64f3ffb5 (W13 tip)",
+ "target": "n-Puzzle 1.1 (sha256 99b9221d44677f65e6326bda6161a046c96206bc6939bc87ceed89fc267a6aac)",
+ "result_delivery_chain": {
+  "status": "RUNTIME_PASS — full chain end-to-end",
+  "sequence_proven": [
+   "1. Real tap --tap 197,112@25 through the canonical TouchDispatcher (F117-TAP DOWN -> PerformClick queue law)",
+   "2. F-NEW-719: dispatch_click resolves the AdapterView ancestor by the stored item listener and calls the EXISTING R-NEW-433 dispatch_item_click (no duplicate abstraction) -> [UI-EVENT] ITEM_CLICK adapter=156 position=0 result=DISPATCHED",
+   "3. ImageSelection.onItemClick (the activity IS the listener) ran the real DEX: deletionMode check -> AdapterView.getItemAtPosition(0)",
+   "4. F-NEW-722 getItemAtPosition custom-adapter face -> real ImageSource.getItem dispatch -> ImageWithConstraints obj#185",
+   "5. F-NEW-721 3-arg addAll(int,Collection) insert law made the adapter's list real (addAll(idx=0,n=3) size_now=3) — without it getItem answered null and the handler NPE'd at ImageWithConstraints.getImageId pc=6",
+   "6. F-NEW-723 putExtra boxed-primitive unboxing: putExtra(selected_image_id, <Integer>) was silently DROPPED (val_kind=6 OBJECT) — now unboxed through the F-NEW-141 value field",
+   "7. F-NEW-723b raw object extra storage (extra:obj:<key> on the intent heap object) + getSerializableExtra/getParcelableExtra/getLongExtra read laws",
+   "8. [G08-RESULT] setResult(-1, intent_id=561) by the app's real handler",
+   "9. [G07-FINISH] cascade (onPause/onStop/onDestroy + prefs save) -> stack pop (popped=1 cls=GamePlay req=1) -> take_result (has_result=1 rc=-1 data=561)",
+   "10. [G08-RESTORE] GamePlay.onActivityResult DISPATCHED (request_code=1, result_code=-1) -> the app read the payload (F-723b) -> cleared images, saved prefs, started the board build (GamePlay$1 addView fired)"],
+  "eliminated": ["ImageSelection.onCreate grid NPE (W13)", "getItem null-recv NPE at getImageId pc=6 (W13/W14a)", "'Image selection page did not return an image' IllegalStateException (W14a)"]
+ },
+ "new_laws": [
+  {"id": "F-NEW-719", "name": "AdapterView item-click tap law in dispatch_click (resolves adapter+item+position, delegates to R-NEW-433 dispatch_item_click)"},
+  {"id": "F-NEW-721", "name": "addAll(int index, Collection) insert law — ArrayList/LinkedList 3-arg overload (was silent stub)"},
+  {"id": "F-NEW-722", "name": "AdapterView.getItemAtPosition custom-adapter face — dispatches the app adapter's real getItem (AOSP mAdapter.getItem contract)"},
+  {"id": "F-NEW-723", "name": "putExtra boxed-primitive unboxing (Integer/Long/Boolean/String via the value field) + raw object storage under extra:obj:<key>"},
+  {"id": "F-NEW-723b", "name": "getSerializableExtra/getParcelableExtra (raw object -> typed re-box -> null) + getLongExtra read laws"}
+ ],
+ "diagnostics": ["F719-STORE (setOnItemClickListener storage)", "F719-SCAN (adapter probe census)", "F721-ADDALL", "F722-GIAP", "F723-PUTEXTRA"],
+ "next_blockers_w15": [
+  "Game model async image load: the ImageConverter thread dies pre-selection on openRawResource(resid=0x0) (correct first-run behavior), but no re-submission happens after the selection; Game.getImageAspectRatio throws IllegalStateException('No image loaded') when the board measures",
+  "Message/notifyParent plumbing: Landroid/os/Message;.<init> is a stub — even a successful converter cannot notify the parent handler",
+  "GridView item PIXEL rendering: item image slots render 0x0 (ARSC drawable paths resolved 0/79 via the canonical resolver)"]
+}

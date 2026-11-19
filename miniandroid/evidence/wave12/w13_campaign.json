@@ -1,0 +1,64 @@
+{
+ "wave": "W13 \u2014 permanent 60/20/20 continuation (n-Puzzle multi-activity chain)",
+ "base_sha": "62ff333f (W12 tip)",
+ "targets": {
+  "n_Puzzle": {
+   "status": "PARTIAL",
+   "label_chain": "LAW_PASS (F-717, F-718) -> RUNTIME_PASS (picker activity launches, onCreate completes, adapter materializes 6 items) -> APP_PASS pending",
+   "progress": [
+    "F-NEW-717 View.inflate(Context,res,root) law: AOSP LayoutInflater.from(context).inflate(resource, root, root!=null) via the UNIFIED_007 inflater. Before: stub null -> ImageSelection.onCreate died at GridView.setOnItemClickListener (F447 NPE). After: images.xml inflates (obj#154, 4 views), onCreate completes (142 instr), the picker's OWN text 'To add your pictures click Menu button' renders (sha 6375a3a3, 3-run stable).",
+    "F-NEW-718 Class.getFields() law: public+inherited fields (JDK law) over make_field500/R-NEW-337 conventions. Before: ImageSource.init pc=177 iterated a null array (R$drawable enumeration) -> NPE -> APP BOUNDARY. After: [F718-REFLECT] R$drawable.getFields() -> 7 public fields, init completes, [C102-ADAPTER] setAdapter count=6 materialized=6 (the picker's grid has its 6 bundled images)."
+   ],
+   "next_blockers": [
+    "AdapterView/GridView item PIXEL rendering (items materialized; pixels not yet on the framebuffer)",
+    "Result-delivery law: AdapterView onItemClick handler runs (12 click-probe state changes observed) but setResult/finish -> task pop -> GamePlay.onActivityResult delivery not yet fired (0 onActivityResult dispatches)"
+   ]
+  },
+  "Notepad": {
+   "status": "BLOCKED",
+   "note": "unchanged from W12: Compose-first divergence; upstream gss null-answerer next (F713 probes in tree)"
+  },
+  "TicTacToe": {
+   "status": "PARTIAL",
+   "sha": "d55056a8928a26ff unchanged"
+  },
+  "BMI_Calculator": {
+   "status": "PENDING",
+   "note": "queued primary target, not yet exercised this wave"
+  },
+  "Blockinger": {
+   "status": "PENDING",
+   "note": "queued primary target, not yet exercised this wave"
+  }
+ },
+ "build_timing_policy_4": {
+  "full_static_cold": "218s",
+  "tests_build": "26s",
+  "dev_so_full": "102s",
+  "incremental_devso_single_tu": "28s (BELOW the 30s milestone)",
+  "incremental_static_single_tu": "45s"
+ },
+ "regression_gate": {
+  "battery": "6/6",
+  "f709": "5/5",
+  "f714": "7/7",
+  "f716": "6/6",
+  "guess": "87fe26766fc48d06 x3 IDENTICAL",
+  "diceroller": "0de952bf unchanged",
+  "tictactoe": "d55056a8 unchanged",
+  "npuzzle_3run": "6375a3a3813af176 x3 IDENTICAL (final F-718 binary)"
+ },
+ "apk_identities": {
+  "n_puzzle": {
+   "sha256": "99b9221d44677f65e6326bda6161a046c96206bc6939bc87ceed89fc267a6aac",
+   "pkg": "name.livitski.games.puzzle.android",
+   "version": "1.1",
+   "source": "StanLivitski/n-puzzle (GPLv3) F-Droid original binary"
+  },
+  "notepad": {
+   "sha256": "b7cf30c187a951203ecf06295653fab587c3e54f155cf54565eda9e27d1444fa",
+   "pkg": "com.farmerbb.notepad",
+   "version": "3.0.6 vc122"
+  }
+ }
+}

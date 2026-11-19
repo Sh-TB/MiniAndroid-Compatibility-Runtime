@@ -1,0 +1,40 @@
+{
+ "prod_build": {
+  "wall_s": 136.52,
+  "rc": 0,
+  "peak_rss_mb": 2137
+ },
+ "prod_test_core": {
+  "wall_s": 12.38,
+  "rc": 0,
+  "pass": 3
+ },
+ "monolith_build": {
+  "wall_s": 193.67,
+  "rc": 0,
+  "peak_rss_mb": 2886
+ },
+ "monolith_test_core": {
+  "wall_s": 12.92,
+  "rc": 0,
+  "pass": 3
+ },
+ "devso_clean_build": {
+  "wall_s": 122.99,
+  "rc": 0,
+  "peak_rss_mb": 2886
+ },
+ "devso_battery": {
+  "wall_s": 0.04,
+  "rc": 0,
+  "pass": 3
+ },
+ "devso_noop": {
+  "wall_s": 0.04,
+  "rc": 0
+ },
+ "prod_restore": {
+  "wall_s": 136.94,
+  "rc": 0
+ }
+}

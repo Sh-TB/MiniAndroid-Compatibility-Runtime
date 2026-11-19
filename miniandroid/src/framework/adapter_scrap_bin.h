@@ -8,6 +8,7 @@
 #include <functional>
 #include <map>
 #include <vector>
+#include <cstdint>  // W20: uint32_t was relied on transitively (exposed by dev .d tracking fix)
 
 namespace miniandroid {
 namespace framework {

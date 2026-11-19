@@ -1,0 +1,25 @@
+{
+ "wave": "W12 — turn PARTIAL APKs into real interactive apps",
+ "base_sha": "d14582b3 (W11 branch tip, verified on origin/wave10/dalvik-accel)",
+ "pr626_state": "STILL base=wave9/dev-so-clean (owner retarget required; token cannot PATCH PR metadata; merge permission present)",
+ "targets": [
+  {"app": "Notepad", "apk": "com.farmerbb.notepad_122.apk", "sha256": "b7cf30c187a951203ecf06295653fab587c3e54f155cf54565eda9e27d1444fa",
+   "finding": "Jetpack Compose app (z0/a=ComposeView, z0/u=AndroidComposeView, LC0/a autofill helper)",
+   "first_divergence_chain": "a0/a.<init> (pc=0x0e getContext) -> LC0/a.k() -> LC0/d.j(ctx, class) = ContextCompat.getSystemService -> INVOKE Context.getSystemService(AutofillManager.class) -> answered null UPSTREAM of all three getSystemService laws (F713P/F713/F713A entry probes: zero hits) -> helper throws ISE 'Autofill service could not be located.' at pc=0x3e -> composition dies -> blank UI",
+   "result": "PARTIAL/BLOCKED on Compose-first divergence; 3/3 runs stable (sha 31ddd4d5b8e6d18e...)"},
+  {"app": "n-Puzzle", "apk": "name.livitski.games.puzzle.android_2.apk", "sha256": "99b9221d44677f65e6326bda6161a046c96206bc6939bc87ceed89fc267a6aac",
+   "finding_chain": "shell Activity.onCreate inflates frame.xml -> forceSetContentView injects GamePlay's anonymous RelativeLayout subclass (GamePlay$1) -> M71 DEX-onMeasure dispatch EXISTS and FIRES (hook_ok=1 spec=1080/1920) but View$MeasureSpec.getSize had NO law -> typed default 0 -> resize math collapsed",
+   "fixes": "F-NEW-714 MeasureSpec static law (getSize/getMode/makeMeasureSpec/makeSafeMeasureSpec, pure AOSP arithmetic, static-arg layout) + F-NEW-712 overrides_on_measure runtime-class sync (defensive)",
+   "runtime_state": "app's own onMeasure bytecode EXECUTES with correct specs; the app then runs its REAL first-run flow: initImage -> startActivityForResult(ImageSelection picker) -> the board intentionally waits for the picker result (verified against upstream source GamePlay.java resumeImpl/showImageBoard + model/Game.java isImageSelected=null!=selectedImageId)",
+   "result": "PARTIAL - real UI (title+footer 82080 px) + real app bytecode to the picker launch; next blocker = multi-activity launch/result flow (second activity lifecycle + onActivityResult delivery)",
+   "runs": "3/3 stable sha 35c4e53b14561b2f... + tap run identical (picker flow)"}],
+ "fixes": [
+  {"id": "F-NEW-714", "files": ["src/dex/dalvik_bridge.cpp"], "test": "tests/f714_measurespec_law_test.cpp 7/7 PASS (incl. static-arg law + round-trip + safety clamp)"},
+  {"id": "F-NEW-712", "files": ["src/runtime/execution_engine.cpp", "src/dex/dalvik_engine.h"], "test": "verified via F712-PROBE instrumentation (root class resolution); sync is defensive - M71 dispatch confirmed working"},
+  {"id": "F-NEW-713-diag", "files": ["src/dex/dalvik_bridge.cpp", "src/dex/dalvik_engine.cpp", "src/dex/dalvik_opcodes_invoke.cpp"], "purpose": "bounded gss entry/null probes that proved the upstream null answerer"}],
+ "tag_law_verdict": "View tag storage (M3 FINDING-011) is IMPLEMENTED and correct - tests/f716_view_tag_law_test.cpp 6/6 PASS (identity, overwrite, keyed, absent-null, no cross-view leak, untagged-null); W11's 'missing tags' were a downstream effect of the first-run picker flow, not a storage gap",
+ "regression_gate": {"static_dev_battery": "6/6", "monolith_battery": "3/3", "f709": "5/5", "f714": "7/7", "f716": "6/6",
+   "guess": "87fe26766fc48d06c59d4c15 x3 IDENTICAL (SUCCESS preserved)",
+   "tictactoe": "d55056a8928a26ffeb15f66d unchanged (PARTIAL preserved)",
+   "diceroller": "0de952bf75f894090317eaf3 (PARTIAL; faces vary by run - class unchanged)"}
+}
