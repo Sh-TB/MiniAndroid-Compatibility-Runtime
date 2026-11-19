@@ -27,7 +27,7 @@ for APK in /home/z/my-project/upload/handoff_apks/*.apk; do
     else
       timeout 60 "$BIN" run --max-seconds 35 --frames 30 \
         --data-root "$DR" -o "$d" --execution-mode real-dalvik "$APK" \
-        > "$d/run.log" 2>&1
+        > "$d/run.log" 2>&1 || true
     fi
     rc=$?
     t1=$(date +%s%N)
