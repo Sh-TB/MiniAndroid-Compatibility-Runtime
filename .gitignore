@@ -456,3 +456,9 @@ worklog.md
 miniandroid/build_dev_so/
 # W22: ccache benchmark build tree (disposable, BUILDDIR=build_cc)
 miniandroid/build_cc/
+# W22 (S230/WP0 no-giant-export law): raw authenticated GitHub API exports +
+# attachment assets stay local (curated digest/inventory/patches ARE committed)
+evidence/w22/issues_raw/
+/tools/ccache.conf
+/tools/ccache_cache/
+/build_cc/
