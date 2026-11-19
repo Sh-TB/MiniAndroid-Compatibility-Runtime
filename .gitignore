@@ -217,6 +217,10 @@ tmp/gate_dr/
 
 # toolchain repair dir (large binaries — rebuilt via scripts/build/bootstrap_toolchain.sh)
 tools/toolchain/
+# W22: portable ccache downloaded for the cache benchmark (not repo content)
+tools/ccache-bin/
+tools/ccache_dl/
+tools/ccache_cache/
 tmp/w4_probebuild/
 tmp/f351_build/
 
@@ -450,3 +454,5 @@ worklog.md
 
 # WAVE-9 (ISSUE-612): shared-library dev build outputs stay out of git
 miniandroid/build_dev_so/
+# W22: ccache benchmark build tree (disposable, BUILDDIR=build_cc)
+miniandroid/build_cc/

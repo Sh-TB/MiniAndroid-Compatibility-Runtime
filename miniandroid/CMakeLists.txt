@@ -13,10 +13,14 @@
 # test battery is behind -DBUILD_TESTS=ON — a normal runtime build compiles
 # no experiments and no tests.
 cmake_minimum_required(VERSION 3.16)
+# ISSUE-607 item 8 (W22): the VERSION file is the single authoritative identity
+# source. cmake_minimum_required must precede project(), so read it here.
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" MINIANDROID_VERSION_STRING)
+string(STRIP "${MINIANDROID_VERSION_STRING}" MINIANDROID_VERSION_STRING)
 # #612-A1: the jni compat shims are C (bionic_compat.c, pthread_shadow.c)
 # and the thunk is ASM — all three languages are declared up front so the
 # shims compile as normal target sources, never as hand-built .o files.
-project(MiniAndroid VERSION 0.1 LANGUAGES C CXX ASM DESCRIPTION "Minimal Android Compatibility Runtime")
+project(MiniAndroid VERSION ${MINIANDROID_VERSION_STRING} LANGUAGES C CXX ASM DESCRIPTION "Minimal Android Compatibility Runtime")
 
 # C++ Standard
 set(CMAKE_CXX_STANDARD 17)
@@ -87,7 +91,8 @@ endif()
 
 # ============== Core Library ==============
 # GP583-BUILD-002 fix: the source list now comes from the SAME manifest the
-# Makefile consumes (miniandroid/core_sources.manifest, 74 TUs). The old
+# Makefile consumes (miniandroid/core_sources.manifest; 87 active TUs at the
+# W22 audit — 74 at the time of this fix). The old
 # hand-maintained CMake list carried only 12 translation units while the
 # Makefile linked 74 — two build commands produced materially different
 # runtime capability (dalvik_engine, shadows, JNI loader/bridge, ARSC/
@@ -231,6 +236,26 @@ add_executable(miniandroid
 )
 
 target_link_libraries(miniandroid PRIVATE miniandroid_core)
+
+# ISSUE-607 item 8 (W22): ONE generated version/commit header (VERSION + git
+# HEAD) into the binary dir (never the source tree). Mirrors the Makefile's
+# version-header rule so both build systems pin the same identity.
+set(MINIANDROID_GENERATED_DIR ${CMAKE_BINARY_DIR}/generated)
+set(MINIANDROID_VERSION_HEADER ${MINIANDROID_GENERATED_DIR}/miniandroid_version.h)
+add_custom_command(
+    OUTPUT ${MINIANDROID_VERSION_HEADER}
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${MINIANDROID_GENERATED_DIR}
+    COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_version_header.py
+            --version-file ${CMAKE_CURRENT_SOURCE_DIR}/VERSION
+            --out ${MINIANDROID_VERSION_HEADER}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION
+            ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_version_header.py
+    COMMENT "Generating authoritative version/commit header (ISSUE-607 item 8)"
+    VERBATIM
+)
+add_custom_target(version-header DEPENDS ${MINIANDROID_VERSION_HEADER})
+target_include_directories(miniandroid PRIVATE ${MINIANDROID_GENERATED_DIR})
+add_dependencies(miniandroid version-header)
 
 # GP583-BUILD-002 + #612-A1/A2: the executable-side native sources the
 # Makefile links (S-2 thunk assembly + bionic C compat shims) are declared
@@ -406,6 +431,93 @@ if(BUILD_TESTS)
             message(STATUS "Google Test not found — simple-test fallback registered with CTest (miniandroid-smoke)")
         endif()
     endif()
+
+    # ── ISSUE-607 item 7 (P1, W22): Make/CTest test-discovery parity ────────
+    # The Makefile's TEST_CORE/TEST_HOSTILE/TEST_LAW variables are the SINGLE
+    # SOURCE OF TRUTH for the canonical battery. CMake reads them here and
+    # registers every entry with CTest, so a green `ctest` represents the same
+    # battery `make test-all` runs. (Before this, only miniandroid-smoke was
+    # registered while the Makefile advertised the battery — a green ctest hid
+    # every unrun test.) A test added to the Makefile therefore appears in
+    # CTest automatically; it cannot silently disappear.
+    # OBJECT (not STATIC) so the QuickJS/thunk objects land directly on each
+    # test's link line — a static archive here would be processed BEFORE
+    # miniandroid_core's webview_engine references to the JS_* symbols and the
+    # link would fail with undefined references.
+    add_library(miniandroid_test_native OBJECT
+        ${MINIANDROID_QUICKJS_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/native_thunk.S
+    )
+    target_link_libraries(miniandroid_test_native PUBLIC miniandroid_core)
+
+    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/Makefile" _mkfile)
+    string(REGEX REPLACE "\\\\\r?\n" " " _mkfile "${_mkfile}")
+
+    set(_battery_tests "")
+    foreach(_grp TEST_CORE TEST_HOSTILE TEST_LAW)
+        if(_mkfile MATCHES "${_grp}[ \t]*=[ \t]*([^\n]*)")
+            string(STRIP "${CMAKE_MATCH_1}" _entry)
+            # Collapse the Makefile's space/tab/continuation whitespace into a
+            # CMake list separator. (separate_arguments() silently dropped
+            # entries after some continuation joins; this regex split does not.)
+            string(REGEX REPLACE "[ \t\r\n]+" ";" _entry "${_entry}")
+            foreach(_t ${_entry})
+                if(_t)
+                    list(APPEND _battery_tests "${_t}")
+                endif()
+            endforeach()
+        else()
+            message(WARNING "ISSUE-607 parity: ${_grp} not found in Makefile")
+        endif()
+    endforeach()
+    list(REMOVE_DUPLICATES _battery_tests)
+
+    set(_battery_missing "")
+    set(_battery_targets "")
+    foreach(_t ${_battery_tests})
+        if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/${_t}.cpp")
+            list(APPEND _battery_missing "${_t}")
+            continue()
+        endif()
+        add_executable(${_t} tests/${_t}.cpp)
+        target_link_libraries(${_t} PRIVATE miniandroid_test_native)
+        if(_t STREQUAL "s225m_wave_law_test")
+            # Makefile: this test also links pthread_shadow.o so its POSIX
+            # error-semantics laws run against the shadow registry.
+            target_sources(${_t} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/jni/pthread_shadow.c)
+        endif()
+        add_test(NAME ${_t} COMMAND ${_t})
+        # Makefile runs every battery test from the repo root; several font /
+        # resource laws resolve paths relative to the CWD, so CTest must use
+        # the same working directory or they fail differently than `make`.
+        set_tests_properties(${_t} PROPERTIES TIMEOUT 300
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+        # The version-identity law reads the generated header; in a pure CMake
+        # build (no Make build present) point it at the CMake-generated copy.
+        if(_t STREQUAL "s254_version_identity_law_test")
+            set_tests_properties(${_t} PROPERTIES ENVIRONMENT
+                "MINIANDROID_VERSION_HEADER=${MINIANDROID_VERSION_HEADER}")
+            add_dependencies(${_t} version-header)
+        endif()
+        list(APPEND _battery_targets ${_t})
+    endforeach()
+    if(_battery_missing)
+        message(WARNING "ISSUE-607 parity: battery entries with no tests/<name>.cpp: ${_battery_missing}")
+    endif()
+    list(LENGTH _battery_tests _battery_n)
+    message(STATUS "ISSUE-607 parity: registered ${_battery_n} battery tests with CTest (source of truth: Makefile TEST_CORE/TEST_HOSTILE/TEST_LAW)")
+
+    # Canonical Make-equivalent entry point: build + run the whole battery and
+    # print the explicit discovered/passed/failed summary (mirrors the
+    # Makefile BATTERY SUMMARY line). miniandroid_test is included so the
+    # registered miniandroid-smoke test also has a built executable.
+    add_custom_target(battery
+        COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+        DEPENDS ${_battery_targets} miniandroid_test
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Running the canonical test battery (Makefile TEST_BATTERY) via CTest"
+        USES_TERMINAL
+    )
 endif()
 
 # ============== Custom Commands ==============

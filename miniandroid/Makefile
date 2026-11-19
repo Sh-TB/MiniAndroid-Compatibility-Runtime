@@ -158,6 +158,14 @@ MAIN_SOURCE = $(SRCDIR)/main.cpp
 MAIN_OBJECT = $(BUILDDIR)/main.o
 EXECUTABLE = $(BUILDDIR)/miniandroid
 
+# ISSUE-607 item 8 (W22): ONE generated version/commit header (VERSION + git
+# HEAD). Generated into the build dir (never the source tree); both build
+# systems consume it so README/runtime/release identity cannot drift.
+VERSION_FILE = VERSION
+GENERATED_DIR = $(BUILDDIR)/generated
+VERSION_HEADER = $(GENERATED_DIR)/miniandroid_version.h
+INCLUDES += -I$(GENERATED_DIR)
+
 # Test executable
 TEST_SOURCE = $(TESTDIR)/simple_test.cpp
 TEST_OBJECT = $(BUILDDIR)/test.o
@@ -198,6 +206,17 @@ $(THUNK_OBJECT): $(SRCDIR)/jni/native_thunk.S
 $(BUILDDIR)/%.o: $(SRCDIR)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -c -o $@ $<
+
+# ISSUE-607 item 8 (W22): generate the authoritative version/commit header
+# before compiling anything that consumes it. Forced (FORCE prerequisite) so a
+# moved HEAD regenerates it; the script rewrites only on change (incremental).
+.PHONY: version-header
+version-header: $(VERSION_HEADER)
+$(VERSION_HEADER): $(VERSION_FILE) scripts/generate_version_header.py FORCE
+	@mkdir -p $(GENERATED_DIR)
+	@python3 scripts/generate_version_header.py --version-file $(VERSION_FILE) --out $(VERSION_HEADER)
+FORCE:
+$(MAIN_OBJECT): $(VERSION_HEADER)
 
 # CONT-37 (F-NEW-298): dalvik_engine.cpp has grown past the -g debug-info
 # cc1plus peak on the 4 GB build host (repeated OOM kills at -O2 -g; the
@@ -387,7 +406,8 @@ TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
 	gp_dex003_fuzz_law_test \
 	s225m_wave_law_test s231_view_resource_law_test \
 	s234_w26_engine_laws_test s235_lane_laws_test s236_port_laws_test s237_append_bounded_law_test s238_achievements_audit_test s239_wave_stack_audit_test s240_generic_law_battery_test s241_compare_law_battery_test s243_font_pipeline_law_test s244_app_font_discovery_law_test s245_font_final_matrix_test s246_layout_closure_law_test s247_grid_rtl_law_test \
-	s248_sqlite_cursor_contract_test s249_adapter_position_contract_test s250_dialog_lifecycle_contract_test s251_activity_result_contract_test s252_view_state_flags_contract_test
+	s248_sqlite_cursor_contract_test s249_adapter_position_contract_test s250_dialog_lifecycle_contract_test s251_activity_result_contract_test s252_view_state_flags_contract_test \
+	s254_version_identity_law_test
 TEST_BATTERY = $(TEST_CORE) $(TEST_HOSTILE) $(TEST_LAW)
 
 # S225-M wave law test links pthread_shadow.o (the interposition object the
@@ -401,7 +421,7 @@ $(BUILDDIR)/tests/s225m_wave_law_test: $(TESTDIR)/s225m_wave_law_test.cpp \
 		$(filter-out $<,$^) $(LIBS) $(FONTS_LIBS)
 TEST_TIMEOUT = 300
 
-$(BUILDDIR)/tests/%: $(TESTDIR)/%.cpp $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT)
+$(BUILDDIR)/tests/%: $(TESTDIR)/%.cpp $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) | $(VERSION_HEADER)
 	@mkdir -p $(BUILDDIR)/tests
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $< \
 		$(filter-out $<,$^) $(LIBS) $(FONTS_LIBS)
@@ -520,7 +540,7 @@ run-megabatch: $(MEGABATCH_EXECUTABLE)
 	./$(MEGABATCH_EXECUTABLE) test_apks/HelloWorld.apk run
 
 help:
-	@echo "MiniAndroid Runtime v0.1 Build System"
+	@echo "MiniAndroid Runtime Build System (version from VERSION + git HEAD)"
 	@echo ""
 	@echo "Targets:"
 	@echo "  all     - Build the main executable"

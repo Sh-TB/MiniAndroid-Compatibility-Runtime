@@ -10,10 +10,18 @@ pixel-evidence output.
 
 ---
 
-## Current state (UNIFIED_011.1 canonical, 2026-08-30)
+## Current state (v0.0.6.2, commit-pinned)
 
-- **HEAD:** tag `v0.11.1-unified-011-1` (local, ahead of `origin/main` — push pending)
-- **Latest remote (`origin/main`):** `bbe0ce3`
+The runtime identity is generated from ONE source of truth: the `VERSION`
+file plus the current Git commit (`scripts/generate_version_header.py` ->
+`miniandroid_version.h`, consumed by both the Make and CMake builds). Run
+`./build/miniandroid version` to print the semantic version and the exact
+build commit. README, build artifacts and `--version` all read that source,
+so they cannot drift.
+
+- **Semantic version:** `0.0.6.2` (see `VERSION`, `CHANGELOG.md`)
+- **Build identity:** `--version` prints the exact commit SHA the binary was
+  built from; release artifacts must carry the same SHA and build config.
 - **Canonical baseline proof:** Telegram v12.10.1 full journey renders
   deterministically **3/3 runs** (`088ea640…`; pixel-identical to the
   `06fb40da…` lineage — PNG file hash changed by design: libpng's encoder

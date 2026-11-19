@@ -11,6 +11,12 @@
 #include <fstream>
 #include <sstream>
 #include <ctime>
+// ISSUE-607 item 8 (W22): generated version/commit header (see VERSION +
+// scripts/generate_version_header.py). Optional so a bare source compile
+// still builds — the #ifdef guards in print_version() handle its absence.
+#if __has_include("miniandroid_version.h")
+#include "miniandroid_version.h"
+#endif
 #include "diagnostics/crash_forensics.h"
 #include "jni/dlopen_exec.h"  // FIX-TTT teardown law (loader-poisoned exit)
 #include <filesystem>
@@ -113,7 +119,18 @@ struct SampleProfiler {
 using namespace miniandroid;
 
 void print_version() {
-    std::cout << "MiniAndroid Runtime v0.1" << std::endl;
+    // ISSUE-607 item 8 (W22): version + commit come from the ONE generated
+    // source (VERSION file + git HEAD -> miniandroid_version.h), never a
+    // hand-written string literal, so README/runtime/release identity cannot
+    // drift.
+#ifdef MINIANDROID_VERSION
+    std::cout << "MiniAndroid Runtime v" << MINIANDROID_VERSION << std::endl;
+#else
+    std::cout << "MiniAndroid Runtime (version unknown)" << std::endl;
+#endif
+#ifdef MINIANDROID_COMMIT
+    std::cout << "Commit: " << MINIANDROID_COMMIT << std::endl;
+#endif
     std::cout << "EXP-001: HelloWorld Loader" << std::endl;
     std::cout << "Evidence-driven Android compatibility runtime" << std::endl;
 }
