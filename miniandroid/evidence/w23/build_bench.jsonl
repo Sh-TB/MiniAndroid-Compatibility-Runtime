@@ -1,0 +1,6 @@
+{"cmd": ["make", "-j1", "--output-sync", "all"], "rc": 0, "wall_s": 591.639, "cpu_user_s": 567.358, "cpu_sys_s": 20.748, "maxrss_kb": 1461300, "nproc": 2, "log": "evidence/w23/prod_build_fresh.log"}
+{"cmd": ["make", "-j1", "dev-so"], "rc": 0, "wall_s": 132.971, "cpu_user_s": 124.527, "cpu_sys_s": 8.217, "maxrss_kb": 1147492, "nproc": 2, "log": "evidence/w23/devso_clean_build.log"}
+{"cmd": ["make", "-j1", "--output-sync", "all"], "rc": 2, "wall_s": 6.376, "cpu_user_s": 5.734, "cpu_sys_s": 0.437, "maxrss_kb": 955688, "nproc": 2, "log": "evidence/w23/prod_build_postsplit.log"}
+{"cmd": ["make", "-j1", "--output-sync", "all"], "rc": 0, "wall_s": 415.849, "cpu_user_s": 401.163, "cpu_sys_s": 13.958, "maxrss_kb": 1461732, "nproc": 2, "log": "evidence/w23/prod_build_postsplit.log"}
+{"cmd": ["make", "-j1", "dev-so"], "rc": 0, "wall_s": 138.226, "cpu_user_s": 128.431, "cpu_sys_s": 8.878, "maxrss_kb": 1144872, "nproc": 2, "log": "evidence/w23/devso_clean_postsplit.log"}
+{"cmd": ["make", "-j1", "--output-sync", "test-all"], "rc": 0, "wall_s": 299.431, "cpu_user_s": 273.076, "cpu_sys_s": 24.395, "maxrss_kb": 1097820, "nproc": 2, "log": "evidence/w23/testall_postsplit.log"}

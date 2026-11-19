@@ -20,7 +20,7 @@
 // (source.android.com/docs/core/runtime/dalvik-bytecode): 22b lit8 =
 // AA|op BB|CC, 22s lit16 = AA|op BBBBB, 22x from16 = AA|op BBBB,
 // 21s const/16 = AA|op BBBBB.
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <iostream>

@@ -751,3 +751,9 @@ bool DalvikExecutionEngine::bridge_arm_5892(const std::string& class_name, const
 
 }  // namespace dalvik
 }  // namespace miniandroid
+// W23-BENCH op=E run=1 t=1795118439
+// W23-BENCH op=E run=2 t=1795118449
+// W23-BENCH op=E run=3 t=1795118458
+// W23-BENCH op=E run=1 t=1795120092
+// W23-BENCH op=E run=2 t=1795120098
+// W23-BENCH op=E run=3 t=1795120105

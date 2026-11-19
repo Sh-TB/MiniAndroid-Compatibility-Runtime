@@ -10,7 +10,7 @@
  * - API bridge integration
  */
 
-#include "dalvik_engine.h"
+#include "dalvik_engine_impl.h"
 #include "dex_parser.h"
 #include "mutf8.h"
 #include "../src/compat/glibc_mallinfo2.h"  // W15 #627 D-03/H-03: mallinfo2 fallback (glibc < 2.33)

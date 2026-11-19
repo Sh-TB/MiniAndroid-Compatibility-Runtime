@@ -11,7 +11,7 @@
 #define MINIANDROID_FRAMEWORK_HEAP_ADAPTER_H
 
 #include "shadow_registry.h"
-#include "../dex/dalvik_engine.h"
+#include "../dex/dalvik_engine_impl.h"
 
 namespace miniandroid { namespace framework {
 

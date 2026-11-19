@@ -3,7 +3,7 @@
 //   r3     the regionMatches regression (the S240 port, post-rebase green)
 // (the Gson TypeToken.get(null) IAE and the Conscrypt dlopen faces verified
 //  macro/app-level — receipt-recorded, not forced into bridge rows.)
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <iostream>

@@ -10,7 +10,7 @@
  * - API bridge integration
  */
 
-#include "dalvik_engine.h"
+#include "dalvik_engine_impl.h"
 #include "dex_parser.h"
 #include "mutf8.h"
 #include <dlfcn.h>  // #371 PHASE B2: real dlopen/dlerror boundary diagnostics

@@ -1,0 +1,3003 @@
+// dalvik_engine_impl.h — W23-03: private implementation header.
+// VERBATIM relocation of the DalvikExecutionEngine class definition and
+// the post-class content of dalvik_engine.h (W23 header-cascade redesign:
+// implementation details move out of the widely-included public header;
+// see evidence/w23/W23_DEPENDENCY_ANALYSIS.md). Attribution and all
+// law comments are carried unchanged with the relocated code.
+#ifndef MINIANDROID_DALVIK_ENGINE_IMPL_H
+#define MINIANDROID_DALVIK_ENGINE_IMPL_H
+
+#include "dalvik_engine_types.h"
+#include "../apk/manifest_reader.h"  // 371-CLOSEOUT: component meta-data law
+#include "dex_parser.h"
+
+namespace miniandroid {
+namespace dalvik {
+
+class DalvikExecutionEngine {
+public:
+    DalvikExecutionEngine();
+    ~DalvikExecutionEngine();
+
+    // EXP-038 (BLOCKER-033): Set per-DEX raw data for correct method_idx resolution.
+    // Call this before execute_apk() to enable per-DEX method resolution.
+    void set_per_dex_raw_data(std::vector<std::vector<uint8_t>> data) {
+        per_dex_raw_data_ = std::move(data);
+        is_multidex_ = (per_dex_raw_data_.size() > 1);
+    }
+    // EXP-071 Phase 6: Set the APK path so AssetManager.open can read assets.
+    void set_apk_path(const std::string& path) { apk_path_ = path; }
+    // S-1 FIX (LOADING-CAMPAIGN): the manifest <provider> class list (AOSP
+    // ActivityThread.installContentProviders order — providers instantiate
+    // and run onCreate BEFORE Application.onCreate; androidx.startup
+    // InitializationProvider depends on this window).
+    void set_manifest_providers(std::vector<std::string> classes) {
+        manifest_providers_ = std::move(classes);
+    }
+    // GATE A (issue #370): manifest <provider> name+authorities pairs —
+    // the PackageManager.getPackageInfo(GET_PROVIDERS) law serves the same
+    // identity AOSP PackageParser records on ProviderInfo (name,
+    // authorities). Order follows manifest order.
+    void set_manifest_provider_identity(
+        std::vector<std::pair<std::string, std::string>> name_authorities) {
+        manifest_provider_identity_ = std::move(name_authorities);
+    }
+    // #371: per-provider grantUriPermissions (AOSP ProviderInfo law —
+    // FileProvider.attachInfo enforces it).
+    void set_manifest_provider_grants(
+        std::vector<std::pair<std::string, bool>> name_grants) {
+        manifest_provider_grants_ = std::move(name_grants);
+    }
+    // F-NEW-525: per-provider android:exported (AOSP law).
+    void set_manifest_provider_exported(
+        std::vector<std::pair<std::string, bool>> name_exported) {
+        manifest_provider_exported_ = std::move(name_exported);
+    }
+    // CODER7 WAVE-3: per-provider android:enabled (disabled-components law).
+    void set_manifest_provider_enabled(
+        std::vector<std::pair<std::string, bool>> name_enabled) {
+        manifest_provider_enabled_ = std::move(name_enabled);
+    }
+    bool c7_provider_enabled(const std::string& cls) const {
+        for (const auto& [pname, pen] : manifest_provider_enabled_)
+            if (pname == cls) return pen;
+        return true;
+    }
+    // CODER7 WAVE-8 L1: per-provider android:readPermission /
+    // android:writePermission plumbing (AOSP PackageParser.Provider).
+    void set_manifest_provider_perms(
+        std::vector<std::tuple<std::string, std::string, std::string>>
+            name_perms) {
+        manifest_provider_perms_ = std::move(name_perms);
+    }
+    // Register a provider INSTANCE's permission identity (own install +
+    // foreign store install; the CRUD gate consults it per op).
+    void c7_set_provider_perms(uint32_t oid, const std::string& read_perm,
+                               const std::string& write_perm,
+                               const std::string& owner_pkg) {
+        c7_provider_perms_[oid] = {read_perm, write_perm, owner_pkg};
+    }
+    // AOSP checkContentProviderAccess law (ActivityManagerService +
+    // ContentProvider_transport): a provider op is granted when
+    //   * the caller's package OWNS the provider (same-app access never
+    //     needs a permission), or
+    //   * the op's permission is empty, or
+    //   * the running package declared it (uses-permission; the
+    //     deterministic install-grant law).
+    // Returns "" when allowed, otherwise the required permission name.
+    std::string c7_check_provider_access(uint32_t prov_oid,
+                                         bool write_op) const {
+        auto it = c7_provider_perms_.find(prov_oid);
+        if (it == c7_provider_perms_.end()) return "";  // unregistered: pre-W8 shape
+        const auto& pp = it->second;
+        if (pp.owner_pkg == package_name_) return "";
+        const std::string& perm = write_op ? pp.write_perm : pp.read_perm;
+        if (perm.empty()) return "";
+        if (std::find(manifest_requested_permissions_.begin(),
+                      manifest_requested_permissions_.end(),
+                      perm) != manifest_requested_permissions_.end())
+            return "";
+        return perm;
+    }
+    // The permission the gate actually enforces for this op ("" = none) —
+    // evidence-side twin of c7_check_provider_access (PROV-PERM-OK rows).
+    std::string c7_provider_enforced_perm(uint32_t prov_oid,
+                                          bool write_op) const {
+        auto it = c7_provider_perms_.find(prov_oid);
+        if (it == c7_provider_perms_.end()) return "";
+        const auto& pp = it->second;
+        if (pp.owner_pkg == package_name_) return "";
+        return write_op ? pp.write_perm : pp.read_perm;
+    }
+    // 371-CLOSEOUT: component meta-data with resource references — the
+    // ProviderInfo.metaData / resolveContentProvider / loadXmlMetaData law
+    // set (androidx FileProvider contract; generic across all components).
+    void set_component_meta_data(
+        std::map<std::string,
+                 std::vector<miniandroid::apk::ManifestInfo::MetaDataEntry>>
+            component_md) {
+        component_meta_data_ = std::move(component_md);
+    }
+    // ── #371 PHASE B5 setters (manifest component transfer) ──
+    void set_manifest_services(
+        std::vector<std::pair<std::string, std::vector<std::string>>> svc) {
+        manifest_service_classes_ = std::move(svc);
+    }
+    // CODER7: full AOSP receiver model transfer (priority/exported/
+    // permission/categories in addition to the action list).
+    struct C7DataSpec {
+        std::string mime_type;
+        std::string scheme;
+        std::string host;
+        std::string path_prefix;
+    };
+    struct ManifestReceiverTransfer {
+        std::string cls;
+        std::vector<std::string> actions;
+        std::vector<std::string> categories;
+        int priority = 0;
+        bool exported = false;
+        bool has_exported_attr = false;
+        std::string permission;
+        // CODER7 WAVE-3: android:enabled (disabled-components law).
+        bool enabled = true;
+        // CODER7 WAVE-2 per-filter model: AOSP PackageParser records EVERY
+        // <intent-filter> as its own matchable unit (the ordered dispatch
+        // resolves per (receiver, filter) pair, each with ITS priority —
+        // a receiver matching through two filters is delivered TWICE).
+        struct FilterTransfer {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            int priority = 0;
+            // CODER7 WAVE-3: the filter's <data> match dimensions
+            // (IntentFilter.matchData).
+            std::vector<C7DataSpec> datas;
+        };
+        std::vector<FilterTransfer> filters;
+    };
+    void set_manifest_receivers(std::vector<ManifestReceiverTransfer> rcv) {
+        manifest_receivers_.clear();
+        for (auto& r : rcv) {
+            ManifestReceiver mr;
+            mr.cls = std::move(r.cls);
+            mr.actions = std::move(r.actions);
+            mr.categories = std::move(r.categories);
+            mr.priority = r.priority;
+            mr.exported = r.exported;
+            mr.has_exported_attr = r.has_exported_attr;
+            mr.permission = std::move(r.permission);
+            mr.enabled = r.enabled;
+            for (auto& f : r.filters) {
+                ManifestReceiver::Filter ef;
+                ef.actions = std::move(f.actions);
+                ef.categories = std::move(f.categories);
+                ef.priority = f.priority;
+                ef.datas = std::move(f.datas);
+                mr.filters.push_back(std::move(ef));
+            }
+            // Defensive synthesis: a receiver transferred without filter
+            // records keeps its old union-level single-filter behavior.
+            if (mr.filters.empty()) {
+                ManifestReceiver::Filter ef;
+                ef.actions = mr.actions;
+                ef.categories = mr.categories;
+                ef.priority = mr.priority;
+                mr.filters.push_back(std::move(ef));
+            }
+            manifest_receivers_.push_back(std::move(mr));
+        }
+    }
+
+    // ── CODER7 WAVE-3: activity/service resolution model transfer ────────
+    // The matchable component model for resolveActivity/resolveService/
+    // queryIntentActivities/queryIntentServices/queryBroadcastReceivers,
+    // the MATCH_DEFAULT_ONLY (CATEGORY_DEFAULT) law and the
+    // disabled-component exclusion law (AOSP PackageParser keeps every
+    // component's filters + PackageItemInfo.isEnabled).
+    struct ManifestFilterTransfer {
+        std::string cls;             // component class (dotted)
+        bool enabled = true;
+        bool exported = false;
+        int launch_mode = 0;         // activities only (0..3)
+        // CODER7 WAVE-12: services only — the manifest
+        // android:foregroundServiceType bitmask (0 = none declared;
+        // AOSP ServiceInfo.foregroundServiceType).
+        int fgs_type = 0;
+        struct Filter {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            std::vector<C7DataSpec> datas;
+        };
+        std::vector<Filter> filters;
+    };
+    void set_manifest_activity_filters(std::vector<ManifestFilterTransfer> acts) {
+        manifest_activity_filters_ = std::move(acts);
+    }
+    void set_manifest_service_filters(std::vector<ManifestFilterTransfer> svcs) {
+        manifest_service_filters_ = std::move(svcs);
+    }
+    // ── CODER7 WAVE-12: the parent-chain law ────────────────────────────
+    // AOSP TaskStackBuilder.addParentStack(ComponentName) walks
+    // ActivityInfo.parentActivityName via PackageManager.getActivityInfo.
+    // The engine-side resolver answers the parent class (dotted
+    // absolute, "" = no parent) for the RUNNING package from the
+    // manifest transfer (manifest_activity_parent_) and for store
+    // packages from the C7 package index — one law, both sources.
+    void set_manifest_activity_parents(
+        std::map<std::string, std::string> parents) {
+        manifest_activity_parent_ = std::move(parents);
+    }
+    // CODER7 WAVE-12: the manifest FGS type of a RUNNING-package
+    // <service> ("" when absent) — the getServiceInfo /
+    // getPackageInfo(GET_SERVICES) / startForeground subset laws read
+    // it. Served from manifest_service_filters_ (the transfer already
+    // carries every service row).
+    int manifest_service_fgs_type(const std::string& dotted_cls) const;
+    // The parent resolver used by the TaskStackBuilder walk (declared
+    // here, implemented beside the other PM laws).
+    std::string c7_activity_parent_of(const std::string& pkg,
+                                      const std::string& cls) const;
+    // ── CODER7 WAVE-5: PMS-lite — the cross-package component index ──────
+    // Non-null AND non-empty ⇒ the PackageManager query/resolve APIs, the
+    // installed-packages/provider identity APIs and the broadcast dispatch
+    // RESOLUTION consult it (AOSP PackageManagerService resolves across ALL
+    // installed packages). Null ⇒ byte-identical pre-WAVE-5 behavior (no
+    // silent drift when no store is configured).
+    void set_package_index(std::shared_ptr<C7PackageIndex> idx) {
+        c7_pkg_index_ = std::move(idx);
+    }
+    const C7PackageIndex* package_index() const { return c7_pkg_index_.get(); }
+    // CODER7 WAVE-3: manifest activity lookups for the task laws — the
+    // launch drain reads launchMode (singleTop) and enabled per target
+    // class (AOSP ActivityInfo.launchMode / PackageItemInfo.isEnabled).
+    int c7_activity_launch_mode(const std::string& cls_desc) const {
+        std::string dotted = cls_desc;
+        if (!dotted.empty() && dotted.front() == 'L') {
+            dotted = dotted.substr(1, dotted.size() - 2);
+            for (auto& c : dotted)
+                if (c == '/') c = '.';
+        }
+        for (const auto& a : manifest_activity_filters_)
+            if (a.cls == dotted) return a.launch_mode;
+        // CODER7 WAVE-8 L4: the launch drain reads the SAME law for
+        // foreign (store) activities — the W5 index already carries
+        // launch_mode per C7IdxActivity (AOSP ActivityInfo.launchMode
+        // regardless of owning package; standard = 0).
+        if (c7_pkg_index_) {
+            for (const auto& p : c7_pkg_index_->packages())
+                for (const auto& a : p.activities)
+                    if (a.cls == dotted) return a.launch_mode;
+        }
+        return 0;
+    }
+    bool c7_activity_enabled(const std::string& cls_desc) const {
+        std::string dotted = cls_desc;
+        if (!dotted.empty() && dotted.front() == 'L') {
+            dotted = dotted.substr(1, dotted.size() - 2);
+            for (auto& c : dotted)
+                if (c == '/') c = '.';
+        }
+        for (const auto& a : manifest_activity_filters_)
+            if (a.cls == dotted) return a.enabled;
+        return true;
+    }
+    // CODER7 WAVE-3: the running package (the caller ComponentName's
+    // package half — getCallingPackage law).
+    const std::string& package_name() const { return package_name_; }
+    // ── #371 PHASE B2 setter (G-4: ABI-scoped lib extraction identity) ──
+    // Called by the run flow when the package store holds extracted libs.
+    void set_native_lib_dir(const std::string& logical,
+                            const std::string& host,
+                            const std::string& abi) {
+        native_lib_dir_logical_ = logical;
+        native_lib_dir_host_ = host;
+        native_primary_abi_ = abi;
+    }
+    // F-116 (R-NEW-384 family): manifest <meta-data> tables for the
+    // PackageManager.getActivityInfo().metaData law (AOSP PackageItemInfo).
+    void set_activity_meta_data(
+        std::map<std::string,
+                 std::vector<std::pair<std::string, std::string>>> activity_md,
+        std::vector<std::pair<std::string, std::string>> application_md) {
+        activity_meta_data_ = std::move(activity_md);
+        application_meta_data_ = std::move(application_md);
+    }
+    // EXP-093/F011: Manifest-derived package identity
+    void set_package_info(const std::string& pkg, int vcode, const std::string& vname) {
+        package_name_ = pkg; version_code_ = vcode; version_name_ = vname;
+        // ST-7 FIX (LOADING-CAMPAIGN) — ONE DATA ROOT LAW: the databases_dir
+        // authority is Storage::set_context_package (F-NEW-234, called by the
+        // runtime right after this). The OLD setter here aimed the SQLite
+        // shadow at the pre-F-NEW-234 flat shape <root>/<pkg>/databases — a
+        // competing second authority that order-dependently fought the
+        // per-package law. REMOVED: no storage consumer may set its own
+        // data root; they all obey the one binding stage.
+    }
+
+    // ── CONT-102 (F-NEW-424/425/427/428): manifest package-identity
+    // transfer — the PM truthfulness law set. requestedPermissions
+    // (uses-permission list), per-activity (name, exported, declared,
+    // launchMode) and the uses-sdk target/min values feed:
+    //   ApplicationInfo.{packageName,enabled,targetSdkVersion,minSdkVersion},
+    //   ActivityInfo.{exported,launchMode},
+    //   getPackageInfo(GET_ACTIVITIES/GET_PERMISSIONS),
+    //   checkSelfPermission install-grant law.
+    // tuple = (class name, exported, exported_declared, launch_mode).
+    void set_manifest_pkg_identity(
+        std::vector<std::string> requested_permissions,
+        std::vector<std::tuple<std::string, bool, bool, int>> activity_attrs,
+        int target_sdk, int min_sdk) {
+        manifest_requested_permissions_ = std::move(requested_permissions);
+        manifest_activity_attrs_ = std::move(activity_attrs);
+        manifest_target_sdk_ = target_sdk;
+        manifest_min_sdk_ = min_sdk;
+    }
+
+    // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.
+    // Must be called after dex_report is set and before execution begins.
+    void build_class_dex_index(const dex::DexReport& report);
+
+    // W20-K (S237-WS7): AOSP Dialog lifecycle-callback delivery — drains the
+    // DialogShadow exactly-once tokens (OnCancel -> OnDismiss -> OnShow) and
+    // invokes the app's REAL overrides via try_recursive_invoke with the
+    // DialogInterface receiver. No-op when nothing is armed; safe to call
+    // from any dispatch/frame point (defined in runtime/execution_engine.cpp
+    // so it exists in both DALVIK_SPLIT=1 and =0 link sets).
+    void deliver_pending_dialog_callbacks();
+
+    // EXP-088+ Phase 1.2 (secondary-DEX injection): Inject ALL classes from
+    // ALL secondary DEX files (per_dex_raw_data_[1..N-1]) into the merged
+    // dex_report_->classes vector and update class_info_index_.
+    //
+    // Without this, only classes.dex (DEX 0) classes are available for
+    // runtime dispatch. Any class defined in classes2.dex/classes3.dex/etc.
+    // (e.g. Telegram's UserConfig, LoginActivity) cannot be found by
+    // try_recursive_invoke, returning "class not in index" silently.
+    //
+    // The previous on-demand injection (only for the manifest activity class)
+    // was insufficient: it injected exactly ONE class. Every other multi-DEX
+    // class (called recursively from onCreate) was still missing.
+    //
+    // This method is idempotent: calling it twice does NOT duplicate classes
+    // (we check class_info_index_ before inserting).
+    //
+    // Returns the number of newly-injected classes.
+    size_t inject_secondary_dex_classes();
+
+    // ── CODER7 WAVE-6 (S185 SQLITE RULE applied to cross-package code):
+    // LoadedApk-lite — FOREIGN APK CODE INGESTION ──────────────────────────────
+    // AOSP law (LoadedApk.java + ActivityThread.handleReceiver): every
+    // installed package owns a LoadedApk with its OWN ClassLoader; the system
+    // delivers components cross-package by LOADING the target package's code
+    // and running the REAL component class. WAVE-5 resolved foreign components
+    // from the package index and honestly did not execute them ("foreign dex
+    // not loaded by this engine" — issue #520 W5.7 limitation #1). WAVE-6
+    // closes that gap with the S185 LOAD-FIRST law (#536): every store APK's
+    // classes.dex/classes2..N are parsed at boot, their classes injected into
+    // the SAME merged class index the running app uses (the EXP-088+ multi-DEX
+    // injection mechanics, generalized from per-APK to per-STORE), and the
+    // dispatch sites (broadcast delivery, service bring-up, provider
+    // acquisition) then run the foreign component's REAL bytecode through the
+    // unmodified try_recursive_invoke machinery. No synthetic components, no
+    // fabricated callbacks: a foreign class that fails to parse/load falls
+    // back to the WAVE-5 honest "resolved, not executed" rows.
+    //
+    // apk_package_pairs: (apk_path, owning_package_name) — the owning package
+    // identity comes from the WAVE-5 C7PackageIndex (ComponentInfo.packageName).
+    // Returns the number of newly-injected foreign classes.
+    size_t inject_foreign_apk_code(
+        const std::vector<std::pair<std::string, std::string>>&
+            apk_package_pairs);
+
+    // The class → owning-package map for foreign classes (AOSP LoadedApk:
+    // the package every injected class belongs to). Own (running-package)
+    // classes are intentionally absent — the lookup answers "" for them,
+    // which every caller must treat as "owned by the running package".
+    void set_foreign_class_owner(const std::string& class_desc,
+                                 const std::string& package_name);
+    // "" ⇒ not a foreign class (the running package owns it).
+    const std::string& foreign_owner_package(const std::string& class_desc)
+        const;
+
+    // ── CODER7 WAVE-7: CROSS-PACKAGE ACTIVITY LAUNCH (AOSP ActivityStarter
+    // + ActivityManagerService.checkComponentPermission) ───────────────────
+    // AOSP law: startActivity resolves implicit intents across ALL installed
+    // packages (PackageManagerService → IntentResolver), then gates the
+    // launch SYNCHRONOUSLY in the caller's frame (Instrumentation.
+    // checkStartActivityResult): a DISABLED target throws
+    // android.content.ActivityNotFoundException ("component disabled"),
+    // a NON-EXPORTED target owned by ANOTHER uid throws
+    // java.lang.SecurityException ("Permission Denial ... not exported").
+    // Same-uid (own-package) starts of non-exported activities are ALLOWED
+    // (checkComponentPermission: caller uid == owner uid ⇒ grant).
+    //
+    // Both answers consult the WAVE-5 store index (register_own_package
+    // ingests the running package too, so one lookup serves own and foreign
+    // targets alike). No store configured (c7_pkg_index_ null) ⇒ the gate
+    // answers "" (allowed) and the resolver answers "" (no cross-package
+    // candidate) — byte-identical pre-W7 behavior for non-store runs.
+    //
+    // c7_activity_launch_gate: "" = allowed; non-empty = the synchronous
+    // error contract, prefixed "ACTIVITY_NOT_FOUND:" or
+    // "SECURITY_EXCEPTION:" (the caller maps the prefix to the exception
+    // class and throws the remainder as the message).
+    std::string c7_activity_launch_gate(const std::string& dotted_cls) const;
+
+    // Implicit cross-package ACTIVITY resolution (AOSP
+    // ContextImpl.startActivity → PackageManager.resolveIntent): the
+    // WAVE-3 match law (action + categories + matchData + CATEGORY_DEFAULT
+    // for startActivity) evaluated over EVERY installed package. The first
+    // candidate follows the index's priority-then-ingest ordering (the W5
+    // best-match law). "" = no candidate.
+    std::string c7_resolve_activity_xpkg(
+        const std::string& action, const std::vector<std::string>& cats,
+        const std::string& mime, const std::string& scheme,
+        const std::string& host, const std::string& path,
+        bool default_only) const;
+
+    // ── CODER7 WAVE-8 L2: the PendingIntent.send dispatch law ───────────
+    // AOSP PendingIntentRecord.sendInner routes the FROZEN intent through
+    // the SAME component pipeline the app-context calls reach:
+    //   BROADCAST → ContextImpl.sendBroadcast (broadcastIntentLocked),
+    //   SERVICE   → ContextImpl.startService,
+    //   ACTIVITY  → AMS startActivityAsUser (the ContextImpl NEW_TASK gate
+    //               does NOT apply; the resolve + synchronous gate + queue
+    //               law of WAVE-7 does).
+    // Wired into PendingIntentShadow via set_send_dispatcher (one engine
+    // law, zero duplicated dispatch). Returns false + err on refusal.
+    // CODER7 WAVE-12: the TaskStackBuilder.startActivities dispatch —
+    // AOSP Context.startActivities(mIntents): the RAW intent stack is
+    // bridged through the SAME W3 startActivities law (resolution +
+    // synchronous gate + FIFO queue) with the application context as
+    // receiver. `oids` = the stack verbatim (ROOT-FIRST, no flag copies).
+    bool c7_tsb_start_dispatch(const std::vector<uint32_t>& oids,
+                               std::string& err);
+    bool c7_send_pending_intent(const std::string& kind,
+                                uint32_t intent_oid, std::string& err);
+
+    /**
+     * Execute APK through real DEX bytecode interpretation
+     */
+    DalvikExecutionResult execute_apk(
+        const std::string& apk_path,
+        const dex::DexReport& dex_report,
+        bool verbose = false
+    );
+
+    /**
+     * EXP-037 Phase B (BLOCKER-019): Execute APK with explicit activity class
+     * name from the AndroidManifest.xml. This bypasses the class-name-scan
+     * heuristic in execute_apk() which fails for obfuscated APKs (e.g.
+     * TinyMusicPlayer uses La/a;, La/b;, etc.).
+     *
+     * `activity_class_name` is the manifest's main_activity in DEX type
+     * descriptor form, e.g. "Lcom/martinmimigames/tinymusicplayer/Launcher;".
+     * If empty, falls back to the scan-based heuristic.
+     */
+    DalvikExecutionResult execute_apk_with_activity(
+        const std::string& apk_path,
+        const dex::DexReport& dex_report,
+        const std::string& activity_class_name,
+        bool verbose = false
+    );
+
+    // EXP-060: Dispatch a synthetic CLICK event on a View. Looks up the
+    // ViewNode via ViewShadow, retrieves its registered OnClickListener,
+    // and invokes listener.onClick(view) via try_recursive_invoke. This
+    // is the generic event mechanism — no Telegram-specific code.
+    //
+    // `view_object_id` is the heap object_id of the target View.
+    // Returns true if a listener was found and dispatched.
+    bool dispatch_click(uint32_t view_object_id, int tap_x = -1,
+                        int tap_y = -1);
+    // F-110e (S62+): dispatch a touch listener (View.OnTouchListener.onTouch)
+    // for the G06 DOWN/UP pipeline. `consumed` mirrors the listener's boolean
+    // return (true = the listener owns the gesture, AOSP View.dispatchTouchEvent).
+    bool dispatch_touch_listener(uint32_t view_object_id, int action,
+                                 float x, float y, bool& consumed);
+    // S128 (R-NEW-424, CAP-INPUT-100): dispatch ViewGroup.onInterceptTouchEvent
+    // for the TouchTarget pipeline. `intercepted` mirrors the override's
+    // boolean return (true = this ViewGroup takes the gesture from its
+    // children — AOSP ViewGroup.dispatchTouchEvent law).
+    bool dispatch_intercept(uint32_t view_object_id, int action, float x,
+                            float y, bool& intercepted);
+    // ── S130 MASS BATCH bridges (AOSP callback laws) ────────────────────
+    // R-NEW-430: View.draw → computeScroll() per-frame dispatch (ViewRootImpl
+    // performTraversals → draw → computeScroll chain).
+    void call_compute_scroll(uint32_t view_object_id);
+    // R-NEW-428: View.onScrollChanged(l,t,oldl,oldt) + OnScrollChangeListener.
+    void dispatch_scroll_changed(uint32_t view_object_id, int l, int t,
+                                 int oldl, int oldt);
+    // R-NEW-433: AdapterView.OnItemClickListener.onItemClick(parent,view,pos,id)
+    // (long_click → OnItemLongClick.onItemLongClick(...)Z).
+    bool dispatch_item_click(uint32_t adapter_id, uint32_t view_id,
+                             int position, bool long_click);
+    // S191 F-NEW-601: adapter-row (re)materialization — the shared body of
+    // ListView.setAdapter (CONT-102), ListActivity.setListAdapter identity
+    // binding, ArrayAdapter.add/notifyDataSetChanged (AOSP: every adapter
+    // mutation invalidates the view; the next layout pass re-queries
+    // getCount()/getView()). Rebuilds the row children of every ListView
+    // node bound to this adapter (bounded 64-row window, same documented
+    // simplification as CONT-102).
+    // F-S231-A (#585 §5): the rebuild now honors the AOSP RecycleBin
+    // contract — previous active rows return to scrap keyed by the
+    // adapter's item-view type and are handed back as convertView
+    // (getViewTypeCount/getItemViewType through the real DEX chain;
+    // ITEM_VIEW_TYPE_IGNORE rows never recycle; out-of-range types are a
+    // counted violation, never silent).
+    int materialize_adapter_rows_for(uint32_t adapter_id);
+    // F-NEW-650 (S235-1, #588 Games-g1 lane): the android:entries ListView
+    // adapter drain — synthesizes the S191-convention ArrayAdapter for
+    // nodes the inflater recorded entries on, binds it, and runs the ONE
+    // row materializer (the AOSP ListView(Context, AttributeSet) ctor law).
+    int materialize_entries_listviews(uint32_t root_view_id);
+    // F-S231-A: per-ListView scrap bins + row→type map from the last bind.
+  private:
+    framework::AdapterScrapBin adapter_scrap_;
+    std::unordered_map<uint32_t, int> adapter_row_type_;  // row_oid → type
+    uint64_t recycle_rows_reused_ = 0;    // getView got non-null convertView
+    uint64_t recycle_rows_inflated_ = 0;  // getView got no scrap (cold bind)
+    uint64_t recycle_type_violations_ = 0;// getItemViewType out-of-range
+  public:
+    uint64_t recycle_rows_reused() const { return recycle_rows_reused_; }
+    uint64_t recycle_rows_inflated() const { return recycle_rows_inflated_; }
+    uint64_t recycle_type_violations() const { return recycle_type_violations_; }
+    framework::AdapterScrapBin& adapter_scrap() { return adapter_scrap_; }
+    // R-NEW-431: CompoundButton.onCheckedChanged(buttonView, isChecked).
+    void dispatch_checked_changed(uint32_t view_id, bool checked);
+    // R-NEW-432: key pipeline — onKey listener → onKeyDown/onKeyUp law.
+    void dispatch_key_event(uint32_t view_id, int action, int keycode,
+                            int repeat, int64_t time_ms, bool& consumed);
+    // R-NEW-434: GestureDetector listener callbacks → DEX.
+    // F-NEW-400 (CONT-97): two-event callbacks (onScroll/onFling) carry the
+    // SECOND event's CURRENT coords in f3/f4; the delta/velocity floats
+    // moved to f5/f6. Simple callbacks keep f1/f2 = (x, y), f3..f6 = 0.
+    void dispatch_gesture_cb(uint32_t gd_obj, uint32_t listener_obj,
+                             const std::string& cb, float f1, float f2,
+                             float f3, float f4, float f5, float f6,
+                             bool& consumed);
+    // GOLDEN-02: AOSP View.performLongClick() law — dispatch to the
+    // registered OnLongClickListener.onLongClick(View)Z via
+    // try_recursive_invoke, using the REAL listener object stored by
+    // View.setOnLongClickListener (ViewShadow long_click_listener_id).
+    // Returns true if a listener was found AND invoked; listener_consumed
+    // receives the listener's boolean return — the AOSP "handled" value
+    // that decides whether the subsequent UP performs a click
+    // (View.java CheckForLongPress → mHasPerformedLongPress law).
+    bool dispatch_long_click(uint32_t view_object_id, bool& listener_consumed);
+    // CAMPAIGN 013: run a custom view's REAL onDraw(Canvas) bytecode.
+    int dispatch_custom_view_draw(uint32_t view_object_id);
+    // S123 (R-NEW-419): AOSP View.setFrame layout law — when a view's frame
+    // size changes during layout, View.setFrame dispatches onSizeChanged(
+    // newW, newH, oldW, oldH) BEFORE the first onDraw. Custom views (games
+    // especially) compute ALL their draw geometry there (FlappyCow
+    // StartscreenView builds every button dst Rect inside onSizeChanged);
+    // without this dispatch the rects stay null and every drawBitmap lands
+    // at (0,0) natural size. Dedup: only fires when (w,h) differs from the
+    // last dispatched size (AOSP "size changed" clause). Returns 1 when the
+    // app's onSizeChanged bytecode executed.
+    int dispatch_custom_view_onsizechanged(uint32_t view_object_id, int w, int h);
+
+    // S83-GFX-BASE §25: run one GLSurfaceView frame for the view at
+    // view_id — onSurfaceCreated (once, lazily) → onSurfaceChanged (on
+    // size change) → onDrawFrame — through REAL DEX bytecode on the
+    // renderer object (heap field "glRenderer" set by GLSurfaceViewShadow).
+    // Returns true when onDrawFrame executed (PGL now holds the frame);
+    // *surf_created_out receives whether this was the first frame.
+    bool dispatch_gl_surface_view_frame(uint32_t view_object_id, int w, int h,
+                                        bool* first_frame_out);
+
+    // S86 §F-NEW-164: SurfaceView surface lifecycle — dispatch
+    // surfaceCreated (once, lazily) + surfaceChanged (on size change) on
+    // the holder's registered Callback object (heap fields svHolder/
+    // svCallback set by SurfaceViewShadow; falls back to the view object
+    // itself — AOSP apps that addCallback(this) stay covered). Returns
+    // true when any callback executed; *created_out = first creation.
+    bool dispatch_surface_view_lifecycle(uint32_t view_object_id, int w,
+                                         int h, bool* created_out);
+
+    // S26 diagnostic (env-gated, read-only): TRUE while a custom-view draw
+    // dispatch window is open (dispatch_custom_view_draw entry→exit). The
+    // method-entry log gates on this to attribute method entries to the
+    // draw phase — evidence for the R-NEW-328 compose draw frontier.
+    bool draw_window_active_ = false;
+    // F-NEW-267 (CONT-61): true while a materialized MotionEvent is being
+    // dispatched into a DEX touch override (dispatchTouchEvent/onTouchEvent)
+    // — gates the [TOUCHWIN-BRIDGE] probe (every bridge call the override
+    // makes: which framework answers the compose input pipeline asked for).
+    bool touch_dispatch_active_ = false;
+
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-298 (CONT-37) FRAME-HONESTY: set when an in-draw F084 budget
+    // halt unwound through the draw window — the app's frame NEVER
+    // completed. ART/SurfaceFlinger contract: an unfinished frame is never
+    // presented; the display keeps the last complete frame. The compositor
+    // resets this at the start of each render pass (frame_honesty_begin)
+    // and consults it at the presentation point (frame_honesty_keep_prev).
+    // P1-6 extension recorded PENDING in CONT-36 §6.
+    // ────────────────────────────────────────────────────────────────────
+    bool draw_window_budget_halted_ = false;
+    void frame_honesty_begin() { draw_window_budget_halted_ = false; }
+    bool frame_honesty_keep_prev() const {
+        return draw_window_budget_halted_;
+    }
+    // ── F-GLZ-1 (S226): scoped draw-window suspension for the GL surface
+    // pipeline. The §25 pump ran POST-WALK — its DEX callbacks
+    // (onSurfaceCreated/onSurfaceChanged/onDrawFrame) were never subject
+    // to the in-draw budget. The F-GLZ-1 in-walk placement (tree-position
+    // GL z-order) must preserve that context: the budget exists to bound
+    // APP draw code, and the surface pipeline is not app draw code (the
+    // pre-GLZ placement is the proof — ttt_3 13-frame SUCCESS with the
+    // full libGDX render loop). The GL blit suspends the window around
+    // dispatch_gl_surface_view_frame and restores it after.
+    bool draw_window_active() const { return draw_window_active_; }
+    void set_draw_window_active(bool v) { draw_window_active_ = v; }
+
+    // ────────────────────────────────────────────────────────────────────
+    // S214 F-NEW-632 SF-ORDER probe (env-gated MINIANDROID_SF_ORDER_LOG=1,
+    // read-only): the Waydroid-#1148-analog ordering evidence — logs the
+    // ORDERED surface lifecycle vs the frame pipeline with one monotonic
+    // step counter: PASS-BEGIN → SURFACE-CREATED → SURFACE-CHANGED →
+    // BUFFER-QUEUED / GL-FIRST-FRAME → PRESENT. The engine has no
+    // compositor thread (one deterministic render stage), so an inversion
+    // ("app buffer queued before surfaceCreated") would show as an
+    // out-of-order t= sequence in the log. Default OFF = behavior-neutral.
+    // ────────────────────────────────────────────────────────────────────
+    void sf_order_log(const char* event, const std::string& detail);
+    uint64_t sf_order_step_ = 0;
+    int sf_order_enabled_ = -1;  // tri-state: -1 unchecked, else env verdict
+
+    // S33 diagnostic (env-gated, read-only): TRUE while the F-096 real-DEX
+    // onMeasure/onLayout lifecycle dispatch window is open. Method-entry
+    // and ()Z-return probes attribute entries to the measure/layout phase —
+    // evidence for the R-NEW-332 placement gate (isPlaced at draw time).
+    bool lifecycle_window_active_ = false;
+
+    // MASTER CAMPAIGN FIX (F10 real-DEX onMeasure): execute an app custom
+    // View's REAL onMeasure(wSpec, hSpec) bytecode; the setMeasuredDimension
+    // shadow dispatch captures the write-back. Returns true when a real
+    // override executed and produced measured dimensions.
+    bool dispatch_custom_view_measure(uint32_t view_object_id, int wspec,
+                                      int hspec, int& out_w, int& out_h);
+
+    // F-096 (R-NEW-329 root): one-time real-DEX measure+layout lifecycle
+    // dispatch for a view whose DEX chain overrides onMeasure/onLayout —
+    // covers PROGRAMMATIC views (compose's AndroidComposeView) that the
+    // inflate-time F10 hook never sees. AOSP order: measure (EXACTLY
+    // specs from the final rect — the runtime's own measure pass already
+    // resolved the geometry) then layout(changed=true, l, t, r, b).
+    // onLayout → AndroidComposeView.measureAndLayout → root.place(0,0)
+    // runs the ENTIRE compose placement chain as real bytecode.
+    bool dispatch_view_lifecycle_once(uint32_t view_object_id,
+                                      int l, int t, int r, int b);
+
+    // R-NEW-466 (AOSP measure→layout pairing law): re-dispatch onLayout
+    // when a re-measure raised dex_layout_required after the F-096
+    // one-shot. Compose placement (placeAt → isPlaced) lives in onLayout —
+    // see dalvik_engine.cpp for the full evidence chain.
+    bool dispatch_view_relayout(uint32_t view_object_id,
+                                int l, int t, int r, int b);
+
+    // Public chain query for the render phase (F-096 call-site logging):
+    // TRUE when the class's DEX chain defines the method.
+    bool chain_overrides_method(const std::string& class_desc,
+                                const char* method);
+
+    // ── G11 FIX-G11-001 (AOSP LayoutInflater.createView law) ───────────
+    // Execute an app class's REAL View constructor on the DEX interpreter.
+    // Called by the LayoutInflater custom-view hook for fully-qualified app
+    // tags (and usable for programmatic new-instance support). The receiver
+    // heap object already exists (ViewShadow::create_view allocated it);
+    // this runs <init>(Context, AttributeSet) / <init>(Context) so the
+    // app-side child hierarchy (inflate/addView/findViewById inside the
+    // constructor) is created through the real runtime path.
+    // Returns true when a constructor body executed. xml_attrs carries the
+    // parsed XML attributes of the tag (F-NEW-197 XML-AttributeSet law) —
+    // installed on the AttributeSet marker so obtainStyledAttributes
+    // resolves styleable slots with AOSP precedence (XML > style > theme).
+    bool run_custom_view_constructor(uint32_t view_object_id,
+                                     const std::string& class_desc_slashed,
+                                     const std::vector<resources::XmlAttrRecord>& xml_attrs = {});
+
+    // F-NEW-309 (AOSP ViewGroup.generateLayoutParams law): the child of a
+    // DEX-defined container carries the CONTAINER'S OWN LayoutParams
+    // subclass, constructed by its real DEX (Context, AttributeSet) ctor
+    // from the child's XML attrs (android:layout_gravity among them —
+    // solitaire's DrawerLayout$g reads it via
+    // obtainStyledAttributes(attrs, {0x010100F3}).getInt(0,0)). Structural
+    // discovery (no name conditions): the parent's "$"-prefixed inner class
+    // whose super is ViewGroup$MarginLayoutParams and which declares the
+    // (Context, AttributeSet) ctor. The generated object is stashed on the
+    // child node (layout_params_object) — ROOT-055 answers it; width/
+    // height write back from the semantic node (the bridge does not read
+    // XML w/h — the runtime's own measure truth, unchanged from ROOT-055).
+    // Returns the heap object id, 0 when the law does not apply (parent
+    // has no discoverable LayoutParams subclass — the AOSP ViewGroup
+    // default then stands, ROOT-055's existing behavior).
+    uint32_t generate_child_layout_params(
+        const std::string& parent_class_desc, uint32_t child_view_id,
+        const std::vector<resources::XmlAttrRecord>& xml_attrs,
+        uint32_t parent_view_id_hint = 0);
+
+    // EXP-060: Convenience wrapper — find a View by class descriptor
+    // substring (e.g. "IntroActivity$4" or "startMessagingButton") and
+    // dispatch a click on it. Returns true if a matching View with a
+    // registered listener was found.
+    bool dispatch_click_by_class(const std::string& class_substring);
+
+    // CAMPAIGN 009 §10: view attach lifecycle dispatch.
+    // AOSP View.java: when the view tree attaches to the window,
+    // View.dispatchAttachedToWindow invokes onAttachedToWindow() on every
+    // node. AbstractComposeView.onAttachedToWindow ->
+    // ensureCompositionCreated() is what turns an empty ComposeView into a
+    // real composition (AndroidComposeView child + render content). The
+    // runtime previously swallowed this callback (ViewShadow handled_void),
+    // so every Compose APK rendered a white frame with children=0.
+    // Env-gated: MINIANDROID_DISPATCH_ATTACH=1 (default off for golden
+    // regression safety). Bounded multi-pass: attach may create new views.
+    bool dispatch_view_attached();
+
+    // ─────────────────────────────────────────────────────────────────────
+    // F-NEW-384 (CONT-82) — AOSP root window-insets dispatch law.
+    // ViewRootImpl.performTraversals dispatches the host window's root
+    // WindowInsets into the tree BEFORE the measure pass (insets →
+    // measure → layout → draw). The engine never dispatched any insets
+    // pass, so androidx fields caching the platform insets (ActionBar-
+    // OverlayLayout.mLastInsets) stayed null and toWindowInsetsCompat(null)
+    // NPE'd (jwtc chess Ln0/k1.c pc=2 ×7). Consumed at every frame
+    // boundary (stage_render_frame_impl) BEFORE the measure walk: material-
+    // izes ONE root WindowInsets per discovered attached root (the empty-
+    // insets law — no simulated system bars) and dispatches it through the
+    // app's REAL onApplyWindowInsets chain (down-tree child walk per the
+    // AOSP ViewGroup law, first consuming override wins). Returns true
+    // when at least one override dispatched this call.
+    // ─────────────────────────────────────────────────────────────────────
+    bool dispatch_root_window_insets();
+
+    // ─────────────────────────────────────────────────────────────────────
+    // R-NEW-347 (S42) — AOSP attach-on-add law (dispatch side).
+    // Drives the real DEX onAttachedToWindow() chain on the subtree rooted
+    // at root_view_id, mirroring View.dispatchAttachedToWindow() +
+    // ViewGroup.dispatchAttachedToWindow(): mark the node attached FIRST
+    // (AOSP stores mAttachInfo before invoking the callback), then invoke
+    // onAttachedToWindow() via the runtime-class super-chain walk (same
+    // walk law as dispatch_view_attached), then recurse into the node's
+    // recorded children. Consumed from bridge_to_api when the ViewShadow
+    // recorded a pending child-attach (addView into an already-attached
+    // parent — ViewGroup.addViewInner law, see android_shadows.h).
+    // Returns true when at least one DEX onAttachedToWindow dispatched.
+    // ─────────────────────────────────────────────────────────────────────
+    bool dispatch_attached_subtree_from(uint32_t root_view_id);
+
+    // EXP-071 Phase 8: Generic Runnable dispatch.
+    // Invokes run()V (or run(TLObject, TL_error)V for RequestDelegate) on the
+    // heap object identified by runnable_object_id. Used by the event loop
+    // to drain queued Runnables after Handler.post / runOnUIThread calls.
+    // The response/error_object_id args are 0 for plain Runnables, or
+    // non-zero for RequestDelegate runnables that take a (response, error) pair.
+    bool dispatch_runnable(uint32_t runnable_object_id,
+                          uint32_t response_object_id = 0,
+                          uint32_t error_object_id = 0);
+
+    // EXP-069: Generic text input dispatch.
+    // Injects text into a TextView/EditText by:
+    //   1. Storing the text on the ViewNode (ViewShadow.setText)
+    //   2. Storing it on the heap object (for getText() in DEX bytecode)
+    //   3. Triggering any registered TextWatchers
+    // Returns true if the view was found and text was set.
+    bool dispatch_text_input(uint32_t view_object_id, const std::string& text);
+
+    // EXP-069: Convenience — find an EditText by class descriptor substring
+    // and dispatch text input. Returns true if a matching view was found.
+    bool dispatch_text_input_by_class(const std::string& class_substring,
+                                       const std::string& text);
+
+    // EXP-061: Dump the full ViewNode tree (from ViewShadow) to a JSON
+    // file. Each node includes object_id, class, parent, children,
+    // geometry (x,y,width,height), text, visibility, clickable,
+    // listener_present. This is the input to the software renderer.
+    bool dump_view_tree(const std::string& path);
+    
+    /**
+     * Execute specific method from DEX report
+     */
+    DalvikExecutionResult execute_method(
+        const dex::MethodInfo& method,
+        const dex::DexReport& dex_report,
+        const std::vector<DalvikValue>& args = {},
+        bool verbose = false
+    );
+    
+    /**
+     * Access post-execution state
+     */
+    const CallStack& get_call_stack() const { return call_stack_; }
+    const DalvikHeap& get_heap() const { return heap_; }
+    // EXP-042 Phase 1: non-const accessors so ApplicationRuntime can configure
+    // ring-buffer caps before execution begins.
+    CallStack& get_call_stack() { return call_stack_; }
+    DalvikHeap& get_heap() { return heap_; }
+    std::string get_last_error() const { return last_error_; }
+    // M3 FINDING-016: exception-honesty accessors (read by the runtime
+    // engine's final status mapping — a run with in-flight uncaught app
+    // exceptions must never report plain SUCCESS).
+    size_t uncaught_in_flight_count() const { return uncaught_in_flight_count_; }
+    const std::vector<std::string>& uncaught_in_flight_log() const { return uncaught_in_flight_log_; }
+    // F-NEW-200 STUBBED-VOCABULARY LAW: unbounded per-status API census.
+    // The api_call_traces ring is capacity-capped by design (S43 memory
+    // law) — this census is the honest roll-up surface behind every
+    // SUCCESS/PARTIAL claim: the run must say how much of its executed
+    // path was stub-answered. Reset per run with the exception state.
+    uint64_t api_status_implemented_ = 0, api_status_stubbed_ = 0,
+             api_status_missing_ = 0, api_status_error_ = 0;
+    void note_api_status(const ApiCallTrace& t) {
+        switch (t.status) {
+            case ApiCallTrace::Status::IMPLEMENTED:
+                ++api_status_implemented_; break;
+            case ApiCallTrace::Status::STUBBED:
+                ++api_status_stubbed_; break;
+            case ApiCallTrace::Status::MISSING:
+                ++api_status_missing_; break;
+            case ApiCallTrace::Status::ERROR:
+                ++api_status_error_; break;
+        }
+    }
+    uint64_t api_status_implemented() const { return api_status_implemented_; }
+    uint64_t api_status_stubbed() const { return api_status_stubbed_; }
+    uint64_t api_status_missing() const { return api_status_missing_; }
+    uint64_t api_status_error() const { return api_status_error_; }
+    // M3 FINDING-016 strict mode (ART process-death law): true when an
+    // uncaught exception escaped the outermost app frame under
+    // MINIANDROID_EXC_STRICT=1; the run must be reported CRASH.
+    bool strict_uncaught_crash() const { return strict_uncaught_crash_; }
+    const std::string& strict_crash_reason() const { return strict_crash_reason_; }
+    // T61 (S145): SCRIPTED-TAP WALL REBATE. The F084 wall-clock budget is
+    // one continuous clock from interpreter start; by the time a scripted
+    // tap (--tap, the F117 pipeline) fires at frame N the session budget is
+    // mostly spent, so the tap's compose dispatch (DOWN/UP + the drain that
+    // runs onClick + the recomposition that renders the state change) dies
+    // at the deadline with VirtualMachineError — the honest run-budget
+    // boundary masquerading as a compose answer (dooz TRAIN-58/61 evidence:
+    // UP halted at Lt4;.dispatchTouchEvent pc=0x2 before anything ran).
+    // The scripted tap is the ENGINE'S OWN evidence machinery, not app
+    // work: this rebate shifts the wall deadline forward for the whole
+    // session (elapsed - rebate). Generic: no app knowledge; only the tap
+    // path calls it; no-tap runs are bit-identical.
+    void rebate_wall_ms(int64_t ms) { wall_rebate_ms_ += ms; }
+
+    // ── S224-TAPDRAIN (the dooz UP-NPE law) ─────────────────────────────
+    // EVIDENCE (s224_dooz_default, UP window): the pressed-state render's
+    // recomposition INSERTS a LayoutNode child (Lt4; children 1→2 in the
+    // same run) whose measure/layout never ran; the UP dispatch then
+    // walks the half-built tree in the app's REAL DEX
+    // (Lt4;.dispatchTouchEvent → .m): an EMPTY pointer/hit list
+    // (obj List.size()=0), then `getClass()` on a NULL receiver → NPE →
+    // catch-all at Lt4;.m pc=378 → UNCAUGHT at MainActivity.onCreate
+    // (APP BOUNDARY) → consumed=false → no PerformClick → no onClick →
+    // GameAction.NewGame never fires. The DOWN worked because the tree
+    // was complete at its dispatch.
+    // LAW (AOSP ViewRootImpl traversal order): a measure/layout pass must
+    // complete BEFORE the next input dispatch touches the tree. The tap
+    // path calls this AFTER the pressed-state render and BEFORE the UP
+    // dispatch: run the app's OWN pending measureAndLayout delegate
+    // (Lzs0;.m, contained) so recomposition-born nodes are laid out
+    // before the hit test. Contained: the drain is a runtime-injected
+    // dispatch — its failures are never APP BOUNDARY.
+    // ────────────────────────────────────────────────────────────────────
+    bool drain_pending_compose_measure() {
+        if (!dex_report_) return false;   // same gate the draw dispatch uses
+        // The Lpz0; modifier-rebuild scope (freshest, per the S155 law).
+        uint32_t scope = 0;
+        for (uint32_t oid : heap_.get_all_ids()) {
+            const auto* obj = heap_.get(oid);
+            if (obj && obj->class_descriptor == "Lpz0;") scope = oid;
+        }
+        uint32_t marked = 0;
+        // 1) owner-side measure request marks for census-recorded
+        //    insertAt nodes not yet serviced (the S221 mark law —
+        //    (T,T,F): replace+measure, lookahead FALSE).
+        if (compose_owner_last_ != 0) {
+            std::string own_cls = "Ljava/lang/Object;";
+            if (const auto* oo = heap_.get(compose_owner_last_))
+                own_cls = oo->class_descriptor;
+            for (uint32_t nid : g_d7_node_ids) {
+                if (marked >= 16) break;
+                if (g_s221_bridged.count(nid)) continue;
+                if (!heap_.has_object(nid)) continue;
+                g_s221_bridged.insert(nid);
+                ++marked;
+                DalvikValue zret = DalvikValue::make_void();
+                DalvikExecutionResult zres;
+                bool prev_contained = contained_invoke_;
+                contained_invoke_ = true;
+                try {
+                    try_recursive_invoke(
+                        "Lt4;", "z",
+                        {DalvikValue::make_object(compose_owner_last_, own_cls),
+                         DalvikValue::make_object(nid, "Lel0;"),
+                         DalvikValue::make_bool(true),
+                         DalvikValue::make_bool(true),
+                         DalvikValue::make_bool(false)},
+                        zret, zres, "(Lel0;ZZZ)V");
+                } catch (...) {
+                }
+                contained_invoke_ = prev_contained;
+            }
+        }
+        // 2) modifier-chain rebuild for inserted nodes (the S155 law,
+        //    "a node insert must schedule a modifier-chain rebuild +
+        //    measure" — the T21 census: late-inserted nodes keep P=NULL).
+        if (scope != 0) {
+            for (uint32_t nid : g_d7_node_ids) {
+                if (!heap_.has_object(nid)) continue;
+                DalvikValue nret = DalvikValue::make_void();
+                DalvikExecutionResult nres;
+                bool prev_contained = contained_invoke_;
+                contained_invoke_ = true;
+                try {
+                    try_recursive_invoke(
+                        "Lel0;", "N",
+                        {DalvikValue::make_object(nid, "Lel0;"),
+                         DalvikValue::make_object(scope, "Lpz0;")},
+                        nret, nres, "(Lpz0;)V");
+                } catch (...) {
+                }
+                contained_invoke_ = prev_contained;
+            }
+        }
+        // 3) the delegate measureAndLayout drain (the app's own pending
+        //    measure requests now include the marks above).
+        uint32_t delegate = 0;
+        for (uint32_t oid : heap_.get_all_ids()) {
+            const auto* obj = heap_.get(oid);
+            if (obj && obj->class_descriptor == "Lzs0;") {
+                delegate = oid;
+                break;
+            }
+        }
+        bool ok = false;
+        if (delegate != 0) {
+            DalvikValue mret = DalvikValue::make_void();
+            DalvikExecutionResult mres;
+            bool prev_contained = contained_invoke_;
+            contained_invoke_ = true;  // S222-A: contained nested dispatch
+            try {
+                ok = try_recursive_invoke(
+                    "Lzs0;", "m", {DalvikValue::make_object(delegate, "Lzs0;")},
+                    mret, mres, "()V");
+            } catch (...) {
+                ok = false;
+            }
+            contained_invoke_ = prev_contained;
+        }
+        std::cerr << "[S224-TAPDRAIN] marks=" << marked << " scope=o" << scope
+                  << " delegate=o" << delegate
+                  << " drain=" << (ok ? "YES" : "NO") << std::endl;
+        return ok;
+    }
+
+    int64_t wall_rebate_ms() const { return wall_rebate_ms_; }
+
+    // ────────────────────────────────────────────────────────────────────
+    // S154 AWAIT-UP GATE — scoped render-window deadline for the scripted
+    // tap path (F117 pipeline). Evidence (S152 a10 dooz + probe transistor):
+    // after the DOWN dispatch, the pressed-state render enters an app-side
+    // draw/invalidate loop (thousands of re-entrant Layout.draw calls,
+    // 256M+ interpreter instructions on the dooz compose board; 400 s wall
+    // on transistor's constraintlayout) and the UP dispatch — which sits
+    // AFTER that render in the tap cadence — never executes. AOSP law: the
+    // input pipeline delivers the gesture stream with priority over frame
+    // production; an UP is never gated behind a full recomposition. The
+    // gate arms a SECOND, scoped deadline around the tap-path render: when
+    // it fires, the render pass stops through the SAME halt channel the
+    // wall uses (frame-honesty keeps the last complete frame), the tap
+    // path logs [AWAIT-UP-GATE] and clears the budget-artifact state
+    // (T61 law: a budget artifact must never masquerade as app behavior)
+    // so the UP dispatch runs clean. Scoped: no-tap runs and every other
+    // render path are untouched (default byte-inert). Env-tunable:
+    // MINIANDROID_AWAITUP_GATE_MS (default 15000; 0 disables the gate).
+    // ────────────────────────────────────────────────────────────────────
+    void awaitup_gate_begin(int64_t ms) {
+        awaitup_deadline_hit_ = false;
+        // CONT-130b: fresh per-tap state — every tap re-arms the gate with
+        // the soft channel DISARMED (the previous window's soft stop left
+        // no artifact behind by law; begin() owns the reset too).
+        awaitup_soft_stop_ = false;
+        awaitup_soft_stop_active_ = false;
+        if (ms > 0) {
+            awaitup_deadline_ = std::chrono::steady_clock::now() +
+                                std::chrono::milliseconds(ms);
+            awaitup_deadline_active_ = true;
+        } else {
+            awaitup_deadline_active_ = false;
+        }
+    }
+    void awaitup_gate_end() { awaitup_deadline_active_ = false; }
+    bool awaitup_gate_hit() const { return awaitup_deadline_hit_; }
+    // Post-gate cleanup: the scoped halt unwound through the draw window as
+    // a deferred VirtualMachineError (the same channel as a wall halt).
+    // That error is OUR budget artifact — clear it so the UP dispatch (the
+    // whole point of the gate) is not eaten by it. Never clears app-raised
+    // exceptions: the pending slot is only reset when it still holds the
+    // gate's own error signature.
+    void awaitup_gate_abort_reset();
+    // S222-A: the S221 measure bridge services each census node once per
+    // FRAME now (the per-run once-per-node set could not win against the
+    // per-frame density flip — the auditor's #583 id 6812986803 demand:
+    // "move remeasure into the correct traversal/recomposition phase").
+    // The render pass calls this at frame entry.
+    void reset_s221_bridge_frame();
+    // Consulted by the interpreter loop next to the S60 wall check.
+    void awaitup_gate_check();
+
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-130b: AWAIT-UP-GATE SOFT DRAW-WINDOW STOP. Inside a draw window
+    // the gate unwinds GRACEFULLY at method boundaries — the fetch loop
+    // breaks on awaitup_soft_stop_, every enclosing frame exits by RETURN,
+    // NO exception is synthesized: the compose draw state survives the
+    // gate stop (the hard F084 unwind left MultiParagraphLayoutCache
+    // density=0.0 half-mutated and poisoned 4,685 later draws — the S215
+    // decode). The hard F084 channel remains as a DELAYED backstop (15 s
+    // grace) for a method body that never returns. Frame honesty is
+    // UNCHANGED: draw_window_budget_halted_ arms in BOTH channels (an
+    // unfinished frame is never presented — the F-NEW-298 law).
+    // ────────────────────────────────────────────────────────────────────
+    bool awaitup_soft_stop_ = false;        // armed: fetch loops break at the boundary
+    bool awaitup_soft_stop_active_ = false; // soft channel engaged in this window
+    std::chrono::steady_clock::time_point awaitup_hard_deadline_{};
+    // Draw-window boundary clear (dispatch_custom_view_draw exit): a
+    // soft-stopped window leaves NO artifact state; frame honesty stays
+    // armed for the presentation point (frame_honesty_begin owns that
+    // reset at the NEXT render pass).
+    void awaitup_soft_stop_clear() {
+        awaitup_soft_stop_ = false;
+        awaitup_soft_stop_active_ = false;
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // CONT-130 F-NEW-277 slice-2: VSYNC-CONTINUITY KEEP-ALIVE (row #21).
+    // AOSP law: vsync belongs to the DISPLAY — a long DEX body (class-init
+    // chains, bitmap decode, big compute) must NOT starve the frame
+    // pipeline. The interpreter epilogue calls vsync_keepalive_tick();
+    // every 256K instructions (MINIANDROID_VSYNC_TICK_INTERVAL env-tunable,
+    // floor 4096) the tick fires the ONE canonical compose pump through
+    // the hook ExecutionEngine wired on the real-dalvik app path
+    // (pump_compose_frames(8) — G06 token routing + F-NEW-289 main-looper
+    // identity stay in one place, the CONT-129 re-land scope law). Guards:
+    // reentrancy flag, env opt-out (MINIANDROID_VSYNC_KEEPALIVE=0),
+    // pending-callback + queue scope guard. BYTE-INERT while the hook is
+    // unset (one null check per instruction — the CONT-42 zero-cost law).
+    // The INTERACTIVE-SESSION CLOCK (row #22 law) rides inside the tick:
+    // when a frame callback is pending AND the handler queue head is
+    // future-due, ONE bounded deterministic advance_virtual(next_ready -
+    // now) happens before the pump — the delay(100ms) dice / delay(500ms)
+    // AI chains resume while a frame callback is pending.
+    // ────────────────────────────────────────────────────────────────────
+    void vsync_keepalive_tick(uint64_t total_insns);
+    void set_vsync_keepalive_hook(std::function<int(int)> hook) {
+        vsync_keepalive_hook_ = std::move(hook);
+    }
+    std::function<int(int)> vsync_keepalive_hook_;  // = pump_compose_frames
+    bool vsync_tick_active_ = false;       // reentrancy guard (the pump interprets)
+    uint64_t vsync_insn_acc_ = 0;          // instructions since the last fire
+    int vsync_keepalive_enabled_ = -1;     // tri-state env verdict cache
+    uint64_t vsync_tick_interval_ = 0;     // env-tunable cadence cache (256K default)
+
+    
+    // Configuration
+    struct Config {
+        bool verbose = false;
+        bool debug_output = false;
+        uint64_t max_instructions = 100000000;  // EXP-042: 100M (was 10M)
+        // S60 (R-NEW-380): wall-clock soft budget in ms (0 = disabled).
+        // When > 0 the DEX dispatch halts gracefully at the deadline (the
+        // same evidence-preserving stop as the instruction budget).
+        uint64_t max_wall_ms = 0;
+        bool stop_on_unimplemented = false;  // EXP-089: Don't halt on unimplemented opcodes
+        bool generate_trace = true;
+        bool enable_api_bridge = true;
+        // EXP-042 Phase 1: Per-instruction register snapshots are the #1 memory
+        // offender (registers_before + registers_after = 2 × 16 × 152 B ≈ 5 KB
+        // per instruction). When disabled (default), trace.registers_before/after
+        // remain empty and the diff loop is skipped. Enable explicitly only when
+        // debugging a specific opcode.
+        bool trace_register_snapshots = false;
+        // EXP-042 Phase 1: Ring-buffer caps. These bound memory regardless of
+        // how many instructions execute. Set to 0 to disable capping (NOT
+        // recommended for real APKs — will OOM).
+        // F-107b2 (S61): instruction traces are FORENSIC artifacts, not
+        // primary evidence — default OFF (0) so the per-instruction
+        // Clock::now()/ring-buffer cost never taxes normal runs. Opt in via
+        // MINIANDROID_TRACE_CAP. API-call traces stay ON (bounded, batched
+        // cap) — they are primary run evidence (api_trace.json).
+        size_t trace_cap = 0;                // 0 = no per-instruction traces
+        size_t api_call_trace_cap = 5000;    // last N API call traces
+        size_t completed_frame_cap = 100;   // last N completed stack frames
+        size_t allocation_log_cap = 1000;    // last N heap allocations
+        // EXP-042 Phase 1: Loop detection. Halts only when the same PC is
+        // visited this many times within the SAME frame. 50 000 allows
+        // legitimate loops (e.g. Theme.getColor iterating color tables) while
+        // still catching true infinite loops.
+        uint32_t loop_visit_threshold = 50000;
+    };
+
+    // EXP-039: Public access to config for ApplicationRuntime
+    Config config_;
+
+    // EXP-040: Recursion depth tracking
+    uint32_t recursion_depth_ = 0;
+    // EXP-053 measured ~80KB of C++ stack per DEX frame; under the
+    // process's 8MB stack that capped the budget at 80 frames.
+    // F-083 (S55, R-NEW-361): the run entry (main.cpp cmd_run) now
+    // executes the engine on a dedicated 1GB-virtual-stack thread, so
+    // the budget follows the ART contract — app recursion is bounded by
+    // the thread stack, not a fixed frame count. 2048 frames × 80KB =
+    // ~164MB worst-case committed stack, well inside the 1GB reservation
+    // and still bounded against true runaway recursion (25x the deepest
+    // depth any corpus app has legitimately required so far; Dooz v18
+    // Compose init was dropped at 80 = the R-NEW-361 ghost-metadata
+    // trigger).
+    static constexpr uint32_t MAX_RECURSION_DEPTH = 2048;
+
+    // M3 FIX-M3-009 (§19 ACTIVE-CYCLE LAW): keys of (class, method) pairs
+    // currently ACTIVE somewhere on the interpreter call stack. A key already
+    // present here means the new invoke is a genuine cycle (infinite
+    // recursion) and may be stubbed. Legitimate repeated calls (timer ticks
+    // re-invoking formatTime 10x/second for minutes) are NOT cycles and must
+    // never be stubbed — AOSP/ART has no per-method lifetime call cap; only
+    // stack depth is bounded. This replaces the EXP-058 process-lifetime
+    // call counter, which silently corrupted app semantics after 10 calls
+    // (evidence: chessclock v29 clock label "null" from tick 2; tictactoe
+    // CHAR-PROBE access$ throttle "null WINS" mid-game).
+    // CONT-42 THROUGHPUT LAW: count/insert/erase by key only, never ordered
+    // iteration -> unordered_set (kills the rb-tree string compares per invoke).
+    std::unordered_set<std::string> active_invoke_keys_;
+
+    // EXP-051: Public singleton accessor so the shadow registry can
+    // share the engine's singleton cache (which guarantees that
+    // getResources(), getMainLooper(), etc. all return the same heap
+    // object_id across the entire APK execution).
+    DalvikValue get_or_create_singleton_public(const std::string& class_desc) {
+        return get_or_create_singleton(class_desc);
+    }
+
+    // ── F-067 (R-NEW-291): attached-Application identity law ─────────────
+    // AOSP (ActivityThread.handleBindApplication → LoadedApk.makeApplication
+    // → Activity.attach): the Application instance is created BEFORE any
+    // activity exists and attach() binds it to every activity; Activity.
+    // getApplication() returns that instance — NEVER null for a launched
+    // activity. The runtime layer instantiates the manifest Application
+    // class (EXP093-APP path) and records the heap object id here; the
+    // bridge serves getApplication() from it so the app-side identity is
+    // preserved (lifecycle callbacks registered on the App instance
+    // dispatch to the SAME object the framework holds).
+    void set_application_object_id(uint32_t oid, const std::string& cls) {
+        application_object_id_ = oid;
+        application_class_desc_ = cls;
+    }
+    uint32_t application_object_id() const { return application_object_id_; }
+    const std::string& application_class_desc() const {
+        return application_class_desc_;
+    }
+
+
+    // EXP-068 + UNIFIED_011.3: Generic class inheritance queries.
+    // These walk the DEX superclass chain (class_to_superclass_) to determine
+    // if a class inherits from a known Android View type.
+    bool is_subclass_of(const std::string& class_desc, const std::string& ancestor_desc) const;
+    // R-NEW-530 (CONT-34): memoized wrapper — the subclass walk is a PURE
+    // function of the monotonically growing class tables (epoch = super-table
+    // size, the R-NEW-467 epoch law); dooz 300s PERF: 4.63M walks = ~28% of
+    // the core budget. The raw walk lives in is_subclass_of_impl.
+    bool is_subclass_of_impl(const std::string& class_desc, const std::string& ancestor_desc) const;
+
+    // F-105 (S59, R-NEW-379): declaration↔heap class reconciliation for
+    // object references (shared by instance-of and check-cast). See the
+    // law comment above reconcile_class_decl in dalvik_engine.cpp.
+    std::string reconcile_class_decl(const std::string& declared,
+                                     uint32_t object_id) const;
+    bool is_view_class(const std::string& class_desc) const;
+    bool is_text_view_class(const std::string& class_desc) const;
+    bool is_edit_text_class(const std::string& class_desc) const;
+    bool is_image_view_class(const std::string& class_desc) const;
+    bool is_button_class(const std::string& class_desc) const;
+    bool is_view_group_class(const std::string& class_desc) const;
+
+    // EXP-051: Public heap accessor for the shadow registry adapter.
+    DalvikHeap& get_heap_public() { return heap_; }
+
+    // ── F-NEW-590 (W10) — JNI static-field query (name-keyed) ───────────
+    // The native-exec JNI layer serves GetStatic<Prim>Field through these:
+    // the caller's jclass degraded to Ljava/lang/Object; (GetObjectClass
+    // identity law), so the field NAME is the only contract left. Law:
+    // (1) the engine's DEX static storage by name — sorted-key
+    // determinism, exact declarer preferred; (2) the REAL display
+    // configuration for the four Flutter display statics (1080x1920
+    // software target @ density 2.625, 60fps frame clock). Unknown names
+    // answer false (the JNI layer logs + answers 0 — never fabricated).
+    bool f590_static_float(const std::string& name, float* out);
+    bool f590_static_int(const std::string& name, int32_t* out);
+    bool f590_static_long(const std::string& name, int64_t* out);
+    bool f590_static_bool(const std::string& name, uint8_t* out);
+    bool f590_static_double(const std::string& name, double* out);
+    // F-NEW-590 direct-ByteBuffer materialization: snapshot a DEX
+    // ByteBuffer's lazy __bb_b<i>__ bytes into REAL malloc memory; the
+    // JNI layer registers the {addr,cap} box that GetDirectBufferAddress/
+    // Capacity then serve. false = oid is not a live DEX ByteBuffer.
+    bool f590_direct_buffer_snapshot(uint32_t oid, void** addr, size_t* cap);
+
+    // ── S188-W18 F-NEW-605 — primitive-array critical family ────────────
+    // (JNI slots 222/223: libgdx.so Matrix4.mul/inv/det/mulVec/prj/rot +
+    // Gdx2DPixmap.load/newPixmap — evidence/s188_w18/
+    // W18_GDX2DPIXMAP_CONTRACT.json). The DEX heap stores arrays as
+    // name-keyed "array[i]" fields; the JNI criticals need byte-packed
+    // contiguous memory, so the engine snapshots and commits.
+    bool f590_primitive_array(uint32_t oid, void** addr, size_t* byte_len);
+    bool f590_primitive_array_write(uint32_t oid, const void* data,
+                                    size_t byte_len);
+
+    // F-NEW-590 read-only static-storage walk (name-keyed query support).
+    template <class F>
+    void f590_for_each_static(F&& f) const {
+        for (const auto& kv : static_field_storage_) f(kv.first, kv.second);
+    }
+
+    // MASTER CAMPAIGN FIX (lifecycle-provenance law): whether onCreate/
+    // onStart/onResume actually EXECUTED as DEX bytecode in this engine.
+    // Set at method-entry time (execute_method_internal), never inferred
+    // from api_call_traces — that ring buffer is capacity-capped, so a
+    // volume-dependent eviction made the lifecycle-source validation flip
+    // between REAL_DALVIK_INTERPRETER and HOST_SHORTCUT across identical
+    // runs (fr.neamar.kiss v224: same byte-identical screenshot, status
+    // oscillated SUCCESS vs PARTIAL SUCCESS).
+    bool lifecycle_methods_from_dex() const { return lifecycle_from_dex_; }
+
+    // MASTER CAMPAIGN FIX (F8 default-onMeasure law): dex-report-backed
+    // query — does class_desc, or any app-defined ancestor below the
+    // framework content boundary, define `method`? Walks the DEX
+    // superclass map (semantic ancestry — no name heuristics). Used at
+    // View-constructor time to decide whether the AOSP DEFAULT
+    // View.onMeasure (getDefaultSize) applies to a custom leaf View.
+    bool class_chain_defines_method(const std::string& class_desc,
+                                    const std::string& method) const;
+
+    // F-NEW-712 (W12): direct DEX superclass descriptor for class_desc —
+    // "" when the class is framework-side (not in class_to_superclass_).
+    // The ancestry walks above cannot cross framework edges; callers that
+    // need the ONE-HOP parent (e.g. the render-stage root onMeasure gate)
+    // use this instead.
+    std::string direct_superclass_of(const std::string& class_desc) const {
+        auto it = class_to_superclass_.find(class_desc);
+        return it == class_to_superclass_.end() ? std::string() : it->second;
+    }
+
+    // M3 F-005 FIX-A: true when the ancestry reaches a framework family
+    // whose onMeasure CONTENT semantics the runtime implements itself
+    // (TextView/Button/ImageView/…). Such nodes take the content measure;
+    // the AOSP View.getDefaultSize fallback (aosp_default_measure) must
+    // stay FALSE for them (microtimer row buttons measured 1080x0 when
+    // the flag misfired).
+    bool runtime_content_measure_class(const std::string& class_desc) const;
+
+    // EXP-051: Attach a shadow registry. The engine does NOT own the
+    // registry — it's owned by ApplicationRuntime so the runtime can
+    // also drain the HandlerShadow queue and read IntentShadow state.
+    void set_shadow_registry(framework::ShadowRegistry* reg) {
+        shadow_registry_ = reg;
+        // F-NEW-236d: give the collection shadow an app-equality resolver.
+        // OpenJDK Set/ArrayList laws classify elements by the element's
+        // own equals(Object); the shadow cannot see DEX code, so the
+        // engine — the only component that can execute it — installs the
+        // resolver at registry-attach time (both registry owners call
+        // set_shadow_registry, so the hook is always installed).
+        install_collection_equality_law();
+    }
+    framework::ShadowRegistry* get_shadow_registry() const { return shadow_registry_; }
+
+    // F-NEW-236d: install the app-equals resolver into CollectionShadow.
+    void install_collection_equality_law();
+    // F-NEW-236d resolver body: run the app's own equals(Object) law for
+    // two heap objects (identity when no app override is reachable).
+    bool app_object_equals(uint32_t a, uint32_t b);
+
+    // VISUAL-CAMPAIGN (EXT-01 gate G25): seed the virtual device identity.
+    // AOSP law: Build.VERSION.SDK_INT / Build.VERSION.RELEASE / Build.* and
+    // Settings.Secure.ANDROID_ID are device-provided statics — an app DEX
+    // never defines them. Without a seed every sget returned 0/null, so
+    // AndroidInfo-style version gates took the WRONG branch (SDK_INT=0 < 26
+    // → legacy Build.SERIAL path) and device-identity strings rendered as
+    // "null". Seeds are insert-if-absent: a real <clinit> always wins.
+    void seed_framework_device_statics();
+
+private:
+    // VISUAL-CAMPAIGN (EXT-01 gate G25): the CYCLE-E Java format engine
+    // (previously inline in the String.format handler) — shared by
+    // String.format AND Context.getString(resId, formatArgs) per the AOSP
+    // law Resources.getString(int, Object...) == String.format(load(resId), args).
+    std::string java_format_walk(const std::string& fmt,
+                                 const std::vector<DalvikValue>& fargs);
+
+    // EXP-051: Try to dispatch a method call via the shadow registry.
+    // Returns true if a shadow handled the call (in which case `result`
+    // and `status` are populated). Returns false if no shadow claimed
+    // the call — the caller should fall back to the legacy bridge.
+    bool try_shadow_dispatch(const std::string& class_name,
+                              const std::string& method,
+                              const std::vector<DalvikValue>& args,
+                              DalvikValue& result,
+                              ApiCallTrace::Status& status);
+
+public:
+    // EXP-077: try_recursive_invoke made public for fragment lifecycle advancement
+    // EXP-038 (BLOCKER-033): Per-DEX raw data for correct method_idx resolution.
+    // Stored in DalvikExecutionEngine (NOT in DexReport) to avoid memory layout
+    // issues that cause SEGV when DexReport struct is modified.
+    // Each entry is the raw bytes of a DEX file, used to resolve method_idx
+    // using the correct per-DEX method_ids[] table.
+    std::vector<std::vector<uint8_t>> per_dex_raw_data_;
+    bool is_multidex_ = false;
+
+    // EXP-038 (BLOCKER-033): Map class descriptor → source DEX index.
+    // Built during execute_apk() by scanning dex_report.classes.
+    std::map<std::string, uint32_t> class_to_dex_index_;
+    // EXP-068: class_to_superclass_ maps class descriptor → direct superclass descriptor.
+    // Built from dex_report_->classes[i].superclass_name.
+    // Used by is_subclass_of() for semantic View inheritance resolution.
+    std::map<std::string, std::string> class_to_superclass_;
+    // CONT-12 F-NEW-266: memo for the invoke-virtual interface-default
+    // dispatch (key = method-ref class.name + descriptor; value = resolved
+    // interface + method name, or empty on negative resolution). Keeps the
+    // transitive-closure scan off the hot path after first resolution.
+    std::map<std::string, std::pair<std::string, std::string>>
+        iface_default_memo_;
+    // S122 (R-NEW-414): DEX class descriptor → (field name → inline
+    // initializer type descriptor). Built lazily by scanning each DEX class's
+    // <init> bytecode for the javac field-initializer pattern
+    // (new-instance T vN ... iput-object vN, field F). A field recorded here
+    // is NEVER NULL after a real constructor — reads that miss the heap
+    // materialize an empty T instead of a manufactured null.
+    std::map<std::string,
+             std::map<std::string, std::string>> init_field_defaults_;
+    std::set<std::string> init_defaults_scanned_;
+    // R-NEW-414b: identity-stable node-object field defaults. View nodes are
+    // not heap objects, so the answer is cached per (node id, field) — the
+    // app then reads/writes the SAME Rect across the measure/use round-trip.
+    std::map<std::pair<uint32_t, std::string>, uint32_t> node_field_defaults_;
+    // R500 ROOT-REFLECTION-FIELD-IDENTITY: framework statics the engine
+    // seeds (Build.*, Settings.Secure.*, MeasureSpec mode constants, ...)
+    // are declared public fields for the reflection surface. Keyed
+    // "Lclass;.name". Consulted by Class.getField/getDeclaredField when
+    // the app DEX has no class_def for the declaring class.
+    std::set<std::string> framework_declared_fields_;
+    // F-087 (R-NEW-313): class descriptor → runtime-visible class annotations
+    // (parsed from the DEX annotations_directory_item by the parser). Backs
+    // Class.getAnnotation / isAnnotationPresent and the annotation-proxy
+    // element dispatch (see bridge_to_api).
+    std::map<std::string,
+             std::vector<std::pair<std::string,
+                                   std::vector<std::pair<std::string, std::string>>>>>
+        class_annotations_;
+    // F-103 (S58, R-NEW-378): class descriptor → directly-declared interface
+    // descriptors. Built next to class_to_superclass_; backs the Class
+    // isInstance/isAssignableFrom assignability walk.
+    std::map<std::string, std::vector<std::string>> class_to_interfaces_;
+    // F-103: OpenJDK Class.isAssignableFrom walk over class_to_superclass_
+    // (≤16 hops) + class_to_interfaces_ + java.lang.Object / array
+    // covariance rules. `from` = probe value class, `to` = receiver class.
+    bool dalvik_class_assignable(const std::string& from_desc,
+                                 const std::string& to_desc);
+    // G11 FIX-G11-001: view object ids currently inside
+    // run_custom_view_constructor — cyclic constructor/inflate chains
+    // re-entering the same view must fail loudly instead of recursing.
+    std::set<uint32_t> ctors_in_progress_;
+
+    // EXP-045 Phase 2: O(1) class lookup index for try_recursive_invoke().
+    // Maps class descriptor → index into dex_report_->classes vector.
+    // Using index instead of raw pointer to avoid dangling pointer issues
+    // when the classes vector is reallocated.
+    std::unordered_map<std::string, size_t> class_info_index_;
+
+    // Core execution loop
+    bool execute_method_internal(
+        const std::string& class_name,
+        const std::string& method_name,
+        const std::string& descriptor,
+        const std::vector<uint16_t>& bytecode,
+        uint32_t registers_size,
+        uint32_t ins_size,
+        uint32_t outs_size,
+        const std::vector<DalvikValue>& args,
+        DalvikExecutionResult& result,
+        // EXP-052: optional tries[] data for exception-handling diagnostics.
+        // When non-null, the THROW opcode handler can scan the tries table
+        // for a matching catch handler.
+        uint16_t tries_size = 0,
+        const uint8_t* tries_data = nullptr,
+        size_t tries_data_size = 0
+    );
+
+    // EXP-038 (BLOCKER-034): Recursive DEX method invocation.
+    // Given a declaring_class and method_name, search the DEX for a matching
+    // method with bytecode. If found, recursively call execute_method_internal()
+    // and return true (with result stored in return_val).
+    // If not found (framework method), return false and let the caller bridge
+    // to the API stub layer.
+    // EXP-077: Made public so ApplicationRuntime can dispatch createView
+    // on fragments that need lifecycle advancement.
+    // F-NEW-710: declaring_class is taken BY VALUE — callers may bind it
+    // to heap_obj->class_descriptor; the re-entered interpreter and the
+    // bridge laws allocate on the heap and a heap vector realloc would
+    // dangle a bound reference (Notepad provider-init segfault, 2026-11-18).
+    bool try_recursive_invoke(
+        const std::string declaring_class,
+        const std::string& method_name,
+        const std::vector<DalvikValue>& args,
+        DalvikValue& return_val,
+        DalvikExecutionResult& result,
+        const std::string& method_descriptor = ""
+    );
+
+    // F-074 (S21): ART virtual-dispatch law for the ENGINE-LEVEL invoke
+    // entry. try_recursive_invoke resolves the method ONLY on the exact
+    // declaring class; callers (queue drains, click dispatch, frame pump)
+    // pass the RUNTIME class of the receiver. When the entry method is
+    // declared on an ancestor, ART dispatches to the most-derived concrete
+    // implementation up the hierarchy — canonical real-world case:
+    // kotlinx.coroutines DispatchedContinuation (b2/h) has NO run() of its
+    // own; the dispatch entrypoint is DispatchedTask.run (W1/N) on the
+    // superclass. Without this walk the drained runnable silently vanishes
+    // (dooz S21 gate: composition coroutine never resumed → withFrameNanos
+    // never reached → no frame → 0 non-white pixels).
+    //
+    // Walks the DEX superclass chain (class_to_superclass_) and retries
+    // try_recursive_invoke on the first ancestor that declares the method
+    // with bytecode. The ORIGINAL receiver (args[0] object identity) is
+    // preserved — inherited virtual methods execute with the runtime
+    // receiver exactly as ART does. Depth-capped; ends at Object.
+    bool try_recursive_invoke_on_super(
+        const std::string declaring_class,  // BY VALUE (F-NEW-710)
+        const std::string& method_name,
+        const std::vector<DalvikValue>& args,
+        DalvikValue& return_val,
+        DalvikExecutionResult& result,
+        const std::string& method_descriptor
+    );
+
+    // CONT-12 F-NEW-266 (oracle-found law, ART/JVMS 5.4.5 virtual
+    // resolution): an invoke-virtual whose class-hierarchy walk finds no
+    // implementation must CONTINUE the search into the receiver's
+    // transitively implemented interfaces and dispatch the first
+    // code-bearing (default) method with the exact descriptor. The
+    // invoke-interface path already implements this (F-023); invoke-virtual
+    // fell through to the API bridge and silently returned null.
+    // Real-APK face (external-Compose 1.11.4 oracle, no R8):
+    // AndroidComposeView$root$1$1.then(other) → Modifier.then default body
+    // (interface Modifier, transitive via Modifier$Element) returned null →
+    // the chained invoke-interface receiver was null → NPE ×172 →
+    // setContent dead → composition never created.
+    // Bounded: 12 superclass hops, 64-interface closure, memoized positive
+    // and negative results keyed by (method ref, proto).
+    bool try_interface_default_invoke(
+        const std::string& receiver_class,
+        const std::string& method_name,
+        const std::string& method_descriptor,
+        const std::vector<DalvikValue>& args,
+        DalvikValue& return_val,
+        DalvikExecutionResult& result,
+        std::string* dispatched_out = nullptr
+    );
+
+    // AOSP ActivityThread.performLaunchActivity fidelity: after allocating
+    // the Activity heap object, run the app's DECLARED no-arg <init>()V so
+    // instance-field initializers (e.g. `private boolean auto = true;`)
+    // execute before onCreate, exactly like newInstance() + constructor on
+    // real Android. Silently does nothing when the class declares no
+    // callable no-arg <init> (framework-only classes).
+    void run_activity_default_init(const std::string& cls,
+                                   uint32_t activity_obj_id,
+                                   DalvikExecutionResult& result);
+
+    // ── R-NEW-341 (S40): AOSP handleBindApplication law ─────────────────
+    // The runtime layer hands over the manifest android:name Application
+    // class (normalized descriptor). The engine instantiates it AFTER
+    // dex_report_ is set and secondary-DEX classes are injected (the old
+    // runtime-side instantiation ran with dex_report=NULL and silently
+    // degraded — dooz23 App.onCreate's Dagger component build), runs
+    // <init>/attachBaseContext/onCreate via REAL DEX, records the object
+    // as application_object_id_, and publishes the identity to the
+    // Activity shadow so getApplicationContext()/getApplication() serve
+    // the SAME object (Hilt: Lk2;.b getApplicationContext → instanceof
+    // Application → Lxb0;.d() → Dagger component).
+    void set_application_class_hint(const std::string& desc) {
+        application_class_hint_ = desc;
+    }
+    // Returns the bound object id (0 = nothing bound; caller falls back).
+    uint32_t bind_manifest_application(DalvikExecutionResult& result);
+
+    // ── F-058 (R-NEW-279): Application.dispatchActivity* fan-out law ────
+    // AOSP (Application.java, android-14): the activity lifecycle dispatch
+    // (ActivityThread → Activity.performCreate/performStart/performResume)
+    // fans EVERY event out to all registered
+    // Application.ActivityLifecycleCallbacks IN REGISTRATION ORDER:
+    //   onActivityPreCreated / onActivityCreated / onActivityPostCreated
+    //   onActivityPreStarted / onActivityStarted / onActivityPostStarted
+    //   onActivityPreResumed / onActivityResumed / onActivityPostResumed
+    // Observer methods are framework-interface names (never R8-renamed —
+    // verified: dooz androidx/lifecycle/v.onActivityPreCreated), so
+    // name-based dispatch is the general law. An observer that does not
+    // implement the event (default no-op in the API-29+ interface) is
+    // skipped silently — try_recursive_invoke returning false is NOT an
+    // error here, mirroring AOSP default-method no-ops.
+    // Returns the number of observers that actually executed the event.
+    // event ∈ {"onActivityPreCreated","onActivityCreated",
+    //          "onActivityPostCreated","onActivityPreStarted",
+    //          "onActivityStarted","onActivityPostStarted",
+    //          "onActivityPreResumed","onActivityResumed",
+    //          "onActivityPostResumed","onActivityPrePaused","onActivityPaused",
+    //          "onActivityPostPaused","onActivityPreStopped","onActivityStopped",
+    //          "onActivityPostStopped","onActivitySaveInstanceState",
+    //          "onActivityPreDestroyed","onActivityDestroyed",
+    //          "onActivityPostDestroyed"}
+    size_t dispatch_activity_lifecycle_callbacks(const std::string& event,
+                                                 DalvikExecutionResult& result);
+
+    bool fetch_decode_execute(DalvikExecutionResult& result);
+    uint16_t fetch_opcode(uint32_t pc) const;
+
+    // UNIFIED_011.2 SYNTH-EXC (§21/§24 campaign): runtime exception machinery.
+    //
+    // find_catch_handler_for_pc: search the current frame's try table for a
+    // handler covering `pc`. Extracted verbatim from the THROW opcode handler
+    // (EXP-052/053) so synthetic runtime exceptions share the same machinery.
+    // UNIFIED_011.3 TYPED-CATCH (§18): typed handlers are now TYPE-MATCHED
+    // against `exc_desc` (DEX superclass chain via class_to_superclass_ +
+    // built-in java.lang/java.io/java.util exception hierarchy). First
+    // matching typed handler wins; catch-all is the fallback; no match →
+    // returns false (caller unwinds/propagates).
+    bool find_catch_handler_for_pc(uint32_t pc, uint32_t& handler_addr,
+                                   bool& is_catch_all, std::string& catch_type,
+                                   const std::string& exc_desc);
+
+    // UNIFIED_011.3 TYPED-CATCH: exception-type compatibility check.
+    // Exact match, DEX superclass-chain walk, and built-in framework
+    // exception hierarchy (see exception_hierarchy_table in dalvik_engine.cpp).
+    bool is_exception_subtype(const std::string& exc_desc,
+                              const std::string& catch_desc) const;
+
+    // raise_synthetic_exception: raise a runtime exception
+    // (ArrayIndexOutOfBoundsException, NullPointerException, ...).
+    //   1. Handler covering pc_ → pending_exception_ = exc, pc_ = handler,
+    //      returns true (execution continues at the handler).
+    //   2. No handler → unwind the current frame (halted_on_return_ like a
+    //      return with null result) AND record the exception in
+    //      frame_unwind_exception_ so the invoking frame can search ITS try
+    //      table (full Dalvik propagation, UNIFIED_011.3 §18). This
+    //      eliminates the livelock that warn-and-continue produced
+    //      (dooz LM1/i;.f aget OOB loop).
+    bool raise_synthetic_exception(const std::string& exc_class_desc,
+                                   const std::string& message,
+                                   const char* origin_tag);
+
+    // MASTER RECONCILIATION (2026-09-03): deferred exception raise for use
+    // INSIDE opcode handlers and bridge_to_api callbacks. Unlike
+    // raise_synthetic_exception it never writes pc_ directly — the caller
+    // (ARITH_*_CASE macros, invoke wrappers `pc_ = pc + len`) would clobber
+    // that jump. Instead it records a post-switch redirect
+    // (exc_redirect_pending_ / exc_redirect_addr_) when a handler covers
+    // pc_, or arms the frame-unwind machinery when uncaught.
+    // Used by: div/rem by zero → ArithmeticException (K-29),
+    // parse* malformed input → NumberFormatException (K-19).
+    // Returns true if a handler covers pc_ (execution continues at the
+    // handler via the post-switch redirect), false if the frame unwinds.
+    bool throw_deferred(const std::string& exc_class_desc,
+                        const std::string& message,
+                        const char* origin_tag);
+
+    // ────────────────────────────────────────────────────────────────────
+    // F-141 (S72-W3): ART NULL-RECEIVER INVOKE LAW — receiver null test.
+    // Null = NULL_REF type, or OBJECT_REF with object_id 0 (the engine-wide
+    // null-object convention; same test as the 3rc dispatch path).
+    // Upstream law (AOSP ART interpreter, DoInvoke /
+    // ThrowNullPointerExceptionFromInterpreter): an instance invoke whose
+    // receiver is null throws NullPointerException from the CALLER frame
+    // at the invoke site, BEFORE any callee body executes. MiniAndroid
+    // previously logged the condition and dispatched anyway — silent
+    // wrongness (constitution §039/§177): the callee ran with this=NULL,
+    // corruption compounded (dooz PersistentHashMapBuilder.putAll trie
+    // walk, entry #49 this=NULL), and the crash surfaced at the WRONG
+    // site (arraycopy NPE), hiding the first divergence.
+    // ────────────────────────────────────────────────────────────────────
+    static bool f141_is_null_receiver(const DalvikValue& v) {
+        return v.type == DalvikType::NULL_REF ||
+               (v.type == DalvikType::OBJECT_REF && v.object_id == 0) ||
+               // ── F-NEW-266a CONT-16: DALVIK UNTYPED-REGISTER NULL LAW ──
+               // DEX registers are UNTYPED; `const/4 vN, 0` (the universal
+               // javac/D8 null materialization — const-string/const-class
+               // never emit 0) leaves the register as DalvikValue INT32 0
+               // in this engine. On every instance invoke form the FIRST
+               // register is the receiver and the verifier guarantees it
+               // is the callee class or null — an INT32 0 in that slot is
+               // therefore a typed null (probe face: f266 row D
+               // `OtherDefI o = null; o.other()` — the gate saw INT32 and
+               // the call fell through to a silent stub answer, no NPE).
+               (v.type == DalvikType::INT32 && v.int_val == 0);
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // F-NEW-270 (CONT-18h): ROOT-059 ROUTE DOMAIN LAW — framework classes
+    // only. The S113 ROOT-059 null-receiver routing (invoke on a null
+    // receiver of a shadow-claimed class → the shadow's materialization
+    // law instead of the ART NPE) was built for PLATFORM classes (the
+    // androidx WindowInsets chain: Builder→Impl30→consume*). But
+    // ViewShadow's EXP-060 claim heuristic accepts ANY class that is not
+    // framework-prefixed ("user-defined class … could be a View subclass;
+    // let dispatch() decide by method name") — so claims_class() answers
+    // true for every R8-obfuscated Compose-internal class (dooz Lhv0; = a
+    // LongSet, Lvx1;, Lnb0; = CompositionImpl …). Routing THEIR null
+    // receivers past the ART NPE law re-created the exact wrong-site
+    // exception disease F-141 was built to kill: the callee's real DEX
+    // body executed with this=null (live face at be95a47f797d3d99: dooz
+    // Lhv0;.h self-calls Lhv0;.d → iget NPE at pc=17 INSIDE the callee
+    // instead of the ART NPE at the invoke site; the multi-NPE cascade
+    // killed CompositionImpl.composeContent → Lzs.m measure unwind →
+    // blank frame), and the paired silent-swallow face dropped a
+    // null-receiver h() put on the floor with no exception at all.
+    // Law (AOSP-faithful): ART never routes — the interpreter throws NPE
+    // at the invoke site for EVERY null receiver. Shadow materialization
+    // for null platform receivers is a MiniAndroid runtime law that only
+    // makes sense where the runtime IS the platform: framework packages
+    // only. The prefix set mirrors the ViewShadow heuristic's own
+    // framework allowlist plus the kotlinx/xmlpull/json runtime families
+    // the engine serves. Non-framework (user/obfuscated) classes keep
+    // the ART-faithful throw at every invoke format.
+    // ────────────────────────────────────────────────────────────────────
+    static bool f141_is_framework_class(const std::string& cls) {
+        return cls.rfind("Landroid/", 0) == 0 ||
+               cls.rfind("Landroidx/", 0) == 0 ||
+               cls.rfind("Ljava/", 0) == 0 ||
+               cls.rfind("Ljavax/", 0) == 0 ||
+               cls.rfind("Lkotlin/", 0) == 0 ||
+               cls.rfind("Lkotlinx/", 0) == 0 ||
+               cls.rfind("Lcom/google/", 0) == 0 ||
+               cls.rfind("Lorg/xmlpull/", 0) == 0 ||
+               cls.rfind("Lorg/json/", 0) == 0;
+    }
+
+    // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-35): REAL XmlPullParser
+    // pull-parse state — event machine advances on next().
+    // NOTE: struct must precede the member-function declarations below.
+    struct XmlPullState {
+        std::string content;   // full XML text
+        size_t pos = 0;        // parse cursor
+        int event = 0;         // current event (XmlPullParser constants)
+        std::string cur_name;  // current tag name (START_TAG/END_TAG)
+        std::string cur_text;  // current text (TEXT)
+        std::vector<std::pair<std::string, std::string>> attrs;  // (name, value)
+        bool ended = false;    // saw END_DOCUMENT
+        bool pending_end = false;          // self-closing tag → END_TAG queued
+        std::string pending_end_name;
+        // ── F-CSW-3 (S226; #376) Xml.asAttributeSet — the parser IS the
+        // AttributeSet ─────────────────────────────────────────────────────
+        // Typed attribute records per START_TAG, in document order, built
+        // ONCE at the 371 getXml hop from the binary AXML decode (the text
+        // serialization loses the TypedValue types — these records keep
+        // them). xml_pull_advance installs the current tag's record set
+        // into the AttributeSetStore under owner_obj at every START_TAG,
+        // so Context.obtainStyledAttributes(parser-as-AttributeSet)
+        // resolves the XML stage of the AOSP precedence law exactly as the
+        // view-ctor path does. Text setInput() parsers carry an empty
+        // sequence → no install → producer behavior unchanged.
+        uint32_t owner_obj = 0;
+        std::vector<std::vector<resources::XmlAttrRecord>> tag_attrs_seq;
+        size_t tag_attrs_pos = 0;
+    };
+
+    // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): resolve an open
+    // asset stream chain (InputStream / InputStreamReader / BufferedReader
+    // wrappers) to its asset path + live position pointer.
+    bool resolve_asset_stream(uint32_t start_id, std::string& path, size_t*& pos);
+    // Pass-3 (K-34): full asset bytes, extracted once per path and cached.
+    const std::string& cached_asset_bytes(const std::string& path);
+    // ASSETS-WITHOUT-ARSC LAW: AOSP AssetManager resolves asset paths from
+    // the APK ZIP independently of resources.arsc. ensure_loaded() fails
+    // for arsc-less APKs; asset lookups must not inherit that failure.
+    // These helpers answer entry-name listing / raw bytes with a direct-APK
+    // fallback (generic, no package conditionals). Names carry their full
+    // ZIP path (e.g. "assets/foo.bin").
+    std::vector<std::string> asset_entry_names(const std::string& prefix);
+    std::vector<uint8_t> asset_entry_bytes(const std::string& entry);
+    // Pass-3 (K-35): advance an XmlPullParser state by one event — REAL event
+    // progression (START_DOCUMENT → tags/text → END_DOCUMENT) with termination.
+    void xml_pull_advance(XmlPullState& st);
+    // 371-CLOSEOUT: PackageManager.getXml(resid) /
+    // ProviderInfo.loadXmlMetaData law — resolve a resource id to the
+    // compiled XML resource entry, decode AXML → text, and register a REAL
+    // K-35 XmlPullParser over it. False when the id resolves to nothing
+    // (the call site then answers the AOSP failure shape: NotFoundException
+    // for getXml, null for loadXmlMetaData).
+    bool xml_parser_for_resid(uint32_t resid, DalvikValue& result);
+
+    // UNIFIED_011.3 EXC-PROPAGATE: exception in flight while unwinding.
+    // Set by raise_synthetic_exception / THROW-no-handler in the frame that
+    // could not catch it. Consumed by try_recursive_invoke at the caller's
+    // invoke site: caller's try table is searched; if a handler covers the
+    // invoke pc, the caller jumps to it with pending_exception_ set
+    // (move-exception works); otherwise the exception continues up.
+    bool frame_unwind_exception_valid_ = false;
+    DalvikValue frame_unwind_exception_ = DalvikValue::make_null();
+    // Post-switch pc redirect: the invoke handlers do `pc_ = pc_ + len`
+    // AFTER try_recursive_invoke returns, which would clobber a
+    // handler-jump made during caller-side catch search. When this flag is
+    // set, fetch_decode_execute re-applies exc_redirect_addr_ right after
+    // the switch — the last word on pc_ belongs to the redirect.
+    bool exc_redirect_pending_ = false;
+    uint32_t exc_redirect_addr_ = 0;
+    // Exception object in flight for the deferred redirect (move-exception
+    // reads it after the handler jump).
+    DalvikValue deferred_exception_ = DalvikValue::make_null();
+    void clear_frame_unwind_exception() { frame_unwind_exception_valid_ = false;
+                                          frame_unwind_exception_ = DalvikValue::make_null(); }
+
+    
+    // Opcode implementations — Constants
+    bool execute_const_4(uint32_t pc, InstructionTrace& trace);
+    bool execute_const_16(uint32_t pc, InstructionTrace& trace);
+    bool execute_const(uint32_t pc, InstructionTrace& trace);
+    bool execute_const_string(uint32_t pc, InstructionTrace& trace);
+    bool execute_const_class(uint32_t pc, InstructionTrace& trace);
+    
+    // Opcode implementations — Moves
+    bool execute_move(uint32_t pc, InstructionTrace& trace);
+    bool execute_move_object(uint32_t pc, InstructionTrace& trace);
+    // EXP-038 (BLOCKER-026): move-object/from16 (0x08, format 22x)
+    // Required by Telegram's LaunchActivity.onCreate() at PC=1.
+    bool execute_move_object_from16(uint32_t pc, InstructionTrace& trace);
+    bool execute_move_object_16(uint32_t pc, InstructionTrace& trace);
+    bool execute_move_result(uint32_t pc, InstructionTrace& trace);
+    bool execute_move_result_object(uint32_t pc, InstructionTrace& trace);
+    
+    // Opcode implementations — Objects
+    bool execute_new_instance(uint32_t pc, InstructionTrace& trace);
+    bool execute_check_cast(uint32_t pc, InstructionTrace& trace);
+    bool execute_instance_of(uint32_t pc, InstructionTrace& trace);
+    
+    // EXP-035: Field System Integration - Instance Field Operations
+    bool execute_iget(uint32_t pc, InstructionTrace& trace);
+    bool execute_iget_object(uint32_t pc, InstructionTrace& trace);
+    bool execute_iput(uint32_t pc, InstructionTrace& trace);
+    bool execute_iput_object(uint32_t pc, InstructionTrace& trace);
+    
+    // EXP-035: Field System Integration - Static Field Operations  
+    bool execute_sget(uint32_t pc, InstructionTrace& trace);
+    bool execute_sget_object(uint32_t pc, InstructionTrace& trace);
+    bool execute_sput(uint32_t pc, InstructionTrace& trace);
+    bool execute_sput_object(uint32_t pc, InstructionTrace& trace);
+    
+    // EXP-035: Field resolution helper (connects to runtime_metadata.h)
+    struct FieldResolution {
+        std::string class_descriptor;
+        std::string field_name;
+        std::string field_type;
+        uint32_t field_offset = 0;
+        bool is_static = false;
+        bool resolved = false;
+        std::string error_message;
+    };
+    FieldResolution resolve_field(uint16_t field_idx);
+    // ── CONT-29 W1 R-NEW-467: FIELD-RESOLUTION MEMOIZATION ──────────────
+    // Field identity (class/name/type) and the S134 declarer/key pair are
+    // RUN-INVARIANT per (dex, field_idx): they derive only from the parsed
+    // DEX + the class-hierarchy tables. The interpreter re-derived them on
+    // EVERY field access (a 60s dooz run: 2.29M iget-object = the #1 burn
+    // opcode at ~1.9us each — raw DEX re-parse + hierarchy chain walk +
+    // string concat per access). Memoize; epoch-guarded on the inputs that
+    // can legally grow mid-run (current_dex_index_, class_to_superclass_,
+    // class_info_index_ — secondary-DEX ingestion). Semantics identical:
+    // a hit returns the SAME value the fresh walk answers.
+    struct FieldMemo {
+        FieldResolution res;
+        std::string s134_decl;
+        std::string s134_fkey;
+        bool s134_valid = false;
+        uint64_t epoch = 0;
+    };
+    const FieldMemo& resolved_field_memo(uint16_t field_idx);
+    uint64_t field_memo_epoch() const;
+    std::vector<FieldMemo> field_memo_;   // lazy, indexed by field_idx
+    // S134 F-NEW-160: a declaring class is FRAMEWORK-OWNED (bare field keys,
+    // C++ shadow interop) iff the runtime provides it — i.e. it has NO DEX
+    // body in this APK. App-bundled classes that merely live under android*/
+    // java*/kotlin* packages (support library, androidx) ARE DEX-defined and
+    // must use qualified field identity (class->name) — their field names
+    // collide across the hierarchy (solitaire 71: e.m vs classes.c.m).
+    // S134 F-NEW-162: public read-only DEX superclass lookup (renderer
+    // family routing — a custom view's semantic base is its superclass
+    // chain, not its own class name).
+    std::string superclass_of(const std::string& cls) const {
+        auto it = class_to_superclass_.find(cls);
+        return (it != class_to_superclass_.end()) ? it->second : std::string();
+    }
+    bool is_dex_defined_class(const std::string& desc) const {
+        return class_info_index_.find(desc) != class_info_index_.end();
+    }
+    // S134 F-NEW-160: ART field resolution law — a field ref (C, name)
+    // resolves to the ACTUAL declaring class: walk C's superclass chain
+    // until a DEX class that DECLARES the field. The ref's class_idx is
+    // only the starting point (javac/R8 emit the register's static type,
+    // which may be a subclass of the declarer: simplestopwatch wrote
+    // ShowTime.options and read StopWatch.options — ONE logical field,
+    // two ref classes). Returns ref_cls when no DEX declarer exists.
+    std::string resolved_field_declarer(const std::string& ref_cls,
+                                        const std::string& name) const;
+    // F-NEW-325 (CONT-53): the TRUE DEX declarer — "" when the field is
+    // declared by a FRAMEWORK ancestor (framework-owned, ONE bare slot),
+    // the real DEX declarer class otherwise. resolved_field_declarer
+    // cannot distinguish "the ref class declares it" from "no DEX body on
+    // the chain declares it" (it returns ref_cls for both); the iget/iput
+    // families must key framework-owned fields BARE even when the REF
+    // class is DEX-defined (solitaire: DrawerLayout$g -> width).
+    std::string true_dex_field_declarer(const std::string& ref_cls,
+                                        const std::string& name) const;
+    // F-NEW-657 (#588 Games-g2): the STATIC-field declarer walker — the
+    // sput half of R-NEW-561. Walks the superclass chain over the DEX
+    // static_fields bodies and returns the DECLARING class, or "" when no
+    // DEX class on the chain declares the static (engine-synthetic
+    // statics keep the ref-class key, preserving every existing face).
+    std::string static_field_declarer_of(const std::string& ref_cls,
+                                         const std::string& name) const;
+    // S122 (R-NEW-414): lazily scan a DEX class's <init> methods for the
+    // javac inline field-initializer pattern (new-instance T vN; … ;
+    // iput-object vN → F) and record field F → T in init_field_defaults_.
+    // Bounded linear scan; skips DEX pseudo-data payloads to stay aligned.
+    void scan_init_field_defaults(const std::string& cls);
+    // S122 (R-NEW-414): materialize an empty instance of `type_desc` for a
+    // field-initializer default (Rect/Point/PointF/TypedValue get their
+    // coordinate/int fields zeroed; other DEX classes get an empty shell).
+    // Returns a null value when the type is not materializable.
+    DalvikValue materialize_init_default(const std::string& type_desc);
+    // F-NEW-274 (CONT-22): ART constructor-contract gate for R-NEW-414
+    // initializer materialization. A zero-object may stand in for a real
+    // instance ONLY when the class exposes a ()V constructor — i.e. a legal
+    // construction path exists that yields the zero-state. Classes whose
+    // every <init> takes arguments (R8 merged-lambda classes, capture
+    // holders) write their identity/capture fields ONLY inside those ctors;
+    // fabricating them produces objects that cannot exist on ART and turns
+    // the app's own null-guards into deeper NPEs. Not-DEX-defined classes
+    // (framework types like Rect) keep the old behavior (return true —
+    // materialize_init_default seeds their zero-state itself).
+    bool class_has_no_arg_ctor(const std::string& type_desc);
+    
+    // Opcode implementations — Invokes
+    bool execute_invoke_virtual(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    bool execute_invoke_direct(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    bool execute_invoke_static(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    bool execute_invoke_interface(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    // EXP-037 Phase B (BLOCKER-012): invoke-super — needed for super.onCreate()
+    // calls. Real Android apps almost always call super.onCreate(bundle) as the
+    // first instruction in their onCreate; without this handler, NO real app
+    // can execute past its entry method's first instruction.
+    bool execute_invoke_super(uint32_t pc, InstructionTrace& trace, DalvikExecutionResult& result);
+    
+    // Opcode implementations — Returns
+    bool execute_return_void(uint32_t pc, InstructionTrace& trace);
+    bool execute_return(uint32_t pc, InstructionTrace& trace);
+    bool execute_return_object(uint32_t pc, InstructionTrace& trace);
+    // EXP-088+ F5: return-wide (opcode 0x10) — returns a long/double value.
+    // Reads the wide register pair (vAA, vAA+1) and stores the combined
+    // 64-bit value in last_invoke_return_.long_val (INT64) or
+    // last_invoke_return_.double_val (FLOAT64).
+    bool execute_return_wide(uint32_t pc, InstructionTrace& trace);
+    
+    // Opcode implementations — Control flow
+    bool execute_goto(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_eqz(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_nez(uint32_t pc, InstructionTrace& trace);
+    // EXP-043 Phase 1: Proper 21t format if-*z handlers (previously all
+    // dispatched to execute_if_eqz with wrong comparison semantics).
+    bool execute_if_ltz(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_gez(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_gtz(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_lez(uint32_t pc, InstructionTrace& trace);
+    // EXP-037 Phase B (BLOCKER-018): 22t format if-* opcodes
+    // (if-lt, if-ge, if-gt, if-le) — required for numeric comparisons.
+    // Existing if-eq/if-ne are in a different file path (or unused).
+    bool execute_if_lt(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_ge(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_gt(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_le(uint32_t pc, InstructionTrace& trace);
+    // Also add if-eq/if-ne for completeness (22t format)
+    bool execute_if_eq(uint32_t pc, InstructionTrace& trace);
+    bool execute_if_ne(uint32_t pc, InstructionTrace& trace);
+    
+    // Unimplemented handler
+    void handle_unimplemented(uint16_t opcode, uint32_t pc, InstructionTrace& trace);
+    
+    // Register access helpers
+    void set_register(uint16_t reg, const DalvikValue& value);
+    // F-028b (M4 §A1) WIDE-PAIR SLOT LAW: ART stores a wide (J/D) value in
+    // TWO consecutive registers — vReg holds the value, vReg+1 holds the
+    // high 32-bit word of its bit pattern. The tagged-union register file
+    // keeps the full value in vReg; the shadow slot must still be filled
+    // so raw register-window reads (range-invoke passthrough, unresolvable
+    // protos) observe ART's slot layout instead of stale/garbage words.
+    void set_wide_pair(uint16_t reg, const DalvikValue& value);
+    DalvikValue get_register(uint16_t reg) const;
+    std::string register_name(uint8_t reg) const;
+
+    // S56 frontier diagnostic (env-gated, read-only, M3-law safe): dump the
+    // current frame's registers + receiver heap fields (+ array elements) at
+    // failure sites (HALT-LOOP spin, aput/aget oob). Gated by
+    // MINIANDROID_LOOP_LOCALS_DIAG; thread-local budget so logs stay bounded.
+    void dump_frame_locals_diag(const char* tag);
+
+    // ── CONT-4 PHASE 1 diagnostic (env-gated, read-only, M3-law safe) ────
+    // fairymahjong Lm2;.b solver ISE classification: "Even face counts
+    // always permit a completion" (guard pc=0x57f if-lez v2 → 0x5bb).
+    // The dump answers ONE question — app bug or runtime root — by
+    // observing, at solver entry and at the fatal guard visit:
+    //   1. the face ArrayList's shadow store (kind-faithful full contents)
+    //      → independent per-face parity count (the game's own invariant);
+    //   2. every register-held [I/[Z array's full element state (kind-
+    //      faithful) → which faces remain unpaired at the stuck pass;
+    //   3. the guard operand v2 and the scan bounds v7/v9.
+    // Read-only: pure get_register + heap/shadow reads; never mutates
+    // state. Bounded: dumps at a fixed pc set only; per-pc visit budgets.
+    void dump_cont4_solver_diag(uint32_t at_pc);
+    
+    // API bridge
+    // UC-CM-001 (F012): method_idx_hint lets the catch-all STUBBED path
+    // resolve the callee proto and return a TYPE-AWARE default (0 / false /
+    // null / 0.0f / 0L) instead of always returning VOID. When the hint is
+    // absent (legacy callers) behavior is unchanged (void + STUBBED).
+    bool bridge_to_api(const std::string& class_name, const std::string& method,
+                       const std::vector<DalvikValue>& args, DalvikValue& result,
+                       ApiCallTrace::Status& status,
+                       uint32_t method_idx_hint = 0xFFFFFFFFu);
+    // ── S71 ROOT LAW #1: ancestry dispatch ────────────────────────────────
+    // 39+ framework guards match with class_name.find("Context")/find(
+    // "Activity") — a receiver whose RUNTIME class is an app subclass (or
+    // Application/MultiDexApplication) misses every guard and falls to the
+    // type-default stub. AOSP law: app classes ARE framework classes
+    // (Application/Service extend Context; Activity extends
+    // ContextThemeWrapper extends Context). This helper walks the DEX
+    // superclass chain (class_to_superclass_) plus the built-in platform
+    // hierarchy (framework supers are not in the APK DEX) and returns the
+    // nearest ancestor name the substring guards can see, or "" if none.
+    std::string framework_ancestor_for_dispatch(const std::string& cls);
+    // F-150 (S72-W4): hierarchy-aware Thread receiver law. javac compiles
+    // unqualified Thread member calls inside subclasses against the
+    // SUBCLASS descriptor (invoke-static GameMainThread;->sleep(J)V —
+    // ground truth: the snake APK method_ids table @ b4968c39), so the
+    // Thread laws (sleep advance+yield, start/run self-run drain) must
+    // match the RESOLVED superclass chain, not the literal receiver class.
+    bool is_thread_receiver(const std::string& cls);
+    // R-NEW-345 park-drain law: LockSupport.park* = the deterministic-yield
+    // point. Bounded drain of the cross-queue runnable work (main MessageQueue
+    // runnables, Choreographer due frame callbacks, pending Thread starts) so
+    // a parked coroutine observes work completed by "other threads" — the
+    // serialized-engine counterpart of a real park/unpark handshake.
+    uint64_t drain_park_queues_bounded(const char* reason);
+    void run_thread_start_body(uint32_t thread_oid, uint32_t target_oid);
+    // EXP-042 Phase 4: Singleton cache helper for Android framework objects.
+    DalvikValue get_or_create_singleton(const std::string& class_desc);
+    // S186h F-NEW-188c (W14 re-apply): make the androidx FragmentManager
+    // singleton REAL for R8-obfuscated androidx — resolve the real class,
+    // alias identity, run <init>()V once. Declared here because S186i
+    // removed the S186h call sites+decl; the W15 re-apply restores both.
+    void realinit_fragment_manager_singleton(uint32_t fm_oid);
+
+    // F-NEW-249 (CONT-6): STABLE CLASS-TOKEN IDENTITY LAW for
+    // Object.getClass. ART returns the SAME java.lang.Class instance for a
+    // given runtime class every time; the engine models Class values as
+    // CLASS_REF whose ref_id is the STABLE per-descriptor token id
+    // (class_token_ids_ — the F-069 const-class map). The old getClass
+    // stamped ref_id = instruction_sequence_, so every getClass produced a
+    // DIFFERENT token for the same class — identity-sensitive consumers
+    // (the androidx NavigatorProvider annotation-name cache keyed by Class,
+    // HashSet<Class>, Class == comparisons) missed every lookup.
+    // Evidence: sudokusolver NavigatorProvider.addNavigator derived the
+    // navigator name via nameForNavigator(cls.getClass()); the per-call
+    // token churn defeated the Lwq1;->b static cache and every
+    // annotation-cache lookup missed → all navigators registered under one
+    // name → getNavigator("composable") ISE → Compose NavHost died →
+    // APP_DRAW_OPS=0.
+    DalvikValue make_stable_class_token(const std::string& type_desc);
+    // S88 F-NEW-179: keyed-by-path directory File law — getFilesDir/
+    // getCacheDir/getExternalFilesDir/getExternalCacheDir answer STABLE,
+    // DISTINCT, PATHED java.io.File objects (AOSP ContextImpl contract;
+    // the class-keyed singleton collapsed all four into one pathless File,
+    // so File.getParentFile/getParent computed no parent and answered null
+    // — microtimer's single-instance guard died on getParentFile null).
+    DalvikValue get_or_create_dir_file(const std::string& path);
+    
+    // Utility
+    void log(const std::string& msg);
+    std::string to_hex(uint32_t val) const;
+    std::string to_hex16(uint16_t val) const;
+    int32_t read_signed_literal(uint16_t val) const;
+    std::string get_timestamp() const;
+    
+    // State
+    std::vector<uint16_t> bytecode_;
+    const dex::DexReport* dex_report_ = nullptr;
+    DexRegisterFile* current_registers_ = nullptr;
+    CallStack call_stack_;
+    DalvikHeap heap_;
+    
+    // EXP-035: Field System State
+    // NOTE: DalvikValue is in miniandroid::dalvik (this namespace), not miniandroid::runtime.
+    // EXP-037 PHASE A Week 3 (BLOCKER-001 FIX): corrected namespace reference; the
+    // previous commit (3392b03 EXP-035) referenced runtime::DalvikValue which does
+    // not exist, breaking the entire build since EXP-035.
+    std::unordered_map<std::string, DalvikValue> static_field_storage_;  // key: "class_descriptor.field_name" (F-NEW-381 phase 2: unordered; the frozen first-match consumer sorts keys)
+    std::map<std::string, std::shared_ptr<runtime::RuntimeClassInfo>> class_info_cache_;  // cached class metadata
+
+    // ────────────────────────────────────────────────────────────────────
+    // R-NEW-337: atomicfu-via-Unsafe reflective field-offset registry.
+    //   kotlinx.coroutines (R8/atomicfu-transformed, present in EVERY
+    //   Compose APK) runs its whole volatile-state machinery through
+    //   sun.misc.Unsafe reflection:
+    //     offsets:  theUnsafe.objectFieldOffset(C.getDeclaredField(name))
+    //     reads:    getObjectVolatile(obj, offset)
+    //     writes:   putObjectVolatile / putOrderedObject
+    //     CAS:      compareAndSwapObject/Int/Long(obj, offset, e, u)
+    //   With no shadow, every call was REC-MISS → offsets 0, reads null —
+    //   JobSupport misread its own Active state as "already complete or
+    //   completing" → ISE killed the FIRST Compose composition (dooz v23
+    //   empty-grey-screen root).
+    //   The registry maps (declaring-class, field-name) ↔ positive offset.
+    // ────────────────────────────────────────────────────────────────────
+    std::map<std::pair<std::string, std::string>, int64_t> unsafe_field_offsets_;
+    std::map<int64_t, std::pair<std::string, std::string>> unsafe_offset_to_field_;
+    int64_t unsafe_next_offset_ = 16;   // real Unsafe offsets are 8-aligned, non-zero
+    uint32_t unsafe_singleton_id_ = 0;  // heap id of the "theUnsafe" singleton
+    // S102 LAW 2: process-wide ClassLoader object (OpenJDK Class.getClassLoader
+    // never returns null for APK classes; single-APK subset = one loader).
+    uint32_t classloader_singleton_id_ = 0;
+
+    // R-NEW-133 (CONT-137): dalvik.system.InMemoryDexClassLoader law.
+    // AOSP: InMemoryDexClassLoader(ByteBuffer/ByteBuffer[], ClassLoader)
+    // loads classes from a DEX image held in memory (child-first, then
+    // parent). Engine subset: <init> scans the buffer bytes (dex header ->
+    // string_ids/type_ids/class_defs) and records the class descriptors
+    // per loader object; loadClass(name) resolves buffer-dex classes FIRST,
+    // then falls through to the primary dex table (single-APK parent-chain
+    // subset). Side table: heap object id -> in-memory dex class set.
+    std::map<uint32_t, std::set<std::string>> inmemory_dex_class_tables_;
+
+    // R-NEW-018/019 (CONT-138): android.os.Parcel marshalling law.
+    // AOSP Parcel is an ordered typed record stream: writeX appends a
+    // tagged record and advances the write position; readX consumes from
+    // the independent read position (setDataPosition moves it). The engine
+    // subset records values in a side table keyed by the parcel object id
+    // (read position lives in the heap field __parcel_rpos__). Binder wire
+    // format (marshall() byte layout) is NOT reproduced — recorded honestly.
+    std::map<uint32_t, std::vector<DalvikValue>> parcel_records_;
+
+    // F-NEW-474 (CONT-144): java.io.RandomAccessFile over real files.
+    // MultiDex.install -> ZipUtil.findCentralDirectory reads the running
+    // APK through RandomAccessFile (length() + backward EOCD seek/read);
+    // with no law, length() answered 0 -> "File too short to be a zip
+    // file" ZipException -> APP BOUNDARY unwind (bouncy deep-frames). The
+    // law serves REAL bytes: the path is resolved to an on-disk file (the
+    // running APK included), length/seek/read answer from the real
+    // content. Side table: heap object id -> slurped bytes.
+    // R-NEW-549 (CONT-40): the SLURP IS BANNED — each RandomAccessFile
+    // kept the WHOLE file resident (telegram: 36 RAFs over the 120MB APK
+    // = 4.3GB live, the +2.9GB envelope's real face). The law is now a
+    // HANDLE: the resolved path + the file size; reads stream from the
+    // file per call. Same OpenJDK semantics (read -1 at EOF).
+    std::map<uint32_t, std::string> raf_paths_;
+    std::map<uint32_t, uint64_t> raf_sizes_;
+
+    // EXP-042 Phase 4: Singleton cache for Android framework objects.
+    // Key: class descriptor (e.g. "Landroid/content/res/Resources;").
+    // Value: heap object ID. Returns the same heap object across all calls,
+    // matching real Android behavior where getResources() always returns the
+    // same Resources instance for a given Context.
+    std::map<std::string, uint32_t> api_singletons_;
+    // R-005 DECOR-LINKAGE (S105): per-activity window decor oid. AOSP law:
+    // ONE DecorView per Window per Activity (PhoneWindow.mDecor created
+    // once and stable for the window lifetime). The global singleton key
+    // ("Landroid/view/View;") leaked one activity's decor object into the
+    // next (ballbreak ground truth: two live decor oids 70/203 in one
+    // run) — a getDecorView captured by an earlier activity could not see
+    // the later activity's F-023 links. Keyed by the ActivityShadow
+    // current-activity view id.
+    std::map<uint32_t, uint32_t> window_decor_for_activity_;
+    // F-NEW-290: Window receiver oid → its WindowManager$LayoutParams
+    // object (AOSP PhoneWindow: mWindowAttributes exists from construction;
+    // getAttributes() NEVER answers null). One LayoutParams per Window.
+    std::map<uint32_t, uint32_t> window_layout_params_;
+    // S88 F-NEW-179: path → File object id (distinct dir File per path).
+    std::map<std::string, uint32_t> dir_files_;
+    // S88 F-NEW-181: code point → boxed Character id (valueOf cache 0..127).
+    std::map<uint32_t, uint32_t> char_box_cache_;
+    // S120 R-NEW-408: boxed Integer value → heap id (OpenJDK IntegerCache
+    // law: valueOf(-128..127) returns the SAME object per value). Identity-
+    // keyed maps (HashMap<Integer,V>) put and get under valueOf — fresh
+    // boxes each call made every lookup miss → get → null → unboxing NPE.
+    std::map<int32_t, uint32_t> int_box_cache_;
+    // F-067: the attached Application instance (heap object id + class)
+    // recorded by the runtime layer before any activity runs.
+    uint32_t application_object_id_ = 0;
+    std::string application_class_desc_;
+    // R-NEW-341: manifest android:name Application class (normalized
+    // descriptor), handed over by the runtime before execute_apk_with_activity.
+    std::string application_class_hint_;
+    // F-069 (R-NEW-293): const-class STABLE IDENTITY tokens. ART: every
+    // evaluation of `X.class` for the same X yields the SAME java.lang
+    // Class object (identity is observable via ==, equals, and == on the
+    // Class* inside the VM). The engine models Class values as CLASS_REF
+    // (class_desc = referred descriptor); the token makes two const-class
+    // evaluations of the same descriptor reference-equal.
+    std::map<std::string, uint32_t> class_token_ids_;
+    uint32_t class_token_counter_ = 0;
+
+    // CONT-44 T24 (F-NEW-567): most recent compose LayoutNode owner value
+    // observed on an iput-object to Lel0;.r. The AOSP insertAt law
+    // propagates the owner to every inserted node; the second-wave insert
+    // path skips the h-writer, leaving late nodes ownerless and starving
+    // the V->z->delegate.requestMeasure scheduling chain. The V-entry
+    // repair completes the propagation with this recorded value.
+    uint32_t compose_owner_last_ = 0;
+    
+    // EXP-035: VTable Dispatch State
+    runtime::VirtualDispatcher vtable_dispatcher_;  // VTable-based method resolution
+    
+    uint32_t pc_ = 0;
+    uint64_t instruction_sequence_ = 0;
+    uint64_t api_call_sequence_ = 0;
+    uint64_t object_sequence_ = 0;
+    
+    // EXP-035: Current execution context (for VTable evidence)
+    std::string current_class_ = "<unknown>";
+    std::string current_method_ = "<unknown>";
+    // CHAR-PROBE campaign: full descriptor of the method currently executed
+    // by execute_method_internal. execute_return uses the return-type char
+    // to type the returned value signature-aware ('Z'→BOOLEAN, 'C'→CHAR,
+    // 'B'→BYTE, 'S'→SHORT) instead of leaking raw INT32 registers.
+    std::string current_method_descriptor_;
+    // EXP-071 Phase 8: Tracks whether the current invoke is static.
+    // Set to true by execute_invoke_static, false by execute_invoke_virtual/direct.
+    // try_shadow_dispatch uses this to decide whether args[0] is `this` (instance)
+    // or the first parameter (static). Without this flag, static calls like
+    // AndroidUtilities.runOnUIThread(Runnable, long) would have their Runnable
+    // stolen as `this` and never reach HandlerShadow's enqueue.
+    bool current_invoke_is_static_ = false;
+    // EXP-038 (BLOCKER-033): Current DEX index for per-DEX method resolution.
+    uint32_t current_dex_index_ = 0;
+
+    // EXP-038 (BLOCKER-033): Per-DEX method name resolution using raw DEX bytes.
+    // CONT-96 W3-B: cache-backed — each (dex, method_idx) resolves its
+    // name/class/proto ONCE (MUTF-8 decode + string materialization per
+    // call used to dominate the invoke wall; 1.33M invokes on the Telegram
+    // 30s gate). The DEX tables are immutable after set_per_dex_raw_data_,
+    // so the memo cannot go stale. Out-of-range indexes keep the exact
+    // uncached behavior.
+    std::string resolve_method_name_for_dex(uint32_t method_idx, uint32_t dex_index) const;
+    std::string resolve_method_class_for_dex(uint32_t method_idx, uint32_t dex_index) const;
+    // EXP-071 Phase 8: Resolve the method's proto descriptor, e.g. "(Ljava/lang/Runnable;J)V".
+    // Used to parse parameter types so we can merge wide register pairs (J=long, D=double)
+    // when invoking static methods. Without this, runOnUIThread(Runnable, long) would
+    // pass 3 args (Runnable, low32, high32) instead of 2 (Runnable, long).
+    std::string resolve_method_proto_for_dex(uint32_t method_idx, uint32_t dex_index) const;
+    // CONT-96 W3-B: memo entry + fill. The uncached originals keep their
+    // exact bodies and are used only by the fill.
+    struct MethodResolveCacheEntry {
+        std::string name;
+        std::string cls;
+        std::string proto;
+        std::vector<std::string> proto_params;
+        bool filled = false;
+    };
+    MethodResolveCacheEntry& method_resolve_entry(uint32_t dex_index,
+                                                  uint32_t method_idx) const;
+    std::string resolve_method_name_uncached(uint32_t method_idx, uint32_t dex_index) const;
+    std::string resolve_method_class_uncached(uint32_t method_idx, uint32_t dex_index) const;
+    std::string resolve_method_proto_uncached(uint32_t method_idx, uint32_t dex_index) const;
+    mutable std::vector<std::vector<MethodResolveCacheEntry>> method_resolve_cache_;
+    // EXP-058: Per-DEX type descriptor resolution.
+    // type_idx is relative to the current DEX file's type_ids table,
+    // NOT the merged global types vector.
+    std::string resolve_type_for_dex(uint32_t type_idx, uint32_t dex_index) const;
+    std::string read_dex_string_from_raw(const std::vector<uint8_t>& raw, uint32_t string_idx,
+                                          const dex::DexHeader& hdr) const;
+    // EXP-065: Per-DEX string resolution.
+    // string_idx is relative to the current DEX file's string_ids table,
+    // NOT the merged global strings vector. Using the merged index causes
+    // const-string to fetch the WRONG string in multi-DEX apps (e.g.
+    // Telegram's classes4.dex string_idx=5975 is "+", but merged_strings[5975]
+    // is "FIELD_PREFERRED_AUDIO_LANGUAGES" from classes.dex).
+    std::string resolve_string_for_dex(uint32_t string_idx, uint32_t dex_index) const;
+    
+    bool halted_ = false;
+    // MASTER CAMPAIGN FIX: lifecycle-provenance flag (see lifecycle_methods_from_dex).
+    bool lifecycle_from_dex_ = false;
+    bool halted_on_return_ = false;
+    // CONT-132 SOFT-STOP RETURN-VALUE LAW: the fetch loop sets this at the
+    // soft-stop break (and the deadline-hit break — the same graceful
+    // channel). A soft-stop frame exit executes NO return instruction, so
+    // the frame has no defined return value; try_recursive_invoke must
+    // answer the caller's move-result with the DEFINED polymorphic zero
+    // instead of the stale last_invoke_return_ (the callee's last internal
+    // invoke result — live face: the raw key hashCode inside Lbw0;.d).
+    bool soft_stopped_no_return_ = false;
+    std::string halt_reason_;
+    // T61 (S145): scripted-tap wall rebate accumulator (see rebate_wall_ms).
+    int64_t wall_rebate_ms_ = 0;
+    // S154 AWAIT-UP GATE state (see awaitup_gate_begin above).
+    std::chrono::steady_clock::time_point awaitup_deadline_{};
+    bool awaitup_deadline_active_ = false;
+    bool awaitup_deadline_hit_ = false;
+    uint64_t awaitup_probe_n_ = 0;  // loop-pass sampler counter (4096 grid)
+    // R-NEW-345 parked-thread yield law: set by the LockSupport.park* bridge
+    // when a parked WORKER frame (park reached at drain depth >= 1) drained
+    // zero work — the frame is "suspended" exactly like a real parked thread.
+    // The DEX interpreter loop breaks (graceful frame exit, NOT halted_) and
+    // the flag is cleared at the drain boundary (run_thread_start_body /
+    // drain_park_queues_bounded) so only the parked worker's frame chain
+    // unwinds.
+    bool park_yield_pending_ = false;
+    int64_t park_yield_wake_at_ = 0;  // F-150: virtual-clock wake time
+    // R-NEW-345: drain depth of the most recent drain_park_queues_bounded
+    // entry (0 = main-thread context, >= 1 = inside a drained worker run).
+    int park_drain_last_depth_ = 0;
+    // M3 FINDING-016: exception-honesty state. uncaught_in_flight_count_
+    // counts every handler-less frame unwind; uncaught_in_flight_log_ is a
+    // bounded (32-entry) record; exc_strict_ enables the ART process-death
+    // law (MINIANDROID_EXC_STRICT=1); strict_uncaught_crash_ latches a
+    // strict-mode app-boundary escape for the whole run.
+    size_t uncaught_in_flight_count_ = 0;
+    std::vector<std::string> uncaught_in_flight_log_;
+    bool exc_strict_ = false;
+    bool strict_uncaught_crash_ = false;
+    std::string strict_crash_reason_;
+    std::string last_error_;
+    // ── S222-A (GP-582 id 6812887007 wave): CONTAINED NESTED INVOKE.
+    // The S221 measure bridge (and every future runtime-injected
+    // diagnostic dispatch) calls DEX methods from engine C++ code. When
+    // such a call throws and no handler exists, the unwind reached the
+    // "APP BOUNDARY" branch and was counted as ART process death of the
+    // APP — live evidence (dooz s222_baseline run): 47/54 APP-BOUNDARY
+    // records were the bridge's own Lt4;.z calls throwing
+    // "requestLookaheadRemeasure cannot be called on a node outside
+    // LookaheadScope" (depth=2, caller_pc=0 — a top-level nested invoke,
+    // zero app frames harmed). T61 law: a runtime artifact must never
+    // masquerade as app behavior. contained_invoke_ (set ONLY around
+    // runtime-injected nested dispatches) converts that bottom into a
+    // CONTAINED-EXC: recorded in contained_exc_count_, in-flight state
+    // cleared, nested loop broken, app frames below untouched, and the
+    // APP-BOUNDARY honesty metric untouched.
+    bool contained_invoke_ = false;
+    uint64_t contained_exc_count_ = 0;
+    // EXP-042 Phase 1: Per-frame loop detection. Reset in execute_method_internal().
+    // CONT-96 W3-A: flat per-pc arrays (was std::map) — the map touched a
+    // red-black node per instruction (visit count) and per conditional
+    // branch (signature), a measured fraction of the interpreter wall.
+    // Sized to bytecode_.size() at frame entry; semantics identical.
+    std::vector<uint32_t> pc_visit_count_;
+    // F-NEW-084 closeout: per-frame forward-progress signature of the last
+    // conditional-branch visit (branch-operand values). Reset alongside
+    // pc_visit_count_ at frame entry. A back-edge whose operands CHANGED
+    // between visits is making observable progress; only a STALLED branch
+    // (identical operands across the whole visit window) is an infinite loop.
+    std::vector<uint64_t> pc_branch_sig_;
+    // CONT-96 W3-A: first-visit flag (replicates the map's insert-vs-compare
+    // law: first visit records the baseline without an epoch bump).
+    std::vector<uint8_t> pc_branch_sig_seen_;
+    // Frame-level law v2 (cont375): epoch bumped whenever ANY branch's
+    // decision inputs change within this frame; pc_epoch_checkpoint_ stores
+    // the epoch at the branch's last visit-threshold checkpoint. A branch
+    // over the visit threshold halts only if the epoch is unchanged across
+    // the checkpoint boundary (NO decision input in the frame moved).
+    uint64_t frame_progress_epoch_ = 0;
+    uint64_t pc_epoch_checkpoint_ = 0;
+    
+    // EXP-050 Phase 2: Store the return value from the last invoke-* instruction.
+    // move-result and move-result-object read from this. Previously, these
+    // opcodes returned placeholder values (0/null), silently discarding ALL
+    // return values from ALL method calls. This was a critical hidden bug
+    // affecting every if-eqz/if-nez after an invoke, every field access
+    // after a getter, and every object creation after new-instance.
+    DalvikValue last_invoke_return_ = DalvikValue::make_void();
+
+    // EXP-094 (CM-018): The receiver of the LAST successful "setParams"
+    // invoke. Apps with multi-page login flows (Telegram LoginActivity)
+    // instantiate SEVERAL views of the same class (one per auth type:
+    // MESSAGE/SMS/FLASH_CALL/CALL) — only the one the app configures via
+    // setParams is the ACTIVE page. The renderer must use THAT instance,
+    // not the first/newest one. This is the app's own navigation signal.
+    uint32_t last_set_params_view_ = 0;
+
+public:
+    uint32_t last_set_params_view() const { return last_set_params_view_; }
+private:
+
+    // EXP-051: Shadow registry pointer. Non-owning. Set by ApplicationRuntime
+    // before execution begins. When non-null, bridge_to_api consults the
+    // registry BEFORE falling through to the legacy if/else chain.
+    framework::ShadowRegistry* shadow_registry_ = nullptr;
+
+    // EXP-052: Exception-handling diagnostic state for the currently
+    // executing method. Updated by execute_method_internal() each time
+    // a new method is entered. The THROW opcode handler reads these to
+    // log whether the current method has a try table and (eventually)
+    // find a matching catch handler.
+    //
+    // The real exception-handling flow is:
+    //   1. throw vAA executes.
+    //   2. Engine looks up the exception object's class descriptor.
+    //   3. Engine scans current_method's tries[] for a try_item whose
+    //      [start_addr, start_addr+insn_count) range contains the
+    //      current PC.
+    //   4. Engine decodes the encoded_catch_handler at handler_off.
+    //   5. For each (type_idx, addr) pair in the handler:
+    //        - If type_idx == 0 (catch-all) or matches the exception
+    //          class, jump to addr.
+    //   6. If no handler matched, unwind to the caller's frame and
+    //      repeat from step 3 with the caller's PC = the invoke-*
+    //      site that called this method.
+    //
+    // EXP-052 only implements steps 1 + 3 (lookup + log) — the actual
+    // handler jump (step 5) is implemented in a later experiment after
+    // the diagnostic mode has been validated with small DEX test cases.
+    uint16_t current_tries_size_ = 0;
+    const uint8_t* current_tries_data_ = nullptr;
+    size_t current_tries_data_size_ = 0;
+
+    // EXP-053: Pending exception for move-exception opcode.
+    // When THROW jumps to a catch handler, the exception object is
+    // stored here. The next move-exception instruction reads from
+    // this slot and clears it.
+    DalvikValue pending_exception_ = DalvikValue::make_null();
+    // (frame_unwind_exception_ members declared near raise_synthetic_exception)
+
+    // EXP-063: Resource lookup maps.
+    // field_name_by_resid: maps resource ID → field name (built during R class init)
+    // Used to resolve resources when DEX IDs don't match ARSC IDs.
+public:
+    std::map<int32_t, std::string> field_name_by_resid_;
+    // resource_string_values: maps field name → string value (loaded from JSON)
+    std::map<std::string, std::string> resource_string_values_;
+    // EXP-067: resource_color_values_ maps field name → ARGB int (e.g. 0xFF1A1A1A).
+    // Loaded from resource_values.json["color"].
+    std::map<std::string, int32_t> resource_color_values_;
+    // EXP-067: resource_dimen_values_ maps field name → dimension in pixels (int).
+    // Loaded from resource_values.json["dimen"] (values are like "16dp" → 16*dp_factor).
+    std::map<std::string, int32_t> resource_dimen_values_;
+    // EXP-067: resource_drawable_paths_ maps field name → APK asset path (e.g. "res/abc.webp").
+    // Loaded from resource_values.json["drawable"] and ["mipmap"].
+    std::map<std::string, std::string> resource_drawable_paths_;
+    // G04 §4: resid → SELECTED config density (raw ResTable_config form) of
+    // the resolved file drawable — the BitmapFactory inDensity input. Filled
+    // by populate_drawable_paths_from_arsc (canonical select_file law).
+    std::map<uint32_t, uint16_t> resource_drawable_density_by_resid_;
+    const std::map<uint32_t, uint16_t>& drawable_density_by_resid() const {
+        return resource_drawable_density_by_resid_;
+    }
+    // G04 §4 (FIND-G04-AUDIT-006): resid → path cache for the DIRECT
+    // canonical resolution law. The legacy chain resid → R-field-name →
+    // basename/path broke whenever R$drawable statics were not parsed
+    // (Markor: 0/35). The resid IS the canonical key (§1); field names are
+    // not part of the resource law.
+    std::map<uint32_t, std::string> resource_drawable_path_by_resid_;
+    // UNIFIED_011.2 IMAGE-RES-RENDER (§13/§14 campaign): populate
+    // resource_drawable_paths_ from the APK's actual res/ entry list by
+    // matching R-field names to drawable file basenames. Prior to this the
+    // map was read but NEVER populated (dead resolution chain): the render
+    // stage could only draw an "IMG" placeholder for runtime
+    // setImageResource() calls. Resolution order per §14 density rule:
+    // xxxhdpi > xxhdpi > xhdpi > hdpi > mdpi > plain drawable/.
+    void populate_resource_drawable_paths(const std::vector<std::string>& entry_names);
+    // GOLDEN-03 §10/§11: ARSC-AUTHORITATIVE drawable path seeding — resolves
+    // every known drawable/mipmap resid via the canonical ArscParser
+    // (apk_path_for, config-selected) instead of basename heuristics.
+    // Returns the number of names resolved. The basename heuristic
+    // (populate_resource_drawable_paths) remains only as fallback.
+    int populate_drawable_paths_from_arsc(
+        const resources::ArscParser& arsc, const std::vector<std::string>& apk_paths);
+    // CONT-48 F1 (AndResGuard drawable-binding gap): the R$ resid harvest
+    // extracted from ensure_class_initialized so it can run EAGERLY too —
+    // the drawable census executes before any app code touches
+    // R.drawable.*, and the lazy-only law left field_name_by_resid_ with
+    // zero drawable entries on obfuscated APKs (telegram official).
+    void harvest_r_class_fields(const std::string& class_descriptor,
+                                const dex::ClassInfo& cls_ref);
+    int eager_harvest_r_classes();
+    bool drawable_paths_populated_ = false;
+    // EXP-098 (CM-027): resource_raw_paths_ maps R.raw.X name → APK asset
+    // path (e.g. "res/-si.json" for R.raw.sms_incoming_info). Used by
+    // RLottieImageView.setAnimation(R.raw.X, w, h) → RLottieDrawable →
+    // AndroidUtilities.readRes(R.raw.X) → openRawResource. Loaded from
+    // resource_values.json["raw"].
+    std::map<std::string, std::string> resource_raw_paths_;
+    // EXP-098 (CM-027): pending_anim_by_drawable_ maps RLottieDrawable
+    // object_id → (raw_resid, w, h). When `new RLottieDrawable(R.raw.X,
+    // name, w, h, ...)` is constructed, we record (resid, w, h) here.
+    // When the drawable is later attached to an RLottieImageView via
+    // setAnimation(RLottieDrawable), the ImageView inherits the pending
+    // animation and the render stage decodes the Lottie frame.
+    struct PendingAnim {
+        int32_t raw_resid = 0;
+        int target_w = 0;
+        int target_h = 0;
+    };
+    std::map<uint32_t, PendingAnim> pending_anim_by_drawable_;
+    // EXP-067: resource_integer_values_ maps field name → int value.
+    std::map<std::string, int32_t> resource_integer_values_;
+    // EXP-067: resource_bool_values_ maps field name → bool value.
+    std::map<std::string, bool> resource_bool_values_;
+    // EXP-071 Phase 6: Asset reading support.
+    // When AssetManager.open(asset_name) is called, we extract the asset
+    // from the APK and store its contents in a per-InputStream buffer.
+    // BufferedReader.readLine() then reads from this buffer line by line.
+    // This is needed because Telegram's PhoneView.<init> reads countries.txt
+    // from assets to populate the country HashMap — without it, the HashMap
+    // is empty, setCountry() returns early, and countryState stays at 1
+    // (NO_SIM), causing onNextPressed to take the wrong "ChooseCountry"
+    // branch instead of reaching auth.sendCode construction.
+    std::string apk_path_;  // path to the APK file
+    // EXP-093/F011: Manifest-derived package identity (replaces hardcoded Telegram values)
+    std::string package_name_;
+    // S99 IDENTITY LAW (AOSP ContextImpl.getSharedPreferences): ONE
+    // SharedPreferencesImpl instance PER FILE NAME per process — a second
+    // getSharedPreferences(name, mode) returns THE SAME object so
+    // in-session writes (edit().putString().apply()) are visible to every
+    // later reader. Without this map each call allocated a FRESH heap
+    // object: writes went to object A, readers got empty object B, and
+    // first-run defaults never materialized (babydots
+    // "null cannot be cast to non-null type kotlin.Float" at
+    // AnimatedDots.setSpeed — full-load wave S99).
+    std::map<std::string, uint32_t> prefs_identity_by_name_;
+    int version_code_ = 0;
+    std::string version_name_;
+    // F-116 (R-NEW-384 family): manifest meta-data tables
+    std::map<std::string,
+             std::vector<std::pair<std::string, std::string>>>
+        activity_meta_data_;
+    std::vector<std::pair<std::string, std::string>> application_meta_data_;
+    // 371-CLOSEOUT: component meta-data with resource references (AOSP
+    // PackageParser Bundle contract — see manifest_reader.h MetaDataEntry).
+    std::map<std::string,
+             std::vector<miniandroid::apk::ManifestInfo::MetaDataEntry>>
+        component_meta_data_;
+    // EXP-093/F008: Permission state map (permission_name → 0=GRANTED, -1=DENIED)
+    std::map<std::string, int> permission_state_;
+    // Map: heap object_id (InputStream) → (asset_name, line_index)
+    std::map<uint32_t, std::pair<std::string, size_t>> open_assets_;
+    // LOADING-CAMPAIGN (ST-2 FIX): open WRITE streams. heap object_id
+    // (FileOutputStream/FileWriter) → (host backing path, append mode,
+    // live output stream). Writes are REAL; close/flush persists; the
+    // run-end flush_finalizers() drains anything left open (AOSP: streams
+    // close at process death, data hits the page cache).
+    struct OpenWriter {
+        std::string host_path;
+        bool append = false;
+        std::ofstream out;
+        bool ever_opened = false;
+    };
+    std::map<uint32_t, OpenWriter> open_writers_;
+    // F-NEW-709: materialized FileDescriptor → owning stream oid
+    // (getFD() law; sync()/valid() resolve the writer through it).
+    std::map<uint32_t, uint32_t> fd_to_stream_;
+    // LOADING-CAMPAIGN: ByteArrayOutputStream buffers (heap oid → bytes).
+    std::map<uint32_t, std::string> baos_buffers_;
+    // LOADING-CAMPAIGN: drain pending writes at run end (idempotent).
+    void flush_finalizers();
+    // S-1 FIX: manifest <provider> classes (install stage, AOSP order).
+    std::vector<std::string> manifest_providers_;
+    // GATE A: manifest <provider> name+authorities identity pairs.
+    std::vector<std::pair<std::string, std::string>> manifest_provider_identity_;
+    // ── CONT-102 (F-NEW-424/425/427/428): manifest package-identity state.
+    std::vector<std::string> manifest_requested_permissions_;
+    std::vector<std::tuple<std::string, bool, bool, int>> manifest_activity_attrs_;
+    int manifest_target_sdk_ = 0;
+    int manifest_min_sdk_ = 0;
+    // #371: manifest <provider> name → grantUriPermissions.
+    std::vector<std::pair<std::string, bool>> manifest_provider_grants_;
+    // F-NEW-525: per-provider android:exported (AOSP PackageParser
+    // ProviderInfo law — ShizukuProvider.attachInfo enforces
+    // exported=true / multiprocess=false; manifest_reader already
+    // parses both).
+    std::vector<std::pair<std::string, bool>> manifest_provider_exported_;
+    // CODER7 WAVE-3: per-provider android:enabled (disabled-components law).
+    std::vector<std::pair<std::string, bool>> manifest_provider_enabled_;
+    // CODER7 WAVE-8 L1: per-provider android:readPermission /
+    // android:writePermission (AOSP PackageParser.Provider law — the
+    // CRUD transport checks them per op; empty = no permission required).
+    std::vector<std::tuple<std::string, std::string, std::string>>
+        manifest_provider_perms_;
+    // CODER7 WAVE-8 L1: provider instance oid → (read_perm, write_perm,
+    // owning_package). Own providers register at install_content_providers,
+    // foreign providers at the W6 store install; the CRUD transport gate
+    // consults it per op (checkContentProviderAccess law).
+    struct C7ProviderPerms {
+        std::string read_perm;
+        std::string write_perm;
+        std::string owner_pkg;
+    };
+    std::map<uint32_t, C7ProviderPerms> c7_provider_perms_;
+    // GATE A: provider object → bound context object (attachInfo law).
+    std::map<uint32_t, uint32_t> provider_context_;
+    // ── #371 PHASE B1: ContentResolver authority→provider dispatch map ──
+    // AOSP law: ContentResolver.acquireProvider resolves the URI authority
+    // through the PMS provider map populated at installContentProviders time
+    // (one authority → one installed provider instance; multiple ';'-
+    // separated authorities each map to the same provider object).
+    std::map<std::string, uint32_t> provider_by_authority_;
+    std::map<uint32_t, std::string> provider_class_by_oid_;
+    // MatrixCursor row pool (heap oid → state). AOSP MatrixCursor: values
+    // live in an Object[] per row; Cursor accessors read row[col].
+    struct MatrixCursorState {
+        std::vector<std::string> columns;
+        std::vector<std::vector<DalvikValue>> rows;
+        int pos = -1;             // AbstractCursor pos, before-first = -1
+        bool closed = false;
+    };
+    std::map<uint32_t, MatrixCursorState> matrix_cursors_;
+    // ContentValues state (heap oid → key→value). AOSP ContentValues is a
+    // Parcelable key/value map; put() stores, get() retrieves by key.
+    std::map<uint32_t, std::vector<std::pair<std::string, DalvikValue>>>
+        content_values_;
+    // UriMatcher state (heap oid → rules). AOSP UriMatcher: addURI(authority,
+    // path, code); match(Uri) → code or the ctor's no-match code (-1).
+    struct UriMatcherState {
+        int no_match_code = -1;
+        std::vector<std::tuple<std::string, std::string, int>> rules;
+    };
+    std::map<uint32_t, UriMatcherState> uri_matchers_;
+    // ── F-NEW-272 (CONT-21/#384): Thread UncaughtExceptionHandler state ──
+    // AOSP Thread law: per-thread handler map + the process default
+    // (RuntimeInit$KillApplicationHandler — never null on a live ART
+    // runtime; materialized lazily on first read).
+    DalvikValue default_uncaught_handler_;
+    std::map<uint32_t, DalvikValue> thread_uncaught_handlers_;
+    // IntentFilter state (heap oid → declared actions). AOSP IntentFilter:
+    // <init>(String... actions) / addAction(String); match by exact action.
+    std::map<uint32_t, std::vector<std::string>> intent_filters_;
+    // R-NEW-097 (CONT-122): category half of the same AOSP law —
+    // addCategory(String) / countCategories() / getCategory(i) /
+    // matchAction(String) need the declared-category list per filter oid.
+    std::map<uint32_t, std::vector<std::string>> intent_filter_categories_;
+    // CODER7 ORDERED-BCAST law: IntentFilter priority state (heap oid →
+    // android:priority). AOSP IntentFilter.setPriority(int)/getPriority():
+    // the ordered-broadcast ordering key ("higher priority receivers are
+    // checked first"; BroadcastQueueModernImpl priority tranches).
+    std::map<uint32_t, int> intent_filter_priority_;
+    // CODER7 WAVE-3: the dynamic filter's <data> dimensions (addDataScheme/
+    // addDataType) — the IntentFilter.matchData dispatch half.
+    std::map<uint32_t, std::vector<C7DataSpec>> intent_filter_datas_;
+    // ── #371 PHASE B5: service + broadcast dispatch state ──
+    // AOSP ActiveServices law: startService instantiates the service class,
+    // runs onCreate then onStartCommand(intent, flags, startId); a second
+    // startService on a LIVE service only delivers onStartCommand;
+    // stopService/stopSelf run onDestroy. Manifest <service> classes come
+    // from the same manifest parse that feeds providers.
+    struct ServiceInstance {
+        uint32_t oid = 0;
+        std::string cls;
+        bool created = false;
+        bool destroyed = false;
+        bool started = false;   // startService path active (AOSP started service)
+        int bindings = 0;       // bindService count (AOSP bound connections)
+        // ── CODER7 SVC contract completion (AOSP Service.java/ActiveServices) ──
+        // stopSelfResult(startId) law: stop succeeds ONLY when startId ==
+        // the service's last delivered startId (ActiveServices
+        // stopServiceTokenLocked: r.getLastStartId() != startId → no stop).
+        int next_start_id = 0;      // per-service startId counter (AOSP
+                                    // ServiceRecord startIds are per-record;
+                                    // the old code used a process-wide static)
+        int last_start_id = 0;      // getLastStartId()
+        // startForegroundService contract (AOSP: the service MUST call
+        // startForeground promptly). Headless runtime: no ANR clock — the
+        // contract is TRACKED and reported loudly, never faked.
+        bool fgs_needs_foreground = false;
+        // onUnbind/onRebind law (AOSP Service.onUnbind doc: "Return true if
+        // you would like to have the service's onRebind method later called
+        // when new clients bind to it").
+        bool do_rebind = false;     // last onUnbind returned true
+        bool on_unbind_overridden = false;  // computed once from DEX
+        uint32_t retained_binder_oid = 0;   // binder from the first onBind
+        std::string retained_binder_cls;
+        // per-connection binding records (AOSP: unbindService(conn) removes
+        // THAT connection only — the old code decremented the FIRST live
+        // service with bindings>0 regardless of which connection unbound).
+        struct ConnBinding {
+            int count = 0;
+            uint32_t bind_intent_oid = 0;  // the binding Intent (onUnbind arg)
+            // CODER7 WAVE-3 (AOSP ActiveServices.bindServiceLocked): a bind
+            // WITHOUT BIND_AUTO_CREATE does not bring the service up — the
+            // connection is QUEUED (no onCreate/onBind/onServiceConnected)
+            // until something starts the service; needs_connect marks the
+            // queued state and the connect is delivered at bring-up.
+            bool needs_connect = false;
+        };
+        std::map<uint32_t, ConnBinding> conn_bindings;
+    };
+    std::map<std::string, ServiceInstance> live_services_;
+    // CODER7 WAVE-2: the bring-down path law (AOSP ActiveServices
+    // bringDownServiceLocked). stopService/stopSelf must deliver
+    // onUnbind(bindingIntent) BEFORE onDestroy when live bindings exist —
+    // the base/wave-1 teardown path skipped onUnbind entirely (recorded
+    // PENDING in the wave-1 issue §7). Shared by every teardown site.
+    void c7_service_bring_down(ServiceInstance& svc, const char* reason);
+    // AOSP BroadcastReceiver dispatch law: sendBroadcast(Intent) resolves
+    // receivers whose intent-filter action matches the intent action —
+    // dynamic registerReceiver registrations AND manifest <receiver>
+    // entries with <intent-filter>. BroadcastReceiver instances registered
+    // dynamically are heap objects; manifest receivers are instantiated
+    // per delivery (AOSP LoadedApk receiver instantiation).
+    struct DynamicReceiver {
+        uint32_t oid = 0;
+        std::string cls;
+        std::vector<std::string> actions;
+        // ── CODER7 ORDERED-BCAST law ──
+        int priority = 0;                 // IntentFilter.getPriority() at
+                                          // registerReceiver time
+        std::vector<std::string> categories;  // filter categories (match law)
+        // CODER7 WAVE-2: the registerReceiver(receiver, filter, permission,
+        // scheduler) broadcastPermission — AOSP LoadedApk.ReceiverDispatcher
+        // carries it and BroadcastQueue enforces it against the SENDER for
+        // every delivery (same law as a manifest receiver's
+        // android:permission). The base ignored the argument entirely.
+        std::string permission;
+        // CODER7 WAVE-3: the filter's <data> dimensions (addDataScheme /
+        // addDataType — IntentFilter.matchData for dynamic registrations).
+        std::vector<C7DataSpec> datas;
+    };
+    std::vector<DynamicReceiver> dynamic_receivers_;
+    // Manifest <receiver> records (parse-time). ── CODER7: the old pair
+    // (class, actions) grew the full AOSP PackageParser receiver model —
+    // priority (max across filters), exported (with the declared-attr
+    // flag), permission, and the filter category union.
+    struct ManifestReceiver {
+        std::string cls;                      // dotted class name
+        std::vector<std::string> actions;
+        std::vector<std::string> categories;
+        int priority = 0;
+        bool exported = false;
+        bool has_exported_attr = false;
+        std::string permission;
+        // CODER7 WAVE-3: android:enabled — a disabled manifest receiver is
+        // not a dispatch candidate (AOSP disabled-components law).
+        bool enabled = true;
+        // CODER7 WAVE-2 per-filter model (AOSP PackageParser: every
+        // <intent-filter> is its own matchable record with its own
+        // priority/actions/categories — the wave-1 MAX-fold recorded only
+        // the receiver-level maximum, a documented PARTIAL).
+        struct Filter {
+            std::vector<std::string> actions;
+            std::vector<std::string> categories;
+            int priority = 0;
+            // CODER7 WAVE-3: the filter's <data> match dimensions.
+            std::vector<C7DataSpec> datas;
+        };
+        std::vector<Filter> filters;
+    };
+    std::vector<ManifestReceiver> manifest_receivers_;
+    // CODER7 WAVE-3: activity/service resolution models (set_manifest_*_filters).
+    std::vector<ManifestFilterTransfer> manifest_activity_filters_;
+    std::vector<ManifestFilterTransfer> manifest_service_filters_;
+    // CODER7 WAVE-12: own-package activity parent chain (dotted class →
+    // dotted parent class; the addParentStack walk).
+    std::map<std::string, std::string> manifest_activity_parent_;
+    // CODER7 WAVE-5: PMS-lite — the cross-package component index (see the
+    // set_package_index law above).
+    std::shared_ptr<C7PackageIndex> c7_pkg_index_;
+    // CODER7 WAVE-9: in-process ContentObserver registry (AOSP
+    // ContentResolver.registerContentObserver → ContentService.register:
+    // (uri, notifyForDescendents, observer) records; notifyChange(uri)
+    // dispatches onChange(selfChange=false) to every observer whose
+    // authority matches and whose uri filter accepts the notified uri —
+    // exact equality when notifyForDescendents=false, authority+path-
+    // prefix when true. The ORIGINATING observer (the one passed to
+    // notifyChange) is excluded — the AOSP selfChange law).
+    struct C7ContentObserver {
+        uint32_t oid = 0;
+        std::string uri_raw;
+        std::string authority;
+        bool notify_descendants = false;
+    };
+    std::vector<C7ContentObserver> c7_content_observers_;
+    // CODER7 WAVE-9: the caller package of the CURRENT provider op (the
+    // ContentProvider.getCallingPackage law — AOSP: "return the name of
+    // the package that invoked this... available while in
+    // query/insert/update/delete/openFile; null otherwise"). Set by the
+    // ContentResolver dispatch around each provider invocation.
+    std::string c7_provider_calling_pkg_;
+    // CODER7 WAVE-9: runtime component-enabled overrides (the
+    // PackageManager.setComponentEnabledSetting law — AOSP PMS keeps
+    // per-component enabled-state settings that override the manifest;
+    // key = "pkg/cls" flattened form, value = COMPONENT_ENABLED_STATE_*).
+    std::map<std::string, int> c7_component_enabled_overrides_;
+    // CODER7 WAVE-6: foreign class → owning package (LoadedApk-lite; see
+    // inject_foreign_apk_code). Own classes are absent ⇒ "" = running pkg.
+    std::map<std::string, std::string> c7_foreign_class_owner_;
+    // CODER7 WAVE-6: whether the foreign code pass already ran for this
+    // execution (idempotence guard — injection is once-per-boot, the AOSP
+    // LoadedApk model).
+    bool c7_foreign_code_injected_ = false;
+    // CODER7 WAVE-11 (AOSP ActivityManagerService URI-grant law): the
+    // URI permission grants — recorded when an intent carrying
+    // FLAG_GRANT_READ_URI_PERMISSION (0x1) / FLAG_GRANT_WRITE_URI_PERMISSION
+    // (0x2) is delivered to a component (grantUriPermissions target law),
+    // consulted by Context.checkUriPermission, revoked by
+    // Context.revokeUriPermission. Key: the granted data-uri RAW string;
+    // value: {to-package → mode flags} ("*" = unrestricted target).
+    struct C7UriGrant {
+        std::string uri_raw;
+        std::string to_package;  // "" = any target
+        int mode_flags = 0;
+    };
+    std::vector<C7UriGrant> c7_uri_grants_;
+    // CODER7 WAVE-3: acquired ContentProviderClient objects (AOSP
+    // ContentResolver.acquireContentProviderClient) — heap object id → the
+    // authority the client is bound to; every client call routes through
+    // the same provider dispatch as ContentResolver.
+    std::map<uint32_t, std::string> c7_provider_client_authority_;
+    // CODER7 WAVE-2: sticky-broadcast cache (AOSP Context.sendStickyBroadcast
+    // law: the LAST sticky intent per action is retained by the system and
+    // delivered to every NEW receiver whose filter matches at
+    // registerReceiver time; removeStickyBroadcast drops it). Keyed by the
+    // intent ACTION (the runtime models one sticky per action — the
+    // BroadcastQueue per-action slot; data/type refinements are a
+    // documented simplification).
+    std::map<std::string, uint32_t> sticky_broadcasts_;
+    // CODER7 WAVE-2: true while the dispatcher is running the INITIAL
+    // sticky catch-up delivery of a freshly registered receiver (AOSP
+    // BroadcastReceiver.isInitialStickyBroadcast()).
+    bool initial_sticky_delivery_ = false;
+    // ── CODER7: ordered-broadcast dispatch state (AOSP BroadcastQueue ──
+    // ordered record: resultCode/resultData/resultExtras carried receiver
+    // to receiver; abortBroadcast stops LOWER-priority pending receivers
+    // but the final resultReceiver still runs — BroadcastReceiver.java
+    // abortBroadcast doc: "It will still call onReceive of the
+    // BroadcastReceiver that the caller of sendOrderedBroadcast passed in").
+    struct OrderedBroadcastState {
+        bool active = false;          // dispatch is an ordered broadcast
+        int code = -1;                // Activity.RESULT_OK seed (ContextImpl
+                                      // sendOrderedBroadcast overloads)
+        std::string data;             // resultData ("" until set / null flag)
+        bool has_data = false;        // data != null
+        uint32_t extras_oid = 0;      // resultExtras Bundle heap oid (0=null)
+        bool aborted = false;         // abortBroadcast() seen
+        uint32_t result_receiver_oid = 0;   // final receiver (0 = none)
+        std::string result_receiver_cls;
+        uint32_t pending_receiver_oid = 0;  // receiver currently executing
+        bool pending_is_final = false;      // executing the final receiver
+        bool in_ordered_dispatch = false;   // inside the dispatch loop
+        // CODER7: set when the pending receiver called goAsync() — AOSP
+        // BroadcastReceiver.goAsync detaches mPendingResult, so the
+        // receiver-level getResult*/setResult* then answer the no-pending
+        // defaults while the chain's carried state is untouched.
+        uint32_t pending_go_async_oid = 0;
+    };
+    OrderedBroadcastState ordered_broadcast_;
+    // BroadcastReceiver.PendingResult state (AOSP BroadcastReceiver.goAsync
+    // → PendingResult; the snapshot of the result state at goAsync time).
+    struct PendingResultState {
+        int code = 0;
+        std::string data;
+        bool has_data = false;
+        uint32_t extras_oid = 0;
+        bool aborted = false;
+        bool ordered = false;
+        bool finished = false;
+    };
+    std::map<uint32_t, PendingResultState> pending_results_;
+    // Manifest <service> name + intent-filter action pairs (parse-time).
+    std::vector<std::pair<std::string, std::vector<std::string>>>
+        manifest_service_classes_;
+    // ── #371 PHASE B2: extracted native libs identity (G-4) ──
+    // Set by main.cpp install flow: logical nativeLibraryDir of the RUNNING
+    // package when the store holds ABI-scoped extracted libs; empty keeps
+    // the pre-G-4 phantom identity (packages installed before extraction).
+    std::string native_lib_dir_logical_;
+    std::string native_lib_dir_host_;
+    std::string native_primary_abi_;
+    // ── helpers (B1/B5) ──
+    // Parse "content://authority/path?query" into (scheme, authority, path,
+    // query). Returns false when the string is not a hierarchical content URI.
+    static bool parse_content_uri(const std::string& raw,
+                                  std::string& scheme,
+                                  std::string& authority,
+                                  std::string& path,
+                                  std::string& query);
+    // Resolve the provider heap object for a content URI authority.
+    // Returns 0 when the authority is unknown (caller throws the AOSP
+    // IllegalArgumentException "Unknown authority").
+    uint32_t resolve_provider_for_authority(const std::string& authority,
+                                            std::string& provider_cls);
+    // Invoke a provider method down the app class chain (try_recursive_invoke
+    // wrapper that reports honest failures).
+    bool invoke_provider_method(uint32_t provider_oid,
+                                const std::string& provider_cls,
+                                const std::string& method,
+                                std::vector<DalvikValue> args,
+                                DalvikValue& ret,
+                                std::string& err);
+    // Build a Uri heap object from a raw string (the Uri.parse law path).
+    uint32_t make_uri_object(const std::string& raw);
+    // ContentProvider.onCreate ordering law helper used by the service stage.
+    bool invoke_lifecycle_method(uint32_t oid, const std::string& cls,
+                                 const std::string& method,
+                                 std::vector<DalvikValue> args,
+                                 DalvikValue& ret);
+    // ── CODER7 WAVE-9: the system-signal dispatch laws (AOSP
+    // ActivityThread.handleTrimMemory / handleConfigurationChanged):
+    // Application-level callbacks run BEFORE the component-level ones;
+    // TRIM_MEMORY_COMPLETE(15) additionally fires Application.onLowMemory()
+    // (the legacy ComponentCallbacks alias). The config-change law builds
+    // a REAL android.content.res.Configuration heap object (orientation
+    // carried). Honest no-ops when the app/activity overrides are absent.
+    void dispatch_memory_and_config_signals(int trim_level, bool rotate);
+    // ── F-NEW-304 (CONT-42): platform Fragment lifecycle drain ──────────
+    // AOSP FragmentController/FragmentManagerImpl stage laws, driven from
+    // the HOST lifecycle boundaries (ExecutionEngine dispatch sites):
+    //   * to_created()  — runs the committed pending-op queue (onAttach →
+    //     onCreate per fragment; AOSP moveToState(CREATED) at the host's
+    //     dispatchActivityCreated window).
+    //   * to_started()  — onCreateView → onViewCreated → onActivityCreated
+    //     → onStart per stage-1 fragment (AOSP CREATED→VIEW_CREATED→STARTED
+    //     on the host's performStart); the returned view attaches into the
+    //     transaction's container node (real measure laws own the geometry).
+    //   * to_resumed()  — onResume per stage-3 fragment.
+    // Each stage skips fragments already at/past it (__frag_stage__ on the
+    // fragment heap object is the single truth) and answers false when no
+    // fragment advanced (bounded [F-NEW-304] diag, never silent).
+    bool advance_fragments_to_created(DalvikExecutionResult& result);
+    bool advance_fragments_to_started(DalvikExecutionResult& result);
+    bool advance_fragments_to_resumed(DalvikExecutionResult& result);
+    // ── F-NEW-339 (CONT-59): XML <fragment> tag instantiation law ────────
+    // AOSP FragmentLayoutInflaterFactory: a <fragment android:name="…">
+    // tag instantiates the named fragment through the FragmentFactory
+    // (no-arg ctor), attaches it to the FragmentManager with the XML
+    // id + tag, and uses the tag's view node as the fragment container
+    // (the F-NEW-304 to_started drain attaches onCreateView's view into
+    // it). The synthetic add-record rides the SAME committed-queue the
+    // DEX commit path uses — one lifecycle owner, no parallel ladder.
+    bool instantiate_fragment_tag(uint32_t container_view_id,
+                                  const std::string& frag_class_desc,
+                                  const std::string& tag, int32_t xml_id,
+                                  const std::vector<resources::XmlAttrRecord>&
+                                      xml_attrs);
+    // Platform PreferenceFragment.onCreateView law (AOSP internal
+    // preference_list_fragment contract): builds the real list container
+    // rows for the fragment's parsed preference screen through the
+    // ViewShadow tree (no fixed-geometry hacks — the measure laws size
+    // every row). Returns 0 when the fragment has no parsed screen.
+    uint32_t frag_build_preference_list_view(uint32_t frag_oid);
+    // S-1 FIX: the provider install stage (runs at bind entry, every path).
+    void install_content_providers(DalvikExecutionResult& result);
+    // FINAL CANONICAL MASTER RECONCILIATION Pass-3 (K-34): full asset bytes
+    // extracted once per path and cached, so InputStream.read()/available()
+    // (and readLine) read REAL bytes without re-running `unzip -p` per call.
+    std::map<std::string, std::string> asset_bytes_cache_;
+    // CODER7 WAVE-6: (size, mtime) stamp per "file:" cached stream — the
+    // live-observability law (a file: stream re-reads when the backing
+    // file changed; APK/asset entries stay insert-once immutable).
+    std::map<std::string, std::pair<long long, long long>>
+        asset_file_stamp_;
+    // Pass-3 (K-35): one parser state per parser object (heap id keyed).
+    std::map<uint32_t, XmlPullState> xml_parsers_;
+
+    // [S188-W3] SUBMIT→FUTURE LAW state: box object id → the DEX result the
+    // submitted task produced (run inline at submit, serialized engine).
+    // Consumed by Future/FutureTask.get in bridge_to_api. Engine-owned
+    // member (NOT a static local — F-025 static-freeze lesson).
+    std::map<uint32_t, DalvikValue> future_results_;
+
+    // [S191-C8] F-C8-141 monitor-contract law state (DETERMINISTICALLY
+    // SERIALIZED vocabulary): monitor heap oid → hold count (owner exists
+    // iff count > 0 under the single serialized interpreter thread), and
+    // monitor oid → parked waiter thread ids (recorded by Object.wait,
+    // woken by Object.notify/notifyAll). NOT static locals (F-025).
+    std::map<uint32_t, int32_t> monitor_holds_;
+    std::map<uint32_t, std::vector<uint32_t>> monitor_waitsets_;
+    // [S191-C8] F-C8-146/147 thread-state law: thread object oid →
+    // interrupt flag (set by Thread.interrupt, read/cleared by
+    // interrupted()/isInterrupted()).
+    std::map<uint32_t, bool> thread_interrupted_;
+    // [S191-C8] F-C8-148 ForkJoinPool.commonPool() singleton identity
+    // (stable per heap, EXP-059 object-identity law).
+    uint32_t common_pool_oid_ = 0;
+    // [S191-C8] F-C8-143 HandlerThread → its Looper object binding.
+    std::map<uint32_t, uint32_t> handler_thread_looper_;
+    // [S193-C8] F-C8-184 Timer → its scheduled task ids (Timer.cancel
+    // discards exactly this set from the shared deterministic queue).
+    std::map<uint32_t, std::vector<uint32_t>> c8_timer_tasks_;
+    // [S193-C8] F-C8-198 ThreadPoolExecutor → its queue box (getQueue
+    // mints the LinkedBlockingQueue view once per executor).
+    std::map<uint32_t, uint32_t> c8_tpe_queue_;
+    // [S193-C8] F-C8-189 Process.setThreadPriority native store (tid →
+    // priority) — loud record; AOSP has no getter (setpriority(2) side).
+    std::map<uint32_t, int32_t> c8_native_thread_prio_;
+private:
+
+    // EXP-053: Set of class descriptors whose <clinit> has been executed.
+    // Used to avoid re-running <clinit> on every sget/sput.
+    // Per JVM spec, <clinit> runs exactly once when a class is first
+    // initialized (typically at first active use: sget/sput/invoke-static
+    // /new-instance on the class).
+    std::set<std::string> initialized_classes_;
+
+    // F-NEW-215 CLASS-INIT HONESTY LAW (JVMS 5.5 / AOSP ClassLinker::
+    // EnsureInitialized): classes whose <clinit> RAN and THREW. The class
+    // stays erroneous for the rest of the process — <clinit> is never
+    // re-run, and every subsequent ACTIVE USE (sget/sput/new-instance/
+    // Class.forName) must observe the failure (NoClassDefFoundError)
+    // instead of silently reading missing statics (the far-from-cause
+    // NPE / white-screen generator). Keyed by raw AND normalized
+    // descriptor; value = bounded first-divergence evidence.
+    std::map<std::string, std::string> failed_clinit_classes_;
+
+    // True only when the class's own <clinit> executed and threw
+    // (erroneous state). Not-found / shadow-resolved paths never mark
+    // this — those are legitimate platform-skip semantics, not failures.
+    bool class_clinit_failed(const std::string& class_descriptor) const {
+        return failed_clinit_classes_.find(class_descriptor) !=
+               failed_clinit_classes_.end();
+    }
+
+    // F-NEW-395 (CONT-87, fixture-first): true when an exception from the
+    // JUST-FAILED clinit is already in flight for THIS active-use site —
+    // armed by the post-invoke EXC-PROPAGATE inside try_recursive_invoke
+    // (handler-found: pending_exception_ + exc_redirect; mid-stack:
+    // frame_unwind_exception_valid_). Raising the erroneous-class NCDFE on
+    // top would double-raise and override the original delivery (live
+    // post-fix evidence run/cont87/clinit_post2.stderr: the NCDFE re-raise
+    // searched the try table at the ADVANCED pc_ and escaped the app's
+    // covering try, killing the boot). The F-NEW-215 NCDFE law therefore
+    // applies only to uses that observe a PREVIOUSLY recorded failure with
+    // no exception in flight; the triggering use delivers the clinit's own
+    // exception at its covering handler.
+    bool clinit_exc_already_in_flight() const {
+        return exc_redirect_pending_ || frame_unwind_exception_valid_ ||
+               pending_exception_.is_null == false;
+    }
+
+    // M3 FIX-M3-012 (§14 reflection identity): Package object identity —
+    // one heap object per dotted package name, so Class.getPackage() is
+    // referentially stable across calls (AOSP packages are classloader-
+    // scoped singletons) and Package.getName() reads the stored name.
+    std::map<std::string, uint32_t> package_object_ids_;
+
+    // EXP-053: Ensure a class is initialized before accessing its static
+    // fields. If the class has a <clinit> method and has not been marked
+    // initialized, execute <clinit> recursively, then mark it.
+    // Returns true if the class is initialized (or initialization was
+    // attempted without crashing).
+    bool ensure_class_initialized(const std::string& class_descriptor);
+
+    DalvikExecutionResult* current_result_ = nullptr;
+    // config_ moved to public section above
+    
+    bool verbose_ = false;
+
+    // EXP-071: APK path, open_assets_, and current_invoke_is_static_ are
+    // declared earlier in this class (lines ~1624-1640). The duplicate
+    // declarations that were here were removed in EXP-075 to fix a
+    // redeclaration error introduced by the EXP-071 merge.
+  // WAVE-6 (ISSUE-612): bridge_to_api arm extraction — verbatim bodies
+  bool bridge_arm_49937(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
+  bool bridge_arm_49792(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
+  bool bridge_arm_46205(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
+  bool bridge_arm_5892(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
+
+    // P0 SPLIT (bridge mega-TU): five domain dispatch ranges of
+    // bridge_to_api — verbatim-range extraction, chained in original
+    // scan order by the coordinator; frame contract in
+    // dex/dalvik_bridge_frame.h.
+  bool bridge_domain_jdk(DalvikBridgeFrame& fr);
+  bool bridge_domain_android_core(DalvikBridgeFrame& fr);
+  bool bridge_domain_ui_graphics(DalvikBridgeFrame& fr);
+  bool bridge_domain_app_runtime(DalvikBridgeFrame& fr);
+  bool bridge_domain_io_lang(DalvikBridgeFrame& fr);
+};
+
+
+} // namespace dalvik
+} // namespace miniandroid
+
+#endif  // MINIANDROID_DALVIK_ENGINE_IMPL_H

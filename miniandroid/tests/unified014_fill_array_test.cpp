@@ -26,7 +26,7 @@
 //   - case 4 old: length set to 3 (==len, passes) — regression guard
 //   - case 5 old: no throw, fallthrough marker created (FAIL)
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <iostream>

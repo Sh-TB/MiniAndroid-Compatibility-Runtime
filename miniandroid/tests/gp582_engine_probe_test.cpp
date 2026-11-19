@@ -17,7 +17,7 @@
 //   words.
 //
 // Harness pattern follows tests/mwr_opcode_probe_test.cpp (S211).
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cmath>
 #include <cstdint>

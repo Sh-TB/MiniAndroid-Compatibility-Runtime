@@ -20,7 +20,7 @@
 //       fix must not mask genuine null descriptors).
 //
 // Harness pattern follows tests/semantic_pass3_bridge_test.cpp (S-61).
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <cstdio>

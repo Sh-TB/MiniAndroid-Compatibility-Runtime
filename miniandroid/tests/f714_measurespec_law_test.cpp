@@ -18,7 +18,7 @@
 //   T6  makeSafeMeasureSpec(1080, UNSPECIFIED) == 0 (AOSP safety clamp).
 //
 // Harness pattern follows tests/f709_filedescriptor_law_test.cpp (S-61).
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <cstdio>

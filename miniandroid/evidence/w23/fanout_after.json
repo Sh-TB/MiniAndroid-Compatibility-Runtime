@@ -1,0 +1,3665 @@
+[
+ {
+  "header": "third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 22,
+  "cascade_s": 306.0,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/diagnostics/trace_engine.cpp",
+   "src/diagnostics/trace_overlay.cpp",
+   "src/framework/bitmap_shadow.cpp",
+   "src/framework/canvas_shadow.cpp",
+   "src/framework/gl_surface_shadow.cpp",
+   "src/jni/dlopen_exec.cpp",
+   "src/jni/native_dep.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/dex_parser.h",
+  "fanout": 19,
+  "cascade_s": 294.3,
+  "tus": [
+   "src/dex/class_resolver.cpp",
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/dex_interpreter_batch.cpp",
+   "src/dex/dex_parser.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/class_resolver.h",
+  "fanout": 18,
+  "cascade_s": 290.4,
+  "tus": [
+   "src/dex/class_resolver.cpp",
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/dex_interpreter_batch.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 18,
+  "cascade_s": 290.4,
+  "tus": [
+   "src/dex/c7_package_index.cpp",
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/dex_interpreter_batch.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/c7_package_index.h",
+  "fanout": 17,
+  "cascade_s": 286.5,
+  "tus": [
+   "src/dex/c7_package_index.cpp",
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../apk/manifest_reader.h",
+  "fanout": 17,
+  "cascade_s": 286.5,
+  "tus": [
+   "src/dex/c7_package_index.cpp",
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../api/android_stubs.h",
+  "fanout": 17,
+  "cascade_s": 286.5,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/dex_interpreter_batch.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/dalvik_engine_types.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../runtime/runtime_metadata.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../runtime/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../runtime/vtable_dispatch.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/arsc_parser.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/res_config.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/res_id.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/attribute_set_store.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../storage/sqlite_shadow.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../storage/../framework/shadow_registry.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../storage/data_root.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/adapter_scrap_bin.h",
+  "fanout": 16,
+  "cascade_s": 282.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/trace_exporter.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/dalvik_engine_impl.h",
+  "fanout": 15,
+  "cascade_s": 278.7,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/mutf8.h",
+  "fanout": 15,
+  "cascade_s": 227.9,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp",
+   "src/dex/dex_parser.cpp",
+   "src/dex/mutf8.cpp",
+   "src/resources/string_pool.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/file_io_trace.h",
+  "fanout": 13,
+  "cascade_s": 220.1,
+  "tus": [
+   "src/dex/c7_package_index.cpp",
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../api/http_client.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../audio/audio_engine.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/gfx_trace.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/trace_engine.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/runtime_event.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/mem_probe.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/click_audit.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/crash_forensics.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/gfx_provenance.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../diagnostics/install_inspection.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../jni/jni_bridge.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../jni/dlopen_exec.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../fonts/text_shaper.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../fonts/../renderer/software_renderer.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../fonts/../renderer/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/shadow_registry.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../webview/webview_engine.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../webview/canvas2d.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../webview/../renderer/software_renderer.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../webview/html_dom.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/choreographer_shadow.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/dialog_shadow.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/canvas_shadow.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/../renderer/software_renderer.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/heap_adapter.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/../dex/dalvik_engine_impl.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/bitmap_shadow.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/view_ancestry.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/resource_runtime.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/axml_parser.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/layout_inflater.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/../framework/view_ancestry.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/../framework/android_shadows.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/../apk/apk_parser.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/../apk/manifest_reader.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/theme_engine.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/font_family.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/plurals.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/dalvik_engine_internal.h",
+  "fanout": 12,
+  "cascade_s": 216.2,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_engine_tail.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../framework/android_shadows.h",
+  "fanout": 11,
+  "cascade_s": 212.3,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "src/dex/dalvik_engine_core.cpp",
+   "src/dex/dalvik_engine_invoke.cpp",
+   "src/dex/dalvik_interpreter.cpp",
+   "src/dex/dalvik_opcodes.cpp",
+   "src/dex/dalvik_opcodes_invoke.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/shadow_registry.h",
+  "fanout": 29,
+  "cascade_s": 163.9,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/animator_shadow.cpp",
+   "src/framework/atomic_shadow.cpp",
+   "src/framework/bitmap_shadow.cpp",
+   "src/framework/canvas_shadow.cpp",
+   "src/framework/choreographer_shadow.cpp",
+   "src/framework/clipboard_shadow.cpp",
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/display_shadow.cpp",
+   "src/framework/executor_shadow.cpp",
+   "src/framework/gesture_detector_shadow.cpp",
+   "src/framework/gl_surface_shadow.cpp",
+   "src/framework/kotlin_shadow.cpp",
+   "src/framework/locale_insets_shadow.cpp",
+   "src/framework/locks_shadow.cpp",
+   "src/framework/matrix_shadow.cpp",
+   "src/framework/pending_intent_shadow.cpp",
+   "src/framework/scroller_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/framework/state_list.cpp",
+   "src/framework/surface_view_shadow.cpp",
+   "src/framework/task_stack_builder_shadow.cpp",
+   "src/framework/touch_dispatcher.cpp",
+   "src/framework/velocity_tracker.cpp",
+   "src/framework/window_insets_shadow.cpp",
+   "src/jni/ma_native_bridge.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/dalvik_bridge_frame.h",
+  "fanout": 6,
+  "cascade_s": 140.6,
+  "tus": [
+   "src/dex/dalvik_bridge.cpp",
+   "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "src/dex/dalvik_bridge_domain_ui_graphics.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/android_shadows.h",
+  "fanout": 13,
+  "cascade_s": 101.5,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/executor_shadow.cpp",
+   "src/framework/locks_shadow.cpp",
+   "src/framework/pending_intent_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/framework/state_list.cpp",
+   "src/framework/task_stack_builder_shadow.cpp",
+   "src/framework/touch_dispatcher.cpp",
+   "src/main.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/adapter_scrap_bin.h",
+  "fanout": 11,
+  "cascade_s": 93.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/executor_shadow.cpp",
+   "src/framework/locks_shadow.cpp",
+   "src/framework/pending_intent_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/framework/state_list.cpp",
+   "src/framework/touch_dispatcher.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/apk/manifest_reader.h",
+  "fanout": 6,
+  "cascade_s": 74.2,
+  "tus": [
+   "src/apk/apk_parser.cpp",
+   "src/apk/manifest_reader.cpp",
+   "src/main.cpp",
+   "src/resources/resource_parser.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/trace_engine.h",
+  "fanout": 6,
+  "cascade_s": 74.2,
+  "tus": [
+   "src/diagnostics/trace_engine.cpp",
+   "src/diagnostics/trace_overlay.cpp",
+   "src/framework/gl_surface_shadow.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/runtime_event.h",
+  "fanout": 6,
+  "cascade_s": 74.2,
+  "tus": [
+   "src/diagnostics/trace_engine.cpp",
+   "src/diagnostics/trace_overlay.cpp",
+   "src/framework/gl_surface_shadow.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 6,
+  "cascade_s": 74.2,
+  "tus": [
+   "src/diagnostics/trace_engine.cpp",
+   "src/diagnostics/trace_overlay.cpp",
+   "src/framework/gl_surface_shadow.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/software_renderer.h",
+  "fanout": 6,
+  "cascade_s": 74.2,
+  "tus": [
+   "src/main.cpp",
+   "src/renderer/gif_decoder.cpp",
+   "src/renderer/software_renderer.cpp",
+   "src/renderer/vector_decode.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/apk/apk_parser.h",
+  "fanout": 5,
+  "cascade_s": 70.3,
+  "tus": [
+   "src/apk/apk_parser.cpp",
+   "src/main.cpp",
+   "src/resources/resource_parser.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/heap_adapter.h",
+  "fanout": 3,
+  "cascade_s": 62.5,
+  "tus": [
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/dalvik_engine_impl.h",
+  "fanout": 3,
+  "cascade_s": 62.5,
+  "tus": [
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 5,
+  "cascade_s": 53.6,
+  "tus": [
+   "src/main.cpp",
+   "src/renderer/gif_decoder.cpp",
+   "src/renderer/software_renderer.cpp",
+   "src/renderer/vector_decode.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 5,
+  "cascade_s": 53.6,
+  "tus": [
+   "src/framework/lifecycle_controller.cpp",
+   "src/framework/touch_dispatcher.cpp",
+   "src/main.cpp",
+   "src/runtime/execution_engine.cpp",
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/gif_decoder.h",
+  "fanout": 4,
+  "cascade_s": 49.7,
+  "tus": [
+   "src/main.cpp",
+   "src/renderer/gif_decoder.cpp",
+   "src/renderer/software_renderer.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/state_list.h",
+  "fanout": 4,
+  "cascade_s": 49.7,
+  "tus": [
+   "src/framework/state_list.cpp",
+   "src/main.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/touch_dispatcher.h",
+  "fanout": 3,
+  "cascade_s": 45.8,
+  "tus": [
+   "src/framework/touch_dispatcher.cpp",
+   "src/main.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/lifecycle_controller.h",
+  "fanout": 3,
+  "cascade_s": 45.8,
+  "tus": [
+   "src/framework/lifecycle_controller.cpp",
+   "src/main.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/route_law.h",
+  "fanout": 3,
+  "cascade_s": 45.8,
+  "tus": [
+   "src/main.cpp",
+   "src/runtime/execution_engine.cpp",
+   "src/runtime/route_law.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../renderer/software_renderer.h",
+  "fanout": 7,
+  "cascade_s": 44.0,
+  "tus": [
+   "src/framework/bitmap_shadow.cpp",
+   "src/framework/canvas_shadow.cpp",
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/framework/surface_view_shadow.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/execution_engine.h",
+  "fanout": 2,
+  "cascade_s": 41.9,
+  "tus": [
+   "src/main.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/api/android_stubs.h",
+  "fanout": 2,
+  "cascade_s": 41.9,
+  "tus": [
+   "src/main.cpp",
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../renderer/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 6,
+  "cascade_s": 40.1,
+  "tus": [
+   "src/framework/bitmap_shadow.cpp",
+   "src/framework/canvas_shadow.cpp",
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/framework/surface_view_shadow.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../apk/manifest_reader.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../dex/trace_exporter.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../dex/dalvik_engine_types.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../diagnostics/click_audit.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../diagnostics/gfx_provenance.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../diagnostics/gfx_trace.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../diagnostics/trace_engine.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../diagnostics/file_io_trace.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../storage/data_root.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../diagnostics/trace_overlay.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../diagnostics/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../renderer/gif_decoder.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../fonts/text_shaper.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../fonts/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/resource_runtime.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/arsc_parser.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/axml_parser.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/layout_inflater.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/../framework/view_ancestry.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/../framework/android_shadows.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/../apk/apk_parser.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/theme_engine.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/res_id.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../resources/res_config.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/android_shadows.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/scroller_shadow.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/shadow_registry.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/gesture_detector_shadow.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/velocity_tracker.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../webview/webview_engine.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../webview/canvas2d.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../webview/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../webview/html_dom.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/dialog_shadow.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/gl_surface_shadow.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../gles/pgl_backend.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/pending_intent_shadow.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/task_stack_builder_shadow.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/../framework/shadow_registry.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/../framework/android_shadows.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/choreographer_shadow.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/canvas_shadow.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/bitmap_shadow.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../framework/heap_adapter.h",
+  "fanout": 1,
+  "cascade_s": 38.0,
+  "tus": [
+   "src/runtime/execution_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/canvas_shadow.h",
+  "fanout": 5,
+  "cascade_s": 36.2,
+  "tus": [
+   "src/framework/canvas_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/framework/surface_view_shadow.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/res_config.h",
+  "fanout": 9,
+  "cascade_s": 35.1,
+  "tus": [
+   "src/apk/manifest_reader.cpp",
+   "src/resources/arsc_parser.cpp",
+   "src/resources/axml_parser.cpp",
+   "src/resources/font_family.cpp",
+   "src/resources/layout_inflater.cpp",
+   "src/resources/res_config.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/res_id.h",
+  "fanout": 9,
+  "cascade_s": 35.1,
+  "tus": [
+   "src/apk/manifest_reader.cpp",
+   "src/resources/arsc_parser.cpp",
+   "src/resources/axml_parser.cpp",
+   "src/resources/font_family.cpp",
+   "src/resources/layout_inflater.cpp",
+   "src/resources/res_id.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/data_root.h",
+  "fanout": 4,
+  "cascade_s": 32.3,
+  "tus": [
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp",
+   "src/storage/data_root.cpp",
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/dialog_shadow.h",
+  "fanout": 4,
+  "cascade_s": 32.3,
+  "tus": [
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/clipboard_shadow.h",
+  "fanout": 4,
+  "cascade_s": 32.3,
+  "tus": [
+   "src/framework/clipboard_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/pending_intent_shadow.h",
+  "fanout": 4,
+  "cascade_s": 32.3,
+  "tus": [
+   "src/framework/pending_intent_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/framework/task_stack_builder_shadow.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/arsc_parser.h",
+  "fanout": 8,
+  "cascade_s": 31.2,
+  "tus": [
+   "src/apk/manifest_reader.cpp",
+   "src/resources/arsc_parser.cpp",
+   "src/resources/axml_parser.cpp",
+   "src/resources/font_family.cpp",
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/object_model.h",
+  "fanout": 3,
+  "cascade_s": 28.4,
+  "tus": [
+   "src/renderer/software_renderer.cpp",
+   "src/resources/resource_parser.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 3,
+  "cascade_s": 28.4,
+  "tus": [
+   "src/renderer/software_renderer.cpp",
+   "src/resources/resource_parser.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/jni/jni_bridge.h",
+  "fanout": 2,
+  "cascade_s": 24.5,
+  "tus": [
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/jni/telegram_sqlite_jni.h",
+  "fanout": 2,
+  "cascade_s": 24.5,
+  "tus": [
+   "src/main.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/resource_parser.h",
+  "fanout": 2,
+  "cascade_s": 24.5,
+  "tus": [
+   "src/resources/resource_parser.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 2,
+  "cascade_s": 24.5,
+  "tus": [
+   "src/resources/resource_parser.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/dex_interpreter_batch.h",
+  "fanout": 2,
+  "cascade_s": 24.5,
+  "tus": [
+   "src/dex/dex_interpreter_batch.cpp",
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/axml_parser.h",
+  "fanout": 6,
+  "cascade_s": 23.4,
+  "tus": [
+   "src/resources/axml_parser.cpp",
+   "src/resources/font_family.cpp",
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/runtime/application_runtime.h",
+  "fanout": 1,
+  "cascade_s": 20.6,
+  "tus": [
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/mem_probe.h",
+  "fanout": 1,
+  "cascade_s": 20.6,
+  "tus": [
+   "src/runtime/application_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/../src/compat/glibc_mallinfo2.h",
+  "fanout": 1,
+  "cascade_s": 20.4,
+  "tus": [
+   "src/dex/dalvik_interpreter.cpp"
+  ]
+ },
+ {
+  "header": "src/gles/pgl_backend.h",
+  "fanout": 5,
+  "cascade_s": 19.5,
+  "tus": [
+   "src/framework/gl_surface_shadow.cpp",
+   "src/gles/gl_copy_bridge.cpp",
+   "src/gles/gles20_bridge.cpp",
+   "src/gles/pgl_backend.cpp",
+   "src/jni/ma_native_bridge.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/bitmap_shadow.h",
+  "fanout": 5,
+  "cascade_s": 19.5,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/bitmap_shadow.cpp",
+   "src/framework/canvas_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/jni/ma_native_bridge.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/string_pool.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/apk/manifest_reader.cpp",
+   "src/resources/arsc_parser.cpp",
+   "src/resources/axml_parser.cpp",
+   "src/resources/string_pool.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/layout_inflater.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/attribute_set_store.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../framework/view_ancestry.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../framework/android_shadows.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../framework/shadow_registry.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../framework/adapter_scrap_bin.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../apk/apk_parser.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../apk/manifest_reader.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp",
+   "src/resources/s132_svg_reader.cpp",
+   "src/resources/vector_inflater.cpp"
+  ]
+ },
+ {
+  "header": "third_party/portablegl/portablegl.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/framework/gl_surface_shadow.cpp",
+   "src/gles/gl_copy_bridge.cpp",
+   "src/gles/gles20_bridge.cpp",
+   "src/gles/pgl_backend.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/matrix_shadow.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/bitmap_shadow.cpp",
+   "src/framework/matrix_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/res_config.h",
+  "fanout": 4,
+  "cascade_s": 15.6,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/bitmap_shadow.cpp",
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/state_list.cpp"
+  ]
+ },
+ {
+  "header": "src/jni/dlopen_exec.h",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/framework/gl_surface_shadow.cpp",
+   "src/jni/dlopen_exec.cpp",
+   "src/main.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/canvas2d.h",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/webview/canvas2d.cpp",
+   "src/webview/html_dom.cpp",
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../renderer/software_renderer.h",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/webview/canvas2d.cpp",
+   "src/webview/html_dom.cpp",
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../renderer/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/webview/canvas2d.cpp",
+   "src/webview/html_dom.cpp",
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/fonts/text_shaper.h",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/fonts/text_shaper.cpp",
+   "src/webview/canvas2d.cpp",
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/fonts/../renderer/software_renderer.h",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/fonts/text_shaper.cpp",
+   "src/webview/canvas2d.cpp",
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/arsc_parser.h",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/state_list.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/res_id.h",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/state_list.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/axml_parser.h",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp",
+   "src/framework/state_list.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/velocity_tracker.h",
+  "fanout": 3,
+  "cascade_s": 11.7,
+  "tus": [
+   "src/framework/gesture_detector_shadow.cpp",
+   "src/framework/shadow_registry.cpp",
+   "src/framework/velocity_tracker.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/crash_forensics.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/diagnostics/crash_forensics.cpp",
+   "src/main.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/install_inspection.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/diagnostics/install_inspection.cpp",
+   "src/main.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/vector_decode.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/renderer/software_renderer.cpp",
+   "src/renderer/vector_decode.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/resource_runtime.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/theme_engine.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/resources/layout_inflater.cpp",
+   "src/resources/resource_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/sqlite_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/storage/data_root.cpp",
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../framework/shadow_registry.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/storage/data_root.cpp",
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/file_sandbox.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/api/application_context.cpp",
+   "src/storage/file_sandbox.cpp"
+  ]
+ },
+ {
+  "header": "src/gles/gles20_bridge.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/gl_surface_shadow.cpp",
+   "src/gles/gles20_bridge.cpp"
+  ]
+ },
+ {
+  "header": "src/jni/native_dep.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/jni/dlopen_exec.cpp",
+   "src/jni/native_dep.cpp"
+  ]
+ },
+ {
+  "header": "src/jni/../diagnostics/gfx_trace.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/jni/dlopen_exec.cpp",
+   "src/jni/native_dep.cpp"
+  ]
+ },
+ {
+  "header": "src/jni/../diagnostics/trace_engine.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/jni/dlopen_exec.cpp",
+   "src/jni/native_dep.cpp"
+  ]
+ },
+ {
+  "header": "src/jni/../diagnostics/runtime_event.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/jni/dlopen_exec.cpp",
+   "src/jni/native_dep.cpp"
+  ]
+ },
+ {
+  "header": "src/jni/../diagnostics/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/jni/dlopen_exec.cpp",
+   "src/jni/native_dep.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/html_dom.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/webview/html_dom.cpp",
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/api/shared_prefs.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/api/application_context.cpp",
+   "src/api/shared_prefs.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/task_stack_builder_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/shadow_registry.cpp",
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../framework/shadow_registry.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/shadow_registry.cpp",
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../framework/android_shadows.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/shadow_registry.cpp",
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../diagnostics/file_io_trace.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/pending_intent_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/kotlin_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/kotlin_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/window_insets_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/shadow_registry.cpp",
+   "src/framework/window_insets_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/resource_runtime.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/layout_inflater.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/attribute_set_store.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/../framework/view_ancestry.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/../framework/android_shadows.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/../apk/apk_parser.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/../apk/manifest_reader.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../resources/theme_engine.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/android_shadows.cpp",
+   "src/framework/dialog_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/gl_surface_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/gl_surface_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/scroller_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/scroller_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/gesture_detector_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/gesture_detector_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/locale_insets_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/locale_insets_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/display_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/display_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/surface_view_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/shadow_registry.cpp",
+   "src/framework/surface_view_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/animator_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/animator_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/locks_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/locks_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/atomic_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/atomic_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/executor_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/executor_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/choreographer_shadow.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/choreographer_shadow.cpp",
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../diagnostics/gfx_provenance.h",
+  "fanout": 2,
+  "cascade_s": 7.8,
+  "tus": [
+   "src/framework/bitmap_shadow.cpp",
+   "src/framework/canvas_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/../../third_party/stb/stb_image.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/renderer/gif_decoder.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/../fonts/text_shaper.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/renderer/software_renderer.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/../fonts/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/renderer/software_renderer.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/bitmap_font_data.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/renderer/software_renderer.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/../resources/axml_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/renderer/vector_decode.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/../resources/arsc_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/renderer/vector_decode.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/../resources/res_config.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/renderer/vector_decode.cpp"
+  ]
+ },
+ {
+  "header": "src/renderer/../resources/res_id.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/renderer/vector_decode.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/font_family.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/resources/font_family.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/framework_theme_attrs.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/resources/resource_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/material_you_palette.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/resources/resource_runtime.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/plurals.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/resources/plurals.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../fonts/text_shaper.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/resources/layout_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../fonts/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/resources/layout_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../fonts/../renderer/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/resources/layout_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/resources/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/resources/layout_inflater.cpp"
+  ]
+ },
+ {
+  "header": "src/audio/audio_engine.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/audio/audio_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/encoded_value.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/dex/dex_parser.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/trace_exporter.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/dex/trace_exporter.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/../framework/shadow_registry.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/dex/dalvik_engine_tail.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../resources/../framework/adapter_scrap_bin.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/dex/dalvik_engine_tail.cpp"
+  ]
+ },
+ {
+  "header": "src/dex/../apk/apk_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/dex/c7_package_index.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../diagnostics/file_io_trace.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/dalvik_engine_types.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/class_resolver.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/dex_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/c7_package_index.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../apk/manifest_reader.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../runtime/runtime_metadata.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../runtime/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../runtime/vtable_dispatch.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../api/android_stubs.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../resources/arsc_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../resources/res_config.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../resources/res_id.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../resources/attribute_set_store.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../storage/sqlite_shadow.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../storage/data_root.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../framework/adapter_scrap_bin.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/storage/../dex/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/storage/sqlite_shadow.cpp"
+  ]
+ },
+ {
+  "header": "third_party/nlohmann_json/include/../../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/runtime/route_law.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/webview_engine.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/resource_runtime.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/arsc_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/res_config.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/res_id.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/axml_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/layout_inflater.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/attribute_set_store.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/../framework/view_ancestry.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/../framework/android_shadows.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/../framework/shadow_registry.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/../framework/adapter_scrap_bin.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/../apk/apk_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/../apk/manifest_reader.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../resources/theme_engine.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../api/http_client.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/../third_party/quickjs/quickjs.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/webview/../../third_party/stb/stb_image.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/webview/webview_engine.cpp"
+  ]
+ },
+ {
+  "header": "src/api/../storage/data_root.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/api/shared_prefs.cpp"
+  ]
+ },
+ {
+  "header": "src/api/../diagnostics/file_io_trace.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/api/shared_prefs.cpp"
+  ]
+ },
+ {
+  "header": "src/api/android_context.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/api/application_context.cpp"
+  ]
+ },
+ {
+  "header": "src/api/http_client.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/api/http_client.cpp"
+  ]
+ },
+ {
+  "header": "src/fonts/../renderer/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/fonts/text_shaper.cpp"
+  ]
+ },
+ {
+  "header": "src/fonts/../diagnostics/file_io_trace.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/fonts/text_shaper.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/../apk/apk_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/diagnostics/install_inspection.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/../apk/manifest_reader.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/diagnostics/install_inspection.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/../dex/dex_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/diagnostics/install_inspection.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/../resources/arsc_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/diagnostics/install_inspection.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/../resources/res_config.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/diagnostics/install_inspection.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/../resources/res_id.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/diagnostics/install_inspection.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/trace_overlay.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/diagnostics/trace_overlay.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/diagnostics/trace_overlay.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/../renderer/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/diagnostics/trace_overlay.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../framework/adapter_scrap_bin.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/dalvik_engine_types.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/class_resolver.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/dex_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/c7_package_index.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../apk/manifest_reader.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../runtime/runtime_metadata.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../runtime/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../runtime/vtable_dispatch.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../api/android_stubs.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../resources/arsc_parser.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../resources/res_config.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../resources/res_id.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../resources/attribute_set_store.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../storage/sqlite_shadow.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../storage/../framework/shadow_registry.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../storage/data_root.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../framework/adapter_scrap_bin.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../dex/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/task_stack_builder_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/key_event_shadow.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/key_event_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/diagnostics/gfx_trace.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/gl_surface_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../storage/sqlite_shadow.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../storage/../framework/shadow_registry.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/shadow_registry.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../fonts/text_shaper.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/canvas_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../fonts/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/canvas_shadow.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../webview/webview_engine.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/android_shadows.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../webview/canvas2d.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/android_shadows.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../webview/../renderer/software_renderer.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/android_shadows.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../webview/../renderer/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/android_shadows.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../webview/html_dom.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/android_shadows.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../api/http_client.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/android_shadows.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../../third_party/nlohmann_json/include/nlohmann/json.hpp",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/android_shadows.cpp"
+  ]
+ },
+ {
+  "header": "src/framework/../storage/data_root.h",
+  "fanout": 1,
+  "cascade_s": 3.9,
+  "tus": [
+   "src/framework/bitmap_shadow.cpp"
+  ]
+ }
+]

@@ -10,7 +10,7 @@
  * - API bridge integration
  */
 
-#include "dalvik_engine.h"
+#include "dalvik_engine_impl.h"
 #include "dex_parser.h"
 #include "mutf8.h"
 #include "../src/compat/glibc_mallinfo2.h"  // W15 #627 D-03/H-03: mallinfo2 fallback (glibc < 2.33)
@@ -6351,3 +6351,9 @@ bool DalvikExecutionEngine::execute_move_result_object(uint32_t pc, InstructionT
 
 } // namespace dalvik
 } // namespace miniandroid
+// W23-BENCH op=C run=1 t=1795119412
+// W23-BENCH op=C run=2 t=1795119747
+// W23-BENCH op=C run=3 t=1795119773
+// W23-BENCH op=C run=1 t=1795120025
+// W23-BENCH op=C run=2 t=1795120039
+// W23-BENCH op=C run=3 t=1795120052

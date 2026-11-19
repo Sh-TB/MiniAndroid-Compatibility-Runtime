@@ -22,7 +22,7 @@
 // Harness pattern follows tests/semantic_long_cmp_conv_test.cpp and
 // tests/unified0113_typed_catch_test.cpp.
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <iostream>

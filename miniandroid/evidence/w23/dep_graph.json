@@ -1,0 +1,1538 @@
+{
+ "headers": [
+  {
+   "header": "src/dex/dalvik_engine.h",
+   "lines": 4744,
+   "fanout": 14,
+   "cascade_s": 240.7,
+   "max_tu_s": 32.45,
+   "tus": [
+    "src/dex/dalvik_bridge.cpp",
+    "src/dex/dalvik_bridge_domain_android_core.cpp",
+    "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+    "src/dex/dalvik_bridge_domain_io_lang.cpp",
+    "src/dex/dalvik_bridge_domain_jdk.cpp",
+    "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+    "src/dex/dalvik_engine_core.cpp",
+    "src/dex/dalvik_engine_invoke.cpp",
+    "src/dex/dalvik_engine_tail.cpp",
+    "src/dex/dalvik_interpreter.cpp",
+    "src/dex/dalvik_opcodes.cpp",
+    "src/dex/dalvik_opcodes_invoke.cpp",
+    "src/dex/dalvik_value_glue.cpp",
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/dex/dalvik_engine_internal.h",
+   "lines": 583,
+   "fanout": 12,
+   "cascade_s": 216.2,
+   "max_tu_s": 32.45,
+   "tus": [
+    "src/dex/dalvik_bridge.cpp",
+    "src/dex/dalvik_bridge_domain_android_core.cpp",
+    "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+    "src/dex/dalvik_bridge_domain_io_lang.cpp",
+    "src/dex/dalvik_bridge_domain_jdk.cpp",
+    "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+    "src/dex/dalvik_engine_core.cpp",
+    "src/dex/dalvik_engine_invoke.cpp",
+    "src/dex/dalvik_engine_tail.cpp",
+    "src/dex/dalvik_interpreter.cpp",
+    "src/dex/dalvik_opcodes.cpp",
+    "src/dex/dalvik_opcodes_invoke.cpp"
+   ]
+  },
+  {
+   "header": "src/dex/dalvik_bridge_frame.h",
+   "lines": 190,
+   "fanout": 6,
+   "cascade_s": 140.6,
+   "max_tu_s": 32.45,
+   "tus": [
+    "src/dex/dalvik_bridge.cpp",
+    "src/dex/dalvik_bridge_domain_android_core.cpp",
+    "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+    "src/dex/dalvik_bridge_domain_io_lang.cpp",
+    "src/dex/dalvik_bridge_domain_jdk.cpp",
+    "src/dex/dalvik_bridge_domain_ui_graphics.cpp"
+   ]
+  },
+  {
+   "header": "src/runtime/object_model.h",
+   "lines": 1107,
+   "fanout": 3,
+   "cascade_s": 28.4,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/renderer/software_renderer.cpp",
+    "src/resources/resource_parser.cpp",
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/resources/resource_parser.h",
+   "lines": 573,
+   "fanout": 2,
+   "cascade_s": 24.5,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/resources/resource_parser.cpp",
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/apk/apk_parser.h",
+   "lines": 282,
+   "fanout": 2,
+   "cascade_s": 24.5,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/resources/resource_parser.cpp",
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/renderer/software_renderer.h",
+   "lines": 700,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/dex/dex_parser.h",
+   "lines": 484,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/dex/class_resolver.h",
+   "lines": 185,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/dex/dex_interpreter_batch.h",
+   "lines": 640,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/storage/data_root.h",
+   "lines": 163,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/apk/manifest_reader.h",
+   "lines": 580,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/jni/jni_bridge.h",
+   "lines": 743,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/jni/telegram_sqlite_jni.h",
+   "lines": 341,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/diagnostics/mem_probe.h",
+   "lines": 27,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/diagnostics/trace_engine.h",
+   "lines": 440,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/framework/canvas_shadow.h",
+   "lines": 451,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/framework/shadow_registry.h",
+   "lines": 515,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/framework/dialog_shadow.h",
+   "lines": 252,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/framework/pending_intent_shadow.h",
+   "lines": 155,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/framework/clipboard_shadow.h",
+   "lines": 60,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/framework/heap_adapter.h",
+   "lines": 410,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/framework/android_shadows.h",
+   "lines": 3241,
+   "fanout": 1,
+   "cascade_s": 20.6,
+   "max_tu_s": 20.64,
+   "tus": [
+    "src/runtime/application_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/compat/glibc_mallinfo2.h",
+   "lines": 50,
+   "fanout": 1,
+   "cascade_s": 20.4,
+   "max_tu_s": 20.43,
+   "tus": [
+    "src/dex/dalvik_interpreter.cpp"
+   ]
+  },
+  {
+   "header": "src/gles/pgl_backend.h",
+   "lines": 113,
+   "fanout": 2,
+   "cascade_s": 7.8,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/framework/gl_surface_shadow.cpp",
+    "src/jni/ma_native_bridge.cpp"
+   ]
+  },
+  {
+   "header": "src/fonts/text_shaper.h",
+   "lines": 366,
+   "fanout": 2,
+   "cascade_s": 7.8,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/webview/canvas2d.cpp",
+    "src/webview/webview_engine.cpp"
+   ]
+  },
+  {
+   "header": "src/resources/arsc_parser.h",
+   "lines": 449,
+   "fanout": 1,
+   "cascade_s": 3.9,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/apk/manifest_reader.cpp"
+   ]
+  },
+  {
+   "header": "src/resources/string_pool.h",
+   "lines": 60,
+   "fanout": 1,
+   "cascade_s": 3.9,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/apk/manifest_reader.cpp"
+   ]
+  },
+  {
+   "header": "src/dex/mutf8.h",
+   "lines": 106,
+   "fanout": 1,
+   "cascade_s": 3.9,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/resources/string_pool.cpp"
+   ]
+  },
+  {
+   "header": "src/storage/file_sandbox.h",
+   "lines": 607,
+   "fanout": 1,
+   "cascade_s": 3.9,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/api/application_context.cpp"
+   ]
+  },
+  {
+   "header": "src/gles/gles20_bridge.h",
+   "lines": 186,
+   "fanout": 1,
+   "cascade_s": 3.9,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/framework/gl_surface_shadow.cpp"
+   ]
+  },
+  {
+   "header": "src/jni/dlopen_exec.h",
+   "lines": 225,
+   "fanout": 1,
+   "cascade_s": 3.9,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/framework/gl_surface_shadow.cpp"
+   ]
+  },
+  {
+   "header": "src/diagnostics/gfx_trace.h",
+   "lines": 286,
+   "fanout": 1,
+   "cascade_s": 3.9,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/framework/gl_surface_shadow.cpp"
+   ]
+  },
+  {
+   "header": "src/framework/bitmap_shadow.h",
+   "lines": 280,
+   "fanout": 1,
+   "cascade_s": 3.9,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/jni/ma_native_bridge.cpp"
+   ]
+  },
+  {
+   "header": "src/framework/state_list.h",
+   "lines": 62,
+   "fanout": 1,
+   "cascade_s": 3.9,
+   "max_tu_s": 3.9,
+   "tus": [
+    "src/resources/resource_runtime.cpp"
+   ]
+  },
+  {
+   "header": "src/renderer/gif_decoder.h",
+   "lines": 42,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/renderer/vector_decode.h",
+   "lines": 56,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/renderer/bitmap_font_data.h",
+   "lines": 2028,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/renderer/view_renderer.h",
+   "lines": 83,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/resource_runtime.h",
+   "lines": 387,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/res_id.h",
+   "lines": 176,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/res_config.h",
+   "lines": 145,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/framework_theme_attrs.h",
+   "lines": 65,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/attribute_set_store.h",
+   "lines": 90,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/real_layout.h",
+   "lines": 123,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/plurals.h",
+   "lines": 60,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/theme_engine.h",
+   "lines": 454,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/layout_inflater.h",
+   "lines": 548,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/axml_parser.h",
+   "lines": 80,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/font_family.h",
+   "lines": 87,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/resources/material_you_palette.h",
+   "lines": 222,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/audio/audio_engine.h",
+   "lines": 154,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/dex/execution_observatory.h",
+   "lines": 637,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/dex/encoded_value.h",
+   "lines": 187,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/dex/exception_system.h",
+   "lines": 449,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/dex/c7_package_index.h",
+   "lines": 254,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/dex/execution_guard.h",
+   "lines": 351,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/dex/trace_exporter.h",
+   "lines": 114,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/dex/api_dispatcher.h",
+   "lines": 463,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/storage/sqlite_shadow.h",
+   "lines": 200,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/runtime/execution_engine.h",
+   "lines": 478,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/runtime/runtime_metadata.h",
+   "lines": 1374,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/runtime/route_law.h",
+   "lines": 78,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/runtime/vtable_dispatch.h",
+   "lines": 778,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/runtime/application_runtime.h",
+   "lines": 775,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/games/tictactoe3d.h",
+   "lines": 423,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/jni/native_dep.h",
+   "lines": 96,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/webview/webview_engine.h",
+   "lines": 104,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/webview/html_dom.h",
+   "lines": 201,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/webview/canvas2d.h",
+   "lines": 174,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/api/android_context.h",
+   "lines": 598,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/api/android_stubs.h",
+   "lines": 667,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/api/http_client.h",
+   "lines": 63,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/api/shared_prefs.h",
+   "lines": 781,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/diagnostics/trace_overlay.h",
+   "lines": 58,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/diagnostics/crash_forensics.h",
+   "lines": 30,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/diagnostics/runtime_event.h",
+   "lines": 200,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/diagnostics/file_io_trace.h",
+   "lines": 143,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/diagnostics/click_audit.h",
+   "lines": 89,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/diagnostics/install_inspection.h",
+   "lines": 55,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/diagnostics/gfx_provenance.h",
+   "lines": 296,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/adapter_scrap_bin.h",
+   "lines": 88,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/view_ancestry.h",
+   "lines": 599,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/locale_insets_shadow.h",
+   "lines": 62,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/surface_view_shadow.h",
+   "lines": 61,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/key_event_shadow.h",
+   "lines": 75,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/window_insets_shadow.h",
+   "lines": 52,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/gesture_detector_shadow.h",
+   "lines": 127,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/matrix_shadow.h",
+   "lines": 76,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/velocity_tracker.h",
+   "lines": 157,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/scroller_shadow.h",
+   "lines": 193,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/kotlin_shadow.h",
+   "lines": 85,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/gl_surface_shadow.h",
+   "lines": 90,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/choreographer_shadow.h",
+   "lines": 144,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/executor_shadow.h",
+   "lines": 88,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/animator_shadow.h",
+   "lines": 31,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/display_shadow.h",
+   "lines": 48,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/atomic_shadow.h",
+   "lines": 134,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/task_stack_builder_shadow.h",
+   "lines": 108,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/lifecycle_controller.h",
+   "lines": 91,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/touch_dispatcher.h",
+   "lines": 216,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  },
+  {
+   "header": "src/framework/locks_shadow.h",
+   "lines": 105,
+   "fanout": 0,
+   "cascade_s": 0,
+   "max_tu_s": 0.0,
+   "tus": []
+  }
+ ],
+ "tus": [
+  {
+   "tu": "src/runtime/application_runtime.cpp",
+   "direct": 21,
+   "transitive_headers": 21,
+   "header_lines": 16093,
+   "own_seconds": 20.64
+  },
+  {
+   "tu": "src/dex/dalvik_bridge.cpp",
+   "direct": 8,
+   "transitive_headers": 3,
+   "header_lines": 5517,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/dalvik_bridge_domain_android_core.cpp",
+   "direct": 1,
+   "transitive_headers": 3,
+   "header_lines": 5517,
+   "own_seconds": 25.08
+  },
+  {
+   "tu": "src/dex/dalvik_bridge_domain_app_runtime.cpp",
+   "direct": 1,
+   "transitive_headers": 3,
+   "header_lines": 5517,
+   "own_seconds": 29.78
+  },
+  {
+   "tu": "src/dex/dalvik_bridge_domain_io_lang.cpp",
+   "direct": 1,
+   "transitive_headers": 3,
+   "header_lines": 5517,
+   "own_seconds": 28.12
+  },
+  {
+   "tu": "src/dex/dalvik_bridge_domain_jdk.cpp",
+   "direct": 1,
+   "transitive_headers": 3,
+   "header_lines": 5517,
+   "own_seconds": 21.28
+  },
+  {
+   "tu": "src/dex/dalvik_bridge_domain_ui_graphics.cpp",
+   "direct": 1,
+   "transitive_headers": 3,
+   "header_lines": 5517,
+   "own_seconds": 32.45
+  },
+  {
+   "tu": "src/dex/dalvik_interpreter.cpp",
+   "direct": 32,
+   "transitive_headers": 3,
+   "header_lines": 5377,
+   "own_seconds": 20.43
+  },
+  {
+   "tu": "src/dex/dalvik_engine_core.cpp",
+   "direct": 31,
+   "transitive_headers": 2,
+   "header_lines": 5327,
+   "own_seconds": 22.04
+  },
+  {
+   "tu": "src/dex/dalvik_engine_invoke.cpp",
+   "direct": 31,
+   "transitive_headers": 2,
+   "header_lines": 5327,
+   "own_seconds": 21.39
+  },
+  {
+   "tu": "src/dex/dalvik_engine_tail.cpp",
+   "direct": 30,
+   "transitive_headers": 2,
+   "header_lines": 5327,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/dalvik_opcodes.cpp",
+   "direct": 31,
+   "transitive_headers": 2,
+   "header_lines": 5327,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/dalvik_opcodes_invoke.cpp",
+   "direct": 31,
+   "transitive_headers": 2,
+   "header_lines": 5327,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/dalvik_value_glue.cpp",
+   "direct": 1,
+   "transitive_headers": 1,
+   "header_lines": 4744,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/resource_parser.cpp",
+   "direct": 3,
+   "transitive_headers": 3,
+   "header_lines": 1962,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/renderer/software_renderer.cpp",
+   "direct": 6,
+   "transitive_headers": 1,
+   "header_lines": 1107,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/gl_surface_shadow.cpp",
+   "direct": 5,
+   "transitive_headers": 4,
+   "header_lines": 810,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/api/application_context.cpp",
+   "direct": 3,
+   "transitive_headers": 1,
+   "header_lines": 607,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/apk/manifest_reader.cpp",
+   "direct": 3,
+   "transitive_headers": 2,
+   "header_lines": 509,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/jni/ma_native_bridge.cpp",
+   "direct": 2,
+   "transitive_headers": 2,
+   "header_lines": 393,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/webview/canvas2d.cpp",
+   "direct": 2,
+   "transitive_headers": 1,
+   "header_lines": 366,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/webview/webview_engine.cpp",
+   "direct": 7,
+   "transitive_headers": 1,
+   "header_lines": 366,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/string_pool.cpp",
+   "direct": 2,
+   "transitive_headers": 1,
+   "header_lines": 106,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/resource_runtime.cpp",
+   "direct": 5,
+   "transitive_headers": 1,
+   "header_lines": 62,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/api/http_client.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/api/shared_prefs.cpp",
+   "direct": 3,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/apk/apk_parser.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/audio/audio_engine.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/c7_package_index.cpp",
+   "direct": 4,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/class_resolver.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/dex_interpreter_batch.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/dex_parser.cpp",
+   "direct": 3,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/mutf8.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/dex/trace_exporter.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/diagnostics/crash_forensics.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/diagnostics/install_inspection.cpp",
+   "direct": 5,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/diagnostics/trace_engine.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/diagnostics/trace_overlay.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/fonts/text_shaper.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/android_shadows.cpp",
+   "direct": 10,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/animator_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/atomic_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/bitmap_shadow.cpp",
+   "direct": 6,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/canvas_shadow.cpp",
+   "direct": 5,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/choreographer_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/clipboard_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/dialog_shadow.cpp",
+   "direct": 4,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/display_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/executor_shadow.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/gesture_detector_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/key_event_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/kotlin_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/lifecycle_controller.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/locale_insets_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/locks_shadow.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/matrix_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/pending_intent_shadow.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/scroller_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/shadow_registry.cpp",
+   "direct": 24,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/state_list.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/surface_view_shadow.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/task_stack_builder_shadow.cpp",
+   "direct": 3,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/touch_dispatcher.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/velocity_tracker.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/framework/window_insets_shadow.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/gles/gl_copy_bridge.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/gles/gles20_bridge.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/gles/pgl_backend.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/jni/dlopen_exec.cpp",
+   "direct": 3,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/jni/native_dep.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/renderer/gif_decoder.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/renderer/vector_decode.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/arsc_parser.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/axml_parser.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/font_family.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/layout_inflater.cpp",
+   "direct": 5,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/plurals.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/res_config.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/res_id.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/s132_svg_reader.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/resources/vector_inflater.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/runtime/execution_engine.cpp",
+   "direct": 29,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 38.01
+  },
+  {
+   "tu": "src/runtime/route_law.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/storage/data_root.cpp",
+   "direct": 2,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/storage/file_sandbox.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/storage/sqlite_shadow.cpp",
+   "direct": 4,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  },
+  {
+   "tu": "src/webview/html_dom.cpp",
+   "direct": 1,
+   "transitive_headers": 0,
+   "header_lines": 0,
+   "own_seconds": 3.9
+  }
+ ],
+ "n_headers": 102,
+ "n_linked_tus": 87
+}

@@ -31,7 +31,7 @@
 // dispatch through the registered shadow; the 657 row is hand-assembled
 // Dalvik on a synthetic three-class DexReport (the s235 battery pattern).
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/framework/shadow_registry.h"
 #include "../src/framework/heap_adapter.h"
 #include "../src/framework/android_shadows.h"

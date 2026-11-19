@@ -7,7 +7,7 @@
 //      the AOSP message shape + available-columns list (OrThrow)
 // Shadow-level contract: real DatabaseShadow, real in-file sqlite db.
 #include "../src/storage/sqlite_shadow.h"
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 // W20-K test adapter: DalvikHeap behind the shadow HeapAllocator face.
 class TestHeapAdapter : public miniandroid::framework::HeapAllocator {
 public:

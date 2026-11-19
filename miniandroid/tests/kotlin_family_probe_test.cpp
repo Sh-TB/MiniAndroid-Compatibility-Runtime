@@ -51,7 +51,7 @@
 // override (JVMS invokeinterface; the D8 $default bridge is a plain static
 // call into that contract).
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/framework/shadow_registry.h"
 #include "../src/framework/heap_adapter.h"
 

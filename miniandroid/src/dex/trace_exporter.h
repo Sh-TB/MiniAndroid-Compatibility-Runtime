@@ -8,7 +8,7 @@
 #ifndef MINIANDROID_TRACE_EXPORTER_H
 #define MINIANDROID_TRACE_EXPORTER_H
 
-#include "dalvik_engine.h"
+#include "dalvik_engine_types.h"
 #include <string>
 #include <vector>
 #include <fstream>

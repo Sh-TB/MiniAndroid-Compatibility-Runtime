@@ -4,7 +4,7 @@
 #include "task_stack_builder_shadow.h"
 #include "pending_intent_shadow.h"
 
-#include "../dex/dalvik_engine.h"  // DalvikValue/DalvikType (the array-element law)
+#include "../dex/dalvik_engine_types.h"  // DalvikValue/DalvikType (the array-element law)
 
 #include <iostream>
 

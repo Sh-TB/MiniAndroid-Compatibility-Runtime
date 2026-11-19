@@ -1,0 +1,2 @@
+ 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN]
+ 0x000000000000001d (RUNPATH)            Library runpath: [$ORIGIN/..]

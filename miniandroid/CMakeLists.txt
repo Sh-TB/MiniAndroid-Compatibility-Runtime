@@ -324,9 +324,12 @@ add_executable(miniandroid_exp003a1_validate EXCLUDE_FROM_ALL
 target_link_libraries(miniandroid_exp003a1_validate PRIVATE miniandroid_core)
 
 # ============== EXP-003-BATCH (Minimal DEX Execution Engine) ==============
+# W23-06 (duplicate-compilation elimination): dex_interpreter_batch.cpp is in
+# core_sources.manifest and therefore already compiled into miniandroid_core —
+# listing it here compiled the TU twice per experiment build. The archive
+# provides the same symbols.
 add_executable(miniandroid_batch EXCLUDE_FROM_ALL
     src/exp003batch_main.cpp
-    src/dex/dex_interpreter_batch.cpp
 )
 
 target_link_libraries(miniandroid_batch PRIVATE miniandroid_core)
@@ -334,16 +337,15 @@ target_link_libraries(miniandroid_batch PRIVATE miniandroid_core)
 # ============== EXP-004 (Android Object Model Foundation) ==============
 add_executable(miniandroid_exp004 EXCLUDE_FROM_ALL
     src/exp004_main.cpp
-    src/dex/dex_interpreter_batch.cpp
 )
 
 target_link_libraries(miniandroid_exp004 PRIVATE miniandroid_core)
 
 # ============== EXP-005 (Minimal Software Rendering Pipeline) ==============
+# W23-06: software_renderer.cpp / vector_decode.cpp come from the core
+# archive (manifest TUs) — no per-target recompilation.
 add_executable(miniandroid_exp005 EXCLUDE_FROM_ALL
     src/exp005_main.cpp
-    src/renderer/software_renderer.cpp
-    src/renderer/vector_decode.cpp
 )
 
 target_link_libraries(miniandroid_exp005 PRIVATE miniandroid_core)
@@ -356,9 +358,10 @@ add_executable(miniandroid_exp006 EXCLUDE_FROM_ALL
 target_link_libraries(miniandroid_exp006 PRIVATE miniandroid_core)
 
 # ============== EXP-007→EXP-012 MEGA BATCH (Unified Runtime Integration) ==============
+# W23-06: application_runtime.cpp is a manifest TU in miniandroid_core —
+# the duplicate per-target listing compiled it twice.
 add_executable(miniandroid_megabatch EXCLUDE_FROM_ALL
     src/exp007_012_megabatch_main.cpp
-    src/runtime/application_runtime.cpp
 )
 
 target_link_libraries(miniandroid_megabatch PRIVATE miniandroid_core)
@@ -543,7 +546,6 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/exp018_main.cpp)  # BUILD-TRAIN: dead-
 add_executable(miniandroid_exp018
     src/exp018_main.cpp
     src/dex/dex_interpreter_exp018.cpp
-    src/runtime/application_runtime.cpp
 )
 
 target_link_libraries(miniandroid_exp018 PRIVATE miniandroid_core)
@@ -555,7 +557,6 @@ add_executable(miniandroid_exp019
     src/exp019_main.cpp
     src/runtime/runtime_integration_exp019.cpp
     src/dex/dex_interpreter_exp018.cpp
-    src/runtime/application_runtime.cpp
 )
 
 target_link_libraries(miniandroid_exp019 PRIVATE miniandroid_core)
@@ -565,7 +566,9 @@ endif()
 # Standalone test that decodes known-PNG reproducer files with MiniAndroid's
 # own PNGDecoder and compares the result against an independently-PIL-verified
 # expected RGBA buffer. See scripts/a4_01_create_known_png.py.
-add_executable(exp088_a4_png_decoder_test
+# W23-05: EXCLUDE_FROM_ALL — the documented `all` contract is "ONLY the
+# distributable runtime"; this test binary broke that contract.
+add_executable(exp088_a4_png_decoder_test EXCLUDE_FROM_ALL
     tests/exp088_a4_png_decoder_test.cpp
 )
 target_link_libraries(exp088_a4_png_decoder_test PRIVATE miniandroid_core)

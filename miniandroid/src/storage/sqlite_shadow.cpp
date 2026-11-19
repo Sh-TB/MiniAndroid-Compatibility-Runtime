@@ -5,7 +5,7 @@
 #include <sqlite3.h>
 
 #include "../diagnostics/file_io_trace.h"  // #371 PHASE B6 (ST-10): sqlite-op provenance rows
-#include "../dex/dalvik_engine.h"          // TRAIN-59 (S144): the ContentValues flat mirror (CvFlat + snapshot) for the SQLiteDatabase.update arm
+#include "../dex/dalvik_engine_types.h"          // TRAIN-59 (S144): the ContentValues flat mirror (CvFlat + snapshot) for the SQLiteDatabase.update arm
 #include "data_root.h"                     // F-C4-588 (W10): resolve_android_path for absolute DB names
 
 #include <algorithm>

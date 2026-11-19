@@ -21,7 +21,7 @@
 //   - case 5 PASSES both (legacy unknown-length path must keep working)
 //   - case 6 FAILs under old code (old: silent skip; new: NPE handler runs)
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <iostream>

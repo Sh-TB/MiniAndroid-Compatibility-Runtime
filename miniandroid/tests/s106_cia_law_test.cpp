@@ -37,7 +37,7 @@
 #include "../src/framework/touch_dispatcher.h"
 #include "../src/renderer/software_renderer.h"
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/framework/heap_adapter.h"
 
 #include <cmath>

@@ -6,7 +6,7 @@
 // Shadow-level contract (tokens) + the engine drain API exists; real DEX
 // delivery exercised by the APK regression runs.
 #include "../src/framework/dialog_shadow.h"
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 // W20-K test adapter: DalvikHeap behind the shadow HeapAllocator face.
 class TestHeapAdapter : public miniandroid::framework::HeapAllocator {
 public:

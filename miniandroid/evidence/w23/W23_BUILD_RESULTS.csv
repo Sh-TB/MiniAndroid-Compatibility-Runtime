@@ -1,0 +1,24 @@
+operation,profile,baseline_wall_s,baseline_tus,after_wall_s,after_tus,runs,classification,evidence
+A_no_change_rebuild,prod,1.06,0,1.09,0,3x3,UNCHANGED (validated no-op),probes_baseline.jsonl;probes_after.jsonl
+B_leaf_edit_value_glue,prod,2.05,1,2.14,1,3x3,UNCHANGED,probes_baseline.jsonl;probes_after.jsonl
+C_interpreter_edit,prod,23.50,1,25.4,1,3x3,UNCHANGED (post-split median of clean runs),probes_baseline.jsonl;probes_after.jsonl
+D_opcode_edit,prod,11.86,1,12.52,1,3x3,UNCHANGED,probes_baseline.jsonl;probes_after.jsonl
+E_bridge_edit,prod,9.44,1,9.60,1,3x3,UNCHANGED,probes_baseline.jsonl;probes_after.jsonl
+F_private_header_engine_internal,prod,246.64,12,246.09,12,1x1,UNCHANGED (family closure intact),probes_baseline.jsonl;probes_after.jsonl
+G_public_header_dalvik_engine_h,prod,343.18,18,1.04,0,1x3,IMPLEMENTED -99.7% (probe of record),probes_baseline.jsonl;probes_after.jsonl
+IMPL_HDR_dalvik_engine_impl_h,prod,n/a (part of G),n/a,317.14,15,1x1,PROPORTIONAL (measured),probes_after.jsonl (tag impl_probe)
+TYPES_HDR_dalvik_engine_types_h,prod,n/a (part of G),n/a,336.95,18,1x1,PROPORTIONAL (measured),probes_after.jsonl (tag types_probe)
+H_common_header_android_shadows_h,prod,400.73,29,not changed,29,1x1,REJECTED to change (all consumers genuine),probes_baseline.jsonl
+I_prod_clean_rebuild,prod,591.64,88,PENDING follow-up chain (prod_build_final_w23.log),88,1x1,PENDING MEASUREMENT,build_bench.jsonl;prod_build_fresh.log
+devso_clean_rebuild,devso,132.97,n/a,138.23,n/a,1x1,UNCHANGED (+4% noise),devso_clean_build.log;devso_clean_postsplit.log
+A_no_change_rebuild,devso,n/a,n/a,0.06,0,3x1,PASS target<0.2s,probes_after.jsonl
+C_interpreter_edit,devso,19.38 (W22),1,13.12,1,3x3,IMPROVED -32%,probes_after.jsonl
+D_opcode_edit,devso,12.55 (W22),1,8.86,1,3x3,IMPROVED -29%,probes_after.jsonl
+E_bridge_edit,devso,8.80 (W22),1,6.71,1,3x3,IMPROVED -24%,probes_after.jsonl
+test_all_battery,prod,287.6 (W22),49 tests,299.4,49 PASS,1x1,PASS,testall_postsplit.log
+apk_gate_screenshot_hashes,devso,11/11 canonical (W22),n/a,11/11 IDENTICAL,11,1x1,PASS,gate_hashes_postsplit.txt
+runpath,devso,$ORIGIN + $ORIGIN/..,n/a,SAME,n/a,1x1,PASS,runpath_dev.txt
+ccache_cold_build,prod,590.7 (W22),88 miss,PENDING (ccache_cold_w23.log),n/a,1x1,PENDING MEASUREMENT,scripts/w23_build_chain.sh
+ccache_warm_rebuild,prod,21.16 (W22),88 hit,PENDING (ccache_warm_w23.log),n/a,1x1,PENDING MEASUREMENT,scripts/w23_build_chain.sh
+g0_profile_clean_build,prod,n/a,n/a,PENDING (prod_build_g0profile.log),n/a,1x1,PENDING (measurement variant NOT adopted),scripts/w23_build_chain.sh
+cmake_megabatch_parity,cmake,n/a,n/a,PENDING (cmake_megabatch_build.log),n/a,1x1,PENDING MEASUREMENT,scripts/w23_build_chain.sh

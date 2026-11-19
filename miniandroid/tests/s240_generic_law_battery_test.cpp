@@ -12,7 +12,7 @@
 //
 // (the AdapterView.getAdapter and GLES20.glCreateShader arms verified
 // state/context-gated — recorded in the receipt, not forced here)
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <iostream>

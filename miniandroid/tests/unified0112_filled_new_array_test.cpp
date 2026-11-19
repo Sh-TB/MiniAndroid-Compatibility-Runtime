@@ -19,7 +19,7 @@
 // Discrimination proof: under the old code every case except N=2 produced
 // a wrong array (N=1 → length 2, N=3/4/5 → length 2 with wrong registers).
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <cstdio>

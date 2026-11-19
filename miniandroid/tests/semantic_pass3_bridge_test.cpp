@@ -11,7 +11,7 @@
 // Every case is chosen so a stub / tag-only / happy-path-only implementation
 // produces a DIFFERENT observable result.
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/framework/shadow_registry.h"
 #include "../src/framework/locks_shadow.h"
 #include "../src/framework/atomic_shadow.h"

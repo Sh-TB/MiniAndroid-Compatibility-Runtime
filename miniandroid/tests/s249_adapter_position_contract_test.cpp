@@ -5,7 +5,7 @@
 //   INVALID_ROW_ID = Long.MIN_VALUE — never INT32, never 0 (0 aliases
 //   row 0's id and defeats the sentinel contract).
 // Bridge-level contract through the REAL dispatch the DEX call reaches.
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/framework/android_shadows.h"
 
 #include <cstdint>

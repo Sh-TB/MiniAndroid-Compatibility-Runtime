@@ -34,7 +34,7 @@
 // base value; runtime dispatch answers the override; super cells carry a
 // +10 discriminator so a fallback-zero arm reads 10, not 11).
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <iostream>

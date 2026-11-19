@@ -23,7 +23,7 @@
 // DalvikExecutionEngine has all the opcodes I've implemented across
 // BLOCKER-012 (invoke-super), BLOCKER-014 (goto fix), BLOCKER-015 (35c format),
 // BLOCKER-016 (arg_count), BLOCKER-017 (22c format), BLOCKER-018 (if-*).
-#include "dex/dalvik_engine.h"
+#include "dex/dalvik_engine_impl.h"
 // EXP-051: Android framework shadow registry.
 #include "framework/shadow_registry.h"
 #include "framework/android_shadows.h"

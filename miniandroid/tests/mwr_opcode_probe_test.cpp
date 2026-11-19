@@ -29,7 +29,7 @@
 //
 // Harness pattern follows tests/semantic_long_cmp_conv_test.cpp.
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <iostream>

@@ -44,7 +44,7 @@
 // DEX rows follow the W26 battery pattern (hand-assembled Dalvik on a
 // synthetic DexReport); shadow/C++ rows build CallContexts directly.
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/framework/shadow_registry.h"
 #include "../src/framework/heap_adapter.h"
 #include "../src/framework/android_shadows.h"

@@ -8,7 +8,7 @@
 // contributed the full accumulator — the OpenCalc one-tap "777" face.
 // Bounds run on the stored UTF-8 BYTE length (the R24 approximation).
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/framework/shadow_registry.h"
 #include "../src/framework/heap_adapter.h"
 

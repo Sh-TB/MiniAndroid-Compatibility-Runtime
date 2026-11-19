@@ -15,7 +15,7 @@
 //
 // This is a GENERIC regression test — it does NOT depend on Telegram.
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/dex/dex_parser.h"
 
 #include <cstdio>

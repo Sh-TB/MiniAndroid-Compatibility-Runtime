@@ -18,7 +18,7 @@
 
 #include "apk/apk_parser.h"
 #include "dex/dex_parser.h"
-#include "dex/dalvik_engine.h"  // EXP-031: Real Dalvik engine
+#include "dex/dalvik_engine_impl.h"  // EXP-031: Real Dalvik engine
 #include "api/android_stubs.h"
 #include "diagnostics/trace_engine.h"
 #include "renderer/software_renderer.h"  // S95: VectorRefResolver for image_ref_resolver()

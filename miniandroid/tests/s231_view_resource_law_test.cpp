@@ -46,7 +46,7 @@
 #include "../src/apk/apk_parser.h"
 #include "../src/framework/android_shadows.h"
 #include "../src/framework/heap_adapter.h"
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdio>
 #include <map>

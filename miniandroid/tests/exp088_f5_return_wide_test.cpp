@@ -18,7 +18,7 @@
 // Any APK that uses long/double values (timestamps, durations, sizes,
 // coordinates, database values) depends on this working correctly.
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/dex/dex_parser.h"
 
 #include <cassert>

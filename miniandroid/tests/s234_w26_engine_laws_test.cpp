@@ -34,7 +34,7 @@
 // report); hit rows follow the input_pipeline_law_test synthetic-tree
 // pattern (no DEX).
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/framework/shadow_registry.h"
 #include "../src/framework/heap_adapter.h"
 #include "../src/framework/android_shadows.h"

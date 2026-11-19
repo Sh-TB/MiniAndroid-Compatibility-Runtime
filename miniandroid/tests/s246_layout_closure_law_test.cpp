@@ -16,7 +16,7 @@
 #include "../src/apk/apk_parser.h"
 #include "../src/framework/android_shadows.h"
 #include "../src/framework/heap_adapter.h"
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/renderer/software_renderer.h"
 
 #include <cstdio>

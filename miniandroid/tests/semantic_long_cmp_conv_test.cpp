@@ -20,7 +20,7 @@
 //
 // Harness pattern follows tests/unified0112_filled_new_array_test.cpp.
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <iostream>

@@ -10,7 +10,7 @@
  * - API bridge integration
  */
 
-#include "dalvik_engine.h"
+#include "dalvik_engine_impl.h"
 #include "dex_parser.h"
 #include "mutf8.h"
 #include <dlfcn.h>  // #371 PHASE B2: real dlopen/dlerror boundary diagnostics
@@ -4284,3 +4284,9 @@ DalvikValue DalvikExecutionEngine::make_stable_class_token(
 
 } // namespace dalvik
 } // namespace miniandroid
+// W23-BENCH op=D run=1 t=1795118402
+// W23-BENCH op=D run=2 t=1795118414
+// W23-BENCH op=D run=3 t=1795118427
+// W23-BENCH op=D run=1 t=1795120065
+// W23-BENCH op=D run=2 t=1795120074
+// W23-BENCH op=D run=3 t=1795120083

@@ -29,7 +29,7 @@
 
 #ifdef MINIANDROID_DALVIK_MODULAR
 
-#include "dex/dalvik_engine.h"
+#include "dex/dalvik_engine_impl.h"
 
 // The monolith defines these inside namespace miniandroid::dalvik (matching
 // the class declared in dalvik_engine.h) — the glue TU must define them in
@@ -101,3 +101,6 @@ json DalvikValue::to_json() const {
 }  // namespace miniandroid
 
 #endif  // MINIANDROID_DALVIK_MODULAR
+// W23-BENCH op=B run=1 t=1795118395
+// W23-BENCH op=B run=2 t=1795118397
+// W23-BENCH op=B run=3 t=1795118400

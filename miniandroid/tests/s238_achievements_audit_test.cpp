@@ -7,7 +7,7 @@
 // node_at degenerate pass-through) already carry their s234 battery; the
 // W27 bounded-append law carries s237 — both audited, not duplicated.
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 #include "../src/framework/shadow_registry.h"
 #include "../src/framework/android_shadows.h"
 #include "../src/framework/heap_adapter.h"

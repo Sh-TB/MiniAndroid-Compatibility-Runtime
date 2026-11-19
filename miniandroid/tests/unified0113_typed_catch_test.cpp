@@ -27,7 +27,7 @@
 //     skip-and-continue / silent-null behavior executes code that must
 //     NOT execute).
 
-#include "../src/dex/dalvik_engine.h"
+#include "../src/dex/dalvik_engine_impl.h"
 
 #include <cstdint>
 #include <cstdio>
