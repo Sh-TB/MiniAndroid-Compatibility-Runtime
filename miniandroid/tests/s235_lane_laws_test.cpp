@@ -514,6 +514,15 @@ static int run_row_ex(DalvikExecutionEngine& engine, DexReport& report,
     using T = miniandroid::dalvik::DalvikType;
     if (v.type == T::INT32 || v.type == T::SHORT || v.type == T::BYTE)
         *out_val = v.int_val;
+    // W21 (S237-WS6 harness law, mirrors the independent coder's own fix on
+    // their lineage): getItemIdAtPosition now returns INT64 (AOSP Adapter
+    // law — Adapter.getItemId returns long, INVALID_ROW_ID = Long.MIN_VALUE).
+    // The decoder below only handled INT32 — the corrected runtime surfaced
+    // as rc=0 "unreadable" (got=-999) instead of the value. The coder's
+    // lineage fixed the same gap in their s235 harness decoder; this lineage
+    // carries the identical law here.
+    else if (v.type == T::INT64)
+        *out_val = v.long_val;
     else if (v.type == T::CHAR)
         *out_val = v.char_val;
     else if (v.type == T::BOOLEAN)

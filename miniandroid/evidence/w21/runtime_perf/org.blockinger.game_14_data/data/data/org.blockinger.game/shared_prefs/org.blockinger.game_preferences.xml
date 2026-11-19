@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="_has_set_default_values" value="true" />
+    <boolean name="pref_accelerationH" value="true" />
+    <boolean name="pref_accelerationV" value="true" />
+    <boolean name="pref_antialiasing" value="true" />
+    <boolean name="pref_button_sound" value="false" />
+    <boolean name="pref_fps" value="false" />
+    <boolean name="pref_fpslimit" value="true" />
+    <string name="pref_fpslimittext">30</string>
+    <boolean name="pref_layoutswap" value="false" />
+    <string name="pref_movespeed">5</string>
+    <boolean name="pref_phantom" value="true" />
+    <boolean name="pref_popup" value="true" />
+    <string name="pref_rng">sevenbag</string>
+    <string name="pref_softdropspeed">7</string>
+    <string name="pref_soundvolume">25</string>
+    <string name="pref_vibDurOffset">15</string>
+    <boolean name="pref_vibration_button" value="false" />
+    <boolean name="pref_vibration_events" value="false" />
+</map>

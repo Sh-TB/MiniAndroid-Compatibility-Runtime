@@ -1,0 +1,1 @@
+{"cmd": ["make", "build/tests/s235_lane_laws_test"], "rc": 0, "wall_s": 9.361, "cpu_user_s": 8.7, "cpu_sys_s": 0.635, "maxrss_kb": 749156, "nproc": 2}
