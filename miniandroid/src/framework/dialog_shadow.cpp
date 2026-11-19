@@ -455,6 +455,10 @@ CallResult DialogShadow::dispatch_dialog(const CallContext& ctx, DialogWindow& w
             win.showing = true;
             win.ever_shown = true;
             win.dismissed = false;
+            // W20-K (S237-WS7): arm the OnShow callback token (delivered
+            // exactly once by the engine drain after this dispatch).
+            if (win.on_show_listener != 0)
+                win.pending_show_cb = true;
             // Pull adapter items NOW (adapter fully populated by app code).
             if (win.items.empty() && win.adapter_obj_id != 0 && registry_) {
                 auto* adapter_shadow = registry_->find_as<ArrayAdapterShadow>();
@@ -478,6 +482,14 @@ CallResult DialogShadow::dispatch_dialog(const CallContext& ctx, DialogWindow& w
     if (m == "dismiss" || m == "cancel" || m == "hide") {
         win.showing = false;
         win.dismissed = true;
+        // W20-K (S237-WS7): AOSP cancel() sends the CANCEL message then the
+        // DISMISS message (two deliveries); plain dismiss sends DISMISS only.
+        if (m == "cancel") {
+            if (win.on_cancel_listener != 0) win.pending_cancel_cb = true;
+            if (win.on_dismiss_listener != 0) win.pending_dismiss_cb = true;
+        } else if (m == "dismiss") {
+            if (win.on_dismiss_listener != 0) win.pending_dismiss_cb = true;
+        }
         std::cerr << "[DIALOG] dismiss() obj=" << win.dialog_obj_id << std::endl;
         return CallResult::handled_void();
     }
@@ -485,8 +497,21 @@ CallResult DialogShadow::dispatch_dialog(const CallContext& ctx, DialogWindow& w
         return CallResult::handled_bool(win.showing);
     }
     if (m == "setOnShowListener" || m == "setOnDismissListener" ||
-        m == "setOnCancelListener" || m == "setCanceledOnTouchOutside" ||
-        m == "setCancelable") {
+        m == "setOnCancelListener") {
+        // W20-K (S237-WS7): AOSP Dialog.java — the listener object is STORED
+        // on the dialog (mShowMessage/mDismissMessage/mCancelMessage chain);
+        // discarding it silently killed first-paint setup, resource release
+        // and cancel hooks in every wiring app.
+        uint32_t l = 0;
+        if (!ctx.args.empty() && ctx.args[0].kind ==
+                framework::CallContext::Arg::Kind::OBJECT)
+            l = ctx.args[0].object_id;
+        if (m == "setOnShowListener") win.on_show_listener = l;
+        else if (m == "setOnDismissListener") win.on_dismiss_listener = l;
+        else win.on_cancel_listener = l;
+        return CallResult::handled_void();
+    }
+    if (m == "setCanceledOnTouchOutside" || m == "setCancelable") {
         return CallResult::handled_void();
     }
     // ── F-NEW-290: AOSP Dialog object law (getWindow / getContext) ──────
@@ -569,8 +594,47 @@ void DialogShadow::dismiss_dialog(uint32_t dialog_obj_id) {
     if (DialogWindow* win = window_by_obj(dialog_obj_id)) {
         win->showing = false;
         win->dismissed = true;
+        // W20-K (S237-WS7): the click-router dismiss path also delivers
+        // OnDismiss (AOSP Dialog.dismiss message).
+        if (win->on_dismiss_listener != 0) win->pending_dismiss_cb = true;
         std::cerr << "[DIALOG] dismiss_dialog(obj=" << dialog_obj_id << ")" << std::endl;
     }
+}
+
+// W20-K (S237-WS7): exactly-once token drains (AOSP Dialog message laws).
+bool DialogShadow::consume_pending_show_cb(uint32_t& dialog_obj_id) {
+    for (auto& w : windows_) {
+        if (w.pending_show_cb) {
+            w.pending_show_cb = false;
+            dialog_obj_id = w.dialog_obj_id;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool DialogShadow::consume_pending_dismiss_cb(uint32_t& dialog_obj_id) {
+    for (auto& w : windows_) {
+        if (w.pending_dismiss_cb) {
+            w.pending_dismiss_cb = false;
+            dialog_obj_id = w.dialog_obj_id;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool DialogShadow::consume_pending_cancel_cb(uint32_t& dialog_obj_id) {
+    // AOSP ordering: cancel() -> OnCancel first, then OnDismiss — so the
+    // cancel drain takes priority over a same-window dismiss token.
+    for (auto& w : windows_) {
+        if (w.pending_cancel_cb) {
+            w.pending_cancel_cb = false;
+            dialog_obj_id = w.dialog_obj_id;
+            return true;
+        }
+    }
+    return false;
 }
 
 // CAMPAIGN 013 B1: paint showing dialog windows from REAL recorded state.

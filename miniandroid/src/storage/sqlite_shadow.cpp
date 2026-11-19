@@ -1146,6 +1146,35 @@ bool DatabaseShadow::cursor_value_string(uint32_t cursor_oid, int32_t pos,
     return false;
 }
 
+// W20-K (S237-WS5, AOSP AbstractCursor.getColumnIndex @android-14 L323-360):
+// shared column-name resolution — strip the table qualifier after the LAST
+// '.' (the bug-903852 hack) and match case-insensitively. Used by both
+// getColumnIndex and getColumnIndexOrThrow.
+static bool column_index_ci(const std::vector<std::string>& columns,
+                            const std::string& requested, int32_t* out) {
+    std::string name = requested;
+    size_t p = name.rfind('.');
+    if (p != std::string::npos) name = name.substr(p + 1);
+    for (size_t i = 0; i < columns.size(); i++) {
+        const std::string& col = columns[i];
+        if (col.size() == name.size()) {
+            bool eq = true;
+            for (size_t j = 0; j < col.size(); j++) {
+                if (std::tolower((unsigned char)col[j]) !=
+                    std::tolower((unsigned char)name[j])) {
+                    eq = false;
+                    break;
+                }
+            }
+            if (eq) {
+                *out = (int32_t)i;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 framework::CallResult DatabaseShadow::cursor_dispatch(const framework::CallContext& ctx) {
     const std::string& m = ctx.method;
     uint32_t cur_oid = ctx.has_receiver ? ctx.receiver_id : 0;
@@ -1173,25 +1202,33 @@ framework::CallResult DatabaseShadow::cursor_dispatch(const framework::CallConte
         return framework::CallResult::handled_bool(
             !c->rows.empty() && c->pos == (int)c->rows.size() - 1);
     if (m == "getColumnIndex" && ctx.args.size() >= 1) {
-        for (size_t i = 0; i < c->columns.size(); i++) {
-            if (c->columns[i] == ctx.args[0].string_val)
-                return framework::CallResult::handled_int((int)i);
-        }
+        // W20-K (S237-WS5): AOSP law — qualifier strip + case-insensitive
+        // match; missing column answers -1 (never throws).
+        int32_t idx = -1;
+        if (column_index_ci(c->columns, ctx.args[0].string_val, &idx))
+            return framework::CallResult::handled_int(idx);
         return framework::CallResult::handled_int(-1);
     }
     // F-NEW-401 (AOSP AbstractCursor.getColumnIndexOrThrow): an unknown
     // column throws IllegalArgumentException — never a silent -1.
     if (m == "getColumnIndexOrThrow" && ctx.args.size() >= 1) {
+        // W20-K (S237-WS5): AOSP matching + message shape with the
+        // available-columns list.
+        int32_t idx = -1;
+        if (column_index_ci(c->columns, ctx.args[0].string_val, &idx))
+            return framework::CallResult::handled_int(idx);
+        std::string avail;
         for (size_t i = 0; i < c->columns.size(); i++) {
-            if (c->columns[i] == ctx.args[0].string_val)
-                return framework::CallResult::handled_int((int)i);
+            if (i) avail += ", ";
+            avail += c->columns[i];
         }
         std::cerr << "[SQLITE-SHADOW] getColumnIndexOrThrow: unknown column '"
                   << ctx.args[0].string_val << "' (caller " << ctx.receiver_class
                   << ")" << std::endl;
         return framework::CallResult::handled_exception(
             "Ljava/lang/IllegalArgumentException;",
-            "Unknown column '" + ctx.args[0].string_val + "'");
+            "column '" + ctx.args[0].string_val +
+                "' does not exist. Available columns: [" + avail + "]");
     }
     // F-NEW-401: getColumnName with the ART ArrayIndexOutOfBoundsException
     // message format on an out-of-range column (was an unchecked read).

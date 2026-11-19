@@ -1,0 +1,802 @@
+diff --git a/miniandroid/Makefile b/miniandroid/Makefile
+index 130adcf7..10e037cb 100755
+--- a/miniandroid/Makefile
++++ b/miniandroid/Makefile
+@@ -386,7 +386,8 @@ TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
+ 	r25_dispatch_matrix_test gp583_img004_bounds_law_test \
+ 	gp_dex003_fuzz_law_test \
+ 	s225m_wave_law_test s231_view_resource_law_test \
+-	s234_w26_engine_laws_test s235_lane_laws_test s236_port_laws_test s237_append_bounded_law_test s238_achievements_audit_test s239_wave_stack_audit_test s240_generic_law_battery_test s241_compare_law_battery_test s243_font_pipeline_law_test s244_app_font_discovery_law_test s245_font_final_matrix_test s246_layout_closure_law_test s247_grid_rtl_law_test
++	s234_w26_engine_laws_test s235_lane_laws_test s236_port_laws_test s237_append_bounded_law_test s238_achievements_audit_test s239_wave_stack_audit_test s240_generic_law_battery_test s241_compare_law_battery_test s243_font_pipeline_law_test s244_app_font_discovery_law_test s245_font_final_matrix_test s246_layout_closure_law_test s247_grid_rtl_law_test \
++	s248_sqlite_cursor_contract_test s249_adapter_position_contract_test s250_dialog_lifecycle_contract_test s251_activity_result_contract_test s252_view_state_flags_contract_test
+ TEST_BATTERY = $(TEST_CORE) $(TEST_HOSTILE) $(TEST_LAW)
+ 
+ # S225-M wave law test links pthread_shadow.o (the interposition object the
+* Unmerged path miniandroid/evidence/w20/corpus/com.farmerbb.notepad_122/trace.jsonl
+* Unmerged path miniandroid/evidence/w20/corpus_census.md
+diff --git a/miniandroid/src/dex/dalvik_bridge.cpp b/miniandroid/src/dex/dalvik_bridge.cpp
+index 2a243b8f..143182f8 100644
+--- a/miniandroid/src/dex/dalvik_bridge.cpp
++++ b/miniandroid/src/dex/dalvik_bridge.cpp
+@@ -88,6 +88,11 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
+     bridge_census_init();
+     BridgeCensusGuard c97_census_guard;
+     if (bridge_census().on) c97_census_guard.begin(class_name, method);
++    // W20-K (S237-WS7): deliver armed dialog lifecycle tokens (onShow /
++    // onDismiss / onCancel) before processing this call — keeps delivery
++    // near-synchronous when a dialog show/dismiss/cancel is followed by
++    // further framework calls. No-op when nothing is armed.
++    deliver_pending_dialog_callbacks();
+     // ────────────────────────────────────────────────────────────────────────
+     // F-NEW-655 (#588 Games-g2) — Activity.managedQuery is a verbatim
+     // forward to ContentResolver.query (AOSP Activity.java: managedQuery
+diff --git a/miniandroid/src/dex/dalvik_bridge_domain_app_runtime.cpp b/miniandroid/src/dex/dalvik_bridge_domain_app_runtime.cpp
+index 6db0e4d1..4c615db5 100644
+--- a/miniandroid/src/dex/dalvik_bridge_domain_app_runtime.cpp
++++ b/miniandroid/src/dex/dalvik_bridge_domain_app_runtime.cpp
+@@ -9,6 +9,7 @@
+ // in the legacy coordinator.
+ // ────────────────────────────────────────────────────────────
+ #include "dex/dalvik_bridge_frame.h"
++#include <limits>  // W20-K (S237-WS6): INVALID_ROW_ID
+ 
+ namespace miniandroid {
+ namespace dalvik {
+@@ -2947,9 +2948,20 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
+         int32_t pos = args.size() >= 2 && args[1].type == DalvikType::INT32
+                           ? args[1].int_val
+                           : 0;
++        // W20-K (S237-WS6 row 3, AOSP AdapterView.getItemAtPosition L810):
++        // (adapter == null || position < 0) ? null : adapter.getItem(pos).
++        if (method == "getItemAtPosition" && pos < 0) {
++            result = DalvikValue::make_null();
++            status = ApiCallTrace::Status::IMPLEMENTED;
++            return true;
++        }
+         if (method == "getItemIdAtPosition") {
+-            result = DalvikValue::make_int(
+-                pos >= 0 ? pos : 0);
++            // W20-K (S237-WS6, AOSP AdapterView.java L808-818): returns LONG
++            // (Adapter.getItemId -> long); negative position answers
++            // INVALID_ROW_ID = Long.MIN_VALUE, never 0 (which aliases row 0).
++            result = DalvikValue::make_long(
++                pos >= 0 ? (int64_t)pos
++                         : std::numeric_limits<int64_t>::min());
+             status = ApiCallTrace::Status::IMPLEMENTED;
+             return true;
+         }
+diff --git a/miniandroid/src/dex/dalvik_bridge_domain_ui_graphics.cpp b/miniandroid/src/dex/dalvik_bridge_domain_ui_graphics.cpp
+index 990f5cae..477a1e1d 100644
+--- a/miniandroid/src/dex/dalvik_bridge_domain_ui_graphics.cpp
++++ b/miniandroid/src/dex/dalvik_bridge_domain_ui_graphics.cpp
+@@ -4442,6 +4442,27 @@ bool DalvikExecutionEngine::bridge_domain_ui_graphics(
+                 args[0].object_id, want_w ? "__dr_width__" : "__dr_height__");
+             int32_t dim = (v.has_value() && v->type == DalvikType::INT32)
+                               ? v->int_val : -1;
++            if (dim <= 0) {
++                // W20-K (S237-PLAY, SolitaireCG DrawMaster h=-1): AOSP
++                // BitmapDrawable.getIntrinsicWidth/Height answer the
++                // WRAPPED BITMAP's real dims (mBitmap.getWidth/Height) —
++                // never -1 for a decoded bitmap. When the drawable shell
++                // has no recorded dims but carries __dr_bitmap__, read the
++                // bitmap's own __bmp_width__/__bmp_height__. This defect
++                // made DrawPortraitCards call createBitmap with h=-1 →
++                // IAE → app-boundary unwind before SolitaireView.onDraw.
++                auto bv = heap_.get_object_field(args[0].object_id,
++                                                 "__dr_bitmap__");
++                if (bv.has_value() && bv->type == DalvikType::OBJECT_REF &&
++                    bv->object_id != 0) {
++                    auto bd = heap_.get_object_field(
++                        bv->object_id,
++                        want_w ? "__bmp_width__" : "__bmp_height__");
++                    if (bd.has_value() && bd->type == DalvikType::INT32 &&
++                        bd->int_val > 0)
++                        dim = bd->int_val;
++                }
++            }
+             if (dim <= 0) {
+                 // AOSP minimum* falls back to intrinsic, else 0
+                 dim = (method[0] == 'm') ? 0 : -1;
+diff --git a/miniandroid/src/dex/dalvik_engine.cpp b/miniandroid/src/dex/dalvik_engine.cpp
+index 931dac50..61dd1bfe 100755
+--- a/miniandroid/src/dex/dalvik_engine.cpp
++++ b/miniandroid/src/dex/dalvik_engine.cpp
+@@ -37604,6 +37604,34 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
+     seed("Landroid/os/Build;.HARDWARE", DalvikValue::make_string("miniandroid", 0));
+     seed("Landroid/os/Build;.FINGERPRINT", DalvikValue::make_string("MiniAndroid/miniandroid/miniandroid:15/MINI.20260905/0:userdebug/test-keys", 0));
+     seed("Landroid/os/Build;.SERIAL", DalvikValue::make_string("miniandroid", 0));
++    // W20-K (S237-PLAY, Frozen Bubble): AOSP BitmapFactory.Options PUBLIC
++    // fields (BitmapFactory.java Options @android-14) — Class.getField on
++    // Options must SUCCEED (real Android answers from framework metadata).
++    // Defaults per AOSP: inScaled=true, inPremultiplied=true, rest 0/false.
++    seed("Landroid/graphics/BitmapFactory$Options;.inScaled",
++         DalvikValue::make_bool(true));
++    seed("Landroid/graphics/BitmapFactory$Options;.inPremultiplied",
++         DalvikValue::make_bool(true));
++    seed("Landroid/graphics/BitmapFactory$Options;.inDither",
++         DalvikValue::make_bool(false));
++    seed("Landroid/graphics/BitmapFactory$Options;.inMutable",
++         DalvikValue::make_bool(false));
++    seed("Landroid/graphics/BitmapFactory$Options;.inJustDecodeBounds",
++         DalvikValue::make_bool(false));
++    seed("Landroid/graphics/BitmapFactory$Options;.inSampleSize",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.inDensity",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.inTargetDensity",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.inScreenDensity",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.inPreferredDensity",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.outWidth",
++         DalvikValue::make_int(-1));
++    seed("Landroid/graphics/BitmapFactory$Options;.outHeight",
++         DalvikValue::make_int(-1));
+     // F-NEW-190 (FINAL CAMPAIGN PHASE 4 — device/context identity, AOSP
+     // Build ABI law): Build.SUPPORTED_ABIS / SUPPORTED_64_BIT_ABIS /
+     // SUPPORTED_32_BIT_ABIS / CPU_ABI / CPU_ABI2 are framework statics fed
+diff --git a/miniandroid/src/dex/dalvik_engine.h b/miniandroid/src/dex/dalvik_engine.h
+index 498e26e4..d3215335 100755
+--- a/miniandroid/src/dex/dalvik_engine.h
++++ b/miniandroid/src/dex/dalvik_engine.h
+@@ -2079,6 +2079,14 @@ public:
+     // Must be called after dex_report is set and before execution begins.
+     void build_class_dex_index(const dex::DexReport& report);
+ 
++    // W20-K (S237-WS7): AOSP Dialog lifecycle-callback delivery — drains the
++    // DialogShadow exactly-once tokens (OnCancel -> OnDismiss -> OnShow) and
++    // invokes the app's REAL overrides via try_recursive_invoke with the
++    // DialogInterface receiver. No-op when nothing is armed; safe to call
++    // from any dispatch/frame point (defined in runtime/execution_engine.cpp
++    // so it exists in both DALVIK_SPLIT=1 and =0 link sets).
++    void deliver_pending_dialog_callbacks();
++
+     // EXP-088+ Phase 1.2 (secondary-DEX injection): Inject ALL classes from
+     // ALL secondary DEX files (per_dex_raw_data_[1..N-1]) into the merged
+     // dex_report_->classes vector and update class_info_index_.
+diff --git a/miniandroid/src/dex/dalvik_opcodes_invoke.cpp b/miniandroid/src/dex/dalvik_opcodes_invoke.cpp
+index 3c5c766e..7a95c0b5 100644
+--- a/miniandroid/src/dex/dalvik_opcodes_invoke.cpp
++++ b/miniandroid/src/dex/dalvik_opcodes_invoke.cpp
+@@ -5802,6 +5802,34 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
+     seed("Landroid/os/Build;.HARDWARE", DalvikValue::make_string("miniandroid", 0));
+     seed("Landroid/os/Build;.FINGERPRINT", DalvikValue::make_string("MiniAndroid/miniandroid/miniandroid:15/MINI.20260905/0:userdebug/test-keys", 0));
+     seed("Landroid/os/Build;.SERIAL", DalvikValue::make_string("miniandroid", 0));
++    // W20-K (S237-PLAY, Frozen Bubble): AOSP BitmapFactory.Options PUBLIC
++    // fields (BitmapFactory.java Options @android-14) — Class.getField on
++    // Options must SUCCEED (real Android answers from framework metadata).
++    // Defaults per AOSP: inScaled=true, inPremultiplied=true, rest 0/false.
++    seed("Landroid/graphics/BitmapFactory$Options;.inScaled",
++         DalvikValue::make_bool(true));
++    seed("Landroid/graphics/BitmapFactory$Options;.inPremultiplied",
++         DalvikValue::make_bool(true));
++    seed("Landroid/graphics/BitmapFactory$Options;.inDither",
++         DalvikValue::make_bool(false));
++    seed("Landroid/graphics/BitmapFactory$Options;.inMutable",
++         DalvikValue::make_bool(false));
++    seed("Landroid/graphics/BitmapFactory$Options;.inJustDecodeBounds",
++         DalvikValue::make_bool(false));
++    seed("Landroid/graphics/BitmapFactory$Options;.inSampleSize",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.inDensity",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.inTargetDensity",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.inScreenDensity",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.inPreferredDensity",
++         DalvikValue::make_int(0));
++    seed("Landroid/graphics/BitmapFactory$Options;.outWidth",
++         DalvikValue::make_int(-1));
++    seed("Landroid/graphics/BitmapFactory$Options;.outHeight",
++         DalvikValue::make_int(-1));
+     // F-NEW-190 (FINAL CAMPAIGN PHASE 4 — device/context identity, AOSP
+     // Build ABI law): Build.SUPPORTED_ABIS / SUPPORTED_64_BIT_ABIS /
+     // SUPPORTED_32_BIT_ABIS / CPU_ABI / CPU_ABI2 are framework statics fed
+diff --git a/miniandroid/src/framework/android_shadows.cpp b/miniandroid/src/framework/android_shadows.cpp
+index 6c272b91..f0a84178 100755
+--- a/miniandroid/src/framework/android_shadows.cpp
++++ b/miniandroid/src/framework/android_shadows.cpp
+@@ -8393,6 +8393,27 @@ ViewShadow::ViewNode* ViewShadow::get_or_create_node(uint32_t view_id,
+     return raw;
+ }
+ 
++ViewShadow::ViewNode* ViewShadow::webview_node_at(int x, int y) {
++    ViewNode* best = nullptr;
++    int best_area = -1;
++    for (auto& kv : nodes_) {
++        ViewNode* n = kv.second.get();
++        if (!n || n->class_desc.find("WebView;") == std::string::npos)
++            continue;
++        if (n->visibility != 0) continue;  // VISIBLE=0 law
++        if (x < n->x || y < n->y ||
++            x >= n->x + n->measured_width ||
++            y >= n->y + n->measured_height)
++            continue;
++        int area = n->measured_width * n->measured_height;
++        if (area < best_area || best_area < 0) {
++            best_area = area;
++            best = n;
++        }
++    }
++    return best;
++}
++
+ const ViewShadow::ViewNode* ViewShadow::find_node(uint32_t view_id) const {
+     auto it = nodes_.find(view_id);
+     if (it != nodes_.end()) return it->second.get();
+@@ -10409,6 +10430,61 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
+         n->enabled = ctx.arg_as_bool(0, true);
+         return CallResult::handled_void();
+     }
++    // ── W20-K (S237-WS9): AOSP View state-flag family (View.java setFlags
++    // law @android-14: PFLAG_SELECTED/ACTIVATED/PRESSED/LONG_CLICKABLE/
++    // HOVERED) — the whole family previously fell through to not_handled()
++    // (REC-MISS silent no-op). Corpus DEX call-site demand: openlauncher 17,
++    // stopwatch 3, tictactoe 2, opensudoku 2, dooz/a2048 1 each. The
++    // state-list background re-picks EVERY frame, so the flag change reaches
++    // rendering without an extra dirty pass.
++    if (m == "setSelected") {
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        n->selected = ctx.arg_as_bool(0, false);
++        return CallResult::handled_void();
++    }
++    if (m == "isSelected") {
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        return CallResult::handled_bool(n->selected);
++    }
++    if (m == "setPressed") {
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        n->pressed = ctx.arg_as_bool(0, false);
++        return CallResult::handled_void();
++    }
++    if (m == "isPressed") {
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        return CallResult::handled_bool(n->pressed);
++    }
++    if (m == "setActivated") {
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        n->activated = ctx.arg_as_bool(0, false);
++        return CallResult::handled_void();
++    }
++    if (m == "isActivated") {
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        return CallResult::handled_bool(n->activated);
++    }
++    if (m == "setHovered") {
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        n->hovered = ctx.arg_as_bool(0, false);
++        return CallResult::handled_void();
++    }
++    if (m == "isHovered") {
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        return CallResult::handled_bool(n->hovered);
++    }
++    if (m == "setLongClickable") {
++        // AOSP: setLongClickable(true) is implicit when an
++        // OnLongClickListener is attached; the stored listener wins.
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        bool v = ctx.arg_as_bool(0, false);
++        n->long_clickable = v || n->long_click_listener_id != 0;
++        return CallResult::handled_void();
++    }
++    if (m == "isLongClickable") {
++        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
++        return CallResult::handled_bool(n->long_clickable);
++    }
+     // ── M3 FINDING-011: AOSP View tag law (View.java mTag + mKeyedTags) ──
+     // setTag(Object) → mTag; setTag(int key, Object) → mKeyedTags (SparseArray).
+     // getTag() / getTag(int): absent value → null (AOSP returns null, never
+diff --git a/miniandroid/src/framework/android_shadows.h b/miniandroid/src/framework/android_shadows.h
+index c501b0fc..b48c68da 100755
+--- a/miniandroid/src/framework/android_shadows.h
++++ b/miniandroid/src/framework/android_shadows.h
+@@ -1277,12 +1277,19 @@ public:
+         result_data_intent_id_ = data_intent_id;
+     }
+     bool take_result(int* result_code, uint32_t* data_intent_id) {
+-        if (!has_result_) return false;
++        // W20-K (S237-WS8, AOSP Activity.java @android-14 L953): mResultCode
++        // is a DEFAULT (RESULT_CANCELED), not an "unset" sentinel. finish()
++        // delivers (RESULT_CANCELED, null Intent) even when the child never
++        // called setResult. The one-shot law is preserved (slot cleared).
++        if (result_code)
++            *result_code = has_result_ ? result_code_ : 0;
++        if (data_intent_id)
++            *data_intent_id = has_result_ ? result_data_intent_id_ : 0;
+         has_result_ = false;
+-        if (result_code) *result_code = result_code_;
+-        if (data_intent_id) *data_intent_id = result_data_intent_id_;
+         return true;
+     }
++    // Evidence-only accessor: delivery no longer depends on has_result().
++    bool has_result() const { return has_result_; }
+     // The Intent the current activity was LAUNCHED with — getIntent()
+     // returns it so extras propagate through the real pipeline.
+     void set_launch_intent_id(uint32_t id) { launch_intent_id_ = id; }
+@@ -1765,6 +1772,8 @@ public:
+         bool focusable_in_touch_mode = false;  // View.setFocusableInTouchMode
+         bool focused = false;            // requestFocus result
+         bool selected = false;           // View.setSelected
++        bool activated = false;          // W20-K (S237-WS9): View.setActivated
++        bool hovered = false;            // W20-K (S237-WS9): View.setHovered
+         // ── G06 §5: state-list background (StateListDrawable law) ────────
+         // When the android:background drawable resolves to a <selector>
+         // XML, the items are parsed once and the winning item is re-picked
+@@ -2352,6 +2361,10 @@ public:
+     // Lookup a ViewNode by id (const variant).
+     const ViewNode* find_node(uint32_t view_id) const;
+     ViewNode* find_node(uint32_t view_id);
++    // W20-K (S237-WS4): topmost WebView-family node containing the screen
++    // point (browser hit-test law) — used by the env-gated swipe-to-browser
++    // drag forward so an HTML5 touch game receives the REAL gesture.
++    ViewNode* webview_node_at(int x, int y);
+ 
+     // EXP-090: Get all nodes for searching by class name
+     const std::map<uint32_t, std::unique_ptr<ViewNode>>& all_nodes() const { return nodes_; }
+diff --git a/miniandroid/src/framework/dialog_shadow.cpp b/miniandroid/src/framework/dialog_shadow.cpp
+index 5e175727..b3981453 100644
+--- a/miniandroid/src/framework/dialog_shadow.cpp
++++ b/miniandroid/src/framework/dialog_shadow.cpp
+@@ -455,6 +455,10 @@ CallResult DialogShadow::dispatch_dialog(const CallContext& ctx, DialogWindow& w
+             win.showing = true;
+             win.ever_shown = true;
+             win.dismissed = false;
++            // W20-K (S237-WS7): arm the OnShow callback token (delivered
++            // exactly once by the engine drain after this dispatch).
++            if (win.on_show_listener != 0)
++                win.pending_show_cb = true;
+             // Pull adapter items NOW (adapter fully populated by app code).
+             if (win.items.empty() && win.adapter_obj_id != 0 && registry_) {
+                 auto* adapter_shadow = registry_->find_as<ArrayAdapterShadow>();
+@@ -478,6 +482,14 @@ CallResult DialogShadow::dispatch_dialog(const CallContext& ctx, DialogWindow& w
+     if (m == "dismiss" || m == "cancel" || m == "hide") {
+         win.showing = false;
+         win.dismissed = true;
++        // W20-K (S237-WS7): AOSP cancel() sends the CANCEL message then the
++        // DISMISS message (two deliveries); plain dismiss sends DISMISS only.
++        if (m == "cancel") {
++            if (win.on_cancel_listener != 0) win.pending_cancel_cb = true;
++            if (win.on_dismiss_listener != 0) win.pending_dismiss_cb = true;
++        } else if (m == "dismiss") {
++            if (win.on_dismiss_listener != 0) win.pending_dismiss_cb = true;
++        }
+         std::cerr << "[DIALOG] dismiss() obj=" << win.dialog_obj_id << std::endl;
+         return CallResult::handled_void();
+     }
+@@ -485,8 +497,21 @@ CallResult DialogShadow::dispatch_dialog(const CallContext& ctx, DialogWindow& w
+         return CallResult::handled_bool(win.showing);
+     }
+     if (m == "setOnShowListener" || m == "setOnDismissListener" ||
+-        m == "setOnCancelListener" || m == "setCanceledOnTouchOutside" ||
+-        m == "setCancelable") {
++        m == "setOnCancelListener") {
++        // W20-K (S237-WS7): AOSP Dialog.java — the listener object is STORED
++        // on the dialog (mShowMessage/mDismissMessage/mCancelMessage chain);
++        // discarding it silently killed first-paint setup, resource release
++        // and cancel hooks in every wiring app.
++        uint32_t l = 0;
++        if (!ctx.args.empty() && ctx.args[0].kind ==
++                framework::CallContext::Arg::Kind::OBJECT)
++            l = ctx.args[0].object_id;
++        if (m == "setOnShowListener") win.on_show_listener = l;
++        else if (m == "setOnDismissListener") win.on_dismiss_listener = l;
++        else win.on_cancel_listener = l;
++        return CallResult::handled_void();
++    }
++    if (m == "setCanceledOnTouchOutside" || m == "setCancelable") {
+         return CallResult::handled_void();
+     }
+     // ── F-NEW-290: AOSP Dialog object law (getWindow / getContext) ──────
+@@ -569,10 +594,49 @@ void DialogShadow::dismiss_dialog(uint32_t dialog_obj_id) {
+     if (DialogWindow* win = window_by_obj(dialog_obj_id)) {
+         win->showing = false;
+         win->dismissed = true;
++        // W20-K (S237-WS7): the click-router dismiss path also delivers
++        // OnDismiss (AOSP Dialog.dismiss message).
++        if (win->on_dismiss_listener != 0) win->pending_dismiss_cb = true;
+         std::cerr << "[DIALOG] dismiss_dialog(obj=" << dialog_obj_id << ")" << std::endl;
+     }
+ }
+ 
++// W20-K (S237-WS7): exactly-once token drains (AOSP Dialog message laws).
++bool DialogShadow::consume_pending_show_cb(uint32_t& dialog_obj_id) {
++    for (auto& w : windows_) {
++        if (w.pending_show_cb) {
++            w.pending_show_cb = false;
++            dialog_obj_id = w.dialog_obj_id;
++            return true;
++        }
++    }
++    return false;
++}
++
++bool DialogShadow::consume_pending_dismiss_cb(uint32_t& dialog_obj_id) {
++    for (auto& w : windows_) {
++        if (w.pending_dismiss_cb) {
++            w.pending_dismiss_cb = false;
++            dialog_obj_id = w.dialog_obj_id;
++            return true;
++        }
++    }
++    return false;
++}
++
++bool DialogShadow::consume_pending_cancel_cb(uint32_t& dialog_obj_id) {
++    // AOSP ordering: cancel() -> OnCancel first, then OnDismiss — so the
++    // cancel drain takes priority over a same-window dismiss token.
++    for (auto& w : windows_) {
++        if (w.pending_cancel_cb) {
++            w.pending_cancel_cb = false;
++            dialog_obj_id = w.dialog_obj_id;
++            return true;
++        }
++    }
++    return false;
++}
++
+ // CAMPAIGN 013 B1: paint showing dialog windows from REAL recorded state.
+ // Dim overlay is a manual framebuffer blend (the walk's draw_rect writes
+ // opaque colors; real dialogs dim the host content behind the window).
+diff --git a/miniandroid/src/framework/dialog_shadow.h b/miniandroid/src/framework/dialog_shadow.h
+index 11d625ce..2843eebd 100644
+--- a/miniandroid/src/framework/dialog_shadow.h
++++ b/miniandroid/src/framework/dialog_shadow.h
+@@ -92,6 +92,19 @@ struct DialogWindow {
+     // Window frame geometry (computed by layout_window() at show time;
+     // the renderer draws the frame and the decor tree inside it).
+     int frame_left = 0, frame_top = 0, frame_w = 0, frame_h = 0;
++
++    // W20-K (S237-WS7, AOSP Dialog.java show/dismiss/cancel message laws):
++    // the three lifecycle listeners MUST be stored (the old setters were a
++    // shared no-op bucket) and delivered exactly once:
++    //   show()    -> OnShow (after onStart)
++    //   dismiss() -> OnDismiss
++    //   cancel()  -> OnCancel THEN OnDismiss (two separate AOSP messages)
++    uint32_t on_show_listener = 0;
++    uint32_t on_dismiss_listener = 0;
++    uint32_t on_cancel_listener = 0;
++    bool pending_show_cb = false;
++    bool pending_dismiss_cb = false;
++    bool pending_cancel_cb = false;
+ };
+ 
+ // Toast state (makeText → show → visible transient window).
+@@ -169,6 +182,14 @@ public:
+     // no-listener button clicks still dismiss, matching real Android).
+     void dismiss_dialog(uint32_t dialog_obj_id);
+ 
++    // W20-K (S237-WS7): exactly-once lifecycle-callback tokens — the ENGINE
++    // drains these after a show/dismiss/cancel shadow dispatch and invokes
++    // the app's real onShow/onDismiss/onCancel overrides (drain-style, the
++    // same shape as ThreadShadow::consume_pending_start).
++    bool consume_pending_show_cb(uint32_t& dialog_obj_id);
++    bool consume_pending_dismiss_cb(uint32_t& dialog_obj_id);
++    bool consume_pending_cancel_cb(uint32_t& dialog_obj_id);
++
+     // R-NEW-394 (S76): AOSP topmost-window touch law — dialog windows sit
+     // ABOVE the activity window (WindowManager z-order). Returns the
+     // decor_root_id of the topmost SHOWING window whose frame contains
+diff --git a/miniandroid/src/framework/state_list.cpp b/miniandroid/src/framework/state_list.cpp
+index 16a4c0bf..0dd502ac 100644
+--- a/miniandroid/src/framework/state_list.cpp
++++ b/miniandroid/src/framework/state_list.cpp
+@@ -164,6 +164,7 @@ bool pick_state_list(
+     const std::vector<ViewShadow::ViewNode::BgStateItem>& items, bool pressed,
+     bool enabled, bool selected, uint32_t* color_out, std::string* path_out,
+     bool checked, bool focused, bool hovered,
++    bool activated, bool window_focused,
+     const ViewShadow::ViewNode::BgStateItem** winner_out) {
+     // StateListDrawable.getStateDrawableIndex law: FIRST item in document
+     // order whose state spec is satisfied wins; a declared state must match
+@@ -188,6 +189,16 @@ bool pick_state_list(
+         if (it.state_hovered >= 0 &&
+             it.state_hovered != (hovered ? 1 : 0))
+             continue;
++        // W20-K (S237-WS9): state_activated / state_window_focused were
++        // parsed since S127 but NEVER consulted — a declared
++        // state_activated="true" item matched as a wildcard and could win
++        // the first-match slot for a view that was NOT activated.
++        if (it.state_activated >= 0 &&
++            it.state_activated != (activated ? 1 : 0))
++            continue;
++        if (it.state_window_focused >= 0 &&
++            it.state_window_focused != (window_focused ? 1 : 0))
++            continue;
+         if (it.has_color && color_out) *color_out = it.color;
+         if (path_out) *path_out = it.drawable_path;
+         if (winner_out) *winner_out = &it;
+diff --git a/miniandroid/src/framework/state_list.h b/miniandroid/src/framework/state_list.h
+index 4f0071be..62fda25c 100644
+--- a/miniandroid/src/framework/state_list.h
++++ b/miniandroid/src/framework/state_list.h
+@@ -46,6 +46,11 @@ bool pick_state_list(
+     bool checked = false,  // S106 MG-022: android:state_checked law
+     bool focused = false,  // C9-18: android:state_focused law
+     bool hovered = false,  // C9-18: android:state_hovered law
++    // W20-K (S237-WS9): AOSP first-match law covers state_activated and
++    // state_window_focused too (window_focused defaults TRUE — the plain
++    // default view state of a focused window).
++    bool activated = false,  // android:state_activated law
++    bool window_focused = true,  // android:state_window_focused law
+     // C9-19 (CODER 9): when non-null, receives the MATCHED item — the
+     // engine dereferences its compiled drawable_ref_id through the ARSC
+     // router (the raw-string path alone left compiled refs unresolved).
+diff --git a/miniandroid/src/runtime/execution_engine.cpp b/miniandroid/src/runtime/execution_engine.cpp
+index d96d0b6c..8c8934b0 100755
+--- a/miniandroid/src/runtime/execution_engine.cpp
++++ b/miniandroid/src/runtime/execution_engine.cpp
+@@ -3452,6 +3452,11 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
+ 
+ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config) {
+     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
++    // W20-K (S237-WS7): AOSP Dialog lifecycle delivery — drain armed
++    // onShow/onDismiss/onCancel tokens BEFORE this frame paints (a dialog
++    // shown late in onCreate must fire onShow before first paint, and a
++    // cancel/dismiss that was the last framework call still delivers).
++    dalvik_engine_.deliver_pending_dialog_callbacks();
+     // ── CONT-65 F-NEW-355: vsync display-tick law. One vsync per RENDERED
+     // frame when no Choreographer callbacks are pending (with pending
+     // callbacks take_due_callbacks owns this vsync's tick — no double
+@@ -4368,8 +4373,9 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
+                                 if (framework::pick_state_list(
+                                         sl_it->second.second, node->pressed,
+                                         node->enabled, node->selected, &c, &p,
+-                                        node->checked, node->focused, false,
+-                                        &win)) {
++                                        node->checked, node->focused,
++                                        node->hovered, node->activated,
++                                        true, &win)) {
+                                     if (p.empty() && c != 0) eff_bg_color = c;
+                                     // ── C9-19 (CODER 9): the matched item
+                                     // may carry a COMPILED ref
+@@ -8618,6 +8624,44 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
+                 hs->advance_virtual(50);
+                 auto up_rec = touch_dispatcher_->dispatch(
+                     swipe_root, {framework::TouchAction::UP, x2, y2});
++                // W20-K (S237-WS4, env-gated MINIANDROID_WV_DRAG_FORWARD,
++                // default OFF): forward the REAL multi-point gesture into
++                // the WebView browser path (touchstart -> N x touchmove ->
++                // touchend at view-local coordinates). Before this gate the
++                // DEX-layer MOVE stream reached the app's Java onTouchEvent
++                // but the browser engine only ever saw the single-point
++                // click burst — an HTML5 touch game (2048) never received
++                // touchmove. Gate unset => byte-identical pristine behavior.
++                static const bool wv_drag_forward =
++                    std::getenv("MINIANDROID_WV_DRAG_FORWARD") != nullptr;
++                if (wv_drag_forward && shadow_registry_) {
++                    if (auto* vs = shadow_registry_->find_as<
++                            framework::ViewShadow>()) {
++                        if (auto* wv = vs->webview_node_at(x1, y1)) {
++                            if (auto eng =
++                                    webview::WebViewRegistry::instance().find(
++                                        wv->view_id)) {
++                                const int lx1 = x1 - wv->x;
++                                const int ly1 = y1 - wv->y;
++                                const int lx2 = x2 - wv->x;
++                                const int ly2 = y2 - wv->y;
++                                std::cerr << "[WV-INPUT] swipe -> browser"
++                                          << " gesture local (" << lx1 << ","
++                                          << ly1 << ") -> (" << lx2 << ","
++                                          << ly2 << ") view=o" << wv->view_id
++                                          << std::endl;
++                                eng->pointer_event(lx1, ly1, "touchstart");
++                                for (int i = 1; i <= steps; ++i) {
++                                    eng->pointer_event(
++                                        lx1 + (lx2 - lx1) * i / steps,
++                                        ly1 + (ly2 - ly1) * i / steps,
++                                        "touchmove");
++                                }
++                                eng->pointer_event(lx2, ly2, "touchend");
++                            }
++                        }
++                    }
++                }
+                 // Drain the gesture's posted callbacks (PerformClick chain).
+                 for (int round = 0; round < 8; ++round) {
+                     std::vector<uint32_t> swipe_drained;
+@@ -10629,3 +10673,42 @@ std::shared_ptr<api::View> ExecutionEngine::create_view_from_dalvik_result(
+ 
+ } // namespace runtime
+ } // namespace miniandroid
++
++namespace miniandroid {
++namespace dalvik {
++
++// W20-K (S237-WS7): AOSP Dialog lifecycle-callback delivery — the
++// DialogShadow stores listener ids and arms exactly-once tokens; this drain
++// invokes the app's REAL overrides. Order per AOSP Dialog.java: cancel()
++// sends the CANCEL message then the DISMISS message; show() sends the SHOW
++// message after onStart. Defined in this always-linked TU.
++void DalvikExecutionEngine::deliver_pending_dialog_callbacks() {
++    if (!shadow_registry_) return;
++    auto* dsh = shadow_registry_->find_as<framework::DialogShadow>();
++    if (!dsh) return;
++
++    auto deliver = [&](uint32_t dlg, const char* method) {
++        if (dlg == 0) return;
++        std::string cls = "Landroid/app/Dialog;";
++        if (auto* obj = get_heap_public().get(dlg))
++            if (!obj->class_descriptor.empty())
++                cls = obj->class_descriptor;
++        DalvikValue ret;
++        DalvikExecutionResult res;
++        std::vector<DalvikValue> args;
++        args.push_back(DalvikValue::make_object(
++            dlg, "Landroid/app/Dialog;"));
++        try_recursive_invoke(cls, method, args, ret, res);
++    };
++
++    uint32_t dlg = 0;
++    while (dsh->consume_pending_cancel_cb(dlg))
++        deliver(dlg, "onCancel");
++    while (dsh->consume_pending_dismiss_cb(dlg))
++        deliver(dlg, "onDismiss");
++    while (dsh->consume_pending_show_cb(dlg))
++        deliver(dlg, "onShow");
++}
++
++} // namespace dalvik
++} // namespace miniandroid
+diff --git a/miniandroid/src/storage/sqlite_shadow.cpp b/miniandroid/src/storage/sqlite_shadow.cpp
+index 5643f0a1..01783d36 100644
+--- a/miniandroid/src/storage/sqlite_shadow.cpp
++++ b/miniandroid/src/storage/sqlite_shadow.cpp
+@@ -1146,6 +1146,35 @@ bool DatabaseShadow::cursor_value_string(uint32_t cursor_oid, int32_t pos,
+     return false;
+ }
+ 
++// W20-K (S237-WS5, AOSP AbstractCursor.getColumnIndex @android-14 L323-360):
++// shared column-name resolution — strip the table qualifier after the LAST
++// '.' (the bug-903852 hack) and match case-insensitively. Used by both
++// getColumnIndex and getColumnIndexOrThrow.
++static bool column_index_ci(const std::vector<std::string>& columns,
++                            const std::string& requested, int32_t* out) {
++    std::string name = requested;
++    size_t p = name.rfind('.');
++    if (p != std::string::npos) name = name.substr(p + 1);
++    for (size_t i = 0; i < columns.size(); i++) {
++        const std::string& col = columns[i];
++        if (col.size() == name.size()) {
++            bool eq = true;
++            for (size_t j = 0; j < col.size(); j++) {
++                if (std::tolower((unsigned char)col[j]) !=
++                    std::tolower((unsigned char)name[j])) {
++                    eq = false;
++                    break;
++                }
++            }
++            if (eq) {
++                *out = (int32_t)i;
++                return true;
++            }
++        }
++    }
++    return false;
++}
++
+ framework::CallResult DatabaseShadow::cursor_dispatch(const framework::CallContext& ctx) {
+     const std::string& m = ctx.method;
+     uint32_t cur_oid = ctx.has_receiver ? ctx.receiver_id : 0;
+@@ -1173,25 +1202,33 @@ framework::CallResult DatabaseShadow::cursor_dispatch(const framework::CallConte
+         return framework::CallResult::handled_bool(
+             !c->rows.empty() && c->pos == (int)c->rows.size() - 1);
+     if (m == "getColumnIndex" && ctx.args.size() >= 1) {
+-        for (size_t i = 0; i < c->columns.size(); i++) {
+-            if (c->columns[i] == ctx.args[0].string_val)
+-                return framework::CallResult::handled_int((int)i);
+-        }
++        // W20-K (S237-WS5): AOSP law — qualifier strip + case-insensitive
++        // match; missing column answers -1 (never throws).
++        int32_t idx = -1;
++        if (column_index_ci(c->columns, ctx.args[0].string_val, &idx))
++            return framework::CallResult::handled_int(idx);
+         return framework::CallResult::handled_int(-1);
+     }
+     // F-NEW-401 (AOSP AbstractCursor.getColumnIndexOrThrow): an unknown
+     // column throws IllegalArgumentException — never a silent -1.
+     if (m == "getColumnIndexOrThrow" && ctx.args.size() >= 1) {
++        // W20-K (S237-WS5): AOSP matching + message shape with the
++        // available-columns list.
++        int32_t idx = -1;
++        if (column_index_ci(c->columns, ctx.args[0].string_val, &idx))
++            return framework::CallResult::handled_int(idx);
++        std::string avail;
+         for (size_t i = 0; i < c->columns.size(); i++) {
+-            if (c->columns[i] == ctx.args[0].string_val)
+-                return framework::CallResult::handled_int((int)i);
++            if (i) avail += ", ";
++            avail += c->columns[i];
+         }
+         std::cerr << "[SQLITE-SHADOW] getColumnIndexOrThrow: unknown column '"
+                   << ctx.args[0].string_val << "' (caller " << ctx.receiver_class
+                   << ")" << std::endl;
+         return framework::CallResult::handled_exception(
+             "Ljava/lang/IllegalArgumentException;",
+-            "Unknown column '" + ctx.args[0].string_val + "'");
++            "column '" + ctx.args[0].string_val +
++                "' does not exist. Available columns: [" + avail + "]");
+     }
+     // F-NEW-401: getColumnName with the ART ArrayIndexOutOfBoundsException
+     // message format on an out-of-range column (was an unchecked read).
+diff --git a/miniandroid/src/storage/sqlite_shadow.h b/miniandroid/src/storage/sqlite_shadow.h
+index ef097f0f..e0e0ade6 100644
+--- a/miniandroid/src/storage/sqlite_shadow.h
++++ b/miniandroid/src/storage/sqlite_shadow.h
+@@ -47,6 +47,10 @@ public:
+     static void set_databases_dir(const std::string& dir);
+     static const std::string& databases_dir();
+ 
++    // W20-K (S237-WS5): public so the contract fixture can drive the exact
++    // cursor surface the engine dispatches (s248_sqlite_cursor_contract).
++    framework::CallResult cursor_dispatch(const framework::CallContext& ctx);
++
+     std::string name() const override { return "DatabaseShadow"; }
+     bool handles_class(const std::string& class_name) const override;
+     framework::CallResult dispatch(const framework::CallContext& ctx) override;
+@@ -155,8 +159,7 @@ private:
+     framework::CallResult helper_dispatch(const framework::CallContext& ctx);
+     framework::CallResult db_dispatch(const framework::CallContext& ctx);
+     framework::CallResult stmt_dispatch(const framework::CallContext& ctx);
+-    framework::CallResult cursor_dispatch(const framework::CallContext& ctx);
+-    framework::CallResult query_builder_dispatch(const framework::CallContext& ctx);
++        framework::CallResult query_builder_dispatch(const framework::CallContext& ctx);
+ 
+     // Shared query materialization for rawQuery / rawQueryWithFactory
+     // (F-026: bare rawQuery(String,String[]) previously had NO handler —
+diff --git a/miniandroid/src/webview/webview_engine.cpp b/miniandroid/src/webview/webview_engine.cpp
+index 080259e1..0d5bddca 100644
+--- a/miniandroid/src/webview/webview_engine.cpp
++++ b/miniandroid/src/webview/webview_engine.cpp
+@@ -6235,6 +6235,50 @@ bool WebViewEngine::pointer_event(int x, int y, const std::string& type) {
+     JS_SetPropertyStr(impl->ctx, t0, "pageY", JS_NewInt32(impl->ctx, y));
+     JS_SetPropertyUint32(impl->ctx, touches, 0, t0);
+     JS_SetPropertyStr(impl->ctx, ev, "touches", touches);
++    // W20-K (S237-WS4, env-gated MINIANDROID_WV_CHANGED_TOUCHES, default
++    // OFF): W3C TouchEvent completeness for real HTML5 games. 2048's
++    // touchend reads event.changedTouches[0].clientX, guards on
++    // event.touches.length, and calls preventDefault() — all three threw
++    // TypeError before this gate. Gate unset => byte-identical pristine
++    // behavior (S237 evidence: sha f3d5b860... both on and off).
++    static const bool wv_changed_touches =
++        std::getenv("MINIANDROID_WV_CHANGED_TOUCHES") != nullptr;
++    if (wv_changed_touches) {
++        bool is_touch = lower_s(type).rfind("touch", 0) == 0;
++        bool is_end = lower_s(type) == "touchend";
++        JSValue changed = JS_NewArray(impl->ctx);
++        JSValue c0 = JS_NewObject(impl->ctx);
++        JS_SetPropertyStr(impl->ctx, c0, "clientX", JS_NewInt32(impl->ctx, x));
++        JS_SetPropertyStr(impl->ctx, c0, "clientY", JS_NewInt32(impl->ctx, y));
++        JS_SetPropertyStr(impl->ctx, c0, "pageX", JS_NewInt32(impl->ctx, x));
++        JS_SetPropertyStr(impl->ctx, c0, "pageY", JS_NewInt32(impl->ctx, y));
++        JS_SetPropertyUint32(impl->ctx, changed, 0, c0);
++        JS_SetPropertyStr(impl->ctx, ev, "changedTouches", changed);
++        if (is_touch) {
++            JSValue tgt = JS_NewArray(impl->ctx);
++            if (!is_end) {
++                JSValue g0 = JS_NewObject(impl->ctx);
++                JS_SetPropertyStr(impl->ctx, g0, "clientX",
++                                  JS_NewInt32(impl->ctx, x));
++                JS_SetPropertyStr(impl->ctx, g0, "clientY",
++                                  JS_NewInt32(impl->ctx, y));
++                JS_SetPropertyUint32(impl->ctx, tgt, 0, g0);
++            }
++            JS_SetPropertyStr(impl->ctx, ev, "targetTouches", tgt);
++            // W3C: touches/targetTouches are EMPTY on touchend.
++            if (is_end)
++                JS_SetPropertyStr(impl->ctx, ev, "touches",
++                                  JS_NewArray(impl->ctx));
++            auto noop_method =
++                [](JSContext*, JSValueConst, int,
++                   JSValueConst*) -> JSValue { return JS_UNDEFINED; };
++            for (const char* mth : {"preventDefault", "stopPropagation",
++                                    "stopImmediatePropagation"}) {
++                JSValue fn = JS_NewCFunction(impl->ctx, noop_method, mth, 0);
++                JS_SetPropertyStr(impl->ctx, ev, mth, fn);
++            }
++        }
++    }
+     impl->dispatch(hit, lower_s(type), ev);
+     return true;
+ }

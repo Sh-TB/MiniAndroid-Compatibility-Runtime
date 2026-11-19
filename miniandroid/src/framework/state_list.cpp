@@ -164,6 +164,7 @@ bool pick_state_list(
     const std::vector<ViewShadow::ViewNode::BgStateItem>& items, bool pressed,
     bool enabled, bool selected, uint32_t* color_out, std::string* path_out,
     bool checked, bool focused, bool hovered,
+    bool activated, bool window_focused,
     const ViewShadow::ViewNode::BgStateItem** winner_out) {
     // StateListDrawable.getStateDrawableIndex law: FIRST item in document
     // order whose state spec is satisfied wins; a declared state must match
@@ -187,6 +188,16 @@ bool pick_state_list(
             continue;
         if (it.state_hovered >= 0 &&
             it.state_hovered != (hovered ? 1 : 0))
+            continue;
+        // W20-K (S237-WS9): state_activated / state_window_focused were
+        // parsed since S127 but NEVER consulted — a declared
+        // state_activated="true" item matched as a wildcard and could win
+        // the first-match slot for a view that was NOT activated.
+        if (it.state_activated >= 0 &&
+            it.state_activated != (activated ? 1 : 0))
+            continue;
+        if (it.state_window_focused >= 0 &&
+            it.state_window_focused != (window_focused ? 1 : 0))
             continue;
         if (it.has_color && color_out) *color_out = it.color;
         if (path_out) *path_out = it.drawable_path;

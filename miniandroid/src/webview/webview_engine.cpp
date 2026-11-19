@@ -6235,6 +6235,50 @@ bool WebViewEngine::pointer_event(int x, int y, const std::string& type) {
     JS_SetPropertyStr(impl->ctx, t0, "pageY", JS_NewInt32(impl->ctx, y));
     JS_SetPropertyUint32(impl->ctx, touches, 0, t0);
     JS_SetPropertyStr(impl->ctx, ev, "touches", touches);
+    // W20-K (S237-WS4, env-gated MINIANDROID_WV_CHANGED_TOUCHES, default
+    // OFF): W3C TouchEvent completeness for real HTML5 games. 2048's
+    // touchend reads event.changedTouches[0].clientX, guards on
+    // event.touches.length, and calls preventDefault() — all three threw
+    // TypeError before this gate. Gate unset => byte-identical pristine
+    // behavior (S237 evidence: sha f3d5b860... both on and off).
+    static const bool wv_changed_touches =
+        std::getenv("MINIANDROID_WV_CHANGED_TOUCHES") != nullptr;
+    if (wv_changed_touches) {
+        bool is_touch = lower_s(type).rfind("touch", 0) == 0;
+        bool is_end = lower_s(type) == "touchend";
+        JSValue changed = JS_NewArray(impl->ctx);
+        JSValue c0 = JS_NewObject(impl->ctx);
+        JS_SetPropertyStr(impl->ctx, c0, "clientX", JS_NewInt32(impl->ctx, x));
+        JS_SetPropertyStr(impl->ctx, c0, "clientY", JS_NewInt32(impl->ctx, y));
+        JS_SetPropertyStr(impl->ctx, c0, "pageX", JS_NewInt32(impl->ctx, x));
+        JS_SetPropertyStr(impl->ctx, c0, "pageY", JS_NewInt32(impl->ctx, y));
+        JS_SetPropertyUint32(impl->ctx, changed, 0, c0);
+        JS_SetPropertyStr(impl->ctx, ev, "changedTouches", changed);
+        if (is_touch) {
+            JSValue tgt = JS_NewArray(impl->ctx);
+            if (!is_end) {
+                JSValue g0 = JS_NewObject(impl->ctx);
+                JS_SetPropertyStr(impl->ctx, g0, "clientX",
+                                  JS_NewInt32(impl->ctx, x));
+                JS_SetPropertyStr(impl->ctx, g0, "clientY",
+                                  JS_NewInt32(impl->ctx, y));
+                JS_SetPropertyUint32(impl->ctx, tgt, 0, g0);
+            }
+            JS_SetPropertyStr(impl->ctx, ev, "targetTouches", tgt);
+            // W3C: touches/targetTouches are EMPTY on touchend.
+            if (is_end)
+                JS_SetPropertyStr(impl->ctx, ev, "touches",
+                                  JS_NewArray(impl->ctx));
+            auto noop_method =
+                [](JSContext*, JSValueConst, int,
+                   JSValueConst*) -> JSValue { return JS_UNDEFINED; };
+            for (const char* mth : {"preventDefault", "stopPropagation",
+                                    "stopImmediatePropagation"}) {
+                JSValue fn = JS_NewCFunction(impl->ctx, noop_method, mth, 0);
+                JS_SetPropertyStr(impl->ctx, ev, mth, fn);
+            }
+        }
+    }
     impl->dispatch(hit, lower_s(type), ev);
     return true;
 }

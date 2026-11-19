@@ -1,0 +1,13 @@
+== resources @ 2026-11-19T08:13:34Z ==
+2
+               total        used        free      shared  buff/cache   available
+Mem:            4041         939        1213           0        2079        3102
+-- swap:
+-- compiler:
+g++ (Debian 14.2.0-19) 14.2.0
+GNU ld (GNU Binutils for Debian) 2.44
+-- build tools:
+GNU Make 4.4.1
+no ninja
+-- disk:
+total=9.9G used=7.7G avail=1.6G

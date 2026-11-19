@@ -92,6 +92,19 @@ struct DialogWindow {
     // Window frame geometry (computed by layout_window() at show time;
     // the renderer draws the frame and the decor tree inside it).
     int frame_left = 0, frame_top = 0, frame_w = 0, frame_h = 0;
+
+    // W20-K (S237-WS7, AOSP Dialog.java show/dismiss/cancel message laws):
+    // the three lifecycle listeners MUST be stored (the old setters were a
+    // shared no-op bucket) and delivered exactly once:
+    //   show()    -> OnShow (after onStart)
+    //   dismiss() -> OnDismiss
+    //   cancel()  -> OnCancel THEN OnDismiss (two separate AOSP messages)
+    uint32_t on_show_listener = 0;
+    uint32_t on_dismiss_listener = 0;
+    uint32_t on_cancel_listener = 0;
+    bool pending_show_cb = false;
+    bool pending_dismiss_cb = false;
+    bool pending_cancel_cb = false;
 };
 
 // Toast state (makeText → show → visible transient window).
@@ -168,6 +181,14 @@ public:
     // Dismiss a window by its Dialog object id (used by the click router:
     // no-listener button clicks still dismiss, matching real Android).
     void dismiss_dialog(uint32_t dialog_obj_id);
+
+    // W20-K (S237-WS7): exactly-once lifecycle-callback tokens — the ENGINE
+    // drains these after a show/dismiss/cancel shadow dispatch and invokes
+    // the app's real onShow/onDismiss/onCancel overrides (drain-style, the
+    // same shape as ThreadShadow::consume_pending_start).
+    bool consume_pending_show_cb(uint32_t& dialog_obj_id);
+    bool consume_pending_dismiss_cb(uint32_t& dialog_obj_id);
+    bool consume_pending_cancel_cb(uint32_t& dialog_obj_id);
 
     // R-NEW-394 (S76): AOSP topmost-window touch law — dialog windows sit
     // ABOVE the activity window (WindowManager z-order). Returns the

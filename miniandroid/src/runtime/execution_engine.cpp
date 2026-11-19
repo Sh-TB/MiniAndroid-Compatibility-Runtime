@@ -245,10 +245,18 @@ ExecutionResult ExecutionEngine::execute(const std::string& path, const Executio
     if (success) success &= boot_stage("capture_output", stage_capture_output(result, config));
     // UNIFIED_011.2 CLICK-TEST: runs AFTER the first frame is captured so the
     // baseline PNG on disk is the untouched frame 1. Never fails the run.
-    if (success && config.click_test) stage_click_test(result, config);
-    // DEMO-CLICK-SEQUENCE: multi-click frame capture (see stage docs).
-    // Runs after click-test so both probes see the launch framebuffer.
-    if (success && config.click_count > 0) stage_click_sequence(result, config);
+    // F-NEW-711 (W11-APPS): the probe is DIAGNOSTIC and must also run when
+    // the app reached a rendered frame but ended with a soft in-flight
+    // exception (F-016 compatibility-continue → success==false, rc=1).
+    // Gating on `success` alone discarded ALL interaction evidence for
+    // exactly the PARTIAL class the APK campaign measures (real Android
+    // still delivers clicks to a crashed-but-resumed activity). First
+    // live face: name.livitski n-Puzzle (1 in-flight exception, 60 frames
+    // rendered, view 22 + Activity$4 listener registered, probe skipped).
+    if ((success || result.content_view) && config.click_test)
+        stage_click_test(result, config);
+    if ((success || result.content_view) && config.click_count > 0)
+        stage_click_sequence(result, config);
     // GOLDEN-02: coordinate-anchored long-press gesture (AOSP touch law).
     if (success && config.long_press_enabled) stage_long_press(result, config);
     // G06 §4/§6: canonical tap gesture through the TouchDispatcher law
@@ -3444,6 +3452,11 @@ bool ExecutionEngine::stage_render_frame( ExecutionResult& result, const Executi
 
 bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const ExecutionConfig& config) {
     trace_engine_.info("ExecutionEngine", "stage_render_frame", "Rendering frame");
+    // W20-K (S237-WS7): AOSP Dialog lifecycle delivery — drain armed
+    // onShow/onDismiss/onCancel tokens BEFORE this frame paints (a dialog
+    // shown late in onCreate must fire onShow before first paint, and a
+    // cancel/dismiss that was the last framework call still delivers).
+    dalvik_engine_.deliver_pending_dialog_callbacks();
     // ── CONT-65 F-NEW-355: vsync display-tick law. One vsync per RENDERED
     // frame when no Choreographer callbacks are pending (with pending
     // callbacks take_due_callbacks owns this vsync's tick — no double
@@ -3881,6 +3894,65 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                     [this](const std::string& c, const std::string& a) {
                                         return dalvik_engine_.is_subclass_of(c, a);
                                     });
+                                // ── F-NEW-712 (W12): overrides_on_measure
+                                // RUNTIME-CLASS SYNC (AOSP View identity law)
+                                // ── The M71 DEX-onMeasure dispatch law
+                                // (R-NEW-347, containers included) gates on
+                                // node->overrides_on_measure, which is
+                                // captured at CONSTRUCTOR time from the
+                                // DECLARED class. For app subclasses created
+                                // with `new` (n-Puzzle: `new RelativeLayout(
+                                // this) { onMeasure... }` injected into the
+                                // shell frame via forceSetContentView) the
+                                // ctor shadow runs with the FRAMEWORK declared
+                                // class, so the flag stays false forever: the
+                                // app's onMeasure override never executes →
+                                // resizeContent never runs → zero setTag and
+                                // zero tile drawables (the board stayed empty
+                                // and every dispatched click routed to a null
+                                // tag). Per frame, re-derive the flag from
+                                // the HEAP object's runtime class (field-
+                                // identity law) for every node of the tree;
+                                // the existing M71 hook then dispatches the
+                                // real bytecode with the correct incoming
+                                // specs, including child negotiation and the
+                                // INCOMPLETE-EMULATION law.
+                                if (view_shadow != nullptr && root_id != 0) {
+                                    std::function<void(uint32_t)> sync712 =
+                                        [&](uint32_t vid) {
+                                            auto* n712 =
+                                                view_shadow->find_node(vid);
+                                            if (!n712) return;
+                                            const auto* h712 =
+                                                dalvik_engine_.get_heap().get(
+                                                    vid);
+                                            if (h712 &&
+                                                !h712->class_descriptor.empty() &&
+                                                dalvik_engine_
+                                                    .class_chain_defines_method(
+                                                        h712->class_descriptor,
+                                                        "onMeasure")) {
+                                                if (!n712->overrides_on_measure) {
+                                                    static thread_local
+                                                        uint64_t f712_n = 0;
+                                                    if (f712_n++ < 12)
+                                                        std::cerr
+                                                            << "[F712-SYNC] view="
+                                                            << vid << " "
+                                                            << h712
+                                                               ->class_descriptor
+                                                            << " overrides_on_measure=1"
+                                                            << std::endl;
+                                                }
+                                                n712->overrides_on_measure =
+                                                    true;
+                                            }
+                                            for (uint32_t c712 :
+                                                 n712->children)
+                                                sync712(c712);
+                                        };
+                                    sync712(root_id);
+                                }
                                 rt.inflater().measure_layout(view_shadow, root_id);
                                 // 21-P0-6/P1-2 census: the canonical measure
                                 // + layout pass RAN for this frame.
@@ -4301,8 +4373,9 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 if (framework::pick_state_list(
                                         sl_it->second.second, node->pressed,
                                         node->enabled, node->selected, &c, &p,
-                                        node->checked, node->focused, false,
-                                        &win)) {
+                                        node->checked, node->focused,
+                                        node->hovered, node->activated,
+                                        true, &win)) {
                                     if (p.empty() && c != 0) eff_bg_color = c;
                                     // ── C9-19 (CODER 9): the matched item
                                     // may carry a COMPILED ref
@@ -7305,6 +7378,57 @@ bool ExecutionEngine::stage_click_test( ExecutionResult& result, const Execution
     std::cerr << "[CLICK-TEST] " << xml_candidates.size()
               << " view(s) with XML android:onClick handlers" << std::endl;
 
+    // ── F-NEW-719 probe reach (W14): AdapterView items are a THIRD touch
+    // path — items carry no per-view listener; the AdapterView's stored
+    // item listener (setOnItemClickListener law) dispatches onItemClick
+    // via the F-719 tap law inside dispatch_click. n-Puzzle's picker grid
+    // was invisible to this probe (0 item taps → 0 result chains ever
+    // fired). Law: every direct child of an AdapterView holding an item
+    // listener is a probe candidate; dispatch_click resolves the item
+    // law at tap time (per-view/XML handlers still win first, per AOSP
+    // View.performClick ordering).
+    {
+        size_t item_cand719 = 0;
+        size_t adapter_nodes719 = 0;
+        for (const auto& [id719, np719] : view_shadow->all_nodes()) {
+            // The stored item listener IS the AdapterView discriminator
+            // (setOnItemClickListener only exists on adapter views); a
+            // class-substring check would miss GridView/ListView
+            // subclasses ("Landroid/widget/GridView;" does not contain
+            // "AdapterView;").
+            if (!np719) continue;
+            if (np719->item_click_listener_id != 0) {
+                ++adapter_nodes719;
+                std::cerr << "[F719-SCAN] adapter node=" << id719
+                          << " (" << np719->class_desc << ")"
+                          << " children=" << np719->children.size()
+                          << " adapter_id=" << np719->adapter_id
+                          << std::endl;
+                for (uint32_t ch719 : np719->children) {
+                    candidates.push_back(ch719);
+                    ++item_cand719;
+                }
+            }
+        }
+        std::cerr << "[CLICK-TEST] " << item_cand719
+                  << " AdapterView item(s) with item-click listeners"
+                  << " (adapter_nodes=" << adapter_nodes719 << ")"
+                  << std::endl;
+        // F-719 identity probe: the store law recorded the listener on
+        // node 156 during onCreate; if the click-test's ViewShadow shows
+        // a different node state, the registry handed out TWO instances.
+        if (const auto* n156 = view_shadow->find_node(156)) {
+            std::cerr << "[F719-SCAN] node156 exists cls=" << n156->class_desc
+                      << " listener=" << n156->item_click_listener_id
+                      << " children=" << n156->children.size()
+                      << " vs=" << (const void*)view_shadow
+                      << std::endl;
+        } else {
+            std::cerr << "[F719-SCAN] node156 ABSENT vs="
+                      << (const void*)view_shadow << std::endl;
+        }
+    }
+
     if (candidates.empty() && xml_candidates.empty()) return true;
 
     const std::vector<uint8_t> frame1 = framebuffer_;  // untouched baseline
@@ -8500,6 +8624,44 @@ bool ExecutionEngine::stage_frame_sequence( ExecutionResult& result, const Execu
                 hs->advance_virtual(50);
                 auto up_rec = touch_dispatcher_->dispatch(
                     swipe_root, {framework::TouchAction::UP, x2, y2});
+                // W20-K (S237-WS4, env-gated MINIANDROID_WV_DRAG_FORWARD,
+                // default OFF): forward the REAL multi-point gesture into
+                // the WebView browser path (touchstart -> N x touchmove ->
+                // touchend at view-local coordinates). Before this gate the
+                // DEX-layer MOVE stream reached the app's Java onTouchEvent
+                // but the browser engine only ever saw the single-point
+                // click burst — an HTML5 touch game (2048) never received
+                // touchmove. Gate unset => byte-identical pristine behavior.
+                static const bool wv_drag_forward =
+                    std::getenv("MINIANDROID_WV_DRAG_FORWARD") != nullptr;
+                if (wv_drag_forward && shadow_registry_) {
+                    if (auto* vs = shadow_registry_->find_as<
+                            framework::ViewShadow>()) {
+                        if (auto* wv = vs->webview_node_at(x1, y1)) {
+                            if (auto eng =
+                                    webview::WebViewRegistry::instance().find(
+                                        wv->view_id)) {
+                                const int lx1 = x1 - wv->x;
+                                const int ly1 = y1 - wv->y;
+                                const int lx2 = x2 - wv->x;
+                                const int ly2 = y2 - wv->y;
+                                std::cerr << "[WV-INPUT] swipe -> browser"
+                                          << " gesture local (" << lx1 << ","
+                                          << ly1 << ") -> (" << lx2 << ","
+                                          << ly2 << ") view=o" << wv->view_id
+                                          << std::endl;
+                                eng->pointer_event(lx1, ly1, "touchstart");
+                                for (int i = 1; i <= steps; ++i) {
+                                    eng->pointer_event(
+                                        lx1 + (lx2 - lx1) * i / steps,
+                                        ly1 + (ly2 - ly1) * i / steps,
+                                        "touchmove");
+                                }
+                                eng->pointer_event(lx2, ly2, "touchend");
+                            }
+                        }
+                    }
+                }
                 // Drain the gesture's posted callbacks (PerformClick chain).
                 for (int round = 0; round < 8; ++round) {
                     std::vector<uint32_t> swipe_drained;
@@ -10510,4 +10672,43 @@ std::shared_ptr<api::View> ExecutionEngine::create_view_from_dalvik_result(
 }
 
 } // namespace runtime
+} // namespace miniandroid
+
+namespace miniandroid {
+namespace dalvik {
+
+// W20-K (S237-WS7): AOSP Dialog lifecycle-callback delivery — the
+// DialogShadow stores listener ids and arms exactly-once tokens; this drain
+// invokes the app's REAL overrides. Order per AOSP Dialog.java: cancel()
+// sends the CANCEL message then the DISMISS message; show() sends the SHOW
+// message after onStart. Defined in this always-linked TU.
+void DalvikExecutionEngine::deliver_pending_dialog_callbacks() {
+    if (!shadow_registry_) return;
+    auto* dsh = shadow_registry_->find_as<framework::DialogShadow>();
+    if (!dsh) return;
+
+    auto deliver = [&](uint32_t dlg, const char* method) {
+        if (dlg == 0) return;
+        std::string cls = "Landroid/app/Dialog;";
+        if (auto* obj = get_heap_public().get(dlg))
+            if (!obj->class_descriptor.empty())
+                cls = obj->class_descriptor;
+        DalvikValue ret;
+        DalvikExecutionResult res;
+        std::vector<DalvikValue> args;
+        args.push_back(DalvikValue::make_object(
+            dlg, "Landroid/app/Dialog;"));
+        try_recursive_invoke(cls, method, args, ret, res);
+    };
+
+    uint32_t dlg = 0;
+    while (dsh->consume_pending_cancel_cb(dlg))
+        deliver(dlg, "onCancel");
+    while (dsh->consume_pending_dismiss_cb(dlg))
+        deliver(dlg, "onDismiss");
+    while (dsh->consume_pending_show_cb(dlg))
+        deliver(dlg, "onShow");
+}
+
+} // namespace dalvik
 } // namespace miniandroid

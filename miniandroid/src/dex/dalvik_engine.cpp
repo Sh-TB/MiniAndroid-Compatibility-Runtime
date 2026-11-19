@@ -13,6 +13,7 @@
 #include "dalvik_engine.h"
 #include "dex_parser.h"
 #include "mutf8.h"
+#include "../src/compat/glibc_mallinfo2.h"  // W15 #627 D-03/H-03: mallinfo2 fallback (glibc < 2.33)
 #include <dlfcn.h>  // #371 PHASE B2: real dlopen/dlerror boundary diagnostics
 #include <openssl/evp.h>  // #371 PHASE B2: sha16 file identity for loadLibrary law
 #include <atomic>  // CONT-86 F-NEW-390 bounded diag counters
@@ -9602,7 +9603,8 @@ size_t DalvikExecutionEngine::dispatch_activity_lifecycle_callbacks(
 // ORIGINAL object identity — an inherited method executes with the runtime
 // receiver, exactly as ART resolves invokevirtual/interface invokes.
 bool DalvikExecutionEngine::try_recursive_invoke_on_super(
-    const std::string& declaring_class,
+    const std::string declaring_class,  // BY VALUE (F-NEW-710, see
+    // try_recursive_invoke) — callers may bind heap_obj->class_descriptor.
     const std::string& method_name,
     const std::vector<DalvikValue>& args,
     DalvikValue& return_val,
@@ -9815,7 +9817,12 @@ bool DalvikExecutionEngine::try_interface_default_invoke(
 }
 
 bool DalvikExecutionEngine::try_recursive_invoke(
-    const std::string& declaring_class,
+    const std::string declaring_class,  // BY VALUE (F-NEW-710): callers may
+    // bind this to heap_obj->class_descriptor; the re-entered interpreter
+    // and the bridge laws allocate on the heap, and a heap vector realloc
+    // would dangle a bound reference — farmerbb/Notepad provider init
+    // segfaulted in string::rfind exactly that way. One owned copy per
+    // call keeps every find()/rfind() below on stable storage.
     const std::string& method_name,
     const std::vector<DalvikValue>& args,
     DalvikValue& return_val,
@@ -24293,24 +24300,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
                     int32_t b_val = dalvik_int_value(b); \
-                    /* K-29: lit8 div/rem by zero throws (deferred mechanism).  */ \
-                    if ((op == "div" || op == "rem") && lit == 0) { \
+                    /* W15 (#627 E-02 monolith parity): strcmp dispatch (was    */ \
+                    /* literal-ptr compare), unsigned-width wrap, MIN/-1 edge.  */ \
+                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && lit == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT8"); \
                         pc_ = pc_ + 2; \
                         break; \
                     } \
-                    if (op == "add") result_val.int_val = b_val + lit; \
-                    else if (op == "rsub") result_val.int_val = lit - b_val; \
-                    else if (op == "sub") result_val.int_val = b_val - lit; \
-                    else if (op == "mul") result_val.int_val = b_val * lit; \
-                    else if (op == "div") result_val.int_val = b_val / lit; \
-                    else if (op == "rem") result_val.int_val = b_val % lit; \
-                    else if (op == "and") result_val.int_val = b_val & lit; \
-                    else if (op == "or")  result_val.int_val = b_val | lit; \
-                    else if (op == "xor") result_val.int_val = b_val ^ lit; \
-                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
-                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "rsub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(lit) - static_cast<uint32_t>(b_val)); \
+                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "div") == 0) result_val.int_val = (lit == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / lit; \
+                    else if (strcmp(op, "rem") == 0) result_val.int_val = (lit == -1) ? 0 : b_val % lit; \
+                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & lit; \
+                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | lit; \
+                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ lit; \
+                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) << (lit & 0x1f)); \
+                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (lit & 0x1f); \
+                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
                     set_register(vAA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ = pc_ + 2; \
@@ -24350,23 +24358,25 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     DalvikValue result_val; \
                     result_val.type = DalvikType::INT32; \
                     int32_t b_val = dalvik_int_value(b); \
-                    if ((op == "div" || op == "rem") && lit == 0) { \
+                    /* W15 (#627 E-02 monolith parity): strcmp dispatch (was    */ \
+                    /* literal-ptr compare), unsigned-width wrap, MIN/-1 edge.  */ \
+                    if ((strcmp(op, "div") == 0 || strcmp(op, "rem") == 0) && lit == 0) { \
                         throw_deferred("Ljava/lang/ArithmeticException;", "divide by zero", "ARITH-LIT16"); \
                         pc_ = pc_ + 2; \
                         break; \
                     } \
-                    if (op == "add") result_val.int_val = b_val + lit; \
-                    else if (op == "rsub") result_val.int_val = lit - b_val; \
-                    else if (op == "sub") result_val.int_val = b_val - lit; \
-                    else if (op == "mul") result_val.int_val = b_val * lit; \
-                    else if (op == "div") result_val.int_val = b_val / lit; \
-                    else if (op == "rem") result_val.int_val = b_val % lit; \
-                    else if (op == "and") result_val.int_val = b_val & lit; \
-                    else if (op == "or")  result_val.int_val = b_val | lit; \
-                    else if (op == "xor") result_val.int_val = b_val ^ lit; \
-                    else if (op == "shl") result_val.int_val = b_val << (lit & 0x1f); \
-                    else if (op == "shr") result_val.int_val = b_val >> (lit & 0x1f); \
-                    else if (op == "ushr") result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
+                    if (strcmp(op, "add") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) + static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "rsub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(lit) - static_cast<uint32_t>(b_val)); \
+                    else if (strcmp(op, "sub") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) - static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "mul") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) * static_cast<uint32_t>(lit)); \
+                    else if (strcmp(op, "div") == 0) result_val.int_val = (lit == -1) ? static_cast<int32_t>(0u - static_cast<uint32_t>(b_val)) : b_val / lit; \
+                    else if (strcmp(op, "rem") == 0) result_val.int_val = (lit == -1) ? 0 : b_val % lit; \
+                    else if (strcmp(op, "and") == 0) result_val.int_val = b_val & lit; \
+                    else if (strcmp(op, "or") == 0)  result_val.int_val = b_val | lit; \
+                    else if (strcmp(op, "xor") == 0) result_val.int_val = b_val ^ lit; \
+                    else if (strcmp(op, "shl") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) << (lit & 0x1f)); \
+                    else if (strcmp(op, "shr") == 0) result_val.int_val = b_val >> (lit & 0x1f); \
+                    else if (strcmp(op, "ushr") == 0) result_val.int_val = static_cast<int32_t>(static_cast<uint32_t>(b_val) >> (lit & 0x1f)); \
                     set_register(vA, result_val); \
                     trace.opcode_name = op_name; \
                     pc_ = pc_ + 2; \
@@ -24393,7 +24403,14 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ + 1 >= bytecode_.size()) return false;
                 uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
                 uint16_t src = bytecode_[pc_ + 1];
-                DalvikValue val = get_register(static_cast<uint8_t>(src));
+                // W15 (#627 E-01 monolith parity): pass the full 16-bit source register
+                // (v256+ must not alias onto v0..255; matches the split-path law).
+                DalvikValue val = get_register(src);
+                static thread_local uint64_t w15_m16 = 0;
+                if (w15_m16++ < 8)
+                    std::cerr << "[W15-M16] src=" << src << " val_type="
+                              << (int)val.type << " int_val=" << val.int_val
+                              << " dest=" << (int)dest << std::endl;
                 set_register(dest, val);
                 trace.opcode_name = "move/from16";
                 pc_ += 2;
@@ -24428,7 +24445,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ + 2 >= bytecode_.size()) return false;
                 uint16_t instr = bytecode_[pc_];
                 uint8_t dest = (instr >> 8) & 0xFF;
-                uint32_t string_idx = (bytecode_[pc_ + 2] << 16) | bytecode_[pc_ + 1];
+                // W15 (#627 E-03): uint16_t promotes to SIGNED int — (idx>>16)<<16
+                // overflows int for high jumbo indices (UB). Mask into
+                // unsigned width before the shift, matching the packed-
+                // sites at the other 31c readers.
+                uint32_t string_idx =
+                    (static_cast<uint32_t>(bytecode_[pc_ + 2]) << 16) |
+                    static_cast<uint32_t>(bytecode_[pc_ + 1]);
                 DalvikValue val;
                 val.type = DalvikType::STRING_REF;
                 val.int_val = string_idx;
@@ -25724,7 +25747,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 if (pc_ + 1 >= bytecode_.size()) return false;
                 uint8_t dest = (bytecode_[pc_] >> 8) & 0xFF;
                 uint16_t src = bytecode_[pc_ + 1];
-                DalvikValue val = get_register(static_cast<uint8_t>(src));
+                // W15 (#627 E-01 monolith parity): pass the full 16-bit source register
+                // (v256+ must not alias onto v0..255; matches the split-path law).
+                DalvikValue val = get_register(src);
                 // F-028b: wide values occupy TWO slots (vDest, vDest+1) —
                 // fill the shadow with the high 32-bit word (ART layout).
                 // The missing shadow left range-invoke wide-arg merges
@@ -27558,7 +27583,8 @@ bool DalvikExecutionEngine::execute_const_16(uint32_t pc, InstructionTrace& trac
     if (pc + 1 >= bytecode_.size()) return false;
     
     uint16_t instr = bytecode_[pc];
-    uint8_t dest_reg = (instr >> 8) & 0xFF;
+    // W15 (#627 E-01 family): 21s dest untruncated (v256+ law).
+    uint16_t dest_reg = static_cast<uint16_t>((instr >> 8) & 0xFF);
     int16_t literal = static_cast<int16_t>(bytecode_[pc + 1]);
     
     set_register(dest_reg, DalvikValue::make_int(static_cast<int32_t>(literal)));
@@ -36998,6 +37024,19 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
         }
         if (gss_ctx540) {
         std::string svc_name339;
+        // F-NEW-713 diag (R339 site): entry probe — every gss reaching this
+        // law prints its arg shape (capped), so a silent miss is visible.
+        static thread_local uint64_t f713r_n = 0;
+        if (f713r_n++ < 16) {
+            std::cerr << "[F713R-GSS] receiver=" << class_name
+                      << " argc=" << args.size();
+            if (args.size() >= 2)
+                std::cerr << " arg1_type=" << static_cast<int>(args[1].type)
+                          << " arg1_desc=" << args[1].class_desc
+                          << " arg1_str=" << args[1].string_val;
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
         if (args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {
             svc_name339 = args[1].string_val;
         } else if (args.size() >= 2 && args[1].type == DalvikType::CLASS_REF) {
@@ -37565,6 +37604,34 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
     seed("Landroid/os/Build;.HARDWARE", DalvikValue::make_string("miniandroid", 0));
     seed("Landroid/os/Build;.FINGERPRINT", DalvikValue::make_string("MiniAndroid/miniandroid/miniandroid:15/MINI.20260905/0:userdebug/test-keys", 0));
     seed("Landroid/os/Build;.SERIAL", DalvikValue::make_string("miniandroid", 0));
+    // W20-K (S237-PLAY, Frozen Bubble): AOSP BitmapFactory.Options PUBLIC
+    // fields (BitmapFactory.java Options @android-14) — Class.getField on
+    // Options must SUCCEED (real Android answers from framework metadata).
+    // Defaults per AOSP: inScaled=true, inPremultiplied=true, rest 0/false.
+    seed("Landroid/graphics/BitmapFactory$Options;.inScaled",
+         DalvikValue::make_bool(true));
+    seed("Landroid/graphics/BitmapFactory$Options;.inPremultiplied",
+         DalvikValue::make_bool(true));
+    seed("Landroid/graphics/BitmapFactory$Options;.inDither",
+         DalvikValue::make_bool(false));
+    seed("Landroid/graphics/BitmapFactory$Options;.inMutable",
+         DalvikValue::make_bool(false));
+    seed("Landroid/graphics/BitmapFactory$Options;.inJustDecodeBounds",
+         DalvikValue::make_bool(false));
+    seed("Landroid/graphics/BitmapFactory$Options;.inSampleSize",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.inDensity",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.inTargetDensity",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.inScreenDensity",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.inPreferredDensity",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.outWidth",
+         DalvikValue::make_int(-1));
+    seed("Landroid/graphics/BitmapFactory$Options;.outHeight",
+         DalvikValue::make_int(-1));
     // F-NEW-190 (FINAL CAMPAIGN PHASE 4 — device/context identity, AOSP
     // Build ABI law): Build.SUPPORTED_ABIS / SUPPORTED_64_BIT_ABIS /
     // SUPPORTED_32_BIT_ABIS / CPU_ABI / CPU_ABI2 are framework statics fed
@@ -77424,6 +77491,24 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
             if (!service_name.empty()) {
                 std::cerr << "[EXP093-SVC] getSystemService(\"" << service_name
                           << "\") → null (unknown service)" << std::endl;
+            } else {
+                // F-NEW-713 diag (engine site A): null answer with NO resolved
+                // name — print the raw arg shape (same law as the bridge-site
+                // copy): farmerbb/Notepad a0/a.<init> autofill helper ISE hit
+                // this silent exit.
+                static thread_local uint64_t f713a_n = 0;
+                if (f713a_n++ < 24) {
+                    std::cerr << "[F713A-GSS-NULL] receiver=" << class_name
+                              << " argc=" << args.size();
+                    if (args.size() >= 2)
+                        std::cerr << " arg1_type=" << static_cast<int>(args[1].type)
+                                  << " arg1_desc=" << args[1].class_desc
+                                  << " arg1_str=" << args[1].string_val
+                                  << " arg1_oid=" << args[1].object_id
+                                  << " arg1_refid=" << args[1].ref_id;
+                    std::cerr << " caller=" << current_class_ << "."
+                              << current_method_ << std::endl;
+                }
             }
         }
         return true;

@@ -200,9 +200,12 @@ private:
     // S129 (R-NEW-426, CAP-INPUT-110): TouchDelegate per-gesture state.
     DelegateState delegate_;
 
-    TokenState tok_check_long_press_{{0}, "CheckForLongPress"};
-    TokenState tok_perform_click_{{0}, "PerformClick"};
-    TokenState tok_unset_pressed_{{0}, "UnsetPressedState"};
+    // W15 (#627 D-02/H-01): drop the braces-around-scalar — `{{0}, "..."}` 
+    // is rejected by g++ 8 (braces around scalar initializer) and the plain
+    // `{0, "..."}` form is valid C++17 on every compiler.
+    TokenState tok_check_long_press_{0, "CheckForLongPress"};
+    TokenState tok_perform_click_{0, "PerformClick"};
+    TokenState tok_unset_pressed_{0, "UnsetPressedState"};
 
     nlohmann::json trace_ = nlohmann::json::array();
 };

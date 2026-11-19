@@ -47,6 +47,10 @@ public:
     static void set_databases_dir(const std::string& dir);
     static const std::string& databases_dir();
 
+    // W20-K (S237-WS5): public so the contract fixture can drive the exact
+    // cursor surface the engine dispatches (s248_sqlite_cursor_contract).
+    framework::CallResult cursor_dispatch(const framework::CallContext& ctx);
+
     std::string name() const override { return "DatabaseShadow"; }
     bool handles_class(const std::string& class_name) const override;
     framework::CallResult dispatch(const framework::CallContext& ctx) override;
@@ -155,8 +159,7 @@ private:
     framework::CallResult helper_dispatch(const framework::CallContext& ctx);
     framework::CallResult db_dispatch(const framework::CallContext& ctx);
     framework::CallResult stmt_dispatch(const framework::CallContext& ctx);
-    framework::CallResult cursor_dispatch(const framework::CallContext& ctx);
-    framework::CallResult query_builder_dispatch(const framework::CallContext& ctx);
+        framework::CallResult query_builder_dispatch(const framework::CallContext& ctx);
 
     // Shared query materialization for rawQuery / rawQueryWithFactory
     // (F-026: bare rawQuery(String,String[]) previously had NO handler —

@@ -185,7 +185,9 @@ static bool diag_env(const char* name) {
 namespace miniandroid {
 namespace dalvik {
 bool DalvikExecutionEngine::try_recursive_invoke(
-    const std::string& declaring_class,
+    const std::string declaring_class,  // BY VALUE (F-NEW-710): callers may
+    // bind this to heap_obj->class_descriptor; downstream laws allocate on
+    // the heap and a realloc would dangle a bound reference.
     const std::string& method_name,
     const std::vector<DalvikValue>& args,
     DalvikValue& return_val,
@@ -10953,6 +10955,80 @@ bool DalvikExecutionEngine::dispatch_click(uint32_t view_object_id,
                       << " result=" << (xok ? "DISPATCHED" : "FAILED")
                       << std::endl;
             return xok;
+        }
+        // ── F-NEW-719 (W14): AdapterView item-click tap law ──────────────
+        // AOSP AbsListView.performItemClick → AdapterView.onItemClick: a
+        // tap on an adapter ITEM (no per-view listener of its own) routes
+        // to the AdapterView's OnItemClickListener with
+        // (parent, itemView, position, itemId). The runtime stored the
+        // item listener on the AdapterView node all along
+        // (setOnItemClickListener law, ViewShadow item_click_listener_id)
+        // but nothing ever dispatched it: n-Puzzle's ImageSelection picker
+        // materialized six tappable grid items and every tap fell through
+        // to "has no OnClickListener" — setResult/finish never ran, and
+        // the whole Activity result chain stayed dead (W13 evidence:
+        // 0 onItemClick dispatches, 0 onActivityResult). The walk finds
+        // the nearest AdapterView ancestor holding an item listener and
+        // the direct-child item view beneath it; position = the item's
+        // index among the AdapterView's children (adapter materialization
+        // order); id = position (BaseAdapter.getItemId default —
+        // documented simplification, a real getItemId law supersedes it).
+        {
+            const std::decay_t<decltype(*node)>* av719 = nullptr;
+            uint32_t item_id719 = view_object_id;
+            uint32_t walk719 = node->parent_id;
+            int guard719 = 0;
+            while (walk719 != 0 && guard719++ < 64) {
+                const auto* p719 = view_shadow->find_node(walk719);
+                if (p719 == nullptr) break;
+                // The stored item listener IS the AdapterView discriminator
+                // (setOnItemClickListener only exists on adapter views) — a
+                // class-substring check would miss GridView/ListView
+                // subclasses ("Landroid/widget/GridView;" does not contain
+                // "AdapterView;").
+                if (p719->item_click_listener_id != 0) {
+                    av719 = p719;
+                    break;
+                }
+                item_id719 = walk719;
+                walk719 = p719->parent_id;
+            }
+            if (av719 != nullptr) {
+                int position719 = -1;
+                for (size_t ci719 = 0; ci719 < av719->children.size();
+                     ++ci719) {
+                    if (av719->children[ci719] == item_id719) {
+                        position719 = static_cast<int>(ci719);
+                        break;
+                    }
+                }
+                // Not a direct child (header/unknown shape): AOSP maps the
+                // tap through the adapter anyway — refuse honestly rather
+                // than invent a position.
+                if (position719 >= 0) {
+                    // R-NEW-433 shared law owns the dispatch shape (the
+                    // CONT-102 receiver slot, the F-NEW-604 ListActivity
+                    // fallback): the tap path here only resolves WHICH
+                    // adapter + item + position, exactly like the live
+                    // touch dispatcher's AdapterView walk.
+                    bool iok = dispatch_item_click(av719->view_id,
+                                                   item_id719, position719,
+                                                   false);
+                    std::cerr << "[UI-EVENT] event=ITEM_CLICK_TAP"
+                              << " adapter_view=" << av719->view_id
+                              << " item=" << item_id719
+                              << " position=" << position719
+                              << " result="
+                              << (iok ? "DISPATCHED" : "FAILED")
+                              << std::endl;
+                    return iok;
+                }
+                std::cerr << "[UI-EVENT] event=ITEM_CLICK_MISS"
+                          << " adapter_view=" << av719->view_id
+                          << " item=" << item_id719
+                          << " (item not a direct adapter child — position"
+                             " unknown, no dispatch)" << std::endl;
+            }
         }
         std::cerr << "[EXP060-CLICK] view_id=" << view_object_id
                   << " class=" << node->class_desc

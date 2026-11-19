@@ -1,0 +1,3375 @@
+{
+ "sig": 197,
+ "body_open": 202,
+ "func_end": 55443,
+ "shared": [],
+ "blocks": [
+  {
+   "a": 220,
+   "b": 234,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 256,
+   "b": 266,
+   "w": [],
+   "r": [],
+   "lab": "IF: !f580_sv.has_value())"
+  },
+  {
+   "a": 286,
+   "b": 300,
+   "w": [],
+   "r": [],
+   "lab": "IF: ecr.handled) {"
+  },
+  {
+   "a": 308,
+   "b": 321,
+   "w": [],
+   "r": [],
+   "lab": "IF: w2b_probe && method == \"createBitmap\" && w2b_n++ < 24) {"
+  },
+  {
+   "a": 325,
+   "b": 342,
+   "w": [],
+   "r": [],
+   "lab": "IF: w6_probe && class_name == \"Ljava/lang/Class;\" &&"
+  },
+  {
+   "a": 383,
+   "b": 400,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::CHAR || args[0].type == DalvikType::IN"
+  },
+  {
+   "a": 453,
+   "b": 484,
+   "w": [],
+   "r": [],
+   "lab": "IF: a.type == DalvikType::STRING_REF && !a.string_val.empty()) {"
+  },
+  {
+   "a": 485,
+   "b": 550,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/logging/Logger;\") {"
+  },
+  {
+   "a": 559,
+   "b": 607,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/time/Instant;\") {"
+  },
+  {
+   "a": 608,
+   "b": 735,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/time/LocalTime;\") {"
+  },
+  {
+   "a": 736,
+   "b": 795,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljavax/net/ssl/TrustManagerFactory;\") {"
+  },
+  {
+   "a": 811,
+   "b": 874,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljavax/net/ssl/SSLContext;\") {"
+  },
+  {
+   "a": 901,
+   "b": 924,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 927,
+   "b": 1013,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"filter\" && args.size() >= 2 &&"
+  },
+  {
+   "a": 1032,
+   "b": 1059,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 1063,
+   "b": 1069,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 1073,
+   "b": 1088,
+   "w": [],
+   "r": [],
+   "lab": "AOSP: Account#toString = \"Account {name=\" + name + \", type=\" +"
+  },
+  {
+   "a": 1106,
+   "b": 1119,
+   "w": [],
+   "r": [],
+   "lab": "IF: f586_n < 8) { ++f586_n;"
+  },
+  {
+   "a": 1122,
+   "b": 1231,
+   "w": [],
+   "r": [],
+   "lab": "F-C4-586: the `new URI(String)` constructor arm \u2014 the receiver"
+  },
+  {
+   "a": 1232,
+   "b": 1293,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/Optional;\") {"
+  },
+  {
+   "a": 1305,
+   "b": 1316,
+   "w": [],
+   "r": [],
+   "lab": "IF: f533_l5 < 8) { ++f533_l5;"
+  },
+  {
+   "a": 1322,
+   "b": 1381,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/text/BreakIterator;\") {"
+  },
+  {
+   "a": 1398,
+   "b": 1451,
+   "w": [],
+   "r": [],
+   "lab": "IF: default_uncaught_handler_.object_id != 0 &&"
+  },
+  {
+   "a": 1454,
+   "b": 1473,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::CHAR || args[0].type == DalvikType::IN"
+  },
+  {
+   "a": 1488,
+   "b": 1523,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::CHAR || args[0].type == DalvikType::IN"
+  },
+  {
+   "a": 1538,
+   "b": 1555,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::CHAR || args[0].type == DalvikType::IN"
+  },
+  {
+   "a": 1557,
+   "b": 1589,
+   "w": [],
+   "r": [],
+   "lab": "Read-only view of the receiver's bytes (deep site copied; the"
+  },
+  {
+   "a": 1593,
+   "b": 1600,
+   "w": [],
+   "r": [],
+   "lab": "IF: s86_bridge.fetch_add(1, std::memory_order_relaxed) < 10)"
+  },
+  {
+   "a": 1612,
+   "b": 1634,
+   "w": [],
+   "r": [],
+   "lab": "Engine-level args: [0]=receiver, [1]=index-or-item, [2]=item(set)."
+  },
+  {
+   "a": 1636,
+   "b": 1636,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 1636,
+   "b": 1636,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 1660,
+   "b": 1687,
+   "w": [],
+   "r": [],
+   "lab": "IF: arg_is_null) {"
+  },
+  {
+   "a": 1710,
+   "b": 1887,
+   "w": [],
+   "r": [],
+   "lab": "IF: f334_arr < 16) {"
+  },
+  {
+   "a": 1904,
+   "b": 1954,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"values\" || method == \"valueOf\") {"
+  },
+  {
+   "a": 1955,
+   "b": 1960,
+   "w": [],
+   "r": [],
+   "lab": "IF: std::getenv(\"MINIANDROID_S123_DIAG\") && class_name == \"Landroid/co"
+  },
+  {
+   "a": 1966,
+   "b": 1980,
+   "w": [],
+   "r": [],
+   "lab": "IF: s88br && s88br_n < 40 && method == \"valueOf\") {"
+  },
+  {
+   "a": 1981,
+   "b": 1997,
+   "w": [],
+   "r": [],
+   "lab": "IF: r350br && r350br_n < 80 && method == \"forName\") {"
+  },
+  {
+   "a": 2000,
+   "b": 2015,
+   "w": [],
+   "r": [],
+   "lab": "IF: ts_diag_on && ts_diag < 60 &&"
+  },
+  {
+   "a": 2019,
+   "b": 2030,
+   "w": [],
+   "r": [],
+   "lab": "IF: drawwin_miss_on && draw_window_active_ && drawwin_miss_count < 300"
+  },
+  {
+   "a": 2080,
+   "b": 2109,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/media/AudioAttributes$Builder;\") {"
+  },
+  {
+   "a": 2110,
+   "b": 2124,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/media/AudioAttributes;\") {"
+  },
+  {
+   "a": 2125,
+   "b": 2282,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/media/MediaPlayer;\") {"
+  },
+  {
+   "a": 2308,
+   "b": 2335,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/app/Notification$Builder;\") {"
+  },
+  {
+   "a": 2336,
+   "b": 2344,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/app/Notification;\") {"
+  },
+  {
+   "a": 2366,
+   "b": 2412,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/graphics/text/LineBreakConfig$Builder;\") {"
+  },
+  {
+   "a": 2439,
+   "b": 2638,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/graphics/Typeface;\") {"
+  },
+  {
+   "a": 2640,
+   "b": 2647,
+   "w": [],
+   "r": [],
+   "lab": "IF: (method == \"setTag\" || method == \"getTag\")) {"
+  },
+  {
+   "a": 2666,
+   "b": 2682,
+   "w": [],
+   "r": [],
+   "lab": "IF: g & 0x00800000) {"
+  },
+  {
+   "a": 2696,
+   "b": 2784,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/graphics/Color;\") {"
+  },
+  {
+   "a": 2803,
+   "b": 2883,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/concurrent/locks/LockSupport;\") {"
+  },
+  {
+   "a": 2933,
+   "b": 3093,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 3100,
+   "b": 3107,
+   "w": [],
+   "r": [],
+   "lab": "IF: auto* ts = shadow_registry_->find_as<framework::ThreadShadow>()) {"
+  },
+  {
+   "a": 3125,
+   "b": 3165,
+   "w": [],
+   "r": [],
+   "lab": "F-150: receiver class resolved through the superclass chain \u2014"
+  },
+  {
+   "a": 3183,
+   "b": 3261,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/view/MotionEvent;\" && !args.empty()) {"
+  },
+  {
+   "a": 3265,
+   "b": 3277,
+   "w": [],
+   "r": [],
+   "lab": "IF: s24_tag < 80) {"
+  },
+  {
+   "a": 3283,
+   "b": 3292,
+   "w": [],
+   "r": [],
+   "lab": "IF: bridge_tid_log < 12) {"
+  },
+  {
+   "a": 3294,
+   "b": 3299,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"findViewById\") {"
+  },
+  {
+   "a": 3303,
+   "b": 3311,
+   "w": [],
+   "r": [],
+   "lab": "IF: f527_hmap < 5000) { ++f527_hmap;"
+  },
+  {
+   "a": 3329,
+   "b": 3335,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 3346,
+   "b": 3367,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name.find(\"Toast;\") != std::string::npos && shadow_registry_"
+  },
+  {
+   "a": 3373,
+   "b": 3391,
+   "w": [],
+   "r": [],
+   "lab": "CONT-6: navigator-diag widened (bounded 40) \u2014 the R8-merged"
+  },
+  {
+   "a": 3410,
+   "b": 3414,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 3417,
+   "b": 3420,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 3422,
+   "b": 3432,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"addFragmentToStack\") {"
+  },
+  {
+   "a": 3453,
+   "b": 3493,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"<init>\") {"
+  },
+  {
+   "a": 3494,
+   "b": 3499,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/ref/PhantomReference;\" && method == \"get"
+  },
+  {
+   "a": 3505,
+   "b": 3513,
+   "w": [],
+   "r": [],
+   "lab": "IF: std::getenv(\"MINIANDROID_CAS_CALLER\") && class_name == \"Ljava/util"
+  },
+  {
+   "a": 3568,
+   "b": 3587,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 3601,
+   "b": 3621,
+   "w": [],
+   "r": [],
+   "lab": "IF: rt.loaded() || rt.ensure_loaded(apk_path_)) {"
+  },
+  {
+   "a": 3651,
+   "b": 3773,
+   "w": [],
+   "r": [],
+   "lab": "IF: rt.loaded() || rt.ensure_loaded(apk_path_)) {"
+  },
+  {
+   "a": 3788,
+   "b": 3845,
+   "w": [],
+   "r": [],
+   "lab": "IF: cs_rt.loaded() || cs_rt.ensure_loaded(apk_path_)) {"
+  },
+  {
+   "a": 3858,
+   "b": 3871,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 3874,
+   "b": 3895,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getChangingConfigurations\") {"
+  },
+  {
+   "a": 3911,
+   "b": 3939,
+   "w": [],
+   "r": [],
+   "lab": "IF: ia_rt.loaded() || ia_rt.ensure_loaded(apk_path_)) {"
+  },
+  {
+   "a": 3954,
+   "b": 3976,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/util/Pair;\") {"
+  },
+  {
+   "a": 3987,
+   "b": 4017,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"<init>\") {"
+  },
+  {
+   "a": 4037,
+   "b": 4056,
+   "w": [],
+   "r": [],
+   "lab": "S186h F-NEW-188c: obfuscated-FM real-init (same law as the"
+  },
+  {
+   "a": 4059,
+   "b": 4106,
+   "w": [],
+   "r": [],
+   "lab": "RECEIVER-SHIFTED convention (this bridge): args[0] = the"
+  },
+  {
+   "a": 4122,
+   "b": 4292,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::CLASS_REF)"
+  },
+  {
+   "a": 4294,
+   "b": 4487,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+  },
+  {
+   "a": 4489,
+   "b": 4703,
+   "w": [],
+   "r": [],
+   "lab": "args: [0]=receiver Class, [1]=name String, [2]=Class[] params"
+  },
+  {
+   "a": 4705,
+   "b": 4734,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+  },
+  {
+   "a": 4736,
+   "b": 4753,
+   "w": [],
+   "r": [],
+   "lab": "F-NEW-219 (OpenJDK Method.getReturnType): answers the declared"
+  },
+  {
+   "a": 4755,
+   "b": 4867,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+  },
+  {
+   "a": 4870,
+   "b": 4928,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+  },
+  {
+   "a": 4947,
+   "b": 5027,
+   "w": [],
+   "r": [],
+   "lab": "IF: probe_ev.has_value()) {"
+  },
+  {
+   "a": 5029,
+   "b": 5099,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+  },
+  {
+   "a": 5101,
+   "b": 5245,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+  },
+  {
+   "a": 5246,
+   "b": 5287,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/reflect/Method;\" && method == \"invoke\") "
+  },
+  {
+   "a": 5305,
+   "b": 5415,
+   "w": [],
+   "r": [],
+   "lab": "F-103 diagnostic (env-gated, bounded): arg shapes reaching the law."
+  },
+  {
+   "a": 5456,
+   "b": 5609,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty()) {"
+  },
+  {
+   "a": 5634,
+   "b": 5722,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[1].type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 5739,
+   "b": 5803,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[1].type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 5815,
+   "b": 5864,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"compress\" && class_name == \"Landroid/graphics/Bitmap;\")"
+  },
+  {
+   "a": 5881,
+   "b": 5893,
+   "w": [],
+   "r": [],
+   "lab": "IF: !is_baos_family) {"
+  },
+  {
+   "a": 5918,
+   "b": 5934,
+   "w": [],
+   "r": [],
+   "lab": "IF: v == sid) { fd_oid = k; break; }"
+  },
+  {
+   "a": 5936,
+   "b": 5964,
+   "w": [],
+   "r": [],
+   "lab": "IF: fd_oid == 0 || !heap_.has_object(fd_oid)) {"
+  },
+  {
+   "a": 5988,
+   "b": 6035,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/util/Log;\") {"
+  },
+  {
+   "a": 6051,
+   "b": 6110,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 6113,
+   "b": 6184,
+   "w": [],
+   "r": [],
+   "lab": "IF: ps_fd.has_value() && ps_fd->type == DalvikType::INT32) {"
+  },
+  {
+   "a": 6192,
+   "b": 6308,
+   "w": [],
+   "r": [],
+   "lab": "Chain-resolve wrappers (BufferedWriter.out \u2192 OutputStreamWriter.out"
+  },
+  {
+   "a": 6322,
+   "b": 6362,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 3 && args[2].type == DalvikType::INT32) mode = args"
+  },
+  {
+   "a": 6366,
+   "b": 6391,
+   "w": [],
+   "r": [],
+   "lab": "IF: !present) {"
+  },
+  {
+   "a": 6395,
+   "b": 6435,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"deleteFile\") {"
+  },
+  {
+   "a": 6474,
+   "b": 6547,
+   "w": [],
+   "r": [],
+   "lab": "IF: m == k) return true;"
+  },
+  {
+   "a": 6564,
+   "b": 6603,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type != DalvikType::OBJECT_REF || args[0].object_id == 0 |"
+  },
+  {
+   "a": 6606,
+   "b": 6637,
+   "w": [],
+   "r": [],
+   "lab": "fromFile is STATIC \u2014 args[0] IS the File (no receiver slot)."
+  },
+  {
+   "a": 6658,
+   "b": 6708,
+   "w": [],
+   "r": [],
+   "lab": "fragment: everything after the first '#'"
+  },
+  {
+   "a": 6713,
+   "b": 6725,
+   "w": [],
+   "r": [],
+   "lab": "IF: v.has_value() && v->type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 6728,
+   "b": 6735,
+   "w": [],
+   "r": [],
+   "lab": "IF: v.has_value() && v->type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 6740,
+   "b": 6793,
+   "w": [],
+   "r": [],
+   "lab": "IF: uobj) {"
+  },
+  {
+   "a": 6820,
+   "b": 7731,
+   "w": [],
+   "r": [],
+   "lab": "C7 W11 diagnostic (env-gated, zero default cost): the resolver"
+  },
+  {
+   "a": 7747,
+   "b": 7880,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"release\" || method == \"close\") {"
+  },
+  {
+   "a": 7885,
+   "b": 8158,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/database/MatrixCursor;\") {"
+  },
+  {
+   "a": 8161,
+   "b": 8390,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/content/ContentValues;\") {"
+  },
+  {
+   "a": 8395,
+   "b": 8483,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/content/UriMatcher;\") {"
+  },
+  {
+   "a": 8486,
+   "b": 8526,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/content/ContentUris;\") {"
+  },
+  {
+   "a": 8551,
+   "b": 8641,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.empty() || args[0].object_id == 0 ||"
+  },
+  {
+   "a": 8654,
+   "b": 8783,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"<init>\") {"
+  },
+  {
+   "a": 8805,
+   "b": 9027,
+   "w": [],
+   "r": [],
+   "lab": "IF: v.type == DalvikType::OBJECT_REF && v.object_id != 0 &&"
+  },
+  {
+   "a": 9048,
+   "b": 9624,
+   "w": [],
+   "r": [],
+   "lab": "Resolve the target service class from the Intent arg: the"
+  },
+  {
+   "a": 9629,
+   "b": 9810,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"stopSelf\" || method == \"stopSelfResult\") {"
+  },
+  {
+   "a": 9823,
+   "b": 9937,
+   "w": [],
+   "r": [],
+   "lab": "IF: i >= args.size() || args[i].type != DalvikType::OBJECT_REF ||"
+  },
+  {
+   "a": 9948,
+   "b": 9992,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[i].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 10002,
+   "b": 11006,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"registerReceiver\" && args.size() >= 3) {"
+  },
+  {
+   "a": 11027,
+   "b": 11189,
+   "w": [],
+   "r": [],
+   "lab": "AOSP checkSynchronousHint: LOG-only RuntimeException."
+  },
+  {
+   "a": 11199,
+   "b": 11260,
+   "w": [],
+   "r": [],
+   "lab": "IF: c7_pr_it != pending_results_.end()) {"
+  },
+  {
+   "a": 11263,
+   "b": 11314,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[1].object_id != 0 && heap_.has_object(args[1].object_id)) {"
+  },
+  {
+   "a": 11327,
+   "b": 11375,
+   "w": [],
+   "r": [],
+   "lab": "The bridge receives the RECEIVER's RUNTIME class (\u00a719 law) \u2014 a"
+  },
+  {
+   "a": 11392,
+   "b": 11448,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 3 && args[1].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 11450,
+   "b": 11485,
+   "w": [],
+   "r": [],
+   "lab": "[S193-C8] F-C8-184: Timer.cancel() discards THIS timer's"
+  },
+  {
+   "a": 11500,
+   "b": 11584,
+   "w": [],
+   "r": [],
+   "lab": "noneOf(Class)/allOf(Class): arg0 is the element Class token."
+  },
+  {
+   "a": 11609,
+   "b": 11696,
+   "w": [],
+   "r": [],
+   "lab": "IF: lo < 0 && hi < 0) {"
+  },
+  {
+   "a": 11714,
+   "b": 11839,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/StringTokenizer;\") {"
+  },
+  {
+   "a": 11856,
+   "b": 11866,
+   "w": [],
+   "r": [],
+   "lab": "static: args[0] = regex string"
+  },
+  {
+   "a": 11884,
+   "b": 11898,
+   "w": [],
+   "r": [],
+   "lab": "IF: rv.has_value() && rv->type == DalvikType::STRING_REF)"
+  },
+  {
+   "a": 11899,
+   "b": 11917,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/regex/Pattern;\" && method == \"matcher\") "
+  },
+  {
+   "a": 11921,
+   "b": 11966,
+   "w": [],
+   "r": [],
+   "lab": "S100 #345 (dooz Lix0;.a pc=186 evidence, RX-DIAG a1=t7): the"
+  },
+  {
+   "a": 11989,
+   "b": 12364,
+   "w": [],
+   "r": [],
+   "lab": "IF: v.has_value() && v->type == DalvikType::STRING_REF) out = v->strin"
+  },
+  {
+   "a": 12366,
+   "b": 12418,
+   "w": [],
+   "r": [],
+   "lab": "F-106 (S60, R-NEW-380): Constructor.getModifiers()I \u2014 OpenJDK"
+  },
+  {
+   "a": 12420,
+   "b": 12482,
+   "w": [],
+   "r": [],
+   "lab": "F-106 (S60): Constructor.getParameterTypes()()Ljava/lang/Class; \u2014"
+  },
+  {
+   "a": 12484,
+   "b": 12654,
+   "w": [],
+   "r": [],
+   "lab": "args: [0]=Constructor receiver, [1]=Object[] ctor params."
+  },
+  {
+   "a": 12672,
+   "b": 12676,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getHandler\" && is_subclass_of(class_name, \"Landroid/vie"
+  },
+  {
+   "a": 12696,
+   "b": 12716,
+   "w": [],
+   "r": [],
+   "lab": "IF: shadow_registry_ != nullptr) {"
+  },
+  {
+   "a": 12738,
+   "b": 12846,
+   "w": [],
+   "r": [],
+   "lab": "IF: i >= args.size()) return def;"
+  },
+  {
+   "a": 12860,
+   "b": 12879,
+   "w": [],
+   "r": [],
+   "lab": "IF: enum_obj) {"
+  },
+  {
+   "a": 12911,
+   "b": 13004,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/io/StringWriter;\") {"
+  },
+  {
+   "a": 13046,
+   "b": 13995,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500 F-243a (S226; #508 Coder-3 law 1): LAW-WIDE HEAP-STRING"
+  },
+  {
+   "a": 14008,
+   "b": 14035,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/text/SpannableString;\") {"
+  },
+  {
+   "a": 14038,
+   "b": 14837,
+   "w": [],
+   "r": [],
+   "lab": "IF: sb_id != 0 && heap_.has_object(sb_id)) {"
+  },
+  {
+   "a": 14869,
+   "b": 14909,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/text/Layout;\" && method == \"getDesiredWidt"
+  },
+  {
+   "a": 14951,
+   "b": 15008,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getPaint\") {"
+  },
+  {
+   "a": 15038,
+   "b": 15663,
+   "w": [],
+   "r": [],
+   "lab": "--- helpers -----------------------------------------------------"
+  },
+  {
+   "a": 15686,
+   "b": 15786,
+   "w": [],
+   "r": [],
+   "lab": "IF: i >= args.size()) return def;"
+  },
+  {
+   "a": 15799,
+   "b": 15842,
+   "w": [],
+   "r": [],
+   "lab": "Stamp: the object now carries engine-materialized state."
+  },
+  {
+   "a": 15877,
+   "b": 15893,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 3 && args[2].type == DalvikType::INT32)"
+  },
+  {
+   "a": 15904,
+   "b": 15981,
+   "w": [],
+   "r": [],
+   "lab": "ASan-found pre-existing defect (S83): addView(View) without params"
+  },
+  {
+   "a": 15995,
+   "b": 16020,
+   "w": [],
+   "r": [],
+   "lab": "IF: vs != nullptr) {"
+  },
+  {
+   "a": 16029,
+   "b": 16064,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 2 && args[1].type == DalvikType::FLOAT32) {"
+  },
+  {
+   "a": 16100,
+   "b": 16151,
+   "w": [],
+   "r": [],
+   "lab": "IF: n519 && n519->text_color_state_object != 0) {"
+  },
+  {
+   "a": 16181,
+   "b": 16217,
+   "w": [],
+   "r": [],
+   "lab": "IF: recv != 0) {"
+  },
+  {
+   "a": 16223,
+   "b": 16239,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 2 && args[1].type == DalvikType::FLOAT32)"
+  },
+  {
+   "a": 16243,
+   "b": 16278,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[1].type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 16303,
+   "b": 16378,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 16406,
+   "b": 16585,
+   "w": [],
+   "r": [],
+   "lab": "IF: tv_recv != 0) {"
+  },
+  {
+   "a": 16592,
+   "b": 16597,
+   "w": [],
+   "r": [],
+   "lab": "IF: vs != nullptr) {"
+  },
+  {
+   "a": 16604,
+   "b": 16614,
+   "w": [],
+   "r": [],
+   "lab": "IF: vs != nullptr) {"
+  },
+  {
+   "a": 16633,
+   "b": 16739,
+   "w": [],
+   "r": [],
+   "lab": "IF: vs != nullptr) {"
+  },
+  {
+   "a": 16751,
+   "b": 16976,
+   "w": [],
+   "r": [],
+   "lab": "IF: vs != nullptr) {"
+  },
+  {
+   "a": 16988,
+   "b": 17009,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::FLOAT32) {"
+  },
+  {
+   "a": 17024,
+   "b": 17041,
+   "w": [],
+   "r": [],
+   "lab": "IF: it != pending_anim_by_drawable_.end()) {"
+  },
+  {
+   "a": 17054,
+   "b": 17067,
+   "w": [],
+   "r": [],
+   "lab": "IF: vs != nullptr) {"
+  },
+  {
+   "a": 17070,
+   "b": 17081,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"isEmpty\" && current_method_ == \"onCreate\") {"
+  },
+  {
+   "a": 17088,
+   "b": 17099,
+   "w": [],
+   "r": [],
+   "lab": "Log first arg if it's an object (the Fragment)."
+  },
+  {
+   "a": 17103,
+   "b": 17114,
+   "w": [],
+   "r": [],
+   "lab": "Only log unique (class, method) pairs to avoid spam."
+  },
+  {
+   "a": 17129,
+   "b": 31136,
+   "w": [],
+   "r": [],
+   "lab": "IF: shadow_registry_ != nullptr) {"
+  },
+  {
+   "a": 31150,
+   "b": 31174,
+   "w": [],
+   "r": [],
+   "lab": "IF: shadow_registry_ != nullptr) {"
+  },
+  {
+   "a": 31183,
+   "b": 31208,
+   "w": [],
+   "r": [],
+   "lab": "First, try the shadow path \u2014 ViewShadow stores context_object_id"
+  },
+  {
+   "a": 31228,
+   "b": 31276,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500 CODER7 WAVE-9: the getCallingPackage law (AOSP"
+  },
+  {
+   "a": 31290,
+   "b": 31303,
+   "w": [],
+   "r": [],
+   "lab": "IF: application_object_id_ != 0 &&"
+  },
+  {
+   "a": 31329,
+   "b": 31372,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getResources\") {"
+  },
+  {
+   "a": 31410,
+   "b": 31414,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 31428,
+   "b": 31456,
+   "w": [],
+   "r": [],
+   "lab": "CONT-68 (probe F5): the AOSP force flag rides the record \u2014"
+  },
+  {
+   "a": 31470,
+   "b": 31474,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 31492,
+   "b": 31520,
+   "w": [],
+   "r": [],
+   "lab": "IF: !bv.has_value()) {"
+  },
+  {
+   "a": 31522,
+   "b": 31545,
+   "w": [],
+   "r": [],
+   "lab": "IF: bv.has_value() && bv->type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 31547,
+   "b": 31564,
+   "w": [],
+   "r": [],
+   "lab": "IF: iv.has_value() && iv->type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 31566,
+   "b": 31579,
+   "w": [],
+   "r": [],
+   "lab": "Engine-bridge framing: args[0] = receiver (Display), args[1] = the"
+  },
+  {
+   "a": 31580,
+   "b": 31588,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getRotation\" && class_name == \"Landroid/view/Display;\")"
+  },
+  {
+   "a": 31590,
+   "b": 31601,
+   "w": [],
+   "r": [],
+   "lab": "AOSP Display.getSize(Point out): out.x = width, out.y = height."
+  },
+  {
+   "a": 31618,
+   "b": 31636,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"get\" && class_name == \"Landroid/view/ViewConfiguration;"
+  },
+  {
+   "a": 31638,
+   "b": 31663,
+   "w": [],
+   "r": [],
+   "lab": "AOSP instance getters \u2014 return the scaled law values directly."
+  },
+  {
+   "a": 31665,
+   "b": 31670,
+   "w": [],
+   "r": [],
+   "lab": "Modern device profile: no permanent menu key."
+  },
+  {
+   "a": 31671,
+   "b": 31675,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/view/ViewConfiguration;\" && method == \"get"
+  },
+  {
+   "a": 31679,
+   "b": 31689,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 31699,
+   "b": 31722,
+   "w": [],
+   "r": [],
+   "lab": "IF: self != 0) {"
+  },
+  {
+   "a": 31728,
+   "b": 31738,
+   "w": [],
+   "r": [],
+   "lab": "C9-10: re-assert the device fields on every call \u2014 now fed from"
+  },
+  {
+   "a": 31740,
+   "b": 31773,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[2].type == DalvikType::OBJECT_REF && args[2].object_id != 0) "
+  },
+  {
+   "a": 31795,
+   "b": 31800,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 31802,
+   "b": 31817,
+   "w": [],
+   "r": [],
+   "lab": "F-NEW-197 NEW-THEME LAW (AOSP Resources.java newTheme()):"
+  },
+  {
+   "a": 31845,
+   "b": 32021,
+   "w": [],
+   "r": [],
+   "lab": "IF: a.type != DalvikType::OBJECT_REF || a.object_id == 0)"
+  },
+  {
+   "a": 32029,
+   "b": 32089,
+   "w": [],
+   "r": [],
+   "lab": "CONT-68 (probe F4): BOTH live conventions must resolve."
+  },
+  {
+   "a": 32095,
+   "b": 32103,
+   "w": [],
+   "r": [],
+   "lab": "C9-10: the generic Resources family answers the same"
+  },
+  {
+   "a": 32109,
+   "b": 32169,
+   "w": [],
+   "r": [],
+   "lab": "IF: result.type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 32204,
+   "b": 32541,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"equals\" && args.size() >= 2 && !current_invoke_is_stati"
+  },
+  {
+   "a": 32548,
+   "b": 32552,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 32564,
+   "b": 32575,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getSystemAvailableFeatures\") {"
+  },
+  {
+   "a": 32592,
+   "b": 32611,
+   "w": [],
+   "r": [],
+   "lab": "IF: application_object_id_ != 0 &&"
+  },
+  {
+   "a": 32635,
+   "b": 32653,
+   "w": [],
+   "r": [],
+   "lab": "The calling activity: current_class_ at this dispatch is the"
+  },
+  {
+   "a": 32655,
+   "b": 32749,
+   "w": [],
+   "r": [],
+   "lab": "Resolve the target activity class from the ComponentName arg."
+  },
+  {
+   "a": 32765,
+   "b": 32828,
+   "w": [],
+   "r": [],
+   "lab": "(String pkg, String cls): args[1]=pkg args[2]=cls"
+  },
+  {
+   "a": 32846,
+   "b": 32878,
+   "w": [],
+   "r": [],
+   "lab": "Arg conventions: static (String pkg, String cls) \u2192 args[0]=pkg"
+  },
+  {
+   "a": 32893,
+   "b": 32919,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 32925,
+   "b": 32939,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 1 && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 32941,
+   "b": 32964,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 1 && args[0].type == DalvikType::STRING_REF)"
+  },
+  {
+   "a": 32985,
+   "b": 33186,
+   "w": [],
+   "r": [],
+   "lab": "Resolve the target provider class from the ComponentName arg"
+  },
+  {
+   "a": 33212,
+   "b": 33409,
+   "w": [],
+   "r": [],
+   "lab": "Resolve the target service class from the ComponentName arg"
+  },
+  {
+   "a": 33424,
+   "b": 33490,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 33503,
+   "b": 33513,
+   "w": [],
+   "r": [],
+   "lab": "IF: f641_res_n++ < 8)"
+  },
+  {
+   "a": 33517,
+   "b": 33892,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500 CODER7 WAVE-5: FOREIGN-package getPackageInfo from the index \u2500\u2500"
+  },
+  {
+   "a": 33912,
+   "b": 33981,
+   "w": [],
+   "r": [],
+   "lab": "1) store the adapter identity on the shadow node (the same"
+  },
+  {
+   "a": 33989,
+   "b": 34018,
+   "w": [],
+   "r": [],
+   "lab": "AOSP AdapterView.getCount() \u2192 adapter.getCount() delegate."
+  },
+  {
+   "a": 34037,
+   "b": 34143,
+   "w": [],
+   "r": [],
+   "lab": "IF: shadow_registry_) {"
+  },
+  {
+   "a": 34157,
+   "b": 34246,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"newTab\" && !is_tab) {"
+  },
+  {
+   "a": 34271,
+   "b": 34588,
+   "w": [],
+   "r": [],
+   "lab": "Runtime-class gate: execute_invoke_virtual bridges with the"
+  },
+  {
+   "a": 34611,
+   "b": 34747,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"<init>\" && args.size() >= 5 &&"
+  },
+  {
+   "a": 34762,
+   "b": 34779,
+   "w": [],
+   "r": [],
+   "lab": "IF: !c7_fowner.empty() && c7_fowner != package_name_) {"
+  },
+  {
+   "a": 34799,
+   "b": 34804,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 34829,
+   "b": 34911,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 34915,
+   "b": 35007,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 35031,
+   "b": 35045,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/view/accessibility/AccessibilityManager;\")"
+  },
+  {
+   "a": 35051,
+   "b": 35127,
+   "w": [],
+   "r": [],
+   "lab": "Grant all requested permissions"
+  },
+  {
+   "a": 35138,
+   "b": 35209,
+   "w": [],
+   "r": [],
+   "lab": "F-NEW-234: per-package law \u2014 <root>/data/data/<pkg>/shared_prefs."
+  },
+  {
+   "a": 35238,
+   "b": 35256,
+   "w": [],
+   "r": [],
+   "lab": "IF: recv.object_id == 0) return false;"
+  },
+  {
+   "a": 35275,
+   "b": 35284,
+   "w": [],
+   "r": [],
+   "lab": "IF: f535_moves < 8) { ++f535_moves;"
+  },
+  {
+   "a": 35288,
+   "b": 35288,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 35288,
+   "b": 35464,
+   "w": [],
+   "r": [],
+   "lab": "Extract preference name from first argument (String)"
+  },
+  {
+   "a": 35488,
+   "b": 35493,
+   "w": [],
+   "r": [],
+   "lab": "IF: heap_.get_object_class(args[0].object_id, f304_recv_cls))"
+  },
+  {
+   "a": 35497,
+   "b": 35603,
+   "w": [],
+   "r": [],
+   "lab": "IF: rt.ensure_loaded(apk_path_)) {"
+  },
+  {
+   "a": 35620,
+   "b": 35794,
+   "w": [],
+   "r": [],
+   "lab": "Static forms per AOSP:"
+  },
+  {
+   "a": 35815,
+   "b": 35849,
+   "w": [],
+   "r": [],
+   "lab": "IF: !len_f.has_value() || len_f->type != DalvikType::INT32)"
+  },
+  {
+   "a": 35856,
+   "b": 36283,
+   "w": [],
+   "r": [],
+   "lab": "Get the SharedPreferences object from args[0] (this for instance methods)"
+  },
+  {
+   "a": 36292,
+   "b": 36314,
+   "w": [],
+   "r": [],
+   "lab": "G-8 FIX (#371): AOSP ContextImpl.createDeviceProtectedStorageContext"
+  },
+  {
+   "a": 36317,
+   "b": 36346,
+   "w": [],
+   "r": [],
+   "lab": "S88 F-NEW-179: PATHED stable File (was pathless class singleton)."
+  },
+  {
+   "a": 36369,
+   "b": 36418,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getFileStreamPath\") {"
+  },
+  {
+   "a": 36430,
+   "b": 36468,
+   "w": [],
+   "r": [],
+   "lab": "IF: std::filesystem::exists(db_dir, dlist_ec)) {"
+  },
+  {
+   "a": 36482,
+   "b": 36519,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[i].type == DalvikType::STRING_REF && !args[i].string_val.empt"
+  },
+  {
+   "a": 36554,
+   "b": 36571,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 2 && args[1].type == DalvikType::STRING_REF)"
+  },
+  {
+   "a": 36591,
+   "b": 36628,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getWindow\") {"
+  },
+  {
+   "a": 36629,
+   "b": 36662,
+   "w": [],
+   "r": [],
+   "lab": "S134-F134A diagnostic: getWindow/getCallback reaching the bridge"
+  },
+  {
+   "a": 36692,
+   "b": 36713,
+   "w": [],
+   "r": [],
+   "lab": "IF: dsh != nullptr) {"
+  },
+  {
+   "a": 36730,
+   "b": 36736,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 36748,
+   "b": 36752,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 36757,
+   "b": 36781,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getCallback\" && class_name.find(\"Window\") != std::strin"
+  },
+  {
+   "a": 36783,
+   "b": 36798,
+   "w": [],
+   "r": [],
+   "lab": "IF: !cur.has_value() ||"
+  },
+  {
+   "a": 36812,
+   "b": 36820,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 36822,
+   "b": 36829,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 36831,
+   "b": 36838,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 36844,
+   "b": 36848,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 36863,
+   "b": 36908,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getAttributes\") {"
+  },
+  {
+   "a": 36922,
+   "b": 36951,
+   "w": [],
+   "r": [],
+   "lab": "IF: a.type == DalvikType::STRING_REF && !a.string_val.empty()) {"
+  },
+  {
+   "a": 36978,
+   "b": 37021,
+   "w": [],
+   "r": [],
+   "lab": "AOSP Font.Builder ctor family \u2014 TWO live shapes (astroloop q/k.h"
+  },
+  {
+   "a": 37024,
+   "b": 37080,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"build\") {"
+  },
+  {
+   "a": 37082,
+   "b": 37092,
+   "w": [],
+   "r": [],
+   "lab": "AOSP Font.getStyle(): non-null FontStyle (weight/slant pair)."
+  },
+  {
+   "a": 37094,
+   "b": 37098,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 37099,
+   "b": 37178,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/graphics/fonts/FontFamily$Builder;\") {"
+  },
+  {
+   "a": 37181,
+   "b": 37261,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"<init>\") {"
+  },
+  {
+   "a": 37276,
+   "b": 37289,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getDefaultVibrator\") {"
+  },
+  {
+   "a": 37291,
+   "b": 37295,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 37311,
+   "b": 37342,
+   "w": [],
+   "r": [],
+   "lab": "IF: (rt_rn.loaded() || rt_rn.ensure_loaded(apk_path_))) {"
+  },
+  {
+   "a": 37348,
+   "b": 37418,
+   "w": [],
+   "r": [],
+   "lab": "R-005 DECOR-LINKAGE (S105): ONE DecorView per Window per"
+  },
+  {
+   "a": 37445,
+   "b": 37611,
+   "w": [],
+   "r": [],
+   "lab": "bridge_to_api arg convention: args[0] = RECEIVER (the Window),"
+  },
+  {
+   "a": 37631,
+   "b": 37720,
+   "w": [],
+   "r": [],
+   "lab": "IF: auto* act = shadow_registry_->find_as<framework::ActivityShadow>()"
+  },
+  {
+   "a": 37733,
+   "b": 37749,
+   "w": [],
+   "r": [],
+   "lab": "IF: shadow_registry_) {"
+  },
+  {
+   "a": 37760,
+   "b": 37785,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/media/SoundPool$Builder;\") {"
+  },
+  {
+   "a": 37786,
+   "b": 37850,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/media/SoundPool;\") {"
+  },
+  {
+   "a": 37866,
+   "b": 37870,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 37878,
+   "b": 37886,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"isAlive\") {"
+  },
+  {
+   "a": 37899,
+   "b": 37930,
+   "w": [],
+   "r": [],
+   "lab": "IF: !is_array) {"
+  },
+  {
+   "a": 37944,
+   "b": 38041,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name.find(\"TimeUnit\") != std::string::npos) {"
+  },
+  {
+   "a": 38056,
+   "b": 38089,
+   "w": [],
+   "r": [],
+   "lab": "Args: (String name, String defType, String defPackage) \u2014 the"
+  },
+  {
+   "a": 38097,
+   "b": 38156,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+  },
+  {
+   "a": 38162,
+   "b": 38178,
+   "w": [],
+   "r": [],
+   "lab": "IF: it != field_name_by_resid_.end()) {"
+  },
+  {
+   "a": 38184,
+   "b": 38211,
+   "w": [],
+   "r": [],
+   "lab": "args[0] is the resource entry name (e.g., \"StartMessaging\")"
+  },
+  {
+   "a": 38221,
+   "b": 38250,
+   "w": [],
+   "r": [],
+   "lab": "IF: fn_it != field_name_by_resid_.end()) {"
+  },
+  {
+   "a": 38267,
+   "b": 38370,
+   "w": [],
+   "r": [],
+   "lab": "F-080 receiver-first defensive resid law: the resid is the FIRST"
+  },
+  {
+   "a": 38385,
+   "b": 38430,
+   "w": [],
+   "r": [],
+   "lab": "IF: a.type == DalvikType::INT32 || a.type == DalvikType::BOOLEAN ||"
+  },
+  {
+   "a": 38441,
+   "b": 38515,
+   "w": [],
+   "r": [],
+   "lab": "S54 FIX (F-080) \u2014 robust resid extraction under BOTH arg conventions."
+  },
+  {
+   "a": 38531,
+   "b": 38610,
+   "w": [],
+   "r": [],
+   "lab": "IF: resid != 0 && rt.ensure_loaded(apk_path_)) {"
+  },
+  {
+   "a": 38615,
+   "b": 38966,
+   "w": [],
+   "r": [],
+   "lab": "M3 F-005 FIX-B: Context.getDrawable(resid) delegates to"
+  },
+  {
+   "a": 38973,
+   "b": 38977,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 38998,
+   "b": 39055,
+   "w": [],
+   "r": [],
+   "lab": "IF: vs717 && !apk_path_.empty() && rt717.ensure_loaded(apk_path_)) {"
+  },
+  {
+   "a": 39070,
+   "b": 39100,
+   "w": [],
+   "r": [],
+   "lab": "F-714 arg law: MeasureSpec methods are STATIC \u2014 args[0] is the"
+  },
+  {
+   "a": 39125,
+   "b": 39334,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getSystemService\") {"
+  },
+  {
+   "a": 39353,
+   "b": 39355,
+   "w": [],
+   "r": [],
+   "lab": "fall through to the next law"
+  },
+  {
+   "a": 39355,
+   "b": 39371,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 39371,
+   "b": 39379,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 39379,
+   "b": 39387,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 39387,
+   "b": 39397,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 39398,
+   "b": 39409,
+   "w": [],
+   "r": [],
+   "lab": "AOSP: setReferenceCounted void; addNetwork/updateNetwork int id;"
+  },
+  {
+   "a": 39427,
+   "b": 39455,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/net/NetworkRequest$Builder;\") {"
+  },
+  {
+   "a": 39464,
+   "b": 39471,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 39499,
+   "b": 39591,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/net/ConnectivityManager;\") {"
+  },
+  {
+   "a": 39593,
+   "b": 39616,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 2 && args[1].type == DalvikType::INT32)"
+  },
+  {
+   "a": 39630,
+   "b": 39646,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name.find(\"ActivityManager\") != std::string::npos) {"
+  },
+  {
+   "a": 39665,
+   "b": 39682,
+   "w": [],
+   "r": [],
+   "lab": "Virtual dispatch: args[0] is the receiver (the R-NEW-540"
+  },
+  {
+   "a": 39713,
+   "b": 39785,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getAllPendingJobs\" ||"
+  },
+  {
+   "a": 39792,
+   "b": 39813,
+   "w": [],
+   "r": [],
+   "lab": "S88 F-NEW-179: PATHED stable File (was pathless class singleton)."
+  },
+  {
+   "a": 39829,
+   "b": 39841,
+   "w": [],
+   "r": [],
+   "lab": "S88 F-NEW-179: PATHED stable File (was pathless class singleton)."
+  },
+  {
+   "a": 39874,
+   "b": 39907,
+   "w": [],
+   "r": [],
+   "lab": "GATE A: getObbDir (singular) \u2014 AOSP ContextImpl.getObbDir returns"
+  },
+  {
+   "a": 39929,
+   "b": 39967,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/os/Environment;\") {"
+  },
+  {
+   "a": 39984,
+   "b": 39998,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF) {"
+  },
+  {
+   "a": 40004,
+   "b": 40014,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40020,
+   "b": 40030,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40037,
+   "b": 40049,
+   "w": [],
+   "r": [],
+   "lab": "S88 F-NEW-179: PATHED stable File (was pathless class singleton)."
+  },
+  {
+   "a": 40064,
+   "b": 40084,
+   "w": [],
+   "r": [],
+   "lab": "invoke-virtual convention: args[0] = receiver, args[1] = name."
+  },
+  {
+   "a": 40091,
+   "b": 40095,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40101,
+   "b": 40108,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40123,
+   "b": 40313,
+   "w": [],
+   "r": [],
+   "lab": "IF: result.type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 40326,
+   "b": 40459,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[1].type == DalvikType::STRING_REF) want_pkg = args[1].string_"
+  },
+  {
+   "a": 40473,
+   "b": 40517,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[1].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 40536,
+   "b": 40612,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"post\" || method == \"postDelayed\" ||"
+  },
+  {
+   "a": 40622,
+   "b": 40626,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40637,
+   "b": 40654,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40658,
+   "b": 40671,
+   "w": [],
+   "r": [],
+   "lab": "IF: uv.has_value() && uv->type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 40674,
+   "b": 40696,
+   "w": [],
+   "r": [],
+   "lab": "IF: !uv.has_value() || uv->type != DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 40699,
+   "b": 40850,
+   "w": [],
+   "r": [],
+   "lab": "fetch-once: connect()/getInputStream()/getResponseCode() trigger it."
+  },
+  {
+   "a": 40863,
+   "b": 40867,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40877,
+   "b": 40881,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40887,
+   "b": 40891,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40897,
+   "b": 40901,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 40920,
+   "b": 40973,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getMode\") {"
+  },
+  {
+   "a": 40994,
+   "b": 41051,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 41082,
+   "b": 41266,
+   "w": [],
+   "r": [],
+   "lab": "CONT-71 ACTIVATION GATE (honest scope decision): the negotiation"
+  },
+  {
+   "a": 41292,
+   "b": 41391,
+   "w": [],
+   "r": [],
+   "lab": "F-NEW-595 (W10): the measure-answer family is DEFAULT-ON. The"
+  },
+  {
+   "a": 41393,
+   "b": 41416,
+   "w": [],
+   "r": [],
+   "lab": "IF: !gs_law_active) {"
+  },
+  {
+   "a": 41418,
+   "b": 41431,
+   "w": [],
+   "r": [],
+   "lab": "IF: !cms_law_active) {"
+  },
+  {
+   "a": 41459,
+   "b": 41498,
+   "w": [],
+   "r": [],
+   "lab": "IF: auto* vs = shadow_registry_->find_as<framework::ViewShadow>()) {"
+  },
+  {
+   "a": 41512,
+   "b": 41559,
+   "w": [],
+   "r": [],
+   "lab": "IF: view_shadow && args[0].type == DalvikType::OBJECT_REF) {"
+  },
+  {
+   "a": 41599,
+   "b": 42919,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/Class;\") {"
+  },
+  {
+   "a": 42934,
+   "b": 42944,
+   "w": [],
+   "r": [],
+   "lab": "IF: classloader_singleton_id_ == 0 ||"
+  },
+  {
+   "a": 42954,
+   "b": 42964,
+   "w": [],
+   "r": [],
+   "lab": "IF: classloader_singleton_id_ == 0 ||"
+  },
+  {
+   "a": 42978,
+   "b": 43121,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/io/RandomAccessFile;\") {"
+  },
+  {
+   "a": 43136,
+   "b": 43244,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/os/Parcel;\") {"
+  },
+  {
+   "a": 43248,
+   "b": 43258,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name.find(\"InMemory\") != std::string::npos ||"
+  },
+  {
+   "a": 43259,
+   "b": 43484,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ldalvik/system/InMemoryDexClassLoader;\") {"
+  },
+  {
+   "a": 43486,
+   "b": 43566,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/ClassLoader;\") {"
+  },
+  {
+   "a": 43568,
+   "b": 43602,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/Enumeration;\") {"
+  },
+  {
+   "a": 43604,
+   "b": 43640,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/net/URL;\") {"
+  },
+  {
+   "a": 43642,
+   "b": 43703,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/ServiceLoader;\") {"
+  },
+  {
+   "a": 43721,
+   "b": 43844,
+   "w": [],
+   "r": [],
+   "lab": "IF: !svcf.has_value() || svcf->type != DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 43881,
+   "b": 44048,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/math/BigInteger;\") {"
+  },
+  {
+   "a": 44067,
+   "b": 45288,
+   "w": [],
+   "r": [],
+   "lab": "helpers shared by the Field/Unsafe blocks"
+  },
+  {
+   "a": 45291,
+   "b": 45301,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/Package;\" && method == \"getName\") {"
+  },
+  {
+   "a": 45307,
+   "b": 45404,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF) {"
+  },
+  {
+   "a": 45416,
+   "b": 45516,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getClass\") {"
+  },
+  {
+   "a": 45534,
+   "b": 45577,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getComponentType\") {"
+  },
+  {
+   "a": 45599,
+   "b": 45732,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/Long;\") {"
+  },
+  {
+   "a": 45734,
+   "b": 45920,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/Integer;\") {"
+  },
+  {
+   "a": 45922,
+   "b": 45999,
+   "w": [],
+   "r": [],
+   "lab": "R500: static-only block (toString(i[,radix]) / toHexString /"
+  },
+  {
+   "a": 46012,
+   "b": 46176,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/Long;\" && args.size() >= 1) {"
+  },
+  {
+   "a": 46177,
+   "b": 46212,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/reflect/Modifier;\" && args.size() >= 1) "
+  },
+  {
+   "a": 46229,
+   "b": 46247,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/Math;\" && method == \"random\") {"
+  },
+  {
+   "a": 46248,
+   "b": 46408,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/Math;\" && args.size() >= 1) {"
+  },
+  {
+   "a": 46414,
+   "b": 46418,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 46423,
+   "b": 46427,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name.find(\"View\") != std::string::npos && method == \"<init>\""
+  },
+  {
+   "a": 46454,
+   "b": 46623,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/util/AtomicFile;\") {"
+  },
+  {
+   "a": 46662,
+   "b": 46693,
+   "w": [],
+   "r": [],
+   "lab": "args: [0]=this, [1]=color(int), [2]=mode(enum object)"
+  },
+  {
+   "a": 46707,
+   "b": 46726,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 46731,
+   "b": 46735,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/io/File;\" && method == \"<init>\") {"
+  },
+  {
+   "a": 46776,
+   "b": 46866,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/Stack;\") {"
+  },
+  {
+   "a": 46870,
+   "b": 47101,
+   "w": [],
+   "r": [],
+   "lab": "HashMap() constructor \u2014 no-op."
+  },
+  {
+   "a": 47123,
+   "b": 47267,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 47307,
+   "b": 47748,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 47810,
+   "b": 48104,
+   "w": [],
+   "r": [],
+   "lab": "F-C4-547 diag (env-gated, bounded): prove the receiver reachability"
+  },
+  {
+   "a": 48114,
+   "b": 48491,
+   "w": [],
+   "r": [],
+   "lab": "GATE A G-6 (issue #370 \u00a74): ArrayList/Arrays$ArrayList"
+  },
+  {
+   "a": 48497,
+   "b": 48512,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Larray;\" || class_name.find(\"[L\") == 0) {"
+  },
+  {
+   "a": 48524,
+   "b": 48588,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 48596,
+   "b": 48669,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"list\" && class_name.find(\"AssetManager\") != std::string"
+  },
+  {
+   "a": 48678,
+   "b": 48773,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"openFd\" && class_name.find(\"AssetManager\") != std::stri"
+  },
+  {
+   "a": 48781,
+   "b": 48832,
+   "w": [],
+   "r": [],
+   "lab": "IF: afd && heap_.has_object(afd)) {"
+  },
+  {
+   "a": 48835,
+   "b": 48943,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"open\") {"
+  },
+  {
+   "a": 48947,
+   "b": 48973,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/io/InputStreamReader;\" && method == \"<init>\")"
+  },
+  {
+   "a": 48976,
+   "b": 48993,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/io/BufferedReader;\" && method == \"<init>\") {"
+  },
+  {
+   "a": 48999,
+   "b": 49070,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/io/BufferedReader;\" && method == \"readLine\") "
+  },
+  {
+   "a": 49075,
+   "b": 49079,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 49108,
+   "b": 49125,
+   "w": [],
+   "r": [],
+   "lab": "IF: ca != cb) { cmp = ca - cb; break; }"
+  },
+  {
+   "a": 49127,
+   "b": 49152,
+   "w": [],
+   "r": [],
+   "lab": "IF: ok)"
+  },
+  {
+   "a": 49154,
+   "b": 49209,
+   "w": [],
+   "r": [],
+   "lab": "Static: args[0] is the first param. (Some call paths prepend a"
+  },
+  {
+   "a": 49210,
+   "b": 49220,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/regex/Pattern;\" && method == \"quote\") {"
+  },
+  {
+   "a": 49221,
+   "b": 49285,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"split\") {"
+  },
+  {
+   "a": 49303,
+   "b": 49343,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 49381,
+   "b": 49490,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 49506,
+   "b": 49569,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 49588,
+   "b": 49731,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 49743,
+   "b": 49776,
+   "w": [],
+   "r": [],
+   "lab": "Try shadow dispatch first"
+  },
+  {
+   "a": 49785,
+   "b": 49809,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"length\") {"
+  },
+  {
+   "a": 49818,
+   "b": 49849,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::STRING_REF)"
+  },
+  {
+   "a": 49875,
+   "b": 50008,
+   "w": [],
+   "r": [],
+   "lab": "IF: s_str_ctor_diag) {"
+  },
+  {
+   "a": 50033,
+   "b": 50099,
+   "w": [],
+   "r": [],
+   "lab": "F-NEW-358: the byte[] source is the [B class contract \u2014 the"
+  },
+  {
+   "a": 50131,
+   "b": 50145,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"equals\") {"
+  },
+  {
+   "a": 50166,
+   "b": 50198,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/Object;\" && method == \"equals\") {"
+  },
+  {
+   "a": 50226,
+   "b": 50248,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 50260,
+   "b": 50289,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"contentEquals\") {"
+  },
+  {
+   "a": 50298,
+   "b": 50309,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"toUpperCase\") {"
+  },
+  {
+   "a": 50313,
+   "b": 50324,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"toLowerCase\") {"
+  },
+  {
+   "a": 50361,
+   "b": 50481,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::STRING_REF)"
+  },
+  {
+   "a": 50492,
+   "b": 50519,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::STRING_REF) s_seq = args[0].string_val"
+  },
+  {
+   "a": 50533,
+   "b": 50658,
+   "w": [],
+   "r": [],
+   "lab": "S100 #345-family diag: toString bridge reach + receiver shape."
+  },
+  {
+   "a": 50661,
+   "b": 50686,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"substring\" && arg"
+  },
+  {
+   "a": 50687,
+   "b": 50704,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"concat\" && args.s"
+  },
+  {
+   "a": 50738,
+   "b": 51040,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && args.size() >= 1) {"
+  },
+  {
+   "a": 51043,
+   "b": 51099,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::STRING_REF) s_li = args[0].string_val;"
+  },
+  {
+   "a": 51109,
+   "b": 51154,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/concurrent/atomic/AtomicReference;\") {"
+  },
+  {
+   "a": 51195,
+   "b": 51259,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.empty() || args[0].type != DalvikType::OBJECT_REF) return nul"
+  },
+  {
+   "a": 51288,
+   "b": 51334,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[1].type != DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 51349,
+   "b": 51376,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[i].type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 51388,
+   "b": 51396,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[1].type == DalvikType::STRING_REF)"
+  },
+  {
+   "a": 51397,
+   "b": 51444,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/io/StringReader;\" && method == \"read\") {"
+  },
+  {
+   "a": 51446,
+   "b": 51454,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 51456,
+   "b": 51629,
+   "w": [],
+   "r": [],
+   "lab": "IF: st_it == xml_parsers_.end()) {"
+  },
+  {
+   "a": 51636,
+   "b": 51719,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"replace\" && args."
+  },
+  {
+   "a": 51731,
+   "b": 51736,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 51743,
+   "b": 51764,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty()) {"
+  },
+  {
+   "a": 51778,
+   "b": 51905,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[i].type == DalvikType::INT32) std::cerr << \"_int=\" << args[i]"
+  },
+  {
+   "a": 51921,
+   "b": 52004,
+   "w": [],
+   "r": [],
+   "lab": "\u2500\u2500 S88 F-NEW-181 \u2014 Character.valueOf canonical-instance law \u2500\u2500\u2500\u2500\u2500"
+  },
+  {
+   "a": 52008,
+   "b": 52051,
+   "w": [],
+   "r": [],
+   "lab": "IF: box_obj) {"
+  },
+  {
+   "a": 52067,
+   "b": 52090,
+   "w": [],
+   "r": [],
+   "lab": "IF: !b) return false;"
+  },
+  {
+   "a": 52093,
+   "b": 52101,
+   "w": [],
+   "r": [],
+   "lab": "Static Integer.sum(int, int) with raw INT32 params (OpenJDK:"
+  },
+  {
+   "a": 52107,
+   "b": 52125,
+   "w": [],
+   "r": [],
+   "lab": "IF: box_obj) {"
+  },
+  {
+   "a": 52142,
+   "b": 52161,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::CHAR || args[0].type == DalvikType::IN"
+  },
+  {
+   "a": 52170,
+   "b": 52187,
+   "w": [],
+   "r": [],
+   "lab": "IF: args[0].type == DalvikType::CHAR || args[0].type == DalvikType::IN"
+  },
+  {
+   "a": 52197,
+   "b": 52247,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"format\" && !args."
+  },
+  {
+   "a": 52251,
+   "b": 52262,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/text/TextUtils;\" && method == \"equals\") {"
+  },
+  {
+   "a": 52271,
+   "b": 52287,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/text/TextUtils;\" && method == \"isEmpty\") {"
+  },
+  {
+   "a": 52297,
+   "b": 52316,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"getLineNumber\") {"
+  },
+  {
+   "a": 52347,
+   "b": 52434,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"fillInStackTrace\") {"
+  },
+  {
+   "a": 52440,
+   "b": 52444,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 52477,
+   "b": 52554,
+   "w": [],
+   "r": [],
+   "lab": "CAMPAIGN 010 R14: REAL stack trace from the interpreter call stack"
+  },
+  {
+   "a": 52565,
+   "b": 52575,
+   "w": [],
+   "r": [],
+   "lab": "Real Android throws LoadingException when Play Services is unavailable."
+  },
+  {
+   "a": 52597,
+   "b": 53117,
+   "w": [],
+   "r": [],
+   "lab": "GATE A: static-call arg convention varies (receiver slot present"
+  },
+  {
+   "a": 53123,
+   "b": 53131,
+   "w": [],
+   "r": [],
+   "lab": "Default black = 0xFF000000"
+  },
+  {
+   "a": 53152,
+   "b": 53156,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 53158,
+   "b": 53162,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name.find(\"Log\") != std::string::npos) {"
+  },
+  {
+   "a": 53200,
+   "b": 53204,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 53209,
+   "b": 53224,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"isRunning\") {"
+  },
+  {
+   "a": 53231,
+   "b": 53238,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 53240,
+   "b": 53248,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"isEmpty\") {"
+  },
+  {
+   "a": 53259,
+   "b": 53269,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"length\") {"
+  },
+  {
+   "a": 53273,
+   "b": 53286,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 53289,
+   "b": 53299,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"equals\") {"
+  },
+  {
+   "a": 53304,
+   "b": 53325,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"contentEquals\") {"
+  },
+  {
+   "a": 53328,
+   "b": 53384,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/lang/String;\" && method == \"split\") {"
+  },
+  {
+   "a": 53387,
+   "b": 53417,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/text/TextUtils;\") {"
+  },
+  {
+   "a": 53428,
+   "b": 53439,
+   "w": [],
+   "r": [],
+   "lab": "IF: view_shadow != nullptr && !args.empty() &&"
+  },
+  {
+   "a": 53445,
+   "b": 53457,
+   "w": [],
+   "r": [],
+   "lab": "IF: view_shadow != nullptr && !args.empty() &&"
+  },
+  {
+   "a": 53462,
+   "b": 53531,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/HashMap;\" && shadow_registry_ == nullptr"
+  },
+  {
+   "a": 53534,
+   "b": 53553,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name.find(\"BufferedReader\") != std::string::npos) {"
+  },
+  {
+   "a": 53555,
+   "b": 53562,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF) {"
+  },
+  {
+   "a": 53566,
+   "b": 53581,
+   "w": [],
+   "r": [],
+   "lab": "IF: args.size() >= 2 && args[1].type == DalvikType::STRING_REF) {"
+  },
+  {
+   "a": 53593,
+   "b": 53603,
+   "w": [],
+   "r": [],
+   "lab": "IF: it != open_assets_.end()) {"
+  },
+  {
+   "a": 53622,
+   "b": 53626,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 53630,
+   "b": 53634,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 53651,
+   "b": 53679,
+   "w": [],
+   "r": [],
+   "lab": "IF: a.type == DalvikType::STRING_REF && !a.string_val.empty()) {"
+  },
+  {
+   "a": 53691,
+   "b": 53718,
+   "w": [],
+   "r": [],
+   "lab": "IF: cp <= 127) {"
+  },
+  {
+   "a": 53730,
+   "b": 53757,
+   "w": [],
+   "r": [],
+   "lab": "IF: cp <= 127) {"
+  },
+  {
+   "a": 53775,
+   "b": 53779,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 53781,
+   "b": 53785,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 53787,
+   "b": 53791,
+   "w": [],
+   "r": [],
+   "lab": ""
+  },
+  {
+   "a": 53796,
+   "b": 53800,
+   "w": [],
+   "r": [],
+   "lab": "IF: method == \"findViewById\") {"
+  },
+  {
+   "a": 53805,
+   "b": 53815,
+   "w": [],
+   "r": [],
+   "lab": "IF: (method == \"setTag\" || method == \"getTag\") && shadow_registry_ != "
+  },
+  {
+   "a": 53816,
+   "b": 53884,
+   "w": [],
+   "r": [],
+   "lab": "IF: shadow_registry_ != nullptr) {"
+  },
+  {
+   "a": 53893,
+   "b": 54134,
+   "w": [],
+   "r": [],
+   "lab": "R-NEW-055 (CONT-122) \u2014 object-valued Bundle arms, the identity"
+  },
+  {
+   "a": 54149,
+   "b": 54474,
+   "w": [],
+   "r": [],
+   "lab": "IF: is_throwable_family && method == \"<init>\" && !args.empty() &&"
+  },
+  {
+   "a": 54490,
+   "b": 54506,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Landroid/app/NotificationManager;\") {"
+  },
+  {
+   "a": 54545,
+   "b": 54695,
+   "w": [],
+   "r": [],
+   "lab": "Per-package channel/group state: the object ids the app handed to"
+  },
+  {
+   "a": 54707,
+   "b": 54720,
+   "w": [],
+   "r": [],
+   "lab": "IF: !ancestor.empty() && ancestor != class_name) {"
+  },
+  {
+   "a": 54728,
+   "b": 54748,
+   "w": [],
+   "r": [],
+   "lab": "IF: stub_triage_n < 40) {"
+  },
+  {
+   "a": 54755,
+   "b": 55163,
+   "w": [],
+   "r": [],
+   "lab": "IF: !args.empty() && args[0].type == DalvikType::OBJECT_REF &&"
+  },
+  {
+   "a": 55175,
+   "b": 55394,
+   "w": [],
+   "r": [],
+   "lab": "IF: class_name == \"Ljava/util/ResourceBundle;\") {"
+  },
+  {
+   "a": 55411,
+   "b": 55440,
+   "w": [],
+   "r": [],
+   "lab": "IF: method_idx_hint != 0xFFFFFFFFu) {"
+  }
+ ]
+}

@@ -38,7 +38,6 @@
 // EXP-051: Shadow registry integration.
 #include "../framework/shadow_registry.h"
 #include <functional>
-#include "../framework/android_shadows.h"
 #include "../webview/webview_engine.h"
 #include "../framework/choreographer_shadow.h"  // R-NEW-345 park-drain: vsync during park
 #include "../framework/dialog_shadow.h"

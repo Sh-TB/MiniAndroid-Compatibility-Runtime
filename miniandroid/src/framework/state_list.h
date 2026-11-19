@@ -46,6 +46,11 @@ bool pick_state_list(
     bool checked = false,  // S106 MG-022: android:state_checked law
     bool focused = false,  // C9-18: android:state_focused law
     bool hovered = false,  // C9-18: android:state_hovered law
+    // W20-K (S237-WS9): AOSP first-match law covers state_activated and
+    // state_window_focused too (window_focused defaults TRUE — the plain
+    // default view state of a focused window).
+    bool activated = false,  // android:state_activated law
+    bool window_focused = true,  // android:state_window_focused law
     // C9-19 (CODER 9): when non-null, receives the MATCHED item — the
     // engine dereferences its compiled drawable_ref_id through the ARSC
     // router (the raw-string path alone left compiled refs unresolved).

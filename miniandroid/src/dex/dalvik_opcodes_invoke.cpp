@@ -5195,6 +5195,20 @@ bool DalvikExecutionEngine::try_shadow_dispatch(const std::string& class_name,
         }
     }
     if (method == "getSystemService") {
+        // F-NEW-713 diag (PIC R339 site): entry probe — every gss reaching
+        // this law prints its arg shape (capped), so a silent miss is
+        // visible (farmerbb/Notepad autofill helper ISE evidence).
+        static thread_local uint64_t f713p_n = 0;
+        if (f713p_n++ < 16) {
+            std::cerr << "[F713P-GSS] receiver=" << class_name
+                      << " argc=" << args.size();
+            if (args.size() >= 2)
+                std::cerr << " arg1_type=" << static_cast<int>(args[1].type)
+                          << " arg1_desc=" << args[1].class_desc
+                          << " arg1_str=" << args[1].string_val;
+            std::cerr << " caller=" << current_class_ << "."
+                      << current_method_ << std::endl;
+        }
         // R-NEW-540 guard fix (CONT-36, site A): substring-only guard
         // missed Application/Service receivers whose runtime class lacks
         // the literal "Context"/"Activity" (the S85-FIX law shape — AOSP:
@@ -5788,6 +5802,34 @@ void DalvikExecutionEngine::seed_framework_device_statics() {
     seed("Landroid/os/Build;.HARDWARE", DalvikValue::make_string("miniandroid", 0));
     seed("Landroid/os/Build;.FINGERPRINT", DalvikValue::make_string("MiniAndroid/miniandroid/miniandroid:15/MINI.20260905/0:userdebug/test-keys", 0));
     seed("Landroid/os/Build;.SERIAL", DalvikValue::make_string("miniandroid", 0));
+    // W20-K (S237-PLAY, Frozen Bubble): AOSP BitmapFactory.Options PUBLIC
+    // fields (BitmapFactory.java Options @android-14) — Class.getField on
+    // Options must SUCCEED (real Android answers from framework metadata).
+    // Defaults per AOSP: inScaled=true, inPremultiplied=true, rest 0/false.
+    seed("Landroid/graphics/BitmapFactory$Options;.inScaled",
+         DalvikValue::make_bool(true));
+    seed("Landroid/graphics/BitmapFactory$Options;.inPremultiplied",
+         DalvikValue::make_bool(true));
+    seed("Landroid/graphics/BitmapFactory$Options;.inDither",
+         DalvikValue::make_bool(false));
+    seed("Landroid/graphics/BitmapFactory$Options;.inMutable",
+         DalvikValue::make_bool(false));
+    seed("Landroid/graphics/BitmapFactory$Options;.inJustDecodeBounds",
+         DalvikValue::make_bool(false));
+    seed("Landroid/graphics/BitmapFactory$Options;.inSampleSize",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.inDensity",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.inTargetDensity",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.inScreenDensity",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.inPreferredDensity",
+         DalvikValue::make_int(0));
+    seed("Landroid/graphics/BitmapFactory$Options;.outWidth",
+         DalvikValue::make_int(-1));
+    seed("Landroid/graphics/BitmapFactory$Options;.outHeight",
+         DalvikValue::make_int(-1));
     // F-NEW-190 (FINAL CAMPAIGN PHASE 4 — device/context identity, AOSP
     // Build ABI law): Build.SUPPORTED_ABIS / SUPPORTED_64_BIT_ABIS /
     // SUPPORTED_32_BIT_ABIS / CPU_ABI / CPU_ABI2 are framework statics fed

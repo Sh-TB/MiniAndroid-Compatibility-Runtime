@@ -1,0 +1,25 @@
+finding_id,artifact,disposition,evidence_label,integration_site,regression_test,cross_ref
+WS2.01,SOLITAIRE board-bitmap dump,SUPERSEDED (coder's own WS2.02 correction),RESOLVED,,,-comment 6898006771
+WS2.02,WS2_02_SOLITAIRE_SPLASH_FINDING.md,RESOLVED-NO-PATCH (splash is by-design),CONFIRMED,,,-comment 6898006771
+WS4.1,ws4_comment.md defect 1,INTEGRATED (env-gated),PATCHED+TESTED,src/webview/webview_engine.cpp changedTouches/targetTouches/preventDefault/bouchend-empties,2048 input runs (WV trace),-comment 6898039390
+WS4.2,ws4_fix_comment.md defect 2,INTEGRATED (env-gated),PATCHED+TESTED,src/runtime/execution_engine.cpp swipe→browser drag forward,2048 input runs,-comment 6898039390
+WS4B,ws4_fix_comment.md residual,PENDING (DOM→repaint investigation),OBSERVED,none (separate workstream),none,2048 NOT playable claim held
+WS5,ws5_comment.md,INTEGRATED,CONFIRMED+TESTED,src/storage/sqlite_shadow.cpp column_index_ci + AOSP message,tests/s248_sqlite_cursor_contract_test.cpp,-comment (WS5)
+WS6,ws6_comment.md,INTEGRATED,CONFIRMED+TESTED,src/dex/dalvik_bridge.cpp + dalvik_bridge_domain_app_runtime.cpp make_long/INVALID_ROW_ID,tests/s249_adapter_position_contract_test.cpp,-comment (WS6)
+WS6-harness,ws6_comment.md s235 decoder,NOTE (harness fix not runtime),NOTED,none (s235 not present on this lineage),,-comment (WS6)
+WS7,ws7_comment.md,INTEGRATED,CONFIRMED+TESTED,src/framework/dialog_shadow.{h,cpp} + runtime/execution_engine.cpp drain + bridge_to_api entry,tests/s250_dialog_lifecycle_contract_test.cpp,-comment (WS7)
+WS8,ws8_comment.md,INTEGRATED,CONFIRMED+TESTED,src/framework/android_shadows.h take_result + src/runtime/execution_engine.cpp cascade,tests/s251_activity_result_contract_test.cpp,-comment (WS8)
+WS9-A,ws9_comment.md defect A,INTEGRATED,CONFIRMED+TESTED,src/framework/android_shadows.{h,cpp} 10 arms,tests/s252_view_state_flags_contract_test.cpp,-comment (WS9)
+WS9-B,ws9_comment.md defect B,INTEGRATED,CONFIRMED+TESTED,src/framework/state_list.{h,cpp} activated/window_focused + render caller,tests/s252_view_state_flags_contract_test.cpp,-comment (WS9)
+PLAY-TTT,CODER_ohc_PLAY_WAVE_ISSUE.md GAME-011,PENDING (asset i18n blocker),OBSERVED,none yet,none,sha 760fe5acf7b39435
+PLAY-SOL,CODER_ohc_PLAY_WAVE_ISSUE.md GAME-090,INTEGRATED (bitmap-dims fallback),PATCHED,src/dex/dalvik_bridge.cpp getIntrinsic bitmap fallback,re-run solitaire_cg APK,sha d4afb74d28680712
+PLAY-UNOTE,CODER_ohc_PLAY_WAVE_ISSUE.md APP-002,PENDING (empty ListView/editor),OBSERVED,none yet,none,sha be91103f0e7db443
+PLAY-NOTES,CODER_ohc_PLAY_WAVE_ISSUE.md APP-006,PENDING (MarkdownView blank),OBSERVED,none yet,none,sha 82cf8bc44c163748
+PLAY-FROZEN,CODER_ohc_PLAY_WAVE_ISSUE.md bonus,INTEGRATED (Options fields),PATCHED,dalvik_opcodes_invoke.cpp + dalvik_engine.cpp seeds,re-run frozenbubble APK,sha fababf48eafa5e45
+J12-array_store,latest independent report,CARRIED (verified earlier),TESTED,,,-prior transfer
+J12-integer_compare,latest independent report,CARRIED (verified earlier),TESTED,,,-prior transfer
+J12-drawRoundRect,latest independent report,CARRIED (verified earlier),TESTED,,,-prior transfer
+CSS-hex3,latest independent report,CARRIED (verified earlier),TESTED,,,-prior transfer
+CSS-hsl,latest independent report,CARRIED (verified earlier),TESTED,,,-prior transfer
+setOrientation-terminal,latest independent report,CARRIED (verified earlier),TESTED,,,-prior transfer
+bgcolor-attr,latest independent report,CARRIED (verified earlier),TESTED,,,-prior transfer

@@ -1277,12 +1277,19 @@ public:
         result_data_intent_id_ = data_intent_id;
     }
     bool take_result(int* result_code, uint32_t* data_intent_id) {
-        if (!has_result_) return false;
+        // W20-K (S237-WS8, AOSP Activity.java @android-14 L953): mResultCode
+        // is a DEFAULT (RESULT_CANCELED), not an "unset" sentinel. finish()
+        // delivers (RESULT_CANCELED, null Intent) even when the child never
+        // called setResult. The one-shot law is preserved (slot cleared).
+        if (result_code)
+            *result_code = has_result_ ? result_code_ : 0;
+        if (data_intent_id)
+            *data_intent_id = has_result_ ? result_data_intent_id_ : 0;
         has_result_ = false;
-        if (result_code) *result_code = result_code_;
-        if (data_intent_id) *data_intent_id = result_data_intent_id_;
         return true;
     }
+    // Evidence-only accessor: delivery no longer depends on has_result().
+    bool has_result() const { return has_result_; }
     // The Intent the current activity was LAUNCHED with — getIntent()
     // returns it so extras propagate through the real pipeline.
     void set_launch_intent_id(uint32_t id) { launch_intent_id_ = id; }
@@ -1765,6 +1772,8 @@ public:
         bool focusable_in_touch_mode = false;  // View.setFocusableInTouchMode
         bool focused = false;            // requestFocus result
         bool selected = false;           // View.setSelected
+        bool activated = false;          // W20-K (S237-WS9): View.setActivated
+        bool hovered = false;            // W20-K (S237-WS9): View.setHovered
         // ── G06 §5: state-list background (StateListDrawable law) ────────
         // When the android:background drawable resolves to a <selector>
         // XML, the items are parsed once and the winning item is re-picked
@@ -2352,6 +2361,10 @@ public:
     // Lookup a ViewNode by id (const variant).
     const ViewNode* find_node(uint32_t view_id) const;
     ViewNode* find_node(uint32_t view_id);
+    // W20-K (S237-WS4): topmost WebView-family node containing the screen
+    // point (browser hit-test law) — used by the env-gated swipe-to-browser
+    // drag forward so an HTML5 touch game receives the REAL gesture.
+    ViewNode* webview_node_at(int x, int y);
 
     // EXP-090: Get all nodes for searching by class name
     const std::map<uint32_t, std::unique_ptr<ViewNode>>& all_nodes() const { return nodes_; }

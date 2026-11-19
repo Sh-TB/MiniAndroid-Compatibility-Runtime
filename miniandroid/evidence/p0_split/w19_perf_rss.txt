@@ -1,0 +1,14 @@
+== production (-O2 -g0), isolated, serial, SHA 8e225b25 ==
+dalvik_bridge                                   874472 KB      7.0 s  exit=0
+dalvik_bridge_domain_jdk                       1090108 KB     19.9 s  exit=0
+dalvik_bridge_domain_android_core              1253076 KB     23.2 s  exit=0
+dalvik_bridge_domain_ui_graphics               1205084 KB     29.0 s  exit=0
+dalvik_bridge_domain_app_runtime               1215328 KB     28.4 s  exit=0
+dalvik_bridge_domain_io_lang                   1165520 KB     27.2 s  exit=0
+== development (-O0 -g0), isolated, serial ==
+dalvik_bridge                                   821652 KB      5.7 s  exit=0
+dalvik_bridge_domain_jdk                       1076840 KB      8.5 s  exit=0
+dalvik_bridge_domain_android_core              1171880 KB     11.9 s  exit=0
+dalvik_bridge_domain_ui_graphics               1137864 KB     10.4 s  exit=0
+dalvik_bridge_domain_app_runtime               1143156 KB      9.5 s  exit=0
+dalvik_bridge_domain_io_lang                   1089300 KB      9.5 s  exit=0

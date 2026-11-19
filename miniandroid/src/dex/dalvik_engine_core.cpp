@@ -3689,13 +3689,31 @@ DalvikExecutionResult DalvikExecutionEngine::execute_method(
     build_class_dex_index(dex_report);
 
     if (!method.bytecode.empty()) {
+        // W15 (#627 E-01 companion): the frame register count must come
+        // from the method's OWN header (registers_size) — the hardcoded 16
+        // aliased every >255-register method's frame onto v0..15, so
+        // /from16-family rows and R8's large-register methods could never
+        // address their real registers through this entry point. Zero
+        // keeps the historical default for synthetic methods that don't
+        // carry a header size.
+        uint32_t frame_regs = method.registers_size > 0
+                                  ? static_cast<uint32_t>(method.registers_size)
+                                  : 16u;
+        // W15 (same law as frame_regs): ins_size is the method's OWN header
+        // value (wide params occupy TWO registers — a (J)J method's ins is
+        // 2 while args.size() is 1). Deriving it from args.size() shifted
+        // param_start_ past the wide param and its shadow fell out of the
+        // frame. Zero keeps the historical args-derived default.
+        uint32_t frame_ins = method.ins_size > 0
+                                 ? static_cast<uint32_t>(method.ins_size)
+                                 : static_cast<uint32_t>(args.size());
         execute_method_internal(
             method.defining_class,
             method.name,
             method.descriptor,
             method.bytecode,
-            16,  // Default register count
-            static_cast<uint32_t>(args.size()),
+            frame_regs,
+            frame_ins,
             4,   // Default outs
             args,
             result,
@@ -5940,6 +5958,26 @@ bool DalvikExecutionEngine::execute_method_internal(
     }
 
     log("Executing: " + class_name + "." + method_name + descriptor);
+    // W16 (#612 n-Puzzle): generic APP-method entry tracer. Env-gated,
+    // count-capped, stderr-only — answers "which app methods actually ran"
+    // (the DEX-tooling gap the Game.loadImage caller hunt exposed). Classes
+    // outside L-prefix (framework/java arrays) are skipped; non-app runtime
+    // bridges print their own tags already.
+    static thread_local bool ait_on =
+        diag_env("MINIANDROID_APP_INVOKE_TRACE");
+    static thread_local uint64_t ait_n = 0;
+    if (ait_on && ait_n < 4000 && !class_name.empty() &&
+        class_name[0] == 'L') {
+        ++ait_n;
+        std::cerr << "[APP-INVOKE] " << class_name << "." << method_name
+                  << " pc=0 insns=" << bytecode.size()
+                  << " caller="
+                  << (!call_stack_.empty()
+                          ? (call_stack_.top().class_name + "." +
+                             call_stack_.top().method_name)
+                          : std::string("<entry>"))
+                  << std::endl;
+    }
     log("Bytecode size: " + std::to_string(bytecode.size()) + " instructions");
     
     // Create stack frame
@@ -9241,7 +9279,9 @@ size_t DalvikExecutionEngine::dispatch_activity_lifecycle_callbacks(
 // ORIGINAL object identity — an inherited method executes with the runtime
 // receiver, exactly as ART resolves invokevirtual/interface invokes.
 bool DalvikExecutionEngine::try_recursive_invoke_on_super(
-    const std::string& declaring_class,
+    const std::string declaring_class,  // BY VALUE (F-NEW-710): callers may
+    // bind this to heap_obj->class_descriptor; downstream laws allocate on
+    // the heap and a realloc would dangle a bound reference.
     const std::string& method_name,
     const std::vector<DalvikValue>& args,
     DalvikValue& return_val,

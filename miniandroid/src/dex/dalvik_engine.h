@@ -1751,6 +1751,11 @@ struct DalvikExecutionResult {
  * - Tracks method invocations via call stack
  * - Bridges to Android API stubs
  */
+    // P0 SPLIT: dispatch frame for the bridge domain ranges — defined
+    // in dex/dalvik_bridge_frame.h (references only here; no include
+    // to keep the engine-header dependency graph unchanged).
+    struct DalvikBridgeFrame;
+
 class DalvikExecutionEngine {
 public:
     DalvikExecutionEngine();
@@ -2073,6 +2078,14 @@ public:
     // EXP-038 (BLOCKER-033): Build class→DEX index map from DexReport.
     // Must be called after dex_report is set and before execution begins.
     void build_class_dex_index(const dex::DexReport& report);
+
+    // W20-K (S237-WS7): AOSP Dialog lifecycle-callback delivery — drains the
+    // DialogShadow exactly-once tokens (OnCancel -> OnDismiss -> OnShow) and
+    // invokes the app's REAL overrides via try_recursive_invoke with the
+    // DialogInterface receiver. No-op when nothing is armed; safe to call
+    // from any dispatch/frame point (defined in runtime/execution_engine.cpp
+    // so it exists in both DALVIK_SPLIT=1 and =0 link sets).
+    void deliver_pending_dialog_callbacks();
 
     // EXP-088+ Phase 1.2 (secondary-DEX injection): Inject ALL classes from
     // ALL secondary DEX files (per_dex_raw_data_[1..N-1]) into the merged
@@ -2990,6 +3003,16 @@ public:
     bool class_chain_defines_method(const std::string& class_desc,
                                     const std::string& method) const;
 
+    // F-NEW-712 (W12): direct DEX superclass descriptor for class_desc —
+    // "" when the class is framework-side (not in class_to_superclass_).
+    // The ancestry walks above cannot cross framework edges; callers that
+    // need the ONE-HOP parent (e.g. the render-stage root onMeasure gate)
+    // use this instead.
+    std::string direct_superclass_of(const std::string& class_desc) const {
+        auto it = class_to_superclass_.find(class_desc);
+        return it == class_to_superclass_.end() ? std::string() : it->second;
+    }
+
     // M3 F-005 FIX-A: true when the ancestry reaches a framework family
     // whose onMeasure CONTENT semantics the runtime implements itself
     // (TextView/Button/ImageView/…). Such nodes take the content measure;
@@ -3143,8 +3166,12 @@ public:
     // to the API stub layer.
     // EXP-077: Made public so ApplicationRuntime can dispatch createView
     // on fragments that need lifecycle advancement.
+    // F-NEW-710: declaring_class is taken BY VALUE — callers may bind it
+    // to heap_obj->class_descriptor; the re-entered interpreter and the
+    // bridge laws allocate on the heap and a heap vector realloc would
+    // dangle a bound reference (Notepad provider-init segfault, 2026-11-18).
     bool try_recursive_invoke(
-        const std::string& declaring_class,
+        const std::string declaring_class,
         const std::string& method_name,
         const std::vector<DalvikValue>& args,
         DalvikValue& return_val,
@@ -3170,7 +3197,7 @@ public:
     // preserved — inherited virtual methods execute with the runtime
     // receiver exactly as ART does. Depth-capped; ends at Object.
     bool try_recursive_invoke_on_super(
-        const std::string& declaring_class,
+        const std::string declaring_class,  // BY VALUE (F-NEW-710)
         const std::string& method_name,
         const std::vector<DalvikValue>& args,
         DalvikValue& return_val,
@@ -4193,6 +4220,9 @@ public:
         bool ever_opened = false;
     };
     std::map<uint32_t, OpenWriter> open_writers_;
+    // F-NEW-709: materialized FileDescriptor → owning stream oid
+    // (getFD() law; sync()/valid() resolve the writer through it).
+    std::map<uint32_t, uint32_t> fd_to_stream_;
     // LOADING-CAMPAIGN: ByteArrayOutputStream buffers (heap oid → bytes).
     std::map<uint32_t, std::string> baos_buffers_;
     // LOADING-CAMPAIGN: drain pending writes at run end (idempotent).
@@ -4696,6 +4726,16 @@ private:
   bool bridge_arm_49792(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
   bool bridge_arm_46205(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
   bool bridge_arm_5892(const std::string& class_name, const std::string& method, const std::vector<DalvikValue>& args_raw, DalvikValue& result, ApiCallTrace::Status& status, uint32_t method_idx_hint, const std::vector<DalvikValue>& args);
+
+    // P0 SPLIT (bridge mega-TU): five domain dispatch ranges of
+    // bridge_to_api — verbatim-range extraction, chained in original
+    // scan order by the coordinator; frame contract in
+    // dex/dalvik_bridge_frame.h.
+  bool bridge_domain_jdk(DalvikBridgeFrame& fr);
+  bool bridge_domain_android_core(DalvikBridgeFrame& fr);
+  bool bridge_domain_ui_graphics(DalvikBridgeFrame& fr);
+  bool bridge_domain_app_runtime(DalvikBridgeFrame& fr);
+  bool bridge_domain_io_lang(DalvikBridgeFrame& fr);
 };
 
 } // namespace dalvik

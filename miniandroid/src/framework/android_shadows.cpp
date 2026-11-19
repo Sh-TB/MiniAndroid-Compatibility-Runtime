@@ -6793,6 +6793,80 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
                 pi->extras_bool[k] = val.bool_val;
             } else if (val.kind == CallContext::Arg::Kind::LONG) {
                 pi->extras_int[k] = static_cast<int32_t>(val.long_val);
+            } else if (val.kind == CallContext::Arg::Kind::OBJECT &&
+                       val.object_id != 0 && heap_) {
+                // ── F-NEW-723 (W14): boxed-primitive putExtra law ────────
+                // AOSP Intent.putExtra(String, T) overloads accept boxed
+                // values (the Serializable/Parcelable faces): the app calls
+                // putExtra(String, Integer). The engine resolves the call
+                // with an OBJECT-kind arg (the F-NEW-141 box law: the box
+                // object's `value` heap field carries the primitive) — the
+                // old law silently DROPPED every OBJECT extra, so the
+                // result-delivery payload vanished and the caller read the
+                // default (n-Puzzle: "Image selection page did not return
+                // an image" IllegalStateException at GamePlay.onActivityResult
+                // pc=49 — putExtra("selected_image_id", <Integer>) ×2
+                // dropped, F723-PUTEXTRA val_kind=6 evidence).
+                // Unbox through the box's value field; classes the box laws
+                // mint are Integer/Long/Boolean/String.
+                std::string box_cls;
+                heap_->get_object_class(val.object_id, box_cls);
+                if (box_cls == "Ljava/lang/Integer;") {
+                    int32_t iv = 0;
+                    if (heap_->get_object_int_field(val.object_id, "value",
+                                                    iv))
+                        pi->extras_int[k] = iv;
+                } else if (box_cls == "Ljava/lang/Long;") {
+                    int64_t lv = 0;
+                    if (heap_->get_object_long_field(val.object_id, "value",
+                                                     lv))
+                        pi->extras_int[k] = static_cast<int32_t>(lv);
+                } else if (box_cls == "Ljava/lang/Boolean;") {
+                    // Engine convention: boolean fields are int32 0/1.
+                    int32_t bv = 0;
+                    if (heap_->get_object_int_field(val.object_id, "value",
+                                                    bv))
+                        pi->extras_bool[k] = (bv != 0);
+                } else if (box_cls == "Ljava/lang/String;") {
+                    std::string sv;
+                    if (heap_->get_object_string_field(val.object_id, "value",
+                                                       sv))
+                        pi->extras_string[k] = sv;
+                }
+                // The RAW object always rides the intent heap object under
+                // "extra:obj:<key>" — enum/Serializable/Parcelable extras
+                // (Game$Level, custom bundles) are read back through
+                // getSerializableExtra/getParcelableExtra, never the typed
+                // maps. ctx.receiver_id IS the intent heap object.
+                heap_->set_object_ref_field(
+                    ctx.receiver_id, "extra:obj:" + k, val.object_id,
+                    val.object_class.empty() ? "Ljava/lang/Object;"
+                                             : val.object_class,
+                    std::string(), false);
+            }
+            // F-723 diagnostic (bounded): the result-delivery payload — an
+            // extra dropped here is invisible downstream (n-Puzzle:
+            // onActivityResult threw "did not return an image" with zero
+            // putExtra evidence in the trace). Also surfaces OBJECT-kind
+            // values, which the law currently does NOT store.
+            static thread_local uint64_t f723_put = 0;
+            if (f723_put++ < 16) {
+                std::string f723_cls;
+                if (val.kind == CallContext::Arg::Kind::OBJECT &&
+                    val.object_id != 0 && heap_)
+                    heap_->get_object_class(val.object_id, f723_cls);
+                std::cerr << "[F723-PUTEXTRA] intent=" << ctx.receiver_id
+                          << " key=\"" << k << "\""
+                          << " val_kind=" << (int)val.kind
+                          << (val.kind == CallContext::Arg::Kind::OBJECT
+                                  ? (" cls=" + f723_cls +
+                                     (pi->extras_int.count(k) ||
+                                              pi->extras_bool.count(k) ||
+                                              pi->extras_string.count(k)
+                                          ? " UNBOXED"
+                                          : " NOT-STORED"))
+                                  : "")
+                          << " caller=" << ctx.caller << std::endl;
             }
         }
         return CallResult::handled_object(ctx.receiver_id, "Landroid/content/Intent;");
@@ -6814,6 +6888,64 @@ CallResult IntentShadow::dispatch(const CallContext& ctx) {
         bool def = ctx.arg_as_bool(1, false);
         auto it = pi->extras_bool.find(k);
         return CallResult::handled_bool(it != pi->extras_bool.end() ? it->second : def);
+    }
+    if (m == "getSerializableExtra" || m == "getParcelableExtra") {
+        // ── F-NEW-723b (W14): the object-extra read face ──────────────────
+        // AOSP Intent.getSerializableExtra/getParcelableExtra return the
+        // object stored by putExtra(String, Serializable/Parcelable).
+        // n-Puzzle's GamePlay.onActivityResult reads the picker's payload
+        // through this face — no handler meant the typed-default stub
+        // answered null and the app threw "Image selection page did not
+        // return an image". Resolution order: the raw stored object
+        // (extra:obj:<key> — covers enums, custom Serializables), then the
+        // typed maps re-boxed (Integer box for int extras, the canonical
+        // AOSP Bundle round trip), else null (the honest AOSP answer for a
+        // missing key).
+        std::string k = ctx.arg_as_string(0);
+        if (heap_) {
+            uint32_t ro = 0;
+            std::string rcls, rstr;
+            bool r_is_str = false;
+            if (heap_->get_object_ref_field(ctx.receiver_id,
+                                            "extra:obj:" + k, ro, rcls,
+                                            rstr, r_is_str) &&
+                ro != 0 && !r_is_str) {
+                return CallResult::handled_object(ro, rcls);
+            }
+        }
+        auto it_i = pi->extras_int.find(k);
+        if (it_i != pi->extras_int.end() && heap_) {
+            uint32_t box = heap_->allocate("Ljava/lang/Integer;");
+            heap_->set_object_int_field(box, "value", it_i->second);
+            return CallResult::handled_object(box, "Ljava/lang/Integer;");
+        }
+        auto it_s = pi->extras_string.find(k);
+        if (it_s != pi->extras_string.end())
+            return CallResult::handled_string(it_s->second);
+        auto it_b = pi->extras_bool.find(k);
+        if (it_b != pi->extras_bool.end() && heap_) {
+            uint32_t box = heap_->allocate("Ljava/lang/Boolean;");
+            heap_->set_object_int_field(box, "value", it_b->second ? 1 : 0);
+            return CallResult::handled_object(box, "Ljava/lang/Boolean;");
+        }
+        return CallResult::handled_null();
+    }
+    if (m == "getLongExtra") {
+        // AOSP Intent.getLongExtra — n-Puzzle persists the move counter
+        // (EXTRA_MOVE_COUNT) as a long; the stub default answered 0 which
+        // silently forged game state. Extras are stored through
+        // putExtra(String, long) into extras_int (int32 cast); the read
+        // face widens back (documented: the runtime stores extras at
+        // int32 width — an existing F-723 law note).
+        std::string k = ctx.arg_as_string(0);
+        int64_t def = ctx.args.size() >= 2 &&
+                              ctx.args[1].kind == CallContext::Arg::Kind::LONG
+                          ? ctx.args[1].long_val
+                          : (int64_t)ctx.arg_as_int(1, 0);
+        auto it = pi->extras_int.find(k);
+        return CallResult::handled_long(it != pi->extras_int.end()
+                                            ? (int64_t)it->second
+                                            : def);
     }
     if (m == "setFlags" || m == "addFlags") {
         int32_t f = ctx.arg_as_int(0);
@@ -8259,6 +8391,27 @@ ViewShadow::ViewNode* ViewShadow::get_or_create_node(uint32_t view_id,
     auto* raw = node.get();
     nodes_[view_id] = std::move(node);
     return raw;
+}
+
+ViewShadow::ViewNode* ViewShadow::webview_node_at(int x, int y) {
+    ViewNode* best = nullptr;
+    int best_area = -1;
+    for (auto& kv : nodes_) {
+        ViewNode* n = kv.second.get();
+        if (!n || n->class_desc.find("WebView;") == std::string::npos)
+            continue;
+        if (n->visibility != 0) continue;  // VISIBLE=0 law
+        if (x < n->x || y < n->y ||
+            x >= n->x + n->measured_width ||
+            y >= n->y + n->measured_height)
+            continue;
+        int area = n->measured_width * n->measured_height;
+        if (area < best_area || best_area < 0) {
+            best_area = area;
+            best = n;
+        }
+    }
+    return best;
 }
 
 const ViewShadow::ViewNode* ViewShadow::find_node(uint32_t view_id) const {
@@ -10277,6 +10430,61 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         n->enabled = ctx.arg_as_bool(0, true);
         return CallResult::handled_void();
     }
+    // ── W20-K (S237-WS9): AOSP View state-flag family (View.java setFlags
+    // law @android-14: PFLAG_SELECTED/ACTIVATED/PRESSED/LONG_CLICKABLE/
+    // HOVERED) — the whole family previously fell through to not_handled()
+    // (REC-MISS silent no-op). Corpus DEX call-site demand: openlauncher 17,
+    // stopwatch 3, tictactoe 2, opensudoku 2, dooz/a2048 1 each. The
+    // state-list background re-picks EVERY frame, so the flag change reaches
+    // rendering without an extra dirty pass.
+    if (m == "setSelected") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->selected = ctx.arg_as_bool(0, false);
+        return CallResult::handled_void();
+    }
+    if (m == "isSelected") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        return CallResult::handled_bool(n->selected);
+    }
+    if (m == "setPressed") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->pressed = ctx.arg_as_bool(0, false);
+        return CallResult::handled_void();
+    }
+    if (m == "isPressed") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        return CallResult::handled_bool(n->pressed);
+    }
+    if (m == "setActivated") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->activated = ctx.arg_as_bool(0, false);
+        return CallResult::handled_void();
+    }
+    if (m == "isActivated") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        return CallResult::handled_bool(n->activated);
+    }
+    if (m == "setHovered") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        n->hovered = ctx.arg_as_bool(0, false);
+        return CallResult::handled_void();
+    }
+    if (m == "isHovered") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        return CallResult::handled_bool(n->hovered);
+    }
+    if (m == "setLongClickable") {
+        // AOSP: setLongClickable(true) is implicit when an
+        // OnLongClickListener is attached; the stored listener wins.
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        bool v = ctx.arg_as_bool(0, false);
+        n->long_clickable = v || n->long_click_listener_id != 0;
+        return CallResult::handled_void();
+    }
+    if (m == "isLongClickable") {
+        auto* n = get_or_create_node(ctx.receiver_id, ctx.receiver_class.empty() ? ctx.class_name : ctx.receiver_class);
+        return CallResult::handled_bool(n->long_clickable);
+    }
     // ── M3 FINDING-011: AOSP View tag law (View.java mTag + mKeyedTags) ──
     // setTag(Object) → mTag; setTag(int key, Object) → mKeyedTags (SparseArray).
     // getTag() / getTag(int): absent value → null (AOSP returns null, never
@@ -11406,6 +11614,16 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         if (n->item_click_listener_id && heap_)
             heap_->get_object_class(n->item_click_listener_id,
                                     n->item_click_listener_class);
+        // F-719 diagnostic: the storage is silent elsewhere — without this
+        // line a swallowed dispatch (registry shadow claims the call
+        // before ViewShadow) is indistinguishable from an app that never
+        // registered a listener (n-Puzzle picker: 0 item taps, W13).
+        std::cerr << "[F719-STORE] setOnItemClickListener view="
+                  << n->view_id << " (" << n->class_desc << ")"
+                  << " listener=" << n->item_click_listener_id
+                  << " listener_cls=" << n->item_click_listener_class
+                  << " vs=" << (const void*)this
+                  << std::endl;
         return CallResult::handled_void();
     }
     if (m == "setOnItemLongClickListener") {

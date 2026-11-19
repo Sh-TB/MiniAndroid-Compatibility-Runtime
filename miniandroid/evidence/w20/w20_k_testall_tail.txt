@@ -1,0 +1,4 @@
+[PASS] s251_activity_result_contract_test
+[PASS] s252_view_state_flags_contract_test
+BATTERY SUMMARY: total=48 passed=47 failed=1
+make: *** [Makefile:441: test-all] Error 1
