@@ -11,8 +11,8 @@ this report are measured on this host (2 cores, 4 GB RAM, g++ 14.2.0) at HEAD
 | # | Question | Answer |
 |---|---|---|
 | 1 | Original production build time | **591.64 s** fresh cold at `23a4d33b` (W22 recorded 572.46 s; +3.4 % session noise) |
-| 2 | New production clean-build time | [FINAL — filled from `prod_build_final_w23.log`] |
-| 3 | New warm rebuild time | [ccache warm — filled from `ccache_warm_w23.log`] |
+| 2 | New production clean-build time | PENDING — persisted chain stage 5 writes `evidence/w23/prod_build_final_w23.log` (reference: post-split incremental 415.8 s / 32 TUs; clean-build cost is -O2 codegen CPU work, essentially unchanged by the split — see §6) |
+| 3 | New warm rebuild time | PENDING — chain stage 2 (`ccache_warm_w23.log`); W22 reference 21.16 s (88/88 hits) |
 | 4 | Typical Dalvik implementation edit | **6.7 s** bridge / **8.9 s** opcode / **13.1 s** interpreter (dev-so cycles, medians of 3) — improved from W22's 8.8/12.6/19.4 s |
 | 5 | TUs compiled per operation | see the matrix in §3 — validated per probe (harness cross-checks the compiled-TU set) |
 | 6 | Header-cascade decrease | **dalvik_engine.h one-line edit: 343.18 s / 18 TUs → 1.04 s / 0 TUs (−99.7 %)** |
@@ -25,9 +25,9 @@ this report are measured on this host (2 cores, 4 GB RAM, g++ 14.2.0) at HEAD
 
 | Field | Value |
 |---|---|
-| PRODUCTION_BUILD_SECONDS | [final clean build — filled from evidence] |
+| PRODUCTION_BUILD_SECONDS | baseline 591.64 s at `23a4d33b`; post-split final clean build PENDING — the persisted measurement chain (`scripts/w23_build_chain.sh`, committed) runs it as stage 5 and writes `evidence/w23/prod_build_final_w23.log`; fill `W23_BUILD_RESULTS.csv` row `I_prod_clean_rebuild` from that log (post-split incremental rebuild reference: 415.8 s for the 32 TUs the repoint invalidated) |
 | DEVELOPER_BUILD_SECONDS | dev-so clean 138.23 s; cycles 0.06 (no-op) / 6.71 (bridge) / 8.86 (opcode) / 13.12 (interpreter) |
-| WARM_REBUILD_SECONDS | [ccache warm — filled] |
+| WARM_REBUILD_SECONDS | PENDING — chain stage 2 (`evidence/w23/ccache_warm_w23.log`; W22 reference 21.16 s for the pre-split content) |
 | DALVIK_EDIT_SECONDS | 6.7–13.1 s (dev-so path, validated) |
 | HEADER_CASCADE_SECONDS | 1.04 s for `dalvik_engine.h` (was 343.18 s); proportional closures: impl 317.1 s / 15 TUs, types 336.9 s / 18 TUs, internal 246.1 s / 12 TUs |
 | COMPILED_TU_COUNTS | per-probe, validated — see W23_BUILD_RESULTS.csv |
@@ -35,8 +35,8 @@ this report are measured on this host (2 cores, 4 GB RAM, g++ 14.2.0) at HEAD
 | REGRESSION_STATUS | PASS (49/49) |
 | APK_PARITY_STATUS | PASS (11/11 hashes identical) |
 | EVIDENCE_STATUS | VERIFIED (every claim has a raw log or JSONL record in evidence/w23/) |
-| GIT_COMMIT | [filled at push] |
-| PUSH_STATUS | [filled at push] |
+| GIT_COMMIT | `c82992d3` (W23-A, pushed) |
+| PUSH_STATUS | PUSHED — origin/main `23a4d33b..c82992d3` |
 
 ## 3. The measured operation matrix (before → after)
 
@@ -104,7 +104,23 @@ W23_DEPENDENCY_ANALYSIS.md §5.
 
 ## 6. Production clean build under 120 s — honest accounting
 
-[final numbers + bottleneck decomposition — filled from the chain logs]
+Measured facts: (a) the fresh cold build is 88 serial -O2 compile slots
+(588 CPU-s ≈ wall — CPU-bound, 2 cores, no SMT); the link is 0.9 s. (b) The
+header split does NOT change clean-build cost materially (family TUs still
+compile the same preprocessed content via impl+types; only the 4 repointed
+public-surface TUs parse less). (c) W22 already rejected -j2 (+9 %), PCH
+(1.03×), lld/mold (link 0.9 s — nothing to win), unity builds on this host;
+none were repeated without a new hypothesis. (d) The -g0-everywhere variant
+(chain stage 3, `prod_build_g0profile.log`) quantifies the debug-info share —
+a measurement variant only; adopting it would alter the production flag
+contract (forbidden without explicit sign-off). (e) ccache warm gives the
+fast identical-content production rebuild (W22: 21.16 s, 27×). Conclusion:
+<120 s fresh-cold production clean build is BLOCKED by hardware (2 cores /
+serial -O2 codegen ≈ 588 CPU-s); the honest floor is ≈550-590 s cold,
+≈21 s warm-cache, 6.7-13.1 s developer cycles. The exact remaining bottleneck:
+the top-10 TUs (45.8 % of compile time: execution_engine 38 s, five bridge
+domains 21-32 s each, engine core/invoke/interpreter ~21 s) are -O2 codegen of
+genuinely required components.
 
 ## 7. Developer workflow (recommended)
 
@@ -115,7 +131,7 @@ W23_DEPENDENCY_ANALYSIS.md §5.
   15 TUs) — do them in the dev-so loop (header edits rebuild PIC objects only
   when the class layout is touched).
 - identical-content rebuilds: `make BUILDDIR=build_cc CXX='ccache g++' all`
-  with a warm cache ([warm number]).
+  with a warm cache (chain stage 2; W22 reference 21.16 s).
 
 ## 8. Evidence index
 
