@@ -1,0 +1,928 @@
+In file included from src/dex/dalvik_engine_types.h:35,
+                 from src/dex/dalvik_engine_impl.h:10,
+                 from src/dex/dalvik_bridge_frame.h:25,
+                 from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:36:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine_types.h:37:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine_types.h:41:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine_types.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine_types.h:1140:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1140 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_bridge_frame.h:82:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+ 2462 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+ 3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6192 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+ 6193 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+ 7529 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10499 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10509 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10516 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+      |                                     ^~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:35,
+                 from src/dex/dalvik_engine_impl.h:10,
+                 from src/dex/dalvik_bridge_frame.h:25,
+                 from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:36:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine_types.h:37:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine_types.h:41:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine_types.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine_types.h:1140:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1140 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_bridge_frame.h:82:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+ 2462 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+ 3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6192 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+ 6193 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+ 7529 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10499 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10509 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10516 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+      |                                     ^~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:35,
+                 from src/dex/dalvik_engine_impl.h:10,
+                 from src/dex/dalvik_bridge_frame.h:25,
+                 from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:36:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine_types.h:37:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine_types.h:41:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine_types.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine_types.h:1140:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1140 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_bridge_frame.h:82:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+ 2462 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+ 3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6192 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+ 6193 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+ 7529 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10499 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10509 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10516 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+      |                                     ^~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:35,
+                 from src/dex/dalvik_engine_impl.h:10,
+                 from src/dex/dalvik_bridge_frame.h:25,
+                 from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:36:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine_types.h:37:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine_types.h:41:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine_types.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine_types.h:1140:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1140 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_bridge_frame.h:82:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+ 2462 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+ 3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6192 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+ 6193 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+ 7529 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10499 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10509 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10516 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+      |                                     ^~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:35,
+                 from src/dex/dalvik_engine_impl.h:10,
+                 from src/dex/dalvik_bridge_frame.h:25,
+                 from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:36:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine_types.h:37:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine_types.h:41:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine_types.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine_types.h:1140:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1140 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_bridge_frame.h:82:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+ 2462 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+ 3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6192 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+ 6193 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+ 7529 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10499 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10509 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10516 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+      |                                     ^~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:35,
+                 from src/dex/dalvik_engine_impl.h:10,
+                 from src/dex/dalvik_bridge_frame.h:25,
+                 from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:36:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine_types.h:37:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine_types.h:41:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine_types.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine_types.h:1140:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1140 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_bridge_frame.h:82:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+ 2462 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+ 3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6192 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+ 6193 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+ 7529 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10499 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10509 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10516 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+      |                                     ^~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:35,
+                 from src/dex/dalvik_engine_impl.h:10,
+                 from src/dex/dalvik_bridge_frame.h:25,
+                 from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:36:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine_types.h:37:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine_types.h:41:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine_types.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine_types.h:1140:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1140 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_bridge_frame.h:82:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+ 2462 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+ 3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6192 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+ 6193 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+ 7529 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10499 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10509 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10516 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+      |                                     ^~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:35,
+                 from src/dex/dalvik_engine_impl.h:10,
+                 from src/dex/dalvik_bridge_frame.h:25,
+                 from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:36:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine_types.h:37:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine_types.h:41:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine_types.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine_types.h:1140:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1140 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_bridge_frame.h:82:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+ 2462 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+ 3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6192 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+ 6193 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+ 7529 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10499 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10509 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10516 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+      |                                     ^~~~~~~~

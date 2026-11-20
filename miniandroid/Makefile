@@ -3,6 +3,10 @@
 
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -g -O2 -MMD -MP
+# AUD-09 (cross-coder audit 2026-11-20): a failed recipe must not leave a
+# partial/corrupt target artifact behind — behavior demonstrated on a failed
+# rule before enabling (evidence/audit/RAW_LOGS/, MASTER_AUDIT.md).
+.DELETE_ON_ERROR:
 # Repo-root discovery (R11/R23: builds must work outside one developer's VM).
 REPO_ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 # EXP-097 §7: rlottie headers + rlottie static lib for Lottie rendering.

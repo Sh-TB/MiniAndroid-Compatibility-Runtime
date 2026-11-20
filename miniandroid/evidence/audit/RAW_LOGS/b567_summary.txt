@@ -1,0 +1,9 @@
+A_baseline rc=0 31.62s
+B_splitdwarf rc=0 33.80s
+C_novta rc=0 34.22s
+D_ggcmin rc=0 102.48s
+D_ggcmin rc=0 101.64s
+C_novta rc=0 31.85s
+B_splitdwarf rc=0 33.45s
+A_baseline rc=0 33.87s
+B567_PROBES_DONE
