@@ -939,7 +939,7 @@ bool decode_vector_drawable(const std::vector<uint8_t>& axml_bytes,
     out->width = W;
     out->height = H;
     out->color_type_name = "vector->rgba";
-    out->ok = !paths.empty();
+    out->ok = err.empty() && !paths.empty();  // MG-011 (#633): any warning-only condition (clip-path, animated-vector) must fail decode, not report success
     if (!out->ok && err.empty()) err = "vector: no renderable paths";
     out->error = err;
     return out->ok;

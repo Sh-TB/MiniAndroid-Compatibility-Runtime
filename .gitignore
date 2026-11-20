@@ -465,3 +465,11 @@ evidence/w22/issues_raw/
 
 # W23: portable cmake/ccache downloads (not repo content)
 /tools/dl/
+
+# AUD-51 (S7 forensics, 2026-11-20): generated build trees and APKs are never tracked.
+# build_w24_cand_a/ was committed by the 9b953ce1 auto-add (53 files incl. the executable
+# binary + test exes + stamps) — untracked with evidence SHAs preserved in
+# miniandroid/evidence/audit/RAW_LOGS/untrack_evidence_shas.txt (§20 APK law also enforced).
+miniandroid/build_w24_cand_a/
+miniandroid/build_w24*/
+download/batch614_624_evidence/
