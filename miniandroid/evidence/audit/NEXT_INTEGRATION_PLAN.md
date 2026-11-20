@@ -17,13 +17,17 @@
    cont24 = reachable branch-only experiments.
 7. **RC-12 / layout apps** — only from the original coder environment; no substitutes.
    S15 re-verification: layout-geometry-001 absent from git ls-remote — still unrecoverable.
-8. **AUD-54 focused tests** — S16 phase 1 done (103/234 machine-checked) + S17 phase 2 done
-   (11 more rows settled by tests/s17_focus_laws_test.cpp: 14 pinning laws over the inflater
-   decode layer, negative-mutation checked, law battery green). S16 phase 1 detail:
+8. **AUD-54 focused tests** — S16 phase 1 (103/234 machine-checked) + S17 phase 2 (14
+   inflater-decode laws) + S18 (131-row classification + 29 laws in 5 new families:
+   rounding/weightSum/text-layout/sql-shadow/renderer-surface; 5-family negative-mutation
+   validation; 11 more rows law-verified -> 114/234 HONEST, 120 classified remaining).
+   S16 phase 1 detail:
    scripts/s16_cite_sweep.py (35 CONFIRMED-LIVE incl. verbatim line cites; 32 STALE-CITE-
    RELOCATED — the 25 old "ABSENT" marks corrected, the files exist relocated; 24 CITE-STALE;
-   5 PARTIAL; 3 RESOLVED-IN-TREE: A1/BP-19/G3; 1 PATTERN-ABSENT). Of those 131 NO-CITE
-   rows S17 settled 11 more (see item 15), leaving 120 in the focused-test queue
+   5 PARTIAL; 3 RESOLVED-IN-TREE: A1/BP-19/G3; 1 PATTERN-ABSENT). The S17 claim of
+   114/234 double-counted 11 rows; the TRUE count reached 114/234 only in S18 (11
+   more rows law-verified; the remaining 120 carry explicit S18 classifications,
+   zero of which need the missing APKs or coder artifacts)
    are runtime-behavior claims needing focused laws (several depend on the missing APKs).
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=

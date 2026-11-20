@@ -1,0 +1,174 @@
+== S18-5 negative-mutation validation 2026-11-20T20:17:16Z ==
+== s18 dimension rounding laws (M3) ==
+  PASS  A1 20dp @2.625 -> 53 (round-half-away)
+  FAIL  A2 nonzero floor: 0.2dp/0.1dp/0.04dp -> 1 (never 0 for nonzero)
+  FAIL  A3 negatives: -20dp -> -53, -0.1dp -> -1 (sign-mirrored floor)
+  PASS  A4 physical units off xdpi=420: 1in->420, 1mm->17, 1pt->6
+  PASS  A5 10sp @scaled_density 3.4125 -> 34 (matches S17 R3)
+  PASS  A6 typed word path agrees: (20<<8)|DIP -> 53, (1<<8)|IN -> 420
+  PASS  A7 zero stays zero; 1e6dp -> 2625000 (no overflow/tail)
+== s18 dimension rounding laws: 5 pass / 2 fail ==
+rc=1
+--- A reverted ---
+== s18 dimension rounding laws (M3) ==
+  PASS  A1 20dp @2.625 -> 53 (round-half-away)
+  PASS  A2 nonzero floor: 0.2dp/0.1dp/0.04dp -> 1 (never 0 for nonzero)
+  PASS  A3 negatives: -20dp -> -53, -0.1dp -> -1 (sign-mirrored floor)
+  PASS  A4 physical units off xdpi=420: 1in->420, 1mm->17, 1pt->6
+  PASS  A5 10sp @scaled_density 3.4125 -> 34 (matches S17 R3)
+  PASS  A6 typed word path agrees: (20<<8)|DIP -> 53, (1<<8)|IN -> 420
+  PASS  A7 zero stays zero; 1e6dp -> 2625000 (no overflow/tail)
+== s18 dimension rounding laws: 7 pass / 0 fail ==
+A revert rc=0 (expect 0)
+== s18 weightSum laws (E2) ==
+  FAIL  B1 weightSum=3, w=[1,1] -> 360/360 (declared sum governs) c0=540 c1=540
+  PASS  B2 weightSum=0 non-positive -> derived sum 540/540 c0=540 c1=540
+  FAIL  B3 weightSum=2, w=[1,1,1] -> 540/540/0 sequential exhaustion c0=360 c1=360 c2=360
+  PASS  B4 no weightSum -> derived sum 540/540 (W1.b contrast) c0=540 c1=540
+== s18 weightSum laws: 2 pass / 2 fail ==
+rc=1
+--- B reverted ---
+== s18 weightSum laws (E2) ==
+  PASS  B1 weightSum=3, w=[1,1] -> 360/360 (declared sum governs) c0=360 c1=360
+  PASS  B2 weightSum=0 non-positive -> derived sum 540/540 c0=540 c1=540
+  PASS  B3 weightSum=2, w=[1,1,1] -> 540/540/0 sequential exhaustion c0=540 c1=540 c2=0
+  PASS  B4 no weightSum -> derived sum 540/540 (W1.b contrast) c0=540 c1=540
+== s18 weightSum laws: 4 pass / 0 fail ==
+B revert rc=0 (expect 0)
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf(strike=109) monospace=runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+== s18 text layout laws (N2/N3/N4) ==
+        [C1 actual: |top|=15 |ascent|=15 pad.ascent=15 nopad.ascent=15]
+  PASS  C1 includeFontPadding: first-line above = |top| vs |ascent| (N2)
+  PASS  C2 last-line below with pad uses |bottom| (>= |descent|) (N2)
+  PASS  C3 shaped run ascent/descent == face metrics (no drift)
+  PASS  C4 lineSpacingAdd: box0 = descent+add-top, box1 = bottom-top (extra on non-last lines only) (N3)
+  PASS  C5 lineSpacingMultiplier: box0 = m*(below-above), last box unmultiplied (N3)
+        [C6 actual: lines(none)=3 lines(end)=3 last='throu…' w=57]
+  PASS  C6 ellipsize END: over-wide last line truncated with U+2026 and fits width; NONE keeps content (N4)
+  PASS  C7 maxLines caps the block: 2 and 1 lines (N4; != singleLine)
+  PASS  C8 first-strong: Arabic run rtl_base=true, Latin false
+== s18 text layout laws: 8 pass / 0 fail ==
+rc=0
+--- MUTATION C2 (ellipsis glyph -> ?) ---
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf(strike=109) monospace=runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+== s18 text layout laws (N2/N3/N4) ==
+        [C1 actual: |top|=15 |ascent|=15 pad.line_above[0]=15 nopad.line_above[0]=15]
+  PASS  C1 includeFontPadding: first-line line_above = |top| vs |ascent| (N2, G47 field law)
+  PASS  C2 last-line box with pad uses |bottom| (>= no-pad box) (N2)
+  PASS  C3 shaped run ascent/descent == face metrics (no drift)
+  PASS  C4 lineSpacingAdd: box0 = descent+add-top, box1 = bottom-top (extra on non-last lines only) (N3)
+  PASS  C5 lineSpacingMultiplier: box0 = m*(below-above), last box unmultiplied (N3)
+        [C6 actual: lines(none)=3 lines(end)=3 last='throug?' w=59]
+  FAIL  C6 ellipsize END: over-wide last line truncated with U+2026 and fits width; NONE keeps content (N4)
+  PASS  C7 maxLines caps the block: 2 and 1 lines (N4; != singleLine)
+  PASS  C8 first-strong: Arabic run rtl_base=true, Latin false
+== s18 text layout laws: 7 pass / 1 fail ==
+rc=1
+--- C2 reverted ---
+[TEXTSHAPER] READY primary=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf bold=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf fallback=/usr/share/fonts/truetype/freefont/FreeSerif.ttf emoji=/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf(strike=109) monospace=runtime/data/fonts/DroidSansMono.ttf cjk=/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc
+FONT_RESOLUTION source=SYSTEM bold=0 (app did not request an app face)
+== s18 text layout laws (N2/N3/N4) ==
+        [C1 actual: |top|=15 |ascent|=15 pad.line_above[0]=15 nopad.line_above[0]=15]
+  PASS  C1 includeFontPadding: first-line line_above = |top| vs |ascent| (N2, G47 field law)
+  PASS  C2 last-line box with pad uses |bottom| (>= no-pad box) (N2)
+  PASS  C3 shaped run ascent/descent == face metrics (no drift)
+  PASS  C4 lineSpacingAdd: box0 = descent+add-top, box1 = bottom-top (extra on non-last lines only) (N3)
+  PASS  C5 lineSpacingMultiplier: box0 = m*(below-above), last box unmultiplied (N3)
+        [C6 actual: lines(none)=3 lines(end)=3 last='throu…' w=57]
+  PASS  C6 ellipsize END: over-wide last line truncated with U+2026 and fits width; NONE keeps content (N4)
+  PASS  C7 maxLines caps the block: 2 and 1 lines (N4; != singleLine)
+  PASS  C8 first-strong: Arabic run rtl_base=true, Latin false
+== s18 text layout laws: 8 pass / 0 fail ==
+C2 revert rc=0 (expect 0)
+== s18 sqlite shadow contract laws ==
+[SQLITE-SHADOW] helper<init> oid=1 name="s18_sql_laws.db" version=1
+[SQLITE-SHADOW] opened db oid=2 path=runtime/data/s18_sql_laws.db user_version=0 target_version=1 [onCreate pending] [onOpen pending]
+  PASS  F0 db opened via helper face (harness sanity)
+[SQLITE-SHADOW] rawQuery rows=1 cols=2 sql="SELECT id, data FROM b"
+  PASS  F1.a BLOB SELECT returns a live cursor
+        [F1 actual: rows=1 col0=1 col1=<unavail>]
+  PASS  F1.b BLOB row materializes: row count 1, id column read
+  PASS  F1.c BLOB column NOT surfaced (SQL-4 claim confirmed: BLOB cells are not materialized)
+[SQLITE-SHADOW] helper<init> oid=4 name="s18_sql_laws.db" version=1
+[SQLITE-SHADOW] opened db oid=6 path=runtime/data/s18_sql_laws.db user_version=0 target_version=1 [onCreate pending] [onOpen pending]
+[SQLITE-SHADOW] rawQuery rows=1 cols=1 sql="SELECT 1"
+  PASS  F2 CursorFactory in the <init> slot: open+query still work (accepted-and-ignored law) (SQL-5)
+[SQLITE-SHADOW] rawQuery rows=1 cols=1 sql="PRAGMA journal_mode;"
+        [F3 actual: journal_mode=delete]
+  PASS  F3 WAL set at open does NOT stick: readback = delete (SQL-6 'WAL buys nothing' confirmed)
+== s18 sqlite shadow laws: 6 pass / 0 fail ==
+rc=0
+--- MUTATION F (row count under-report) ---
+== s18 sqlite shadow contract laws ==
+[SQLITE-SHADOW] helper<init> oid=1 name="s18_sql_laws.db" version=1
+[SQLITE-SHADOW] opened db oid=2 path=runtime/data/s18_sql_laws.db user_version=0 target_version=1 [onCreate pending] [onOpen pending]
+  PASS  F0 db opened via helper face (harness sanity)
+[SQLITE-SHADOW] rawQuery rows=1 cols=2 sql="SELECT id, data FROM b"
+  PASS  F1.a BLOB SELECT returns a live cursor
+        [F1 actual: rows=0 col0=1 col1=<unavail>]
+  FAIL  F1.b BLOB row materializes: row count 1, id column read
+  PASS  F1.c BLOB column NOT surfaced (SQL-4 claim confirmed: BLOB cells are not materialized)
+[SQLITE-SHADOW] helper<init> oid=4 name="s18_sql_laws.db" version=1
+[SQLITE-SHADOW] opened db oid=6 path=runtime/data/s18_sql_laws.db user_version=0 target_version=1 [onCreate pending] [onOpen pending]
+[SQLITE-SHADOW] rawQuery rows=1 cols=1 sql="SELECT 1"
+  PASS  F2 CursorFactory in the <init> slot: open+query still work (accepted-and-ignored law) (SQL-5)
+[SQLITE-SHADOW] rawQuery rows=1 cols=1 sql="PRAGMA journal_mode;"
+        [F3 actual: journal_mode=delete]
+  PASS  F3 WAL set at open does NOT stick: readback = delete (SQL-6 'WAL buys nothing' confirmed)
+== s18 sqlite shadow laws: 5 pass / 1 fail ==
+rc=1
+--- F reverted ---
+== s18 sqlite shadow contract laws ==
+[SQLITE-SHADOW] helper<init> oid=1 name="s18_sql_laws.db" version=1
+[SQLITE-SHADOW] opened db oid=2 path=runtime/data/s18_sql_laws.db user_version=0 target_version=1 [onCreate pending] [onOpen pending]
+  PASS  F0 db opened via helper face (harness sanity)
+[SQLITE-SHADOW] rawQuery rows=1 cols=2 sql="SELECT id, data FROM b"
+  PASS  F1.a BLOB SELECT returns a live cursor
+        [F1 actual: rows=0 col0=1 col1=<unavail>]
+  FAIL  F1.b BLOB row materializes: row count 1, id column read
+  PASS  F1.c BLOB column NOT surfaced (SQL-4 claim confirmed: BLOB cells are not materialized)
+[SQLITE-SHADOW] helper<init> oid=4 name="s18_sql_laws.db" version=1
+[SQLITE-SHADOW] opened db oid=6 path=runtime/data/s18_sql_laws.db user_version=0 target_version=1 [onCreate pending] [onOpen pending]
+[SQLITE-SHADOW] rawQuery rows=1 cols=1 sql="SELECT 1"
+  PASS  F2 CursorFactory in the <init> slot: open+query still work (accepted-and-ignored law) (SQL-5)
+[SQLITE-SHADOW] rawQuery rows=1 cols=1 sql="PRAGMA journal_mode;"
+        [F3 actual: journal_mode=delete]
+  PASS  F3 WAL set at open does NOT stick: readback = delete (SQL-6 'WAL buys nothing' confirmed)
+== s18 sqlite shadow laws: 5 pass / 1 fail ==
+F revert rc=1 (expect 0)
+== s18 renderer surface laws (O4/O5) ==
+  PASS  G1 fresh framebuffer = every pixel WHITE {255,255,255,255} (O4: Android would start transparent/black — defect pinned)
+  PASS  G2 get_pixels_mut bypass: raw write lands bit-exact, no blending (O5)
+  PASS  G3 set_pixel opaque source stores exactly (sa=1 blend law), OOB clipped (API contrast for G2)
+  PASS  G4 clear() default restores WHITE (per-op bookkeeping law)
+== s18 renderer surface laws: 4 pass / 0 fail ==
+rc=0
+--- F fully reverted (note: first F injection attempt was a no-op placed before the assignment; corrected injection validated; log keeps both) ---
+== s18 sqlite shadow contract laws ==
+[SQLITE-SHADOW] helper<init> oid=1 name="s18_sql_laws.db" version=1
+[SQLITE-SHADOW] opened db oid=2 path=runtime/data/s18_sql_laws.db user_version=0 target_version=1 [onCreate pending] [onOpen pending]
+  PASS  F0 db opened via helper face (harness sanity)
+[SQLITE-SHADOW] rawQuery rows=1 cols=2 sql="SELECT id, data FROM b"
+  PASS  F1.a BLOB SELECT returns a live cursor
+        [F1 actual: rows=1 col0=1 col1=<unavail>]
+  PASS  F1.b BLOB row materializes: row count 1, id column read
+  PASS  F1.c BLOB column NOT surfaced (SQL-4 claim confirmed: BLOB cells are not materialized)
+[SQLITE-SHADOW] helper<init> oid=4 name="s18_sql_laws.db" version=1
+[SQLITE-SHADOW] opened db oid=6 path=runtime/data/s18_sql_laws.db user_version=0 target_version=1 [onCreate pending] [onOpen pending]
+[SQLITE-SHADOW] rawQuery rows=1 cols=1 sql="SELECT 1"
+  PASS  F2 CursorFactory in the <init> slot: open+query still work (accepted-and-ignored law) (SQL-5)
+[SQLITE-SHADOW] rawQuery rows=1 cols=1 sql="PRAGMA journal_mode;"
+        [F3 actual: journal_mode=delete]
+  PASS  F3 WAL set at open does NOT stick: readback = delete (SQL-6 'WAL buys nothing' confirmed)
+== s18 sqlite shadow laws: 6 pass / 0 fail ==
+F revert rc=0 (expect 0)
+== s18 renderer surface laws (O4/O5) ==
+  FAIL  G1 fresh framebuffer = every pixel WHITE {255,255,255,255} (O4: Android would start transparent/black — defect pinned)
+  PASS  G2 get_pixels_mut bypass: raw write lands bit-exact, no blending (O5)
+  FAIL  G3 set_pixel opaque source stores exactly (sa=1 blend law), OOB clipped (API contrast for G2)
+  PASS  G4 clear() default restores WHITE (per-op bookkeeping law)
+== s18 renderer surface laws: 2 pass / 2 fail ==
+rc=1
+--- G reverted; mutation summary: A=floor(A2,A3 FAIL), B=weightSum(B1,B3 FAIL), C2=ellipsis(C6 FAIL), F=rowcount(F1.b FAIL; first attempt no-op documented), G=init-color(G1,G3 FAIL); all reverted -> re-run green ---
