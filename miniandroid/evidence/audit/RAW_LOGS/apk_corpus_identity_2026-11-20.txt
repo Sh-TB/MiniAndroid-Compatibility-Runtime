@@ -1,0 +1,23 @@
+# APK CORPUS IDENTITY CENSUS — 2026-11-20 (upload/handoff_apks, 15 APKs)
+
+327bdbf4be528b9ef9ea566c116c8aba7c64e9943dc5fded313af87a7029cb47  upload/handoff_apks/HelloWorldToast-1.3.0-android.apk
+24612974e3b8e3a26e1bbc25760806dbd7b67462fd286e59ff202f9b62d23da2  upload/handoff_apks/HelloWorldToast-1.4.0-android.apk
+7c18c2b21096a1029caec99f447298c502150255dbf0e7a8c4704e835940874c  upload/handoff_apks/com.attenomy.janken_1.apk
+b7cf30c187a951203ecf06295653fab587c3e54f155cf54565eda9e27d1444fa  upload/handoff_apks/com.farmerbb.notepad_122.apk
+2a057a9a519acd81dc54af9b3c9f58e40ebd0ce92f949aca65f6c439e8f74d45  upload/handoff_apks/com.itsfrz.tictactoe_5.apk
+769f4d941400a22a222a0339f96e86de0a8499b9ff345355c3299457bdae75cc  upload/handoff_apks/com.ivylopez.authsrng_6.apk
+8f137be5228c14766e7ae7063bcb150f34be45aab15dc8ff32f965c029249edd  upload/handoff_apks/com.minar.randomix_42.apk
+af76923388c4ee3a265f66ea1fdab80092ed72400123d7e23f38a886281228a0  upload/handoff_apks/de.tcrass.minos_10004.apk
+6f9815e1cf0ab34175ace9d7f67775ac12a54a64a650d1bbd7c51a2b8256242c  upload/handoff_apks/dk.cocode.chess_5022.apk
+364f14fa30d37884c0beadc1473043cfd4a0439867796c21bb1da361d32fa4ec  upload/handoff_apks/io.github.herrerad85.tallybook_94.apk
+99b9221d44677f65e6326bda6161a046c96206bc6939bc87ceed89fc267a6aac  upload/handoff_apks/name.livitski.games.puzzle.android_2.apk
+0c51e2255401eeb16ada6ea4eaa8aec1c2b715a789b12a004355a3812fe1c111  upload/handoff_apks/org.blockinger.game_14.apk
+63730ec2ac320ecb31004c07e60c30f374ab20ad8041147720a967bb2aafd5fb  upload/handoff_apks/org.ecos.logic.flip_a_coin_3.apk
+000ae2e5751f9a85c331d6205881d3db5dc81a00d10522485d9026b0494f8c3d  upload/handoff_apks/ru.zxalexis.ugaday_15.apk
+d812e69612ccee064c67a75a6df29ee7b83a2b6395e2f8eb455a02ec66b6161c  upload/handoff_apks/tech.gaskell.diceroller_1_debug.apk
+
+Identity verifications:
+- ru.zxalexis.ugaday_15.apk sha16 000ae2e5751f9a85 == #612 body's recorded sha 000ae2e5751f9a85c331d... EXACT MATCH
+- de.tcrass.minos_10004.apk sha16 af76923388c4ee3a == untracked-from-repo copy (AUD-51) EXACT MATCH
+- com.itsfrz.tictactoe_5.apk = the SUBSTITUTE used by the 5-APK gate; emmanuelmess original ABSENT (AUD-35/36 remain BLOCKED for interactive claims)
+- ABSENT from corpus: #597 OpenCalc, #618 Counter, #623 RNG app -> their runtime claims stay BLOCKED

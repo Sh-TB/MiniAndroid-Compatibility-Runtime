@@ -1,91 +1,55 @@
-# MASTER AUDIT — Cross-Coder Achievement Audit (2026-11-20)
+# MASTER AUDIT — Cross-Coder Achievement Audit (v2, 2026-11-20 (continuation session))
+v1 baseline: commit 9b953ce1 (2026-11-20). v2 continues it per Issue #635 §1-§9 — nothing replaced, everything reconciled.
+Base: origin/main 56ba5842; session HEAD: 051af519 AUD-51 (S7 forensics) — untrack generated build tree + APK per §20/APK law: (1) commit 9b953ce1's auto-add tracked the whole miniandroid/build_w24_cand_a/ tree (53 files: the executable binary + 5 test exes + stamps + generated header) because root .gitignore covered build/, build-asan/, build_prof/, build_dev_so/ but NOT build_w24*/ — every rebuild therefore showed the binary as modified (root cause of the S7 anomaly; the tracked binary sha a3013295 differs from the recorded candidate sha 32442d05 because it churns per rebuild). FIX: gitignore rules miniandroid/build_w24_cand_a/ + build_w24*/ + download/batch614_624_evidence/; 53 build files + the APK untracked via git rm --cached (SHAs preserved in miniandroid/evidence/audit/RAW_LOGS/untrack_evidence_shas.txt: binary a3013295..., APK af769233...). (2) The APK (de.tcrass.minos_10004) violated the §20 zero-APK law; batch614/617 run logs + screenshots + view-tree JSONs are curated evidence per the BUG-3 law and moved to miniandroid/evidence/batch614_624_evidence/ (APK excluded, sha recorded). (3) No history rewrite — generated files remain in old commits; the tree going forward stays source + intentional assets. Labels: AUD-51 S7-FORENSICS FIXED; §20 ENFORCED; EVIDENCE PRESERVED.
 
-Mission source: upload/Pasted Content_1795175734014.txt (1040 lines, §0-§12).
-Method: every mandatory section read line by line; each claim tested where the
-environment allowed; verdicts assigned per the master-task taxonomy; nothing
-accepted on trust — another coder's status is treated as a claim, not proof.
+## §1 What this session changed
+1. **Ledger normalized** (S2): 50 rows -> **62 rows**, one claim per row, canonical verdicts
+   only (CONFIRMED/REJECTED/PARTIALLY CONFIRMED/BLOCKED/PENDING/SUPERSEDED), separate
+   evidence-level and integration-status columns, machine-validated (LEDGER_VALIDATION_REPORT.md — PASS).
+   Splits: AUD-10a/b, 15a/b, 25a/b, 36a/b, 37a/b, 38a/b. New rows AUD-51..57.
+2. **False-green corrections** (the audit's own): AUD-30 (GridLayout) FALSIFIED by source — the
+   Bellman-Ford solver EXISTS (layout_inflater.cpp:2899-2903, :4364-4380); AUD-32 (nine-patch)
+   downgraded to PARTIALLY (npTc parsing EXISTS at execution_engine.cpp:2876; npLb absent);
+   AUD-06/01/02 re-measured with cmake 4.4.5 (below); AUD-36/37/38 tracker-state rows split from
+   runtime rows (tracker closure is NOT runtime proof).
+3. **#632 fully extracted** (S3): 234 findings, one row each (632_FINDINGS.csv), original wording
+   preserved, statuses: 190 LIVE / 20 RETRACTED-BY-AUTHOR / 14 DEAD-CODE-RESCOPED / 10 PLAN-SWEEP.
+   Reconciliation: title says 194; delta +40 = the registry author's own retraction counter
+   (batch 3: "Running total: 40"). NEW-18/19/20 never published (numbering gap).
+4. **RC-12 recovery closed** (S4): 4 commits unrecoverable after a full sweep (cat-file x4, 26
+   remote refs, 2 PR refs, tags, stashes, 0 dangling commits, worktrees, upload/ artifacts);
+   the owning branch `layout-geometry-001` is coder-local only; capability PARTIALLY SUPERSEDED
+   by mainline c48773a0 + 7e5473be (scaleType laws in the battery). AUD-53.
+5. **MG-011 recovered and INTEGRATED** (S5): `out->ok = err.empty() && !paths.empty();` applied at
+   vector_decode.cpp:942 — the hole was verified live first (clip-path warning at :493 still
+   reported success). Build rc=0, battery rc=0 battery 49/49 PASS rc=0 (first run hit ENOSPC — rerun clean; both records in the log).
+6. **CMake measured** (S9): default all = 99 edges / 1 link / QuickJS 1x / WEBP define absent;
+   BUILD_TESTS=ON = 204 edges / **50 links** / QuickJS 2x. AUD-06's blocked measurement is done;
+   claims B19/B22 confirmed WITH their condition (BUILD_TESTS=ON), false for the default graph.
+7. **S7 forensics** (AUD-51, commit 051af519): build_w24_cand_a/ + APK untracked, .gitignore
+   hardened, evidence SHAs preserved, no history rewrite.
+8. **Branch census** (S10): merged into main: s241-law-waves (S236-S240), s237-w27, s238-audit,
+   s239, s240. Absent: wave10/dalvik-accel (15 commits — largest unmerged coder line), audit/s236
+   (7, raw evidence for the selectively-merged S236 laws), audit/m16-litehtml (3, flag-gated
+   prototype), cont24/skeleton-light (2, measured branch-only experiment). 2 stashes preserved.
+9. **APK identity census** (S8): 15-corpus SHAs recorded; ugraday matches #612's recorded sha;
+   TicTacToe substitute documented; #597/#618/#623 APKs absent -> claims stay BLOCKED.
 
-## Baseline manifest (taken before any modification)
+## §2 Verdict totals (programmatic, from the 62-row ledger)
+See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==62.
+v1's "30 CONFIRMED / 4 REJECTED..." was internally inconsistent (its CONFIRMED bucket absorbed 3
+REJECTED probes); v2 replaces it with machine-counted numbers.
 
-- Repo: github.com/Sh-TB/MiniAndroid-Compatibility-Runtime, branch main,
-  HEAD d8b8fbb9 (W24-B) at audit start; working tree clean before audit edits.
-- Toolchain: g++ 14.2.0, GNU Make, Python 3; **cmake ABSENT** (tools/dl wiped
-  by sandbox recycle) — CMake graph measurements are BLOCKED, not skipped.
-- Host: 2 vCPU / 4 GB RAM / GCC 14.2.0, shared VM, hypervisor steal measured
-  24-25% of every build window today (evidence/w24/RAW_LOGS/w24_combo_steal.txt).
-- Tracker: 300 issues+PRs fetched from the GitHub API today; every issue
-  referenced by the mission exists (#586-#634 incl. #625/#626 as PRs).
-- No destructive cleanup performed; build trees and stale artifacts preserved.
+## §3 Deliverables (this directory)
+ACHIEVEMENT_LEDGER.csv (62 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234) ·
+632_BATCH8_174_ATTRIBUTES.md · MASTER_AUDIT.md · INTEGRATION_MAP.md · REJECTED_AND_CORRECTED.md ·
+BLOCKED_AND_PENDING.md · REGRESSION_RESULTS.md · PRESERVED_WORK_MANIFEST.md ·
+NEXT_INTEGRATION_PLAN.md · RAW_LOGS/ (cmake_graph_measurement.md, apk corpus census,
+632_registry_snapshot, untrack SHAs, b567 probes, tracker index)
 
-## Verdict counts (reconcile with ACHIEVEMENT_LEDGER.csv, 50 rows)
-
-- CONFIRMED (any level): 30 — incl. 3 fresh build-probe REJECTEDs recorded as
-  preserved corrections, tracker-state confirmations, and today's ABBA/battery/
-  gate run on the W24 candidate (d8b8fbb9).
-- REJECTED: 4 (B4 mold/lld, B5 split-dwarf, B6 ggc-min, B7 var-tracking,
-  EXP-B Ninja — external folklore does not reproduce on this tree).
-- PARTIALLY CONFIRMED: 5 (§D gravity depth, §I ScrollView offsets, §L reference
-  chain, MG-010 clip-path, #606 layout closure).
-- BLOCKED: 4 (cmake graph measurement, RC-12 oracle commits absent, #628
-  frames-12 exact APK, #597/#618/#619 APK corpus absent).
-- PENDING: 3 (#634 source audit, UBSan profile, BUG-7 dedupe).
-- NOT-INTEGRATED but CONFIRMED-to-exist-elsewhere: RC-12 oracle, #633 MG-011
-  fix, #630/#631 layout apps.
-
-## Key findings by mission section
-
-### B1/B2 build findings (#632)
-- QuickJS compiled twice in CMake (two OBJECT libraries) — CONFIRMED at
-  source level; Makefile compiles once. CMake graph test BLOCKED (no cmake).
-- Battery-test loop without EXCLUDE_FROM_ALL — CONFIRMED at source level.
-- The NEW-9 retraction (guard at CMakeLists.txt:433) — CONFIRMED present.
-- ~52 links + OOM claim — BLOCKED (no cmake); OOM NOT observed on the Make
-  path (peak RSS 1221 MB / 4 GB across ~40 full builds W22-W24).
-
-### B3-B9 experiments
-- B3 ccache: CONFIRMED (committed logs: cold 553.42 s 0 hits / warm 20.94 s
-  88/88; warm-cache identical rebuild 25.40 s).
-- B4 mold/lld: REJECTED — link is 1.5 s of a 350 s build.
-- B5 -gsplit-dwarf: REJECTED — +4 % slower on the heaviest TU (fresh ABBA probe).
-- B6 ggc tuning: REJECTED — 3× slower (102 s vs 32 s, GC thrash). Preserved
-  as a correction so it is never retried.
-- B7 -fno-var-tracking-assignments: REJECTED — no win (GCC 14 fixed the VTA
-  pathology; -g1 already drops var-tracking).
-- B8 .DELETE_ON_ERROR: CONFIRMED missing → **added to the Makefile in this
-  audit** + behavior demonstrated on a failed target.
-- B9 job pools: CONFIRMED as a non-issue at -j2 (no OOM in any full build).
-
-### Build architecture (W22-W24, independently re-verified)
-- W24 tiering ABBA A/B: −17.3 % wall / −17.7 % CPU, battery 49/49, gate 11/11
-  on candidate codegen — CONFIRMED (commit d8b8fbb9).
-- BUG-8 parse-order defect: CONFIRMED + FIXED (cfd0870e).
-- Steal root-cause: CONFIRMED (24 % of every window; scheduler exonerated ×2;
-  Ninja rejected; candidate sits at the 288.4 s effective-capacity floor).
-- Targets <280 s / <250 s: honestly MEASURED-MISS, documented.
-
-### Runtime / apps
-- TicTacToe #619 (closed): render parity re-proven TODAY on the W24 candidate
-  (screenshot hash d55056a8... identical to canonical, 11/11 gate).
-- #618/#623 closed per tracker; re-verification BLOCKED (APKs absent).
-- #597 OpenCalc: BLOCKED at APK; 7×3=21 claim untestable here.
-- #628 frames-12: BLOCKED (exact APK absent; substitute app shows no setGraph).
-- #633 MG-011 fix: NOT INTEGRATED (proposed expression absent from source) —
-  highest-value recovery candidate.
-- RC-12 ScaleType oracle: NOT INTEGRATED (4 local commits absent from mainline).
-- #630/#631 layout test apps: NOT INTEGRATED (apps/ empty).
-- #586 FORTIFY: CONFIRMED (3 defined __*_chk symbols in the binary).
-- §H GridLayout (no solver), §K nine-patch (no npTc handling): CONFIRMED live.
-- Opcode law tests (#627): CONFIRMED (w15 law test + battery rc0 today).
-
-## False-green / test-quality notes (§8 of the mission)
-- The BUG-5 placebo lesson (page-cache order bias) is preserved in the
-  Makefile comment: any future param claim must alternate run order.
-- The battery never asserts exit code alone: 49 tests assert laws, and the
-  5-APK gate compares screenshot SHA-256 hashes against a recorded canonical
-  set (11/11 today) — no static placeholder screenshots involved.
-- RC-12's verifier defect history (V-1/V-2) could not be re-audited here: the
-  oracle files are absent from mainline (BLOCKED row AUD-26).
-
-## Integration positions (§6 of the mission)
-See INTEGRATION_MAP.md — every accepted contribution is placed on the shared
-execution chain with its consumer stage.
+## §4 Honest limits
+- Peak memory of a full BUILD_TESTS=ON cmake build: not measured (dry-run graph facts only).
+- #295/#296/#297 and #634 fixes remain coder-local (branch layout-geometry-001 / local trees);
+  not re-implemented here — MG-011 was, because the mission allows a one-line fix backed by tests.
+- #632 per-finding focused tests: 25/234 file:line cites machine-checked; the rest carry status
+  notes and are the follow-up work queue (NEXT_INTEGRATION_PLAN.md).

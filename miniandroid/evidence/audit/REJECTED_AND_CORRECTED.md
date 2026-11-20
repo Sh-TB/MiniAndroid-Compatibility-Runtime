@@ -1,12 +1,16 @@
-# REJECTED AND CORRECTED — preserved so nothing is rediscovered later
-
-| ID | Original claim | What was false | Disproof | Correction preserved |
+# REJECTED AND CORRECTED — v2 (preserved so nothing is rediscovered)
+| ID | Original claim | What was false / corrected | Disproof | Status |
 |---|---|---|---|---|
-| AUD-17 | mold/lld gives 3-8x faster builds | External folklore does not apply: this repo's link step is 1.5 s of a 350 s build | W24 link measurement | Keep BFD ld; revisit only if link exceeds ~5% of wall |
-| AUD-18 | -gsplit-dwarf helps large TUs | +4 % SLOWER on the heaviest TU (33.8/33.5 vs 31.6/33.9 baseline) | fresh ABBA probe 2026-11-20 (audit/RAW_LOGS/b567_summary.txt) | keep -g1; split-dwarf adds .o bookkeeping |
-| AUD-19 | ggc-min-expand/heapsize tuning helps | 3× SLOWER (102.5/101.6 s vs 32.7 s) — GC thrash | fresh ABBA probe 2026-11-20 | never adopt; recorded so it is not retried |
-| AUD-20 | -fno-var-tracking-assignments is a cheaper -g0 | No measurable win (34.2/31.9 ≈ baseline) — GCC 14 fixed the VTA pathology | fresh ABBA probe + W23-F -ftime-report | -g1 (line tables kept) is the chosen cut |
-| AUD-21 | PCH helps build time | Rejected 3× (36.4 s PCH build; ABBA probes: apkparse +40 %, net ≤0) | W23-F + W24 EXP-C | third definitive rejection on this repo |
-| AUD-22 | Inline-budget params save 7-13 % | Placebo: full A/B byte-identical binaries; probe bias = page-cache order | W23-G BUG-5 record | alternate run order in every future param probe |
-| AUD-24 | make/Ninja scheduler is the bottleneck | make == xargs == Ninja within ±2 %; idle is hypervisor steal | W24 EXP-B | scheduler exonerated ×2 |
-| AUD-10 | job pools needed to avoid OOM | No OOM at -j2 in ~40 full builds; peak RSS 1221 MB / 4 GB | W22-W24 build logs | re-evaluate only at -j4+ |
+| AUD-30 | "GridLayout not implemented" | a Bellman-Ford arc solver EXISTS (layout_inflater.cpp:2899-2903, :4364-4380, :4494 — #606 wave); the v1 audit grep was scoped to the wrong directory | full-tree source check 2026-11-20 | REJECTED (claim falsified) |
+| AUD-32 | "Nine-patch npTc/npLb missing" | npTc chunk parsing EXISTS (execution_engine.cpp:2876, aapt2 8.13.2 layout); npLb path still absent | full-tree grep | PARTIALLY CONFIRMED |
+| AUD-06 | "~52 links + OOM in default cmake all" | default all = 99 edges, exactly 1 executable link; the ~52-link scope exists only with BUILD_TESTS=ON (measured 50) | ninja dry-run, cmake 4.4.5 (AUD-52) | REJECTED for the default graph |
+| AUD-02 | "QuickJS compiled twice in CMake" | TRUE only with BUILD_TESTS=ON (10 edges = 5 sources x 2 OBJECT libs); default graph compiles it once | ninja dry-run | PARTIALLY CONFIRMED |
+| AUD-36 (v1 level) | "Original-APK-verified" render parity | the gate used the itsfrz SUBSTITUTE; original emmanuelmess APK absent | AUD-35 run log | split + downgraded to substitute-APK render parity |
+| AUD-37/38 (v1) | "CONFIRMED-closed" single rows | tracker state and runtime proof were fused in one row | mission rule | split into tracker-state CONFIRMED + runtime BLOCKED rows |
+| AUD-17 | mold/lld 3-8x faster links | link is 1.5 s of a 350 s build | W24 measurement | REJECTED |
+| AUD-18/19/20 | -gsplit-dwarf / ggc-min / -fno-var-tracking wins | +4% / 3x slower / no win (GCC14 fixed VTA) | fresh ABBA probes | REJECTED |
+| AUD-21 | PCH helps | rejected 3x on this repo | W23-F + W24 EXP-C | REJECTED |
+| AUD-22 | inline-budget params save 7-13% | byte-identical binaries (page-cache placebo) | BUG-5 record | REJECTED |
+| AUD-24 | make scheduler is the bottleneck | make == xargs == Ninja ±2%; steal is the cause | W24 EXP-B | REJECTED |
+| AUD-10 | job pools needed | no OOM at -j2 in ~40 builds | runtime census | REJECTED at -j2 |
+| RC-12 | exact commits recoverable | branch layout-geometry-001 never pushed; all local sources swept | AUD-53 | BLOCKED, partially superseded |
