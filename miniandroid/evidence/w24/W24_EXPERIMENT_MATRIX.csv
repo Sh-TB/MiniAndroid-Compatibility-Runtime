@@ -19,3 +19,10 @@ expD_mold_lld,REJECTED-MEASURED,link 1.5s of 349,share too small,REJECTED
 expD_cpp20_modules,REJECTED,project is C++17,not justified,REJECTED
 bug7_shadow_registry_duplicate,REGISTERED,src/dex/ vs src/framework/ copies DIFFER,cascade analyses measured framework copy,OPEN (needs dedup decision)
 cmake_webp_flag_parity,REGISTERED,CMake builds without -DMINIANDROID_HAVE_WEBP,silent divergence from Make,OPEN (pass flag explicitly)
+expA_full_AB_ABBA,TESTED,[base_a 440.64s/535.6cpu steal220.9s][cand_a 289.31s/426.7 steal138.5][cand_b 290.39s/430.2 steal139.9][base_b 350.39s/520.4 steal170.8],-17.3% wall -17.7% CPU vs matched-steal base_b; cand reps byte-identical 32442d05,IMPLEMENTED+TESTED
+bug8_tier_parse_order,REGISTERED+FIXED,tier ':=' lists before BUILDDIR(line166) -> empty targets at parse; moved after DEV override; make -n matrix verified,fix is a prerequisite of the A/B above,FIXED+VERIFIED
+battery_49_candidate,TESTED,49 PASS 0 FAIL rc0 181.34s (w24_cand_testall.log),runtime contract on candidate binary,PASS
+gate_5apk_candidate_codegen,TESTED,11/11 sha16 ALL-IDENTICAL vs canonical recorded set (candidate-flag dev tree incl tier-1 PIC rules),pixel parity of adopted codegen,PASS
+devso_candidate,TESTED,rc0 268.98s cpu398.2 (FASTPROFILE+W24TIERS dev tree),dev path at candidate flags,TESTED
+incr_leaf_candidate,TESTED,2.04s rc0,data_root.cpp tier-2 -O1 rebuild,PASS
+targets_analysis,MEASURED,Target1<280 MISS by 10s; Target2<250 MISS; cand floor 428.5cpu/(2x0.743)=288.4s = measured 289.85s — build AT effective-capacity floor; steal ~24% every window not schedulable,remaining limit = cold-TU CPU work + steal,DOCUMENTED
