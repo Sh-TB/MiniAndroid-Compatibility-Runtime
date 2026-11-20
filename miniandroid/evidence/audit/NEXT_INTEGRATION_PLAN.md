@@ -17,6 +17,11 @@
    cont24 = reachable branch-only experiments.
 7. **RC-12 / layout apps** — only from the original coder environment; no substitutes.
    S15 re-verification: layout-geometry-001 absent from git ls-remote — still unrecoverable.
+8. **AUD-54 focused tests** — S16 phase 1 done: 103/234 findings machine-checked by
+   scripts/s16_cite_sweep.py (35 CONFIRMED-LIVE incl. verbatim line cites; 32 STALE-CITE-
+   RELOCATED — the 25 old "ABSENT" marks corrected, the files exist relocated; 24 CITE-STALE;
+   5 PARTIAL; 3 RESOLVED-IN-TREE: A1/BP-19/G3; 1 PATTERN-ABSENT). Remaining 131 NO-CITE rows
+   are runtime-behavior claims needing focused laws (several depend on the missing APKs).
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
    0 machine-reproduce the hub's claim; the FULL 49-test battery built and ran
