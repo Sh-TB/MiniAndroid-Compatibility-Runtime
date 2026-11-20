@@ -24,3 +24,7 @@ g0_profile_clean_build,prod,n/a,n/a,468.06 rc0 rss1225MB (debug-info share ~15-2
 o1g0_profile_clean_build,prod,n/a,n/a,325.28 rc0 rss1174MB (-O2 optimization tier ~143s; -O1 floor 325s),88,1x1,MEASURED (variant NOT adopted),prod_build_o1g0profile.log
 cmake_megabatch_parity,cmake,n/a,n/a,FAILED rc2 -> FIXED: BUG-1 quickjs + BUG-1b native_thunk shared OBJECT libs; megabatch+miniandroid build+link rc0 in 14.93s incremental; second-gap fix verified in cmake_megabatch_fixed2.log,n/a,1x1,BUG-1/1b REGISTERED->FIXED->VERIFIED,cmake_megabatch_build.log;cmake_megabatch_fixed2.log
 j2_clean_build,prod,591.64 (j1 baseline),88,386.35 rc0 cpu566 rss1427MB,88,1x1,MEASURED -28.7% vs -j1; binary BYTE-IDENTICAL (sha a20ad331 == a20ad331); W22 +9% result was a 99%-disk confound,prod_build_j2.log
+ccache_cold_j2_retry,prod,553.42 (j1),88 miss,395.51 rc0 rss1426MB sha e1a9ce6d3ee24c2d (HEAD d7fe7c6c),88,2x1,MEASURED (P120),p120_ccache_cold_j2_retry.log
+ccache_warm_j1_retry,prod,21.16 (W22),88 hit,25.40 rc0 (88/88 hits: 82 direct+6 preprocessed) sha e1a9ce6d3ee24c2d — BYTE-IDENTICAL to cold-j2; 120s target MET for identical-content rebuilds,0 compiles,1x1,PASS (P120),p120_ccache_warm_j1_retry.log;p120_warm_sha_check.txt
+g1j2_clean_build,prod,n/a,n/a,317.05 rc0 cpu469 rss1224MB (-g1 keeps line tables; codegen identical to -g; NOT adopted without sign-off),88,2x1,MEASURED (P120 variant),p120_g1_j2.log
+j3_clean_build,prod,n/a,n/a,393.46 rc0 cpu573 rss1428MB — SLOWER than -j2 386.35: 2-core saturation proven, no OOM,88,3x1,MEASURED (P120),p120_j3.log

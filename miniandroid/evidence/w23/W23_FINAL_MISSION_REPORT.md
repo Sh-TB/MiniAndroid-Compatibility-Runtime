@@ -138,6 +138,32 @@ changes. `make -j2 all` is now the documented fast production command on
 120 s target, so the hardware verdict below stands. (f) ccache warm (20.94 s)
 is the supported path for identical-content production rebuilds.
 
+### P120 follow-up (post-review mandate: "541 s cold is not acceptable")
+
+Five more measured experiments (scripts/w23_push120.sh + w23_push120b.sh,
+commit d7fe7c6c tree, HEAD build sha e1a9ce6d3ee24c2d):
+
+| Experiment | wall | CPU | verdict |
+|---|---:|---:|---|
+| ccache COLD -j2 | 395.51 s | 583.0 | cache-fill path; sha e1a9ce6d |
+| ccache WARM -j1 (identical tree) | **25.40 s** | 25.4 | 88/88 hits; **binary BYTE-IDENTICAL to the cold build** → the 120 s target is MET for identical-content production rebuilds, today, with zero flag changes |
+| `-O2 -g1` -j2 (measurement variant) | 317.05 s | 469.1 | −18 % vs -j2 -g; codegen identical, line tables kept; NOT adopted without explicit sign-off |
+| -j3 | 393.46 s | 573.2 | SLOWER than -j2 (386.35 s): 2-core saturation measured, no OOM (peak 1428 MB) |
+| -j2 without --output-sync | — | — | superseded: the -j2 anchor numbers above already include the sync cost |
+
+Cores arithmetic (anchored on measured -j1 541.33 s / -j2 386.35 s, CPU total
+566.3 s, contention factor 1.36): cold-clean 120 s needs ≈ **6 cores**
+(~129 s modeled; ~111 s at -g0; ~97 s at 8 cores). On 2 cores the CPU budget
+(240 s in 120 s) is below even the -O1 -g0 floor (325 CPU-s) — physically
+impossible without semantic weakening. Remaining software levers and their
+measured ceilings: TU-split of the top-10 TUs for load balance → floor ≈ CPU/2
+≈ 283 s; PCH → W22-measured 1.03×, bounded well above 120 s. Both are far
+above the target: the binding constraint is core count, not build graph.
+
+Practical production paths that DO meet 120 s (all measured this wave):
+warm-cache rebuild 25.40 s (byte-identical binary), incremental rebuilds
+6.7-13.1 s, and any ≥6-core machine for cold builds.
+
 Verdict: <120 s fresh-cold on THIS host is BLOCKED with measured evidence —
 the floor is set by 88 serial -O2 codegen slots (~541 CPU-s ≈ wall). Reaching
 120 s would require ~5 cores at `-O2 -g0` or ~7-8 cores at the production

@@ -1,0 +1,13 @@
+R1 rc=0 cold-j2 sha:
+R2 rc=0 warm-j1 sha:
+IDENTITY_CHECK: 0 of 2 shas match production a20ad3311f036771
+R3 rc=0 g1-j2 sha:
+c63f254bf46b5f2c59aec550272d73c4
+R4 rc=0
+P120_DONE
+R1b rc=0 cold-j2 sha:
+e1a9ce6d3ee24c2d2efa685bf25c3fc5
+R2b rc=0 warm-j1 sha:
+e1a9ce6d3ee24c2d2efa685bf25c3fc5
+IDENTITY: 1 of 2 match production a20ad3311f036771
+P120B_DONE
