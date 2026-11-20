@@ -1,0 +1,14 @@
+PROBE P1_resparse_o2: real	0m4.890s
+PROBE P1_resparse_o1: real	0m3.774s
+PROBE P1_sqlsh_o1: real	0m3.406s
+PROBE P1_sqlsh_o2: real	0m4.147s
+PROBE P1_dexparse_o1: real	0m1.792s
+PROBE P1_dexparse_o2: real	0m2.639s
+PROBE P2_resparse_o2: real	0m4.883s
+PROBE P2_resparse_o1: real	0m3.765s
+PROBE P2_sqlsh_o1: real	0m3.441s
+PROBE P2_sqlsh_o2: real	0m4.098s
+PROBE P2_dexparse_o1: real	0m1.788s
+PROBE P2_dexparse_o2: real	0m2.643s
++ echo PROBEB_DONE
+PROBEB_DONE

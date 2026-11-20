@@ -1,0 +1,7 @@
+src/dex/dalvik_value_glue.cpp:54:28: warning: trigraph ??> ignored, use -trigraphs to enable [-Wtrigraphs]
+   54 |         default: return "<???>";
+
+Time variable                                   usr           sys          wall           GGC
+ phase setup                        :   0.00 (  0%)   0.00 (  0%)   0.01 (100%)  1781k ( 75%)
+ TOTAL                              :   0.00          0.00          0.01         2375k
+== dalvik_value_glue rc=0

@@ -1,0 +1,44 @@
++ echo 'PCH BUILD: real	0m0.166s size='
+PCH BUILD: real	0m0.166s size=
++ echo 'PROBE P1_resparse_no: real	0m5.138s 0'
+PROBE P1_resparse_no: real	0m5.138s 0
++ echo 'PROBE P1_resparse_p: real	0m5.852s 0'
+PROBE P1_resparse_p: real	0m5.852s 0
++ echo 'PROBE P1_apkparse_p: real	0m3.629s 0'
+PROBE P1_apkparse_p: real	0m3.629s 0
++ echo 'PROBE P1_apkparse_no: real	0m2.106s 0'
+PROBE P1_apkparse_no: real	0m2.106s 0
++ echo 'PROBE P1_sqlsh_p: real	0m4.993s 0'
+PROBE P1_sqlsh_p: real	0m4.993s 0
++ echo 'PROBE P1_sqlsh_no: real	0m4.261s 0'
+PROBE P1_sqlsh_no: real	0m4.261s 0
++ echo 'PROBE P1_layout_p: real	0m8.313s 0'
+PROBE P1_layout_p: real	0m8.313s 0
++ echo 'PROBE P1_layout_no: real	0m8.214s 0'
+PROBE P1_layout_no: real	0m8.214s 0
++ echo 'PROBE P1_uig2_p: real	0m33.293s 0'
+PROBE P1_uig2_p: real	0m33.293s 0
++ echo 'PROBE P1_uig2_no: real	0m33.497s 0'
+PROBE P1_uig2_no: real	0m33.497s 0
++ echo 'PROBE P2_resparse_no: real	0m5.080s 0'
+PROBE P2_resparse_no: real	0m5.080s 0
++ echo 'PROBE P2_resparse_p: real	0m5.806s 0'
+PROBE P2_resparse_p: real	0m5.806s 0
++ echo 'PROBE P2_apkparse_p: real	0m3.641s 0'
+PROBE P2_apkparse_p: real	0m3.641s 0
++ echo 'PROBE P2_apkparse_no: real	0m2.139s 0'
+PROBE P2_apkparse_no: real	0m2.139s 0
++ echo 'PROBE P2_sqlsh_p: real	0m5.063s 0'
+PROBE P2_sqlsh_p: real	0m5.063s 0
++ echo 'PROBE P2_sqlsh_no: real	0m4.356s 0'
+PROBE P2_sqlsh_no: real	0m4.356s 0
++ echo 'PROBE P2_layout_p: real	0m8.294s 0'
+PROBE P2_layout_p: real	0m8.294s 0
++ echo 'PROBE P2_layout_no: real	0m8.258s 0'
+PROBE P2_layout_no: real	0m8.258s 0
++ echo 'PROBE P2_uig2_p: real	0m33.761s 0'
+PROBE P2_uig2_p: real	0m33.761s 0
++ echo 'PROBE P2_uig2_no: real	0m33.565s 0'
+PROBE P2_uig2_no: real	0m33.565s 0
++ echo PROBEC_DONE
+PROBEC_DONE

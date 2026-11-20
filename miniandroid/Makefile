@@ -36,6 +36,73 @@ ifeq ($(FASTPROFILE),1)
 CXXFLAGS := $(subst -g , -g1 ,$(CXXFLAGS))
 endif
 
+# W24 EXP-A: measured per-TU optimization tiering (opt-in: FASTPROFILE=1
+# W24TIERS=1). Probes (ABBA x2, w24_probeA_o1.sh / w24_probeB_o1small.sh):
+# the five bridge domains compile -37..-44 % faster at -O1; the cold
+# small-TU tail -18..-23 %. Adopted ONLY for cold-path TUs: the interpreter
+# keeps its wave-7 contract, the renderer/audio/touch hot paths stay -O2,
+# and every adopted tier is verified by the 49-test battery + 5-APK
+# screenshot gate before shipping. -O1 is appended LAST, so it overrides -O2.
+ifeq ($(FASTPROFILE)$(W24TIERS),11)
+W24_TIER1_COLD := \
+  $(BUILDDIR)/dex/dalvik_bridge_domain_jdk.o \
+  $(BUILDDIR)/dex/dalvik_bridge_domain_android_core.o \
+  $(BUILDDIR)/dex/dalvik_bridge_domain_ui_graphics.o \
+  $(BUILDDIR)/dex/dalvik_bridge_domain_app_runtime.o \
+  $(BUILDDIR)/dex/dalvik_bridge_domain_io_lang.o \
+  $(BUILDDIR)/runtime/application_runtime.o \
+  $(BUILDDIR)/webview/webview_engine.o
+W24_TIER2_COLD := \
+  $(BUILDDIR)/diagnostics/trace_engine.o \
+  $(BUILDDIR)/resources/resource_parser.o \
+  $(BUILDDIR)/dex/trace_exporter.o \
+  $(BUILDDIR)/jni/dlopen_exec.o \
+  $(BUILDDIR)/diagnostics/install_inspection.o \
+  $(BUILDDIR)/storage/sqlite_shadow.o \
+  $(BUILDDIR)/dex/dex_interpreter_batch.o \
+  $(BUILDDIR)/framework/gl_surface_shadow.o \
+  $(BUILDDIR)/framework/bitmap_shadow.o \
+  $(BUILDDIR)/resources/resource_runtime.o \
+  $(BUILDDIR)/framework/task_stack_builder_shadow.o \
+  $(BUILDDIR)/webview/html_dom.o \
+  $(BUILDDIR)/resources/arsc_parser.o \
+  $(BUILDDIR)/framework/shadow_registry.o \
+  $(BUILDDIR)/jni/native_dep.o \
+  $(BUILDDIR)/framework/dialog_shadow.o \
+  $(BUILDDIR)/runtime/route_law.o \
+  $(BUILDDIR)/apk/manifest_reader.o \
+  $(BUILDDIR)/api/shared_prefs.o \
+  $(BUILDDIR)/diagnostics/trace_overlay.o \
+  $(BUILDDIR)/dex/dex_parser.o \
+  $(BUILDDIR)/storage/file_sandbox.o \
+  $(BUILDDIR)/apk/apk_parser.o \
+  $(BUILDDIR)/framework/pending_intent_shadow.o \
+  $(BUILDDIR)/storage/data_root.o \
+  $(BUILDDIR)/framework/lifecycle_controller.o \
+  $(BUILDDIR)/resources/s132_svg_reader.o \
+  $(BUILDDIR)/dex/class_resolver.o \
+  $(BUILDDIR)/api/http_client.o \
+  $(BUILDDIR)/api/application_context.o \
+  $(BUILDDIR)/framework/surface_view_shadow.o \
+  $(BUILDDIR)/framework/locks_shadow.o \
+  $(BUILDDIR)/framework/atomic_shadow.o \
+  $(BUILDDIR)/resources/axml_parser.o \
+  $(BUILDDIR)/framework/executor_shadow.o \
+  $(BUILDDIR)/framework/kotlin_shadow.o \
+  $(BUILDDIR)/framework/locale_insets_shadow.o \
+  $(BUILDDIR)/framework/clipboard_shadow.o \
+  $(BUILDDIR)/resources/font_family.o \
+  $(BUILDDIR)/jni/ma_native_bridge.o \
+  $(BUILDDIR)/resources/res_config.o \
+  $(BUILDDIR)/framework/key_event_shadow.o \
+  $(BUILDDIR)/resources/string_pool.o \
+  $(BUILDDIR)/dex/mutf8.o \
+  $(BUILDDIR)/resources/res_id.o \
+  $(BUILDDIR)/diagnostics/crash_forensics.o \
+  $(BUILDDIR)/resources/plurals.o
+$(W24_TIER1_COLD) $(W24_TIER2_COLD): CXXFLAGS += -O1
+endif
+
 # W23-P2 negative result (BUG-5, kept as a documented dead end): wave-7
 # inline-budget params were probed at 7-13 % per-TU savings on the heavy
 # TUs, but full-build A/B falsified them — with the rules active the CPU

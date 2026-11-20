@@ -1,0 +1,6 @@
+TUs=88 compile_sum=500.3s serial(link+ar+ver)=1.5s
+ideal 2-core (sum/2 + link)        = 251.7s
+LPT makespan (compile+link)        = 251.7s
+measured FASTPROFILE -j2 wall      = see build_bench (322.75)
+measured - LPT model               = schedule waste
+top5: [('src/dex/dalvik_bridge_domain_ui_gr', 31.3), ('src/dex/dalvik_bridge_domain_app_r', 29.5), ('src/dex/dalvik_bridge_domain_io_la', 27.2), ('src/runtime/execution_engine.cpp', 27.0), ('src/dex/dalvik_bridge_domain_andro', 26.0)]

@@ -1,0 +1,468 @@
+In file included from src/webview/../resources/../framework/android_shadows.h:23,
+                 from src/webview/../resources/layout_inflater.h:29,
+                 from src/webview/../resources/resource_runtime.h:18,
+                 from src/webview/webview_engine.cpp:4:
+src/webview/../resources/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/webview/../resources/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/webview/../resources/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/webview/../resources/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/webview/../resources/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/webview/../resources/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/webview/../resources/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/webview/../resources/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+In file included from src/webview/../resources/resource_runtime.h:19:
+src/webview/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/webview/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+In file included from src/webview/webview_engine.cpp:17:
+src/../third_party/quickjs/quickjs.h: In function ‘JSValue __JS_NewFloat64(JSContext*, double)’:
+src/../third_party/quickjs/quickjs.h:225:50: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  225 | static inline JSValue __JS_NewFloat64(JSContext *ctx, double d)
+      |                                       ~~~~~~~~~~~^~~
+src/../third_party/quickjs/quickjs.h: In function ‘JSValue JS_NewBool(JSContext*, int)’:
+src/../third_party/quickjs/quickjs.h:508:54: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  508 | static js_force_inline JSValue JS_NewBool(JSContext *ctx, JS_BOOL val)
+      |                                           ~~~~~~~~~~~^~~
+src/../third_party/quickjs/quickjs.h: In function ‘JSValue JS_NewInt32(JSContext*, int32_t)’:
+src/../third_party/quickjs/quickjs.h:513:55: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  513 | static js_force_inline JSValue JS_NewInt32(JSContext *ctx, int32_t val)
+      |                                            ~~~~~~~~~~~^~~
+src/../third_party/quickjs/quickjs.h: In function ‘JSValue JS_NewCatchOffset(JSContext*, int32_t)’:
+src/../third_party/quickjs/quickjs.h:518:61: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  518 | static js_force_inline JSValue JS_NewCatchOffset(JSContext *ctx, int32_t val)
+      |                                                  ~~~~~~~~~~~^~~
+src/../third_party/quickjs/quickjs.h: In function ‘int JS_IsBigInt(JSContext*, JSValue)’:
+src/../third_party/quickjs/quickjs.h:575:46: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  575 | static inline JS_BOOL JS_IsBigInt(JSContext *ctx, JSValueConst v)
+      |                                   ~~~~~~~~~~~^~~
+src/../third_party/quickjs/quickjs.h: In function ‘JSValue JS_DupValue(JSContext*, JSValue)’:
+src/../third_party/quickjs/quickjs.h:666:46: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  666 | static inline JSValue JS_DupValue(JSContext *ctx, JSValueConst v)
+      |                                   ~~~~~~~~~~~^~~
+src/../third_party/quickjs/quickjs.h: In function ‘JSValue JS_DupValueRT(JSRuntime*, JSValue)’:
+src/../third_party/quickjs/quickjs.h:675:48: warning: unused parameter ‘rt’ [-Wunused-parameter]
+  675 | static inline JSValue JS_DupValueRT(JSRuntime *rt, JSValueConst v)
+      |                                     ~~~~~~~~~~~^~
+src/../third_party/quickjs/quickjs.h: In function ‘JSValue JS_NewCFunctionMagic(JSContext*, JSValue (*)(JSContext*, JSValue, int, JSValue*, int), const char*, int, JSCFunctionEnum, int)’:
+src/../third_party/quickjs/quickjs.h:969:34: warning: cast between incompatible function types from ‘JSValue (*)(JSContext*, JSValue, int, JSValue*, int)’ to ‘JSValue (*)(JSContext*, JSValue, int, JSValue*)’ [-Wcast-function-type]
+  969 |     return JS_NewCFunction2(ctx, (JSCFunction *)func, name, length, cproto, magic);
+      |                                  ^~~~~~~~~~~~~~~~~~~
+src/webview/webview_engine.cpp: In function ‘int miniandroid::webview::style_define_own_property(JSContext*, JSValue, JSAtom, JSValue, JSValue, JSValue, int)’:
+src/webview/webview_engine.cpp:577:51: warning: unused parameter ‘getter’ [-Wunused-parameter]
+  577 |                                      JSValueConst getter, JSValueConst setter, int flags) {
+src/webview/webview_engine.cpp:577:72: warning: unused parameter ‘setter’ [-Wunused-parameter]
+  577 |                                      JSValueConst getter, JSValueConst setter, int flags) {
+src/webview/webview_engine.cpp:577:84: warning: unused parameter ‘flags’ [-Wunused-parameter]
+  577 |                                      JSValueConst getter, JSValueConst setter, int flags) {
+      |                                                                                ~~~~^~~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::el_set_canvas_w(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:753:73: warning: unused parameter ‘argc’ [-Wunused-parameter]
+  753 | static JSValue el_set_canvas_w(JSContext* ctx, JSValueConst this_v, int argc, JSValueConst* argv) {
+      |                                                                     ~~~~^~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::el_set_canvas_h(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:766:73: warning: unused parameter ‘argc’ [-Wunused-parameter]
+  766 | static JSValue el_set_canvas_h(JSContext* ctx, JSValueConst this_v, int argc, JSValueConst* argv) {
+      |                                                                     ~~~~^~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::c2d_begin_path(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:894:42: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  894 |     static JSValue c2d_##name(JSContext* ctx, JSValueConst this_v,          \
+      |                               ~~~~~~~~~~~^~~
+src/webview/webview_engine.cpp:909:1: note: in expansion of macro ‘C2D_METHOD’
+  909 | C2D_METHOD(begin_path, { c->begin_path(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp:895:55: warning: unused parameter ‘argv’ [-Wunused-parameter]
+  895 |                               int argc, JSValueConst* argv) {               \
+src/webview/webview_engine.cpp:909:1: note: in expansion of macro ‘C2D_METHOD’
+  909 | C2D_METHOD(begin_path, { c->begin_path(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::c2d_close_path(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:894:42: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  894 |     static JSValue c2d_##name(JSContext* ctx, JSValueConst this_v,          \
+      |                               ~~~~~~~~~~~^~~
+src/webview/webview_engine.cpp:910:1: note: in expansion of macro ‘C2D_METHOD’
+  910 | C2D_METHOD(close_path, { c->close_path(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp:895:55: warning: unused parameter ‘argv’ [-Wunused-parameter]
+  895 |                               int argc, JSValueConst* argv) {               \
+src/webview/webview_engine.cpp:910:1: note: in expansion of macro ‘C2D_METHOD’
+  910 | C2D_METHOD(close_path, { c->close_path(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::c2d_fill(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:894:42: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  894 |     static JSValue c2d_##name(JSContext* ctx, JSValueConst this_v,          \
+      |                               ~~~~~~~~~~~^~~
+src/webview/webview_engine.cpp:923:1: note: in expansion of macro ‘C2D_METHOD’
+  923 | C2D_METHOD(fill, { c->fill(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp:895:55: warning: unused parameter ‘argv’ [-Wunused-parameter]
+  895 |                               int argc, JSValueConst* argv) {               \
+src/webview/webview_engine.cpp:923:1: note: in expansion of macro ‘C2D_METHOD’
+  923 | C2D_METHOD(fill, { c->fill(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::c2d_stroke(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:894:42: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  894 |     static JSValue c2d_##name(JSContext* ctx, JSValueConst this_v,          \
+      |                               ~~~~~~~~~~~^~~
+src/webview/webview_engine.cpp:924:1: note: in expansion of macro ‘C2D_METHOD’
+  924 | C2D_METHOD(stroke, { c->stroke(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp:895:55: warning: unused parameter ‘argv’ [-Wunused-parameter]
+  895 |                               int argc, JSValueConst* argv) {               \
+src/webview/webview_engine.cpp:924:1: note: in expansion of macro ‘C2D_METHOD’
+  924 | C2D_METHOD(stroke, { c->stroke(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::c2d_clip(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:894:42: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  894 |     static JSValue c2d_##name(JSContext* ctx, JSValueConst this_v,          \
+      |                               ~~~~~~~~~~~^~~
+src/webview/webview_engine.cpp:925:1: note: in expansion of macro ‘C2D_METHOD’
+  925 | C2D_METHOD(clip, { c->clip(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp:895:55: warning: unused parameter ‘argv’ [-Wunused-parameter]
+  895 |                               int argc, JSValueConst* argv) {               \
+src/webview/webview_engine.cpp:925:1: note: in expansion of macro ‘C2D_METHOD’
+  925 | C2D_METHOD(clip, { c->clip(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::c2d_save(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:894:42: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  894 |     static JSValue c2d_##name(JSContext* ctx, JSValueConst this_v,          \
+      |                               ~~~~~~~~~~~^~~
+src/webview/webview_engine.cpp:926:1: note: in expansion of macro ‘C2D_METHOD’
+  926 | C2D_METHOD(save, { c->save(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp:895:55: warning: unused parameter ‘argv’ [-Wunused-parameter]
+  895 |                               int argc, JSValueConst* argv) {               \
+src/webview/webview_engine.cpp:926:1: note: in expansion of macro ‘C2D_METHOD’
+  926 | C2D_METHOD(save, { c->save(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::c2d_restore(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:894:42: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  894 |     static JSValue c2d_##name(JSContext* ctx, JSValueConst this_v,          \
+      |                               ~~~~~~~~~~~^~~
+src/webview/webview_engine.cpp:927:1: note: in expansion of macro ‘C2D_METHOD’
+  927 | C2D_METHOD(restore, { c->restore(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp:895:55: warning: unused parameter ‘argv’ [-Wunused-parameter]
+  895 |                               int argc, JSValueConst* argv) {               \
+src/webview/webview_engine.cpp:927:1: note: in expansion of macro ‘C2D_METHOD’
+  927 | C2D_METHOD(restore, { c->restore(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::c2d_reset_transform(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:894:42: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+  894 |     static JSValue c2d_##name(JSContext* ctx, JSValueConst this_v,          \
+      |                               ~~~~~~~~~~~^~~
+src/webview/webview_engine.cpp:937:1: note: in expansion of macro ‘C2D_METHOD’
+  937 | C2D_METHOD(reset_transform, { c->reset_transform(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp:895:55: warning: unused parameter ‘argv’ [-Wunused-parameter]
+  895 |                               int argc, JSValueConst* argv) {               \
+src/webview/webview_engine.cpp:937:1: note: in expansion of macro ‘C2D_METHOD’
+  937 | C2D_METHOD(reset_transform, { c->reset_transform(); })
+      | ^~~~~~~~~~
+src/webview/webview_engine.cpp: In function ‘void miniandroid::webview::setup_style_class(JSRuntime*)’:
+src/webview/webview_engine.cpp:1015:62: warning: missing initializer for member ‘JSClassDef::gc_mark’ [-Wmissing-field-initializers]
+ 1015 |         JSClassDef d = {"CSSStyleDeclaration", noop_finalizer};
+      |                                                              ^
+src/webview/webview_engine.cpp:1015:62: warning: missing initializer for member ‘JSClassDef::call’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1015:62: warning: missing initializer for member ‘JSClassDef::exotic’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1015:20: warning: variable ‘d’ set but not used [-Wunused-but-set-variable]
+ 1015 |         JSClassDef d = {"CSSStyleDeclaration", noop_finalizer};
+      |                    ^
+src/webview/webview_engine.cpp:1019:58: warning: missing initializer for member ‘JSClassDef::gc_mark’ [-Wmissing-field-initializers]
+ 1019 |     JSClassDef d = {"CSSStyleDeclaration", noop_finalizer};
+      |                                                          ^
+src/webview/webview_engine.cpp:1019:58: warning: missing initializer for member ‘JSClassDef::call’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1019:58: warning: missing initializer for member ‘JSClassDef::exotic’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp: In function ‘void miniandroid::webview::register_js_classes(JSRuntime*)’:
+src/webview/webview_engine.cpp:1025:54: warning: missing initializer for member ‘JSClassDef::gc_mark’ [-Wmissing-field-initializers]
+ 1025 |     JSClassDef dElem = {"HTMLElement", noop_finalizer};
+      |                                                      ^
+src/webview/webview_engine.cpp:1025:54: warning: missing initializer for member ‘JSClassDef::call’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1025:54: warning: missing initializer for member ‘JSClassDef::exotic’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1028:67: warning: missing initializer for member ‘JSClassDef::gc_mark’ [-Wmissing-field-initializers]
+ 1028 |     JSClassDef dCtx = {"CanvasRenderingContext2D", ctx2d_finalizer};
+      |                                                                   ^
+src/webview/webview_engine.cpp:1028:67: warning: missing initializer for member ‘JSClassDef::call’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1028:67: warning: missing initializer for member ‘JSClassDef::exotic’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1031:51: warning: missing initializer for member ‘JSClassDef::gc_mark’ [-Wmissing-field-initializers]
+ 1031 |     JSClassDef dStore = {"Storage", noop_finalizer};
+      |                                                   ^
+src/webview/webview_engine.cpp:1031:51: warning: missing initializer for member ‘JSClassDef::call’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1031:51: warning: missing initializer for member ‘JSClassDef::exotic’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1034:55: warning: missing initializer for member ‘JSClassDef::gc_mark’ [-Wmissing-field-initializers]
+ 1034 |     JSClassDef dPat = {"CanvasPattern", noop_finalizer};
+      |                                                       ^
+src/webview/webview_engine.cpp:1034:55: warning: missing initializer for member ‘JSClassDef::call’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1034:55: warning: missing initializer for member ‘JSClassDef::exotic’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1037:59: warning: missing initializer for member ‘JSClassDef::gc_mark’ [-Wmissing-field-initializers]
+ 1037 |     JSClassDef dImg = {"HTMLImageElement", image_finalizer};
+      |                                                           ^
+src/webview/webview_engine.cpp:1037:59: warning: missing initializer for member ‘JSClassDef::call’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1037:59: warning: missing initializer for member ‘JSClassDef::exotic’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1040:57: warning: missing initializer for member ‘JSClassDef::gc_mark’ [-Wmissing-field-initializers]
+ 1040 |     JSClassDef dGrad = {"CanvasGradient", noop_finalizer};
+      |                                                         ^
+src/webview/webview_engine.cpp:1040:57: warning: missing initializer for member ‘JSClassDef::call’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp:1040:57: warning: missing initializer for member ‘JSClassDef::exotic’ [-Wmissing-field-initializers]
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:1504:58: warning: unused parameter ‘c’ [-Wunused-parameter]
+ 1504 |     JSValue catchfn = JS_NewCFunction(ctx, [](JSContext* c, JSValueConst, int,
+      |                                               ~~~~~~~~~~~^
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:1508:57: warning: unused parameter ‘c’ [-Wunused-parameter]
+ 1508 |     JSValue thenfn = JS_NewCFunction(ctx, [](JSContext* c, JSValueConst, int,
+      |                                              ~~~~~~~~~~~^
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::el_media_pause(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:1514:42: warning: unused parameter ‘ctx’ [-Wunused-parameter]
+ 1514 | static JSValue el_media_pause(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+      |                               ~~~~~~~~~~~^~~
+src/webview/webview_engine.cpp:1514:60: warning: unused parameter ‘this_v’ [-Wunused-parameter]
+ 1514 | static JSValue el_media_pause(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::el_getContext(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:1655:71: warning: unused parameter ‘argc’ [-Wunused-parameter]
+ 1655 | static JSValue el_getContext(JSContext* ctx, JSValueConst this_v, int argc, JSValueConst* argv) {
+      |                                                                   ~~~~^~~~
+src/webview/webview_engine.cpp:1655:91: warning: unused parameter ‘argv’ [-Wunused-parameter]
+ 1655 | static JSValue el_getContext(JSContext* ctx, JSValueConst this_v, int argc, JSValueConst* argv) {
+src/webview/webview_engine.cpp: In function ‘JSValue miniandroid::webview::storage_getItem(JSContext*, JSValue, int, JSValue*)’:
+src/webview/webview_engine.cpp:1926:61: warning: unused parameter ‘this_v’ [-Wunused-parameter]
+ 1926 | static JSValue storage_getItem(JSContext* ctx, JSValueConst this_v, int argc, JSValueConst* argv) {
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:3041:73: warning: unused parameter ‘this_v’ [-Wunused-parameter]
+ 3041 |         JSValue url_ctor = make_ctor(ctx, [](JSContext* c, JSValueConst this_v, int argc, JSValueConst* argv) {
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:3147:52: warning: unused parameter ‘this_v’ [-Wunused-parameter]
+ 3147 |                     [](JSContext* c2, JSValueConst this_v, int argc2, JSValueConst* argv2) {
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:3161:52: warning: unused parameter ‘this_v’ [-Wunused-parameter]
+ 3161 |                     [](JSContext* c2, JSValueConst this_v, int, JSValueConst*) {
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:3141:63: warning: unused parameter ‘argc’ [-Wunused-parameter]
+ 3141 |             make_ctor(ctx, [](JSContext* c, JSValueConst, int argc, JSValueConst* argv) {
+      |                                                           ~~~~^~~~
+src/webview/webview_engine.cpp:3141:83: warning: unused parameter ‘argv’ [-Wunused-parameter]
+ 3141 |             make_ctor(ctx, [](JSContext* c, JSValueConst, int argc, JSValueConst* argv) {
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:3243:52: warning: unused parameter ‘this_v’ [-Wunused-parameter]
+ 3243 |                     [](JSContext* c2, JSValueConst this_v, int argc2, JSValueConst* argv2) {
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:3273:31: warning: unused parameter ‘c2’ [-Wunused-parameter]
+ 3273 |                 [](JSContext* c2, JSValueConst, int, JSValueConst*) {
+      |                    ~~~~~~~~~~~^~
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:3277:31: warning: unused parameter ‘c2’ [-Wunused-parameter]
+ 3277 |                 [](JSContext* c2, JSValueConst, int, JSValueConst*) {
+      |                    ~~~~~~~~~~~^~
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:3265:74: warning: unused parameter ‘this_v’ [-Wunused-parameter]
+ 3265 |         JSValue cap = JS_NewCFunction(ctx, [](JSContext* c, JSValueConst this_v, int, JSValueConst*) {
+src/webview/webview_engine.cpp: In member function ‘void miniandroid::webview::WebViewEngine::Impl::setup_bindings()’:
+src/webview/webview_engine.cpp:3265:17: warning: variable ‘cap’ set but not used [-Wunused-but-set-variable]
+ 3265 |         JSValue cap = JS_NewCFunction(ctx, [](JSContext* c, JSValueConst this_v, int, JSValueConst*) {
+      |                 ^~~
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:5300:17: warning: unused variable ‘extra’ [-Wunused-variable]
+ 5300 |             int extra = c->border_box ? 0 : 2 * c->border_w + c->pad_l + c->pad_r;
+      |                 ^~~~~
+src/webview/webview_engine.cpp: In member function ‘void miniandroid::webview::WebViewEngine::render(uint8_t*, int, int)’:
+src/webview/webview_engine.cpp:6206:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 6206 |     for (int i = 0; i < size_t(w) * h && i < int(px.size()); ++i) {
+      |                     ~~^~~~~~~~~~~~~~~
+src/webview/webview_engine.cpp: At global scope:
+src/webview/webview_engine.cpp:6490:23: warning: declaration ‘struct miniandroid::webview::WebViewEngine::Impl’ does not declare anything
+ 6490 | struct WebViewEngine::Impl;   // fwd (defined below)
+      |                       ^~~~
+src/webview/webview_engine.cpp:86:31: warning: ‘miniandroid::renderer::FrameBuffer* miniandroid::webview::canvas_bitmap_of(DomNode*)’ declared ‘static’ but never defined [-Wunused-function]
+   86 | static renderer::FrameBuffer* canvas_bitmap_of(DomNode* n);
+      |                               ^~~~~~~~~~~~~~~~
+src/webview/webview_engine.cpp:3624:14: warning: ‘float miniandroid::webview::css_len_px(const std::string&, float, float)’ defined but not used [-Wunused-function]
+ 3624 | static float css_len_px(const std::string& v, float viewport, float dflt) {
+      |              ^~~~~~~~~~
+src/webview/webview_engine.cpp:1981:16: warning: ‘JSValue miniandroid::webview::win_get_devicePixelRatio(JSContext*, JSValue, int, JSValue*)’ defined but not used [-Wunused-function]
+ 1981 | static JSValue win_get_devicePixelRatio(JSContext* ctx, JSValueConst, int, JSValueConst*) {
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~
+src/webview/webview_engine.cpp:1205:16: warning: ‘JSValue miniandroid::webview::el_get_class_list(JSContext*, JSValue, int, JSValue*)’ defined but not used [-Wunused-function]
+ 1205 | static JSValue el_get_class_list(JSContext* ctx, JSValueConst this_v, int, JSValueConst*) {
+      |                ^~~~~~~~~~~~~~~~~
+src/webview/webview_engine.cpp: In lambda function:
+src/webview/webview_engine.cpp:5869:68: warning: ‘%g’ directive output may be truncated writing between 1 and 13 bytes into a region of size between 0 and 48 [-Wformat-truncation=]
+ 5869 |                     snprintf(buf, sizeof buf, "M %g %g H %g V %g H %g Z",
+      |                                                                    ^~
+src/webview/webview_engine.cpp:5869:47: note: assuming directive output of 12 bytes
+ 5869 |                     snprintf(buf, sizeof buf, "M %g %g H %g V %g H %g Z",
+      |                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~
+src/webview/webview_engine.cpp:5869:29: note: ‘snprintf’ output between 20 and 80 bytes into a destination of size 64
+ 5869 |                     snprintf(buf, sizeof buf, "M %g %g H %g V %g H %g Z",
+      |                     ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 5870 |                              x, y, x + w2, y + h2, x);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~
+
+Time variable                                   usr           sys          wall           GGC
+ phase setup                        :   0.00 (  0%)   0.00 (  0%)   0.00 (  0%)  1781k (  0%)
+ phase parsing                      :   2.21 ( 15%)   1.29 ( 42%)   3.50 ( 19%)   396M ( 39%)
+ phase lang. deferred               :   1.25 (  8%)   0.45 ( 15%)   1.70 (  9%)   182M ( 18%)
+ phase opt and generate             :  11.66 ( 77%)   1.33 ( 43%)  13.00 ( 71%)   443M ( 43%)
+ phase last asm                     :   0.06 (  0%)   0.01 (  0%)   0.06 (  0%)  2137k (  0%)
+ |name lookup                       :   0.57 (  4%)   0.38 ( 12%)   0.86 (  5%)    23M (  2%)
+ |overload resolution               :   1.10 (  7%)   0.47 ( 15%)   1.67 (  9%)   162M ( 16%)
+ garbage collection                 :   0.56 (  4%)   0.00 (  0%)   0.56 (  3%)     0  (  0%)
+ dump files                         :   0.16 (  1%)   0.06 (  2%)   0.20 (  1%)     0  (  0%)
+ callgraph construction             :   0.23 (  2%)   0.05 (  2%)   0.25 (  1%)    26M (  3%)
+ callgraph optimization             :   0.26 (  2%)   0.09 (  3%)   0.28 (  2%)   107k (  0%)
+ callgraph functions expansion      :   8.40 ( 55%)   0.61 ( 20%)   9.02 ( 49%)   251M ( 24%)
+ callgraph ipa passes               :   2.51 ( 17%)   0.62 ( 20%)   3.13 ( 17%)   124M ( 12%)
+ ipa function summary               :   0.04 (  0%)   0.00 (  0%)   0.06 (  0%)  2769k (  0%)
+ ipa dead code removal              :   0.04 (  0%)   0.00 (  0%)   0.06 (  0%)     0  (  0%)
+ ipa cp                             :   0.11 (  1%)   0.01 (  0%)   0.12 (  1%)  3043k (  0%)
+ ipa inlining heuristics            :   0.22 (  1%)   0.02 (  1%)   0.23 (  1%)    12M (  1%)
+ ipa function splitting             :   0.01 (  0%)   0.00 (  0%)   0.02 (  0%)  1105k (  0%)
+ ipa comdats                        :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ ipa reference                      :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ ipa pure const                     :   0.05 (  0%)   0.01 (  0%)   0.04 (  0%)   333k (  0%)
+ ipa icf                            :   0.04 (  0%)   0.00 (  0%)   0.04 (  0%)   279k (  0%)
+ ipa SRA                            :   0.04 (  0%)   0.00 (  0%)   0.05 (  0%)  2051k (  0%)
+ ipa free lang data                 :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ ipa free inline summary            :   0.02 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ ipa modref                         :   0.03 (  0%)   0.00 (  0%)   0.04 (  0%)  1223k (  0%)
+ cfg construction                   :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  1215k (  0%)
+ cfg cleanup                        :   0.16 (  1%)   0.01 (  0%)   0.22 (  1%)  1822k (  0%)
+ trivially dead code                :   0.06 (  0%)   0.01 (  0%)   0.02 (  0%)     0  (  0%)
+ df scan insns                      :   0.07 (  0%)   0.00 (  0%)   0.10 (  1%)    28k (  0%)
+ df reaching defs                   :   0.20 (  1%)   0.00 (  0%)   0.19 (  1%)     0  (  0%)
+ df live regs                       :   0.54 (  4%)   0.01 (  0%)   0.37 (  2%)     0  (  0%)
+ df live&initialized regs           :   0.10 (  1%)   0.02 (  1%)   0.22 (  1%)     0  (  0%)
+ df use-def / def-use chains        :   0.10 (  1%)   0.01 (  0%)   0.08 (  0%)     0  (  0%)
+ df live reg subwords               :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ df reg dead/unused notes           :   0.18 (  1%)   0.00 (  0%)   0.20 (  1%)  3591k (  0%)
+ register information               :   0.04 (  0%)   0.00 (  0%)   0.06 (  0%)     0  (  0%)
+ alias analysis                     :   0.08 (  1%)   0.00 (  0%)   0.12 (  1%)  7856k (  1%)
+ alias stmt walking                 :   0.23 (  2%)   0.04 (  1%)   0.22 (  1%)   786k (  0%)
+ preprocessing                      :   0.23 (  2%)   0.24 (  8%)   0.51 (  3%)    42M (  4%)
+ parser (global)                    :   0.18 (  1%)   0.28 (  9%)   0.37 (  2%)    57M (  6%)
+ parser struct body                 :   0.22 (  1%)   0.07 (  2%)   0.17 (  1%)    60M (  6%)
+ parser function body               :   0.28 (  2%)   0.15 (  5%)   0.39 (  2%)    27M (  3%)
+ parser inl. func. body             :   0.05 (  0%)   0.04 (  1%)   0.12 (  1%)    10M (  1%)
+ parser inl. meth. body             :   0.24 (  2%)   0.09 (  3%)   0.35 (  2%)    26M (  3%)
+ template instantiation             :   2.08 ( 14%)   0.85 ( 28%)   2.97 ( 16%)   350M ( 34%)
+ constant expression evaluation     :   0.02 (  0%)   0.02 (  1%)   0.12 (  1%)  4045k (  0%)
+ early inlining heuristics          :   0.03 (  0%)   0.00 (  0%)   0.06 (  0%)  5745k (  1%)
+ inline parameters                  :   0.11 (  1%)   0.04 (  1%)   0.18 (  1%)    10M (  1%)
+ integration                        :   0.49 (  3%)   0.10 (  3%)   0.54 (  3%)    61M (  6%)
+ tree gimplify                      :   0.09 (  1%)   0.04 (  1%)   0.16 (  1%)    27M (  3%)
+ tree eh                            :   0.03 (  0%)   0.00 (  0%)   0.04 (  0%)  5530k (  1%)
+ tree CFG construction              :   0.03 (  0%)   0.01 (  0%)   0.03 (  0%)    11M (  1%)
+ tree CFG cleanup                   :   0.21 (  1%)   0.06 (  2%)   0.27 (  1%)   247k (  0%)
+ tree tail merge                    :   0.01 (  0%)   0.00 (  0%)   0.02 (  0%)  1180k (  0%)
+ tree VRP                           :   0.24 (  2%)   0.01 (  0%)   0.24 (  1%)  2281k (  0%)
+ tree Early VRP                     :   0.16 (  1%)   0.02 (  1%)   0.12 (  1%)  6974k (  1%)
+ tree copy propagation              :   0.07 (  0%)   0.00 (  0%)   0.04 (  0%)    96k (  0%)
+ tree PTA                           :   0.36 (  2%)   0.04 (  1%)   0.47 (  3%)  4344k (  0%)
+ tree SSA other                     :   0.00 (  0%)   0.01 (  0%)   0.01 (  0%)   131k (  0%)
+ tree SSA rewrite                   :   0.04 (  0%)   0.04 (  1%)   0.04 (  0%)  8191k (  1%)
+ tree SSA incremental               :   0.11 (  1%)   0.01 (  0%)   0.21 (  1%)  5333k (  1%)
+ tree operand scan                  :   0.20 (  1%)   0.07 (  2%)   0.19 (  1%)    22M (  2%)
+ dominator optimization             :   0.28 (  2%)   0.03 (  1%)   0.43 (  2%)  5269k (  1%)
+ backwards jump threading           :   0.26 (  2%)   0.02 (  1%)   0.29 (  2%)  1873k (  0%)
+ tree SRA                           :   0.10 (  1%)   0.00 (  0%)   0.06 (  0%)  2820k (  0%)
+ tree CCP                           :   0.29 (  2%)   0.01 (  0%)   0.22 (  1%)  1461k (  0%)
+ tree split crit edges              :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  1487k (  0%)
+ tree reassociation                 :   0.03 (  0%)   0.00 (  0%)   0.02 (  0%)    23k (  0%)
+ tree PRE                           :   0.15 (  1%)   0.01 (  0%)   0.18 (  1%)  6195k (  1%)
+ tree FRE                           :   0.20 (  1%)   0.02 (  1%)   0.31 (  2%)  4437k (  0%)
+ tree code sinking                  :   0.03 (  0%)   0.00 (  0%)   0.01 (  0%)  2675k (  0%)
+ tree linearize phis                :   0.02 (  0%)   0.01 (  0%)   0.02 (  0%)   795k (  0%)
+ tree backward propagate            :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ tree forward propagate             :   0.04 (  0%)   0.02 (  1%)   0.07 (  0%)  1369k (  0%)
+ tree phiprop                       :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    73k (  0%)
+ tree conservative DCE              :   0.08 (  1%)   0.01 (  0%)   0.12 (  1%)   107k (  0%)
+ tree aggressive DCE                :   0.06 (  0%)   0.03 (  1%)   0.11 (  1%)  7505k (  1%)
+ tree buildin call DCE              :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  4992  (  0%)
+ tree DSE                           :   0.05 (  0%)   0.00 (  0%)   0.06 (  0%)   719k (  0%)
+ PHI merge                          :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)   424k (  0%)
+ tree loop invariant motion         :   0.01 (  0%)   0.00 (  0%)   0.06 (  0%)    46k (  0%)
+ tree canonical iv                  :   0.01 (  0%)   0.01 (  0%)   0.00 (  0%)   587k (  0%)
+ scev constant prop                 :   0.01 (  0%)   0.01 (  0%)   0.01 (  0%)   127k (  0%)
+ complete unrolling                 :   0.00 (  0%)   0.01 (  0%)   0.02 (  0%)  2140k (  0%)
+ tree vectorization                 :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)  3070k (  0%)
+ tree slp vectorization             :   0.14 (  1%)   0.00 (  0%)   0.11 (  1%)    16M (  2%)
+ tree loop distribution             :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   111k (  0%)
+ tree iv optimization               :   0.05 (  0%)   0.00 (  0%)   0.03 (  0%)  3232k (  0%)
+ predictive commoning               :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   193k (  0%)
+ tree copy headers                  :   0.07 (  0%)   0.01 (  0%)   0.04 (  0%)  1448k (  0%)
+ tree switch conversion             :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    96  (  0%)
+ gimple widening/fma detection      :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)    19k (  0%)
+ tree strlen optimization           :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)   723k (  0%)
+ tree modref                        :   0.02 (  0%)   0.05 (  2%)   0.09 (  0%)  3222k (  0%)
+ dominance frontiers                :   0.01 (  0%)   0.00 (  0%)   0.02 (  0%)     0  (  0%)
+ dominance computation              :   0.30 (  2%)   0.04 (  1%)   0.32 (  2%)     0  (  0%)
+ control dependences                :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ out of ssa                         :   0.06 (  0%)   0.00 (  0%)   0.04 (  0%)    52k (  0%)
+ expand vars                        :   0.02 (  0%)   0.00 (  0%)   0.00 (  0%)  2266k (  0%)
+ expand                             :   0.12 (  1%)   0.02 (  1%)   0.14 (  1%)    24M (  2%)
+ post expand cleanups               :   0.03 (  0%)   0.00 (  0%)   0.02 (  0%)  2371k (  0%)
+ varconst                           :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    15k (  0%)
+ lower subreg                       :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   191k (  0%)
+ forward prop                       :   0.15 (  1%)   0.00 (  0%)   0.13 (  1%)   505k (  0%)
+ CSE                                :   0.14 (  1%)   0.00 (  0%)   0.18 (  1%)   979k (  0%)
+ dead code elimination              :   0.03 (  0%)   0.00 (  0%)   0.05 (  0%)     0  (  0%)
+ dead store elim1                   :   0.04 (  0%)   0.01 (  0%)   0.08 (  0%)  1799k (  0%)
+ dead store elim2                   :   0.01 (  0%)   0.00 (  0%)   0.06 (  0%)  2783k (  0%)
+ loop init                          :   0.23 (  2%)   0.04 (  1%)   0.11 (  1%)    15M (  1%)
+ loop invariant motion              :   0.03 (  0%)   0.00 (  0%)   0.00 (  0%)    49k (  0%)
+ loop unrolling                     :   0.02 (  0%)   0.00 (  0%)   0.03 (  0%)   556k (  0%)
+ loop fini                          :   0.02 (  0%)   0.02 (  1%)   0.05 (  0%)    30k (  0%)
+ CPROP                              :   0.21 (  1%)   0.00 (  0%)   0.18 (  1%)  4420k (  0%)
+ PRE                                :   0.08 (  1%)   0.00 (  0%)   0.03 (  0%)   684k (  0%)
+ code hoisting                      :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  8160  (  0%)
+ CSE 2                              :   0.06 (  0%)   0.00 (  0%)   0.04 (  0%)   499k (  0%)
+ branch prediction                  :   0.05 (  0%)   0.01 (  0%)   0.03 (  0%)  1641k (  0%)
+ combiner                           :   0.10 (  1%)   0.00 (  0%)   0.18 (  1%)  5592k (  1%)
+ if-conversion                      :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)   770k (  0%)
+ integrated RA                      :   0.40 (  3%)   0.01 (  0%)   0.55 (  3%)    23M (  2%)
+ LRA non-specific                   :   0.15 (  1%)   0.01 (  0%)   0.16 (  1%)  1957k (  0%)
+ LRA virtuals elimination           :   0.02 (  0%)   0.00 (  0%)   0.04 (  0%)  1406k (  0%)
+ LRA reload inheritance             :   0.02 (  0%)   0.00 (  0%)   0.03 (  0%)   418k (  0%)
+ LRA create live ranges             :   0.13 (  1%)   0.00 (  0%)   0.19 (  1%)   262k (  0%)
+ LRA hard reg assignment            :   0.04 (  0%)   0.00 (  0%)   0.03 (  0%)     0  (  0%)
+ LRA rematerialization              :   0.02 (  0%)   0.00 (  0%)   0.02 (  0%)   304  (  0%)
+ reload CSE regs                    :   0.12 (  1%)   0.01 (  0%)   0.14 (  1%)  3334k (  0%)
+ ree                                :   0.02 (  0%)   0.00 (  0%)   0.00 (  0%)    28k (  0%)
+ thread pro- & epilogue             :   0.05 (  0%)   0.00 (  0%)   0.10 (  1%)  1950k (  0%)
+ if-conversion 2                    :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)    14k (  0%)
+ combine stack adjustments          :   0.02 (  0%)   0.00 (  0%)   0.00 (  0%)   984  (  0%)
+ peephole 2                         :   0.03 (  0%)   0.01 (  0%)   0.07 (  0%)   357k (  0%)
+ hard reg cprop                     :   0.07 (  0%)   0.00 (  0%)   0.06 (  0%)    43k (  0%)
+ scheduling 2                       :   0.30 (  2%)   0.02 (  1%)   0.38 (  2%)  1593k (  0%)
+ machine dep reorg                  :   0.06 (  0%)   0.00 (  0%)   0.02 (  0%)    37k (  0%)
+ reorder blocks                     :   0.10 (  1%)   0.00 (  0%)   0.05 (  0%)  1758k (  0%)
+ shorten branches                   :   0.04 (  0%)   0.01 (  0%)   0.03 (  0%)     0  (  0%)
+ final                              :   0.17 (  1%)   0.03 (  1%)   0.17 (  1%)    16M (  2%)
+ variable output                    :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    37k (  0%)
+ symout                             :   0.08 (  1%)   0.02 (  1%)   0.12 (  1%)    17M (  2%)
+ tree if-combine                    :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    81k (  0%)
+ uninit var analysis                :   0.01 (  0%)   0.00 (  0%)   0.02 (  0%)     0  (  0%)
+ straight-line strength reduction   :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)  8376  (  0%)
+ store merging                      :   0.02 (  0%)   0.00 (  0%)   0.00 (  0%)   324k (  0%)
+ initialize rtl                     :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)    12k (  0%)
+ access analysis                    :   0.05 (  0%)   0.01 (  0%)   0.04 (  0%)    57k (  0%)
+ early local passes                 :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ rest of compilation                :   0.29 (  2%)   0.00 (  0%)   0.30 (  2%)  3806k (  0%)
+ remove unused locals               :   0.04 (  0%)   0.01 (  0%)   0.12 (  1%)  8968  (  0%)
+ address taken                      :   0.08 (  1%)   0.02 (  1%)   0.05 (  0%)    32  (  0%)
+ rebuild frequencies                :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)    67k (  0%)
+ repair loop structures             :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)  5616  (  0%)
+ TOTAL                              :  15.18          3.08         18.26         1026M
+== webview_engine rc=0

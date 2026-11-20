@@ -1,0 +1,181 @@
+    0.00 Makefile:275: warning: overriding recipe for target 'build_w24b/dex/dalvik_interpreter.o'
+    0.00 Makefile:259: warning: ignoring old recipe for target 'build_w24b/dex/dalvik_interpreter.o'
+    0.46 scripts/cont83_sles_anchor.c:16:1: warning: braces around scalar initializer
+    0.46    16 | static const SLInterfaceID_ iid_engine = {0x156199a2, 0x8b44, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       | ^~~~~~
+    0.46 scripts/cont83_sles_anchor.c:16:1: note: (near initialization for ‘iid_engine.d1’)
+    0.46 scripts/cont83_sles_anchor.c:16:85: warning: excess elements in scalar initializer
+    0.46    16 | static const SLInterfaceID_ iid_engine = {0x156199a2, 0x8b44, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                     ^~~~
+    0.46 scripts/cont83_sles_anchor.c:16:85: note: (near initialization for ‘iid_engine.d1’)
+    0.46 scripts/cont83_sles_anchor.c:16:90: warning: excess elements in scalar initializer
+    0.46    16 | static const SLInterfaceID_ iid_engine = {0x156199a2, 0x8b44, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                          ^~~~
+    0.46 scripts/cont83_sles_anchor.c:16:90: note: (near initialization for ‘iid_engine.d1’)
+    0.46 scripts/cont83_sles_anchor.c:16:95: warning: excess elements in scalar initializer
+    0.46    16 | static const SLInterfaceID_ iid_engine = {0x156199a2, 0x8b44, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                               ^~~~
+    0.46 scripts/cont83_sles_anchor.c:16:95: note: (near initialization for ‘iid_engine.d1’)
+    0.46 scripts/cont83_sles_anchor.c:16:100: warning: excess elements in scalar initializer
+    0.46    16 | static const SLInterfaceID_ iid_engine = {0x156199a2, 0x8b44, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                    ^~~~
+    0.46 scripts/cont83_sles_anchor.c:16:100: note: (near initialization for ‘iid_engine.d1’)
+    0.46 scripts/cont83_sles_anchor.c:16:105: warning: excess elements in scalar initializer
+    0.46    16 | static const SLInterfaceID_ iid_engine = {0x156199a2, 0x8b44, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                         ^~~~
+    0.46 scripts/cont83_sles_anchor.c:16:105: note: (near initialization for ‘iid_engine.d1’)
+    0.46 scripts/cont83_sles_anchor.c:17:1: warning: braces around scalar initializer
+    0.46    17 | static const SLInterfaceID_ iid_bufferqueue = {0x2b1368b0, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       | ^~~~~~
+    0.46 scripts/cont83_sles_anchor.c:17:1: note: (near initialization for ‘iid_bufferqueue.d1’)
+    0.46 scripts/cont83_sles_anchor.c:17:90: warning: excess elements in scalar initializer
+    0.46    17 | static const SLInterfaceID_ iid_bufferqueue = {0x2b1368b0, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                          ^~~~
+    0.46 scripts/cont83_sles_anchor.c:17:90: note: (near initialization for ‘iid_bufferqueue.d1’)
+    0.46 scripts/cont83_sles_anchor.c:17:95: warning: excess elements in scalar initializer
+    0.46    17 | static const SLInterfaceID_ iid_bufferqueue = {0x2b1368b0, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                               ^~~~
+    0.46 scripts/cont83_sles_anchor.c:17:95: note: (near initialization for ‘iid_bufferqueue.d1’)
+    0.46 scripts/cont83_sles_anchor.c:17:100: warning: excess elements in scalar initializer
+    0.46    17 | static const SLInterfaceID_ iid_bufferqueue = {0x2b1368b0, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                    ^~~~
+    0.46 scripts/cont83_sles_anchor.c:17:100: note: (near initialization for ‘iid_bufferqueue.d1’)
+    0.46 scripts/cont83_sles_anchor.c:17:105: warning: excess elements in scalar initializer
+    0.46    17 | static const SLInterfaceID_ iid_bufferqueue = {0x2b1368b0, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                         ^~~~
+    0.46 scripts/cont83_sles_anchor.c:17:105: note: (near initialization for ‘iid_bufferqueue.d1’)
+    0.46 scripts/cont83_sles_anchor.c:17:110: warning: excess elements in scalar initializer
+    0.46    17 | static const SLInterfaceID_ iid_bufferqueue = {0x2b1368b0, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                              ^~~~
+    0.46 scripts/cont83_sles_anchor.c:17:110: note: (near initialization for ‘iid_bufferqueue.d1’)
+    0.46 scripts/cont83_sles_anchor.c:18:1: warning: braces around scalar initializer
+    0.46    18 | static const SLInterfaceID_ iid_play = {0x2b136950, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       | ^~~~~~
+    0.46 scripts/cont83_sles_anchor.c:18:1: note: (near initialization for ‘iid_play.d1’)
+    0.46 scripts/cont83_sles_anchor.c:18:83: warning: excess elements in scalar initializer
+    0.46    18 | static const SLInterfaceID_ iid_play = {0x2b136950, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                   ^~~~
+    0.46 scripts/cont83_sles_anchor.c:18:83: note: (near initialization for ‘iid_play.d1’)
+    0.46 scripts/cont83_sles_anchor.c:18:88: warning: excess elements in scalar initializer
+    0.46    18 | static const SLInterfaceID_ iid_play = {0x2b136950, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                        ^~~~
+    0.46 scripts/cont83_sles_anchor.c:18:88: note: (near initialization for ‘iid_play.d1’)
+    0.46 scripts/cont83_sles_anchor.c:18:93: warning: excess elements in scalar initializer
+    0.46    18 | static const SLInterfaceID_ iid_play = {0x2b136950, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                             ^~~~
+    0.46 scripts/cont83_sles_anchor.c:18:93: note: (near initialization for ‘iid_play.d1’)
+    0.46 scripts/cont83_sles_anchor.c:18:98: warning: excess elements in scalar initializer
+    0.46    18 | static const SLInterfaceID_ iid_play = {0x2b136950, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                  ^~~~
+    0.46 scripts/cont83_sles_anchor.c:18:98: note: (near initialization for ‘iid_play.d1’)
+    0.46 scripts/cont83_sles_anchor.c:18:103: warning: excess elements in scalar initializer
+    0.46    18 | static const SLInterfaceID_ iid_play = {0x2b136950, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                       ^~~~
+    0.46 scripts/cont83_sles_anchor.c:18:103: note: (near initialization for ‘iid_play.d1’)
+    0.46 scripts/cont83_sles_anchor.c:19:1: warning: braces around scalar initializer
+    0.46    19 | static const SLInterfaceID_ iid_record = {0xc5657aa0, 0x8b47, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       | ^~~~~~
+    0.46 scripts/cont83_sles_anchor.c:19:1: note: (near initialization for ‘iid_record.d1’)
+    0.46 scripts/cont83_sles_anchor.c:19:85: warning: excess elements in scalar initializer
+    0.46    19 | static const SLInterfaceID_ iid_record = {0xc5657aa0, 0x8b47, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                     ^~~~
+    0.46 scripts/cont83_sles_anchor.c:19:85: note: (near initialization for ‘iid_record.d1’)
+    0.46 scripts/cont83_sles_anchor.c:19:90: warning: excess elements in scalar initializer
+    0.46    19 | static const SLInterfaceID_ iid_record = {0xc5657aa0, 0x8b47, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                          ^~~~
+    0.46 scripts/cont83_sles_anchor.c:19:90: note: (near initialization for ‘iid_record.d1’)
+    0.46 scripts/cont83_sles_anchor.c:19:95: warning: excess elements in scalar initializer
+    0.46    19 | static const SLInterfaceID_ iid_record = {0xc5657aa0, 0x8b47, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                               ^~~~
+    0.46 scripts/cont83_sles_anchor.c:19:95: note: (near initialization for ‘iid_record.d1’)
+    0.46 scripts/cont83_sles_anchor.c:19:100: warning: excess elements in scalar initializer
+    0.46    19 | static const SLInterfaceID_ iid_record = {0xc5657aa0, 0x8b47, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                    ^~~~
+    0.46 scripts/cont83_sles_anchor.c:19:100: note: (near initialization for ‘iid_record.d1’)
+    0.46 scripts/cont83_sles_anchor.c:19:105: warning: excess elements in scalar initializer
+    0.46    19 | static const SLInterfaceID_ iid_record = {0xc5657aa0, 0x8b47, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                         ^~~~
+    0.46 scripts/cont83_sles_anchor.c:19:105: note: (near initialization for ‘iid_record.d1’)
+    0.46 scripts/cont83_sles_anchor.c:20:1: warning: braces around scalar initializer
+    0.46    20 | static const SLInterfaceID_ iid_volume = {0x2b136a68, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       | ^~~~~~
+    0.46 scripts/cont83_sles_anchor.c:20:1: note: (near initialization for ‘iid_volume.d1’)
+    0.46 scripts/cont83_sles_anchor.c:20:85: warning: excess elements in scalar initializer
+    0.46    20 | static const SLInterfaceID_ iid_volume = {0x2b136a68, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                     ^~~~
+    0.46 scripts/cont83_sles_anchor.c:20:85: note: (near initialization for ‘iid_volume.d1’)
+    0.46 scripts/cont83_sles_anchor.c:20:90: warning: excess elements in scalar initializer
+    0.46    20 | static const SLInterfaceID_ iid_volume = {0x2b136a68, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                          ^~~~
+    0.46 scripts/cont83_sles_anchor.c:20:90: note: (near initialization for ‘iid_volume.d1’)
+    0.46 scripts/cont83_sles_anchor.c:20:95: warning: excess elements in scalar initializer
+    0.46    20 | static const SLInterfaceID_ iid_volume = {0x2b136a68, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                               ^~~~
+    0.46 scripts/cont83_sles_anchor.c:20:95: note: (near initialization for ‘iid_volume.d1’)
+    0.46 scripts/cont83_sles_anchor.c:20:100: warning: excess elements in scalar initializer
+    0.46    20 | static const SLInterfaceID_ iid_volume = {0x2b136a68, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                    ^~~~
+    0.46 scripts/cont83_sles_anchor.c:20:100: note: (near initialization for ‘iid_volume.d1’)
+    0.46 scripts/cont83_sles_anchor.c:20:105: warning: excess elements in scalar initializer
+    0.46    20 | static const SLInterfaceID_ iid_volume = {0x2b136a68, 0x8b45, 0x11db, 0xa905, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                         ^~~~
+    0.46 scripts/cont83_sles_anchor.c:20:105: note: (near initialization for ‘iid_volume.d1’)
+    0.46 scripts/cont83_sles_anchor.c:21:1: warning: braces around scalar initializer
+    0.46    21 | static const SLInterfaceID_ iid_androidconf = {0x6b5bd3f2, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       | ^~~~~~
+    0.46 scripts/cont83_sles_anchor.c:21:1: note: (near initialization for ‘iid_androidconf.d1’)
+    0.46 scripts/cont83_sles_anchor.c:21:90: warning: excess elements in scalar initializer
+    0.46    21 | static const SLInterfaceID_ iid_androidconf = {0x6b5bd3f2, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                          ^~~~
+    0.46 scripts/cont83_sles_anchor.c:21:90: note: (near initialization for ‘iid_androidconf.d1’)
+    0.46 scripts/cont83_sles_anchor.c:21:95: warning: excess elements in scalar initializer
+    0.46    21 | static const SLInterfaceID_ iid_androidconf = {0x6b5bd3f2, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                               ^~~~
+    0.46 scripts/cont83_sles_anchor.c:21:95: note: (near initialization for ‘iid_androidconf.d1’)
+    0.46 scripts/cont83_sles_anchor.c:21:100: warning: excess elements in scalar initializer
+    0.46    21 | static const SLInterfaceID_ iid_androidconf = {0x6b5bd3f2, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                    ^~~~
+    0.46 scripts/cont83_sles_anchor.c:21:100: note: (near initialization for ‘iid_androidconf.d1’)
+    0.46 scripts/cont83_sles_anchor.c:21:105: warning: excess elements in scalar initializer
+    0.46    21 | static const SLInterfaceID_ iid_androidconf = {0x6b5bd3f2, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                         ^~~~
+    0.46 scripts/cont83_sles_anchor.c:21:105: note: (near initialization for ‘iid_androidconf.d1’)
+    0.46 scripts/cont83_sles_anchor.c:21:110: warning: excess elements in scalar initializer
+    0.46    21 | static const SLInterfaceID_ iid_androidconf = {0x6b5bd3f2, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                              ^~~~
+    0.46 scripts/cont83_sles_anchor.c:21:110: note: (near initialization for ‘iid_androidconf.d1’)
+    0.46 scripts/cont83_sles_anchor.c:22:1: warning: braces around scalar initializer
+    0.46    22 | static const SLInterfaceID_ iid_androidsimplebq = {0x6b5bd446, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       | ^~~~~~
+    0.46 scripts/cont83_sles_anchor.c:22:1: note: (near initialization for ‘iid_androidsimplebq.d1’)
+    0.46 scripts/cont83_sles_anchor.c:22:94: warning: excess elements in scalar initializer
+    0.46    22 | static const SLInterfaceID_ iid_androidsimplebq = {0x6b5bd446, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                              ^~~~
+    0.46 scripts/cont83_sles_anchor.c:22:94: note: (near initialization for ‘iid_androidsimplebq.d1’)
+    0.46 scripts/cont83_sles_anchor.c:22:99: warning: excess elements in scalar initializer
+    0.46    22 | static const SLInterfaceID_ iid_androidsimplebq = {0x6b5bd446, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                   ^~~~
+    0.46 scripts/cont83_sles_anchor.c:22:99: note: (near initialization for ‘iid_androidsimplebq.d1’)
+    0.46 scripts/cont83_sles_anchor.c:22:104: warning: excess elements in scalar initializer
+    0.46    22 | static const SLInterfaceID_ iid_androidsimplebq = {0x6b5bd446, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                        ^~~~
+    0.46 scripts/cont83_sles_anchor.c:22:104: note: (near initialization for ‘iid_androidsimplebq.d1’)
+    0.46 scripts/cont83_sles_anchor.c:22:109: warning: excess elements in scalar initializer
+    0.46    22 | static const SLInterfaceID_ iid_androidsimplebq = {0x6b5bd446, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                             ^~~~
+    0.46 scripts/cont83_sles_anchor.c:22:109: note: (near initialization for ‘iid_androidsimplebq.d1’)
+    0.46 scripts/cont83_sles_anchor.c:22:114: warning: excess elements in scalar initializer
+    0.46    22 | static const SLInterfaceID_ iid_androidsimplebq = {0x6b5bd446, 0xb23c, 0x11e1, 0xa09c, {0x00,0x02,0xa5,0xd5,0xc5,0x1b}};
+    0.46       |                                                                                                                  ^~~~
+    0.46 scripts/cont83_sles_anchor.c:22:114: note: (near initialization for ‘iid_androidsimplebq.d1’)
+    0.98 miniandroid/build/anchor_libs/libEGL.so soname=libEGL.so sha16=3b241394942e76e9
+    0.99 miniandroid/build/anchor_libs/libGLESv2.so soname=libGLESv2.so sha16=fdecd9f4403a9dbf
+    0.99 miniandroid/build/anchor_libs/libOpenSLES.so soname=libOpenSLES.so sha16=a97dcca90fd701f5
+    0.99 miniandroid/build/anchor_libs/libandroid.so soname=libandroid.so sha16=21496377b3024bea
+    1.00 miniandroid/build/anchor_libs/libc.so soname=libc.so sha16=ba97c6c2f53253d2
+    1.00 miniandroid/build/anchor_libs/libdl.so soname=libdl.so sha16=ce13a6606daa3d1b
+    1.01 miniandroid/build/anchor_libs/libjnigraphics.so soname=libjnigraphics.so sha16=d158d2c41398666f
+    1.01 miniandroid/build/anchor_libs/liblog.so soname=liblog.so sha16=20ac301d011e29c0
+    1.02 miniandroid/build/anchor_libs/libm.so soname=libm.so sha16=ca20b1c6dac7a5a3
+    1.02 miniandroid/build/anchor_libs/libstdc++.so soname=libstdc++.so sha16=7a9b37148a5a1edb
+    1.02 miniandroid/build/anchor_libs/libz.so soname=libz.so sha16=e84457bb86d9eb2d

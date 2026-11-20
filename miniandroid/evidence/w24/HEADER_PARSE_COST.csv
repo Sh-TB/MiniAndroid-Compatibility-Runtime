@@ -1,0 +1,14 @@
+header,n_consumers,preprocess_only_s
+third_party/nlohmann_json/include/nlohmann/json.hpp,43,0m0.158s
+src/resources/res_config.h,34,0m0.036s
+src/resources/res_id.h,33,0m0.038s
+src/resources/arsc_parser.h,32,0m0.065s
+src/renderer/software_renderer.h,30,0m0.156s
+src/framework/adapter_scrap_bin.h,31,0m0.044s
+src/apk/apk_parser.h,26,0m0.058s
+src/framework/android_shadows.h,29,0m0.107s
+src/resources/attribute_set_store.h,25,0m0.066s
+src/dex/dex_parser.h,22,0m0.058s
+src/dex/class_resolver.h,20,0m0.059s
+src/api/android_stubs.h,19,0m0.068s
+src/dex/dalvik_engine_types.h,18,0m0.222s

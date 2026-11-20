@@ -1,0 +1,282 @@
+In file included from src/dex/dalvik_engine_types.h:35,
+                 from src/dex/dalvik_engine_impl.h:10,
+                 from src/dex/dalvik_bridge_frame.h:25,
+                 from src/dex/dalvik_bridge_domain_ui_graphics.cpp:11:
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry()’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:351:5: warning:   when initialized here [-Wreorder]
+  351 |     StaticFieldEntry()
+      |     ^~~~~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h: In constructor ‘miniandroid::runtime::StaticFieldEntry::StaticFieldEntry(uint32_t, const std::string&, const std::string&, uint32_t, uint32_t)’:
+src/dex/../runtime/runtime_metadata.h:348:10: warning: ‘miniandroid::runtime::StaticFieldEntry::is_object_ref’ will be initialized after [-Wreorder]
+  348 |     bool is_object_ref;                 // reference type
+      |          ^~~~~~~~~~~~~
+src/dex/../runtime/runtime_metadata.h:345:10: warning:   ‘miniandroid::runtime::json miniandroid::runtime::StaticFieldEntry::value’ [-Wreorder]
+  345 |     json value;                         // Current value (JSON for flexibility)
+      |          ^~~~~
+src/dex/../runtime/runtime_metadata.h:356:5: warning:   when initialized here [-Wreorder]
+  356 |     StaticFieldEntry(uint32_t idx, const std::string& n, const std::string& type,
+      |     ^~~~~~~~~~~~~~~~
+In file included from src/dex/dalvik_engine_types.h:36:
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:298:48: warning: unused parameter ‘method’ [-Wunused-parameter]
+  298 |         executor = [](const RuntimeMethodInfo* method,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/../runtime/vtable_dispatch.h:299:48: warning: unused parameter ‘args’ [-Wunused-parameter]
+  299 |                       const std::vector<json>& args,
+      |                       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+src/dex/../runtime/vtable_dispatch.h: In lambda function:
+src/dex/../runtime/vtable_dispatch.h:635:61: warning: unused parameter ‘args’ [-Wunused-parameter]
+  635 |                                    const std::vector<json>& args,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+In file included from src/dex/dalvik_engine_types.h:37:
+src/dex/../api/android_stubs.h: In member function ‘virtual int miniandroid::api::Context::getResourceId(const std::string&, const std::string&)’:
+src/dex/../api/android_stubs.h:137:75: warning: unused parameter ‘def_type’ [-Wunused-parameter]
+  137 |     virtual int getResourceId(const std::string& name, const std::string& def_type) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~^~~~~~~~
+src/dex/../api/android_stubs.h: In member function ‘virtual void miniandroid::api::View::measure(int, int)’:
+src/dex/../api/android_stubs.h:340:30: warning: unused parameter ‘width_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                          ~~~~^~~~~~~~~~
+src/dex/../api/android_stubs.h:340:46: warning: unused parameter ‘height_spec’ [-Wunused-parameter]
+  340 |     virtual void measure(int width_spec, int height_spec) {
+      |                                          ~~~~^~~~~~~~~~~
+In file included from src/dex/../storage/sqlite_shadow.h:32,
+                 from src/dex/dalvik_engine_types.h:41:
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_float_field(uint32_t, const std::string&, float&)’:
+src/dex/../storage/../framework/shadow_registry.h:230:50: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  230 |     virtual bool get_object_float_field(uint32_t object_id,
+      |                                         ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:231:60: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  231 |                                         const std::string& field_name,
+      |                                         ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:232:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  232 |                                         float& out) {
+      |                                         ~~~~~~~^~~
+src/dex/../storage/../framework/shadow_registry.h: In member function ‘virtual bool miniandroid::framework::HeapAllocator::get_object_int_field(uint32_t, const std::string&, int32_t&)’:
+src/dex/../storage/../framework/shadow_registry.h:235:48: warning: unused parameter ‘object_id’ [-Wunused-parameter]
+  235 |     virtual bool get_object_int_field(uint32_t object_id,
+      |                                       ~~~~~~~~~^~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:236:58: warning: unused parameter ‘field_name’ [-Wunused-parameter]
+  236 |                                       const std::string& field_name,
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+src/dex/../storage/../framework/shadow_registry.h:237:48: warning: unused parameter ‘out’ [-Wunused-parameter]
+  237 |                                       int32_t& out) {
+      |                                       ~~~~~~~~~^~~
+src/dex/dalvik_engine_types.h: In member function ‘uint32_t miniandroid::dalvik::DalvikHeap::allocate(const std::string&, uint32_t, uint32_t)’:
+src/dex/dalvik_engine_types.h:1140:21: warning: unused variable ‘obj’ [-Wunused-variable]
+ 1140 |         HeapObject& obj =
+      |                     ^~~
+In file included from src/dex/../resources/resource_runtime.h:19,
+                 from src/dex/dalvik_bridge_frame.h:82:
+src/dex/../resources/theme_engine.h: In member function ‘void miniandroid::resources::Theme::apply_style(const miniandroid::resources::ArscRouter&, const miniandroid::resources::ResTableConfig&, uint32_t, bool)’:
+src/dex/../resources/theme_engine.h:114:66: warning: unused parameter ‘device’ [-Wunused-parameter]
+  114 |     void apply_style(const ArscRouter& rt, const ResTableConfig& device,
+      |                                            ~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:2462:30: warning: unused variable ‘par’ [-Wunused-variable]
+ 2462 |                     uint32_t par = 0;
+      |                              ^~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:3908:14: warning: unused variable ‘is_long_family’ [-Wunused-variable]
+ 3908 |         bool is_long_family = class_name == "Landroid/util/SparseLongArray;";
+      |              ^~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6192:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6192 |                             c7_matches.push_back(
+      |                             ~~~~~~~~~~~~~~~~~~~~^
+ 6193 |                                 {a.cls, a.exported, a.launch_mode});
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6205:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6205 |                             c7_matches.push_back({s.cls, s.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:6216:49: warning: missing initializer for member ‘miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)::C7Match::pkg’ [-Wmissing-field-initializers]
+ 6216 |                             c7_matches.push_back({r.cls, r.exported, 0});
+      |                             ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In lambda function:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:7529:27: warning: unused variable ‘msPerDay’ [-Wunused-variable]
+ 7529 |             const int64_t msPerDay = 86400000LL;
+      |                           ^~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp: In member function ‘bool miniandroid::dalvik::DalvikExecutionEngine::bridge_domain_ui_graphics(miniandroid::dalvik::DalvikBridgeFrame&)’:
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10499:40: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<unsigned char>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10499 |                                 f570_i < f570_sst->elem_kinds.size()
+      |                                 ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10509:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10509 |                                     f570_i < f570_sst->elem_strings.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:10516:44: warning: comparison of integer expressions of different signedness: ‘int32_t’ {aka ‘int’} and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+10516 |                                     f570_i < f570_sst->elem_ints.size()
+      |                                     ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dex/dalvik_bridge_domain_ui_graphics.cpp:20:37: warning: unused variable ‘args_raw’ [-Wunused-variable]
+   20 |     const std::vector<DalvikValue>& args_raw = fr.args_raw;
+      |                                     ^~~~~~~~
+
+Time variable                                   usr           sys          wall           GGC
+ phase setup                        :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  1772k (  0%)
+ phase parsing                      :   4.44 ( 13%)   2.08 ( 51%)   6.52 ( 17%)   691M ( 48%)
+ phase lang. deferred               :   1.73 (  5%)   0.63 ( 15%)   2.37 (  6%)   262M ( 18%)
+ phase opt and generate             :  27.14 ( 81%)   1.38 ( 34%)  28.52 ( 76%)   476M ( 33%)
+ phase last asm                     :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)  2000  (  0%)
+ |name lookup                       :   0.96 (  3%)   0.41 ( 10%)   1.39 (  4%)    30M (  2%)
+ |overload resolution               :   1.92 (  6%)   0.72 ( 18%)   2.57 (  7%)   246M ( 17%)
+ garbage collection                 :   1.01 (  3%)   0.02 (  0%)   1.01 (  3%)     0  (  0%)
+ dump files                         :   0.13 (  0%)   0.04 (  1%)   0.13 (  0%)     0  (  0%)
+ callgraph construction             :   0.25 (  1%)   0.04 (  1%)   0.29 (  1%)    25M (  2%)
+ callgraph optimization             :   0.32 (  1%)   0.07 (  2%)   0.34 (  1%)   143k (  0%)
+ callgraph functions expansion      :  20.90 ( 63%)   0.70 ( 17%)  21.60 ( 58%)   256M ( 18%)
+ callgraph ipa passes               :   5.83 ( 17%)   0.59 ( 14%)   6.42 ( 17%)   146M ( 10%)
+ ipa function summary               :   0.06 (  0%)   0.00 (  0%)   0.06 (  0%)  2219k (  0%)
+ ipa dead code removal              :   0.03 (  0%)   0.00 (  0%)   0.03 (  0%)     0  (  0%)
+ ipa inheritance graph              :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)    12k (  0%)
+ ipa cp                             :   1.71 (  5%)   0.01 (  0%)   1.70 (  5%)  4605k (  0%)
+ ipa inlining heuristics            :   0.21 (  1%)   0.00 (  0%)   0.21 (  1%)    11M (  1%)
+ ipa function splitting             :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)   604k (  0%)
+ ipa comdats                        :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ ipa reference                      :   0.01 (  0%)   0.00 (  0%)   0.02 (  0%)     0  (  0%)
+ ipa profile                        :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ ipa pure const                     :   0.08 (  0%)   0.00 (  0%)   0.06 (  0%)   303k (  0%)
+ ipa icf                            :   0.05 (  0%)   0.00 (  0%)   0.04 (  0%)    15k (  0%)
+ ipa SRA                            :   0.05 (  0%)   0.00 (  0%)   0.04 (  0%)  1422k (  0%)
+ ipa free lang data                 :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ ipa free inline summary            :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ ipa modref                         :   0.03 (  0%)   0.00 (  0%)   0.05 (  0%)   944k (  0%)
+ cfg construction                   :   0.02 (  0%)   0.00 (  0%)   0.05 (  0%)  1571k (  0%)
+ cfg cleanup                        :   0.81 (  2%)   0.01 (  0%)   0.71 (  2%)  3453k (  0%)
+ trivially dead code                :   0.12 (  0%)   0.00 (  0%)   0.12 (  0%)     0  (  0%)
+ df scan insns                      :   0.14 (  0%)   0.01 (  0%)   0.16 (  0%)    18k (  0%)
+ df reaching defs                   :   0.96 (  3%)   0.00 (  0%)   0.97 (  3%)     0  (  0%)
+ df live regs                       :   1.72 (  5%)   0.00 (  0%)   1.78 (  5%)     0  (  0%)
+ df live&initialized regs           :   1.02 (  3%)   0.01 (  0%)   1.00 (  3%)     0  (  0%)
+ df must-initialized regs           :   0.02 (  0%)   0.00 (  0%)   0.03 (  0%)     0  (  0%)
+ df use-def / def-use chains        :   0.19 (  1%)   0.01 (  0%)   0.18 (  0%)     0  (  0%)
+ df live reg subwords               :   0.03 (  0%)   0.00 (  0%)   0.03 (  0%)     0  (  0%)
+ df reg dead/unused notes           :   0.46 (  1%)   0.01 (  0%)   0.44 (  1%)  4940k (  0%)
+ register information               :   0.09 (  0%)   0.00 (  0%)   0.10 (  0%)     0  (  0%)
+ alias analysis                     :   0.29 (  1%)   0.00 (  0%)   0.25 (  1%)    10M (  1%)
+ alias stmt walking                 :   0.30 (  1%)   0.07 (  2%)   0.48 (  1%)   715k (  0%)
+ register scan                      :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)   190k (  0%)
+ rebuild jump labels                :   0.05 (  0%)   0.00 (  0%)   0.03 (  0%)     0  (  0%)
+ preprocessing                      :   0.45 (  1%)   0.42 ( 10%)   0.87 (  2%)    76M (  5%)
+ parser (global)                    :   0.58 (  2%)   0.42 ( 10%)   0.89 (  2%)   174M ( 12%)
+ parser struct body                 :   0.20 (  1%)   0.09 (  2%)   0.25 (  1%)    32M (  2%)
+ parser enumerator list             :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   380k (  0%)
+ parser function body               :   0.51 (  2%)   0.14 (  3%)   0.65 (  2%)    54M (  4%)
+ parser inl. func. body             :   0.19 (  1%)   0.16 (  4%)   0.44 (  1%)    43M (  3%)
+ parser inl. meth. body             :   0.38 (  1%)   0.16 (  4%)   0.60 (  2%)    48M (  3%)
+ template instantiation             :   3.22 ( 10%)   1.23 ( 30%)   4.54 ( 12%)   516M ( 36%)
+ constant expression evaluation     :   0.17 (  1%)   0.07 (  2%)   0.16 (  0%)  7352k (  1%)
+ early inlining heuristics          :   0.04 (  0%)   0.00 (  0%)   0.08 (  0%)  9543k (  1%)
+ inline parameters                  :   0.10 (  0%)   0.04 (  1%)   0.18 (  0%) 10203k (  1%)
+ integration                        :   0.53 (  2%)   0.05 (  1%)   0.70 (  2%)    75M (  5%)
+ tree gimplify                      :   0.11 (  0%)   0.03 (  1%)   0.15 (  0%)    30M (  2%)
+ tree eh                            :   0.09 (  0%)   0.01 (  0%)   0.08 (  0%)    11M (  1%)
+ tree CFG construction              :   0.03 (  0%)   0.00 (  0%)   0.06 (  0%)    14M (  1%)
+ tree CFG cleanup                   :   0.56 (  2%)   0.03 (  1%)   0.70 (  2%)   306k (  0%)
+ tree tail merge                    :   0.04 (  0%)   0.01 (  0%)   0.06 (  0%)  1772k (  0%)
+ tree VRP                           :   0.32 (  1%)   0.01 (  0%)   0.32 (  1%)  1444k (  0%)
+ tree Early VRP                     :   0.11 (  0%)   0.05 (  1%)   0.20 (  1%)  6379k (  0%)
+ tree copy propagation              :   0.09 (  0%)   0.01 (  0%)   0.10 (  0%)    93k (  0%)
+ tree PTA                           :   1.16 (  3%)   0.09 (  2%)   1.32 (  4%)  5924k (  0%)
+ tree SSA rewrite                   :   0.07 (  0%)   0.01 (  0%)   0.06 (  0%)    10M (  1%)
+ tree SSA incremental               :   0.50 (  2%)   0.01 (  0%)   0.48 (  1%)  6262k (  0%)
+ tree operand scan                  :   0.20 (  1%)   0.07 (  2%)   0.26 (  1%)    21M (  1%)
+ dominator optimization             :   0.44 (  1%)   0.01 (  0%)   0.36 (  1%)  6024k (  0%)
+ backwards jump threading           :   0.33 (  1%)   0.04 (  1%)   0.33 (  1%)  3152k (  0%)
+ tree SRA                           :   0.05 (  0%)   0.01 (  0%)   0.06 (  0%)  1673k (  0%)
+ isolate eroneous paths             :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ tree CCP                           :   0.35 (  1%)   0.03 (  1%)   0.29 (  1%)  2465k (  0%)
+ tree split crit edges              :   0.01 (  0%)   0.01 (  0%)   0.01 (  0%)  2082k (  0%)
+ tree reassociation                 :   0.01 (  0%)   0.00 (  0%)   0.05 (  0%)    24k (  0%)
+ tree PRE                           :   0.20 (  1%)   0.02 (  0%)   0.18 (  0%)  6666k (  0%)
+ tree FRE                           :   0.26 (  1%)   0.05 (  1%)   0.32 (  1%)  3807k (  0%)
+ tree RPO VN                        :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)   134k (  0%)
+ tree code sinking                  :   0.08 (  0%)   0.01 (  0%)   0.04 (  0%)  3983k (  0%)
+ tree linearize phis                :   0.01 (  0%)   0.00 (  0%)   0.03 (  0%)   530k (  0%)
+ tree backward propagate            :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ tree forward propagate             :   0.13 (  0%)   0.02 (  0%)   0.20 (  1%)  1536k (  0%)
+ tree phiprop                       :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)    26k (  0%)
+ tree conservative DCE              :   0.17 (  1%)   0.01 (  0%)   0.14 (  0%)   142k (  0%)
+ tree aggressive DCE                :   0.16 (  0%)   0.03 (  1%)   0.16 (  0%)  6772k (  0%)
+ tree DSE                           :   0.10 (  0%)   0.01 (  0%)   0.10 (  0%)   708k (  0%)
+ PHI merge                          :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   382k (  0%)
+ tree loop invariant motion         :   0.03 (  0%)   0.02 (  0%)   0.05 (  0%)    40k (  0%)
+ tree canonical iv                  :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   594k (  0%)
+ scev constant prop                 :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    87k (  0%)
+ complete unrolling                 :   0.02 (  0%)   0.00 (  0%)   0.05 (  0%)  2477k (  0%)
+ tree vectorization                 :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)   247k (  0%)
+ tree slp vectorization             :   0.10 (  0%)   0.00 (  0%)   0.07 (  0%)    15M (  1%)
+ tree loop distribution             :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)    59k (  0%)
+ tree iv optimization               :   0.05 (  0%)   0.01 (  0%)   0.05 (  0%)  3477k (  0%)
+ tree copy headers                  :   0.04 (  0%)   0.01 (  0%)   0.05 (  0%)  1100k (  0%)
+ tree SSA uncprop                   :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ tree switch lowering               :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)    64k (  0%)
+ gimple widening/fma detection      :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    12k (  0%)
+ tree strlen optimization           :   0.04 (  0%)   0.00 (  0%)   0.03 (  0%)   485k (  0%)
+ tree modref                        :   0.08 (  0%)   0.00 (  0%)   0.05 (  0%)  2815k (  0%)
+ dominance frontiers                :   0.13 (  0%)   0.01 (  0%)   0.14 (  0%)     0  (  0%)
+ dominance computation              :   0.91 (  3%)   0.03 (  1%)   0.89 (  2%)     0  (  0%)
+ control dependences                :   0.00 (  0%)   0.01 (  0%)   0.01 (  0%)     0  (  0%)
+ out of ssa                         :   0.07 (  0%)   0.00 (  0%)   0.06 (  0%)    51k (  0%)
+ expand vars                        :   0.05 (  0%)   0.00 (  0%)   0.05 (  0%)  3873k (  0%)
+ expand                             :   0.14 (  0%)   0.00 (  0%)   0.14 (  0%)    35M (  2%)
+ post expand cleanups               :   0.03 (  0%)   0.00 (  0%)   0.08 (  0%)  3720k (  0%)
+ varconst                           :   0.02 (  0%)   0.01 (  0%)   0.03 (  0%)    49k (  0%)
+ lower subreg                       :   0.02 (  0%)   0.00 (  0%)   0.03 (  0%)    16k (  0%)
+ forward prop                       :   0.20 (  1%)   0.01 (  0%)   0.26 (  1%)   769k (  0%)
+ CSE                                :   0.19 (  1%)   0.01 (  0%)   0.25 (  1%)  2281k (  0%)
+ dead code elimination              :   0.11 (  0%)   0.00 (  0%)   0.13 (  0%)     0  (  0%)
+ dead store elim1                   :   0.09 (  0%)   0.00 (  0%)   0.11 (  0%)  1998k (  0%)
+ dead store elim2                   :   0.12 (  0%)   0.00 (  0%)   0.14 (  0%)  3209k (  0%)
+ loop analysis                      :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ loop init                          :   0.48 (  1%)   0.04 (  1%)   0.44 (  1%)    13M (  1%)
+ loop invariant motion              :   0.08 (  0%)   0.00 (  0%)   0.04 (  0%)    35k (  0%)
+ loop unrolling                     :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   563k (  0%)
+ loop fini                          :   0.02 (  0%)   0.00 (  0%)   0.00 (  0%)   512  (  0%)
+ CPROP                              :   0.47 (  1%)   0.08 (  2%)   0.54 (  1%)  6863k (  0%)
+ PRE                                :   3.12 (  9%)   0.04 (  1%)   3.15 (  8%)  1619k (  0%)
+ code hoisting                      :   0.02 (  0%)   0.00 (  0%)   0.00 (  0%)  6120  (  0%)
+ CSE 2                              :   0.14 (  0%)   0.00 (  0%)   0.14 (  0%)   954k (  0%)
+ branch prediction                  :   0.06 (  0%)   0.01 (  0%)   0.07 (  0%)  1511k (  0%)
+ combiner                           :   0.22 (  1%)   0.00 (  0%)   0.22 (  1%)  5340k (  0%)
+ if-conversion                      :   0.09 (  0%)   0.00 (  0%)   0.08 (  0%)  1864k (  0%)
+ integrated RA                      :   0.64 (  2%)   0.01 (  0%)   0.67 (  2%)    27M (  2%)
+ LRA non-specific                   :   0.34 (  1%)   0.00 (  0%)   0.36 (  1%)  3772k (  0%)
+ LRA virtuals elimination           :   0.04 (  0%)   0.00 (  0%)   0.06 (  0%)  2059k (  0%)
+ LRA reload inheritance             :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)   138k (  0%)
+ LRA create live ranges             :   0.37 (  1%)   0.00 (  0%)   0.39 (  1%)   425k (  0%)
+ LRA hard reg assignment            :   0.02 (  0%)   0.00 (  0%)   0.02 (  0%)     0  (  0%)
+ LRA rematerialization              :   0.06 (  0%)   0.00 (  0%)   0.10 (  0%)  3744  (  0%)
+ reload                             :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    29k (  0%)
+ reload CSE regs                    :   0.25 (  1%)   0.00 (  0%)   0.19 (  1%)  4677k (  0%)
+ ree                                :   0.06 (  0%)   0.00 (  0%)   0.06 (  0%)    33k (  0%)
+ thread pro- & epilogue             :   0.13 (  0%)   0.00 (  0%)   0.19 (  1%)  1239k (  0%)
+ if-conversion 2                    :   0.03 (  0%)   0.00 (  0%)   0.05 (  0%)    20k (  0%)
+ combine stack adjustments          :   0.02 (  0%)   0.00 (  0%)   0.03 (  0%)     0  (  0%)
+ peephole 2                         :   0.05 (  0%)   0.00 (  0%)   0.09 (  0%)   541k (  0%)
+ hard reg cprop                     :   0.09 (  0%)   0.01 (  0%)   0.07 (  0%)    32k (  0%)
+ scheduling 2                       :   0.45 (  1%)   0.01 (  0%)   0.46 (  1%)  1730k (  0%)
+ machine dep reorg                  :   0.09 (  0%)   0.00 (  0%)   0.08 (  0%)    30k (  0%)
+ reorder blocks                     :   0.16 (  0%)   0.00 (  0%)   0.17 (  0%)  2201k (  0%)
+ shorten branches                   :   0.05 (  0%)   0.00 (  0%)   0.08 (  0%)     0  (  0%)
+ final                              :   0.12 (  0%)   0.01 (  0%)   0.09 (  0%)  7108k (  0%)
+ variable output                    :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   105k (  0%)
+ tree if-combine                    :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   103k (  0%)
+ if to switch conversion            :   0.00 (  0%)   0.01 (  0%)   0.00 (  0%)  7384  (  0%)
+ uninit var analysis                :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ straight-line strength reduction   :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)  5552  (  0%)
+ store merging                      :   0.05 (  0%)   0.00 (  0%)   0.02 (  0%)   463k (  0%)
+ initialize rtl                     :   0.00 (  0%)   0.01 (  0%)   0.00 (  0%)    12k (  0%)
+ tree loop if-conversion            :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)   378k (  0%)
+ access analysis                    :   0.06 (  0%)   0.00 (  0%)   0.06 (  0%)    58k (  0%)
+ early local passes                 :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ rest of compilation                :   0.45 (  1%)   0.02 (  0%)   0.50 (  1%)  3482k (  0%)
+ remove unused locals               :   0.16 (  0%)   0.00 (  0%)   0.18 (  0%)  9120  (  0%)
+ address taken                      :   0.11 (  0%)   0.06 (  1%)   0.14 (  0%)   320  (  0%)
+ rebuild frequencies                :   0.03 (  0%)   0.00 (  0%)   0.02 (  0%)    98k (  0%)
+ repair loop structures             :   0.03 (  0%)   0.00 (  0%)   0.00 (  0%)  4912  (  0%)
+ TOTAL                              :  33.32          4.09         37.42         1431M
+== dalvik_bridge_domain_ui_graphics rc=0

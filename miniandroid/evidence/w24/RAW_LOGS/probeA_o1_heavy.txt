@@ -1,0 +1,10 @@
+PROBE A1_jdk_o2: real	0m19.980s
+PROBE A1_jdk_o1: real	0m12.649s
+PROBE A1_uig_o1: real	0m17.199s
+PROBE A1_uig_o2: real	0m30.875s
+PROBE A2_jdk_o2: real	0m19.993s
+PROBE A2_jdk_o1: real	0m12.511s
+PROBE A2_uig_o1: real	0m17.192s
+PROBE A2_uig_o2: real	0m30.553s
++ echo PROBEA_DONE
+PROBEA_DONE

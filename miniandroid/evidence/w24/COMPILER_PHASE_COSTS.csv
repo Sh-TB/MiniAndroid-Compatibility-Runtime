@@ -1,0 +1,185 @@
+tu,phase_or_pass,user_s,sys_s,wall_s,mem
+dalvik_bridge_domain_ui_graphics,phase parsing,4.44,2.08,6.52,691M
+dalvik_bridge_domain_ui_graphics,phase lang. deferred,1.73,0.63,2.37,262M
+dalvik_bridge_domain_ui_graphics,phase opt and generate,27.14,1.38,28.52,476M
+dalvik_bridge_domain_ui_graphics,phase last asm,0.01,0.00,0.00,2000
+dalvik_bridge_domain_ui_graphics,garbage collection,1.01,0.02,1.01,0
+dalvik_bridge_domain_ui_graphics,callgraph functions expansion,20.90,0.70,21.60,256M
+dalvik_bridge_domain_ui_graphics,callgraph ipa passes,5.83,0.59,6.42,146M
+dalvik_bridge_domain_ui_graphics,template instantiation,3.22,1.23,4.54,516M
+dalvik_bridge_domain_ui_graphics,integration,0.53,0.05,0.70,75M
+dalvik_bridge_domain_ui_graphics,tree PTA,1.16,0.09,1.32,5924k
+dalvik_bridge_domain_ui_graphics,integrated RA,0.64,0.01,0.67,27M
+dalvik_bridge_domain_ui_graphics,TOTAL,33.32,4.09,37.42,1431M
+dalvik_bridge_domain_app_runtime,phase parsing,4.31,2.11,6.42,693M
+dalvik_bridge_domain_app_runtime,phase lang. deferred,1.74,0.60,2.34,264M
+dalvik_bridge_domain_app_runtime,phase opt and generate,26.02,1.36,27.38,453M
+dalvik_bridge_domain_app_runtime,garbage collection,1.00,0.01,1.02,0
+dalvik_bridge_domain_app_runtime,callgraph functions expansion,19.60,0.72,20.32,242M
+dalvik_bridge_domain_app_runtime,callgraph ipa passes,6.00,0.58,6.59,139M
+dalvik_bridge_domain_app_runtime,template instantiation,3.20,1.31,4.46,521M
+dalvik_bridge_domain_app_runtime,integration,0.46,0.09,0.54,74M
+dalvik_bridge_domain_app_runtime,tree PTA,1.35,0.10,1.39,5581k
+dalvik_bridge_domain_app_runtime,integrated RA,0.63,0.03,0.65,25M
+dalvik_bridge_domain_app_runtime,symout,0.00,0.00,0.02,0
+dalvik_bridge_domain_app_runtime,TOTAL,32.07,4.07,36.15,1412M
+dalvik_bridge_domain_io_lang,phase parsing,4.30,2.04,6.35,673M
+dalvik_bridge_domain_io_lang,phase lang. deferred,1.96,0.73,2.70,289M
+dalvik_bridge_domain_io_lang,phase opt and generate,23.84,1.33,25.17,454M
+dalvik_bridge_domain_io_lang,garbage collection,1.03,0.01,1.04,0
+dalvik_bridge_domain_io_lang,callgraph functions expansion,18.23,0.65,18.89,248M
+dalvik_bridge_domain_io_lang,callgraph ipa passes,5.21,0.60,5.81,138M
+dalvik_bridge_domain_io_lang,template instantiation,3.33,1.35,4.77,539M
+dalvik_bridge_domain_io_lang,integration,0.54,0.10,0.70,72M
+dalvik_bridge_domain_io_lang,tree PTA,0.90,0.06,0.99,5573k
+dalvik_bridge_domain_io_lang,integrated RA,0.62,0.03,0.63,26M
+dalvik_bridge_domain_io_lang,symout,0.02,0.00,0.02,0
+dalvik_bridge_domain_io_lang,TOTAL,30.10,4.11,34.22,1419M
+execution_engine,phase parsing,3.41,1.65,5.06,529M
+execution_engine,phase lang. deferred,2.56,0.68,3.25,314M
+execution_engine,phase opt and generate,21.07,1.87,22.93,738M
+execution_engine,phase last asm,0.11,0.00,0.11,3685k
+execution_engine,garbage collection,1.24,0.01,1.25,0
+execution_engine,callgraph functions expansion,15.15,0.70,15.84,365M
+execution_engine,callgraph ipa passes,5.33,1.02,6.36,261M
+execution_engine,template instantiation,3.70,1.38,5.03,581M
+execution_engine,integration,0.69,0.17,0.85,157M
+execution_engine,tree PTA,0.66,0.08,0.86,7352k
+execution_engine,integrated RA,0.85,0.03,1.00,30M
+execution_engine,symout,0.13,0.03,0.14,30M
+execution_engine,TOTAL,27.15,4.20,31.36,1588M
+dalvik_bridge_domain_android_core,phase parsing,4.30,2.04,6.35,679M
+dalvik_bridge_domain_android_core,phase lang. deferred,2.41,0.79,3.20,342M
+dalvik_bridge_domain_android_core,phase opt and generate,19.92,1.56,21.48,509M
+dalvik_bridge_domain_android_core,garbage collection,1.17,0.01,1.17,0
+dalvik_bridge_domain_android_core,callgraph functions expansion,13.95,0.70,14.66,265M
+dalvik_bridge_domain_android_core,callgraph ipa passes,4.76,0.76,5.52,161M
+dalvik_bridge_domain_android_core,template instantiation,3.93,1.42,5.30,604M
+dalvik_bridge_domain_android_core,integration,0.54,0.14,0.54,79M
+dalvik_bridge_domain_android_core,tree PTA,0.83,0.05,0.89,6406k
+dalvik_bridge_domain_android_core,integrated RA,0.60,0.02,0.54,25M
+dalvik_bridge_domain_android_core,symout,0.03,0.00,0.00,0
+dalvik_bridge_domain_android_core,TOTAL,26.63,4.40,31.03,1532M
+dalvik_engine_invoke,phase parsing,4.27,2.07,6.35,682M
+dalvik_engine_invoke,phase lang. deferred,1.78,0.59,2.37,263M
+dalvik_engine_invoke,phase opt and generate,18.01,1.23,19.25,451M
+dalvik_engine_invoke,garbage collection,1.03,0.00,1.03,0
+dalvik_engine_invoke,callgraph functions expansion,13.01,0.52,13.55,246M
+dalvik_engine_invoke,callgraph ipa passes,4.59,0.63,5.22,136M
+dalvik_engine_invoke,template instantiation,3.35,1.26,4.40,519M
+dalvik_engine_invoke,integration,0.50,0.14,0.56,71M
+dalvik_engine_invoke,tree PTA,0.71,0.02,0.80,5503k
+dalvik_engine_invoke,integrated RA,0.68,0.01,0.65,26M
+dalvik_engine_invoke,symout,0.00,0.00,0.01,0
+dalvik_engine_invoke,TOTAL,24.06,3.90,27.97,1398M
+dalvik_engine_core,phase parsing,4.50,2.15,6.65,685M
+dalvik_engine_core,phase lang. deferred,2.15,0.67,2.84,301M
+dalvik_engine_core,phase opt and generate,17.56,1.54,19.27,510M
+dalvik_engine_core,garbage collection,1.16,0.00,1.16,0
+dalvik_engine_core,callgraph functions expansion,11.80,0.64,12.51,273M
+dalvik_engine_core,callgraph ipa passes,4.64,0.77,5.51,158M
+dalvik_engine_core,template instantiation,3.53,1.39,5.08,563M
+dalvik_engine_core,integration,0.58,0.11,0.64,79M
+dalvik_engine_core,tree PTA,0.64,0.02,0.70,6085k
+dalvik_engine_core,integrated RA,0.67,0.00,0.67,27M
+dalvik_engine_core,TOTAL,24.21,4.36,28.77,1498M
+dalvik_interpreter,phase parsing,4.48,2.09,6.57,692M
+dalvik_interpreter,phase lang. deferred,1.74,0.58,2.33,255M
+dalvik_interpreter,phase opt and generate,18.67,0.82,19.49,264M
+dalvik_interpreter,garbage collection,0.97,0.02,0.97,0
+dalvik_interpreter,callgraph functions expansion,15.58,0.41,16.00,133M
+dalvik_interpreter,callgraph ipa passes,2.78,0.36,3.13,80M
+dalvik_interpreter,template instantiation,3.07,1.18,4.49,505M
+dalvik_interpreter,integration,0.19,0.03,0.25,35M
+dalvik_interpreter,tree PTA,0.72,0.05,0.78,3279k
+dalvik_interpreter,integrated RA,0.42,0.01,0.44,12M
+dalvik_interpreter,symout,0.01,0.01,0.01,0
+dalvik_interpreter,TOTAL,24.89,3.49,28.39,1214M
+dalvik_bridge_domain_jdk,phase parsing,4.20,2.07,6.28,665M
+dalvik_bridge_domain_jdk,phase lang. deferred,1.77,0.61,2.38,257M
+dalvik_bridge_domain_jdk,phase opt and generate,16.48,0.91,17.38,305M
+dalvik_bridge_domain_jdk,phase last asm,0.00,0.00,0.01,1520
+dalvik_bridge_domain_jdk,garbage collection,0.97,0.01,0.99,0
+dalvik_bridge_domain_jdk,callgraph functions expansion,12.80,0.43,13.23,157M
+dalvik_bridge_domain_jdk,callgraph ipa passes,3.38,0.41,3.78,96M
+dalvik_bridge_domain_jdk,template instantiation,3.24,1.34,4.50,506M
+dalvik_bridge_domain_jdk,integration,0.33,0.05,0.45,50M
+dalvik_bridge_domain_jdk,tree PTA,0.68,0.05,0.63,3991k
+dalvik_bridge_domain_jdk,integrated RA,0.35,0.00,0.43,14M
+dalvik_bridge_domain_jdk,TOTAL,22.45,3.59,26.05,1230M
+dalvik_value_glue,TOTAL,0.00,0.00,0.01,2375k
+dalvik_opcodes_invoke,phase parsing,4.16,2.00,6.16,668M
+dalvik_opcodes_invoke,phase lang. deferred,1.69,0.58,2.27,249M
+dalvik_opcodes_invoke,phase opt and generate,10.00,0.76,10.76,291M
+dalvik_opcodes_invoke,garbage collection,0.97,0.00,0.97,0
+dalvik_opcodes_invoke,callgraph functions expansion,7.39,0.34,7.73,159M
+dalvik_opcodes_invoke,callgraph ipa passes,2.34,0.36,2.70,84M
+dalvik_opcodes_invoke,template instantiation,3.15,1.29,4.38,497M
+dalvik_opcodes_invoke,integration,0.30,0.03,0.33,45M
+dalvik_opcodes_invoke,tree PTA,0.30,0.02,0.42,3311k
+dalvik_opcodes_invoke,integrated RA,0.48,0.03,0.44,15M
+dalvik_opcodes_invoke,symout,0.01,0.01,0.01,0
+dalvik_opcodes_invoke,TOTAL,15.85,3.34,19.20,1211M
+webview_engine,phase parsing,2.21,1.29,3.50,396M
+webview_engine,phase lang. deferred,1.25,0.45,1.70,182M
+webview_engine,phase opt and generate,11.66,1.33,13.00,443M
+webview_engine,phase last asm,0.06,0.01,0.06,2137k
+webview_engine,garbage collection,0.56,0.00,0.56,0
+webview_engine,callgraph functions expansion,8.40,0.61,9.02,251M
+webview_engine,callgraph ipa passes,2.51,0.62,3.13,124M
+webview_engine,template instantiation,2.08,0.85,2.97,350M
+webview_engine,integration,0.49,0.10,0.54,61M
+webview_engine,tree PTA,0.36,0.04,0.47,4344k
+webview_engine,integrated RA,0.40,0.01,0.55,23M
+webview_engine,symout,0.08,0.02,0.12,17M
+webview_engine,TOTAL,15.18,3.08,18.26,1026M
+trace_exporter,phase parsing,1.57,1.02,2.59,295M
+trace_exporter,phase lang. deferred,1.24,0.34,1.58,166M
+trace_exporter,phase opt and generate,2.22,0.33,2.55,105M
+trace_exporter,phase last asm,0.01,0.01,0.02,446k
+trace_exporter,garbage collection,0.20,0.01,0.20,0
+trace_exporter,callgraph functions expansion,1.48,0.07,1.55,43M
+trace_exporter,callgraph ipa passes,0.58,0.21,0.79,34M
+trace_exporter,template instantiation,1.78,0.73,2.47,294M
+trace_exporter,integration,0.06,0.04,0.12,14M
+trace_exporter,tree PTA,0.04,0.04,0.11,1135k
+trace_exporter,integrated RA,0.10,0.00,0.03,4222k
+trace_exporter,symout,0.02,0.01,0.02,3302k
+trace_exporter,TOTAL,5.04,1.70,6.75,570M
+dlopen_exec,phase parsing,1.03,0.73,1.77,199M
+dlopen_exec,phase lang. deferred,0.57,0.23,0.80,94M
+dlopen_exec,phase opt and generate,3.19,0.49,3.67,141M
+dlopen_exec,phase last asm,0.02,0.00,0.02,726k
+dlopen_exec,garbage collection,0.17,0.00,0.17,0
+dlopen_exec,callgraph functions expansion,2.13,0.22,2.35,73M
+dlopen_exec,callgraph ipa passes,0.92,0.23,1.16,41M
+dlopen_exec,template instantiation,0.91,0.33,1.13,143M
+dlopen_exec,integration,0.15,0.03,0.16,16M
+dlopen_exec,tree PTA,0.06,0.01,0.11,1381k
+dlopen_exec,integrated RA,0.07,0.01,0.20,8951k
+dlopen_exec,symout,0.02,0.02,0.04,6110k
+dlopen_exec,TOTAL,4.81,1.45,6.27,438M
+pgl_backend,phase parsing,0.45,0.41,0.87,88M
+pgl_backend,phase lang. deferred,0.06,0.03,0.08,12M
+pgl_backend,phase opt and generate,4.28,0.41,4.70,164M
+pgl_backend,phase last asm,0.01,0.00,0.00,257k
+pgl_backend,callgraph functions expansion,3.62,0.28,3.90,120M
+pgl_backend,callgraph ipa passes,0.58,0.11,0.69,26M
+pgl_backend,template instantiation,0.10,0.07,0.12,20M
+pgl_backend,integration,0.02,0.00,0.01,13M
+pgl_backend,tree PTA,0.11,0.03,0.08,1084k
+pgl_backend,integrated RA,0.32,0.01,0.28,17M
+pgl_backend,symout,0.01,0.00,0.00,1437k
+pgl_backend,TOTAL,4.80,0.85,5.66,267M
+install_inspection,phase parsing,0.81,0.57,1.39,147M
+install_inspection,phase lang. deferred,0.19,0.11,0.30,37M
+install_inspection,phase opt and generate,3.58,0.39,3.98,158M
+install_inspection,phase last asm,0.02,0.01,0.02,932k
+install_inspection,callgraph functions expansion,2.79,0.16,2.96,94M
+install_inspection,callgraph ipa passes,0.70,0.20,0.89,42M
+install_inspection,template instantiation,0.48,0.25,0.79,89M
+install_inspection,integration,0.11,0.04,0.20,20M
+install_inspection,tree PTA,0.17,0.03,0.18,1661k
+install_inspection,integrated RA,0.16,0.00,0.13,7910k
+install_inspection,symout,0.04,0.01,0.03,7767k
+install_inspection,TOTAL,4.60,1.08,5.69,345M

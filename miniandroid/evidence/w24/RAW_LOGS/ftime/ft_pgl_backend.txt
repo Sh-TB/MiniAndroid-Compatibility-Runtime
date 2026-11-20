@@ -1,0 +1,1057 @@
+In file included from src/gles/pgl_backend.cpp:11:
+third_party/portablegl/portablegl.h:1058: warning: ignoring ‘#pragma STDC FP_CONTRACT’ [-Wunknown-pragmas]
+ 1058 | #pragma STDC FP_CONTRACT OFF
+third_party/portablegl/portablegl.h: In function ‘vec4 blend_pixel(vec4, vec4, int)’:
+third_party/portablegl/portablegl.h:9197:21: warning: missing initializer for member ‘vec4::y’ [-Wmissing-field-initializers]
+ 9197 |         vec4 Cs = {0}, Cd = {0};
+      |                     ^
+third_party/portablegl/portablegl.h:9197:21: warning: missing initializer for member ‘vec4::z’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:9197:21: warning: missing initializer for member ‘vec4::w’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:9197:31: warning: missing initializer for member ‘vec4::y’ [-Wmissing-field-initializers]
+ 9197 |         vec4 Cs = {0}, Cd = {0};
+      |                               ^
+third_party/portablegl/portablegl.h:9197:31: warning: missing initializer for member ‘vec4::z’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:9197:31: warning: missing initializer for member ‘vec4::w’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h: In function ‘GLboolean init_glContext(glContext*, u32**, GLsizei, GLsizei)’:
+third_party/portablegl/portablegl.h:11738:30: warning: missing initializer for member ‘glBuffer::type’ [-Wmissing-field-initializers]
+11738 |         glBuffer tmp_buf = {0};
+      |                              ^
+third_party/portablegl/portablegl.h:11738:30: warning: missing initializer for member ‘glBuffer::data’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11738:30: warning: missing initializer for member ‘glBuffer::deleted’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11738:30: warning: missing initializer for member ‘glBuffer::user_owned’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h: In function ‘void glGenVertexArrays(GLsizei, GLuint*)’:
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Attrib::type’ [-Wmissing-field-initializers]
+11985 |         glVertex_Array tmp = {0};
+      |                                ^
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Attrib::stride’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Attrib::offset’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Attrib::relativeoffset’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Attrib::normalized’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Attrib::buf’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Attrib::enabled’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Attrib::divisor’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Array::element_buffer’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h:11985:32: warning: missing initializer for member ‘glVertex_Array::deleted’ [-Wmissing-field-initializers]
+third_party/portablegl/portablegl.h: In function ‘void glTexParameterfv(GLenum, GLenum, const GLfloat*)’:
+third_party/portablegl/portablegl.h:12367:37: warning: unused parameter ‘target’ [-Wunused-parameter]
+12367 | PGLDEF void glTexParameterfv(GLenum target, GLenum pname, const GLfloat* params)
+      |                              ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:12367:52: warning: unused parameter ‘pname’ [-Wunused-parameter]
+12367 | PGLDEF void glTexParameterfv(GLenum target, GLenum pname, const GLfloat* params)
+      |                                             ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:12367:74: warning: unused parameter ‘params’ [-Wunused-parameter]
+12367 | PGLDEF void glTexParameterfv(GLenum target, GLenum pname, const GLfloat* params)
+      |                                                           ~~~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTexParameteriv(GLenum, GLenum, const GLint*)’:
+third_party/portablegl/portablegl.h:12384:37: warning: unused parameter ‘target’ [-Wunused-parameter]
+12384 | PGLDEF void glTexParameteriv(GLenum target, GLenum pname, const GLint* params)
+      |                              ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:12384:52: warning: unused parameter ‘pname’ [-Wunused-parameter]
+12384 | PGLDEF void glTexParameteriv(GLenum target, GLenum pname, const GLint* params)
+      |                                             ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:12384:72: warning: unused parameter ‘params’ [-Wunused-parameter]
+12384 | PGLDEF void glTexParameteriv(GLenum target, GLenum pname, const GLint* params)
+      |                                                           ~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTextureParameterfv(GLuint, GLenum, const GLfloat*)’:
+third_party/portablegl/portablegl.h:12415:41: warning: unused parameter ‘texture’ [-Wunused-parameter]
+12415 | PGLDEF void glTextureParameterfv(GLuint texture, GLenum pname, const GLfloat* params)
+      |                                  ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:12415:57: warning: unused parameter ‘pname’ [-Wunused-parameter]
+12415 | PGLDEF void glTextureParameterfv(GLuint texture, GLenum pname, const GLfloat* params)
+      |                                                  ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:12415:79: warning: unused parameter ‘params’ [-Wunused-parameter]
+12415 | PGLDEF void glTextureParameterfv(GLuint texture, GLenum pname, const GLfloat* params)
+      |                                                                ~~~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTextureParameteriv(GLuint, GLenum, const GLint*)’:
+third_party/portablegl/portablegl.h:12423:41: warning: unused parameter ‘texture’ [-Wunused-parameter]
+12423 | PGLDEF void glTextureParameteriv(GLuint texture, GLenum pname, const GLint* params)
+      |                                  ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:12423:57: warning: unused parameter ‘pname’ [-Wunused-parameter]
+12423 | PGLDEF void glTextureParameteriv(GLuint texture, GLenum pname, const GLint* params)
+      |                                                  ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:12423:77: warning: unused parameter ‘params’ [-Wunused-parameter]
+12423 | PGLDEF void glTextureParameteriv(GLuint texture, GLenum pname, const GLint* params)
+      |                                                                ~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glGetTexParameterfv(GLenum, GLenum, GLfloat*)’:
+third_party/portablegl/portablegl.h:12436:40: warning: unused parameter ‘target’ [-Wunused-parameter]
+12436 | PGLDEF void glGetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
+      |                                 ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:12436:55: warning: unused parameter ‘pname’ [-Wunused-parameter]
+12436 | PGLDEF void glGetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
+      |                                                ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:12436:71: warning: unused parameter ‘params’ [-Wunused-parameter]
+12436 | PGLDEF void glGetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
+      |                                                              ~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glGetTextureParameterfv(GLuint, GLenum, GLfloat*)’:
+third_party/portablegl/portablegl.h:12499:44: warning: unused parameter ‘texture’ [-Wunused-parameter]
+12499 | PGLDEF void glGetTextureParameterfv(GLuint texture, GLenum pname, GLfloat* params)
+      |                                     ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:12499:60: warning: unused parameter ‘pname’ [-Wunused-parameter]
+12499 | PGLDEF void glGetTextureParameterfv(GLuint texture, GLenum pname, GLfloat* params)
+      |                                                     ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:12499:76: warning: unused parameter ‘params’ [-Wunused-parameter]
+12499 | PGLDEF void glGetTextureParameterfv(GLuint texture, GLenum pname, GLfloat* params)
+      |                                                                   ~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘const GLubyte* glGetStringi(GLenum, GLuint)’:
+third_party/portablegl/portablegl.h:15184:43: warning: unused parameter ‘name’ [-Wunused-parameter]
+15184 | PGLDEF const GLubyte* glGetStringi(GLenum name, GLuint index) { return NULL; }
+      |                                    ~~~~~~~^~~~
+third_party/portablegl/portablegl.h:15184:56: warning: unused parameter ‘index’ [-Wunused-parameter]
+15184 | PGLDEF const GLubyte* glGetStringi(GLenum name, GLuint index) { return NULL; }
+      |                                                 ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glGetDoublev(GLenum, GLdouble*)’:
+third_party/portablegl/portablegl.h:15189:33: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15189 | PGLDEF void glGetDoublev(GLenum pname, GLdouble* params) { }
+      |                          ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15189:50: warning: unused parameter ‘params’ [-Wunused-parameter]
+15189 | PGLDEF void glGetDoublev(GLenum pname, GLdouble* params) { }
+      |                                        ~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glGetInteger64v(GLenum, GLint64*)’:
+third_party/portablegl/portablegl.h:15190:36: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15190 | PGLDEF void glGetInteger64v(GLenum pname, GLint64* params) { }
+      |                             ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15190:52: warning: unused parameter ‘params’ [-Wunused-parameter]
+15190 | PGLDEF void glGetInteger64v(GLenum pname, GLint64* params) { }
+      |                                           ~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glNamedFramebufferDrawBuffers(GLuint, GLsizei, const GLenum*)’:
+third_party/portablegl/portablegl.h:15193:50: warning: unused parameter ‘framebuffer’ [-Wunused-parameter]
+15193 | PGLDEF void glNamedFramebufferDrawBuffers(GLuint framebuffer, GLsizei n, const GLenum* bufs) {}
+      |                                           ~~~~~~~^~~~~~~~~~~
+third_party/portablegl/portablegl.h:15193:71: warning: unused parameter ‘n’ [-Wunused-parameter]
+15193 | PGLDEF void glNamedFramebufferDrawBuffers(GLuint framebuffer, GLsizei n, const GLenum* bufs) {}
+      |                                                               ~~~~~~~~^
+third_party/portablegl/portablegl.h:15193:88: warning: unused parameter ‘bufs’ [-Wunused-parameter]
+15193 | PGLDEF void glNamedFramebufferDrawBuffers(GLuint framebuffer, GLsizei n, const GLenum* bufs) {}
+      |                                                                          ~~~~~~~~~~~~~~^~~~
+third_party/portablegl/portablegl.h: In function ‘void glFramebufferTexture1D(GLenum, GLenum, GLenum, GLuint, GLint)’:
+third_party/portablegl/portablegl.h:15196:43: warning: unused parameter ‘target’ [-Wunused-parameter]
+15196 | PGLDEF void glFramebufferTexture1D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {}
+      |                                    ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15196:58: warning: unused parameter ‘attachment’ [-Wunused-parameter]
+15196 | PGLDEF void glFramebufferTexture1D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {}
+      |                                                   ~~~~~~~^~~~~~~~~~
+third_party/portablegl/portablegl.h:15196:77: warning: unused parameter ‘textarget’ [-Wunused-parameter]
+15196 | PGLDEF void glFramebufferTexture1D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {}
+      |                                                                      ~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15196:95: warning: unused parameter ‘texture’ [-Wunused-parameter]
+15196 | PGLDEF void glFramebufferTexture1D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {}
+      |                                                                                        ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15196:110: warning: unused parameter ‘level’ [-Wunused-parameter]
+15196 | PGLDEF void glFramebufferTexture1D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {}
+      |                                                                                                        ~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glFramebufferTexture3D(GLenum, GLenum, GLenum, GLuint, GLint, GLint)’:
+third_party/portablegl/portablegl.h:15197:43: warning: unused parameter ‘target’ [-Wunused-parameter]
+15197 | PGLDEF void glFramebufferTexture3D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint layer) {}
+      |                                    ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15197:58: warning: unused parameter ‘attachment’ [-Wunused-parameter]
+15197 | PGLDEF void glFramebufferTexture3D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint layer) {}
+      |                                                   ~~~~~~~^~~~~~~~~~
+third_party/portablegl/portablegl.h:15197:77: warning: unused parameter ‘textarget’ [-Wunused-parameter]
+15197 | PGLDEF void glFramebufferTexture3D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint layer) {}
+      |                                                                      ~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15197:95: warning: unused parameter ‘texture’ [-Wunused-parameter]
+15197 | PGLDEF void glFramebufferTexture3D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint layer) {}
+      |                                                                                        ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15197:110: warning: unused parameter ‘level’ [-Wunused-parameter]
+15197 | PGLDEF void glFramebufferTexture3D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint layer) {}
+      |                                                                                                        ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15197:123: warning: unused parameter ‘layer’ [-Wunused-parameter]
+15197 | PGLDEF void glFramebufferTexture3D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLint layer) {}
+      |                                                                                                                     ~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glFramebufferTextureLayer(GLenum, GLenum, GLuint, GLint, GLint)’:
+third_party/portablegl/portablegl.h:15199:46: warning: unused parameter ‘target’ [-Wunused-parameter]
+15199 | PGLDEF void glFramebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                       ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15199:61: warning: unused parameter ‘attachment’ [-Wunused-parameter]
+15199 | PGLDEF void glFramebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                                      ~~~~~~~^~~~~~~~~~
+third_party/portablegl/portablegl.h:15199:80: warning: unused parameter ‘texture’ [-Wunused-parameter]
+15199 | PGLDEF void glFramebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                                                         ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15199:95: warning: unused parameter ‘level’ [-Wunused-parameter]
+15199 | PGLDEF void glFramebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                                                                         ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15199:108: warning: unused parameter ‘layer’ [-Wunused-parameter]
+15199 | PGLDEF void glFramebufferTextureLayer(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                                                                                      ~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glNamedFramebufferTextureLayer(GLuint, GLenum, GLuint, GLint, GLint)’:
+third_party/portablegl/portablegl.h:15200:51: warning: unused parameter ‘framebuffer’ [-Wunused-parameter]
+15200 | PGLDEF void glNamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                            ~~~~~~~^~~~~~~~~~~
+third_party/portablegl/portablegl.h:15200:71: warning: unused parameter ‘attachment’ [-Wunused-parameter]
+15200 | PGLDEF void glNamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                                                ~~~~~~~^~~~~~~~~~
+third_party/portablegl/portablegl.h:15200:90: warning: unused parameter ‘texture’ [-Wunused-parameter]
+15200 | PGLDEF void glNamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                                                                   ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15200:105: warning: unused parameter ‘level’ [-Wunused-parameter]
+15200 | PGLDEF void glNamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                                                                                   ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15200:118: warning: unused parameter ‘layer’ [-Wunused-parameter]
+15200 | PGLDEF void glNamedFramebufferTextureLayer(GLuint framebuffer, GLenum attachment, GLuint texture, GLint level, GLint layer) {}
+      |                                                                                                                ~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glNamedFramebufferReadBuffer(GLuint, GLenum)’:
+third_party/portablegl/portablegl.h:15202:49: warning: unused parameter ‘framebuffer’ [-Wunused-parameter]
+15202 | PGLDEF void glNamedFramebufferReadBuffer(GLuint framebuffer, GLenum mode) {}
+      |                                          ~~~~~~~^~~~~~~~~~~
+third_party/portablegl/portablegl.h:15202:69: warning: unused parameter ‘mode’ [-Wunused-parameter]
+15202 | PGLDEF void glNamedFramebufferReadBuffer(GLuint framebuffer, GLenum mode) {}
+      |                                                              ~~~~~~~^~~~
+third_party/portablegl/portablegl.h: In function ‘void glBlitNamedFramebuffer(GLuint, GLuint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum)’:
+third_party/portablegl/portablegl.h:15204:43: warning: unused parameter ‘readFramebuffer’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                    ~~~~~~~^~~~~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15204:67: warning: unused parameter ‘drawFramebuffer’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                            ~~~~~~~^~~~~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15204:90: warning: unused parameter ‘srcX0’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                    ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15204:103: warning: unused parameter ‘srcY0’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                                 ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15204:116: warning: unused parameter ‘srcX1’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                                              ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15204:129: warning: unused parameter ‘srcY1’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                                                           ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15204:142: warning: unused parameter ‘dstX0’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                                                                        ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15204:155: warning: unused parameter ‘dstY0’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                                                                                     ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15204:168: warning: unused parameter ‘dstX1’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                                                                                                  ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15204:181: warning: unused parameter ‘dstY1’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                                                                                                               ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15204:199: warning: unused parameter ‘mask’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                                                                                                                            ~~~~~~~~~~~^~~~
+third_party/portablegl/portablegl.h:15204:212: warning: unused parameter ‘filter’ [-Wunused-parameter]
+15204 | PGLDEF void glBlitNamedFramebuffer(GLuint readFramebuffer, GLuint drawFramebuffer, GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) {}
+      |                                                                                                                                                                                                             ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glRenderbufferStorageMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei)’:
+third_party/portablegl/portablegl.h:15207:53: warning: unused parameter ‘target’ [-Wunused-parameter]
+15207 | PGLDEF void glRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                              ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15207:69: warning: unused parameter ‘samples’ [-Wunused-parameter]
+15207 | PGLDEF void glRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                                             ~~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15207:85: warning: unused parameter ‘internalformat’ [-Wunused-parameter]
+15207 | PGLDEF void glRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                                                              ~~~~~~~^~~~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15207:109: warning: unused parameter ‘width’ [-Wunused-parameter]
+15207 | PGLDEF void glRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                                                                                     ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15207:124: warning: unused parameter ‘height’ [-Wunused-parameter]
+15207 | PGLDEF void glRenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                                                                                                    ~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glNamedRenderbufferStorageMultisample(GLuint, GLsizei, GLenum, GLsizei, GLsizei)’:
+third_party/portablegl/portablegl.h:15208:58: warning: unused parameter ‘renderbuffer’ [-Wunused-parameter]
+15208 | PGLDEF void glNamedRenderbufferStorageMultisample(GLuint renderbuffer, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                                   ~~~~~~~^~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15208:80: warning: unused parameter ‘samples’ [-Wunused-parameter]
+15208 | PGLDEF void glNamedRenderbufferStorageMultisample(GLuint renderbuffer, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                                                        ~~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15208:96: warning: unused parameter ‘internalformat’ [-Wunused-parameter]
+15208 | PGLDEF void glNamedRenderbufferStorageMultisample(GLuint renderbuffer, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                                                                         ~~~~~~~^~~~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15208:120: warning: unused parameter ‘width’ [-Wunused-parameter]
+15208 | PGLDEF void glNamedRenderbufferStorageMultisample(GLuint renderbuffer, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                                                                                                ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15208:135: warning: unused parameter ‘height’ [-Wunused-parameter]
+15208 | PGLDEF void glNamedRenderbufferStorageMultisample(GLuint renderbuffer, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height) {}
+      |                                                                                                                               ~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glGetProgramiv(GLuint, GLenum, GLint*)’:
+third_party/portablegl/portablegl.h:15211:35: warning: unused parameter ‘program’ [-Wunused-parameter]
+15211 | PGLDEF void glGetProgramiv(GLuint program, GLenum pname, GLint* params) { }
+      |                            ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15211:51: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15211 | PGLDEF void glGetProgramiv(GLuint program, GLenum pname, GLint* params) { }
+      |                                            ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15211:65: warning: unused parameter ‘params’ [-Wunused-parameter]
+15211 | PGLDEF void glGetProgramiv(GLuint program, GLenum pname, GLint* params) { }
+      |                                                          ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glGetProgramInfoLog(GLuint, GLsizei, GLsizei*, GLchar*)’:
+third_party/portablegl/portablegl.h:15212:40: warning: unused parameter ‘program’ [-Wunused-parameter]
+15212 | PGLDEF void glGetProgramInfoLog(GLuint program, GLsizei maxLength, GLsizei* length, GLchar* infoLog) { }
+      |                                 ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15212:57: warning: unused parameter ‘maxLength’ [-Wunused-parameter]
+15212 | PGLDEF void glGetProgramInfoLog(GLuint program, GLsizei maxLength, GLsizei* length, GLchar* infoLog) { }
+      |                                                 ~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15212:77: warning: unused parameter ‘length’ [-Wunused-parameter]
+15212 | PGLDEF void glGetProgramInfoLog(GLuint program, GLsizei maxLength, GLsizei* length, GLchar* infoLog) { }
+      |                                                                    ~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15212:93: warning: unused parameter ‘infoLog’ [-Wunused-parameter]
+15212 | PGLDEF void glGetProgramInfoLog(GLuint program, GLsizei maxLength, GLsizei* length, GLchar* infoLog) { }
+      |                                                                                     ~~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glAttachShader(GLuint, GLuint)’:
+third_party/portablegl/portablegl.h:15213:35: warning: unused parameter ‘program’ [-Wunused-parameter]
+15213 | PGLDEF void glAttachShader(GLuint program, GLuint shader) { }
+      |                            ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15213:51: warning: unused parameter ‘shader’ [-Wunused-parameter]
+15213 | PGLDEF void glAttachShader(GLuint program, GLuint shader) { }
+      |                                            ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glCompileShader(GLuint)’:
+third_party/portablegl/portablegl.h:15214:36: warning: unused parameter ‘shader’ [-Wunused-parameter]
+15214 | PGLDEF void glCompileShader(GLuint shader) { }
+      |                             ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glGetShaderInfoLog(GLuint, GLsizei, GLsizei*, GLchar*)’:
+third_party/portablegl/portablegl.h:15215:39: warning: unused parameter ‘shader’ [-Wunused-parameter]
+15215 | PGLDEF void glGetShaderInfoLog(GLuint shader, GLsizei maxLength, GLsizei* length, GLchar* infoLog) { }
+      |                                ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15215:55: warning: unused parameter ‘maxLength’ [-Wunused-parameter]
+15215 | PGLDEF void glGetShaderInfoLog(GLuint shader, GLsizei maxLength, GLsizei* length, GLchar* infoLog) { }
+      |                                               ~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15215:75: warning: unused parameter ‘length’ [-Wunused-parameter]
+15215 | PGLDEF void glGetShaderInfoLog(GLuint shader, GLsizei maxLength, GLsizei* length, GLchar* infoLog) { }
+      |                                                                  ~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15215:91: warning: unused parameter ‘infoLog’ [-Wunused-parameter]
+15215 | PGLDEF void glGetShaderInfoLog(GLuint shader, GLsizei maxLength, GLsizei* length, GLchar* infoLog) { }
+      |                                                                                   ~~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glLinkProgram(GLuint)’:
+third_party/portablegl/portablegl.h:15216:34: warning: unused parameter ‘program’ [-Wunused-parameter]
+15216 | PGLDEF void glLinkProgram(GLuint program) { }
+      |                           ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glShaderSource(GLuint, GLsizei, const GLchar**, const GLint*)’:
+third_party/portablegl/portablegl.h:15217:35: warning: unused parameter ‘shader’ [-Wunused-parameter]
+15217 | PGLDEF void glShaderSource(GLuint shader, GLsizei count, const GLchar** string, const GLint* length) { }
+      |                            ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15217:51: warning: unused parameter ‘count’ [-Wunused-parameter]
+15217 | PGLDEF void glShaderSource(GLuint shader, GLsizei count, const GLchar** string, const GLint* length) { }
+      |                                           ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15217:73: warning: unused parameter ‘string’ [-Wunused-parameter]
+15217 | PGLDEF void glShaderSource(GLuint shader, GLsizei count, const GLchar** string, const GLint* length) { }
+      |                                                          ~~~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15217:94: warning: unused parameter ‘length’ [-Wunused-parameter]
+15217 | PGLDEF void glShaderSource(GLuint shader, GLsizei count, const GLchar** string, const GLint* length) { }
+      |                                                                                 ~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glGetShaderiv(GLuint, GLenum, GLint*)’:
+third_party/portablegl/portablegl.h:15218:34: warning: unused parameter ‘shader’ [-Wunused-parameter]
+15218 | PGLDEF void glGetShaderiv(GLuint shader, GLenum pname, GLint* params) { }
+      |                           ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15218:49: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15218 | PGLDEF void glGetShaderiv(GLuint shader, GLenum pname, GLint* params) { }
+      |                                          ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15218:63: warning: unused parameter ‘params’ [-Wunused-parameter]
+15218 | PGLDEF void glGetShaderiv(GLuint shader, GLenum pname, GLint* params) { }
+      |                                                        ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glDeleteShader(GLuint)’:
+third_party/portablegl/portablegl.h:15219:35: warning: unused parameter ‘shader’ [-Wunused-parameter]
+15219 | PGLDEF void glDeleteShader(GLuint shader) { }
+      |                            ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glDetachShader(GLuint, GLuint)’:
+third_party/portablegl/portablegl.h:15220:35: warning: unused parameter ‘program’ [-Wunused-parameter]
+15220 | PGLDEF void glDetachShader(GLuint program, GLuint shader) { }
+      |                            ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15220:51: warning: unused parameter ‘shader’ [-Wunused-parameter]
+15220 | PGLDEF void glDetachShader(GLuint program, GLuint shader) { }
+      |                                            ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘GLuint glCreateShader(GLenum)’:
+third_party/portablegl/portablegl.h:15223:37: warning: unused parameter ‘shaderType’ [-Wunused-parameter]
+15223 | PGLDEF GLuint glCreateShader(GLenum shaderType) { return 0; }
+      |                              ~~~~~~~^~~~~~~~~~
+third_party/portablegl/portablegl.h: In function ‘GLint glGetUniformLocation(GLuint, const GLchar*)’:
+third_party/portablegl/portablegl.h:15224:42: warning: unused parameter ‘program’ [-Wunused-parameter]
+15224 | PGLDEF GLint glGetUniformLocation(GLuint program, const GLchar* name) { return 0; }
+      |                                   ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15224:65: warning: unused parameter ‘name’ [-Wunused-parameter]
+15224 | PGLDEF GLint glGetUniformLocation(GLuint program, const GLchar* name) { return 0; }
+      |                                                   ~~~~~~~~~~~~~~^~~~
+third_party/portablegl/portablegl.h: In function ‘GLint glGetAttribLocation(GLuint, const GLchar*)’:
+third_party/portablegl/portablegl.h:15225:41: warning: unused parameter ‘program’ [-Wunused-parameter]
+15225 | PGLDEF GLint glGetAttribLocation(GLuint program, const GLchar* name) { return 0; }
+      |                                  ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15225:64: warning: unused parameter ‘name’ [-Wunused-parameter]
+15225 | PGLDEF GLint glGetAttribLocation(GLuint program, const GLchar* name) { return 0; }
+      |                                                  ~~~~~~~~~~~~~~^~~~
+third_party/portablegl/portablegl.h: In function ‘GLboolean glUnmapBuffer(GLenum)’:
+third_party/portablegl/portablegl.h:15227:39: warning: unused parameter ‘target’ [-Wunused-parameter]
+15227 | PGLDEF GLboolean glUnmapBuffer(GLenum target) { return GL_TRUE; }
+      |                                ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘GLboolean glUnmapNamedBuffer(GLuint)’:
+third_party/portablegl/portablegl.h:15228:44: warning: unused parameter ‘buffer’ [-Wunused-parameter]
+15228 | PGLDEF GLboolean glUnmapNamedBuffer(GLuint buffer) { return GL_TRUE; }
+      |                                     ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glActiveTexture(GLenum)’:
+third_party/portablegl/portablegl.h:15232:36: warning: unused parameter ‘texture’ [-Wunused-parameter]
+15232 | PGLDEF void glActiveTexture(GLenum texture) { }
+      |                             ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTexParameterf(GLenum, GLenum, GLfloat)’:
+third_party/portablegl/portablegl.h:15233:36: warning: unused parameter ‘target’ [-Wunused-parameter]
+15233 | PGLDEF void glTexParameterf(GLenum target, GLenum pname, GLfloat param) {}
+      |                             ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15233:51: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15233 | PGLDEF void glTexParameterf(GLenum target, GLenum pname, GLfloat param) {}
+      |                                            ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15233:66: warning: unused parameter ‘param’ [-Wunused-parameter]
+15233 | PGLDEF void glTexParameterf(GLenum target, GLenum pname, GLfloat param) {}
+      |                                                          ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTextureParameterf(GLuint, GLenum, GLfloat)’:
+third_party/portablegl/portablegl.h:15235:40: warning: unused parameter ‘texture’ [-Wunused-parameter]
+15235 | PGLDEF void glTextureParameterf(GLuint texture, GLenum pname, GLfloat param) {}
+      |                                 ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15235:56: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15235 | PGLDEF void glTextureParameterf(GLuint texture, GLenum pname, GLfloat param) {}
+      |                                                 ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15235:71: warning: unused parameter ‘param’ [-Wunused-parameter]
+15235 | PGLDEF void glTextureParameterf(GLuint texture, GLenum pname, GLfloat param) {}
+      |                                                               ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTexParameterliv(GLenum, GLenum, const GLint*)’:
+third_party/portablegl/portablegl.h:15238:38: warning: unused parameter ‘target’ [-Wunused-parameter]
+15238 | PGLDEF void glTexParameterliv(GLenum target, GLenum pname, const GLint* params) {}
+      |                               ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15238:53: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15238 | PGLDEF void glTexParameterliv(GLenum target, GLenum pname, const GLint* params) {}
+      |                                              ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15238:73: warning: unused parameter ‘params’ [-Wunused-parameter]
+15238 | PGLDEF void glTexParameterliv(GLenum target, GLenum pname, const GLint* params) {}
+      |                                                            ~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTexParameterluiv(GLenum, GLenum, const GLuint*)’:
+third_party/portablegl/portablegl.h:15239:39: warning: unused parameter ‘target’ [-Wunused-parameter]
+15239 | PGLDEF void glTexParameterluiv(GLenum target, GLenum pname, const GLuint* params) {}
+      |                                ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15239:54: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15239 | PGLDEF void glTexParameterluiv(GLenum target, GLenum pname, const GLuint* params) {}
+      |                                               ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15239:75: warning: unused parameter ‘params’ [-Wunused-parameter]
+15239 | PGLDEF void glTexParameterluiv(GLenum target, GLenum pname, const GLuint* params) {}
+      |                                                             ~~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTextureParameterliv(GLuint, GLenum, const GLint*)’:
+third_party/portablegl/portablegl.h:15241:42: warning: unused parameter ‘texture’ [-Wunused-parameter]
+15241 | PGLDEF void glTextureParameterliv(GLuint texture, GLenum pname, const GLint* params) {}
+      |                                   ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15241:58: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15241 | PGLDEF void glTextureParameterliv(GLuint texture, GLenum pname, const GLint* params) {}
+      |                                                   ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15241:78: warning: unused parameter ‘params’ [-Wunused-parameter]
+15241 | PGLDEF void glTextureParameterliv(GLuint texture, GLenum pname, const GLint* params) {}
+      |                                                                 ~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTextureParameterluiv(GLuint, GLenum, const GLuint*)’:
+third_party/portablegl/portablegl.h:15242:43: warning: unused parameter ‘texture’ [-Wunused-parameter]
+15242 | PGLDEF void glTextureParameterluiv(GLuint texture, GLenum pname, const GLuint* params) {}
+      |                                    ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15242:59: warning: unused parameter ‘pname’ [-Wunused-parameter]
+15242 | PGLDEF void glTextureParameterluiv(GLuint texture, GLenum pname, const GLuint* params) {}
+      |                                                    ~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15242:80: warning: unused parameter ‘params’ [-Wunused-parameter]
+15242 | PGLDEF void glTextureParameterluiv(GLuint texture, GLenum pname, const GLuint* params) {}
+      |                                                                  ~~~~~~~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glCompressedTexImage1D(GLenum, GLint, GLenum, GLsizei, GLint, GLsizei, const GLvoid*)’:
+third_party/portablegl/portablegl.h:15244:43: warning: unused parameter ‘target’ [-Wunused-parameter]
+15244 | PGLDEF void glCompressedTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                    ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15244:57: warning: unused parameter ‘level’ [-Wunused-parameter]
+15244 | PGLDEF void glCompressedTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                   ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15244:71: warning: unused parameter ‘internalformat’ [-Wunused-parameter]
+15244 | PGLDEF void glCompressedTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                ~~~~~~~^~~~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15244:95: warning: unused parameter ‘width’ [-Wunused-parameter]
+15244 | PGLDEF void glCompressedTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                       ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15244:108: warning: unused parameter ‘border’ [-Wunused-parameter]
+15244 | PGLDEF void glCompressedTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                      ~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15244:124: warning: unused parameter ‘imageSize’ [-Wunused-parameter]
+15244 | PGLDEF void glCompressedTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                                    ~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15244:149: warning: unused parameter ‘data’ [-Wunused-parameter]
+15244 | PGLDEF void glCompressedTexImage1D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                                                       ~~~~~~~~~~~~~~^~~~
+third_party/portablegl/portablegl.h: In function ‘void glCompressedTexImage2D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const GLvoid*)’:
+third_party/portablegl/portablegl.h:15245:43: warning: unused parameter ‘target’ [-Wunused-parameter]
+15245 | PGLDEF void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                    ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15245:57: warning: unused parameter ‘level’ [-Wunused-parameter]
+15245 | PGLDEF void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                   ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15245:71: warning: unused parameter ‘internalformat’ [-Wunused-parameter]
+15245 | PGLDEF void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                ~~~~~~~^~~~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15245:95: warning: unused parameter ‘width’ [-Wunused-parameter]
+15245 | PGLDEF void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                       ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15245:110: warning: unused parameter ‘height’ [-Wunused-parameter]
+15245 | PGLDEF void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                      ~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15245:124: warning: unused parameter ‘border’ [-Wunused-parameter]
+15245 | PGLDEF void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                                      ~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15245:140: warning: unused parameter ‘imageSize’ [-Wunused-parameter]
+15245 | PGLDEF void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                                                    ~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15245:165: warning: unused parameter ‘data’ [-Wunused-parameter]
+15245 | PGLDEF void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                                                                       ~~~~~~~~~~~~~~^~~~
+third_party/portablegl/portablegl.h: In function ‘void glCompressedTexImage3D(GLenum, GLint, GLenum, GLsizei, GLsizei, GLsizei, GLint, GLsizei, const GLvoid*)’:
+third_party/portablegl/portablegl.h:15246:43: warning: unused parameter ‘target’ [-Wunused-parameter]
+15246 | PGLDEF void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                    ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15246:57: warning: unused parameter ‘level’ [-Wunused-parameter]
+15246 | PGLDEF void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                   ~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15246:71: warning: unused parameter ‘internalformat’ [-Wunused-parameter]
+15246 | PGLDEF void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                ~~~~~~~^~~~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15246:95: warning: unused parameter ‘width’ [-Wunused-parameter]
+15246 | PGLDEF void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                       ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15246:110: warning: unused parameter ‘height’ [-Wunused-parameter]
+15246 | PGLDEF void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                      ~~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15246:126: warning: unused parameter ‘depth’ [-Wunused-parameter]
+15246 | PGLDEF void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                                      ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15246:139: warning: unused parameter ‘border’ [-Wunused-parameter]
+15246 | PGLDEF void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                                                     ~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15246:155: warning: unused parameter ‘imageSize’ [-Wunused-parameter]
+15246 | PGLDEF void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                                                                   ~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15246:180: warning: unused parameter ‘data’ [-Wunused-parameter]
+15246 | PGLDEF void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid* data) {}
+      |                                                                                                                                                                      ~~~~~~~~~~~~~~^~~~
+third_party/portablegl/portablegl.h: In function ‘void glTexBuffer(GLenum, GLenum, GLuint)’:
+third_party/portablegl/portablegl.h:15248:32: warning: unused parameter ‘target’ [-Wunused-parameter]
+15248 | PGLDEF void glTexBuffer(GLenum target, GLenum internalformat, GLuint buffer) { }
+      |                         ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h:15248:47: warning: unused parameter ‘internalformat’ [-Wunused-parameter]
+15248 | PGLDEF void glTexBuffer(GLenum target, GLenum internalformat, GLuint buffer) { }
+      |                                        ~~~~~~~^~~~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15248:70: warning: unused parameter ‘buffer’ [-Wunused-parameter]
+15248 | PGLDEF void glTexBuffer(GLenum target, GLenum internalformat, GLuint buffer) { }
+      |                                                               ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glTextureBuffer(GLuint, GLenum, GLuint)’:
+third_party/portablegl/portablegl.h:15249:36: warning: unused parameter ‘texture’ [-Wunused-parameter]
+15249 | PGLDEF void glTextureBuffer(GLuint texture, GLenum internalformat, GLuint buffer) { }
+      |                             ~~~~~~~^~~~~~~
+third_party/portablegl/portablegl.h:15249:52: warning: unused parameter ‘internalformat’ [-Wunused-parameter]
+15249 | PGLDEF void glTextureBuffer(GLuint texture, GLenum internalformat, GLuint buffer) { }
+      |                                             ~~~~~~~^~~~~~~~~~~~~~
+third_party/portablegl/portablegl.h:15249:75: warning: unused parameter ‘buffer’ [-Wunused-parameter]
+15249 | PGLDEF void glTextureBuffer(GLuint texture, GLenum internalformat, GLuint buffer) { }
+      |                                                                    ~~~~~~~^~~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform1f(GLint, GLfloat)’:
+third_party/portablegl/portablegl.h:15252:31: warning: unused parameter ‘location’ [-Wunused-parameter]
+15252 | PGLDEF void glUniform1f(GLint location, GLfloat v0) { }
+      |                         ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15252:49: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15252 | PGLDEF void glUniform1f(GLint location, GLfloat v0) { }
+      |                                         ~~~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform2f(GLint, GLfloat, GLfloat)’:
+third_party/portablegl/portablegl.h:15253:31: warning: unused parameter ‘location’ [-Wunused-parameter]
+15253 | PGLDEF void glUniform2f(GLint location, GLfloat v0, GLfloat v1) { }
+      |                         ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15253:49: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15253 | PGLDEF void glUniform2f(GLint location, GLfloat v0, GLfloat v1) { }
+      |                                         ~~~~~~~~^~
+third_party/portablegl/portablegl.h:15253:61: warning: unused parameter ‘v1’ [-Wunused-parameter]
+15253 | PGLDEF void glUniform2f(GLint location, GLfloat v0, GLfloat v1) { }
+      |                                                     ~~~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform3f(GLint, GLfloat, GLfloat, GLfloat)’:
+third_party/portablegl/portablegl.h:15254:31: warning: unused parameter ‘location’ [-Wunused-parameter]
+15254 | PGLDEF void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) { }
+      |                         ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15254:49: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15254 | PGLDEF void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) { }
+      |                                         ~~~~~~~~^~
+third_party/portablegl/portablegl.h:15254:61: warning: unused parameter ‘v1’ [-Wunused-parameter]
+15254 | PGLDEF void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) { }
+      |                                                     ~~~~~~~~^~
+third_party/portablegl/portablegl.h:15254:73: warning: unused parameter ‘v2’ [-Wunused-parameter]
+15254 | PGLDEF void glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2) { }
+      |                                                                 ~~~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform4f(GLint, GLfloat, GLfloat, GLfloat, GLfloat)’:
+third_party/portablegl/portablegl.h:15255:31: warning: unused parameter ‘location’ [-Wunused-parameter]
+15255 | PGLDEF void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) { }
+      |                         ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15255:49: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15255 | PGLDEF void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) { }
+      |                                         ~~~~~~~~^~
+third_party/portablegl/portablegl.h:15255:61: warning: unused parameter ‘v1’ [-Wunused-parameter]
+15255 | PGLDEF void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) { }
+      |                                                     ~~~~~~~~^~
+third_party/portablegl/portablegl.h:15255:73: warning: unused parameter ‘v2’ [-Wunused-parameter]
+15255 | PGLDEF void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) { }
+      |                                                                 ~~~~~~~~^~
+third_party/portablegl/portablegl.h:15255:85: warning: unused parameter ‘v3’ [-Wunused-parameter]
+15255 | PGLDEF void glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) { }
+      |                                                                             ~~~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform1i(GLint, GLint)’:
+third_party/portablegl/portablegl.h:15257:31: warning: unused parameter ‘location’ [-Wunused-parameter]
+15257 | PGLDEF void glUniform1i(GLint location, GLint v0) { }
+      |                         ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15257:47: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15257 | PGLDEF void glUniform1i(GLint location, GLint v0) { }
+      |                                         ~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform2i(GLint, GLint, GLint)’:
+third_party/portablegl/portablegl.h:15258:31: warning: unused parameter ‘location’ [-Wunused-parameter]
+15258 | PGLDEF void glUniform2i(GLint location, GLint v0, GLint v1) { }
+      |                         ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15258:47: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15258 | PGLDEF void glUniform2i(GLint location, GLint v0, GLint v1) { }
+      |                                         ~~~~~~^~
+third_party/portablegl/portablegl.h:15258:57: warning: unused parameter ‘v1’ [-Wunused-parameter]
+15258 | PGLDEF void glUniform2i(GLint location, GLint v0, GLint v1) { }
+      |                                                   ~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform3i(GLint, GLint, GLint, GLint)’:
+third_party/portablegl/portablegl.h:15259:31: warning: unused parameter ‘location’ [-Wunused-parameter]
+15259 | PGLDEF void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) { }
+      |                         ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15259:47: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15259 | PGLDEF void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) { }
+      |                                         ~~~~~~^~
+third_party/portablegl/portablegl.h:15259:57: warning: unused parameter ‘v1’ [-Wunused-parameter]
+15259 | PGLDEF void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) { }
+      |                                                   ~~~~~~^~
+third_party/portablegl/portablegl.h:15259:67: warning: unused parameter ‘v2’ [-Wunused-parameter]
+15259 | PGLDEF void glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) { }
+      |                                                             ~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform4i(GLint, GLint, GLint, GLint, GLint)’:
+third_party/portablegl/portablegl.h:15260:31: warning: unused parameter ‘location’ [-Wunused-parameter]
+15260 | PGLDEF void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) { }
+      |                         ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15260:47: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15260 | PGLDEF void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) { }
+      |                                         ~~~~~~^~
+third_party/portablegl/portablegl.h:15260:57: warning: unused parameter ‘v1’ [-Wunused-parameter]
+15260 | PGLDEF void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) { }
+      |                                                   ~~~~~~^~
+third_party/portablegl/portablegl.h:15260:67: warning: unused parameter ‘v2’ [-Wunused-parameter]
+15260 | PGLDEF void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) { }
+      |                                                             ~~~~~~^~
+third_party/portablegl/portablegl.h:15260:77: warning: unused parameter ‘v3’ [-Wunused-parameter]
+15260 | PGLDEF void glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GLint v3) { }
+      |                                                                       ~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform1ui(GLint, GLuint)’:
+third_party/portablegl/portablegl.h:15262:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15262 | PGLDEF void glUniform1ui(GLint location, GLuint v0) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15262:49: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15262 | PGLDEF void glUniform1ui(GLint location, GLuint v0) { }
+      |                                          ~~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform2ui(GLint, GLuint, GLuint)’:
+third_party/portablegl/portablegl.h:15263:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15263 | PGLDEF void glUniform2ui(GLint location, GLuint v0, GLuint v1) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15263:49: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15263 | PGLDEF void glUniform2ui(GLint location, GLuint v0, GLuint v1) { }
+      |                                          ~~~~~~~^~
+third_party/portablegl/portablegl.h:15263:60: warning: unused parameter ‘v1’ [-Wunused-parameter]
+15263 | PGLDEF void glUniform2ui(GLint location, GLuint v0, GLuint v1) { }
+      |                                                     ~~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform3ui(GLint, GLuint, GLuint, GLuint)’:
+third_party/portablegl/portablegl.h:15264:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15264 | PGLDEF void glUniform3ui(GLint location, GLuint v0, GLuint v1, GLuint v2) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15264:49: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15264 | PGLDEF void glUniform3ui(GLint location, GLuint v0, GLuint v1, GLuint v2) { }
+      |                                          ~~~~~~~^~
+third_party/portablegl/portablegl.h:15264:60: warning: unused parameter ‘v1’ [-Wunused-parameter]
+15264 | PGLDEF void glUniform3ui(GLint location, GLuint v0, GLuint v1, GLuint v2) { }
+      |                                                     ~~~~~~~^~
+third_party/portablegl/portablegl.h:15264:71: warning: unused parameter ‘v2’ [-Wunused-parameter]
+15264 | PGLDEF void glUniform3ui(GLint location, GLuint v0, GLuint v1, GLuint v2) { }
+      |                                                                ~~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform4ui(GLint, GLuint, GLuint, GLuint, GLuint)’:
+third_party/portablegl/portablegl.h:15265:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15265 | PGLDEF void glUniform4ui(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15265:49: warning: unused parameter ‘v0’ [-Wunused-parameter]
+15265 | PGLDEF void glUniform4ui(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) { }
+      |                                          ~~~~~~~^~
+third_party/portablegl/portablegl.h:15265:60: warning: unused parameter ‘v1’ [-Wunused-parameter]
+15265 | PGLDEF void glUniform4ui(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) { }
+      |                                                     ~~~~~~~^~
+third_party/portablegl/portablegl.h:15265:71: warning: unused parameter ‘v2’ [-Wunused-parameter]
+15265 | PGLDEF void glUniform4ui(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) { }
+      |                                                                ~~~~~~~^~
+third_party/portablegl/portablegl.h:15265:82: warning: unused parameter ‘v3’ [-Wunused-parameter]
+15265 | PGLDEF void glUniform4ui(GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3) { }
+      |                                                                           ~~~~~~~^~
+third_party/portablegl/portablegl.h: In function ‘void glUniform1fv(GLint, GLsizei, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15267:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15267 | PGLDEF void glUniform1fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15267:50: warning: unused parameter ‘count’ [-Wunused-parameter]
+15267 | PGLDEF void glUniform1fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                                          ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15267:72: warning: unused parameter ‘value’ [-Wunused-parameter]
+15267 | PGLDEF void glUniform1fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                                                         ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform2fv(GLint, GLsizei, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15268:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15268 | PGLDEF void glUniform2fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15268:50: warning: unused parameter ‘count’ [-Wunused-parameter]
+15268 | PGLDEF void glUniform2fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                                          ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15268:72: warning: unused parameter ‘value’ [-Wunused-parameter]
+15268 | PGLDEF void glUniform2fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                                                         ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform3fv(GLint, GLsizei, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15269:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15269 | PGLDEF void glUniform3fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15269:50: warning: unused parameter ‘count’ [-Wunused-parameter]
+15269 | PGLDEF void glUniform3fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                                          ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15269:72: warning: unused parameter ‘value’ [-Wunused-parameter]
+15269 | PGLDEF void glUniform3fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                                                         ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform4fv(GLint, GLsizei, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15270:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15270 | PGLDEF void glUniform4fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15270:50: warning: unused parameter ‘count’ [-Wunused-parameter]
+15270 | PGLDEF void glUniform4fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                                          ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15270:72: warning: unused parameter ‘value’ [-Wunused-parameter]
+15270 | PGLDEF void glUniform4fv(GLint location, GLsizei count, const GLfloat* value) { }
+      |                                                         ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform1iv(GLint, GLsizei, const GLint*)’:
+third_party/portablegl/portablegl.h:15272:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15272 | PGLDEF void glUniform1iv(GLint location, GLsizei count, const GLint* value) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15272:50: warning: unused parameter ‘count’ [-Wunused-parameter]
+15272 | PGLDEF void glUniform1iv(GLint location, GLsizei count, const GLint* value) { }
+      |                                          ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15272:70: warning: unused parameter ‘value’ [-Wunused-parameter]
+15272 | PGLDEF void glUniform1iv(GLint location, GLsizei count, const GLint* value) { }
+      |                                                         ~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform2iv(GLint, GLsizei, const GLint*)’:
+third_party/portablegl/portablegl.h:15273:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15273 | PGLDEF void glUniform2iv(GLint location, GLsizei count, const GLint* value) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15273:50: warning: unused parameter ‘count’ [-Wunused-parameter]
+15273 | PGLDEF void glUniform2iv(GLint location, GLsizei count, const GLint* value) { }
+      |                                          ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15273:70: warning: unused parameter ‘value’ [-Wunused-parameter]
+15273 | PGLDEF void glUniform2iv(GLint location, GLsizei count, const GLint* value) { }
+      |                                                         ~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform3iv(GLint, GLsizei, const GLint*)’:
+third_party/portablegl/portablegl.h:15274:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15274 | PGLDEF void glUniform3iv(GLint location, GLsizei count, const GLint* value) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15274:50: warning: unused parameter ‘count’ [-Wunused-parameter]
+15274 | PGLDEF void glUniform3iv(GLint location, GLsizei count, const GLint* value) { }
+      |                                          ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15274:70: warning: unused parameter ‘value’ [-Wunused-parameter]
+15274 | PGLDEF void glUniform3iv(GLint location, GLsizei count, const GLint* value) { }
+      |                                                         ~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform4iv(GLint, GLsizei, const GLint*)’:
+third_party/portablegl/portablegl.h:15275:32: warning: unused parameter ‘location’ [-Wunused-parameter]
+15275 | PGLDEF void glUniform4iv(GLint location, GLsizei count, const GLint* value) { }
+      |                          ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15275:50: warning: unused parameter ‘count’ [-Wunused-parameter]
+15275 | PGLDEF void glUniform4iv(GLint location, GLsizei count, const GLint* value) { }
+      |                                          ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15275:70: warning: unused parameter ‘value’ [-Wunused-parameter]
+15275 | PGLDEF void glUniform4iv(GLint location, GLsizei count, const GLint* value) { }
+      |                                                         ~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform1uiv(GLint, GLsizei, const GLuint*)’:
+third_party/portablegl/portablegl.h:15277:33: warning: unused parameter ‘location’ [-Wunused-parameter]
+15277 | PGLDEF void glUniform1uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                           ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15277:51: warning: unused parameter ‘count’ [-Wunused-parameter]
+15277 | PGLDEF void glUniform1uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                                           ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15277:72: warning: unused parameter ‘value’ [-Wunused-parameter]
+15277 | PGLDEF void glUniform1uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                                                          ~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform2uiv(GLint, GLsizei, const GLuint*)’:
+third_party/portablegl/portablegl.h:15278:33: warning: unused parameter ‘location’ [-Wunused-parameter]
+15278 | PGLDEF void glUniform2uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                           ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15278:51: warning: unused parameter ‘count’ [-Wunused-parameter]
+15278 | PGLDEF void glUniform2uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                                           ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15278:72: warning: unused parameter ‘value’ [-Wunused-parameter]
+15278 | PGLDEF void glUniform2uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                                                          ~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform3uiv(GLint, GLsizei, const GLuint*)’:
+third_party/portablegl/portablegl.h:15279:33: warning: unused parameter ‘location’ [-Wunused-parameter]
+15279 | PGLDEF void glUniform3uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                           ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15279:51: warning: unused parameter ‘count’ [-Wunused-parameter]
+15279 | PGLDEF void glUniform3uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                                           ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15279:72: warning: unused parameter ‘value’ [-Wunused-parameter]
+15279 | PGLDEF void glUniform3uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                                                          ~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniform4uiv(GLint, GLsizei, const GLuint*)’:
+third_party/portablegl/portablegl.h:15280:33: warning: unused parameter ‘location’ [-Wunused-parameter]
+15280 | PGLDEF void glUniform4uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                           ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15280:51: warning: unused parameter ‘count’ [-Wunused-parameter]
+15280 | PGLDEF void glUniform4uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                                           ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15280:72: warning: unused parameter ‘value’ [-Wunused-parameter]
+15280 | PGLDEF void glUniform4uiv(GLint location, GLsizei count, const GLuint* value) { }
+      |                                                          ~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniformMatrix2fv(GLint, GLsizei, GLboolean, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15282:38: warning: unused parameter ‘location’ [-Wunused-parameter]
+15282 | PGLDEF void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15282:56: warning: unused parameter ‘count’ [-Wunused-parameter]
+15282 | PGLDEF void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15282:73: warning: unused parameter ‘transpose’ [-Wunused-parameter]
+15282 | PGLDEF void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                               ~~~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15282:99: warning: unused parameter ‘value’ [-Wunused-parameter]
+15282 | PGLDEF void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                                    ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniformMatrix3fv(GLint, GLsizei, GLboolean, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15283:38: warning: unused parameter ‘location’ [-Wunused-parameter]
+15283 | PGLDEF void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15283:56: warning: unused parameter ‘count’ [-Wunused-parameter]
+15283 | PGLDEF void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15283:73: warning: unused parameter ‘transpose’ [-Wunused-parameter]
+15283 | PGLDEF void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                               ~~~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15283:99: warning: unused parameter ‘value’ [-Wunused-parameter]
+15283 | PGLDEF void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                                    ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniformMatrix4fv(GLint, GLsizei, GLboolean, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15284:38: warning: unused parameter ‘location’ [-Wunused-parameter]
+15284 | PGLDEF void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15284:56: warning: unused parameter ‘count’ [-Wunused-parameter]
+15284 | PGLDEF void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15284:73: warning: unused parameter ‘transpose’ [-Wunused-parameter]
+15284 | PGLDEF void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                               ~~~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15284:99: warning: unused parameter ‘value’ [-Wunused-parameter]
+15284 | PGLDEF void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                                    ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniformMatrix2x3fv(GLint, GLsizei, GLboolean, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15285:40: warning: unused parameter ‘location’ [-Wunused-parameter]
+15285 | PGLDEF void glUniformMatrix2x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                  ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15285:58: warning: unused parameter ‘count’ [-Wunused-parameter]
+15285 | PGLDEF void glUniformMatrix2x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                  ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15285:75: warning: unused parameter ‘transpose’ [-Wunused-parameter]
+15285 | PGLDEF void glUniformMatrix2x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                 ~~~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15285:101: warning: unused parameter ‘value’ [-Wunused-parameter]
+15285 | PGLDEF void glUniformMatrix2x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                                      ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniformMatrix3x2fv(GLint, GLsizei, GLboolean, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15286:40: warning: unused parameter ‘location’ [-Wunused-parameter]
+15286 | PGLDEF void glUniformMatrix3x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                  ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15286:58: warning: unused parameter ‘count’ [-Wunused-parameter]
+15286 | PGLDEF void glUniformMatrix3x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                  ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15286:75: warning: unused parameter ‘transpose’ [-Wunused-parameter]
+15286 | PGLDEF void glUniformMatrix3x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                 ~~~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15286:101: warning: unused parameter ‘value’ [-Wunused-parameter]
+15286 | PGLDEF void glUniformMatrix3x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                                      ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniformMatrix2x4fv(GLint, GLsizei, GLboolean, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15287:40: warning: unused parameter ‘location’ [-Wunused-parameter]
+15287 | PGLDEF void glUniformMatrix2x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                  ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15287:58: warning: unused parameter ‘count’ [-Wunused-parameter]
+15287 | PGLDEF void glUniformMatrix2x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                  ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15287:75: warning: unused parameter ‘transpose’ [-Wunused-parameter]
+15287 | PGLDEF void glUniformMatrix2x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                 ~~~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15287:101: warning: unused parameter ‘value’ [-Wunused-parameter]
+15287 | PGLDEF void glUniformMatrix2x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                                      ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniformMatrix4x2fv(GLint, GLsizei, GLboolean, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15288:40: warning: unused parameter ‘location’ [-Wunused-parameter]
+15288 | PGLDEF void glUniformMatrix4x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                  ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15288:58: warning: unused parameter ‘count’ [-Wunused-parameter]
+15288 | PGLDEF void glUniformMatrix4x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                  ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15288:75: warning: unused parameter ‘transpose’ [-Wunused-parameter]
+15288 | PGLDEF void glUniformMatrix4x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                 ~~~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15288:101: warning: unused parameter ‘value’ [-Wunused-parameter]
+15288 | PGLDEF void glUniformMatrix4x2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                                      ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniformMatrix3x4fv(GLint, GLsizei, GLboolean, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15289:40: warning: unused parameter ‘location’ [-Wunused-parameter]
+15289 | PGLDEF void glUniformMatrix3x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                  ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15289:58: warning: unused parameter ‘count’ [-Wunused-parameter]
+15289 | PGLDEF void glUniformMatrix3x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                  ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15289:75: warning: unused parameter ‘transpose’ [-Wunused-parameter]
+15289 | PGLDEF void glUniformMatrix3x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                 ~~~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15289:101: warning: unused parameter ‘value’ [-Wunused-parameter]
+15289 | PGLDEF void glUniformMatrix3x4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                                      ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘void glUniformMatrix4x3fv(GLint, GLsizei, GLboolean, const GLfloat*)’:
+third_party/portablegl/portablegl.h:15290:40: warning: unused parameter ‘location’ [-Wunused-parameter]
+15290 | PGLDEF void glUniformMatrix4x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                  ~~~~~~^~~~~~~~
+third_party/portablegl/portablegl.h:15290:58: warning: unused parameter ‘count’ [-Wunused-parameter]
+15290 | PGLDEF void glUniformMatrix4x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                  ~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h:15290:75: warning: unused parameter ‘transpose’ [-Wunused-parameter]
+15290 | PGLDEF void glUniformMatrix4x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                 ~~~~~~~~~~^~~~~~~~~
+third_party/portablegl/portablegl.h:15290:101: warning: unused parameter ‘value’ [-Wunused-parameter]
+15290 | PGLDEF void glUniformMatrix4x3fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) { }
+      |                                                                                      ~~~~~~~~~~~~~~~^~~~~
+third_party/portablegl/portablegl.h: In function ‘float pgl_auto_lod(const glTexture*, GLsizei, GLsizei)’:
+third_party/portablegl/portablegl.h:15463:44: warning: unused parameter ‘t’ [-Wunused-parameter]
+15463 | static float pgl_auto_lod(const glTexture* t, GLsizei dim0, GLsizei dim1)
+      |                           ~~~~~~~~~~~~~~~~~^
+
+Time variable                                   usr           sys          wall           GGC
+ phase setup                        :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  1781k (  1%)
+ phase parsing                      :   0.45 (  9%)   0.41 ( 48%)   0.87 ( 15%)    88M ( 33%)
+ phase lang. deferred               :   0.06 (  1%)   0.03 (  4%)   0.08 (  1%)    12M (  5%)
+ phase opt and generate             :   4.28 ( 89%)   0.41 ( 48%)   4.70 ( 83%)   164M ( 62%)
+ phase last asm                     :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   257k (  0%)
+ |name lookup                       :   0.09 (  2%)   0.03 (  4%)   0.19 (  3%)  3424k (  1%)
+ |overload resolution               :   0.06 (  1%)   0.02 (  2%)   0.08 (  1%) 10195k (  4%)
+ dump files                         :   0.05 (  1%)   0.00 (  0%)   0.12 (  2%)     0  (  0%)
+ callgraph construction             :   0.03 (  1%)   0.01 (  1%)   0.05 (  1%)  3696k (  1%)
+ callgraph optimization             :   0.03 (  1%)   0.02 (  2%)   0.03 (  1%)    18k (  0%)
+ callgraph functions expansion      :   3.62 ( 75%)   0.28 ( 33%)   3.90 ( 69%)   120M ( 45%)
+ callgraph ipa passes               :   0.58 ( 12%)   0.11 ( 13%)   0.69 ( 12%)    26M ( 10%)
+ ipa function summary               :   0.03 (  1%)   0.01 (  1%)   0.02 (  0%)  1401k (  1%)
+ ipa cp                             :   0.03 (  1%)   0.00 (  0%)   0.03 (  1%)  1032k (  0%)
+ ipa inlining heuristics            :   0.04 (  1%)   0.00 (  0%)   0.01 (  0%)  1011k (  0%)
+ ipa function splitting             :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)   310k (  0%)
+ ipa pure const                     :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    74k (  0%)
+ ipa icf                            :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   440k (  0%)
+ ipa modref                         :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)   497k (  0%)
+ cfg construction                   :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   457k (  0%)
+ cfg cleanup                        :   0.06 (  1%)   0.01 (  1%)   0.05 (  1%)  1101k (  0%)
+ trivially dead code                :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)     0  (  0%)
+ df scan insns                      :   0.01 (  0%)   0.00 (  0%)   0.04 (  1%)    26k (  0%)
+ df reaching defs                   :   0.04 (  1%)   0.01 (  1%)   0.04 (  1%)     0  (  0%)
+ df live regs                       :   0.15 (  3%)   0.02 (  2%)   0.13 (  2%)     0  (  0%)
+ df live&initialized regs           :   0.05 (  1%)   0.00 (  0%)   0.02 (  0%)     0  (  0%)
+ df use-def / def-use chains        :   0.04 (  1%)   0.00 (  0%)   0.06 (  1%)     0  (  0%)
+ df reg dead/unused notes           :   0.02 (  0%)   0.00 (  0%)   0.07 (  1%)  1860k (  1%)
+ register information               :   0.00 (  0%)   0.00 (  0%)   0.04 (  1%)     0  (  0%)
+ alias analysis                     :   0.03 (  1%)   0.00 (  0%)   0.04 (  1%)  4854k (  2%)
+ alias stmt walking                 :   0.04 (  1%)   0.01 (  1%)   0.08 (  1%)   554k (  0%)
+ register scan                      :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)   283k (  0%)
+ rebuild jump labels                :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ preprocessing                      :   0.07 (  1%)   0.10 ( 12%)   0.14 (  2%)  7666k (  3%)
+ parser (global)                    :   0.06 (  1%)   0.14 ( 16%)   0.26 (  5%)    28M ( 11%)
+ parser struct body                 :   0.03 (  1%)   0.01 (  1%)   0.02 (  0%)  8988k (  3%)
+ parser function body               :   0.17 (  4%)   0.10 ( 12%)   0.30 (  5%)    24M (  9%)
+ parser inl. func. body             :   0.02 (  0%)   0.00 (  0%)   0.06 (  1%)  4033k (  1%)
+ parser inl. meth. body             :   0.03 (  1%)   0.02 (  2%)   0.05 (  1%)  6195k (  2%)
+ template instantiation             :   0.10 (  2%)   0.07 (  8%)   0.12 (  2%)    20M (  8%)
+ constant expression evaluation     :   0.03 (  1%)   0.00 (  0%)   0.00 (  0%)   579k (  0%)
+ early inlining heuristics          :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)   465k (  0%)
+ inline parameters                  :   0.03 (  1%)   0.00 (  0%)   0.05 (  1%)  2121k (  1%)
+ integration                        :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)    13M (  5%)
+ tree gimplify                      :   0.03 (  1%)   0.01 (  1%)   0.01 (  0%)    10M (  4%)
+ tree eh                            :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   274k (  0%)
+ tree CFG construction              :   0.02 (  0%)   0.00 (  0%)   0.01 (  0%)  3311k (  1%)
+ tree CFG cleanup                   :   0.07 (  1%)   0.01 (  1%)   0.11 (  2%)    88k (  0%)
+ tree tail merge                    :   0.05 (  1%)   0.00 (  0%)   0.01 (  0%)   614k (  0%)
+ tree VRP                           :   0.13 (  3%)   0.02 (  2%)   0.08 (  1%)  2001k (  1%)
+ tree Early VRP                     :   0.13 (  3%)   0.00 (  0%)   0.07 (  1%)  1457k (  1%)
+ tree copy propagation              :   0.02 (  0%)   0.00 (  0%)   0.03 (  1%)    39k (  0%)
+ tree PTA                           :   0.11 (  2%)   0.03 (  4%)   0.08 (  1%)  1084k (  0%)
+ tree SSA rewrite                   :   0.01 (  0%)   0.01 (  1%)   0.02 (  0%)  2340k (  1%)
+ tree SSA incremental               :   0.05 (  1%)   0.00 (  0%)   0.01 (  0%)  1272k (  0%)
+ tree operand scan                  :   0.01 (  0%)   0.02 (  2%)   0.05 (  1%)  6677k (  2%)
+ dominator optimization             :   0.20 (  4%)   0.02 (  2%)   0.22 (  4%)  2662k (  1%)
+ backwards jump threading           :   0.14 (  3%)   0.01 (  1%)   0.19 (  3%)   581k (  0%)
+ tree SRA                           :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)  1410k (  1%)
+ isolate eroneous paths             :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)     0  (  0%)
+ tree CCP                           :   0.16 (  3%)   0.03 (  4%)   0.13 (  2%)   299k (  0%)
+ tree reassociation                 :   0.01 (  0%)   0.00 (  0%)   0.02 (  0%)    58k (  0%)
+ tree PRE                           :   0.06 (  1%)   0.00 (  0%)   0.08 (  1%)  2690k (  1%)
+ tree FRE                           :   0.08 (  2%)   0.01 (  1%)   0.11 (  2%)  1890k (  1%)
+ tree code sinking                  :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  1427k (  1%)
+ tree linearize phis                :   0.02 (  0%)   0.00 (  0%)   0.00 (  0%)   731k (  0%)
+ tree backward propagate            :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ tree forward propagate             :   0.03 (  1%)   0.02 (  2%)   0.04 (  1%)   478k (  0%)
+ tree conservative DCE              :   0.03 (  1%)   0.00 (  0%)   0.05 (  1%)    46k (  0%)
+ tree aggressive DCE                :   0.03 (  1%)   0.00 (  0%)   0.01 (  0%)  1778k (  1%)
+ tree buildin call DCE              :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    35k (  0%)
+ tree DSE                           :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   351k (  0%)
+ PHI merge                          :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   222k (  0%)
+ tree loop invariant motion         :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  8848  (  0%)
+ scev constant prop                 :   0.01 (  0%)   0.01 (  1%)   0.00 (  0%)   107k (  0%)
+ complete unrolling                 :   0.00 (  0%)   0.00 (  0%)   0.00 (  0%)  1308k (  0%)
+ tree vectorization                 :   0.02 (  0%)   0.00 (  0%)   0.03 (  1%)  1313k (  0%)
+ tree slp vectorization             :   0.05 (  1%)   0.01 (  1%)   0.07 (  1%)    13M (  5%)
+ tree iv optimization               :   0.04 (  1%)   0.00 (  0%)   0.02 (  0%)  2066k (  1%)
+ tree copy headers                  :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)  1168k (  0%)
+ tree SSA uncprop                   :   0.01 (  0%)   0.01 (  1%)   0.01 (  0%)     0  (  0%)
+ gimple CSE sin/cos                 :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  1048  (  0%)
+ gimple expand pow/cabs             :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ gimple widening/fma detection      :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   472  (  0%)
+ tree strlen optimization           :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)   698k (  0%)
+ tree modref                        :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)   849k (  0%)
+ dominance frontiers                :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ dominance computation              :   0.06 (  1%)   0.01 (  1%)   0.12 (  2%)     0  (  0%)
+ out of ssa                         :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)    72k (  0%)
+ expand vars                        :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  1032k (  0%)
+ expand                             :   0.06 (  1%)   0.01 (  1%)   0.14 (  2%)    12M (  5%)
+ post expand cleanups               :   0.01 (  0%)   0.01 (  1%)   0.01 (  0%)   788k (  0%)
+ forward prop                       :   0.05 (  1%)   0.00 (  0%)   0.04 (  1%)   230k (  0%)
+ CSE                                :   0.08 (  2%)   0.01 (  1%)   0.11 (  2%)   376k (  0%)
+ dead code elimination              :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ dead store elim1                   :   0.03 (  1%)   0.00 (  0%)   0.03 (  1%)  1164k (  0%)
+ dead store elim2                   :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)  1656k (  1%)
+ loop init                          :   0.03 (  1%)   0.00 (  0%)   0.05 (  1%)  6546k (  2%)
+ loop invariant motion              :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)    25k (  0%)
+ loop fini                          :   0.02 (  0%)   0.00 (  0%)   0.00 (  0%)    32  (  0%)
+ CPROP                              :   0.10 (  2%)   0.01 (  1%)   0.08 (  1%)  2288k (  1%)
+ PRE                                :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)   120k (  0%)
+ CSE 2                              :   0.04 (  1%)   0.01 (  1%)   0.03 (  1%)   227k (  0%)
+ branch prediction                  :   0.01 (  0%)   0.01 (  1%)   0.02 (  0%)   598k (  0%)
+ combiner                           :   0.11 (  2%)   0.00 (  0%)   0.17 (  3%)  4264k (  2%)
+ if-conversion                      :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   656k (  0%)
+ integrated RA                      :   0.32 (  7%)   0.01 (  1%)   0.28 (  5%)    17M (  6%)
+ LRA non-specific                   :   0.04 (  1%)   0.00 (  0%)   0.10 (  2%)  1237k (  0%)
+ LRA virtuals elimination           :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   408k (  0%)
+ LRA create live ranges             :   0.05 (  1%)   0.00 (  0%)   0.05 (  1%)   172k (  0%)
+ LRA hard reg assignment            :   0.01 (  0%)   0.00 (  0%)   0.02 (  0%)     0  (  0%)
+ reload CSE regs                    :   0.17 (  4%)   0.00 (  0%)   0.09 (  2%)  2048k (  1%)
+ ree                                :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)    35k (  0%)
+ thread pro- & epilogue             :   0.04 (  1%)   0.00 (  0%)   0.04 (  1%)  1555k (  1%)
+ if-conversion 2                    :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)  5752  (  0%)
+ peephole 2                         :   0.01 (  0%)   0.00 (  0%)   0.01 (  0%)   358k (  0%)
+ hard reg cprop                     :   0.03 (  1%)   0.00 (  0%)   0.00 (  0%)    28k (  0%)
+ scheduling 2                       :   0.25 (  5%)   0.00 (  0%)   0.24 (  4%)   751k (  0%)
+ machine dep reorg                  :   0.01 (  0%)   0.00 (  0%)   0.02 (  0%)    11k (  0%)
+ reorder blocks                     :   0.06 (  1%)   0.00 (  0%)   0.04 (  1%)   701k (  0%)
+ shorten branches                   :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)   504  (  0%)
+ reg stack                          :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)     0  (  0%)
+ final                              :   0.09 (  2%)   0.01 (  1%)   0.06 (  1%)  4649k (  2%)
+ variable output                    :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  3552  (  0%)
+ symout                             :   0.01 (  0%)   0.00 (  0%)   0.00 (  0%)  1437k (  1%)
+ uninit var analysis                :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)     0  (  0%)
+ straight-line strength reduction   :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)   115k (  0%)
+ address lowering                   :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)    19k (  0%)
+ tree loop if-conversion            :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)   232k (  0%)
+ access analysis                    :   0.01 (  0%)   0.01 (  1%)   0.05 (  1%)    33k (  0%)
+ unaccounted optimizations          :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)     0  (  0%)
+ rest of compilation                :   0.14 (  3%)   0.00 (  0%)   0.13 (  2%)  2267k (  1%)
+ remove unused locals               :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   216  (  0%)
+ address taken                      :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)   384  (  0%)
+ rebuild frequencies                :   0.00 (  0%)   0.00 (  0%)   0.02 (  0%)   352  (  0%)
+ repair loop structures             :   0.00 (  0%)   0.00 (  0%)   0.01 (  0%)  2008  (  0%)
+ TOTAL                              :   4.80          0.85          5.66          267M
+== pgl_backend rc=0

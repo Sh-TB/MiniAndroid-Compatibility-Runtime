@@ -1,0 +1,21 @@
+experiment,status,measurement,effect_on_build,verdict
+baseline_canonical_j1,TESTED,592.78s rc0 cpu590.2 rss1425MB (today),reference point,PASS
+baseline_fastprofile_j2,TESTED,349.35s rc0 cpu513.9 rss1221MB (today),reference point,PASS
+baseline_fastprofile_j1,TESTED,501.83s cpu501.4,per-TU cost ranking source,PASS
+warm_noop,TESTED,1.02s,developer no-op,PASS
+incr_leaf_edit,TESTED,2.55s,developer leaf loop,PASS
+incr_header_engine_types_18consumers,TESTED,308.12s -j1,header cascade cost,PASS
+incr_header_shadow_registry_29consumers,TESTED,278.75s -j2 (framework copy),header cascade cost,PASS
+LPT_scheduling_model,OBSERVED,ideal floor 251.7s vs 349.35 measured,~97s gap NOT schedulable,MODEL
+ninja_flag_parity_j2,TESTED,355.91s vs 349.35 make,scheduler exonerated,REJECTED-MEASURED
+xargs_raw_P2,TESTED,348.90s (8 dir-missing fails noted),scheduler exonerated again,REJECTED-MEASURED
+hypervisor_steal_sample,OBSERVED,+172.7s steal during 356s build (~24% of 2-core budget),explains 1.47 effective cores,ROOT-CAUSE
+expA_o1_tier1_domains,TESTED-PROBE+IMPLEMENTED,ABBA x2: -37..-44% per-TU at -O1,-68 CPU-s expected,IMPLEMENTED (W24TIERS=1; full A/B pending)
+expA_o1_tier2_cold_small,TESTED-PROBE+IMPLEMENTED,ABBA x2: -18..-23% per-TU at -O1,-19 CPU-s expected,IMPLEMENTED (W24TIERS=1; full A/B pending)
+expC_pch_common_prefix,TESTED,151MB gch; ABBA probes: apkparse +40% resparse ±0 sqlsh -8% layout -10% uig +4.6%,net ≈ zero-to-negative,REJECTED-MEASURED
+expD_ccache_warm,TESTED (W23-E),25.40s byte-identical identical-tree,recommended dev loop,IMPLEMENTED (existing)
+expD_sccache,BLOCKED,not available in sandbox,no rust toolchain,BLOCKED
+expD_mold_lld,REJECTED-MEASURED,link 1.5s of 349,share too small,REJECTED
+expD_cpp20_modules,REJECTED,project is C++17,not justified,REJECTED
+bug7_shadow_registry_duplicate,REGISTERED,src/dex/ vs src/framework/ copies DIFFER,cascade analyses measured framework copy,OPEN (needs dedup decision)
+cmake_webp_flag_parity,REGISTERED,CMake builds without -DMINIANDROID_HAVE_WEBP,silent divergence from Make,OPEN (pass flag explicitly)
