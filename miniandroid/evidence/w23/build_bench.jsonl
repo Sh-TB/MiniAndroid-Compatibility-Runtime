@@ -22,3 +22,6 @@
 {"cmd": ["make", "FASTPROFILE=1", "BUILDDIR=build_fast", "-j2", "all"], "rc": 0, "wall_s": 323.9, "cpu_user_s": 467.865, "cpu_sys_s": 10.178, "maxrss_kb": 1253072, "nproc": 2, "log": "evidence/w23/p120_fastprofile_j2.log"}
 {"cmd": ["make", "FASTPROFILE=1", "BUILDDIR=build_fast", "test-all"], "rc": 2, "wall_s": 169.471, "cpu_user_s": 158.889, "cpu_sys_s": 10.085, "maxrss_kb": 567856, "nproc": 2, "log": "evidence/w23/p120_fastprofile_testall.log"}
 {"cmd": ["make", "FASTPROFILE=1", "BUILDDIR=build_fast", "test-all"], "rc": 0, "wall_s": 0.619, "cpu_user_s": 0.395, "cpu_sys_s": 0.266, "maxrss_kb": 39468, "nproc": 2, "log": "evidence/w23/p120_fastprofile_testall_retry.log"}
+{"cmd": ["make", "FASTPROFILE=1", "BUILDDIR=build_p2a", "-j2", "all"], "rc": 0, "wall_s": 322.749, "cpu_user_s": 466.123, "cpu_sys_s": 12.421, "maxrss_kb": 1221976, "nproc": 2, "log": "evidence/w23/p2_fastprofile_j2_nosync.log"}
+{"cmd": ["make", "FASTPROFILE=1", "BUILDDIR=build_p2b", "-j2", "all"], "rc": 0, "wall_s": 322.563, "cpu_user_s": 466.17, "cpu_sys_s": 12.233, "maxrss_kb": 1224900, "nproc": 2, "log": "evidence/w23/p2_fastprofile_params_j2.log"}
+{"cmd": ["make", "FASTPROFILE=1", "BUILDDIR=build_p2b", "test-all"], "rc": 0, "wall_s": 169.878, "cpu_user_s": 159.302, "cpu_sys_s": 9.971, "maxrss_kb": 568132, "nproc": 2, "log": "evidence/w23/p2_testall_final.log"}

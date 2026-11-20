@@ -164,6 +164,28 @@ Practical production paths that DO meet 120 s (all measured this wave):
 warm-cache rebuild 25.40 s (byte-identical binary), incremental rebuilds
 6.7-13.1 s, and any ≥6-core machine for cold builds.
 
+### P2: breaking the 323.9 s floor — two more falsified hypotheses, floor confirmed
+
+1. `--output-sync` removal (suspected cause of the 1.36 parallel-efficiency
+   factor): measured 322.75 s vs 323.90 s with sync — 0.4 %, REFUTED. The
+   factor is memory-bandwidth contention of two cc1plus processes, not
+   tooling overhead; TU-splitting for balance is therefore also bounded
+   (wall ≈ 1.36 × CPU/2 regardless of scheduling).
+2. Wave-7 inline-budget params generalized to the 6 heavy TUs: per-TU
+   probes showed 7-13 %, but the full-build A/B falsified it — with the
+   rules active, CPU total (478.4 vs 478.5) AND the binary were identical.
+   BUG-5 registered: the probe "wins" were OS page-cache order bias
+   (baseline always ran first). Rules reverted; dead end documented in the
+   Makefile so it is not re-adopted without alternating-order repetitions.
+3. Cross-check on reproducibility: the P2 binaries embed commit 29a708c3
+   while the previous day's build embedded 28aab688 — the only sha
+   difference (no timestamps in the generated version header).
+4. Final floor on this 2-core host, three independent FASTPROFILE -j2 runs:
+   317.05 / 323.90 / 322.75 s (±1 % noise). Canonical -j1 541.33 s ->
+   FASTPROFILE 322.75 s = **-40.4 %**, every step measured. Below this
+   floor the remaining paths are unchanged: warm-cache rebuild 25.40 s
+   (byte-identical), incremental 6.7-13.1 s, or ≥6 cores for cold builds.
+
 ### FASTPROFILE (user mandate: ">=20 % of the ~500 s is worth it — find what other projects do")
 
 Research pass (StackOverflow/GCC docs precedent: GCC "variable tracking"

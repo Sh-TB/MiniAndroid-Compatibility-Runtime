@@ -36,6 +36,13 @@ ifeq ($(FASTPROFILE),1)
 CXXFLAGS := $(subst -g , -g1 ,$(CXXFLAGS))
 endif
 
+# W23-P2 negative result (BUG-5, kept as a documented dead end): wave-7
+# inline-budget params were probed at 7-13 % per-TU savings on the heavy
+# TUs, but full-build A/B falsified them — with the rules active the CPU
+# total and the BINARY were byte-identical (2bcdcfb8 == 2bcdcfb8). The
+# probe deltas were OS page-cache order bias (baseline always ran first,
+# params second). Do NOT re-adopt without alternating-order repetitions.
+
 # ===== ISSUE-612 WAVE-2: fast developer feedback (P0) =====
 # DEV=1 swaps the optimization profile of EVERY translation unit to
 # -O0 -g0 (parse/sema iteration speed). Without DEV the production
