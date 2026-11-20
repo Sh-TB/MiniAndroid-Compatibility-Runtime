@@ -530,7 +530,7 @@ TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
 	s225m_wave_law_test s231_view_resource_law_test \
 	s234_w26_engine_laws_test s235_lane_laws_test s236_port_laws_test s237_append_bounded_law_test s238_achievements_audit_test s239_wave_stack_audit_test s240_generic_law_battery_test s241_compare_law_battery_test s243_font_pipeline_law_test s244_app_font_discovery_law_test s245_font_final_matrix_test s246_layout_closure_law_test s247_grid_rtl_law_test \
 	s248_sqlite_cursor_contract_test s249_adapter_position_contract_test s250_dialog_lifecycle_contract_test s251_activity_result_contract_test s252_view_state_flags_contract_test \
-	s254_version_identity_law_test
+	s254_version_identity_law_test s17_focus_laws_test
 TEST_BATTERY = $(TEST_CORE) $(TEST_HOSTILE) $(TEST_LAW)
 
 # S225-M wave law test links pthread_shadow.o (the interposition object the

@@ -15,7 +15,7 @@
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
 | AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
-| AUD-54 follow-ups | #632 focused tests for the 131 runtime-behavior claims still NO-CITE after the S16 sweep (103/234 machine-checked) | focused laws per registry; several need the missing APKs |
+| AUD-54 follow-ups | 120 runtime-behavior claims still NO-CITE after S16 (103) + S17 (11) = 114/234 settled | focused laws per registry; several need the missing APKs |
 
 ## Resolved by S14/S15
 - AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined (probes rc=0, battery 49/49 rc=0).

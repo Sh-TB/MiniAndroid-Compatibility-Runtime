@@ -290,6 +290,13 @@ public:
                            int wspec_word, int hspec_word,
                            int& out_w, int& out_h);
 
+    // S17 (AUD-54): element-level inflation is a PUBLIC entry point — the
+    // #632 focused-law battery (s17_focus_laws_test) drives real AxmlElements
+    // through the decode layer without a packaged APK. Implementation and
+    // behavior unchanged; only the access moved from private.
+    uint32_t inflate_element(framework::ViewShadow* views, const AxmlElement& el,
+                             uint32_t parent_view_id, InflateStats& stats);
+
 private:
     // G04 §8: drawable intrinsic-size probe cache (path → natural dims;
     // {-1,-1} = probe failed — never retried, honest 48dp fallback applies).
@@ -422,8 +429,10 @@ private:
         bool from_style_text_style = false;
     };
 
-    uint32_t inflate_element(framework::ViewShadow* views, const AxmlElement& el,
-                             uint32_t parent_view_id, InflateStats& stats);
+    // S17 (AUD-54): element-level inflation is a PUBLIC entry point — the
+    // #632 focused-law battery (s17_focus_laws_test) drives real AxmlElements
+    // through the decode layer without a packaged APK. Implementation and
+    // behavior unchanged; only the access moved from private.
     void apply_element_attrs(framework::ViewShadow::ViewNode& node,
                              const AxmlElement& el, Attrs& a, InflateStats& stats);
     // F-053 (M9): GradientDrawable <shape> law — parse the bg .xml drawable
