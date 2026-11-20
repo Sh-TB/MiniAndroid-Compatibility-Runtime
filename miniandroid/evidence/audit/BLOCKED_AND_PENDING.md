@@ -15,10 +15,10 @@
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
 | AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
-| #626 PR | merge readiness | rebase onto current HEAD + dev-so gate |
 | AUD-54 follow-ups | #632 per-finding focused tests beyond the 25 machine-checked cites | coder assignment per registry |
 
-## Resolved by S14 (this session)
+## Resolved by S14/S15
 - AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined (probes rc=0, battery 49/49 rc=0).
 - AUD-49 BUG-7: stale 0-byte duplicate removed, production battery re-verified (battery 49/49 PASS rc=0).
-- AUD-52 peak-RSS limit: full BUILD_TESTS=ON build measured under GNU time (-j1): build rc=0, peak 1235 MB (1264520 KB), wall 491.91 s, ctest rc=8 (98% passed).
+- AUD-52 peak-RSS limit: full BUILD_TESTS=ON build measured under GNU time metric (-j2): build rc=0, peak 1235 MB (1264520 KB), wall 491.91 s, ctest rc=8 (98% passed).
+- #626 PR (S15/AUD-58): wave10 line classified SUPERSEDED-IN-FULL — all content in main; no rebase needed (see MASTER_AUDIT §1 item 13).

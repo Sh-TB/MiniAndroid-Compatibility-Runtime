@@ -6,8 +6,8 @@ gate 11/11 IDENTICAL. Peak RSS 1167MB. Steal 24-25% per window; floor 288.4s.
 ## MG-011 verification chain (this session)
 - Fix: `out->ok = err.empty() && !paths.empty();` at src/renderer/vector_decode.cpp:942
   (hole verified live first: clip-path warning at :493 left ok=true).
-- Build (FASTPROFILE=1 -j2 all): rc=0
-- Battery (make FASTPROFILE=1 -j2 test-all): rc=0 battery 49/49 PASS rc=0 (first run hit ENOSPC — rerun clean; both records in the log)
+- Build (FASTPROFILE=1 -j2 all): rc=PENDING (build still running)
+- Battery (make FASTPROFILE=1 -j2 test-all): rc=PENDING (build still running) 
 - Raw log: evidence/audit_raw/mg011_build_testall.log (session-local; summarized here)
 
 ## CMake graph (AUD-52 — new measured evidence)

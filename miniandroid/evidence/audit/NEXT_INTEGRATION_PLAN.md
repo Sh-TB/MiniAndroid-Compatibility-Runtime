@@ -10,8 +10,13 @@
    includers — removed, battery 49/49 re-verified. No repointing was needed.
 5. **CMake WEBP parity (AUD-07)** — add -DMINIANDROID_HAVE_WEBP to CMakeLists; proof = section
    compare vs the Make build (cmake now fully exercised: AUD-52 measured + RSS + ctest done).
-6. **#626 PR rebase** — wave10 dev-so profiles onto current HEAD; the 15-commit branch is the base.
+6. ~~**#626 PR rebase**~~ RESOLVED-SUPERSEDED (S15/AUD-58): the wave10 line's entire content is in
+   main via direct W22-W24 landings (13/13 F-NEW-7xx ids, 3/3 W20 P2 fixes, P0 split, dev-so
+   profiles, ZERO missing src/tests paths) — no rebase, no cherry-pick; classification logged
+   for the PR close decision. audit/s236 = superseded (test in TEST_LAW:531); m16-litehtml +
+   cont24 = reachable branch-only experiments.
 7. **RC-12 / layout apps** — only from the original coder environment; no substitutes.
+   S15 re-verification: layout-geometry-001 absent from git ls-remote — still unrecoverable.
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
    0 machine-reproduce the hub's claim; the FULL 49-test battery built and ran
