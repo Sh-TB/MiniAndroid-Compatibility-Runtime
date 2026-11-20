@@ -13,6 +13,8 @@
   port, generic-law battery, corpus lane, six-pin gate runner, #606 LAYOUT-PIPE-001 laws
   (s246, 47 laws incl. scaleType geometry + RelativeLayout center fix + HSV width law).
 - MG-011 ok-fix (#633) — APPLIED THIS SESSION (vector_decode.cpp:942), build+battery verified.
+- BUG-7 dedupe (AUD-49, S14) — stale EMPTY src/dex/shadow_registry.h removed; battery 49/49 after.
+- UBSAN=1 profile + E-05 probes + 7-vector w15 const/high16 rows (AUD-47, S14) — INTEGRATED.
 - .DELETE_ON_ERROR (AUD-09), AUD-51 untrack+gitignore (051af519).
 
 ## Confirmed to exist but NOT in mainline (recovery list)

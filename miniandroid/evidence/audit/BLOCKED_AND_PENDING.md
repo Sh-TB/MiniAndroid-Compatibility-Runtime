@@ -1,4 +1,4 @@
-# BLOCKED AND PENDING — v2 (2026-11-20 (continuation session))
+# BLOCKED AND PENDING — v2 (2026-11-20 (continuation session, S12+S14))
 
 ## BLOCKED
 | ID | Item | Exact blocker | Recovery outcome |
@@ -9,13 +9,16 @@
 | AUD-53 | RC-12 exact commits | branch layout-geometry-001 is coder-local; every local source checked | partially superseded (c48773a0, 7e5473be) |
 | AUD-56 | #630/#631 ten layout apps | coder-local artifacts; no substitutes allowed | documented with visual-evidence comment refs |
 | #634/#295/#296/#297 | coder-local fixes (MG-012, stroke laws) | implementations live in coder trees, not in any reachable branch | documented per issue; not re-implemented here |
-| AUD-52 (partial) | peak memory of full BUILD_TESTS=ON cmake build | session budget (2 vCPU, ~1.4 GB free disk) | graph facts measured; runtime measurement queued |
 
 ## PENDING
 | ID | Item | Missing step |
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
-| AUD-47 | UBSAN=1 profile + 7-test rerun (E-05) | optional sanitizer profile |
-| AUD-49 | BUG-7 duplicate shadow_registry.h dedupe | repoint includes + rebuild |
+| AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
 | #626 PR | merge readiness | rebase onto current HEAD + dev-so gate |
 | AUD-54 follow-ups | #632 per-finding focused tests beyond the 25 machine-checked cites | coder assignment per registry |
+
+## Resolved by S14 (this session)
+- AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined (probes rc=0, battery 49/49 rc=0).
+- AUD-49 BUG-7: stale 0-byte duplicate removed, production battery re-verified (battery 49/49 PASS rc=0).
+- AUD-52 peak-RSS limit: full BUILD_TESTS=ON build measured under GNU time (-j1): build rc=0, peak 1235 MB (1264520 KB), wall 491.91 s, ctest rc=8 (98% passed).

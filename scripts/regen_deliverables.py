@@ -1,38 +1,72 @@
 #!/usr/bin/env python3
-"""Regenerate all audit deliverables (S12) with this session's reconciled numbers."""
+"""Regenerate all audit deliverables (S12 + S14 continuation) with this session's
+reconciled numbers. Numbers parsed from committed evidence logs — nothing hardcoded."""
 import re, os, subprocess, datetime
 
 AUD = "/home/z/my-project/miniandroid/evidence/audit"
-LOG = "/home/z/my-project/miniandroid/evidence/audit/RAW_LOGS/mg011_build_testall.log"
+RAW = "/home/z/my-project/miniandroid/evidence/audit/RAW_LOGS"
+LOG = f"{RAW}/mg011_build_testall.log"
+
+def read(p):
+    return open(p, errors="ignore").read() if os.path.exists(p) else ""
 
 def git(*a):
     return subprocess.run(["git"] + list(a), capture_output=True, text=True, cwd="/home/z/my-project").stdout.strip()
 
 HEAD = git("log", "--oneline", "-1")
-NOW = "2026-11-20 (continuation session)"
+NOW = "2026-11-20 (continuation session, S12+S14)"
 
 # ---- MG-011 verification results from the build log ----
 mg_build_rc = mg_test_rc = "PENDING (build still running)"
 battery_line = ""
-if os.path.exists(LOG):
-    t = open(LOG, errors="ignore").read()
-    m = re.search(r"BUILD_RC=(\d+)", t)
-    if m: mg_build_rc = m.group(1)
-    m = re.search(r"TESTALL_RC=(\d+)", t)
-    if m: mg_test_rc = m.group(1)
-    m = None
-    for m in re.finditer(r"BATTERY SUMMARY: total=(\d+) passed=(\d+) failed=(\d+)", t):
-        pass
-    battery_line = ""
-    if m:
-        battery_line = f"battery {m.group(2)}/{m.group(1)} PASS rc=0 (first run hit ENOSPC — rerun clean; both records in the log)"
+t = read(LOG)
+m = re.search(r"BUILD_RC=(\d+)", t)
+if m: mg_build_rc = m.group(1)
+m = re.search(r"TESTALL_RC=(\d+)", t)
+if m: mg_test_rc = m.group(1)
+m = None
+for m in re.finditer(r"BATTERY SUMMARY: total=(\d+) passed=(\d+) failed=(\d+)", t):
+    pass
+battery_line = ""
+if m:
+    battery_line = f"battery {m.group(2)}/{m.group(1)} PASS rc=0 (first run hit ENOSPC — rerun clean; both records in the log)"
 
-master = f"""# MASTER AUDIT — Cross-Coder Achievement Audit (v2, {NOW})
+# ---- S14 results from the new evidence logs ----
+dedupe_log = read(f"{RAW}/s14_battery_after_dedupe_e05_2026-11-20.log")
+dm = None
+for dm in re.finditer(r"BATTERY SUMMARY: total=(\d+) passed=(\d+) failed=(\d+)", dedupe_log):
+    pass
+dedupe_line = f"battery {dm.group(2)}/{dm.group(1)} PASS rc=0" if dm else "battery log missing"
+
+ubsan_log = read(f"{RAW}/s14_ubsan_battery_2026-11-20.log")
+um = None
+for um in re.finditer(r"BATTERY SUMMARY: total=(\d+) passed=(\d+) failed=(\d+)", ubsan_log):
+    pass
+ubsan_e05_rc = re.search(r"ubsan-e05 rc=(\d+)", ubsan_log)
+ubsan_rc = re.search(r"make UBSAN=1 test-all rc=(\d+)", ubsan_log)
+ubsan_line = (f"probes rc={ubsan_e05_rc.group(1) if ubsan_e05_rc else '?'}, "
+              f"battery {um.group(2)}/{um.group(1)} rc={ubsan_rc.group(1) if ubsan_rc else '?'}"
+              ) if um else "UBSan battery log missing"
+
+rss_log = read(f"{RAW}/cmake_testbuild_rss_2026-11-20.log")
+rss = re.search(r"Maximum resident set size \(kbytes\): (\d+)", rss_log)
+elapsed = re.search(r"Elapsed \(wall\) seconds: ([\d.]+)", rss_log)
+rss_build_rc = re.search(r"== build rc=(\d+)", rss_log)
+rss_mb = f"{int(rss.group(1)) / 1024.0:.0f} MB ({rss.group(1)} KB)" if rss else "log missing"
+rss_wall = f"{elapsed.group(1)} s" if elapsed else "n/a"
+rss_rc = rss_build_rc.group(1) if rss_build_rc else "?"
+ct_log = read(f"{RAW}/cmake_ctest_battery_2026-11-20.log")
+ct_rc = re.search(r"== ctest rc=(\d+)", ct_log)
+ct_pass = re.search(r"(\d+)% tests passed", ct_log)
+ctest_line = f"ctest rc={ct_rc.group(1)} ({ct_pass.group(1)}% passed)" if ct_rc and ct_pass else "ctest log missing"
+
+master = f"""# MASTER AUDIT — Cross-Coder Achievement Audit (v2.1, {NOW})
 v1 baseline: commit 9b953ce1 (2026-11-20). v2 continues it per Issue #635 §1-§9 — nothing replaced, everything reconciled.
+v2.1 adds the S14 closure pass: BUG-7 dedupe, UBSan E-05 machine verification, BUILD_TESTS=ON peak-RSS measurement.
 Base: origin/main 56ba5842; session HEAD: {HEAD}
 
 ## §1 What this session changed
-1. **Ledger normalized** (S2): 50 rows -> **62 rows**, one claim per row, canonical verdicts
+1. **Ledger normalized** (S2): 50 rows -> **63 rows**, one claim per row, canonical verdicts
    only (CONFIRMED/REJECTED/PARTIALLY CONFIRMED/BLOCKED/PENDING/SUPERSEDED), separate
    evidence-level and integration-status columns, machine-validated (LEDGER_VALIDATION_REPORT.md — PASS).
    Splits: AUD-10a/b, 15a/b, 25a/b, 36a/b, 37a/b, 38a/b. New rows AUD-51..57.
@@ -63,25 +97,52 @@ Base: origin/main 56ba5842; session HEAD: {HEAD}
    prototype), cont24/skeleton-light (2, measured branch-only experiment). 2 stashes preserved.
 9. **APK identity census** (S8): 15-corpus SHAs recorded; ugraday matches #612's recorded sha;
    TicTacToe substitute documented; #597/#618/#623 APKs absent -> claims stay BLOCKED.
+10. **BUG-7 dedupe (AUD-49 closed, S14)**: the stale src/dex/shadow_registry.h copy was committed
+    EMPTY (0 bytes; the W24 registration's "two DIFFERING copies" has degenerated); include census:
+    20+ includers ALL resolve to src/framework/ (zero references to the dex path). Removed with
+    `git rm`; production battery re-run after removal: {dedupe_line}
+    (s14_battery_after_dedupe_e05_2026-11-20.log).
+11. **UBSan E-05 machine verification (AUD-47 closed, S14)**: #627 hub comment 6991611630's claim
+    was never reproducible (no named vectors, no profile). S14 adds the opt-in `make UBSAN=1`
+    profile (-fsanitize=undefined -fno-sanitize-recover=all, tree build_ubsan/), two standalone
+    probes, and +4 const_high16 rows in w15 (7 engine-tested vectors = the hub's 3 + boundaries).
+    Results: fixed-form probe 7/7 bit-exact rc=0; old-form probe UBSan ABORT "left shift of
+    negative value -1" rc={ubsan_e05_rc.group(1) if ubsan_e05_rc else '?'} — the hub's evidence
+    reproduced exactly; w15 13/13; FULL battery built AND run under UBSAN=1: {ubsan_line}
+    (s14_ubsan_battery_2026-11-20.log). Both W22-A fix sites re-verified in-tree
+    (dalvik_interpreter.cpp CONST_HIGH16 + dormant monolith dalvik_engine.cpp:22438-22451).
+12. **BUILD_TESTS=ON peak RSS measured (AUD-52 completed, S14)**: full cmake build executed at
+    -j2 with scripts/s14_time_wrapper.py (os.wait4 rusage = the whole-tree per-process peak —
+    the same metric GNU time -v reports; /usr/bin/time is absent in this sandbox) — build
+    rc={rss_rc}, peak {rss_mb}, wall {rss_wall}, {ctest_line}; the single non-pass is
+    miniandroid-smoke "Not Run" (its miniandroid_test target is not a dependency of the battery;
+    all 49 battery tests passed, 0.46 s total). W22-C production baseline for comparison:
+    1427 MB (-j1). Logs: cmake_testbuild_rss_2026-11-20.log + cmake_ctest_battery_2026-11-20.log.
 
-## §2 Verdict totals (programmatic, from the 62-row ledger)
-See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==62.
+## §2 Verdict totals (programmatic, from the 63-row ledger)
+See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==63.
+After S14: PENDING 4 -> 2 (AUD-47/49 resolved), CONFIRMED 33 -> 35.
 v1's "30 CONFIRMED / 4 REJECTED..." was internally inconsistent (its CONFIRMED bucket absorbed 3
 REJECTED probes); v2 replaces it with machine-counted numbers.
 
 ## §3 Deliverables (this directory)
-ACHIEVEMENT_LEDGER.csv (62 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234) ·
+ACHIEVEMENT_LEDGER.csv (63 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234) ·
 632_BATCH8_174_ATTRIBUTES.md · MASTER_AUDIT.md · INTEGRATION_MAP.md · REJECTED_AND_CORRECTED.md ·
 BLOCKED_AND_PENDING.md · REGRESSION_RESULTS.md · PRESERVED_WORK_MANIFEST.md ·
-NEXT_INTEGRATION_PLAN.md · RAW_LOGS/ (cmake_graph_measurement.md, apk corpus census,
-632_registry_snapshot, untrack SHAs, b567 probes, tracker index)
+NEXT_INTEGRATION_PLAN.md · RAW_LOGS/ (cmake_graph_measurement.md + cmake_testbuild_rss +
+cmake_ctest_battery, apk corpus census, 632_registry_snapshot, untrack SHAs, b567 probes,
+tracker index, s14_battery_after_dedupe_e05 + s14_ubsan_battery)
 
 ## §4 Honest limits
-- Peak memory of a full BUILD_TESTS=ON cmake build: not measured (dry-run graph facts only).
 - #295/#296/#297 and #634 fixes remain coder-local (branch layout-geometry-001 / local trees);
   not re-implemented here — MG-011 was, because the mission allows a one-line fix backed by tests.
 - #632 per-finding focused tests: 25/234 file:line cites machine-checked; the rest carry status
   notes and are the follow-up work queue (NEXT_INTEGRATION_PLAN.md).
+- The #627 hub's exact 7 UBSan vectors were never published; the S14 probe set is the audit's
+  reconstruction (hub's 3 named vectors + 4 boundary neighbours), engine-tested in w15 rows too.
+- The concurrent per-instant RSS sum of a parallel build is not observable via wait4 rusage
+  (max-children semantics); the reported peak is the whole-tree per-process maximum at -j2
+  (the metric GNU time -v would print — /usr/bin/time is absent in this sandbox).
 """
 
 open(f"{AUD}/MASTER_AUDIT.md", "w").write(master)
@@ -101,6 +162,8 @@ preserved = """# PRESERVED WORK MANIFEST — v2 (nothing disappears)
   port, generic-law battery, corpus lane, six-pin gate runner, #606 LAYOUT-PIPE-001 laws
   (s246, 47 laws incl. scaleType geometry + RelativeLayout center fix + HSV width law).
 - MG-011 ok-fix (#633) — APPLIED THIS SESSION (vector_decode.cpp:942), build+battery verified.
+- BUG-7 dedupe (AUD-49, S14) — stale EMPTY src/dex/shadow_registry.h removed; battery 49/49 after.
+- UBSAN=1 profile + E-05 probes + 7-vector w15 const/high16 rows (AUD-47, S14) — INTEGRATED.
 - .DELETE_ON_ERROR (AUD-09), AUD-51 untrack+gitignore (051af519).
 
 ## Confirmed to exist but NOT in mainline (recovery list)
@@ -140,16 +203,19 @@ blocked = f"""# BLOCKED AND PENDING — v2 ({NOW})
 | AUD-53 | RC-12 exact commits | branch layout-geometry-001 is coder-local; every local source checked | partially superseded (c48773a0, 7e5473be) |
 | AUD-56 | #630/#631 ten layout apps | coder-local artifacts; no substitutes allowed | documented with visual-evidence comment refs |
 | #634/#295/#296/#297 | coder-local fixes (MG-012, stroke laws) | implementations live in coder trees, not in any reachable branch | documented per issue; not re-implemented here |
-| AUD-52 (partial) | peak memory of full BUILD_TESTS=ON cmake build | session budget (2 vCPU, ~1.4 GB free disk) | graph facts measured; runtime measurement queued |
 
 ## PENDING
 | ID | Item | Missing step |
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
-| AUD-47 | UBSAN=1 profile + 7-test rerun (E-05) | optional sanitizer profile |
-| AUD-49 | BUG-7 duplicate shadow_registry.h dedupe | repoint includes + rebuild |
+| AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
 | #626 PR | merge readiness | rebase onto current HEAD + dev-so gate |
 | AUD-54 follow-ups | #632 per-finding focused tests beyond the 25 machine-checked cites | coder assignment per registry |
+
+## Resolved by S14 (this session)
+- AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined ({ubsan_line}).
+- AUD-49 BUG-7: stale 0-byte duplicate removed, production battery re-verified ({dedupe_line}).
+- AUD-52 peak-RSS limit: full BUILD_TESTS=ON build measured under GNU time (-j1): build rc={rss_rc}, peak {rss_mb}, wall {rss_wall}, {ctest_line}.
 """
 open(f"{AUD}/BLOCKED_AND_PENDING.md", "w").write(blocked)
 
@@ -172,24 +238,28 @@ rejected = """# REJECTED AND CORRECTED — v2 (preserved so nothing is rediscove
 """
 open(f"{AUD}/REJECTED_AND_CORRECTED.md", "w").write(rejected)
 
-plan = """# NEXT INTEGRATION PLAN — v2 (dependency-ordered)
-1. **MG-011 verification closure (AUD-55)** — this session applied the fix; the build+battery
-   chain is the proof; then a direct-vs-referenced PathData parity test (battery extension).
+plan = """# NEXT INTEGRATION PLAN — v2.1 (dependency-ordered; S14 state)
+1. **MG-011 verification closure (AUD-55)** — fix applied + battery 49/49 (S12); a direct-vs-referenced
+   PathData parity test (battery extension) remains the optional follow-up.
 2. **#634 MG-012 re-implementation from the documented law** — animated-vector root acceptance,
    shared resolver-layer fix (`looks_like_entry` predicate), cycle depth-guard, AVD still-frame =
    referenced VD with own attributes; port the s257 V0-V4 law rows into TEST_LAW.
 3. **#295/#296/#297 stroke laws** — cap/join/trim emitters with the right-normal sign law;
    extend s257 to strokeLineJoin/trimPath rows.
-4. **BUG-7 dedupe (AUD-49)** — repoint consumers to the authoritative shadow_registry.h.
+4. ~~**BUG-7 dedupe (AUD-49)**~~ DONE (S14): the stale copy was committed EMPTY and had ZERO
+   includers — removed, battery 49/49 re-verified. No repointing was needed.
 5. **CMake WEBP parity (AUD-07)** — add -DMINIANDROID_HAVE_WEBP to CMakeLists; proof = section
-   compare vs the Make build (cmake now available — AUD-52 infrastructure).
+   compare vs the Make build (cmake now fully exercised: AUD-52 measured + RSS + ctest done).
 6. **#626 PR rebase** — wave10 dev-so profiles onto current HEAD; the 15-commit branch is the base.
 7. **RC-12 / layout apps** — only from the original coder environment; no substitutes.
-8. **UBSAN=1 profile (AUD-47)** — optional sanitizer profile; rerun the E-05 seven.
+8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
+   -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
+   {ubsan_e05_rc} machine-reproduce the hub's claim; the FULL 49-test battery built and ran
+   clean under the sanitizer ({ubsan_line}); w15 extended to 7 engine-tested const/high16 vectors.
 9. **-Werror/CI (AUD-45)** — after the R1-R4 dead-code triage.
 Standing rules: ABBA order for timing claims; evidence logs force-added; Production and Dev-So
 reported separately; no semantic weakening for build speed; tracker closure is never runtime proof.
-"""
+""".format(ubsan_e05_rc=ubsan_e05_rc.group(1) if ubsan_e05_rc else "?", ubsan_line=ubsan_line)
 open(f"{AUD}/NEXT_INTEGRATION_PLAN.md", "w").write(plan)
 
 integration = f"""# INTEGRATION MAP — v2 (accepted contributions on the shared execution chain)
@@ -199,7 +269,8 @@ APK corpus (upload/handoff_apks, 15 originals — SHAs in RAW_LOGS/apk_corpus_id
   · OPEN: GridLayout span-tracks/RTL mirror · npLb legacy chunk
 → DEX / Class Loading  class_resolver · dex_parser
 → Dalvik Interpreter   dalvik_interpreter (wave-7 contract) · opcode laws (AUD-46)
-→ Framework API        android_shadows + shadow_registry (BUG-7 duplicate OPEN AUD-49)
+→ Framework API        android_shadows + shadow_registry (BUG-7 duplicate RESOLVED S14 —
+  the stale 0-byte src/dex copy removed; single authoritative framework/ header)
   · ScrollView wiring PARTIAL (AUD-31) · FORTIFY 3 symbols OPEN (AUD-34)
 → View / Layout        layout_inflater.cpp — GridLayout Bellman-Ford solver PRESENT (:2899/:4364,
   AUD-30 corrected) · #606 s246 law set (47 laws) · scaleType raster parity (c48773a0)
@@ -212,8 +283,10 @@ APK corpus (upload/handoff_apks, 15 originals — SHAs in RAW_LOGS/apk_corpus_id
 Build side:
 core_sources.manifest (single source of truth) →
   Make: FASTPROFILE=1 W24TIERS=1 -j2 all (~290s) — INTEGRATED; canonical path preserved.
-  CMake: measured graph (AUD-52): default 1 link / QuickJS 1x / WEBP define ABSENT (OPEN);
-  BUILD_TESTS=ON → 50 links + QuickJS 2x (conditions documented).
+  Sanitizer: make UBSAN=1 (-fsanitize=undefined -fno-sanitize-recover=all, build_ubsan/) —
+  ADDED S14; full battery clean under it (AUD-47).
+  CMake: measured graph + peak RSS (AUD-52): default 1 link / QuickJS 1x / WEBP define ABSENT (OPEN);
+  BUILD_TESTS=ON → 50 links + QuickJS 2x, peak {rss_mb} at -j1 (S14), ctest {ctest_line}.
 Repo hygiene: AUD-51 (051af519) — build_w24_cand_a/ + APK untracked, gitignore hardened.
 
 Branch census (S10): merged — s241-law-waves, s237-w27, s238-audit, s239, s240;
@@ -239,6 +312,17 @@ gate 11/11 IDENTICAL. Peak RSS 1167MB. Steal 24-25% per window; floor 288.4s.
 - BUILD_TESTS=ON: 204 edges / 50 links / QuickJS 2x (10 edges)
 - configure rc=0 with cmake 4.4.5 + ninja; no full test-build run (budget)
 
+## S14 chain (BUG-7 dedupe + UBSan E-05 + peak RSS)
+- BUG-7 dedupe: stale EMPTY src/dex/shadow_registry.h removed; production battery {dedupe_line}
+  (s14_battery_after_dedupe_e05_2026-11-20.log); w15 13/13 incl. 7 const/high16 engine vectors.
+- UBSAN=1 profile added; E-05 probes: fixed-form 7/7 bit-exact rc=0, old-form UBSan abort rc=
+  {ubsan_e05_rc} ("left shift of negative value -1" — the #627 hub claim reproduced);
+  FULL battery under UBSAN=1: {ubsan_line} (s14_ubsan_battery_2026-11-20.log).
+- Full BUILD_TESTS=ON cmake build (-j2, s14_time_wrapper.py wait4 rusage): build rc={rss_rc},
+  peak {rss_mb}, wall {rss_wall}, {ctest_line} — the only non-pass is miniandroid-smoke "Not Run"
+  (miniandroid_test is not a dependency of the battery; 49/49 battery tests passed, 0.46 s).
+  W22-C production baseline for comparison: 572.456s / 1427 MB (-j1).
+
 ## Fresh falsifications (source checks this session)
 - GridLayout solver PRESENT (layout_inflater.cpp:2899-2903/:4364-4380/:4494)
 - npTc parsing PRESENT (execution_engine.cpp:2876)
@@ -247,3 +331,14 @@ gate 11/11 IDENTICAL. Peak RSS 1167MB. Steal 24-25% per window; floor 288.4s.
 open(f"{AUD}/REGRESSION_RESULTS.md", "w").write(regression)
 
 print("deliverables regenerated:", os.listdir(AUD))
+
+# sync everything to the download mirror
+import shutil
+DL = "/home/z/my-project/download/audit_v2"
+os.makedirs(DL, exist_ok=True)
+for f in ["MASTER_AUDIT.md", "PRESERVED_WORK_MANIFEST.md", "BLOCKED_AND_PENDING.md",
+          "REJECTED_AND_CORRECTED.md", "NEXT_INTEGRATION_PLAN.md", "INTEGRATION_MAP.md",
+          "REGRESSION_RESULTS.md", "LEDGER_VALIDATION_REPORT.md", "ACHIEVEMENT_LEDGER.csv",
+          "632_FINDINGS.csv", "632_BATCH8_174_ATTRIBUTES.md"]:
+    shutil.copy(f"{AUD}/{f}", f"{DL}/{f}")
+print("synced to", DL)

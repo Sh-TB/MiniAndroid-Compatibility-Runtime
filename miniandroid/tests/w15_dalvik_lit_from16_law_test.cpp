@@ -230,6 +230,43 @@ int main() {
         expect_int(engine, "const_high16_7fff_is_0x7fff0000", c,
                    static_cast<int32_t>(0x7FFF0000u));
     }
+    // AUD-47 (#627 E-05 verification): the hub's "7/7 bit-exact" claim was
+    // never published as named tests (only 3 vectors illustrated); these 4
+    // rows complete the audit's reconstruction to a 7-vector engine-tested
+    // set — both boundaries (0x0000/0x0001/0x7FFF below the sign bit,
+    // 0x8000/0x8001/0xFFFF above it) plus the 0xABCD mid-range row above.
+    {
+        std::vector<uint16_t> c;
+        c.push_back(w21h_lo(0, opc::CONST_HIGH16));
+        c.push_back(static_cast<uint16_t>(0x0000));
+        c.push_back(w11x(0, opc::RETURN));
+        expect_int(engine, "const_high16_0000_is_0x00000000", c,
+                   static_cast<int32_t>(0x00000000u));
+    }
+    {
+        std::vector<uint16_t> c;
+        c.push_back(w21h_lo(0, opc::CONST_HIGH16));
+        c.push_back(static_cast<uint16_t>(0x0001));
+        c.push_back(w11x(0, opc::RETURN));
+        expect_int(engine, "const_high16_0001_is_0x00010000", c,
+                   static_cast<int32_t>(0x00010000u));
+    }
+    {
+        std::vector<uint16_t> c;
+        c.push_back(w21h_lo(0, opc::CONST_HIGH16));
+        c.push_back(static_cast<uint16_t>(0x8001));
+        c.push_back(w11x(0, opc::RETURN));
+        expect_int(engine, "const_high16_8001_is_0x80010000", c,
+                   static_cast<int32_t>(0x80010000u));
+    }
+    {
+        std::vector<uint16_t> c;
+        c.push_back(w21h_lo(0, opc::CONST_HIGH16));
+        c.push_back(static_cast<uint16_t>(0xFFFF));
+        c.push_back(w11x(0, opc::RETURN));
+        expect_int(engine, "const_high16_ffff_is_0xffff0000", c,
+                   static_cast<int32_t>(0xFFFF0000u));
+    }
 
     // ── E-01: /from16 16-bit source registers (>255-register methods) ──
     // AOSP-faithful shape: in a >255-register method the only values that

@@ -26,11 +26,11 @@ Ledger: `miniandroid/evidence/audit/ACHIEVEMENT_LEDGER.csv`
 
 | Verdict | Rows |
 |---|---|
-| CONFIRMED | 33 |
+| CONFIRMED | 35 |
 | REJECTED | 11 |
 | PARTIALLY CONFIRMED | 6 |
 | BLOCKED | 8 |
-| PENDING | 4 |
+| PENDING | 2 |
 | SUPERSEDED | 1 |
 | **TOTAL** | **63** |
 
@@ -39,25 +39,25 @@ Ledger: `miniandroid/evidence/audit/ACHIEVEMENT_LEDGER.csv`
 | Level | Rows |
 |---|---|
 | BINARY-INSPECTED | 1 |
-| BUILD-GRAPH-MEASURED | 7 |
-| BUILD-MEASURED | 11 |
-| ENV-BLOCKED | 10 |
+| BUILD-GRAPH-MEASURED | 6 |
+| BUILD-MEASURED | 12 |
+| ENV-BLOCKED | 9 |
 | INTEGRATION-TESTED | 5 |
 | RUNTIME-EXECUTED | 2 |
-| SOURCE-INSPECTED | 23 |
+| SOURCE-INSPECTED | 22 |
 | TRACKER-STATE | 3 |
-| UNIT-TESTED | 1 |
+| UNIT-TESTED | 3 |
 
 ## Integration status counts
 
 | Status | Rows |
 |---|---|
-| DOCUMENTED-ONLY | 8 |
-| INTEGRATED | 18 |
+| DOCUMENTED-ONLY | 7 |
+| INTEGRATED | 21 |
 | INTEGRATED-PER-TRACKER | 2 |
 | N/A | 6 |
-| NOT-INTEGRATED | 11 |
-| OPEN-DEFECT | 4 |
+| NOT-INTEGRATED | 10 |
+| OPEN-DEFECT | 3 |
 | PARTIALLY-INTEGRATED | 5 |
 | REJECTED-EXPERIMENT | 8 |
 | SUPERSEDED-BY-SPLIT | 1 |

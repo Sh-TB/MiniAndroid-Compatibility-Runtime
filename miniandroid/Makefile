@@ -99,6 +99,19 @@ ifeq ($(DEV),1)
 BUILDDIR := build_dev
 endif
 
+# AUD-47 (#627 E-05 verification profile, opt-in): `make UBSAN=1 <target>`
+# rebuilds with -fsanitize=undefined -fno-sanitize-recover=all so ANY
+# undefined behavior — incl. the const/high16 signed-shift family W22-A
+# fixed at both execution paths — aborts with a nonzero exit instead of
+# silently recovering. -O1 keeps the sanitizer's flow sensitivity while
+# cutting compile cost vs -O2. Artifacts live in build_ubsan/ (same
+# override pattern as DEV=1: a sanitizer tree never mixes objects into the
+# production build tree).
+ifeq ($(UBSAN),1)
+CXXFLAGS := $(filter-out -O2 -g,$(CXXFLAGS)) -O1 -g1 -fsanitize=undefined -fno-sanitize-recover=all
+BUILDDIR := build_ubsan
+endif
+
 # GP583-BUILD-002: ONE shared source manifest consumed by BOTH build
 # graphs. The old duplicated list drifted (CMake carried 12 TUs while the
 # Makefile linked 74) so two build commands produced materially different
@@ -529,6 +542,34 @@ $(BUILDDIR)/tests/s225m_wave_law_test: $(TESTDIR)/s225m_wave_law_test.cpp \
 	@mkdir -p $(BUILDDIR)/tests
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(JSON_INCLUDE) -o $@ $< \
 		$(filter-out $<,$^) $(LIBS) $(FONTS_LIBS)
+
+# AUD-47 (#627 E-05) standalone shift-law probes — deliberately NOT battery
+# members (TEST_* groups untouched, the battery stays 49). The fixed-form
+# probe must run CLEAN under `make UBSAN=1` (exit 0, 7/7 rows); the old-form
+# probe contains the pre-W22-A signed shift and must ABORT with a nonzero
+# exit — the machine reproduction of the hub's "UBSan -fsanitize=shift →
+# exit 1" evidence. Explicit rules so the generic %-pattern rule (which
+# pulls the whole core lib) does not apply.
+$(BUILDDIR)/tests/w22_e05_ubshift_probe: $(TESTDIR)/w22_e05_ubshift_probe.cpp
+	@mkdir -p $(BUILDDIR)/tests
+	$(CXX) $(CXXFLAGS) -o $@ $<
+$(BUILDDIR)/tests/w22_e05_ubshift_probe_oldform: $(TESTDIR)/w22_e05_ubshift_probe_oldform.cpp
+	@mkdir -p $(BUILDDIR)/tests
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+# One-shot E-05 verification: build both probes under UBSAN=1, then the
+# fixed-form probe MUST exit 0 (7/7 bit-exact) and the old-form probe MUST
+# exit nonzero (UB abort). Any other outcome fails the target.
+ubsan-e05: $(BUILDDIR)/tests/w22_e05_ubshift_probe $(BUILDDIR)/tests/w22_e05_ubshift_probe_oldform
+	@set -e; \
+	./$(BUILDDIR)/tests/w22_e05_ubshift_probe; \
+	rc_fixed=$$?; \
+	rc_old=0; \
+	./$(BUILDDIR)/tests/w22_e05_ubshift_probe_oldform > $(BUILDDIR)/tests/w22_e05_oldform.log 2>&1 \
+		|| rc_old=$$?; \
+	echo "fixed-form rc=$$rc_fixed (must be 0), old-form rc=$$rc_old (must be nonzero)"; \
+	cat $(BUILDDIR)/tests/w22_e05_oldform.log; \
+	test $$rc_fixed -eq 0 && test $$rc_old -ne 0
 TEST_TIMEOUT = 300
 
 $(BUILDDIR)/tests/%: $(TESTDIR)/%.cpp $(CORE_OBJECTS) $(QUICKJS_OBJECTS) $(THUNK_OBJECT) | $(VERSION_HEADER)
