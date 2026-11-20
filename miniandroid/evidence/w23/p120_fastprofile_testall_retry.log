@@ -1,0 +1,60 @@
+    0.01 Makefile:268: warning: overriding recipe for target 'build_fast/dex/dalvik_interpreter.o'
+    0.01 Makefile:252: warning: ignoring old recipe for target 'build_fast/dex/dalvik_interpreter.o'
+    0.04 [PARITY-DORMANT] src/dex/api_dispatcher.cpp (documented dormant — not linked)
+    0.05 [PARITY-DORMANT] src/dex/dalvik_engine.cpp (documented dormant — not linked)
+    0.06 [PARITY-DORMANT] src/dex/exception_system.cpp (documented dormant — not linked)
+    0.06 [PARITY-DORMANT] src/dex/execution_guard.cpp (documented dormant — not linked)
+    0.07 [PARITY-DORMANT] src/dex/execution_observatory.cpp (documented dormant — not linked)
+    0.14 [PARITY-DORMANT] src/renderer/view_renderer.cpp (documented dormant — not linked)
+    0.14 [PARITY-DORMANT] src/resources/real_layout.cpp (documented dormant — not linked)
+    0.16 [PARITY-OK] 87 core sources manifest-parity
+    0.20 [PASS] simple_test
+    0.21 [PASS] s130_laws_test
+    0.21 [PASS] gp582_engine_probe_test
+    0.22 [PASS] w15_dalvik_lit_from16_law_test
+    0.29 [PASS] g04_hostile_test
+    0.34 [PASS] g06g08_hostile_test
+    0.35 [PASS] resource_hostile_test
+    0.35 [PASS] lifecycle_law_test
+    0.36 [PASS] input_pipeline_law_test
+    0.36 [PASS] linear_layout_law_test
+    0.37 [PASS] g10_layout_law_test
+    0.37 [PASS] g11_ctor_law_test
+    0.38 [PASS] mutf8_string_pool_test
+    0.38 [PASS] resource_core_law_test
+    0.39 [PASS] resource_config_selection_test
+    0.39 [PASS] s98_prefs_law_test
+    0.40 [PASS] s98_scroll_transform_law_test
+    0.41 [PASS] s98_text_law_test
+    0.41 [PASS] s106_cia_law_test
+    0.42 [PASS] s106_gif_law_test
+    0.42 [PASS] s106_layout_net_law_test
+    0.43 [PASS] s106_text2_law_test
+    0.43 [PASS] encoded_value_law_test
+    0.44 [PASS] gp583_gles_law_test
+    0.44 [PASS] c9_bitmap_density_law_test
+    0.45 [PASS] r25_dispatch_matrix_test
+    0.45 [PASS] gp583_img004_bounds_law_test
+    0.46 [PASS] gp_dex003_fuzz_law_test
+    0.46 [PASS] s225m_wave_law_test
+    0.47 [PASS] s231_view_resource_law_test
+    0.48 [PASS] s234_w26_engine_laws_test
+    0.49 [PASS] s235_lane_laws_test
+    0.49 [PASS] s236_port_laws_test
+    0.50 [PASS] s237_append_bounded_law_test
+    0.50 [PASS] s238_achievements_audit_test
+    0.51 [PASS] s239_wave_stack_audit_test
+    0.52 [PASS] s240_generic_law_battery_test
+    0.52 [PASS] s241_compare_law_battery_test
+    0.55 [PASS] s243_font_pipeline_law_test
+    0.56 [PASS] s244_app_font_discovery_law_test
+    0.57 [PASS] s245_font_final_matrix_test
+    0.58 [PASS] s246_layout_closure_law_test
+    0.59 [PASS] s247_grid_rtl_law_test
+    0.59 [PASS] s248_sqlite_cursor_contract_test
+    0.60 [PASS] s249_adapter_position_contract_test
+    0.60 [PASS] s250_dialog_lifecycle_contract_test
+    0.61 [PASS] s251_activity_result_contract_test
+    0.61 [PASS] s252_view_state_flags_contract_test
+    0.62 [PASS] s254_version_identity_law_test
+    0.62 BATTERY SUMMARY: total=49 passed=49 failed=0

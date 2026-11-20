@@ -164,6 +164,42 @@ Practical production paths that DO meet 120 s (all measured this wave):
 warm-cache rebuild 25.40 s (byte-identical binary), incremental rebuilds
 6.7-13.1 s, and any ≥6-core machine for cold builds.
 
+### FASTPROFILE (user mandate: ">=20 % of the ~500 s is worth it — find what other projects do")
+
+Research pass (StackOverflow/GCC docs precedent: GCC "variable tracking"
+eating 50 % of -O2 -g build time on GCC 4.5-era; LLVM-style pass pruning)
+was tested against THIS tree, not copied blindly:
+
+1. `gcc -ftime-report` on the heaviest TU (execution_engine.cpp, 38 s):
+   parsing 13 %, lang. deferred 7 %, **opt+generate 78 %**, var-tracking
+   ~5 % (GCC 14 fixed the old VTA pathology — the 50 % folklore does not
+   apply), symout 5 %, GC 5 %.
+2. Flag probes on that TU: `-g` 31.7 s / `-g1` 23.0 s / `-g0` 22.5 s;
+   LLVM-style `-fno-tree-pre -fno-code-hoisting` saves only ~1 s per heavy
+   TU → rejected (not worth a codegen change). PCH and unity stay rejected
+   (issue-612 PCH probe 36.4 s vs 216 s; frontend is the TU's own content).
+3. **Winner: -g1** (line tables kept, var-tracking/var-location DWARF
+   dropped) — `.text` sections of the heaviest TU are BYTE-IDENTICAL at
+   `-g` and `-g1` (sha256 of objdump -d: 3b32cee0e3086459 both): a
+   debug-info-only change with zero codegen impact.
+4. Implemented as opt-in `make FASTPROFILE=1 all` (Makefile conditional;
+   production default untouched; engine-family rules keep their explicit
+   -g0). Full clean -j2 measurement: **323.90 s rc=0** (CPU 478.0 s,
+   RSS 1223 MB, sha 7b6577cf51b0c686) = **-40.2 % vs the 541.33 s canonical
+   -j1 build** and -16.2 % vs the -j2 -g fast path; a second -g1-everywhere
+   variant measured 317.05 s (noise band ~±2 %). Model-validated:
+   wall ≈ CPU × 1.36 / 2 = 325 s. Regression battery re-run on the
+   FASTPROFILE build itself: first run 48/49 — the single failure (s254
+   L1.0) was BUG-4, a pre-existing test-portability bug (hardcoded
+   `build/` path; surfaced by the first-ever non-default-BUILDDIR battery
+   run). Fixed in RUN_BATTERY (exports
+   MINIANDROID_VERSION_HEADER=$(BUILDDIR)/generated — the env hint already
+   existed in the test); retry **49/49 PASS rc=0**.
+5. Remaining floor on 2 cores is now the -O2 pipeline itself (78 %) plus
+   the 1.36 parallel-efficiency factor: without core count or semantic
+   weakening, ~317-324 s is the measured floor; every further % needs the
+   ≥6-core path or code restructure with its own runtime-risk budget.
+
 Verdict: <120 s fresh-cold on THIS host is BLOCKED with measured evidence —
 the floor is set by 88 serial -O2 codegen slots (~541 CPU-s ≈ wall). Reaching
 120 s would require ~5 cores at `-O2 -g0` or ~7-8 cores at the production

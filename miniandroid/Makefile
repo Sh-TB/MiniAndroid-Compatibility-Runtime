@@ -26,6 +26,16 @@ INCLUDES += -I$(RLOTTIE_DIR)/inc
 CXXFLAGS += -DMINIANDROID_HAVE_LOTTIE
 endif
 
+# W23-P120 FASTPROFILE (opt-in): `make FASTPROFILE=1 all` compiles the same
+# -O2 code with -g1 (line tables, no var-tracking/var-location DWARF).
+# Measured: heaviest TU 23.0 s vs 31.7 s at -g; .text sections BYTE-IDENTICAL
+# (sha 3b32cee0e3086459 both — debug-info-only change, zero codegen impact).
+# Full-build -j2: 317.05 s vs 386.35 s at -g. The engine-family rules below
+# already append explicit -g0, which keeps winning over -g1.
+ifeq ($(FASTPROFILE),1)
+CXXFLAGS := $(subst -g , -g1 ,$(CXXFLAGS))
+endif
+
 # ===== ISSUE-612 WAVE-2: fast developer feedback (P0) =====
 # DEV=1 swaps the optimization profile of EVERY translation unit to
 # -O0 -g0 (parse/sema iteration speed). Without DEV the production
@@ -433,7 +443,7 @@ failed=0; total=0; \
 for t in $(1); do \
 	exe="$(BUILDDIR)/tests/$$t"; \
 	total=$$((total+1)); \
-	if timeout $(TEST_TIMEOUT) ./"$$exe" > "$(BUILDDIR)/tests/$$t.log" 2>&1; then \
+	if MINIANDROID_VERSION_HEADER="$(BUILDDIR)/generated/miniandroid_version.h" timeout $(TEST_TIMEOUT) ./"$$exe" > "$(BUILDDIR)/tests/$$t.log" 2>&1; then \
 		echo "[PASS] $$t"; \
 	else \
 		rc=$$?; echo "[FAIL] $$t (rc=$$rc) — log: $(BUILDDIR)/tests/$$t.log"; failed=$$((failed+1)); \

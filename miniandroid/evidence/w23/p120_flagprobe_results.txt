@@ -1,0 +1,21 @@
+W23-P120 flag probes — execution_engine.cpp (heaviest TU, 38s canonical)
+method: bash time, g++ -O2, identical include set; date 2026-11-20T04:07:45Z
+
+== w23probe_g0.txt
+real	0m22.539s
+user	0m22.209s
+== w23probe_g0_pre.txt
+real	0m21.325s
+user	0m21.136s
+== w23probe_g1.txt
+real	0m23.004s
+user	0m22.756s
+== w23probe_g1_pre.txt
+real	0m22.303s
+user	0m22.054s
+== w23probe_g_pre.txt
+real	0m31.653s
+user	0m31.222s
+
+.text identity check (-g vs -g1, objdump -d sha256): 3b32cee0e3086459 == 3b32cee0e3086459
+FASTPROFILE full build: 323.90s rc0 sha 7b6577cf51b0c686; battery 49/49 PASS after BUG-4 fix
