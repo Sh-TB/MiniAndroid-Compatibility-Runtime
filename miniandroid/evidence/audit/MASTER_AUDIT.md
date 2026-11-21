@@ -1,7 +1,7 @@
-# MASTER AUDIT — Cross-Coder Achievement Audit (v2.1, 2026-11-20 (continuation session, S12+S14))
+# MASTER AUDIT — Cross-Coder Achievement Audit (v2.2, 2026-11-21 (S18 track continuation — D/E law families + track-A digest))
 v1 baseline: commit 9b953ce1 (2026-11-20). v2 continues it per Issue #635 §1-§9 — nothing replaced, everything reconciled.
 v2.1 adds the S14 closure pass: BUG-7 dedupe, UBSan E-05 machine verification, BUILD_TESTS=ON peak-RSS measurement.
-Base: origin/main 56ba5842; session HEAD: ed7df15f S18 — #632 classification + focused-law expansion (AUD-54 phase 2 cont.): 131/131 NO-CITE rows classified (84 TESTABLE-NO-APK, 28 UNVERIFIABLE, 6 DUPLICATE, 5 NEEDS-EXTERNAL-ORACLE, 4 ALREADY-RESOLVED, 3 TESTABLE-WITH-NEW-FIXTURE, 1 NEEDS-IMAGE-FIXTURE; ZERO rows need the missing APKs/coder artifacts — not inferred from earlier tests' APK usage); 5 NEW law families 29 laws all green + per-family negative-mutation validation + full battery 48/48 rc=0; ledger 64->65 rows (AUD-59) validator PASS; S17 queue arithmetic CORRECTED (114/234 was a double-count; honest 114/234 reached here). (1) BASELINE (RAW_LOGS/s18_baseline_2026-11-20.log): origin/main=3f9a3f6c verified, both S17 commits in ancestry, s17 test in main; g++ 14.2.0, CXXFLAGS -std=c++17 -Wall -Wextra -g -O2 -MMD -MP+WEBP; sandbox recycle had WIPED build/ (make -q could not reuse — full rebuild, recorded honestly); 43/43 battery + 14 s17 laws re-run green on the rebuilt tree. (2) CLASSIFICATION (scripts/s18_classify.py; every row keeps ID+provenance, source_check NO-CITE -> S18-CLASS with note): 84 census/law candidates, 28 unverifiable (sweep plans S1-S9, port plans R-1..R-5, perf-without-oracle, retracted, process suggestions, external-service state), 6 duplicates (Q1/Q2/Q3/Q5/Q6/Q7 explicit see-X), 5 external-oracle (M4/N5/NEW-23-locale/P5/S4), 4 already-resolved (E2/E8/H1/NEW-3), 3 new-fixture (N2/NEW-24 font, P8 mini-DEX), 1 image-fixture (N8). (3) FIVE LAW FAMILIES (29 laws, expectations fixed BEFORE tests — methodology §A/§B computed arithmetically, §C/§F/§G from documented production laws; 3 observe-then-pin laws marked (o)): A s18_dimension_rounding_laws_test 7/7 — M3 rounding tail + nonzero floor (0.1dp->1, -0.1dp->-1), physical units off xdpi=420 (1in->420/1mm->17/1pt->6), typed-word path agreement; B s18_weightsum_laws_test 4/4 — weightSum=3 -> 360/360 (E2 claim settled: weightSum IS read, inflater.cpp:1672/4930), weightSum=0 fallback, weightSum=2 three children -> 540/540/0 sequential exhaustion (AOSP law), no-attr derived; C s18_text_layout_laws_test 8/8 — G47 field law (line_above=|top| vs |ascent|; TextLayout.ascent stays raw box — first C attempt tested the WRONG field and was FIXED), spacing add/mult box laws (extra on non-last lines only), ellipsize END truncates OVER-WIDE last line with U+2026 ('throu…' 57<=60px; fitting wraps have nothing to truncate), maxLines cap != singleLine, first-strong rtl_base (NEW-23 partial); F s18_sql_shadow_laws_test 6/6 — REAL DatabaseShadow path (s248 harness, fresh-db cleanup): BLOB row materializes but BLOB column NOT surfaced (SQL-4 CONFIRMED-LIVE), CursorFactory accepted-and-ignored (SQL-5), WAL set at open does NOT stick — readback journal_mode=delete (SQL-6 confirmed STRONGER than claimed); G s18_renderer_surface_laws_test 4/4 — fresh framebuffer = every pixel WHITE {255,255,255,255} (O4 defect pinned), get_pixels_mut bit-exact bypass (O5), set_pixel is a BLENDING API (opaque sa=1 stores exactly — first draft corrected from the production law), clear() default. Families D (grid margins/stretch) + E (gravity FILL) defined-not-implemented — deliberately left rather than rushed. (4) MUTATION VALIDATION (RAW_LOGS/s18_mutation_2026-11-20.log, one per family): A floor removed -> A2/A3 FAIL 5/2; B weight_sum override removed -> B1/B3 FAIL 2/2 (540/540 and 360/360/360 observed); C2 ellipsis glyph -> ? -> C6 FAIL 7/1; F row-count under-report -> F1.b FAIL 5/1; G init TRANSPARENT -> G1/G3 FAIL 2/2. ALL REVERTED -> 7/4/8/6/4 green; git diff mutation markers = 0. Process notes recorded honestly: first F injection was a no-op (placed before the assignment — kept in the log); first C attempt proved the law tested the wrong field and the law was FIXED to the documented G47 field, mutation retargeted to the ellipsis path — exactly the harness defect class this validation exists to catch. (5) REGRESSION: full law battery with 5 families registered (Makefile TEST_LAW +5): BATTERY SUMMARY total=48 passed=48 failed=0 rc=0 (RAW_LOGS/s18_battery_2026-11-20.log). (6) DELIVERABLES: MASTER_AUDIT §1 item 16 + S17 arithmetic-correction note; §4 114/234 honest; NEXT_INTEGRATION_PLAN item 8 updated; BLOCKED_AND_PENDING AUD-54 row (120 classified remaining; next D/E families); ACHIEVEMENT_LEDGER +AUD-59 (UNIT-TESTED, 65 rows); LEDGER_VALIDATION_REPORT regenerated OVERALL: PASS; 632_FINDINGS.csv 11 rows S18-LAW upgraded (M3/E2/N2/N3/N4/NEW-23/SQL-4/SQL-5/SQL-6/O4/O5); regen_deliverables.py reproduces all. Labels: AUD-54 PHASE-2 131-CLASSIFIED 29-LAWS MUTATION-TESTED; QUEUE-COUNT CORRECTED 120->131->120-HONEST; LEDGER 65-ROWS-VALIDATED.
+Base: origin/main 56ba5842; session HEAD: d0e4198a S18 track-A digest P1 — batch-comment parentage RESOLVED via authenticated API (token read at runtime from git credential, never stored): all 11 comment IDs 7034254502..7038547151 are comments on #632 itself (BATCH 2/3/4/5/6/7/8, B1, B2, 10, 11 — full stream 08:20-11:36Z 2026-11-20); the earlier '3 comments' reading was a WebFetch line-window truncation artifact, digest table corrected with per-comment batch labels + row counts; D/E law-family guidance added: target the LIVE inflater path, not the D/E rows' cited view_renderer.cpp lines (dead file per BATCH 3).
 
 ## §1 What this session changed
 1. **Ledger normalized** (S2): 50 rows -> **63 rows** (S15: +1 -> **64 rows**, AUD-58), one claim per row, canonical verdicts
@@ -120,15 +120,46 @@ Base: origin/main 56ba5842; session HEAD: ed7df15f S18 — #632 classification +
     Law battery with the 5 families registered: total=48 passed=48 failed=0 rc=0 (43 prior + 5 new S18 families). 11 more rows
     law-verified (M3/E2/N2/N3/N4/NEW-23/SQL-4/SQL-5/SQL-6/O4/O5) -> 114/234 settled
     HONESTLY, 120 remain classified. RAW_LOGS/s18_methodology_2026-11-20.md.
+17. **#632 D/E law families (S18-cont, AUD-54 phase 2 cont.)**: the two families the
+    S18 closeout deliberately left ("defined-not-implemented") are now implemented on
+    the LIVE inflater path — the D/E registry rows cite view_renderer.cpp lines, which
+    BATCH 3 proved are NOT COMPILED, so the laws target layout_inflater.cpp instead.
+    EIGHT laws, expectations fixed from the documented production laws BEFORE the run:
+    family D s18_gravity_direction_laws_test — D1 fill_vertical keeps its 40px height,
+    top-aligned (no stretch branch exists, :4853-4883; AOSP expects a stretched child);
+    D2 fill_horizontal same on the vertical column's cross axis; D3 STRING "start" under
+    RTL stays LTR-mapped (gravity_bits drops the 0x00800000 relative flag, :105-107, so
+    the RTL flip law at :5022-5028 can never fire for XML-declared start; AOSP mirrors);
+    D4 INT 0x00800003 under RTL DOES flip to x=60 — the defect is isolated to the string
+    decoder; D5 DISPLAY_CLIP 0x11000000 placement-identical to a no-gravity control.
+    Family E s18_linear_extras_laws_test — E1 no baseline branch: 30px/60px children
+    both top-aligned (AOSP baselineAligned default would offset the 30px child);
+    E2/E3 showDividers matches no decode case: silent vanish (warnings EMPTY, S17 A1
+    law) and placement identical to the no-divider control on both axes. NEGATIVE-
+    MUTATION VALIDATED (3 injections, RAW_LOGS/s18_de_mutations_2026-11-21.log):
+    MUTATION-D relative-flag guard removal -> exactly D3 FAIL (D4/D5 untouched, as
+    predicted); MUTATION-E (first, KEPT) the vg>=0 TOP branch centered -> D1 FAIL —
+    a collateral catch that proved E1 guards a DIFFERENT branch (prediction corrected
+    honestly, S18 wrong-field lesson class); MUTATION-E2 retargeted to the no-gravity
+    else -> exactly E1 FAIL (tops 35/20). ALL REVERTED -> battery total=50 passed=50 failed=0 rc=0 (48 prior + 2 new D/E families; first run and post-mutation-revert run both green).
+    Registry: 5 rows upgraded (D5/D6/E6/E7 newly settled — they carried S18-CLASS
+    stamps in the classified queue; D4 upgraded IN PLACE from the S16 PARTIAL mark
+    inside the 103 machine-checked rows) -> **118/234 settled HONESTLY, 116 classified
+    remaining** (arithmetic computed by scripts/s18_de_upgrade_rows.py; no recount of
+    already-marked rows). Ledger +AUD-60 (UNIT-TESTED, 66 rows) validator PASS.
+    Track-A P1: batch-comment parentage RESOLVED — all 11 provenance comment IDs are
+    comments on #632 itself (BATCH 2/3/4/5/6/7/8/B1/B2/10/11; TRACK_A_ISSUE_DIGEST.md
+    table corrected — the earlier "3 comments" reading was a fetch truncation artifact).
 
-## §2 Verdict totals (programmatic, from the 64-row ledger)
-See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==64.
+## §2 Verdict totals (programmatic, from the 66-row ledger)
+See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==66.
 S14: PENDING 4 -> 2 (AUD-47/49 resolved), CONFIRMED 33 -> 35. S15: +1 row (AUD-58, SUPERSEDED).
+S18: +1 (AUD-59, UNIT-TESTED). S18-cont: +1 (AUD-60, UNIT-TESTED).
 v1's "30 CONFIRMED / 4 REJECTED..." was internally inconsistent (its CONFIRMED bucket absorbed 3
 REJECTED probes); v2 replaces it with machine-counted numbers.
 
 ## §3 Deliverables (this directory)
-ACHIEVEMENT_LEDGER.csv (64 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
+ACHIEVEMENT_LEDGER.csv (66 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
 source_check sweep on 103 rows) · 632_BATCH8_174_ATTRIBUTES.md · MASTER_AUDIT.md ·
 INTEGRATION_MAP.md · REJECTED_AND_CORRECTED.md · BLOCKED_AND_PENDING.md ·
 REGRESSION_RESULTS.md · PRESERVED_WORK_MANIFEST.md · NEXT_INTEGRATION_PLAN.md · RAW_LOGS/
@@ -140,8 +171,10 @@ census, 632_registry_snapshot, untrack SHAs, b567 probes, tracker index)
 - #295/#296/#297 and #634 fixes remain coder-local (branch layout-geometry-001 / local trees);
   not re-implemented here — MG-011 was, because the mission allows a one-line fix backed by tests.
 - #632 per-finding checks: 103/234 claims machine-checked by the S16 sweep (source_check col);
-  the 131 remaining NO-CITE rows are runtime-behavior claims and carry status notes — they are
-  the focused-test queue (NEXT_INTEGRATION_PLAN.md item 8). The S16 sweep CORRECTED the earlier
+  the classified queue is now **116 rows** (131 NO-CITE classified in S18 -> 120 after its 11
+  law-verified rows -> 116 after the S18-cont D/E laws settled D5/D6/E6/E7 and upgraded D4 in
+  place) — runtime-behavior claims that carry status notes; they are the focused-test queue
+  (NEXT_INTEGRATION_PLAN.md item 8). **118/234 settled honestly.** The S16 sweep CORRECTED the earlier
   25 "cited X ABSENT" marks: every one of those files exists under src/resources/ or
   src/renderer/ — the cites were stale paths, not missing code (verdict STALE-CITE-RELOCATED).
 - The #627 hub's exact 7 UBSan vectors were never published; the S14 probe set is the audit's

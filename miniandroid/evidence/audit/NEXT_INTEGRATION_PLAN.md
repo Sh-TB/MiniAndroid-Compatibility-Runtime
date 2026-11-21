@@ -29,6 +29,10 @@
    more rows law-verified; the remaining 120 carry explicit S18 classifications,
    zero of which need the missing APKs or coder artifacts)
    are runtime-behavior claims needing focused laws (several depend on the missing APKs).
+   S18-cont (2026-11-21): the D/E families are DONE — 8 laws over the LIVE inflater
+   (gravity direction/fill + baseline/divider absence), 3 negative-mutation injections
+   (one honest retarget recorded), battery 50/50; 5 registry rows upgraded ->
+   118/234 settled, 116 classified remaining (AUD-60).
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
    0 machine-reproduce the hub's claim; the FULL 49-test battery built and ran

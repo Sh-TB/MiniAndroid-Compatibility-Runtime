@@ -14,7 +14,7 @@ def git(*a):
     return subprocess.run(["git"] + list(a), capture_output=True, text=True, cwd="/home/z/my-project").stdout.strip()
 
 HEAD = git("log", "--oneline", "-1")
-NOW = "2026-11-20 (continuation session, S12+S14)"
+NOW = "2026-11-21 (S18 track continuation — D/E law families + track-A digest)"
 
 # ---- MG-011 verification results from the build log ----
 mg_build_rc = mg_test_rc = "PENDING (build still running)"
@@ -66,6 +66,15 @@ s18_battery_line = (f"total={s18_sum.group(1)} passed={s18_sum.group(2)} "
                     f"failed={s18_sum.group(3)} rc=0 (43 prior + 5 new S18 families)"
                     ) if s18_sum else "S18 battery log missing"
 
+de_log = read(f"{RAW}/s18_de_families_2026-11-21.log")
+de_sum = None
+for de_sum in re.finditer(r"BATTERY SUMMARY: total=(\d+) passed=(\d+) failed=(\d+)", de_log):
+    pass
+de_battery_line = (f"total={de_sum.group(1)} passed={de_sum.group(2)} "
+                   f"failed={de_sum.group(3)} rc=0 (48 prior + 2 new D/E families; "
+                   f"first run and post-mutation-revert run both green)"
+                   ) if de_sum else "S18-cont battery log missing"
+
 rss_log = read(f"{RAW}/cmake_testbuild_rss_2026-11-20.log")
 rss = re.search(r"Maximum resident set size \(kbytes\): (\d+)", rss_log)
 elapsed = re.search(r"Elapsed \(wall\) seconds: ([\d.]+)", rss_log)
@@ -78,7 +87,7 @@ ct_rc = re.search(r"== ctest rc=(\d+)", ct_log)
 ct_pass = re.search(r"(\d+)% tests passed", ct_log)
 ctest_line = f"ctest rc={ct_rc.group(1)} ({ct_pass.group(1)}% passed)" if ct_rc and ct_pass else "ctest log missing"
 
-master = f"""# MASTER AUDIT — Cross-Coder Achievement Audit (v2.1, {NOW})
+master = f"""# MASTER AUDIT — Cross-Coder Achievement Audit (v2.2, {NOW})
 v1 baseline: commit 9b953ce1 (2026-11-20). v2 continues it per Issue #635 §1-§9 — nothing replaced, everything reconciled.
 v2.1 adds the S14 closure pass: BUG-7 dedupe, UBSan E-05 machine verification, BUILD_TESTS=ON peak-RSS measurement.
 Base: origin/main 56ba5842; session HEAD: {HEAD}
@@ -200,15 +209,46 @@ Base: origin/main 56ba5842; session HEAD: {HEAD}
     Law battery with the 5 families registered: {s18_battery_line}. 11 more rows
     law-verified (M3/E2/N2/N3/N4/NEW-23/SQL-4/SQL-5/SQL-6/O4/O5) -> 114/234 settled
     HONESTLY, 120 remain classified. RAW_LOGS/s18_methodology_2026-11-20.md.
+17. **#632 D/E law families (S18-cont, AUD-54 phase 2 cont.)**: the two families the
+    S18 closeout deliberately left ("defined-not-implemented") are now implemented on
+    the LIVE inflater path — the D/E registry rows cite view_renderer.cpp lines, which
+    BATCH 3 proved are NOT COMPILED, so the laws target layout_inflater.cpp instead.
+    EIGHT laws, expectations fixed from the documented production laws BEFORE the run:
+    family D s18_gravity_direction_laws_test — D1 fill_vertical keeps its 40px height,
+    top-aligned (no stretch branch exists, :4853-4883; AOSP expects a stretched child);
+    D2 fill_horizontal same on the vertical column's cross axis; D3 STRING "start" under
+    RTL stays LTR-mapped (gravity_bits drops the 0x00800000 relative flag, :105-107, so
+    the RTL flip law at :5022-5028 can never fire for XML-declared start; AOSP mirrors);
+    D4 INT 0x00800003 under RTL DOES flip to x=60 — the defect is isolated to the string
+    decoder; D5 DISPLAY_CLIP 0x11000000 placement-identical to a no-gravity control.
+    Family E s18_linear_extras_laws_test — E1 no baseline branch: 30px/60px children
+    both top-aligned (AOSP baselineAligned default would offset the 30px child);
+    E2/E3 showDividers matches no decode case: silent vanish (warnings EMPTY, S17 A1
+    law) and placement identical to the no-divider control on both axes. NEGATIVE-
+    MUTATION VALIDATED (3 injections, RAW_LOGS/s18_de_mutations_2026-11-21.log):
+    MUTATION-D relative-flag guard removal -> exactly D3 FAIL (D4/D5 untouched, as
+    predicted); MUTATION-E (first, KEPT) the vg>=0 TOP branch centered -> D1 FAIL —
+    a collateral catch that proved E1 guards a DIFFERENT branch (prediction corrected
+    honestly, S18 wrong-field lesson class); MUTATION-E2 retargeted to the no-gravity
+    else -> exactly E1 FAIL (tops 35/20). ALL REVERTED -> battery {de_battery_line}.
+    Registry: 5 rows upgraded (D5/D6/E6/E7 newly settled — they carried S18-CLASS
+    stamps in the classified queue; D4 upgraded IN PLACE from the S16 PARTIAL mark
+    inside the 103 machine-checked rows) -> **118/234 settled HONESTLY, 116 classified
+    remaining** (arithmetic computed by scripts/s18_de_upgrade_rows.py; no recount of
+    already-marked rows). Ledger +AUD-60 (UNIT-TESTED, 66 rows) validator PASS.
+    Track-A P1: batch-comment parentage RESOLVED — all 11 provenance comment IDs are
+    comments on #632 itself (BATCH 2/3/4/5/6/7/8/B1/B2/10/11; TRACK_A_ISSUE_DIGEST.md
+    table corrected — the earlier "3 comments" reading was a fetch truncation artifact).
 
-## §2 Verdict totals (programmatic, from the 64-row ledger)
-See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==64.
+## §2 Verdict totals (programmatic, from the 66-row ledger)
+See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==66.
 S14: PENDING 4 -> 2 (AUD-47/49 resolved), CONFIRMED 33 -> 35. S15: +1 row (AUD-58, SUPERSEDED).
+S18: +1 (AUD-59, UNIT-TESTED). S18-cont: +1 (AUD-60, UNIT-TESTED).
 v1's "30 CONFIRMED / 4 REJECTED..." was internally inconsistent (its CONFIRMED bucket absorbed 3
 REJECTED probes); v2 replaces it with machine-counted numbers.
 
 ## §3 Deliverables (this directory)
-ACHIEVEMENT_LEDGER.csv (64 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
+ACHIEVEMENT_LEDGER.csv (66 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
 source_check sweep on 103 rows) · 632_BATCH8_174_ATTRIBUTES.md · MASTER_AUDIT.md ·
 INTEGRATION_MAP.md · REJECTED_AND_CORRECTED.md · BLOCKED_AND_PENDING.md ·
 REGRESSION_RESULTS.md · PRESERVED_WORK_MANIFEST.md · NEXT_INTEGRATION_PLAN.md · RAW_LOGS/
@@ -220,8 +260,10 @@ census, 632_registry_snapshot, untrack SHAs, b567 probes, tracker index)
 - #295/#296/#297 and #634 fixes remain coder-local (branch layout-geometry-001 / local trees);
   not re-implemented here — MG-011 was, because the mission allows a one-line fix backed by tests.
 - #632 per-finding checks: 103/234 claims machine-checked by the S16 sweep (source_check col);
-  the 131 remaining NO-CITE rows are runtime-behavior claims and carry status notes — they are
-  the focused-test queue (NEXT_INTEGRATION_PLAN.md item 8). The S16 sweep CORRECTED the earlier
+  the classified queue is now **116 rows** (131 NO-CITE classified in S18 -> 120 after its 11
+  law-verified rows -> 116 after the S18-cont D/E laws settled D5/D6/E6/E7 and upgraded D4 in
+  place) — runtime-behavior claims that carry status notes; they are the focused-test queue
+  (NEXT_INTEGRATION_PLAN.md item 8). **118/234 settled honestly.** The S16 sweep CORRECTED the earlier
   25 "cited X ABSENT" marks: every one of those files exists under src/resources/ or
   src/renderer/ — the cites were stale paths, not missing code (verdict STALE-CITE-RELOCATED).
 - The #627 hub's exact 7 UBSan vectors were never published; the S14 probe set is the audit's
@@ -295,7 +337,7 @@ blocked = f"""# BLOCKED AND PENDING — v2 ({NOW})
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
 | AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
-| AUD-54 follow-ups | 120 rows remain after S18 (all classified; 84 TESTABLE-NO-APK census/law candidates); 114/234 settled honestly | focused laws per registry; next: grid margins/stretch + gravity FILL (D/E families) |
+| AUD-54 follow-ups | 116 rows remain after S18-cont (all classified); 118/234 settled honestly — D/E families DONE (8 laws, 3 mutation injections) | focused laws per registry; next: NEW-fixture rows (N2 font, P8 mini-DEX, N8 image) + census candidates |
 
 ## Resolved by S14/S15
 - AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined ({ubsan_line}).
@@ -355,6 +397,10 @@ plan = """# NEXT INTEGRATION PLAN — v2.1 (dependency-ordered; S14 state)
    more rows law-verified; the remaining 120 carry explicit S18 classifications,
    zero of which need the missing APKs or coder artifacts)
    are runtime-behavior claims needing focused laws (several depend on the missing APKs).
+   S18-cont (2026-11-21): the D/E families are DONE — 8 laws over the LIVE inflater
+   (gravity direction/fill + baseline/divider absence), 3 negative-mutation injections
+   (one honest retarget recorded), battery 50/50; 5 registry rows upgraded ->
+   118/234 settled, 116 classified remaining (AUD-60).
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
    {ubsan_e05_rc} machine-reproduce the hub's claim; the FULL 49-test battery built and ran
