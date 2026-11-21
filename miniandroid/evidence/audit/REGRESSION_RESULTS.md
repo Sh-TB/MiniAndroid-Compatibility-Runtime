@@ -1,4 +1,4 @@
-# REGRESSION RESULTS — v2 (2026-11-21 (S18 track continuation — D/E law families + track-A digest))
+# REGRESSION RESULTS — v2 (2026-11-21 (S18-cont-2 — A-row census re-measurement, B5 falsification family H, S3 issue bodies))
 ## Baselines (unchanged from v1 — W24 ABBA record, commit d8b8fbb9)
 candidate avg 289.85s (-17.3% wall / -17.7% CPU vs matched-steal base 350.39s), battery 49/49,
 gate 11/11 IDENTICAL. Peak RSS 1167MB. Steal 24-25% per window; floor 288.4s.

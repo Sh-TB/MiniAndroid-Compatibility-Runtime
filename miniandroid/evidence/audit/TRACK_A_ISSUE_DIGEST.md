@@ -71,6 +71,18 @@ view_renderer.cpp lines (dead file).
 | 626 | ISSUE-612: WAVE-10 dev-so speed profiles (PR 2 of stacked series) | open | Dev profiles: interpreter/opcode `-O1`, bridge `-O0` (4 GB host memory bound). Wave-10.1 acceptance: clean dev-so 122.7 s, battery 3/3; incremental: no-op 0.04 s, interpreter 12.16 s, bridge 26.89 s, opcode 8.08 s — one PIC compile + one relink, zero test relinks; `$ORIGIN` resolution verified. Base = wave9 branch; merge #625 first, retarget after |
 | 612 | P0 BUILD PERFORMANCE task book | open | Measured-baseline discipline: record host/cgroup limits every benchmark; no speed claim without clean+incremental; CMake PRE_LINK missing-source defect documented; 300 s harness window kills single-job Release at ~7% on `dex_interpreter_batch.cpp` |
 
+## S3 — mission + vector-domain issue bodies (fetched 2026-11-21, authenticated API, `scripts/s3_fetch_issue_bodies.py`)
+
+| # | Title (abridged) | State | Key facts worth keeping |
+|---|---|---|---|
+| 635 | MASTER CROSS-CODER ACHIEVEMENT AUDIT — 50-claim item-by-item verification ledger | open | Independent audit from HEAD `d8b8fbb9` + audit commit `9b953ce1`; host 2 vCPU / 4 GB, hypervisor steal 24-25% of every build window; cmake ABSENT (CMake graph measurements BLOCKED, not skipped); 300 issues+PRs fetched, every mission-referenced issue exists. §1.A dispositions that settle #632 census rows: B1/B2 CMake-battery CONFIRMED; B3 ccache CONFIRMED (cold 553.42 s / 0 hits, warm 20.94 s / 88-88); B4 mold/lld REJECTED (link 1.5 s of 350 s); B5 gsplit-dwarf REJECTED-MEASURED (+4% on heaviest TU, ABBA probe); B6 ggc-min REJECTED-MEASURED (3× slower — GC thrash); B7 -fno-var-tracking-assignments REJECTED-MEASURED (no win; GCC14 fixed VTA; -g1 already covers); B8 .DELETE_ON_ERROR CONFIRMED-missing → **FIXED in this audit** (in-tree, verified by grep today); Make-path peak RSS 1221 MB / 4 GB across ~40 full builds (OOM NOT observed — bounds the -j co-scheduling risk); layout path = `layout_inflater.cpp` verified; NEW-9 guard CONFIRMED (retraction justified) |
+| 633 | [MG-009] vector pathData parse failure — aapt2 string refs unreachable through VectorRefResolver | open | Coder claims root-caused + fixed LOCALLY, **commit blocked from pushing**; upstream law: `android.util.PathParser` + aapt2 resource-table inlining; domain resource/asset — integration candidate pending actual patch delivery (same class as MG-007/MG-008) |
+| 634 | [MG-012] animated-vector decodes to nothing; drawable references never resolve to a document | open | Same "fixed locally, push blocked" status; TWO defects — AVD rejection outright + a shared-layer drawable-reference resolution bug "far wider than animated vectors"; upstream: `AnimatedVectorDrawable.getConstantState()`, `VectorDrawable.draw()` — integration candidate pending patch delivery |
+
+The #635 §1 dispositions are external measured evidence: this session settles #632
+rows B6/B7/B8/B9 by cross-referencing them (see the S18-CONT-2 registry stamps),
+and A2-A8 by re-measurement (`RAW_LOGS/s18_a_census_2026-11-21.log`).
+
 ## Why this file exists
 
 Sandbox recycles repeatedly restore the repo to an older checkout and wipe

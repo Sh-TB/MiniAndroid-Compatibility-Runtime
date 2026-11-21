@@ -14,7 +14,7 @@ def git(*a):
     return subprocess.run(["git"] + list(a), capture_output=True, text=True, cwd="/home/z/my-project").stdout.strip()
 
 HEAD = git("log", "--oneline", "-1")
-NOW = "2026-11-21 (S18 track continuation — D/E law families + track-A digest)"
+NOW = "2026-11-21 (S18-cont-2 — A-row census re-measurement, B5 falsification family H, S3 issue bodies)"
 
 # ---- MG-011 verification results from the build log ----
 mg_build_rc = mg_test_rc = "PENDING (build still running)"
@@ -75,6 +75,20 @@ de_battery_line = (f"total={de_sum.group(1)} passed={de_sum.group(2)} "
                    f"first run and post-mutation-revert run both green)"
                    ) if de_sum else "S18-cont battery log missing"
 
+h_log = read(f"{RAW}/s18_h_families_2026-11-21.log")
+h_sum = None
+for h_sum in re.finditer(r"BATTERY SUMMARY: total=(\d+) passed=(\d+) failed=(\d+)", h_log):
+    pass
+h_battery_line = (f"total={h_sum.group(1)} passed={h_sum.group(2)} "
+                  f"failed={h_sum.group(3)} rc=0 (50 prior + family H; last run green)"
+                  ) if h_sum else "S18-cont-2 battery log missing"
+h_mut = re.search(r"MUTATION-H.*?== s18 constraint anchor laws: (\d+) pass / (\d+) fail",
+                  h_log, re.S)
+h_mut_line = (f"MUTATION-H broke the is_cl_container predicate -> family H "
+              f"{h_mut.group(1)} pass / {h_mut.group(2)} fail (the solving/bias/span "
+              f"laws FAIL as predicted; reverted)"
+              ) if h_mut else "mutation record pending"
+
 rss_log = read(f"{RAW}/cmake_testbuild_rss_2026-11-20.log")
 rss = re.search(r"Maximum resident set size \(kbytes\): (\d+)", rss_log)
 elapsed = re.search(r"Elapsed \(wall\) seconds: ([\d.]+)", rss_log)
@@ -87,7 +101,7 @@ ct_rc = re.search(r"== ctest rc=(\d+)", ct_log)
 ct_pass = re.search(r"(\d+)% tests passed", ct_log)
 ctest_line = f"ctest rc={ct_rc.group(1)} ({ct_pass.group(1)}% passed)" if ct_rc and ct_pass else "ctest log missing"
 
-master = f"""# MASTER AUDIT — Cross-Coder Achievement Audit (v2.2, {NOW})
+master = f"""# MASTER AUDIT — Cross-Coder Achievement Audit (v2.3, {NOW})
 v1 baseline: commit 9b953ce1 (2026-11-20). v2 continues it per Issue #635 §1-§9 — nothing replaced, everything reconciled.
 v2.1 adds the S14 closure pass: BUG-7 dedupe, UBSan E-05 machine verification, BUILD_TESTS=ON peak-RSS measurement.
 Base: origin/main 56ba5842; session HEAD: {HEAD}
@@ -239,16 +253,43 @@ Base: origin/main 56ba5842; session HEAD: {HEAD}
     Track-A P1: batch-comment parentage RESOLVED — all 11 provenance comment IDs are
     comments on #632 itself (BATCH 2/3/4/5/6/7/8/B1/B2/10/11; TRACK_A_ISSUE_DIGEST.md
     table corrected — the earlier "3 comments" reading was a fetch truncation artifact).
+18. **S18-cont-2 — census re-measurement + B5 falsification + S3**: a sandbox recycle had
+    rewound the local branch to c5a1efa6 with a partial tree; restored by hard reset to
+    origin/main d878c4c8 (untracked new evidence survived; tree verified against the pushed
+    state). (a) S3: #635/#633/#634 bodies fetched and archived
+    (RAW_LOGS/s3_issue_bodies_2026-11-21.md; digest section added) — #635's §1 dispositions
+    provide EXTERNAL measured evidence: ggc-min REJECTED-measured (3x slower, GC thrash),
+    -fno-var-tracking-assignments REJECTED-measured (no win; GCC14 fixed VTA),
+    .DELETE_ON_ERROR FIXED in-tree (grep-verified on the restored tree), Make-path peak RSS
+    1221 MB / 4 GB across ~40 full builds (OOM NOT observed). (b) A-row hygiene census
+    RE-MEASURED (RAW_LOGS/s18_a_census_2026-11-21.log): A2 tracked evidence/ = 55.61 MB /
+    1287 files (claim 45.67/1185 — HOLDS, grown with the law logs); A3 37 root logs /
+    4.83 MB (HOLDS); A5 .gitignore exactly 645 bytes with NO build_* exclusion (HOLDS
+    verbatim); A6 src/ 16.10 MB / 214 files but src share = 16.9% of the 95.24 MB tracked
+    repo — the '>99% non-source' figure SUPERSEDED (directionally true at ~83%); A7
+    build_p2a/build_dev/build_cc ABSENT (SUPERSEDED-by-cleanup); A8 database 7.15 MB /
+    third_party 4.36 MB (HOLDS). (c) Family H s18_constraint_law_test 3/3 — B5 FALSIFIED
+    for the live path: the claim ("ConstraintLayout classified as FrameLayout, no
+    constraint solving") cites view_renderer.cpp:70 (DEAD per BATCH 3); the engine
+    implements the F-148 ConstraintLayout law (layout_inflater.cpp:3502-3531 — per-axis
+    topological anchors, MATCH_CONSTRAINT spans, bias 0.5); expectations fixed from that
+    documented law BEFORE the run: H1 anchor solving (B.top = A.bottom = 60), H2 bias
+    centering (left = 0 + 0.5*400 = 200), H3 MATCH_CONSTRAINT span (EXACTLY 800).
+    {h_mut_line}. (d) 11 registry rows settled (A2/A3/A5/A6/A7/A8/B5/B6/B7/B8/B9 via
+    scripts/s18_cont2_upgrade_rows.py) -> **129/234 settled HONESTLY, 105 classified
+    remaining**. Ledger +AUD-61 (UNIT-TESTED, 67 rows) validator PASS. S3 also recorded
+    #633 [MG-009] and #634 [MG-012]: both MG vector issues claim root-caused local fixes
+    that are BLOCKED FROM PUSHING — integration candidates pending actual patch delivery.
 
-## §2 Verdict totals (programmatic, from the 66-row ledger)
-See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==66.
+## §2 Verdict totals (programmatic, from the 67-row ledger)
+See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==67.
 S14: PENDING 4 -> 2 (AUD-47/49 resolved), CONFIRMED 33 -> 35. S15: +1 row (AUD-58, SUPERSEDED).
-S18: +1 (AUD-59, UNIT-TESTED). S18-cont: +1 (AUD-60, UNIT-TESTED).
+S18: +1 (AUD-59, UNIT-TESTED). S18-cont: +1 (AUD-60, UNIT-TESTED). S18-cont-2: +1 (AUD-61, UNIT-TESTED).
 v1's "30 CONFIRMED / 4 REJECTED..." was internally inconsistent (its CONFIRMED bucket absorbed 3
 REJECTED probes); v2 replaces it with machine-counted numbers.
 
 ## §3 Deliverables (this directory)
-ACHIEVEMENT_LEDGER.csv (66 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
+ACHIEVEMENT_LEDGER.csv (67 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
 source_check sweep on 103 rows) · 632_BATCH8_174_ATTRIBUTES.md · MASTER_AUDIT.md ·
 INTEGRATION_MAP.md · REJECTED_AND_CORRECTED.md · BLOCKED_AND_PENDING.md ·
 REGRESSION_RESULTS.md · PRESERVED_WORK_MANIFEST.md · NEXT_INTEGRATION_PLAN.md · RAW_LOGS/
@@ -260,10 +301,11 @@ census, 632_registry_snapshot, untrack SHAs, b567 probes, tracker index)
 - #295/#296/#297 and #634 fixes remain coder-local (branch layout-geometry-001 / local trees);
   not re-implemented here — MG-011 was, because the mission allows a one-line fix backed by tests.
 - #632 per-finding checks: 103/234 claims machine-checked by the S16 sweep (source_check col);
-  the classified queue is now **116 rows** (131 NO-CITE classified in S18 -> 120 after its 11
+  the classified queue is now **105 rows** (131 NO-CITE classified in S18 -> 120 after its 11
   law-verified rows -> 116 after the S18-cont D/E laws settled D5/D6/E6/E7 and upgraded D4 in
-  place) — runtime-behavior claims that carry status notes; they are the focused-test queue
-  (NEXT_INTEGRATION_PLAN.md item 8). **118/234 settled honestly.** The S16 sweep CORRECTED the earlier
+  place -> 105 after S18-cont-2 settled A2/A3/A5/A6/A7/A8/B5/B6/B7/B8/B9) — runtime-behavior
+  claims that carry status notes; they are the focused-test queue (NEXT_INTEGRATION_PLAN.md
+  item 8). **129/234 settled honestly.** The S16 sweep CORRECTED the earlier
   25 "cited X ABSENT" marks: every one of those files exists under src/resources/ or
   src/renderer/ — the cites were stale paths, not missing code (verdict STALE-CITE-RELOCATED).
 - The #627 hub's exact 7 UBSan vectors were never published; the S14 probe set is the audit's
@@ -337,7 +379,7 @@ blocked = f"""# BLOCKED AND PENDING — v2 ({NOW})
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
 | AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
-| AUD-54 follow-ups | 116 rows remain after S18-cont (all classified); 118/234 settled honestly — D/E families DONE (8 laws, 3 mutation injections) | focused laws per registry; next: NEW-fixture rows (N2 font, P8 mini-DEX, N8 image) + census candidates |
+| AUD-54 follow-ups | 105 rows remain after S18-cont-2 (all classified); 129/234 settled honestly — D/E families DONE, family H (constraint anchors) DONE, A-row census re-measured, B6-B9 dispositioned by the #635 audit | focused laws per registry; next: NEW-fixture rows (N2 font, P8 mini-DEX, N8 image) + remaining census candidates; #633/#634 patch delivery |
 
 ## Resolved by S14/S15
 - AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined ({ubsan_line}).
@@ -401,6 +443,10 @@ plan = """# NEXT INTEGRATION PLAN — v2.1 (dependency-ordered; S14 state)
    (gravity direction/fill + baseline/divider absence), 3 negative-mutation injections
    (one honest retarget recorded), battery 50/50; 5 registry rows upgraded ->
    118/234 settled, 116 classified remaining (AUD-60).
+   S18-cont-2 (2026-11-21): family H (constraint anchors, 3 laws, mutation-validated)
+   FALSIFIES B5 for the live path; A2-A8 census RE-MEASURED; B6-B9 dispositioned by the
+   #635 audit's measured rejections/fixes; 11 more rows settled -> 129/234 settled,
+   105 classified remaining (AUD-61).
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
    {ubsan_e05_rc} machine-reproduce the hub's claim; the FULL 49-test battery built and ran

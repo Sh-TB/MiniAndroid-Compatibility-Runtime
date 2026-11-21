@@ -33,6 +33,10 @@
    (gravity direction/fill + baseline/divider absence), 3 negative-mutation injections
    (one honest retarget recorded), battery 50/50; 5 registry rows upgraded ->
    118/234 settled, 116 classified remaining (AUD-60).
+   S18-cont-2 (2026-11-21): family H (constraint anchors, 3 laws, mutation-validated)
+   FALSIFIES B5 for the live path; A2-A8 census RE-MEASURED; B6-B9 dispositioned by the
+   #635 audit's measured rejections/fixes; 11 more rows settled -> 129/234 settled,
+   105 classified remaining (AUD-61).
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
    0 machine-reproduce the hub's claim; the FULL 49-test battery built and ran

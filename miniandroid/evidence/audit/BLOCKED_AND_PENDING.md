@@ -1,4 +1,4 @@
-# BLOCKED AND PENDING — v2 (2026-11-21 (S18 track continuation — D/E law families + track-A digest))
+# BLOCKED AND PENDING — v2 (2026-11-21 (S18-cont-2 — A-row census re-measurement, B5 falsification family H, S3 issue bodies))
 
 ## BLOCKED
 | ID | Item | Exact blocker | Recovery outcome |
@@ -15,7 +15,7 @@
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
 | AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
-| AUD-54 follow-ups | 116 rows remain after S18-cont (all classified); 118/234 settled honestly — D/E families DONE (8 laws, 3 mutation injections) | focused laws per registry; next: NEW-fixture rows (N2 font, P8 mini-DEX, N8 image) + census candidates |
+| AUD-54 follow-ups | 105 rows remain after S18-cont-2 (all classified); 129/234 settled honestly — D/E families DONE, family H (constraint anchors) DONE, A-row census re-measured, B6-B9 dispositioned by the #635 audit | focused laws per registry; next: NEW-fixture rows (N2 font, P8 mini-DEX, N8 image) + remaining census candidates; #633/#634 patch delivery |
 
 ## Resolved by S14/S15
 - AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined (probes rc=0, battery 49/49 rc=0).
