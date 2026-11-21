@@ -1,0 +1,28 @@
+{
+  "clickable_views": 0,
+  "frame1_sha_note": "screenshot.png (already written by stage_capture_output)",
+  "per_view": [
+    {
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": false,
+      "disabled_skipped": true,
+      "handler": "onClickResume",
+      "kind": "xml_onClick",
+      "view_id": 26
+    },
+    {
+      "changed_px": 2073600,
+      "class": "Landroid/widget/Button;",
+      "click_dispatched": true,
+      "handler": "onClickStart",
+      "kind": "xml_onClick",
+      "screenshot": "click_frame_1.png",
+      "state_changed": true,
+      "view_id": 28
+    }
+  ],
+  "render_failures": 0,
+  "views_changed_second_frame": 1,
+  "views_probed": 2,
+  "xml_onclick_views": 2
+}

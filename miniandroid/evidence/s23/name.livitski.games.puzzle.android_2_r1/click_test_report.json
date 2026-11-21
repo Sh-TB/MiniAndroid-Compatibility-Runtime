@@ -1,0 +1,123 @@
+{
+  "clickable_views": 35,
+  "frame1_sha_note": "screenshot.png (already written by stage_capture_output)",
+  "per_view": [
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "screenshot": "click_frame_0.png",
+      "state_changed": true,
+      "view_id": 138
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/ImageView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "screenshot": "click_frame_1.png",
+      "state_changed": true,
+      "view_id": 137
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "screenshot": "click_frame_2.png",
+      "state_changed": true,
+      "view_id": 136
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/ImageView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "screenshot": "click_frame_3.png",
+      "state_changed": true,
+      "view_id": 135
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "screenshot": "click_frame_4.png",
+      "state_changed": true,
+      "view_id": 134
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/ImageView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "state_changed": true,
+      "view_id": 133
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "state_changed": true,
+      "view_id": 132
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/ImageView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "state_changed": true,
+      "view_id": 131
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "state_changed": true,
+      "view_id": 130
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/ImageView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "state_changed": true,
+      "view_id": 127
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/TextView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "state_changed": true,
+      "view_id": 126
+    },
+    {
+      "changed_px": 87694,
+      "class": "Landroid/widget/ImageView;",
+      "click_dispatched": true,
+      "kind": "listener",
+      "listener_class": "Lname/livitski/games/puzzle/android/GamePlay;",
+      "state_changed": true,
+      "view_id": 125
+    }
+  ],
+  "render_failures": 0,
+  "views_changed_second_frame": 12,
+  "views_probed": 12,
+  "xml_onclick_views": 0
+}
