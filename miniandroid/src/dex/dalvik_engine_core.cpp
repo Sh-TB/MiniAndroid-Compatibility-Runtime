@@ -2276,6 +2276,22 @@ static const size_t kContentMeasureClasses_N = sizeof(kContentMeasureClasses) / 
                               : "<none>")
                       << std::endl;
         }
+        // S22-WS2 (env-gated, read-only): dump the runtime-parsed declared
+        // method table of the queried class ONCE — the authoritative view of
+        // what method resolution can see in R8-minified dex files.
+        static std::set<std::string> s22_ws2_dumped;
+        if (!s21_dump.empty() && s21_dump == cur &&
+            cit != class_info_index_.end() && dex_report_ &&
+            !s22_ws2_dumped.count(cur)) {
+            s22_ws2_dumped.insert(cur);
+            const auto& dc22 = dex_report_->classes[cit->second];
+            size_t n22 = 0;
+            std::cerr << "[S22-WS2] declared methods of " << cur << ": ";
+            dc22.for_each_method([&](const auto& m22) {
+                if (n22++ < 64) std::cerr << m22.name << " ";
+            });
+            std::cerr << "(total=" << n22 << ")" << std::endl;
+        }
         if (kv_table_contains(kContentMeasureClasses, kContentMeasureClasses_N, cur)) return false;
         // MASTER-2 FIX-MEASURE-001 (override-query law): reaching a plain
         // framework View family means the APP chain does NOT define the

@@ -4088,6 +4088,59 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 }
                 std::cerr << std::endl;
 
+                // ── S22-LC-PROVIDE (issue #635 chain; AOSP CompositionLocal
+                // law). The compose content wrapper is SUPPOSED to install
+                // `LocalContext provides context` around the app's composable
+                // content (AbstractComposeView.setContent law). The runtime's
+                // composition does not install that provider scope yet, so the
+                // LocalContext accessor's default executes and throws the
+                // AOSP ISE "CompositionLocal LocalContext not present" — the
+                // measure/draw pipeline aborts, the LayoutNode tree stays
+                // empty and dispatchDraw produces 0 ops (dooz: 25× per run,
+                // blank face; freebloks' Compose menu: same family). AOSP
+                // semantic: LocalContext.current INSIDE compose content always
+                // answers the composing view's Context. Emulate the provider
+                // law at the earliest honest point: when the thrown exception
+                // carries the exact AOSP LocalContext failure message and the
+                // method has no handler for it, the accessor RETURNS the
+                // runtime's current Activity object (the Context the provider
+                // would have installed) instead of unwinding. App-agnostic:
+                // the key is the AOSP error string, never an APK name; every
+                // substitution is logged for the evidence chain.
+                if (!handler_found && exc.object_id != 0) {
+                    auto lc_msg = heap_.get_object_field(exc.object_id, "message");
+                    if (lc_msg.has_value() &&
+                        lc_msg->string_val ==
+                            "CompositionLocal LocalContext not present") {
+                        uint32_t act_obj = 0;
+                        if (shadow_registry_ != nullptr) {
+                            if (auto* act22 =
+                                    shadow_registry_->find_as<
+                                        framework::ActivityShadow>())
+                                act_obj = act22->current_activity_id();
+                        }
+                        std::cerr << "[S22-LC-PROVIDE] LocalContext accessor "
+                                     "throw contained — returning activity "
+                                     "Context o" << act_obj
+                                  << " from " << current_class_ << "."
+                                  << current_method_ << std::endl;
+                        DalvikValue lc_val =
+                            act_obj != 0
+                                ? DalvikValue::make_object(
+                                      act_obj, "Landroid/app/Activity;")
+                                : DalvikValue::make_null();
+                        // The execute_return_object contract (halted_ +
+                        // halted_on_return_ end the frame with
+                        // trace.return_value — EXP-055 store semantics).
+                        trace.status = InstructionTrace::Status::HALT_RETURN;
+                        trace.return_value = lc_val;
+                        last_invoke_return_ = lc_val;
+                        halted_ = true;
+                        halted_on_return_ = true;
+                        break;
+                    }
+                }
+
                 // EXP-053 + UNIFIED_011.3: if any handler (typed or catch-all)
                 // matched, jump to it instead of halting/skipping.
                 if (handler_found) {
