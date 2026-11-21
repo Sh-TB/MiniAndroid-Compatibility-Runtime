@@ -1,4 +1,4 @@
-# REGRESSION RESULTS — v2 (2026-11-21 (S19 mega-sweep — classified census queue CLOSED 227/234, family I grid/scroll laws))
+# REGRESSION RESULTS — v2 (2026-11-21 (S20 — #632 registry FULLY CLOSED: 234/234 settled; #633/#634 assessed at code level))
 ## Baselines (unchanged from v1 — W24 ABBA record, commit d8b8fbb9)
 candidate avg 289.85s (-17.3% wall / -17.7% CPU vs matched-steal base 350.39s), battery 49/49,
 gate 11/11 IDENTICAL. Peak RSS 1167MB. Steal 24-25% per window; floor 288.4s.
