@@ -27,16 +27,31 @@ pointers + summaries behind it.
 
 The stale hunt for "#632 batches 5-11 via pagination" is closed: the registry
 already holds 234 rows ≥ the 194-item target, with per-row provenance by comment
-ID. #632 itself carries only 3 comments (7034254502 = BATCH 2, 7034329407 =
-BATCH 3, 7034373205 = BATCH 4 FINAL); the later batches (7034418989 …
-7038547151) were harvested in earlier sessions from subsequent comment pages /
-follow-up threads. This session did not re-verify which issue number hosts each
-later comment ID (web calls timed out); the CSV's comment IDs are the
-authoritative provenance either way. Batch highlights preserved in-tree:
+ID. **Parentage resolved 2026-11-21 via the authenticated API** (token read at
+runtime from git credential, never stored): ALL 11 comment IDs are comments on
+**#632 itself** — the earlier "3 comments" reading was a WebFetch line-window
+truncation artifact, now corrected. The full batch stream on #632:
+
+| comment ID | BATCH label (first heading, abridged) | CSV rows |
+|---|---|---|
+| 7034254502 | BATCH 2 — two layout engines; six own P0 items retracted | 6 |
+| 7034329407 | BATCH 3 — view_renderer/real_layout NOT COMPILED | 7 |
+| 7034373205 | BATCH 4 — live engine faithful AOSP port; NEW-11/12 falsified | 4 |
+| 7034418989 | BATCH 5 — text pipeline; P0 Persian/Arabic shaping-order defect | 6 |
+| 7034447952 | BATCH 6 — resource system faithful + style-value heuristic | 3 |
+| 7034483805 | BATCH 7 — NEW-14 CONFIRMED: CENTER/CROP drawn with no clip | 13 |
+| 7037681554 | BATCH 8 — sweep S2: 174 XML attributes silently dropped | 17 |
+| 7038195837 | BATCH B1 — build performance, 18 new findings | 18 |
+| 7038248330 | BATCH B2 — CMake `all` links 52 executables | 6 |
+| 7038515790 | BATCH 10 — SQLite law mapped + 8 verified defects | 8 |
+| 7038547151 | BATCH 11 — subsystem reuse registry (~600 KB) | 6 |
+
+Batch highlights preserved in-tree:
 BATCH 2 retracted six of its own P0 items after discovering TWO layout engines;
 BATCH 3 proved `view_renderer.cpp`/`real_layout.cpp` are NOT COMPILED (40 claims
-dead-code); BATCH 4 closed the audit with "the live engine is
-MeasureSpec-compliant".
+dead-code); BATCH 4 closed the live-engine question — so the S18 D/E law
+families must target the LIVE inflater path, not the D/E rows' cited
+view_renderer.cpp lines (dead file).
 
 ## App-acceptance / engineering issue bodies (S7b, 13 fetched)
 
