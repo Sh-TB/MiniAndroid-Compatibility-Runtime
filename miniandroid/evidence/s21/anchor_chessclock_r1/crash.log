@@ -1,0 +1,238 @@
+MiniAndroid Crash/Error Log
+============================
+
+Session: EXP-001-20261121-173800-6763
+Generated: 2026-11-21 17:39:08 UTC
+Total Errors: 33
+
+--- Error #1 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lr0/a;.e invoke_pc=0x3f depth=4
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #2 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lr0/a;.e invoke_pc=0x3f depth=4
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #3 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lr0/a;.onMeasure invoke_pc=0x3 depth=3
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #4 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lb/l;.setContentView invoke_pc=0x15 depth=2
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #5 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNCAUGHT-TOP] Ljava/lang/IllegalStateException; escaped the app boundary at Ldk/cocode/chess/MainActivity;.onCreate invoke_pc=0xb1 depth=1 [APP-BOUNDARY]
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #6 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound Lf2/j;.next invoke_pc=0xa depth=51
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #7 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound Lf2/c;.a invoke_pc=0x8 depth=50
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #8 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound Lf2/c;.hasNext invoke_pc=0x5 depth=49
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #9 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound Lf2/g;.n0 invoke_pc=0x24 depth=48
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #10 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound Lm/b0;.a invoke_pc=0x60 depth=45
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #11 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound Ly1/c;.i invoke_pc=0x2c depth=44
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #12 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LN/a;.i invoke_pc=0x33 depth=43
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #13 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LF/d;.a invoke_pc=0xe2 depth=42
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #14 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LC/u1;.a invoke_pc=0x4c depth=41
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #15 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LC/c;.i invoke_pc=0x2f2 depth=40
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #16 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LN/a;.i invoke_pc=0x33 depth=39
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #17 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LF/d;.b invoke_pc=0x95 depth=38
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #18 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LC/e0;.a invoke_pc=0xdf depth=37
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #19 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LH1/b;.i invoke_pc=0x5c depth=36
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #20 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LN/a;.i invoke_pc=0x33 depth=35
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #21 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LF/d;.a invoke_pc=0xe2 depth=34
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #22 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LJ1/B;.a invoke_pc=0x66 depth=33
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #23 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound Ly1/b;.i invoke_pc=0x5e depth=32
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #24 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LN/a;.i invoke_pc=0x33 depth=31
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #25 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound Lr0/h0;.a invoke_pc=0x45 depth=30
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #26 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LF/w0;.i invoke_pc=0x97 depth=29
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #27 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LN/a;.i invoke_pc=0x33 depth=28
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #28 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LF/d;.b invoke_pc=0x95 depth=27
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #29 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound Lr0/i0;.a invoke_pc=0x134 depth=26
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #30 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LC/i0;.i invoke_pc=0x34 depth=25
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #31 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LN/a;.i invoke_pc=0x33 depth=24
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #32 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/VirtualMachineError; unwound LF/d;.b invoke_pc=0x95 depth=23
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 17:39:01 UTC
+
+--- Error #33 ---
+Type: DALVIK_ERROR
+Message: filesystem error: cannot create directories: No space left on device [evidence/s21/anchor_chessclock_r1/exp031_5/traces/dk.cocode.chess]
+Context: DalvikEngine.execute_apk
+Fatal: NO
+Timestamp: 2026-11-21 17:39:08 UTC
+

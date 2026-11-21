@@ -2252,12 +2252,29 @@ static const size_t kContentMeasureClasses_N = sizeof(kContentMeasureClasses) / 
 
     std::string cur = class_desc;
     int guard = 0;
+    // S21 diagnostic (env-gated, read-only): one-shot env read.
+    static const std::string s21_dump = [] {
+        const char* e = std::getenv("MINIANDROID_S21_CHAIN_DUMP");
+        return e ? std::string(e) : std::string();
+    }();
     while (!cur.empty() && guard++ < 16) {
         auto cit = class_info_index_.find(cur);
         if (cit != class_info_index_.end() && dex_report_) {
             const auto& cls = dex_report_->classes[cit->second];
             // F-107c2: iterate without copying the method table.
             if (cls.find_method(method) != nullptr) return true;
+        }
+        // S21 diagnostic (env-gated, read-only): trace one chain query.
+        if (!s21_dump.empty() && s21_dump == cur) {
+            std::cerr << "[S21-CHAIN] cur=" << cur << " method=" << method
+                      << " in_index=" << (cit != class_info_index_.end() ? 1 : 0)
+                      << " index_size=" << class_info_index_.size()
+                      << " dex_report=" << (dex_report_ != nullptr ? 1 : 0)
+                      << " super="
+                      << (class_to_superclass_.count(cur)
+                              ? class_to_superclass_.at(cur)
+                              : "<none>")
+                      << std::endl;
         }
         if (kv_table_contains(kContentMeasureClasses, kContentMeasureClasses_N, cur)) return false;
         // MASTER-2 FIX-MEASURE-001 (override-query law): reaching a plain

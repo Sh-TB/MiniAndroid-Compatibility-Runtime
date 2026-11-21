@@ -5095,13 +5095,28 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                         // diagnostic). Nothing fires unless
                                         // the app's own draw produced ops.
                                         {
+                                            // S20-B2 (issue #635 gate): replace the
+                                            // name-prefix provenance gate with the
+                                            // AOSP-FAITHFUL contract. AOSP's
+                                            // View.draw() template has NO
+                                            // class-provenance gate: every view
+                                            // with a live object runs the draw
+                                            // chain (bg → onDraw → dispatchDraw →
+                                            // fg). Honest-blank safety is ALREADY
+                                            // enforced downstream: the replay
+                                            // happens only when the dispatched
+                                            // draw produced real ops (gap_ops > 0)
+                                            // — a 0-op dispatch keeps the
+                                            // diagnostic recording unchanged
+                                            // (21-P0-5 authoritative-frame purity
+                                            // preserved). dooz's AndroidComposeView
+                                            // and freebloks' ContentFrameLayout
+                                            // (both live heap objects, both real
+                                            // draw contracts in their bundled
+                                            // androidx) were declined by NAME only.
                                             const std::string& cv_cls =
                                                 node->class_desc;
-                                            bool cv_framework =
-                                                cv_cls.rfind("Landroid/", 0) == 0 ||
-                                                cv_cls.rfind("Landroidx/", 0) == 0 ||
-                                                cv_cls.rfind("Lcom/google/", 0) == 0;
-                                            if (!cv_framework && task.view_id != 0 &&
+                                            if (task.view_id != 0 &&
                                                 dalvik_engine_.get_heap().has_object(task.view_id)) {
                                                 int gap_ops =
                                                     dalvik_engine_.dispatch_custom_view_draw(
