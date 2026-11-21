@@ -1,4 +1,4 @@
-# BLOCKED AND PENDING — v2 (2026-11-21 (S18-cont-2 — A-row census re-measurement, B5 falsification family H, S3 issue bodies))
+# BLOCKED AND PENDING — v2 (2026-11-21 (S19 mega-sweep — classified census queue CLOSED 227/234, family I grid/scroll laws))
 
 ## BLOCKED
 | ID | Item | Exact blocker | Recovery outcome |
@@ -15,7 +15,7 @@
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
 | AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
-| AUD-54 follow-ups | 105 rows remain after S18-cont-2 (all classified); 129/234 settled honestly — D/E families DONE, family H (constraint anchors) DONE, A-row census re-measured, B6-B9 dispositioned by the #635 audit | focused laws per registry; next: NEW-fixture rows (N2 font, P8 mini-DEX, N8 image) + remaining census candidates; #633/#634 patch delivery |
+| AUD-54 follow-ups | 7 rows remain after the S19 mega-sweep (content-check class: NEW-2/12/14/24/26/28/32); 227/234 settled honestly — family I (grid/scroll) DONE with an honest retarget, 92-row census sweep applied with fresh measurements | content-level checks on the 7 + NEW-fixture rows (N2 font, P8 mini-DEX, N8 image); #633/#634 patch delivery |
 
 ## Resolved by S14/S15
 - AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined (probes rc=0, battery 49/49 rc=0).

@@ -1,7 +1,7 @@
-# MASTER AUDIT — Cross-Coder Achievement Audit (v2.3, 2026-11-21 (S18-cont-2 — A-row census re-measurement, B5 falsification family H, S3 issue bodies))
+# MASTER AUDIT — Cross-Coder Achievement Audit (v2.4, 2026-11-21 (S19 mega-sweep — classified census queue CLOSED 227/234, family I grid/scroll laws))
 v1 baseline: commit 9b953ce1 (2026-11-20). v2 continues it per Issue #635 §1-§9 — nothing replaced, everything reconciled.
 v2.1 adds the S14 closure pass: BUG-7 dedupe, UBSan E-05 machine verification, BUILD_TESTS=ON peak-RSS measurement.
-Base: origin/main 56ba5842; session HEAD: 9bfc997e S18-cont-2 — 11 more classified rows settled -> 129/234 (105 remain): (1) branch restored after a recycle rewound local main to c5a1efa6 with a partial tree — hard reset to origin/main d878c4c8, tree verified against the pushed state, untracked evidence survived; (2) S3: #635/#633/#634 bodies fetched+archived (RAW_LOGS/s3_issue_bodies_2026-11-21.md, digest section) — #635's §1 dispositions are EXTERNAL measured evidence: ggc-min REJECTED-measured 3x slower (GC thrash), -fno-var-tracking-assignments REJECTED-measured no win (GCC14 fixed VTA), .DELETE_ON_ERROR FIXED in-tree (grep-verified), Make-path peak RSS 1221 MB / 4 GB across ~40 builds (OOM not observed); #633 [MG-009] + #634 [MG-012] recorded as MG vector fixes BLOCKED FROM PUSHING (integration candidates pending patch delivery); (3) A-row census RE-MEASURED (RAW_LOGS/s18_a_census_2026-11-21.log): A2 evidence/ 55.61 MB/1287 tracked (claim 45.67/1185 HOLDS), A3 37 root logs/4.83 MB HOLDS, A5 .gitignore exactly 645 bytes NO build_* exclusion HOLDS verbatim, A6 src/ 16.10 MB/214 files but src share 16.9% of 95.24 MB tracked repo -> '>99% non-source' SUPERSEDED (honest downgrade), A7 build_p2a/build_dev/build_cc ABSENT (SUPERSEDED-by-cleanup), A8 database 7.15 MB / third_party 4.36 MB HOLDS; (4) family H s18_constraint_law_test 3/3 FALSIFIES B5 for the live path: the claim (ConstraintLayout-as-FrameLayout, no constraint solving) cites view_renderer.cpp:70 (DEAD per BATCH 3); the engine implements the F-148 CL law (layout_inflater.cpp:3502-3531 — per-axis topological anchors, MATCH_CONSTRAINT spans, bias 0.5); expectations fixed from the documented law BEFORE the run: H1 solving (B.top=A.bottom=60), H2 bias centering (left=0.5*400=200), H3 MATCH_CONSTRAINT (EXACTLY 800); MUTATION-H (CL predicate broken) -> exactly 0/3 FAIL as predicted (B.top=0, C.left=0, D.height=0), reverted, mutation markers in src/ = 0, full battery post-revert 51/51 rc=0 (first full run 50/50 pre-registration, then 51/51 x2); (5) registry: 11 rows stamped S18-CONT-2 via scripts/s18_cont2_upgrade_rows.py with per-row unique wording selectors (original_id is NOT unique across #632 sections — two B8s/two B9s — the first selector-less run aborted fail-closed BEFORE any write); classified queue 131-11(S18)-4(S18-cont-1)-11(cont-2) = 105 remaining, settled 129/234; (6) ledger +AUD-61 (UNIT-TESTED, 67 rows) validator OVERALL PASS; deliverables regenerated v2.3 (item 18, §2/§3/§4 counts, BLOCKED_AND_PENDING AUD-54 row, NEXT_INTEGRATION_PLAN item 8).
+Base: origin/main 56ba5842; session HEAD: c59eba39 S18-cont-2 closeout — #635 progress comment body + poster preserved as evidence (token read at runtime from git credential, never stored)
 
 ## §1 What this session changed
 1. **Ledger normalized** (S2): 50 rows -> **63 rows** (S15: +1 -> **64 rows**, AUD-58), one claim per row, canonical verdicts
@@ -177,16 +177,48 @@ Base: origin/main 56ba5842; session HEAD: 9bfc997e S18-cont-2 — 11 more classi
     remaining**. Ledger +AUD-61 (UNIT-TESTED, 67 rows) validator PASS. S3 also recorded
     #633 [MG-009] and #634 [MG-012]: both MG vector issues claim root-caused local fixes
     that are BLOCKED FROM PUSHING — integration candidates pending actual patch delivery.
+19. **S19 mega-sweep — the classified census queue CLOSED (227/234)**: branch restored
+    AGAIN after a second recycle rewind (hard reset to c59eba39, tree verified). (a) The
+    true open queue was 96, not 105 — 9 rows (E8/Q1/Q2/Q3/Q5/Q6/Q7 and 2 more) were
+    ALREADY resolved inside their own S18-CLASS notes (ALREADY-RESOLVED/DUPLICATE).
+    (b) One self-measuring sweep (scripts/s19_census_sweep.py, log
+    RAW_LOGS/s19_census_sweep_2026-11-21.log, per-row uniqueness pre-flight — the
+    S18-cont-2 lesson) settled **92 rows with fresh measured evidence**: 19
+    DORMANT-RESCOPE (every view_renderer.cpp-cited row — the Makefile itself lists it in
+    DORMANT_SOURCES :624-626, "documented dormant — not linked", skipped by the parity
+    loop); 30 CENSUS-CONFIRMED (B8: app-class hardcodings in 4 live TUs; B9:
+    **253 distinct MINIANDROID_* env vars** vs the 3 the claim named; SQL-7/SQL-8
+    verified at src/storage/; NEW-8 largest TU 5.03 MB; NEW-3 weight-milli
+    lround(f*1000); J2/NEW-5 resample_nearest live; G5/I4/NEW-40/K3/N5/O9/J11/NEW-17/
+    NEW-30/NEW-41/NEW-43/NEW-44/NEW-45/NEW-46/NEW-47/NEW-48/N8 absences at 0 grep hits;
+    NEW-16 depth cap live; Q4 uncapped extract cache live; NEW-10 6 EXISTS guards);
+    8 LAW-REFUTED (H1/F4/F6 grid — the #606 Bellman-Ford law, margins carry the gaps;
+    I5 HSV horizontal UNSPEC; G6 cycle fallback; NEW-42 CL sizing core per family H;
+    NEW-39 baseline/divider per the DE laws; NEW-11 gravity laws in-battery);
+    10 CENSUS-PARTIAL refinements with counts (J3/J10/M4/O8/P5/P6/P7/P8/H3/K5);
+    2 RESOLVED-DOC (SWEEP-S2 -> the batch-8 doc; NEW-9 -> #635's retraction-justified
+    disposition); 22 PLAN-ACK (R-1..R-5/REUSE-TOTAL/R3-R5/R8/S1/S3-S9/NEW-13/25/31 —
+    proposal rows, not factual claims); 1 BLOCKED-EXTERNAL (NEW-6 GitHub indexing).
+    (c) Family I s19_grid_scroll_laws_test 3/3 — I1 margins-carry-the-gaps (F4
+    falsified: track = max(child+margins), root 110 not 100), I2 columnCount honored
+    (2x2 tracks = 160x80), I3 HONESTLY RETARGETED: my root-wrap expectation was
+    falsified by the engine's AOSP-correct window-frame answer (root = 1080); the law
+    was retargeted to the content-UNSPEC assertion (child = 3000, root = 1080),
+    mirroring s246 H1.3. MUTATION-I dropped the grid margins from the track law -> family I 2 pass / 1 fail (I1 FAIL exactly as predicted at 100x100; I2/I3 unaffected; reverted; markers in src/ = 0). Full battery total=52 passed=52 failed=0 rc=0 (51 prior + family I; final post-revert run green). (d) Remaining
+    queue: **7 rows** (NEW-2/12/14/24/26/28/32 — content-check class, decisive grep
+    evidence unavailable). **227/234 settled honestly.** Ledger +AUD-62 (UNIT-TESTED,
+    68 rows) validator PASS.
 
-## §2 Verdict totals (programmatic, from the 67-row ledger)
-See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==67.
+## §2 Verdict totals (programmatic, from the 68-row ledger)
+See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==68.
 S14: PENDING 4 -> 2 (AUD-47/49 resolved), CONFIRMED 33 -> 35. S15: +1 row (AUD-58, SUPERSEDED).
 S18: +1 (AUD-59, UNIT-TESTED). S18-cont: +1 (AUD-60, UNIT-TESTED). S18-cont-2: +1 (AUD-61, UNIT-TESTED).
+S19: +1 (AUD-62, UNIT-TESTED).
 v1's "30 CONFIRMED / 4 REJECTED..." was internally inconsistent (its CONFIRMED bucket absorbed 3
 REJECTED probes); v2 replaces it with machine-counted numbers.
 
 ## §3 Deliverables (this directory)
-ACHIEVEMENT_LEDGER.csv (67 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
+ACHIEVEMENT_LEDGER.csv (68 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
 source_check sweep on 103 rows) · 632_BATCH8_174_ATTRIBUTES.md · MASTER_AUDIT.md ·
 INTEGRATION_MAP.md · REJECTED_AND_CORRECTED.md · BLOCKED_AND_PENDING.md ·
 REGRESSION_RESULTS.md · PRESERVED_WORK_MANIFEST.md · NEXT_INTEGRATION_PLAN.md · RAW_LOGS/
@@ -198,11 +230,12 @@ census, 632_registry_snapshot, untrack SHAs, b567 probes, tracker index)
 - #295/#296/#297 and #634 fixes remain coder-local (branch layout-geometry-001 / local trees);
   not re-implemented here — MG-011 was, because the mission allows a one-line fix backed by tests.
 - #632 per-finding checks: 103/234 claims machine-checked by the S16 sweep (source_check col);
-  the classified queue is now **105 rows** (131 NO-CITE classified in S18 -> 120 after its 11
-  law-verified rows -> 116 after the S18-cont D/E laws settled D5/D6/E6/E7 and upgraded D4 in
-  place -> 105 after S18-cont-2 settled A2/A3/A5/A6/A7/A8/B5/B6/B7/B8/B9) — runtime-behavior
-  claims that carry status notes; they are the focused-test queue (NEXT_INTEGRATION_PLAN.md
-  item 8). **129/234 settled honestly.** The S16 sweep CORRECTED the earlier
+  the classified census queue is CLOSED for grep/census-level work: **7 rows remain**
+  (131 NO-CITE classified in S18 -> 11 settled by its law families -> 4 by the S18-cont
+  D/E laws (D5/D6/E6/E7, D4 upgraded in place) -> 11 by S18-cont-2 (A2-A8/B5-B9) -> 9
+  found resolved-in-note -> **92 by the S19 mega-sweep**) — the 7 left (NEW-2/12/14/24/
+  26/28/32) need content-level checks, not greps (NEXT_INTEGRATION_PLAN.md item 8).
+  **227/234 settled honestly.** The S16 sweep CORRECTED the earlier
   25 "cited X ABSENT" marks: every one of those files exists under src/resources/ or
   src/renderer/ — the cites were stale paths, not missing code (verdict STALE-CITE-RELOCATED).
 - The #627 hub's exact 7 UBSan vectors were never published; the S14 probe set is the audit's

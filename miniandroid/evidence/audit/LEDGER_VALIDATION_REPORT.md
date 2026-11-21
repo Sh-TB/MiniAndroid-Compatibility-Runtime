@@ -5,11 +5,11 @@ Ledger: `miniandroid/evidence/audit/ACHIEVEMENT_LEDGER.csv`
 
 | Check | Result |
 |---|---|
-| Total data rows | 67 |
-| Unique claim IDs | 67 |
+| Total data rows | 68 |
+| Unique claim IDs | 68 |
 | Duplicate IDs | 0 |
 | Missing IDs / orphan splits | 0 |
-| Sum of verdict counts | 67 |
+| Sum of verdict counts | 68 |
 | Sum == rows | YES |
 | Rows with non-canonical verdicts | 0 |
 | Rows with multiple/compound verdicts | 0 |
@@ -26,13 +26,13 @@ Ledger: `miniandroid/evidence/audit/ACHIEVEMENT_LEDGER.csv`
 
 | Verdict | Rows |
 |---|---|
-| CONFIRMED | 38 |
+| CONFIRMED | 39 |
 | REJECTED | 11 |
 | PARTIALLY CONFIRMED | 6 |
 | BLOCKED | 8 |
 | PENDING | 2 |
 | SUPERSEDED | 2 |
-| **TOTAL** | **67** |
+| **TOTAL** | **68** |
 
 ## Evidence level counts
 
@@ -46,14 +46,14 @@ Ledger: `miniandroid/evidence/audit/ACHIEVEMENT_LEDGER.csv`
 | RUNTIME-EXECUTED | 2 |
 | SOURCE-INSPECTED | 23 |
 | TRACKER-STATE | 3 |
-| UNIT-TESTED | 6 |
+| UNIT-TESTED | 7 |
 
 ## Integration status counts
 
 | Status | Rows |
 |---|---|
 | DOCUMENTED-ONLY | 7 |
-| INTEGRATED | 25 |
+| INTEGRATED | 26 |
 | INTEGRATED-PER-TRACKER | 2 |
 | N/A | 6 |
 | NOT-INTEGRATED | 10 |
@@ -62,6 +62,6 @@ Ledger: `miniandroid/evidence/audit/ACHIEVEMENT_LEDGER.csv`
 | REJECTED-EXPERIMENT | 8 |
 | SUPERSEDED-BY-SPLIT | 1 |
 
-**OVERALL: PASS** — rows==verdict-sum==67, all verdicts canonical, all rows carry evidence + integration status.
+**OVERALL: PASS** — rows==verdict-sum==68, all verdicts canonical, all rows carry evidence + integration status.
 
 Split provenance (v1 50 rows -> v2): AUD-10→10a/10b, AUD-15→15a/15b, AUD-25→25a/25b, AUD-36→36a/36b, AUD-37→37a/37b, AUD-38→38a/38b. v1 backup: /tmp/ledger_v1_backup.csv (session-local).

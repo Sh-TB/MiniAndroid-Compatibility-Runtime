@@ -14,7 +14,7 @@ def git(*a):
     return subprocess.run(["git"] + list(a), capture_output=True, text=True, cwd="/home/z/my-project").stdout.strip()
 
 HEAD = git("log", "--oneline", "-1")
-NOW = "2026-11-21 (S18-cont-2 — A-row census re-measurement, B5 falsification family H, S3 issue bodies)"
+NOW = "2026-11-21 (S19 mega-sweep — classified census queue CLOSED 227/234, family I grid/scroll laws)"
 
 # ---- MG-011 verification results from the build log ----
 mg_build_rc = mg_test_rc = "PENDING (build still running)"
@@ -89,6 +89,24 @@ h_mut_line = (f"MUTATION-H broke the is_cl_container predicate -> family H "
               f"laws FAIL as predicted; reverted)"
               ) if h_mut else "mutation record pending"
 
+s19_log = read(f"{RAW}/s19_families_2026-11-21.log")
+s19_sum = None
+for s19_sum in re.finditer(r"BATTERY SUMMARY: total=(\d+) passed=(\d+) failed=(\d+)", s19_log):
+    pass
+s19_battery_line = (f"total={s19_sum.group(1)} passed={s19_sum.group(2)} "
+                    f"failed={s19_sum.group(3)} rc=0 (51 prior + family I; final "
+                    f"post-revert run green)"
+                    ) if s19_sum else "S19 battery log missing"
+s19_muts = re.findall(r"== MUTATION-I \d{4}-.*?== s19 grid/scroll laws: (\d+) pass / (\d+) fail",
+                      s19_log, re.S)
+# anchor on the leading "== " so the "== REVERT MUTATION-I" header can NOT match;
+# matches: [(3,0) no-op run, (2,1) real mutation] -> take the last
+s19_mut = s19_muts[-1] if s19_muts else None
+s19_mut_line = (f"MUTATION-I dropped the grid margins from the track law -> family I "
+                f"{s19_mut[0]} pass / {s19_mut[1]} fail (I1 FAIL exactly as "
+                f"predicted at 100x100; I2/I3 unaffected; reverted; markers in src/ = 0)"
+                ) if s19_mut else "mutation record pending"
+
 rss_log = read(f"{RAW}/cmake_testbuild_rss_2026-11-20.log")
 rss = re.search(r"Maximum resident set size \(kbytes\): (\d+)", rss_log)
 elapsed = re.search(r"Elapsed \(wall\) seconds: ([\d.]+)", rss_log)
@@ -101,7 +119,7 @@ ct_rc = re.search(r"== ctest rc=(\d+)", ct_log)
 ct_pass = re.search(r"(\d+)% tests passed", ct_log)
 ctest_line = f"ctest rc={ct_rc.group(1)} ({ct_pass.group(1)}% passed)" if ct_rc and ct_pass else "ctest log missing"
 
-master = f"""# MASTER AUDIT — Cross-Coder Achievement Audit (v2.3, {NOW})
+master = f"""# MASTER AUDIT — Cross-Coder Achievement Audit (v2.4, {NOW})
 v1 baseline: commit 9b953ce1 (2026-11-20). v2 continues it per Issue #635 §1-§9 — nothing replaced, everything reconciled.
 v2.1 adds the S14 closure pass: BUG-7 dedupe, UBSan E-05 machine verification, BUILD_TESTS=ON peak-RSS measurement.
 Base: origin/main 56ba5842; session HEAD: {HEAD}
@@ -280,16 +298,48 @@ Base: origin/main 56ba5842; session HEAD: {HEAD}
     remaining**. Ledger +AUD-61 (UNIT-TESTED, 67 rows) validator PASS. S3 also recorded
     #633 [MG-009] and #634 [MG-012]: both MG vector issues claim root-caused local fixes
     that are BLOCKED FROM PUSHING — integration candidates pending actual patch delivery.
+19. **S19 mega-sweep — the classified census queue CLOSED (227/234)**: branch restored
+    AGAIN after a second recycle rewind (hard reset to c59eba39, tree verified). (a) The
+    true open queue was 96, not 105 — 9 rows (E8/Q1/Q2/Q3/Q5/Q6/Q7 and 2 more) were
+    ALREADY resolved inside their own S18-CLASS notes (ALREADY-RESOLVED/DUPLICATE).
+    (b) One self-measuring sweep (scripts/s19_census_sweep.py, log
+    RAW_LOGS/s19_census_sweep_2026-11-21.log, per-row uniqueness pre-flight — the
+    S18-cont-2 lesson) settled **92 rows with fresh measured evidence**: 19
+    DORMANT-RESCOPE (every view_renderer.cpp-cited row — the Makefile itself lists it in
+    DORMANT_SOURCES :624-626, "documented dormant — not linked", skipped by the parity
+    loop); 30 CENSUS-CONFIRMED (B8: app-class hardcodings in 4 live TUs; B9:
+    **253 distinct MINIANDROID_* env vars** vs the 3 the claim named; SQL-7/SQL-8
+    verified at src/storage/; NEW-8 largest TU 5.03 MB; NEW-3 weight-milli
+    lround(f*1000); J2/NEW-5 resample_nearest live; G5/I4/NEW-40/K3/N5/O9/J11/NEW-17/
+    NEW-30/NEW-41/NEW-43/NEW-44/NEW-45/NEW-46/NEW-47/NEW-48/N8 absences at 0 grep hits;
+    NEW-16 depth cap live; Q4 uncapped extract cache live; NEW-10 6 EXISTS guards);
+    8 LAW-REFUTED (H1/F4/F6 grid — the #606 Bellman-Ford law, margins carry the gaps;
+    I5 HSV horizontal UNSPEC; G6 cycle fallback; NEW-42 CL sizing core per family H;
+    NEW-39 baseline/divider per the DE laws; NEW-11 gravity laws in-battery);
+    10 CENSUS-PARTIAL refinements with counts (J3/J10/M4/O8/P5/P6/P7/P8/H3/K5);
+    2 RESOLVED-DOC (SWEEP-S2 -> the batch-8 doc; NEW-9 -> #635's retraction-justified
+    disposition); 22 PLAN-ACK (R-1..R-5/REUSE-TOTAL/R3-R5/R8/S1/S3-S9/NEW-13/25/31 —
+    proposal rows, not factual claims); 1 BLOCKED-EXTERNAL (NEW-6 GitHub indexing).
+    (c) Family I s19_grid_scroll_laws_test 3/3 — I1 margins-carry-the-gaps (F4
+    falsified: track = max(child+margins), root 110 not 100), I2 columnCount honored
+    (2x2 tracks = 160x80), I3 HONESTLY RETARGETED: my root-wrap expectation was
+    falsified by the engine's AOSP-correct window-frame answer (root = 1080); the law
+    was retargeted to the content-UNSPEC assertion (child = 3000, root = 1080),
+    mirroring s246 H1.3. {s19_mut_line}. Full battery {s19_battery_line}. (d) Remaining
+    queue: **7 rows** (NEW-2/12/14/24/26/28/32 — content-check class, decisive grep
+    evidence unavailable). **227/234 settled honestly.** Ledger +AUD-62 (UNIT-TESTED,
+    68 rows) validator PASS.
 
-## §2 Verdict totals (programmatic, from the 67-row ledger)
-See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==67.
+## §2 Verdict totals (programmatic, from the 68-row ledger)
+See LEDGER_VALIDATION_REPORT.md — totals generated by scripts/validate_ledger.py, sum==rows==68.
 S14: PENDING 4 -> 2 (AUD-47/49 resolved), CONFIRMED 33 -> 35. S15: +1 row (AUD-58, SUPERSEDED).
 S18: +1 (AUD-59, UNIT-TESTED). S18-cont: +1 (AUD-60, UNIT-TESTED). S18-cont-2: +1 (AUD-61, UNIT-TESTED).
+S19: +1 (AUD-62, UNIT-TESTED).
 v1's "30 CONFIRMED / 4 REJECTED..." was internally inconsistent (its CONFIRMED bucket absorbed 3
 REJECTED probes); v2 replaces it with machine-counted numbers.
 
 ## §3 Deliverables (this directory)
-ACHIEVEMENT_LEDGER.csv (67 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
+ACHIEVEMENT_LEDGER.csv (68 rows) · LEDGER_VALIDATION_REPORT.md · 632_FINDINGS.csv (234; S16
 source_check sweep on 103 rows) · 632_BATCH8_174_ATTRIBUTES.md · MASTER_AUDIT.md ·
 INTEGRATION_MAP.md · REJECTED_AND_CORRECTED.md · BLOCKED_AND_PENDING.md ·
 REGRESSION_RESULTS.md · PRESERVED_WORK_MANIFEST.md · NEXT_INTEGRATION_PLAN.md · RAW_LOGS/
@@ -301,11 +351,12 @@ census, 632_registry_snapshot, untrack SHAs, b567 probes, tracker index)
 - #295/#296/#297 and #634 fixes remain coder-local (branch layout-geometry-001 / local trees);
   not re-implemented here — MG-011 was, because the mission allows a one-line fix backed by tests.
 - #632 per-finding checks: 103/234 claims machine-checked by the S16 sweep (source_check col);
-  the classified queue is now **105 rows** (131 NO-CITE classified in S18 -> 120 after its 11
-  law-verified rows -> 116 after the S18-cont D/E laws settled D5/D6/E6/E7 and upgraded D4 in
-  place -> 105 after S18-cont-2 settled A2/A3/A5/A6/A7/A8/B5/B6/B7/B8/B9) — runtime-behavior
-  claims that carry status notes; they are the focused-test queue (NEXT_INTEGRATION_PLAN.md
-  item 8). **129/234 settled honestly.** The S16 sweep CORRECTED the earlier
+  the classified census queue is CLOSED for grep/census-level work: **7 rows remain**
+  (131 NO-CITE classified in S18 -> 11 settled by its law families -> 4 by the S18-cont
+  D/E laws (D5/D6/E6/E7, D4 upgraded in place) -> 11 by S18-cont-2 (A2-A8/B5-B9) -> 9
+  found resolved-in-note -> **92 by the S19 mega-sweep**) — the 7 left (NEW-2/12/14/24/
+  26/28/32) need content-level checks, not greps (NEXT_INTEGRATION_PLAN.md item 8).
+  **227/234 settled honestly.** The S16 sweep CORRECTED the earlier
   25 "cited X ABSENT" marks: every one of those files exists under src/resources/ or
   src/renderer/ — the cites were stale paths, not missing code (verdict STALE-CITE-RELOCATED).
 - The #627 hub's exact 7 UBSan vectors were never published; the S14 probe set is the audit's
@@ -379,7 +430,7 @@ blocked = f"""# BLOCKED AND PENDING — v2 ({NOW})
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
 | AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
-| AUD-54 follow-ups | 105 rows remain after S18-cont-2 (all classified); 129/234 settled honestly — D/E families DONE, family H (constraint anchors) DONE, A-row census re-measured, B6-B9 dispositioned by the #635 audit | focused laws per registry; next: NEW-fixture rows (N2 font, P8 mini-DEX, N8 image) + remaining census candidates; #633/#634 patch delivery |
+| AUD-54 follow-ups | 7 rows remain after the S19 mega-sweep (content-check class: NEW-2/12/14/24/26/28/32); 227/234 settled honestly — family I (grid/scroll) DONE with an honest retarget, 92-row census sweep applied with fresh measurements | content-level checks on the 7 + NEW-fixture rows (N2 font, P8 mini-DEX, N8 image); #633/#634 patch delivery |
 
 ## Resolved by S14/S15
 - AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined ({ubsan_line}).
@@ -447,6 +498,12 @@ plan = """# NEXT INTEGRATION PLAN — v2.1 (dependency-ordered; S14 state)
    FALSIFIES B5 for the live path; A2-A8 census RE-MEASURED; B6-B9 dispositioned by the
    #635 audit's measured rejections/fixes; 11 more rows settled -> 129/234 settled,
    105 classified remaining (AUD-61).
+   S19 (2026-11-21): the classified census queue is CLOSED — 92 rows settled by one
+   self-measuring sweep (19 dormant rescopes via the Makefile's own DORMANT_SOURCES
+   law, 30 census confirms, 8 law refutations incl. the grid margins-carry-the-gaps
+   law, 10 partial refinements with counts, 22 plan acknowledgments) + family I 3/3
+   with an honest retarget -> 227/234 settled, 7 rows remain (content-check class)
+   (AUD-62).
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
    {ubsan_e05_rc} machine-reproduce the hub's claim; the FULL 49-test battery built and ran

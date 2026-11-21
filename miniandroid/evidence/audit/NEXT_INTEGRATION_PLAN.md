@@ -37,6 +37,12 @@
    FALSIFIES B5 for the live path; A2-A8 census RE-MEASURED; B6-B9 dispositioned by the
    #635 audit's measured rejections/fixes; 11 more rows settled -> 129/234 settled,
    105 classified remaining (AUD-61).
+   S19 (2026-11-21): the classified census queue is CLOSED — 92 rows settled by one
+   self-measuring sweep (19 dormant rescopes via the Makefile's own DORMANT_SOURCES
+   law, 30 census confirms, 8 law refutations incl. the grid margins-carry-the-gaps
+   law, 10 partial refinements with counts, 22 plan acknowledgments) + family I 3/3
+   with an honest retarget -> 227/234 settled, 7 rows remain (content-check class)
+   (AUD-62).
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
    0 machine-reproduce the hub's claim; the FULL 49-test battery built and ran

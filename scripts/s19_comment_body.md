@@ -1,0 +1,18 @@
+**S19 — the classified census queue CLOSED: 227/234 settled (92-row mega-sweep + family I grid/scroll laws)**
+
+Branch restored again after a second sandbox rewind (hard reset to `c59eba39`, tree verified). Then the big pass:
+
+**1. Accurate queue accounting.** The true open queue was **96, not 105** — 9 rows (E8/Q1/Q2/Q3/Q5/Q6/Q7 + 2) were already resolved inside their own S18-CLASS notes (ALREADY-RESOLVED/DUPLICATE) and my earlier filter missed that.
+
+**2. One self-measuring sweep settled 92 rows** (`scripts/s19_census_sweep.py`, log `RAW_LOGS/s19_census_sweep_2026-11-21.log`, per-row uniqueness pre-flight — the two-B8s/two-B9s lesson from last session):
+- **19 DORMANT-RESCOPE** — every row citing `view_renderer.cpp` (C5/C6/C7/C10/C11/E4/E5/F3/F5/I3/J4/J12/J6/O10/O11/O3/P2/C8/C9): the Makefile itself lists it in `DORMANT_SOURCES` (:624-626, "documented dormant — not linked", skipped by the parity loop).
+- **30 CENSUS-CONFIRMED with fresh counts** — headline: **B9 confirmed at 253 distinct `MINIANDROID_*` env vars** (the claim named 3); B8 hardcodings in 4 live TUs; SQL-7 (no busy_timeout) + SQL-8 (`insert`/`insertOrThrow` dispatched at :770 but absent from `implemented_methods()`) verified at `src/storage/`; NEW-8 largest TU 5.03 MB; NEW-3 weight-milli `lround(f*1000)`; J2/NEW-5 nearest-neighbour resample live; NEW-16 depth cap live; Q4 uncapped extract-entry cache live; and the absence family (G5/I4/NEW-40/K3/N5/O9/J11/NEW-17/NEW-30/NEW-41/NEW-43/NEW-44/NEW-45/NEW-46/NEW-47/NEW-48/N8) all at 0 grep hits.
+- **8 LAW-REFUTED** — H1/F4/F6 (the live #606 GridLayout law: Bellman-Ford track solve, **margins carry the gaps** — F4's "margins ignored entirely" is falsified at :4385-4388), I5 (HSV horizontal UNSPEC law live), G6 (cycle detection + declaration-order fallback live in both RL and CL topos), NEW-42 (CL sizing core live per family H), NEW-39 (baseline/divider live per the DE laws), NEW-11 (gravity laws in-battery).
+- **10 CENSUS-PARTIAL refinements with counts** (J3/J10/M4/O8/P5/P6/P7/P8/H3/K5) — blanket claims refined to measured partial states, content checks queued.
+- **2 RESOLVED-DOC** (SWEEP-S2 → the 174-attributes doc; NEW-9 → #635's "retraction justified"), **22 PLAN-ACK** (R-1..R-5/REUSE-TOTAL/R3-R5/R8/S1/S3-S9/NEW-13/25/31 — proposal rows, not factual claims), **1 BLOCKED-EXTERNAL** (NEW-6 GitHub indexing).
+
+**3. Family I `s19_grid_scroll_laws_test` 3/3** (expectations fixed from the documented laws BEFORE the run): I1 margins-carry-the-gaps (root 110 = max(100, 80+30), not 100), I2 columnCount honored (2×2 tracks = 160×80), I3 **honestly retargeted** — my root-wrap expectation (3000) was falsified by the engine's AOSP-correct window-frame answer (root = 1080); retargeted to the content-UNSPEC assertion (child = 3000, root = 1080), mirroring s246 H1.3. **MUTATION-I** (grid margins dropped from the track law) → I1 FAIL at 100×100 exactly as predicted, I2/I3 PASS; reverted; markers in src/ = 0. Full battery **52/52 rc=0** (one earlier run caught my own I3 expectation error — recorded as a no-op MUTATION-I section with a correction note in the log).
+
+**4. Remaining queue: 7 rows** (NEW-2/12/14/24/26/28/32) — all content-check class where decisive grep evidence is unavailable; they need code-level reading, not sweeps. **227/234 settled honestly.** Ledger +AUD-62 (UNIT-TESTED, 68 rows) validator PASS; deliverables regenerated v2.4.
+
+Commits: this batch. Logs: `RAW_LOGS/s19_families_2026-11-21.log`, `s19_census_sweep_2026-11-21.log`. Next: content-level checks on the 7, NEW-fixture rows (N2 font, P8 mini-DEX, N8 image), #633/#634 patch delivery.
