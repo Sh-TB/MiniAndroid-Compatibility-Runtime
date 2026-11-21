@@ -43,6 +43,11 @@
    law, 10 partial refinements with counts, 22 plan acknowledgments) + family I 3/3
    with an honest retarget -> 227/234 settled, 7 rows remain (content-check class)
    (AUD-62).
+   S20 (2026-11-21): **the registry audit is COMPLETE — 234/234** — the last 7 rows
+   content-checked at code level (NEW-26 CONFIRMED with the exact residual site
+   text_shaper.cpp:619; NEW-2/12/28/32 refuted with sites; NEW-14 resolved; NEW-24
+   refined) and #633/#634 assessed at code level (#633 BLOCKED at the mini-ARSC
+   fixture; #634 feature-class) (AUD-63).
 8. ~~**UBSAN=1 profile (AUD-47)**~~ DONE (S14): `make UBSAN=1` (-fsanitize=undefined
    -fno-sanitize-recover=all, tree build_ubsan/); E-05 probes 7/7 + old-form abort rc=
    0 machine-reproduce the hub's claim; the FULL 49-test battery built and ran

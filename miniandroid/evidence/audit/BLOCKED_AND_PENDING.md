@@ -1,4 +1,4 @@
-# BLOCKED AND PENDING — v2 (2026-11-21 (S19 mega-sweep — classified census queue CLOSED 227/234, family I grid/scroll laws))
+# BLOCKED AND PENDING — v2 (2026-11-21 (S20 — #632 registry FULLY CLOSED: 234/234 settled; #633/#634 assessed at code level))
 
 ## BLOCKED
 | ID | Item | Exact blocker | Recovery outcome |
@@ -15,7 +15,7 @@
 |---|---|---|
 | AUD-29/31/33 | per-call-site unit laws (gravity/ScrollView offsets/TypedValue chain) | #632 task list items |
 | AUD-10b/42 | job-pool OOM guard at -j4+ / MG-012 recovery | dependent on the BLOCKED artifacts above |
-| AUD-54 follow-ups | 7 rows remain after the S19 mega-sweep (content-check class: NEW-2/12/14/24/26/28/32); 227/234 settled honestly — family I (grid/scroll) DONE with an honest retarget, 92-row census sweep applied with fresh measurements | content-level checks on the 7 + NEW-fixture rows (N2 font, P8 mini-DEX, N8 image); #633/#634 patch delivery |
+| AUD-54 follow-ups | **REGISTRY AUDIT COMPLETE: 234/234 settled** — the last 7 rows content-checked at code level (S20); #633/#634 assessed at code level (sites pinned: #633 = vector_inflater.cpp:356 + the ARSC indirection, needs a mini-ARSC fixture; #634 = feature-class, no animated-vector branch, no drawable-doc loader) | NEW-fixture rows (N2 font, P8 mini-DEX, N8 image — the mini-ARSC fixture unblocks #633); #634 feature-class (animated-vector + drawable-doc loader); new-defect watch on fresh claims |
 
 ## Resolved by S14/S15
 - AUD-47 UBSan E-05: profile + probes + 7 engine vectors + FULL battery under -fsanitize=undefined (probes rc=0, battery 49/49 rc=0).

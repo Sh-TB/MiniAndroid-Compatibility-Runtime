@@ -90,3 +90,28 @@ context; in-conversation fetches do not survive. The bodies above were fetched
 from `api.github.com/repos/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/N`
 on 2026-11-21; future integration work should re-fetch any body it needs
 verbatim — this digest is a map, not a substitute.
+
+## S20 #633/#634 code-level assessment (2026-11-21)
+
+Both MG issues were assessed AT CODE LEVEL this session (sites pinned):
+
+- **#633 [MG-009]** (aapt2 string refs unreachable through pathData): the live
+  vector inflater reads `el.attr("pathData", "android")` at
+  `src/resources/vector_inflater.cpp:356` and consumes the literal value; an
+  aapt2 string-REFERENCE-typed attr would need the ARSC string-pool indirection
+  (the LayoutInflater holds the arsc — resolvable), but a LAW TEST for the fix
+  requires a hand-built mini-ARSC/AXML fixture (the same fixture class as the
+  N2/P8/N8 NEW-rows). MG-011 (the fail-honesty fix at vector_decode.cpp:942)
+  is already IN. Verdict: implementable-with-fixture — **BLOCKED at the
+  mini-ARSC fixture**, exactly the #635 §1 "pending patch delivery" class.
+- **#634 [MG-012]** (animated-vector decodes to nothing): confirmed at code
+  level — the live inflater has NO animated-vector branch at all, the dormant
+  renderer copy explicitly rejects it (`vector_decode.cpp:495-497 "animated-vector
+  unsupported"`), and NO drawable-document loader exists anywhere (grep = 0:
+  load_drawable/drawable_document/parse_drawable). The fix is a NEW SUBSYSTEM
+  (drawable-XML document loader + ref resolution + wire-in), not a patch —
+  feature-class work. Verdict: **BLOCKED (feature-class)**, the honest
+  successor to #635 §1's reading.
+
+Both stay integration candidates; neither blocks the registry audit, which is
+now CLOSED (234/234 settled — see S20 stamps).
