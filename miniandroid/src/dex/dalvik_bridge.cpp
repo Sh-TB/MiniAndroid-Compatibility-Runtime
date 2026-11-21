@@ -88,6 +88,51 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     bridge_census_init();
     BridgeCensusGuard c97_census_guard;
     if (bridge_census().on) c97_census_guard.begin(class_name, method);
+
+    // ── S24-W2 (PH2, easy-APK completion): the JDK interface receiver
+    // normalization law. An invoke-interface carries the DECLARED interface
+    // (Ljava/util/List;/Map;/Collection;/Set;/Queue;/Deque;/Iterator;) as
+    // the class token, but the domain bridges key on the IMPLEMENTATION
+    // classes (ArrayList/HashMap/ArrayDeque/LinkedList...). minos' first
+    // divergence hit exactly this: MazeFactory.createMaze called
+    // List.size on a heap list — the bridge REC-MISSed to the int default
+    // 0 → Random.nextInt(0) → IAE "bound must be positive" → onCreate
+    // unwound → blank face (S23 baseline rc=1 ×3). AOSP contract:
+    // interface dispatch resolves the RUNTIME class of the receiver.
+    // Law: when the receiver is a heap-backed object whose class
+    // descriptor names a JDK implementation, re-dispatch the SAME call on
+    // that class — one law, every interface-collection consumer.
+    if (!args_raw.empty() && args_raw[0].type == DalvikType::OBJECT_REF &&
+        args_raw[0].object_id != 0 &&
+        (class_name == "Ljava/util/List;" ||
+         class_name == "Ljava/util/Collection;" ||
+         class_name == "Ljava/util/Set;" ||
+         class_name == "Ljava/util/Queue;" ||
+         class_name == "Ljava/util/Deque;" ||
+         class_name == "Ljava/util/Map;" ||
+         class_name == "Ljava/util/Iterator;" ||
+         class_name == "Ljava/util/ListIterator;")) {
+        if (heap_.has_object(args_raw[0].object_id)) {
+            const auto* s24_hobj = heap_.get(args_raw[0].object_id);
+            static thread_local uint64_t s24_iface_n = 0;
+            if (s24_iface_n++ < 12)
+                std::cerr << "[S24-W2-IFACE-DIAG] declared=" << class_name
+                          << "." << method << " recv_class="
+                          << (s24_hobj ? s24_hobj->class_descriptor
+                                       : std::string("(no heap obj)"))
+                          << std::endl;
+            if (s24_hobj != nullptr &&
+                s24_hobj->class_descriptor.rfind("Ljava/util/", 0) == 0 &&
+                s24_hobj->class_descriptor != class_name) {
+                std::cerr << "[S24-W2-IFACE] " << class_name << "." << method
+                          << " → receiver runtime class "
+                          << s24_hobj->class_descriptor << std::endl;
+                return bridge_to_api(s24_hobj->class_descriptor, method,
+                                     args_raw, result, status,
+                                     method_idx_hint);
+            }
+        }
+    }
     // W20-K (S237-WS7): deliver armed dialog lifecycle tokens (onShow /
     // onDismiss / onCancel) before processing this call — keeps delivery
     // near-synchronous when a dialog show/dismiss/cancel is followed by

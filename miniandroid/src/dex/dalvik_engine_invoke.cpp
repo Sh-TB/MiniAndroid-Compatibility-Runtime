@@ -11589,6 +11589,63 @@ bool DalvikExecutionEngine::dispatch_attached_subtree_from(uint32_t root_view_id
     auto* view_shadow = shadow_registry_->find_as<framework::ViewShadow>();
     if (view_shadow == nullptr) return false;
 
+    // ── S24-W1 (PH1, easy-APK completion campaign): the AOSP mContentParent
+    // adoption law. PhoneWindow.setContentView(res) attaches the inflated
+    // root under the CONTENT PARENT (the android.R.id.content host — in the
+    // appcompat sub-decor stack that host is the ContentFrameLayout). The
+    // sub-decor path (R005-DECOR) links the FitWindows stack under the
+    // window decor, but the U007 res-inflate root was only RECORDED for
+    // first-traversal attach — no node ever adopted it: the renderer walked
+    // the decor alone, ContentFrameLayout reported children=0 and the face
+    // stayed blank (flip_a_coin / tallybook / minos family; S23 baseline:
+    // "[P0-1-ORDER] first-traversal attach wave root=461 attached=0" +
+    // walk root=856 FitWindowsLinearLayout → 860 ContentFrameLayout
+    // children=0). Law: an orphan root (parent_id==0) whose node exists is
+    // adopted by the ContentFrameLayout-family node of the CURRENT
+    // activity's decor subtree — AOSP ViewGroup.addView(mContentParent,
+    // root) ownership, keyed by CLASS FAMILY, never by package name.
+    {
+        const auto* s24_root = view_shadow->find_node(root_view_id);
+        if (s24_root != nullptr && !s24_root->class_desc.empty() &&
+            s24_root->parent_id == 0) {
+            uint32_t s24_act = 0;
+            if (auto* act = shadow_registry_->find_as<
+                    framework::ActivityShadow>())
+                s24_act = act->current_activity_id();
+            auto dit = window_decor_for_activity_.find(s24_act);
+            if (s24_act != 0 && dit != window_decor_for_activity_.end()) {
+                // BFS the decor subtree for the content-frame-family host.
+                std::vector<uint32_t> s24_bfs{dit->second};
+                std::unordered_set<uint32_t> s24_seen;
+                uint32_t s24_content = 0;
+                for (size_t bi = 0;
+                     bi < s24_bfs.size() && s24_content == 0; ++bi) {
+                    uint32_t s24_id = s24_bfs[bi];
+                    if (!s24_seen.insert(s24_id).second) continue;
+                    const auto* n = view_shadow->find_node(s24_id);
+                    if (n == nullptr) continue;
+                    if (n->class_desc.find("ContentFrameLayout") !=
+                            std::string::npos &&
+                        s24_id != root_view_id) {
+                        s24_content = s24_id;
+                        break;
+                    }
+                    for (uint32_t c : n->children) s24_bfs.push_back(c);
+                }
+                if (s24_content != 0 &&
+                    view_shadow->add_child(s24_content, root_view_id)) {
+                    std::cerr << "[S24-W1-ADOPT] first-traversal root "
+                              << root_view_id << " (class="
+                              << s24_root->class_desc
+                              << ") adopted by content frame node "
+                              << s24_content
+                              << " (AOSP mContentParent ownership law)"
+                              << std::endl;
+                }
+            }
+        }
+    }
+
     bool any_ok = false;
     // AOSP View.dispatchAttachedToWindow() is strictly one-shot per attach
     // (a view cannot be attached twice without detaching). The visited set

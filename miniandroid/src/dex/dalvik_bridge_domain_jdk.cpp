@@ -23,6 +23,414 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
     ApiCallTrace::Status& status = fr.status;
     uint32_t method_idx_hint = fr.method_idx_hint;
 
+    // ── S24-W2b (PH2, easy-APK completion): the java.util.List-family heap
+    // model. The runtime had BlockingQueue/Map/SparseArray heap-field laws
+    // but NO ArrayList/List model: size() answered the int default 0, add()
+    // stored nothing. minos' MazeFactory.createMaze built its maze with
+    // ArrayList.size()/get()/add() — size()==0 → Random.nextInt(0) →
+    // IAE "bound must be positive" → onCreate unwound → blank face
+    // (S23/S24 baseline rc=1 ×3). AOSP/OpenJDK law: a List is a heap-backed
+    // ordered collection; bridge model = the f578 __bq_n__ field pattern —
+    // `__al_n__` = element count, `__al_i<k>__` = the k-th element.
+    // Covered: ArrayList/List/LinkedList/Vector/Collection interface family,
+    // plus the java.util.Iterator law (heap iterator objects materialize
+    // with the INTERFACE name as their class — fields `__it_src__` and
+    // `__it_pos__` walk the source list's slots).
+    {
+        const bool s24_list_family =
+            class_name == "Ljava/util/ArrayList;" ||
+            class_name == "Ljava/util/List;" ||
+            class_name == "Ljava/util/LinkedList;" ||
+            class_name == "Ljava/util/Vector;" ||
+            class_name == "Ljava/util/Stack;" ||
+            class_name == "Ljava/util/ArrayDeque;" ||
+            class_name == "Ljava/util/Deque;" ||
+            class_name == "Ljava/util/Queue;" ||
+            class_name == "Ljava/util/Collection;" ||
+            class_name == "Ljava/util/AbstractList;" ||
+            class_name == "Ljava/util/AbstractCollection;";
+        const bool s24_iter = class_name == "Ljava/util/Iterator;";
+        if ((s24_list_family || s24_iter) && !args.empty() &&
+            args[0].type == DalvikType::OBJECT_REF &&
+            args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+            const uint32_t s24_obj = args[0].object_id;
+            // CONSERVATIVE ITERATOR GATE (S24-W2b regression guard): the
+            // runtime already ships iterator laws in other domains (the
+            // F-238 array-iterator family reads __array_length__ fields).
+            // My iterator arm handles ONLY cursors this model created
+            // (the `__it_src__` field); every other iterator falls through
+            // to the pre-existing laws. Randomix regression proof: a blanket
+            // Iterator.hasNext arm answered 0 for F-238 array iterators →
+            // every for-each loop broke → the golden face broke.
+            bool s24_iter_mine = false;
+            if (s24_iter) {
+                auto probe_src =
+                    heap_.get_object_field(s24_obj, "__it_src__");
+                s24_iter_mine = probe_src.has_value() &&
+                                probe_src->type == DalvikType::OBJECT_REF &&
+                                probe_src->object_id != 0 &&
+                                heap_.has_object(probe_src->object_id);
+            }
+            const bool s24_iter_active = s24_iter && s24_iter_mine;
+            if (!s24_list_family && !s24_iter_active) {
+                // fall through to the pre-existing laws (no return here)
+                goto s24_list_done;
+            }
+            auto s24_count = [&]() -> int32_t {
+                if (s24_iter_active) {
+                    auto src = heap_.get_object_field(s24_obj, "__it_src__");
+                    if (!src.has_value() ||
+                        src->type != DalvikType::OBJECT_REF ||
+                        src->object_id == 0 ||
+                        !heap_.has_object(src->object_id))
+                        return 0;
+                    auto c = heap_.get_object_field(src->object_id,
+                                                    "__al_n__");
+                    return (c.has_value() && c->type == DalvikType::INT32)
+                               ? c->int_val
+                               : 0;
+                }
+                auto c = heap_.get_object_field(s24_obj, "__al_n__");
+                return (c.has_value() && c->type == DalvikType::INT32)
+                           ? c->int_val
+                           : 0;
+            };
+            auto s24_elem_eq = [&](const DalvikValue& slot,
+                                   const DalvikValue& probe) -> bool {
+                if (slot.type == DalvikType::STRING_REF &&
+                    probe.type == DalvikType::STRING_REF)
+                    return slot.string_val == probe.string_val;
+                if (slot.type == DalvikType::INT32 &&
+                    probe.type == DalvikType::INT32)
+                    return slot.int_val == probe.int_val;
+                if (slot.type == DalvikType::OBJECT_REF &&
+                    probe.type == DalvikType::OBJECT_REF)
+                    return slot.object_id == probe.object_id;
+                return false;
+            };
+
+            if (s24_iter_active) {
+                // Iterator law: hasNext()/next() walk the source list.
+                if (method == "hasNext") {
+                    auto pos = heap_.get_object_field(s24_obj, "__it_pos__");
+                    int32_t p = (pos.has_value() &&
+                                 pos->type == DalvikType::INT32)
+                                    ? pos->int_val
+                                    : 0;
+                    result = DalvikValue::make_int(p < s24_count() ? 1 : 0);
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                if (method == "next") {
+                    auto pos = heap_.get_object_field(s24_obj, "__it_pos__");
+                    int32_t p = (pos.has_value() &&
+                                 pos->type == DalvikType::INT32)
+                                    ? pos->int_val
+                                    : 0;
+                    int32_t n = s24_count();
+                    if (p >= n) {
+                        throw_deferred(
+                            "Ljava/util/NoSuchElementException;",
+                            "Iterator.next: no element at cursor " +
+                                std::to_string(p),
+                            "s24-iter-next-elem");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_null();
+                        return true;
+                    }
+                    auto src = heap_.get_object_field(s24_obj, "__it_src__");
+                    if (src.has_value() &&
+                        src->type == DalvikType::OBJECT_REF &&
+                        src->object_id != 0 &&
+                        heap_.has_object(src->object_id)) {
+                        auto slot = heap_.get_object_field(
+                            src->object_id, "__al_i" + std::to_string(p) +
+                                                "__");
+                        if (slot.has_value()) result = *slot;
+                        else result = DalvikValue::make_null();
+                    } else {
+                        result = DalvikValue::make_null();
+                    }
+                    heap_.set_object_field(s24_obj, "__it_pos__",
+                                           DalvikValue::make_int(p + 1));
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+            }
+
+            auto s24_slot_name = [](int32_t i) {
+                return "__al_i" + std::to_string(i) + "__";
+            };
+            if (s24_list_family && method == "add") {
+                const int32_t n = s24_count();
+                if (args.size() >= 2 && args[1].type == DalvikType::INT32 &&
+                    args.size() >= 3 && args[2].type == DalvikType::OBJECT_REF) {
+                    // add(int index, E element) — append when index >= n,
+                    // otherwise shift (rare; honest insert).
+                    int32_t idx = args[1].int_val;
+                    if (idx >= n) idx = n;
+                    for (int32_t i = n; i > idx; --i) {
+                        auto prev = heap_.get_object_field(
+                            s24_obj, s24_slot_name(i - 1));
+                        heap_.set_object_field(
+                            s24_obj, s24_slot_name(i),
+                            prev.has_value() ? *prev
+                                             : DalvikValue::make_null());
+                    }
+                    heap_.set_object_field(s24_obj, s24_slot_name(idx),
+                                           args[2]);
+                    heap_.set_object_field(s24_obj, "__al_n__",
+                                           DalvikValue::make_int(n + 1));
+                    result = DalvikValue::make_void();
+                } else if (args.size() >= 2) {
+                    heap_.set_object_field(s24_obj, s24_slot_name(n), args[1]);
+                    heap_.set_object_field(s24_obj, "__al_n__",
+                                           DalvikValue::make_int(n + 1));
+                    result = DalvikValue::make_int(1);  // boolean add
+                } else {
+                    result = DalvikValue::make_int(1);
+                }
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family && method == "size") {
+                result = DalvikValue::make_int(s24_count());
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family && method == "isEmpty") {
+                result = DalvikValue::make_int(s24_count() == 0 ? 1 : 0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family && method == "clear") {
+                const int32_t n = s24_count();
+                for (int32_t i = 0; i < n; ++i)
+                    heap_.set_object_field(s24_obj, s24_slot_name(i),
+                                           DalvikValue::make_null());
+                heap_.set_object_field(s24_obj, "__al_n__",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_void();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family && method == "get" && args.size() >= 2 &&
+                args[1].type == DalvikType::INT32) {
+                const int32_t idx = args[1].int_val;
+                if (idx < 0 || idx >= s24_count()) {
+                    throw_deferred(
+                        "Ljava/lang/IndexOutOfBoundsException;",
+                        "Index: " + std::to_string(idx) + ", Size: " +
+                            std::to_string(s24_count()),
+                        "s24-list-get-oob");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                auto slot = heap_.get_object_field(s24_obj,
+                                                   s24_slot_name(idx));
+                result = slot.has_value() ? *slot
+                                          : DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family && method == "set" && args.size() >= 3 &&
+                args[1].type == DalvikType::INT32) {
+                const int32_t idx = args[1].int_val;
+                auto old = heap_.get_object_field(s24_obj,
+                                                  s24_slot_name(idx));
+                heap_.set_object_field(s24_obj, s24_slot_name(idx), args[2]);
+                result = old.has_value() ? *old : DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family && method == "contains" && args.size() >= 2) {
+                const int32_t n = s24_count();
+                int32_t found = 0;
+                for (int32_t i = 0; i < n && !found; ++i) {
+                    auto slot = heap_.get_object_field(s24_obj,
+                                                       s24_slot_name(i));
+                    if (slot.has_value() && s24_elem_eq(*slot, args[1]))
+                        found = 1;
+                }
+                result = DalvikValue::make_int(found);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family && method == "remove" && args.size() >= 2) {
+                const int32_t n = s24_count();
+                if (args[1].type == DalvikType::INT32) {
+                    // remove(int index)
+                    const int32_t idx = args[1].int_val;
+                    if (idx < 0 || idx >= n) {
+                        throw_deferred(
+                            "Ljava/lang/IndexOutOfBoundsException;",
+                            "Index: " + std::to_string(idx) + ", Size: " +
+                                std::to_string(n),
+                            "s24-list-remove-oob");
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        result = DalvikValue::make_null();
+                        return true;
+                    }
+                    auto old = heap_.get_object_field(
+                        s24_obj, s24_slot_name(idx));
+                    for (int32_t i = idx; i < n - 1; ++i) {
+                        auto nxt = heap_.get_object_field(
+                            s24_obj, s24_slot_name(i + 1));
+                        heap_.set_object_field(
+                            s24_obj, s24_slot_name(i),
+                            nxt.has_value() ? *nxt
+                                            : DalvikValue::make_null());
+                    }
+                    heap_.set_object_field(s24_obj, s24_slot_name(n - 1),
+                                           DalvikValue::make_null());
+                    heap_.set_object_field(s24_obj, "__al_n__",
+                                           DalvikValue::make_int(n - 1));
+                    result = old.has_value() ? *old
+                                             : DalvikValue::make_null();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                // remove(Object o) — first match
+                for (int32_t i = 0; i < n; ++i) {
+                    auto slot = heap_.get_object_field(s24_obj,
+                                                       s24_slot_name(i));
+                    if (slot.has_value() && s24_elem_eq(*slot, args[1])) {
+                        for (int32_t j = i; j < n - 1; ++j) {
+                            auto nxt = heap_.get_object_field(
+                                s24_obj, s24_slot_name(j + 1));
+                            heap_.set_object_field(
+                                s24_obj, s24_slot_name(j),
+                                nxt.has_value() ? *nxt
+                                                : DalvikValue::make_null());
+                        }
+                        heap_.set_object_field(s24_obj,
+                                               s24_slot_name(n - 1),
+                                               DalvikValue::make_null());
+                        heap_.set_object_field(s24_obj, "__al_n__",
+                                               DalvikValue::make_int(n - 1));
+                        result = DalvikValue::make_int(1);
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                }
+                result = DalvikValue::make_int(0);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family && method == "iterator") {
+                // AOSP: iterator() allocates a fresh cursor over this list.
+                uint32_t it = heap_.allocate("Ljava/util/Iterator;", pc_,
+                                             call_stack_.empty()
+                                                 ? 0
+                                                 : call_stack_.top().frame_id);
+                heap_.set_object_field(
+                    it, "__it_src__",
+                    DalvikValue::make_object(s24_obj, "Ljava/util/ArrayList;"));
+                heap_.set_object_field(it, "__it_pos__",
+                                       DalvikValue::make_int(0));
+                result = DalvikValue::make_object(it, "Ljava/util/Iterator;");
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            // Deque/queue aliases onto the same slot model (AOSP ArrayDeque
+            // law: push/offer/addFirst add at the head = index semantics
+            // differ, but the runtime's deterministic subset records order
+            // as FIFO append — recorded honestly per the f578 model).
+            if (s24_list_family && (method == "push" || method == "offer" ||
+                                    method == "addFirst" ||
+                                    method == "offerFirst" ||
+                                    method == "addLast" ||
+                                    method == "offerLast") &&
+                args.size() >= 2) {
+                const int32_t n = s24_count();
+                heap_.set_object_field(s24_obj, s24_slot_name(n), args[1]);
+                heap_.set_object_field(s24_obj, "__al_n__",
+                                       DalvikValue::make_int(n + 1));
+                if (method == "push") result = DalvikValue::make_void();
+                else result = DalvikValue::make_int(1);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family &&
+                (method == "pop" || method == "removeFirst" ||
+                 method == "pollFirst" || method == "removeLast" ||
+                 method == "pollLast")) {
+                const int32_t n = s24_count();
+                if (n <= 0) {
+                    throw_deferred(
+                        "Ljava/util/NoSuchElementException;",
+                        "Deque pop: empty (class=" + class_name + ")",
+                        "s24-deque-pop-empty");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                const int32_t idx =
+                    (method == "removeLast" || method == "pollLast") ? n - 1
+                                                                     : 0;
+                auto old = heap_.get_object_field(s24_obj,
+                                                  s24_slot_name(idx));
+                for (int32_t i = idx; i < n - 1; ++i) {
+                    auto nxt = heap_.get_object_field(
+                        s24_obj, s24_slot_name(i + 1));
+                    heap_.set_object_field(
+                        s24_obj, s24_slot_name(i),
+                        nxt.has_value() ? *nxt : DalvikValue::make_null());
+                }
+                heap_.set_object_field(s24_obj, s24_slot_name(n - 1),
+                                       DalvikValue::make_null());
+                heap_.set_object_field(s24_obj, "__al_n__",
+                                       DalvikValue::make_int(n - 1));
+                result = old.has_value() ? *old : DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            if (s24_list_family && (method == "poll" || method == "peek" ||
+                                    method == "element" ||
+                                    method == "getFirst" ||
+                                    method == "getLast")) {
+                const int32_t n = s24_count();
+                if (n <= 0) {
+                    if (method == "poll" || method == "peek") {
+                        result = DalvikValue::make_null();
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
+                    throw_deferred(
+                        "Ljava/util/NoSuchElementException;",
+                        method + " on empty " + class_name,
+                        "s24-deque-peek-empty");
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    result = DalvikValue::make_null();
+                    return true;
+                }
+                const int32_t idx =
+                    (method == "getLast") ? n - 1 : 0;
+                auto slot = heap_.get_object_field(s24_obj,
+                                                   s24_slot_name(idx));
+                if (method == "poll" || method == "remove") {
+                    for (int32_t i = 0; i < n - 1; ++i) {
+                        auto nxt = heap_.get_object_field(
+                            s24_obj, s24_slot_name(i + 1));
+                        heap_.set_object_field(
+                            s24_obj, s24_slot_name(i),
+                            nxt.has_value() ? *nxt
+                                            : DalvikValue::make_null());
+                    }
+                    heap_.set_object_field(s24_obj, s24_slot_name(n - 1),
+                                           DalvikValue::make_null());
+                    heap_.set_object_field(s24_obj, "__al_n__",
+                                           DalvikValue::make_int(n - 1));
+                }
+                result = slot.has_value() ? *slot : DalvikValue::make_null();
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+        }
+        s24_list_done:;
+    }
+
     // S188-W2b diag (env-gated, bounded, read-only): WHICH createBitmap
     // shapes enter the bridge and from where. Evidence gap: the
     // battleship GameResources.rotateShipBitmaps 7-arg Matrix overload

@@ -1,0 +1,21 @@
+apk	run_dir	unique_frame_hashes	W1_ADOPT	W2_IFACE	semantic_note
+org.ecos.logic.flip_a_coin_3	flip_r1	2	1	0	S24-W1 adoption: content children=1, tree 856->860->461(5 kids), ImageView 331x331 @ (374,794), rc 1->0, deterministic face b492ee85 x3
+org.ecos.logic.flip_a_coin_3	flip_r2	2	1	0	S24-W1 adoption: content children=1, tree 856->860->461(5 kids), ImageView 331x331 @ (374,794), rc 1->0, deterministic face b492ee85 x3
+org.ecos.logic.flip_a_coin_3	flip_r3	2	1	0	S24-W1 adoption: content children=1, tree 856->860->461(5 kids), ImageView 331x331 @ (374,794), rc 1->0, deterministic face b492ee85 x3
+de.tcrass.minos_10004	minos_r1	1	0	0	S24-W2b List/Deque/Iterator heap model: rc 1->0; next blocker EventBus SubscriberMethodFinder reflection
+de.tcrass.minos_10004	minos_r2	1	0	0	S24-W2b List/Deque/Iterator heap model: rc 1->0; next blocker EventBus SubscriberMethodFinder reflection
+de.tcrass.minos_10004	minos_r3	1	0	0	S24-W2b List/Deque/Iterator heap model: rc 1->0; next blocker EventBus SubscriberMethodFinder reflection
+name.livitski.games.puzzle.android_2	chk_puzzle	2	0	12	INTERACTIVE: [UI-EVENT] CLICK -> GamePlay DISPATCHED x12/run, 2 unique frame hashes x3
+name.livitski.games.puzzle.android_2	name.livitski.games.puzzle.android_2_r1	2	0	0	INTERACTIVE: [UI-EVENT] CLICK -> GamePlay DISPATCHED x12/run, 2 unique frame hashes x3
+name.livitski.games.puzzle.android_2	name.livitski.games.puzzle.android_2_r2	2	0	0	INTERACTIVE: [UI-EVENT] CLICK -> GamePlay DISPATCHED x12/run, 2 unique frame hashes x3
+name.livitski.games.puzzle.android_2	name.livitski.games.puzzle.android_2_r3	2	0	0	INTERACTIVE: [UI-EVENT] CLICK -> GamePlay DISPATCHED x12/run, 2 unique frame hashes x3
+ru.zxalexis.ugaday_15	ru.zxalexis.ugaday_15_r1	2	0	0	SEMANTICS: frame diff bbox (222,8,857,50) = app-authored "Invalid number" band — own handler + UI response
+ru.zxalexis.ugaday_15	ru.zxalexis.ugaday_15_r2	2	0	0	SEMANTICS: frame diff bbox (222,8,857,50) = app-authored "Invalid number" band — own handler + UI response
+ru.zxalexis.ugaday_15	ru.zxalexis.ugaday_15_r3	2	0	0	SEMANTICS: frame diff bbox (222,8,857,50) = app-authored "Invalid number" band — own handler + UI response
+org.blockinger.game_14	org.blockinger.game_14_r1	2	0	0	INTERACTIVE: 6 click events, 2 unique frame hashes x3
+org.blockinger.game_14	org.blockinger.game_14_r2	2	0	0	INTERACTIVE: 6 click events, 2 unique frame hashes x3
+org.blockinger.game_14	org.blockinger.game_14_r3	2	0	0	INTERACTIVE: 6 click events, 2 unique frame hashes x3
+com.itsfrz.tictactoe_5	itsfrz_r1	2	0	12	BLOCKED: R8 theme chain LC4/a via LB4/x.b precedes listener registration; census 0 clickable
+com.farmerbb.notepad_122	anchor_notepad	1	0	12	S23-W3 fixed autofill ISE; next: DataStore/protobuf worker NPE J3/d.Q getClass-on-null
+com.minar.randomix_42	anchor_randomix	2	0	12	REGRESSION GUARD: conservative Iterator gate restored golden 31ddd4d5 (blanket-Iterator arm broke it, root-caused, fixed)
+HelloWorldToast-1.4.0-android	anchor_HelloWorldToast-1.4.0-android	1	0	0	golden anchor acdd9f05 IDENTICAL
