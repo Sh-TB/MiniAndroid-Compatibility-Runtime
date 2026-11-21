@@ -4107,28 +4107,77 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                 // would have installed) instead of unwinding. App-agnostic:
                 // the key is the AOSP error string, never an APK name; every
                 // substitution is logged for the evidence chain.
-                if (!handler_found && exc.object_id != 0) {
-                    auto lc_msg = heap_.get_object_field(exc.object_id, "message");
-                    if (lc_msg.has_value() &&
-                        lc_msg->string_val ==
-                            "CompositionLocal LocalContext not present") {
-                        uint32_t act_obj = 0;
-                        if (shadow_registry_ != nullptr) {
-                            if (auto* act22 =
-                                    shadow_registry_->find_as<
-                                        framework::ActivityShadow>())
-                                act_obj = act22->current_activity_id();
+                //
+                // S23-W1 (easy-APK campaign): the law GENERALIZED to the whole
+                // AOSP CompositionLocal provider family — janken's first
+                // divergence was the SAME accessor-throw shape but with
+                // "CompositionLocal LocalConfiguration not present"; the
+                // AbstractComposeView content wrapper installs LocalContext,
+                // LocalConfiguration and friends in ONE provider scope, so a
+                // message match on "CompositionLocal Local<N> not present"
+                // with a per-local value law is the AOSP-faithful emulation:
+                //   LocalContext        → the current Activity
+                //   LocalConfiguration  → the Resources.getConfiguration()
+                //                         singleton (P0.5 law, C9-22 fed)
+                // Other locals still throw honestly.
+                {
+                    std::string lc_str;
+                    if (exc.object_id != 0) {
+                        auto lc_msg =
+                            heap_.get_object_field(exc.object_id, "message");
+                        if (lc_msg.has_value()) lc_str = lc_msg->string_val;
+                    }
+                    if (!handler_found &&
+                        lc_str.rfind("CompositionLocal Local", 0) == 0 &&
+                        lc_str.size() > 34 &&
+                        lc_str.compare(
+                            lc_str.size() - 12, 12,
+                            " not present") == 0) {
+                        std::string local_name = lc_str.substr(
+                            22, lc_str.size() - 22 - 12);
+                        DalvikValue lc_val = DalvikValue::make_null();
+                        bool provided = false;
+                        if (local_name == "Context") {
+                            uint32_t act_obj = 0;
+                            if (shadow_registry_ != nullptr) {
+                                if (auto* act22 =
+                                        shadow_registry_->find_as<
+                                            framework::ActivityShadow>())
+                                    act_obj = act22->current_activity_id();
+                            }
+                            if (act_obj != 0) {
+                                lc_val = DalvikValue::make_object(
+                                    act_obj, "Landroid/app/Activity;");
+                                provided = true;
+                            }
+                            std::cerr << "[S22-LC-PROVIDE] LocalContext accessor "
+                                         "throw contained — returning activity "
+                                         "Context o" << act_obj
+                                      << " from " << current_class_ << "."
+                                      << current_method_ << std::endl;
+                        } else if (local_name == "Configuration") {
+                            // The P0.5 singleton law: one Configuration
+                            // object per runtime, fields fed from
+                            // device_config() (C9-22) — exactly what the
+                            // provider would install.
+                            DalvikValue cfg_val = get_or_create_singleton(
+                                "Landroid/content/res/Configuration;");
+                            if (cfg_val.type == DalvikType::OBJECT_REF &&
+                                cfg_val.object_id != 0 &&
+                                heap_.has_object(cfg_val.object_id)) {
+                                lc_val = cfg_val;
+                                provided = true;
+                            }
+                            std::cerr << "[S23-W1-PROVIDE] LocalConfiguration "
+                                         "accessor throw contained — returning "
+                                         "Configuration singleton o"
+                                      << (lc_val.type == DalvikType::OBJECT_REF
+                                              ? lc_val.object_id
+                                              : 0)
+                                      << " from " << current_class_ << "."
+                                      << current_method_ << std::endl;
                         }
-                        std::cerr << "[S22-LC-PROVIDE] LocalContext accessor "
-                                     "throw contained — returning activity "
-                                     "Context o" << act_obj
-                                  << " from " << current_class_ << "."
-                                  << current_method_ << std::endl;
-                        DalvikValue lc_val =
-                            act_obj != 0
-                                ? DalvikValue::make_object(
-                                      act_obj, "Landroid/app/Activity;")
-                                : DalvikValue::make_null();
+                        if (provided) {
                         // The execute_return_object contract (halted_ +
                         // halted_on_return_ end the frame with
                         // trace.return_value — EXP-055 store semantics).
@@ -4138,8 +4187,9 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                         halted_ = true;
                         halted_on_return_ = true;
                         break;
-                    }
-                }
+                        } // if (provided)
+                    } // combined Local <N> not-present match
+                } // lc_msg scope
 
                 // EXP-053 + UNIFIED_011.3: if any handler (typed or catch-all)
                 // matched, jump to it instead of halting/skipping.

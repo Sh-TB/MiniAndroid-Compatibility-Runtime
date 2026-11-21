@@ -8191,6 +8191,50 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
     {"vibrator_manager", "Landroid/os/VibratorManager;"},
 };
 
+        // ── S23-W3 (easy-APK campaign): the AOSP getSystemService(Class)
+        // overload law. farmerbb/Notepad's startup hit this gap: androidx
+        // ContextCompat.getSystemService(Context, AutofillManager.class)
+        // passed a materialized Class token (OBJECT_REF of
+        // Ljava/lang/Class; carrying __referent_desc) — the old law only
+        // resolved STRING service names, answered null, and the app's
+        // autofill helper threw ISE "Autofill service could not be
+        // located." → onCreate unwound → blank. AOSP: the manager OBJECT
+        // always exists (enabled-ness is the manager's internal state —
+        // isEnabled()=false without a service, never a null manager).
+        // Law: resolve the token's referent descriptor (CLASS_REF carries
+        // it directly in class_desc — FIX-M3-012; heap tokens carry it in
+        // __referent_desc — the token materialization law) and answer the
+        // singleton of THAT manager class.
+        if (args.size() >= 2) {
+            std::string referent_desc;
+            std::string cls1 = args[1].class_desc;
+            if (args[1].type == DalvikType::CLASS_REF &&
+                cls1.size() > 1 && cls1.front() == 'L' &&
+                cls1.back() == ';' && cls1 != "Ljava/lang/Class;") {
+                referent_desc = cls1;
+            } else if (args[1].type == DalvikType::OBJECT_REF &&
+                       cls1 == "Ljava/lang/Class;" &&
+                       args[1].object_id != 0) {
+                auto rd = heap_.get_object_field(args[1].object_id,
+                                                 "__referent_desc");
+                if (rd.has_value() && rd->type == DalvikType::STRING_REF &&
+                    rd->string_val.size() > 1)
+                    referent_desc = rd->string_val;
+            }
+            if (!referent_desc.empty()) {
+                result = get_or_create_singleton(referent_desc);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                std::cerr << "[S23-W3-GSS-CLASS] getSystemService(<Class "
+                          << referent_desc << ">) → singleton o"
+                          << (result.type == DalvikType::OBJECT_REF
+                                  ? result.object_id
+                                  : 0)
+                          << " caller=" << current_class_ << "."
+                          << current_method_ << std::endl;
+                return true;
+            }
+        }
+
         const char* smp = kv_table_find(t_service_map,
                 sizeof(t_service_map) / sizeof(t_service_map[0]),
                 service_name);
