@@ -1,0 +1,26 @@
+[*] MAX-SECONDS enabled (60 s wall-clock soft budget)
+[*] FRAME-SEQUENCE enabled (30 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] Execution mode: REAL_DALVIK (bytecode interpretation)
+[*] Running APK: /home/z/my-project/upload/handoff_apks/HelloWorldToast-1.4.0-android.apk
+[*] Output directory: evidence/t0/reg_HelloWorldToast-1.4.0-android_r1
+[ROUTE] NO_PROFILE for stem=HelloWorldToast-1 — generate with tools/s188_route_classifier.py (S188 §4); runtime proceeds route-blind, which is NOT a pass.
+[DATA-ROOT] app data root = /home/z/my-project/miniandroid/evidence/t0/reg_HelloWorldToast-1.4.0-android_data
+[DEVICE-CLOCK] boot_base=0ms (device=evidence/t0/reg_HelloWorldToast-1.4.0-android_data)
+[DATA-ROOT] context package = com.thehellomaker.helloworldtoast (data dir /home/z/my-project/miniandroid/evidence/t0/reg_HelloWorldToast-1.4.0-android_data/data/data/com.thehellomaker.helloworldtoast)
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-NEW-233 frame truth: verdict=SYSTEM_CHROME_ONLY, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 31
+Execution Time: 0ms
+Errors: 0
+Warnings: 32
+
+Screenshot: evidence/t0/reg_HelloWorldToast-1.4.0-android_r1/screenshot.png
+Report: evidence/t0/reg_HelloWorldToast-1.4.0-android_r1/report.md
+[DEVICE-CLOCK] persist=8700ms (prev=0)

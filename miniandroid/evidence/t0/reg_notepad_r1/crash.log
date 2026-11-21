@@ -1,0 +1,84 @@
+MiniAndroid Crash/Error Log
+============================
+
+Session: EXP-001-20261121-165215-1671
+Generated: 2026-11-21 16:52:22 UTC
+Total Errors: 11
+
+--- Error #1 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lz0/u;.<init> invoke_pc=0x1a0 depth=14
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #2 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lz0/n1;.a invoke_pc=0x62 depth=13
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #3 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lz0/a;.onAttachedToWindow invoke_pc=0x10 depth=11
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #4 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lb/l;.setContentView invoke_pc=0x15 depth=10
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #5 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lz0/u;.<init> invoke_pc=0x1a0 depth=14
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #6 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lz0/n1;.a invoke_pc=0x62 depth=13
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #7 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lz0/a;.onMeasure invoke_pc=0x0 depth=11
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #8 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lb/l;.setContentView invoke_pc=0x15 depth=10
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #9 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lc/d;.a invoke_pc=0x58 depth=9
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #10 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lm2/a;.b invoke_pc=0x144 depth=8
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+
+--- Error #11 ---
+Type: EXC-UNCAUGHT-TOP
+Message: [EXC-UNWIND] Ljava/lang/IllegalStateException; unwound Lw2/t;.t invoke_pc=0x4e depth=7
+Context: .
+Fatal: NO
+Timestamp: 2026-11-21 16:52:15 UTC
+

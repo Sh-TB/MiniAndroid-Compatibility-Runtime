@@ -1,0 +1,319 @@
+[TG-SQLITE] registered 20 org.telegram.SQLite natives over real sqlite3
+[BOOT-ORDER] 1/7 stage=load_apk ok=1 ms=104
+[BOOT-RSS] stage=load_apk rss_mb=11.25
+[EXP062-SV] parse_static_values for Lcom/thehellomaker/helloworldtoast/R$color; offset=0x94e static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/thehellomaker/helloworldtoast/R$color; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/thehellomaker/helloworldtoast/R$drawable; offset=0x954 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/thehellomaker/helloworldtoast/R$drawable; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/thehellomaker/helloworldtoast/R$mipmap; offset=0x95a static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/thehellomaker/helloworldtoast/R$mipmap; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lcom/thehellomaker/helloworldtoast/R$string; offset=0x965 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/thehellomaker/helloworldtoast/R$string; with_defaults=2/2
+[EXP062-SV] parse_static_values for Lcom/thehellomaker/helloworldtoast/R$style; offset=0x970 static_fields=1 with_defaults=0
+[EXP062-SV-DONE] Lcom/thehellomaker/helloworldtoast/R$style; with_defaults=1/1
+[EXP062-SV] parse_static_values for Lcom/thehellomaker/helloworldtoast/R$xml; offset=0x976 static_fields=2 with_defaults=0
+[EXP062-SV-DONE] Lcom/thehellomaker/helloworldtoast/R$xml; with_defaults=2/2
+[BOOT-ORDER] 2/7 stage=parse_dex ok=1 ms=110
+[BOOT-RSS] stage=parse_dex rss_mb=12.0625
+[U007-RES] ResourceRuntime loaded: /home/z/my-project/upload/handoff_apks/HelloWorldToast-1.4.0-android.apk named_ids=9 types=6
+[S124-FWRES] framework-res table NOT FOUND (degrading to generated attr-default table)
+[BOOT-ORDER] 3/7 stage=initialize_runtime ok=1 ms=166
+[BOOT-RSS] stage=initialize_runtime rss_mb=20.1719
+[BOOT-ORDER] 4/7 stage=load_classes ok=1 ms=166
+[BOOT-RSS] stage=load_classes rss_mb=20.1719
+[S123-ACTION-REG] activities=1 action_targets=1
+FONT_SOURCE apk=/home/z/my-project/upload/handoff_apks/HelloWorldToast-1.4.0-android.apk font_files=0 registered=0 first=<none>
+[EXP068] Built class→superclass map: 58 entries (8 from APK + 50 framework) — LinearLayout present: YES
+[EXP086-P1] Configured dalvik_engine_ with 1 DEX files for 'com.thehellomaker.helloworldtoast.HelloWorldActivity'
+[ARSC-VALUES] apk=/home/z/my-project/upload/handoff_apks/HelloWorldToast-1.4.0-android.apk strings=2 colors=1 dimens=0 bools=0 integers=0 raw=0 (ARSC-authoritative resource values)
+[A7] application label resolved through ARSC: "Hello World Toast" (resid @0x7f040000)
+[A7b] icon @0x7f030000 -> res/BW.xml DECODE FAILED (adaptive-icon: layers reference app resources but no resolver was provided) — honest miss
+[EXP093-APP] No custom Application class declared in manifest
+[BMF-RESOLVER] registering resolver EARLY (entries=29)
+[S1-PROVIDER] manifest providers transferred: 0
+[C7-STORE-AUTO] /home/z/my-project/miniandroid/evidence/t0/reg_HelloWorldToast-1.4.0-android_data/data/app ok=1 install store absent — nothing to auto-index
+[C7-W8] install-store auto-index root=/home/z/my-project/miniandroid/evidence/t0/reg_HelloWorldToast-1.4.0-android_data packages=0 cold=0 warm=0 failed=0
+[C7-STORE-OWN] com.thehellomaker.helloworldtoast ok=1 components: a=1 s=0 r=0 p=0
+[R341-APP] default Application bound: obj#14
+[R341-APP] bound application obj#14 (Landroid/app/Application;)
+[TRY-ENTRY] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.<init> dex_report=YES
+[TRY-ENTRY] Landroid/app/Activity;.<init> dex_report=YES
+[REC-MISS] Landroid/app/Activity;.<init> caller=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=<init> class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;
+[S71-ANCESTRY] re-dispatch Landroid/app/Activity; as Landroid/content/ContextWrapper; for .<init>
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=attachBaseContext class=Landroid/content/ContextWrapper;
+[F166-BASECTX] <init> served for Landroid/content/ContextWrapper; (receiver=15)
+[MEM] method_exit: Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.<init> insns=2 RSS=22.4805 MB
+[TRY-ENTRY] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.attachBaseContext dex_report=YES
+[U0113-ACTIVITY] activity heap object #15 (Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;) recorded for handler dispatch
+[C94-SINGLETON] LAUNCH-STORE key='Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;' id=15
+[TRY-ENTRY] Landroid/app/Activity;.onCreate dex_report=YES
+[REC-MISS] Landroid/app/Activity;.onCreate caller=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onCreate
+[F-NEW-471-RES-GAP] super-call Landroid/app/Activity;.onCreate method_id=1 has no declaration in class_data or any app-parsed superclass (reference-only method_ids slot) — framework-boundary shadow dispatch (ART-equivalent) caller=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onCreate
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=onCreate class=Landroid/app/Activity;
+[TRY-ENTRY] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.getApplicationContext dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=getApplicationContext class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;
+[EXP062-INIT] Lcom/thehellomaker/helloworldtoast/R$string; static_fields=2 with_defaults=2
+[SGET] class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity; method=onCreate pc=7 field=Lcom/thehellomaker/helloworldtoast/R$string;.hello_world_message value=2130968577
+[TRY-ENTRY] Landroid/widget/Toast;.makeText dex_report=YES
+[REC-MISS] Landroid/widget/Toast;.makeText caller=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onCreate
+[TOAST] makeText obj=16 text="" resid=2130968577
+[TRY-ENTRY] Landroid/widget/Toast;.show dex_report=YES
+[REC-MISS] Landroid/widget/Toast;.show caller=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onCreate
+[TOAST] show() text=""
+[TRY-ENTRY] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.finish dex_report=YES
+[EXP088-B-DISPATCH] ActivityShadow.dispatch: method=finish class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;
+[TRY-ENTRY] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onStart dex_report=YES
+[FRAGMENT-LIFECYCLE] method=onStart declared_in=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity; runtime_class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;
+[G07-LIFECYCLE] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onStart() dispatched via DEX engine (ok=0, instructions=0)
+[TRY-ENTRY] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onResume dex_report=YES
+[FRAGMENT-LIFECYCLE] method=onResume declared_in=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity; runtime_class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;
+[G07-LIFECYCLE] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onResume() dispatched via DEX engine (ok=0, instructions=0)
+[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...
+[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=8 nodes=0 depth=0
+[UC009-ATTACH-DIAG] ComposeView NOT in class index
+[UC009-ATTACH] attach dispatch complete ok=false
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 5/7 stage=execute_application ok=1 ms=174
+[BOOT-RSS] stage=execute_application rss_mb=22.4805
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 3/9
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[BOOT-ORDER] 6/7 stage=render_frame ok=1 ms=202
+[BOOT-RSS] stage=render_frame rss_mb=32.332
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[BOOT-ORDER] 7/7 stage=capture_output ok=1 ms=335
+[BOOT-RSS] stage=capture_output rss_mb=40.5234
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[TRY-ENTRY] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onPause dex_report=YES
+[FRAGMENT-LIFECYCLE] method=onPause declared_in=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity; runtime_class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;
+[G07-LIFECYCLE] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onPause() dispatched via DEX engine (ok=0, instructions=0)
+[TRY-ENTRY] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onStop dex_report=YES
+[FRAGMENT-LIFECYCLE] method=onStop declared_in=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity; runtime_class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;
+[G07-LIFECYCLE] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onStop() dispatched via DEX engine (ok=0, instructions=0)
+[TRY-ENTRY] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onDestroy dex_report=YES
+[FRAGMENT-LIFECYCLE] method=onDestroy declared_in=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity; runtime_class=Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;
+[G07-LIFECYCLE] Lcom/thehellomaker/helloworldtoast/HelloWorldActivity;.onDestroy() dispatched via DEX engine (ok=0, instructions=0)
+[G07-FINISH] cascade complete at virtual_ms=300
+[G08-DBG] restore block enter, depth=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_1: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_2: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_3: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_4: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[ECR-ROOT] scan root=0 candidates=0 cur_act=15
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_5: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_6: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_7: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_8: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_9: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_10: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_11: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_12: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_13: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_14: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_15: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_16: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_17: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_18: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_19: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_20: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_21: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_22: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_23: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_24: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_25: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_26: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_27: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_28: runnables_fired=0, diff_px=0
+[F100-STATE] pump entry: pending_cb=0 queue_size=0
+[F100-STATE] quiescence at tick=0 pending_cb=0 queue_size=0
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)
+[FRAME-SEQ] frame_29: runnables_fired=0, diff_px=0
+[FRAME-SEQ] done: runnables_fired=0 frames=30 dir=evidence/t0/reg_HelloWorldToast-1.4.0-android_r1/frames
+[CONT48-F1] eager R$ harvest: 6 classes, 9 resids
+[ARSC-VALUES] drawable paths resolved via canonical resolver: 0/9
+[DIALOG-RENDER] toast box 173x56 text="Hello World!"
+[TOAST-RENDER] no-root window painted (toast overlay)

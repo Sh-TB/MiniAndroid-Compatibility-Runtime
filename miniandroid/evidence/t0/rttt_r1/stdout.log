@@ -1,0 +1,37 @@
+[*] MAX-SECONDS enabled (60 s wall-clock soft budget)
+[*] FRAME-SEQUENCE enabled (30 frames @ +300ms virtual each, saved to <output>/frames/)
+[*] Execution mode: REAL_DALVIK (bytecode interpretation)
+[*] Running APK: /home/z/my-project/apk_cache/org.kirkezz.rttt_3.apk
+[*] Output directory: evidence/t0/rttt_r1
+[ROUTE] NO_PROFILE for stem=org — generate with tools/s188_route_classifier.py (S188 §4); runtime proceeds route-blind, which is NOT a pass.
+[DATA-ROOT] app data root = /home/z/my-project/miniandroid/evidence/t0/rttt_data
+[DEVICE-CLOCK] boot_base=0ms (device=evidence/t0/rttt_data)
+[DATA-ROOT] context package = org.kirkezz.rttt (data dir /home/z/my-project/miniandroid/evidence/t0/rttt_data/data/data/org.kirkezz.rttt)
+LOG/v/SDL: Manufacturer: MiniAndroid
+LOG/v/SDL: Device: miniandroid
+LOG/v/SDL: Model: MiniAndroid
+LOG/v/SDL: onCreate()
+LOG/v/SDL: onStart()
+LOG/v/SDL: onResume()
+LOG/v/SDL: surfaceCreated()
+LOG/v/SDL: surfaceChanged()
+LOG/v/SDL: Window size: 1080x1920
+LOG/v/SDL: Device size: 1080x1920
+LOG/v/SDL: Running main function SDL_main from library /data/app/~~miniandroid/base/lib/arm64/libmain.so
+
+=== Execution Result ===
+
+Status: PARTIAL SUCCESS ⚠️
+
+Message: Partial execution completed [F-NEW-200 stub-census: 243 IMPLEMENTED, 19 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 31
+Execution Time: 0ms
+Errors: 0
+Warnings: 1
+
+Screenshot: evidence/t0/rttt_r1/screenshot.png
+Report: evidence/t0/rttt_r1/report.md
+[DEVICE-CLOCK] persist=8700ms (prev=0)
