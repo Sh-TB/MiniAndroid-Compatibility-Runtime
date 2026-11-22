@@ -17,6 +17,13 @@ std::string g_app_data_root = "runtime/data";
 bool g_explicit = false;
 // F-NEW-234: the running package identity ("" = none bound).
 std::string g_context_package;
+// S26-W1 fresh-device-per-run law: each set_context_package() bind resets
+// the package's persisted data families first (default ON). Root-caused on
+// randomix (issue #635): run 1 wrote shared_prefs into the workspace, run 2
+// loaded them and took a different init path — same binary, different face.
+// The determinism contract requires a fresh install per run unless the
+// operator explicitly opts out (--keep-app-data).
+bool g_fresh_data_per_run = true;
 
 // F-NEW-375 (CONT-72, issue #364 FOUNDATION-3 review probe): lexical
 // containment — does `child` stay inside (or equal) `base` after
@@ -77,6 +84,32 @@ void set_context_package(const std::string& package) {
     // first Context use; eager creation here makes the installed-package
     // filesystem inspectable from the moment the identity binds.
     fs::path base = fs::path(g_app_data_root) / "data" / "data" / package;
+    // S26-W1 fresh-device-per-run law: a persisted workspace must not leak
+    // app state ACROSS runs (randomix root-cause, issue #635: run 1's
+    // shared_prefs changed run 2's init path — same binary, different
+    // face). Reset the package's three persisted families (the CE data
+    // fence, the DE fence, the external Android/data volume) so every run
+    // starts from a fresh install; --keep-app-data opts out. Defensive
+    // guard: never wipe for an empty/traversal package name.
+    if (g_fresh_data_per_run && !package.empty() &&
+        package.find("..") == std::string::npos) {
+        std::error_code wipe_ec;
+        uintmax_t removed = 0;
+        for (const std::string& family :
+             {"data/data/" + package, "data/user_de/0/" + package,
+              "storage/emulated/0/Android/data/" + package}) {
+            fs::path victim = fs::path(g_app_data_root) / family;
+            removed += fs::remove_all(victim, wipe_ec);
+        }
+        if (wipe_ec) {
+            std::cerr << "[DATA-ROOT] fresh-data-per-run warning: "
+                      << wipe_ec.message() << "\n";
+        }
+        std::cout << "[DATA-ROOT] fresh-data-per-run: reset " << package
+                  << " (removed " << removed << " entries)\n";
+        std::cerr << "[DATA-ROOT] fresh-data-per-run: reset " << package
+                  << " (removed " << removed << " entries)\n";
+    }
     std::error_code ec;
     for (const char* sub : {"files", "cache", "shared_prefs", "databases",
                             "code_cache", "no_backup"}) {
@@ -94,6 +127,10 @@ void set_context_package(const std::string& package) {
 }
 
 const std::string& context_package() { return g_context_package; }
+
+void set_fresh_data_per_run(bool fresh) { g_fresh_data_per_run = fresh; }
+
+bool fresh_data_per_run() { return g_fresh_data_per_run; }
 
 std::filesystem::path package_data_dir() {
     if (g_context_package.empty()) return fs::path(g_app_data_root);

@@ -1310,6 +1310,14 @@ int main(int argc, char* argv[]) {
             // S135 machine-readable trace only (trace.jsonl + summary, no UI).
             setenv("MINIANDROID_BOOT_TRACE", "1", 0);
             std::cout << "[*] BOOT-TRACE enabled (S135 runtime event backbone)\n";
+        } else if (arg == "--keep-app-data") {
+            // S26-W1 fresh-device-per-run opt-out: the default law resets the
+            // package's persisted data families (data/data/<pkg> etc.) at the
+            // set_context_package bind so every run is a fresh install (the
+            // randomix determinism root-cause). This flag keeps leftovers.
+            Storage::set_fresh_data_per_run(false);
+            std::cout << "[*] KEEP-APP-DATA: persisted package data survives "
+                         "across runs (fresh-device-per-run disabled)\n";
         } else if (arg.rfind("--trace-live", 0) == 0) {
             // GP S223 LOG-020 (issue #582): ONE switch enables the EXISTING
             // instrumentation backbones with safe bounded defaults — boot/

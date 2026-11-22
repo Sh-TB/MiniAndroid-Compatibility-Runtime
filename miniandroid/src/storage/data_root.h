@@ -67,7 +67,20 @@ bool app_data_root_explicit();
 /// DatabaseShadow::set_databases_dir at the package databases dir and
 /// creates the AOSP framework dirs (files/cache/shared_prefs/databases/
 /// code_cache/no_backup). Empty string resets to the legacy flat root.
+/// S26-W1 fresh-device-per-run law: with fresh_data_per_run() (the
+/// default), the bind ALSO wipes the package's persisted data families
+/// (data/data/<pkg>, data/user_de/0/<pkg>, Android/data/<pkg>) so every
+/// run starts from a fresh install — a second run of the same binary
+/// otherwise sees the FIRST run's leftovers (randomix: run 1 wrote
+/// shared_prefs, run 2 loaded them and diverged — the determinism
+/// contract violation). --keep-app-data opts out.
 void set_context_package(const std::string& package);
+
+/// S26-W1: default true — every set_context_package() bind resets the
+/// package's persisted data families first. false = keep leftovers
+/// (operator opt-out via --keep-app-data).
+void set_fresh_data_per_run(bool fresh);
+bool fresh_data_per_run();
 
 /// The bound running package ("" = none bound → legacy flat resolution).
 const std::string& context_package();

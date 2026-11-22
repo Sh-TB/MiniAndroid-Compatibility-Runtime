@@ -1,0 +1,16 @@
+apk	run_dir	unique_face_set	last_frame_hash16	markers	note
+com.minar.randomix_42	randomix_d1	31ddd4d5,b5a7a35d	31ddd4d5b8e6d18e	fresh-reset=2 prefs_loaded=0	DETERMINISTIC x4 — S24 golden 31ddd4d5 restored (fresh-device-per-run)
+com.minar.randomix_42	randomix_d2	31ddd4d5,b5a7a35d	31ddd4d5b8e6d18e	fresh-reset=2 prefs_loaded=0	DETERMINISTIC x4 — S24 golden 31ddd4d5 restored (fresh-device-per-run)
+com.minar.randomix_42	randomix_d3	31ddd4d5,b5a7a35d	31ddd4d5b8e6d18e	fresh-reset=2 prefs_loaded=0	DETERMINISTIC x4 — S24 golden 31ddd4d5 restored (fresh-device-per-run)
+com.minar.randomix_42	randomix_d4	31ddd4d5,b5a7a35d	31ddd4d5b8e6d18e	fresh-reset=2 prefs_loaded=0	DETERMINISTIC x4 — S24 golden 31ddd4d5 restored (fresh-device-per-run)
+com.farmerbb.notepad_122	w1_np	31ddd4d5	31ddd4d5b8e6d18e	-	six-pin guard np: last-frame IDENTICAL vs canonical 31ddd4d5b8e6d18e
+tech.gaskell.diceroller_1_debug	w1_dice	0ab178b9,0de952bf,0efd9882,46b07062,beabbef0	0de952bf75f89409	-	six-pin guard dice: last-frame IDENTICAL vs canonical 0de952bf75f89409
+name.livitski.games.puzzle.android_2	w1_pz	35c4e53b,6375a3a3	6375a3a3813af176	-	six-pin guard pz: last-frame IDENTICAL vs canonical 6375a3a3813af176
+ru.zxalexis.ugaday_15	w1_guess	87fe2676	87fe26766fc48d06	-	six-pin guard guess: last-frame IDENTICAL vs canonical 87fe26766fc48d06
+com.itsfrz.tictactoe_5	w1_ttt	d55056a8,d602648e	d55056a8928a26ff	-	six-pin guard ttt: last-frame IDENTICAL vs canonical d55056a8928a26ff
+org.ecos.logic.flip_a_coin_3	w1_f1	b270ff04	b270ff040b3601dc	ADOPT=1 setPresenter=1 listener=1 vectorBlocked=1	S25 marker set intact on the S26-W1 binary
+org.ecos.logic.flip_a_coin_3	w1_f2	b270ff04	b270ff040b3601dc	ADOPT=1 setPresenter=1 listener=1 vectorBlocked=1	S25 marker set intact on the S26-W1 binary
+de.tcrass.minos_10004	w1_m1	b5a7a35d	b5a7a35d5fe0564b	eventbus_exc=0	minos face stable (fresh-device-per-run no-op for its flow)
+de.tcrass.minos_10004	w1_m2	b5a7a35d	b5a7a35d5fe0564b	eventbus_exc=0	minos face stable (fresh-device-per-run no-op for its flow)
+HelloWorldToast-1.4.0-android	w1_HelloWorldToast-1.4.0-android	acdd9f05	acdd9f05dc9c7ece	-	golden byte-identical
+dk.cocode.chess_5022	w1_dk.cocode.chess_5022	d602648e	d602648e8e401895	-	golden byte-identical
