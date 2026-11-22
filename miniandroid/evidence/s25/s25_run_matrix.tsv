@@ -1,0 +1,10 @@
+apk	run_dir	unique_hashes	hashes	verdict	firing	semantic_note
+org.ecos.logic.flip_a_coin_3	flip_r1	1	b270ff04	DEFAULT_BACKGROUND_ONLY	ADOPT=1 setPresenter=1 listener=1 vectorBlocked=1	S25-W1a bind-time content parent + W1b tag stamp + W1c asList dual-store + W1d AnimatorSet Builder: setPresenter RUNS, setOnClickListener registers (view 594); face blocked at the honest P1-2 VectorDrawable layer (#633/#634)
+org.ecos.logic.flip_a_coin_3	flip_r2	1	b270ff04	DEFAULT_BACKGROUND_ONLY	ADOPT=1 setPresenter=1 listener=1 vectorBlocked=1	S25-W1a bind-time content parent + W1b tag stamp + W1c asList dual-store + W1d AnimatorSet Builder: setPresenter RUNS, setOnClickListener registers (view 594); face blocked at the honest P1-2 VectorDrawable layer (#633/#634)
+org.ecos.logic.flip_a_coin_3	flip_r3	1	b270ff04	DEFAULT_BACKGROUND_ONLY	ADOPT=1 setPresenter=1 listener=1 vectorBlocked=1	S25-W1a bind-time content parent + W1b tag stamp + W1c asList dual-store + W1d AnimatorSet Builder: setPresenter RUNS, setOnClickListener registers (view 594); face blocked at the honest P1-2 VectorDrawable layer (#633/#634)
+de.tcrass.minos_10004	minos_r1	1	b5a7a35d	DEFAULT_BACKGROUND_ONLY	eventbus_exc=0 cache_put=2	S25-W2 collection copy-ctor: EventBus registration COMPLETES (METHOD_CACHE.put); EventBusException GONE; remaining deferred face = GameMetrics dims layer (recorded)
+de.tcrass.minos_10004	minos_r2	1	b5a7a35d	DEFAULT_BACKGROUND_ONLY	eventbus_exc=0 cache_put=2	S25-W2 collection copy-ctor: EventBus registration COMPLETES (METHOD_CACHE.put); EventBusException GONE; remaining deferred face = GameMetrics dims layer (recorded)
+de.tcrass.minos_10004	minos_r3	1	b5a7a35d	DEFAULT_BACKGROUND_ONLY	eventbus_exc=0 cache_put=2	S25-W2 collection copy-ctor: EventBus registration COMPLETES (METHOD_CACHE.put); EventBusException GONE; remaining deferred face = GameMetrics dims layer (recorded)
+com.minar.randomix_42	anchor_com.minar.randomix_42	1	b5a7a35d	NO_ROOT		
+HelloWorldToast-1.4.0-android	anchor_HelloWorldToast-1.4.0-android	1	acdd9f05	SYSTEM_CHROME_ONLY		
+dk.cocode.chess_5022	anchor_dk.cocode.chess_5022	1	d602648e	DEFAULT_BACKGROUND_ONLY		

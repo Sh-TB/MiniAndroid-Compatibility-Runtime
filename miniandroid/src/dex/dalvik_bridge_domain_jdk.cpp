@@ -23,6 +23,153 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
     ApiCallTrace::Status& status = fr.status;
     uint32_t method_idx_hint = fr.method_idx_hint;
 
+    // ── S25-W1c (PH1, flip coin-drawables): the java.util.Arrays.asList
+    // arm — JDK-domain home (the dispatch-proven domain; the ui_graphics
+    // F-235 copy sits behind a dispatch layer the direct battery calls
+    // never reach — measured: MINIANDROID_S25_BATDIAG chain trace showed
+    // ui_graphics entered yet its asList guard never fired, while every
+    // jdk arm claims). Law: mint the Arrays$ArrayList fixed-size list over
+    // the varargs array, slot-count fallback for arrays minted without
+    // __array_length__ (flip MainActivity.<init> varargs face: the coin
+    // drawables list answered EMPTY → CoinValues.getCoinIdDrawables
+    // List.get(0) → IndexOutOfBoundsException → animationSetup never ran),
+    // and the S25 dual-store law: the SAME element lands in BOTH the
+    // array[i] convention and the S24-W2 model slots (__al_n__/__al_i<k>__)
+    // so every List consumer walks the real elements.
+    if (class_name == "Ljava/util/Arrays;" && method == "asList" &&
+        !args.empty() && args[0].type == DalvikType::OBJECT_REF &&
+        args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
+        const uint32_t s25_src = args[0].object_id;
+        int32_t s25_n = 0;
+        auto s25_len = heap_.get_object_field(s25_src, "__array_length__");
+        if (s25_len.has_value() && s25_len->type == DalvikType::INT32)
+            s25_n = s25_len->int_val;
+        if (s25_n <= 0)
+            s25_n = args[0].int_val > 0 ? args[0].int_val : 0;
+        if (s25_n <= 0) {
+            for (int32_t s25_i = 0; s25_i < 64; ++s25_i) {
+                auto s25_probe = heap_.get_object_field(
+                    s25_src, "array[" + std::to_string(s25_i) + "]");
+                if (!s25_probe.has_value()) {
+                    s25_n = s25_i;
+                    break;
+                }
+                s25_n = s25_i + 1;
+            }
+        }
+        const uint32_t s25_list = heap_.allocate(
+            "Ljava/util/Arrays$ArrayList;", pc_,
+            call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+        for (int32_t s25_i = 0; s25_i < s25_n; ++s25_i) {
+            auto s25_e = heap_.get_object_field(
+                s25_src, "array[" + std::to_string(s25_i) + "]");
+            DalvikValue s25_v =
+                s25_e.has_value() ? *s25_e : DalvikValue::make_null();
+            // F-NEW-244 projection (verbatim from the ui_graphics F-235
+            // arm): const-class tokens stored in the source array are
+            // CLASS_REF values — every array-fields consumer walks
+            // string/int/REF kinds only, so a CLASS_REF slot is unreadable
+            // (the kotlin withIndex copy-loop spin — randomix regression
+            // face measured on the first final-binary anchor run). Project
+            // to the OBJECT_REF form: same heap id, class java.lang.Class.
+            if (s25_v.type == DalvikType::CLASS_REF) {
+                if (s25_v.object_id != 0) {
+                    s25_v = DalvikValue::make_object(
+                        s25_v.object_id, "Ljava/lang/Class;");
+                } else {
+                    const std::string tok_desc = s25_v.class_desc;
+                    if (tok_desc.size() > 1 && tok_desc.front() == 'L' &&
+                        tok_desc.back() == ';') {
+                        uint32_t tok = 0;
+                        auto tok_it = class_token_ids_.find(tok_desc);
+                        if (tok_it != class_token_ids_.end()) {
+                            tok = tok_it->second;
+                        } else {
+                            tok = heap_.allocate("Ljava/lang/Class;", pc_, 0);
+                            heap_.set_object_field(
+                                tok, "__referent_desc",
+                                DalvikValue::make_string(tok_desc, 0));
+                            class_token_ids_.emplace(tok_desc, tok);
+                        }
+                        s25_v = DalvikValue::make_object(tok,
+                                                         "Ljava/lang/Class;");
+                    }
+                }
+            }
+            heap_.set_object_field(
+                s25_list, "array[" + std::to_string(s25_i) + "]", s25_v);
+            heap_.set_object_field(
+                s25_list, "__al_i" + std::to_string(s25_i) + "__", s25_v);
+        }
+        heap_.set_object_field(s25_list, "__al_n__",
+                               DalvikValue::make_int(s25_n));
+        // The array-fields consumers (the F-238 family and every
+        // array[i]/__array_length__ reader) walk the SAME product — the
+        // pre-S25 F-235 arm always stamped it; the first final-binary
+        // anchor run measured its absence (randomix boot-face regression).
+        heap_.set_object_field(s25_list, "__array_length__",
+                               DalvikValue::make_int(s25_n));
+        heap_.set_object_field(s25_list, "__iterator_pos__",
+                               DalvikValue::make_int(0));
+        result = DalvikValue::make_object(s25_list,
+                                          "Ljava/util/Arrays$ArrayList;");
+        status = ApiCallTrace::Status::IMPLEMENTED;
+        return true;
+    }
+
+    // ── S25-W1d (PH1, flip animationSetup): the AnimatorSet Builder law.
+    // AOSP AnimatorSet.play(anim) returns a NON-NULL AnimatorSet$Builder;
+    // with/before/after chain on it and return the SAME builder (the
+    // builder's first-chained anim rides __as_anim__). The engine had NO
+    // AnimatorSet domain handler → play() answered the typed default null
+    // → 'AnimatorSet$Builder.with on a null object reference' NPE at
+    // MainActivity.animationSetup pc=94 (flip_a_coin, the post-S25-W1b
+    // face: the app reached its animation setup for the first time).
+    // ValueAnimator/ObjectAnimator setters are fluent (AOSP returns this);
+    // start/cancel/playTogether are void.
+    if (class_name == "Landroid/animation/AnimatorSet;" ||
+        class_name == "Landroid/animation/AnimatorSet$Builder;" ||
+        class_name == "Landroid/animation/ValueAnimator;" ||
+        class_name == "Landroid/animation/ObjectAnimator;") {
+        if (class_name == "Landroid/animation/AnimatorSet;" &&
+            method == "play") {
+            const uint32_t s25_bid = heap_.allocate(
+                "Landroid/animation/AnimatorSet$Builder;", pc_,
+                call_stack_.empty() ? 0 : call_stack_.top().frame_id);
+            if (args.size() >= 2 && args[1].type == DalvikType::OBJECT_REF)
+                heap_.set_object_field(s25_bid, "__as_anim__", args[1]);
+            result = DalvikValue::make_object(
+                s25_bid, "Landroid/animation/AnimatorSet$Builder;");
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (class_name == "Landroid/animation/AnimatorSet$Builder;" &&
+            (method == "with" || method == "before" || method == "after")) {
+            result = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                         ? args[0]
+                         : DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "setDuration" || method == "setStartDelay" ||
+            method == "setInterpolator" || method == "addListener" ||
+            method == "removeListener" || method == "setRepeatCount" ||
+            method == "setRepeatMode" || method == "setFillAfter") {
+            result = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                         ? args[0]
+                         : DalvikValue::make_null();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+        if (method == "start" || method == "cancel" || method == "end" ||
+            method == "playTogether" || method == "playSequentially" ||
+            method == "setupStartValues" || method == "setupEndValues") {
+            result = DalvikValue::make_void();
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
     // ── S24-W2b (PH2, easy-APK completion): the java.util.List-family heap
     // model. The runtime had BlockingQueue/Map/SparseArray heap-field laws
     // but NO ArrayList/List model: size() answered the int default 0, add()
@@ -48,7 +195,12 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
             class_name == "Ljava/util/Queue;" ||
             class_name == "Ljava/util/Collection;" ||
             class_name == "Ljava/util/AbstractList;" ||
-            class_name == "Ljava/util/AbstractCollection;";
+            class_name == "Ljava/util/AbstractCollection;" ||
+            // ── S25-W1c: Arrays.asList products are java.util.List — the
+            // interface normalization re-dispatches on this runtime class,
+            // and the S25-W1c dual-store law fills the model slots, so the
+            // get/size/iterator arms answer the REAL elements.
+            class_name == "Ljava/util/Arrays$ArrayList;";
         const bool s24_iter = class_name == "Ljava/util/Iterator;";
         if ((s24_list_family || s24_iter) && !args.empty() &&
             args[0].type == DalvikType::OBJECT_REF &&
@@ -161,6 +313,45 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
             auto s24_slot_name = [](int32_t i) {
                 return "__al_i" + std::to_string(i) + "__";
             };
+            // ── S25-W2 (PH1, minos EventBus chain): the java.util collection
+            // COPY-CONSTRUCTION law — new ArrayList<E>(Collection c) copies
+            // the source's live element slots into the receiver. OpenJDK
+            // law: the copy ctor copies every element IN ORDER; the
+            // receiver is a distinct list (mutations never alias the
+            // source). EventBus SubscriberMethodFinder.getMethodsAndRelease
+            // moves FindState.subscriberMethods out with
+            // new ArrayList<>(findState.subscriberMethods) — without the
+            // copy the freshly registered @Subscribe methods were lost and
+            // the scan re-answered EMPTY → EventBusException (minos 10004
+            // baseline rc=1 ×3: the findUsingReflectionInSingleClass trace
+            // showed List.add firing yet findSubscriberMethods still threw
+            // "no public methods with the @Subscribe annotation").
+            // Conservative: only sources THIS model created (they carry
+            // __al_n__) copy; anything else falls through to the generic
+            // ctor path untouched.
+            if (s24_list_family && method == "<init>" && args.size() >= 2 &&
+                args[1].type == DalvikType::OBJECT_REF &&
+                args[1].object_id != 0 &&
+                heap_.has_object(args[1].object_id)) {
+                auto src_n =
+                    heap_.get_object_field(args[1].object_id, "__al_n__");
+                if (src_n.has_value() && src_n->type == DalvikType::INT32) {
+                    const int32_t sn = src_n->int_val;
+                    for (int32_t k = 0; k < sn; ++k) {
+                        auto v = heap_.get_object_field(
+                            args[1].object_id, s24_slot_name(k));
+                        heap_.set_object_field(
+                            s24_obj, s24_slot_name(k),
+                            v.has_value() ? *v : DalvikValue::make_null());
+                    }
+                    heap_.set_object_field(s24_obj, "__al_n__",
+                                           DalvikValue::make_int(sn));
+                    result = DalvikValue::make_void();
+                    status = ApiCallTrace::Status::IMPLEMENTED;
+                    return true;
+                }
+                // source not a model-backed list → fall through
+            }
             if (s24_list_family && method == "add") {
                 const int32_t n = s24_count();
                 if (args.size() >= 2 && args[1].type == DalvikType::INT32 &&

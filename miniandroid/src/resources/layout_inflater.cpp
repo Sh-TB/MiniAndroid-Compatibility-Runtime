@@ -1290,6 +1290,33 @@ uint32_t LayoutInflater::inflate_element(framework::ViewShadow* views, const Axm
             if (it != id_names_.end()) node->android_id_name = it->second;
         }
     }
+    // ── S25-W1b (PH1): the AOSP View tag law — axml android:tag transfer ─
+    // AOSP LayoutInflater stamps android:tag onto the View's mTag exactly
+    // like android:id stamps the id — the attribute is part of the INFLATE
+    // contract, not a runtime call. DataBinding compilers stamp binding
+    // tags on wrapped-layout roots (flip_a_coin: "binding_1" on the
+    // activity_main root) and View.getTag() is the bind() entry contract;
+    // the engine decoded the attribute only for fragment containers
+    // (F-NEW-339/F-C4-614) — the general transfer was missing, so
+    // DataBindingUtil.bind(root) answered null and the generated
+    // ActivityMainBinding.setPresenter NPE'd (onCreate pc=22, baseline
+    // rc=1 ×3). STRING-kind payload; reference tags resolve as their
+    // literal form (honest limitation, none in the current corpus).
+    if (const AxmlAttribute* vta = el.attr("tag", "android")) {
+        std::string vtag = !vta->raw_value.empty() ? vta->raw_value
+                                                   : vta->value.string_value;
+        if (!vtag.empty()) {
+            node->default_tag.kind =
+                framework::ViewShadow::ViewNode::TagValue::STRING;
+            node->default_tag.string_val = vtag;
+            static const bool inflate_diag =
+                std::getenv("MINIANDROID_INFLATE_DIAG") != nullptr;
+            if (inflate_diag)
+                std::cerr << "[S25-W1-TAG] android:tag=\"" << vtag
+                          << "\" -> view=" << view_id << " el=" << el.name
+                          << std::endl;
+        }
+    }
     // ── F-NEW-339 (AOSP FragmentLayoutInflaterFactory law) ──────────────
     // A <fragment> short tag instantiates the fragment named in
     // android:name (or class=) through the FragmentFactory and attaches

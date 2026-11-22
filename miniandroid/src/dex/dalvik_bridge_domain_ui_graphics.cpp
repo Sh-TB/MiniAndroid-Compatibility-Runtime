@@ -1008,6 +1008,27 @@ bool DalvikExecutionEngine::bridge_domain_ui_graphics(
             // (NEW_ARRAY stores the size there too).
             n = args[0].int_val > 0 ? args[0].int_val : 0;
         }
+        if (n <= 0) {
+            // ── S25-W1c (PH1, flip coin-drawables): the slot-count fallback
+            // law. Some array-minting paths skip __array_length__ AND pass
+            // size 0 in int_val — flip_a_coin's MainActivity.<init> varargs
+            // `Arrays.asList(R.drawable.heads, R.drawable.tails)` produced
+            // an EMPTY Arrays$ArrayList → CoinValues.getCoinIdDrawables
+            // List.get(0) → IndexOutOfBoundsException (Index: 0, Size: 0)
+            // → animationSetup never ran (post-S25-W1b face). Law: when
+            // both length sources are absent, COUNT the array[i] slots
+            // honestly (bounded — the engine array convention has no
+            // trailing slots beyond the real elements).
+            for (int32_t s25_i = 0; s25_i < 64; ++s25_i) {
+                auto probe = heap_.get_object_field(
+                    src_id, "array[" + std::to_string(s25_i) + "]");
+                if (!probe.has_value()) {
+                    n = s25_i;
+                    break;
+                }
+                n = s25_i + 1;
+            }
+        }
         {
             static thread_local uint64_t f235_al = 0;
             static thread_local const bool f235_diag = std::getenv("MINIANDROID_F235_DIAG") != nullptr;
@@ -1080,8 +1101,17 @@ bool DalvikExecutionEngine::bridge_domain_ui_graphics(
                 }
                 heap_.set_object_field(
                     list_id, "array[" + std::to_string(i) + "]", *elem);
+                // ── S25-W1c dual-store law: the SAME element also lands in
+                // the S24-W2 list-model slots (__al_n__ / __al_i<k>__) so
+                // every List.get/size consumer — not only the array-fields
+                // readers — walks the REAL elements. Arrays$ArrayList is a
+                // java.util.List (the interface normalization re-dispatches
+                // on this runtime class); the model family now covers it.
+                heap_.set_object_field(
+                    list_id, "__al_i" + std::to_string(i) + "__", *elem);
             }
         }
+        heap_.set_object_field(list_id, "__al_n__", DalvikValue::make_int(n));
         heap_.set_object_field(list_id, "__iterator_pos__",
                                DalvikValue::make_int(0));
         status = ApiCallTrace::Status::IMPLEMENTED;
@@ -5842,6 +5872,9 @@ bool DalvikExecutionEngine::bridge_domain_ui_graphics(
         }
     }
     // ────────────────────────────────────────────────────────────────────────
+    // S25-W1d NOTE: the AnimatorSet Builder law now lives in the jdk domain
+    // TU (dalvik_bridge_domain_jdk.cpp) — the dispatch-proven home; this
+    // domain's copy was removed after the r3 battery dispatch trace.
     // S109 ROOT-040 — AnimationUtils.loadAnimation + View Animation family.
     // AOSP: loadAnimation(Context, resid) NEVER answers null for a valid
     // resource (Resources$NotFoundException otherwise); the returned

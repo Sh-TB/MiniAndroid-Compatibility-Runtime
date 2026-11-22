@@ -9720,6 +9720,53 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                 auto it = window_content_nodes_.find(search_root);
                 if (it != window_content_nodes_.end()) existing = it->second;
             }
+            // ── S25-W1a (PH1, flip DataBinding chain): the content-parent
+            // UNIFICATION law, materialize-branch guard. findViewById
+            // (android.R.id.content) whose rooted BFS missed MUST reuse the
+            // live ContentFrameLayout-family node instead of materializing
+            // a parallel FrameLayout. AOSP answers ONE content parent per
+            // window (PhoneWindow.mContentParent): a parallel node has no
+            // children — the S24-W1 adoption lives on the REAL content
+            // frame inside the sub-decor stack — so framework iteration
+            // over the parallel node sees an empty host and answers null
+            // (flip_a_coin: DataBindingUtil.setContentView → bind(null) →
+            // generated ActivityMainBinding.setPresenter NPE at onCreate
+            // pc=22, baseline rc=1 ×3; F-NEW-220 already documents the same
+            // trap for the materialized-anchor face). Class-family keyed —
+            // never package-name keyed; the BFS-root miss covers both the
+            // unstamped id (the sub-decor id-swap never executed on this
+            // node) and the inside-subtree search-root face.
+            if (existing == 0) {
+                static const bool s25_scan_diag =
+                    std::getenv("MINIANDROID_INFLATE_DIAG") != nullptr;
+                size_t s25_cfl = 0;
+                for (const auto& [s25_nid, s25_n] : nodes_) {
+                    // Class-family match only — the sub-decor's
+                    // ContentFrameLayout may be RECORDED without a parent
+                    // mount (the R005 path links the FitWindows stack, the
+                    // content frame itself is reached through the children
+                    // walk), so a parent_id filter would reject the very
+                    // node this law exists to reuse (flip_w1 measured face).
+                    // The 0x01020002-stamped node matches too: the S25-W1a
+                    // bind-time host (dalvik_bridge.cpp) is a FrameLayout —
+                    // when a lookup's BFS roots BELOW the host (the legacy
+                    // search root is the activity content root), the
+                    // upward host is invisible to the subtree walk and the
+                    // id-stamp is the only identity that survives.
+                    if (s25_n &&
+                        (s25_n->class_desc.find("ContentFrameLayout") !=
+                             std::string::npos ||
+                         s25_n->android_view_id == 0x01020002)) {
+                        ++s25_cfl;
+                        if (existing == 0) existing = s25_nid;
+                    }
+                }
+                if (s25_scan_diag)
+                    std::cerr << "[S25-W1-SCAN] content lookup: nodes="
+                              << nodes_.size() << " ContentFrameLayout="
+                              << s25_cfl << " chosen=" << existing
+                              << std::endl;
+            }
             if (existing != 0 && find_node(existing)) {
                 std::cerr << "[P0-2-CONTENT] android.R.id.content REUSED node="
                           << existing << " (window=" << search_root

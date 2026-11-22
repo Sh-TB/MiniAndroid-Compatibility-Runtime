@@ -535,7 +535,7 @@ TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
 	s18_text_layout_laws_test s18_sql_shadow_laws_test \
 	s18_renderer_surface_laws_test \
 	s18_gravity_direction_laws_test s18_linear_extras_laws_test \
-	s18_constraint_law_test s19_grid_scroll_laws_test
+	s18_constraint_law_test s19_grid_scroll_laws_test s25_laws_test
 TEST_BATTERY = $(TEST_CORE) $(TEST_HOSTILE) $(TEST_LAW)
 
 # S225-M wave law test links pthread_shadow.o (the interposition object the

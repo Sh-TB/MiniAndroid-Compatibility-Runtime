@@ -89,6 +89,100 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
     BridgeCensusGuard c97_census_guard;
     if (bridge_census().on) c97_census_guard.begin(class_name, method);
 
+    // ── S25-W1a (PH1, flip DataBinding chain): the bind-time content-parent
+    // law. AOSP ordering: AppCompatDelegateImpl.setContentView →
+    // ensureSubDecor() inflates the sub-decor (incl. the ContentFrameLayout
+    // content host) DURING setContentView; the engine defers the sub-decor
+    // to the attach wave, so DataBindingUtil.setContentView's follow-up
+    // decorView.findViewById(android.R.id.content) finds NO content host
+    // (measured: nodes=8, ContentFrameLayout=0 at lookup — flip_w1c
+    // [S25-W1-SCAN]) and materializes an EMPTY parallel FrameLayout → the
+    // child loop never runs → bind(null) → the generated
+    // ActivityMainBinding.setPresenter NPE at onCreate pc=22 (rc=1 ×3,
+    // S23/S24/S25 baselines). Law (engine-side — window_decor_for_activity_
+    // lives here): on View.findViewById(android.R.id.content) with a live
+    // activity + decor: (a) when NO content host exists in the decor
+    // subtree (no 0x01020002-stamped node, no ContentFrameLayout),
+    // materialize ONE under the decor; (b) adopt the activity's ORPHAN
+    // content root into it (AOSP ViewGroup.addView(mContentParent, root)).
+    // Then the normal dispatch proceeds: the shadow's receiver-subtree BFS
+    // answers a host WITH the root, the DataBinding child loop runs, and
+    // the renderer walk reaches the real tree through the decor. The
+    // attach-wave S24-W1 adoption stays as the safety net — the adopted
+    // root is no longer an orphan, so the two laws compose, never fight.
+    if (class_name == "Landroid/view/View;" && method == "findViewById" &&
+        args_raw.size() >= 2 && args_raw[1].type == DalvikType::INT32 &&
+        args_raw[1].int_val == 0x01020002 && shadow_registry_ != nullptr) {
+        auto* s25_act =
+            shadow_registry_->find_as<framework::ActivityShadow>();
+        const uint32_t s25_act_view =
+            s25_act != nullptr ? s25_act->current_activity_id() : 0;
+        auto s25_dit = s25_act_view != 0
+                           ? window_decor_for_activity_.find(s25_act_view)
+                           : window_decor_for_activity_.end();
+        const uint32_t s25_decor =
+            (s25_dit != window_decor_for_activity_.end() &&
+             heap_.has_object(s25_dit->second))
+                ? s25_dit->second
+                : 0;
+        if (s25_decor != 0) {
+            auto* s25_vs =
+                shadow_registry_->find_as<framework::ViewShadow>();
+            if (s25_vs != nullptr) {
+                // (a) ONE content host per window — BFS the decor subtree.
+                uint32_t s25_host = 0;
+                std::vector<uint32_t> s25_bfs{s25_decor};
+                std::unordered_set<uint32_t> s25_seen;
+                for (size_t bi = 0; bi < s25_bfs.size() && s25_host == 0;
+                     ++bi) {
+                    const uint32_t s25_id = s25_bfs[bi];
+                    if (!s25_seen.insert(s25_id).second) continue;
+                    const auto* s25_n = s25_vs->find_node(s25_id);
+                    if (s25_n == nullptr) continue;
+                    if (s25_n->android_view_id == 0x01020002 ||
+                        s25_n->class_desc.find("ContentFrameLayout") !=
+                            std::string::npos) {
+                        s25_host = s25_id;
+                        break;
+                    }
+                    for (uint32_t s25_c : s25_n->children)
+                        s25_bfs.push_back(s25_c);
+                }
+                if (s25_host == 0) {
+                    const uint32_t s25_c =
+                        s25_vs->create_view("Landroid/widget/FrameLayout;");
+                    if (s25_c != 0) {
+                        if (auto* s25_cn = s25_vs->find_node(s25_c))
+                            s25_cn->android_view_id = 0x01020002;
+                        if (s25_vs->add_child(s25_decor, s25_c))
+                            std::cerr
+                                << "[S25-W1-BIND-HOST] content host node "
+                                << s25_c << " created under decor "
+                                << s25_decor
+                                << " (bind-time mContentParent law)"
+                                << std::endl;
+                    }
+                    s25_host = s25_c;
+                }
+                // (b) adopt the activity's orphan content root.
+                const uint32_t s25_root =
+                    s25_act != nullptr ? s25_act->content_view_id() : 0;
+                if (s25_host != 0 && s25_root != 0 && s25_root != s25_host) {
+                    const auto* s25_rn = s25_vs->find_node(s25_root);
+                    if (s25_rn != nullptr && s25_rn->parent_id == 0) {
+                        if (s25_vs->add_child(s25_host, s25_root))
+                            std::cerr
+                                << "[S25-W1-BIND-ADOPT] content root "
+                                << s25_root << " adopted under host "
+                                << s25_host
+                                << " (bind-time mContentParent law)"
+                                << std::endl;
+                    }
+                }
+            }
+        }
+    }
+
     // ── S24-W2 (PH2, easy-APK completion): the JDK interface receiver
     // normalization law. An invoke-interface carries the DECLARED interface
     // (Ljava/util/List;/Map;/Collection;/Set;/Queue;/Deque;/Iterator;) as
