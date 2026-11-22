@@ -3166,6 +3166,13 @@ std::pair<int, int> LayoutInflater::measure_node_raw(
                 n->dex_measure_valid = false;
                 n->dex_measured_w = 0;
                 n->dex_measured_h = 0;
+                // ── S27-W4 (the layout arm of the R-NEW-438 law): mark the
+                // node so the paired DEX onLayout re-dispatch (R-NEW-466/
+                // R445) is skipped for this pass when the canonical native
+                // frame is non-degenerate — the same incomplete-emulation
+                // surface, measured poisoning the canonical frames
+                // (flip w4_diag4 [T58-FRAME] child.layout(0,0,0,0) receipts).
+                n->dex_measure_takeover = true;
                 if (getenv("U007_LAYOUT_DEBUG"))
                     fprintf(stderr, "[U007-LAYOUT] R-NEW-438 degenerate DEX "
                                     "onMeasure (%dx%d) at view %u (%s) — "
@@ -4689,7 +4696,9 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 "[U007-LAYOUT] %*sview %u %s id_name=%s lp=%d/%d m=%d,%d,%d,%d weight=%d "
                 "orient=%d measured=%dx%d at=(%d,%d) vis=%d clickable=%d "
                 "text_size=%.1f lines=%d below='%s' above='%s' "
-                "right_of='%s' left_of='%s' cgrav=0x%x text='%s'\n",
+                "right_of='%s' left_of='%s' cgrav=0x%x "
+                "clL='%s'%d clT='%s'%d edges=%d cached=(l%d r%d t%d b%d) "
+                "text='%s'\n",
                 depth * 2, "", vid, n->class_desc.c_str(),
                 n->android_id_name.c_str(), n->lp_width, n->lp_height,
                 n->lp_margin_left, n->lp_margin_top,
@@ -4702,6 +4711,10 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 n->rel_below_name.c_str(), n->rel_above_name.c_str(),
                 n->rel_right_of_name.c_str(), n->rel_left_of_name.c_str(),
                 n->child_gravity,
+                n->cl_left_to.c_str(), n->cl_left_edge,
+                n->cl_top_to.c_str(), n->cl_top_edge,
+                (int)n->rl_edges_valid, n->rl_cached_left, n->rl_cached_right,
+                n->rl_cached_top, n->rl_cached_bottom,
                 n->text.substr(0, 40).c_str());
             for (uint32_t cid : n->children) dump(cid, depth + 1);
         };
@@ -5102,7 +5115,15 @@ void LayoutInflater::measure_layout(framework::ViewShadow* views, uint32_t root_
                 const int bh = cn->rl_edges_valid
                                    ? std::max(0, cn->rl_cached_bottom - cn->rl_cached_top)
                                    : cn->measured_height;
-                                stack.push_back({cid, bx, by, bw, bh});
+                if (getenv("U007_LAYOUT_DEBUG"))
+                    fprintf(stderr,
+                            "[U007-CLL] parent=%u child=%u box=(%d,%d %dx%d) "
+                            "edges=%d cached=(l%d r%d t%d b%d)\n",
+                            t.id, cid, bx, by, bw, bh,
+                            (int)cn->rl_edges_valid, cn->rl_cached_left,
+                            cn->rl_cached_right, cn->rl_cached_top,
+                            cn->rl_cached_bottom);
+                stack.push_back({cid, bx, by, bw, bh});
             }
         } else if (is_fl || is_rl || is_scroll) {
             if (is_rl) {

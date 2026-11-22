@@ -1698,6 +1698,19 @@ public:
         int last_size_w = -1, last_size_h = -1;
         int dex_measured_w = 0, dex_measured_h = 0;
         bool dex_measure_valid = false;
+        // ── S27-W4 (the layout arm of the R-NEW-438 incomplete-emulation
+        // law): set by the canonical measure pass when this node's DEX
+        // onMeasure answer was judged an incomplete emulation and the
+        // native container law took over (R-NEW-438 arm). The paired DEX
+        // onLayout re-dispatch (R-NEW-466/R445) is the SAME unreliable
+        // surface for that pass — MEASURED (flip w4_diag4): the real
+        // androidx.ConstraintLayout.onLayout calls child.layout(0,0,0,0)
+        // for EVERY child EVERY frame and the layout shadow faithfully
+        // overwrites the canonical F-148 frames with 0x0, clipping the app
+        // content out of the draw walk. dispatch_view_relayout consumes
+        // this flag (skip the DEX onLayout when the canonical frame is
+        // non-degenerate).
+        bool dex_measure_takeover = false;
         // R-NEW-438 (S132): transient — set by the canonical measure law on
         // a 0dp+weight child measured under the AOSP AT_MOST wrap branch
         // (LinearLayout lp.width = WRAP_CONTENT restore-after law). The

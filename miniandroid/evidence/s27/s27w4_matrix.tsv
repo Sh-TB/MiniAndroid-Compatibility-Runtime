@@ -1,0 +1,16 @@
+apk	run_dir	binary	last_frame_hash16	verdict	rc	events	note
+org.ecos.logic.flip_a_coin_3	w4_diag	production	b492ee85799fb2cb	NO-DIVERGENCE REAL_APP_CONTENT		205	PRE-LAW forensics: [DEX-MEASURE] CL.onMeasure AT_MOST(1080)xAT_MOST(1920) -> 0x0; R-NEW-438 takeover heals the ROOT from frame 2 (census 406 1080x1920) but the CHILDREN stay 0x0
+org.ecos.logic.flip_a_coin_3	w4_diag4	production	b492ee85799fb2cb	NO-DIVERGENCE REAL_APP_CONTENT		205	THE POISON RECEIPT: [T58-FRAME] view=569/594 layout(0,0,0,0) caller=ConstraintLayout.onLayout pc=70 — the R445 DEX onLayout re-dispatch zeroes every child every frame
+org.ecos.logic.flip_a_coin_3	w4_law_r1	production	6808aa29ff941dae	NO-DIVERGENCE REAL_APP_CONTENT		205	S27-W4 law: face 6808aa29ff941dae, verdict REAL_APP_CONTENT, first_divergence=None, census 569 pos=(374,794) 331x331, face region 84324 px
+org.ecos.logic.flip_a_coin_3	w4_flip_r1	production	6808aa29ff941dae	NO-DIVERGENCE REAL_APP_CONTENT	0	205	S27-W4 x3 deterministic 6808aa29ff941dae
+org.ecos.logic.flip_a_coin_3	w4_flip_r2	production	6808aa29ff941dae	NO-DIVERGENCE REAL_APP_CONTENT	0	205	S27-W4 x3
+org.ecos.logic.flip_a_coin_3	w4_flip_r3	production	6808aa29ff941dae	NO-DIVERGENCE REAL_APP_CONTENT	0	205	S27-W4 x3
+com.farmerbb.notepad	w3_np	production	31ddd4d5b8e6d18e	NO_ROOT,		59	canonical flags — hash IDENTICAL to S27-W2 canonical 31ddd4d5b8e6d18e
+tech.gaskell.diceroller	w3_dice	production	0de952bf75f89409	NO-DIVERGENCE REAL_APP_CONTENT		207	canonical flags — IDENTICAL 0de952bf75f89409
+ru.zxalexis.ugaday	w3_guess	production	87fe26766fc48d06	NO-DIVERGENCE REAL_APP_CONTENT		205	canonical flags — IDENTICAL 87fe26766fc48d06, rc=0
+com.itsfrz.tictactoe	w3_ttt	production	d55056a8928a26ff	DEFAULT_BACKGROUND_ONLY,		214	canonical flags — IDENTICAL d55056a8928a26ff
+com.minar.randomix	w4_rnd	production	5fef8090d5c9c87b	REAL_APP_CONTENT	1	200	ADJUDICATED PROGRESS: canonical 31ddd4d5 was BLANK (0 non-white px — the DEX AppIntroViewPager.onLayout collapsed the full-screen pager to 0x0); the law rejected the poison ([S27-W4-FRAME-REJECT] view=1065 over canonical (0,0 1080x1920), Button over (32,1762 231x126)) — new face 5fef8090 carries the real AppIntro pager chrome (1080 px, buttons at real positions)
+name.livitski.games.puzzle.android	w3_pz	production	35c4e53b14561b2f	NO-DIVERGENCE REAL_APP_CONTENT		331	unchanged 35c4e53b — the S27-W3 bisect-attributed pre-existing delta; 0 S27-W4 markers (the law is inert on pz)
+de.tcrass.minos	w3_minos	production	b5a7a35d5fe0564b	DEFAULT_BACKGROUND_ONLY,		205	canonical flags — IDENTICAL b5a7a35d5fe0564b
+com.thehellomaker.helloworldtoast	w3_hw	production	acdd9f05dc9c7ece	SYSTEM_CHROME_ONLY,		50	canonical flags — IDENTICAL acdd9f05dc9c7ece
+dk.cocode.chess	w3_chess	production	d602648e8e401895	DEFAULT_BACKGROUND_ONLY,		237	canonical flags — IDENTICAL d602648e8e401895

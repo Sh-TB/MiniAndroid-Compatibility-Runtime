@@ -11247,6 +11247,36 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                                            : ctx.receiver_class);
             const int l = ctx.arg_as_int(0), t = ctx.arg_as_int(1);
             const int r = ctx.arg_as_int(2), b = ctx.arg_as_int(3);
+            // ── S27-W4 (AOSP setFrame authority; the R-NEW-438 layout arm
+            // defense net): a DEGENERATE layout write over a NON-degenerate
+            // canonical frame assigned by the current pass is the
+            // incomplete-emulation poison signature — MEASURED (flip
+            // w4_diag4): the real androidx.ConstraintLayout.onLayout calls
+            // child.layout(0,0,0,0) for every child every frame and the
+            // faithful write clipped the coin face out of the draw walk.
+            // The canonical frame is authoritative; the write is rejected
+            // loudly (AOSP would never produce this shape from a healthy
+            // container: onLayout geometry descends from onMeasure state).
+            // GONE nodes are exempt (a collapsing write is lawful there).
+            if ((r - l <= 0 && b - t <= 0) && n->visibility != 8 &&
+                n->laid_out && n->measured_width > 0 &&
+                n->measured_height > 0) {
+                static thread_local uint64_t s27w4_rej_n = 0;
+                if (s27w4_rej_n < 24)
+                    std::cerr << "[S27-W4-FRAME-REJECT] view="
+                              << ctx.receiver_id << " " << n->class_desc
+                              << " layout(" << l << ',' << t << ',' << r
+                              << ',' << b
+                              << ") rejected over canonical ("
+                              << n->measured_left << ',' << n->measured_top
+                              << ' ' << n->measured_width << 'x'
+                              << n->measured_height
+                              << ") — degenerate DEX onLayout write (the "
+                                 "R-NEW-438 layout arm)"
+                              << std::endl;
+                return m == "setFrame" ? CallResult::handled_bool(false)
+                                       : CallResult::handled_void();
+            }
             n->measured_left = l;
             n->measured_top = t;
             n->measured_right = r;

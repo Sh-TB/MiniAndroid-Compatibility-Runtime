@@ -9077,6 +9077,10 @@ bool DalvikExecutionEngine::dispatch_custom_view_measure(
         if (node->dex_measure_valid) {
             out_w = node->dex_measured_w;
             out_h = node->dex_measured_h;
+            // S27-W4: a GENUINE DEX write-back supersedes the takeover
+            // judgment — the paired onLayout re-dispatch is trustworthy
+            // again for the next pass.
+            node->dex_measure_takeover = false;
         }
         // R-NEW-466 (CONT-11 W7, AOSP measure→layout pairing): View.java
         // measure() sets PFLAG_LAYOUT_REQUIRED after onMeasure returns —
@@ -9912,6 +9916,36 @@ bool DalvikExecutionEngine::dispatch_view_relayout(
     // R-NEW-441 degenerate-frame gate (same law as the one-shot dispatch):
     // a 0x0 frame is never a laid-out window on real Android.
     if (r - l <= 0 && b - t <= 0) return false;
+    // ── S27-W4 (the layout arm of the R-NEW-438 incomplete-emulation law):
+    // the R-NEW-466/R445 re-layout re-runs the REAL DEX onLayout after
+    // every re-measure. For a container whose DEX onMeasure was judged an
+    // incomplete emulation THIS pass (the R-NEW-438 measure-side takeover
+    // ran — dex_measure_takeover), the same DEX onLayout is the same
+    // unreliable surface: MEASURED (flip w4_diag4), the real
+    // androidx.ConstraintLayout.onLayout calls child.layout(0,0,0,0) for
+    // EVERY child EVERY frame ([T58-FRAME] pc=70 receipts) and the layout
+    // shadow faithfully overwrites the canonical F-148 frames
+    // (374,794 331x331) with 0x0 — the coin face clipped out of the draw
+    // walk. AOSP doctrine (same as the measure arm): the native container
+    // law is authoritative. Skip the re-dispatch when the canonical native
+    // frame is non-degenerate; a degenerate canonical frame keeps the DEX
+    // onLayout (its only placement hope).
+    if (node->dex_measure_takeover) {
+        node->dex_measure_takeover = false;  // consume for this pass
+        if (node->measured_width > 0 && node->measured_height > 0) {
+            static thread_local uint64_t s27w4_skip_n = 0;
+            if (s27w4_skip_n < 16)
+                fprintf(stderr,
+                        "[S27-W4-RELAYOUT-SKIP] %s view=%u: the R-NEW-438 "
+                        "measure-side takeover judged the DEX chain an "
+                        "incomplete emulation this pass; the canonical "
+                        "native frame (%dx%d) is authoritative — DEX "
+                        "onLayout re-dispatch skipped\n",
+                        node->class_desc.c_str(), view_object_id,
+                        node->measured_width, node->measured_height);
+            return false;
+        }
+    }
     // Only views whose DEX chain actually overrides onLayout.
     std::string cls = node->class_desc;
     if (!cls.empty() && cls[0] == 'L' && cls.find('.') != std::string::npos) {
