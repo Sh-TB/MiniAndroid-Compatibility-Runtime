@@ -1119,6 +1119,18 @@ public:
     void set_content_view(uint32_t view_id) { content_view_id_ = view_id; }
     uint32_t content_view_id() const { return content_view_id_; }
 
+    // ── S27-W3 (the content-view attachment law, appcompat family) ──────
+    // The U007 res-inflate APP root (the layout inflated by
+    // setContentView(res)), recorded SEPARATELY from content_view_id_:
+    // the appcompat F165 path re-points content_view_id_ at the SUBDECOR
+    // root when the decoration chain assembles, which silently erased the
+    // app root's identity and left it outside the window tree (flip
+    // baseline: census ContentFrameLayout children=0, verdict
+    // DEFAULT_BACKGROUND_ONLY). The F165 mContentParent adoption consumes
+    // this — AOSP contentParent.addView(appLayout).
+    void set_u007_inflate_root(uint32_t root_id) { u007_inflate_root_ = root_id; }
+    uint32_t u007_inflate_root() const { return u007_inflate_root_; }
+
     // ── G08: Activity stack + result + launch-intent identity ──────────
     // TransactionExecutor law: a launched activity pushes onto the task
     // stack; finish() pops and RESTORES the previous entry (restart law).
@@ -1421,6 +1433,8 @@ private:
             config_overrides_[derived_id] = override_config_id;
     }
     uint32_t content_view_id_ = 0;
+    // S27-W3: the U007 res-inflate app root (see the accessor above).
+    uint32_t u007_inflate_root_ = 0;
     // F-LISTACTIVITY (AOSP ListActivity.getListView law): cached
     // android.R.id.list view id (AOSP ListActivity mList handle) + the
     // pending setListAdapter adapter identity drained by the engine.

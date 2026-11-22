@@ -6487,10 +6487,21 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
                     sub_node && sub_node->parent_id == content_parent;
                 if (!already_under_content && content_parent != r005_sub &&
                     !f220_content_inside_sub) {
-                    vs->add_child(content_parent, r005_sub);
-                    std::cerr << "[F165-CONTENT] view=" << r005_sub
-                              << " installed under content parent="
-                              << content_parent << std::endl;
+                    // Honest receipt law: the print fires only when the edge
+                    // REALLY landed (the baseline printed "installed" even
+                    // when the G11 cycle guard rejected the edge — a false
+                    // receipt for the census gap).
+                    if (vs->add_child(content_parent, r005_sub)) {
+                        std::cerr << "[F165-CONTENT] view=" << r005_sub
+                                  << " installed under content parent="
+                                  << content_parent << std::endl;
+                    } else {
+                        std::cerr << "[F165-CONTENT] view=" << r005_sub
+                                  << " NOT installed under content parent="
+                                  << content_parent
+                                  << " (add_child rejected: cycle/identity law)"
+                                  << std::endl;
+                    }
                 }
                 if (auto* act2 =
                         shadow_registry_->find_as<framework::ActivityShadow>()) {
@@ -6502,6 +6513,99 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
                         vs->layout_dirty = true;
                         std::cerr << "[F165-CONTENT] activity content root="
                                   << r005_sub << std::endl;
+                        // ── S27-W3 (the content-view attachment law,
+                        // appcompat family) ────────────────────────────
+                        // AOSP AppCompatDelegateImpl.setContentView(int):
+                        // ensureSubDecor() FIRST, then inflate(resId,
+                        // mContentParent) — the app layout lands INSIDE the
+                        // id-swapped ContentFrameLayout. The runtime inflates
+                        // FIRST (U007 → u007_inflate_root_) and assembles the
+                        // subdecor SECOND, so the app root stayed OUTSIDE the
+                        // window tree (flip baseline: root 461 carried only
+                        // the S83-inverted stray content child 800100; the
+                        // census walked decor 815 → subdecor 856 →
+                        // ContentFrameLayout 860 children=0 → verdict
+                        // DEFAULT_BACKGROUND_ONLY, rc=1 ×3). Law: the
+                        // id-swapped content parent adopts the U007 app root
+                        // — AOSP contentParent.addView(appLayout).
+                        // Preconditions (all honest):
+                        //   * the root is recorded and is NOT the subdecor
+                        //     itself (never self-mount);
+                        //   * the root is NOT already inside the SUBDECOR
+                        //     subtree (idempotent — composes with the
+                        //     wave-time S24-W1 orphan adoption, which keeps
+                        //     its parent_id==0 gate);
+                        //   * a S83-inversion stray (a 0x01020002-stamped
+                        //     FrameLayout CHILD of the app root — the #676
+                        //     S83-CONTENT-CHILD family artifact: the lazy
+                        //     content materialize ran with receiver=app root)
+                        //     is detached FIRST — the content parent belongs
+                        //     to the window, never to the app root. add_child
+                        //     then re-parents loudly (GP-LAYOUT-003) so the
+                        //     receipt names the old (duality) parent.
+                        // MEASURED guard note (flip w3_fix_r1): the F-023
+                        // PARENTLINK re-parents the app root under the
+                        // ACTIVITY node ([GP-LAYOUT-003] 761→32) and the
+                        // activity node hangs under the DECOR — so an
+                        // ancestor walk to the DECOR would wrongly call the
+                        // root "attached". The census roots at the ACTIVITY
+                        // CONTENT ROOT (the subdecor 854 → ContentFrameLayout
+                        // 858), and the duality branch (decor → activity
+                        // node → app root) is never walked — the guard must
+                        // test reachability from the SUBDECOR, not the decor.
+                        const uint32_t s27w3_root = act2->u007_inflate_root();
+                        if (s27w3_root != 0 && s27w3_root != r005_sub &&
+                            content_parent != 0 &&
+                            content_parent != s27w3_root) {
+                            bool s27w3_inside = false;
+                            for (uint32_t anc = s27w3_root; anc != 0;) {
+                                const auto* an = vs->find_node(anc);
+                                if (an == nullptr) break;
+                                if (anc == r005_sub) {
+                                    s27w3_inside = true;
+                                    break;
+                                }
+                                anc = an->parent_id;
+                            }
+                            if (!s27w3_inside) {
+                                if (const auto* rn =
+                                        vs->find_node(s27w3_root)) {
+                                    for (uint32_t s27c : rn->children) {
+                                        const auto* scn = vs->find_node(s27c);
+                                        if (scn != nullptr &&
+                                            scn->android_view_id ==
+                                                (int32_t)0x01020002) {
+                                            vs->detach_from_parent(s27c);
+                                            std::cerr << "[S27-W3-UNLINK]"
+                                                      << " stray content node="
+                                                      << s27c
+                                                      << " detached from app root="
+                                                      << s27w3_root
+                                                      << " (S83-CONTENT-CHILD"
+                                                      << " inversion, #676 law)"
+                                                      << std::endl;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (vs->add_child(content_parent, s27w3_root)) {
+                                    std::cerr << "[S27-W3-ADOPT] U007 app root="
+                                              << s27w3_root
+                                              << " adopted under id-swapped"
+                                              << " content parent="
+                                              << content_parent
+                                              << " (AOSP contentParent.addView law)"
+                                              << std::endl;
+                                } else {
+                                    std::cerr << "[S27-W3-ADOPT] app root="
+                                              << s27w3_root
+                                              << " NOT adopted under content parent="
+                                              << content_parent
+                                              << " (add_child rejected)"
+                                              << std::endl;
+                                }
+                            }
+                        }
                     }
                 }
             }

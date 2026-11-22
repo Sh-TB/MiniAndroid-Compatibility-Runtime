@@ -1,0 +1,15 @@
+apk	run_dir	binary	last_frame_hash16	verdict	rc	events	note
+org.ecos.logic.flip_a_coin_3	w3_base_r1	dev-O0	b270ff040b3601dc			31	BASELINE reproduction on PRE-FIX binary (dev -O0 build, flags --max-seconds 12): census ContentFrameLayout children=0, verdict DEFAULT_BACKGROUND_ONLY, rc=1 - the S27-W3 blocker measured
+org.ecos.logic.flip_a_coin_3	w3_fix_r2	dev-O0	b492ee85799fb2cb			31	S27-W3 law on dev binary: ADOPT fires, census 858 children=1, verdict REAL_APP_CONTENT, rc=0
+com.farmerbb.notepad	w3_np	production	31ddd4d5b8e6d18e	NO_ROOT,	1	59	canonical flags p0_gate (90s frames30 trace)
+tech.gaskell.diceroller	w3_dice	production	0de952bf75f89409		1	207	canonical flags p0_gate (120s frames30)
+ru.zxalexis.ugaday	w3_guess	production	87fe26766fc48d06		0	205	canonical flags p0_gate (120s frames30)
+com.itsfrz.tictactoe	w3_ttt	production	d55056a8928a26ff	DEFAULT_BACKGROUND_ONLY,	1	214	canonical flags p0_gate (120s frames30)
+name.livitski.games.puzzle.android	w3_pz	production	35c4e53b14561b2f		1	331	canonical flags p0_gate (200s frames50 tap 197,112@25) - face delta vs S27-W2 canonical, see bisect
+com.minar.randomix	w3_rnd	production	31ddd4d5b8e6d18e	DEFAULT_BACKGROUND_ONLY,	1	200	canonical flags (120s frames30)
+de.tcrass.minos	w3_minos	production	b5a7a35d5fe0564b	DEFAULT_BACKGROUND_ONLY,	1	205	canonical flags (120s frames30)
+com.thehellomaker.helloworldtoast	w3_hw	production	acdd9f05dc9c7ece	SYSTEM_CHROME_ONLY,	1	50	canonical flags (120s frames30)
+dk.cocode.chess	w3_chess	production	d602648e8e401895	DEFAULT_BACKGROUND_ONLY,	1	237	canonical flags (120s frames30)
+org.ecos.logic.flip_a_coin_3	w3_flip_r1	production	b492ee85799fb2cb		0	205	S27-W3 x3 face b492ee85799fb2cb deterministic - NEW face (was b270ff04 DEFAULT_BACKGROUND_ONLY)
+org.ecos.logic.flip_a_coin_3	w3_flip_r2	production	b492ee85799fb2cb		0	205	S27-W3 x3
+org.ecos.logic.flip_a_coin_3	w3_flip_r3	production	b492ee85799fb2cb		0	205	S27-W3 x3

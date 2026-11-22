@@ -7330,6 +7330,12 @@ CallResult ActivityShadow::dispatch(const CallContext& ctx) {
                                           << " law)" << std::endl;
                             }
                             content_view_id_ = root_id;
+                            // ── S27-W3: record the APP inflate root under
+                            // its OWN identity — content_view_id_ is re-pointed
+                            // at the subdecor root by the appcompat F165 path,
+                            // and the mContentParent adoption (AOSP
+                            // contentParent.addView) consumes this field.
+                            u007_inflate_root_ = root_id;
                             // ── ADDITIONAL-AUDIT P0-1 (attach-before-measure)
                             // The inflater no longer measures (P0-1 law);
                             // record the first-traversal root — the engine's

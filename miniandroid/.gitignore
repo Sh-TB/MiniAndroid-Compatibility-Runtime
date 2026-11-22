@@ -28,3 +28,8 @@ run/s24_elist*
 run/s24_navprobe*
 run/s24_det_run*
 !runtime/data/fonts/
+
+# W23-D (S230 sweep-prevention law, same family as W22-F): portable
+# cmake/ccache download trees stay local — never sweep them into commits.
+tools/dl/
+tools/ccache-bin/
