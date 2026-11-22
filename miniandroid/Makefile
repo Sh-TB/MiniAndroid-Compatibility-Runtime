@@ -230,6 +230,7 @@ W24_TIER2_COLD := \
   $(BUILDDIR)/dex/dex_interpreter_batch.o \
   $(BUILDDIR)/framework/gl_surface_shadow.o \
   $(BUILDDIR)/framework/bitmap_shadow.o \
+  $(BUILDDIR)/framework/vector_raster.o \
   $(BUILDDIR)/resources/resource_runtime.o \
   $(BUILDDIR)/framework/task_stack_builder_shadow.o \
   $(BUILDDIR)/webview/html_dom.o \

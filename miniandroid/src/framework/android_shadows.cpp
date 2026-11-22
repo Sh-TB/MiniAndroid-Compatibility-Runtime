@@ -10839,6 +10839,18 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
                 return;
             }
             if (sb && sb->has_pixels) {
+                // S27-W1 (#633/#634): vector-decoded bitmaps ARE the pixels —
+                // rasterized from the parsed vector XML at the C9-3 site —
+                // and the renderer paints them through the SAME
+                // direct-BitmapStore image law as every other stored bitmap.
+                // No provenance re-decode (the vector XML is not a raster).
+                if (sb->source_desc.rfind("vector-decode:", 0) == 0) {
+                    reached_pipeline = true;
+                    evidence = "S27-W1 vector-decoded pixels (" +
+                               sb->source_desc +
+                               ") → direct BitmapStore draw";
+                    return;
+                }
                 evidence = "stored bitmap pixels without APK-path provenance "
                            "(source_desc=" + sb->source_desc +
                            ") — direct-pixel draw is a recorded frontier";

@@ -5398,11 +5398,30 @@ bool ExecutionEngine::stage_render_frame_impl(ExecutionResult& result, const Exe
                                 // through the SAME g04 fit-rect + draw_image
                                 // pipeline as every other image (scaleType
                                 // honored; no second density rescale).
-                                if (resolved_img_path.empty() &&
-                                    node->image_bitmap_object != 0) {
-                                    const auto* sb =
-                                        framework::BitmapStore::instance().get(
-                                            node->image_bitmap_object);
+                                const framework::StoredBitmap* s27_vb =
+                                    node->image_bitmap_object != 0
+                                        ? framework::BitmapStore::instance().get(
+                                              node->image_bitmap_object)
+                                        : nullptr;
+                                // ── S27-W1 (#633/#634): a VECTOR-decoded
+                                // bitmap bound to the node IS the resource's
+                                // pixels (rasterized from the vector XML at
+                                // the C9-3 site). When the canonical path is
+                                // that SAME vector entry, the path-decode
+                                // branch would try to raster-decode an XML
+                                // and fail — prefer the direct-pixel draw
+                                // (provenance: image_resource_id → vector
+                                // wrapper → S27-W1 bitmap). The raster path
+                                // branch below is untouched for every other
+                                // resource kind.
+                                const bool s27_vector_bound =
+                                    s27_vb && s27_vb->has_pixels &&
+                                    s27_vb->source_desc.rfind(
+                                        "vector-decode:", 0) == 0;
+                                if ((resolved_img_path.empty() ||
+                                     s27_vector_bound) &&
+                                    s27_vb) {
+                                    const auto* sb = s27_vb;
                                     if (sb && sb->has_pixels &&
                                         sb->width > 0 && sb->height > 0 &&
                                         (int)sb->rgba.size() >=

@@ -9,6 +9,7 @@
 // in the legacy coordinator.
 // ────────────────────────────────────────────────────────────
 #include "dex/dalvik_bridge_frame.h"
+#include "framework/vector_raster.h"  // S27-W1: the vector rasterization law
 #include <limits>  // W20-K (S237-WS6): INVALID_ROW_ID
 
 namespace miniandroid {
@@ -7800,6 +7801,56 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
                     std::cerr << "[RES] C9-3 vector intrinsic " << wpx << "x"
                               << hpx << " (density " << dev_density
                               << ") for " << path << std::endl;
+                    // ── S27-W1 (#633/#634) — the vector rasterization law ──
+                    // AOSP VectorDrawable.draw fills every <path> child (SVG
+                    // pathData + fillColor, document order, viewport→bounds
+                    // aspect-preserving centered) into the drawable's bounds.
+                    // The wrapper previously carried ONLY the intrinsic dims,
+                    // so every setImageDrawable(VectorDrawable) blocked on
+                    // "no probeable bitmap" (flip's coin face, view 569).
+                    // The law rasterizes the SAME parsed AXML ONCE into a
+                    // real Bitmap (BitmapStore pixels at the intrinsic size,
+                    // capped 2048) and binds it as the wrapper's "bitmap"
+                    // field — the R-NEW-360 probe name — so the existing
+                    // g04 fit-rect + draw_image pipeline paints it like
+                    // every other decoded bitmap. No second render path.
+                    const int vr_w = (int)(wpx + 0.5f);
+                    const int vr_h = (int)(hpx + 0.5f);
+                    if (vr_w > 0 && vr_h > 0 && vr_w <= 2048 &&
+                        vr_h <= 2048) {
+                        framework::VectorRasterStats vstats;
+                        std::vector<uint8_t> vrgba;
+                        if (framework::vector_rasterize(ax.root(), vr_w, vr_h,
+                                                        vrgba, vstats) &&
+                            !vrgba.empty()) {
+                            framework::DalvikHeapAdapter vr_heap(&heap_,
+                                                                 this);
+                            const uint32_t vb =
+                                vr_heap.allocate("Landroid/graphics/Bitmap;");
+                            if (vb != 0) {
+                                framework::BitmapStore::instance().store(
+                                    vb, vr_w, vr_h, std::move(vrgba),
+                                    "vector-decode:" +
+                                        path.substr(
+                                            path.find_last_of('/') + 1));
+                                heap_.set_object_field(
+                                    dw, "bitmap",
+                                    DalvikValue::make_object(
+                                        vb, "Landroid/graphics/Bitmap;"));
+                            }
+                            std::cerr << "[S27-W1] vector rasterized " << path
+                                      << " " << vr_w << "x" << vr_h
+                                      << " paths=" << vstats.painted_paths
+                                      << "/" << vstats.paths
+                                      << " contours=" << vstats.contours
+                                      << " bmp_oid=" << vb << std::endl;
+                        } else {
+                            std::cerr << "[S27-W1] vector rasterize SKIPPED "
+                                      << path << " paths=" << vstats.paths
+                                      << " skip=" << vstats.first_skip
+                                      << std::endl;
+                        }
+                    }
                 }
                 // ── S231 (cODER-ohc) — <bitmap> XML BitmapDrawable law ────
                 // AOSP BitmapDrawableInflater.inflate: a res/drawable/*.xml
