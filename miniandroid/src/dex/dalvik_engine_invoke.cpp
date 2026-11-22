@@ -247,6 +247,232 @@ bool DalvikExecutionEngine::try_recursive_invoke(
     }
 
     struct F107Guard { PhaseClock::Phase& ph; uint64_t t0; ~F107Guard(){{ phase_clock().exit(ph, t0);}} } f107_guard{phase_clock().recursive_invoke, f107_t0};
+
+    // ── S27-W2 (#633/#634) — the androidx viewmodel initializer DSL law ────
+    // AOSP InitializerViewModelFactory.create(Class, CreationExtras): scan
+    // the recorded initializers; the element whose clazz Class equals
+    // modelClass answers through its Function1 lambda — the lambda body IS
+    // the registered initializer and runs REAL bytecode (SavedStateHandleSupport's
+    // initializer { SavedStateHandlesVM() } constructs SavedStateHandlesVM via
+    // its own <init>). flip died at this create's pc=75 IAE ("No initializer
+    // set for given class androidx.lifecycle.SavedStateHandlesVM") inside
+    // LifecycleRegistry.sync → SavedStateHandleAttacher → the provider lazy —
+    // MainActivity.onCreate unwound (APP BOUNDARY), the content tree never
+    // attached, and the S27-W1-rasterized coin face never painted. The law
+    // mirrors the AOSP loop against the REAL heap state: the receiver's
+    // "initializers" array, each ViewModelInitializer's "clazz" Class token
+    // (F-282/F-103 __referent_desc identity) compared to modelClass's
+    // descriptor, and the MATCHING element's "initializer" Function1 invoked
+    // through this same real dispatch path (runtime-class-first, F-068).
+    // No match (or the array absent/empty) → fall through: the REAL loop
+    // bytecode executes unchanged and the AOSP IAE stays honest.
+    if (declaring_class ==
+            "Landroidx/lifecycle/viewmodel/InitializerViewModelFactory;" &&
+        method_name == "create" && args.size() >= 3) {
+        const bool s27w2_diag =
+            std::getenv("MINIANDROID_S27W2_TRACE") != nullptr;
+        const uint32_t s27_recv =
+            !args.empty() && args[0].type == DalvikType::OBJECT_REF
+                ? args[0].object_id
+                : 0;
+        std::string s27_model_desc;
+        if (args.size() > 1) {
+            const DalvikValue& s27_mc = args[1];
+            if (s27_mc.type == DalvikType::CLASS_REF) {
+                s27_model_desc = s27_mc.class_desc;
+            } else if (s27_mc.type == DalvikType::OBJECT_REF &&
+                       s27_mc.object_id != 0) {
+                auto s27_rd = heap_.get_object_field(s27_mc.object_id,
+                                                     "__referent_desc");
+                if (s27_rd.has_value() &&
+                    s27_rd->type == DalvikType::STRING_REF)
+                    s27_model_desc = s27_rd->string_val;
+            }
+        }
+        uint32_t s27_arr_v = 0;
+        if (s27_recv != 0) {
+            auto s27_af =
+                heap_.get_object_field(s27_recv, "initializers");
+            if (s27_af.has_value() &&
+                s27_af->type == DalvikType::OBJECT_REF &&
+                s27_af->object_id != 0) {
+                s27_arr_v = s27_af->object_id;
+            }
+        }
+        const bool s27_arr_found = s27_arr_v != 0;
+        const uint32_t s27_arr = s27_arr_v;
+        int32_t s27_len = 0;
+        if (s27_arr_found) {
+            auto s27_lf =
+                heap_.get_object_field(s27_arr, "__array_length__");
+            if (!s27_lf.has_value() || s27_lf->type != DalvikType::INT32)
+                s27_lf = heap_.get_object_field(s27_arr,
+                                                "__new_array_length__");
+            if (s27_lf.has_value() && s27_lf->type == DalvikType::INT32)
+                s27_len = s27_lf->int_val;
+        }
+        if (s27w2_diag)
+            std::cerr << "[S27-W2] create recv=o" << s27_recv << " model="
+                      << (s27_model_desc.empty() ? "?" : s27_model_desc)
+                      << " arr="
+                      << (s27_arr_found ? std::to_string(s27_arr) : "ABSENT")
+                      << " len=" << s27_len << " caller=" << current_class_
+                      << "." << current_method_ << std::endl;
+        // S27-W2 length-honesty: a RECORDED 0 is authoritative (F-NEW-268b
+        // family), but an ABSENT length field is metadata the allocating
+        // law never wrote (the copyOf family) — the array[i] slots are the
+        // ground truth. Scan the slots directly (bounded) and honor the
+        // recorded length only as a cap.
+        int32_t s27_scan = s27_len > 0 ? s27_len : 64;
+        if (s27_arr_found && s27_len <= 0) {
+            int32_t s27_found = 0;
+            for (int32_t s27_i = 0; s27_i < 64; ++s27_i) {
+                auto s27_pf = heap_.get_object_field(
+                    s27_arr, "array[" + std::to_string(s27_i) + "]");
+                if (!s27_pf.has_value()) break;
+                s27_found = s27_i + 1;
+            }
+            if (s27w2_diag)
+                std::cerr << "[S27-W2] lenfield unrecorded; slot scan found="
+                          << s27_found
+                          << " __array_length__="
+                          << (heap_.get_object_field(s27_arr,
+                                                     "__array_length__")
+                                  .has_value()
+                                  ? "present"
+                                  : "ABSENT")
+                          << std::endl;
+            s27_scan = s27_found;
+        }
+        if (s27_arr_found && s27_scan > 0) {
+            for (int32_t s27_i = 0; s27_i < s27_scan; ++s27_i) {
+                uint32_t s27_elem = 0;
+                auto s27_ef = heap_.get_object_field(
+                    s27_arr, "array[" + std::to_string(s27_i) + "]");
+                s27_elem = (s27_ef.has_value() &&
+                            s27_ef->type == DalvikType::OBJECT_REF)
+                               ? s27_ef->object_id
+                               : 0;
+                if (s27_elem == 0) continue;
+                auto s27_cf = heap_.get_object_field(s27_elem, "clazz");
+                uint32_t s27_clazz =
+                    (s27_cf.has_value() &&
+                     s27_cf->type == DalvikType::OBJECT_REF)
+                        ? s27_cf->object_id
+                        : 0;
+                if (s27_clazz == 0) continue;
+                auto s27_crd =
+                    heap_.get_object_field(s27_clazz, "__referent_desc");
+                if (!s27_crd.has_value() ||
+                    s27_crd->type != DalvikType::STRING_REF)
+                    continue;
+                const bool s27_match =
+                    s27_crd->string_val == s27_model_desc;
+                if (s27w2_diag)
+                    std::cerr << "[S27-W2] initializer[" << s27_i
+                              << "] clazz=" << s27_crd->string_val
+                              << (s27_match ? " MATCH" : "") << std::endl;
+                if (!s27_match) continue;
+                auto s27_lf2 =
+                    heap_.get_object_field(s27_elem, "initializer");
+                uint32_t s27_lambda =
+                    (s27_lf2.has_value() &&
+                     s27_lf2->type == DalvikType::OBJECT_REF)
+                        ? s27_lf2->object_id
+                        : 0;
+                if (s27_lambda == 0) continue;
+                std::string s27_lambda_cls;
+                if (!heap_.get_object_class(s27_lambda, s27_lambda_cls) ||
+                    s27_lambda_cls.empty())
+                    s27_lambda_cls = "Lkotlin/jvm/functions/Function1;";
+                DalvikValue s27_ret;
+                DalvikExecutionResult s27_tmp;
+                std::vector<DalvikValue> s27_args;
+                s27_args.push_back(
+                    DalvikValue::make_object(s27_lambda, s27_lambda_cls));
+                for (size_t s27_k = 2; s27_k < args.size(); ++s27_k)
+                    s27_args.push_back(args[s27_k]);
+                if (try_recursive_invoke(s27_lambda_cls, "invoke", s27_args,
+                                         s27_ret, s27_tmp, "")) {
+                    std::cerr << "[S27-W2] InitializerViewModelFactory.create "
+                                 "matched initializer["
+                              << s27_i << "] for " << s27_model_desc
+                              << " → Function1.invoke ran real bytecode ("
+                              << s27_lambda_cls << " obj#" << s27_lambda
+                              << ")" << std::endl;
+                    return_val = s27_ret;
+                    return true;
+                }
+                if (s27w2_diag)
+                    std::cerr << "[S27-W2] initializer[" << s27_i
+                              << "] lambda invoke failed (" << s27_lambda_cls
+                              << ".invoke) — falling through" << std::endl;
+            }
+        }
+        // no match ran → the REAL loop bytecode executes unchanged
+    }
+    // ── S27-W2 law A: the ViewModelInitializer construction record ───────
+    // AOSP InitializerViewModelFactoryBuilder.addInitializer stores every
+    // element through a List.add; the engine's dispatch dropped the add on
+    // the floor (flip's SavedStateHandleSupport FACTORY built an EMPTY
+    // initializers array — [S27-W2] arr=1084 len=0 with a present,
+    // authoritative __array_length__=0). The element IDENTITY is its own
+    // <init> — record it unconditionally; the build() law (below)
+    // materializes the recorded elements into the REAL array.
+    if (declaring_class ==
+            "Landroidx/lifecycle/viewmodel/ViewModelInitializer;" &&
+        method_name == "<init>" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0) {
+        const uint32_t s27_oid = args[0].object_id;
+        bool s27_dup = false;
+        for (const uint32_t s27_p : s27w2_pending_initializers_)
+            if (s27_p == s27_oid) { s27_dup = true; break; }
+        if (!s27_dup) s27w2_pending_initializers_.push_back(s27_oid);
+    }
+    // ── S27-W2 law B: Builder.build() materializes the REAL array ────────
+    // AOSP build(): InitializerViewModelFactory(*initializers.toTypedArray())
+    // — the transfer chain (ArrayList backing store → toArray → vararg)
+    // crossed three engine dispatch boundaries and answered EMPTY. The law
+    // materializes the recorded <init> elements DIRECTLY into the vararg
+    // array + constructs the factory on the heap with the array bound as
+    // the "initializers" field (the real create() loop reads exactly this
+    // field — iget field#16169). No app knowledge; androidx-name-scoped.
+    if (declaring_class ==
+            "Landroidx/lifecycle/viewmodel/InitializerViewModelFactoryBuilder;" &&
+        method_name == "build" && !args.empty() &&
+        args[0].type == DalvikType::OBJECT_REF && args[0].object_id != 0 &&
+        !s27w2_pending_initializers_.empty()) {
+        const int32_t s27_n =
+            (int32_t)s27w2_pending_initializers_.size();
+        const uint32_t s27_arr = heap_.allocate(
+            "[Landroidx/lifecycle/viewmodel/ViewModelInitializer;", pc_, 0);
+        heap_.set_object_field(s27_arr, "__array_length__",
+                               DalvikValue::make_int(s27_n));
+        for (int32_t s27_i = 0; s27_i < s27_n; ++s27_i) {
+            heap_.set_object_field(
+                s27_arr,
+                "array[" + std::to_string(s27_i) + "]",
+                DalvikValue::make_object(
+                    s27w2_pending_initializers_[(size_t)s27_i],
+                    "Landroidx/lifecycle/viewmodel/ViewModelInitializer;"));
+        }
+        const uint32_t s27_factory = heap_.allocate(
+            "Landroidx/lifecycle/viewmodel/InitializerViewModelFactory;",
+            pc_, 0);
+        heap_.set_object_field(
+            s27_factory, "initializers",
+            DalvikValue::make_object(
+                s27_arr,
+                "[Landroidx/lifecycle/viewmodel/ViewModelInitializer;"));
+        s27w2_pending_initializers_.clear();
+        std::cerr << "[S27-W2] Builder.build materialized " << s27_n
+                  << " recorded initializer(s) → factory obj#" << s27_factory
+                  << " initializers array obj#" << s27_arr << std::endl;
+        return_val = DalvikValue::make_object(
+            s27_factory,
+            "Landroidx/lifecycle/viewmodel/InitializerViewModelFactory;");
+        return true;
+    }
     // ── W10 (Coder-4) CTOR PROBE (diagnostic, env MINIANDROID_W10_CTOR_PROBE)
     // — every try_recursive_invoke entry + candidate-scan row for
     // AutoSizeHelper-family classes. Zero behavior change. Proven the

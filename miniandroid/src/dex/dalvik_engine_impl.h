@@ -2134,6 +2134,19 @@ public:
     std::map<std::string, uint32_t> class_token_ids_;
     uint32_t class_token_counter_ = 0;
 
+    // ── S27-W2 (#633/#634) — the viewmodel initializer construction log ────
+    // AOSP: the viewModelFactory{} DSL records every initializer through
+    // InitializerViewModelFactoryBuilder.addInitializer (a List.add the
+    // engine's dispatch chain dropped on the floor — flip's SavedStateHandleSupport
+    // FACTORY built an EMPTY initializers array, so create(SavedStateHandlesVM)
+    // threw the honest AOSP IAE and MainActivity.onCreate died before the
+    // content tree attached). The law records each ViewModelInitializer at
+    // ITS OWN <init> (the element identity, unconditionally real) and
+    // Builder.build() materializes the recorded elements into the REAL
+    // initializers array — create()'s loop then matches through ordinary
+    // heap state. Bounded: consumed on build, deduped by oid.
+    std::vector<uint32_t> s27w2_pending_initializers_;
+
     // CONT-44 T24 (F-NEW-567): most recent compose LayoutNode owner value
     // observed on an iput-object to Lel0;.r. The AOSP insertAt law
     // propagates the owner to every inserted node; the second-wave insert
