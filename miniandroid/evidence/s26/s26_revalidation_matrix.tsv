@@ -1,0 +1,18 @@
+apk	run_dir	unique_hashes	hashes	verdict	note
+org.ecos.logic.flip_a_coin_3	flip_r1	1	b270ff04	DEFAULT_BACKGROUND_ONLY	ADOPT=1 setPresenter=1 listener=1 vectorBlocked=1
+org.ecos.logic.flip_a_coin_3	flip_r2	1	b270ff04	DEFAULT_BACKGROUND_ONLY	ADOPT=1 setPresenter=1 listener=1 vectorBlocked=1
+org.ecos.logic.flip_a_coin_3	flip_r3	1	b270ff04	DEFAULT_BACKGROUND_ONLY	ADOPT=1 setPresenter=1 listener=1 vectorBlocked=1
+de.tcrass.minos_10004	minos_r1	1	b5a7a35d	DEFAULT_BACKGROUND_ONLY	eventbus_exc=0 cache_put=2 (S25-W2 holds)
+de.tcrass.minos_10004	minos_r2	1	b5a7a35d	DEFAULT_BACKGROUND_ONLY	eventbus_exc=0 cache_put=2 (S25-W2 holds)
+de.tcrass.minos_10004	minos_r3	1	b5a7a35d	DEFAULT_BACKGROUND_ONLY	eventbus_exc=0 cache_put=2 (S25-W2 holds)
+com.minar.randomix_42	randomix_r0	2	31ddd4d5,b5a7a35d	DEFAULT_BACKGROUND_ONLY	NONDETERMINISTIC on the clean binary: r0 reached the blank face (31ddd4d5), r1/r2/anchor stuck at boot (b5a7a35d) — same f2823280 binary; the S25 'deterministic b5a7a35d x3' record is SUPERSEDED
+com.minar.randomix_42	randomix_r1	1	b5a7a35d	NO_ROOT	NONDETERMINISTIC on the clean binary: r0 reached the blank face (31ddd4d5), r1/r2/anchor stuck at boot (b5a7a35d) — same f2823280 binary; the S25 'deterministic b5a7a35d x3' record is SUPERSEDED
+com.minar.randomix_42	randomix_r2	1	b5a7a35d	NO_ROOT	NONDETERMINISTIC on the clean binary: r0 reached the blank face (31ddd4d5), r1/r2/anchor stuck at boot (b5a7a35d) — same f2823280 binary; the S25 'deterministic b5a7a35d x3' record is SUPERSEDED
+com.minar.randomix_42	anchor_com.minar.randomix_42	1	b5a7a35d	NO_ROOT	NONDETERMINISTIC on the clean binary: r0 reached the blank face (31ddd4d5), r1/r2/anchor stuck at boot (b5a7a35d) — same f2823280 binary; the S25 'deterministic b5a7a35d x3' record is SUPERSEDED
+HelloWorldToast-1.4.0-android	anchor_HelloWorldToast-1.4.0-android	1	acdd9f05	SYSTEM_CHROME_ONLY	golden acdd9f05 byte-identical
+dk.cocode.chess_5022	anchor_dk.cocode.chess_5022	1	d602648e	DEFAULT_BACKGROUND_ONLY	golden d602648e byte-identical
+name.livitski.games.puzzle.android_2	gate_pz	2	35c4e53b,6375a3a3		SIX-PIN revalidation: 6375a3a3813af176 (W23 canonical ceb1a6ad — attributed to S24-era, worktree b2b7ef25 reproduces 35c4e53b with-tap; S25==S24)
+ru.zxalexis.ugaday_15	gate_guess	1	87fe2676		SIX-PIN revalidation: 87fe26766fc48d06 == W23 canonical
+com.farmerbb.notepad_122	gate_np	1	31ddd4d5	NO_ROOT	SIX-PIN revalidation: 31ddd4d5b8e6d18e == W23 canonical
+tech.gaskell.diceroller_1_debug	gate_dice	5	0ab178b9,0de952bf,0efd9882,46b07062,beabbef0		SIX-PIN revalidation: 0de952bf75f89409 == W23 canonical
+com.itsfrz.tictactoe_5	gate_ttt	2	d55056a8,d602648e	DEFAULT_BACKGROUND_ONLY	SIX-PIN revalidation: d55056a8928a26ff == W23 canonical
