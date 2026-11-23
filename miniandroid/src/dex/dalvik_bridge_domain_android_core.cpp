@@ -6532,10 +6532,30 @@ bool DalvikExecutionEngine::bridge_domain_android_core(
                 if (nl < 0)
                     return r24_sioobe("length " + std::to_string(nl) +
                                       " < 0");
-                if (static_cast<size_t>(nl) <= cur.size())
+                if (static_cast<size_t>(nl) <= cur.size()) {
                     cur.resize(static_cast<size_t>(nl));
-                else
+                } else {
+                    // S27-A2: growth is a real heap allocation of
+                    // (nl - size) JVM chars (2 bytes each). A hostile
+                    // setLength(Integer.MAX_VALUE) maps to the ART
+                    // OutOfMemoryError contract (the R-NEW-169 law family,
+                    // 1 GiB budget) instead of an uncaught bad_alloc that
+                    // kills the runtime.
+                    int64_t grow_bytes =
+                        ((int64_t)nl - (int64_t)cur.size()) * 2;
+                    if (grow_bytes > (1LL << 30)) {
+                        throw_deferred(
+                            "Ljava/lang/OutOfMemoryError;",
+                            "Failed to allocate a " +
+                                std::to_string(grow_bytes) +
+                                "-byte allocation",
+                            "setlength-oom");
+                        result = DalvikValue::make_null();
+                        status = ApiCallTrace::Status::IMPLEMENTED;
+                        return true;
+                    }
                     cur.append(static_cast<size_t>(nl) - cur.size(), '\0');
+                }
                 r24_writeback(cur);
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 result = DalvikValue::make_void();

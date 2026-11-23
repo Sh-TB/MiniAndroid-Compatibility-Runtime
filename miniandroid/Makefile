@@ -564,6 +564,25 @@ $(BUILDDIR)/tests/w22_e05_ubshift_probe_oldform: $(TESTDIR)/w22_e05_ubshift_prob
 	@mkdir -p $(BUILDDIR)/tests
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
+# S27-AUDIT-2 fuzz battery — the three raw-buffer parser surfaces under
+# ASan+UBSan. Standalone (not a battery member): the sanitizer runtime
+# must not leak into the pinned production test groups.
+.PHONY: test-audit2-fuzz
+test-audit2-fuzz: $(BUILDDIR)/tests/s27_audit2_fuzz_test
+	$(BUILDDIR)/tests/s27_audit2_fuzz_test
+$(BUILDDIR)/tests/s27_audit2_fuzz_test: $(TESTDIR)/s27_audit2_fuzz_test.cpp \
+		$(BUILDDIR)/resources/axml_parser.o \
+		$(BUILDDIR)/resources/arsc_parser.o \
+		$(BUILDDIR)/resources/res_config.o \
+		$(BUILDDIR)/resources/res_id.o \
+		$(BUILDDIR)/resources/string_pool.o \
+		$(BUILDDIR)/dex/dex_parser.o \
+		$(BUILDDIR)/dex/mutf8.o
+	@mkdir -p $(BUILDDIR)/tests
+	$(CXX) $(CXXFLAGS) -fsanitize=address,undefined \
+		-fno-omit-frame-pointer -o $@ $< \
+		$(filter-out $<,$^) $(LIBS)
+
 # One-shot E-05 verification: build both probes under UBSAN=1, then the
 # fixed-form probe MUST exit 0 (7/7 bit-exact) and the old-form probe MUST
 # exit nonzero (UB abort). Any other outcome fails the target.
