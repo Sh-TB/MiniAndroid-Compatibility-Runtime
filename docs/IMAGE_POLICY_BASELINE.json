@@ -15,7 +15,8 @@
    "expired_entries": 17,
    "measured_kept_png_updated": 2,
    "note": "entries for migrated/deleted paths removed; KEPT_PNG entries carry the measured JPEG-larger outcome (JPEG conversion rejected where it would grow bytes)"
-  }
+  },
+  "s_slim_refresh": "2026-11-23"
  },
  "legacy_images": [
   {
@@ -536,6 +537,24 @@
    "review_trigger": "incremental migration wave tracked in #386"
   },
   {
+   "path": "evidence/s207/runs/s207_ttt0/screenshot.png",
+   "bytes": 3360830,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
+   "path": "evidence/s207/runs/s207_ttt1/screenshot.png",
+   "bytes": 3360830,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
+   "path": "evidence/s207/runs/s207_ttt2/screenshot.png",
+   "bytes": 3360830,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
    "path": "evidence/s215/runs/ar_probe/screenshot.png",
    "bytes": 278575,
    "sha256": "a48cf00b1670110911d5c5fc29c7f1bc881f001b2f8e8aff99d23e8ea00cbdc2",
@@ -547,6 +566,12 @@
    "review_trigger": "incremental migration wave tracked in #386"
   },
   {
+   "path": "evidence/s232/runs/s232_opensudoku/screenshot.png",
+   "bytes": 316065,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
    "path": "evidence/s58/s58_mosaic.png",
    "bytes": 419777,
    "sha256": "0089e8b27d87a2c8e13f5b751bc150a243a23b79b9dd8c25719209afdbef45bc",
@@ -556,6 +581,54 @@
    "owner": "S213 adoption baseline (#587)",
    "reason": "legacy asset present at S213 adoption; per-path record, not a blanket exception",
    "review_trigger": "incremental migration wave tracked in #386"
+  },
+  {
+   "path": "miniandroid/evidence/w21/frozenbubble_11_coder_20831/screenshot.png",
+   "bytes": 265077,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
+   "path": "miniandroid/evidence/w21/frozenbubble_11_coder_25090/screenshot.png",
+   "bytes": 265077,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
+   "path": "miniandroid/evidence/w21/frozenbubble_11_coder_9178/screenshot.png",
+   "bytes": 265077,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
+   "path": "miniandroid/evidence/w21/frozenbubble_11_fixed_r1/screenshot.png",
+   "bytes": 1212260,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
+   "path": "miniandroid/evidence/w21/frozenbubble_11_fixed_r2/screenshot.png",
+   "bytes": 1212260,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
+   "path": "miniandroid/evidence/w21/frozenbubble_11_fixed_r3/screenshot.png",
+   "bytes": 1212260,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
+   "path": "miniandroid/evidence/w21/frozenbubble_54_fixed/screenshot.png",
+   "bytes": 576153,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
+  },
+  {
+   "path": "miniandroid/evidence/w21/frozenbubble_54_latest_29825/screenshot.png",
+   "bytes": 576153,
+   "reason": "canonical frozen run capture (S-SLIM review); decisive visual receipt",
+   "recorded": "2026-11-23"
   },
   {
    "path": "upstream/corpus/com.github.muellerma.stopwatch/src/Stopwatch-13d2fab247e431104e40126e1ecd5099e6ce49fa/fastlane/metadata/android/en-US/images/featureGraphic.png",

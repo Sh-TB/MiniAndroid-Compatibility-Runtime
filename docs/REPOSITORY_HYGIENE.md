@@ -1,5 +1,13 @@
 # REPOSITORY HYGIENE POLICY (S59, Issue #386)
 
+> **Authority note (S-SLIM, 2026-11-23):** the single normative authority for
+> repository structure and retention is **CONSTITUTION_V2.md §172**; this
+> document is an explanatory law-summary subordinate to it. The enforcement
+> executor is `tools/policy_validator.py` (pre-commit hook + CI policy.yml);
+> `tools/check_repo_hygiene.py` remains until its consolidation into the
+> validator (owner-reviewed, see evidence/audit/POLICY_CONFLICT_MATRIX.csv).
+> Hook install: `cp tools/hooks/pre-commit-policy.sh .git/hooks/pre-commit`.
+
 Scope: what may be tracked in Git, what must stay external, and how every
 exception is approved and documented. This is the canonical policy referenced
 by `tools/check_repo_hygiene.py` and `docs/ARTIFACT_LIFECYCLE.md`.

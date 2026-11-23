@@ -1,89 +1,52 @@
-# CAMPAIGN 011 (§28) — build/cache/artifact hygiene
-# APK policy (§20): ZERO APK/AAB inside the repository, releases, or source ZIPs.
-# Test APKs are fetched by scripts/download_test_apks.py into an EXTERNAL cache.
+# =============================================================================
+# MiniAndroid .gitignore — S-SLIM consolidated edition (2026-11-23)
+# -----------------------------------------------------------------------------
+# ONE policy: the repository tracks SOURCE + CURATED EVIDENCE ONLY.
+# Everything below is generated, fetched, run-produced, or local-only.
+#
+# Owner: release engineering (CONSTITUTION_V2 §172, docs/REPOSITORY_HYGIENE.md)
+# Enforcement: tools/policy_validator.py (pre-commit hook + CI policy.yml)
+#
+# GIT FACT THIS FILE RELIES ON: .gitignore never untracks existing content.
+# Tracked canonical evidence stays tracked regardless of these rules; NEW
+# files under ignored trees need an explicit `git add -f` = deliberate,
+# reviewable promotion (the frozen-evidence doctrine of docs/PATH_OWNERSHIP.json).
+# Campaign names are deliberately NOT listed here: stable directory rules
+# replace the historical per-session entries. History: docs/history/.
+# =============================================================================
 
-# build outputs
-miniandroid/build/
-/build/
+# --- build outputs (any naming convention, any depth) -----------------------
+miniandroid/build*/
+build*/
+build-*/
+/build_*/
+/build-*/
 *.o
 *.d
-
-# APK / Android app bundles — never commit
-*.apk
-*.aab
-*.so
-
-# local APK caches (legacy in-repo path + external)
-miniandroid/download/
-apk_cache/
-
-# external tool build artifacts
-**/robolectric-oracle/target/
-
-# large local run artifacts (keep curated evidence under docs/evidence instead)
-miniandroid/run/u011/
-miniandroid/run/**/*.log
-miniandroid/run/**/*.ppm
-miniandroid/run/**/*.json
-
-# local logs / temporary artifacts
-*.log
-*.tmp
-.cache/
-
-# secrets / credentials — should never exist here
-*.keystore
-*.jks
-credentials.json
-secrets*
-.env
-
-# UNIFIED_011.3: run/ evidence dirs are external artifacts; curated evidence lives in docs/evidence/
-miniandroid/run/clicktest_*/
-miniandroid/run/corpus_*/
-miniandroid/run/real_whatsapp/
-miniandroid/run/u0113_*/
-
-# =============================================================================
-# RELEASE PACKAGING HYGIENE (2026-09-04)
-# ---------------------------------------------------------------------------
-# Incident: the Windows cross-build tree `miniandroid/build-win/` was never
-# ignored (the old rules only covered `miniandroid/build/`), so one `git add`
-# committed 13,600+ llvm-mingw toolchain files, the 80 MB compiler archive,
-# downloaded dependency source trees (win_src) and object files.
-#
-# RULE: the repository stays SOURCE + intentional project assets.
-# Build trees, toolchains, downloaded dependency sources, staging dirs and
-# generated binaries are NEVER committed. Files that are intentionally
-# released are attached to GitHub Releases as artifacts.
-# `scripts/release/validate_release_content.py` enforces the same rule on every
-# release package before it is published.
-# =============================================================================
-
-# Windows cross-build tree: llvm-mingw toolchain + win_deps + win_src + objects
-miniandroid/build-win/
-build-win/
-win_src/
-win_deps/
-llvm-mingw*/
-llvm-mingw.tar.xz
-
-# any other cross-build / experiment work trees
-/build-*/
-work/
-
-# compiler + linker byproducts anywhere
 *.obj
 *.lib
+*.a
 *.ninja
 *.ninja_deps
 .ninja_log
 CMakeCache.txt
 CMakeFiles/
 compile_commands.json
+__pycache__/
+*.pyc
+core
 
-# downloaded dependency archives and extracted dependency source trees
-# (upstream sources are fetched by build scripts into ignored work dirs)
+# --- APK / DEX / dependency payloads — NEVER tracked (§20 zero-APK law) -----
+*.apk
+*.aab
+*.dex
+*.odex
+*.aar
+*.jar
+*.so
+*.dll
+apk_cache/
+miniandroid/download/
 **/freetype-*/
 **/harfbuzz-*/
 **/fribidi-*/
@@ -95,386 +58,87 @@ compile_commands.json
 **/hb.tgz
 **/jpeg.zip
 
-# generated release staging (always created fresh by scripts/release/package_release.sh
-# and validated by scripts/release/validate_release_content.py before packaging)
-release_staging/
-dist/
-release_audit/
-
-# raw demo-run output (the curated, hash-pinned proof is committed under docs/demos/)
-miniandroid/run/demo_evidence/
-miniandroid/run/demo_timer_evidence/
-
-# stray runtime data written by corpus runs at the repository root
-/runtime/
-.build_*/
-
-# M9 (§41 hygiene): session run/ evidence dirs are external artifacts;
-# curated evidence lives in docs/evidence/hello_color_golden/
-miniandroid/run/m9_*/
-
-# S19: shared APK/DEX/ARSC artifact cache (content-addressed, regenerable via
-# tools/verify/apk_artifacts.py; curated proof artifacts live under docs/ and
-# the repo-root artifacts/ committed in 3ea1ffc3)
-artifacts/
-# S19: session probe run dirs follow the m9_* external-artifact law
-miniandroid/run/s19_*/
-
-# repository-structure migration: demo app build output + generated runtime binary
-examples/demo-app/build/
-miniandroid/core
-
-# container workspace dirs (local-only, never part of the repository)
-/skills/
-/upload/
-/download/
-/logs/
-/tool-results/
-/MiniAndroid-Compatibility-Runtime/
-
-# toolchain binaries (restored by scripts/build/bootstrap_toolchain.sh — never committed)
-/tools/aapt2/
-/tools/d8/
-/tools/ecj/
-/tools/android-34.jar
-/tools/platform-34-ext*_r0*.zip
-androguard.db
-
-# =============================================================================
-# S48 EVIDENCE TAXONOMY (2026-09-16) — raw campaign exhaust stays external
-# -----------------------------------------------------------------------------
-# Raw run dumps and forensic-session traces live in the EXTERNAL archive
-# (/home/z/archive/miniandroid) with per-file SHA-256 provenance recorded in
-# docs/evidence/ARCHIVE_MANIFEST.json. Compact evidence (report.md,
-# execution_summary.json, screenshot.png, golden artifacts) is the source of
-# truth and lives under docs/evidence/. Never re-add the classes below.
-# =============================================================================
-miniandroid/run/**/*_stderr.txt
-miniandroid/run/**/*_stdout.txt
-gpg_*/
-gpg_lambda_probe.out
-
-# S51 purge scratch + local backup (never commit)
-/backup-s51/
-/tool-results/
-local/
+# --- runtime run stores, raw traces, profiler dumps -------------------------
+/run*/
 miniandroid/run/
-
-# S58 hygiene: repo-root session run/ dirs are external artifacts (same law as
-# miniandroid/run/ M9 §41). A root run/ dir was auto-committed with a UUID
-# message at bef5f601 (raw pre-fix traces; commit dropped, SHAs archived on
-# disk). Curated evidence belongs in docs/evidence/<session>/ + SHA256SUMS.
-/run/
-
-# S61: local Go toolchain + zoekt/codesearch build (SEARCH_LEDGER documents them; binaries are reproducible via the ledger recipe)
-/tools/go/
-/tools/gopath/
-zoektdb
-
-# S69 source pins: tarballs are re-fetchable via PROVENANCE.json (codeload URL
-# + SHA256); the two heavy extracted trees (tripeaks 12M, bouncy 8.8M) stay
-# external — their key law files are curated under docs/upstream/apps/.
-upstream/corpus/**/*.tar.gz
-upstream/corpus/com.dozingcatsoftware.bouncy/src/
-upstream/corpus/eu.veldsoft.tri.peaks/src/
-
-.secrets/
-miniandroid/build-asan/
-upstream/dodge-src/
-run/s94/source_mining/clones/
-
-# S-HYGIENE: on-disk-only rescue area (never committed)
-external_backup/
-core
-*.ppm
-
-# FINAL CAMPAIGN PHASE 1 (repo hygiene law docs/ARTIFACT_LIFECYCLE.md):
-# tmp/ must contain NO required repository artifact. Scratch APK-derived files
-# (extracted APKs, .dex/.jar payloads, market/archive indices, external fonts)
-# and raw multi-MB traces live outside git; canonical evidence = distilled
-# summaries + SHA256 ledgers (docs/history/final_campaign_phase1/).
-tmp/archidx.json
-tmp/index-v1.json
-tmp/idx.jar
-tmp/mykanji_extract/
-tmp/blid/
-tmp/flappy_build/
-tmp/*_check/
-tmp/*_trace*/
-tmp/*_tap*
-tmp/*_x*/
-tmp/*_tg*/
-evidence/**/api_trace.json
-evidence/**/heap_trace.json
-evidence/**/method_trace.json
-evidence/**/opcode_trace.json
-evidence/**/register_trace.json
-evidence/**/*_bundle*.js
-*.apk
-*.aab
-tmp/wa169/
-tmp/gate_dr/
-
-# toolchain repair dir (large binaries — rebuilt via scripts/build/bootstrap_toolchain.sh)
-tools/toolchain/
-# W22: portable ccache downloaded for the cache benchmark (not repo content)
-tools/ccache-bin/
-tools/ccache_dl/
-tools/ccache_cache/
-tmp/w4_probebuild/
-tmp/f351_build/
-
-# S59 (#386 C14): python bytecode + probe build work dirs are never tracked.
-# Ignore rules do not untrack existing files — the tracked copies were removed
-# in commit 8b8e6f17 (REGENERATE dispositions, zero input-consumers verified).
-__pycache__/
-*.pyc
-tmp/capaudit_build/
-tmp/cont46_probebuild/
-tmp/f352_build/
-tmp/gatea_rebuild/
-fixtures/fnew253_probe/build/
-tmp/cont99_build/
-miniandroid/build_prof/
-
-# top-level run/ artifacts: local-only (T11 law; see docs/evidence/run_untrack_ledger.md)
-/run/
-
-# T12 law: tmp/ and vendored kotlinc-dist are local-only (re-downloadable / stale A\/B binaries)
-/tmp/
-/upstream/cont12_maven/kotlinc-dist/
-
-# =============================================================================
-# S153 HISTORY SLIMMING (2026-11-02) — repo was ~600MB+ on GitHub because
-# heavy artifacts survived in HISTORY from earlier passes. git filter-repo
-# purged them from all 1437 commits (manifest: docs/BIGFILE_PURGE_MANIFEST.md,
-# full ledger: evidence/s153_purge/purge_manifest.json, backup: backup/).
-# RULE: the categories below are NEVER tracked again — locally they are
-# restored from backup/wt_offenders.tar and stay untracked.
-# =============================================================================
-/backup/
-*.dex
-*.odex
-*.aar
-*.jar
-*.a
-*.dll
-miniandroid/framework_res/
-miniandroid/test_apks/
-tools/android-34/
-tools/r8/
-upstream/cont12_maven/
-docs/evidence/**/api_trace.json
-docs/evidence/**/heap_trace.json
-docs/evidence/**/method_trace.json
-**/traces/
-# (raw traces & multi-MB view_tree dumps belong under run/ — ignored above.
-#  Small curated view_tree.json files under docs/evidence/ remain tracked.)
-
-# S155: run outputs live in run155/ (run/ became root-owned infra artifact)
-/run155/
-
-# S156: run artifacts are external
-/run156/
-/run155p2/
-scripts/tracer
-
-# S158/S159: run artifacts are external (environment auto-commit swept these in 303ad5b1)
-/run_s158_*/
-/run_s159_*/
-/run_s161_*/
-/run_s162_*/
-/run_s163_*/
-/run_s164_*/
-/run_s165_*/
-/run_s166_*/
-/run_s167_w6/
-/run_s168_w7/
-/run_s169_w8/
-run_s172_w10/
-run_s173_w10/
-run_s174_w10coder/
-run_s180_battery/
-run_s181_minimal/
-run_s182_minimal2/
-
-# S185 bigfile law (user directive 2026-11-06: no bulky run artifacts/logs/libs in git —
-# rebuild via scripts, evidence = verdicts + small JPGs only)
+miniandroid/evidence/
 run_*/
-*.err
-*.bak
-api_trace.json
+*.ppm
+gmon.out
 frames/
-.s185_stash/
-*.bundle
-
-# S186 evidence law: NO per-frame PNG archives and NO raw traces in git —
-# verdict JSON + final face JPG (+ GIF <=1MB only for fully-loaded titles) is evidence.
-*/frames/
-/api_trace.json
-/method_trace.json
-/heap_trace.json
-/opcode_trace.json
-/register_trace.json
-/view_tree.json
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
 **/api_trace.json
-**/method_trace.json
 **/heap_trace.json
+**/method_trace.json
 **/opcode_trace.json
 **/register_trace.json
 **/view_tree.json
+**/lifecycle_trace*.json.bak
+*.err
+*.bak
+*.rej
+*.orig
+*.tmp
+*~
 
-# S186c: battery run dirs + probe dbs stay out of git (evidence law)
-evidence/s186_s107/reruns_battery/
-evidence/s186_s107/reruns_box2d/
-androguard.db*
+# --- logs and temporary files ------------------------------------------------
+*.log
+.cache/
+tmp/
+tmp_*/
+.build_*/
+.forgejo*/
 
-# S186i run artifacts (S185 evidence law: run dirs/resume caches stay local)
-evidence/s186_s107/s186i_runs/
-evidence/s186_s107/S186I_BATTERY.*.jsonl
-evidence/s200/runs/store_*
-evidence/s200/runs/gate_*
-evidence/s200/runs/cmp_*
-evidence/s200/runs/dooz_pinchk_*
-evidence/s200/runs/ttt_f62*
-evidence/s200/runs/*.console.log
-evidence/s204/wt_1b4d0293/
-evidence/s204/wt_head/
+# --- toolchain / dependency caches (re-obtained by bootstrap recipes) -------
+tools/dl/
+tools/ccache-bin/
+tools/ccache_dl/
+tools/ccache_cache/
+tools/ccache.conf
+tools/toolchain/
+tools/aapt2/
+tools/d8/
+tools/ecj/
+tools/android-34/
+tools/android-34.jar
+tools/r8/
+tools/go/
+tools/gopath/
+zoektdb
+upstream/cont12_maven/
+upstream/dodge-src/
 
-# S230: raw GitHub API exports are local fetch artifacts (WP0 no-giant-export law)
-evidence/s230/issue*.json
-evidence/s230/issue*_comments.json
-
-# S231: raw GitHub API exports are local fetch artifacts (WP0 no-giant-export law)
-evidence/s231/issue*.json
-evidence/s231/issue*_comments.json
+# --- workspace-local, machine-only areas ------------------------------------
+/upload/
+/download/
+/skills/
+/logs/
+/tool-results/
+/backup*/
+/backup-s51/
+external_backup/
+/local/
+/work/
+.secrets/
+.env
+credentials.json
+*.keystore
+*.jks
+secrets*
 worklog.md
+androguard.db*
+.current_size_*
 
-# =============================================================================
-# LOCAL-ONLY SESSION ARTIFACTS (2026-11-14, the S235-0 boundary-sweep fix)
-# ---------------------------------------------------------------------------
-# Incident: session-boundary auto-commits (UUID messages b110be50, bff51d90)
-# twice swept 1556 untracked local files into the tree: 45 MB of OSMesa vendor
-# blobs (three libOSMesa copies + the .deb packages), 0-byte PNG evidence,
-# forensic raw data, reference dumps and historical run-store internals from
-# pre-S230 sessions. The repository stays SOURCE + curated evidence (the same
-# law as worklog.md, work/ and the build trees). These paths stay local-only.
-# gitignore never untracks: the curated files already promoted per wave (e.g.
-# docs/evidence/campaign014's tracked subset, evidence/s207/s208/s232 in
-# S234-2/S234-3) remain tracked; new wave evidence keeps its deliberate
-# per-wave promotion (evidence/s2xx registered in PATH_OWNERSHIP).
-# =============================================================================
-/CAMPAIGN_STATE.md
-/CONT-*.md
-/F023_ROOT_CAUSE.md
-/PLAYABILITY_REPORT.md
-/MessageSchema.java
-/current_size_
-/gfx_trace.jsonl
-/third_party/
+# --- untracked-by-default evidence doctrine ---------------------------------
+# Tracked curated evidence remains tracked (gitignore never untracks).
+# New evidence lands here first as LOCAL files; promotion to Git is an
+# explicit `git add -f` reviewed against the size budget + validator.
+/evidence/
+/docs/evidence/
 /forensic_data/
 /reference/
-/docs/evidence/campaign014/
-# historical pre-S230 evidence dirs carrying untracked run artifacts
-
-# --- inventory-completion pass (v2): every remaining untracked group ---
-/docs/evidence/g09_corpus/
-/docs/evidence/g11g12_evidence/
-/docs/evidence/m3_campaign/
-/docs/evidence/master_campaign/
-/docs/evidence/s210_dooz/
-/docs/evidence/s21_f074_f075/
-/docs/evidence/s91_sandbox/
-/docs/evidence/visual_forensics/
-/evidence/audit_s107/
-/evidence/batch367_rerun/
-/evidence/cont107/
-/evidence/cont11/
-/evidence/cont48/
-/evidence/cont49/
-/evidence/cont54/
-/evidence/cont55/
-/evidence/cont61/
-/evidence/cont65/
-/evidence/diff366/
-/evidence/s106_fresh/
-/evidence/s107_fresh/
-/evidence/s107_games/
-/evidence/s109_telegram/
-/evidence/s109_webview/
-/evidence/s110_telegram/
-/evidence/s110_tickets/
-/evidence/s112_html5_generalization/
-/evidence/s113_fullgui/
-/evidence/s114_bigfix/
-/evidence/s115_sweep/
-/evidence/s115_telegram/
-/evidence/s117_complete_graphics/
-/evidence/s119_games/
-/evidence/s120_new_games/
-/evidence/s151_trains/
-/evidence/s186_s107/
-/evidence/s188/
-/evidence/s188_w10/
-/evidence/s188_w11/
-/evidence/s188_w12/
-/evidence/s188_w13/
-/evidence/s188_w14/
-/evidence/s188_w15/
-/evidence/s188_w16/
-/evidence/s188_w17/
-/evidence/s188_w18/
-/evidence/s188_w2/
-/evidence/s188_w5/
-/evidence/s188_w6/
-/evidence/s188_w7/
-/evidence/s194_intake/
-/evidence/s195_audit/
-/evidence/s199/
-/evidence/s200/
-/evidence/s204/
-/evidence/s206/
-/evidence/s210/
-/evidence/s211/
-/evidence/s213/
-/evidence/s214/
-/evidence/s215/
-/evidence/s216/
-/evidence/s220/
-/evidence/s223/
-/evidence/s224/
-/evidence/s225/
-/evidence/s226/
-/evidence/s58/
-/miniandroid/build_status.txt
-
-# S235: the lane-comment working archive (machine-path logs; the canonical
-# source lives on GitHub #588) — local-only like worklog.md
-/scripts/s235_comments/
-
-# WAVE-9 (ISSUE-612): shared-library dev build outputs stay out of git
-miniandroid/build_dev_so/
-# W22: ccache benchmark build tree (disposable, BUILDDIR=build_cc)
-miniandroid/build_cc/
-# W22 (S230/WP0 no-giant-export law): raw authenticated GitHub API exports +
-# attachment assets stay local (curated digest/inventory/patches ARE committed)
-evidence/w22/issues_raw/
-/tools/ccache.conf
-/tools/ccache_cache/
-/build_cc/
-
-# W23: portable cmake/ccache downloads (not repo content)
-/tools/dl/
-
-# AUD-51 (S7 forensics, 2026-11-20): generated build trees and APKs are never tracked.
-# build_w24_cand_a/ was committed by the 9b953ce1 auto-add (53 files incl. the executable
-# binary + test exes + stamps) — untracked with evidence SHAs preserved in
-# miniandroid/evidence/audit/RAW_LOGS/untrack_evidence_shas.txt (§20 APK law also enforced).
-miniandroid/build_w24_cand_a/
-miniandroid/build_w24*/
-download/batch614_624_evidence/
-miniandroid/build_fast/
-miniandroid/build_dev/
-miniandroid/build_p2a/
-miniandroid/build_p2b/
-miniandroid/build/
+/third_party/

@@ -3,170 +3,199 @@
   "law": "#587 S214-WP3 per-area size budget",
   "generated": "2026-11-13",
   "adopted": "S229 (#587 S213/S214; owner-approved in the #587 closeout thread)",
-  "rule": "tracked path-summed bytes per top-level area; exceeding budget fails the validator unless a reviewed per-area exception records the reason+expiry; budgets were set at adoption with 10% headroom"
+  "rule": "tracked path-summed bytes per top-level area; exceeding budget fails the validator unless a reviewed per-area exception records the reason+expiry; budgets were set at adoption with 10% headroom",
+  "s_slim_readopted": "2026-11-23",
+  "s_slim_note": "budgets re-measured post-cleanup with +10% headroom; the evidence area is frozen \u2014 further growth requires a registry amendment"
  },
  "areas": {
   ".agent": {
    "measured_at_adopted": 29836,
    "budget_bytes": 1078412,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 29836
   },
   ".github": {
    "measured_at_adopted": 5229,
    "budget_bytes": 1053805,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 5779
   },
   ".gitignore": {
    "measured_at_adopted": 10097,
    "budget_bytes": 1058673,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 3111
   },
   "CONSTITUTION_V2.md": {
    "measured_at_adopted": 56094,
    "budget_bytes": 1104670,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 56094
   },
   "LICENSE": {
    "measured_at_adopted": 1108,
    "budget_bytes": 1049684,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 1108
   },
   "README.md": {
    "measured_at_adopted": 8327,
    "budget_bytes": 1056903,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 8405
   },
   "audit": {
    "measured_at_adopted": 761541,
    "budget_bytes": 1810117,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 761541
   },
   "campaigns": {
    "measured_at_adopted": 1911,
    "budget_bytes": 1050487,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 1911
   },
   "canonical": {
    "measured_at_adopted": 2076335,
    "budget_bytes": 3124911,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 2085827
   },
   "docs": {
    "measured_at_adopted": 50168513,
    "budget_bytes": 55185364,
    "headroom_bytes": 5016851,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 48444287
   },
   "evidence": {
    "measured_at_adopted": 128069492,
-   "budget_bytes": 140876441,
-   "headroom_bytes": 12806949,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "budget_bytes": 156372342,
+   "headroom_bytes": 14215667,
+   "review_trigger": "any tracked addition pushing the area over budget (S-SLIM re-adoption; growth beyond this fails the validator)",
+   "measured_at_s_slim": 106433899
   },
   "examples": {
    "measured_at_adopted": 14293,
    "budget_bytes": 1062869,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 14293
   },
   "fixtures": {
    "measured_at_adopted": 4789547,
    "budget_bytes": 5838123,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 4789547
   },
   "games": {
    "measured_at_adopted": 128741,
    "budget_bytes": 1177317,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 128741
   },
   "hc_provenance": {
    "measured_at_adopted": 266702,
    "budget_bytes": 1315278,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 266702
   },
   "library_ecosystem": {
    "measured_at_adopted": 24576,
    "budget_bytes": 1073152,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 24576
   },
   "miniandroid": {
    "measured_at_adopted": 29470637,
-   "budget_bytes": 32417700,
-   "headroom_bytes": 2947063,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "budget_bytes": 99453303,
+   "headroom_bytes": 9041209,
+   "review_trigger": "any tracked addition pushing the area over budget (S-SLIM re-adoption; growth beyond this fails the validator)",
+   "measured_at_s_slim": 65875852
   },
   "plugins": {
    "measured_at_adopted": 92344,
    "budget_bytes": 1140920,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 92344
   },
   "probe_store": {
    "measured_at_adopted": 31884,
    "budget_bytes": 1080460,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 31884
   },
   "registry": {
    "measured_at_adopted": 991287,
    "budget_bytes": 2039863,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 991287
   },
   "reports": {
    "measured_at_adopted": 139357,
    "budget_bytes": 1187933,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 139357
   },
   "research": {
    "measured_at_adopted": 3266,
    "budget_bytes": 1051842,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 3266
   },
   "root_registry.json": {
    "measured_at_adopted": 998503,
    "budget_bytes": 2047079,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 998503
   },
   "scripts": {
    "measured_at_adopted": 10758538,
-   "budget_bytes": 11834391,
-   "headroom_bytes": 1075853,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "budget_bytes": 13198686,
+   "headroom_bytes": 1199880,
+   "review_trigger": "any tracked addition pushing the area over budget (S-SLIM re-adoption; growth beyond this fails the validator)",
+   "measured_at_s_slim": 11998806
   },
   "tests": {
    "measured_at_adopted": 53510,
    "budget_bytes": 1102086,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 83059
   },
   "tools": {
    "measured_at_adopted": 447436,
    "budget_bytes": 1496012,
    "headroom_bytes": 1048576,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 503059
   },
   "upstream": {
    "measured_at_adopted": 24570928,
    "budget_bytes": 27028020,
    "headroom_bytes": 2457092,
-   "review_trigger": "any tracked addition pushing the area over budget"
+   "review_trigger": "any tracked addition pushing the area over budget",
+   "measured_at_s_slim": 24137074
   }
  }
 }

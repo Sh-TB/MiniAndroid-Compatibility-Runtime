@@ -38,6 +38,14 @@ externalization of the 265 historical reader scripts).
 
 ## Migration status (this release wave)
 
+- S-SLIM (2026-11-23): 481-line campaign-list .gitignore → grouped stable
+  rules; evidence/doc dirs untracked-by-default with explicit `git add -f`
+  promotion; 461 index removals (raw exhaust, run-store residue, byte-identical
+  duplicates — SHA ledger evidence/audit/S_SLIM_UNTRACK_SHAS.txt); budgets
+  re-adopted post-cleanup; validator 4,279→0 violations; pre-commit guard +
+  CI policy.yml restored; cleanup driver tools/slim_consolidation.py; reports:
+  evidence/audit/REPOSITORY_SIZE_AUDIT.md + POLICY_CONFLICT_MATRIX.csv +
+  EVIDENCE_RETENTION_DECISIONS.md.
 - removed: root session residue, `make_out/err` corpus, `s203_out*`,
   `gfx_trace.jsonl`, root `MessageSchema.java` (canonical `docs/upstream/`),
   root campaign docs → `docs/history/`

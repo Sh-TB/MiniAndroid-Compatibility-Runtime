@@ -288,6 +288,7 @@
   ".agent/requests",
   ".github",
   ".github/ISSUE_TEMPLATE",
+  ".github/workflows",
   ".gitignore",
   "CONSTITUTION_V2.md",
   "LICENSE",
@@ -325,9 +326,20 @@
   "docs/testing",
   "docs/tooling",
   "docs/upstream",
+  "download/batch614_624_evidence",
   "evidence",
+  "evidence/audit",
   "evidence/audit_s107",
   "evidence/batch367_rerun",
+  "evidence/batch614_guess",
+  "evidence/batch616_dice",
+  "evidence/batch617_minos",
+  "evidence/batch618_counter",
+  "evidence/batch619_ttt",
+  "evidence/batch621_janken",
+  "evidence/batch622_calc",
+  "evidence/batch623_rng",
+  "evidence/batch624_coin",
   "evidence/c121",
   "evidence/cleanup",
   "evidence/cont10",
@@ -450,6 +462,7 @@
   "evidence/gp582",
   "evidence/gp583",
   "evidence/head_smoke",
+  "evidence/issue609_blockinger",
   "evidence/law001_abi_scope",
   "evidence/s105_issues",
   "evidence/s106_fresh",
@@ -577,6 +590,9 @@
   "evidence/s232/runs",
   "evidence/s232/runs/s232_dooz_census",
   "evidence/s232/runs/s232_opensudoku",
+  "evidence/s234",
+  "evidence/s235",
+  "evidence/s27",
   "evidence/s57",
   "evidence/s58",
   "evidence/s59",
@@ -591,6 +607,8 @@
   "evidence/t22",
   "evidence/t23",
   "evidence/w15",
+  "evidence/w21",
+  "evidence/w22",
   "examples",
   "examples/demo-app",
   "fixtures",
@@ -731,8 +749,12 @@
   "library_ecosystem/reports",
   "miniandroid",
   "miniandroid/.agent",
+  "miniandroid/.gitignore",
+  "miniandroid/Makefile",
+  "miniandroid/VERSION",
   "miniandroid/database",
   "miniandroid/docs",
+  "miniandroid/evidence",
   "miniandroid/golden",
   "miniandroid/runtime",
   "miniandroid/scripts",
@@ -781,6 +803,7 @@
   "tests/graphics",
   "tools",
   "tools/architecture",
+  "tools/hooks",
   "tools/verify",
   "upstream",
   "upstream/cont11_train7",
@@ -789,9 +812,7 @@
   "upstream/nav_s36",
   "upstream/s43",
   "upstream/s44",
-  "upstream/scatter_s37",
-  "evidence/s234",
-  "evidence/s235"
+  "upstream/scatter_s37"
  ],
  "frozen_snapshot": {
   "audit": {
@@ -837,8 +858,10 @@
    "basis": "sorted git ls-files list at adoption S229 (#587 S213/S214; owner-approved in the #587 closeout thread)"
   },
   "evidence": {
-   "tracked_file_count": 6247,
-   "snapshot_sha256": "61b97a6a8c77191f3e216971765a8d17067f3187e0565c0702f79e80dd39e14e"
+   "tracked_file_count": 5994,
+   "snapshot_sha256": "33ac35f950f646cdc1864fc2213eff92a8ed65139f5336ecd93c23bce9cbd730",
+   "refreshed": "2026-11-23",
+   "refresh_reason": "S-SLIM post-cleanup census (raw exhaust untracked; ledger evidence/audit/S_SLIM_UNTRACK_SHAS.txt)"
   },
   "docs/history": {
    "lifecycle": "frozen \u2014 no new files, no new directories",
@@ -848,11 +871,11 @@
   }
  },
  "wave_evidence_registered": {
-  "path": "evidence/s235",
-  "owner": "S235 (#588 runtime-lane integration: F-NEW-639..650)",
-  "approved_in": "#588 lane wave receipt flow (S235-0/S235-1 commits)",
-  "expected_classes": "json, txt, md",
-  "note": "registered at wave start (S214 default-deny law); JSON law record + battery log, no screenshots"
+  "path": "evidence/s27",
+  "owner": "S27 waves (W1-W4 + AUDIT + AUDIT-2 + RECON)",
+  "approved_in": "S27 wave receipts; S-SLIM re-registration",
+  "expected_classes": "json, tsv, md, log, png",
+  "note": "current wave; the NEXT wave must re-register its evidence dir or the frozen-snapshot check fails by design"
  },
  "run_output_routing": {
   "default": ".cache/<tool-or-suite>/<run-id>/ (gitignored, untracked)",
