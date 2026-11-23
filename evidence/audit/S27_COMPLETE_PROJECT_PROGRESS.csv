@@ -1,0 +1,50 @@
+item_id,category,subject,commit,commit_in_main,status,evidence_level,test_or_result,evidence_path,blocker,next_dependency
+APK-01,apk,org.ecos.logic.flip_a_coin_3 (coin flip),06b0f090,YES,INTEGRATED_AND_VERIFIED,OBSERVED,s27_audit_laws n/a; face 6808aa29ff941dae x3 deterministic; face region 84324 px PIL-verified this session,miniandroid/evidence/s27/w4_flip_r1/screenshot.png,post-click visible state change not independently evidenced,interaction evidence run
+APK-02,apk,tech.gaskell.diceroller (dicer),f70c6c29,YES,INTEGRATED_BUT_NOT_RUNTIME_VERIFIED,OBSERVED,canonic hash 0de952bf75f89409 REAL_APP_CONTENT,miniandroid/evidence/s27/s27w4_matrix.tsv,persistence stage not re-run,reopen-recovery run
+APK-03,apk,ru.zxalexis.ugaday_15 (hangman),a86d3e03,YES,INTEGRATED_AND_VERIFIED,OBSERVED,87fe26766fc48d06 REAL_APP_CONTENT + S23 interactive x3,miniandroid/evidence/s27/s27w4_matrix.tsv; miniandroid/evidence/s23,-,
+APK-04,apk,name.livitski.games.puzzle.android_2 (n-puzzle),a86d3e03,YES,PARTIAL,OBSERVED,S23 interactive x3 PASS; S27 35c4e53b renders then NoSuchElementException Board.placeTilesRandom,miniandroid/evidence/s27/s27w4_matrix.tsv,Iterator/Collection DEX frontier (S24-W2 family),pz Iterator law wave
+APK-05,apk,org.blockinger.game_14 (minesweeper),a86d3e03,YES,INTEGRATED_AND_VERIFIED,SUPERSEDED-risk (S23-era; not re-run in S27 wall),S23 interactive x3 state-changing,miniandroid/evidence/s23/s23_apk_sha256.tsv,no fresh S27 re-run,S27-wall rerun with next production build
+APK-06,apk,com.farmerbb.notepad_122,b2b7ef25,YES,BLOCKED,OBSERVED,S23 interact runs FAILURE; S27 wall NO_ROOT (app tree never materializes),miniandroid/evidence/s23/interact_com.farmerbb.notepad_122/report.md,attachment-law diagnosis for this app,notepad NO_ROOT diagnosis
+APK-07,apk,com.itsfrz.tictactoe_5 (SUBSTITUTE for emmanuelmess ttt),-,-,BLOCKED,OBSERVED,d55056a8928a26ff DEFAULT_BACKGROUND_ONLY on substitute,miniandroid/evidence/s27/s27w4_matrix.tsv,original emmanuelmess APK absent from corpus,obtain original APK
+APK-08,apk,de.tcrass.minos_10004,-,YES,PARTIAL,OBSERVED,b5a7a35d5fe0564b DEFAULT_BACKGROUND_ONLY,miniandroid/evidence/s27/s27w4_matrix.tsv,app subtree empty in census,census diagnosis
+APK-09,apk,dk.cocode.chess,-,YES,PARTIAL,OBSERVED,d602648e8e401895 DEFAULT_BACKGROUND_ONLY,miniandroid/evidence/s27/s27w4_matrix.tsv,app subtree empty in census,census diagnosis
+APK-10,apk,com.thehellomaker.helloworldtoast,-,YES,PARTIAL,OBSERVED,acdd9f05dc9c7ece SYSTEM_CHROME_ONLY,miniandroid/evidence/s27/s27w4_matrix.tsv,app content layer,app-content law
+APK-11,apk,com.minar.randomix,06b0f090,YES,PARTIAL,OBSERVED,adjudicated progress: blank 31ddd4d5 -> 5fef8090d5c9c87b (pager chrome; poison rejected),miniandroid/evidence/s27/s27w4_matrix.tsv,AppIntro drawables/labels next layer,content layer
+APK-12,apk,io.github.yamin8000.dooz (dooz #573),-,YES,BLOCKED,OBSERVED,last verified S21: FAILURE 0 APIs 32 errors 31 frames,miniandroid/evidence/s21/ws1_dooz_r3/report.md,#573 render ladder never closed on main,dooz re-diagnosis
+APK-13,apk,Freebloks,-,-,PENDING,NONE,no fresh evidence found this session,-,no current evidence,re-run
+LAW-01,law,mContentParent adoption (live dispatch),b2b7ef25,YES,INTEGRATED_AND_VERIFIED,TESTED,battery + flip W3 chain,miniandroid/Makefile TEST_LAW,-,
+LAW-02,law,bind-time content-parent adoption,f2823280,YES,INTEGRATED_AND_VERIFIED,TESTED,s25_laws_test 4/4 (re-run this session),miniandroid/build/tests/s25_laws_test,-,
+LAW-03,law,Iterator/Collection semantics,S24 family,YES,INTEGRATED frontier OPEN,TESTED,battery laws; pz crash shows frontier,miniandroid/evidence/s27/s27w4_matrix.tsv,pz placeTilesRandom,Iterator law wave
+LAW-04,law,DataBinding host + generated binding,b2b7ef25,YES,INTEGRATED_BUT_NOT_RUNTIME_VERIFIED,TESTED,battery law only,miniandroid/Makefile TEST_LAW,no DataBinding APK re-run,APK re-run
+LAW-05,law,AXML android:tag stamp,f2823280,YES,INTEGRATED_AND_VERIFIED,TESTED,s25_laws_test,miniandroid/tests/s25_laws_test.cpp,-,
+LAW-06,law,Arrays.asList slot count + dual store,f2823280,YES,INTEGRATED_AND_VERIFIED,TESTED,s25_laws_test,miniandroid/tests/s25_laws_test.cpp,-,
+LAW-07,law,AnimatorSet Builder identity,f2823280,YES,INTEGRATED_AND_VERIFIED,TESTED,s25_laws_test,miniandroid/tests/s25_laws_test.cpp,-,
+LAW-08,law,Collection copy-constructor,f2823280,YES,INTEGRATED_AND_VERIFIED,TESTED,s25_laws_test,miniandroid/tests/s25_laws_test.cpp,-,
+LAW-09,law,fresh-device-per-run storage reset,2603311c,YES,INTEGRATED_BUT_NOT_RUNTIME_VERIFIED,OBSERVED,app-level (randomix determinism root-cause),miniandroid/evidence/s27/-,no dedicated unit test,unit law extraction
+LAW-10,law,--keep-app-data behavior,c7565dbb,YES,INTEGRATED_BUT_NOT_RUNTIME_VERIFIED,OBSERVED,app-level,run harness,-,unit law extraction
+LAW-11,law,VectorDrawable rasterization,21b4ffdb,YES,INTEGRATED_AND_VERIFIED,OBSERVED,flip chain receipts + face pixels,miniandroid/evidence/s27/w4_flip_r1,-,
+LAW-12,law,ViewModel initializer DSL,e41ba912,YES,INTEGRATED_AND_VERIFIED,OBSERVED,F-016 death gone; factory materialized,miniandroid/evidence/s27/w2_flip_r1,-,
+LAW-13,law,content-view attachment (S83 + mContentParent + adoption),f70c6c29,YES,INTEGRATED_AND_VERIFIED,OBSERVED,census children=1 -> 4; rc=1 -> rc=0 x3,miniandroid/evidence/s27/w3_flip_r1,-,
+LAW-14,law,onLayout authority (takeover + relayout gate + frame reject),06b0f090,YES,INTEGRATED_AND_VERIFIED,OBSERVED,[S27-W4-FRAME-REJECT]; face 0 -> 84324 px,miniandroid/evidence/s27/w4_law_r1,-,
+LAW-15,law,StringBuilder.setLength OOM (S27-A2),2d79dbe7,YES,IMPLEMENTED (runtime verify PENDING),PARTIAL,engine TUs rc=0; s25 4/4 + audit 7/7 regression; NO dedicated unit test,miniandroid/src/dex/dalvik_engine.cpp,full battery rerun pending,unit law + battery
+SEC-01,security,36 external findings verified+fixed,7e96b97e,YES,INTEGRATED_AND_VERIFIED,TESTED,36/36 confirmed (1 sub-claim refuted); report docx,download/MiniAndroid_Audit_Verification_Report_FA.docx,-,
+SEC-02,security,s27_audit_laws_test,7e96b97e,YES,INTEGRATED_AND_VERIFIED,TESTED,7/7 PASS (re-run this session from current source),miniandroid/tests/s27_audit_laws_test.cpp,-,
+SEC-03,security,battery identity,7e96b97e,YES,TESTED,TESTED,make -n: core 4 + hostile 3 + law 54 = all 61; fuzz standalone NOT a member,miniandroid/Makefile,-,
+SEC-04,security,6000-input parser fuzz ASan+UBSan,2d79dbe7,YES,INTEGRATED_AND_VERIFIED,TESTED,seed 0x527A27D2; accepted 0/965/917; ESCAPEE 0 (re-run this session),miniandroid/evidence/s27/s27_audit2_fuzz.log,-,
+SEC-05,security,278-site memcpy sweep,2d79dbe7,YES,INTEGRATED_AND_VERIFIED,OBSERVED,129C/107G/16F/26U all manually reviewed; 0 real findings,evidence/s27/s27_audit2_memcpy_sweep.csv,-,
+SEC-06,security,post-AUDIT-2 full production battery,2d79dbe7,YES,PENDING,NONE,NOT yet run,promised with next production build,rebuild + rerun owed,next production build
+BUILD-01,build,full build time,dbaseline d8b8fbb9-era,YES,INTEGRATED_AND_VERIFIED,OBSERVED,350.39s baseline -> 289.85s W24 tiering -j2; floor 288.4s (24-25% steal),miniandroid/evidence/w24/RAW_LOGS,-,
+BUILD-02,build,one-TU rebuild,2d79dbe7 tree,YES,OBSERVED,OBSERVED,arsc_parser.cpp touch->object = 4.4s (measured this session),session log,-,
+BUILD-03,build,no-op make,2d79dbe7 tree,YES,OBSERVED,OBSERVED,0.064s (measured this session),session log,-,
+BUILD-04,build,ccache cold/warm,7e96b97e-era measurement,YES,INTEGRATED_AND_VERIFIED,OBSERVED,cold 553.42s / warm 20.94-25.40s (W23); ccache ABSENT in current env,miniandroid/evidence/w23,-,
+BUILD-05,build,peak RSS,-,YES,OBSERVED,OBSERVED,1427MB prod -j1; 1235MB cmake BUILD_TESTS=ON -j2 491.91s; no OOM at -j2,miniandroid/evidence/audit/RAW_LOGS,-,
+BUILD-06,build,stale-object / false-incremental risk,c7565dbb + this session,YES,DOCUMENTED_ONLY,OBSERVED,S25 build9 inconsistent incremental link (S26-A) + recycle-restored tree this session; rule: binary claims need clean build or provenance,miniandroid/evidence,-,
+XCODER-01,cross-coder,PR #626 wave10/dalvik-accel (15 commits),-,YES,SUPERSEDED,TESTED,SUPERSEDED-IN-FULL: all F-NEW-7xx + W20 P2 in main; no rebase,miniandroid/evidence/audit/RAW_LOGS/s15_branch_classification_2026-11-20.md,-,
+XCODER-02,cross-coder,MG-011 ok-fix (#633),AUD-55,YES,INTEGRATED_AND_VERIFIED,TESTED,vector_decode.cpp:942; battery green at the time,miniandroid/src/resources/vector_decode.cpp,-,
+XCODER-03,cross-coder,RC-12 layout-geometry commits,-,NO,BLOCKED,NONE,branch layout-geometry-001 coder-local; partially superseded by c48773a0 + 7e5473be,miniandroid/evidence/audit/MASTER_AUDIT.md,unrecoverable,coder environment
+XCODER-04,cross-coder,#634 animated drawable feature-class,-,NO,DOCUMENTED_ONLY,NONE,grep=0 on main; no animated-vector branch,miniandroid/evidence/audit/BLOCKED_AND_PENDING.md,design needed,feature wave
+XCODER-05,cross-coder,#630/#631 ten layout apps,-,NO,BLOCKED,NONE,apps/ empty on origin; coder-local artifacts only,miniandroid/evidence/audit/BLOCKED_AND_PENDING.md,original artifacts required,coder environment
+XCODER-06,cross-coder,#618/#623/#619-tracker closures,-,YES,DOCUMENTED_ONLY,NONE,tracker closure is NOT runtime proof; runtime rows BLOCKED (APKs absent),miniandroid/evidence/audit/ACHIEVEMENT_LEDGER.csv,original APKs required,corpus acquisition
+XCODER-07,cross-coder,vendored real libraries (#536),-,-,INTEGRATED_AND_VERIFIED,OBSERVED,-lsqlite3 -lssl -lcrypto -ljpeg -lwebp -lmpg123 -lsndfile -lz + QuickJS + FriBidi/HarfBuzz/FreeType on the link line,miniandroid/Makefile LIBS,-,
+META-01,meta,authoritative state,2d79dbe7,YES,IMPLEMENTED,OBSERVED,HEAD==origin==2d79dbe7 clean; 11 wave SHAs all ancestors; production binary ABSENT from worktree (BLOCKED),git ls-remote + merge-base x11,rebuild for binary identity,make all
+META-02,meta,coin face pixel verification,this session,YES,IMPLEMENTED,OBSERVED,PIL: face region 84324 / full 113430 — EXACT match to claims; visual read: correct coin + Flip button,miniandroid/evidence/s27/w4_flip_r1/screenshot.png,-,
