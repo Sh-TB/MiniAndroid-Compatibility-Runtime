@@ -858,8 +858,8 @@
    "basis": "sorted git ls-files list at adoption S229 (#587 S213/S214; owner-approved in the #587 closeout thread)"
   },
   "evidence": {
-   "tracked_file_count": 5994,
-   "snapshot_sha256": "33ac35f950f646cdc1864fc2213eff92a8ed65139f5336ecd93c23bce9cbd730",
+   "tracked_file_count": 5995,
+   "snapshot_sha256": "2270f3320659a67366fc687f48e801016949879bd7ecec38099d2f45e005b711",
    "refreshed": "2026-11-23",
    "refresh_reason": "S-SLIM post-cleanup census (raw exhaust untracked; ledger evidence/audit/S_SLIM_UNTRACK_SHAS.txt)"
   },

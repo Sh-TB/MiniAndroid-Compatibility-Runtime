@@ -20,14 +20,14 @@
    "budget_bytes": 1053805,
    "headroom_bytes": 1048576,
    "review_trigger": "any tracked addition pushing the area over budget",
-   "measured_at_s_slim": 5779
+   "measured_at_s_slim": 5229
   },
   ".gitignore": {
    "measured_at_adopted": 10097,
    "budget_bytes": 1058673,
    "headroom_bytes": 1048576,
    "review_trigger": "any tracked addition pushing the area over budget",
-   "measured_at_s_slim": 3111
+   "measured_at_s_slim": 3407
   },
   "CONSTITUTION_V2.md": {
    "measured_at_adopted": 56094,
@@ -76,14 +76,14 @@
    "budget_bytes": 55185364,
    "headroom_bytes": 5016851,
    "review_trigger": "any tracked addition pushing the area over budget",
-   "measured_at_s_slim": 48444287
+   "measured_at_s_slim": 48255518
   },
   "evidence": {
    "measured_at_adopted": 128069492,
    "budget_bytes": 156372342,
    "headroom_bytes": 14215667,
    "review_trigger": "any tracked addition pushing the area over budget (S-SLIM re-adoption; growth beyond this fails the validator)",
-   "measured_at_s_slim": 106433899
+   "measured_at_s_slim": 106444690
   },
   "examples": {
    "measured_at_adopted": 14293,
@@ -125,7 +125,7 @@
    "budget_bytes": 99453303,
    "headroom_bytes": 9041209,
    "review_trigger": "any tracked addition pushing the area over budget (S-SLIM re-adoption; growth beyond this fails the validator)",
-   "measured_at_s_slim": 65875852
+   "measured_at_s_slim": 69883368
   },
   "plugins": {
    "measured_at_adopted": 92344,
@@ -188,14 +188,14 @@
    "budget_bytes": 1496012,
    "headroom_bytes": 1048576,
    "review_trigger": "any tracked addition pushing the area over budget",
-   "measured_at_s_slim": 503059
+   "measured_at_s_slim": 503560
   },
   "upstream": {
    "measured_at_adopted": 24570928,
    "budget_bytes": 27028020,
    "headroom_bytes": 2457092,
    "review_trigger": "any tracked addition pushing the area over budget",
-   "measured_at_s_slim": 24137074
+   "measured_at_s_slim": 24325261
   }
  }
 }

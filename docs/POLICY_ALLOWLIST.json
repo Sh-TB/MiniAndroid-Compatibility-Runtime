@@ -37493,13 +37493,13 @@
   },
   {
    "path": "miniandroid/runtime/data/fonts/DroidSansMono.ttf",
-   "reason": "runtime framework font; the identical fixtures/gate_a_probe copy is the intentional test fixture (both referenced)",
+   "reason": "runtime framework font; identical fixtures/gate_a_probe copy is the intentional test fixture (both referenced)",
    "owner": "runtime + quality",
    "expiry": "externalization wave (#386)"
   },
   {
    "path": "upstream/s43/ui_android_src/androidMain/androidx/compose/ui/platform/AndroidComposeView.android.kt",
-   "reason": "recorded pinned-upstream content: the s43 snapshot itself carries two source layouts (ui_android_src vs ui_android) \u2014 recorded upstream payload, not repository duplication",
+   "reason": "recorded pinned-upstream content: the s43 snapshot carries two source layouts (ui_android_src vs ui_android) \u2014 recorded upstream payload",
    "owner": "deps",
    "expiry": "externalization wave (#386)"
   }

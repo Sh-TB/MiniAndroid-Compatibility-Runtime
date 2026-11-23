@@ -118,6 +118,13 @@ def step1_inventory(files, blobs):
 
 
 def step2_duplicates(files):
+    allow = {}
+    try:
+        allow = json.loads((ROOT / "docs" / "POLICY_ALLOWLIST.json").read_text() or "{}")
+    except FileNotFoundError:
+        pass
+    documented = {e if isinstance(e, str) else e.get("path", "")
+                  for e in allow.get("duplicates", [])}
     groups = defaultdict(list)
     for f in files:
         p = ROOT / f
@@ -133,6 +140,10 @@ def step2_duplicates(files):
         if len(ps) < 2:
             continue
         ndup += 1
+        if any(p in documented for p in ps):
+            rows.append(f"{h[:16]},{(ROOT / ps[0]).stat().st_size},"
+                        f"'{';'.join(ps)}',DOCUMENTED allowlisted pair (kept tracked)")
+            continue
         # keep the first-seen path as canonical; untrack the redundant copies
         # (byte-identical, so zero information loss; SHAs recorded below)
         losers = ps[1:]

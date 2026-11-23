@@ -142,3 +142,8 @@ androguard.db*
 /forensic_data/
 /reference/
 /third_party/
+
+# S-SLIM: byte-identical twins of tracked pinned-tree files (s44 canonical;
+# ledger: evidence/audit/DUPLICATE_AND_UNUSED_LEDGER.csv)
+/docs/upstream/MessageSchema.java
+/upstream/s43/ui_android_src/androidMain/androidx/compose/ui/platform/AndroidComposeViewAccessibilityDelegateCompat.android.kt

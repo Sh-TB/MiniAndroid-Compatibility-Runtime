@@ -1,4 +1,6 @@
 sha256,bytes,paths,action
+db19a1fdaba41cc4,108128,'fixtures/gate_a_probe/res/font/probe_font.ttf;miniandroid/runtime/data/fonts/DroidSansMono.ttf',UNTRACKED losers keep fixtures/gate_a_probe/res/font/probe_font.ttf canonical
+2e033a6da3d5ec61,176847,'upstream/s43/ui_android/androidMain/androidx/compose/ui/platform/AndroidComposeView.android.kt;upstream/s43/ui_android_src/androidMain/androidx/compose/ui/platform/AndroidComposeView.android.kt',UNTRACKED losers keep upstream/s43/ui_android/androidMain/androidx/compose/ui/platform/AndroidComposeView.android.kt canonical
 4d8ae110f4aef372,-,untracked:download/batch614_624_evidence/batch614_guess_run.log,UNTRACKED keep-local
 0e41d765f34b73af,-,untracked:download/batch614_624_evidence/batch617_minos_run.log,UNTRACKED keep-local
 9bbc891c5b654f29,-,untracked:miniandroid/evidence/s22/anchor_notepad_data/data/data/com.farmerbb.notepad/databases/notepad.db,UNTRACKED keep-local
@@ -564,3 +566,7 @@ fa1d5362083fe23d,-,untracked:miniandroid/make_err6.txt,UNTRACKED keep-local
 b5ce350b110205d8,-,untracked:miniandroid/make_err7.txt,UNTRACKED keep-local
 9fbf489e61cd0d02,-,untracked:miniandroid/make_err8.txt,UNTRACKED keep-local
 1718c120d4b26384,-,untracked:miniandroid/make_err9.txt,UNTRACKED keep-local
+db19a1fdaba41cc4,-,untracked:miniandroid/runtime/data/fonts/DroidSansMono.ttf,UNTRACKED keep-local
+2e033a6da3d5ec61,-,untracked:upstream/s43/ui_android_src/androidMain/androidx/compose/ui/platform/AndroidComposeView.android.kt,UNTRACKED keep-local
+db19a1fdaba41cc4,-,untracked:miniandroid/runtime/data/fonts/DroidSansMono.ttf,UNTRACKED keep-local
+2e033a6da3d5ec61,-,untracked:upstream/s43/ui_android_src/androidMain/androidx/compose/ui/platform/AndroidComposeView.android.kt,UNTRACKED keep-local

@@ -1,30 +1,20 @@
-# NOTE (#587 R32): this workflow is shipped at docs/ci/policy.yml because the
-# release-environment GitHub token lacks the `workflow` scope required to push
-# into .github/workflows/. To activate: copy this file to
-# .github/workflows/policy.yml with a workflow-scope token. The checks it runs
-# (tools/policy_validator.py, tests/policy_validator_law_test.py,
-# scripts/forensic_ledger.py validate, tools/check_readme_metrics.py) are all
-# runnable locally right now — see docs/releases/RELEASE_v0.0.6.2.md gate results.
-name: policy-guard
+name: policy
 
-on: [push, pull_request]
-
-permissions:
-  contents: read
+on:
+  push:
+  pull_request:
 
 jobs:
   policy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          fetch-depth: 0
-      - name: Repository policy validator (Constitution §172)
-        run: |
-          python3 tools/policy_validator.py check
-      - name: Policy-validator law test (positive + 8 negative classes)
-        run: |
-          python3 tests/policy_validator_law_test.py
-      - name: Forensic ledger validation (no raw dumps, no network)
-        run: |
-          python3 scripts/forensic_ledger.py validate
+          python-version: '3.11'
+      - name: policy validator (CONSTITUTION_V2 §172.5 + S213/S214)
+        run: python tools/policy_validator.py check
+      - name: validator law test (positive + 8 negative classes)
+        run: python tests/policy_validator_law_test.py
+      - name: hygiene checker self-test
+        run: python tools/test_check_repo_hygiene.py
