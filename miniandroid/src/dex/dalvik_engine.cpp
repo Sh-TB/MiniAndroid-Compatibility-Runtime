@@ -11849,6 +11849,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                            " len=" + std::to_string(len) +
                                            " arr_len=" + std::to_string(arr_len),
                                        "STREAM-READ");
+                        // AUDIT-H2 (monolith twin): recursion budget leak.
+                        recursion_depth_--;
                         return true;
                     }
                     size_t remaining = content.size() - p;
@@ -16666,6 +16668,8 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                            "f141-null-recv-core");
             return_val = DalvikValue::make_null();
             last_invoke_return_ = return_val;
+            // AUDIT-H2 (monolith twin): recursion budget leak.
+            recursion_depth_--;
             return true;
         }
         uint64_t f107_e0 = 0; phase_clock().enter(phase_clock().invoke_execute, f107_e0);

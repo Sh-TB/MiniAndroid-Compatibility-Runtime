@@ -1101,7 +1101,12 @@ bool ResourceManager::initialize(const std::string& apk_path) {
     
     size_t size = file.tellg();
     file.seekg(0, std::ios::beg);
-    
+    // AUDIT-L4: failed tellg() = -1 → the resize asked for ~2^64 bytes.
+    if (size < 0 || size > (std::streampos)(512u << 20)) {
+        failure_reporter_.report_error(ResourceError::FILE_NOT_FOUND,
+                                       "resource size unreadable or oversized");
+        return false;
+    }
     apk_data_.resize(size);
     if (!file.read(reinterpret_cast<char*>(apk_data_.data()), size)) {
         failure_reporter_.report_error(ResourceError::FILE_NOT_FOUND,

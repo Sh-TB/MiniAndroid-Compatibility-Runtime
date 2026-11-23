@@ -338,6 +338,7 @@ bool GLES20Bridge::dispatch(const std::string& method,
                             const uint64_t* iargs, int ni,
                             const float* fargs, int nf,
                             const void** pargs, int np,
+                            size_t p0_cap,
                             int32_t* int_ret, float* float_ret,
                             std::string& trace) {
     (void)fargs; (void)nf; (void)float_ret;
@@ -661,7 +662,20 @@ bool GLES20Bridge::dispatch(const std::string& method,
     if (method == "glBufferData") {
         // F-NEW-503: pointer-array indexing (data = the ONLY object arg).
         // A null data is legal GL (uninitialized storage) — no guard needed.
-        glBufferData(S(0), (GLsizeiptr)(uintptr_t)I(1), P(0), S(3));  // F-NEW-607: target+usage
+        // AUDIT-M10 (2026-11-23): the declared size came off the bytecode
+        // with NO comparison to the backing array — a mismatch made
+        // PortableGL memcpy past the hold. The marshal now carries the
+        // REAL byte capacity of the data slot; the app-declared size is
+        // trusted only up to it (a declared overrun is recorded honestly
+        // in the trace, never silently served).
+        size_t declared = (size_t)(uintptr_t)I(1);
+        size_t cap = p0_cap ? p0_cap : (size_t)(16u << 20);
+        if (declared > cap) {
+            trace = "glBufferData size " + std::to_string(declared) +
+                    " clamped to backing " + std::to_string(cap);
+            declared = cap;
+        }
+        glBufferData(S(0), (GLsizeiptr)declared, P(0), S(3));  // F-NEW-607: target+usage
         stats_.buffer_ops++;
         return true;
     }
@@ -1168,8 +1182,9 @@ bool GLES20Bridge::dispatch(const std::string& method,
                     }
                 }
                 std::fprintf(stderr,
+                    // AUDIT-L7: nonzero is int — %ld mismatched signedness.
                     "[GLDBG] tex2D %ux%u fmt=0x%X type=0x%X ptr=%p "
-                    "bytesum=%lu nonzero=%ld/%ld b0=%02x b1=%02x\n",
+                    "bytesum=%lu nonzero=%d/%ld b0=%02x b1=%02x\n",
                     (unsigned)I(3), (unsigned)I(4), (unsigned)S(6),
                     (unsigned)S(7), P(0), sum, nonzero,
                     npix < 8388608 ? npix : -1L, d ? d[0] : 0, d ? d[1] : 0);

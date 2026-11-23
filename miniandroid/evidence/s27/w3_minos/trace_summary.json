@@ -1,7 +1,7 @@
 {
   "activity": "de.tcrass.minos.MainActivity",
   "apk_package": "de.tcrass.minos",
-  "duration_ms": 4811,
+  "duration_ms": 4835,
   "events_retained": 205,
   "events_total": 205,
   "first_divergence": {
@@ -83,12 +83,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 174,
       "sev": "CONFIRMED",
       "state": "visited=2",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435523
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979515
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -97,12 +97,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 175,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435523
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979515
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -111,12 +111,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NOT_RUN",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 176,
       "sev": "PENDING",
       "state": "app_ops=0",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435523
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979515
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -125,12 +125,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 177,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435632
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979625
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -139,12 +139,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 178,
       "sev": "CONFIRMED",
       "state": "root_id=17",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435632
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979625
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -153,12 +153,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NO_APP_OPS",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 179,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435665
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979662
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -167,12 +167,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 180,
       "sev": "CONFIRMED",
       "state": "visited=2",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435665
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979662
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -181,12 +181,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 181,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435665
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979662
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -195,12 +195,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NOT_RUN",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 182,
       "sev": "PENDING",
       "state": "app_ops=0",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435665
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979662
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -209,12 +209,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 183,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435775
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979771
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -223,12 +223,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 184,
       "sev": "CONFIRMED",
       "state": "root_id=17",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435775
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979771
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -237,12 +237,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NO_APP_OPS",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 185,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435817
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979803
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -251,12 +251,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 186,
       "sev": "CONFIRMED",
       "state": "visited=2",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435817
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979803
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -265,12 +265,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 187,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435817
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979803
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -279,12 +279,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NOT_RUN",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 188,
       "sev": "PENDING",
       "state": "app_ops=0",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435817
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979803
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -293,12 +293,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 189,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435926
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979913
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -307,12 +307,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 190,
       "sev": "CONFIRMED",
       "state": "root_id=17",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435926
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979913
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -321,12 +321,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NO_APP_OPS",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 191,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435965
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979945
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -335,12 +335,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 192,
       "sev": "CONFIRMED",
       "state": "visited=2",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435965
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979945
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -349,12 +349,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 193,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435965
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979945
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -363,12 +363,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NOT_RUN",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 194,
       "sev": "PENDING",
       "state": "app_ops=0",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377435965
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407979945
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -377,12 +377,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 195,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436092
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980056
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -391,12 +391,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 196,
       "sev": "CONFIRMED",
       "state": "root_id=17",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436092
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980056
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -405,12 +405,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NO_APP_OPS",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 197,
       "sev": "PENDING",
       "state": "nonwhite=2073600 total=2073600 app_ops=0 diag_regions=0",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436125
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980088
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -419,12 +419,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 198,
       "sev": "CONFIRMED",
       "state": "visited=2",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436125
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980088
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -433,12 +433,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 199,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436125
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980088
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -447,12 +447,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "NOT_RUN",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 200,
       "sev": "PENDING",
       "state": "app_ops=0",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436125
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980088
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -461,12 +461,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 201,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436126
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980088
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -479,12 +479,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 202,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436196
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980161
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -506,12 +506,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 203,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436206
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980171
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -561,12 +561,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 204,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436207
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980171
     },
     {
       "activity": "de.tcrass.minos.MainActivity",
@@ -578,12 +578,12 @@
       "package": "de.tcrass.minos",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1795377431448-1",
+      "run_id": "1795407975390-1",
       "seq": 205,
       "sev": "FAILURE",
       "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 272 IMPLEMENTED, 15 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
-      "thread": "tid:140035128432320",
-      "ts_ms": 1795377436259
+      "thread": "tid:139677980534464",
+      "ts_ms": 1795407980224
     }
   ],
   "last_exception": {
@@ -596,18 +596,18 @@
     "package": "de.tcrass.minos",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1795377431448-1",
+    "run_id": "1795407975390-1",
     "seq": 205,
     "sev": "FAILURE",
     "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 272 IMPLEMENTED, 15 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_DRAW_OPS — SUCCESS requires authoritative app content]",
-    "thread": "tid:140035128432320",
-    "ts_ms": 1795377436259
+    "thread": "tid:139677980534464",
+    "ts_ms": 1795407980224
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1795377431448-1",
+  "run_id": "1795407975390-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261122-195711-1842",
+  "session_id": "EXP-001-20261123-042615-0924",
   "severity_census": {
     "CONFIRMED": 104,
     "FAILURE": 1,

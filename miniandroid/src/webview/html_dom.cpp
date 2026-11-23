@@ -210,9 +210,14 @@ ParsedDocument HtmlParser::parse(const std::string& html) {
             }
             if (tag == "title") doc.title = trim(elp->text);
         } else if (tag == "meta") {
-            if (tag_body.find("charset") != std::string::npos) {}
+            // AUDIT-M12: the charset branch was a no-op (dead code) — the
+            // parsed charset is not consumed anywhere yet; keep it honest
+            // and empty (the previous empty-if misread as handled).
         }
-        bool self_closing = tag_body.back() == '/' ||
+        // AUDIT-M12: tag_body can be EMPTY ("<>" or "< >") — back() on an
+        // empty string is UB. Also note: a '<' that opens a tag whose body
+        // never fills is malformed; the tokenizer tolerates it.
+        bool self_closing = (!tag_body.empty() && tag_body.back() == '/') ||
                             tag == "meta" || tag == "link" || tag == "br" ||
                             tag == "img" || tag == "input" || tag == "hr";
         // S113: <link rel="stylesheet" href=...> → external stylesheet law

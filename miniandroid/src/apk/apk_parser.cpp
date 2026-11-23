@@ -193,7 +193,12 @@ bool ApkParser::read_file_to_memory(const std::string& path, std::vector<uint8_t
     
     auto size = file.tellg();
     file.seekg(0, std::ios::beg);
-    
+    // AUDIT-L4: failed tellg() = -1 → the size_t cast asked for ~2^64
+    // bytes (bad_alloc uncaught). Fence like the dex_parser arm.
+    if (size < 0 || size > (std::streampos)(512u << 20)) {
+        last_error_ = "APK size unreadable or oversized";
+        return false;
+    }
     buffer.resize(static_cast<size_t>(size));
     if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) {
         last_error_ = "Failed to read file contents";

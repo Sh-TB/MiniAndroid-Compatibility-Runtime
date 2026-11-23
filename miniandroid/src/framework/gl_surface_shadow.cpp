@@ -34,6 +34,10 @@ struct GlMarshal {
     std::vector<uint64_t> ia;
     std::vector<float> fa;
     std::vector<const void*> pa;
+    // AUDIT-M10: the REAL byte capacity backing the FIRST pointer arg
+    // (the data slot of the upload faces) — 0 = not a hold-backed array
+    // (direct buffers are already bounded by the marshal's 16 MiB law).
+    size_t p0_bytes = 0;
     std::vector<std::vector<uint8_t>> hold;   // materialized byte buffers
     std::vector<std::string> strs;
     bool ok = true;
@@ -276,6 +280,8 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
                     return false;
                 }
                 m.pa.push_back((const void*)(uintptr_t)(bb_addr + bb_pos));
+                if (m.pa.size() == 1)
+                    m.p0_bytes = (size_t)(bb_cap - bb_pos);
                 break;
             }
             if (!chase_buffer(heap, a.object_id, arr, ed)) {
@@ -374,6 +380,9 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
                         pos = 0;  // out-of-bounds position → honest base ptr
                     m.pa.push_back((void*)(uintptr_t)(
                         (uint64_t)(uintptr_t)dbuf_addr + (uint64_t)pos * esz));
+                    if (m.pa.size() == 1)
+                        m.p0_bytes = (size_t)dbuf_cap -
+                                     (size_t)pos * esz;
                     break;
                 }
                 m.ok = false;
@@ -420,10 +429,17 @@ bool marshal_gles20(HeapAllocator* heap, const CallContext& ctx,
                 if (off > 0) {
                     // Slice in place: point at the offset inside the hold.
                     m.pa.push_back(m.hold.back().data() + (size_t)off * esz);
+                    if (m.pa.size() == 1)
+                        m.p0_bytes =
+                            m.hold.back().size() - (size_t)off * esz;
                     break;
                 }
             }
             m.pa.push_back(m.hold.back().data());
+            // AUDIT-M10: the bridge gets the REAL backing byte count for
+            // the data slot — the app-declared glBufferData size is
+            // trusted only up to it.
+            if (m.pa.size() == 1) m.p0_bytes = m.hold.back().size();
             break;
         }
         default:
@@ -873,9 +889,12 @@ CallResult dispatch_gles20_static(HeapAllocator* heap, const CallContext& ctx) {
     if (marsh) {
         handled = gles::GLES20Bridge::instance().dispatch(
             ctx.method,
+            // AUDIT-M10: the data slot's REAL byte backing rides with the
+            // call so the bridge can clamp app-declared sizes.
             m.ia.empty() ? nullptr : m.ia.data(), (int)m.ia.size(),
             m.fa.empty() ? nullptr : m.fa.data(), (int)m.fa.size(),
             m.pa.empty() ? nullptr : m.pa.data(), (int)m.pa.size(),
+            m.p0_bytes,
             &iret, &fret, note);
     }
     gfx::GfxTrace::instance().gl_call(

@@ -218,9 +218,12 @@ void CanvasShadow::push_op(DrawOp op) {
             const int ki = static_cast<int>(op.kind);
             const char* kn = (ki >= 0 && ki < 14) ? kind_names[ki] : "?";
             std::fprintf(op_trace_,
+                         // AUDIT-L7 (2026-11-23): the four clip fields are
+                         // FLOAT members — %d read them as ints (UB/garbage
+                         // trace). Matched to %.3f.
                          "%llu %s %.3f %.3f %.3f %.3f %.3f %08x %d %.3f "
-                         "%.3f %d %d %d %d %d %.6f %.6f %.6f %.6f %.6f "
-                         "%.6f \"%s\"\n",
+                         "%.3f %d %.3f %.3f %.3f %.3f %.6f %.6f %.6f %.6f "
+                         "%.6f %.6f \"%s\"\n",
                          static_cast<unsigned long long>(op_trace_seq_++),
                          kn, op.x, op.y, op.w, op.h, op.r, op.color,
                          op.stroke ? 1 : 0, op.stroke_w, op.text_size_px,
@@ -1151,8 +1154,13 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
             LayerFrame lf = std::move(layers.back());
             layers.pop_back();
             if (!lf.fb) continue;
-            renderer::SoftwareCanvas& parent =
-                layers.empty() ? canvas : *layers.back().cnv;
+            // AUDIT-H4 (2026-11-23): the parent pick checked ONLY the stack
+            // — a frame whose cnv is null (SAVE_LAYER zero-area boundary)
+            // deref'd null here while the normal-op path below guards
+            // !layers.back().cnv. Same guard, both composite legs.
+            renderer::SoftwareCanvas* parent_c =
+                layers.empty() || !layers.back().cnv ? &canvas : layers.back().cnv.get();
+            renderer::SoftwareCanvas& parent = *parent_c;
             // Composite: src_over(layer_px × layer_alpha, parent_px) —
             // set_pixel picks the correct law per target (opaque base =
             // legacy blend; nested layer = alpha accumulation).
@@ -1187,8 +1195,11 @@ size_t CanvasShadow::replay(renderer::SoftwareCanvas& canvas,
         LayerFrame lf = std::move(layers.back());
         layers.pop_back();
         if (!lf.fb) continue;
+        // AUDIT-H4: same parent-null guard as the END_LAYER leg.
         renderer::SoftwareCanvas& parent =
-            layers.empty() ? canvas : *layers.back().cnv;
+            layers.empty() || !layers.back().cnv
+                ? canvas
+                : *layers.back().cnv;
         for (int yy = 0; yy < lf.fb->get_height(); yy++)
             for (int xx = 0; xx < lf.fb->get_width(); xx++) {
                 const renderer::RGBA sp = lf.fb->get_pixel(xx, yy);

@@ -1,0 +1,27 @@
+[*] BOOT-TRACE enabled (S135 runtime event backbone)
+[*] MAX-SECONDS enabled (12 s wall-clock soft budget)
+[*] Running APK: /home/z/my-project/upload/handoff_apks/org.ecos.logic.flip_a_coin_3.apk
+[*] Output directory: evidence/s27/w3_fix_r2
+[ROUTE] NO_PROFILE for stem=org — generate with tools/s188_route_classifier.py (S188 §4); runtime proceeds route-blind, which is NOT a pass.
+[DATA-ROOT] app data root = /home/z/my-project/miniandroid/build_dev/dr_w3f2
+[DEVICE-CLOCK] boot_base=0ms (device=build_dev/dr_w3f2)
+[DATA-ROOT] fresh-data-per-run: reset org.ecos.logic.flip_a_coin (removed 0 entries)
+[DATA-ROOT] context package = org.ecos.logic.flip_a_coin (data dir /home/z/my-project/miniandroid/build_dev/dr_w3f2/data/data/org.ecos.logic.flip_a_coin)
+LOG/d/AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+LOG/d/ViewUtils: Could not find method makeOptionalFitsSystemWindows. Oh well...
+
+=== Execution Result ===
+
+Status: SUCCESS ✅
+
+Message: Execution completed successfully [F-NEW-200 stub-census: 7286 IMPLEMENTED, 250 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]
+
+--- Metrics ---
+API Calls: 0
+Frames Rendered: 2
+Execution Time: 0ms
+Errors: 0
+Warnings: 0
+
+Screenshot: evidence/s27/w3_fix_r2/screenshot.png
+Report: evidence/s27/w3_fix_r2/report.md

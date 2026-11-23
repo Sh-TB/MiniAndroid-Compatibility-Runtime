@@ -80,7 +80,8 @@ struct DArgs {
 bool dispatch1(const std::string& method, DArgs& d, int32_t* iret,
                std::string& trace) {
     return GLES20Bridge::instance().dispatch(
-        method, d.ia, d.ni, nullptr, 0, d.pa, d.np, iret, nullptr, trace);
+        method, d.ia, d.ni, nullptr, 0, d.pa, d.np, 0, iret, nullptr,
+        trace);
 }
 
 // libGDX SpriteBatch default shader pair (the exact family the runtime

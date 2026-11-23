@@ -917,18 +917,26 @@ bool decode_vector_drawable(const std::vector<uint8_t>& axml_bytes,
                 s.a = (uint8_t)std::lround(s.a * (t.a / 255.f));
             }
             const float sw = std::max(1.f, pd.stroke_width * scale * 0.5f);
+            // AUDIT-M11 (2026-11-23): the step count came straight from the
+            // segment length — `M0 0 L100000000 1` produced 1e8 iterations
+            // × ceil(sw)^2 blends from ONE path command (hostile-VM/DoS).
+            // Cap: 4096 steps per segment still subsamples any real
+            // viewport segment (a 4K-wide line needs ~4k steps at most).
+            constexpr int kMaxStrokeSteps = 4096;
+            const float blend_span = std::max(1.f, std::ceil(sw));
             for (const Contour& ct : mapped) {
                 for (size_t i = 0; i + 1 < ct.size(); ++i) {
                     const float ax = ct[i].first, ay = ct[i].second;
                     const float bx = ct[i + 1].first, by = ct[i + 1].second;
                     const float dx = bx - ax, dy = by - ay;
-                    const int steps =
-                        (int)std::max({std::fabs(dx), std::fabs(dy), 1.f});
+                    const int steps = (int)std::min(
+                        (float)kMaxStrokeSteps,
+                        std::max({std::fabs(dx), std::fabs(dy), 1.f}));
                     for (int k = 0; k <= steps; ++k) {
                         const float px = ax + dx * k / steps;
                         const float py = ay + dy * k / steps;
-                        for (int oyy = 0; oyy < (int)std::ceil(sw); ++oyy)
-                            for (int oxx = 0; oxx < (int)std::ceil(sw); ++oxx)
+                        for (int oyy = 0; oyy < (int)blend_span; ++oyy)
+                            for (int oxx = 0; oxx < (int)blend_span; ++oxx)
                                 blend((int)(px + oxx), (int)(py + oyy), s);
                     }
                 }

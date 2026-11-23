@@ -97,6 +97,7 @@ public:
                   const uint64_t* iargs, int ni,
                   const float* fargs, int nf,
                   const void** pargs, int np,
+                  size_t p0_cap,  // AUDIT-M10: real bytes backing pargs[0]
                   int32_t* int_ret, float* float_ret,
                   std::string& trace);
 

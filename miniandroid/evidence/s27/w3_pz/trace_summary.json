@@ -1,7 +1,7 @@
 {
   "activity": "name.livitski.games.puzzle.android.GamePlay",
   "apk_package": "name.livitski.games.puzzle.android",
-  "duration_ms": 9089,
+  "duration_ms": 9212,
   "events_retained": 331,
   "events_total": 331,
   "first_divergence": null,
@@ -74,12 +74,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 300,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424681
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968375
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -88,12 +88,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 301,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424681
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968375
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -102,12 +102,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 302,
       "sev": "CONFIRMED",
       "state": "app_ops=4",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424681
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968375
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -116,12 +116,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 303,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424796
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968492
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -130,12 +130,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 304,
       "sev": "CONFIRMED",
       "state": "root_id=19",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424796
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968492
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -144,12 +144,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 305,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=4 diag_regions=0",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424837
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968535
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -158,12 +158,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 306,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424837
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968535
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -172,12 +172,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 307,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424837
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968535
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -186,12 +186,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 308,
       "sev": "CONFIRMED",
       "state": "app_ops=4",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424837
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968535
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -200,12 +200,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 309,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424954
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968653
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -214,12 +214,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 310,
       "sev": "CONFIRMED",
       "state": "root_id=19",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424954
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968653
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -228,12 +228,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 311,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=4 diag_regions=0",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424996
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968708
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -242,12 +242,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 312,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424996
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968708
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -256,12 +256,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 313,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424996
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968708
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -270,12 +270,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 314,
       "sev": "CONFIRMED",
       "state": "app_ops=4",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377424996
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968708
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -284,12 +284,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 315,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425112
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968827
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -298,12 +298,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 316,
       "sev": "CONFIRMED",
       "state": "root_id=19",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425112
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968827
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -312,12 +312,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 317,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=4 diag_regions=0",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425169
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968870
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -326,12 +326,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 318,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425169
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968870
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -340,12 +340,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 319,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425169
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968870
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -354,12 +354,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 320,
       "sev": "CONFIRMED",
       "state": "app_ops=4",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425169
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968870
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -368,12 +368,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 321,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425285
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968988
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -382,12 +382,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 322,
       "sev": "CONFIRMED",
       "state": "root_id=19",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425285
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407968989
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -396,12 +396,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 323,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=4 diag_regions=0",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425327
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407969033
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -410,12 +410,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 324,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425327
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407969033
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -424,12 +424,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 325,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425327
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407969033
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -438,12 +438,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 326,
       "sev": "CONFIRMED",
       "state": "app_ops=4",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425327
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407969033
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -452,12 +452,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 327,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425327
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407969034
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -470,12 +470,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 328,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425404
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407969112
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -497,12 +497,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 329,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425437
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407969147
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -551,12 +551,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 330,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425437
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407969147
     },
     {
       "activity": "name.livitski.games.puzzle.android.GamePlay",
@@ -568,12 +568,12 @@
       "package": "name.livitski.games.puzzle.android",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1795377416401-1",
+      "run_id": "1795407959989-1",
       "seq": 331,
       "sev": "FAILURE",
       "state": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 2518 IMPLEMENTED, 112 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
-      "thread": "tid:140049384367808",
-      "ts_ms": 1795377425490
+      "thread": "tid:139762476848832",
+      "ts_ms": 1795407969201
     }
   ],
   "last_exception": {
@@ -586,18 +586,18 @@
     "package": "name.livitski.games.puzzle.android",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1795377416401-1",
+    "run_id": "1795407959989-1",
     "seq": 331,
     "sev": "FAILURE",
     "state": "Execution completed successfully [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 2518 IMPLEMENTED, 112 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
-    "thread": "tid:140049384367808",
-    "ts_ms": 1795377425490
+    "thread": "tid:139762476848832",
+    "ts_ms": 1795407969201
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1795377416401-1",
+  "run_id": "1795407959989-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261122-195656-7577",
+  "session_id": "EXP-001-20261123-042559-3349",
   "severity_census": {
     "CONFIRMED": 271,
     "FAILURE": 1,

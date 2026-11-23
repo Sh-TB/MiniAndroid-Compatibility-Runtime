@@ -1509,19 +1509,26 @@ public:
 
     json dump_current_stack() const {
         json arr = json::array();
-        
-        // Copy stack to vector (can't iterate stack easily in reverse)
-        std::vector<const Frame*> frames;
-        auto temp = stack_;
-        while (!temp.empty()) {
-            frames.push_back(&temp.top());
-            temp.pop();
+
+        // AUDIT-H1 (2026-11-23): this used to hold POINTERS into `temp` —
+        // a local stack copy — while popping temp; every pointer dangled
+        // before the to_json read (UAF on every completed dump).
+        // peek_frames_top_first above already shows the correct shape:
+        // copy VALUES, then serialize.
+        std::vector<Frame> frames;
+        frames.reserve(stack_.size());
+        {
+            auto temp = stack_;
+            while (!temp.empty()) {
+                frames.push_back(temp.top());
+                temp.pop();
+            }
         }
-        
+
         for (auto it = frames.rbegin(); it != frames.rend(); ++it) {
-            arr.push_back((*it)->to_json());
+            arr.push_back(it->to_json());
         }
-        
+
         return arr;
     }
     

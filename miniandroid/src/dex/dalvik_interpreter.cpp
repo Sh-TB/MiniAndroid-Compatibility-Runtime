@@ -197,6 +197,54 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                   << std::endl;
     }
     while (!halted_ && pc_ < bytecode_.size()) {
+        // AUDIT-M5 (2026-11-23): the loop fence was pc_ < size only —
+        // multi-unit formats indexed bytecode_[pc_+1..pc_+4] unchecked, so
+        // a truncated method body read past the vector (and one diag guard
+        // tested pc_+1 while reading pc_+2). Dalvik width law: every
+        // instruction's 16-bit units must lie INSIDE the bytecode; a
+        // truncated tail halts honestly instead of decoding garbage.
+        // Widths are the standard format table (in 16-bit units).
+        {
+            uint8_t op = bytecode_[pc_] & 0xFF;
+            int units = 1;
+            if (op == 0x02 || op == 0x05 || op == 0x08 || op == 0x13 ||
+                op == 0x15 || op == 0x16 || op == 0x19 || op == 0x1a ||
+                op == 0x1c || op == 0x1f || op == 0x20 || op == 0x22 ||
+                op == 0x23 || op == 0x29 ||
+                (op >= 0x2d && op <= 0x37) ||
+                (op >= 0x44 && op <= 0x4e) || (op >= 0x4f && op <= 0x6a) ||
+                (op >= 0x90 && op <= 0xaf) || (op >= 0xd0 && op <= 0xe2))
+                units = 2;
+            else if (op == 0x03 || op == 0x06 || op == 0x09 || op == 0x14 ||
+                     op == 0x17 || op == 0x1b ||
+                     (op >= 0x24 && op <= 0x26) || op == 0x2a ||
+                     op == 0x2b || op == 0x2c ||
+                     (op >= 0x6e && op <= 0x72) ||
+                     (op >= 0x74 && op <= 0x78))
+                units = 3;
+            else if (op == 0x18)
+                units = 5;
+            else if (op == 0xfe || op == 0xff)
+                units = 4;  // invoke-polymorphic(/range), 45cc/4rcc
+            else if (op == 0x00 && pc_ + 1 < bytecode_.size()) {
+                uint16_t nxt = bytecode_[pc_ + 1];
+                if (nxt == 0x0100 || nxt == 0x0200) {
+                    // packed/sparse-switch PAYLOAD pseudo-instruction: its
+                    // header (ident + size) must at least be present.
+                    units = 2;
+                }
+            }
+            if ((size_t)pc_ + (size_t)units > bytecode_.size()) {
+                std::cerr << "[AUDIT-M5] truncated instruction at pc=" << pc_
+                          << " op=0x" << std::hex << (int)op << std::dec
+                          << " needs " << units << " units, has "
+                          << (bytecode_.size() - pc_) << " — halting "
+                          << current_class_ << "." << current_method_
+                          << std::endl;
+                halted_ = true;
+                break;
+            }
+        }
         uint64_t s62_pre0 = phase_clock().on ? __rdtsc() : 0;  // S62 bucket: pre
         InstructionTrace trace;
         // S156-P4 (CONT-42 zero-cost-gate law): the reserve was an
@@ -3413,7 +3461,13 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     "filled-new-array" : "filled-new-array/range";
 
                 uint16_t type_idx;
-                std::vector<uint8_t> src_regs;
+                // AUDIT-M4 (2026-11-23): format 3rc's CCCC is a 16-bit
+                // register number (DEX spec) — the & 0xFF mask wrapped
+                // registers ≥256 (the R8 register-width family the
+                // codebase's own dalvik_engine_types.h:803 law documents
+                // as a real-app breakage shape). The register file bound
+                // is checked at get_register below.
+                std::vector<uint16_t> src_regs;
 
                 if (opcode == Opcode::FILLED_NEW_ARRAY) {
                     // Format 35c: A|G|op BBBB FEDC
@@ -3451,7 +3505,7 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                     type_idx = bytecode_[pc_ + 1];
                     uint16_t first_reg = bytecode_[pc_ + 2];
                     for (int i = 0; i < arg_count; i++) {
-                        src_regs.push_back((first_reg + i) & 0xFF);
+                        src_regs.push_back((uint16_t)(first_reg + i));
                     }
                 }
 

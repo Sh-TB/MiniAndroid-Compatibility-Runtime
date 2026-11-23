@@ -1,7 +1,7 @@
 {
   "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
   "apk_package": "com.thehellomaker.helloworldtoast",
-  "duration_ms": 4524,
+  "duration_ms": 4695,
   "events_retained": 50,
   "events_total": 50,
   "first_divergence": {
@@ -76,12 +76,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 19,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377437096
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407981173
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -90,12 +90,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 20,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377437231
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407981318
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -104,12 +104,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 21,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377437365
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407981465
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -118,12 +118,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 22,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377437504
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407981600
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -132,12 +132,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 23,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377437640
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407981740
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -146,12 +146,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 24,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377437776
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407981885
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -160,12 +160,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 25,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377437909
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407982020
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -174,12 +174,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 26,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377438055
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407982159
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -188,12 +188,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 27,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377438190
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407982295
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -202,12 +202,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 28,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377438326
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407982429
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -216,12 +216,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 29,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377438460
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407982571
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -230,12 +230,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 30,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377438599
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407982711
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -244,12 +244,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 31,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377438733
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407982848
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -258,12 +258,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 32,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377438866
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407983000
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -272,12 +272,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 33,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377439001
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407983134
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -286,12 +286,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 34,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377439145
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407983269
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -300,12 +300,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 35,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377439279
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407983403
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -314,12 +314,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 36,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377439413
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407983538
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -328,12 +328,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 37,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377439547
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407983676
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -342,12 +342,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 38,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377439684
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407983813
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -356,12 +356,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 39,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377439817
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407983947
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -370,12 +370,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 40,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377439951
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984097
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -384,12 +384,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 41,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440085
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984238
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -398,12 +398,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 42,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440232
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984373
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -412,12 +412,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 43,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440366
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984507
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -426,12 +426,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 44,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440501
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984641
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -440,12 +440,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 45,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440635
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984781
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -454,12 +454,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 46,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440669
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984805
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -472,12 +472,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 47,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440740
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984877
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -499,12 +499,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 48,
       "sev": "INFO",
       "state": "SYSTEM_CHROME_ONLY",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440750
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984887
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -554,12 +554,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 49,
       "sev": "INFO",
       "state": "SYSTEM_CHROME_ONLY",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440750
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984887
     },
     {
       "activity": "com.thehellomaker.helloworldtoast.HelloWorldActivity",
@@ -571,12 +571,12 @@
       "package": "com.thehellomaker.helloworldtoast",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1795377436279-1",
+      "run_id": "1795407980245-1",
       "seq": 50,
       "sev": "FAILURE",
       "state": "Partial execution completed [F-NEW-233 frame truth: verdict=SYSTEM_CHROME_ONLY, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]",
-      "thread": "tid:139729583601344",
-      "ts_ms": 1795377440803
+      "thread": "tid:140532239283904",
+      "ts_ms": 1795407984940
     }
   ],
   "last_exception": {
@@ -589,18 +589,18 @@
     "package": "com.thehellomaker.helloworldtoast",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1795377436279-1",
+    "run_id": "1795407980245-1",
     "seq": 50,
     "sev": "FAILURE",
     "state": "Partial execution completed [F-NEW-233 frame truth: verdict=SYSTEM_CHROME_ONLY, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]",
-    "thread": "tid:139729583601344",
-    "ts_ms": 1795377440803
+    "thread": "tid:140532239283904",
+    "ts_ms": 1795407984940
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1795377436279-1",
+  "run_id": "1795407980245-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261122-195716-2066",
+  "session_id": "EXP-001-20261123-042620-9255",
   "severity_census": {
     "CONFIRMED": 11,
     "FAILURE": 1,

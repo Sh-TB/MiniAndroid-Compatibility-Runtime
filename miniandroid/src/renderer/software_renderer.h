@@ -116,10 +116,22 @@ namespace Colors {
 
 class FrameBuffer {
 public:
+    // AUDIT-C8 (2026-11-23): width*height rode in int arithmetic —
+    // 70000x70000 wrapped to 605M and 65536x65536 wrapped to ZERO, so the
+    // pixel buffer was smaller than width_*height_ and set_pixel's
+    // in-bounds-checked index wrote past the vector. Law: compute the
+    // pixel count in size_t and cap the sides (8192 — a real device
+    // canvas never exceeds it; the WebView canvas cap in
+    // el_set_canvas_w/h mirrors this).
+    static constexpr int kMaxSide = 8192;
     FrameBuffer(int width = 480, int height = 800)
         : width_(width), height_(height)
     {
-        pixels_.resize(width * height, Colors::WHITE);
+        if (width_ < 1) width_ = 1;
+        if (height_ < 1) height_ = 1;
+        if (width_ > kMaxSide) width_ = kMaxSide;
+        if (height_ > kMaxSide) height_ = kMaxSide;
+        pixels_.resize((size_t)width_ * (size_t)height_, Colors::WHITE);
         clear_count_ = 0;
         draw_count_ = 0;
     }
@@ -141,8 +153,10 @@ public:
     
     void set_pixel(int x, int y, RGBA color) {
         if (x < 0 || x >= width_ || y < 0 || y >= height_) return;
-        
-        size_t idx = y * width_ + x;
+
+        // AUDIT-C8: the index is computed in size_t — an int product could
+        // go negative (UB) and wrap to ~2^64 as size_t.
+        size_t idx = (size_t)y * (size_t)width_ + (size_t)x;
         if (alpha_preserve_) {
             // S83-GFX-BASE (Contract C6): offscreen LAYER targets composite
             // SRC-OVER onto a transparent buffer — the pixel's own alpha is

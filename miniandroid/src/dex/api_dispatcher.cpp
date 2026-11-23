@@ -489,17 +489,20 @@ ApiResult ApiDispatcher::dispatch(const ApiCallContext& context) {
     
     // Update statistics
     switch (result.status) {
+        // AUDIT-L1 (2026-11-23): these were bare member names — statements
+        // with no effect (cppcheck constStatement), so the four counters
+        // never moved. Restore the increments.
         case Observatory::ApiImplementationStatus::FOUND_AND_EXECUTED:
-            successful_calls_;
+            ++successful_calls_;
             break;
         case Observatory::ApiImplementationStatus::FOUND_BUT_FAILED:
-            failed_calls_;
+            ++failed_calls_;
             break;
         case Observatory::ApiImplementationStatus::MISSING_STUB:
-            stubbed_calls_;
+            ++stubbed_calls_;
             break;
         case Observatory::ApiImplementationStatus::MISSING_CRITICAL:
-            critical_missing_calls_;
+            ++critical_missing_calls_;
             missing_critical_apis_.push_back(context);
             break;
         default:

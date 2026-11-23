@@ -206,6 +206,117 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
             args[0].type == DalvikType::OBJECT_REF &&
             args[0].object_id != 0 && heap_.has_object(args[0].object_id)) {
             const uint32_t s24_obj = args[0].object_id;
+            // ── S27-W5 (the dual-store completion): ONE element, BOTH
+            // conventions. The CollectionShadow store (the ui_graphics
+            // mutation arms — shadow add()/F721 addAll) and the S24-W2
+            // slot store (__al_n__/__al_i<k>__) must agree. MEASURED (pz
+            // tap path, w5_pz_tap3): the app's List.add dispatches NEVER
+            // reached the jdk slot arm (zero [S27-W5-LIST-ADD] receipts)
+            // while its iterators DID reach the s24 cursor law — the
+            // Board.placeTilesRandom source list was iterated EMPTY
+            // (cursor=0 live_n=0 at o739) and the deferred
+            // NoSuchElementException killed GamePlay.onCreate. The
+            // materialization runs at the s24 entry when the slots are
+            // EMPTY (never overwrites live slot data); same doctrine as
+            // the S25-W1c dual-store law ("the SAME element lands in BOTH
+            // conventions").
+            if (s24_list_family) {
+                auto w5_nf = heap_.get_object_field(s24_obj, "__al_n__");
+                int32_t w5_n =
+                    (w5_nf.has_value() && w5_nf->type == DalvikType::INT32)
+                        ? w5_nf->int_val
+                        : 0;
+                if (w5_n == 0 && shadow_registry_) {
+                    auto* w5_csh =
+                        shadow_registry_->find_as<framework::CollectionShadow>();
+                    auto* w5_st =
+                        w5_csh ? w5_csh->get_or_create(s24_obj,
+                                                       /*is_map=*/false)
+                               : nullptr;
+                    // ── F-036 heap-mirror fallback (the THIRD convention of
+                    // the same family): the shadow add()/F721 arms mirror
+                    // the elements into array[i] + __array_length__; when
+                    // the CollectionState is empty but the heap mirror
+                    // holds elements, materialize from THERE.
+                    int32_t w5_mlen = 0;
+                    auto w5_len = heap_.get_object_field(s24_obj,
+                                                         "__array_length__");
+                    if (w5_len.has_value() &&
+                        w5_len->type == DalvikType::INT32)
+                        w5_mlen = w5_len->int_val;
+                    size_t w5_sz = 0;
+                    if (w5_st && !w5_st->elements.empty())
+                        w5_sz = w5_st->elements.size();
+                    else if (w5_mlen > 0)
+                        w5_sz = static_cast<size_t>(w5_mlen);
+                    else {
+                        // no length field — probe the mirror slots
+                        for (int32_t i = 0; i < 256; ++i) {
+                            if (!heap_.get_object_field(
+                                    s24_obj,
+                                    "array[" + std::to_string(i) + "]")
+                                    .has_value())
+                                break;
+                            w5_sz = static_cast<size_t>(i) + 1;
+                        }
+                    }
+                    if (w5_sz > 0) {
+                        int32_t w5_stored = 0;
+                        for (size_t i = 0; i < w5_sz; ++i) {
+                            DalvikValue v5;
+                            if (w5_st && !w5_st->elements.empty()) {
+                                const uint8_t k5 =
+                                    i < w5_st->elem_kinds.size()
+                                        ? w5_st->elem_kinds[i]
+                                        : 0;
+                                if (k5 == 1)
+                                    v5 = w5_st->elements[i] != 0
+                                             ? DalvikValue::make_object(
+                                                   w5_st->elements[i],
+                                                   "Ljava/lang/Object;")
+                                             : DalvikValue::make_null();
+                                else if (k5 == 2)
+                                    v5 = i < w5_st->elem_strings.size()
+                                             ? DalvikValue::make_string(
+                                                   w5_st->elem_strings[i], 0)
+                                             : DalvikValue::make_null();
+                                else if (k5 == 3)
+                                    v5 = i < w5_st->elem_ints.size()
+                                             ? DalvikValue::make_int(
+                                                   w5_st->elem_ints[i])
+                                             : DalvikValue::make_null();
+                                else
+                                    continue;
+                            } else {
+                                auto mv = heap_.get_object_field(
+                                    s24_obj,
+                                    "array[" + std::to_string(i) + "]");
+                                if (!mv.has_value()) break;
+                                v5 = *mv;
+                            }
+                            heap_.set_object_field(
+                                s24_obj,
+                                "__al_i" + std::to_string(i) + "__", v5);
+                            ++w5_stored;
+                        }
+                        if (w5_stored > 0) {
+                            heap_.set_object_field(
+                                s24_obj, "__al_n__",
+                                DalvikValue::make_int(w5_stored));
+                            static thread_local uint64_t w5_sync_n = 0;
+                            if (w5_sync_n < 16)
+                                fprintf(stderr,
+                                        "[S27-W5-DUAL-SYNC] recv=o%u "
+                                        "materialized %d elements (%s) into "
+                                        "the S24 slot store\n",
+                                        s24_obj, w5_stored,
+                                        (w5_st && !w5_st->elements.empty())
+                                            ? "shadow"
+                                            : "F-036 mirror");
+                        }
+                    }
+                }
+            }
             // CONSERVATIVE ITERATOR GATE (S24-W2b regression guard): the
             // runtime already ships iterator laws in other domains (the
             // F-238 array-iterator family reads __array_length__ fields).
@@ -281,6 +392,34 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
                                     : 0;
                     int32_t n = s24_count();
                     if (p >= n) {
+                        // ── S27-W5 instrument (environment-transient
+                        // hazard hardening): the pz placeTilesRandom
+                        // NoSuchElementException fired in ONE sandbox
+                        // (deterministic ×3 there) and did NOT reproduce
+                        // after the rebuild (rc=0 ×3, the original
+                        // canonical face restored) — the cursor state was
+                        // environment-sensitive. Any future recurrence
+                        // must be root-catchable in ONE run: the receipt
+                        // carries the cursor, the LIVE source size, and
+                        // the source's class.
+                        uint32_t w5_src_id = 0;
+                        std::string w5_src_cls = "";
+                        auto w5_src = heap_.get_object_field(
+                            s24_obj, "__it_src__");
+                        if (w5_src.has_value() &&
+                            w5_src->type == DalvikType::OBJECT_REF &&
+                            w5_src->object_id != 0 &&
+                            heap_.has_object(w5_src->object_id)) {
+                            w5_src_id = w5_src->object_id;
+                            w5_src_cls = heap_.get(w5_src_id)
+                                             ->class_descriptor;
+                        }
+                        static thread_local uint64_t s27w5_throw_n = 0;
+                        if (s27w5_throw_n++ < 8)
+                            fprintf(stderr,
+                                    "[S27-W5-ITER-EXHAUST] cursor=%d live_n="
+                                    "%d src=o%u(%s)\n",
+                                    p, n, w5_src_id, w5_src_cls.c_str());
                         throw_deferred(
                             "Ljava/util/NoSuchElementException;",
                             "Iterator.next: no element at cursor " +
@@ -349,6 +488,23 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
                     result = DalvikValue::make_void();
                     status = ApiCallTrace::Status::IMPLEMENTED;
                     return true;
+                }
+                // ── S27-W5 instrument: the copy-ctor fall-through is the
+                // measured empty-list minting signature (the pz tap path:
+                // Board.placeTilesRandom's iterator hit cursor=0 live_n=0 —
+                // the receiver's elements arrived by an unmodeled source).
+                // Name the source class so the next gap is one-run
+                // root-catchable.
+                {
+                    std::string src_cls =
+                        heap_.get(args[1].object_id)->class_descriptor;
+                    static thread_local uint64_t s27w5_cf_n = 0;
+                    if (s27w5_cf_n++ < 12)
+                        fprintf(stderr,
+                                "[S27-W5-COPY-FALLTHROUGH] recv=o%u "
+                                "src=o%u(%s) — source is NOT model-backed; "
+                                "the receiver stays EMPTY\n",
+                                s24_obj, args[1].object_id, src_cls.c_str());
                 }
                 // source not a model-backed list → fall through
             }
@@ -507,6 +663,18 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
                 }
                 result = DalvikValue::make_int(0);
                 status = ApiCallTrace::Status::IMPLEMENTED;
+                // ── S27-W5 instrument: who fills which list (the pz tap
+                // path minted the placeTilesRandom source list EMPTY —
+                // live_n=0 at iterator-mint; this receipt names every add
+                // receiver so the unmodeled fill path is one-run visible).
+                {
+                    static thread_local uint64_t s27w5_add_n = 0;
+                    if (s27w5_add_n < 40)
+                        fprintf(stderr,
+                                "[S27-W5-LIST-ADD] recv=o%u n=%d->%d\n",
+                                s24_obj, n, n + 1);
+                    ++s27w5_add_n;
+                }
                 return true;
             }
             if (s24_list_family && method == "iterator") {
@@ -520,6 +688,17 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
                     DalvikValue::make_object(s24_obj, "Ljava/util/ArrayList;"));
                 heap_.set_object_field(it, "__it_pos__",
                                        DalvikValue::make_int(0));
+                // ── S27-W5 instrument: mint-time snapshot (the pz tap-path
+                // receipt pair: live_n AT MINT vs live_n AT THROW tells
+                // whether the source was born empty or emptied in between).
+                {
+                    static thread_local uint64_t s27w5_im_n = 0;
+                    if (s27w5_im_n++ < 16)
+                        fprintf(stderr,
+                                "[S27-W5-ITER-MINT] it=o%u src=o%u live_n="
+                                "%d\n",
+                                it, s24_obj, s24_count());
+                }
                 result = DalvikValue::make_object(it, "Ljava/util/Iterator;");
                 status = ApiCallTrace::Status::IMPLEMENTED;
                 return true;

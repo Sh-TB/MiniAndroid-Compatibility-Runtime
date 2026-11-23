@@ -539,6 +539,14 @@ const ShapedText& TextShaper::shape(const std::string& utf8, float size_px,
     auto it = shape_cache_.find(key);
     if (it != shape_cache_.end()) return it->second;
 
+    // AUDIT-M11 (2026-11-23): the shape cache grew WITHOUT eviction — an
+    // app emitting unique strings per frame (clocks, counters) grew it
+    // forever. Bounded law: at the cap the cache clears wholesale
+    // (re-shaping is cheap; unbounded growth is not). All emplace paths
+    // in this function sit below this fence.
+    constexpr size_t kShapeCacheCap = 4096;
+    if (shape_cache_.size() >= kShapeCacheCap) shape_cache_.clear();
+
     ShapedText result;
     // FONT-PIPE-002 follow-up (#605): the guard keys on the RESOLVED face,
     // not on available_ (the SYSTEM-chain health flag). AOSP law: an app's

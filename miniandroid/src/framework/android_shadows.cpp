@@ -504,7 +504,14 @@ CallResult CollectionShadow::dispatch(const CallContext& ctx) {
             "removeIf", "getOrDefault", "forEach", "merge",
             "computeIfAbsent", "compute", "sort", "removeAll",
             "retainAll", "subList", "stream", "streamOf",
-            "remove", "containsKey", "size", "of", "filter", "collect", "toList"};
+            "remove", "containsKey", "size", "of", "filter", "collect",
+            "toList",
+            // ── S27-W5 instrument: the mutation/mint faces — the pz tap
+            // path (Board.placeTilesRandom) minted its source list EMPTY
+            // in every store; this receipt names every (class, method,
+            // recv) the CollectionShadow SEES so the unmodeled fill path
+            // is one-run visible.
+            "add", "addAll", "iterator", "get", "set", "<init>"};
         if (lawcef_on) {
             for (const char* f : lawcef_faces) {
                 if (m == f) {

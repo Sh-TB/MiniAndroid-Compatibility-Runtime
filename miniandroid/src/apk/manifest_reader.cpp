@@ -429,9 +429,12 @@ bool ManifestReader::parse_element(const uint8_t* data, size_t size, size_t& off
             
             std::string ns = resolve_namespace(elem->namespace_index);
             std::string name = get_string(elem->name_index);
-            
+
             process_end_element(ns, name);
-            depth_--;
+            // AUDIT-M6 (2026-11-23): an END before any START drove depth_
+            // negative and std::string(depth_ * 2, ' ') blew up to
+            // std::length_error → terminate in the manifest pipeline.
+            if (depth_ > 0) depth_--;
             break;
         }
         

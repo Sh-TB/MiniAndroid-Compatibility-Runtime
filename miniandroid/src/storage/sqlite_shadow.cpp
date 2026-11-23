@@ -191,16 +191,43 @@ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
     }
 
     DbState st;
+    // AUDIT-C7 (2026-11-23): a RELATIVE db name went to sqlite3_open_v2 as
+    // (databases_dir / name) with NO containment check — the F-NEW-375 law
+    // fenced absolute paths but this second consumer was forgotten, so
+    // "openOrCreateDatabase(\"../../x\")" walked out of the sandbox.
+    // Law: resolve, normalize, and require the result to stay INSIDE the
+    // databases dir (a legal "sub/name.db" stays; "../escape" DENIES to
+    // :memory: — never a silent host-path open).
+    auto contained_db_path = [&](const std::string& rel, std::string& out)
+        -> bool {
+        fs::path dir(databases_dir_);
+        fs::path joined = (dir / rel).lexically_normal();
+        auto d_it = dir.begin();
+        auto j_it = joined.begin();
+        fs::path d_acc, j_acc;
+        while (d_it != dir.end()) {
+            if (j_it == joined.end() || *d_it != *j_it) return false;
+            d_acc /= *d_it;
+            j_acc /= *j_it;
+            ++d_it;
+            ++j_it;
+        }
+        out = joined.string();
+        return true;
+    };
     if (h->db_name.empty() || h->db_name == ":memory:") {
         st.path = ":memory:";
     } else if (f588_resolve_db_path(h->db_name, st.path)) {
         std::cerr << "[F-C4-588] helper absolute-path db \"" << h->db_name
                   << "\" -> " << st.path << std::endl;
-    } else {
-        fs::path dir(databases_dir_);
+    } else if (contained_db_path(h->db_name, st.path)) {
         std::error_code ec;
-        fs::create_directories(dir, ec);
-        st.path = (dir / h->db_name).string();
+        fs::create_directories(fs::path(st.path).parent_path(), ec);
+    } else {
+        std::cerr << "[AUDIT-C7] sandbox-escape db name DENIED: \""
+                  << h->db_name << "\" -> :memory:" << std::endl;
+        st.path = ":memory:";
+        h->db_name = ":memory:";
     }
 
     sqlite3* raw = nullptr;
@@ -287,16 +314,36 @@ framework::CallResult DatabaseShadow::open_helper_database(uint32_t helper_oid,
 framework::CallResult DatabaseShadow::open_standalone_database(
     const std::string& name) {
     DbState st;
+    // AUDIT-C7 (2026-11-23): the standalone open is the SECOND consumer of
+    // relative db names — same containment law as the helper branch above
+    // (resolve, normalize, require inside databases_dir; escape DENIES to
+    // :memory:).
+    auto contained_db_path2 = [&](const std::string& rel, std::string& out)
+        -> bool {
+        fs::path dir(databases_dir_);
+        fs::path joined = (dir / rel).lexically_normal();
+        auto d_it = dir.begin();
+        auto j_it = joined.begin();
+        while (d_it != dir.end()) {
+            if (j_it == joined.end() || *d_it != *j_it) return false;
+            ++d_it;
+            ++j_it;
+        }
+        out = joined.string();
+        return true;
+    };
     if (name == ":memory:") {
         st.path = ":memory:";
     } else if (f588_resolve_db_path(name, st.path)) {
         std::cerr << "[F-C4-588] standalone absolute-path db \"" << name
                   << "\" -> " << st.path << std::endl;
-    } else {
-        fs::path dir(databases_dir_);
+    } else if (contained_db_path2(name, st.path)) {
         std::error_code ec;
-        fs::create_directories(dir, ec);
-        st.path = (dir / name).string();
+        fs::create_directories(fs::path(st.path).parent_path(), ec);
+    } else {
+        std::cerr << "[AUDIT-C7] sandbox-escape standalone db DENIED: \""
+                  << name << "\" -> :memory:" << std::endl;
+        st.path = ":memory:";
     }
     sqlite3* raw = nullptr;
     int flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;

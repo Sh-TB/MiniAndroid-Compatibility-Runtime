@@ -309,19 +309,51 @@ std::string ApplicationRuntime::get_timestamp() const {
 bool ApplicationRuntime::transition_to(RuntimeState new_state, const std::string& reason) {
     auto start = std::chrono::steady_clock::now();
     RuntimeState from = state_;
-    
-    state_ = new_state;
-    
+
+    // AUDIT-M3 (2026-11-23): the machine accepted ANY transition and
+    // always recorded success=true — a retrograde jump like
+    // FRAME_RENDERED → CREATED was silently "successful" in the trace.
+    // The runtime state IS the parse/run pipeline: the honest law is the
+    // ordered pipeline (forward or idempotent) plus the failure terminal
+    // states, which any stage may reach. Anything else is REJECTED,
+    // recorded with success=false, and reported.
+    static const RuntimeState kPipeline[] = {
+        RuntimeState::CREATED,       RuntimeState::APK_LOADED,
+        RuntimeState::MANIFEST_RESOLVED, RuntimeState::DEX_LOADED,
+        RuntimeState::ACTIVITY_RESOLVED, RuntimeState::ACTIVITY_CREATED,
+        RuntimeState::ACTIVITY_STARTED,  RuntimeState::ACTIVITY_RESUMED,
+        RuntimeState::CONTENT_LOADED,    RuntimeState::LAYOUT_READY,
+        RuntimeState::FRAME_RENDERED,    RuntimeState::COMPLETED};
+    auto pipeline_rank = [&](RuntimeState s) -> int {
+        for (size_t i = 0; i < sizeof(kPipeline) / sizeof(kPipeline[0]); ++i)
+            if (kPipeline[i] == s) return (int)i;
+        return -1;  // failure terminals (ERROR/LOAD_FAILED/RESOLUTION_FAILED)
+    };
+    int from_rank = pipeline_rank(from);
+    int to_rank = pipeline_rank(new_state);
+    bool valid = (new_state == from) ||            // idempotent
+                 (to_rank >= 0 && from_rank >= 0 &&
+                  to_rank >= from_rank) ||          // forward (or same)
+                 (to_rank < 0);                     // failure terminal
     auto end = std::chrono::steady_clock::now();
     double duration = std::chrono::duration<double, std::milli>(end - start).count();
-    
-    record_transition(from, new_state, reason, true, duration);
-    
+
+    record_transition(from, new_state, reason, valid, duration);
+
+    if (!valid) {
+        std::cerr << "[State-REJECT] invalid transition " << state_to_string(from)
+                  << " → " << state_to_string(new_state) << ": " << reason
+                  << std::endl;
+        return false;
+    }
+
+    state_ = new_state;
+
     if (config_.verbose) {
-        std::cout << "[State] " << state_to_string(from) << " → " 
+        std::cout << "[State] " << state_to_string(from) << " → "
                   << state_to_string(new_state) << ": " << reason << std::endl;
     }
-    
+
     return true;
 }
 

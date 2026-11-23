@@ -1,7 +1,7 @@
 {
   "activity": "com.itsfrz.tictactoe.MainActivity",
   "apk_package": "com.itsfrz.tictactoe",
-  "duration_ms": 6377,
+  "duration_ms": 6896,
   "events_retained": 214,
   "events_total": 214,
   "first_divergence": null,
@@ -12,7 +12,7 @@
     "method": "",
     "seq": 214,
     "stage": null,
-    "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 16464 IMPLEMENTED, 405 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]"
+    "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 16170 IMPLEMENTED, 376 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]"
   },
   "frame_analysis": {
     "app_draw_ops": 1,
@@ -75,12 +75,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 183,
       "sev": "CONFIRMED",
       "state": "visited=4",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415449
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959048
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -89,12 +89,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 184,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415449
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959048
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -103,12 +103,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 185,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415449
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959048
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -117,12 +117,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 186,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415569
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959169
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -131,12 +131,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 187,
       "sev": "CONFIRMED",
       "state": "root_id=957",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415569
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959170
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -145,12 +145,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 188,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=1 diag_regions=1",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415634
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959233
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -159,12 +159,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 189,
       "sev": "CONFIRMED",
       "state": "visited=4",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415634
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959233
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -173,12 +173,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 190,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415634
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959233
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -187,12 +187,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 191,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415634
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959233
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -201,12 +201,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 192,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415764
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959354
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -215,12 +215,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 193,
       "sev": "CONFIRMED",
       "state": "root_id=957",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415764
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959354
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -229,12 +229,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 194,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=1 diag_regions=1",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415827
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959420
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -243,12 +243,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 195,
       "sev": "CONFIRMED",
       "state": "visited=4",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415827
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959420
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -257,12 +257,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 196,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415827
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959420
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -271,12 +271,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 197,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415827
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959420
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -285,12 +285,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 198,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415950
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959541
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -299,12 +299,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 199,
       "sev": "CONFIRMED",
       "state": "root_id=957",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377415950
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959541
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -313,12 +313,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 200,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=1 diag_regions=1",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416014
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959605
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -327,12 +327,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 201,
       "sev": "CONFIRMED",
       "state": "visited=4",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416014
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959605
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -341,12 +341,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 202,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416014
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959605
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -355,12 +355,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 203,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416014
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959605
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -369,12 +369,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 204,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416128
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959716
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -383,12 +383,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 205,
       "sev": "CONFIRMED",
       "state": "root_id=957",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416128
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959716
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -397,12 +397,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 206,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=1 diag_regions=1",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416194
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959779
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -411,12 +411,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 207,
       "sev": "CONFIRMED",
       "state": "visited=4",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416194
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959780
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -425,12 +425,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 208,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416194
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959780
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -439,12 +439,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 209,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416194
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959780
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -453,12 +453,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 210,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416194
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959780
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -471,12 +471,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 211,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416266
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959851
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -498,12 +498,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 212,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416276
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959861
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -553,12 +553,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 213,
       "sev": "INFO",
       "state": "DEFAULT_BACKGROUND_ONLY",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416276
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959861
     },
     {
       "activity": "com.itsfrz.tictactoe.MainActivity",
@@ -570,12 +570,12 @@
       "package": "com.itsfrz.tictactoe",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1795377409967-1",
+      "run_id": "1795407953035-1",
       "seq": 214,
       "sev": "FAILURE",
-      "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 16464 IMPLEMENTED, 405 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]",
-      "thread": "tid:140209161565888",
-      "ts_ms": 1795377416344
+      "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 16170 IMPLEMENTED, 376 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]",
+      "thread": "tid:140535642703552",
+      "ts_ms": 1795407959931
     }
   ],
   "last_exception": {
@@ -588,18 +588,18 @@
     "package": "com.itsfrz.tictactoe",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1795377409967-1",
+    "run_id": "1795407953035-1",
     "seq": 214,
     "sev": "FAILURE",
-    "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 16464 IMPLEMENTED, 405 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]",
-    "thread": "tid:140209161565888",
-    "ts_ms": 1795377416344
+    "state": "Partial execution completed [F-016 exception-honesty: 1 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 16170 IMPLEMENTED, 376 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]",
+    "thread": "tid:140535642703552",
+    "ts_ms": 1795407959931
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1795377409967-1",
+  "run_id": "1795407953035-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261122-195649-5938",
+  "session_id": "EXP-001-20261123-042553-3326",
   "severity_census": {
     "CONFIRMED": 166,
     "FAILURE": 10,

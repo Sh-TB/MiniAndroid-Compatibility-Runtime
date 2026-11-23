@@ -1,7 +1,7 @@
 {
   "activity": "com.farmerbb.notepad.android.NotepadActivity",
   "apk_package": "com.farmerbb.notepad",
-  "duration_ms": 4291,
+  "duration_ms": 4450,
   "events_retained": 59,
   "events_total": 59,
   "first_divergence": {
@@ -85,12 +85,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 28,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377395096
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407937914
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -99,12 +99,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 29,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377395213
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407938041
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -113,12 +113,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 30,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377395344
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407938157
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -127,12 +127,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 31,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377395459
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407938272
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -141,12 +141,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 32,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377395577
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407938387
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -155,12 +155,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 33,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377395693
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407938502
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -169,12 +169,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 34,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377395810
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407938622
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -183,12 +183,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 35,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377395925
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407938737
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -197,12 +197,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 36,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377396041
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407938852
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -211,12 +211,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 37,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377396159
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407938971
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -225,12 +225,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 38,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377396275
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407939106
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -239,12 +239,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 39,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377396403
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407939225
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -253,12 +253,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 40,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377396519
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407939470
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -267,12 +267,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 41,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377396636
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407939587
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -281,12 +281,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 42,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377396753
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407939709
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -295,12 +295,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 43,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377396869
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407939826
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -309,12 +309,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 44,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377396986
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407939945
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -323,12 +323,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 45,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377397101
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407940062
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -337,12 +337,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 46,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377397222
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407940191
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -351,12 +351,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 47,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377397363
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407940314
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -365,12 +365,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 48,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377397495
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407940433
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -379,12 +379,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 49,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377397612
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407940554
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -393,12 +393,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 50,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377397728
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407940671
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -407,12 +407,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 51,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377397845
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407940786
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -421,12 +421,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 52,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377398012
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407940918
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -435,12 +435,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 53,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377398127
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407941036
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -449,12 +449,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 54,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377398246
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407941152
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -463,12 +463,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 55,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377398252
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407941170
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -481,12 +481,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 56,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377398324
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407941242
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -508,12 +508,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 57,
       "sev": "INFO",
       "state": "NO_ROOT",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377398334
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407941252
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -563,12 +563,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 58,
       "sev": "INFO",
       "state": "NO_ROOT",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377398334
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407941252
     },
     {
       "activity": "com.farmerbb.notepad.android.NotepadActivity",
@@ -580,12 +580,12 @@
       "package": "com.farmerbb.notepad",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1795377394111-1",
+      "run_id": "1795407936870-1",
       "seq": 59,
       "sev": "FAILURE",
       "state": "Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 4354 IMPLEMENTED, 98 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]",
-      "thread": "tid:139881884452544",
-      "ts_ms": 1795377398402
+      "thread": "tid:139891752814272",
+      "ts_ms": 1795407941320
     }
   ],
   "last_exception": {
@@ -598,18 +598,18 @@
     "package": "com.farmerbb.notepad",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1795377394111-1",
+    "run_id": "1795407936870-1",
     "seq": 59,
     "sev": "FAILURE",
     "state": "Partial execution completed [F-016 exception-honesty: 2 uncaught in-flight exception(s) past all app frames — ART process-death law; compatibility-continue mode (MINIANDROID_EXC_STRICT=1 fails the run); see crash.log] [F-NEW-200 stub-census: 4354 IMPLEMENTED, 98 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=NO_ROOT, first_missing_stage=WINDOW_ROOT — SUCCESS requires authoritative app content]",
-    "thread": "tid:139881884452544",
-    "ts_ms": 1795377398402
+    "thread": "tid:139891752814272",
+    "ts_ms": 1795407941320
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1795377394111-1",
+  "run_id": "1795407936870-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261122-195634-8896",
+  "session_id": "EXP-001-20261123-042536-2012",
   "severity_census": {
     "CONFIRMED": 11,
     "FAILURE": 10,

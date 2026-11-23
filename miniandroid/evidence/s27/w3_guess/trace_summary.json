@@ -1,7 +1,7 @@
 {
   "activity": "ru.zxalexis.ugaday.activity_main",
   "apk_package": "ru.zxalexis.ugaday",
-  "duration_ms": 4762,
+  "duration_ms": 4893,
   "events_retained": 205,
   "events_total": 205,
   "first_divergence": null,
@@ -66,12 +66,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 174,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409180
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952266
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -80,12 +80,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 175,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409180
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952266
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -94,12 +94,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 176,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409180
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952266
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -108,12 +108,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 177,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409292
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952376
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -122,12 +122,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 178,
       "sev": "CONFIRMED",
       "state": "root_id=16",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409292
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952376
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -136,12 +136,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 179,
       "sev": "CONFIRMED",
       "state": "nonwhite=2067841 total=2073600 app_ops=1 diag_regions=0",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409357
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952412
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -150,12 +150,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 180,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409357
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952412
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -164,12 +164,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 181,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409357
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952412
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -178,12 +178,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 182,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409357
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952412
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -192,12 +192,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 183,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409466
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952522
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -206,12 +206,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 184,
       "sev": "CONFIRMED",
       "state": "root_id=16",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409466
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952522
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -220,12 +220,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 185,
       "sev": "CONFIRMED",
       "state": "nonwhite=2067841 total=2073600 app_ops=1 diag_regions=0",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409497
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952554
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -234,12 +234,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 186,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409497
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952554
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -248,12 +248,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 187,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409497
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952554
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -262,12 +262,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 188,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409497
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952554
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -276,12 +276,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 189,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409605
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952664
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -290,12 +290,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 190,
       "sev": "CONFIRMED",
       "state": "root_id=16",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409605
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952664
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -304,12 +304,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 191,
       "sev": "CONFIRMED",
       "state": "nonwhite=2067841 total=2073600 app_ops=1 diag_regions=0",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409640
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952696
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -318,12 +318,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 192,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409640
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952696
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -332,12 +332,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 193,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409640
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952696
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -346,12 +346,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 194,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409640
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952696
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -360,12 +360,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 195,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409748
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952807
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -374,12 +374,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 196,
       "sev": "CONFIRMED",
       "state": "root_id=16",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409749
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952807
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -388,12 +388,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 197,
       "sev": "CONFIRMED",
       "state": "nonwhite=2067841 total=2073600 app_ops=1 diag_regions=0",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409775
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952835
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -402,12 +402,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 198,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409775
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952835
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -416,12 +416,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 199,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409775
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952835
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -430,12 +430,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 200,
       "sev": "CONFIRMED",
       "state": "app_ops=1",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409775
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952835
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -444,12 +444,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 201,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409775
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952835
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -462,12 +462,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 202,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409847
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952908
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -489,12 +489,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 203,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409877
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952940
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -543,12 +543,12 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 204,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409877
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952940
     },
     {
       "activity": "ru.zxalexis.ugaday.activity_main",
@@ -560,20 +560,20 @@
       "package": "ru.zxalexis.ugaday",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377405171-1",
+      "run_id": "1795407948104-1",
       "seq": 205,
       "sev": "CONFIRMED",
       "state": "Execution completed successfully [F-NEW-200 stub-census: 12 IMPLEMENTED, 2 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
-      "thread": "tid:140337113376448",
-      "ts_ms": 1795377409933
+      "thread": "tid:140699251013312",
+      "ts_ms": 1795407952997
     }
   ],
   "last_exception": null,
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1795377405171-1",
+  "run_id": "1795407948104-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261122-195645-1999",
+  "session_id": "EXP-001-20261123-042548-8974",
   "severity_census": {
     "CONFIRMED": 167,
     "INFO": 4,

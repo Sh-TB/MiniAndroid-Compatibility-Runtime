@@ -325,14 +325,14 @@ int main(int argc, char** argv) {
             const void* pa[2] = {p0, nullptr};
             std::string trace;
             return gl.dispatch(method, ia, 1, nullptr, 0, pa,
-                               p0 ? 1 : 0, iret, nullptr, trace);
+                               p0 ? 1 : 0, 0, iret, nullptr, trace);
         };
         auto d2 = [&gl](const std::string& method, uint64_t a0, uint64_t a1,
                         int32_t* iret) {
             uint64_t ia[2] = {a0, a1};
             std::string trace;
-            return gl.dispatch(method, ia, 2, nullptr, 0, nullptr, 0,
-                               iret, nullptr, trace);
+            return gl.dispatch(method, ia, 2, nullptr, 0, nullptr, 0, 0, iret,
+                               nullptr, trace);
         };
         int32_t vs = 0, fs = 0, prog = 0;
         bool ok_v = d1("glCreateShader", 0x8B31, nullptr, &vs);

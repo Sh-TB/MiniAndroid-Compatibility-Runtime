@@ -65,6 +65,16 @@ bool AxmlParser::parse(const std::vector<uint8_t>& data) {
     uint32_t total = ax_rd32(p + 4);
     if (type != RES_XML_TYPE) { last_error_ = "not RES_XML_TYPE"; return false; }
     if (total > avail) { last_error_ = "size overrun"; return false; }
+    // AUDIT-C1 (2026-11-23): header_size came off the wire (bytes 2-3) and
+    // seeded `pos` unvalidated — a hostile header_size > avail made
+    // `avail - pos` underflow to ~2^64 and parse_string_pool read at
+    // p+pos, far past the buffer. Same fence shape as the `total` guard
+    // above: the first pool byte must live INSIDE the file and the chunk
+    // header itself must be present.
+    if (header_size < 8 || header_size > avail) {
+        last_error_ = "bad header_size";
+        return false;
+    }
 
     size_t pos = header_size;
     {
@@ -97,6 +107,16 @@ bool AxmlParser::parse(const std::vector<uint8_t>& data) {
                 if (uri_idx < strings_.size()) android_ns_ = strings_[uri_idx];
             }
         } else if (ctype == RES_XML_START_ELEM) {
+            // AUDIT-H5 (2026-11-23): the element depth comes straight off
+            // the file; the tree assembly (attach) and to_json walk it
+            // RECURSIVELY, so unbounded START_ELEM nesting = stack
+            // overflow at install/render. Cap at 512 (real AXML layouts
+            // and manifests nest a few dozen; the text-XML parser's
+            // depth cap in resource_parser.cpp is the precedent).
+            if (stack.size() >= 512) {
+                last_error_ = "AXML nesting too deep";
+                return false;
+            }
             uint32_t name_idx = ax_rd32(p + pos + 20);
             uint16_t attr_start = ax_rd16(p + pos + 24);
             uint16_t attr_size = ax_rd16(p + pos + 26);

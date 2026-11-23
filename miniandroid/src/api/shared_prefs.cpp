@@ -140,13 +140,17 @@ bool SharedPreferencesEditor::commit() {
 }
 
 void SharedPreferencesEditor::apply() {
-    // In this implementation, apply() uses async execution
-    // For simplicity, we use std::async to run commit() in background
-    
-    // Capture necessary data before potential destruction
+    // AUDIT-M1 (2026-11-23): the "fire and forget" here was a lie —
+    // std::async's returned future was DISCARDED, and per [futures.states]
+    // the destructor of an async future BLOCKS until the task finishes, so
+    // apply() was fully synchronous anyway (plus a wasted thread hop and
+    // a raw-pointer capture whose safety was accidental). The honest law
+    // (documented): the runtime is single-threaded-deterministic, so apply
+    // commits synchronously — identical observable behavior, no phantom
+    // async promise, no dangling-capture risk.
     auto prefs_ptr = m_prefs;
     auto modified_keys = m_modified_keys;
-    
+
     // Clear local state immediately (apply is non-blocking)
     auto puts_copy = std::move(m_puts);
     auto removes_copy = std::move(m_removes);
@@ -155,42 +159,29 @@ void SharedPreferencesEditor::apply() {
     m_removes.clear();
     m_modified_keys.clear();
     m_clear_all = false;
-    
-    // Async commit (detached thread - fire and forget like Android)
-    std::async(std::launch::async, [prefs_ptr, puts_copy, removes_copy, 
-                                     clear_all_flag, modified_keys]() {
-        // Create a temporary editor-like operation
-        // Note: This is a simplified async implementation
-        // A production system would use a proper write queue
-        
-        // Reconstruct the operation on the captured data
-        SharedPreferencesEditor temp_editor(const_cast<SharedPreferences*>(prefs_ptr));
-        // The temp_editor would need access to internal state...
-        // For now, we'll just call commit synchronously in background
-        // In a real implementation, this would be more sophisticated
-        
-        // Actually, let's just do the work directly since we have the data
+
+    {
         std::lock_guard<std::shared_mutex> lock(prefs_ptr->m_rw_lock);
-        
+
         if (clear_all_flag) {
             prefs_ptr->m_data.clear();
         }
-        
+
         for (const auto& key : removes_copy) {
             prefs_ptr->m_data.erase(key);
         }
-        
+
         for (const auto& [key, value] : puts_copy) {
             prefs_ptr->m_data[key] = value;
         }
-        
+
         // Save to file
         prefs_ptr->saveToFile();
-        
-        // Notify listeners (must be done carefully in async context)
-        // For safety, we skip listener notification in async mode
-        // or it should be posted to main thread
-    });
+    }
+
+    // Listener notification: synchronous, same channel as commit()
+    // (the old async body skipped it entirely).
+    if (!modified_keys.empty()) prefs_ptr->notifyListeners(modified_keys);
 }
 
 
@@ -215,7 +206,27 @@ SharedPreferences::SharedPreferences(
         (base_path == "runtime/data")
             ? Storage::context_dir("shared_prefs")
             : base / package_name / "shared_prefs";
-    m_file_path = pkg_dir / (prefs_name + ".xml");
+    // AUDIT-C6 (2026-11-23): the prefs name rode verbatim into the host
+    // path — fs::path operator/ with an ABSOLUTE rhs REPLACES the whole
+    // prefix and a "../" rhs walks out of shared_prefs entirely. A prefs
+    // name is a single path token: keep [A-Za-z0-9._-], defuse everything
+    // else (same law as the AOSP ContextImpl.makeFilename separator
+    // rejection and the app_runtime arm of this fix).
+    std::string prefs_token;
+    for (char c : prefs_name)
+        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+            (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '-')
+            prefs_token.push_back(c);
+    // Collapse consecutive dots — a filtered traversal name must never
+    // still contain a ".." substring.
+    std::string prefs_collapsed;
+    for (char c : prefs_token) {
+        if (c == '.' && !prefs_collapsed.empty() && prefs_collapsed.back() == '.')
+            continue;
+        prefs_collapsed.push_back(c);
+    }
+    if (prefs_collapsed.empty()) prefs_collapsed = "default";
+    m_file_path = pkg_dir / (prefs_collapsed + ".xml");
     
     // Ensure directory exists
     fs::create_directories(pkg_dir);
@@ -406,22 +417,37 @@ void SharedPreferences::registerOnSharedPreferenceChangeListener(
 
 void SharedPreferences::unregisterOnSharedPreferenceChangeListener(
     OnSharedPreferenceChangeListener listener) {
-    
+
     std::unique_lock<std::shared_mutex> lock(m_rw_lock);
-    
-    // std::function doesn't support == comparison, so we need to compare targets
-    // Use erase-remove with target comparison
-    auto it = std::remove_if(m_listeners.begin(), m_listeners.end(),
-        [&listener](const OnSharedPreferenceChangeListener& existing) {
-            // Compare function targets if they are non-null
-            // Note: This is a best-effort comparison; exact matching may not be possible
-            // for all cases depending on how the lambda/function was created
-            return false;  // Simplified: listener removal by identity is complex
-        });
-    
-    // For simplicity in this implementation, we clear all listeners
-    // In production, you'd want a more sophisticated tracking mechanism
-    m_listeners.clear();
+
+    // AUDIT-M2 (2026-11-23): the erase-remove predicate was literally
+    // `return false;` and the body then ran m_listeners.clear() —
+    // unregistering ONE listener silently detached EVERY observer.
+    // std::function gives no identity for closures, so a full match is
+    // not recoverable at this layer; the honest behavior is a best-effort
+    // single-entry removal: function-pointer targets compare by address,
+    // everything else is left registered (documented boundary) — and
+    // NEVER a blanket clear.
+    if (!listener) return;
+    if (m_listeners.empty()) return;
+    if (listener.target_type() == m_listeners.front().target_type()) {
+        void* want = nullptr;
+        if (auto* fp = listener.template target<
+                void (*)(SharedPreferences*,
+                         const std::string&)>())
+            want = (void*)fp;
+        for (auto it = m_listeners.begin(); it != m_listeners.end(); ++it) {
+            void* have = nullptr;
+            if (auto* fp = it->template target<
+                    void (*)(SharedPreferences*,
+                             const std::string&)>())
+                have = (void*)fp;
+            if (want && have && want == have) {
+                m_listeners.erase(it);
+                return;
+            }
+        }
+    }
 }
 
 
@@ -561,6 +587,9 @@ bool SharedPreferences::validate() const {
 }
 
 std::string SharedPreferences::getLastError() const {
+    // AUDIT-M1: read under the same lock the writers use (m_last_error is
+    // mutated under m_rw_lock) — the unlocked read was a data-race face.
+    std::shared_lock<std::shared_mutex> lock(m_rw_lock);
     return m_last_error;
 }
 
@@ -597,17 +626,24 @@ bool SharedPreferences::applyEditorChanges(const SharedPreferencesEditor& editor
 }
 
 void SharedPreferences::notifyListeners(const std::set<std::string>& keys) {
+    // AUDIT-H3 (2026-11-23): `*keys.begin()` on an EMPTY set is UB — and
+    // clear() empties m_modified_keys while commit() calls here
+    // unconditionally, so the plain edit().clear().commit() chain
+    // dereferenced end(). The signature carries a key by reference (no
+    // AOSP-null channel), so the honest law is: no changed keys → no
+    // notification.
+    if (keys.empty()) return;
     // Make a copy of listeners under lock, then call outside lock
     std::vector<OnSharedPreferenceChangeListener> listeners_copy;
     {
         std::shared_lock<std::shared_mutex> lock(m_rw_lock);
         listeners_copy = m_listeners;
     }
-    
+
     // Call each listener (outside lock to prevent deadlocks)
     for (auto& listener : listeners_copy) {
         try {
-            listener(this, *keys.begin());  // Simplified: pass first changed key
+            listener(this, *keys.begin());  // first changed key (set is sorted)
         } catch (const std::exception& e) {
             std::cerr << "[SharedPreferences] Listener exception: " << e.what() << std::endl;
         }

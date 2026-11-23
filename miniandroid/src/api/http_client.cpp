@@ -45,6 +45,14 @@ int connect_host(const std::string& host, const std::string& port,
     for (struct addrinfo* ai = res; ai; ai = ai->ai_next) {
         fd = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
         if (fd < 0) continue;
+        // AUDIT-M9 (2026-11-23): select()/FD_SET is only defined for
+        // fd < FD_SETSIZE — an unchecked set() smashes the stack fd_set
+        // once the process is fd-rich. Skip (and close) over-big fds.
+        if (fd >= FD_SETSIZE) {
+            close(fd);
+            fd = -1;
+            continue;
+        }
         // Non-blocking connect with select-based timeout.
         int flags = fcntl(fd, F_GETFL, 0);
         fcntl(fd, F_SETFL, flags | O_NONBLOCK);
@@ -255,14 +263,44 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
             return r;
         }
         SSL_CTX_set_default_verify_paths(ctx);
-        SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, nullptr);  // honest: no pinning yet
+        // AUDIT-C4 (2026-11-23): SSL_VERIFY_NONE + no hostname check meant
+        // NO certificate was ever validated — every https call was
+        // MITM-able end to end. AOSP law (and every real stack): verify
+        // the chain against the system roots AND the hostname
+        // (SSL_set1_host pins the expected DNS name into the check).
+        // Escape hatch for offline/experimental runs (documented, explicit,
+        // never the default): MINIANDROID_TLS_INSECURE=1.
+        static const bool tls_insecure = [] {
+            const char* v = std::getenv("MINIANDROID_TLS_INSECURE");
+            if (v && std::string(v) == "1")
+                std::cerr << "[TLS-INSECURE] certificate verification "
+                             "DISABLED by env (MINIANDROID_TLS_INSECURE=1) "
+                             "— traffic is MITM-able" << std::endl;
+            return v && std::string(v) == "1";
+        }();
+        if (tls_insecure) {
+            SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, nullptr);
+        } else {
+            SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, nullptr);
+        }
         ssl = SSL_new(ctx);
         SSL_set_fd(ssl, fd);
+        if (!tls_insecure) {
+            // Hostname law (X509_check_host equivalent): the presented
+            // certificate must match the dialed host, not just chain to a
+            // trusted root.
+            SSL_set1_host(ssl, host.c_str());
+        }
         SSL_set_tlsext_host_name(ssl, host.c_str());
         struct timeval tv{timeout_ms / 1000, (timeout_ms % 1000) * 1000};
         setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
         if (SSL_connect(ssl) != 1) {
-            r.error = "tls handshake failed: " + host;
+            // AUDIT-C4: surface the verification verdict, not just the
+            // generic handshake failure — a hostile certificate must be
+            // distinguishable from a dead peer in the trace.
+            long vr = SSL_get_verify_result(ssl);
+            r.error = "tls handshake failed: " + host +
+                      " (verify=" + std::to_string(vr) + ")";
             SSL_free(ssl);
             SSL_CTX_free(ctx);
             close(fd);
@@ -273,13 +311,25 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
         setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
     }
 
+    // AUDIT-M8 (2026-11-23): CR/LF in a header name, a header value, the
+    // cookie header, or the request path smuggles whole extra request
+    // lines (request-splitting at the origin). RFC 7230 tokens carry no
+    // CR/LF — strip them here, at the one place every producer funnels
+    // through.
+    auto strip_crlf = [](const std::string& s) {
+        std::string out;
+        out.reserve(s.size());
+        for (char c : s)
+            if (c != '\r' && c != '\n') out.push_back(c);
+        return out;
+    };
     std::string extra;
     if (extra_headers) {
         for (auto& [name, value] : *extra_headers) {
             // S133 header-injection law (RFC 7230 §3.2): each field line is
             // "name: value" CRLF; names are forwarded verbatim (the WHATWG
             // fetch Headers normalizes case at the JS layer, not here).
-            extra += name + ": " + value + "\r\n";
+            extra += strip_crlf(name) + ": " + strip_crlf(value) + "\r\n";
         }
     }
     // S133 cookie-echo law (RFC 6265 §5.4): attach the host's cookie pairs
@@ -288,9 +338,9 @@ HttpResponse fetch_once(const std::string& scheme, const std::string& host,
         extra_headers->find("Cookie") == extra_headers->end() &&
         extra_headers->find("cookie") == extra_headers->end()) {
         std::string cookie = cookie_jar().header_for(host);
-        if (!cookie.empty()) extra += "Cookie: " + cookie + "\r\n";
+        if (!cookie.empty()) extra += "Cookie: " + strip_crlf(cookie) + "\r\n";
     }
-    std::string req = "GET " + path + " HTTP/1.1\r\n"
+    std::string req = "GET " + strip_crlf(path) + " HTTP/1.1\r\n"
                       "Host: " + host +
                       (port.empty() ? "" : (":" + port)) + "\r\n"
                       "User-Agent: MiniAndroid/0.1 (S100 NET-001; Linux)\r\n"

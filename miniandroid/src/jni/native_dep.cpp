@@ -100,6 +100,16 @@ bool locate_sections(const std::vector<uint8_t>& buf, std::string& why,
         why = "missing versym/verneed/dynstr";
         return false;
     }
+    // AUDIT-H6 (2026-11-23): the section HEADERS were bounded but each
+    // section's BODY was not — a hostile sh_offset/sh_size made the
+    // versym rewrite loop read AND WRITE past the file buffer. Every
+    // consumed section body must lie inside the ELF bytes.
+    for (const Elf64Shdr* s : {&vs, &vn, &ds}) {
+        if ((uint64_t)s->sh_offset + (uint64_t)s->sh_size > buf.size()) {
+            why = "section body outside file";
+            return false;
+        }
+    }
     *versym = &vs;
     *verneed = &vn;
     *dynstr = &ds;
@@ -536,6 +546,25 @@ std::vector<DepRow> prepare_dependencies(const std::string& host_path,
     for (const auto& soname : needed) {
         DepRow r;
         r.needed = soname;
+        // AUDIT-H6 (2026-11-23): the soname rides verbatim from the APK's
+        // DT_NEEDED into dlopen — dlopen treats any string containing '/'
+        // as a PATH, so "../../evil.so" or "/host/evil.so" loaded ARBITRARY
+        // host code (and ../ escaped app_lib_dir on the bundled leg). A
+        // DT_NEEDED dependency name is a bare soname: refuse path-shaped
+        // entries outright.
+        if (soname.find('/') != std::string::npos ||
+            soname.find('\\') != std::string::npos ||
+            soname.find("..") != std::string::npos || soname.empty()) {
+            r.status = "rejected-path";
+            r.resolved = "";
+            r.note = "DT_NEEDED carries a path, not a soname";
+            plan.push_back(std::move(r));
+            gfx::GfxTrace::instance().native_dep(soname,
+                                                 plan.back().status,
+                                                 plan.back().resolved,
+                                                 plan.back().note);
+            continue;
+        }
         // (a) host-native: the HOST loader can resolve this soname itself
         // (glibc sonames like libc.so.6). One dlopen attempt registers it
         // RTLD_GLOBAL for the app's own load; a failure falls through.

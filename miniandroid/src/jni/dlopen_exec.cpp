@@ -34,6 +34,7 @@
 #include <unistd.h>
 #include <map>
 #include <mutex>
+#include <set>
 #include <vector>
 
 namespace miniandroid {
@@ -452,11 +453,31 @@ std::vector<std::string*>& arena() {
     static std::vector<std::string*> a;
     return a;
 }
+// ── AUDIT-H9 registry: EVERY live string box is registered here, so the
+// native-return marshaler can tell a real jstring box from an arbitrary
+// pointer (a native `return thiz;` returns the engine's tagged-oid handle
+// or a foreign pointer — deref'ing either as std::string is UB). The
+// arena set covers local refs; the permanent set covers the interner;
+// the global-ref set covers promoted refs.
+std::mutex g_box_mu;
+std::set<std::string*> g_string_boxes;
 std::string* box_string(const std::string& s) {
     std::string* b = new std::string(s);
+    {
+        std::lock_guard<std::mutex> lk(g_box_mu);
+        g_string_boxes.insert(b);
+    }
     std::lock_guard<std::mutex> lk(g_arena_mu);
     arena().push_back(b);
     return b;
+}
+static bool is_known_string_box(void* r) {
+    std::lock_guard<std::mutex> lk(g_box_mu);
+    return g_string_boxes.count((std::string*)r) != 0;
+}
+static void forget_string_box(void* r) {
+    std::lock_guard<std::mutex> lk(g_box_mu);
+    g_string_boxes.erase((std::string*)r);
 }
 // F-NEW-596 (W12) — the lifetime contract was violated: box_string
 // registered EVERY box in the per-call arena, and arena_clear() (the
@@ -475,12 +496,62 @@ std::string* box_string(const std::string& s) {
 // per-call arena. Local refs (NewStringUTF etc.) stay arena-scoped
 // (JNI-spec local-ref lifetime).
 std::string* box_string_permanent(const std::string& s) {
-    return new std::string(s);
+    std::string* b = new std::string(s);
+    std::lock_guard<std::mutex> lk(g_box_mu);
+    g_string_boxes.insert(b);
+    return b;
 }
 void arena_clear() {
     std::lock_guard<std::mutex> lk(g_arena_mu);
-    for (std::string* p : arena()) delete p;
+    for (std::string* p : arena()) {
+        forget_string_box(p);
+        delete p;
+    }
     arena().clear();
+}
+
+// ── AUDIT-H8 (2026-11-23): GLOBAL-REF REGISTRY ──────────────────────────
+// jni_NewGlobalRef returned its argument verbatim; when that argument was
+// a LOCAL ref (an arena box), the ref died at the next arena_clear() and
+// the native caller kept a dangling handle (the F-NEW-596 contract covers
+// only the interner's own ids). JNI law: a global ref lives until
+// DeleteGlobalRef. Promotion: copy the box to a persistent allocation and
+// register it; DeleteGlobalRef frees ONLY registered refs. Tagged-oid
+// handles (the engine's own object channel) pass through by identity —
+// the engine owns their lifetime.
+static std::mutex g_global_ref_mu;
+static std::set<std::string*> g_global_string_refs;
+// The engine's object channel: push_object packs (0x500000000 | oid32) —
+// a 40-bit constant prefix, NOT a pointer. Same law as the push site.
+static bool is_tagged_oid(void* r) {
+    return ((uintptr_t)r & ~0xffffffffull) == 0x500000000ull;
+}
+std::string* jni_promote_global_ref(void* r) {
+    if (!r || is_tagged_oid(r)) return (std::string*)r;
+    // Copy-construct OUTSIDE the arena: the global ref owns its bytes.
+    // It is still a REAL string box — register it so the return marshaler
+    // recognizes it (H9 law).
+    std::string* promoted = new std::string(*(std::string*)r);
+    {
+        std::lock_guard<std::mutex> lk(g_box_mu);
+        g_string_boxes.insert(promoted);
+    }
+    std::lock_guard<std::mutex> lk(g_global_ref_mu);
+    g_global_string_refs.insert(promoted);
+    return promoted;
+}
+void jni_release_global_ref(void* r) {
+    if (!r || is_tagged_oid(r)) return;
+    std::string* p = (std::string*)r;
+    bool owned = false;
+    {
+        std::lock_guard<std::mutex> lk(g_global_ref_mu);
+        owned = g_global_string_refs.erase(p) != 0;
+    }
+    if (owned) {
+        forget_string_box(p);
+        delete p;
+    }
 }
 
 // ── JNI function table (spec slot indices) ─────────────────────────────
@@ -733,9 +804,17 @@ void* jni_GetObjectClass(void*, void*) {
     // object identity only — class reflection stays an unsupported frontier
     return intern_class_token("Ljava/lang/Object;");
 }
-void* jni_NewGlobalRef(void*, void* r) { return r; }
+void* jni_NewGlobalRef(void*, void* r) {
+    // AUDIT-H8: promote to a persistent copy — a global ref must survive
+    // the per-call arena sweep (JNI lifetime law).
+    return jni_promote_global_ref(r);
+}
 void* jni_NewLocalRef(void*, void* r) { return r; }
-void jni_DeleteGlobalRef(void*, void*) {}
+void jni_DeleteGlobalRef(void*, void* r) {
+    // AUDIT-H8: free only refs this runtime promoted; engine-owned handles
+    // (tagged oids) are never freed here.
+    jni_release_global_ref(r);
+}
 void jni_DeleteLocalRef(void*, void*) {}
 int jni_Throw(void*, void* throwable) {
     // A-R1 (S211): the pending-exception channel. The throwable jobject
@@ -2157,7 +2236,8 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
                 out.kind = JOutcome::Kind::STRING_ARRAY;
                 out.str_elems.reserve(arr->elems.size());
                 for (void* e : arr->elems) {
-                    if (e && !as_obj_array(e)) {
+                    if (e && !as_obj_array(e) && !is_tagged_oid(e) &&
+                        is_known_string_box(e)) {
                         out.str_elems.push_back(
                             *static_cast<std::string*>(e));
                     } else {
@@ -2169,12 +2249,27 @@ bool call_native(void* fn, bool static_call, const std::string& sig,
                         "string elements (NewObjectArray family live)\n",
                         arr->elems.size());
             } else {
-                // The implemented subset materializes exactly one object
-                // kind: a jstring box (NewStringUTF). Any other pointer is
-                // surfaced as UNSUPPORTED text, never a fabricated managed
-                // object.
-                out.kind = JOutcome::Kind::STRING;
-                out.str = *static_cast<std::string*>(ref);
+                // AUDIT-H9 (2026-11-23): the old tail deref'd ANY unknown
+                // pointer as std::string — a native `return thiz;` comes
+                // back as the engine's tagged-oid handle (0x500000000|oid)
+                // and a foreign pointer deref'd wild memory (the code
+                // contradicted its own comment). Law, in contract order:
+                // a tagged oid → OBJECT outcome (the engine owns that
+                // object); a REGISTERED string box → STRING; anything
+                // else → honest UNSUPPORTED text, never a fabricated
+                // managed object.
+                if (is_tagged_oid(ref)) {
+                    out.kind = JOutcome::Kind::OBJECT;
+                    out.object_id = (uint32_t)(uintptr_t)ref;
+                } else if (is_known_string_box(ref)) {
+                    out.kind = JOutcome::Kind::STRING;
+                    out.str = *static_cast<std::string*>(ref);
+                } else {
+                    out.kind = JOutcome::Kind::STRING;
+                    out.str = "UNSUPPORTED: native returned a non-box "
+                              "object handle (jobject class/array faces "
+                              "not materialized)";
+                }
             }
             break;
         }

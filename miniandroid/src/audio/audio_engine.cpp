@@ -69,7 +69,22 @@ static DecodedPcm decode_sndfile(const std::string& path) {
     }
     out.sample_rate = info.samplerate;
     out.channels = info.channels;
+    // AUDIT-M12 (2026-11-23): frames*channels came from the hostile header
+    // unchecked — a 1e12-frame header asked libsndfile to resize terabytes
+    // (uncaught bad_alloc → terminate). Bounded law: 30-minute stereo at
+    // 48 kHz ≈ 172M samples; refuse beyond a 1<<28 sample ceiling and a
+    // zero/negative channel count (the decode_mp3 division guard).
+    if (info.channels < 1) {
+        out.error = "hostile header: channels < 1";
+        sf_close(f);
+        return out;
+    }
     sf_count_t total = info.frames * info.channels;
+    if (total < 0 || total > (1LL << 28)) {
+        out.error = "hostile header: sample count out of bounds";
+        sf_close(f);
+        return out;
+    }
     out.samples.resize((size_t)total);
     sf_count_t read = sf_read_short(f, out.samples.data(), total);
     sf_close(f);

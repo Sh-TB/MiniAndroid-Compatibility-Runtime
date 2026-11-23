@@ -1,7 +1,7 @@
 {
   "activity": "com.minar.randomix.activities.MainActivity",
   "apk_package": "com.minar.randomix",
-  "duration_ms": 5892,
+  "duration_ms": 6117,
   "events_retained": 200,
   "events_total": 200,
   "first_divergence": {
@@ -17,8 +17,8 @@
   "first_failure_event": null,
   "frame_analysis": {
     "app_draw_ops": 2,
-    "app_owned_pixels": 0,
-    "app_owned_pixels_inside_content_bounds": 0,
+    "app_owned_pixels": 1080,
+    "app_owned_pixels_inside_content_bounds": 1080,
     "auth_root_valid": true,
     "budget_exhausted": false,
     "content_bounds": {
@@ -38,10 +38,9 @@
     "dominant_color": [
       "#ffffff"
     ],
-    "dominant_pct": 100.0,
+    "dominant_pct": 99.94791666666667,
     "draw_budget_halt": false,
     "draw_walk_ran": true,
-    "first_missing_stage": "APP_PIXELS",
     "height": 1920,
     "inflation_failed": false,
     "keep_last_complete": false,
@@ -52,19 +51,19 @@
     "no_root": false,
     "nodes_skipped_depth": 0,
     "nodes_visited": 7,
-    "non_default_pixels": 0,
+    "non_default_pixels": 1080,
     "presentation": "this_frame",
     "render_exception": false,
-    "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+    "screenshot_sha256": "5fef8090d5c9c87b04e32537ecebfdce8f23e2687479c6452dbab6799ae7d8c8",
     "size": "1080x1920",
     "synthetic_suppressed": false,
-    "unique_colors": 1,
+    "unique_colors": 2,
     "unreachable_children": 0,
-    "verdict": "DEFAULT_BACKGROUND_ONLY",
+    "verdict": "REAL_APP_CONTENT",
     "verdict_law": "21-P0-6 pixel ownership + correlated proof",
     "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
     "width": 1080,
-    "window_background_px": 2073600,
+    "window_background_px": 2072520,
     "window_chrome_pixels": 0
   },
   "instrument": "S135 VISUAL RUNTIME BOOT/TRACE LOGGER",
@@ -76,12 +75,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 169,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430562
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974503
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -90,12 +89,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 170,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430562
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974503
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -104,12 +103,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 171,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430562
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974503
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -118,12 +117,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 172,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430672
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974613
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -132,12 +131,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 173,
       "sev": "CONFIRMED",
       "state": "root_id=1423",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430672
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974613
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -146,12 +145,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 174,
       "sev": "CONFIRMED",
-      "state": "nonwhite=0 total=2073600 app_ops=2 diag_regions=2",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430734
+      "state": "nonwhite=1080 total=2073600 app_ops=2 diag_regions=2",
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974676
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -160,12 +159,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 175,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430734
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974676
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -174,12 +173,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 176,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430734
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974676
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -188,12 +187,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 177,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430734
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974676
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -202,12 +201,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 178,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430844
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974789
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -216,12 +215,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 179,
       "sev": "CONFIRMED",
       "state": "root_id=1423",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430844
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974789
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -230,12 +229,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 180,
       "sev": "CONFIRMED",
-      "state": "nonwhite=0 total=2073600 app_ops=2 diag_regions=2",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430910
+      "state": "nonwhite=1080 total=2073600 app_ops=2 diag_regions=2",
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974850
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -244,12 +243,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 181,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430910
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974850
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -258,12 +257,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 182,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430910
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974850
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -272,12 +271,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 183,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377430910
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974850
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -286,12 +285,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 184,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431020
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974962
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -300,12 +299,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 185,
       "sev": "CONFIRMED",
       "state": "root_id=1423",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431020
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407974962
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -314,12 +313,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 186,
       "sev": "CONFIRMED",
-      "state": "nonwhite=0 total=2073600 app_ops=2 diag_regions=2",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431081
+      "state": "nonwhite=1080 total=2073600 app_ops=2 diag_regions=2",
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975021
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -328,12 +327,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 187,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431081
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975021
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -342,12 +341,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 188,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431081
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975021
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -356,12 +355,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 189,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431081
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975021
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -370,12 +369,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "PENDING",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 190,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431191
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975135
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -384,12 +383,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 191,
       "sev": "CONFIRMED",
       "state": "root_id=1423",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431191
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975135
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -398,12 +397,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 192,
       "sev": "CONFIRMED",
-      "state": "nonwhite=0 total=2073600 app_ops=2 diag_regions=2",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431253
+      "state": "nonwhite=1080 total=2073600 app_ops=2 diag_regions=2",
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975198
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -412,12 +411,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 193,
       "sev": "CONFIRMED",
       "state": "visited=7",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431253
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975198
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -426,12 +425,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 194,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431253
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975198
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -440,12 +439,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 195,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431253
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975198
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -454,30 +453,30 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 196,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431253
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975198
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
       "component": "capture",
       "event": "FRAME_CAPTURE",
       "extra": {
-        "bytes": 10351,
+        "bytes": 10450,
         "path": "evidence/s27/w3_rnd/screenshot.png"
       },
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 197,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431334
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975271
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -487,24 +486,24 @@
         "dominant_color": [
           "#ffffff"
         ],
-        "dominant_pct": 100.0,
+        "dominant_pct": 99.94791666666667,
         "height": 1920,
-        "non_default_pixels": 0,
-        "screenshot_sha256": "31ddd4d5b8e6d18e4a14cd38a44bd355b4e809de97f3f97bcd669ac103838093",
+        "non_default_pixels": 1080,
+        "screenshot_sha256": "5fef8090d5c9c87b04e32537ecebfdce8f23e2687479c6452dbab6799ae7d8c8",
         "size": "1080x1920",
-        "unique_colors": 1,
-        "verdict": "DEFAULT_BACKGROUND_ONLY",
+        "unique_colors": 2,
+        "verdict": "REAL_APP_CONTENT",
         "width": 1080
       },
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "OK",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 198,
       "sev": "INFO",
-      "state": "DEFAULT_BACKGROUND_ONLY",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431344
+      "state": "REAL_APP_CONTENT",
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975281
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -512,8 +511,8 @@
       "event": "TRACE_MARK",
       "extra": {
         "app_draw_ops": 2,
-        "app_owned_pixels": 0,
-        "app_owned_pixels_inside_content_bounds": 0,
+        "app_owned_pixels": 1080,
+        "app_owned_pixels_inside_content_bounds": 1080,
         "auth_root_valid": true,
         "budget_exhausted": false,
         "content_bounds": {
@@ -532,7 +531,6 @@
         "dialog_content_rendered": false,
         "draw_budget_halt": false,
         "draw_walk_ran": true,
-        "first_missing_stage": "APP_PIXELS",
         "inflation_failed": false,
         "keep_last_complete": false,
         "kept_prior_app_draw_ops": 0,
@@ -548,18 +546,18 @@
         "unreachable_children": 0,
         "verdict_law": "21-P0-6 pixel ownership + correlated proof",
         "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
-        "window_background_px": 2073600,
+        "window_background_px": 2072520,
         "window_chrome_pixels": 0
       },
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "CENSUS",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 199,
       "sev": "INFO",
-      "state": "DEFAULT_BACKGROUND_ONLY",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431344
+      "state": "REAL_APP_CONTENT",
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975281
     },
     {
       "activity": "com.minar.randomix.activities.MainActivity",
@@ -571,12 +569,12 @@
       "package": "com.minar.randomix",
       "renderer_family": "CLASSIC_CANVAS",
       "result": "FAIL",
-      "run_id": "1795377425511-1",
+      "run_id": "1795407969225-1",
       "seq": 200,
       "sev": "FAILURE",
-      "state": "Partial execution completed [F-NEW-200 stub-census: 12046 IMPLEMENTED, 1151 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]",
-      "thread": "tid:140472377996992",
-      "ts_ms": 1795377431403
+      "state": "Partial execution completed [F-NEW-200 stub-census: 10238 IMPLEMENTED, 1127 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
+      "thread": "tid:140000326817472",
+      "ts_ms": 1795407975342
     }
   ],
   "last_exception": {
@@ -589,18 +587,18 @@
     "package": "com.minar.randomix",
     "renderer_family": "CLASSIC_CANVAS",
     "result": "FAIL",
-    "run_id": "1795377425511-1",
+    "run_id": "1795407969225-1",
     "seq": 200,
     "sev": "FAILURE",
-    "state": "Partial execution completed [F-NEW-200 stub-census: 12046 IMPLEMENTED, 1151 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json] [F-NEW-233 frame truth: verdict=DEFAULT_BACKGROUND_ONLY, first_missing_stage=APP_PIXELS — SUCCESS requires authoritative app content]",
-    "thread": "tid:140472377996992",
-    "ts_ms": 1795377431403
+    "state": "Partial execution completed [F-NEW-200 stub-census: 10238 IMPLEMENTED, 1127 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
+    "thread": "tid:140000326817472",
+    "ts_ms": 1795407975342
   },
   "lifecycle": "RESUMED",
   "renderer_family": "CLASSIC_CANVAS",
-  "run_id": "1795377425511-1",
+  "run_id": "1795407969225-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261122-195705-7550",
+  "session_id": "EXP-001-20261123-042609-9408",
   "severity_census": {
     "CONFIRMED": 161,
     "FAILURE": 1,

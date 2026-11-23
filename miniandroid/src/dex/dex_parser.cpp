@@ -37,7 +37,16 @@ DexReport DexParser::parse(const std::string& path) {
     
     auto size = file.tellg();
     file.seekg(0, std::ios::beg);
-    
+    // AUDIT-L4 (2026-11-23): a failed tellg() answers -1; the size_t cast
+    // made the resize ask for ~2^64 bytes (bad_alloc/length_error, uncaught
+    // in this path). Same fence as the other file loads in the tree.
+    if (size < 0 || size > (std::streampos)(512u << 20)) {  // 512 MiB cap
+        DexReport report;
+        report.is_valid = false;
+        report.validation_error = "DEX size unreadable or oversized";
+        return report;
+    }
+
     std::vector<uint8_t> data(static_cast<size_t>(size));
     if (!file.read(reinterpret_cast<char*>(data.data()), size)) {
         DexReport report;
@@ -922,7 +931,16 @@ bool DexParser::parse_class_defs(const uint8_t* data, DexReport& report) {
                                         // resolve the constant identity.
                                         // (AOSP law: encoded_value VALUE_ENUM
                                         // carries a field_ids index.)
-                                        if (idx < report.header.field_ids_size) {
+                                        // AUDIT-C2 (2026-11-23): the guard
+                                        // must also cover the PARSED vector
+                                        // — parse_raw keeps going after a
+                                        // failed section (success &= …), so
+                                        // fields_ can be empty while
+                                        // field_ids_size still carries the
+                                        // hostile file value → OOB vector
+                                        // index. Bound by the real size.
+                                        if (idx < report.header.field_ids_size &&
+                                            idx < fields_.size()) {
                                             const DexFieldId& fid =
                                                 fields_[idx];
                                             decoded =
@@ -1082,13 +1100,18 @@ bool DexParser::parse_static_values(const uint8_t* data, uint32_t offset, ClassI
     }
     size_t p = offset;
     // Read ULEB128 count
+    // AUDIT-L3 (2026-11-23): the hand-rolled reader had no 5-byte ceiling —
+    // a 6th continuation byte shifted past 32 (UB on int). Cap the shift
+    // like mutf8::read_uleb128 (the reader the rest of this codebase
+    // already standardizes on).
     uint32_t count = 0;
     int shift = 0;
     while (p < current_size_) {
         uint8_t b = data[p++];
-        count |= (b & 0x7f) << shift;
+        if (shift < 32) count |= (uint32_t)(b & 0x7f) << shift;
         shift += 7;
         if (!(b & 0x80)) break;
+        if (shift >= 35) break;  // 5 bytes carry a u32; longer is malformed
     }
 
     if (count == 0) return true;
@@ -1273,18 +1296,31 @@ bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_d
                 mi.return_type = get_type(proto.return_type_idx);
                 
                 // Parse parameters
-                if (proto.parameters_off != 0 && proto.parameters_off < current_size_) {
+                // AUDIT-C3 (2026-11-23): the old guard
+                // `parameters_off < current_size_` admitted an offset one
+                // byte short of EOF while the size read is FOUR bytes
+                // (3-byte overrun), and `list_size` was trusted with no
+                // ceiling (list_size = 0xFFFFFFFF → 4.3e9 silent
+                // iterations). Fence: the whole u32 header must be inside
+                // the buffer and the element loop is capped by the bytes
+                // actually left, breaking at the first out-of-range
+                // element.
+                if (proto.parameters_off != 0 &&
+                    proto.parameters_off + sizeof(uint32_t) <= current_size_) {
                     // Type list starts with size
                     uint32_t list_size;
                     std::memcpy(&list_size, data + proto.parameters_off, sizeof(uint32_t));
-                    
+                    const size_t proto_left =
+                        (current_size_ - proto.parameters_off - sizeof(uint32_t)) /
+                        sizeof(uint16_t);
+                    if (list_size > proto_left) list_size = (uint32_t)proto_left;
+
                     for (uint32_t p = 0; p < list_size; p++) {
                         uint16_t type_idx;
                         size_t param_off = proto.parameters_off + sizeof(uint32_t) + p * sizeof(uint16_t);
-                        if (param_off + sizeof(uint16_t) <= current_size_) {
-                            std::memcpy(&type_idx, data + param_off, sizeof(uint16_t));
-                            mi.parameters.push_back(get_type(type_idx));
-                        }
+                        if (param_off + sizeof(uint16_t) > current_size_) break;
+                        std::memcpy(&type_idx, data + param_off, sizeof(uint16_t));
+                        mi.parameters.push_back(get_type(type_idx));
                     }
                 }
             }
@@ -1334,17 +1370,24 @@ bool DexParser::parse_class_data(const uint8_t* data, const DexClassDef& class_d
                 mi.shorty = get_string(proto.shorty_idx);
                 mi.return_type = get_type(proto.return_type_idx);
                 
-                if (proto.parameters_off != 0 && proto.parameters_off < current_size_) {
+                if (proto.parameters_off != 0 &&
+                    proto.parameters_off + sizeof(uint32_t) <= current_size_) {
+                    // AUDIT-C3 (2026-11-23): same fence as the first copy —
+                    // four-byte size read needs four bytes of buffer, and
+                    // list_size is capped by the bytes actually left.
                     uint32_t list_size;
                     std::memcpy(&list_size, data + proto.parameters_off, sizeof(uint32_t));
-                    
+                    const size_t proto_left =
+                        (current_size_ - proto.parameters_off - sizeof(uint32_t)) /
+                        sizeof(uint16_t);
+                    if (list_size > proto_left) list_size = (uint32_t)proto_left;
+
                     for (uint32_t p = 0; p < list_size; p++) {
                         uint16_t type_idx;
                         size_t param_off = proto.parameters_off + sizeof(uint32_t) + p * sizeof(uint16_t);
-                        if (param_off + sizeof(uint16_t) <= current_size_) {
-                            std::memcpy(&type_idx, data + param_off, sizeof(uint16_t));
-                            mi.parameters.push_back(get_type(type_idx));
-                        }
+                        if (param_off + sizeof(uint16_t) > current_size_) break;
+                        std::memcpy(&type_idx, data + param_off, sizeof(uint16_t));
+                        mi.parameters.push_back(get_type(type_idx));
                     }
                 }
             }

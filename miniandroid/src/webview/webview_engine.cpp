@@ -755,7 +755,10 @@ static JSValue el_set_canvas_w(JSContext* ctx, JSValueConst this_v, int argc, JS
     if (n) {
         int32_t w = 300; JS_ToInt32(ctx, &w, argv[0]);
         if (!n->canvas) n->canvas = std::make_unique<Canvas2D>();
-        n->canvas->set_size(std::max(1, w), n->canvas->height());
+        // AUDIT-C8: cap the canvas side — an app-side `canvas.width = 7e4`
+        // used to reach the FrameBuffer ctor unbounded (int-overflowed
+        // pixel counts). 8192 = FrameBuffer::kMaxSide.
+        n->canvas->set_size(std::max(1, std::min(w, 8192)), n->canvas->height());
     }
     return JS_UNDEFINED;
 }
@@ -768,7 +771,8 @@ static JSValue el_set_canvas_h(JSContext* ctx, JSValueConst this_v, int argc, JS
     if (n) {
         int32_t h = 150; JS_ToInt32(ctx, &h, argv[0]);
         if (!n->canvas) n->canvas = std::make_unique<Canvas2D>();
-        n->canvas->set_size(n->canvas->width(), std::max(1, h));
+        // AUDIT-C8: same side cap as el_set_canvas_w.
+        n->canvas->set_size(n->canvas->width(), std::max(1, std::min(h, 8192)));
     }
     return JS_UNDEFINED;
 }

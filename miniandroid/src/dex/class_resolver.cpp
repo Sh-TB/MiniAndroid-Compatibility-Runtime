@@ -467,20 +467,23 @@ std::string ClassResolver::to_hex(uint32_t value) const {
 
 std::string ClassResolver::to_readable_class(const std::string& descriptor) const {
     if (descriptor.empty()) return "<empty>";
-    
+
     std::string result = descriptor;
-    
+
     // Remove leading 'L' and trailing ';'
-    if (result.front() == 'L') {
+    // AUDIT-M7 (2026-11-23): a one-char descriptor "L" (or ";") left
+    // result empty and back() was UB — string-pool junk hits this verbatim.
+    if (!result.empty() && result.front() == 'L') {
         result = result.substr(1);
     }
-    if (result.back() == ';') {
+    if (!result.empty() && result.back() == ';') {
         result = result.substr(0, result.length() - 1);
     }
-    
+    if (result.empty()) return "<empty>";
+
     // Replace '/' with '.'
     std::replace(result.begin(), result.end(), '/', '.');
-    
+
     return result;
 }
 

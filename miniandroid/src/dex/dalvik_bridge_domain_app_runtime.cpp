@@ -4050,7 +4050,30 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
         std::string prefs_pkg = package_name_.empty() ? std::string("unknown.package") : package_name_;
         // F-NEW-234: per-package law — <root>/data/data/<pkg>/shared_prefs.
         std::string prefs_dir = Storage::context_dir("shared_prefs").string();
-        std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
+        // AUDIT-C6 (2026-11-23): the prefs name rides verbatim into the
+        // host path — `../../..` or an absolute name read/wrote ANY host
+        // file. Law: a prefs name is a single path token — keep
+        // [A-Za-z0-9._-], defuse everything else. AOSP
+        // ContextImpl.makeFilename rejects path separators with the same
+        // intent.
+        auto prefs_name_token = [](const std::string& raw) {
+            std::string out;
+            for (char c : raw)
+                if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                    (c >= '0' && c <= '9') || c == '.' || c == '_' ||
+                    c == '-')
+                    out.push_back(c);
+            // Collapse consecutive dots — a filtered traversal name must
+            // never still contain a ".." substring.
+            std::string collapsed;
+            for (char c : out) {
+                if (c == '.' && !collapsed.empty() && collapsed.back() == '.')
+                    continue;
+                collapsed.push_back(c);
+            }
+            return collapsed.empty() ? std::string("default") : collapsed;
+        };
+        std::string prefs_file = prefs_dir + "/" + prefs_name_token(prefs_name) + ".xml";
         std::ifstream infile(prefs_file);
         if (infile.is_open()) {
             std::string line;
@@ -4246,7 +4269,30 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
         std::string prefs_pkg = package_name_.empty() ? std::string("unknown.package") : package_name_;
         // F-NEW-234: per-package law — <root>/data/data/<pkg>/shared_prefs.
         std::string prefs_dir = Storage::context_dir("shared_prefs").string();
-        std::string prefs_file = prefs_dir + "/" + prefs_name + ".xml";
+        // AUDIT-C6 (2026-11-23): the prefs name rides verbatim into the
+        // host path — `../../..` or an absolute name read/wrote ANY host
+        // file. Law: a prefs name is a single path token — keep
+        // [A-Za-z0-9._-], defuse everything else. AOSP
+        // ContextImpl.makeFilename rejects path separators with the same
+        // intent.
+        auto prefs_name_token = [](const std::string& raw) {
+            std::string out;
+            for (char c : raw)
+                if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                    (c >= '0' && c <= '9') || c == '.' || c == '_' ||
+                    c == '-')
+                    out.push_back(c);
+            // Collapse consecutive dots — a filtered traversal name must
+            // never still contain a ".." substring.
+            std::string collapsed;
+            for (char c : out) {
+                if (c == '.' && !collapsed.empty() && collapsed.back() == '.')
+                    continue;
+                collapsed.push_back(c);
+            }
+            return collapsed.empty() ? std::string("default") : collapsed;
+        };
+        std::string prefs_file = prefs_dir + "/" + prefs_name_token(prefs_name) + ".xml";
         std::ifstream infile(prefs_file);
         if (infile.is_open()) {
             // ST-6 FIX round-trip: the writer XML-escapes names/values — the

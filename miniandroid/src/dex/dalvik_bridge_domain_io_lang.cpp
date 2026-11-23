@@ -7572,23 +7572,57 @@ bool DalvikExecutionEngine::bridge_domain_io_lang(
         } else {
             // System.load(absolute path): resolve the logical nativeLibraryDir
             // spelling to the extracted backing when the caller addresses it.
+            // AUDIT-H7 (2026-11-23): leg 1 appended the raw suffix —
+            // "/../../../home/u/evil.so" passed the prefix test and dlopen'd
+            // an arbitrary host ELF; leg 2 accepted ANY existing absolute
+            // path. Law: normalize, re-check the containment, and keep the
+            // free-absolute leg restricted to paths the runtime itself
+            // materializes (the app's store tree) — the design contract
+            // ("only the APK's own libs are dlopen'd") restored.
+            std::filesystem::path lib_norm =
+                std::filesystem::path(lib).lexically_normal();
+            auto under = [](const std::filesystem::path& base,
+                            const std::filesystem::path& child) {
+                auto b = base.begin();
+                auto c = child.begin();
+                for (; b != base.end(); ++b, ++c)
+                    if (c == child.end() || *b != *c) return false;
+                return true;
+            };
             if (!native_lib_dir_host_.empty() &&
                 lib.rfind(native_lib_dir_logical_, 0) == 0) {
                 std::string suffix = lib.substr(native_lib_dir_logical_.size());
                 std::filesystem::path cand = std::filesystem::path(
                     native_lib_dir_host_) /
                     (suffix.empty() ? "" : suffix.substr(1));
+                cand = cand.lexically_normal();
                 std::error_code ld_ec;
-                if (std::filesystem::exists(cand, ld_ec) && !ld_ec) {
+                bool contained = under(std::filesystem::path(
+                                           native_lib_dir_host_).lexically_normal(),
+                                       cand);
+                if (contained && std::filesystem::exists(cand, ld_ec) && !ld_ec) {
                     extracted_file = cand.string();
                     logical_file = lib;
+                } else if (!contained) {
+                    std::cerr << "[AUDIT-H7] System.load escape DENIED: "
+                              << lib << std::endl;
                 }
             } else {
                 std::error_code le_ec;
+                // Leg 2: only paths inside the runtime's OWN store tree
+                // (the data root) are loadable — a host-wide ELF was never
+                // in the contract.
+                const std::string store_root = Storage::app_data_root();
                 std::filesystem::path p(lib);
-                if (std::filesystem::exists(p, le_ec) && !le_ec) {
-                    extracted_file = lib;
+                if (!store_root.empty() &&
+                    under(std::filesystem::path(store_root).lexically_normal(),
+                          p.lexically_normal()) &&
+                    std::filesystem::exists(p, le_ec) && !le_ec) {
+                    extracted_file = p.lexically_normal().string();
                     logical_file = lib;
+                } else if (std::filesystem::exists(p, le_ec) && !le_ec) {
+                    std::cerr << "[AUDIT-H7] System.load outside the store "
+                                 "tree DENIED: " << lib << std::endl;
                 }
             }
         }

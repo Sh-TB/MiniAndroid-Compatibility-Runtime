@@ -361,7 +361,11 @@ runtime::ExecutionResult run_on_art_sized_stack(
     F083Invoke inv{&engine, &apk_path, &config, {}};
     pthread_attr_t attr;
     int rc = pthread_attr_init(&attr);
-    if (rc == 0) {
+    // AUDIT-L5 (2026-11-23): destroy() ran even when attr_init failed
+    // (destroy on an UNINITIALIZED attr object is UB per POSIX). The
+    // attr is destroyed exactly once, on the init-success paths only.
+    bool attr_live = (rc == 0);
+    if (attr_live) {
         // 1GB VIRTUAL stack ≈ 12k DEX frames at the measured 80KB/frame
         // (ART main-thread budgets are thousands of frames). Virtual
         // reservation only; resident cost stays proportional to the
@@ -375,7 +379,7 @@ runtime::ExecutionResult run_on_art_sized_stack(
         pthread_join(tid, nullptr);
         return inv.result;
     }
-    pthread_attr_destroy(&attr);
+    if (attr_live) pthread_attr_destroy(&attr);
     // Deep-stack thread unavailable (rlimit): fall back to the caller
     // stack — the pre-F-083 behavior — rather than fail the run.
     inv.result = engine.execute(apk_path, config);

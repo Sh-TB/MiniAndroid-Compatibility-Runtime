@@ -357,7 +357,9 @@ public:
     }
     uint32_t runtime_id() const { return runtime_id_; }
 private:
-    HeapAllocator* heap_ = nullptr;
+    // AUDIT-L2 (2026-11-23): this child used to RE-DECLARE heap_, shadowing
+    // Shadow::heap_ — every base-class read saw null. The base member is
+    // the single store (the init override assigns it directly).
     uint32_t runtime_id_ = 0;
 };
 
@@ -462,7 +464,8 @@ public:
     }
 
 private:
-    HeapAllocator* heap_ = nullptr;
+    // AUDIT-L2: heap_ re-declaration removed (shadowed the base member) —
+    // Shadow::heap_ is the single store.
     std::vector<PendingTx> committed_;
     std::vector<FragmentRec> fragments_;
     bool drain_requested_ = false;

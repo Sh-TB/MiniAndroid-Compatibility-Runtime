@@ -283,9 +283,14 @@ void Canvas2D::fill_poly_scanline(const std::vector<PathPoint>& pts, uint32_t co
 
 void Canvas2D::stroke_polyline(const std::vector<PathPoint>& pts, uint32_t color, float alpha, float width) {
     int w = std::max(1, int(width + .5f));
+    // AUDIT-M11 (2026-11-23): the step count scaled with the segment
+    // length — one hostile lineTo(1e8, ...) issued 2e8 blend iterations.
+    // Cap: 8192 steps per segment (a real canvas segment never needs more).
+    constexpr int kMaxPolySteps = 8192;
     for (size_t i = 0; i + 1 < pts.size(); ++i) {
         float x0 = pts[i].x, y0 = pts[i].y, x1 = pts[i + 1].x, y1 = pts[i + 1].y;
         int steps = std::max(1, int(std::max(::fabsf(x1 - x0), ::fabsf(y1 - y0)) * 2));
+        if (steps > kMaxPolySteps) steps = kMaxPolySteps;
         for (int s = 0; s <= steps; ++s) {
             float t = float(s) / steps;
             float px = x0 + t * (x1 - x0), py = y0 + t * (y1 - y0);
@@ -371,6 +376,11 @@ void Canvas2D::move_to(float x, float y) {
     path_.push_back(p);
 }
 void Canvas2D::line_to(float x, float y) {
+    // AUDIT-M11: the path is a growth vector the app drives (an arc loop
+    // appends ~80 pts/call) — cap it; a real canvas path stays orders of
+    // magnitude below this.
+    constexpr size_t kMaxPathPoints = 1u << 20;
+    if (path_.size() >= kMaxPathPoints) return;
     PathPoint p; map_point(x, y, p.x, p.y);
     path_.push_back(p);
 }

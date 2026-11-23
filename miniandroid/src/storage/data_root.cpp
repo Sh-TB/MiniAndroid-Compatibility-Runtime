@@ -267,7 +267,13 @@ PathResolution resolve_android_path(const std::string& logical) {
                 return r;  // DENY foreign package private data
             r.category = PathCategory::SANDBOX_DATA;
             fs::path base = fs::path(g_app_data_root) / "data" / "data" / pkg;
-            r.host_path = tail.empty() ? base : base / tail;
+            fs::path host = tail.empty() ? base : (base / tail).lexically_normal();
+            // AUDIT-C5 (2026-11-23): the tail was appended unchecked while
+            // the sibling branches (relative paths, /storage, fonts) apply
+            // path_contained — files/../../../* walked straight out of the
+            // sandbox to an arbitrary host path. Same fence, same law.
+            if (!path_contained(base, host)) return r;  // DENY escape
+            r.host_path = host;
             r.allowed = true;
             return r;
             }
@@ -317,7 +323,12 @@ PathResolution resolve_android_path(const std::string& logical) {
                     base = fs::path(g_app_data_root) / "data" / "users" /
                            user_id / pkg;
                 }
-                r.host_path = tail.empty() ? base : base / tail;
+                // AUDIT-C5 (2026-11-23): same tail-containment fence as the
+                // /data/data branch — /data/user spells the same sandbox,
+                // so it must carry the same escape DENY.
+                fs::path host_u = tail.empty() ? base : (base / tail).lexically_normal();
+                if (!path_contained(base, host_u)) return r;  // DENY escape
+                r.host_path = host_u;
                 r.allowed = true;
                 return r;
             }

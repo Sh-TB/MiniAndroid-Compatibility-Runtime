@@ -2440,6 +2440,12 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                                            " len=" + std::to_string(len) +
                                            " arr_len=" + std::to_string(arr_len),
                                        "STREAM-READ");
+                        // AUDIT-H2 (2026-11-23): this return path skipped
+                        // the recursion_depth_ decrement — every hostile
+                        // read() burned one unit of the 2048 budget
+                        // FOREVER. The sibling success paths decrement
+                        // before their return; so does this one now.
+                        recursion_depth_--;
                         return true;
                     }
                     size_t remaining = content.size() - p;
@@ -7257,6 +7263,10 @@ bool DalvikExecutionEngine::try_recursive_invoke(
                            "f141-null-recv-core");
             return_val = DalvikValue::make_null();
             last_invoke_return_ = return_val;
+            // AUDIT-H2 (2026-11-23): second permanent-budget leak path —
+            // the null-receiver NPE returned without releasing the unit
+            // the entry took (the androidx pattern fires this CONSTANTLY).
+            recursion_depth_--;
             return true;
         }
         uint64_t f107_e0 = 0; phase_clock().enter(phase_clock().invoke_execute, f107_e0);

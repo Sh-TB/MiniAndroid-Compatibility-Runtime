@@ -1,15 +1,15 @@
 {
   "activity": "org.ecos.logic.flip_a_coin.MainActivity",
   "apk_package": "org.ecos.logic.flip_a_coin",
-  "duration_ms": 6745,
+  "duration_ms": 7411,
   "events_retained": 205,
   "events_total": 205,
   "first_divergence": null,
   "first_failure_event": null,
   "frame_analysis": {
     "app_draw_ops": 2,
-    "app_owned_pixels": 234,
-    "app_owned_pixels_inside_content_bounds": 234,
+    "app_owned_pixels": 113430,
+    "app_owned_pixels_inside_content_bounds": 113430,
     "auth_root_valid": true,
     "budget_exhausted": false,
     "content_bounds": {
@@ -29,7 +29,7 @@
     "dominant_color": [
       "#fef7ff"
     ],
-    "dominant_pct": 99.98871527777777,
+    "dominant_pct": 94.52980324074075,
     "draw_budget_halt": false,
     "draw_walk_ran": true,
     "height": 1920,
@@ -42,19 +42,19 @@
     "no_root": false,
     "nodes_skipped_depth": 0,
     "nodes_visited": 6,
-    "non_default_pixels": 234,
+    "non_default_pixels": 113430,
     "presentation": "this_frame",
     "render_exception": false,
-    "screenshot_sha256": "b492ee85799fb2cb3491b25a6cc8dcf6ccd97d3dd4b0e3b065d7b896cbefdbff",
+    "screenshot_sha256": "6808aa29ff941dae9963209cbce98e8f9a46ec58f363b502423ccd3b2eb81f98",
     "size": "1080x1920",
     "synthetic_suppressed": false,
-    "unique_colors": 47,
+    "unique_colors": 70,
     "unreachable_children": 0,
     "verdict": "REAL_APP_CONTENT",
     "verdict_law": "21-P0-6 pixel ownership + correlated proof",
     "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
     "width": 1080,
-    "window_background_px": 2073366,
+    "window_background_px": 1960170,
     "window_chrome_pixels": 0
   },
   "instrument": "S135 VISUAL RUNTIME BOOT/TRACE LOGGER",
@@ -66,12 +66,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 174,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460565
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408005908
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -80,12 +80,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 175,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460565
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408005908
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -94,12 +94,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 176,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460565
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408005908
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -108,12 +108,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 177,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460676
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006021
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -122,12 +122,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 178,
       "sev": "CONFIRMED",
       "state": "root_id=854",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460676
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006021
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -136,12 +136,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 179,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=2 diag_regions=2",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460761
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006123
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -150,12 +150,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 180,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460761
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006123
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -164,12 +164,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 181,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460761
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006123
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -178,12 +178,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 182,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460761
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006123
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -192,12 +192,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 183,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460871
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006234
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -206,12 +206,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 184,
       "sev": "CONFIRMED",
       "state": "root_id=854",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460871
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006234
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -220,12 +220,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 185,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=2 diag_regions=2",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460946
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006326
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -234,12 +234,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 186,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460946
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006326
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -248,12 +248,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 187,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460946
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006326
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -262,12 +262,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 188,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377460946
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006326
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -276,12 +276,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 189,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461057
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006437
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -290,12 +290,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 190,
       "sev": "CONFIRMED",
       "state": "root_id=854",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461057
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006437
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -304,12 +304,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 191,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=2 diag_regions=2",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461139
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006530
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -318,12 +318,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 192,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461139
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006530
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -332,12 +332,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 193,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461139
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006530
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -346,12 +346,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 194,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461139
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006530
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -360,12 +360,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "PENDING",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 195,
       "sev": "PENDING",
       "state": "measure/layout/draw pass",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461249
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006642
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -374,12 +374,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 196,
       "sev": "CONFIRMED",
       "state": "root_id=854",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461249
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006642
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -388,12 +388,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 197,
       "sev": "CONFIRMED",
       "state": "nonwhite=2073600 total=2073600 app_ops=2 diag_regions=2",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461334
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006737
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -402,12 +402,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 198,
       "sev": "CONFIRMED",
       "state": "visited=6",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461334
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006737
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -416,12 +416,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 199,
       "sev": "CONFIRMED",
       "state": "layout_src=inflater",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461334
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006737
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -430,12 +430,12 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 200,
       "sev": "CONFIRMED",
       "state": "app_ops=2",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461334
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006737
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -444,30 +444,30 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 201,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461335
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006737
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
       "component": "capture",
       "event": "FRAME_CAPTURE",
       "extra": {
-        "bytes": 10844,
+        "bytes": 17113,
         "path": "evidence/s27/w3_flip_r2/screenshot.png"
       },
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 202,
       "sev": "CONFIRMED",
       "state": "1080x1920",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461407
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006809
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -477,24 +477,24 @@
         "dominant_color": [
           "#fef7ff"
         ],
-        "dominant_pct": 99.98871527777777,
+        "dominant_pct": 94.52980324074075,
         "height": 1920,
-        "non_default_pixels": 234,
-        "screenshot_sha256": "b492ee85799fb2cb3491b25a6cc8dcf6ccd97d3dd4b0e3b065d7b896cbefdbff",
+        "non_default_pixels": 113430,
+        "screenshot_sha256": "6808aa29ff941dae9963209cbce98e8f9a46ec58f363b502423ccd3b2eb81f98",
         "size": "1080x1920",
-        "unique_colors": 47,
+        "unique_colors": 70,
         "verdict": "REAL_APP_CONTENT",
         "width": 1080
       },
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 203,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461431
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006822
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -502,8 +502,8 @@
       "event": "TRACE_MARK",
       "extra": {
         "app_draw_ops": 2,
-        "app_owned_pixels": 234,
-        "app_owned_pixels_inside_content_bounds": 234,
+        "app_owned_pixels": 113430,
+        "app_owned_pixels_inside_content_bounds": 113430,
         "auth_root_valid": true,
         "budget_exhausted": false,
         "content_bounds": {
@@ -537,18 +537,18 @@
         "unreachable_children": 0,
         "verdict_law": "21-P0-6 pixel ownership + correlated proof",
         "verdict_regions_law": "V1/V7: WINDOW_BACKGROUND=dominant; AUTHORITATIVE_APP_CONTENT=non-dominant inside content bounds; WINDOW_CHROME=non-dominant outside; DIAGNOSTIC_OVERLAY=separate trace_overlay.png",
-        "window_background_px": 2073366,
+        "window_background_px": 1960170,
         "window_chrome_pixels": 0
       },
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "CENSUS",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 204,
       "sev": "INFO",
       "state": "REAL_APP_CONTENT",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461431
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006823
     },
     {
       "activity": "org.ecos.logic.flip_a_coin.MainActivity",
@@ -560,20 +560,20 @@
       "package": "org.ecos.logic.flip_a_coin",
       "renderer_family": "COMPOSE",
       "result": "OK",
-      "run_id": "1795377454769-1",
+      "run_id": "1795407999495-1",
       "seq": 205,
       "sev": "CONFIRMED",
-      "state": "Execution completed successfully [F-NEW-200 stub-census: 35967 IMPLEMENTED, 2019 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
-      "thread": "tid:140637153085120",
-      "ts_ms": 1795377461514
+      "state": "Execution completed successfully [F-NEW-200 stub-census: 50400 IMPLEMENTED, 2919 STUBBED, 0 MISSING, 0 ERROR — success claim is stubby-bounded; per-call truth in api_calls.json]",
+      "thread": "tid:140446670468800",
+      "ts_ms": 1795408006906
     }
   ],
   "last_exception": null,
   "lifecycle": "RESUMED",
   "renderer_family": "COMPOSE",
-  "run_id": "1795377454769-1",
+  "run_id": "1795407999495-1",
   "schema": "miniandroid.boot_trace/1.0",
-  "session_id": "EXP-001-20261122-195734-7445",
+  "session_id": "EXP-001-20261123-042639-7430",
   "severity_census": {
     "CONFIRMED": 167,
     "INFO": 4,
