@@ -2351,6 +2351,8 @@ public:
         return {"<init>", "setId", "getId", "getParent",
                 "addView", "addViewInLayout", "removeView",
                 "removeViewInLayout", "removeAllViews",
+                // F-NEW-685 (W31): the index-based removal family.
+                "removeViewAt", "removeViews", "removeViewsInLayout",
                 "getChildAt", "getChildCount",
                 "findViewById", "findViewWithTag",
                 "setVisibility", "getVisibility",

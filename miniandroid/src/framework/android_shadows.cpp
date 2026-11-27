@@ -9456,6 +9456,79 @@ CallResult ViewShadow::dispatch(const CallContext& ctx) {
         if (child != 0) remove_child(ctx.receiver_id, child);
         return CallResult::handled_void();
     }
+    // ── F-NEW-685 (W31): the ViewGroup INDEX-based removal family ──────
+    // The runtime had the object-identity removal arms (removeView /
+    // removeViewInLayout above) but NONE of the index arms AOSP apps
+    // drive teardown through: ListView/LinearLayout cleanup code calls
+    // removeViewAt(int) / removeViews(int,int) / removeViewsInLayout(
+    // int,int); every call fell through to the generic stub tail (silent
+    // no-op — the child stayed in mChildren and the app face kept the
+    // removed row). AOSP ViewGroup.java laws (the R-NEW-302 removal
+    // doctrine extended to the index family):
+    //   removeViewAt(int index): getChildAt(index) supplies the child —
+    //     an out-of-range index throws IndexOutOfBoundsException from
+    //     getChildAt's bounds check BEFORE any removal; a valid index
+    //     removes the child (mChildren compacts, child.mParent cleared)
+    //     and requestLayout() fires (the R-NEW-302 full-removal law —
+    //     remove_child() already sets it).
+    //   removeViews(int start, int count): the RANGE removal; the
+    //     out-of-layout form finishes with requestLayout().
+    //   removeViewsInLayout(int start, int count): the layout-pass form —
+    //     identical removal, NO requestLayout (AOSP removeViewInLayout
+    //     contract; the detachViewFromParent family below documents the
+    //     same in-pass rule — a layout request inside the pass it serves
+    //     is meaningless and AOSP does not issue one).
+    //   An invalid range (start<0, count<0, start+count>childCount) walks
+    //     AOSP's raw mChildren[start+i] access → ArrayIndexOutOfBounds-
+    //     Exception; the engine's deferred-throw law carries it as the
+    //     JDK index family (IndexOutOfBoundsException) — the same
+    //     normalization the subList-style bounds arms use. count==0 is
+    //     AOSP's empty-loop no-op (no exception even for a degenerate
+    //     start).
+    if (m == "removeViewAt") {
+        auto* n = find_node(ctx.receiver_id);
+        if (n == nullptr) return CallResult::handled_void();
+        int32_t idx = ctx.arg_as_int(0, -1);
+        if (idx < 0 || static_cast<size_t>(idx) >= n->children.size()) {
+            // AOSP getChildAt bounds check throws before any removal.
+            return CallResult::handled_exception(
+                "Ljava/lang/IndexOutOfBoundsException;",
+                "index=" + std::to_string(idx) + " childCount=" +
+                    std::to_string(n->children.size()));
+        }
+        remove_child(ctx.receiver_id, n->children[static_cast<size_t>(idx)]);
+        return CallResult::handled_void();
+    }
+    if (m == "removeViews" || m == "removeViewsInLayout") {
+        auto* n = find_node(ctx.receiver_id);
+        if (n == nullptr) return CallResult::handled_void();
+        int32_t start = ctx.arg_as_int(0, -1);
+        int32_t count = ctx.arg_as_int(1, 0);
+        if (count == 0) return CallResult::handled_void();
+        if (start < 0 || count < 0 ||
+            static_cast<size_t>(start) + static_cast<size_t>(count) >
+                n->children.size()) {
+            return CallResult::handled_exception(
+                "Ljava/lang/IndexOutOfBoundsException;",
+                "removeViews start=" + std::to_string(start) +
+                    " count=" + std::to_string(count) + " childCount=" +
+                    std::to_string(n->children.size()));
+        }
+        // AOSP removeViewsInLayout iterates BACKWARD (count-1 .. 0) so
+        // the erases stay index-stable; keep the same order.
+        for (int32_t i = count - 1; i >= 0; --i) {
+            const uint32_t child =
+                n->children[static_cast<size_t>(start) +
+                            static_cast<size_t>(i)];
+            if (auto* cn = find_node(child)) cn->parent_id = 0;
+            n->children.erase(n->children.begin() + start + i);
+        }
+        if (m == "removeViews") {
+            // R-NEW-302: the out-of-layout range form → requestLayout.
+            layout_dirty = true;
+        }
+        return CallResult::handled_void();
+    }
     // ── F-NEW-323 (CONT-51): the AOSP ViewGroup detach/attach family ──
     // RecyclerView's ChildHelper drives this family through REAL DEX
     // (solitaire ay$5.c = ChildHelper.Callback.detachViewFromParent,
