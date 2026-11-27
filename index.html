@@ -1,140 +1,25 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniAndroid — Real Gameplay | گیم‌پلی واقعی روی runtime</title>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080d18">
+<meta name="description" content="MiniAndroid Showcase — real Android apps and games executed by the MiniAndroid compatibility runtime, with auditable evidence.">
+<title>MiniAndroid — Runtime Showcase</title>
 <style>
-  :root {
-    --bg: #0d1117; --card: #161b27; --border: #2d3748;
-    --text: #e6edf3; --muted: #9aa7b8; --accent: #22c55e; --blue: #58a6ff;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg); color: var(--text);
-    font-family: "Vazirmatn", "Segoe UI", Tahoma, sans-serif;
-    line-height: 1.8; padding: 24px 16px 60px;
-  }
-  .wrap { max-width: 780px; margin: 0 auto; }
-  h1 { font-size: 1.55rem; text-align: center; margin: 18px 0 6px; }
-  h1 .en { color: var(--blue); }
-  .sub { text-align: center; color: var(--muted); margin-bottom: 22px; font-size: .95rem; }
-  .card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 14px; padding: 18px; margin-bottom: 20px;
-  }
-  .gifbox { text-align: center; }
-  .gifbox img {
-    max-width: 100%; border-radius: 10px;
-    border: 1px solid var(--border); background: #fff;
-  }
-  .shots { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
-  .shots img { max-width: 46%; border-radius: 8px; border: 1px solid var(--border); }
-  .caption { color: var(--muted); font-size: .85rem; margin-top: 10px; text-align: center; }
-  h2 { font-size: 1.12rem; margin-bottom: 10px; }
-  h2 .en { color: var(--accent); }
-  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
-  td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  td:first-child { color: var(--muted); white-space: nowrap; width: 42%; }
-  code {
-    background: #0d1117; border: 1px solid var(--border); border-radius: 6px;
-    padding: 1px 6px; font-size: .82em; direction: ltr; unicode-bidi: embed;
-    font-family: "Sarasa Mono SC", Consolas, monospace; color: var(--blue);
-    word-break: break-all;
-  }
-  .fa { direction: rtl; text-align: right; }
-  .en-block { direction: ltr; text-align: left; }
-  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .badge {
-    background: #10243a; color: var(--blue); border: 1px solid #1f4a70;
-    border-radius: 999px; padding: 3px 12px; font-size: .8rem;
-  }
-  .ok { color: #3fb950; font-weight: 700; }
-  a { color: var(--blue); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .stats { color: var(--accent); font-size: .85rem; text-align:center; margin-top:6px; }
-</style>
-</head>
-<body>
-<div class="wrap">
-
-  <h1>MiniAndroid <span class="en">— Real Gameplay Proof</span></h1>
-  <div class="sub">سه بازی واقعی (APK واقعی اندروید) اجرا و بازی شده روی runtime سازگاری MiniAndroid — S80</div>
-
-  <div class="card">
-    <h2><span class="en">1 · Snake Deluxe</span> — اسنک Deluxe</h2>
-    <div class="gifbox">
-      <img src="snake_gameplay.gif" alt="Snake Deluxe gameplay GIF" loading="lazy">
-    </div>
-    <div class="stats">۹ بار سیب خورده شد · مار از ۳ قطعه به ۱۱ قطعه رسید · SCORE 9 · BEST 9</div>
-    <table class="fa">
-      <tr><td>APK</td><td class="en-block"><code>snake_deluxe_v1.0_vc1.apk</code> — ساخته‌شده در همین موج (S80)، جاوا خالص android.jar</td></tr>
-      <tr><td>گرافیک</td><td class="fa">صفحه شطرنجی تیره، مار سبز راه‌راه با سر و چشم جهت‌دار، سیب با ساقه و برگ، نوار امتیاز — همه با <code>Canvas.onDraw</code> واقعی</td></tr>
-      <tr><td>کنترل</td><td class="fa">دکمه‌های START / TOP / LEFT / RIGHT / BOTTOM — لمس واقعی از طریق TouchDispatcher</td></tr>
-    </table>
-  </div>
-
-  <div class="card">
-    <h2><span class="en">2 · Mini Tetris</span> — تتریس</h2>
-    <div class="gifbox">
-      <img src="tetris_gameplay.gif" alt="Mini Tetris gameplay GIF" loading="lazy">
-    </div>
-    <div class="stats">۷ مهره چیده و قفل شد · پالت ۷ رنگ کلاسیک · پنل NEXT / SCORE / LINES / LEVEL</div>
-    <table class="fa">
-      <tr><td>APK</td><td class="en-block"><code>tetris_v1.0_vc1.apk</code> — موج S80</td></tr>
-      <tr><td>گرافیک</td><td class="fa">مهره‌های براق گردگوشه باHighlights، شبکه‌ی زمین بازی، پیش‌نمایش مهره بعدی</td></tr>
-      <tr><td>مکانیک</td><td class="fa">چرخش با wall-kick، قفل و حذف سطر، امتیازدهی کلاسیک 100/300/500/800</td></tr>
-    </table>
-  </div>
-
-  <div class="card">
-    <h2><span class="en">3 · 2048</span> — بازی ۲۰۴۸</h2>
-    <div class="gifbox">
-      <img src="g2048_gameplay.gif" alt="2048 gameplay GIF" loading="lazy">
-    </div>
-    <div class="stats">۶۴ حرکت · SCORE 684 · بالاترین کاشی 64 · مکانیک کلاسیک Gabriele Cirulli</div>
-    <table class="fa">
-      <tr><td>APK</td><td class="en-block"><code>g2048_v1.0_vc1.apk</code> — موج S80</td></tr>
-      <tr><td>گرافیک</td><td class="fa">پالت رنگی اصلی ۲۰۴۸ برای هر مقدار، کاشی‌های گردگوشه با اعداد بولد</td></tr>
-      <tr><td>مکانیک</td><td class="fa">لغزش و ادغام کامل در ۴ جهت، تولید 2/4 بعد از هر حرکت، تشخیص پایان بازی</td></tr>
-    </table>
-  </div>
-
-  <div class="card">
-    <h2><span class="en">Upload Rules</span> — قوانین آپلود (ثبت‌شده از S80)</h2>
-    <table class="fa">
-      <tr><td>سایت اصلی</td><td class="en-block">این صفحه = شاخه <code>gh-pages</code> همان ریپو</td></tr>
-      <tr><td>لینک زنده (بدون اکانت)</td><td class="en-block">
-        <code>https://raw.githack.com/Sh-TB/MiniAndroid-Compatibility-Runtime/gh-pages/index.html</code><br>
-        <code>https://cdn.jsdelivr.net/gh/Sh-TB/MiniAndroid-Compatibility-Runtime@gh-pages/index.html</code></td></tr>
-      <tr><td>نیاز به اکانت؟</td><td class="fa">مشاهده: <span class="ok">نه</span> — CDNهای githack/jsDelivr بدون اکانت سرو می‌کنند. انتشار (push): فقط با PAT گیت‌هاب که در اختیار runtime است؛ GitHub Pages API با این PAT غیرفعال است (pages:write نیست — ثبت شده) بنابراین مسیر CDN رسمی همین است.</td></tr>
-      <tr><td>قانون ثابت</td><td class="fa">هر GIF/اسکرین‌شات اثبات = فریم‌های واقعی خروجی runtime (بدون دست‌کاری گرافیک)؛ فقط کوچک‌سازی + نوار عنوان باریک مجاز است.</td></tr>
-    </table>
-  </div>
-
-  <div class="card">
-    <h2 class="en-block">Verification (S80)</h2>
-    <table class="en-block">
-      <tr><td>Snake Deluxe autoplay</td><td class="ok">9 captures</td><td>vision-planned taps, C7 prefix-SHA verified</td></tr>
-      <tr><td>Mini Tetris autoplay</td><td class="ok">7 locks</td><td>greedy placer, pixel-arbitrated anchors</td></tr>
-      <tr><td>2048 autoplay</td><td class="ok">64 moves · 684 pts</td><td>64/64 prefix-SHA verified</td></tr>
-      <tr><td>Golden regression</td><td class="ok">26/26 · 90/90</td><td>battery + verifier SAME + fidelity BYTE-IDENTICAL</td></tr>
-      <tr><td>App ladder sweep</td><td class="ok">20/20 load</td><td>every inventory APK re-run at HEAD</td></tr>
-    </table>
-    <div class="badges">
-      <span class="badge">real-dalvik</span>
-      <span class="badge">Canvas.onDraw</span>
-      <span class="badge">TouchDispatcher</span>
-      <span class="badge">no emulator</span>
-      <span class="badge">no game patches</span>
-    </div>
-  </div>
-
-  <div class="card fa">
-    <h2>چطور خودت بازی کنی؟</h2>
-    <p>هر سه بازی APK استاندارد اندروید هستند و روی هر گوشی اندرویدی نصب می‌شوند؛ روی MiniAndroid runtime هم با همین گرافیک اجرا می‌شوند. فایل‌ها در پوشه <code class="ltr">upload/s80_games/</code> ریپو هستند.</p>
-  </div>
-
-</div>
-</body>
-</html>
+:root{color-scheme:dark;--bg:#080d18;--panel:#101b2b;--line:#263951;--text:#eef5ff;--muted:#91a5bf;--cyan:#73e5dc;--blue:#9ab8ff;--green:#80e0a6;--amber:#f2c56c;--red:#ff8c9a;--violet:#c0aaff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(850px 520px at 85% -5%,#456fc533,transparent 65%),radial-gradient(650px 500px at 0 15%,#2fcfc21b,transparent 65%),var(--bg);color:var(--text);font:15px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 40px));margin:auto}.top{height:74px;border-bottom:1px solid #9aacc21c;display:flex;align-items:center}.nav{display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{display:flex;gap:11px;align-items:center;font-weight:850;letter-spacing:.04em}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(140deg,#83e8dd,#8caeff);display:grid;place-items:center;color:#07121d;font-size:21px}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.18em}.links{display:flex;gap:24px;color:var(--muted);font-size:12px}.pill{border:1px solid var(--line);border-radius:99px;padding:7px 12px;color:#c5d6eb;font-size:11px}.hero{padding:78px 0 48px;display:grid;grid-template-columns:1.12fr .88fr;gap:42px;align-items:center}.eyebrow,.kicker{color:var(--cyan);font-size:10px;font-weight:850;letter-spacing:.2em;text-transform:uppercase}.eyebrow:before{content:"";display:inline-block;width:25px;height:1px;background:var(--cyan);vertical-align:middle;margin-right:10px}h1{font-size:clamp(43px,6.4vw,76px);line-height:1;letter-spacing:-.065em;margin:19px 0}.grad{background:linear-gradient(100deg,#f0f7ff,#8ce8df 55%,#a7baff);color:transparent;background-clip:text}.lead{color:#aabbd0;font-size:16px;max-width:620px;line-height:1.85}.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:27px}.btn{display:inline-flex;padding:11px 15px;border-radius:11px;border:1px solid var(--line);background:#142238;font-size:12px;font-weight:750}.primary{background:linear-gradient(110deg,#83e7dd,#a8c0ff);color:#07121d;border:0}.visual{border:1px solid #30445e;border-radius:25px;padding:22px;background:linear-gradient(145deg,#17283d,#0c1625);box-shadow:0 28px 80px #0007}.vhead,.vfoot{display:flex;justify-content:space-between;color:#91a8c3;font-size:9px;letter-spacing:.13em}.screen{margin-top:22px;padding:17px;border:1px solid #344962;border-radius:17px;background:#08111e}.screenbar{display:flex;justify-content:space-between;color:#8298b2;font-size:9px}.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0}.tile{height:70px;border:1px solid #2e465f;border-radius:12px;background:linear-gradient(145deg,#1a3047,#101d2d);display:grid;place-items:center;color:#8ce8df;font-size:23px}.vfoot{margin-top:13px}.section{padding:34px 0 68px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 52px}.stat{padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#121f30,#0c1624)}.stat label{display:block;color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}.stat strong{display:block;font-size:31px;letter-spacing:-.05em;margin-top:6px}.stat small{color:#8297b0;font-size:10px}.head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:20px}h2{font-size:29px;letter-spacing:-.045em;margin:5px 0}.sub{color:var(--muted);font-size:12px}.filters{display:flex;gap:9px;flex-wrap:wrap;margin:20px 0}.filters input,.filters select{background:#0e1929;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:11px 13px}.filters input{flex:1;min-width:220px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card{border:1px solid var(--line);border-radius:17px;overflow:hidden;background:linear-gradient(155deg,#121f31,#0d1726)}.thumb{height:160px;background:linear-gradient(135deg,#162b40,#0c1725);display:grid;place-items:center;color:#80e4db;font-size:34px}.thumb img{width:100%;height:100%;object-fit:cover}.body{padding:16px}.row{display:flex;justify-content:space-between;gap:8px;align-items:start}.body h3{margin:0;font-size:16px}.pkg{font-size:10px;color:#8297b0;overflow-wrap:anywhere;margin-top:4px}.status{font-size:8px;font-weight:850;letter-spacing:.07em;padding:5px 7px;border-radius:99px;border:1px solid;white-space:nowrap}.current,.interactive{color:var(--green);border-color:#326b55;background:#153126}.historical{color:var(--blue);border-color:#385c86;background:#172b45}.partial,.pending{color:var(--amber);border-color:#705b35;background:#302819}.regressed,.noise{color:var(--red);border-color:#75404a;background:#351e27}.blocked{color:var(--violet);border-color:#594b85;background:#28213d}.desc{min-height:42px;color:#9aacc2;font-size:11px;margin:12px 0}.meta{border-top:1px solid #25364b;padding-top:11px;display:flex;justify-content:space-between;align-items:center;color:#8296ae;font-size:10px}.detail{border:0;color:#9bdedb;background:none;cursor:pointer;font-weight:800}.empty{grid-column:1/-1;text-align:center;padding:45px 20px;border:1px dashed #354b64;border-radius:18px;background:#0d1724}.empty b{display:block;font-size:19px;margin:7px}.empty p{color:var(--muted);font-size:12px;max-width:560px;margin:auto}.method{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.method article{padding:19px;border:1px solid var(--line);border-radius:15px;background:#0f1a2a}.method em{font-style:normal;color:var(--cyan);font-size:10px;font-weight:850;letter-spacing:.15em}.method h3{font-size:14px;margin:9px 0 5px}.method p{color:var(--muted);font-size:11px;margin:0}.note{font-size:10px;color:#8297b0;margin-top:17px}.footer{border-top:1px solid #203047;padding:26px 0 40px;color:#7f93ac;font-size:10px}.foot{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.modal{position:fixed;inset:0;background:#030711e8;display:none;place-items:center;padding:18px;z-index:5}.modal.open{display:grid}.box{width:min(750px,100%);max-height:90vh;overflow:auto;background:#111e30;border:1px solid #3a526e;border-radius:20px;padding:22px}.close{float:right;background:#1a2a40;color:white;border:1px solid #3a4d66;border-radius:8px;padding:7px 10px}.box dl{display:grid;grid-template-columns:145px 1fr;gap:7px;font-size:11px}.box dt{color:#8296ae}.box dd{margin:0;overflow-wrap:anywhere}.box p{color:#a7b9cf;font-size:12px}.box img{max-width:100%;max-height:390px;display:block;margin:14px auto;border-radius:10px}
+@media(max-width:820px){.hero{grid-template-columns:1fr;padding-top:54px}.cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:580px){.wrap{width:calc(100% - 28px)}.links{display:none}.stats{grid-template-columns:repeat(2,1fr)}.cards,.method{grid-template-columns:1fr}.head{display:block}.head .pill{display:inline-block;margin-top:10px}.hero{padding:45px 0 30px}.visual{padding:16px}.thumb{height:190px}}
+</style></head>
+<body><header class="top"><div class="wrap nav"><a class="brand" href="#"><span class="logo">M</span><span>MINIANDROID<small>COMPATIBILITY RUNTIME</small></span></a><nav class="links"><a href="#showcase">Showcase</a><a href="#evidence">Evidence standard</a><a href="#about">About</a></nav><span class="pill">● Evidence-led project</span></div></header>
+<main><section class="wrap hero"><div><div class="eyebrow">Real apps. Real runtime. Verifiable results.</div><h1>Android,<br><span class="grad">brought to life.</span></h1><p class="lead">A public window into Android applications and games executed by MiniAndroid — with genuine runtime captures, exact APK identity, runtime versions and evidence you can inspect.</p><div class="actions"><a class="btn primary" href="#showcase">Explore achievements ↗</a><a class="btn" href="https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime">Source repository ↗</a></div><p class="note">Historical success and current reproducibility are deliberately separated. No invented totals. No screenshot-only claims.</p></div><div class="visual"><div class="vhead"><span>MINIANDROID / RUNTIME VIEW</span><span>PUBLIC ARCHIVE</span></div><div class="screen"><div class="screenbar"><span>APPLICATION SURFACE</span><span>DEX · UI · INPUT</span></div><div class="tiles"><div class="tile">▦</div><div class="tile">◈</div><div class="tile">⌘</div><div class="tile">◎</div><div class="tile">▤</div><div class="tile">✳</div></div><div class="vfoot"><span>APK → RUNTIME → FRAME</span><span>TRACEABLE</span></div></div><div class="vfoot"><span>COMPATIBILITY ARCHIVE</span><span>BUILD · RUN · OBSERVE</span></div></div></section>
+<section class="wrap section" id="showcase"><div class="stats"><div class="stat"><label>Catalogued titles</label><strong id="all">0</strong><small>Evidence records</small></div><div class="stat"><label>Current reproducible</label><strong id="current">0</strong><small>Verified on listed runtime</small></div><div class="stat"><label>Interactive</label><strong id="interactive">0</strong><small>Input path demonstrated</small></div><div class="stat"><label>Historical / other</label><strong id="other">0</strong><small>Preserved with honest status</small></div></div><div class="head"><div><div class="kicker">The evidence archive</div><h2>Apps & games, in action.</h2><div class="sub">Browse achievements and open the technical record behind each result.</div></div><span class="pill" id="loaded">0 records loaded</span></div><div class="filters"><input id="search" type="search" placeholder="Search title, package, category or notes…"><select id="status"><option value="">All statuses</option><option>CURRENT-REPRODUCIBLE</option><option>INTERACTIVE</option><option>HISTORICAL-REAL</option><option>PARTIAL</option><option>REGRESSED</option><option>BLOCKED</option><option>PENDING</option><option>NOISE</option></select><select id="type"><option value="">All types</option><option value="game">Games</option><option value="app">Applications</option></select></div><div class="cards" id="cards"><div class="empty"><b>The archive is ready.</b><p>Verified records will appear here as the project grows. Empty counters are intentional: no achievement is fabricated to make the page look busy.</p></div></div><p class="note">A screenshot alone is not proof. Each record should identify the exact APK, runtime commit and binary, and distinguish launch, visible content and interaction.</p></section>
+<section class="wrap section" id="evidence"><div class="head"><div><div class="kicker">Trust before totals</div><h2>Evidence, not marketing.</h2><div class="sub">Every entry follows the same reproducible chain.</div></div></div><div class="method"><article><em>01 / IDENTITY</em><h3>Pin the exact APK</h3><p>Package, version, source URL and SHA-256 identify the original release artifact. No APK rebuilt from source.</p></article><article><em>02 / EXECUTION</em><h3>Record the runtime</h3><p>Runtime commit, binary hash, date, launch result, first divergence and interaction outcome make each run auditable.</p></article><article><em>03 / EVIDENCE</em><h3>Show the real result</h3><p>Genuine runtime screenshots link to logs and issue evidence. Regressions remain visible instead of disappearing.</p></article></div></section>
+<section class="wrap section" id="about"><div class="kicker">About the project</div><h2>Compatibility measured in real apps.</h2><p class="lead">MiniAndroid is an experimental Android compatibility runtime — not a claim of full Android emulation. This site is its public evidence gallery, designed to grow as capabilities are verified.</p><p class="note"><a href="archive/s80/index.html">View the preserved S80 gameplay page ↗</a></p></section></main>
+<footer class="footer"><div class="wrap foot"><span>© MiniAndroid Compatibility Runtime · Evidence archive</span><span><a href="https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime">GitHub ↗</a> · Static site · No tracking</span></div></footer>
+<div class="modal" id="modal"><div class="box"><button class="close" id="close">Close ✕</button><div id="detail"></div></div></div>
+<script>
+const $=s=>document.querySelector(s),esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),cls=s=>({"CURRENT-REPRODUCIBLE":"current","INTERACTIVE":"interactive","HISTORICAL-REAL":"historical","PARTIAL":"partial","PENDING":"pending","REGRESSED":"regressed","BLOCKED":"blocked","NOISE":"noise"}[s]||"pending");
+let records=[];
+function render(){const q=$("#search").value.toLowerCase(),s=$("#status").value,t=$("#type").value,shown=records.filter(r=>(!q||[r.title,r.package,r.category,r.notes].join(" ").toLowerCase().includes(q))&&(!s||r.status===s)&&(!t||r.type===t));$("#cards").innerHTML=shown.length?shown.map(r=>'<article class="card"><div class="thumb">'+(r.screenshot?'<img loading="lazy" src="'+esc(r.screenshot)+'" alt="Runtime capture" onerror="this.remove()">':'✧')+'</div><div class="body"><div class="row"><div><h3>'+esc(r.title)+'</h3><div class="pkg">'+esc(r.package||"Package not supplied")+'</div></div><span class="status '+cls(r.status)+'">'+esc(r.status||"PENDING")+'</span></div><p class="desc">'+esc(r.notes||"Evidence record pending.")+'</p><div class="meta"><span>'+esc((r.type||"app").toUpperCase())+' · '+esc(r.version||"Version n/a")+'</span><button class="detail" data-id="'+records.indexOf(r)+'">Evidence ↗</button></div></div></article>').join(""):'<div class="empty"><b>No matching records</b><p>Try another search or clear the filters.</p></div>';document.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>details(records[+b.dataset.id]));}
+function details(r){const f=[["Package",r.package],["APK version",r.version],["APK SHA-256",r.apk_sha256],["APK source",r.apk_source],["Runtime commit",r.runtime_commit],["Runtime binary SHA-256",r.runtime_binary_sha256],["Test date",r.test_date],["Launch",r.launch_result],["Visible content",r.visual_result],["Interaction",r.interaction_result],["Known blocker",r.blocker]];$("#detail").innerHTML='<div class="kicker">Evidence record</div><h2>'+esc(r.title)+'</h2><span class="status '+cls(r.status)+'">'+esc(r.status)+'</span>'+(r.screenshot?'<img src="'+esc(r.screenshot)+'" alt="Runtime screenshot">':'')+'<p>'+esc(r.notes||"")+'</p><dl>'+f.filter(x=>x[1]).map(x=>'<dt>'+esc(x[0])+'</dt><dd>'+esc(x[1])+'</dd>').join("")+'</dl><p>'+(r.issue_url?'<a class="btn" href="'+esc(r.issue_url)+'" target="_blank" rel="noopener">Issue evidence ↗</a> ':"")+(r.log_url?'<a class="btn" href="'+esc(r.log_url)+'" target="_blank" rel="noopener">Run log ↗</a>':"")+'</p>';$("#modal").classList.add("open");}
+$("#close").onclick=()=>$("#modal").classList.remove("open");$("#modal").onclick=e=>{if(e.target.id==="modal")$("#modal").classList.remove("open")};["search","status","type"].forEach(id=>$("#"+id).addEventListener("input",render));
+fetch("data/achievements.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(d=>{records=Array.isArray(d.records)?d.records:[];const c=records.filter(r=>r.status==="CURRENT-REPRODUCIBLE").length,i=records.filter(r=>r.status==="INTERACTIVE").length;$("#all").textContent=records.length;$("#current").textContent=c;$("#interactive").textContent=i;$("#other").textContent=records.length-c-i;$("#loaded").textContent=records.length+" records loaded";render();}).catch(()=>{records=[];render();});
+</script></body></html>
