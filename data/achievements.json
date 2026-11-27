@@ -2,5 +2,69 @@
   "schema_version": 1,
   "project": "MiniAndroid Compatibility Runtime",
   "updated_at": "2026-11-27",
-  "records": []
+  "records": [
+    {
+      "title": "Chess Clock",
+      "type": "app",
+      "status": "HISTORICAL-REAL",
+      "package": "com.chessclock.android",
+      "version": "29 (F-Droid)",
+      "apk_source": "https://f-droid.org/repo/com.chessclock.android_29.apk",
+      "runtime_commit": "7354c06",
+      "test_date": "2026-11-02",
+      "launch_result": "SUCCESS · exit 0 · 4 frames · 0 errors · 0 warnings · no LOC_ERR / SGET-MISS / UNCAUGHT",
+      "visual_result": "1080×1920 · 97.01% non-white · 244 distinct colors (120×213 downscale) · 52 ViewTree nodes · screenshot SHA-256 fe3ae1167c9e968cc551fb6b34057d9365cdd4d8f6d04c95d87d7bcf1412dfa6",
+      "interaction_result": "Not demonstrated in this first-render record",
+      "notes": "First successful full-content render in the cited fresh-sandbox run. Historical evidence from runtime commit 7354c06; not a claim of reproduction on today's HEAD. APK SHA is omitted because the achievement issue and its follow-up tracker contain conflicting pins.",
+      "issue_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/452"
+    },
+    {
+      "title": "MicroTimer",
+      "type": "app",
+      "status": "HISTORICAL-REAL",
+      "package": "dubrowgn.microtimer",
+      "version": "8 (F-Droid)",
+      "apk_source": "https://f-droid.org/repo/dubrowgn.microtimer_8.apk",
+      "apk_sha256": "79c6f730f64886e7b6561c2eed1a4420201e6e44a53b635dbb14c0689fd19828",
+      "runtime_commit": "7354c06",
+      "test_date": "2026-11-02",
+      "launch_result": "SUCCESS · exit 0 · 4 frames · 0 errors · 0 warnings · no LOC_ERR / SGET-MISS / UNCAUGHT",
+      "visual_result": "1080×1920 · 43.07% non-white · 188 distinct colors (120×213 downscale) · 104 ViewTree nodes · screenshot SHA-256 bbd350b6c14fbd520403fb193426061adcc9d67f39ac6f733358944c4ee9425f",
+      "interaction_result": "Not demonstrated in this first-render record",
+      "notes": "First reproduced full render; countdown/timer UI is visible. Historical evidence from runtime commit 7354c06; not a claim of reproduction on today's HEAD.",
+      "issue_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/453"
+    },
+    {
+      "title": "uNote",
+      "type": "app",
+      "status": "HISTORICAL-REAL",
+      "package": "app.varlorg.unote",
+      "version": "30 (F-Droid)",
+      "apk_source": "https://f-droid.org/repo/app.varlorg.unote_30.apk",
+      "apk_sha256": "be91103f0e7db44361de5e918d9130dab4ac137bab5bd946a0fd8dab88bc2cc0",
+      "runtime_commit": "7354c06",
+      "test_date": "2026-11-02",
+      "launch_result": "SUCCESS · exit 0 · 4 frames · 0 errors · 0 warnings · no LOC_ERR / SGET-MISS / UNCAUGHT",
+      "visual_result": "1080×1920 · 100.0% non-white · 93 distinct colors (120×213 downscale) · 36 ViewTree nodes · screenshot SHA-256 7481e9b468eaa376af829f31a3231886a489ee9d12a3dbc5c22e77d3fc608379",
+      "interaction_result": "Not demonstrated in this first-render record",
+      "notes": "First reproduced full render; the frame contains the app's own light-theme background and content, not a blank white shell. Historical evidence from runtime commit 7354c06; not a claim of reproduction on today's HEAD.",
+      "issue_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/454"
+    },
+    {
+      "title": "Heading Calculator",
+      "type": "app",
+      "status": "HISTORICAL-REAL",
+      "package": "org.debian.eugen.headingcalculator",
+      "version": "1 (F-Droid)",
+      "apk_source": "https://f-droid.org/repo/org.debian.eugen.headingcalculator_1.apk",
+      "apk_sha256": "274ec873098eea512e10aa6915d2a832a5a17865ee7931bc101fe4832983f93",
+      "runtime_commit": "7354c06",
+      "test_date": "2026-11-02",
+      "launch_result": "SUCCESS · exit 0 · 4 frames · 0 errors · 0 warnings · no LOC_ERR / SGET-MISS / UNCAUGHT",
+      "visual_result": "1080×1920 · 98.68% non-white · 828 distinct colors (120×213 downscale) · 184 ViewTree nodes · screenshot SHA-256 5be093d0fdf97988696c2c956be1c9e5d26b936fa4cf97f234173d1f17c5d5b0",
+      "interaction_result": "Not demonstrated in this first-render record",
+      "notes": "First reproduced full render; custom-drawn compass/heading UI is visible. Historical evidence from runtime commit 7354c06; not a claim of reproduction on today's HEAD.",
+      "issue_url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/455"
+    }
+  ]
 }
