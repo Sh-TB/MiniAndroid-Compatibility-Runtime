@@ -4637,7 +4637,7 @@
    "launched": true,
    "level": 1,
    "level_name": "R1_NO_VALID_VISUAL",
-   "notes": "S23: APP_PIXELS face d55056a8/d602648e; T279 two-run DEFAULT_BACKGROUND_ONLY px 0 unc 10 r1==r2 face d55056a8928a26ff (== S27 wall); custom-cell listener registration gap (0 clickable views at census)",
+   "notes": "S23: APP_PIXELS face d55056a8/d602648e; T279 two-run DEFAULT_BACKGROUND_ONLY px 0 unc 10 r1==r2 face d55056a8928a26ff (== S27 wall); custom-cell listener registration gap (0 clickable views at census) | C2 2026-11-28 census: the 0-clickable census is STRUCTURAL \u2014 itsfrz is a compose app; cell clicks use compose clickable/pointerInput modifiers that never reach ViewShadow (0 setOnClickListener/pointerInput stubs in the whole run; ViewShadow clickables: 0 with --click-test, binary d4bcd762). The census measures View-based clicks only; compose UIs need a compose-node interaction probe (new capability, not a listener-registration fix).",
    "package": "com.itsfrz.tictactoe",
    "proven": "LOADED/LAUNCHED (no visual)",
    "remaining": "custom-cell listener registration",
@@ -4689,7 +4689,7 @@
    "launched": true,
    "level": 1,
    "level_name": "R1_NO_VALID_VISUAL",
-   "notes": "S23: blank; S23-W1 CompositionLocal provider x4/run deterministic; T279 two-run DEFAULT_BACKGROUND_ONLY px 0 unc 33 r1==r2 face d602648e8e401895; compose composition-state layer throw null x22 (the B1-scale model) is the named next frontier | T279 CONT fix 2026-11-28: the T279-LLO-PROVIDE law (dalvik_interpreter.cpp, LocalLifecycleOwner -> the current Activity, the AOSP ComponentActivity-is-the-owner semantic) eliminated the LocalLifecycleOwner ISE layer (uncaught 33->32); janken's named next frontier is androidx Navigation 'You cannot access the Navigator's state until the Navigator is attached' (nav-controller boot-order class \u2014 recorded, not chased); authsrng's remaining blocker is the kotlin-reflect SynchronizedLazyImpl NPE (different class, recorded).",
+   "notes": "S23: blank; S23-W1 CompositionLocal provider x4/run deterministic; T279 two-run DEFAULT_BACKGROUND_ONLY px 0 unc 33 r1==r2 face d602648e8e401895; compose composition-state layer throw null x22 (the B1-scale model) is the named next frontier | T279 CONT fix 2026-11-28: the T279-LLO-PROVIDE law (dalvik_interpreter.cpp, LocalLifecycleOwner -> the current Activity, the AOSP ComponentActivity-is-the-owner semantic) eliminated the LocalLifecycleOwner ISE layer (uncaught 33->32); janken's named next frontier is androidx Navigation 'You cannot access the Navigator's state until the Navigator is attached' (nav-controller boot-order class \u2014 recorded, not chased); authsrng's remaining blocker is the kotlin-reflect SynchronizedLazyImpl NPE (different class, recorded). | C2 2026-11-28: Navigator-attach frontier CLASSIFIED from the fresh stack \u2014 the ISE is thrown from INSIDE the NavHost body (H/p.n pc=275 via j1/J.b) when nav state is read before the Navigator attaches; in AOSP the attach runs earlier in the same composition pass, so a faithful fix needs compose effect-order + nav state-machine emulation (NOT convention-class; fabricating a state object would violate the no-fabrication law). Recorded as the named frontier.",
    "package": "com.attenomy.janken",
    "proven": "LOADED/LAUNCHED (no visual)",
    "remaining": "compose composition-state layer",
@@ -4836,5 +4836,5 @@
   }
  ],
  "wave": "S87 +S141 +T279",
- "generated": "2026-11-28 T279 CONT reconciliation: 9 restored APKs measured (receipt scripts/t279c_restore_receipt.txt), all pairs face-identical; honest R-scale corrections after full visual verification; T279-LLO-PROVIDE law peeled the janken LocalLifecycleOwner layer"
+ "generated": "2026-11-28 T279 CONT reconciliation: 9 restored APKs measured (receipt scripts/t279c_restore_receipt.txt), all pairs face-identical; honest R-scale corrections after full visual verification; T279-LLO-PROVIDE law peeled the janken LocalLifecycleOwner layer | C2 frontier classifications appended"
 }
