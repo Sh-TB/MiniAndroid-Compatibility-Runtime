@@ -1,7 +1,21 @@
 /*
  * MiniAndroid Runtime v0.2 - Real Dalvik Execution Engine Implementation
  * EXP-030: Real Bytecode Execution
- * 
+ *
+ * ██ T281 BUILD-MODE HAZARD (KA-KYK-034 corrected) ██
+ * This monolith is NOT compiled in the default build. Makefile DALVIK_SPLIT=1
+ * (default) builds the split TUs (dalvik_engine_core/_invoke/_tail,
+ * dalvik_interpreter, dalvik_opcodes, dalvik_opcodes_invoke, dalvik_bridge,
+ * dalvik_bridge_domain_*). This file is the DALVIK_SPLIT=0 fallback mirror
+ * only — edits here are invisible to production APK runs unless the fallback
+ * mode is explicitly built. T280's bridge_to_api fix at line ~59471 landed
+ * here and was INERT in the default build; the LIVE bridge_to_api is
+ * dalvik_bridge.cpp:82 (the domain-chain dispatcher — verified as the ONLY
+ * definition in the linked binary: GLOBAL symbol from dalvik_bridge.o;
+ * engine_core/engine_invoke/opcodes_invoke hold UND references only).
+ * Route diagnostic: MINIANDROID_BRIDGE_ROUTE=1 logs [BRIDGE-ROUTE] hops.
+ * Verify any bridge edit against the SPLIT build before claiming integration.
+ *
  * Complete implementation of Dalvik register machine with:
  * - 25+ opcodes executed
  * - Real register state changes

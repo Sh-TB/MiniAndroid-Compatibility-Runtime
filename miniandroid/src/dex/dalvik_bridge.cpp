@@ -86,6 +86,12 @@ bool DalvikExecutionEngine::bridge_to_api(const std::string& class_name,
                                           ApiCallTrace::Status& status,
                                           uint32_t method_idx_hint) {
     bridge_census_init();
+    if (diag_env("MINIANDROID_BRIDGE_ROUTE")) {
+        static thread_local uint64_t brc = 0;
+        if (brc++ < 40)
+            std::cerr << "[BRIDGE-ROUTE] chain-entry " << class_name << "."
+                      << method << std::endl;
+    }
     BridgeCensusGuard c97_census_guard;
     if (bridge_census().on) c97_census_guard.begin(class_name, method);
 

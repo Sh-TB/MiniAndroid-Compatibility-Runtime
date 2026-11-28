@@ -22,6 +22,12 @@ bool DalvikExecutionEngine::bridge_domain_ui_graphics(
     DalvikValue& result = fr.result;
     ApiCallTrace::Status& status = fr.status;
     uint32_t method_idx_hint = fr.method_idx_hint;
+    if (diag_env("MINIANDROID_BRIDGE_ROUTE")) {
+        static thread_local uint64_t brd_ui_graphics = 0;
+        if (brd_ui_graphics++ < 12)
+            std::cerr << "[BRIDGE-ROUTE] domain=ui_graphics " << class_name
+                      << "." << method << std::endl;
+    }
 
     if ((method == "width" || method == "height") &&
         (class_name == "Landroid/graphics/Rect;" ||
@@ -29,6 +35,13 @@ bool DalvikExecutionEngine::bridge_domain_ui_graphics(
         uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
                             ? args[0].object_id : 0;
         if (recv != 0) {
+        if (diag_env("MINIANDROID_BRIDGE_ROUTE")) {
+            static thread_local uint64_t brr = 0;
+            if (brr++ < 24)
+                std::cerr << "[BRIDGE-ROUTE] rectf-law " << class_name << "."
+                          << method << std::endl;
+        }
+
             // T280 (KA-KYK-029): AOSP RectF.width()/height() are FLOAT
             // consumers (RectF.java: "public float width() { return right
             // - left; }") over the FLOAT32 fields the ctor law (F-NEW-169b,

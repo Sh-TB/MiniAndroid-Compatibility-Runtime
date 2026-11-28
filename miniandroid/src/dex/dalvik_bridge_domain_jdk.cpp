@@ -22,6 +22,12 @@ bool DalvikExecutionEngine::bridge_domain_jdk(
     DalvikValue& result = fr.result;
     ApiCallTrace::Status& status = fr.status;
     uint32_t method_idx_hint = fr.method_idx_hint;
+    if (diag_env("MINIANDROID_BRIDGE_ROUTE")) {
+        static thread_local uint64_t brd_jdk = 0;
+        if (brd_jdk++ < 12)
+            std::cerr << "[BRIDGE-ROUTE] domain=jdk " << class_name
+                      << "." << method << std::endl;
+    }
 
     // ── S25-W1c (PH1, flip coin-drawables): the java.util.Arrays.asList
     // arm — JDK-domain home (the dispatch-proven domain; the ui_graphics

@@ -22,6 +22,12 @@ bool DalvikExecutionEngine::bridge_domain_io_lang(
     DalvikValue& result = fr.result;
     ApiCallTrace::Status& status = fr.status;
     uint32_t method_idx_hint = fr.method_idx_hint;
+    if (diag_env("MINIANDROID_BRIDGE_ROUTE")) {
+        static thread_local uint64_t brd_io_lang = 0;
+        if (brd_io_lang++ < 12)
+            std::cerr << "[BRIDGE-ROUTE] domain=io_lang " << class_name
+                      << "." << method << std::endl;
+    }
     // Package.getName() — returns the dotted package name stored at
     // construction (FIX-M3-012 counterpart; OpenJDK Package.getName law).
     if (class_name == "Ljava/lang/Package;" && method == "getName") {

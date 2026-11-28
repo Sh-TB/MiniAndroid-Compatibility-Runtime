@@ -22,6 +22,12 @@ bool DalvikExecutionEngine::bridge_domain_android_core(
     DalvikValue& result = fr.result;
     ApiCallTrace::Status& status = fr.status;
     uint32_t method_idx_hint = fr.method_idx_hint;
+    if (diag_env("MINIANDROID_BRIDGE_ROUTE")) {
+        static thread_local uint64_t brd_android_core = 0;
+        if (brd_android_core++ < 12)
+            std::cerr << "[BRIDGE-ROUTE] domain=android_core " << class_name
+                      << "." << method << std::endl;
+    }
     // ── #371 PHASE B1: ContentValues — the Parcelable key/value carrier
     // providers receive on insert/update. AOSP: put stores, get retrieves.
     if (class_name == "Landroid/content/ContentValues;") {

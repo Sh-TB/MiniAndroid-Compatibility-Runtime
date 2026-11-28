@@ -24,6 +24,12 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
     DalvikValue& result = fr.result;
     ApiCallTrace::Status& status = fr.status;
     uint32_t method_idx_hint = fr.method_idx_hint;
+    if (diag_env("MINIANDROID_BRIDGE_ROUTE")) {
+        static thread_local uint64_t brd_app_runtime = 0;
+        if (brd_app_runtime++ < 12)
+            std::cerr << "[BRIDGE-ROUTE] domain=app_runtime " << class_name
+                      << "." << method << std::endl;
+    }
 
     // ────────────────────────────────────────────────────────────────────────
     // EXP-071: BaseFragment.getParentActivity() → returns the Activity.
