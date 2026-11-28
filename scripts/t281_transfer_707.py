@@ -17,6 +17,8 @@ def get_token():
     raise RuntimeError("no token")
 
 
+TOKEN = get_token()
+
 BODY = """# KODER-YAR-E-KOMAKI — T281 ARCHITECTURE FORENSIC: KA-KYK-034 strong form FALSIFIED, KA-KYK-035 FALSIFIED, the real build-mode hazard named
 
 **Audit base:** remote `main` HEAD `ad2e08ee6` → T281 commit **`399fb2378` pushed** (binary `1946562fe61d6177`). Evidence: `evidence/t281/` (route logs for 6 APKs + gate logs). This comment supersedes the 034/035 rows and §2 of the T280 comment (`7241050366`).
