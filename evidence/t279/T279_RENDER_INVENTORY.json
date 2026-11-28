@@ -3,11 +3,11 @@
   "generated_by": "scripts/t279_build_inventory.py",
   "status_counts": {
    "HISTORICAL-REAL": 140,
-   "PARTIAL": 22,
+   "PARTIAL": 18,
    "INTERACTIVE": 5,
-   "CURRENT-REPRODUCIBLE": 7,
-   "REGRESSED": 3,
-   "BLOCKED": 2
+   "CURRENT-REPRODUCIBLE": 10,
+   "BLOCKED": 4,
+   "REGRESSED": 2
   },
   "total_unique_packages": 179,
   "r_scale": "R-scale: R0 none | R1 launched no visual | R2 first frame | R3 primary screen complete | R4 navigation/scroll/dialogs | R5 interactive workflow",
@@ -2071,13 +2071,14 @@
    "s182_hist_px": 58212,
    "apk_source": "upload/fdroid_batch/org.secuso.privacyfriendlysolitaire_4.apk",
    "two_run_result": "PASS-IDENTICAL",
-   "render_level_current": "R3",
+   "render_level_current": "R2",
    "interaction_current": "no-frame-change",
    "run1_face16": "88dbb4a719dbc8d4",
    "run2_face16": "88dbb4a719dbc8d4",
    "last_tested": "2026-11-28",
    "binary_sha16": "9c5e456b4790299e",
-   "engine_commit": "344774e66"
+   "engine_commit": "344774e66",
+   "visual_verification": "VISUALLY VERIFIED: SECUSO SKIP/NEXT onboarding intro (same template as pfludo) -> honest R2 (was R3)"
   },
   "com.serwylo.babydots": {
    "package": "com.serwylo.babydots",
@@ -2942,7 +2943,11 @@
    "s182_class": "PARTIAL",
    "s182_hist_face": "894a69b0d4f16baa",
    "s182_hist_px": 0,
-   "apk_source": "upload/fdroid_batch/com.nononsenseapps.notepad_72700.apk"
+   "apk_source": "upload/fdroid_batch/com.nononsenseapps.notepad_72700.apk",
+   "render_level_current": "R1",
+   "two_run_result": "PASS-IDENTICAL",
+   "last_tested": "2026-11-28 (CONT)",
+   "binary_sha16": "c3006bf71e02b3ae"
   },
   "com.aurora.store": {
    "package": "com.aurora.store",
@@ -3137,7 +3142,11 @@
    "render_level_hist": 2,
    "apk_source": "upload/fdroid_batch/com.aeropayout.game_12.apk",
    "first_divergence": "",
-   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): "
+   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): ",
+   "render_level_current": "R1",
+   "two_run_result": "PASS-IDENTICAL",
+   "last_tested": "2026-11-28 (CONT)",
+   "binary_sha16": "c3006bf71e02b3ae"
   },
   "ac.stresa.uturn": {
    "package": "ac.stresa.uturn",
@@ -3154,14 +3163,15 @@
    "first_divergence": "Compose AbstractComposeView.internalOnMeasure$ui IllegalStateException",
    "notes": " | S182 battery (2026-11-06): REAL_APP_CONTENT; recheck on 96878de83 (2026-11-27): DEFAULT_BACKGROUND_ONLY | T279 FIX 2026-11-28: MeasureSpec.getMode AOSP bit-pattern law restored REAL_APP_CONTENT; face a53523e7ca331866 == S182 historical face byte-identical; uncaught 8->0; zero anchor regressions (12 faces identical pre/post).",
    "two_run_result": "PASS-IDENTICAL",
-   "render_level_current": "R3",
+   "render_level_current": "R2",
    "interaction_current": "n/a",
    "run1_face16": "b5a7a35d5fe0564b",
    "run2_face16": "b5a7a35d5fe0564b",
    "last_tested": "2026-11-28",
    "binary_sha16": "9c5e456b4790299e",
    "engine_commit": "344774e66",
-   "postfix_face16": "a53523e7ca331866"
+   "postfix_face16": "a53523e7ca331866",
+   "visual_verification": "VISUALLY VERIFIED: 'UTurn Installed. No need to launch it\u2026' notice screen \u2014 genuine app text, face == S182 historical a53523e7 byte-identical; the primary game UI is behind further interaction -> honest R2 (was R3 in the first campaign table)"
   },
   "org.secuso.privacyfriendlydicer": {
    "package": "org.secuso.privacyfriendlydicer",
@@ -3178,13 +3188,14 @@
    "first_divergence": "",
    "notes": " | S182 battery (2026-11-06): REAL_APP_CONTENT; recheck on 96878de83 (2026-11-27): REAL_APP_CONTENT",
    "two_run_result": "PASS-IDENTICAL",
-   "render_level_current": "R3",
+   "render_level_current": "R2",
    "interaction_current": "no-frame-change",
    "run1_face16": "31ffa499c59e3e41",
    "run2_face16": "31ffa499c59e3e41",
    "last_tested": "2026-11-28",
    "binary_sha16": "9c5e456b4790299e",
-   "engine_commit": "344774e66"
+   "engine_commit": "344774e66",
+   "visual_verification": "VISUALLY VERIFIED: blue welcome dialog with 'Okay' \u2014 a gate screen before the dice UI -> honest R2 (was R3)"
   },
   "stack.tower3d": {
    "package": "stack.tower3d",
@@ -3218,11 +3229,15 @@
    "s182_class": "PARTIAL",
    "s182_hist_face": "b5a7a35d5fe0564b",
    "s182_hist_px": 0,
-   "status": "PARTIAL",
+   "status": "BLOCKED",
    "render_level_hist": 2,
    "apk_source": "upload/fdroid_batch/com.awagam.android_5.apk",
    "first_divergence": "",
-   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): "
+   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): ",
+   "render_level_current": "R1",
+   "two_run_result": "PASS-IDENTICAL",
+   "last_tested": "2026-11-28 (CONT)",
+   "binary_sha16": "c3006bf71e02b3ae"
   },
   "org.secuso.privacyfriendlyludo": {
    "package": "org.secuso.privacyfriendlyludo",
@@ -3233,11 +3248,15 @@
    "s182_class": "PARTIAL",
    "s182_hist_face": "31ddd4d5b8e6d18e",
    "s182_hist_px": 0,
-   "status": "PARTIAL",
+   "status": "CURRENT-REPRODUCIBLE",
    "render_level_hist": 2,
    "apk_source": "upload/fdroid_batch/org.secuso.privacyfriendlyludo_100.apk",
    "first_divergence": "",
-   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): "
+   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): ",
+   "render_level_current": "R2",
+   "two_run_result": "PASS-IDENTICAL",
+   "last_tested": "2026-11-28 (CONT)",
+   "binary_sha16": "c3006bf71e02b3ae"
   },
   "com.ashkanrafiee.librecontactsbackup": {
    "package": "com.ashkanrafiee.librecontactsbackup",
@@ -3275,7 +3294,11 @@
    "render_level_hist": 2,
    "apk_source": "upload/fdroid_batch/com.curryplayer.quicksettingssoundprofile_11.apk",
    "first_divergence": "",
-   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): "
+   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): ",
+   "render_level_current": "R1",
+   "two_run_result": "PASS-IDENTICAL",
+   "last_tested": "2026-11-28 (CONT)",
+   "binary_sha16": "c3006bf71e02b3ae"
   },
   "com.cg.lrceditor": {
    "package": "com.cg.lrceditor",
@@ -3286,11 +3309,15 @@
    "s182_class": "PARTIAL",
    "s182_hist_face": "d602648e8e401895",
    "s182_hist_px": 0,
-   "status": "PARTIAL",
+   "status": "CURRENT-REPRODUCIBLE",
    "render_level_hist": 2,
    "apk_source": "upload/fdroid_batch/com.cg.lrceditor_57.apk",
    "first_divergence": "",
-   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): "
+   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): ",
+   "render_level_current": "R2",
+   "two_run_result": "PASS-IDENTICAL",
+   "last_tested": "2026-11-28 (CONT)",
+   "binary_sha16": "c3006bf71e02b3ae"
   },
   "app.floatdeck": {
    "package": "app.floatdeck",
@@ -3305,7 +3332,11 @@
    "render_level_hist": 2,
    "apk_source": "upload/fdroid_batch/app.floatdeck_8.apk",
    "first_divergence": "",
-   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): "
+   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): ",
+   "render_level_current": "R1",
+   "two_run_result": "PASS-IDENTICAL",
+   "last_tested": "2026-11-28 (CONT)",
+   "binary_sha16": "c3006bf71e02b3ae"
   },
   "app.wocheneinkauf": {
    "package": "app.wocheneinkauf",
@@ -3339,11 +3370,15 @@
    "s182_class": "PARTIAL",
    "s182_hist_face": "b5a7a35d5fe0564b",
    "s182_hist_px": 0,
-   "status": "PARTIAL",
+   "status": "BLOCKED",
    "render_level_hist": 2,
    "apk_source": "upload/fdroid_batch/com.chiranth7.webstack_6.apk",
    "first_divergence": "",
-   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): "
+   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): ",
+   "render_level_current": "R1",
+   "two_run_result": "PASS-IDENTICAL",
+   "last_tested": "2026-11-28 (CONT)",
+   "binary_sha16": "c3006bf71e02b3ae"
   },
   "com.maxistar.textpad": {
    "package": "com.maxistar.textpad",
@@ -3360,13 +3395,14 @@
    "first_divergence": "",
    "notes": " | S182 battery (2026-11-06): REAL_APP_CONTENT; recheck on 96878de83 (2026-11-27): REAL_APP_CONTENT",
    "two_run_result": "PASS-IDENTICAL",
-   "render_level_current": "R3",
+   "render_level_current": "R2",
    "interaction_current": "no-frame-change",
    "run1_face16": "27f44f4647bf76f2",
    "run2_face16": "27f44f4647bf76f2",
    "last_tested": "2026-11-28",
    "binary_sha16": "9c5e456b4790299e",
-   "engine_commit": "344774e66"
+   "engine_commit": "344774e66",
+   "visual_verification": "VISUALLY VERIFIED: editor chrome bar only, editor area blank -> honest R2 (was R3)"
   },
   "org.dmfs.tasks": {
    "package": "org.dmfs.tasks",
@@ -3381,7 +3417,11 @@
    "render_level_hist": 2,
    "apk_source": "upload/fdroid_batch/org.dmfs.tasks_82200.apk",
    "first_divergence": "",
-   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): "
+   "notes": " | S182 battery (2026-11-06): PARTIAL; recheck on 96878de83 (2026-11-27): ",
+   "render_level_current": "R1",
+   "two_run_result": "PASS-IDENTICAL",
+   "last_tested": "2026-11-28 (CONT)",
+   "binary_sha16": "c3006bf71e02b3ae"
   },
   "app.simple.peri": {
    "package": "app.simple.peri",
@@ -3418,13 +3458,14 @@
    "wave_evidence": "miniandroid/evidence/s23/s23_interaction_summary.tsv (S23 2026-11-21): CLICK_HANDLER_EXECUTED x12/run, 2 frame hashes STATE_CHANGED x3 runs; S27 wall w_pz faces 35c4e53b,6375a3a3 last IDENTICAL",
    "notes": " | S23-S27 wave: miniandroid/evidence/s23/s23_interaction_summary.tsv (S23 2026-11-21): CLICK_HANDLER_EXECUTED x12/run, 2 frame hashes STATE_CHANGED x3 runs; S27 wall w_pz faces 35c4e53b,6375a3a3 last IDENTICAL",
    "two_run_result": "PASS-IDENTICAL",
-   "render_level_current": "R3",
+   "render_level_current": "R2",
    "interaction_current": "listener-registered-no-ct-change",
    "run1_face16": "6375a3a3813af176",
    "run2_face16": "6375a3a3813af176",
    "last_tested": "2026-11-28",
    "binary_sha16": "9c5e456b4790299e",
-   "engine_commit": "344774e66"
+   "engine_commit": "344774e66",
+   "visual_verification": "VISUALLY VERIFIED: 'Please select a picture' prompt \u2014 gate screen before the board (Menu interaction path) -> honest R2 (was R3)"
   },
   "ru.zxalexis.ugaday": {
    "package": "ru.zxalexis.ugaday",

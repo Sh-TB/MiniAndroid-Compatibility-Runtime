@@ -1,0 +1,10 @@
+OK https://f-droid.org/repo dae6cb3ea3437d8011a7c0e3d19b1b1d346683eb1ddcca1a19efc61d4198dcab 3178697 upload/fdroid_batch/com.aeropayout.game_12.apk
+OK https://f-droid.org/repo 30af184cdbb35f9b06fae5f16b2e524f2451a2d4a1865adf4bc967e556a82b63 4096897 upload/fdroid_batch/com.awagam.android_5.apk
+OK https://f-droid.org/repo b86427e1c4e874372be3f4f87bc26739a96c37e87ef7d87650568fcc01fe487b 7638010 upload/fdroid_batch/org.secuso.privacyfriendlyludo_100.apk
+OK https://f-droid.org/repo 6714227399fea33b6a736795943c34e0e1f89fe1fec2636c019512344812cbb3 1230675 upload/fdroid_batch/com.curryplayer.quicksettingssoundprofile_11.apk
+OK https://f-droid.org/repo ea720cf8ae77d9dcae2f5639654ae03f9309c9de49b6abb166d4a93c1d20f016 1246051 upload/fdroid_batch/com.cg.lrceditor_57.apk
+OK https://f-droid.org/repo 115ab98dacb0f989f587b3427896ed9f3e392372b6bce2dc6b09194c5ce162eb 1950918 upload/fdroid_batch/app.floatdeck_8.apk
+OK https://f-droid.org/repo 2f22bbbd4e089ddfeca691867d20b562be08c0e815defd214443fa93cf35aa08 2111354 upload/fdroid_batch/com.chiranth7.webstack_6.apk
+OK https://f-droid.org/repo 7f3a1528142c8a8a0ab1ecf6b83f0620eb31cd8daa94b299149c21982e3c2f14 3685910 upload/fdroid_batch/org.dmfs.tasks_82200.apk
+OK https://f-droid.org/repo 0d79884020f2a09e0787282e345d7e8808826e0fb09135f620007015b30630b0 3296437 upload/fdroid_batch/com.nononsenseapps.notepad_72700.apk
+=== DONE 2026-11-28T13:12:07Z

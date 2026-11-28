@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-28T04:31:22Z",
+ "generated_utc": "2026-11-28T13:27:47Z",
  "source_of_truth": {
   "titles": "docs/evidence/canonical/registry.json",
   "games": "canonical/game_registry.json",
@@ -7,23 +7,23 @@
   "roots": "root_registry.json (compatibility projection of canonical/root_cause_registry.json)",
   "head": "git"
  },
- "head": "f9e1d3314d1938bf1f25fd30251281aeb93aa8cf",
- "tree": "83167ac58c536d5df54410c14be54a6e6f73b111",
- "tracked_files": 17232,
+ "head": "d2c4bb4613185d308165414447405a25562d44a9",
+ "tree": "94219539e26fd42ef2a3d29f81a0134561454091",
+ "tracked_files": 17237,
  "canonical_titles_total": 179,
  "canonical_title_status": {
-  "OBSERVED": 112,
+  "OBSERVED": 111,
   "VISUALLY_PARTIAL": 5,
   "FRAME_CAPTURED": 1,
   "VERIFIED": 24,
   "candidate_VISUALLY_VERIFIED": 1,
   "candidate_INTERACTION_VERIFIED": 6,
   "FAILED": 1,
-  "PARTIAL": 15,
-  "CURRENT-REPRODUCIBLE": 6,
+  "PARTIAL": 12,
+  "CURRENT-REPRODUCIBLE": 8,
   "INTERACTIVE": 4,
   "REGRESSED": 2,
-  "BLOCKED": 2
+  "BLOCKED": 4
  },
  "canonical_verified": 24,
  "games_registered": 91,

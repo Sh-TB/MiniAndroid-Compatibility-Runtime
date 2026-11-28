@@ -185,3 +185,69 @@ two titles have one MORE compose layer below it (honestly BLOCKED, not
    custom cells report 0 listeners at dispatch census.
 6. BMI Calculator / MasterMindy / 2048-uberspot: no verified original APK
    URL exists (recorded, not invented — S23 §7 law).
+
+## 6. CONT pass (2026-11-28, same session): corpus completion + honest R-scale corrections + the LocalLifecycleOwner law
+
+### 6.1 The 9 restored APKs (S182 corpus now 100% two-run measured)
+
+The 8 off-disk S182 PARTIAL APKs + `com.nononsenseapps.notepad` were restored
+from F-Droid (byte-pinned receipts, `scripts/t279c_restore_receipt.txt`) and
+measured on the rebuilt binary `c3006bf71e02b3ae` (identical source to
+`1a21be9f`). **All 9 pairs face-identical, 0 INSTALL_FAILs**:
+
+| tag | package | verdict | px | R | status | face (r1==r2) |
+|---|---|---|---|---|---|---|
+| pfludo | org.secuso.privacyfriendlyludo | REAL_APP_CONTENT | 58,212 | R2 | CURRENT-REPRODUCIBLE | 21ea13e14c604e8e |
+| lrceditor | com.cg.lrceditor | REAL_APP_CONTENT | 2,194 | R2 | CURRENT-REPRODUCIBLE | ea62ee67239a0fbb |
+| aeropayout | com.aeropayout.game | DEFAULT_BACKGROUND_ONLY (chrome d602648e) | 0 | R1 | PARTIAL | d602648e8e401895 |
+| awagam | com.awagam.android | DEFAULT_BACKGROUND_ONLY (b5a7a35d) | 0 | R1 | BLOCKED | b5a7a35d5fe0564b |
+| quicksettingssound | com.curryplayer.quicksettingssoundprofile | DEFAULT_BACKGROUND_ONLY (tint 11a38a5a) | 0 | R1 | PARTIAL | 11a38a5aeeff45a6 |
+| floatdeck | app.floatdeck | DEFAULT_BACKGROUND_ONLY (chrome d602648e) | 0 | R1 | PARTIAL | d602648e8e401895 |
+| webstack | com.chiranth7.webstack | DEFAULT_BACKGROUND_ONLY (b5a7a35d) | 0 | R1 | BLOCKED | b5a7a35d5fe0564b |
+| dmfstasks | org.dmfs.tasks | DEFAULT_BACKGROUND_ONLY (chrome d602648e) | 0 | R1 | PARTIAL | d602648e8e401895 |
+| nonotepad | com.nononsenseapps.notepad | DEFAULT_BACKGROUND_ONLY (tint 894a69b0) | 0 | R1 | PARTIAL | 894a69b0d4f16baa |
+
+Two further REAL recoveries (pfludo, lrceditor) — the S182 PARTIAL class
+keeps improving with each engine wave, exactly like flip/diceroller did.
+
+### 6.2 Honest R-scale corrections (full visual verification of every claim)
+
+Every previously unverified R3 claim was visually inspected this pass. Five
+were gate/intro/chrome screens, not complete primary screens — corrected to
+R2 (the registry rows carry the exact notes; nothing deleted):
+
+- **uturn**: "UTurn Installed. No need to launch it…" notice screen (face ==
+  the S182 historical face byte-identical — the recovery stands, but the
+  historical achievement was always this R2 screen, not the game board).
+- **pfdicer**: blue welcome dialog with "Okay" — a gate before the dice UI.
+- **pfsolitaire**: SECUSO SKIP/NEXT onboarding intro (same template as
+  pfludo — both 58,212 px).
+- **textpad**: editor chrome bar only; editor area blank.
+- **npuzzle**: "Please select a picture" prompt — the board sits behind the
+  Menu path.
+
+Final campaign census: **7 R3 / 8 R2 / 17 R1** across 32 two-run titles
+(R3 = gmdice, bouncy, librecontactsbackup, ugaday, blockinger, flip,
+diceroller — all visually verified genuine app content).
+
+### 6.3 The T279-LLO-PROVIDE law (second focused fix)
+
+Fresh stacks (logs wiped by the sandbox recycle were regenerated) named the
+compose composition-state layer precisely: janken's first divergence is
+`ISE "CompositionLocal LocalLifecycleOwner not present"` in `Lf1/a;.a` via
+`x1/l.getValue`. AOSP semantic: `ComponentActivity` IS the
+`LocalLifecycleOwner` inside compose content. The law (dalvik_interpreter.cpp,
+same S22-LC-PROVIDE family, exact AOSP error-string key, app-agnostic,
+logged): contain the accessor throw and return the current Activity object;
+the app's own bundled `ComponentActivity.getLifecycle()` DEX then answers
+its real `LifecycleRegistry`.
+
+**Result: janken uncaught 33→32; the next frontier is NAMED, not guessed:**
+androidx Navigation `"You cannot access the Navigator's state until the
+Navigator is attached"` (nav-controller boot-order class — recorded, not
+chased this session). authsrng's remaining blocker is the kotlin-reflect
+`SynchronizedLazyImpl` NPE (different class, recorded).
+
+**Regression gate (binary c3006bf7):** f714 9/9, lifecycle ALL, linear 24/24,
+input_pipeline ALL; gmdice/bouncy/pfdicer faces byte-identical
+(3891679d/37326cb2/31ffa499); janken r1==r2 deterministic.

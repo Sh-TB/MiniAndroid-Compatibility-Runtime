@@ -50,9 +50,10 @@ L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery �
 
 - Titles: **179** (102 games, 76 apps, 1 fixture) — 27 registered at the T279 rendering-recovery reconciliation (2026-11-28): 15 S182 battery titles + 12 S23–S27 easy-APK wave titles that had never been transferred into the registry (a reporting failure, not an evidence failure — the primary records were tracked the whole time)
 - Legacy statuses (historical claims): VERIFIED **24** (+6 candidate_INTERACTION_VERIFIED, +1 candidate_VISUALLY_VERIFIED) · PARTIAL-class **21** (PARTIAL 15 + VISUALLY_PARTIAL 5 + FRAME_CAPTURED 1) · OBSERVED **112** · FAILED 1
-- T279 current-status census (campaign-tested subset, 2026-11-28): INTERACTIVE **6** (gmdice, bouncy, librecontactsbackup, npuzzle, ugaday, blockinger) · CURRENT-REPRODUCIBLE **7** · PARTIAL **1** · REGRESSED **2** · BLOCKED **2** · PENDING **1**
-- Rendered: 158 · Interacted: 19 · State-change proven: 18
-- Canonical screenshots: one per title (S84 law) + `evidence/t279/shots/` (72 compact 480px two-run evidence captures, SHA256SUMS.txt ledgered)
+- T279 current-status census (campaign-tested subset, 2026-11-28, after the CONT pass): INTERACTIVE **5** (gmdice, bouncy, librecontactsbackup, ugaday, blockinger) · CURRENT-REPRODUCIBLE **10** (incl. pfludo, lrceditor recovered in the CONT pass; npuzzle/uturn carry separate S23 interactive evidence) · PARTIAL **18** · REGRESSED **2** · BLOCKED **4** — R-scale after FULL visual verification of every claim: **7 R3 / 8 R2 / 17 R1**
+- Rendered: 151 · Interacted: 19 · State-change proven: 18
+- CONT pass 2026-11-28: the 9 off-disk S182 APKs restored from F-Droid (byte-pinned receipts, `scripts/t279c_restore_receipt.txt`) and two-run measured — all 9 pairs face-identical, 0 INSTALL_FAILs; pfludo (SECUSO intro, px 58,212) and lrceditor (px 2,194) reached REAL_APP_CONTENT; T279-LLO-PROVIDE law (`LocalLifecycleOwner` → the current Activity, the AOSP ComponentActivity-is-the-owner semantic) peeled janken's compose frontier one layer (unc 33→32; next frontier named: androidx Navigator-attach class); honest R2 corrections recorded for uturn/pfdicer/pfsolitaire/textpad/npuzzle after visual verification
+- Canonical screenshots: one per title (S84 law) + `evidence/t279/shots/` (75 compact 480px two-run evidence captures, SHA256SUMS.txt ledgered)
 
 ---
 

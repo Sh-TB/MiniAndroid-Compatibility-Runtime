@@ -4230,6 +4230,41 @@ bool DalvikExecutionEngine::fetch_decode_execute(DalvikExecutionResult& result) 
                                               : 0)
                                       << " from " << current_class_ << "."
                                       << current_method_ << std::endl;
+                        } else if (local_name == "LifecycleOwner") {
+                            // T279-CONT (2026-11-28): AOSP ComponentActivity
+                            // IS the LocalLifecycleOwner inside compose
+                            // content — the accessor returns the current
+                            // Activity object, and the app's own bundled
+                            // ComponentActivity.getLifecycle() DEX then
+                            // answers its LifecycleRegistry (real androidx
+                            // bytecode, executed like any other app code —
+                            // F058 observers already drive it). Evidence:
+                            // com.attenomy.janken Lf1/a;.a ISE
+                            // "CompositionLocal LocalLifecycleOwner not
+                            // present" every composition pass (T279 unc 33
+                            // frontier; fresh stack run_t279_cont/
+                            // janken_stack.err). Same law family as
+                            // S22-LC-PROVIDE/S23-W1: AOSP error-string key,
+                            // app-agnostic, logged.
+                            uint32_t act_obj_llo = 0;
+                            if (shadow_registry_ != nullptr) {
+                                if (auto* act_llo =
+                                        shadow_registry_->find_as<
+                                            framework::ActivityShadow>())
+                                    act_obj_llo =
+                                        act_llo->current_activity_id();
+                            }
+                            if (act_obj_llo != 0) {
+                                lc_val = DalvikValue::make_object(
+                                    act_obj_llo, "Landroid/app/Activity;");
+                                provided = true;
+                            }
+                            std::cerr << "[T279-LLO-PROVIDE] "
+                                         "LocalLifecycleOwner accessor throw "
+                                         "contained — returning activity "
+                                         "LifecycleOwner o" << act_obj_llo
+                                      << " from " << current_class_ << "."
+                                      << current_method_ << std::endl;
                         }
                         if (provided) {
                         // The execute_return_object contract (halted_ +
