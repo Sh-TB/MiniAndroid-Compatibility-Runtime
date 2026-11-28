@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-13T07:05:29Z",
+ "generated_utc": "2026-11-28T04:31:22Z",
  "source_of_truth": {
   "titles": "docs/evidence/canonical/registry.json",
   "games": "canonical/game_registry.json",
@@ -7,10 +7,10 @@
   "roots": "root_registry.json (compatibility projection of canonical/root_cause_registry.json)",
   "head": "git"
  },
- "head": "3b2ab6a4443e6bafe920524b230b3eccb0a74578",
- "tree": "ac7ad1bc24fde14dce60d198352f5df28ac7c5f2",
- "tracked_files": 14775,
- "canonical_titles_total": 152,
+ "head": "f9e1d3314d1938bf1f25fd30251281aeb93aa8cf",
+ "tree": "83167ac58c536d5df54410c14be54a6e6f73b111",
+ "tracked_files": 17232,
+ "canonical_titles_total": 179,
  "canonical_title_status": {
   "OBSERVED": 112,
   "VISUALLY_PARTIAL": 5,
@@ -19,11 +19,15 @@
   "candidate_VISUALLY_VERIFIED": 1,
   "candidate_INTERACTION_VERIFIED": 6,
   "FAILED": 1,
-  "PARTIAL": 2
+  "PARTIAL": 15,
+  "CURRENT-REPRODUCIBLE": 6,
+  "INTERACTIVE": 4,
+  "REGRESSED": 2,
+  "BLOCKED": 2
  },
  "canonical_verified": 24,
  "games_registered": 91,
- "apps_registered": 15,
+ "apps_registered": 21,
  "root_causes_total": 797,
  "abi_scope": "x86 / x86_64 only",
  "excluded_from_readme": [

@@ -27,16 +27,32 @@
 | OBSERVED | frames captured, level below render threshold |
 | BLOCKED | no usable frame; root cause recorded |
 
+T279 current-status vocabulary (2026-11-28; kept DISTINCT from the
+historical statuses above — a historical screenshot never upgrades a
+current claim):
+
+| Status | Meaning |
+|---|---|
+| HISTORICAL-REAL | genuine historical rendering exists (screenshot/battery); current state NOT re-proven |
+| CURRENT-REPRODUCIBLE | reproduced twice independently on the current engine build (byte-identical faces) |
+| INTERACTIVE | CURRENT-REPRODUCIBLE + input → handler → observable state change |
+| PARTIAL | renders, but incomplete primary screen / recorded first divergence |
+| REGRESSED | historical real, currently NOT reproducing (root cause named) |
+| BLOCKED | launch or render blocked at a named frontier |
+| PENDING | candidate queued, not yet measured |
+| NOISE | pixel-classified garbage face (distinct≥0.25 AND nonwhite≥0.5) — never an achievement |
+
 ## Rendering levels
 
 L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery → L5 meaningful frame (non-blank real UI) → L6 real input → L7 input→state change → L8 multiple interactions → L9 app-specific behavior → L10 close/reopen persistence. The screenshot-gate law (S54) applies: blank/placeholder frames are NEVER evidence.
 
 ## Totals (generated from registry.json — not hand-written)
 
-- Titles: **150** (88 games, 61 apps, 1 fixtures) — 33 added in S84; 2 browser titles registered at forensic sync (#365)
-- VERIFIED: **36** · VERIFIED-INTERACTIVE: **12** · PARTIAL: **2** · BLOCKED: **0**
-- Rendered: 129 · Interacted: 13 · State-change proven: 12
-- Canonical screenshots: **150** (14 GIF + 24 JPG) — one per title, zero duplicates
+- Titles: **179** (102 games, 76 apps, 1 fixture) — 27 registered at the T279 rendering-recovery reconciliation (2026-11-28): 15 S182 battery titles + 12 S23–S27 easy-APK wave titles that had never been transferred into the registry (a reporting failure, not an evidence failure — the primary records were tracked the whole time)
+- Legacy statuses (historical claims): VERIFIED **24** (+6 candidate_INTERACTION_VERIFIED, +1 candidate_VISUALLY_VERIFIED) · PARTIAL-class **21** (PARTIAL 15 + VISUALLY_PARTIAL 5 + FRAME_CAPTURED 1) · OBSERVED **112** · FAILED 1
+- T279 current-status census (campaign-tested subset, 2026-11-28): INTERACTIVE **6** (gmdice, bouncy, librecontactsbackup, npuzzle, ugaday, blockinger) · CURRENT-REPRODUCIBLE **7** · PARTIAL **1** · REGRESSED **2** · BLOCKED **2** · PENDING **1**
+- Rendered: 158 · Interacted: 19 · State-change proven: 18
+- Canonical screenshots: one per title (S84 law) + `evidence/t279/shots/` (72 compact 480px two-run evidence captures, SHA256SUMS.txt ledgered)
 
 ---
 
@@ -2091,3 +2107,76 @@ L0 recognized → L1 manifest → L2 DEX → L3 lifecycle → L4 UI machinery �
 - 307 redirect to chat.z.ai followed over TLS; 15,727 bytes rendered.
 - Canonical evidence: [GIF](evidence/canonical/com.miniandroid.browser.zai.gif) · session record [S100](evidence/s100_browser/README.md)
 
+
+---
+
+## T279 — Rendering Recovery & Two-Run Verification (2026-11-28)
+
+Mission: recover every genuine rendering achievement that was forgotten,
+omitted, or mis-classified, re-prove the corpus on the current engine with
+TWO independent runs per title, and correct the public claims. Full data:
+`evidence/t279/` (T279_RENDER_AUDIT.md · T279_RENDER_INVENTORY.json ·
+T279_TWO_RUN_RESULTS.csv · shots/ + SHA256SUMS.txt).
+
+### The recovered achievements (27 registry-absent titles registered)
+
+**Root cause of the omission (audit answer):** the S182 20-title battery
+(2026-11-06) recorded its results in tracked JSON but the reconciliation
+step into the registry/ACHIEVEMENTS was never executed for 15 of the 20
+titles, and the entire S23–S27 easy-APK wave (2026-11-21..23) post-dated
+the last registry sync. A reporting failure, not an evidence failure.
+
+**Games — now proven complete (R3) + interactive (R5) on the current engine
+(two independent runs each, byte-identical faces):**
+
+| Title | Package | Evidence |
+|---|---|---|
+| GameMasterDice | `de.duenndns.gmdice` | face `3891679dff449331` byte-identical across S182/recheck/T279 (3 builds); click-test face changes (px 182,535→753,437) |
+| Vector Pinball | `com.dozingcatsoftware.bouncy` | face `37326cb2b8bb6bfe`; improved from S182 (unc 18→0); click state change |
+| n-Puzzle | `name.livitski.games.puzzle.android` | S23 ×3-run STATE_CHANGED + T279 two-run face `6375a3a3813af176` |
+| Hangman (Ugaday) | `ru.zxalexis.ugaday` | S23 ×3 STATE_CHANGED + T279 click face change `204f8970cb238b5d` |
+| Minesweeper (Blockinger) | `org.blockinger.game` | S23 ×3 STATE_CHANGED + T279 click face change `52875ecb030ab8b8` (Highscores dialog rendered) |
+| Libre Contacts Backup | `com.ashkanrafiee.librecontactsbackup` | T279 click face change `b0df57086f5178d0`; drift item recorded |
+| PF Dicer | `org.secuso.privacyfriendlydicer` | face `31ffa499c59e3e41` byte-identical to S182 |
+| PF Solitaire | `org.secuso.privacyfriendlysolitaire` | face `88dbb4a719dbc8d4` byte-identical to S182 |
+
+**Apps — now proven complete (R3) on the current engine:**
+
+| Title | Package | Evidence |
+|---|---|---|
+| TextPad | `com.maxistar.textpad` | face `27f44f4647bf76f2` byte-identical to S182 |
+| Coin Flip | `org.ecos.logic.flip_a_coin` | S27-W1/W3 laws landed; T279 coin face + Flip button (px 113,430) |
+| Dice Roller | `tech.gaskell.diceroller` | recovered from blank by the S27-W4 law; T279 px 225,233 |
+| UTurn | `ac.stresa.uturn` | RECOVERED by the T279 MeasureSpec fix: face `a53523e7ca331866` == its 2026-11-06 historical face BYTE-IDENTICAL, unc 8→0 |
+| Randomix | `com.minar.randomix` | R2 (near-blank AppIntro slide, px 1,080) — deterministic, honestly not a complete screen |
+
+**Honest regressions / blocks (historical evidence preserved):**
+`app.wocheneinkauf`, `app.simple.peri` REGRESSED (2026-11-06 real → 2026-11-28
+default background; the T279 MeasureSpec fix eliminated the
+convertMeasureSpec ISE layer, uncaught 33→32; the deeper compose
+composition-state layer remains) · `com.attenomy.janken`,
+`com.ivylopez.authsrng` BLOCKED at the compose composition-state layer ·
+`com.farmerbb.notepad`, `com.itsfrz.tictactoe`, `de.tcrass.minos`,
+`dk.cocode.chess`, `stack.tower3d`, `com.emmanuelmess.tictactoe` PARTIAL with
+per-title named first divergences (registry rows carry the exact chains).
+
+### The T279 fix (one focused correction)
+
+**Root cause (disassembled from the original APK):** androidx compose
+`AndroidComposeView.convertMeasureSpec` compares `MeasureSpec.getMode()`
+against the AOSP constants and throws `IllegalStateException` in its else
+arm; the engine's `View$MeasureSpec.getMode` shadow returned a 0/1/2 INDEX
+instead of the bit pattern → every Compose app died in measure. The old
+`f714_measurespec_law_test.cpp` had pinned the wrong convention itself.
+Fix (pure AOSP `spec & MODE_MASK` + mask-form `makeMeasureSpec`, commit
+`f9e1d3314`): law test 9/9 (incl. the T7 Compose fence), 8 spot law
+batteries rc=0, 6 golden anchor faces byte-identical pre/post, UTurn
+restored to its historical face byte-exactly.
+
+### Reproducibility (the two-run law)
+
+46/46 reproducibility pairs byte-identical (23 titles × r1/r2; 12 ct pairs;
+9 post-fix pairs). Zero flaky behavior; no third diagnostic run needed.
+Verdicts come from the engine's frame_census (REAL_APP_CONTENT requires
+window root + measure + layout + draw + app-owned pixels — never a bare
+exit code or a nonempty PNG).
