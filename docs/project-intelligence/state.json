@@ -88,5 +88,11 @@
   "battery": "s236 17/0 x2 + 5 gate batteries green",
   "anchors": "gmdice 3891679d, pfdicer 31ffa499 BYTE-IDENTICAL"
  },
- "sandbox_incident": "sandbox recycled twice to W23-D snapshot; forensics branches local/sandbox-rewound-tree (v1) + local/sandbox-rewound-tree2 preserve stale trees; main re-aligned to origin/main before T282 commit"
+ "sandbox_incident": "sandbox recycled twice to W23-D snapshot; forensics branches local/sandbox-rewound-tree (v1) + local/sandbox-rewound-tree2 preserve stale trees; main re-aligned to origin/main before T282 commit",
+ "mainline_sha": "1b65a2019",
+ "feedback": {
+  "#596": "comment 7244153428",
+  "#612(PR626 audit)": "comment 7244162989"
+ },
+ "note": "PR comments blocked by fine-grained PAT scope \u2014 post PR audits via the parent hub issues."
 }

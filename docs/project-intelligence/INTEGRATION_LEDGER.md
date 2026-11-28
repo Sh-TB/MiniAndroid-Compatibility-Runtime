@@ -85,3 +85,10 @@ Conclusion: the wave10/W19-W20 source work reached main via direct wave commits;
 - test battery `s236_port_laws_test.cpp` = present in main's tests/ — MAIN-INTEGRATED;
 - **the ONLY missing piece: F596-P1 path-2 composed-CREATE dedupe law** (opensudoku CREATE-crash face) — NOT in main at session start.
 Status change: INTEGRATION-IN-PROGRESS by the Main Coder this session: dedupe law applied to `sqlite_shadow.cpp` execSQL + battery row `r12_f596p2_composed_create_dedupe` (functional criterion: deduped table exists, INSERT answers rowId 1). Build+verify pending at correction time.
+
+### C3 — T282 closeout (2026-11-28, Main Coder)
+- **Mainline SHA: `1b65a2019`** (pushed: `4efb0f21c..1b65a2019`). L-001 path-2 dedupe = MAIN-INTEGRATED + MAIN-VERIFIED (binary 6822e834cd386488, s236 battery 17/0 ×2, 5 gate batteries green, anchors gmdice/pfdicer byte-identical).
+- L-002 (PR #626) = SUPERSEDED; audit posted on #612 (comment 7244162989) — the PAT token cannot comment on PR conversations (fine-grained scope); PR verdict lives in the ledger + #612.
+- L-004/L-005 (lost commits #713/#714) and L-006 (#627 S256): re-implement / re-push queued as Q3/Q7.
+- Sandbox incident: two mid-session recycles rewound local git to the W23-D snapshot; forensic branches `local/sandbox-rewound-tree{,2}` preserve the stale trees; main was re-aligned to origin/main BEFORE committing (the divergent first T282 commit was discarded, superseded by `1b65a2019`).
+- LAW-5 record: #596 audit comment 7244153428 (INTEGRATED INTO MAIN).
