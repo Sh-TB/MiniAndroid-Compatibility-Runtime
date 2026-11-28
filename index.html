@@ -109,7 +109,7 @@ function cardHTML(e){
   if(e.current_image) imgs.push(["current_image",e.current_image,"CURRENT reproduction ("+esc(e.status)+") — "+esc(e.last_tested||"")]);
   if(e.current_interaction_image && e.current_interaction_image!==e.current_image) imgs.push(["ct",e.current_interaction_image,"CURRENT after interaction (state change)"]);
   if(e.historical_image) imgs.push(["hist",e.historical_image,"HISTORICAL capture ("+esc(e.status_legacy)+", session "+esc(e.session_hist||"")+")"]);
-  const im=imgs.map(i=>`<figure><img src="${i[1]}" loading="lazy" alt="${esc(e.title)} evidence" data-full="${i[1]}"><figcaption>${i[2]}</figcaption></figure>`).join("");
+  const im=imgs.map(i=>`<figure><img src="${i[1]}" loading="lazy" alt="${esc(e.title)} evidence" data-full="${i[1]}" onerror="this.onerror=null;this.src='assets/'+this.dataset.full.split('/').pop()"><figcaption>${i[2]}</figcaption></figure>`).join("");
   const tracker=e.tracker_issue?` · <a href="https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/issues/${e.tracker_issue}">tracker #${e.tracker_issue}</a>`:"";
   return `<article class="card" data-status="${esc(e.status)}" data-q="${esc((e.title+" "+e.package).toLowerCase())}">
   <header><h3>${esc(e.title)}</h3><div class="pkg">${esc(e.package)} · ${esc(e.type)}</div></header>
@@ -137,9 +137,10 @@ function render(m){
 }
 document.getElementById("lb").onclick=()=>document.getElementById("lb").style.display="none";
 document.getElementById("q").oninput=ev=>{QUERY=ev.target.value.toLowerCase();if(DATA)render(DATA);};
+function localize(m){ for (const e of m.entries){ for (const k of ["historical_image","current_image","current_interaction_image"]) if(e[k]) e[k]="assets/"+e[k].split("/").pop(); } return m; }
 function boot(m){ DATA=m; stats(m); chips(m); render(m); }
 fetch(MANIFEST_URL).then(r=>r.ok?r.json():Promise.reject(r.status))
-  .then(boot).catch(()=>boot(INLINE));
+  .then(boot).catch(()=>boot(localize(INLINE)));
 </script>
 </body>
 </html>
