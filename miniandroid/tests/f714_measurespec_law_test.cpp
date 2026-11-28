@@ -10,12 +10,25 @@
 //
 // Laws pinned (AOSP View.java$MeasureSpec):
 //   T1  getSize(AT_MOST|1080) == 1080 (mask strips the mode bits).
-//   T2  getMode(EXACTLY|1920) == 1; T3 getMode(AT_MOST|1080) == 2;
+//   T2  getMode(EXACTLY|1920) == 0x40000000 (1073741824) — the AOSP MODE
+//       BIT PATTERN, never a 0/1/2 index. T279 fix 2026-11-28: the shadow
+//       returned (spec>>30)&3; androidx compose
+//       AndroidComposeView.convertMeasureSpec compares the mode against the
+//       real constants and its else arm throws IllegalStateException —
+//       ac.stresa.uturn dex pc=0x48, app.wocheneinkauf, app.simple.peri all
+//       died there every measure pass ("Compose measure frontier").
+//   T3  getMode(AT_MOST|1080) == 0x80000000 (int32 -2147483648);
 //       getMode(UNSPECIFIED|77) == 0.
-//   T4  makeMeasureSpec(1080, EXACTLY) == 0x40000000|1080 (size FIRST,
-//       mode second — the platform argument order).
-//   T5  round-trip getSize(makeMeasureSpec(1920, AT_MOST)) == 1920.
+//   T4  makeMeasureSpec(1080, EXACTLY=0x40000000) == 0x40000000|1080 (size
+//       FIRST, mode second; AOSP mask form (size & ~MODE_MASK) |
+//       (mode & MODE_MASK)); T4b makeMeasureSpec(1080, 1) == 1080 (an
+//       index-encoded "mode" degenerates to UNSPECIFIED under the AOSP mask
+//       law — index inputs are not platform-legal).
+//   T5  round-trip getSize(makeMeasureSpec(1920, AT_MOST=0x80000000)) == 1920.
 //   T6  makeSafeMeasureSpec(1080, UNSPECIFIED) == 0 (AOSP safety clamp).
+//   T7  COMPOSE FENCE (T279): getMode(EXACTLY|56) == 0x40000000 — the exact
+//       spec shape internalOnMeasure$ui feeds convertMeasureSpec; mode must
+//       never come back as 1 or the compose when() hits throw ISE.
 //
 // Harness pattern follows tests/f709_filedescriptor_law_test.cpp (S-61).
 #include "../src/dex/dalvik_engine_impl.h"
@@ -166,23 +179,27 @@ int main(int argc, char** argv) {
                       AT_MOST_1080, 0, 1080);
     if (only.empty() || only == "t2")
         expect_static(engine, "t2_getMode_exactly1920", m_getMode, "getMode", 1,
-                      EXACTLY_1920, 0, 1);
+                      EXACTLY_1920, 0, 1073741824.0);
     if (only.empty() || only == "t3") {
         expect_static(engine, "t3a_getMode_atmost1080", m_getMode, "getMode", 1,
-                      AT_MOST_1080, 0, 2);
+                      AT_MOST_1080, 0, -2147483648.0);
         expect_static(engine, "t3b_getMode_unspecified", m_getMode, "getMode", 1,
                       UNSPEC_77, 0, 0);
     }
-    if (only.empty() || only == "t4")
+    if (only.empty() || only == "t4") {
         expect_static(engine, "t4_makeMeasureSpec_size_mode", m_make,
-                      "makeMeasureSpec", 2, 1080, 1,
+                      "makeMeasureSpec", 2, 1080,
+                      static_cast<int32_t>(0x40000000u),
                       static_cast<double>(0x40000000u | 1080u));
+        expect_static(engine, "t4b_makeMeasureSpec_index_degenerates", m_make,
+                      "makeMeasureSpec", 2, 1080, 1, 1080.0);
+    }
     if (only.empty() || only == "t5") {
         // Round-trip: getSize(makeMeasureSpec(1920, AT_MOST)) == 1920 — two
         // static calls chained through registers.
         std::vector<uint16_t> c;
         emit_const(c, 1, 1920);
-        emit_const(c, 2, 2);  // AT_MOST
+        emit_const(c, 2, static_cast<int32_t>(0x80000000u));  // AT_MOST pattern
         emit_invoke(c, opc::INVOKE_STATIC, 2, {1, 2}, m_make);
         emit_move_result(c, 3);
         emit_invoke(c, opc::INVOKE_STATIC, 1, {3}, m_getSize);
@@ -199,6 +216,14 @@ int main(int argc, char** argv) {
     if (only.empty() || only == "t6")
         expect_static(engine, "t6_makeSafeMeasureSpec_unspecified",
                       m_makeSafe, "makeSafeMeasureSpec", 2, 1080, 0, 0);
+    if (only.empty() || only == "t7")
+        // T279 compose fence: the exact spec internalOnMeasure$ui feeds
+        // AndroidComposeView.convertMeasureSpec (EXACTLY|56 = 0x40000038).
+        // The mode must come back as the EXACTLY bit pattern; 1 (the old
+        // index convention) is the uturn/wocheneinkauf/peri ISE.
+        expect_static(engine, "t7_getMode_compose_convert_fence", m_getMode,
+                      "getMode", 1, static_cast<int32_t>(0x40000000u | 56u),
+                      0, 1073741824.0);
 
     std::printf("\nRESULT: %d passed, %d failed\n", g_pass, g_fail);
     return g_fail == 0 ? 0 : 1;

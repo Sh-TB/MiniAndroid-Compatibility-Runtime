@@ -8158,8 +8158,29 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
     // ── F-NEW-714 (W12): android.view.View$MeasureSpec static law ──
     // Pure AOSP arithmetic (View.java$MeasureSpec):
     //   getSize(spec)          = spec & MEASURED_SIZE_MASK (0x3fffffff)
-    //   getMode(spec)          = (spec >> MODE_SHIFT) & MODE_MASK (0x3)
-    //   makeMeasureSpec(size, mode) = (mode << MODE_SHIFT) | (size & ~MODE_MASK)
+    //   getMode(spec)          = spec & MODE_MASK (0xc0000000) — the AOSP
+    //                            MODE BIT PATTERN (UNSPECIFIED=0,
+    //                            EXACTLY=0x40000000, AT_MOST=0x80000000),
+    //                            NOT a 0/1/2 index. T279 (2026-11-28): the
+    //                            previous (spec >> 30) & 3 returned the
+    //                            index; androidx compose
+    //                            AndroidComposeView.convertMeasureSpec
+    //                            compares the mode against the real
+    //                            constants (dex when(mode): AT_MOST/0/
+    //                            EXACTLY) and its else arm is
+    //                            throw IllegalStateException() — ac.stresa
+    //                            .uturn pc=29 (dex 0x48), app.wocheneinkauf,
+    //                            app.simple.peri all died there every
+    //                            measure pass (the "Compose measure
+    //                            frontier"). Pattern-encoded specs decode
+    //                            identically through any (spec >> 30)
+    //                            index reader, so the only consumer of the
+    //                            old convention was DEX-visible getMode.
+    //   makeMeasureSpec(size, mode) = (size & ~MODE_MASK) | (mode & MODE_MASK)
+    //                            (AOSP mask form — accepts the mode BIT
+    //                            PATTERN; index-encoded callers 0/1/2
+    //                            degenerate to UNSPECIFIED, which no real
+    //                            platform contract ever allowed).
     //   makeSafeMeasureSpec(size, mode) = UNSPECIFIED → 0, else makeMeasureSpec
     // These are STATIC, stateless, and every app custom-view measure needs
     // them: name.livitski n-Puzzle GamePlay$1.onMeasure pc≈0x10 calls
@@ -8177,15 +8198,23 @@ bool DalvikExecutionEngine::bridge_domain_app_runtime(
         if (method == "getSize" && args.size() >= 1) {
             result = DalvikValue::make_int(i32(args[0]) & 0x3FFFFFFF);
         } else if (method == "getMode" && args.size() >= 1) {
-            result = DalvikValue::make_int((i32(args[0]) >> 30) & 0x3);
+            // AOSP: spec & MODE_MASK — the full mode bit pattern.
+            result = DalvikValue::make_int(static_cast<int32_t>(
+                static_cast<uint32_t>(i32(args[0])) & 0xC0000000u));
         } else if ((method == "makeMeasureSpec" ||
                     method == "makeSafeMeasureSpec") &&
                    args.size() >= 2) {
             int32_t sz = i32(args[0]), md = i32(args[1]);
             // AOSP makeMeasureSpec(int size, int mode): size first, mode
             // second (the platform never defined a swapped overload).
-            int32_t spec = (md << 30) | (sz & 0x3FFFFFFF);
-            if (method == "makeSafeMeasureSpec" && md == 0) spec = 0;
+            // Mask BOTH inputs (AOSP View.java): (size & ~MODE_MASK) |
+            // (mode & MODE_MASK).
+            int32_t spec = static_cast<int32_t>(
+                (static_cast<uint32_t>(sz) & 0x3FFFFFFFu) |
+                (static_cast<uint32_t>(md) & 0xC0000000u));
+            if (method == "makeSafeMeasureSpec" &&
+                (static_cast<uint32_t>(md) & 0xC0000000u) == 0)
+                spec = 0;
             result = DalvikValue::make_int(spec);
         } else {
             result = DalvikValue::make_int(0);
