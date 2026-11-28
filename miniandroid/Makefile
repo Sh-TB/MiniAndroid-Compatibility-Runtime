@@ -520,6 +520,7 @@ TEST_CORE = simple_test s130_laws_test gp582_engine_probe_test \
             w15_dalvik_lit_from16_law_test
 TEST_HOSTILE = g04_hostile_test g06g08_hostile_test resource_hostile_test
 TEST_LAW = lifecycle_law_test input_pipeline_law_test linear_layout_law_test \
+	t280_rectf_choreo_law_test \
 	g10_layout_law_test g11_ctor_law_test \
 	mutf8_string_pool_test resource_core_law_test resource_config_selection_test \
 	s98_prefs_law_test s98_scroll_transform_law_test s98_text_law_test \

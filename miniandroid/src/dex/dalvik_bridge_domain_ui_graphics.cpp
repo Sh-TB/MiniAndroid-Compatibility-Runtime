@@ -23,6 +23,85 @@ bool DalvikExecutionEngine::bridge_domain_ui_graphics(
     ApiCallTrace::Status& status = fr.status;
     uint32_t method_idx_hint = fr.method_idx_hint;
 
+    if ((method == "width" || method == "height") &&
+        (class_name == "Landroid/graphics/Rect;" ||
+         class_name == "Landroid/graphics/RectF;")) {
+        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id : 0;
+        if (recv != 0) {
+            // T280 (KA-KYK-029): AOSP RectF.width()/height() are FLOAT
+            // consumers (RectF.java: "public float width() { return right
+            // - left; }") over the FLOAT32 fields the ctor law (F-NEW-169b,
+            // dalvik_engine.cpp) stores. The shared reader below only
+            // answered INT32 fields — every REAL RectF (float-stored
+            // bounds) answered 0 for width/height/isEmpty. Split the laws
+            // by exact descriptor: Rect = int fields / int result; RectF =
+            // float fields / float result.
+            if (class_name == "Landroid/graphics/RectF;") {
+                auto rf32 = [&](const char* f) -> float {
+                    auto v = heap_.get_object_field(recv, f);
+                    if (!v.has_value()) return 0.f;
+                    if (v->type == DalvikType::FLOAT32) return v->float_val;
+                    if (v->type == DalvikType::INT32) return (float)v->int_val;
+                    return 0.f;
+                };
+                float dim = (method == "width")
+                                ? (rf32("right") - rf32("left"))
+                                : (rf32("bottom") - rf32("top"));
+                result = DalvikValue::make_float(dim);
+                status = ApiCallTrace::Status::IMPLEMENTED;
+                return true;
+            }
+            auto rf = [&](const char* f) -> int32_t {
+                auto v = heap_.get_object_field(recv, f);
+                return (v.has_value() && v->type == DalvikType::INT32)
+                           ? v->int_val : 0;
+            };
+            int32_t dim = (method == "width") ? (rf("right") - rf("left"))
+                                              : (rf("bottom") - rf("top"));
+            result = DalvikValue::make_int(dim);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+    // F-NEW-442c (CONT-104) — AOSP Rect/RectF isEmpty law (Rect.java):
+    //   public final boolean isEmpty() { return left >= right || top >= bottom; }
+    // T280 (KA-KYK-030): the first implementation carried && — which only
+    // classifies a rect empty when BOTH axes are degenerate; AOSP uses OR
+    // (a zero-width or zero-height rect IS empty). Verified against the
+    // AOSP source 2026-11-28 (frameworks/base Rect.java). RectF compares
+    // its FLOAT32 fields (KA-KYK-029 same root).
+    if (method == "isEmpty" &&
+        (class_name == "Landroid/graphics/Rect;" ||
+         class_name == "Landroid/graphics/RectF;")) {
+        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
+                            ? args[0].object_id : 0;
+        if (recv != 0) {
+            bool empty;
+            if (class_name == "Landroid/graphics/RectF;") {
+                auto rf32 = [&](const char* f) -> float {
+                    auto v = heap_.get_object_field(recv, f);
+                    if (!v.has_value()) return 0.f;
+                    if (v->type == DalvikType::FLOAT32) return v->float_val;
+                    if (v->type == DalvikType::INT32) return (float)v->int_val;
+                    return 0.f;
+                };
+                empty = rf32("left") >= rf32("right") ||
+                        rf32("top") >= rf32("bottom");
+            } else {
+                auto rf = [&](const char* f) -> int32_t {
+                    auto v = heap_.get_object_field(recv, f);
+                    return (v.has_value() && v->type == DalvikType::INT32)
+                               ? v->int_val : 0;
+                };
+                empty = rf("left") >= rf("right") || rf("top") >= rf("bottom");
+            }
+            result = DalvikValue::make_int(empty ? 1 : 0);
+            status = ApiCallTrace::Status::IMPLEMENTED;
+            return true;
+        }
+    }
+
     // ────────────────────────────────────────────────────────────────────
     // S82-GFX F-NEW-158: programmatic background family (AOSP View.java
     // mBackground swap law). Fixture ladder evidence (l0/l4):
@@ -4365,48 +4444,7 @@ bool DalvikExecutionEngine::bridge_domain_ui_graphics(
             }
         }
     }
-    if ((method == "width" || method == "height") &&
-        (class_name == "Landroid/graphics/Rect;" ||
-         class_name == "Landroid/graphics/RectF;")) {
-        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
-                            ? args[0].object_id : 0;
-        if (recv != 0) {
-            auto rf = [&](const char* f) -> int32_t {
-                auto v = heap_.get_object_field(recv, f);
-                return (v.has_value() && v->type == DalvikType::INT32)
-                           ? v->int_val : 0;
-            };
-            int32_t dim = (method == "width") ? (rf("right") - rf("left"))
-                                              : (rf("bottom") - rf("top"));
-            result = DalvikValue::make_int(dim);
-            status = ApiCallTrace::Status::IMPLEMENTED;
-            return true;
-        }
-    }
-    // F-NEW-442c (CONT-104) — AOSP Rect.isEmpty law (Rect.java):
-    //   public final boolean isEmpty() { return left >= right && top >= bottom; }
-    // Previously unimplemented → silent stub false for every consumer of
-    // computeSystemWindowInsets' out rect (androidx insets math) — the same
-    // silent-default class the honesty red line forbids. Reads the SAME
-    // plain int fields the Rect ctor bridge stores (F-CTX rect law).
-    if (method == "isEmpty" &&
-        (class_name == "Landroid/graphics/Rect;" ||
-         class_name == "Landroid/graphics/RectF;")) {
-        uint32_t recv = (!args.empty() && args[0].type == DalvikType::OBJECT_REF)
-                            ? args[0].object_id : 0;
-        if (recv != 0) {
-            auto rf = [&](const char* f) -> int32_t {
-                auto v = heap_.get_object_field(recv, f);
-                return (v.has_value() && v->type == DalvikType::INT32)
-                           ? v->int_val : 0;
-            };
-            bool empty =
-                rf("left") >= rf("right") && rf("top") >= rf("bottom");
-            result = DalvikValue::make_int(empty ? 1 : 0);
-            status = ApiCallTrace::Status::IMPLEMENTED;
-            return true;
-        }
-    }
+
     // F-NEW-442d (CONT-104) — AOSP WindowInsets.inset(IIII) law
     // (WindowInsets.java): returns a NEW WindowInsets (clamped, NEVER null)
     // for every receiver. Real-APK oracle: chess androidx g1.l

@@ -230,6 +230,13 @@ bool DalvikExecutionEngine::execute_invoke_virtual(uint32_t pc, InstructionTrace
     // treats args[0] as `this` (instance method, not static).
     bool saved_is_static = current_invoke_is_static_;
     current_invoke_is_static_ = false;
+    // T280 (KA-KYK-033): RAII scope guard — the F-141 null-receiver early
+    // return exits without the manual tail restore. Same pattern
+    // execute_invoke_interface already uses (F-023).
+    struct IsStaticRestore {
+        bool& flag; bool saved;
+        ~IsStaticRestore() { flag = saved; }
+    } is_static_restore{current_invoke_is_static_, saved_is_static};
 
     // EXP-062: Debug — trace ALL invoke-virtual entry in PhoneView.<init>
     if (diag_env("MINIANDROID_EXP062_TRACE") && current_class_.find("PhoneView") != std::string::npos &&
@@ -1166,6 +1173,13 @@ bool DalvikExecutionEngine::execute_invoke_direct(uint32_t pc, InstructionTrace&
     // for invoke-direct calls (instance methods).
     bool saved_is_static = current_invoke_is_static_;
     current_invoke_is_static_ = false;
+    // T280 (KA-KYK-033): RAII scope guard — the F-141 null-receiver early
+    // return exits without the manual tail restore. Same pattern
+    // execute_invoke_interface already uses (F-023).
+    struct IsStaticRestore {
+        bool& flag; bool saved;
+        ~IsStaticRestore() { flag = saved; }
+    } is_static_restore{current_invoke_is_static_, saved_is_static};
     
     uint16_t instr = bytecode_[pc];
     // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"
@@ -1478,6 +1492,15 @@ bool DalvikExecutionEngine::execute_invoke_static(uint32_t pc, InstructionTrace&
     //   - bridge_to_api → try_shadow_dispatch inside callees sees false (instance)
     bool saved_is_static = current_invoke_is_static_;
     current_invoke_is_static_ = true;
+    // T280 (KA-KYK-033): RAII scope guard — the Class.forName /
+    // SystemProperties special exits below advance pc_ and return SUCCESS
+    // without the manual tail restore, leaking TRUE across invoke
+    // boundaries (every later handler's save captures the corrupted
+    // state). Same pattern execute_invoke_interface already uses (F-023).
+    struct IsStaticRestore {
+        bool& flag; bool saved;
+        ~IsStaticRestore() { flag = saved; }
+    } is_static_restore{current_invoke_is_static_, saved_is_static};
 
     uint16_t instr = bytecode_[pc];
     // EXP-037 Phase B (BLOCKER-015 FIX): 35c format is "AA|op BBBB FEDC"

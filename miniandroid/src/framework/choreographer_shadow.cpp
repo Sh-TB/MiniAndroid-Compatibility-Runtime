@@ -68,6 +68,16 @@ CallResult ChoreographerShadow::dispatch(const CallContext& ctx) {
         // Documented deviation: fail-soft to the last frame time; the
         // strict ISE law is recorded in the ROOT_LAW ledger as a queued
         // strictness item. Deterministic either way.
+        //
+        // T280 (KA-KYK-028): AOSP unit law — Choreographer.getFrameTime()
+        // is the MILLISECOND getter ("Returns the current frame time in
+        // milliseconds", Choreographer.java: getFrameTime() { return
+        // (int)(getFrameTimeNanos() / TimeUtils.NANOS_PER_MS); }) while
+        // getFrameTimeNanos() is nanoseconds. Both were grouped here and
+        // answered the same ns value — ms readers received a value 1e6×
+        // too large (animation elapsed-time/deadline arithmetic wrong).
+        if (m == "getFrameTime")
+            return CallResult::handled_long(frame_time_nanos_ / 1000000LL);
         return CallResult::handled_long(frame_time_nanos_);
     }
 

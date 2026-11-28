@@ -1,0 +1,72 @@
+{
+ "run_dir": "run_t280/itsfrz_tap",
+ "log": "run_t280/itsfrz_tap.err",
+ "tap_frame": 0,
+ "states": {
+  "NODE_DISCOVERED": {
+   "reached": true,
+   "evidence": [
+    "[UC009-WIRE] view-attach dispatch (dispatchAttachedToWindow)...",
+    "[UC009-ATTACH-DIAG] dex_report=SET classes_indexed=4424 nodes=10 depth=0",
+    "[UC009-ATTACH-DIAG] ComposeView NOT in class index",
+    "[UC009-ATTACH-DIAG] sample key: Landroidx/compose/ui/viewinterop/a;",
+    "[UC009-ATTACH-DIAG] sample key: Landroidx/compose/ui/viewinterop/FocusTargetPropertiesElement;",
+    "[UC009-ATTACH-DIAG] sample key: Landroidx/compose/ui/viewinterop/FocusGroupPropertiesElement;"
+   ],
+   "note": "compose render passes (rf=COMPOSE) or attach diag present"
+  },
+  "INTERACTION_MODIFIER_FOUND": {
+   "reached": false,
+   "evidence": [],
+   "note": ""
+  },
+  "HIT_TEST_REACHED": {
+   "reached": false,
+   "targets": [
+    0
+   ],
+   "evidence": [
+    "[F117-TAP] frame 1 DOWN (540,960) target=0"
+   ]
+  },
+  "EVENT_DISPATCHED": {
+   "reached": false,
+   "count": 0,
+   "evidence": []
+  },
+  "CALLBACK_EXECUTED": {
+   "reached": false,
+   "evidence": [],
+   "post_callback_activity": [],
+   "note": "PerformClick token executed (View.performClick law)"
+  },
+  "STATE_CHANGED": {
+   "reached": false,
+   "evidence": [],
+   "note": "activity/fragment state transition observed after dispatch"
+  },
+  "RECOMPOSITION_OBSERVED": {
+   "reached": false,
+   "compose_render_count": 0,
+   "evidence": [],
+   "note": "COMPOSE render passes after tap (render-channel recomposition proxy)"
+  },
+  "PIXEL_CHANGE_OBSERVED": {
+   "reached": false,
+   "faces": {
+    "frame_000.png": "d602648e8e401895",
+    "frame_001.png": "d55056a8928a26ff",
+    "frame_002.png": "d55056a8928a26ff"
+   },
+   "pre_tap_baseline": null,
+   "post_unique": [
+    "d55056a8928a26ff",
+    "d602648e8e401895"
+   ]
+  }
+ },
+ "apk_sha256": null,
+ "binary_sha256": null,
+ "command": null,
+ "interaction_ceiling": "NODE_DISCOVERED"
+}
