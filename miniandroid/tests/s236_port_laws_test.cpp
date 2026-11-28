@@ -436,6 +436,56 @@ static void run_port_rows(DalvikExecutionEngine& engine,
             record("r4_f658c_copy_ctor_mirror",
                    okc && snapb.size() == 2,
                    "copied=" + std::to_string(snapb.size()));
+
+            // ── F596-P1 path-2 (S236.1, ported to main): composed-CREATE
+            // dedupe. A composed CREATE TABLE carrying a duplicate column
+            // must SUCCEED (first occurrence kept, duplicates dropped
+            // loudly) — the opensudoku RATING_LEVEL face: sqlite3's
+            // duplicate-column rejection used to kill the table so the
+            // onOpen cursor arm died on a null cursor. Functional proof:
+            // the deduped table really EXISTS — an INSERT answers rowId 1.
+            {
+                CallContext dupc = create;
+                dupc.args.clear();
+                // The law dedupes on the full lowercased column DEFINITION
+                // text (the branch-tested semantics; the app composed the
+                // SAME definition twice) — not on the bare column name.
+                dupc.args.push_back(str_arg(
+                    "CREATE TABLE IF NOT EXISTS t_dup ("
+                    "rating_level INTEGER, name TEXT, "
+                    "rating_level INTEGER)"));
+                db->dispatch(dupc);
+                // Determinism: the db file PERSISTS across battery runs —
+                // clear t_dup so the insert always answers rowId 1.
+                CallContext dupclr = create;
+                dupclr.args.clear();
+                dupclr.args.push_back(str_arg("DELETE FROM t_dup"));
+                db->dispatch(dupclr);
+                uint32_t cvd = heap.allocate(
+                    "Landroid/content/ContentValues;", 0, 0);
+                DalvikValue dout;
+                bridge(engine, "Landroid/content/ContentValues;", "put",
+                       {DalvikValue::make_object(
+                            cvd, "Landroid/content/ContentValues;"),
+                        DalvikValue::make_string("name", 0),
+                        DalvikValue::make_string("deduped", 0)},
+                       dout);
+                CallContext dupi;
+                dupi.class_name = create.class_name;
+                dupi.method = "insert";
+                dupi.has_receiver = true;
+                dupi.receiver_id = db_oid;
+                dupi.receiver_class = dupi.class_name;
+                dupi.args.push_back(str_arg("t_dup"));
+                dupi.args.push_back(str_arg("name"));
+                dupi.args.push_back(obj_arg(cvd));
+                CallResult dupr = db->dispatch(dupi);
+                record("r12_f596p2_composed_create_dedupe",
+                       dupr.ret_kind == CallResult::RetKind::INT &&
+                           dupr.int_val == 1,
+                       "rowId=" + std::to_string(dupr.int_val) +
+                           " (duplicate-column CREATE must succeed)");
+            }
         }
     }
 

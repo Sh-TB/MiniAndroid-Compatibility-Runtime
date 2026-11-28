@@ -1,0 +1,92 @@
+{
+ "checkpoint_version": 2,
+ "updated": "2026-11-28",
+ "remote_main": "4efb0f21c",
+ "issues_total": 714,
+ "issues_open": 593,
+ "issues_closed": 121,
+ "raw_data": [
+  "raw/issues_all.json",
+  "raw/prs_all.json",
+  "raw/branches.json",
+  "raw/comments_hot.json"
+ ],
+ "ledger_entries": 10,
+ "queue": [
+  {
+   "id": "Q1",
+   "task": "wave10 3 source fixes cherry-pick to main",
+   "status": "DONE-SUPERSEDED (fixes verified already in main)",
+   "refs": [
+    "PR #626",
+    "L-002"
+   ]
+  },
+  {
+   "id": "Q2",
+   "task": "s236 provider-law re-port into split layout",
+   "status": "DONE (dedupe law landed this session; rest verified pre-integrated)",
+   "refs": [
+    "L-001",
+    "branch audit/s236"
+   ]
+  },
+  {
+   "id": "Q3",
+   "task": "re-implement #713 TableLayout law (lost fix)",
+   "status": "PENDING",
+   "refs": [
+    "L-004"
+   ]
+  },
+  {
+   "id": "Q4",
+   "task": "m16-litehtml opt-in adoption decision",
+   "status": "PARKED",
+   "refs": [
+    "L-003"
+   ]
+  },
+  {
+   "id": "Q5",
+   "task": "compose host materialization design",
+   "status": "PENDING",
+   "refs": [
+    "#712",
+    "#707"
+   ]
+  },
+  {
+   "id": "Q6",
+   "task": "monolith fate (verify fallback or delete)",
+   "status": "PARKED",
+   "refs": [
+    "T281 banner"
+   ]
+  },
+  {
+   "id": "Q7",
+   "task": "LAW-5 feedback comments (#596/#626/#713/#714/#627)",
+   "status": "PENDING",
+   "refs": [
+    "L-001..L-006"
+   ]
+  }
+ ],
+ "lost_progress_verified": [
+  "976f97bc",
+  "ec7bf965",
+  "8426390c",
+  "3f3df30b",
+  "c6a7291c"
+ ],
+ "notes": "All 'lost' hashes confirmed absent locally+remotely as of this checkpoint.",
+ "remote_main_before": "4efb0f21c",
+ "integration": {
+  "Q2_first_cycle": "F596-P1 path-2 composed-CREATE dedupe landed",
+  "binary": "6822e834cd386488",
+  "battery": "s236 17/0 x2 + 5 gate batteries green",
+  "anchors": "gmdice 3891679d, pfdicer 31ffa499 BYTE-IDENTICAL"
+ },
+ "sandbox_incident": "sandbox recycled twice to W23-D snapshot; forensics branches local/sandbox-rewound-tree (v1) + local/sandbox-rewound-tree2 preserve stale trees; main re-aligned to origin/main before T282 commit"
+}

@@ -1,0 +1,26 @@
+[
+{
+"n": 625,
+"state": "closed",
+"title": "ISSUE-612: Add opt-in shared Dalvik .so development build path",
+"author": "Sh-TB",
+"created": "2026-11-18",
+"merged": true,
+"merged_at": "2026-11-18",
+"head": "wave9/dev-so-clean",
+"base": "main",
+"url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/pull/625"
+},
+{
+"n": 626,
+"state": "open",
+"title": "ISSUE-612: WAVE-10 dev-so speed profiles \u2014 interpreter 12.16s, bridge 26.89s",
+"author": "Sh-TB",
+"created": "2026-11-18",
+"merged": false,
+"merged_at": "",
+"head": "wave10/dalvik-accel",
+"base": "wave9/dev-so-clean",
+"url": "https://github.com/Sh-TB/MiniAndroid-Compatibility-Runtime/pull/626"
+}
+]

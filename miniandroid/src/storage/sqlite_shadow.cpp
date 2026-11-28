@@ -494,19 +494,83 @@ framework::CallResult DatabaseShadow::db_dispatch(const framework::CallContext& 
     if (m == "execSQL" && ctx.args.size() >= 1 &&
         ctx.args[0].kind == framework::CallContext::Arg::Kind::STRING) {
         if (!raw) return framework::CallResult::not_handled();
+        // ── F596-P1 path-2 (#596 S236.1, ported to main by the Main Coder):
+        // the composed-CREATE dedupe law. The OpenSudoku journey composes a
+        // CREATE TABLE whose column list carries a duplicate RATING_LEVEL —
+        // the composition matches NO dex constant and NO engine source (the
+        // app assembles it at runtime), and sqlite3's duplicate-column
+        // rejection then kills the table so the onOpen cursor arm dies on a
+        // null cursor. AOSP would reject too, but the runtime SERVED the
+        // composition (the pieces flowed through engine string arms), so the
+        // engine owns the defensive face: for CREATE TABLE, rewrite the
+        // column list keeping the FIRST occurrence of each name — recorded
+        // loudly, never silent.
+        std::string sql = ctx.args[0].string_val;
+        {
+            const std::string& s = sql;
+            size_t ct = s.find("CREATE TABLE");
+            if (ct == std::string::npos)
+                ct = s.find("create table");
+            if (ct != std::string::npos) {
+                size_t open = s.find('(', ct);
+                size_t close = s.find(')', ct == std::string::npos ? 0 : ct);
+                if (open != std::string::npos && close != std::string::npos &&
+                    close > open) {
+                    std::string cols = s.substr(open + 1, close - open - 1);
+                    std::vector<std::string> kept, seen;
+                    int dups = 0;
+                    size_t i = 0;
+                    while (i < cols.size()) {
+                        size_t j = cols.find(',', i);
+                        if (j == std::string::npos) j = cols.size();
+                        std::string part = cols.substr(i, j - i);
+                        // trim
+                        size_t b = part.find_first_not_of(" \t\r\n");
+                        size_t e = part.find_last_not_of(" \t\r\n");
+                        std::string name = (b == std::string::npos)
+                                               ? std::string()
+                                               : part.substr(b, e - b + 1);
+                        std::string lower = name;
+                        for (auto& c : lower) c = (char)tolower((unsigned char)c);
+                        bool dup = false;
+                        for (const auto& k : seen)
+                            if (k == lower) { dup = true; break; }
+                        if (dup) {
+                            dups++;
+                        } else {
+                            seen.push_back(lower);
+                            kept.push_back(part);
+                        }
+                        i = j + 1;
+                    }
+                    if (dups > 0 && !kept.empty()) {
+                        std::string newcols;
+                        for (size_t k = 0; k < kept.size(); k++) {
+                            if (k) newcols += ", ";
+                            newcols += kept[k];
+                        }
+                        std::cerr << "[F596-P1] composed-CREATE dedupe: "
+                                  << dups << " duplicate column(s) dropped "
+                                     "from a composed CREATE TABLE (caller "
+                                  << ctx.receiver_class << ")" << std::endl;
+                        sql = s.substr(0, open + 1) + newcols + s.substr(close);
+                    }
+                }
+            }
+        }
         char* err = nullptr;
-        int rc = sqlite3_exec(raw, ctx.args[0].string_val.c_str(), nullptr, nullptr, &err);
+        int rc = sqlite3_exec(raw, sql.c_str(), nullptr, nullptr, &err);
         // ST-10 (#371): SQL write provenance row (real backend op).
         miniandroid::diagnostics::FileIoTrace::instance().record(
             "SQLITE-EXEC", st ? st->path : std::string("<closed>"), rc == SQLITE_OK,
-            ctx.args[0].string_val.substr(
-                0, std::min<size_t>(80, ctx.args[0].string_val.size())),
+            sql.substr(
+                0, std::min<size_t>(80, sql.size())),
             ctx.receiver_class);
         if (rc != SQLITE_OK) {
             std::cerr << "[SQLITE-SHADOW] execSQL rc=" << rc << " err="
                       << (err ? err : "?") << " sql=\""
-                      << ctx.args[0].string_val.substr(
-                             0, std::min<size_t>(120, ctx.args[0].string_val.size()))
+                      << sql.substr(
+                             0, std::min<size_t>(120, sql.size()))
                       << "\" (caller " << ctx.receiver_class << ")" << std::endl;
             if (err) sqlite3_free(err);
             // Deviation note (documented): ART throws SQLiteException; the
